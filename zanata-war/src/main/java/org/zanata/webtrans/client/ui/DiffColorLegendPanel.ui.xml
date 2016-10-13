@@ -29,31 +29,55 @@
 
         <tr>
           <td class="diff-insert">
-            <ui:text from="{messages.greenColor}" />
+            <g:InlineLabel ui:field="searchOnlyLabel">
+              <ui:text from="{messages.searchOnly}" />
+            </g:InlineLabel>
           </td>
           <td>
-            <g:Label ui:field="insDescription" />
+            <g:Label ui:field="searchOnlyDescription" />
           </td>
         </tr>
 
         <tr>
           <td class="diff-delete">
-            <ui:text from="{messages.redColorCrossedOut}" />
+            <g:InlineLabel ui:field="tmOnlyLabel">
+              <ui:text from="{messages.tmOnly}" />
+            </g:InlineLabel>
           </td>
           <td>
-            <g:Label ui:field="delDescription" />
+            <g:Label ui:field="tmOnlyDescription" />
           </td>
         </tr>
 
         <tr>
-          <td class="diff-equal">
-            <ui:text from="{messages.plainText}" />
+          <td class="CodeMirror-searching">
+            <g:InlineLabel ui:field="matchLabel">
+              <ui:text from="{messages.noColor}" />
+            </g:InlineLabel>
           </td>
           <td>
-            <g:Label ui:field="containDescription" />
+            <g:Label ui:field="matchDescription">
+              <ui:text from="{messages.tmHighlightTextDesc}" />
+            </g:Label>
           </td>
         </tr>
+
+        <tr>
+          <td>
+            <g:InlineLabel ui:field="absentLabel">
+              <ui:text from="{messages.noMatch}" />
+            </g:InlineLabel>
+          </td>
+          <td>
+            <g:Label ui:field="absentDescription">
+              <ui:text from="{messages.tmInsertTagDesc}" />
+            </g:Label>
+          </td>
+        </tr>
+
       </table>
     </div>
   </g:HTMLPanel>
 </ui:UiBinder>
+
+

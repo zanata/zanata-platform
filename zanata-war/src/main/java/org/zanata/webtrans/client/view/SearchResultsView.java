@@ -372,6 +372,6 @@ public class SearchResultsView extends Composite implements
 
     @Override
     public void showDiffLegend() {
-        diffLegendPanel.show(ShortcutContext.ProjectWideSearch);
+        diffLegendPanel.show(ShortcutContext.ProjectWideSearch, null);
     }
 }

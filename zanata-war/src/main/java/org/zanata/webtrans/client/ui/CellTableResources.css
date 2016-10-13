@@ -32,7 +32,7 @@
   }
 
   .cellTableSelectedRow {
-    background: #a7c6fa;
+    background: rgba(167,198, 250, 0.5);
     color: inherit;
   }
 

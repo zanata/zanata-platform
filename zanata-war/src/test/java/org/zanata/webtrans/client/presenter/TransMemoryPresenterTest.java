@@ -497,7 +497,7 @@ public class TransMemoryPresenterTest {
         List<TransMemoryResultItem> currentResult =
                 Lists.newArrayList(transMemoryResultItem);
         presenter.setStatesForTesting(currentResult, null);
-        configHolder.setTMDisplayMode(DiffMode.HIGHLIGHT);
+        configHolder.setTMDisplayMode(DiffMode.NORMAL);
 
         presenter
                 .onUserConfigChanged(UserConfigChangeEvent.EDITOR_CONFIG_CHANGE_EVENT);
