@@ -54,14 +54,11 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 
 import com.google.common.collect.Lists;
-import com.ibm.icu.util.ULocale;
 
 import org.zanata.service.impl.LocaleServiceImpl;
-import org.zanata.webtrans.shared.model.Locale;
+import org.zanata.servlet.annotations.AllJavaLocales;
 
 import lombok.Setter;
-
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -87,6 +84,10 @@ public class LocalesService implements LocalesResource {
 
     @Inject
     private ResourceUtils resourceUtils;
+
+    @Inject
+    @AllJavaLocales
+    private List<LocaleId> allJavaLocales;
 
     @Transactional(readOnly = true)
     @Override
@@ -128,14 +129,14 @@ public class LocalesService implements LocalesResource {
     public Response getNewLocales(@QueryParam("filter") String filter,
             @QueryParam("size") @DefaultValue("10") int size) {
         List<LocaleId> supportedLocaleIds =
-                localeServiceImpl.getAllLocales(1, -1, null, null).stream()
+                localeServiceImpl.getAllLocales().stream()
                         .map(hLocale -> hLocale.getLocaleId())
                         .collect(Collectors.toList());
 
         List<LocaleDetails> localeDetails =
-                localeServiceImpl.getAllJavaLanguages().stream()
-                        .filter(newLocale -> !supportedLocaleIds
-                                .contains(newLocale))
+                allJavaLocales.stream()
+                        .filter(localeId -> !supportedLocaleIds
+                                .contains(localeId))
                         .map(convertToLocaleDetails)
                         .collect(Collectors.toList());
 
@@ -211,7 +212,7 @@ public class LocalesService implements LocalesResource {
         identity.checkPermission("insert-language");
 
         if (localeServiceImpl.localeExists(localeDetails.getLocaleId())) {
-            return Response.status(Response.Status.CONFLICT).build();
+            return Response.ok().build();
         }
         HLocale hLocale = LocaleServiceImpl.convertToHLocale(localeDetails);
         localeDAO.makePersistent(hLocale);
@@ -249,7 +250,7 @@ public class LocalesService implements LocalesResource {
         return result;
     }
 
-    private Function<LocaleId, LocaleDetails> convertToLocaleDetails =
+    private final Function<LocaleId, LocaleDetails> convertToLocaleDetails =
         new Function<LocaleId, LocaleDetails>() {
             @Override
             public LocaleDetails apply(LocaleId localeId) {
@@ -272,8 +273,10 @@ public class LocalesService implements LocalesResource {
             if (StringUtils.isBlank(query)) {
                 return true;
             }
-            return localeDetails.getDisplayName().contains(query)
-                || localeDetails.getLocaleId().toString().contains(query);
+            return StringUtils
+                .containsIgnoreCase(localeDetails.getDisplayName(), query)
+                || StringUtils
+                .containsIgnoreCase(localeDetails.getLocaleId().getId(), query);
         }
     }
 }

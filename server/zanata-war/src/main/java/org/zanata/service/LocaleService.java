@@ -37,6 +37,8 @@ public interface LocaleService {
     List<HLocale> getAllLocales(int offset, int maxResults, String filter,
             List<LocaleSortField> sortFields);
 
+    List<HLocale> getAllLocales();
+
     List<HLocale> getSupportedLocales(int offset, int maxResults, String filter,
             List<LocaleSortField> sortFields);
 
