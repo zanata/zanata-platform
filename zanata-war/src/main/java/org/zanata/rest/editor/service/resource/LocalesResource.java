@@ -5,6 +5,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -27,7 +28,7 @@ public interface LocalesResource extends RestResource {
     public static final String SERVICE_PATH = "/locales";
 
     /**
-     * Retrieves a full list of locales enabled in Zanata. The result is
+     * Retrieves a full list of locales enabled in Zanata.
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
@@ -53,7 +54,7 @@ public interface LocalesResource extends RestResource {
     public Response getDetails(@PathParam("localeId") String localeId);
 
     /**
-     * Retrieves a full list of localized locales for server. The result is
+     * Retrieves a full list of localized locales for server.
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
@@ -69,7 +70,7 @@ public interface LocalesResource extends RestResource {
 
 
     /**
-     * Retrieves a list of locales that is not added yet in the server. The result is
+     * Retrieves a list of locales that is not added yet in the server.
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
@@ -100,14 +101,15 @@ public interface LocalesResource extends RestResource {
     public Response delete(@PathParam("localeId") String localeId);
 
     /**
-     * Create new language in Zanata
+     * Create a new language in Zanata
      * @return The following response status codes will be returned from this
      *         operation:<br>
      *         OK(201) - Locale is added. <br>
+     *         OK(200) - Locale is already exist. <br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
      */
-    @POST
+    @PUT
     @Path("/locale")
     @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
         MediaType.APPLICATION_JSON })

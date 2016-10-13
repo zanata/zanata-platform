@@ -43,7 +43,7 @@ const getLocalesList = (state) => {
   const query = state.routing.location.query
   let queries = []
   if (query.search) {
-    queries.push('filter=' + query.search)
+    queries.push('filter=' + encodeURIComponent(query.search))
   }
   if (query.page) {
     queries.push('page=' + query.page)
@@ -82,7 +82,7 @@ const getLocalesList = (state) => {
 
 const searchLocales = (query) => {
   const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/locales/new?filter=' + query
+    '/locales/new?filter=' + encodeURIComponent(query)
 
   const apiTypes = [
     LOAD_LANGUAGES_SUGGESTION_REQUEST,
@@ -211,7 +211,7 @@ const createNewLanguage = (details) => {
     CREATE_LANGUAGE_FAILURE
   ]
   return {
-    [CALL_API]: buildAPIRequest(endpoint, 'POST', headers, apiTypes,
+    [CALL_API]: buildAPIRequest(endpoint, 'PUT', headers, apiTypes,
       JSON.stringify(details))
   }
 }

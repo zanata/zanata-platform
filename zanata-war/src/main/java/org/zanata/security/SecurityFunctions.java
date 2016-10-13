@@ -440,7 +440,7 @@ public class SecurityFunctions extends PermissionProvider {
 
     /* Only admin can delete language in the server */
     @GrantsPermission(actions = { "delete-language", "insert-language" })
-    public boolean canDeleteLanguage() {
+    public boolean canManageSystemLanguage() {
         return identity.hasRole("admin");
     }
 

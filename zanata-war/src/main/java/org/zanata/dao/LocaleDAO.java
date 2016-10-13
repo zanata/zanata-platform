@@ -78,9 +78,52 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long> {
 
     public List<HLocale> find(int offset, int maxResults, String filter,
         List<LocaleSortField> sortFields, boolean onlyActive) {
+        Query query = getSession()
+                .createQuery(buildResultSearchQuery(filter, sortFields, onlyActive));
+        if (StringUtils.isNotBlank(filter)) {
+            query.setString("query", "%" + filter.toLowerCase() + "%");
+        }
+        query.setFirstResult(offset).setComment("LocaleDAO.find");
+
+        if (maxResults != -1) {
+            query.setMaxResults(maxResults);
+        }
+        return query.list();
+    }
+
+    public int countByFind(String filter, boolean onlyActive) {
+        Query query = getSession()
+                .createQuery(buildCountSearchQuery(filter, null, onlyActive));
+        if (StringUtils.isNotBlank(filter)) {
+            query.setString("query", "%" + filter.toLowerCase() + "%");
+        }
+        query.setComment("LocaleDAO.countByFind");
+        Long totalCount = (Long) query.uniqueResult();
+        if (totalCount == null) {
+            return 0;
+        }
+        return totalCount.intValue();
+    }
+
+    private String buildCountSearchQuery(String filter,
+        List<LocaleSortField> sortFields, boolean onlyActive) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("select count(*) from HLocale l");
+        queryBuilder.append(buildSearchQuery(filter, sortFields, onlyActive));
+        return queryBuilder.toString();
+    }
+
+    private String buildResultSearchQuery(String filter,
+        List<LocaleSortField> sortFields, boolean onlyActive) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("from HLocale l");
+        queryBuilder.append(buildSearchQuery(filter, sortFields, onlyActive));
+        return queryBuilder.toString();
+    }
 
+    private String buildSearchQuery(String filter,
+            List<LocaleSortField> sortFields, boolean onlyActive) {
+        StringBuilder queryBuilder = new StringBuilder();
         boolean hasCondition = StringUtils.isNotBlank(filter) || onlyActive;
         if (hasCondition) {
             queryBuilder.append(" where");
@@ -90,8 +133,8 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long> {
         if (StringUtils.isNotBlank(filter)) {
             joinQuery = true;
             queryBuilder.append(" lower(l.localeId) like :query")
-                .append(" or lower(l.displayName) like :query")
-                .append(" or lower(l.nativeName) like :query");
+                    .append(" or lower(l.displayName) like :query")
+                    .append(" or lower(l.nativeName) like :query");
         }
         if (onlyActive) {
             if (joinQuery) {
@@ -109,19 +152,6 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long> {
             }
             queryBuilder.append(Joiner.on(", ").join(sortQuery));
         }
-        Query query = getSession().createQuery(queryBuilder.toString());
-        if (StringUtils.isNotBlank(filter)) {
-            query.setString("query", "%" + filter.toLowerCase() + "%");
-        }
-        query.setFirstResult(offset).setComment("LocaleDAO.find");
-
-        if (maxResults != -1) {
-            query.setMaxResults(maxResults);
-        }
-        return query.list();
-    }
-
-    public int countByFind(String filter, boolean onlyActive) {
-        return find(0, -1, filter, null, onlyActive).size();
+        return queryBuilder.toString();
     }
 }

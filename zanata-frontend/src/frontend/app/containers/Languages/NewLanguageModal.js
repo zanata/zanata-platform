@@ -1,7 +1,7 @@
 import React, {PropTypes, Component} from 'react'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Modal } from 'zanata-ui'
+import { Modal, Icon } from 'zanata-ui'
 import Autosuggest from 'react-autosuggest'
 
 import {
@@ -123,6 +123,7 @@ class NewLanguageModal extends Component {
 
     const inputProps = {
       placeholder: 'Search for languages',
+      maxlength: 256,
       onChange: this.onSearchChange,
       value: query
     }
@@ -151,6 +152,7 @@ class NewLanguageModal extends Component {
             <FormGroup validationState={!validFields ? 'error' : undefined}>
               <ControlLabel>Name</ControlLabel>
               <FormControl type='text'
+                maxLength={100}
                 onChange={(e) => this.updateField('displayName', e)}
                 placeholder='Display name'
                 value={details.displayName} />
@@ -159,6 +161,7 @@ class NewLanguageModal extends Component {
             <FormGroup>
               <ControlLabel>Native Name</ControlLabel>
               <FormControl type='text'
+                maxLength={100}
                 onChange={(e) => this.updateField('nativeName', e)}
                 placeholder='Native name'
                 value={details.nativeName} />
@@ -173,12 +176,13 @@ class NewLanguageModal extends Component {
               <ControlLabel>Plural forms</ControlLabel>
               <a href='http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms' // eslint-disable-line max-len
                 target='_blank'>
-                <Icon name='plus'
-                  atomic={{m: 'Mend(re) Va(sub)'}}
-                  title='plus' />
+                <Icon name='info'
+                  atomic={{m: 'Mstart(re) Va(sub)'}}
+                  title='Help' />
               </a>
               <FormControl
                 type='text'
+                maxLength={100}
                 onChange={(e) => this.updateField('pluralForms', e)}
                 placeholder='Plural forms'
                 value={details.pluralForms} />
