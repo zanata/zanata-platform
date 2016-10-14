@@ -359,6 +359,8 @@ public class VersionHomeAction extends AbstractSortAction implements
         if (selectedLocale != null && !manualWebhooks.isEmpty()) {
             webhookService.processManualEvent(projectSlug, versionSlug,
                     selectedLocale.getLocaleId(), manualWebhooks);
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.iteration.manualWebhook.triggered", getManualWebhookNames()));
         }
     }
 

@@ -94,7 +94,7 @@
         <ul class="list--slat list--highlight l--push-top-half">
           <ui:repeat value="#{projectHome.instance.webHooks}" var="webhook">
             <li class="list-item l--pad-h-quarter">
-              <span name="url"><span class="label">#{webhook.name}</span>#{webhook.url}</span>
+              <span name="url">#{webhook.url}<h:panelGroup styleClass="label" rendered="#{not empty webhook.name}">#{webhook.name}</h:panelGroup></span>
               <span class="txt--meta l--push-left-quarter" name="type">#{webhookServiceImpl.getDisplayNames(webhook.types)}</span>
               <button class="button button--small l--float-right" name="editBtn" onclick="jQuery('##{webhook.id}').toggle(50)">
                 #{msgs['jsf.Edit']}
