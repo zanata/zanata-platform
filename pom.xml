@@ -929,6 +929,10 @@
             <groupId>net.sf.okapi.logbind</groupId>
             <artifactId>build-log4j</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
@@ -941,6 +945,10 @@
             <groupId>net.sf.okapi.logbind</groupId>
             <artifactId>build-log4j</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
@@ -952,6 +960,26 @@
           <exclusion>
             <groupId>net.sf.okapi.logbind</groupId>
             <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-json</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -981,6 +1009,10 @@
             <groupId>net.sf.okapi.logbind</groupId>
             <artifactId>build-log4j</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
@@ -1009,6 +1041,10 @@
             <groupId>net.sf.okapi.logbind</groupId>
             <artifactId>build-log4j</artifactId>
           </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
         </exclusions>
       </dependency>
 
@@ -1020,6 +1056,10 @@
           <exclusion>
             <groupId>net.sf.okapi.logbind</groupId>
             <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
           </exclusion>
         </exclusions>
       </dependency>

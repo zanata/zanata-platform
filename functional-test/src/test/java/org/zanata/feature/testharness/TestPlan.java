@@ -131,6 +131,7 @@ import org.zanata.feature.versionGroup.VersionGroupUrlTest;
         TranslateOpenOfficeTest.class,
         TranslateTextTest.class,
         TranslationHistoryTest.class,
+        TranslateJSONTest.class,
 
         /*
          * Glossary

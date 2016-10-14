@@ -6,16 +6,23 @@ This feature provides the ability to upload and download documents using the web
 
 Supported formats include:
 
-* plain-text (*.txt)
-* Document Type Definition (*.dtd)
+* Plain-text (.txt)
+* Web (.html, .htm)
+* Subtitles (.srt, .vtt, .sub, .sbv)
+* Qt Linguist (.ts)
+* Document Type Definition (.dtd)
+* XLIFF (.xlf) - limited support
 * Open Document Format (LibreOffice):
-    * Open Document Text (*.odt)
-    * Open Document Presentation (*.odp)
-    * Open Document Spreadsheet (*.ods)
-    * Open Document Graphics (*.odg)
-* InDesign Markup Language (*.idml)
+    * Open Document Text (.odt)
+    * Open Document Presentation (.odp)
+    * Open Document Spreadsheet (.ods)
+    * Open Document Graphics (.odg)
+* InDesign Markup Language (.idml)
+* JSON (.json)
 
 _Open Document Formula (*.odf) and Open Document Database (*.odb) are not supported._
+_JSON dedicated localisation formats (eg i18next) are not supported._
+_JSON files will be treated as raw documents and standalone strings (eg. array values) will be included in parsing. See the [JSON Filter help page](http://okapi.sourceforge.net/Release/Filters/Help/json.htm) for more information_
 
 ## Known Issues
 
