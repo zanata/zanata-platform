@@ -168,13 +168,13 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Searching...")
     String searching();
 
-    @DefaultMessage("Found no glossary results")
+    @DefaultMessage("No glossary results found")
     String foundNoGlossaryResults();
 
-    @DefaultMessage("Found no translation memory results")
+    @DefaultMessage("No translation memory results found")
     String foundNoTMResults();
 
-    @DefaultMessage("Glossary save fail")
+    @DefaultMessage("Glossary save failed")
     String saveGlossaryFailed();
 
     @DefaultMessage("#")
