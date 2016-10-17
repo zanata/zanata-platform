@@ -360,14 +360,8 @@ public class VersionHomeAction extends AbstractSortAction implements
             webhookService.processManualEvent(projectSlug, versionSlug,
                     selectedLocale.getLocaleId(), manualWebhooks);
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    msgs.format("jsf.iteration.manualWebhook.triggered", getManualWebhookNames()));
+                    msgs.format("jsf.iteration.manualWebhook.triggered"));
         }
-    }
-
-    public String getManualWebhookNames() {
-        Set<String> webhookNames = getManualWebhooks().stream()
-                .map(WebHook::getName).collect(Collectors.toSet());
-        return Joiner.on(", ").skipNulls().join(webhookNames);
     }
 
     // TODO Serializable only because it's a dependent bean
