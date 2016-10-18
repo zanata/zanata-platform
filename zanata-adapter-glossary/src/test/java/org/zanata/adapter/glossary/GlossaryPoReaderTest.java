@@ -47,12 +47,8 @@ public class GlossaryPoReaderTest {
     // 578 glossary entries
     private final File sourceFile = new File(
             "src/test/resources/glossary/fuel_hi.po");
-    // 2645 glossary entries
-    private final File sourceFile2 = new File(
-            "src/test/resources/glossary/compendium-zh_TW.po");
 
     private static final int sourceSize1 = 578;
-    private static final int sourceSize2 = 2645;
 
     @Test
     public void extractGlossaryTest() throws IOException {
@@ -70,19 +66,4 @@ public class GlossaryPoReaderTest {
         assertThat(glossaries.get(localeId).size(), equalTo(sourceSize1));
     }
 
-    @Test
-    public void glossaryBatchTest() throws IOException {
-        LocaleId localeId = new LocaleId("zh-Hants");
-        GlossaryPoReader reader =
-                new GlossaryPoReader(LocaleId.EN_US, localeId);
-        Reader inputStreamReader =
-                new InputStreamReader(new FileInputStream(sourceFile2),
-                        "UTF-8");
-        BufferedReader br = new BufferedReader(inputStreamReader);
-
-        Map<LocaleId, List<GlossaryEntry>> glossaries = reader
-                .extractGlossary(br, GlossaryResource.GLOBAL_QUALIFIED_NAME);
-        assertThat(glossaries.keySet(), contains(localeId));
-        assertThat(glossaries.get(localeId).size(), equalTo(sourceSize2));
-    }
 }
