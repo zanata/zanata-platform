@@ -21,7 +21,6 @@
 
   <properties>
     <enunciate.version>2.6.0</enunciate.version>
-    <jersey.version>1.19</jersey.version>
   </properties>
 
   <build>
@@ -256,18 +255,6 @@
     </dependency>
 
     <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-core</artifactId>
-      <version>${jersey.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>javax.ws.rs</groupId>
-          <artifactId>jsr311-api</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <dependency>
       <!-- we still need this because the annotation must present in the
        interface/dto otherwise RESTEasy server implementation won't work-->
       <groupId>org.jboss.resteasy</groupId>
@@ -300,11 +287,6 @@
     <dependency>
       <groupId>org.codehaus.jackson</groupId>
       <artifactId>jackson-mapper-asl</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-xc</artifactId>
     </dependency>
 
     <dependency>
