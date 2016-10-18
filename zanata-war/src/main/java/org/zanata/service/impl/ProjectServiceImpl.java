@@ -21,6 +21,7 @@
 
 package org.zanata.service.impl;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -49,7 +50,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static org.zanata.model.LocaleRole.Coordinator;
 import static org.zanata.model.LocaleRole.Reviewer;
 import static org.zanata.model.LocaleRole.Translator;
@@ -109,7 +109,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public boolean updateWebhook(HProject project, Long webhookId, String url,
-            String secret, Set<WebhookType> types) {
+            String secret, String name, Set<WebhookType> types) {
         if (types.isEmpty()) {
             return false;
         }
@@ -121,7 +121,7 @@ public class ProjectServiceImpl implements ProjectService {
             return false;
         }
         secret = StringUtils.isBlank(secret) ? null : secret;
-        webHook.update(url, types, secret);
+        webHook.update(url, Strings.emptyToNull(name), types, secret);
         webHookDAO.makePersistent(webHook);
         return true;
     }
@@ -129,7 +129,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional
     @Override
     public boolean addWebhook(HProject project, String url, String secret,
-            Set<WebhookType> types) {
+            String name, Set<WebhookType> types) {
         if (types.isEmpty()) {
             return false;
         }
@@ -138,7 +138,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
         secret = StringUtils.isBlank(secret) ? null : secret;
         WebHook webHook =
-                new WebHook(project, url, types, secret);
+                new WebHook(project, url, Strings.emptyToNull(name), types, secret);
         project.getWebHooks().add(webHook);
         projectDAO.makePersistent(project);
         return true;

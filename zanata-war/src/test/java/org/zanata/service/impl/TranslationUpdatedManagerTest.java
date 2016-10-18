@@ -106,9 +106,9 @@ public class TranslationUpdatedManagerTest {
 
         webHooks = Lists
             .newArrayList(new WebHook(project, "http://test.example.com",
-                    Sets.newHashSet(WebhookType.DocumentMilestoneEvent), key),
+                            "test", Sets.newHashSet(WebhookType.DocumentMilestoneEvent), key),
                 new WebHook(project, "http://test.example.com",
-                    Sets.newHashSet(WebhookType.DocumentStatsEvent), key));
+                        "test", Sets.newHashSet(WebhookType.DocumentStatsEvent), key));
 
         when(person.getAccount()).thenReturn(account);
         when(account.getUsername()).thenReturn(username);

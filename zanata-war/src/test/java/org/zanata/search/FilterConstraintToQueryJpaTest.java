@@ -76,7 +76,7 @@ public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
         HProject hProject = hDocument.getProjectIteration().getProject();
         hProject.getWebHooks()
                 .add(new WebHook(hProject, "http://www.test.example.com",
-                    Sets.newHashSet(WebhookType.DocumentMilestoneEvent), "key"));
+                        "test", Sets.newHashSet(WebhookType.DocumentMilestoneEvent), "key"));
         documentId = new DocumentId(hDocument.getId(), hDocument.getDocId());
 
         HTextFlowBuilder baseBuilder =

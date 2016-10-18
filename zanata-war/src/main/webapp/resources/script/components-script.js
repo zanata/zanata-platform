@@ -497,7 +497,8 @@ function onAddWebhook(formId, callback) {
   var url = form.find('[name="payloadUrlInput"]').val();
   var secret = form.find('[name="secretInput"]').val();
   var types = form.find('[name="webhookTypes"]').val();
-  callback(url, secret, types, formId);
+  var name = form.find('[name="nameInput"]').val();
+  callback(url, secret, types, formId, name);
 }
 
 function onUpdateWebhook(id, formId, callback) {
@@ -505,5 +506,6 @@ function onUpdateWebhook(id, formId, callback) {
   var url = form.find('[name="payloadUrlInput"]').val();
   var secret = form.find('[name="secretInput"]').val();
   var types = form.find('[name="webhookTypes"]').val();
-  callback(id, url, secret, types, formId);
+  var name = form.find('[name="nameInput"]').val();
+  callback(id, url, secret, types, formId, name);
 }

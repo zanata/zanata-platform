@@ -14,7 +14,9 @@ public enum WebhookType implements Serializable {
     DocumentStatsEvent("Translation update"),
     VersionChangedEvent("Project version"),
     ProjectMaintainerChangedEvent("Project maintainer update"),
-    SourceDocumentChangedEvent("Document");
+    SourceDocumentChangedEvent("Document"),
+    ManuallyTriggeredEvent("Manual event")
+    ;
 
     @Getter
     private String displayName;
