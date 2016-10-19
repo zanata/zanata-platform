@@ -34,8 +34,9 @@
       height: 100%;
     }
 
-    .paddingBottom {
+    .table {
       padding-bottom: 30px;
+      display: table!important;
     }
 
   </ui:style>
@@ -101,7 +102,7 @@
     </g:layer>
     <g:layer top='96px' bottom='0'>
       <g:ScrollPanel styleName='projectWideSearchResultsPanel'>
-        <g:VerticalPanel ui:field='searchResultsPanel' width="100%" styleName="{style.paddingBottom}" />
+        <g:VerticalPanel ui:field='searchResultsPanel' width="100%" styleName="{style.table}" />
       </g:ScrollPanel>
     </g:layer>
 

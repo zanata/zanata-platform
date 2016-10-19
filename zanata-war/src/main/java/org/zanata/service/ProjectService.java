@@ -28,7 +28,6 @@ import org.zanata.model.type.WebhookType;
 import org.zanata.service.impl.ProjectServiceImpl;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -47,11 +46,11 @@ public interface ProjectService {
 
     @Transactional
     boolean updateWebhook(HProject project, Long webhookId, String url,
-        String secret, Set<WebhookType> types);
+            String secret, String name, Set<WebhookType> types);
 
     @Transactional
     boolean addWebhook(HProject project, String url, String secret,
-        Set<WebhookType> types);
+            String name, Set<WebhookType> types);
 
     /**
      * Check if project contains duplicate webhook with matching url

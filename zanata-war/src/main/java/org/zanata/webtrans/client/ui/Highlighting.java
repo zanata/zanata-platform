@@ -116,7 +116,7 @@ public class Highlighting {
         html[x] = '<del class="diff-delete">' + text + '</del>';
         break;
       case $wnd['DIFF_EQUAL']:
-        html[x] = '<span class="diff-equal">' + text + '</span>';
+        html[x] = '<span class="diff-equal CodeMirror-searching">' + text + '</span>';
         break;
       }
     }

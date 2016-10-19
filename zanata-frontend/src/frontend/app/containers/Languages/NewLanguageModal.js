@@ -24,7 +24,10 @@ class NewLanguageModal extends Component {
     this.state = {
       details: {
         enabledByDefault: true,
-        enabled: true
+        enabled: true,
+        displayName: '',
+        nativeName: '',
+        pluralForms: ''
       },
       query: '',
       validFields: true,
@@ -68,13 +71,18 @@ class NewLanguageModal extends Component {
   }
 
   validateDetails () {
-    const displayName = this.state.details
-    if (!isEmpty(displayName)) {
-      this.props.handleOnSave(this.state.details)
-    } else {
+    const displayName = this.state.details.displayName
+    const query = this.state.query
+    if (isEmpty(displayName) && isEmpty(query)) {
       this.setState({
         validFields: false
       })
+    } else {
+      const details = isEmpty(displayName) ? {
+        ...this.state.details,
+        localeId: query.replace('_', '-')
+      } : this.state.details
+      this.props.handleOnSave(details)
     }
   }
 
@@ -85,9 +93,6 @@ class NewLanguageModal extends Component {
   }
 
   onSuggestionsClearRequested = () => {
-    this.setState({
-      query: ''
-    })
   }
 
   getSuggestionValue (selectedLocale) {
@@ -123,7 +128,7 @@ class NewLanguageModal extends Component {
 
     const inputProps = {
       placeholder: 'Search for languages',
-      maxlength: 256,
+      maxLength: 256,
       onChange: this.onSearchChange,
       value: query
     }
@@ -209,9 +214,9 @@ class NewLanguageModal extends Component {
               Close
             </Button>
             <Button
-              title={isEmpty(details.localeId)
-                ? 'Please search for a language' : ''}
-              disabled={saving || isEmpty(details.localeId)} bsStyle='primary'
+              disabled={saving ||
+                (isEmpty(details.localeId) && isEmpty(query))}
+              bsStyle='primary'
               onClick={() => this.validateDetails()}>
               Save
             </Button>

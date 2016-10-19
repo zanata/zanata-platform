@@ -191,6 +191,13 @@
       constraintName="UKWebHookUrl_projectId" />
   </changeSet>
 
+  <changeSet id="10" author="pahuang@redhat.com">
+    <comment>Add name column to webhook</comment>
+    <addColumn tableName="WebHook">
+      <column name="name" type="varchar(255)"/>
+    </addColumn>
+  </changeSet>
+
   <changeSet id="10" author="aeng@redhat.com">
     <comment>Increase pluralforms length to 255</comment>
     <modifyDataType tableName="HLocale" columnName="pluralForms"

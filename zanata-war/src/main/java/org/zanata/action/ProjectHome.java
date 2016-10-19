@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -760,7 +759,8 @@ public class ProjectHome extends SlugHome<HProject> implements
             String validationMessages =
                     ResourceBundle.getBundle("ValidationMessages").getString(
                             "javax.validation.constraints.Slug.message");
-            facesMessages.addToControl(componentId, validationMessages);
+            facesMessages.addToControl(componentId,
+                    validationMessages);
             return false;
         }
         return true;
@@ -1087,7 +1087,7 @@ public class ProjectHome extends SlugHome<HProject> implements
     }
 
     @Transactional
-    public void addWebHook(String url, String secret, String strTypes) {
+    public void addWebHook(String url, String secret, String strTypes, String name) {
         identity.checkPermission(getInstance(), "update");
         Set<WebhookType> types = getTypesFromString(strTypes);
         if(types.isEmpty()) {
@@ -1103,7 +1103,7 @@ public class ProjectHome extends SlugHome<HProject> implements
             return;
         }
         boolean isAdded = projectServiceImpl.addWebhook(getInstance(), url,
-                secret, types);
+                secret, name, types);
         if (isAdded) {
             facesMessages.addGlobal(
                     msgs.format("jsf.project.AddNewWebhook", url));
@@ -1114,8 +1114,8 @@ public class ProjectHome extends SlugHome<HProject> implements
     public void removeWebHook(String id) {
         identity.checkPermission(getInstance(), "update");
         WebHook webHook = webHookDAO.findById(new Long(id));
-        String url = webHook.getUrl();
         if (webHook != null) {
+            String url = webHook.getUrl();
             getInstance().getWebHooks().remove(webHook);
             webHookDAO.makeTransient(webHook);
             facesMessages.addGlobal(
@@ -1125,7 +1125,7 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     @Transactional
     public void updateWebhook(String id, String url, String secret,
-        String strTypes) {
+        String strTypes, String name) {
         identity.checkPermission(getInstance(), "update");
         Set<WebhookType> types = getTypesFromString(strTypes);
         if(types.isEmpty()) {
@@ -1143,7 +1143,7 @@ public class ProjectHome extends SlugHome<HProject> implements
             return;
         }
         boolean updated = projectServiceImpl.updateWebhook(getInstance(),
-                webhookId, url, secret, types);
+                webhookId, url, secret, name, types);
         if (updated) {
             facesMessages.addGlobal(
                     msgs.format("jsf.project.UpdateWebhook", url));

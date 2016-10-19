@@ -20,14 +20,17 @@
  */
 package org.zanata.webtrans.client.ui;
 
+import com.google.gwt.user.client.ui.Widget;
 import org.zanata.webtrans.client.keys.ShortcutContext;
 import org.zanata.webtrans.client.resources.WebTransMessages;
+import org.zanata.webtrans.shared.model.DiffMode;
 
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.inject.Inject;
@@ -49,7 +52,10 @@ public class DiffColorLegendPanel extends PopupPanel {
     }
 
     @UiField
-    Label insDescription, delDescription, containDescription;
+    Label searchOnlyDescription, tmOnlyDescription, matchDescription, absentDescription;
+
+    @UiField
+    InlineLabel searchOnlyLabel, tmOnlyLabel, matchLabel, absentLabel;
 
     @UiField
     Styles style;
@@ -69,21 +75,53 @@ public class DiffColorLegendPanel extends PopupPanel {
         setWidget(container);
     }
 
-    public void show(ShortcutContext context) {
+    public void show(ShortcutContext context, DiffMode diffMode) {
+        //reset to default style
+        showTableRow(searchOnlyLabel, true);
+        showTableRow(tmOnlyLabel, true);
+        showTableRow(matchLabel, true);
+
         switch (context) {
         case TM:
-            insDescription.setText(messages.tmInsertTagDesc());
-            delDescription.setText(messages.tmDelTagDesc());
-            containDescription.setText(messages.tmPlainTextDesc());
+            searchOnlyLabel.setText(messages.searchOnly());
+            tmOnlyLabel.setText(messages.tmOnly());
+            matchLabel.setText(messages.noColor());
+
+            searchOnlyDescription.setText(messages.tmInsertTagDesc());
+            tmOnlyDescription.setText(messages.tmDelTagDesc());
+            matchDescription.setText(messages.tmHighlightTextDesc());
+
+            if (diffMode == DiffMode.NORMAL) {
+                showTableRow(absentLabel, false);
+            } else {
+                showTableRow(tmOnlyLabel, false);
+                showTableRow(searchOnlyLabel, false);
+                showTableRow(absentLabel, true);
+            }
             break;
         case ProjectWideSearch:
-            insDescription.setText(messages.searchReplaceInsertTagDesc());
-            delDescription.setText(messages.searchReplaceDelTagDesc());
-            containDescription.setText(messages.searchReplacePlainTextDesc());
+            showTableRow(absentLabel, false);
+            searchOnlyLabel.setText(messages.searchColor());
+            tmOnlyLabel.setText(messages.tmColor());
+            matchLabel.setText(messages.highlightColor());
+
+            searchOnlyDescription.setText(messages.searchReplaceInsertTagDesc());
+            tmOnlyDescription.setText(messages.searchReplaceDelTagDesc());
+            matchDescription.setText(messages.searchReplacePlainTextDesc());
             break;
         default:
             break;
         }
         this.center();
+    }
+
+    private void showTableRow(Widget label, boolean show) {
+        if (show) {
+            label.getElement().getParentElement().getParentElement()
+                .removeClassName("is-hidden");
+        } else {
+            label.getElement().getParentElement().getParentElement()
+                .addClassName("is-hidden");
+        }
     }
 }

@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
@@ -47,6 +48,7 @@ import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
+import org.zanata.dao.WebHookDAO;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.async.handle.CopyVersionTaskHandle;
@@ -68,7 +70,9 @@ import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
+import org.zanata.model.WebHook;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.model.type.WebhookType;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
@@ -83,6 +87,7 @@ import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
+import org.zanata.service.impl.WebhookServiceImpl;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.AbstractSortAction;
 import org.zanata.ui.CopyAction;
@@ -98,6 +103,7 @@ import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.util.TokenUtil;
 
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -188,6 +194,13 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     @Inject
     private UrlUtil urlUtil;
+
+    @Inject
+    private WebhookServiceImpl webhookService;
+
+    @Inject
+    private WebHookDAO webHookDAO;
+
 
     private List<HLocale> supportedLocale;
 
@@ -309,6 +322,7 @@ public class VersionHomeAction extends AbstractSortAction implements
                                     elem.retrieveDisplayName(), filter);
                 }
             };
+    private List<WebHook> manualWebhooks;
 
     public void setVersionSlug(String versionSlug) {
         this.versionSlug = versionSlug;
@@ -324,6 +338,30 @@ public class VersionHomeAction extends AbstractSortAction implements
         copyVersionManager.cancelCopyVersion(projectSlug, versionSlug);
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.copyVersion.Cancelled", versionSlug));
+    }
+
+    private List<WebHook> getManualWebhooks() {
+        if (manualWebhooks == null) {
+            manualWebhooks = webHookDAO.getWebHooksForType(projectSlug,
+                    WebhookType.ManuallyTriggeredEvent);
+        }
+        return manualWebhooks;
+    }
+
+    public boolean canTriggerManualWebhook() {
+        boolean hasLocalePermission =
+                isUserAllowedToTranslateOrReview(selectedLocale);
+        return hasLocalePermission && !getManualWebhooks().isEmpty();
+    }
+
+    public void triggerManualWebhookEvent() {
+        List<WebHook> manualWebhooks = getManualWebhooks();
+        if (selectedLocale != null && !manualWebhooks.isEmpty()) {
+            webhookService.processManualEvent(projectSlug, versionSlug,
+                    selectedLocale.getLocaleId(), manualWebhooks);
+            conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
+                    msgs.format("jsf.iteration.manualWebhook.triggered"));
+        }
     }
 
     // TODO Serializable only because it's a dependent bean
@@ -435,6 +473,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         documents = null;
         version = null;
         supportedLocale = null;
+        manualWebhooks = null;
         loadStatistics();
     }
 

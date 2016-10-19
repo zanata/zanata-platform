@@ -35,8 +35,10 @@ export const LANGUAGE_DELETE_FAILURE = 'LANGUAGE_DELETE_FAILURE'
 
 export const pageSizeOption = [10, 20, 50, 100]
 export const sortOption = [
-  {display: 'Locale', value: 'localeId'},
-  {display: 'Members', value: 'member'}
+  {display: 'Locale (a-z)', value: 'localeId'},
+  {display: 'Locale (z-a)', value: '-localeId'},
+  {display: 'Members (low-high)', value: 'member'},
+  {display: 'Members (high-low)', value: '-member'}
 ]
 
 const getLocalesList = (state) => {
@@ -52,7 +54,7 @@ const getLocalesList = (state) => {
     queries.push('sizePerPage=' + query.size)
   }
   if (query.sort) {
-    queries.push('sort=' + query.sort.toLowerCase())
+    queries.push('sort=' + query.sort)
   }
   const endpoint = window.config.baseUrl + window.config.apiRoot + '/locales' +
     (!isEmpty(queries) ? '?' + queries.join('&') : '')
@@ -187,7 +189,7 @@ const deleteLanguage = (dispatch, localeId) => {
 
 const createNewLanguage = (details, dispatch) => {
   const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/locales/locale/'
+    '/locales/locale'
 
   let headers = getJsonHeaders()
   headers['Content-Type'] = 'application/json'

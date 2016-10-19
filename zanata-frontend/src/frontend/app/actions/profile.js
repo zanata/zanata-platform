@@ -131,7 +131,7 @@ export const profileInitialLoad = (username) => {
       window.location = config.baseUrl + config.links.loginUrl + '#profile'
     } else {
       dispatch(getUserInfo(dispatch, username,
-        getState().profile.dateRangeOption))
+        getState().profile.dateRange))
     }
   }
 }
