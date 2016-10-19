@@ -27,6 +27,13 @@ Zanata's jboss-web.xml has been updated: if you maintain a custom version, you s
 ##### Bug Fixes
 * [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
 * [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page
+## 3.9.6
+##### Bug Fixes
+ * [ZNTA-1404](https://zanata.atlassian.net/browse/ZNTA-1404) - Incorrect email body when becoming a reviewer
+ * [ZNTA-1400](https://zanata.atlassian.net/browse/ZNTA-1400) - CopyTrans "On project mismatch Don't Copy" does not work as expected
+ * [ZNTA-1392](https://zanata.atlassian.net/browse/ZNTA-1392) - Cannot load document with comma separated docId in alpha editor
+ * [ZNTA-1386](https://zanata.atlassian.net/browse/ZNTA-1386) - Piwik insertion code is outdated, slows page loading
+ * [ZNTA-1384](https://zanata.atlassian.net/browse/ZNTA-1384) - UI opens "compare version" instead of Translation History
 
 -----------------------
 
