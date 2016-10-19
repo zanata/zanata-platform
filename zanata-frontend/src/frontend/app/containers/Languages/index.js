@@ -95,29 +95,31 @@ class Languages extends Component {
                       <NewLanguageModal />
                     </div>
                   }
+                  <div className='left-form toolbar col-xs-12'>
+                    <div className='search-box col-xs-6 col-sm-8 col-md-6
+                         col-lg-7'>
+                      <FormGroup>
+                        <InputGroup>
+                          <FormControl type='text'
+                            defaultValue={searchText}
+                            onChange={handleOnUpdateSearch} />
+                          <InputGroup.Button>
+                            <Button>
+                              <Icon name='search'
+                                atomic={{m: 'Va(sub)'}}
+                                title='search' />&nbsp;
+                            </Button>
+                          </InputGroup.Button>
+                        </InputGroup>
+                      </FormGroup>
+                    </div>
+
                   {loading
                       ? <View theme={loadingContainerTheme}>
                         <LoaderText theme={{ base: { fz: 'Fz(ms1)' } }}
                           size='2' loading />
                       </View>
-                      : (<div className='left-form toolbar col-xs-12'>
-                        <div className='search-box col-xs-6 col-sm-8 col-md-6
-                         col-lg-7'>
-                          <FormGroup>
-                            <InputGroup>
-                              <FormControl type='text'
-                                defaultValue={searchText}
-                                onChange={handleOnUpdateSearch} />
-                              <InputGroup.Button>
-                                <Button>
-                                  <Icon name='search'
-                                    atomic={{m: 'Va(sub)'}}
-                                    title='search' />&nbsp;
-                                </Button>
-                              </InputGroup.Button>
-                            </InputGroup>
-                          </FormGroup>
-                        </div>
+                      : (<div>
                         <div className='sort-items col-xs-6 col-sm-4 col-md-4
                           col-lg-3'>
                           <FormControl componentClass='select'
@@ -153,6 +155,7 @@ class Languages extends Component {
                         </div>
                       </div>)
                   }
+                  </div>
                   {!loading &&
                     <div className='left-form tablepadding col-xs-12'>
                       <table className='table'>
