@@ -1,3 +1,13 @@
+## 3.9.6
+##### Bug Fixes
+ * [ZNTA-1404](https://zanata.atlassian.net/browse/ZNTA-1404) - Incorrect email body when becoming a reviewer
+ * [ZNTA-1400](https://zanata.atlassian.net/browse/ZNTA-1400) - CopyTrans "On project mismatch Don't Copy" does not work as expected
+ * [ZNTA-1392](https://zanata.atlassian.net/browse/ZNTA-1392) - Cannot load document with comma separated docId in alpha editor
+ * [ZNTA-1386](https://zanata.atlassian.net/browse/ZNTA-1386) - Piwik insertion code is outdated, slows page loading
+ * [ZNTA-1384](https://zanata.atlassian.net/browse/ZNTA-1384) - UI opens "compare version" instead of Translation History
+
+-----------------------
+
 ## 3.9.5
 ##### Bug Fixes
  * [ZNTA-1358](https://zanata.atlassian.net/browse/ZNTA-1358) - Memory leak causing OOM error in idle server
