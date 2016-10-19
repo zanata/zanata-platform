@@ -182,7 +182,7 @@ class NewLanguageModal extends Component {
               </a>
               <FormControl
                 type='text'
-                maxLength={100}
+                maxLength={255}
                 onChange={(e) => this.updateField('pluralForms', e)}
                 placeholder='Plural forms'
                 value={details.pluralForms} />

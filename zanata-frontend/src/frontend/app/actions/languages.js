@@ -185,7 +185,7 @@ const deleteLanguage = (dispatch, localeId) => {
   }
 }
 
-const createNewLanguage = (details) => {
+const createNewLanguage = (details, dispatch) => {
   const endpoint = window.config.baseUrl + window.config.apiRoot +
     '/locales/locale/'
 
@@ -200,6 +200,7 @@ const createNewLanguage = (details) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
+            dispatch(getLocalesList(state))
             return json
           })
         }
@@ -297,6 +298,6 @@ export const handleLoadSuggestion = (query) => {
 
 export const handleSaveNewLanguage = (details) => {
   return (dispatch, getState) => {
-    dispatch(createNewLanguage(details))
+    dispatch(createNewLanguage(details, dispatch))
   }
 }
