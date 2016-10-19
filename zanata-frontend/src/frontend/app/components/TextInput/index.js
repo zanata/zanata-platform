@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react'
+import React, {Component, PropTypes} from 'react'
 import ReactDOM from 'react-dom'
 import TextareaAutosize from 'react-textarea-autosize'
 
@@ -7,126 +7,127 @@ import TextareaAutosize from 'react-textarea-autosize'
  */
 class TextInput extends Component {
   _onBlur (e) {
-      const { onBlur } = this.props
-      if (onBlur) {
-          onBlur(e)
-      }
+    const {onBlur} = this.props
+    if (onBlur) {
+      onBlur(e)
+    }
   }
+
   _onChange (e) {
-      const { onChange, onChangeText } = this.props
-      if (onChangeText) onChangeText(e.target.value)
-      if (onChange) onChange(e)
+    const {onChange, onChangeText} = this.props
+    if (onChangeText) onChangeText(e.target.value)
+    if (onChange) onChange(e)
   }
 
   _onFocus (e) {
-      const { clearTextOnFocus, onFocus, selectTextOnFocus } = this.props
-      const node = ReactDOM.findDOMNode(this)
-      if (clearTextOnFocus) node.value = ''
-      if (selectTextOnFocus) node.select()
-      if (onFocus) onFocus(e)
+    const {clearTextOnFocus, onFocus, selectTextOnFocus} = this.props
+    const node = ReactDOM.findDOMNode(this)
+    if (clearTextOnFocus) node.value = ''
+    if (selectTextOnFocus) node.select()
+    if (onFocus) onFocus(e)
   }
 
   _onSelectionChange (e) {
-      const { onSelectionChange } = this.props
-      const { selectionDirection, selectionEnd, selectionStart } = e.target
-      if (onSelectionChange) {
-          const event = {
-              selectionDirection,
-              selectionEnd,
-              selectionStart,
-              nativeEvent: e.nativeEvent
-          }
-          onSelectionChange(event)
+    const {onSelectionChange} = this.props
+    const {selectionDirection, selectionEnd, selectionStart} = e.target
+    if (onSelectionChange) {
+      const event = {
+        selectionDirection,
+        selectionEnd,
+        selectionStart,
+        nativeEvent: e.nativeEvent
       }
+      onSelectionChange(event)
+    }
   }
 
   _onKeyDown (e) {
-      const { onKeyDown } = this.props
-      if (onKeyDown) onKeyDown(e)
+    const {onKeyDown} = this.props
+    if (onKeyDown) onKeyDown(e)
   }
 
   _onClear () {
-      const node = ReactDOM.findDOMNode(this)
-      node.value = ''
+    const node = ReactDOM.findDOMNode(this)
+    node.value = ''
   }
 
   render () {
-      const {
-          id,
-          accessibilityLabel,
-          autoComplete,
-          autoFocus,
-          editable = true,
-          keyboardType = 'default',
-          maxNumberOfLines,
-          multiline = false,
-          numberOfLines = 2,
-          onBlur,
-          onChange,
-          onChangeText,
-          onKeyDown,
-          onSelectionChange,
-          placeholder,
-          secureTextEntry = false,
-          value
-      } = this.props
+    const {
+      id,
+      accessibilityLabel,
+      autoComplete,
+      autoFocus,
+      editable = true,
+      keyboardType = 'default',
+      maxNumberOfLines,
+      multiline = false,
+      numberOfLines = 2,
+      onBlur,
+      onChange,
+      onChangeText,
+      onKeyDown,
+      onSelectionChange,
+      placeholder,
+      secureTextEntry = false,
+      value
+    } = this.props
 
-      let type
+    let type
 
-      switch (keyboardType) {
-          case 'default':
-              break
-          case 'email-address':
-              type = 'email'
-              break
-          case 'numeric':
-              type = 'number'
-              break
-          case 'phone-pad':
-              type = 'tel'
-              break
-          case 'url':
-              type = 'url'
-              break
-          default:
-              console.error('Unsupported keyboardType.', keyboardType)
-              break
+    switch (keyboardType) {
+      case 'default':
+        break
+      case 'email-address':
+        type = 'email'
+        break
+      case 'numeric':
+        type = 'number'
+        break
+      case 'phone-pad':
+        type = 'tel'
+        break
+      case 'url':
+        type = 'url'
+        break
+      default:
+        console.error('Unsupported keyboardType.', keyboardType)
+        break
+    }
+
+    if (secureTextEntry) {
+      type = 'password'
+    }
+
+    const propsCommon = {
+      id: id,
+      'aria-label': accessibilityLabel,
+      autoComplete: autoComplete && 'on',
+      autoFocus,
+      className: 'TextInput',
+      onBlur: onBlur && ::this._onBlur,
+      onChange: (onChange || onChangeText) && ::this._onChange,
+      onFocus: ::this._onFocus,
+      onSelect: onSelectionChange && ::this._onSelectionChange,
+      onKeyDown: (onKeyDown) && ::this._onKeyDown,
+      placeholder,
+      readOnly: !editable,
+      value
+    }
+
+    if (multiline) {
+      const propsMultiline = {
+        ...propsCommon,
+        maxRows: maxNumberOfLines || numberOfLines,
+        minRows: numberOfLines
       }
-
-      if (secureTextEntry) {
-          type = 'password'
+      return <TextareaAutosize {...propsMultiline} />
+    } else {
+      const propsSingleline = {
+        ...propsCommon,
+        type
       }
-
-      const propsCommon = {
-          id: id,
-          'aria-label': accessibilityLabel,
-          autoComplete: autoComplete && 'on',
-          autoFocus,
-          className: 'textInput',
-          onBlur: onBlur && ::this._onBlur,
-          onChange: (onChange || onChangeText) && ::this._onChange,
-          onFocus: ::this._onFocus,
-          onSelect: onSelectionChange && ::this._onSelectionChange,
-          onKeyDown: (onKeyDown) && ::this._onKeyDown,
-          placeholder,
-          readOnly: !editable,
-          value
-      }
-
-      if (multiline) {
-          const propsMultiline = {
-              ...propsCommon,
-              maxRows: maxNumberOfLines || numberOfLines,
-              minRows: numberOfLines
-          }
-          return <TextareaAutosize {...propsMultiline} />
-      } else {
-          const propsSingleline = {
-              ...propsCommon,
-              type
-          }
-          return <input {...propsSingleline} />
-      }
+      return <input {...propsSingleline} />
+    }
   }
 }
 
@@ -164,7 +165,7 @@ TextInput.propTypes = {
    * HTML 'type' attribute for <input>
    */
   keyboardType: PropTypes.oneOf(['default', 'email-address', 'numeric',
-      'phone-pad', 'url']),
+    'phone-pad', 'url']),
   /**
    * Maximum length of text field. <input> 'maxlength' attribute
    */

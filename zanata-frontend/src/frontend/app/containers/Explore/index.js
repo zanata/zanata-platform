@@ -3,13 +3,16 @@ import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
 import {
+  Page,
+  Base,
+  View,
   ScrollView,
   Heading,
   Icon,
   Button
 } from 'zanata-ui'
 import TeaserList from './TeaserList'
-import TextInput from '../../components/TextInput'
+import { TextInput } from '../../components'
 
 import {
   searchTextChanged,
