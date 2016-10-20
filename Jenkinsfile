@@ -1,27 +1,28 @@
 #!/usr/bin/env groovy
 
 // these wrappers don't seem to be built in yet
-void ansicolor(Closure<Void> wrapped) {
+void ansicolor(Closure wrapped) {
   wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
     wrapped.call()
   }
 }
-void xvfb(Closure<Void> wrapped) {
+void xvfb(Closure wrapped) {
   wrap([$class: 'Xvfb']) {
     wrapped.call()
   }
 }
 
-void withPorts(Closure<Void> wrapped) {
+void withPorts(Closure wrapped) {
   def ports = sh(script: 'etc/scripts/allocate-jboss-ports', returnStdout: true)
   withEnv(ports.trim().readLines()) {
     wrapped.call()
   }
 }
 
-void printNode() {
+void printNodeInfo() {
   sh "env"
-  sh "which chromedriver"
+  sh returnStatus: true, script: 'which chromedriver google-chrome'
+  sh returnStatus: true, script: 'ls -l /opt/chromedriver /opt/google/chrome/google-chrome'
   println "running on node ${env.NODE_NAME}"
 }
 
@@ -55,7 +56,7 @@ timestamps {
   node {
     ansicolor {
       stage('Checkout') {
-        printNode()
+        printNodeInfo()
         notifyStarted()
         // Checkout code from repository
         // Based on https://issues.jenkins-ci.org/browse/JENKINS-33022?focusedCommentId=248530&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-248530
@@ -78,7 +79,7 @@ timestamps {
       }
 
       stage('Install build tools') {
-        printNode()
+        printNodeInfo()
         // TODO yum install the following
         // Xvfb libaio xorg-x11-server-Xvfb wget unzip git-core
         // https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
@@ -99,7 +100,7 @@ timestamps {
 
 
       stage('Build') {
-        printNode()
+        printNodeInfo()
         sh """./mvnw clean package \
                      --batch-mode \
                      --settings .travis-settings.xml \
@@ -139,7 +140,7 @@ timestamps {
       node {
         ansicolor {
           unstash 'workspace'
-          printNode()
+          printNodeInfo()
           integrationTests('wildfly8')
         }
       }
@@ -148,7 +149,7 @@ timestamps {
       node {
         ansicolor {
           unstash 'workspace'
-          printNode()
+          printNodeInfo()
           integrationTests('jbosseap6')
         }
       }
