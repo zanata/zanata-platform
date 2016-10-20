@@ -13,7 +13,7 @@ void xvfb(Closure wrapped) {
 }
 
 void withPorts(Closure wrapped) {
-  def ports = sh(script: 'etc/scripts/allocate-jboss-ports', returnStdout: true)
+  def ports = sh(script: 'server/etc/scripts/allocate-jboss-ports', returnStdout: true)
   withEnv(ports.trim().readLines()) {
     wrapped.call()
   }
