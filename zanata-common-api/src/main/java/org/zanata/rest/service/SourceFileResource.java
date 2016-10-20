@@ -20,6 +20,10 @@
  */
 package org.zanata.rest.service;
 
+import static org.zanata.rest.service.SourceFileResource.SERVICE_PATH;
+
+import java.io.InputStream;
+
 import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -32,23 +36,19 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.dto.ChunkUploadResponse;
+import org.zanata.rest.dto.FileUploadResponse;
 
 /**
  * REST Interface for upload and download of source files.
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Path(SourceFileResource.SERVICE_PATH)
-@ExternallyManagedLifecycle
+@Path(SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_OCTET_STREAM })
 @Consumes({ MediaType.APPLICATION_OCTET_STREAM })
 public interface SourceFileResource extends RestResource {
-    String SERVICE_PATH = "/file/source";
+    String SERVICE_PATH = "/file2/source";
 
     /**
      * Upload a source file (or file chunk) to Zanata. Allows breaking up files
@@ -61,24 +61,22 @@ public interface SourceFileResource extends RestResource {
      *
      * @param projectSlug The project slug where to store the document.
      * @param iterationSlug The project version slug where to store the document.
-     * @param docId The full Document identifier
-     * @param uploadForm The multi-part form body for the file or chunk.
+     * @param docId The full Document identifier (including file extension)
+     * @param fileStream Contents of the file to be uploaded
      * @param projectType A ProjectType used for mapping of file extensions.
      * @return A message with information about the upload operation.
      */
     @POST
     @Path("/{projectSlug}/{iterationSlug}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_XML)
     // /file/source/{projectSlug}/{iterationSlug}?docId={docId}
-    @TypeHint(ChunkUploadResponse.class)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @TypeHint(FileUploadResponse.class)
     Response uploadSourceFile(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("iterationSlug") String iterationSlug,
             @QueryParam("docId") String docId,
-            @MultipartForm DocumentFileUploadForm uploadForm,
+            InputStream fileStream,
             @QueryParam("projectType") @Nullable ProjectType projectType);
-
 
     /**
      * Downloads a single source file.
