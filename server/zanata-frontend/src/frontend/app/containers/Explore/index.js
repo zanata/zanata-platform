@@ -3,16 +3,17 @@ import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
 import {
-  Base,
   Page,
-  ScrollView,
+  Base,
   View,
+  ScrollView,
   Heading,
   Icon,
-  Button,
-  TextInput
+  Button
 } from 'zanata-ui'
 import TeaserList from './TeaserList'
+import { TextInput } from '../../components'
+
 import {
   searchTextChanged,
   searchPageInitialLoad,
@@ -57,13 +58,6 @@ const iconClasses = {
   t: 'T(0)',
   ta: 'Ta(c)',
   w: 'W(ms1) W(ms2)--md'
-}
-const inputTheme = {
-  base: {
-    bdrs: 'Bdrs(rnd)',
-    p: 'Py(rq) Py(rh)--md Pstart(r1q) Pstart(r1h)--md Pend(rq)',
-    w: 'W(100%)'
-  }
 }
 const buttonTheme = {
   base: {
@@ -194,13 +188,13 @@ class Explore extends Component {
           <View theme={searchViewTheme}>
             <Icon name='search' atomic={iconClasses} />
             <TextInput
+              className='TextInput'
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
-              id='explore_search'
+              id='explore_search2'
               type='search'
               placeholder='Search Zanata…'
               accessibilityLabel='Search Zanata'
-              theme={inputTheme}
               defaultValue={searchText}
               onKeyDown={(e) => { this.handleKeyDown(e) }}
               onChange={handleSearchTextChange}
