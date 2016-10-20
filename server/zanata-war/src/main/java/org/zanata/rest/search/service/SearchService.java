@@ -32,6 +32,7 @@ import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProject;
+import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.search.dto.GroupSearchResult;
 import org.zanata.rest.search.dto.LanguageTeamSearchResult;
 import org.zanata.rest.search.dto.PersonSearchResult;
@@ -198,24 +199,19 @@ public class SearchService {
     @GET
     @Path("/teams/language")
     public SearchResults searchLanguageTeams(
-        @QueryParam("q") @DefaultValue("") String query,
-        @DefaultValue("1") @QueryParam("page") int page,
-        @DefaultValue("20") @QueryParam("sizePerPage") int sizePerPage) {
+            @QueryParam("q") @DefaultValue("") String query,
+            @DefaultValue("1") @QueryParam("page") int page,
+            @DefaultValue("20") @QueryParam("sizePerPage") int sizePerPage) {
 
         int offset = (validatePage(page) - 1) * validatePageSize(sizePerPage);
-        int totalCount = localeDAO.countByNameLike(query);
+        int totalCount = localeDAO.countByFind(query, false);
         List<SearchResult> results = localeDAO
-                .searchByName(query, validatePageSize(sizePerPage), offset)
+                .find(offset, validatePageSize(sizePerPage), query, null, false)
                 .stream()
-            .map(l -> {
-                LanguageTeamSearchResult result =
-                    new LanguageTeamSearchResult();
-                result.setId(l.getLocaleId().getId());
-                result.setLocale(l.asULocale().getDisplayName());
-                result.setMemberCount(l.getMembers().size());
-                return result;
-            }).collect(Collectors.toList());
-        return new SearchResults(totalCount, results, SearchResult.SearchResultType.LanguageTeam);
+                .map(l -> new LanguageTeamSearchResult(l))
+                .collect(Collectors.toList());
+        return new SearchResults(totalCount, results,
+                SearchResult.SearchResultType.LanguageTeam);
     }
 
     private int validatePage(int page) {

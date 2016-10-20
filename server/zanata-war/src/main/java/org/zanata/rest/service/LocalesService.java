@@ -30,6 +30,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.service.LocaleService;
+import org.zanata.service.impl.LocaleServiceImpl;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -51,9 +52,8 @@ public abstract class LocalesService {
 
         for (HLocale hLocale : locales) {
             LocaleId id = hLocale.getLocaleId();
-            String name = hLocale.retrieveDisplayName();
             String alias = localeAliases.get(id);
-            localeDetails.add(new LocaleDetails(id, name, alias));
+            localeDetails.add(LocaleServiceImpl.convertToDTO(hLocale, alias));
         }
 
         Type genericType = new GenericType<List<LocaleDetails>>() {

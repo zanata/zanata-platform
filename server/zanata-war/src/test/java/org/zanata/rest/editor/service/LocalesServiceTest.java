@@ -67,7 +67,7 @@ public class LocalesServiceTest extends ZanataDbunitJpaTest implements
     @Test
     @InRequestScope
     public void testGetLocales() {
-        response = localesService.get();
+        response = localesService.get("test", null, 1, 1);
         assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
     }
 

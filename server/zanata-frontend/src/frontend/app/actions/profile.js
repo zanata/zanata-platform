@@ -1,24 +1,27 @@
 import { createAction } from 'redux-actions'
 import { CALL_API } from 'redux-api-middleware'
-import { isEmpty, includes } from 'lodash'
+import { isEmpty, includes, forEach } from 'lodash'
 import utilsDate from '../utils/DateHelper'
 
 import {
   getJsonHeaders,
-  buildAPIRequest
+  buildAPIRequest,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE
 } from './common'
 
 export const FILTER_UPDATE = 'FILTER_UPDATE'
 export const DATE_RANGE_UPDATE = 'DATE_RANGE_UPDATE'
 export const SELECT_DAY_UPDATE = 'SELECT_DAY_UPDATE'
 
-export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST'
-export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS'
-export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE'
-
 export const USER_STATS_REQUEST = 'USER_STATS_REQUEST'
 export const USER_STATS_SUCCESS = 'USER_STATS_SUCCESS'
 export const USER_STATS_FAILURE = 'USER_STATS_FAILURE'
+
+export const GET_LOCALE_REQUEST = 'GET_LOCALE_REQUEST'
+export const GET_LOCALE_SUCCESS = 'GET_LOCALE_SUCCESS'
+export const GET_LOCALE_FAILURE = 'GET_LOCALE_FAILURE'
 
 export const updateDateRange = createAction(DATE_RANGE_UPDATE)
 export const updateFilter = createAction(FILTER_UPDATE)
@@ -54,14 +57,41 @@ const getUserStatistics = (username, fromDate, toDate) => {
   }
 }
 
-const loadUserStats = (username, dateRange) => {
+const loadUserStats = (username, dateRangeOption) => {
   return (dispatch, getState) => {
-    const dates = utilsDate.getDateRangeFromOption(dateRange)
-    dispatch(getUserStatistics(username, dates.fromDate, dates.toDate))
+    const dateRange = utilsDate.getDateRangeFromOption(dateRangeOption)
+    dispatch(getUserStatistics(username, dateRange.fromDate, dateRange.toDate))
   }
 }
 
-const getUserInfo = (dispatch, username, dateRange) => {
+const getLocaleDetail = (localeId) => {
+  const endpoint = window.config.baseUrl + window.config.apiRoot +
+    '/locales/locale/' + localeId
+
+  const apiTypes = [
+    GET_LOCALE_REQUEST,
+    {
+      type: GET_LOCALE_SUCCESS,
+      payload: (action, state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      },
+      meta: {
+        receivedAt: Date.now()
+      }
+    },
+    GET_LOCALE_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
+}
+
+const getUserInfo = (dispatch, username, dateRangeOption) => {
   const endpoint = window.config.baseUrl + window.config.apiRoot + '/user' +
     (isEmpty(username) ? '' : '/' + username)
 
@@ -73,7 +103,10 @@ const getUserInfo = (dispatch, username, dateRange) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
-            dispatch(loadUserStats(username, dateRange))
+            forEach(json.languageTeams, function (localeId) {
+              dispatch(getLocaleDetail(localeId))
+            })
+            dispatch(loadUserStats(username, dateRangeOption))
             return json
           })
         }
@@ -103,11 +136,11 @@ export const profileInitialLoad = (username) => {
   }
 }
 
-export const dateRangeChanged = (dateRange) => {
+export const dateRangeChanged = (dataRangeOption) => {
   return (dispatch, getState) => {
     const username = getState().profile.user.username
-    dispatch(updateDateRange(dateRange))
-    dispatch(loadUserStats(username, dateRange))
+    dispatch(updateDateRange(dataRangeOption))
+    dispatch(loadUserStats(username, dataRangeOption))
   }
 }
 

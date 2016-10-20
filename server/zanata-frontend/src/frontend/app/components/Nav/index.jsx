@@ -72,7 +72,8 @@ const items = [
   },
   {
     icon: 'language',
-    link: '/language/list',
+    link: prefixPath + dswid + '#languages',
+    internalLink: '/languages',
     title: 'Languages',
     auth: 'loggedin',
     id: 'nav_language'
