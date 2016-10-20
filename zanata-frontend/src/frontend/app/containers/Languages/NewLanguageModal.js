@@ -78,10 +78,10 @@ class NewLanguageModal extends Component {
         validFields: false
       })
     } else {
-      const details = isEmpty(displayName) ? {
+      const details = {
         ...this.state.details,
         localeId: query.replace('_', '-')
-      } : this.state.details
+      }
       this.props.handleOnSave(details)
     }
   }
@@ -96,7 +96,7 @@ class NewLanguageModal extends Component {
   }
 
   getSuggestionValue (selectedLocale) {
-    return selectedLocale
+    return selectedLocale.localeId
   }
 
   renderSuggestion (suggestion) {
@@ -114,7 +114,7 @@ class NewLanguageModal extends Component {
     { suggestion, suggestionValue, sectionIndex, method }) => {
     this.setState({
       details: {
-        ...suggestionValue,
+        ...suggestion,
         enabledByDefault: true,
         enabled: true
       }
@@ -143,7 +143,7 @@ class NewLanguageModal extends Component {
         <Modal.Body>
           <div className='bootstrap'>
             <FormGroup validationState={!validFields ? 'error' : undefined}>
-              <ControlLabel>Language</ControlLabel>
+              <ControlLabel>Language Code</ControlLabel>
               <Autosuggest
                 suggestions={searchResults}
                 onSuggestionSelected={this.onSuggestionSelected}
@@ -170,12 +170,6 @@ class NewLanguageModal extends Component {
                 onChange={(e) => this.updateField('nativeName', e)}
                 placeholder='Native name'
                 value={details.nativeName} />
-            </FormGroup>
-            <FormGroup>
-              <strong className='Mend(eq)'>Language Code</strong>
-              <span className='C(muted)'>
-                {details.localeId || 'None'}
-              </span>
             </FormGroup>
             <FormGroup>
               <ControlLabel>Plural forms</ControlLabel>
