@@ -21,14 +21,22 @@
 
 package org.zanata.rest.client;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -38,6 +46,28 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ClientUtil {
 
+    }
+
+    public static String calculateFileMD5(File srcFile) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            InputStream fileStream = new FileInputStream(srcFile);
+            try {
+                fileStream = new DigestInputStream(fileStream, md);
+                byte[] buffer = new byte[256];
+                //noinspection StatementWithEmptyBody
+                while (fileStream.read(buffer) > 0) {
+                    // just keep digesting the input
+                }
+            } finally {
+                fileStream.close();
+            }
+            @SuppressWarnings("UnnecessaryLocalVariable")
+            String md5hash = new String(Hex.encodeHex(md.digest()));
+            return md5hash;
+        } catch (NoSuchAlgorithmException | IOException e) {
+            throw new RuntimeException(e);
+        }
     public static String getBaseURL(String movedTo) {
         try {
             URL url = new URI(movedTo).toURL();

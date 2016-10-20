@@ -29,9 +29,11 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.ws.rs.core.EntityTag;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.NaturalIdLoadAccess;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.zanata.common.ContentState;
@@ -67,9 +69,10 @@ public class ProjectIterationDAO extends
     @Nullable
     public HProjectIteration getBySlug(@Nonnull String projectSlug,
             @Nonnull String iterationSlug) {
+        NaturalIdLoadAccess loader =
+                getSession().byNaturalId(HProject.class);
         HProject project =
-                (HProject) getSession().byNaturalId(HProject.class)
-                        .using("slug", projectSlug).load();
+                (HProject) loader.using("slug", projectSlug).load();
         return getBySlug(project, iterationSlug);
     }
 
@@ -87,7 +90,7 @@ public class ProjectIterationDAO extends
     public List<HProjectIteration> getByProjectSlug(
             @Nonnull String projectSlug, EntityStatus... includeStatus) {
         if (StringUtils.isEmpty(projectSlug)) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         StringBuilder sb = new StringBuilder();
         sb.append("from HProjectIteration version where ").

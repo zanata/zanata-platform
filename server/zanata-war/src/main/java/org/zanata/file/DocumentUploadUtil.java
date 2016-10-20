@@ -249,6 +249,12 @@ public class DocumentUploadUtil {
         return uploadForm.getFirst() && uploadForm.getLast();
     }
 
+    /**
+     * Note: the caller is responsible for deleting the temp file.
+     * @param upload
+     * @param finalPart
+     * @return
+     */
     public File combineToTempFileAndDeleteUploadRecord(HDocumentUpload upload,
             DocumentFileUploadForm finalPart) {
         File tempFile;
@@ -271,6 +277,13 @@ public class DocumentUploadUtil {
         return tempFile;
     }
 
+    /**
+     * Note: the caller is responsible for deleting the temp file.
+     * @param upload
+     * @param finalPart
+     * @return
+     * @throws SQLException
+     */
     private File
             combineToTempFile(HDocumentUpload upload, DocumentFileUploadForm finalPart)
                     throws SQLException {
@@ -313,6 +326,11 @@ public class DocumentUploadUtil {
                 id.getVersionSlug(), id.getDocId()) == null;
     }
 
+    /**
+     * Note: the caller is responsible for deleting the temp file.
+     * @param uploadForm
+     * @return
+     */
     protected File persistTempFileFromUpload(DocumentFileUploadForm uploadForm) {
         File tempFile;
         try {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2016, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -21,26 +21,23 @@
 
 package org.zanata.rest.client;
 
+import java.io.InputStream;
 import java.net.URI;
-import java.util.List;
 
 import javax.ws.rs.core.MediaType;
 
-import org.zanata.common.DocumentType;
-import org.zanata.common.FileTypeInfo;
-import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.dto.ChunkUploadResponse;
-import org.zanata.rest.service.FileResource;
+import org.zanata.common.ProjectType;
+import org.zanata.rest.dto.FileUploadResponse;
+import org.zanata.rest.service.SourceFileResource;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.GenericType;
 import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.multipart.FormDataMultiPart;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Sean Flanigan <a
+ *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @see SourceFileResource
  */
 public class SourceFileResourceClient {
     private final RestClientFactory factory;
@@ -50,123 +47,40 @@ public class SourceFileResourceClient {
     SourceFileResourceClient(RestClientFactory restClientFactory) {
         this.factory = restClientFactory;
         baseUri = restClientFactory.getBaseUri();
-
     }
 
-    @Deprecated
-    public List<DocumentType> acceptedFileTypes() {
-        List<DocumentType> types = factory.getClient()
-                .resource(baseUri)
-                .path(FileResource.SERVICE_PATH
-                    + FileResource.ACCEPTED_TYPE_LIST_RESOURCE)
-                .get(new GenericType<List<DocumentType>>() {
-            });
-        return types;
-    }
-
-    public List<FileTypeInfo> fileTypeInfoList() {
-        List<FileTypeInfo> types = factory.getClient()
-                .resource(baseUri)
-                .path(FileResource.SERVICE_PATH
-                        + FileResource.FILE_TYPE_INFO_RESOURCE)
-                .get(new GenericType<List<FileTypeInfo>>() {
-                });
-        return types;
-    }
-
-    public ChunkUploadResponse uploadSourceFile(
+    public FileUploadResponse uploadSourceFile(
             String projectSlug,
             String iterationSlug, String docId,
-            DocumentFileUploadForm documentFileUploadForm) {
+            ProjectType projectType,
+            InputStream fileStream) {
         Client client = factory.getClient();
         WebResource.Builder builder = client
                 .resource(baseUri)
-                .path("file").path("source").path(projectSlug)
-                .path(iterationSlug)
+                .path(SourceFileResource.SERVICE_PATH)
+                .path(projectSlug).path(iterationSlug)
                 .queryParam("docId", docId)
-                .type(MediaType.MULTIPART_FORM_DATA_TYPE);
-        FormDataMultiPart form =
-                prepareFormDataMultiPart(documentFileUploadForm);
+                .queryParam("projectType", projectType.name())
+                .type(MediaType.APPLICATION_OCTET_STREAM);
+//        addBodyPartIfPresent(form, "adapterParams",
+//                documentFileUploadForm.getAdapterParams());
+//        addBodyPartIfPresent(form, "type", documentFileUploadForm.getFileType());
 
-        ClientResponse response = builder.post(ClientResponse.class, form);
+        ClientResponse response = builder.post(ClientResponse.class, fileStream);
         if (response.getStatus() == 404) {
             throw new RuntimeException("Encountered 404 during post form");
         }
-        ChunkUploadResponse chunkUploadResponse =
-                response.getEntity(ChunkUploadResponse.class);
-        return chunkUploadResponse;
-    }
-
-    private FormDataMultiPart prepareFormDataMultiPart(
-            DocumentFileUploadForm documentFileUploadForm) {
-        FormDataMultiPart form =
-                new FormDataMultiPart()
-                        .field("file", documentFileUploadForm
-                                .getFileStream(),
-                                MediaType.APPLICATION_OCTET_STREAM_TYPE);
-        addBodyPartIfPresent(form, "adapterParams",
-                documentFileUploadForm.getAdapterParams());
-        addBodyPartIfPresent(form, "type", documentFileUploadForm.getFileType());
-        addBodyPartIfPresent(form, "first", documentFileUploadForm.getFirst());
-        addBodyPartIfPresent(form, "hash", documentFileUploadForm.getHash());
-        addBodyPartIfPresent(form, "last", documentFileUploadForm.getLast());
-        addBodyPartIfPresent(form, "size", documentFileUploadForm.getSize());
-        addBodyPartIfPresent(form, "uploadId",
-                documentFileUploadForm.getUploadId());
-        return form;
-    }
-
-    public ChunkUploadResponse uploadTranslationFile(
-            String projectSlug,
-            String iterationSlug, String locale, String docId,
-            String mergeType,
-            DocumentFileUploadForm documentFileUploadForm) {
-        Client client = factory.getClient();
-        WebResource.Builder builder = client.resource(baseUri)
-                .path(FileResource.SERVICE_PATH)
-                .path("translation")
-                .path(projectSlug)
-                .path(iterationSlug)
-                .path(locale)
-                .queryParam("docId", docId)
-                .queryParam("merge", mergeType)
-                .type(MediaType.MULTIPART_FORM_DATA_TYPE);
-        FormDataMultiPart form =
-                prepareFormDataMultiPart(documentFileUploadForm);
-
-        ClientResponse response = builder.post(ClientResponse.class, form);
-        if (response.getStatus() == 404) {
-            throw new RuntimeException("Encountered 404 during post form");
-        }
-        ChunkUploadResponse chunkUploadResponse =
-                response.getEntity(ChunkUploadResponse.class);
-        return chunkUploadResponse;
+        return response.getEntity(FileUploadResponse.class);
     }
 
     public ClientResponse downloadSourceFile(String projectSlug,
             String iterationSlug,
-            String fileType, String docId) {
+            String fileType, String docId, ProjectType projectType) {
         WebResource webResource = factory.getClient().resource(baseUri)
-                .path(FileResource.SERVICE_PATH).path("source")
-                .path(projectSlug).path(iterationSlug).path(fileType);
+                .path(SourceFileResource.SERVICE_PATH)
+                .path(projectSlug).path(iterationSlug).path(fileType)
+                .queryParam("projectType", projectType.name());
         return webResource.queryParam("docId", docId).get(ClientResponse.class);
     }
 
-    public ClientResponse downloadTranslationFile(String projectSlug,
-            String iterationSlug, String locale, String fileExtension,
-            String docId) {
-        WebResource webResource = factory.getClient().resource(baseUri)
-                .path(FileResource.SERVICE_PATH).path("translation")
-                .path(projectSlug).path(iterationSlug).path(locale)
-                .path(fileExtension);
-        return webResource.queryParam("docId", docId).get(ClientResponse.class);
-    }
-
-    private static <T> FormDataMultiPart addBodyPartIfPresent(
-            FormDataMultiPart form, String field, T value) {
-        if (value != null) {
-            return form.field(field, value.toString());
-        }
-        return form;
-    }
 }

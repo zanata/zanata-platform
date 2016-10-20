@@ -81,6 +81,7 @@ import com.google.common.collect.ImmutableList;
 
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode;
 import static org.zanata.client.commands.StringUtil.multiline;
+import static org.zanata.rest.client.ClientUtil.calculateFileMD5;
 
 /**
  * Command to send files directly to the server without parsing on the client.
@@ -551,7 +552,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     private void pushDocumentToServer(String docId, String fileType,
             @Nullable String locale, File docFile) {
         try {
-            String md5hash = calculateFileHash(docFile);
+            String md5hash = calculateFileMD5(docFile);
             if (docFile.length() <= getOpts().getChunkSize()) {
                 log.info("    transmitting file [{}] as single chunk",
                         docFile.getAbsolutePath());
@@ -631,28 +632,6 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         log.debug("response from server: {}", response);
         ConsoleUtils.endProgressFeedback();
         return response;
-    }
-
-    private String calculateFileHash(File srcFile) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            InputStream fileStream = new FileInputStream(srcFile);
-            try {
-                fileStream = new DigestInputStream(fileStream, md);
-                byte[] buffer = new byte[256];
-                //noinspection StatementWithEmptyBody
-                while (fileStream.read(buffer) > 0) {
-                    // just keep digesting the input
-                }
-            } finally {
-                fileStream.close();
-            }
-            @SuppressWarnings("UnnecessaryLocalVariable")
-            String md5hash = new String(Hex.encodeHex(md.digest()));
-            return md5hash;
-        } catch (NoSuchAlgorithmException | IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**

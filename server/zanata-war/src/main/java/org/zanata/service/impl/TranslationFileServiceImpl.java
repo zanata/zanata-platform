@@ -90,7 +90,6 @@ import static org.zanata.common.DocumentType.XML_DOCUMENT_TYPE_DEFINITION;
 
 /**
  * Default implementation of the TranslationFileService interface.
- *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
@@ -155,11 +154,12 @@ public class TranslationFileServiceImpl implements TranslationFileService {
 
         if (version.getProjectType() == ProjectType.File) {
             File tempFile = persistToTempFile(fileContents);
-            TranslationsResource transRes =
-                parseAdapterTranslationFile(tempFile, projectSlug,
-                    iterationSlug, docId, localeId, fileName, documentType);
-            removeTempFile(tempFile);
-            return transRes;
+            try {
+                return parseAdapterTranslationFile(tempFile, projectSlug,
+                        iterationSlug, docId, localeId, fileName, documentType);
+            } finally {
+                removeTempFile(tempFile);
+            }
         } else if (fileName.endsWith(".po")) {
             return parsePoFile(fileContents, projectSlug, iterationSlug, docId);
         } else {

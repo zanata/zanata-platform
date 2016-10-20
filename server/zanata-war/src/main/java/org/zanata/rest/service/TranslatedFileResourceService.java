@@ -67,13 +67,14 @@ import static org.zanata.rest.service.FileResource.FILETYPE_TRANSLATED_APPROVED;
 import static org.zanata.rest.service.FileResource.FILETYPE_TRANSLATED_APPROVED_AND_FUZZY;
 
 /**
+ * By convention, this would be called TranslatedFileService, but we already have one of those.
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @RequestScoped
 @Slf4j
 @Transactional
-public class TranslationFileResourceService implements TranslatedFileResource {
+public class TranslatedFileResourceService implements TranslatedFileResource {
     /**
      * See also {@link org.zanata.rest.service.SourceFileService#FILE_TYPE_OFFLINE_PO_TEMPLATE}
      */
@@ -97,16 +98,18 @@ public class TranslationFileResourceService implements TranslatedFileResource {
     @Override
     public Response uploadTranslationFile(String projectSlug,
             String iterationSlug, String localeId, String docId, String merge,
-            @MultipartForm DocumentFileUploadForm uploadForm,
+            InputStream fileStream,
             String projectType) {
         //assignCreditToUploader is not supported from here
         boolean assignCreditToUploader = false;
 
         GlobalDocumentId id =
                 new GlobalDocumentId(projectSlug, iterationSlug, docId);
-        return translationUploader.tryUploadTranslationFile(id, localeId,
-                merge, assignCreditToUploader, uploadForm,
-                TranslationSourceType.API_UPLOAD);
+        // FIXME
+        return null;
+//        return translationUploader.tryUploadTranslationFile(id, localeId,
+//                merge, assignCreditToUploader, fileStream,
+//                TranslationSourceType.API_UPLOAD);
     }
 
     @Override

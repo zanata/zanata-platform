@@ -35,8 +35,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
@@ -44,6 +46,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.util.GenericType;
 
@@ -56,13 +59,18 @@ import org.zanata.common.ContentState;
 import org.zanata.common.DocumentType;
 import org.zanata.common.FileTypeInfo;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.RawDocumentContentAccessException;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.TranslationDocumentUpload;
 import org.zanata.model.HDocument;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.DocumentFileUploadForm;
@@ -79,41 +87,19 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+
 @RequestScoped
 @Named("fileService")
 @Path(FileResource.SERVICE_PATH)
 @Slf4j
 @Transactional
 public class FileService implements FileResource {
-    private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
-    private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
-
-    @Inject
-    private DocumentDAO documentDAO;
-
-    @Inject
-    private TranslatedDocResourceService translatedDocResourceService;
-
     @Inject
     private FileSystemService fileSystemServiceImpl;
 
     @Inject
     private TranslationFileService translationFileServiceImpl;
-
-    @Inject
-    private ResourceUtils resourceUtils;
-
-    @Inject
-    private VirusScanner virusScanner;
-
-    @Inject
-    private SourceDocumentUpload sourceUploader;
-
-    @Inject
-    private TranslationDocumentUpload translationUploader;
-
-    @Inject
-    private FilePersistService filePersistService;
 
     /**
      * Deprecated.
@@ -159,198 +145,37 @@ public class FileService implements FileResource {
         return Response.ok(entity).build();
     }
 
+    @Deprecated
     @Override
+    @Produces("")
     public Response uploadSourceFile(String projectSlug, String iterationSlug,
             String docId, DocumentFileUploadForm uploadForm) {
-        GlobalDocumentId id =
-                new GlobalDocumentId(projectSlug, iterationSlug, docId);
-        return sourceUploader.tryUploadSourceFile(id, uploadForm);
+        throw new RuntimeException("routing error");
     }
 
+    @Deprecated
     @Override
+    @Produces("")
     public Response uploadTranslationFile(String projectSlug,
             String iterationSlug, String localeId, String docId, String merge,
             DocumentFileUploadForm uploadForm) {
-
-        //assignCreditToUploader is not supported from here
-        boolean assignCreditToUploader = false;
-
-        GlobalDocumentId id =
-                new GlobalDocumentId(projectSlug, iterationSlug, docId);
-        return translationUploader.tryUploadTranslationFile(id, localeId,
-            merge, assignCreditToUploader, uploadForm,
-            TranslationSourceType.API_UPLOAD);
+        throw new RuntimeException("routing error");
     }
 
+    @Deprecated
     @Override
+    @Produces("")
     public Response downloadSourceFile(String projectSlug,
             String iterationSlug, String fileType, String docId) {
-        // TODO scan (again) for virus
-        HDocument document =
-                documentDAO.getByProjectIterationAndDocId(projectSlug,
-                        iterationSlug, docId);
-        if (document == null) {
-            return Response.status(Status.NOT_FOUND).build();
-        }
-
-        if (FILETYPE_RAW_SOURCE_DOCUMENT.equals(fileType)) {
-            if (document.getRawDocument() == null) {
-                return Response.status(Status.NOT_FOUND).build();
-            }
-            InputStream fileContents;
-            try {
-                fileContents =
-                        filePersistService
-                                .getRawDocumentContentAsStream(document
-                                        .getRawDocument());
-            } catch (RawDocumentContentAccessException e) {
-                log.error(e.toString(), e);
-                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
-                        .build();
-            }
-            StreamingOutput output =
-                    new InputStreamStreamingOutput(fileContents);
-            return Response
-                    .ok()
-                    .header("Content-Disposition",
-                            "attachment; filename=\"" + document.getName()
-                                    + "\"").entity(output).build();
-        } else if ("pot".equals(fileType)
-                || FILE_TYPE_OFFLINE_PO_TEMPLATE.equals(fileType)) {
-            // Note: could give 404 or unsupported media type for "pot" in
-            // non-po projects,
-            // and suggest using offlinepo
-            Resource res = resourceUtils.buildResource(document);
-            StreamingOutput output =
-                    new POTStreamingOutput(res,
-                            FILE_TYPE_OFFLINE_PO_TEMPLATE.equals(fileType));
-            return Response
-                    .ok()
-                    .header("Content-Disposition",
-                            "attachment; filename=\"" + document.getName()
-                                    + ".pot\"").type(MediaType.TEXT_PLAIN)
-                    .entity(output).build();
-        } else {
-            return Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
-        }
+        throw new RuntimeException("routing error");
     }
 
+    @Deprecated
     @Override
+    @Produces("")
     public Response downloadTranslationFile(String projectSlug,
             String iterationSlug, String locale, String fileType, String docId) {
-        GlobalDocumentId id =
-                new GlobalDocumentId(projectSlug, iterationSlug, docId);
-        // TODO scan (again) for virus
-        final Response response;
-        HDocument document =
-                this.documentDAO.getByProjectIterationAndDocId(projectSlug,
-                        iterationSlug, docId);
-
-        if (document == null) {
-            response = Response.status(Status.NOT_FOUND).build();
-        } else if ("po".equals(fileType)
-                || FILE_TYPE_OFFLINE_PO.equals(fileType)) {
-            // Note: could return 404 or Unsupported media type for "po" in
-            // non-po projects,
-            // and suggest to use offlinepo
-            final Set<String> extensions = new HashSet<String>();
-            extensions.add("gettext");
-            extensions.add("comment");
-
-            // Perform translation of Hibernate DTOs to JAXB DTOs
-            TranslationsResource transRes =
-                    (TranslationsResource) this.translatedDocResourceService
-                            .getTranslations(docId, new LocaleId(locale),
-                                    extensions, true, null).getEntity();
-            Resource res = this.resourceUtils.buildResource(document);
-
-            StreamingOutput output =
-                    new POStreamingOutput(res, transRes,
-                            FILE_TYPE_OFFLINE_PO.equals(fileType));
-            response =
-                    Response.ok()
-                            .header("Content-Disposition",
-                                    "attachment; filename=\""
-                                            + document.getName() + ".po\"")
-                            .type(MediaType.TEXT_PLAIN).entity(output).build();
-        } else if (FILETYPE_TRANSLATED_APPROVED.equals(fileType)
-                || FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType)) {
-            if (!filePersistService.hasPersistedDocument(id)) {
-                return Response.status(Status.NOT_FOUND).build();
-            }
-            Resource res = this.resourceUtils.buildResource(document);
-
-            final Set<String> extensions = Collections.<String> emptySet();
-            TranslationsResource transRes =
-                    (TranslationsResource) this.translatedDocResourceService
-                            .getTranslations(docId, new LocaleId(locale),
-                                    extensions, true, null).getEntity();
-            // Filter to only provide translated targets. "Preview" downloads
-            // include fuzzy.
-            // New list is used as transRes list appears not to be a modifiable
-            // implementation.
-            List<TextFlowTarget> filteredTranslations = Lists.newArrayList();
-
-            boolean useFuzzy =
-                    FILETYPE_TRANSLATED_APPROVED_AND_FUZZY.equals(fileType);
-            for (TextFlowTarget target : transRes.getTextFlowTargets()) {
-                // TODO rhbz953734 - translatedDocResourceService will map
-                // review content state to old state. For now this is
-                // acceptable. Once we have new REST options, we should review
-                // this
-                if (target.getState() == ContentState.Approved
-                        || (useFuzzy && target.getState() == ContentState.NeedReview)) {
-                    filteredTranslations.add(target);
-                }
-            }
-
-            transRes.getTextFlowTargets().clear();
-            transRes.getTextFlowTargets().addAll(filteredTranslations);
-
-            InputStream inputStream;
-            try {
-                inputStream =
-                        filePersistService
-                                .getRawDocumentContentAsStream(document
-                                        .getRawDocument());
-            } catch (RawDocumentContentAccessException e) {
-                log.error(e.toString(), e);
-                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
-                        .build();
-            }
-            File tempFile =
-                    translationFileServiceImpl.persistToTempFile(inputStream);
-            String name = projectSlug + ":" + iterationSlug + ":" + docId;
-            // TODO damason: this file is not transmitted, but used to generate
-            // a file later
-            // the generated file should be scanned instead
-            virusScanner.scan(tempFile, name);
-            URI uri = tempFile.toURI();
-            HRawDocument hRawDocument = document.getRawDocument();
-            FileFormatAdapter adapter =
-                    translationFileServiceImpl.getAdapterFor(hRawDocument.getType());
-            String rawParamString = hRawDocument.getAdapterParameters();
-            Optional<String> params =
-                    Optional.<String> fromNullable(Strings
-                            .emptyToNull(rawParamString));
-            StreamingOutput output =
-                    new FormatAdapterStreamingOutput(uri, res, transRes,
-                        locale, adapter, params);
-            String translationFilename = adapter.generateTranslationFilename(document, locale);
-            response =
-                    Response.ok()
-                            .header("Content-Disposition",
-                                    "attachment; filename=\""
-                                            + translationFilename + "\"")
-                            .entity(output).build();
-         // TODO damason: remove more immediately, but make sure response has
-            // finished with the file
-            // Note: may not be necessary when file storage is on disk.
-            tempFile.deleteOnExit();
-        } else {
-            response = Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
-        }
-        return response;
+        throw new RuntimeException("routing error");
     }
 
     @Override
@@ -387,104 +212,6 @@ public class FileService implements FileResource {
         } catch (IOException e) {
             return Response.serverError().status(Status.INTERNAL_SERVER_ERROR)
                     .build();
-        }
-    }
-
-    /*
-     * Private class that implements PO file streaming of a document.
-     */
-    private class POStreamingOutput implements StreamingOutput {
-        private Resource resource;
-        private TranslationsResource transRes;
-        private boolean offlinePo;
-
-        /**
-         * @param offlinePo
-         *            true if text flow id should be inserted into msgctxt to
-         *            allow reverse mapping.
-         */
-        public POStreamingOutput(Resource resource,
-                TranslationsResource transRes, boolean offlinePo) {
-            this.resource = resource;
-            this.transRes = transRes;
-            this.offlinePo = offlinePo;
-        }
-
-        @Override
-        public void write(OutputStream output) throws IOException,
-                WebApplicationException {
-            PoWriter2 writer = new PoWriter2(false, offlinePo);
-            writer.writePo(output, "UTF-8", this.resource, this.transRes);
-        }
-    }
-
-    private class POTStreamingOutput implements StreamingOutput {
-        private Resource resource;
-        private boolean offlinePot;
-
-        /**
-         * @param offlinePot
-         *            true if text flow id should be inserted into msgctxt to
-         *            allow reverse mapping
-         */
-        public POTStreamingOutput(Resource resource, boolean offlinePot) {
-            this.resource = resource;
-            this.offlinePot = offlinePot;
-        }
-
-        @Override
-        public void write(OutputStream output) throws IOException,
-                WebApplicationException {
-            PoWriter2 writer = new PoWriter2(false, offlinePot);
-            writer.writePot(output, "UTF-8", resource);
-        }
-    }
-
-    private class InputStreamStreamingOutput implements StreamingOutput {
-        private InputStream input;
-
-        public InputStreamStreamingOutput(InputStream input) {
-            this.input = input;
-        }
-
-        @Override
-        public void write(OutputStream output) throws IOException,
-                WebApplicationException {
-            byte[] buffer = new byte[4096]; // To hold file contents
-            int bytesRead; // How many bytes in buffer
-
-            while ((bytesRead = input.read(buffer)) != -1) {
-                output.write(buffer, 0, bytesRead);
-            }
-        }
-    }
-
-    private class FormatAdapterStreamingOutput implements StreamingOutput {
-        private Resource resource;
-        private TranslationsResource translationsResource;
-        private String locale;
-        private URI original;
-        private FileFormatAdapter adapter;
-        private Optional<String> params;
-
-        public FormatAdapterStreamingOutput(URI originalDoc,
-            Resource resource, TranslationsResource translationsResource,
-                String locale, FileFormatAdapter adapter,
-                Optional<String> params) {
-            this.resource = resource;
-            this.translationsResource = translationsResource;
-            this.locale = locale;
-            this.original = originalDoc;
-            this.adapter = adapter;
-            this.params = params;
-        }
-
-        @Override
-        public void write(OutputStream output) throws IOException,
-                WebApplicationException {
-            // FIXME should the generated file be virus scanned?
-            adapter.writeTranslatedFile(output, original, resource,
-                translationsResource, locale, params);
         }
     }
 

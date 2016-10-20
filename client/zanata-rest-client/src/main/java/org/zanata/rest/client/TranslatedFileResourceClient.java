@@ -21,15 +21,14 @@
 
 package org.zanata.rest.client;
 
-import static org.zanata.common.ProjectType.File;
-
 import java.io.InputStream;
 import java.net.URI;
 
 import javax.ws.rs.core.MediaType;
 
+import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.FileUploadResponse;
-import org.zanata.rest.service.FileResource;
+import org.zanata.rest.service.TranslatedFileResource;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -38,6 +37,7 @@ import com.sun.jersey.api.client.WebResource;
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @see TranslatedFileResource
  */
 public class TranslatedFileResourceClient {
     private final RestClientFactory factory;
@@ -49,17 +49,21 @@ public class TranslatedFileResourceClient {
         baseUri = restClientFactory.getBaseUri();
     }
 
-    public FileUploadResponse uploadSourceFile(
+    public FileUploadResponse uploadTranslatedFile(
             String projectSlug,
-            String iterationSlug, String docId,
+            String iterationSlug, String locale, String docId,
+            String mergeType,
+            ProjectType projectType,
             InputStream fileStream) {
         Client client = factory.getClient();
         WebResource.Builder builder = client
                 .resource(baseUri)
-                .path("file").path("source").path(projectSlug)
-                .path(iterationSlug)
+                .path(TranslatedFileResource.SERVICE_PATH)
+                .path(projectSlug).path(iterationSlug)
+                .path(locale)
                 .queryParam("docId", docId)
-                .queryParam("projectType", File.name())
+                .queryParam("merge", mergeType)
+                .queryParam("projectType", projectType.name())
                 .type(MediaType.APPLICATION_OCTET_STREAM);
 //        addBodyPartIfPresent(form, "adapterParams",
 //                documentFileUploadForm.getAdapterParams());
@@ -72,13 +76,14 @@ public class TranslatedFileResourceClient {
         return response.getEntity(FileUploadResponse.class);
     }
 
-    public ClientResponse downloadSourceFile(String projectSlug,
-            String iterationSlug,
-            String fileType, String docId) {
+    public ClientResponse downloadTranslatedFile(String projectSlug,
+            String iterationSlug, String locale, String fileExtension,
+            String docId, ProjectType projectType) {
         WebResource webResource = factory.getClient().resource(baseUri)
-                .path(FileResource.SERVICE_PATH).path("source")
-                .path(projectSlug).path(iterationSlug).path(fileType);
+                .path(TranslatedFileResource.SERVICE_PATH)
+                .path(projectSlug).path(iterationSlug).path(locale)
+                .path(fileExtension)
+                .queryParam("projectType", projectType.name());
         return webResource.queryParam("docId", docId).get(ClientResponse.class);
     }
-
 }

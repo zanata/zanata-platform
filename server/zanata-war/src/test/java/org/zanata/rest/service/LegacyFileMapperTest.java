@@ -20,8 +20,45 @@
  */
 package org.zanata.rest.service;
 
+import org.jglue.cdiunit.AdditionalClasses;
+import org.jglue.cdiunit.InRequestScope;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.test.CdiUnitRunner;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+
+import static org.mockito.Mockito.when;
+
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
+@RunWith(CdiUnitRunner.class)
+@InRequestScope
 public class LegacyFileMapperTest {
+
+    @Produces @Mock
+    ProjectDAO projectDAO;
+
+    @Produces @Mock
+    ProjectIterationDAO projectIterationDAO;
+
+    @Inject
+    LegacyFileMapper mapper;
+
+    @Before
+    public void before() {
+//        when(projectDAO.)
+    }
+
+    @Test
+    public void serverPropertiesWithPropertiesHint() {
+//        mapper.getServerDocId()
+    }
+
 }

@@ -4,14 +4,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement(name = "streamUploadResponse")
-@XmlType(name = "streamUploadResponseType")
-public class StreamUploadResponse {
+@XmlRootElement(name = "fileUploadResponse")
+@XmlType(name = "fileUploadResponseType")
+// FIXME see also AsynchronousProcessResource.startSourceDocCreation() and ProcessStatus
+public class FileUploadResponse {
+    // FIXME eliminate this?
     private Long uploadId;
     private String successMessage;
     private String errorMessage;
 
-    public StreamUploadResponse() {
+    public FileUploadResponse() {
     }
 
     /**
@@ -21,16 +23,16 @@ public class StreamUploadResponse {
      * @param errorMessage
      *            detailing what went wrong
      */
-    public StreamUploadResponse(String errorMessage) {
+    public FileUploadResponse(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
-    public StreamUploadResponse(long uploadId, String successMessage) {
+    public FileUploadResponse(long uploadId, String successMessage) {
         this.uploadId = uploadId;
         this.successMessage = successMessage;
     }
 
-    @XmlElement(required = false)
+    @XmlElement
     public Long getUploadId() {
         return uploadId;
     }
@@ -39,7 +41,7 @@ public class StreamUploadResponse {
         this.uploadId = uploadId;
     }
 
-    @XmlElement(required = false)
+    @XmlElement
     public String getSuccessMessage() {
         return successMessage;
     }
@@ -48,7 +50,7 @@ public class StreamUploadResponse {
         successMessage = message;
     }
 
-    @XmlElement(required = false)
+    @XmlElement
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
     }
@@ -59,7 +61,7 @@ public class StreamUploadResponse {
 
     @Override
     public String toString() {
-        return "StreamUploadResponse: uploadId=" + uploadId
+        return "FileUploadResponse: uploadId=" + uploadId
                 + " successMessage=\"" + successMessage + "\" errorMessage=\""
                 + errorMessage + "\".";
     }

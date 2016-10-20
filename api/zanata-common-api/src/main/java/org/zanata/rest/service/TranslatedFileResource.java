@@ -20,6 +20,10 @@
  */
 package org.zanata.rest.service;
 
+import org.codehaus.enunciate.jaxrs.TypeHint;
+import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
+import org.zanata.rest.dto.FileUploadResponse;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -30,23 +34,20 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
-import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.dto.ChunkUploadResponse;
+import java.io.InputStream;
+
+import static org.zanata.rest.service.TranslatedFileResource.SERVICE_PATH;
 
 /**
  * REST Interface for upload and download of translation files.
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Path(TranslatedFileResource.SERVICE_PATH)
-@ExternallyManagedLifecycle
+@Path(SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_OCTET_STREAM })
 @Consumes({ MediaType.APPLICATION_OCTET_STREAM })
 public interface TranslatedFileResource extends RestResource {
-    String SERVICE_PATH = "/file/translation";
+    String SERVICE_PATH = "/file2/translation";
 
     /**
      * Upload a translation file (or file chunk) to Zanata. Allows breaking up files
@@ -60,25 +61,24 @@ public interface TranslatedFileResource extends RestResource {
      * @param projectSlug The project slug where to store the document.
      * @param iterationSlug The project version slug where to store the document.
      * @param localeId The locale (language) for the translation file.
-     * @param docId The full Document identifier.
+     * @param docId The full Document identifier (including file extension)
      * @param merge Indicates whether to merge translations or overwrite all
      *              translations with the contents of the uploaded file.
-     * @param uploadForm The multi-part form body for the file or chunk.
+     * @param fileStream Contents of the file to be uploaded
      * @return A message with information about the upload operation.
      */
     @POST
     @Path("/{projectSlug}/{iterationSlug}/{locale}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces(MediaType.APPLICATION_XML)
     // /file/translation/{projectSlug}/{iterationSlug}/{locale}?docId={docId}&merge={merge}
-    @TypeHint(ChunkUploadResponse.class)
+    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @TypeHint(FileUploadResponse.class)
     Response uploadTranslationFile(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("iterationSlug") String iterationSlug,
             @PathParam("locale") String localeId,
             @QueryParam("docId") String docId,
             @QueryParam("merge") String merge,
-            @MultipartForm DocumentFileUploadForm uploadForm,
+            InputStream fileStream,
             @QueryParam("projectType") String projectType);
 
     /**

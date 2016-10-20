@@ -45,8 +45,10 @@ import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.DocumentType;
 import org.zanata.common.FileTypeInfo;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
+import org.zanata.rest.dto.FileUploadResponse;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.StubbingServerRule;
@@ -56,7 +58,7 @@ import com.sun.jersey.api.client.ClientResponse;
 public class TranslatedFileResourceClientTest {
     private static final Logger log =
             LoggerFactory.getLogger(TranslatedFileResourceClientTest.class);
-    private FileResourceClient client;
+    private TranslatedFileResourceClient client;
 
     @ClassRule
     public static StubbingServerRule
@@ -66,57 +68,8 @@ public class TranslatedFileResourceClientTest {
     public void setUp() throws URISyntaxException {
         RestClientFactory restClientFactory = MockServerTestUtil
                 .createClientFactory(stubbingServerRule.getServerBaseUri());
-        client = new FileResourceClient(restClientFactory);
-    }
-
-    @Test
-    public void testServerAcceptedType() {
-        List<DocumentType> serverAcceptedTypes = client
-                .acceptedFileTypes();
-
-        Set<String> allExtension = new HashSet<String>();
-        for (DocumentType docType : serverAcceptedTypes) {
-            allExtension.addAll(docType.getSourceExtensions());
-        }
-        assertThat(allExtension, Matchers.containsInAnyOrder("dtd", "pot",
-                "txt", "idml", "html", "htm", "odt", "odp", "odg", "ods",
-                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts"));
-    }
-
-    @Test
-    public void testFileTypeInfoList() {
-        List<FileTypeInfo> serverAcceptedTypes = client
-                .fileTypeInfoList();
-
-        Set<String> allExtension = new HashSet<String>();
-        for (FileTypeInfo docType : serverAcceptedTypes) {
-            allExtension.addAll(docType.getSourceExtensions());
-        }
-        assertThat(allExtension, Matchers.containsInAnyOrder("dtd", "pot",
-                "txt", "idml", "html", "htm", "odt", "odp", "odg", "ods",
-                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts"));
-    }
-
-    @Test
-    public
-            void testSourceFileUpload() throws Exception {
-//        client = clientTalkingToRealServer();
-        DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-        File source = loadFileFromClasspath("test-odt.odt");
-        FileInputStream fileInputStream = new FileInputStream(source);
-
-        uploadForm.setFileStream(fileInputStream);
-        uploadForm.setFileType("odt");
-        uploadForm.setHash(calculateFileMD5(source));
-        uploadForm.setFirst(true);
-        uploadForm.setLast(true);
-        uploadForm.setSize(source.length());
-        ChunkUploadResponse uploadResponse = client
-                .uploadSourceFile("about-fedora", "master",
-                        "test.odt",
-                        uploadForm);
-        log.info("response: {}", uploadResponse);
-        assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
+//        client = resteasyClient.target(uri).proxyBuilder(TranslatedFileResource.class);
+        client = new TranslatedFileResourceClient(restClientFactory);
     }
 
     private static File loadFileFromClasspath(String file) {
@@ -125,48 +78,28 @@ public class TranslatedFileResourceClientTest {
     }
 
     @Test
-    public
-            void testTranslationFileUpload() throws Exception {
-//        client = clientTalkingToRealServer();
+    public void testTranslationFileUpload() throws Exception {
         DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
         File source = loadFileFromClasspath("zh-CN/test-odt.odt");
         FileInputStream fileInputStream = new FileInputStream(source);
 
         uploadForm.setFileStream(fileInputStream);
-        uploadForm.setFileType("odt");
-        uploadForm.setHash(calculateFileMD5(source));
-        uploadForm.setFirst(true);
-        uploadForm.setLast(true);
-        uploadForm.setSize(source.length());
-        ChunkUploadResponse uploadResponse = client
-                .uploadTranslationFile("about-fedora", "master",
+//        uploadForm.setFileType("odt");
+        FileUploadResponse uploadResponse = client
+                .uploadTranslatedFile("about-fedora", "master",
                         "zh",
                         "test.odt", "auto",
-                        uploadForm);
+                        ProjectType.File,
+                        fileInputStream);
         log.info("response: {}", uploadResponse);
-        assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
-    }
-
-    @Test
-    public void testDownloadSourceFile() throws IOException {
-        ClientResponse response =
-                client.downloadSourceFile("about-fedora", "master", "pot",
-                        "About-Fedora");
-        assertEquals(200, response.getStatus());
-        InputStream inputStream =
-                response.getEntity(InputStream.class);
-        PoReader2 reader = new PoReader2();
-        Resource resource =
-                reader.extractTemplate(new InputSource(inputStream),
-                        LocaleId.EN_US, "About-Fedora");
-        assertThat(resource.getTextFlows(), Matchers.hasSize(1));
+        assertThat(uploadResponse.getSuccessMessage(), Matchers.notNullValue());
     }
 
     @Test
     public void testDownloadTranslationFile() {
         ClientResponse response =
-                client.downloadTranslationFile("about-fedora", "master", "es",
-                        "po", "About-Fedora");
+                client.downloadTranslatedFile("about-fedora", "master", "es",
+                        "po", "About-Fedora", ProjectType.File);
         assertEquals(200, response.getStatus());
         InputStream inputStream =
                 response.getEntity(InputStream.class);

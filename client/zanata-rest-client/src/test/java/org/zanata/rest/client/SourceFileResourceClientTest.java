@@ -23,6 +23,7 @@ package org.zanata.rest.client;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.zanata.rest.client.ClientUtil.calculateFileMD5;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,6 +39,7 @@ import java.util.Set;
 
 import org.apache.commons.codec.binary.Hex;
 import org.hamcrest.Matchers;
+import org.jboss.resteasy.client.jaxrs.ProxyBuilder;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -48,10 +50,13 @@ import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.DocumentType;
 import org.zanata.common.FileTypeInfo;
 import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
+import org.zanata.rest.dto.FileUploadResponse;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.SourceFileResource;
 import org.zanata.rest.service.StubbingServerRule;
 
 import com.sun.jersey.api.client.ClientResponse;
@@ -59,7 +64,7 @@ import com.sun.jersey.api.client.ClientResponse;
 public class SourceFileResourceClientTest {
     private static final Logger log =
             LoggerFactory.getLogger(SourceFileResourceClientTest.class);
-    private FileResourceClient client;
+    private SourceFileResourceClient client;
 
     @ClassRule
     public static StubbingServerRule
@@ -69,57 +74,8 @@ public class SourceFileResourceClientTest {
     public void setUp() throws URISyntaxException {
         RestClientFactory restClientFactory = MockServerTestUtil
                 .createClientFactory(stubbingServerRule.getServerBaseUri());
-        client = new FileResourceClient(restClientFactory);
-    }
-
-    @Test
-    public void testServerAcceptedType() {
-        List<DocumentType> serverAcceptedTypes = client
-                .acceptedFileTypes();
-
-        Set<String> allExtension = new HashSet<String>();
-        for (DocumentType docType : serverAcceptedTypes) {
-            allExtension.addAll(docType.getSourceExtensions());
-        }
-        assertThat(allExtension, Matchers.containsInAnyOrder("dtd", "pot",
-                "txt", "idml", "html", "htm", "odt", "odp", "odg", "ods",
-                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts"));
-    }
-
-    @Test
-    public void testFileTypeInfoList() {
-        List<FileTypeInfo> serverAcceptedTypes = client
-                .fileTypeInfoList();
-
-        Set<String> allExtension = new HashSet<String>();
-        for (FileTypeInfo docType : serverAcceptedTypes) {
-            allExtension.addAll(docType.getSourceExtensions());
-        }
-        assertThat(allExtension, Matchers.containsInAnyOrder("dtd", "pot",
-                "txt", "idml", "html", "htm", "odt", "odp", "odg", "ods",
-                "srt", "sbt", "sub", "vtt", "properties", "xlf", "ts"));
-    }
-
-    @Test
-    public
-            void testSourceFileUpload() throws Exception {
-//        client = clientTalkingToRealServer();
-        DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-        File source = loadFileFromClasspath("test-odt.odt");
-        FileInputStream fileInputStream = new FileInputStream(source);
-
-        uploadForm.setFileStream(fileInputStream);
-        uploadForm.setFileType("odt");
-        uploadForm.setHash(calculateFileHash(source));
-        uploadForm.setFirst(true);
-        uploadForm.setLast(true);
-        uploadForm.setSize(source.length());
-        ChunkUploadResponse uploadResponse = client
-                .uploadSourceFile("about-fedora", "master",
-                        "test.odt",
-                        uploadForm);
-        log.info("response: {}", uploadResponse);
-        assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
+//        client = resteasyClient.target(uri).proxyBuilder(SourceFileResource.class);
+        client = new SourceFileResourceClient(restClientFactory);
     }
 
     private static File loadFileFromClasspath(String file) {
@@ -128,52 +84,23 @@ public class SourceFileResourceClientTest {
     }
 
     @Test
-    public
-            void testTranslationFileUpload() throws Exception {
-//        client = clientTalkingToRealServer();
-        DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-        File source = loadFileFromClasspath("zh-CN/test-odt.odt");
+    public void testSourceFileUpload() throws Exception {
+        File source = loadFileFromClasspath("test-odt.odt");
         FileInputStream fileInputStream = new FileInputStream(source);
 
-        uploadForm.setFileStream(fileInputStream);
-        uploadForm.setFileType("odt");
-        uploadForm.setHash(calculateFileHash(source));
-        uploadForm.setFirst(true);
-        uploadForm.setLast(true);
-        uploadForm.setSize(source.length());
-        ChunkUploadResponse uploadResponse = client
-                .uploadTranslationFile("about-fedora", "master",
-                        "zh",
-                        "test.odt", "auto",
-                        uploadForm);
+        FileUploadResponse uploadResponse = client
+                .uploadSourceFile("about-fedora", "master",
+                        "test.odt", ProjectType.File,
+                        fileInputStream);
         log.info("response: {}", uploadResponse);
-        assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
-    }
-
-    private String calculateFileHash(File srcFile) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            InputStream fileStream = new FileInputStream(srcFile);
-            try {
-                fileStream = new DigestInputStream(fileStream, md);
-                byte[] buffer = new byte[256];
-                while (fileStream.read(buffer) > 0) {
-                    // continue
-                }
-            } finally {
-                fileStream.close();
-            }
-            return new String(Hex.encodeHex(md.digest()));
-        } catch (NoSuchAlgorithmException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        assertThat(uploadResponse.getSuccessMessage(), Matchers.notNullValue());
     }
 
     @Test
     public void testDownloadSourceFile() throws IOException {
         ClientResponse response =
                 client.downloadSourceFile("about-fedora", "master", "pot",
-                        "About-Fedora");
+                        "About-Fedora", ProjectType.File);
         assertEquals(200, response.getStatus());
         InputStream inputStream =
                 response.getEntity(InputStream.class);
@@ -182,21 +109,6 @@ public class SourceFileResourceClientTest {
                 reader.extractTemplate(new InputSource(inputStream),
                         LocaleId.EN_US, "About-Fedora");
         assertThat(resource.getTextFlows(), Matchers.hasSize(1));
-    }
-
-    @Test
-    public void testDownloadTranslationFile() {
-        ClientResponse response =
-                client.downloadTranslationFile("about-fedora", "master", "es",
-                        "po", "About-Fedora");
-        assertEquals(200, response.getStatus());
-        InputStream inputStream =
-                response.getEntity(InputStream.class);
-        PoReader2 reader = new PoReader2();
-        TranslationsResource translationsResource =
-                reader.extractTarget(new InputSource(inputStream));
-        assertThat(translationsResource.getTextFlowTargets(),
-                Matchers.hasSize(1));
     }
 
 }
