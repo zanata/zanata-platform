@@ -25,26 +25,30 @@ void printNode() {
   println "running on node ${env.NODE_NAME}"
 }
 
+def jobLink() {
+  "<a href=\"${env.BUILD_URL}\">${env.JOB_NAME} #${env.BUILD_NUMBER}</a>"
+}
+
 def notifyStarted() {
-  hipchatSend color: "GRAY", notify: true, message: "STARTED: Job <a href=\"${env.BUILD_URL}\">${env.JOB_NAME} #${env.BUILD_NUMBER}</a>"
+  hipchatSend color: "GRAY", notify: true, message: "STARTED: Job " + jobLink()
 }
 
 def notifyTestResults(def testType) {
   // if tests have failed currentBuild.result will be 'UNSTABLE'
   if (currentBuild.result != null) {
-    hipchatSend color: "YELLOW", notify: true, message: "TESTS FAILED ($testType): Job ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
+    hipchatSend color: "YELLOW", notify: true, message: "TESTS FAILED ($testType): Job " + jobLink()
   } else {
-    hipchatSend color: "GREEN", notify: true, message: "TESTS PASSED ($testType): Job ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
+    hipchatSend color: "GREEN", notify: true, message: "TESTS PASSED ($testType): Job " + jobLink()
   }
 }
 
 def notifySuccessful() {
-  hipchatSend color: "GRAY", notify: true, message: "SUCCESSFUL: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
+  hipchatSend color: "GRAY", notify: true, message: "SUCCESSFUL: Job " + jobLink()
 }
 
 // TODO try-catch build exception and call this:
 def notifyFailed() {
-  hipchatSend color: "RED", notify: true, message: "FAILED: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
+  hipchatSend color: "RED", notify: true, message: "FAILED: Job " + jobLink()
 }
 
 timestamps {
