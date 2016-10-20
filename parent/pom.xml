@@ -188,15 +188,16 @@
     <surefire.version>2.18.1</surefire.version>
     <maven.source.version>2.2.1</maven.source.version>
 
+    <!-- Avoid raw.github.com -->
     <checkstyle.skip>false</checkstyle.skip>
     <!-- When testing checkstyle changes, use -Dcheckstyle.config.location to point to a local file: -->
-    <checkstyle.config.location>https://raw.github.com/zanata/zanata-parent/master/checkstyle.xml</checkstyle.config.location>
+    <checkstyle.config.location>https://raw.githubusercontent.com/zanata/zanata-platform/master/parent/checkstyle.xml</checkstyle.config.location>
     <checkstyle.propertiesLocation />
-    <checkstyle.suppressions.location>https://raw.github.com/zanata/zanata-parent/master/checkstyle-suppressions.xml</checkstyle.suppressions.location>
+    <checkstyle.suppressions.location>https://raw.githubusercontent.com/zanata/zanata-platform/master/parent/checkstyle-suppressions.xml</checkstyle.suppressions.location>
     <checkstyle.suppressionsFileExpression />
     <checkstyle.maven.version>2.17</checkstyle.maven.version>
     <checkstyle.version>7.0</checkstyle.version>
-    <findbugs.excludeFilterFile>https://raw.github.com/zanata/zanata-parent/master/findbugs-filter.xml</findbugs.excludeFilterFile>
+    <findbugs.excludeFilterFile>https://raw.githubusercontent.com/zanata/zanata-platform/master/parent/findbugs-filter.xml</findbugs.excludeFilterFile>
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
     <slf4j.version>1.7.12</slf4j.version>
