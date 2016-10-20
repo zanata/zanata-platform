@@ -1,0 +1,19 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>null</groupId>
+  <artifactId>null</artifactId>
+  <version>0</version>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-maven-plugin</artifactId>
+        <version>3.8.1</version>
+        <configuration>
+          <glossaryFile>translate1.csv</glossaryFile>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
