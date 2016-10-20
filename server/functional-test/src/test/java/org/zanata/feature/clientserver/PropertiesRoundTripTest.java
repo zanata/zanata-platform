@@ -44,6 +44,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.feature.clientserver.ProjectMaintainerTest.MAVEN_PLUGIN;
+import static org.zanata.util.MavenHome.mvn;
 
 /**
  * @author Patrick Huang <a
@@ -85,7 +86,7 @@ public class PropertiesRoundTripTest extends ZanataTestCase {
                 "properties-test", "master", "properties", Lists
                 .newArrayList("pl"));
         List<String> output = client.callWithTimeout(tempDir,
-                "mvn -B " + MAVEN_PLUGIN + ":push -Dzanata.srcDir=. " +
+                mvn() + " -B " + MAVEN_PLUGIN + ":push -Dzanata.srcDir=. " +
                 "-Dzanata.userConfig=" + userConfigPath);
 
         assertThat(client.isPushSuccessful(output)).isTrue();
@@ -99,7 +100,7 @@ public class PropertiesRoundTripTest extends ZanataTestCase {
                 .saveAsFuzzyAtRow(1);
 
         output = client.callWithTimeout(tempDir,
-                "mvn -e -B " + MAVEN_PLUGIN + ":pull " +
+                mvn() + " -e -B " + MAVEN_PLUGIN + ":pull " +
                 "-Dzanata.userConfig=" + userConfigPath);
 
         assertThat(client.isPushSuccessful(output)).isTrue();
@@ -117,7 +118,7 @@ public class PropertiesRoundTripTest extends ZanataTestCase {
 
         // push again
         client.callWithTimeout(tempDir,
-                "mvn -e -B " + MAVEN_PLUGIN + ":push " +
+                mvn() + " -e -B " + MAVEN_PLUGIN + ":push " +
                 "-Dzanata.pushType=trans -Dzanata.srcDir=. -Dzanata.userConfig="
                 + userConfigPath);
 
