@@ -184,13 +184,14 @@ def integrationTests(def appserver) {
                    -DstaticAnalysis=false \
                    -Dcheckstyle.skip \
                    -Dappserver=$appserver \
+                   -DskipUnitTests \
                    -Dmaven.test.failure.ignore \
                    -Dmaven.main.skip \
                    -Dgwt.compiler.skip \
-                   -Dwebdriver.display=${env.DISPLAY}
-                   -Dcargo.debug.jvm.args=
-                   -Dwebdriver.type=chrome
-                   -Dwebdriver.chrome.driver=/opt/chromedriver
+                   -Dwebdriver.display=${env.DISPLAY} \
+                   -Dcargo.debug.jvm.args= \
+                   -Dwebdriver.type=chrome \
+                   -Dwebdriver.chrome.driver=/opt/chromedriver \
 -DexcludeFrontend \
       """
 // FIXME put this back
