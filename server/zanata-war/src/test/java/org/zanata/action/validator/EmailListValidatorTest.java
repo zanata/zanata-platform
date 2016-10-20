@@ -1,23 +1,24 @@
 package org.zanata.action.validator;
 
 
-import org.junit.Before;
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
+import org.jglue.cdiunit.AdditionalClasses;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.zanata.test.CdiUnitRunner;
 
+import javax.inject.Inject;
 import javax.validation.ConstraintValidatorContext;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(CdiUnitRunner.class)
+@AdditionalClasses(EmailValidator.class)
 public class EmailListValidatorTest {
 
+    @Inject
     private EmailListValidator validator;
     private ConstraintValidatorContext context = null;
-
-    @Before
-    public void create() {
-        validator = new EmailListValidator();
-        validator.initialize(null);
-    }
 
     @Test
     public void nullIsValid() throws Exception {
