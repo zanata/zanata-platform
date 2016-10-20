@@ -11,6 +11,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.zanata.common.LocaleId;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({ "username", "email", "name", "imageUrl", "languageTeams"})
@@ -21,14 +22,14 @@ public class User implements Serializable {
     private String email;
     private String name;
     private String imageUrl;
-    private List<String> languageTeams;
+    private List<LocaleId> languageTeams;
 
     public User() {
         this(null, null, null, null, null);
     }
 
     public User(String username, String email, String name,
-        String imageUrl, List<String> languageTeams) {
+        String imageUrl, List<LocaleId> languageTeams) {
         this.username = username;
         this.email = email;
         this.name = name;
@@ -77,11 +78,12 @@ public class User implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    public List<String> getLanguageTeams() {
+    @JsonProperty("languageTeams")
+    public List<LocaleId> getLanguageTeams() {
         return languageTeams;
     }
 
-    public void setLanguageTeams(List<String> languageTeams) {
+    public void setLanguageTeams(List<LocaleId> languageTeams) {
         this.languageTeams = languageTeams;
     }
 
