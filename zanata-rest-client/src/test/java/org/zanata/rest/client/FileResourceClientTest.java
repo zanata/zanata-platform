@@ -54,6 +54,7 @@ import org.zanata.rest.service.StubbingServerRule;
 
 import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.junit.Assert.*;
+import static org.zanata.rest.client.ClientUtil.calculateFileMD5;
 
 public class FileResourceClientTest {
     private static final Logger log =
@@ -109,7 +110,7 @@ public class FileResourceClientTest {
 
         uploadForm.setFileStream(fileInputStream);
         uploadForm.setFileType("odt");
-        uploadForm.setHash(calculateFileHash(source));
+        uploadForm.setHash(calculateFileMD5(source));
         uploadForm.setFirst(true);
         uploadForm.setLast(true);
         uploadForm.setSize(source.length());
@@ -136,7 +137,7 @@ public class FileResourceClientTest {
 
         uploadForm.setFileStream(fileInputStream);
         uploadForm.setFileType("odt");
-        uploadForm.setHash(calculateFileHash(source));
+        uploadForm.setHash(calculateFileMD5(source));
         uploadForm.setFirst(true);
         uploadForm.setLast(true);
         uploadForm.setSize(source.length());
@@ -147,25 +148,6 @@ public class FileResourceClientTest {
                         uploadForm);
         log.info("response: {}", uploadResponse);
         assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
-    }
-
-    private String calculateFileHash(File srcFile) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            InputStream fileStream = new FileInputStream(srcFile);
-            try {
-                fileStream = new DigestInputStream(fileStream, md);
-                byte[] buffer = new byte[256];
-                while (fileStream.read(buffer) > 0) {
-                    // continue
-                }
-            } finally {
-                fileStream.close();
-            }
-            return new String(Hex.encodeHex(md.digest()));
-        } catch (NoSuchAlgorithmException | IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Test

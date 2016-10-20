@@ -23,19 +23,15 @@ package org.zanata.rest.service;
 
 import static org.zanata.rest.service.MockFileResource.sampleResource;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.dto.ChunkUploadResponse;
+import org.zanata.rest.dto.FileUploadResponse;
 import org.zanata.rest.dto.resource.Resource;
 
 /**
@@ -46,10 +42,10 @@ public class MockSourceFileResource implements SourceFileResource {
 
     @Override
     public Response uploadSourceFile(String projectSlug, String iterationSlug,
-            String docId, @MultipartForm DocumentFileUploadForm uploadForm, ProjectType projectType) {
+            String docId, InputStream fileStream, ProjectType projectType) {
         return Response.status(Response.Status.CREATED).entity(
-                new ChunkUploadResponse(1L, 1, false,
-                        "Upload of new source document successful."))
+                new FileUploadResponse(1L, "Upload of new source document successful: "+
+                        projectSlug + "/" + iterationSlug + "/" + docId + ":" + projectType))
                 .build();
     }
 

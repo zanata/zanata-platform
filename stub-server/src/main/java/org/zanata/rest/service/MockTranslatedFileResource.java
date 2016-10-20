@@ -24,18 +24,14 @@ package org.zanata.rest.service;
 import static org.zanata.rest.service.MockFileResource.sampleResource;
 import static org.zanata.rest.service.MockFileResource.sampleTransResource;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.InputStream;
 
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
-import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.adapter.po.PoWriter2;
-import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.dto.ChunkUploadResponse;
+import org.zanata.rest.dto.FileUploadResponse;
 
 /**
  * @author Sean Flanigan <a
@@ -46,10 +42,10 @@ public class MockTranslatedFileResource implements TranslatedFileResource {
     @Override
     public Response uploadTranslationFile(String projectSlug,
             String iterationSlug, String localeId, String docId, String merge,
-            @MultipartForm DocumentFileUploadForm uploadForm, String projectType) {
+            InputStream fileStream, String projectType) {
         return Response.ok(
-                new ChunkUploadResponse(1L, 1, false,
-                        "Translations uploaded successfully"))
+                new FileUploadResponse(1L, "Upload of translation document successful: "+
+                        projectSlug + "/" + iterationSlug + "/" + docId + ":" + projectType + ":" + localeId))
                 .build();
     }
 
