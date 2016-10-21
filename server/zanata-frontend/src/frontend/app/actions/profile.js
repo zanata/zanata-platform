@@ -1,24 +1,27 @@
 import { createAction } from 'redux-actions'
 import { CALL_API } from 'redux-api-middleware'
-import { isEmpty, includes } from 'lodash'
+import { isEmpty, includes, forEach } from 'lodash'
 import utilsDate from '../utils/DateHelper'
 
 import {
   getJsonHeaders,
-  buildAPIRequest
+  buildAPIRequest,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE
 } from './common'
 
 export const FILTER_UPDATE = 'FILTER_UPDATE'
 export const DATE_RANGE_UPDATE = 'DATE_RANGE_UPDATE'
 export const SELECT_DAY_UPDATE = 'SELECT_DAY_UPDATE'
 
-export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST'
-export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS'
-export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE'
-
 export const USER_STATS_REQUEST = 'USER_STATS_REQUEST'
 export const USER_STATS_SUCCESS = 'USER_STATS_SUCCESS'
 export const USER_STATS_FAILURE = 'USER_STATS_FAILURE'
+
+export const GET_LOCALE_REQUEST = 'GET_LOCALE_REQUEST'
+export const GET_LOCALE_SUCCESS = 'GET_LOCALE_SUCCESS'
+export const GET_LOCALE_FAILURE = 'GET_LOCALE_FAILURE'
 
 export const updateDateRange = createAction(DATE_RANGE_UPDATE)
 export const updateFilter = createAction(FILTER_UPDATE)
@@ -61,7 +64,38 @@ const loadUserStats = (username, dateRange) => {
   }
 }
 
+<<<<<<< HEAD
+const getLocaleDetail = (localeId) => {
+  const endpoint = window.config.baseUrl + window.config.apiRoot +
+    '/locales/locale/' + localeId
+
+  const apiTypes = [
+    GET_LOCALE_REQUEST,
+    {
+      type: GET_LOCALE_SUCCESS,
+      payload: (action, state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && includes(contentType, 'json')) {
+          return res.json().then((json) => {
+            return json
+          })
+        }
+      },
+      meta: {
+        receivedAt: Date.now()
+      }
+    },
+    GET_LOCALE_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
+}
+
+const getUserInfo = (dispatch, username, dateRangeOption) => {
+=======
 const getUserInfo = (dispatch, username, dateRange) => {
+>>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
   const endpoint = window.config.baseUrl + window.config.apiRoot + '/user' +
     (isEmpty(username) ? '' : '/' + username)
 
@@ -73,7 +107,14 @@ const getUserInfo = (dispatch, username, dateRange) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
+<<<<<<< HEAD
+            forEach(json.languageTeams, function (localeId) {
+              dispatch(getLocaleDetail(localeId))
+            })
+            dispatch(loadUserStats(username, dateRangeOption))
+=======
             dispatch(loadUserStats(username, dateRange))
+>>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
             return json
           })
         }

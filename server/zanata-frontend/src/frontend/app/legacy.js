@@ -27,6 +27,7 @@ import { Nav } from './components'
 import { Icons } from 'zanata-ui'
 import WebFont from 'webfontloader'
 import './styles/atomic.css'
+import './styles/style.less'
 import { isJsonString } from './utils/StringUtils'
 import { getContextPath } from './utils/UrlHelper'
 /**

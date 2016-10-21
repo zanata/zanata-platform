@@ -8,12 +8,21 @@ import {
   View,
   ScrollView,
   Heading,
+<<<<<<< HEAD
+  Icon
+=======
   Icon,
   Button
+>>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
 } from 'zanata-ui'
+import { Button } from 'react-bootstrap'
 import TeaserList from './TeaserList'
 import { TextInput } from '../../components'
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
 import {
   searchTextChanged,
   searchPageInitialLoad,
@@ -46,6 +55,9 @@ const searchViewTheme = {
     w: 'W(100%)'
   }
 }
+<<<<<<< HEAD
+
+=======
 const iconClasses = {
   ai: 'Ai(c)',
   c: 'C(neutral)',
@@ -65,6 +77,7 @@ const buttonTheme = {
     m: 'Mstart(rq)'
   }
 }
+>>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
 const scrollViewTheme = {
   base: {
     ai: 'Ai(c)'
@@ -186,9 +199,13 @@ class Explore extends Component {
         <Base tagName='header' theme={headerClasses}>
           <Heading level='1' theme={headingTheme}>Search</Heading>
           <View theme={searchViewTheme}>
-            <Icon name='search' atomic={iconClasses} />
+            <Icon name='search' theme='icons' />
             <TextInput
+<<<<<<< HEAD
+              className='form-group'
+=======
               className='TextInput'
+>>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
               id='explore_search2'
@@ -200,7 +217,7 @@ class Explore extends Component {
               onChange={handleSearchTextChange}
             />
             <Button
-              theme={buttonTheme} disabled={isEmpty(searchText)}
+              className='explore-can' disabled={isEmpty(searchText)}
               onClick={(e) => { this.handleClearSearch() }}>
               Cancel
             </Button>

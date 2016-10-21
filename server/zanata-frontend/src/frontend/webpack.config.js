@@ -8,26 +8,24 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
-    preLoaders: [
-      {
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: 'eslint'
-      }
-    ],
     loaders: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         include: path.join(__dirname, 'app'),
         loader: 'atomic-loader?configPath=' + __dirname +
-          '/atomicCssConfig.js' +
-          '!babel?presets[]=react,presets[]=stage-0,presets[]=es2015'
+        '/atomicCssConfig.js' +
+        '!babel?presets[]=react,presets[]=stage-0,presets[]=es2015'
       },
       {
         test: /\.css$/,
         loader: 'style!css!autoprefixer?browsers=last 2 versions'
-      }
+      },
+      {
+        test: /\.less$/,
+        exclude: /node_modules/,
+        loader: "style!css!autoprefixer!less"
+      },
     ]
   },
   plugins: [
@@ -36,7 +34,7 @@ module.exports = {
     new webpack.NoErrorsPlugin()
   ],
   resolve: {
-    extensions: ['', '.js', '.jsx', '.json', '.css']
+    extensions: ['', '.js', '.jsx', '.json', '.css', '.less']
   },
   node: {
     __dirname: true
