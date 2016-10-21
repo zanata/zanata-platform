@@ -23,6 +23,7 @@ package org.zanata.client;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.commons.codec.Charsets;
@@ -58,11 +59,17 @@ public class TestUtils {
     }
 
     public static File fileFromClasspath(String relativePath) {
-        URL url = loadFromClasspath(relativePath);
-        return new File(url.getFile());
+        try {
+            URL url = loadFromClasspath(relativePath);
+            File file = new File(url.toURI());
+            assert file.exists() : "bad File from classpath URL: " + url;
+            return file;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static URL loadFromClasspath(String relativePath) {
+    public static URL loadFromClasspath(String relativePath) {
         URL resource =
                 Thread.currentThread().getContextClassLoader()
                         .getResource(relativePath);

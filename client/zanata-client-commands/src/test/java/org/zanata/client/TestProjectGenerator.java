@@ -58,20 +58,19 @@ public class TestProjectGenerator {
     }
 
     private static File findTestProjectsRoot() {
-        URL testProjects = Thread.currentThread().getContextClassLoader()
-                .getResource("testProjects");
-        Preconditions.checkArgument(testProjects != null,
-                "can not find test projects");
-        return new File(testProjects.getFile());
+        try {
+            URL testProjects = Thread.currentThread().getContextClassLoader()
+                    .getResource("testProjects");
+            Preconditions.checkArgument(testProjects != null,
+                    "can not find test projects");
+            return new File(testProjects.toURI());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static File[] listAllSubDirectories(File projectsRoot) {
-        return projectsRoot.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String name) {
-                return dir.isDirectory();
-            }
-        });
+        return projectsRoot.listFiles((dir, name) -> dir.isDirectory());
     }
 
     /**
