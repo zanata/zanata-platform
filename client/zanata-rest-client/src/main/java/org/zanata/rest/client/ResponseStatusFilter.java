@@ -71,6 +71,8 @@ public class ResponseStatusFilter implements ClientResponseFilter {
             if (responseStatus == Response.Status.UNAUTHORIZED) {
                 throw new NotAuthorizedException("Incorrect username/password");
             } else if (responseStatus == Response.Status.NOT_FOUND) {
+                // potentially we may continue when 404 happens so we want to release the connection
+                responseContext.getEntityStream().close();
                 throw new NotFoundException(msg);
             } else if (statusCode < 500) {
                 throw new ClientErrorException(msg, statusCode);

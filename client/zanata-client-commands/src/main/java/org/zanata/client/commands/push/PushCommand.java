@@ -16,6 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.client.ResponseProcessingException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -43,6 +44,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Iterables.all;
@@ -69,7 +71,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
     {
         strategies.put(PROJECT_TYPE_UTF8_PROPERTIES, new PropertiesStrategy(
-            PropWriter.CHARSET.UTF8));
+                PropWriter.CHARSET.UTF8));
         strategies.put(PROJECT_TYPE_PROPERTIES, new PropertiesStrategy());
         strategies.put(PROJECT_TYPE_GETTEXT, new GettextPushStrategy());
         strategies.put(PROJECT_TYPE_PUBLICAN, new GettextDirStrategy());
@@ -80,7 +82,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                 new OfflinePoStrategy(getClientFactory()
                         .getSourceDocResourceClient(getOpts().getProj(),
                                 getOpts()
-                .getProjectVersion())));
+                                        .getProjectVersion())));
     }
 
     public PushCommand(PushOptions opts) {
@@ -363,17 +365,17 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
         if (strat.isTransOnly()) {
             switch (getOpts().getPushType()) {
-            case Source:
-                log.error("You are trying to push source only, but source is not available for this project type.\n");
-                log.info("Nothing to do. Aborting\n");
-                return;
-            case Both:
-                log.warn("Source is not available for this project type. Source will not be pushed.\n");
-                confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
-                break;
-            case Trans:
-                confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
-                break;
+                case Source:
+                    log.error("You are trying to push source only, but source is not available for this project type.\n");
+                    log.info("Nothing to do. Aborting\n");
+                    return;
+                case Both:
+                    log.warn("Source is not available for this project type. Source will not be pushed.\n");
+                    confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
+                    break;
+                case Trans:
+                    confirmWithUser("This will overwrite existing TRANSLATIONS on the server.\n");
+                    break;
             }
         } else {
             if (pushTrans()) {
@@ -431,7 +433,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                 // Copy Trans after pushing (only when pushing source)
                 if (getOpts().getCopyTrans()
                         && (getOpts().getPushType() == PushPullType.Both || getOpts()
-                                .getPushType() == PushPullType.Source)) {
+                        .getPushType() == PushPullType.Source)) {
                     this.copyTransForDocument(qualifiedDocName);
                 }
             } catch (Exception e) {
@@ -483,7 +485,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                                     return input == null
                                             || input.getContents().isEmpty()
                                             || all(input.getContents(),
-                                                    blankStringPredicate);
+                                            blankStringPredicate);
                                 }
                             });
             log.debug(
@@ -568,35 +570,35 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
             while (waitForCompletion) {
                 switch (status.getStatusCode()) {
-                case Failed:
-                    throw new RuntimeException(
-                            "Failed while pushing document: "
-                                    + status.getMessages());
+                    case Failed:
+                        throw new RuntimeException(
+                                "Failed while pushing document: "
+                                        + status.getMessages());
 
-                case Finished:
-                    waitForCompletion = false;
-                    break;
+                    case Finished:
+                        waitForCompletion = false;
+                        break;
 
-                case Running:
-                    ConsoleUtils.setProgressFeedbackMessage("Pushing ...");
-                    break;
+                    case Running:
+                        ConsoleUtils.setProgressFeedbackMessage("Pushing ...");
+                        break;
 
-                case Waiting:
-                    ConsoleUtils
-                            .setProgressFeedbackMessage("Waiting to start ...");
-                    break;
+                    case Waiting:
+                        ConsoleUtils
+                                .setProgressFeedbackMessage("Waiting to start ...");
+                        break;
 
-                case NotAccepted:
-                    // try to submit the process again
-                    status =
-                            asyncProcessClient
-                                    .startSourceDocCreationOrUpdate(docUri,
-                                            getOpts().getProj(), getOpts()
-                                                    .getProjectVersion(),
-                                            srcDoc, extensions, false);
-                    ConsoleUtils
-                            .setProgressFeedbackMessage("Waiting for other clients ...");
-                    break;
+                    case NotAccepted:
+                        // try to submit the process again
+                        status =
+                                asyncProcessClient
+                                        .startSourceDocCreationOrUpdate(docUri,
+                                                getOpts().getProj(), getOpts()
+                                                        .getProjectVersion(),
+                                                srcDoc, extensions, false);
+                        ConsoleUtils
+                                .setProgressFeedbackMessage("Waiting for other clients ...");
+                        break;
                 }
 
                 // Wait before retrying
@@ -688,39 +690,39 @@ public class PushCommand extends PushPullCommand<PushOptions> {
 
             while (waitForCompletion) {
                 switch (status.getStatusCode()) {
-                case Failed:
-                    throw new RuntimeException(
-                            "Failed while pushing document translations: "
-                                    + status.getMessages());
+                    case Failed:
+                        throw new RuntimeException(
+                                "Failed while pushing document translations: "
+                                        + status.getMessages());
 
-                case Finished:
-                    waitForCompletion = false;
-                    break;
+                    case Finished:
+                        waitForCompletion = false;
+                        break;
 
-                case Running:
-                    ConsoleUtils.setProgressFeedbackMessage(status
-                            .getPercentageComplete() + "%");
-                    break;
+                    case Running:
+                        ConsoleUtils.setProgressFeedbackMessage(status
+                                .getPercentageComplete() + "%");
+                        break;
 
-                case Waiting:
-                    ConsoleUtils
-                            .setProgressFeedbackMessage("Waiting to start ...");
-                    break;
+                    case Waiting:
+                        ConsoleUtils
+                                .setProgressFeedbackMessage("Waiting to start ...");
+                        break;
 
-                case NotAccepted:
-                    // try to submit the process again
-                    status =
-                            asyncProcessClient
-                                    .startTranslatedDocCreationOrUpdate(docUri,
-                                            getOpts().getProj(), getOpts()
-                                                    .getProjectVersion(),
-                                            new LocaleId(locale.getLocale()),
-                                            targetDoc, extensions,
-                                            getOpts().getMergeType(),
-                                            getOpts().isMyTrans());
-                    ConsoleUtils
-                            .setProgressFeedbackMessage("Waiting for other clients ...");
-                    break;
+                    case NotAccepted:
+                        // try to submit the process again
+                        status =
+                                asyncProcessClient
+                                        .startTranslatedDocCreationOrUpdate(docUri,
+                                                getOpts().getProj(), getOpts()
+                                                        .getProjectVersion(),
+                                                new LocaleId(locale.getLocale()),
+                                                targetDoc, extensions,
+                                                getOpts().getMergeType(),
+                                                getOpts().isMyTrans());
+                        ConsoleUtils
+                                .setProgressFeedbackMessage("Waiting for other clients ...");
+                        break;
                 }
 
                 // Wait before retrying
@@ -775,15 +777,16 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             copyTransStatus =
                     this.copyTransClient.getCopyTransStatus(getOpts()
                             .getProj(), getOpts().getProjectVersion(), docName);
-        } catch (NotFoundException nfe) {
+        } catch (ResponseProcessingException e) {
             // 404 - Probably because of an old server
-            if (getClientFactory()
+            if (e.getResponse().getStatus() == 404 && getClientFactory()
                     .compareToServerVersion("1.8.0-SNAPSHOT") < 0) {
                 log.warn("Copy Trans not started (Incompatible server version.)");
                 return;
             } else {
                 throw new RuntimeException(
-                        "Could not invoke copy trans. The service was not available (404)");
+                        "Could not invoke copy trans. The service returned (" + e.getResponse().getStatus() + ")",
+                        Throwables.getRootCause(e));
             }
         } catch (Exception failure) {
             if (failure.getCause() != null) {

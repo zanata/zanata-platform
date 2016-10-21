@@ -11,6 +11,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -304,8 +305,8 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             // only then use the cached ETag
             if (transFile.exists()
                     && Long.toString(transFile.lastModified())
-                            .equals(eTagCacheEntry
-                                    .getLocalFileTime())) {
+                    .equals(eTagCacheEntry
+                            .getLocalFileTime())) {
                 eTag = eTagCacheEntry.getServerETag();
             }
         }
@@ -315,9 +316,12 @@ public class PullCommand extends PushPullCommand<PullOptions> {
             transResponse = transDocResourceClient.getTranslations(docUri,
                     locale, strat.getExtensions(),
                     createSkeletons, eTag);
-        } catch (NotFoundException e) {
+        } catch (ResponseProcessingException e) {
             // ignore 404 (no translation yet for specified
             // document)
+            if (e.getResponse().getStatus() != 404) {
+                throw e;
+            }
             if (!createSkeletons) {
                 log.info(
                         "No translations found in locale {} for document {}",
@@ -353,13 +357,13 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                                 createSkeletons, null);
                 // rewrite the target document
                 writeTargetDoc(strat, localDocName, locMapping,
-                    doc, transResponse.readEntity(TranslationsResource.class),
-                    transResponse.getStringHeaders()
-                        .getFirst(HttpHeaders.ETAG));
+                        doc, transResponse.readEntity(TranslationsResource.class),
+                        transResponse.getStringHeaders()
+                                .getFirst(HttpHeaders.ETAG));
             }
         } else {
             TranslationsResource targetDoc =
-                transResponse.readEntity(TranslationsResource.class);
+                    transResponse.readEntity(TranslationsResource.class);
 
             // Write the target document
             writeTargetDoc(strat, localDocName, locMapping,
