@@ -20,7 +20,7 @@ void withPorts(Closure wrapped) {
 }
 
 void printNodeInfo() {
-  sh "env"
+  sh "env|sort"
   sh returnStatus: true, script: 'which chromedriver google-chrome'
   sh returnStatus: true, script: 'ls -l /opt/chromedriver /opt/google/chrome/google-chrome'
   println "running on node ${env.NODE_NAME}"
@@ -50,6 +50,38 @@ def notifySuccessful() {
 // TODO try-catch build exception and call this:
 def notifyFailed() {
   hipchatSend color: "RED", notify: true, message: "FAILED: Job " + jobLink()
+}
+
+// Based on http://stackoverflow.com/a/37688740/14379
+String truncateAtWord(String content, int maxLength) {
+  def ellipsis = "…"
+  // Is content > than the maxLength?
+  if (content.size() > maxLength) {
+    def bi = java.text.BreakIterator.getWordInstance()
+    bi.setText(content);
+    def cutoff = bi.preceding(maxLength - ellipsis.length())
+    // if too short when cutting by words, ignore words
+    if (cutoff < maxLength / 2) {
+      cutoff = maxLength - ellipsis.length()
+    }
+    // Truncate
+    return content.substring(0, cutoff) + ellipsis
+  } else {
+    return content
+  }
+}
+
+if (env.CHANGE_ID) {
+  def abbrTitle = truncateAtWord(env.CHANGE_TITLE, 50)
+  def prDesc = """<a title=\"${env.CHANGE_TITLE}\" href=\"${env.CHANGE_URL}\">PR #${env.CHANGE_ID}</a>:
+    |$abbrTitle
+    |⭆${env.CHANGE_TARGET}""".stripMargin()
+
+  currentBuild.description = prDesc
+  def job = manager.build.project
+//  def job = Jenkins.instance.getItemByFullName(env.JOB_NAME)
+  job.setDescription(prDesc)
+  job.save()
 }
 
 timestamps {
