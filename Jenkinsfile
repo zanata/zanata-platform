@@ -152,8 +152,6 @@ timestamps {
       }
 
       // TODO build and archive binaries with unit tests, then in parallel, unarchive and run:
-      //   arquillian tests
-      //   eap, wildfly functional tests
       //   mysql 5.6, functional tests (on wildfly)
       //   and (later) mariadb 10 functional tests (on wildfly)
 
@@ -169,11 +167,7 @@ timestamps {
                      -Dchromefirefox \
                      -DskipFuncTests \
                      -DskipArqTests \
--DexcludeFrontend \
         """
-// TODO remove -DexcludeFrontend (just for faster testing)
-
-// TODO build zanata-test-war but don't run functional tests (need to modify zanata-test-war pom)
 
         def testFiles = '**/target/surefire-reports/TEST-*.xml'
         setJUnitPrefix("UNIT", testFiles)
@@ -184,7 +178,6 @@ timestamps {
         notifyTestResults("UNIT")
 
         archive '**/target/*.war'
-//        archive '**/target/*.jar, **/target/*.war'
       }
 
       stage('stash') {
@@ -193,7 +186,8 @@ timestamps {
     }
   }
 
-  stage('Parallel tests') {
+  // TODO limit parallel runs of integration tests
+  stage('Integration tests') {
     def tasks = [:]
     tasks['Integration tests: WILDFLY'] = {
       node {
@@ -251,10 +245,10 @@ def integrationTests(def appserver) {
                    -Dcargo.debug.jvm.args= \
                    -Dwebdriver.type=chrome \
                    -Dwebdriver.chrome.driver=/opt/chromedriver \
--DexcludeFrontend \
+                   -DallFuncTests \\
       """
+// TODO avoid building frontend again, but we want it in the reactor
 // FIXME put this back
-//                   -DallFuncTests \
       // TODO add -Dmaven.war.skip (but we need zanata-test-war)
       // -Dfunctional-test - probably obsolete
 
