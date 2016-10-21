@@ -8,21 +8,12 @@ import {
   View,
   ScrollView,
   Heading,
-<<<<<<< HEAD
   Icon
-=======
-  Icon,
-  Button
->>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
 } from 'zanata-ui'
 import { Button } from 'react-bootstrap'
 import TeaserList from './TeaserList'
 import { TextInput } from '../../components'
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
 import {
   searchTextChanged,
   searchPageInitialLoad,
@@ -55,29 +46,7 @@ const searchViewTheme = {
     w: 'W(100%)'
   }
 }
-<<<<<<< HEAD
 
-=======
-const iconClasses = {
-  ai: 'Ai(c)',
-  c: 'C(neutral)',
-  fz: 'Fz(ms1) Fz(ms2)--sm',
-  jc: 'Jc(c)',
-  h: 'H(100%)',
-  l: 'Start(rq) Start(rh)--md',
-  m: 'Mstart(re) Mstart(0)--md',
-  pos: 'Pos(a)',
-  t: 'T(0)',
-  ta: 'Ta(c)',
-  w: 'W(ms1) W(ms2)--md'
-}
-const buttonTheme = {
-  base: {
-    c: 'C(pri)',
-    m: 'Mstart(rq)'
-  }
-}
->>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
 const scrollViewTheme = {
   base: {
     ai: 'Ai(c)'
@@ -201,14 +170,9 @@ class Explore extends Component {
           <View theme={searchViewTheme}>
             <Icon name='search' theme='icons' />
             <TextInput
-<<<<<<< HEAD
-              className='form-group'
-=======
-              className='TextInput'
->>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
-              id='explore_search2'
+              id='explore_search'
               type='search'
               placeholder='Search Zanata…'
               accessibilityLabel='Search Zanata'

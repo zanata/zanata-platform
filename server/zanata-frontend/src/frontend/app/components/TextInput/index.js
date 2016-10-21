@@ -103,11 +103,7 @@ class TextInput extends Component {
       'aria-label': accessibilityLabel,
       autoComplete: autoComplete && 'on',
       autoFocus,
-<<<<<<< HEAD
       className: 'textInput',
-=======
-      className: 'TextInput',
->>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
       onBlur: onBlur && ::this._onBlur,
       onChange: (onChange || onChangeText) && ::this._onChange,
       onFocus: ::this._onFocus,
@@ -120,16 +116,16 @@ class TextInput extends Component {
 
     if (multiline) {
       const propsMultiline = {
-        ...propsCommon,
+          ...propsCommon,
         maxRows: maxNumberOfLines || numberOfLines,
         minRows: numberOfLines
-      }
+    }
       return <TextareaAutosize {...propsMultiline} />
     } else {
       const propsSingleline = {
-        ...propsCommon,
+          ...propsCommon,
         type
-      }
+    }
       return <input {...propsSingleline} />
     }
   }
@@ -140,10 +136,7 @@ TextInput.propTypes = {
    * HTML 'id' attribute
    */
   id: PropTypes.string,
-<<<<<<< HEAD
 
-=======
->>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
   /**
    * HTML 'aria-label' attribute
    */

@@ -64,7 +64,6 @@ const loadUserStats = (username, dateRange) => {
   }
 }
 
-<<<<<<< HEAD
 const getLocaleDetail = (localeId) => {
   const endpoint = window.config.baseUrl + window.config.apiRoot +
     '/locales/locale/' + localeId
@@ -93,9 +92,6 @@ const getLocaleDetail = (localeId) => {
 }
 
 const getUserInfo = (dispatch, username, dateRangeOption) => {
-=======
-const getUserInfo = (dispatch, username, dateRange) => {
->>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
   const endpoint = window.config.baseUrl + window.config.apiRoot + '/user' +
     (isEmpty(username) ? '' : '/' + username)
 
@@ -107,14 +103,10 @@ const getUserInfo = (dispatch, username, dateRange) => {
         const contentType = res.headers.get('Content-Type')
         if (contentType && includes(contentType, 'json')) {
           return res.json().then((json) => {
-<<<<<<< HEAD
             forEach(json.languageTeams, function (localeId) {
               dispatch(getLocaleDetail(localeId))
             })
             dispatch(loadUserStats(username, dateRangeOption))
-=======
-            dispatch(loadUserStats(username, dateRange))
->>>>>>> 07e2205ea91bc94f7b331dc29db3f2b11986d89d
             return json
           })
         }
