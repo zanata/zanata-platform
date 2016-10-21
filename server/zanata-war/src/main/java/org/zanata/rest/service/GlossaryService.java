@@ -52,6 +52,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GlossaryFileService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.GlossaryFileServiceImpl;
+import org.zanata.service.impl.LocaleServiceImpl;
 
 @RequestScoped
 @Named("glossaryService")
@@ -97,8 +98,8 @@ public class GlossaryService implements GlossaryResource {
                 qualifiedName);
 
         GlossaryLocaleInfo srcGlossaryLocale =
-            new GlossaryLocaleInfo(generateLocaleDetails(srcLocale),
-                entryCount);
+            new GlossaryLocaleInfo(
+                LocaleServiceImpl.convertToDTO(srcLocale, ""), entryCount);
 
         Map<LocaleId, Integer> transMap =
             glossaryDAO
@@ -113,7 +114,8 @@ public class GlossaryService implements GlossaryResource {
             .filter(
                 locale -> !locale.getLocaleId().equals(srcLocale.getLocaleId()))
             .forEach(locale -> {
-                LocaleDetails localeDetails = generateLocaleDetails(locale);
+                LocaleDetails localeDetails =
+                    LocaleServiceImpl.convertToDTO(locale, "");
                 int count = transMap.containsKey(locale.getLocaleId()) ?
                     transMap.get(locale.getLocaleId()) : 0;
 
@@ -413,11 +415,6 @@ public class GlossaryService implements GlossaryResource {
     private HLocale getSourceLocale() {
         LocaleId srcLocaleId = LocaleId.EN_US;
         return localeServiceImpl.getByLocaleId(srcLocaleId);
-    }
-
-    private LocaleDetails generateLocaleDetails(HLocale locale) {
-        return new LocaleDetails(locale.getLocaleId(),
-            locale.retrieveDisplayName(), "");
     }
 
     private List<GlossarySortField> convertToSortField(
