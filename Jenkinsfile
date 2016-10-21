@@ -73,13 +73,14 @@ String truncateAtWord(String content, int maxLength) {
 
 if (env.CHANGE_ID) {
   def abbrTitle = truncateAtWord(env.CHANGE_TITLE, 50)
-  def prDesc = """<a title=\"${env.CHANGE_TITLE}\" href=\"${env.CHANGE_URL}\">PR #${env.CHANGE_ID}</a>:
+  def prDesc = """<a title=\"${env.CHANGE_TITLE}\" href=\"${env.CHANGE_URL}\">PR #${env.CHANGE_ID} by ${env.CHANGE_AUTHOR}</a>:
     |$abbrTitle
-    |⭆${env.CHANGE_TARGET}""".stripMargin()
+    |⭆ ${env.CHANGE_TARGET}""".stripMargin()
+  // ideally we would show eg sourceRepo/featureBranch ⭆ master
+  // but there is no env var with that info
 
-  currentBuild.description = prDesc
+  //currentBuild.description = prDesc
   def job = manager.build.project
-//  def job = Jenkins.instance.getItemByFullName(env.JOB_NAME)
   job.setDescription(prDesc)
   job.save()
 }
