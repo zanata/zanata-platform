@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
 import {
   Page,
-  Base,
   View,
   ScrollView,
   Heading,
@@ -21,44 +20,6 @@ import {
   SIZE_PER_PAGE
 } from '../../actions/explore'
 
-const headerClasses = {
-  ai: 'Ai(c)',
-  bxsh: 'Bxsh(shw)',
-  bxz: 'Bxz(cb)', // For chrome bug that doesn't keep height of container
-  d: 'D(f)',
-  fz: 'Fz(ms1)--md',
-  jc: 'Jc(c)',
-  p: 'Py(rq) Px(rh) P(r1)--sm',
-  pos: 'Pos(r)'
-}
-const headingTheme = {
-  base: {
-    hidden: 'Hidden'
-  }
-}
-const searchViewTheme = {
-  base: {
-    ai: 'Ai(c)',
-    c: 'C(dark)',
-    fld: '',
-    pos: 'Pos(r)',
-    maw: 'Maw(r32)',
-    w: 'W(100%)'
-  }
-}
-
-const scrollViewTheme = {
-  base: {
-    ai: 'Ai(c)'
-  }
-}
-const contentViewContainerTheme = {
-  base: {
-    maw: 'Maw(r32)',
-    m: 'Mx(a)',
-    w: 'W(100%)'
-  }
-}
 /**
  * Root component for Explore page
  */
@@ -165,9 +126,9 @@ class Explore extends Component {
     return (
       <Page>
         <Helmet title='Search' />
-        <Base tagName='header' theme={headerClasses}>
-          <Heading level='1' theme={headingTheme}>Search</Heading>
-          <View theme={searchViewTheme}>
+        <Base tagName='header' className='headerClasses'>
+          <Heading level='1' className='headingTheme'>Search</Heading>
+          <View className='searchViewTheme'>
             <Icon name='search' theme='icons' />
             <TextInput
               maxLength={100}
@@ -187,8 +148,8 @@ class Explore extends Component {
             </Button>
           </View>
         </Base>
-        <ScrollView theme={scrollViewTheme}>
-          <View theme={contentViewContainerTheme}>
+        <ScrollView className='scrollViewTheme'>
+          <View className='contentViewContainerTheme'>
             {content}
           </View>
         </ScrollView>
