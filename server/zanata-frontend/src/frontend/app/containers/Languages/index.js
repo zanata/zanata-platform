@@ -79,7 +79,8 @@ class Languages extends Component {
           <View theme={contentViewContainerTheme}>
             <div className='row clearfix' id='admin-lang'>
               <div className='row-height'>
-                <div className='contentx clearfix center-block'>
+                <div className='contentx clearfix center-block'
+                  id='languages-form'>
                   <h2>
                     Languages {!loading &&
                       <span className='badge'>{totalCount}</span>}
@@ -87,6 +88,7 @@ class Languages extends Component {
                   {permission.canAddLocale &&
                     <div>
                       <Button className='btn-primary'
+                        id='btn-language-add-new'
                         onClick={handleOnDisplayNewLanguage}>
                         <Icon name='plus'
                           atomic={{m: 'Mend(re) Va(sub)'}}
@@ -158,7 +160,7 @@ class Languages extends Component {
                   </div>
                   {!loading &&
                     <div className='left-form tablepadding col-xs-12'>
-                      <table className='table'>
+                      <table className='table' id='languages-table'>
                         <thead>
                           <tr className='hidden'>
                             <th>Language</th>

@@ -101,8 +101,10 @@ class NewLanguageModal extends Component {
 
   renderSuggestion (suggestion) {
     return (
-      <span>
-        <span className='Fw(400)'>{suggestion.displayName}</span>
+      <span name='new-language-displayName'>
+        <span className='Fw(400)'>
+          {suggestion.displayName}
+        </span>
         <span className='C(muted) Fz(msn1) Mstart(eq)'>
           {suggestion.localeId}
         </span>
@@ -133,6 +135,8 @@ class NewLanguageModal extends Component {
       value: query
     }
 
+    const showPluralFormsWarning = isEmpty(searchResults) && !isEmpty(query)
+
     return (
       <Modal
         show={show}
@@ -145,6 +149,7 @@ class NewLanguageModal extends Component {
             <FormGroup validationState={!validFields ? 'error' : undefined}>
               <ControlLabel>Language Code</ControlLabel>
               <Autosuggest
+                name='new-language-code'
                 suggestions={searchResults}
                 onSuggestionSelected={this.onSuggestionSelected}
                 getSuggestionValue={this.getSuggestionValue}
@@ -158,6 +163,7 @@ class NewLanguageModal extends Component {
               <ControlLabel>Name</ControlLabel>
               <FormControl type='text'
                 maxLength={100}
+                id='new-language-name'
                 onChange={(e) => this.updateField('displayName', e)}
                 placeholder='Display name'
                 value={details.displayName} />
@@ -166,19 +172,29 @@ class NewLanguageModal extends Component {
             <FormGroup>
               <ControlLabel>Native Name</ControlLabel>
               <FormControl type='text'
+                id='new-language-nativeName'
                 maxLength={100}
                 onChange={(e) => this.updateField('nativeName', e)}
                 placeholder='Native name'
                 value={details.nativeName} />
             </FormGroup>
-            <FormGroup>
-              <ControlLabel>Plural forms</ControlLabel>
-              <a href='http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms' // eslint-disable-line max-len
-                target='_blank'>
-                <Icon name='info'
-                  atomic={{m: 'Mstart(re) Va(sub)'}}
-                  title='Help' />
-              </a>
+            <FormGroup validationState={showPluralFormsWarning
+              ? 'warning' : undefined}>
+              <ControlLabel>
+                Plural forms
+                <a href='http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms' // eslint-disable-line max-len
+                  target='_blank'>
+                  <Icon name='info'
+                    atomic={{m: 'Mstart(re) Va(sub)'}}
+                    title='Help' />
+                </a>
+                {showPluralFormsWarning &&
+                  <div className='Fz(msn1)'
+                    id='new-language-pluralforms-warning'>
+                    No plural information available. Assuming no plurals.
+                  </div>
+                }
+              </ControlLabel>
               <FormControl
                 type='text'
                 maxLength={255}
@@ -188,6 +204,7 @@ class NewLanguageModal extends Component {
             </FormGroup>
             <FormGroup>
               <Checkbox
+                id='chk-new-language-enabled'
                 onChange={() => this.updateCheckbox('enabledByDefault')}
                 checked={details.enabledByDefault}>
                 Enabled by default
@@ -202,7 +219,7 @@ class NewLanguageModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <div className='bootstrap Ta(end)'>
-            <Button className='btn-left'
+            <Button id='btn-new-language-cancel' className='btn-left'
               disabled={saving}
               onClick={() => this.handleCancel()}>
               Close
@@ -210,6 +227,7 @@ class NewLanguageModal extends Component {
             <Button
               disabled={saving ||
                 (isEmpty(details.localeId) && isEmpty(query))}
+              id='btn-new-language-save'
               bsStyle='primary'
               onClick={() => this.validateDetails()}>
               Save

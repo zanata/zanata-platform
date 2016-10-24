@@ -71,7 +71,8 @@ class Notification extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Row theme={{ base: {j: 'Jc(c)'} }}>
-            <ButtonRound type='primary' onClick={() => this.clearMessage()}>
+            <ButtonRound id='btn-notification-close'
+              type='primary' onClick={() => this.clearMessage()}>
               Close
             </ButtonRound>
           </Row>
