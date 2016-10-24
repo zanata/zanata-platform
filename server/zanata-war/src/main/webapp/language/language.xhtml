@@ -263,7 +263,7 @@
                         data-toggle="modal" onclick="return false;"
                         data-target="#contactCoordinatorDialog">
                         #{msgs['jsf.contactLanguageTeamCoordinator']}
-                        <i class="i i--plus i__item__icon"></i>
+                        <i class="i i--add i__item__icon"></i>
                       </a>
                     </li>
                     <ui:fragment rendered="#{!contactLanguageTeamMembersAction.getMembers().isEmpty() and identity.hasPermission(languageAction.locale, 'manage-language-team')}">
@@ -272,7 +272,7 @@
                           data-toggle="modal" onclick="return false;"
                           data-target="#contactMembersDialog">
                           #{msgs['jsf.contactLanguageTeamMembers']}
-                          <i class="i i--plus i__item__icon"></i>
+                          <i class="i i--add i__item__icon"></i>
                         </a>
                       </li>
                     </ui:fragment>

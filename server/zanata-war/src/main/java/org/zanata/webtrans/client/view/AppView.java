@@ -419,7 +419,7 @@ public class AppView extends Composite implements AppDisplay,
 
     public interface NotificationTemplate extends SafeHtmlTemplates {
         @Template("<li class='{0} message--removable js-message-removable'>{1}" +
-                "<a href='#' class='message__remove js-message-remove'><i class='i i--remove'></i></a>" +
+                "<a href='#' class='message__remove js-message-remove'><i class='i i--cancel'></i></a>" +
                 "</li>")
         SafeHtml listItem(String messageStyle, SafeHtml message);
     }

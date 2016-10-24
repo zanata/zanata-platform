@@ -57,6 +57,6 @@
     <g:Anchor ui:field="details"
       styleName="{style.inline} l--push-h-half" />
     <g:Anchor ui:field="closeMessage"
-      styleName="{style.inline} i i--remove i--large l--float-right" />
+      styleName="{style.inline} i i--cancel i--large l--float-right" />
   </g:HTMLPanel>
 </ui:UiBinder>
