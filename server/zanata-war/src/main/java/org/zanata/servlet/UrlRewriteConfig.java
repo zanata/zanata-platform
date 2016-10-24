@@ -71,6 +71,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/{path}").to("/a/index.xhtml"))
                 .where("path").matches(anyOf(
                         "explore",
+                        "glossary",
                         // There is a 302 redirect from profile to profile/
                         // I don't know why it does it, but it causes 403 Forbidden
                         // unless there is also a rewrite for profile/ here
@@ -98,7 +99,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
 
                 .addRule(Join.path("/error/").to("/error.xhtml"))
                 .addRule(Join.pathNonBinding("/error/{path}").to("/error/{path}.xhtml"))
-                .addRule(Join.path("/glossary/").to("/glossary/view.xhtml"))
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}").to("/iteration/view.xhtml"))
 
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}/{section}").to("/iteration/view.xhtml"))
