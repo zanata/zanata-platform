@@ -47,7 +47,7 @@
                 #{msgs['jsf.project.DisableLanguages.inProgress.label']}
               </span>
             </f:facet>
-            <i class="i i--remove"></i>
+            <i class="i i--cancel"></i>
             #{msgs['jsf.languages.DisableLanguages.short']}
           </zanata:ajax-command-link>
 
@@ -119,7 +119,7 @@
                             styleClass="dropdown__content__link button--link i__item--left"
                             onclick="showLocaleAliasInput('#{locale.localeId}', '#{projectHome.getLocaleAlias(locale)}'); return false;"
                             value="#">
-                            <i class="i i--plus i__item__icon"></i>
+                            <i class="i i--add i__item__icon"></i>
                             #{msgs['jsf.languages.AddAlias']}
                           </h:outputLink>
                         </li>
