@@ -47,7 +47,7 @@ import org.zanata.rest.dto.TransUnitStatus;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.editor.service.UserService;
-import org.zanata.search.FilterConstraints;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;

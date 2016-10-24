@@ -27,7 +27,7 @@ import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.editor.service.UserService;
-import org.zanata.search.FilterConstraints;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService;
 import org.zanata.webtrans.shared.model.DocumentId;

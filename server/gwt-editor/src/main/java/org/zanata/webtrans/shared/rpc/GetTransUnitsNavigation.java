@@ -20,9 +20,9 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
-import org.zanata.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import com.google.common.base.Objects;
 

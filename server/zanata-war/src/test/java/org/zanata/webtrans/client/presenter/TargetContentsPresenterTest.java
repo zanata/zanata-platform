@@ -80,7 +80,6 @@ import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
@@ -671,7 +670,7 @@ public class TargetContentsPresenterTest {
 
         verify(display).clearTranslatorList();
 
-        InOrder inOrder = inOrder(editorTranslators);
+        InOrder inOrder = Mockito.inOrder(editorTranslators);
         inOrder.verify(editorTranslators).updateTranslator(display,
                 selectedTU.getId());
         verifyNoMoreInteractions(editorTranslators);

@@ -22,13 +22,12 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
-import org.zanata.webtrans.server.rpc.PreviewReplaceTextHandler;
 import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
 
 /**
  *
  * @author David Mason, damason@redhat.com
- * @see PreviewReplaceTextHandler
+ * @see org.zanata.webtrans.server.rpc.PreviewReplaceTextHandler
  *
  */
 public class PreviewReplaceTextResult implements DispatchResult {

@@ -2,7 +2,6 @@ package org.zanata.webtrans.client.view;
 
 import java.util.Date;
 
-import org.zanata.ui.input.TextInput;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.Resources;
 import org.zanata.webtrans.client.resources.UiMessages;

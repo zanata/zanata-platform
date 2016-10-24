@@ -23,7 +23,7 @@ package org.zanata.service;
 import java.util.List;
 
 import org.zanata.model.HTextFlow;
-import org.zanata.search.FilterConstraints;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 

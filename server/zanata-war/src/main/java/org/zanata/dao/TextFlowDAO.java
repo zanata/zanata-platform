@@ -21,8 +21,6 @@
 package org.zanata.dao;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -32,16 +30,13 @@ import org.hibernate.transform.ResultTransformer;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.inject.Named;
-import org.zanata.common.ContentState;
-import org.zanata.common.LocaleId;
+
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.search.FilterConstraintToQuery;
-import org.zanata.search.FilterConstraints;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -207,7 +202,7 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
      *            max result
      * @return a list of HTextFlow that matches the constraint.
      * @see org.zanata.service.impl.TextFlowSearchServiceImpl#findTextFlows(org.zanata.webtrans.shared.model.WorkspaceId,
-     *      org.zanata.search.FilterConstraints)
+     *      FilterConstraints)
      */
     public List<HTextFlow> getTextFlowByDocumentIdWithConstraints(
             DocumentId documentId, HLocale hLocale,
