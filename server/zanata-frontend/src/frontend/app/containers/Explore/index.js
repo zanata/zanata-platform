@@ -2,10 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import {
-  Icon
-} from 'zanata-ui'
-import { Button, Grid, Row, Col, Clearfix } from 'react-bootstrap'
+import { Button, Col } from 'react-bootstrap'
 import TeaserList from './TeaserList'
 import { TextInput } from '../../components'
 import {
@@ -124,14 +121,12 @@ class Explore extends Component {
         <div className='headerClasses'>
           <div className='headingTheme' level='1'></div>
           <div className='view searchViewTheme'>
-            <Icon name='search' className='icons' />
+            <i className="i icons i--search"></i>
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
               id='explore_search'
               type='search'
-              bsStyle='form-group'
-              className='LineClamp'
               placeholder='Search Zanata…'
               accessibilityLabel='Search Zanata'
               defaultValue={searchText}
