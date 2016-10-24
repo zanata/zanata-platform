@@ -21,6 +21,8 @@
 
 package org.zanata.client.commands.pull;
 
+import java.io.File;
+
 import org.zanata.client.commands.PushPullOptions;
 import org.zanata.client.commands.PushPullType;
 
@@ -45,4 +47,6 @@ public interface PullOptions extends PushPullOptions {
     boolean isContinueAfterError();
 
     int getMinDocPercent();
+
+    File getCacheDir();
 }

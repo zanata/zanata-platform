@@ -21,6 +21,8 @@
 
 package org.zanata.client.commands.pull;
 
+import java.io.File;
+
 import org.kohsuke.args4j.Option;
 import org.zanata.client.commands.AbstractPushPullOptionsImpl;
 import org.zanata.client.commands.BooleanValueHandler;
@@ -52,6 +54,7 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
     private boolean purgeCache = DEFAULT_PURGE_CACHE;
     private boolean continueAfterError = DEFAULT_CONTINUE_AFTER_ERROR;
     private int minDocPercent = 0;
+    private File cacheDir = new File(".");
 
     @Override
     public ZanataCommand initCommand() {
@@ -199,5 +202,15 @@ public class PullOptionsImpl extends AbstractPushPullOptionsImpl<PullOptions>
             "Default is " + DEFAULT_PURGE_CACHE + ".")
     public void setPurgeCache(boolean purgeCache) {
         this.purgeCache = purgeCache;
+    }
+
+    @Option(name = "--cache-dir", metaVar = "DIR", usage = "The base directory for storing zanata cache files. Default is current directory.")
+    public void setCacheDir(File cacheDir) {
+        this.cacheDir = cacheDir;
+    }
+
+    @Override
+    public File getCacheDir() {
+        return this.cacheDir;
     }
 }
