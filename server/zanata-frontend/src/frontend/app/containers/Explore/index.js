@@ -5,10 +5,9 @@ import { isEmpty, debounce } from 'lodash'
 import {
   Icon
 } from 'zanata-ui'
-import { Button } from 'react-bootstrap'
+import { Button, Grid, Row, Col, Clearfix } from 'react-bootstrap'
 import TeaserList from './TeaserList'
 import { TextInput } from '../../components'
-
 import {
   searchTextChanged,
   searchPageInitialLoad,
@@ -120,28 +119,30 @@ class Explore extends Component {
     }
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
-      <div className='page' id='explore'>
+    <div className='page' id='explore'>
         <Helmet title='Search'/>
         <div className='headerClasses'>
           <div className='headingTheme' level='1'></div>
-          <div className='View searchViewTheme'>
+          <div className='view searchViewTheme'>
             <Icon name='search' className='icons' />
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
               id='explore_search'
               type='search'
+              bsStyle='form-group'
+              className='LineClamp'
               placeholder='Search Zanata…'
               accessibilityLabel='Search Zanata'
               defaultValue={searchText}
               onKeyDown={(e) => { this.handleKeyDown(e) }}
               onChange={handleSearchTextChange}
             />
-            <ButtonLink
-              className='explore-can' disabled={isEmpty(searchText)}
+            <Button
+              bsStyle='link' disabled={isEmpty(searchText)}
               onClick={(e) => { this.handleClearSearch() }}>
               Cancel
-            </ButtonLink>
+            </Button>
           </div>
         </div>
         <div className='scrollViewTheme'>
