@@ -83,7 +83,9 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
         this.modulePrefix =
                 opts.getEnableModules() ? getOpts().getCurrentModule()
                         + opts.getModuleSuffix() : "";
-        this.loadETagCache();
+        if (opts instanceof PullOptions) {
+            this.loadETagCache(((PullOptions) opts).getCacheDir());
+        }
         sourceDocResourceClient =
                 getClientFactory().getSourceDocResourceClient(opts.getProj(),
                         opts.getProjectVersion());
@@ -217,7 +219,7 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
         }
     }
 
-    protected void loadETagCache() {
+    protected void loadETagCache(File cacheDir) {
         try {
             String location =
                     ".zanata-cache" + File.separator + "etag-cache.xml";
@@ -226,14 +228,14 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
             }
             eTagCache =
                     ETagCacheReaderWriter.readCache(new FileInputStream(
-                            location));
+                            new File(cacheDir, location)));
         } catch (Exception e) {
             // could not read for some reason, use a new one
             eTagCache = new ETagCache();
         }
     }
 
-    protected void storeETagCache() {
+    protected void storeETagCache(File cacheDir) {
         try {
             String location =
                     ".zanata-cache" + File.separator + "etag-cache.xml";
@@ -241,12 +243,12 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
                 location = modulePrefix + File.separator + location;
             }
 
-            File targetFile = new File(location);
+            File targetFile = new File(cacheDir, location);
             if (!targetFile.exists()) {
                 PathUtil.makeDirs(targetFile.getParentFile());
             }
             ETagCacheReaderWriter.writeCache(this.eTagCache,
-                    new FileOutputStream(location));
+                    new FileOutputStream(targetFile));
         } catch (IOException e) {
             log.warn("Could not create Zanata ETag cache file. Will proceed without it.");
         }
@@ -289,11 +291,11 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
             LocaleList locales) {
         String[] localesOnServer = new String[locales.size()];
         for (int i = 0; i < locales.size(); i++) {
-             localesOnServer[i] = locales.get(i).getLocale();
+            localesOnServer[i] = locales.get(i).getLocale();
         }
         return statsClient
-                    .getStatistics(getOpts().getProj(),
-                            getOpts().getProjectVersion(), true, false, localesOnServer);
+                .getStatistics(getOpts().getProj(),
+                        getOpts().getProjectVersion(), true, false, localesOnServer);
     }
 
     /**
@@ -332,11 +334,11 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
             log.debug("{} for locale {} is translated {}%", localDocName,
                     serverLocale, optionalStats.get()
                             .get(localDocName).get(serverLocale)
-                    .getTranslatedPercent());
+                            .getTranslatedPercent());
         }
         return !optionalStats.isPresent()
                 || optionalStats.get().get(localDocName).get(serverLocale)
-                        .isAboveThreshold(minDocPercent);
+                .isAboveThreshold(minDocPercent);
     }
 
     protected static class TranslatedPercent {

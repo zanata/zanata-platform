@@ -11,6 +11,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
@@ -260,7 +261,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                     }
 
                     // write the cache
-                    super.storeETagCache();
+                    super.storeETagCache(getOpts().getCacheDir());
                 }
 
             } catch (RuntimeException e) {
