@@ -136,6 +136,7 @@
             </logger>
             <!-- Disable some startup warnings triggered by third-party jars -->
             <logger category="org.jboss.as.server.deployment">
+                <level name="DEBUG"/>
                 <filter-spec value="not(any( match(&quot;JBAS015960&quot;), match(&quot;JBAS015893&quot;) ))"/>
             </logger>
             <!-- Disable WARN about GWT's org.hibernate.validator.ValidationMessages -->
@@ -153,6 +154,10 @@
             <!-- Disable WARN: "Queue with name '...' has already been registered" -->
             <logger category="org.richfaces.log.Components">
                 <level name="ERROR"/>
+            </logger>
+            <logger category="org.jboss.weld">
+                <filter-spec value="match(&quot;.*Catching.*&quot;)"/>
+                <level name="DEBUG" />
             </logger>
             <!-- Enable if you want to log all HTTP requests to server.log: -->
             <!--<logger category="org.zanata.requests">-->

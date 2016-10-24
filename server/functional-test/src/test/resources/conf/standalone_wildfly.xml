@@ -141,7 +141,12 @@
       </logger>
       <!-- Disable WARN: "JMS API was found on the classpath..." -->
       <logger category="org.richfaces.log.Application">
+        <level name="DEBUG"/>
         <filter-spec value="not( match(&quot;JMS API was found on the classpath&quot;) )"/>
+      </logger>
+      <logger category="org.jboss.weld">
+        <filter-spec value="match(&quot;Catching&quot;)"/>
+        <level name="DEBUG"/>
       </logger>
       <!-- Disable WARN: "Queue with name '...' has already been registered" -->
       <logger category="org.richfaces.log.Components">
