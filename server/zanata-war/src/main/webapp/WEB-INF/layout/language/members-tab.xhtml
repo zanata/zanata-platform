@@ -15,7 +15,7 @@
             data-toggle="modal"
             data-target="#searchUserDialog"
             title="#{msgs['jsf.AddTeamMember']}">
-            <i class="i i--plus"></i>
+            <i class="i i--add"></i>
           </a>
         </ui:fragment>
       </div>
@@ -64,7 +64,7 @@
               data-toggle="modal" onclick="return false;"
               data-target="#searchUserDialog">
               #{msgs['jsf.AddTeamMember']}
-              <i class="i i--plus i__item__icon"></i>
+              <i class="i i--add i__item__icon"></i>
             </a>
           </p>
         </ui:fragment>
@@ -96,7 +96,7 @@
                         action="#{languageAction.removeMembership(member)}"
                         execute="@this" oncomplete="refreshMembersForm()"
                         styleClass="i__item--right txt--danger">
-                        <i class="i i--remove i__item__icon"></i>
+                        <i class="i i--cancel i__item__icon"></i>
                       </a4j:commandLink>
                     </li>
                   </ul>
