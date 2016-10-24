@@ -119,7 +119,7 @@ class Explore extends Component {
       <div className='page' id='explore'>
         <Helmet title='Search' />
         <div className='headerClasses'>
-          <div className='headingTheme' level='1'></div>
+          <h1 className='headingTheme hidden' level='1'>Search</h1>
           <div className='view searchViewTheme'>
             <i className='i icons i--search'></i>
             <TextInput
