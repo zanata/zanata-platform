@@ -8,14 +8,21 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
+    preLoaders: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'eslint'
+      }
+    ],
     loaders: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         include: path.join(__dirname, 'app'),
         loader: 'atomic-loader?configPath=' + __dirname +
-        '/atomicCssConfig.js' +
-        '!babel?presets[]=react,presets[]=stage-0,presets[]=es2015'
+          '/atomicCssConfig.js' +
+          '!babel?presets[]=react,presets[]=es2015,presets[]=stage-0'
       },
       {
         test: /\.css$/,

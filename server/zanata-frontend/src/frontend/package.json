@@ -59,6 +59,7 @@
     "moment-range": "2.2.0",
     "normalizr": "2.1.0",
     "react": "0.14.8",
+    "react-autosuggest": "^6.0.4",
     "react-bootstrap": "0.30.3",
     "react-chartjs": "0.4.0",
     "react-date-range": "0.2.4",
