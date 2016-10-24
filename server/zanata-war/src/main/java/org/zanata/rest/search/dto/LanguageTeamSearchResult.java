@@ -24,6 +24,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.zanata.common.LocaleId;
+import org.zanata.model.HLocale;
+import org.zanata.rest.dto.LocaleDetails;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -33,12 +36,22 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 public class LanguageTeamSearchResult extends SearchResult {
 
     @Getter @Setter
-    private String locale;
+    private LocaleDetails localeDetails;
 
     @Getter @Setter
     private long memberCount;
 
     public LanguageTeamSearchResult() {
         this.setType(SearchResultType.LanguageTeam);
+    }
+
+    public LanguageTeamSearchResult(HLocale locale) {
+        this.setType(SearchResultType.LanguageTeam);
+        this.setId(locale.getLocaleId().getId());
+        this.localeDetails = new LocaleDetails(locale.getLocaleId(),
+                locale.retrieveDisplayName(), null, locale.retrieveNativeName(),
+                locale.isActive(), locale.isEnabledByDefault(),
+                locale.getPluralForms());
+        this.memberCount = locale.getMembers().size();
     }
 }

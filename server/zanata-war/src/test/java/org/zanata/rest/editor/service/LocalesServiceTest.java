@@ -12,11 +12,15 @@ import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cdi.StaticProducer;
 import org.zanata.jpa.FullText;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.servlet.annotations.SessionId;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.UrlUtil;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.ws.rs.core.Response;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -35,13 +39,23 @@ public class LocalesServiceTest extends ZanataDbunitJpaTest implements
     @Inject
     private LocalesService localesService;
 
+    @Inject
+    private ZanataIdentity identity;
+
+    @Produces @SessionId String sessionId = "";
+
+    @Produces @Mock
+    private UrlUtil urlUtil;
+
     @Produces
     public Session getSession() {
         return super.getSession();
     }
 
-    @Produces @FullText @Mock
-    private FullTextEntityManager fullTextEntityManager;
+    @Produces @Mock
+    private EntityManager entityManager;
+
+    @Produces @Mock @FullText FullTextEntityManager fullTextEntityManager;
 
     /**
      * Implement this in a subclass.
@@ -67,7 +81,7 @@ public class LocalesServiceTest extends ZanataDbunitJpaTest implements
     @Test
     @InRequestScope
     public void testGetLocales() {
-        response = localesService.get();
+        response = localesService.get("test", null, 1, 1);
         assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
     }
 

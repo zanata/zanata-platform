@@ -3,6 +3,7 @@ import { Provider } from 'react-redux'
 import { Router, Route, Redirect } from 'react-router'
 import App from '../containers/App'
 import Glossary from '../containers/Glossary'
+import Languages from '../containers/Languages'
 import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
 import { View } from 'zanata-ui'
@@ -21,6 +22,7 @@ export default class Root extends Component {
             <Route component={App} >
               <Route path='explore' component={Explore} />
               <Route path='glossary' component={Glossary} />
+              <Route path='languages' component={Languages} />
               <Route path='profile/:username' component={UserProfile} />
               <Route path='project/:projectSlug/glossary'
                 component={Glossary} />

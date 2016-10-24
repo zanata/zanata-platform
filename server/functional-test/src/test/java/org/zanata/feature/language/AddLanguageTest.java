@@ -68,8 +68,7 @@ public class AddLanguageTest extends ZanataTestCase {
                 .as("The language is not listed");
 
         languagesPage = languagesPage
-                .clickMoreActions()
-                .addNewLanguage()
+                .clickAddNewLanguage()
                 .enterSearchLanguage(language)
                 .expectPluralsWarning()
                 .saveLanguage();
@@ -81,6 +80,8 @@ public class AddLanguageTest extends ZanataTestCase {
         assertThat(languagesPage.languageIsEnabledByDefault(language))
                 .isTrue()
                 .as("The language is enabled by default");
+
+        languagesPage.closeNotification();
 
         List<String> enabledLocaleList = languagesPage
                 .goToHomePage()
@@ -111,8 +112,7 @@ public class AddLanguageTest extends ZanataTestCase {
                 .as("The language is not listed");
 
         languagesPage = languagesPage
-                .clickMoreActions()
-                .addNewLanguage()
+                .clickAddNewLanguage()
                 .enterSearchLanguage(language)
                 .expectPluralsWarning()
                 .disableLanguageByDefault()
@@ -124,6 +124,8 @@ public class AddLanguageTest extends ZanataTestCase {
         assertThat(languagesPage.languageIsEnabledByDefault(language))
                 .isFalse()
                 .as("The language is disabled by default");
+
+        languagesPage.closeNotification();
 
         ProjectLanguagesTab projectLanguagesTab = languagesPage.goToHomePage()
                 .gotoExplore()
@@ -151,25 +153,19 @@ public class AddLanguageTest extends ZanataTestCase {
                 .as("The language is not listed");
 
         AddLanguagePage addLanguagePage = languagesPage
-                .clickMoreActions()
-                .addNewLanguage()
-                .enterSearchLanguage("ru-RU")
-                .selectSearchLanguage("ru-RU");
+                .clickAddNewLanguage()
+                .enterSearchLanguage(language)
+                .selectSearchLanguage(language);
 
-        Map<String, String> languageInfo = addLanguagePage.getLanguageDetails();
-
-        assertThat(languageInfo.get("Name"))
+        assertThat(addLanguagePage.getNewLanguageName())
                 .isEqualTo("Russian (Russia)")
                 .as("The name is correct");
-        assertThat(languageInfo.get("Native Name"))
+        assertThat(addLanguagePage.getNewLanguageNativeName())
                 .isEqualTo("русский (Россия)")
                 .as("The native name is correct");
-        assertThat(languageInfo.get("Language Code"))
-                .isEqualTo("ru")
+        assertThat(addLanguagePage.getNewLanguageCode())
+                .isEqualTo(language)
                 .as("The language is correct");
-        assertThat(languageInfo.get("Country Code"))
-                .isEqualTo("RU")
-                .as("The country code is correct");
     }
 
 }

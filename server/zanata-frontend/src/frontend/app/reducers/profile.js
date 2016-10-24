@@ -2,20 +2,24 @@ import { handleActions } from 'redux-actions'
 import {ContentStates} from '../constants/Options'
 import utilsDate from '../utils/DateHelper'
 import {
-  LOAD_USER_REQUEST,
-  LOAD_USER_SUCCESS,
-  LOAD_USER_FAILURE,
   USER_STATS_REQUEST,
   USER_STATS_SUCCESS,
   USER_STATS_FAILURE,
   DATE_RANGE_UPDATE,
   FILTER_UPDATE,
-  SELECT_DAY_UPDATE
+  SELECT_DAY_UPDATE,
+  GET_LOCALE_REQUEST,
+  GET_LOCALE_SUCCESS,
+  GET_LOCALE_FAILURE
 } from '../actions/profile'
 import {
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE,
   SEVERITY,
   CLEAR_MESSAGE
 } from '../actions/common'
+import { keyBy } from 'lodash'
 
 /**
  *
@@ -166,9 +170,16 @@ export default handleActions({
     }
   },
   [LOAD_USER_SUCCESS]: (state, action) => {
+    const languageTeams =
+      keyBy(action.payload.languageTeams, function (localeId) {
+        return localeId
+      })
     return {
       ...state,
-      user: action.payload
+      user: {
+        ...action.payload,
+        languageTeams: languageTeams
+      }
     }
   },
   [LOAD_USER_FAILURE]: (state, action) => {
@@ -238,6 +249,41 @@ export default handleActions({
       selectedDay: selectedDay,
       wordCountsForSelectedDayFilteredByContentState:
         filterByContentStateAndDay(matrix, contentStateOption, selectedDay)
+    }
+  },
+  [GET_LOCALE_REQUEST]: (state, action) => {
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        loading: true
+      }
+    }
+  },
+  [GET_LOCALE_SUCCESS]: (state, action) => {
+    const details = action.payload
+    return {
+      ...state,
+      user: {
+        ...state.user,
+        loading: false,
+        languageTeams: {
+          ...state.user.languageTeams,
+          [details.localeId]: details
+        }
+      }
+    }
+  },
+  [GET_LOCALE_FAILURE]: (state, action) => {
+    return {
+      ...state,
+      loading: false,
+      notification: {
+        severity: SEVERITY.ERROR,
+        message:
+        'We were unable load user information. ' +
+        'Please refresh this page and try again.'
+      }
     }
   }
 },
