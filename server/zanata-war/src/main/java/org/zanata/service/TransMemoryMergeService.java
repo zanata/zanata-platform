@@ -24,12 +24,7 @@ import java.util.List;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 
-import org.zanata.model.HLocale;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
-
-import com.google.common.base.Optional;
 
 public interface TransMemoryMergeService {
 

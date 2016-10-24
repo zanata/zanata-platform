@@ -636,6 +636,12 @@
         <version>${project.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>gwt-editor</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- zanata api -->
       <dependency>
         <groupId>org.zanata</groupId>
@@ -1834,12 +1840,12 @@
             <goals><goal>run</goal></goals>
             <configuration combine.self="override">
               <target xmlns:unless="ant:unless" unless="skipITs">
-                <echo message="appserver=${appserver}" />
-                <echo message="cargo.installation=${cargo.installation}" />
-                <echo message="appserver.home=${appserver.home}" />
-                <echo message="DISPLAY=${env.DISPLAY}" />
-                <echo message="WARNING: 'appserver' property must be set unless skipping integration tests" unless:set="appserver" />
-                <echo message="WARNING: 'cargo.installation' property is null. You might need to set the env var EAP7_URL" unless:set="cargo.installation" />
+                <echo message="appserver=${appserver}"/>
+                <echo message="cargo.installation=${cargo.installation}"/>
+                <echo message="appserver.home=${appserver.home}"/>
+                <echo message="DISPLAY=${env.DISPLAY}"/>
+                <echo message="WARNING: 'appserver' property must be set unless skipping integration tests" unless:set="appserver"/>
+                <echo message="WARNING: 'cargo.installation' property is null. You might need to set the env var EAP7_URL" unless:set="cargo.installation"/>
               </target>
             </configuration>
           </execution>
@@ -2230,5 +2236,6 @@
     <module>zanata-test-war</module>
     <module>functional-test</module>
     <!-- <module>zanata-dist</module> -->
+    <module>gwt-editor</module>
   </modules>
 </project>

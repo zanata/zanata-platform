@@ -18,7 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.search;
+package org.zanata.webtrans.shared.search;
 
 //TODO May want to add document(someDocument) to these constraints
 //so that only one search method is needed on the interface.

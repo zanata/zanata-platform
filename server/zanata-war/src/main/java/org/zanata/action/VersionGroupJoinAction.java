@@ -249,6 +249,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
         projectVersions.clear();
     }
 
+    // TODO this is using a GWT shared class and should change to something else
     public final class SelectableVersion extends ProjectIterationId {
         @Getter
         @Setter

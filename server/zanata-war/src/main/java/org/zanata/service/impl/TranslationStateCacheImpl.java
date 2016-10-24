@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.annotations.VisibleForTesting;
-
 import org.infinispan.manager.CacheContainer;
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;

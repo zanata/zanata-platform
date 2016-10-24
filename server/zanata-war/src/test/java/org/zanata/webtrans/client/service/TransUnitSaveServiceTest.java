@@ -10,8 +10,6 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-import java.util.List;
-
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.hamcrest.Matchers;

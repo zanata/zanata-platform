@@ -41,7 +41,6 @@ import org.junit.runners.Parameterized;
 import org.mockito.Mock;
 import org.zanata.SlowTest;
 import org.zanata.async.handle.CopyTransTaskHandle;
-import org.zanata.cache.CacheWrapper;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.cdi.TestTransaction;
 import org.zanata.common.ContentState;
