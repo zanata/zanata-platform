@@ -1,5 +1,5 @@
 #admin-lang,
-#manage-users {
+#manage-users, #explore {
   html {
     font-family: sans-serif;
     -webkit-text-size-adjust: 100%;
@@ -5072,7 +5072,7 @@
 #explore_search.textInput:focus {
   border-color: rgb(27, 167, 217);
 }
-#explore_search .icons {
+#explore_search svg.icons {
   align-items: center;
   color:neutral;
   font-size: 1.2rem;
@@ -5081,7 +5081,7 @@
   position: relative;
   text-align: left;
   width: 1.2rem;
-  left:20px !important;
+  left:20px;
   @media (max-width: 768px) {
          font-size: 1.44rem;
     }
@@ -5092,44 +5092,71 @@ button.explore-can {
   font-size: 0.9rem;
 }
 
+.headingTheme.hidden {
+  visibility: hidden !important;
+  display:none !important;
+}
+
 .headerClasses {
   align-items: center;
   box-shadow: 0 0 15px 5px #fff;
   box-sizing: content-box;
-  display: flex;
-  @media (min-width: 768px) {
-    font-size: 1.2rem;
-  }
   justify-content:center;
   padding-top: 0.375rem;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
-  @media (max-width:768px) {
-    padding: 1.5rem;
-  }
   position:relative;
 }
 
-.headingTheme.hidden {
-  visibility: hidden;
-  display:none;
+@media (min-width: 768px) {
+  .headerClasses {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width:768px) {
+  .headerClasses {
+    padding: 1.5rem;
+
+  }
+}
+
+.view {
+  overflow: hidden;
 }
 
 .searchViewTheme {
   align-items: center;
   color: rgb(84, 102, 122);
-  flex-direction:'';
   position: relative;
   max-width: 48rem;
   width:100%;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  margin-left: 1rem;
 }
 
 .scrollViewTheme {
   align-items: center;
+  overflow:hidden;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  margin-left: 1rem;
 }
 
 .contentViewContainerTheme {
   max-width: 48rem;
   margin-right: auto;
   width:100%;
+  margin-top: 1rem;
+  margin-left:1rem;
+}
+.page {
+  overflow:hidden;
+  width:100%;
+}
+
+#explore h1 {
+  font-size: 1em;
+  margin-bottom:0;
 }

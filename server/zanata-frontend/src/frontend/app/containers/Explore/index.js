@@ -3,10 +3,6 @@ import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
 import {
-  Page,
-  View,
-  ScrollView,
-  Heading,
   Icon
 } from 'zanata-ui'
 import { Button } from 'react-bootstrap'
@@ -124,12 +120,12 @@ class Explore extends Component {
     }
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
-      <Page>
-        <Helmet title='Search' />
-        <Base tagName='header' className='headerClasses'>
-          <Heading level='1' className='headingTheme'>Search</Heading>
-          <View className='searchViewTheme'>
-            <Icon name='search' theme='icons' />
+      <div className='page' id='explore'>
+        <Helmet title='Search'/>
+        <div className='headerClasses'>
+          <div className='headingTheme' level='1'></div>
+          <div className='View searchViewTheme'>
+            <Icon name='search' className='icons' />
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
@@ -141,19 +137,19 @@ class Explore extends Component {
               onKeyDown={(e) => { this.handleKeyDown(e) }}
               onChange={handleSearchTextChange}
             />
-            <Button
+            <ButtonLink
               className='explore-can' disabled={isEmpty(searchText)}
               onClick={(e) => { this.handleClearSearch() }}>
               Cancel
-            </Button>
-          </View>
-        </Base>
-        <ScrollView className='scrollViewTheme'>
-          <View className='contentViewContainerTheme'>
+            </ButtonLink>
+          </div>
+        </div>
+        <div className='scrollViewTheme'>
+          <div className='view contentViewContainerTheme'>
             {content}
-          </View>
-        </ScrollView>
-      </Page>
+          </div>
+        </div>
+      </div>
     )
     /* eslint-enable react/jsx-no-bind, no-return-assign */
   }
