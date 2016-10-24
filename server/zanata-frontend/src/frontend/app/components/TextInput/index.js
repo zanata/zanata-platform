@@ -116,16 +116,16 @@ class TextInput extends Component {
 
     if (multiline) {
       const propsMultiline = {
-          ...propsCommon,
+        ...propsCommon,
         maxRows: maxNumberOfLines || numberOfLines,
         minRows: numberOfLines
-    }
+      }
       return <TextareaAutosize {...propsMultiline} />
     } else {
       const propsSingleline = {
-          ...propsCommon,
+        ...propsCommon,
         type
-    }
+      }
       return <input {...propsSingleline} />
     }
   }

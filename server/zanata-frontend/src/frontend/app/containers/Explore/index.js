@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Button, Col } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import TeaserList from './TeaserList'
 import { TextInput } from '../../components'
 import {
@@ -50,15 +50,15 @@ class Explore extends Component {
     let content
     if (searchError) {
       content = (<p>Error searching for '{searchText}'.<br />
-                    {searchResults.message}. Please try again.</p>)
+        {searchResults.message}. Please try again.</p>)
     } else {
       const projectContent = (<TeaserList
         loading={searchLoading['Project'] === true}
         items={searchResults['Project']
-            ? searchResults['Project'].results : []}
+          ? searchResults['Project'].results : []}
         title='Projects'
         totalCount={searchResults['Project']
-            ? parseInt(searchResults['Project'].totalCount) : 0}
+          ? parseInt(searchResults['Project'].totalCount) : 0}
         type='Project'
         key='Project'
         sizePerPage={SIZE_PER_PAGE}
@@ -68,10 +68,10 @@ class Explore extends Component {
       const groupContent = (<TeaserList
         loading={isEmpty(searchResults) && searchLoading['Group']}
         items={searchResults['Group']
-            ? searchResults['Group'].results : []}
+          ? searchResults['Group'].results : []}
         title='Groups'
         totalCount={searchResults['Group']
-            ? parseInt(searchResults['Group'].totalCount) : 0}
+          ? parseInt(searchResults['Group'].totalCount) : 0}
         type='Group'
         key='Group'
         sizePerPage={SIZE_PER_PAGE}
@@ -108,20 +108,20 @@ class Explore extends Component {
 
       content = (
         <div>
-            {projectContent}
-            {personContent}
-            {languageTeamContent}
-            {groupContent}
+          {projectContent}
+          {personContent}
+          {languageTeamContent}
+          {groupContent}
         </div>)
     }
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
-    <div className='page' id='explore'>
-        <Helmet title='Search'/>
+      <div className='page' id='explore'>
+        <Helmet title='Search' />
         <div className='headerClasses'>
           <div className='headingTheme' level='1'></div>
           <div className='view searchViewTheme'>
-            <i className="i icons i--search"></i>
+            <i className='i icons i--search'></i>
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
