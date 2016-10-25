@@ -158,7 +158,8 @@ public class HtmlXmlTagValidation extends AbstractValidationAction {
                 int index = tmp.indexOf(node);
                 String beforeNode = tmp.substring(0, index);
                 String afterNode = tmp.substring(index + node.length());
-                tmp = beforeNode + afterNode; // remove matched node from
+                // remove matched node from
+                tmp = beforeNode + afterNode;
             }
             result = regExp.exec(compareFrom);
         }

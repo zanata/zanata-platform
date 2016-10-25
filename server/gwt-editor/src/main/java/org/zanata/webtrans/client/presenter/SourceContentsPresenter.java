@@ -134,7 +134,8 @@ public class SourceContentsPresenter implements ClickHandler,
     }
 
     public void showData(List<TransUnit> transUnits) {
-        selectedSource = null; // clear cache
+        // clear cache
+        selectedSource = null;
         ImmutableList.Builder<SourceContentsDisplay> builder =
                 ImmutableList.builder();
         for (TransUnit transUnit : transUnits) {

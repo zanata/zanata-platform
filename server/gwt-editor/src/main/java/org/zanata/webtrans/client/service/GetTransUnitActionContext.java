@@ -42,8 +42,8 @@ import com.google.common.base.Objects;
 public class GetTransUnitActionContext {
     private DocumentInfo document;
     private int offset = 0;
-    private int count = 5; // this should be set to
-                           // UserConfigHolder.getPageSize()
+    // this should be set to UserConfigHolder.getPageSize()
+    private int count = 5;
     private boolean filterTranslated;
     private boolean filterFuzzy;
     private boolean filterUntranslated;

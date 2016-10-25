@@ -153,7 +153,8 @@ public class AppView extends Composite implements AppDisplay,
         translationStatsBar =
                 new TransUnitCountBar(userWorkspaceContext, messages,
                         LabelFormat.PERCENT_COMPLETE_HRS, true);
-        translationStatsBar.setVisible(false); // hide until there is a value to
+        // hide until there is a value to
+        translationStatsBar.setVisible(false);
 
         projectLink =
                 new Breadcrumb(true, false,
@@ -408,11 +409,13 @@ public class AppView extends Composite implements AppDisplay,
 
     // @formatter:off
     @CoverageIgnore("JSNI")
-    private static native void activateNotification(Element element)/*-{
+    private static native void activateNotification(Element element)
+    /*-{
       $wnd.zanata.messages.activate(element);
     }-*/;
     @CoverageIgnore("JSNI")
-    private static native void deactivateNotification(Element element)/*-{
+    private static native void deactivateNotification(Element element)
+        /*-{
       $wnd.zanata.messages.deactivate(element);
     }-*/;
     // @formatter:on

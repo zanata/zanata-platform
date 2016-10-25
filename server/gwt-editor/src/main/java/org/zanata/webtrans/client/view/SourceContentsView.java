@@ -103,7 +103,8 @@ public class SourceContentsView extends Composite implements
         sourcePanelList = new ArrayList<HasSelectableSource>();
         referencePanel = new ReferencePanel();
         referencePanel.setReferenceText(messages.noReferenceFoundText());
-        referencePanel.setVisible(false); // Reference is hidden by default
+        // Reference is hidden by default
+        referencePanel.setVisible(false);
 
         tuLink = getUrlWidget();
         transUnitDetailsPanel = transUnitDetailsPanelProvider.get();

@@ -28,7 +28,8 @@ public class CodeMirrorReadOnlyWidget extends Composite implements
 
     // see http://codemirror.net/doc/manual.html#usage
     @CoverageIgnore("JSNI")
-    private native JavaScriptObject initCodeMirror(Element element) /*-{
+    private native JavaScriptObject initCodeMirror(Element element)
+    /*-{
     var self = this;
     var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
       lineNumbers : true,
@@ -56,7 +57,8 @@ public class CodeMirrorReadOnlyWidget extends Composite implements
     }
 
     @CoverageIgnore("JSNI")
-    public native void refresh() /*-{
+    public native void refresh()
+        /*-{
     var codeMirror = this.@org.zanata.webtrans.client.ui.CodeMirrorReadOnlyWidget::codeMirror;
     if (codeMirror) {
       codeMirror.refresh();
@@ -70,7 +72,8 @@ public class CodeMirrorReadOnlyWidget extends Composite implements
     }
 
     @CoverageIgnore("JSNI")
-    private native void codeMirrorHighlight(String term) /*-{
+    private native void codeMirrorHighlight(String term)
+        /*-{
     var codeMirror = this.@org.zanata.webtrans.client.ui.CodeMirrorReadOnlyWidget::codeMirror;
     var searchCursor = codeMirror.getSearchCursor(term, {
       line : 0,

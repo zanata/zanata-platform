@@ -91,7 +91,7 @@ public class TransHistoryItemLine extends Composite {
         targetContents =
                 new InlineHTML(template.targetContent(TextContentsDisplay
                         .asSyntaxHighlight(item.getContents()).toSafeHtml()));
-        if(!Strings.isNullOrEmpty(item.getOptionalTag())) {
+        if (!Strings.isNullOrEmpty(item.getOptionalTag())) {
             revision =
                 new InlineHTML(template.targetRevision(item.getVersionNum(),
                     item.getOptionalTag()));
@@ -99,7 +99,7 @@ public class TransHistoryItemLine extends Composite {
             revision = new InlineHTML("");
         }
 
-        if(!Strings.isNullOrEmpty(item.getRevisionComment())) {
+        if (!Strings.isNullOrEmpty(item.getRevisionComment())) {
             revisionComment = new InlineHTML(template.revisionComment(
                     item.getRevisionComment()));
         } else {

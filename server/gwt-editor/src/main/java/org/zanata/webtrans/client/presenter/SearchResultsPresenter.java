@@ -483,9 +483,8 @@ public class SearchResultsPresenter extends
     }
 
     private void showDocInEditor(String doc, boolean runSearch) {
-        contextHolder.updateContext(null); // this will ensure editor reload
-                                           // (prevent multiple cursors in code
-                                           // mirror)
+        // this will ensure editor reload (prevent multiple cursors in code mirror)
+        contextHolder.updateContext(null);
         HistoryToken token = HistoryToken.fromTokenString(history.getToken());
         token.setDocumentPath(doc);
         token.clearEditorFilterAndSearch();
@@ -625,9 +624,8 @@ public class SearchResultsPresenter extends
                     // sure it reloads everything for this document.
 
                     HistoryToken token = history.getHistoryToken();
-                    contextHolder.updateContext(null); // this will ensure
-                                                       // HistoryEventHandlerService
-                                                       // fire InitEditorEvent
+                    // this will ensure HistoryEventHandlerService fire InitEditorEvent
+                    contextHolder.updateContext(null);
                     token.clearEditorFilterAndSearch();
                     token.setView(MainView.Editor);
                     token.setDocumentPath(docPaths.get(info.getDocId()));

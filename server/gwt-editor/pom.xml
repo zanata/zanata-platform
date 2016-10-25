@@ -262,6 +262,13 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <failIfNoTests>false</failIfNoTests>
+        </configuration>
+      </plugin>
+
       <!-- add gwt output to final jar-->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>

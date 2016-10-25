@@ -84,7 +84,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
                             Log.error("Authentication error.", caught);
                             Application.redirectToLogin();
                         } else if (caught instanceof InvalidTokenError) {
-                            Log.error("Invalid Token error ("+ sessionId + ")", caught);
+                            Log.error("Invalid Token error (" + sessionId + ")", caught);
                             Application.redirectToLogin();
                         } else if (caught instanceof AuthorizationError) {
                             Log.info("RCP Authorization Error calling "

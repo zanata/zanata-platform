@@ -116,9 +116,8 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler {
         DisclosurePanel disclosurePanel =
                 new DisclosurePanel(
                         "Stack trace of the exception (helpful to us)");
-        disclosurePanel.getHeader().getParent().setStyleName(""); // conflict
-                                                                  // style from
-                                                                  // menu.css
+        disclosurePanel.getHeader().getParent().setStyleName("");
+        // conflict style from menu.css
         SafeHtmlBuilder htmlBuilder = new SafeHtmlBuilder();
         htmlBuilder.appendHtmlConstant("<pre>");
         htmlBuilder.appendHtmlConstant(stackTrace);

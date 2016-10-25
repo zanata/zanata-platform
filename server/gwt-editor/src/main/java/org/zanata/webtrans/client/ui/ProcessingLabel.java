@@ -27,7 +27,8 @@ public class ProcessingLabel extends Label {
                 if (show) {
                     setText(messages.processing());
                     count = 0;
-                    this.run(5000); // if still showing, continue to run
+                    // if still showing, continue to run
+                    this.run(5000);
                 } else {
                     super.onComplete();
                 }

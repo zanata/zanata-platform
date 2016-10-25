@@ -133,7 +133,7 @@ public class ValidationWarningPanel extends ShortcutContextAwareDialogBox
                 && selectedTransUnit.getId().equals(transUnitId)) {
             timer.cancel();
             eventBus.fireEvent(new CopyDataToEditorEvent(targets));
-            if(saveAsFuzzyOpt) {
+            if (saveAsFuzzyOpt) {
                 listener.saveAsFuzzy(transUnitId);
             }
             saveAsFuzzyOpt = false;

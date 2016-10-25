@@ -44,8 +44,10 @@ public class TransUnitUpdateRequest implements IsSerializable {
     private String targetComment;
     private String revisionComment;
     private Long copiedEntityId;
-    private String copiedEntityType; //abbreviation
-    private String sourceType; //abbreviation
+    //abbreviation
+    private String copiedEntityType;
+    //abbreviation
+    private String sourceType;
 
     // required for GWT rpc serialization
     @SuppressWarnings("unused")

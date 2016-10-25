@@ -42,7 +42,7 @@ public class ShortcutContextAwareDialogBox extends DialogBox {
         this.modalContext = modalContext;
         this.keyShortcutPresenter = keyShortcutPresenter;
 
-        if(enableEscKeyClose) {
+        if (enableEscKeyClose) {
             // intercept esc key so that Firefox won't close event service
             // connection
             KeyShortcutEventHandler handler =

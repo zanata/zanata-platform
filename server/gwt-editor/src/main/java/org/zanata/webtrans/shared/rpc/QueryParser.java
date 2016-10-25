@@ -69,13 +69,16 @@ public class QueryParser {
 
     static {
         String plainChar = "[^\"\\\\]",
-                escapedChar = "\\\\",  // slash followed by any single character
+                // slash followed by any single character
+                escapedChar = "\\\\",
                 character = "(?:" + plainChar + "|" + escapedChar + ")",
-                quotedText = "\"" + character + "*?\"", // any plain or escaped chars between quotes
+                // any plain or escaped chars between quotes
+                quotedText = "\"" + character + "*?\"",
                 value = "(?:" + character + "|" + quotedText + ")",
                 captureLeadingValue = "^(" + value + "*?)",
                 orKeys = Joiner.on("|").skipNulls().join(KEYS),
-                anyKey = "(?: (?:" + orKeys + "):)", // space, then key including colon
+                // space, then key including colon
+                anyKey = "(?: (?:" + orKeys + "):)",
                 keyOrEndOfLine = "(?:" + anyKey + "|$)",
                 keyAndRemainderOfLine = "(" + keyOrEndOfLine + "(?:.*$)?)";
 

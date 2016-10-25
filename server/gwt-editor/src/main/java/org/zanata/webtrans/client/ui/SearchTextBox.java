@@ -53,7 +53,8 @@ public class SearchTextBox extends TextBox {
     }
 
     @CoverageIgnore("JSNI")
-    private native boolean isElementFocused(Element element)/*-{
+    private native boolean isElementFocused(Element element)
+        /*-{
         return element.ownerDocument.activeElement === element;
     }-*/;
 }
