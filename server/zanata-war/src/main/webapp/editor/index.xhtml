@@ -44,6 +44,17 @@
   </head>
 
   <body class="new-zanata">
+  <!-- Based on config in /a/index.xhtml -->
+  <div id="config"
+       data-base-url="#{request.contextPath}"
+       data-api-root="/rest"
+       data-user="#{authenticatedAccountHome.getUser()}"
+       data-permission="#{authenticatedAccountHome.getUserPermission().getJSON()}"
+       data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",
+                     "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'>
+  </div>
+
+
     <noscript>
       <div class="l__wrapper l--push-v-1">
         <p class="message--danger" translate="translate">We're sorry, this application needs Javascript to

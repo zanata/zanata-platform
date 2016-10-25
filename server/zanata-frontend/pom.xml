@@ -205,7 +205,7 @@
 
       <!-- Copy the built files into META-INF/resources (or nested directories).
             Files in this location will be built in the JAR file and served relative to the root path of the web app.
-            e.g. META-INF/resources/app/index.html will be served at example.org/app/index.html -->
+            e.g. META-INF/resources/app/bundle.js will be served at example.org/app/bundle.js -->
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
@@ -240,7 +240,6 @@
               <resources>
                 <resource>
                   <directory>${editor.built.artifact.directory}</directory>
-                  <include>index.html</include>
                   <include>bundle.js</include>
                   <include>bundle.js.map</include>
                   <include>bundle.css</include>

@@ -140,9 +140,15 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .where("section").matches(".*")
 
                 // FIXME this path is ambiguous with /project/view etc.
-                .addRule(Join.path("/project/{project}/v/{version}/translate/{document}")
-                        .to("/app/index.html"))
+                // Using this instead of "/project/{project}/v/{version}/translate/{document}"
+                // needs discussion to decide whether to settle on this one
+                .addRule(Join.path("/project/translate/{project}/v/{version}/{document}")
+                        .to("/editor/index.xhtml"))
                         .where("document").matches(".*")
+                // should also work when a document is not yet selected
+                .addRule(Join.path("/project/translate/{project}/v/{version}")
+                        .to("/editor/index.xhtml"))
+
 
                 // generate zanata.xml config
                 .addRule(Join.path("/project/view/{projectSlug}/iter/{iterationSlug}/config").
