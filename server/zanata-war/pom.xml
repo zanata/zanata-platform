@@ -139,6 +139,32 @@
               <goal>properties</goal>
             </goals>
           </execution>
+
+          <!-- this is used to unpack gwt-editor to war -->
+          <execution>
+            <id>extract gwt editor content</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.zanata</groupId>
+                  <artifactId>gwt-editor</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/gwt-editor</outputDirectory>
+                  <includes>gwt-editor/**/*</includes>
+                </artifactItem>
+              </artifactItems>
+              <includes>gwt-editor/**/*</includes>
+              <outputDirectory>${project.build.directory}/${war.name}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
         </executions>
         <configuration>
           <usedDependencies combine.children="append">
@@ -262,9 +288,9 @@
                 <include>images/**</include>
               </includes>
             </resource>
-            <!-- Include the GWT generated resources -->
+            <!-- Include the GWT editor resources -->
             <resource>
-              <directory>${project.build.directory}/zanata</directory>
+              <directory>${project.build.directory}/gwt-editor/gwt-editor</directory>
             </resource>
           </webResources>
           <archive>

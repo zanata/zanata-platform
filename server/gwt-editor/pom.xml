@@ -261,6 +261,42 @@
           </replacements>
         </configuration>
       </plugin>
+
+      <!-- add gwt output to final jar-->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>copy-resources</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/${project.artifactId}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>
+                    ${project.build.directory}/${project.artifactId}-${project.version}/
+                  </directory>
+                  <filtering>false</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*</include>
+            <include>${project.artifactId}-${project.version}/**</include>
+          </includes>
+        </configuration>
+      </plugin>
     </plugins>
 
   </build>
