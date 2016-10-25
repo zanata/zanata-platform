@@ -53,6 +53,9 @@ try {
         stage('Build') {
           printNodeInfo()
           printEnvInfo()
+          def testReports = '**/target/surefire-reports/TEST-*.xml'
+          def warFiles = '**/target/*.war'
+          sh "shopt -s globstar && rm -f $testReports $warFiles"
           sh """./mvnw clean package \
                      --batch-mode \
                      --settings .travis-settings.xml \
@@ -63,16 +66,13 @@ try {
                      -DskipFuncTests \
                      -DskipArqTests \
           """
-
-          def testFiles = '**/target/surefire-reports/TEST-*.xml'
-          setJUnitPrefix("UNIT", testFiles)
-          junit testFiles
+          setJUnitPrefix("UNIT", testReports)
+          junit testReports
 
           // notify if compile+unit test successful
-
           notifyTestResults("UNIT")
 
-          archive '**/target/*.war'
+          archive warFiles
         }
 
         stage('stash') {
@@ -227,6 +227,8 @@ String jobLink() {
 }
 
 void integrationTests(def appserver) {
+  def testReports = '**/target/failsafe-reports/TEST-*.xml'
+  sh "shopt -s globstar && rm -f $testReports"
   xvfb {
     withPorts {
       // Run the maven build
@@ -252,9 +254,8 @@ void integrationTests(def appserver) {
       // TODO try to remove cargo.debug.jvm.args webdriver.*
     }
   }
-  def testFiles = '**/target/failsafe-reports/TEST-*.xml'
-  setJUnitPrefix(appserver.toUpperCase(), testFiles)
-  junit testFiles
+  setJUnitPrefix(appserver.toUpperCase(), testReports)
+  junit testReports
   archiveTestFilesIfUnstable()
   notifyTestResults(appserver.toUpperCase())
 }
@@ -266,6 +267,8 @@ void withPorts(Closure wrapped) {
   }
 }
 
+// Modify classnames of tests, to avoid collision between EAP and WildFly test runs.
+// We also use this to distinguish unit tests from integration tests.
 // from https://issues.jenkins-ci.org/browse/JENKINS-27395?focusedCommentId=256459&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-256459
 void setJUnitPrefix(prefix, files) {
   // add prefix to qualified classname
