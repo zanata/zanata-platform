@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.client.ResponseProcessingException;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.codec.binary.Hex;
@@ -119,7 +120,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     }
 
     public RawPushCommand(PushOptions opts, RestClientFactory clientFactory,
-        ConsoleInteractor console) {
+            ConsoleInteractor console) {
         super(opts, clientFactory);
         client = getClientFactory().getFileResourceClient();
         this.consoleInteractor = console;
@@ -191,7 +192,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                                 Messages.format(
                                         "file.type.suggestFromExtension",
                                         docType,
-                            srcExt, docType);
+                                        srcExt, docType);
                         throw new InvalidUserInputException(msg);
                     }
                 }
@@ -270,7 +271,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                 //throw error if same file extension found in multiple file types
                 if (!seenUserExtensions.add(srcExt)) {
                     String msg = Messages.format(
-                                    "file.type.conflictExtension", srcExt, userType);
+                            "file.type.conflictExtension", srcExt, userType);
                     log.error(msg);
                     throw new RuntimeException(msg);
                 }
@@ -279,7 +280,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             // Use the extensions from docTypeMappingSpec if specified,
             // otherwise use the extensions from server.
             Map<String, String> filteredExtensions =
-                userExtensions.isEmpty() ? fileTypeInfo.getExtensions()
+                    userExtensions.isEmpty() ? fileTypeInfo.getExtensions()
                             : userExtensions;
             docTypeMappings.add(new FileTypeInfo(userType, filteredExtensions));
         }
@@ -291,7 +292,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         PushCommand.logOptions(log, getOpts());
 
         consoleInteractor.printfln(DisplayMode.Warning,
-            "Using EXPERIMENTAL project type 'file'.");
+                "Using EXPERIMENTAL project type 'file'.");
 
         List<FileTypeInfo> serverAcceptedTypes = fileTypeInfoList(client);
 
@@ -309,7 +310,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             if (enableModules) {
                 consoleInteractor
                         .printfln(DisplayMode.Warning,
-                            "enableModules=true but multi-modules not yet supported for this command. Using single module push.");
+                                "enableModules=true but multi-modules not yet supported for this command. Using single module push.");
             }
 
             throw new RuntimeException("directory '" + sourceDir
@@ -321,7 +322,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         strat.setPushOptions(getOpts());
 
         ImmutableList<FileTypeInfo> actualFileTypes =
-            getActualFileTypes(serverAcceptedTypes, getOpts().getFileTypes());
+                getActualFileTypes(serverAcceptedTypes, getOpts().getFileTypes());
 
         if (actualFileTypes.isEmpty()) {
             log.info("no valid types specified; nothing to do");
@@ -330,7 +331,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
         ImmutableList.Builder<String> sourceFileExtensionsBuilder = ImmutableList.builder();
         actualFileTypes.forEach(fileTypeInfo ->
-            sourceFileExtensionsBuilder.addAll(fileTypeInfo.getSourceExtensions()));
+                sourceFileExtensionsBuilder.addAll(fileTypeInfo.getSourceExtensions()));
         ImmutableList<String> sourceFileExtensions = sourceFileExtensionsBuilder.build();
 
         String[] srcFiles =
@@ -344,7 +345,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         // TODO(files) handle obsolete document deletion
         consoleInteractor
                 .printfln(DisplayMode.Warning,
-                    "Obsolete document removal is not yet implemented, no documents will be removed from the server.");
+                        "Obsolete document removal is not yet implemented, no documents will be removed from the server.");
 
         SortedSet<String> docsToPush = localDocNames;
         if (getOpts().getFromDoc() != null) {
@@ -371,13 +372,13 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             for (String docName : localDocNames) {
                 if (docsToPush.contains(docName)) {
                     FileTypeName fileType = getFileTypeNameBySourceExtension(actualFileTypes,
-                        FilenameUtils.getExtension(docName));
+                            FilenameUtils.getExtension(docName));
                     consoleInteractor.printfln("           "
                             + Messages.format("push.info.documentToPush",
-                                    docName, fileType.getName()));
+                            docName, fileType.getName()));
                 } else {
                     consoleInteractor.printfln(
-                        Messages.format("push.info.skipDocument", docName));
+                            Messages.format("push.info.skipDocument", docName));
                 }
             }
         }
@@ -408,7 +409,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             try {
                 final String srcExtension = FilenameUtils.getExtension(localDocName);
                 final FileTypeInfo fileType = getFileType(actualFileTypes,
-                    srcExtension);
+                        srcExtension);
                 final String qualifiedDocName = qualifiedDocName(localDocName);
                 if (getOpts().getPushType() == PushPullType.Source
                         || getOpts().getPushType() == PushPullType.Both) {
@@ -452,7 +453,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             } catch (IOException | RuntimeException e) {
                 log.error(
                         "Operation failed: " + e.getMessage() + "\n\n"
-                        + "    To retry from the last document, please add the option: {}\n",
+                                + "    To retry from the last document, please add the option: {}\n",
                         getOpts().buildFromDocArgument(localDocName));
                 throw new RuntimeException(e.getMessage(), e);
             }
@@ -663,10 +664,13 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     public List<FileTypeInfo> fileTypeInfoList(FileResourceClient client) {
         try {
             return client.fileTypeInfoList();
-        } catch (NotFoundException e) {
-            log.info("Detected old Zanata Server; using hard-coded file types.");
-            // probably running against an old Zanata Server
-            return fileTypeInfoListWorkaround();
+        } catch (ResponseProcessingException e) {
+            if (e.getResponse().getStatus() == 404) {
+                log.info("Detected old Zanata Server; using hard-coded file types.");
+                // probably running against an old Zanata Server
+                return fileTypeInfoListWorkaround();
+            }
+            throw e;
         }
     }
 

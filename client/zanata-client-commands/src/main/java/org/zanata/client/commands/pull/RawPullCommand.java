@@ -28,6 +28,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
 
 import com.google.common.collect.Lists;
@@ -178,10 +179,14 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                                 srcDoc.close();
                             }
                         }
-                    } catch (NotFoundException e) {
-                        log.warn(
-                                "No source document file is available for [{}]. Skipping.",
-                                qualifiedDocName);
+                    } catch (ResponseProcessingException e) {
+                        if (e.getResponse().getStatus() == 404) {
+                            log.warn(
+                                    "No source document file is available for [{}]. Skipping.",
+                                    qualifiedDocName);
+                        } else {
+                            throw e;
+                        }
                     }
                 }
 
@@ -217,7 +222,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
             } catch (IOException | RuntimeException e) {
                 log.error(
                         "Operation failed: " + e.getMessage() + "\n\n"
-                        + "    To retry from the last document, please add the option: {}\n",
+                                + "    To retry from the last document, please add the option: {}\n",
                         getOpts().buildFromDocArgument(qualifiedDocName));
                 throw new RuntimeException(e.getMessage(), e);
             }
@@ -251,10 +256,14 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                     transDoc.close();
                 }
             }
-        } catch (NotFoundException e) {
-            log.info(
-                    "No translation document file found in locale {} for document [{}]",
-                    locale, qualifiedDocName);
+        } catch (ResponseProcessingException e) {
+            if (e.getResponse().getStatus() == 404) {
+                log.info(
+                        "No translation document file found in locale {} for document [{}]",
+                        locale, qualifiedDocName);
+            } else {
+                throw e;
+            }
         }
     }
 }
