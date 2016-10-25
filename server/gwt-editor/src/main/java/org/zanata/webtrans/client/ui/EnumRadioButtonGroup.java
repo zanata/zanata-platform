@@ -62,7 +62,8 @@ public class EnumRadioButtonGroup<E extends Enum<?>> implements
         for (Map.Entry<E, RadioButton> entry : radioButtons.entrySet()) {
             if (entry.getKey() == option) {
                 RadioButton radioButton = entry.getValue();
-                radioButton.setValue(true, true); // fire event
+                // fire event
+                radioButton.setValue(true, true);
                 currentSelection = entry.getKey();
             }
         }

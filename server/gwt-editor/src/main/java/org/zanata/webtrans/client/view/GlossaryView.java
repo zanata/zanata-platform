@@ -241,14 +241,14 @@ public class GlossaryView extends Composite implements GlossaryDisplay {
     }
 
     private String getTypeIconClass(String qualifiedName) {
-        if(Application.isProjectGlossary(qualifiedName)) {
+        if (Application.isProjectGlossary(qualifiedName)) {
             return "i--project";
         }
         return "i--translate";
     }
 
     private String getTypeTitle(String qualifiedName) {
-        if(Application.isProjectGlossary(qualifiedName)) {
+        if (Application.isProjectGlossary(qualifiedName)) {
             return messages.glossaryProjectTypeTitle();
         }
         return messages.glossaryGlobalTypeTitle();

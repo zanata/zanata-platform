@@ -87,7 +87,7 @@ public class TransUnitDetailsPanel extends Composite {
     }
 
     private void setSourceMetaData(Label label, String value) {
-        if(Strings.isNullOrEmpty(value)) {
+        if (Strings.isNullOrEmpty(value)) {
             label.addStyleName("label");
             label.setText("No content");
         } else {
@@ -96,7 +96,7 @@ public class TransUnitDetailsPanel extends Composite {
     }
 
     private String append(String str, String valueToAppend) {
-        if(Strings.isNullOrEmpty(str)) {
+        if (Strings.isNullOrEmpty(str)) {
             return valueToAppend;
         } else {
             return str + ", " + valueToAppend;
@@ -104,7 +104,7 @@ public class TransUnitDetailsPanel extends Composite {
     }
 
     private String getHeader(String header, String value) {
-        if(Strings.isNullOrEmpty(value)) {
+        if (Strings.isNullOrEmpty(value)) {
             return "";
         }
         return header + ": " + value;

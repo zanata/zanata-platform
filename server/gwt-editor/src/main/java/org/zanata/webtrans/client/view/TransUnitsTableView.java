@@ -182,7 +182,8 @@ public class TransUnitsTableView extends Composite implements
     }
 
     @CoverageIgnore("JSNI")
-    private native void scrollToElement(Element scroll, Element item) /*-{
+    private native void scrollToElement(Element scroll, Element item)
+        /*-{
       if (!item || !scroll)  {
         return;
       }

@@ -237,7 +237,8 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
         private String lastModifiedBy;
         private Date lastModifiedTime;
         private int rowIndex;
-        private int verNum = -1; // to fail check if not set before build
+        // to fail check if not set before build
+        private int verNum = -1;
         private String targetComment;
         private int commentsCount;
         private String revisionComment;

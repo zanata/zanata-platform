@@ -312,7 +312,8 @@ public class Application implements EntryPoint {
     }
 
     @CoverageIgnore("JSNI")
-    public static native void redirectToUrl(String url)/*-{
+    public static native void redirectToUrl(String url)
+        /*-{
     $wnd.location = url;
     }-*/;
 

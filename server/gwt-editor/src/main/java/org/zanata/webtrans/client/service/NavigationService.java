@@ -310,9 +310,8 @@ public class NavigationService implements TransUnitUpdatedEventHandler,
 
     @Override
     public void onRequestSelectTableRow(RequestSelectTableRowEvent event) {
-        contextHolder.updateContext(null); // this will ensure
-                                           // HistoryEventHandlerService fire
-                                           // InitEditorEvent
+        // this will ensure HistoryEventHandlerService fire InitEditorEvent
+        contextHolder.updateContext(null);
         HistoryToken token = history.getHistoryToken();
         token.setView(MainView.Editor);
         token.setDocumentPath(event.getDocInfo().getPath()
@@ -325,7 +324,7 @@ public class NavigationService implements TransUnitUpdatedEventHandler,
 
     public void execute(UpdateContextCommand command) {
         GetTransUnitActionContext context = contextHolder.getContext();
-        if(context != null) {
+        if (context != null) {
             GetTransUnitActionContext newContext = command.updateContext(context);
             Log.debug("old context: " + context);
             Log.debug("new context: " + newContext);

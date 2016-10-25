@@ -48,11 +48,11 @@ public class TransMemoryResultItem extends SearchResultItem implements
 
     private ArrayList<String> sourceContents;
     private ArrayList<String> targetContents;
-    private int matchCount = 0; // The number of occurrences for the source
-                                // contents
+    // The number of occurrences for the source contents
+    private int matchCount = 0;
     private MatchType matchType;
-    private List<String> origins; // The optional origin identifiers for this
-                                  // result (i.e. A Trans memory name)
+    // The optional origin identifiers for this result (i.e. A Trans memory name)
+    private List<String> origins;
     private ArrayList<Long> sourceIdList = new ArrayList<Long>();
 
     // for GWT

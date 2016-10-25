@@ -29,8 +29,10 @@ public class TransUnitUpdated implements SessionEventData,
         HasTransUnitUpdatedData {
 
     public enum UpdateType {
-        WebEditorSave, // save as Translated or Fuzzy for an individual message
-        NonEditorSave // all other type of saving. Include: revert, TM merge, search & replace, non webtrans actions like REST, copyTrans
+        // save as Translated or Fuzzy for an individual message
+        WebEditorSave,
+        // all other type of saving. Include: revert, TM merge, search & replace, non webtrans actions like REST, copyTrans
+        NonEditorSave
     }
 
     private static final long serialVersionUID = 1L;

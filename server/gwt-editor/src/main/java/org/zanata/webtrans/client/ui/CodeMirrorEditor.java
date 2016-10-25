@@ -41,7 +41,8 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
 
     // see http://codemirror.net/doc/manual.html#usage
     @CoverageIgnore("JSNI")
-    private native JavaScriptObject initCodeMirror(TextAreaElement element) /*-{
+    private native JavaScriptObject initCodeMirror(TextAreaElement element)
+    /*-{
     var self = this;
 
     var codeMirrorEditor = $wnd.CodeMirror.fromTextArea(element, {
@@ -113,13 +114,15 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
     }
 
     @CoverageIgnore("JSNI")
-    private native String getCodeMirrorContent() /*-{
+    private native String getCodeMirrorContent()
+        /*-{
     var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
     return editor.getValue();
     }-*/;
 
     @CoverageIgnore("JSNI")
-    private native void setCodeMirrorContent(String text) /*-{
+    private native void setCodeMirrorContent(String text)
+        /*-{
     var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
     if (editor) {
       editor.setValue(text);
@@ -127,7 +130,8 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
     }-*/;
 
     @CoverageIgnore("JSNI")
-    private native void focusEditor() /*-{
+    private native void focusEditor()
+        /*-{
     var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
     editor.focus();
     }-*/;
@@ -142,7 +146,8 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
     }
 
     @CoverageIgnore("JSNI")
-    private native void setEditorOption(String option, String value) /*-{
+    private native void setEditorOption(String option, String value)
+        /*-{
     var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
     if (editor) {
       editor.setOption(option, value);
@@ -150,7 +155,8 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
     }-*/;
 
     @CoverageIgnore("JSNI")
-    private native String getEditorOption(String option, String defaultValue) /*-{
+    private native String getEditorOption(String option, String defaultValue)
+        /*-{
     var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
     if (editor) {
       return '' + editor.getOption(option);
@@ -169,7 +175,8 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
     }
 
     @CoverageIgnore("JSNI")
-    private native int getCodeMirrorCursorPos() /*-{
+    private native int getCodeMirrorCursorPos()
+        /*-{
     var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
     var pos = editor.getCursor();
     return editor.indexFromPos(pos);
@@ -181,7 +188,8 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
     }
 
     @CoverageIgnore("JSNI")
-    private native void setCodeMirrorCursorPos(int cursorIndex) /*-{
+    private native void setCodeMirrorCursorPos(int cursorIndex)
+        /*-{
     var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
     var pos = editor.posFromIndex(cursorIndex);
     editor.setCursor(pos);
@@ -195,7 +203,8 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
     }
 
     @CoverageIgnore("JSNI")
-    private native void codeMirrorHighlight(String term) /*-{
+    private native void codeMirrorHighlight(String term)
+        /*-{
     var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
     var searchCursor = editor.getSearchCursor(term, {
       line : 0,
@@ -213,7 +222,8 @@ public class CodeMirrorEditor extends Composite implements TextAreaWrapper {
     }
 
     @CoverageIgnore("JSNI")
-    private native void refreshCodeMirror() /*-{
+    private native void refreshCodeMirror()
+        /*-{
     var editor = this.@org.zanata.webtrans.client.ui.CodeMirrorEditor::codeMirror;
 
     if (editor) {

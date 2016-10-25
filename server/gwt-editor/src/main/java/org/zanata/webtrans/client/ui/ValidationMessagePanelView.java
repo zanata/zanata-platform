@@ -141,7 +141,8 @@ public class ValidationMessagePanelView extends Composite implements
     }
 
     public void setVisibleIfHasError(boolean visible) {
-        if (!displayMessages.isEmpty()) { // has error message
+        if (!displayMessages.isEmpty()) {
+            // has error message
             removeStyleName("is-hidden");
         } else {
             addStyleName("is-hidden");

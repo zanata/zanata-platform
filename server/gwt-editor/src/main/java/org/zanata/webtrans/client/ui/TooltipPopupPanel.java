@@ -102,7 +102,8 @@ public class TooltipPopupPanel extends PopupPanel {
 
         int left;
 
-        if (LocaleInfo.getCurrentLocale().isRTL()) { // RTL case
+        if (LocaleInfo.getCurrentLocale().isRTL()) {
+            // RTL case
 
             int textBoxAbsoluteLeft = relativeObject.getAbsoluteLeft();
 
@@ -154,7 +155,8 @@ public class TooltipPopupPanel extends PopupPanel {
                     left = textBoxAbsoluteLeft;
                 }
             }
-        } else { // LTR case
+        } else {
+            // LTR case
 
             // Left-align the popup.
             left = relativeObject.getAbsoluteLeft();

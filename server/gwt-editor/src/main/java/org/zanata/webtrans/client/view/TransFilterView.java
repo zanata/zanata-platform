@@ -189,7 +189,8 @@ public class TransFilterView extends Composite implements TransFilterDisplay {
 
     @CoverageIgnore("JSNI")
     private static native void setElementIndeterminate(Element elem,
-            boolean indeterminate)/*-{
+            boolean indeterminate)
+        /*-{
     elem.getElementsByTagName('input')[0].indeterminate = indeterminate;
     }-*/;
 

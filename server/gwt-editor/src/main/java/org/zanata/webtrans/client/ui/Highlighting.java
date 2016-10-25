@@ -27,14 +27,16 @@ import org.zanata.util.CoverageIgnore;
 public class Highlighting {
 
     @CoverageIgnore("JSNI")
-    public static native void syntaxHighlight(String text, Element elem)/*-{
+    public static native void syntaxHighlight(String text, Element elem)
+        /*-{
     elem.innerHTML = '';
     $wnd.CodeMirror.runMode(text, "visibleSpace", elem);
     }-*/;
 
     // From JavaScript on http://www.nsftools.com/misc/SearchAndHighlight.htm
     @CoverageIgnore("JSNI")
-    public static native void searchHighlight(String searchTerm, Element elem)/*-{
+    public static native void searchHighlight(String searchTerm, Element elem)
+    /*-{
     // the highlightStartTag and highlightEndTag parameters are optional
     var bodyText = elem.innerHTML;
 
@@ -81,7 +83,8 @@ public class Highlighting {
 
     @CoverageIgnore("JSNI")
     private static native JavaScriptObject diff(String oldText, String newText,
-            boolean cleanupSemantic)/*-{
+            boolean cleanupSemantic)
+        /*-{
     if (!$wnd.diffMatchPatch) {
       $wnd.diffMatchPatch = new $wnd.diff_match_patch();
       $wnd.diffMatchPatch.Diff_Timeout = 0.2;
@@ -97,7 +100,8 @@ public class Highlighting {
 
     // modified diff_prettyHtml() from diff_match_patch.js
     @CoverageIgnore("JSNI")
-    private static native String diffsToHtml(JavaScriptObject diffs)/*-{
+    private static native String diffsToHtml(JavaScriptObject diffs)
+    /*-{
     var html = [];
     var pattern_amp = /&/g;
     var pattern_lt = /</g;
@@ -131,7 +135,8 @@ public class Highlighting {
     // DIFF_DELETE text is hidden, DIFF_EQUAL text is highlighted, and
     // DIFF_INSERT text is shown plain
     @CoverageIgnore("JSNI")
-    private static native String diffsHighlight(JavaScriptObject diffs)/*-{
+    private static native String diffsHighlight(JavaScriptObject diffs)
+    /*-{
     var html = [];
     var pattern_amp = /&/g;
     var pattern_lt = /</g;
