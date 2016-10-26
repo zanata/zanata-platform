@@ -1,3 +1,6 @@
+/**
+ * Legacy build to compile js for JSF pages which has only side menu bar.
+ */
 var webpack = require('webpack')
 var path = require('path')
 var _ = require('lodash')
