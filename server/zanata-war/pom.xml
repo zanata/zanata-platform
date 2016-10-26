@@ -2409,6 +2409,12 @@
       </exclusions>
     </dependency>
 
+    <dependency>
+      <groupId>com.offbytwo.jenkins</groupId>
+      <artifactId>jenkins-client</artifactId>
+      <version>0.3.6</version>
+    </dependency>
+
   </dependencies>
 
 

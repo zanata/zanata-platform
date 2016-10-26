@@ -83,6 +83,14 @@
       <span class="is-hidden--m-l-down">#{msgs['jsf.Translation']}</span>
     </a>
   </li>
+  <li>
+    <a id="settings-sync_tab"
+      href="#{request.contextPath}/iteration/view/#{versionHome.projectSlug}/#{versionHome.slug}/settings/sync"
+      class="js-url-mod" data-content="#settings-sync">
+      <i class="i i--translate"></i>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Sync']}</span>
+    </a>
+  </li>
 </ul>
 
 <ul class="tabs__content js-tabs-content">
@@ -354,6 +362,28 @@
         </li>
       </ui:repeat>
     </ul>
+  </h:form>
+</li>
+<li id="settings-sync">
+  <h:form>
+    <ui:fragment rendered="#{not versionSyncAction.syncJobExists(versionHome.projectSlug, versionHome.slug)}">
+      <h:commandButton action="#{versionSyncAction.createJob(versionHome.projectSlug, versionHome.slug)}"
+          value="Create Job"/>
+    </ui:fragment>
+    <ui:fragment rendered="#{versionSyncAction.syncJobExists(versionHome.projectSlug, versionHome.slug)}">
+      <ui:fragment id="job-progress" rendered="#{versionSyncAction.isJobRunning(versionHome.projectSlug, versionHome.slug)}">
+        <div>
+          Building...
+          <div>
+            <a href="#{versionSyncAction.getCurrentJobBuild()}">Visit Job</a>
+          </div>
+        </div>
+        <a4j:commandButton render="job-progress" value="Refresh"/>
+      </ui:fragment>
+      <ui:fragment rendered="#{not versionSyncAction.isJobRunning(versionHome.projectSlug, versionHome.slug)}">
+        <h:commandButton action="#{versionSyncAction.runSync(versionHome.projectSlug, versionHome.slug)}" value="Get latest strings from source"/>
+      </ui:fragment>
+    </ui:fragment>
   </h:form>
 </li>
 </ul>
