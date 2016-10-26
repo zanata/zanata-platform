@@ -9,23 +9,18 @@ const contentViewContainerTheme = {
   }
 }
 
-class ManageRoles extends Component {
+class Users extends Component {
   render () {
     return (
       <Page>
-        <Helmet title='ManageRoles' />
+        <Helmet title='ManageUsers' />
         <ScrollView>
           <View theme={contentViewContainerTheme}>
             <div className='row clearfix' id='admin-lang'>
               <div className='row-height'>
                 <div className='contentx clearfix center-block'>
-                  <h2>Manage Roles&nbsp;<span className='badge'>6</span>
+                  <h2>Manage Users&nbsp;<span className='badge'>6</span>
                   </h2>
-                  <Button bsStyle='primary'>
-                    <Icon name='plus'
-                      atomic={{m: 'Va(sub)'}}
-                      title='plus' />&nbsp;Create role
-                  </Button>
                   <div className='left-form toolbar col-xs-12'>
                     <div className='search-box col-xs-6 col-sm-8 col-md-6
                        col-lg-7'>
@@ -54,11 +49,10 @@ class ManageRoles extends Component {
                       <tbody>
                         <tr>
                           <td>
-                            <a href=''>admin
-                            </a>
+                            <a href=''>admin</a> <small>[admin]</small>
                             <br />
                             <span className='langcode'>
-                            [user, glossary-admin]</span>
+                            admin@zanata.org</span>
                           </td>
                           <td>
                             <Button>
@@ -70,22 +64,11 @@ class ManageRoles extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>glossarist</a>
-                          </td>
-                          <td>
-                            <Button>
-                              <Icon name='cross'
-                                atomic={{ m: 'H(ms0) Va(sub)' }}
-                                title='cross' />
-                            Delete</Button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <a href=''>glossary-admin</a>
+                            <a href=''>glossarist</a> <small>[glossarist, user]
+                            </small>
                             <br />
                             <span className='langcode'>
-                            [glossarist]</span>
+                            glossarist@no-email.com</span>
                           </td>
                           <td>
                             <Button>
@@ -97,22 +80,11 @@ class ManageRoles extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>project-creator</a>
-                          </td>
-                          <td>
-                            <Button>
-                              <Icon name='cross'
-                                atomic={{ m: 'H(ms0) Va(sub)' }}
-                                title='cross' />
-                            Delete</Button>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <a href=''>translator</a>
+                            <a href=''>glossaryadmin</a> <small>
+                            [glossary-admin, user]</small>
                             <br />
                             <span className='langcode'>
-                            ar</span>
+                            glossary-admin@no-email.com</span>
                           </td>
                           <td>
                             <Button>
@@ -124,10 +96,43 @@ class ManageRoles extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>user</a>
+                            <a href=''>langcoor</a> <small>[translator, user]
+                            </small>
                             <br />
                             <span className='langcode'>
-                            [project-creator]</span>
+                            lang-coor@no-email.com</span>
+                          </td>
+                          <td>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
+                            Delete</Button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <a href=''>pmaint</a> <small>[translator, user]
+                            </small>
+                            <br />
+                            <span className='langcode'>
+                            pmaint@no-email.com</span>
+                          </td>
+                          <td>
+                            <Button>
+                              <Icon name='cross'
+                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                title='cross' />
+                            Delete</Button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <a href=''>translator</a> <small>[translator, user]
+                            </small>
+                            <br />
+                            <span className='langcode'>
+                            translator@no-email.com</span>
                           </td>
                           <td>
                             <Button>
@@ -150,4 +155,4 @@ class ManageRoles extends Component {
   }
 }
 
-export default ManageRoles
+export default Users

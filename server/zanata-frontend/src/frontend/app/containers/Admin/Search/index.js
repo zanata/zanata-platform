@@ -14,7 +14,7 @@ const tooltip = (
   </Tooltip>
 )
 
-class ManageSearch extends Component {
+class Search extends Component {
 
   render () {
     return (
@@ -165,4 +165,4 @@ class ManageSearch extends Component {
     )
   }
 }
-export default ManageSearch
+export default Search

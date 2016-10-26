@@ -9,18 +9,23 @@ const contentViewContainerTheme = {
   }
 }
 
-class ManageUsers extends Component {
+class Roles extends Component {
   render () {
     return (
       <Page>
-        <Helmet title='ManageUsers' />
+        <Helmet title='ManageRoles' />
         <ScrollView>
           <View theme={contentViewContainerTheme}>
             <div className='row clearfix' id='admin-lang'>
               <div className='row-height'>
                 <div className='contentx clearfix center-block'>
-                  <h2>Manage Users&nbsp;<span className='badge'>6</span>
+                  <h2>Manage Roles&nbsp;<span className='badge'>6</span>
                   </h2>
+                  <Button bsStyle='primary'>
+                    <Icon name='plus'
+                      atomic={{m: 'Va(sub)'}}
+                      title='plus' />&nbsp;Create role
+                  </Button>
                   <div className='left-form toolbar col-xs-12'>
                     <div className='search-box col-xs-6 col-sm-8 col-md-6
                        col-lg-7'>
@@ -49,10 +54,11 @@ class ManageUsers extends Component {
                       <tbody>
                         <tr>
                           <td>
-                            <a href=''>admin</a> <small>[admin]</small>
+                            <a href=''>admin
+                            </a>
                             <br />
                             <span className='langcode'>
-                            admin@zanata.org</span>
+                            [user, glossary-admin]</span>
                           </td>
                           <td>
                             <Button>
@@ -64,11 +70,7 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>glossarist</a> <small>[glossarist, user]
-                            </small>
-                            <br />
-                            <span className='langcode'>
-                            glossarist@no-email.com</span>
+                            <a href=''>glossarist</a>
                           </td>
                           <td>
                             <Button>
@@ -80,11 +82,10 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>glossaryadmin</a> <small>
-                            [glossary-admin, user]</small>
+                            <a href=''>glossary-admin</a>
                             <br />
                             <span className='langcode'>
-                            glossary-admin@no-email.com</span>
+                            [glossarist]</span>
                           </td>
                           <td>
                             <Button>
@@ -96,11 +97,7 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>langcoor</a> <small>[translator, user]
-                            </small>
-                            <br />
-                            <span className='langcode'>
-                            lang-coor@no-email.com</span>
+                            <a href=''>project-creator</a>
                           </td>
                           <td>
                             <Button>
@@ -112,11 +109,10 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>pmaint</a> <small>[translator, user]
-                            </small>
+                            <a href=''>translator</a>
                             <br />
                             <span className='langcode'>
-                            pmaint@no-email.com</span>
+                            ar</span>
                           </td>
                           <td>
                             <Button>
@@ -128,11 +124,10 @@ class ManageUsers extends Component {
                         </tr>
                         <tr>
                           <td>
-                            <a href=''>translator</a> <small>[translator, user]
-                            </small>
+                            <a href=''>user</a>
                             <br />
                             <span className='langcode'>
-                            translator@no-email.com</span>
+                            [project-creator]</span>
                           </td>
                           <td>
                             <Button>
@@ -155,4 +150,4 @@ class ManageUsers extends Component {
   }
 }
 
-export default ManageUsers
+export default Roles
