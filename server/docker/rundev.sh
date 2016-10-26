@@ -9,6 +9,8 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
+source ${DIR}/common
+
 # change to top of the git working directory
 cd $DIR/../
 ZANATA_WAR=$(echo $PWD/zanata-war/target/zanata-*.war)
@@ -21,7 +23,7 @@ mkdir -p ${ZANATA_DEPLOYMENTS_DIR} && chcon -Rt svirt_sandbox_file_t ${ZANATA_DE
 if [ -f "$ZANATA_WAR" ]
 then
     # remove old file (hardlink) first
-    rm ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war
+    rm -f ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war
     # we can not use symlink as JBoss inside docker can't properly read the symlink file
     # try to link or copy the war file to deployments directory
     ln ${ZANATA_WAR} ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war || cp ${ZANATA_WAR} ${ZANATA_DEPLOYMENTS_DIR}/ROOT.war
@@ -35,7 +37,7 @@ HTTP_PORT=8080
 DEBUG_PORT=8787
 MGMT_PORT=9090
 
-while getopts ":p:H" opt; do
+while getopts ":p:n:h" opt; do
   case ${opt} in
     p)
       echo "===== set JBoss port offset to $OPTARG ====="
@@ -52,18 +54,25 @@ while getopts ":p:H" opt; do
         exit 1
       fi
       ;;
-    H)
+    n)
+      echo "===== set docker network to $OPTARG ====="
+      DOCKER_NETWORK=$OPTARG
+      ;;
+    h)
       echo "========   HELP   ========="
       echo "-p <offset number> : set JBoss port offset"
-      echo "-H                 : display help"
+      echo "-n <docker network>: will connect container to given docker network (default is $DOCKER_NETWORK)"
+      echo "-h                 : display help"
       exit
       ;;
     \?)
-      echo "Invalid option: -${OPTARG}. Use -H for help" >&2
+      echo "Invalid option: -${OPTARG}. Use -h for help" >&2
       exit 1
       ;;
   esac
 done
+
+ensure_docker_network
 
 # volume mapping for zanata server files
 ZANATA_DIR=$HOME/docker-volumes/zanata
@@ -83,7 +92,8 @@ JBOSS_DEPLOYMENT_VOLUME=/opt/jboss/wildfly/standalone/deployments/
 # runs zanata/server-dev:latest docker image
 docker run \
     -e JAVA_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata" \
-    --rm --name zanata --link zanatadb:db \
+    -e DB_USERNAME=${DB_USERNAME} -e DB_PASSWORD=${DB_PASSWORD} -e DB_SCHEMA=${DB_SCHEMA} -e DB_HOSTNAME=zanatadb\
+    --rm --name zanata --net=${DOCKER_NETWORK} \
     -p ${HTTP_PORT}:8080 -p ${DEBUG_PORT}:8787 -p ${MGMT_PORT}:9990 -it \
     -v ${ZANATA_DEPLOYMENTS_DIR}:${JBOSS_DEPLOYMENT_VOLUME} \
     -v $ZANATA_DIR:/opt/jboss/zanata \

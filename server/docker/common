@@ -1,0 +1,21 @@
+# default settings for the scripts
+
+# default database settings value
+DB_USERNAME=zanata
+DB_PASSWORD=zanatapw
+DB_SCHEMA=zanata
+DB_ROOT_PASSWORD=rootpw
+
+# default docker network to join
+DOCKER_NETWORK=docker-network
+
+function ensure_docker_network() {
+    # check if the docker network is already created
+    if docker network ls | grep -w ${DOCKER_NETWORK}
+    then
+        echo "will use docker network $DOCKER_NETWORK"
+    else
+        echo "creating docker network $DOCKER_NETWORK"
+        docker network create ${DOCKER_NETWORK}
+    fi
+}
