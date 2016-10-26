@@ -19,4 +19,15 @@
     <module>client</module>
     <module>server</module>
   </modules>
+
+  <!--
+    Maven likes to add the artifactIds to these URLs (thus breaking
+    them), so we have to specify these URLs again in each POM.
+   -->
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata-platform.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
+    <url>https://github.com/zanata/zanata-platform</url>
+    <tag>HEAD</tag>
+  </scm>
 </project>

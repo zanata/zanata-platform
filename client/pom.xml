@@ -11,13 +11,6 @@
     <relativePath>../parent</relativePath>
   </parent>
 
-  <scm>
-    <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
-    <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
-    <url>https://github.com/zanata/zanata-client</url>
-    <tag>HEAD</tag>
-  </scm>
-
   <!-- This is needed for bootstrapping with a zanata-parent SNAPSHOT  -->
   <repositories>
     <repository>

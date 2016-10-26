@@ -11,13 +11,6 @@
     <relativePath>../parent</relativePath>
   </parent>
 
-  <scm>
-    <connection>scm:git:git://github.com/zanata/zanata-server.git</connection>
-    <developerConnection>scm:git:git@github.com:zanata/zanata-server.git</developerConnection>
-    <url>https://github.com/zanata/zanata-server</url>
-    <tag>HEAD</tag>
-  </scm>
-
   <properties>
     <byteman.version>2.1.2</byteman.version>
     <cobertura.total-line-rate>50</cobertura.total-line-rate>
