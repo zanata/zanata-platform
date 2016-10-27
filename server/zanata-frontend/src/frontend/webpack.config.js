@@ -21,8 +21,8 @@ module.exports = {
         exclude: /node_modules/,
         include: path.join(__dirname, 'app'),
         loader: 'atomic-loader?configPath=' + __dirname +
-          '/atomicCssConfig.js' +
-          '!babel?presets[]=react,presets[]=es2015,presets[]=stage-0'
+        '/atomicCssConfig.js' +
+        '!babel?presets[]=react,presets[]=stage-0,presets[]=es2015'
       },
       {
         test: /\.css$/,
