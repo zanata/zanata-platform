@@ -24,16 +24,21 @@ package org.zanata.util;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class MavenHome {
+    private static final String mvn;
+    static {
+        // When using mvnw, the Maven process has maven.home pointing at the maven install.
+        // Failsafe is configured to propagate maven.home as a system property.
+        String mavenHome = System.getProperty("maven.home");
+        // TODO will this work on windows (mvn.cmd)?
+        mvn = mavenHome != null ? mavenHome + "/bin/mvn" : "mvn";
+    }
+
     /**
      * Tries to return the full path to the script "mvn" in the Maven home
      * directory (if maven.home is set), otherwise returns simply "mvn" for
      * resolution via system PATH.
      */
     public static String mvn() {
-        // When using mvnw, the Maven process has maven.home pointing at the maven install.
-        // Failsafe is configured to propagate maven.home as a system property.
-        String mavenHome = System.getProperty("maven.home");
-        // TODO will this work on windows (mvn.cmd)?
-        return mavenHome != null ? mavenHome + "/bin/mvn" : "mvn";
+        return mvn;
     }
 }
