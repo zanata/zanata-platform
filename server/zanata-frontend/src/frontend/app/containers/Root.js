@@ -3,9 +3,9 @@ import { Provider } from 'react-redux'
 import { Router, Route, Redirect } from 'react-router'
 import App from '../containers/App'
 import Glossary from '../containers/Glossary'
-import ManageUsers from '../containers/ManageUsers'
-import ManageRoles from '../containers/ManageRoles'
-import ManageSearch from '../containers/ManageSearch'
+import ManageUsers from '../containers/Admin/Users'
+import ManageRoles from '../containers/Admin/Roles'
+import ManageSearch from '../containers/Admin/Search'
 import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
 import { View } from 'zanata-ui'
@@ -24,9 +24,9 @@ export default class Root extends Component {
             <Route component={App} >
               <Route path='explore' component={Explore} />
               <Route path='glossary' component={Glossary} />
-              <Route path='manageusers' component={ManageUsers} />
-              <Route path='manageroles' component={ManageRoles} />
-              <Route path='managesearch' component={ManageSearch} />
+              <Route path='users' component={Users} />
+              <Route path='roles' component={Roles} />
+              <Route path='search' component={Search} />
               <Route path='profile/:username' component={UserProfile} />
               <Route path='project/:projectSlug/glossary'
                 component={Glossary} />
