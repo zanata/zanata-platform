@@ -152,7 +152,7 @@ class Search extends Component {
                     <div>
                       <Button bsStyle='default'>
                       Clear selected</Button>
-                      <div className='pull-right'><Button bsStyle='primary'>
+                      <div className='pull-right'><Button bsStyle='primary '>
                       Perform selected actions</Button></div>
                     </div>
                   </div>

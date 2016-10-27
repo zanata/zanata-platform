@@ -55,7 +55,7 @@ class Users extends Component {
                             admin@zanata.org</span>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
                                 atomic={{ m: 'H(ms0) Va(sub)' }}
                                 title='cross' />
@@ -71,7 +71,7 @@ class Users extends Component {
                             glossarist@no-email.com</span>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
                                 atomic={{ m: 'H(ms0) Va(sub)' }}
                                 title='cross' />
@@ -87,7 +87,7 @@ class Users extends Component {
                             glossary-admin@no-email.com</span>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
                                 atomic={{ m: 'H(ms0) Va(sub)' }}
                                 title='cross' />
@@ -103,7 +103,7 @@ class Users extends Component {
                             lang-coor@no-email.com</span>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
                                 atomic={{ m: 'H(ms0) Va(sub)' }}
                                 title='cross' />
@@ -119,7 +119,7 @@ class Users extends Component {
                             pmaint@no-email.com</span>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
                                 atomic={{ m: 'H(ms0) Va(sub)' }}
                                 title='cross' />
@@ -135,7 +135,7 @@ class Users extends Component {
                             translator@no-email.com</span>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
                                 atomic={{ m: 'H(ms0) Va(sub)' }}
                                 title='cross' />

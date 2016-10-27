@@ -26,9 +26,9 @@ export default class Root extends Component {
               <Route path='explore' component={Explore} />
               <Route path='glossary' component={Glossary} />
               <Route path='languages' component={Languages} />
-              <Route path='admin/:users' component={Users} />
-              <Route path='admin/:roles' component={Roles} />
-              <Route path='admin:/search' component={Search} />
+              <Route path='users' component={Users} />
+              <Route path='roles' component={Roles} />
+              <Route path='search' component={Search} />
               <Route path='profile/:username' component={UserProfile} />
               <Route path='project/:projectSlug/glossary'
                 component={Glossary} />

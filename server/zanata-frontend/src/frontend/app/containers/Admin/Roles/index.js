@@ -22,9 +22,7 @@ class Roles extends Component {
                   <h2>Manage Roles&nbsp;<span className='badge'>6</span>
                   </h2>
                   <Button bsStyle='primary'>
-                    <Icon name='plus'
-                      atomic={{m: 'Va(sub)'}}
-                      title='plus' />&nbsp;Create role
+                   Create role
                   </Button>
                   <div className='left-form toolbar col-xs-12'>
                     <div className='search-box col-xs-6 col-sm-8 col-md-6
@@ -61,9 +59,9 @@ class Roles extends Component {
                             [user, glossary-admin]</span>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
-                                atomic={{ m: 'H(ms0) Va(sub)' }}
+                                atomic={{ m: 'H(msn2) Va(sub)' }}
                                 title='cross' />
                             Delete</Button>
                           </td>
@@ -73,7 +71,7 @@ class Roles extends Component {
                             <a href=''>glossarist</a>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
                                 atomic={{ m: 'H(ms0) Va(sub)' }}
                                 title='cross' />
@@ -88,7 +86,7 @@ class Roles extends Component {
                             [glossarist]</span>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
                                 atomic={{ m: 'H(ms0) Va(sub)' }}
                                 title='cross' />
@@ -100,7 +98,7 @@ class Roles extends Component {
                             <a href=''>project-creator</a>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
                                 atomic={{ m: 'H(ms0) Va(sub)' }}
                                 title='cross' />
@@ -115,7 +113,7 @@ class Roles extends Component {
                             ar</span>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
                                 atomic={{ m: 'H(ms0) Va(sub)' }}
                                 title='cross' />
@@ -130,7 +128,7 @@ class Roles extends Component {
                             [project-creator]</span>
                           </td>
                           <td>
-                            <Button>
+                            <Button bsStyle='default btn-sm'>
                               <Icon name='cross'
                                 atomic={{ m: 'H(ms0) Va(sub)' }}
                                 title='cross' />
