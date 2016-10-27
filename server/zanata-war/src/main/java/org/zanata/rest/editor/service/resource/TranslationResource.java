@@ -11,13 +11,14 @@ import javax.ws.rs.core.Response;
 
 import org.zanata.rest.editor.MediaTypes;
 import org.zanata.rest.editor.dto.TranslationData;
+import org.zanata.rest.service.RestResource;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
-public interface TranslationResource {
+public interface TranslationResource extends RestResource {
 
     public static final String SERVICE_PATH = "/trans/{localeId}";
 

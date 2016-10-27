@@ -168,13 +168,13 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Searching...")
     String searching();
 
-    @DefaultMessage("Found no glossary results")
+    @DefaultMessage("No glossary results found")
     String foundNoGlossaryResults();
 
-    @DefaultMessage("Found no translation memory results")
+    @DefaultMessage("No translation memory results found")
     String foundNoTMResults();
 
-    @DefaultMessage("Glossary save fail")
+    @DefaultMessage("Glossary save failed")
     String saveGlossaryFailed();
 
     @DefaultMessage("#")
@@ -182,6 +182,12 @@ public interface UiMessages extends Messages {
 
     @DefaultMessage("Color legend")
     String colorLegend();
+
+    @DefaultMessage("TM Diff Highlighting")
+    String tmDiffHighlighting();
+
+    @DefaultMessage("TM Highlighting")
+    String tmHighlighting();
 
     @DefaultMessage("Click to see available filter terms (separate by space)")
     String filterMesssagesByTerm();

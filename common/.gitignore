@@ -1,0 +1,12 @@
+/target/
+/*/target/
+*~
+/.settings
+/.project
+bin/
+test-output/
+*.orig
+
+# idea
+*.idea/
+*.iml

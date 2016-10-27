@@ -134,6 +134,7 @@ public class TranslationHistoryView extends ShortcutContextAwareDialogBox
         items = Lists.newArrayList();
         redrawList();
         disableComparison();
+        tabLayoutPanel.selectTab(0);
     }
 
     interface TranslationHistoryViewUiBinder extends

@@ -1,0 +1,1423 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.zanata</groupId>
+  <artifactId>parent</artifactId>
+  <version>4.0.0-SNAPSHOT</version>
+  <name>Zanata Parent POM</name>
+  <description>Parent pom for Zanata modules</description>
+  <url>http://zanata.org/</url>
+  <packaging>pom</packaging>
+
+  <!--
+    Maven likes to add the artifactIds to these URLs (thus breaking
+    them), so we have to specify these URLs again in each POM.
+   -->
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata-parent.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-parent.git</developerConnection>
+    <url>https://github.com/zanata/zanata-parent</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License v2.1</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <issueManagement>
+    <system>Jira</system>
+    <url>https://zanata.atlassian.net/</url>
+  </issueManagement>
+
+  <ciManagement>
+    <system>jenkins</system>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+      </notifier>
+    </notifiers>
+  </ciManagement>
+
+  <mailingLists>
+    <mailingList>
+      <name>zanata-users</name>
+      <post>zanata-users@redhat.com</post>
+      <subscribe>https://www.redhat.com/mailman/listinfo/zanata-users/</subscribe>
+      <unsubscribe>zanata-users-request@redhat.com?subject=unsubscribe</unsubscribe>
+      <archive>https://www.redhat.com/archives/zanata-users/</archive>
+    </mailingList>
+
+    <mailingList>
+      <name>zanata-devel</name>
+      <post>zanata-devel@redhat.com</post>
+      <subscribe>https://www.redhat.com/mailman/listinfo/zanata-devel/</subscribe>
+      <unsubscribe>zanata-devel-request@redhat.com?subject=unsubscribe</unsubscribe>
+      <archive>https://www.redhat.com/archives/zanata-devel/</archive>
+    </mailingList>
+
+    <mailingList>
+      <name>zanata-commits</name>
+      <!-- users can't post messages: <post>zanata-commits@redhat.com</post> -->
+      <subscribe>https://www.redhat.com/mailman/listinfo/zanata-commits/</subscribe>
+      <unsubscribe>zanata-commits-request@redhat.com?subject=unsubscribe</unsubscribe>
+      <archive>https://www.redhat.com/archives/zanata-commits/</archive>
+    </mailingList>
+
+  </mailingLists>
+
+  <organization>
+    <name>Zanata Project</name>
+    <url>http://zanata.org/</url>
+  </organization>
+
+  <developers>
+    <!-- in alphabetical order (by id field) -->
+    <developer>
+      <id>aeng@redhat.com</id>
+      <name>Alex Eng</name>
+      <email>aeng@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>camunoz@redhat.com</id>
+      <name>Carlos Munoz</name>
+      <email>camunoz@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>damason@redhat.com</id>
+      <name>David Mason</name>
+      <email>damason@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>hding@redhat.com</id>
+      <name>Helen Ding</name>
+      <email>hding@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>jni@redhat.com</id>
+      <name>James Ni</name>
+      <email>jni@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>8</timezone>
+    </developer>
+    <developer>
+      <id>pahuang@redhat.com</id>
+      <name>Patrick Huang</name>
+      <email>pahuang@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>sflaniga@redhat.com</id>
+      <name>Sean Flanigan</name>
+      <email>sflaniga@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+  </developers>
+
+  <contributors>
+    <!-- in alphabetical order (by email field) -->
+    <contributor>
+      <name>Ding-Yi Chen</name>
+      <email>dchen@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <roles>
+        <role>packager</role>
+        <role>tester</role>
+      </roles>
+      <timezone>10</timezone>
+    </contributor>
+  </contributors>
+
+  <properties>
+    <!--
+    Version of java compiler used for building. (Specified as major.minor,
+    as used by javac -source and -target).
+    -->
+    <required.java>1.8</required.java>
+    <!--
+      Version of Java used for runtime (major.minor) and for bytecode
+      generation. Should correspond with animal.sniffer.signature.
+    -->
+    <required.jvm>1.8</required.jvm>
+
+    <!--
+      Version of Java used for API compatibility checking. Should
+      correspond with required.jvm.
+    -->
+    <animal.sniffer.signature>org.codehaus.mojo.signature:java18:1.0</animal.sniffer.signature>
+    <required.maven>3.3.9</required.maven>
+    <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <!-- The profile 'staticAnalysis' enables these -->
+    <dupfind.skip>true</dupfind.skip>
+    <enforcer.skip>true</enforcer.skip>
+    <findbugs.skip>true</findbugs.skip>
+    <mdep.analyze.skip>true</mdep.analyze.skip>
+
+    <hamcrest.version>1.3</hamcrest.version>
+    <findbugs.maven.version>3.0.1</findbugs.maven.version>
+    <groovy.version>1.8.9</groovy.version>
+    <guava.version>18.0</guava.version>
+    <jackson.version>1.9.13</jackson.version>
+    <jaxb.api.version>2.2.12</jaxb.api.version>
+    <maven.javadoc.version>2.9.1</maven.javadoc.version>
+    <maven.jxr.version>2.5</maven.jxr.version>
+    <resteasy.version>3.0.13.Final</resteasy.version>
+    <surefire.version>2.18.1</surefire.version>
+    <maven.source.version>2.2.1</maven.source.version>
+
+    <!-- Avoid raw.github.com -->
+    <checkstyle.skip>false</checkstyle.skip>
+    <!-- When testing checkstyle changes, use -Dcheckstyle.config.location to point to a local file: -->
+    <checkstyle.config.location>https://raw.githubusercontent.com/zanata/zanata-platform/master/parent/checkstyle.xml</checkstyle.config.location>
+    <checkstyle.propertiesLocation />
+    <checkstyle.suppressions.location>https://raw.githubusercontent.com/zanata/zanata-platform/master/parent/checkstyle-suppressions.xml</checkstyle.suppressions.location>
+    <checkstyle.suppressionsFileExpression />
+    <checkstyle.maven.version>2.17</checkstyle.maven.version>
+    <checkstyle.version>7.0</checkstyle.version>
+    <findbugs.excludeFilterFile>https://raw.githubusercontent.com/zanata/zanata-platform/master/parent/findbugs-filter.xml</findbugs.excludeFilterFile>
+    <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
+    <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
+    <slf4j.version>1.7.12</slf4j.version>
+  </properties>
+
+  <build>
+    <plugins>
+
+      <!--
+        This plugin sorts and reformats the pom.xml.
+        NB: Do not sort dependencies because:
+        1. Classpath order matters.
+        2. So does the order of bom imports.
+        See also https://code.google.com/p/sortpom/wiki/SortDependenciesVarning
+        and https://code.google.com/p/sortpom/wiki/SortPluginsVarning
+      -->
+      <plugin>
+        <groupId>com.google.code.sortpom</groupId>
+        <artifactId>maven-sortpom-plugin</artifactId>
+        <version>2.2.1</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+          <keepBlankLines>true</keepBlankLines>
+          <nrOfIndentSpace>2</nrOfIndentSpace>
+          <predefinedSortOrder>custom_1</predefinedSortOrder>
+          <sortProperties>true</sortProperties>
+        </configuration>
+        <!--
+                <executions>
+                  <execution>
+                    <goals>
+                      <goal>sort</goal>
+                    </goals>
+                    <phase>verify</phase>
+                  </execution>
+                </executions>
+        -->
+      </plugin>
+
+      <!-- Allow whitespace checking with "mvn checkstyle:check" -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <configuration>
+          <configLocation>${checkstyle.config.location}</configLocation>
+          <!-- report violations to stdout (not console!) -->
+          <consoleOutput>true</consoleOutput>
+          <includes>*.xml,*.txt,*.md,etc/**,src/**</includes>
+          <excludes>src/test/resources/**</excludes>
+          <sourceDirectory>${project.basedir}</sourceDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <id>check</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <phase>verify</phase>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>com.puppycrawl.tools</groupId>
+            <artifactId>checkstyle</artifactId>
+            <version>${checkstyle.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <encoding>UTF-8</encoding>
+          <source>${required.java}</source>
+          <target>${required.java}</target>
+          <showDeprecation>true</showDeprecation>
+          <showWarnings>true</showWarnings>
+          <optimize>true</optimize>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-eclipse-plugin</artifactId>
+        <configuration>
+          <downloadSources>true</downloadSources>
+          <downloadJavadocs>false</downloadJavadocs>
+          <buildOutputDirectory>bin</buildOutputDirectory>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <!--
+            Check for misused dependencies during the build
+            http://maven.apache.org/plugins/maven-dependency-plugin/examples/failing-the-build-on-dependency-analysis-warnings.html
+          -->
+          <execution>
+            <id>analyze</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>analyze-only</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <failOnWarning>false</failOnWarning>
+          <outputXML>true</outputXML>
+          <usedDependencies combine.children="append">
+            <!-- runtime-only dependencies which maven-dependency-analyzer misses  -->
+            <usedDependency>org.slf4j:slf4j-log4j12</usedDependency>
+            <usedDependency>org.slf4j:jcl-over-slf4j</usedDependency>
+          </usedDependencies>
+        </configuration>
+      </plugin>
+
+      <!-- https://github.com/basepom/duplicate-finder-maven-plugin -->
+      <plugin>
+        <groupId>org.basepom.maven</groupId>
+        <artifactId>duplicate-finder-maven-plugin</artifactId>
+        <version>1.2.1</version>
+        <configuration>
+          <failBuildInCaseOfDifferentContentConflict>true</failBuildInCaseOfDifferentContentConflict>
+          <!--<printEqualFiles>true</printEqualFiles>-->
+          <skip>${dupfind.skip}</skip>
+        </configuration>
+        <executions>
+          <execution>
+            <id>check</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.4</version>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <rules>
+            <bannedDependencies>
+              <excludes combine.children="append">
+                <!-- use junit:junit v11+ -->
+                <exclude>junit:junit-dep</exclude>
+                <exclude>xml-apis:xml-apis</exclude>
+                <exclude>xerces:xmlParserAPIs</exclude>
+
+                <!-- use com.google.code.findbugs:annotations -->
+                <exclude>net.jcip:jcip-annotations</exclude>
+                <exclude>com.google.code.findbugs:jsr305</exclude>
+
+                <!-- use org.glassfish.jaxb:jaxb-core -->
+                <exclude>com.sun.xml.bind:jaxb-core</exclude>
+                <!-- use org.glassfish.jaxb:jaxb-runtime -->
+                <exclude>com.sun.xml.bind:jaxb-impl</exclude>
+
+                <!-- use org.jboss.spec.javax.servlet -->
+                <exclude>javax.servlet:servlet-api</exclude>
+                <exclude>javax.servlet:javax.servlet-api</exclude>
+
+                <!-- use org.jboss.spec.javax.annotation -->
+                <exclude>javax.annotation:jsr250-api</exclude>
+
+                <exclude>net.sf.okapi.logbind:build-log4j</exclude>
+                <!-- use org.javassist:javassist  -->
+                <exclude>javassist:javassist</exclude>
+                <!-- use org.apache.httpcomponents -->
+                <exclude>commons-httpclient:commons-httpclient</exclude>
+                <!-- use commons-beanutils:commons-beanutils -->
+                <exclude>commons-beanutils:commons-beanutils-core</exclude>
+                <!-- use org.slf4j:jcl-over-slf4j -->
+                <exclude>commons-logging:commons-logging</exclude>
+                <!-- use org.mockito:mockito-core -->
+                <exclude>org.mockito:mockito-all</exclude>
+                <exclude>org.slf4j:slf4j-jcl</exclude>
+
+                <!-- use resteasy-jaxrs instead of these: -->
+                <!-- client could use jersey -->
+                <exclude>javax.ws.rs:jsr311-api</exclude>
+
+                <!-- use org.opensymphony.quartz:quartz -->
+                <exclude>quartz:quartz</exclude>
+
+                <!-- use com.io7m.xom:xom -->
+                <exclude>xom:xom</exclude>
+              </excludes>
+              <searchTransitive>true</searchTransitive>
+            </bannedDependencies>
+            <!--
+              Ensure that dependencies are compatible with our chosen
+              version of Java. See
+              http://mojo.codehaus.org/extra-enforcer-rules/enforceBytecodeVersion.html
+            -->
+            <enforceBytecodeVersion>
+              <maxJdkVersion>${required.jvm}</maxJdkVersion>
+              <ignoredScopes>
+                <!-- Newer bytecode is allowed for system:jdk-tools and similar -->
+                <ignoredScope>system</ignoredScope>
+              </ignoredScopes>
+            </enforceBytecodeVersion>
+            <!--
+              Ensure that Maven is using our chosen version of the JDK. See
+              http://maven.apache.org/enforcer/enforcer-rules/requireJavaVersion.html
+            -->
+            <requireJavaVersion>
+              <version>${required.java}</version>
+            </requireJavaVersion>
+            <requireMavenVersion>
+              <version>${required.maven}</version>
+            </requireMavenVersion>
+            <requireNoRepositories>
+              <message xml:space="preserve">Repositories in pom.xml are not allowed by Maven Central</message>
+              <banRepositories>true</banRepositories>
+              <banPluginRepositories>true</banPluginRepositories>
+              <allowedRepositories combine.children="append">
+                <allowedRepository>sonatype-nexus-snapshots</allowedRepository>
+              </allowedRepositories>
+            </requireNoRepositories>
+            <requireUpperBoundDeps />
+          </rules>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>extra-enforcer-rules</artifactId>
+            <version>1.0-beta-3</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <useFile>false</useFile>
+          <failIfNoTests>true</failIfNoTests>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version>1.15</version>
+        <executions>
+          <execution>
+            <id>animal-sniffer</id>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <excludeDependencies>
+            <!-- xom:1.0 uses this -->
+            <excludeDependency>com.ibm.icu:icu4j:jar:2.6.1</excludeDependency>
+          </excludeDependencies>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>${findbugs.maven.version}</version>
+        <configuration>
+          <excludeFilterFile>${findbugs.excludeFilterFile}</excludeFilterFile>
+          <!-- NB: If we want to failOnError, we may need to
+               remove GuavaBetaDetector/library-detectors. -->
+          <failOnError>false</failOnError>
+          <plugins>
+            <plugin>
+              <groupId>com.overstock.findbugs</groupId>
+              <artifactId>library-detectors</artifactId>
+              <version>1.1</version>
+            </plugin>
+          </plugins>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default</id>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>versions-maven-plugin</artifactId>
+        <version>2.2</version>
+      </plugin>
+
+      <plugin>
+        <groupId>com.lukegb.mojo</groupId>
+        <artifactId>gitdescribe-maven-plugin</artifactId>
+        <version>2.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>gitdescribe</goal>
+            </goals>
+            <id>git-describe</id>
+            <phase>initialize</phase>
+            <configuration>
+              <descriptionProperty>gitDescribe</descriptionProperty>
+              <extraArguments>
+              </extraArguments>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- useful for debugging Maven properties: eg mvn initialize antrun:run -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <configuration>
+          <target>
+            <echo>[describe] ${gitDescribe}</echo>
+          </target>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <inherited>true</inherited>
+        <configuration>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+            <manifestEntries>
+              <SCM-Describe>${gitDescribe}</SCM-Describe>
+              <Implementation-Build>${maven.build.timestamp}</Implementation-Build>
+            </manifestEntries>
+          </archive>
+          <skipIfEmpty>true</skipIfEmpty>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5</version>
+        <configuration>
+          <allowTimestampedSnapshots>false</allowTimestampedSnapshots>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
+          <useReleaseProfile>false</useReleaseProfile>
+          <localCheckout>true</localCheckout>
+          <pushChanges>true</pushChanges>
+          <releaseProfiles>release</releaseProfiles>
+          <goals>deploy</goals>
+        </configuration>
+      </plugin>
+
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.8</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>${checkstyle.maven.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>2.6.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.3</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.10</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven.javadoc.version}</version>
+          <configuration>
+            <additionalparam>${javadoc.opts}</additionalparam>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-eclipse-plugin</artifactId>
+          <version>2.10</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>2.5.2</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.6</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.7</version>
+          <dependencies>
+            <dependency>
+                <groupId>org.apache.maven.shared</groupId>
+                <artifactId>maven-filtering</artifactId>
+                <version>1.3</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>${maven.source.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${surefire.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <version>2.4</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-report-plugin</artifactId>
+          <version>${surefire.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jxr-plugin</artifactId>
+          <version>${maven.jxr.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>3.4</version>
+        </plugin>
+        <!-- Mandatory plugins for using Spock -->
+        <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>gmaven-plugin</artifactId>
+          <version>1.5</version>
+          <configuration>
+            <providerSelection>1.8</providerSelection>
+          </configuration>
+          <executions>
+            <execution>
+              <id>spock</id>
+              <goals>
+                <goal>compile</goal>
+                <goal>testCompile</goal>
+              </goals>
+            </execution>
+          </executions>
+          <dependencies>
+            <dependency>
+              <groupId>org.codehaus.gmaven.runtime</groupId>
+              <artifactId>gmaven-runtime-1.8</artifactId>
+              <version>1.5</version>
+              <exclusions>
+                <exclusion>
+                  <groupId>org.codehaus.groovy</groupId>
+                  <artifactId>groovy-all</artifactId>
+                </exclusion>
+              </exclusions>
+            </dependency>
+            <dependency>
+              <groupId>org.codehaus.groovy</groupId>
+              <artifactId>groovy-all</artifactId>
+              <version>${groovy.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <extensions>
+      <extension>
+        <!--
+        enables dav: protocol for distributionManagement in Maven 3+
+        -->
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav-jackrabbit</artifactId>
+        <version>1.0-beta-7</version>
+      </extension>
+    </extensions>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>doclint-java8-disable</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.opts>-Xdoclint:none</javadoc.opts>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <!-- Deploy sources to OSSRH -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven.source.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- Deploy javadocs to OSSRH -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <additionalparam>${javadoc.opts}</additionalparam>
+            </configuration>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- Deploy sign artifacts for OSSRH -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <useAgent>true</useAgent>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- This profile lets us skip unit tests (but not integration tests)
+        with -DskipUnitTests . The option
+        -DskipTests can still be used to skip all tests (unit and integration). -->
+      <id>skipUnitTests</id>
+      <activation>
+        <property>
+          <name>skipUnitTests</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skipTests>true</skipTests>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>staticAnalysis</id>
+      <activation>
+        <property>
+          <name>staticAnalysis</name>
+        </property>
+      </activation>
+      <build>
+
+      </build>
+      <properties>
+        <dupfind.skip>false</dupfind.skip>
+        <enforcer.skip>false</enforcer.skip>
+        <findbugs.skip>false</findbugs.skip>
+        <mdep.analyze.skip>false</mdep.analyze.skip>
+      </properties>
+    </profile>
+
+    <profile>
+      <!-- This profile runs a single integration test with
+        -Dit.test=<integration-test-name>, skipping unit tests. -->
+      <id>it.test</id>
+      <activation>
+        <property>
+          <name>it.test</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <skipTests>true</skipTests>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>m2e</id>
+      <!-- This profile is only active when the property "m2e.version"
+        is set, which is the case when building in Eclipse with m2e. -->
+      <!-- From http://stackoverflow.com/a/21574285/14379 -->
+      <activation>
+        <property>
+          <name>m2e.version</name>
+        </property>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.eclipse.m2e</groupId>
+              <artifactId>lifecycle-mapping</artifactId>
+              <version>1.0.0</version>
+              <configuration>
+                <lifecycleMappingMetadata>
+                  <pluginExecutions>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <versionRange>[1.0.0,)</versionRange>
+                        <goals>
+                          <goal>enforce</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>com.lukegb.mojo</groupId>
+                        <artifactId>gitdescribe-maven-plugin</artifactId>
+                        <versionRange>[2.0,)</versionRange>
+                        <goals>
+                          <goal>gitdescribe</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <versionRange>[2.10,)</versionRange>
+                        <goals>
+                          <goal>check</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <versionRange>[2.8,)</versionRange>
+                        <goals>
+                          <goal>analyze-only</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>findbugs-maven-plugin</artifactId>
+                        <versionRange>[2.5.2,)</versionRange>
+                        <goals>
+                          <goal>check</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                    <pluginExecution>
+                      <pluginExecutionFilter>
+                        <groupId>org.codehaus.groovy.maven</groupId>
+                        <artifactId>gmaven-plugin</artifactId>
+                        <versionRange>[1.0,)</versionRange>
+                        <goals>
+                          <goal>execute</goal>
+                        </goals>
+                      </pluginExecutionFilter>
+                      <action>
+                        <ignore />
+                      </action>
+                    </pluginExecution>
+                  </pluginExecutions>
+                </lifecycleMappingMetadata>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+
+    <profile>
+      <!-- Used for MEAD builds -->
+      <id>mead</id>
+      <activation>
+        <property>
+          <name>mead</name>
+        </property>
+      </activation>
+      <properties>
+        <allow.deploy.skip>false</allow.deploy.skip>
+        <checkstyle.skip>true</checkstyle.skip>
+        <enforcer.skip>true</enforcer.skip>
+        <findbugs.skip>true</findbugs.skip>
+        <mavensign.expand.skip>*</mavensign.expand.skip>
+        <mavensign.sign.skip>*</mavensign.sign.skip>
+        <skipTests>true</skipTests>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>allReports</id>
+      <reporting>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>cobertura-maven-plugin</artifactId>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <configuration>
+              <configLocation>${checkstyle.config.location}</configLocation>
+              <propertiesLocation>${checkstyle.propertiesLocation}</propertiesLocation>
+              <suppressionsLocation>${checkstyle.suppressions.location}</suppressionsLocation>
+              <suppressionsFileExpression>${checkstyle.suppressionsFileExpression}</suppressionsFileExpression>
+              <enableRulesSummary>false</enableRulesSummary>
+              <skip>${checkstyle.skip}</skip>
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-report-plugin</artifactId>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jxr-plugin</artifactId>
+            <configuration>
+              <aggregate>true</aggregate>
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-pmd-plugin</artifactId>
+            <version>2.5</version>
+            <configuration>
+              <targetJdk>${required.java}</targetJdk>
+            </configuration>
+          </plugin>
+
+        </plugins>
+      </reporting>
+    </profile>
+  </profiles>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.xml.fastinfoset</groupId>
+        <artifactId>FastInfoset</artifactId>
+        <version>1.2.13</version>
+      </dependency>
+      <dependency>
+        <groupId>log4j</groupId>
+        <artifactId>log4j</artifactId>
+        <version>1.2.17</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <version>${groovy.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jcl-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>log4j-over-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.spockframework</groupId>
+        <artifactId>spock-core</artifactId>
+        <version>0.7-groovy-1.8</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>junit</groupId>
+            <artifactId>junit-dep</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.testng</groupId>
+        <artifactId>testng</artifactId>
+        <version>6.8.21</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.easymock</groupId>
+        <artifactId>easymock</artifactId>
+        <version>3.3.1</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>1.10.19</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-core</artifactId>
+        <version>${hamcrest.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hamcrest</groupId>
+        <artifactId>hamcrest-library</artifactId>
+        <version>${hamcrest.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava-gwt</artifactId>
+        <version>${guava.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>annotations</artifactId>
+        <version>${findbugs.maven.version}</version>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>net.jcip</groupId>
+            <artifactId>jcip-annotations</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-core-asl</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-jaxrs</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-mapper-asl</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-xc</artifactId>
+        <version>${jackson.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>1.3.170</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>1.9.2</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.10</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>3.2.2</version>
+      </dependency>
+
+      <!-- BANNED! -->
+      <!--
+            <dependency>
+              <groupId>commons-logging</groupId>
+              <artifactId>commons-logging</artifactId>
+              <version>1.1.1</version>
+            </dependency>
+      -->
+
+      <dependency>
+        <groupId>commons-httpclient</groupId>
+        <artifactId>commons-httpclient</artifactId>
+        <version>3.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.transaction</groupId>
+        <artifactId>jta</artifactId>
+        <version>1.1.1</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>${jaxb.api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml.bind</groupId>
+        <artifactId>jaxb-api</artifactId>
+        <version>${jaxb.api.version}</version>
+        <classifier>sources</classifier>
+      </dependency>
+      <dependency>
+        <groupId>javax.xml.stream</groupId>
+        <artifactId>stax-api</artifactId>
+        <version>1.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.jaxb</groupId>
+        <artifactId>jaxb-runtime</artifactId>
+        <version>2.2.11</version>
+      </dependency>
+
+      <!-- RestEasy dependencies -->
+      <!-- We still need RestEasy, as zanata-common-api need it -->
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-bom</artifactId>
+        <version>${resteasy.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxrs</artifactId>
+        <version>${resteasy.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>net.jcip</groupId>
+            <artifactId>jcip-annotations</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-plugin-api</artifactId>
+        <version>2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>3.0.4</version>
+      </dependency>
+      <dependency>
+        <groupId>com.pyx4j</groupId>
+        <artifactId>maven-plugin-log4j</artifactId>
+        <version>1.0.1</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-configuration</groupId>
+        <artifactId>commons-configuration</artifactId>
+        <version>1.10</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.fedorahosted.openprops</groupId>
+        <artifactId>openprops</artifactId>
+        <version>0.7.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.infinitest</groupId>
+        <artifactId>infinitest</artifactId>
+        <version>4.0.1</version>
+        <scope>test</scope>
+      </dependency>
+
+      <!-- Liquibase Dependencies -->
+      <!-- If the Liquibase version is being updated, please refer to
+      any changelog files that run 'on change' and make sure that they still run
+      after upgrading the version. -->
+      <dependency>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-core</artifactId>
+        <version>3.0.7</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.6</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-csv</artifactId>
+        <version>1.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.4</version>
+      </dependency>
+
+      <dependency>
+        <!-- New group Id -->
+        <groupId>com.io7m.xom</groupId>
+        <artifactId>xom</artifactId>
+        <!-- NB: the latest version currently packaged for Fedora: -->
+        <version>1.2.10</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>xml-apis</artifactId>
+            <groupId>xml-apis</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xerces</groupId>
+            <artifactId>xmlParserAPIs</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!-- Optional dependencies for using Spock -->
+      <dependency> <!-- enables mocking of classes (in addition to interfaces) -->
+        <groupId>cglib</groupId>
+        <artifactId>cglib-nodep</artifactId>
+        <version>2.2.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency> <!-- enables mocking of classes without default constructor (together with CGLIB) -->
+        <groupId>org.objenesis</groupId>
+        <artifactId>objenesis</artifactId>
+        <version>2.1</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <!-- these can be incredibly slow -->
+          <dependencyDetailsEnabled>${reports-plugin.dependencyDetailsEnabled}</dependencyDetailsEnabled>
+          <dependencyLocationsEnabled>${reports-plugin.dependencyLocationsEnabled}</dependencyLocationsEnabled>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>${findbugs.maven.version}</version>
+        <configuration>
+          <xmlOutput>true</xmlOutput>
+          <!-- Optional directory to put findbugs xdoc xml report -->
+          <xmlOutputDirectory>target/site</xmlOutputDirectory>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </reporting>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+</project>

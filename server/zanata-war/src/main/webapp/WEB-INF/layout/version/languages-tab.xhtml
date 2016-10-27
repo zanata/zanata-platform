@@ -22,6 +22,9 @@
     action="#{projectIterationZipFileAction.prepareIterationZipFile(versionHomeAction.poProject, versionHomeAction.projectSlug, versionHomeAction.versionSlug, versionHomeAction.selectedLocale.localeId)}"
     render="download-progress" limitRender="true"/>
 
+  <a4j:jsFunction name="triggerManualWebHook"
+    action="#{versionHomeAction.triggerManualWebhookEvent}" />
+
 <div class="panels--2">
 <div class="panels__panel panel js-panel">
   <div class="panels__panel__header panel__header">
@@ -226,6 +229,16 @@
                 <i class="i i--export i__item__icon"></i>
               </a>
             </li>
+
+            <ui:fragment rendered="#{versionHomeAction.canTriggerManualWebhook()}">
+              <li>
+                <a href="#" onclick="triggerManualWebHook()" class="i__item--right">
+                  #{msgs.format('jsf.iteration.triggerWebHook', versionHomeAction.selectedLocale.retrieveDisplayName())}
+                  <i class="i i--notification i__item__icon"></i>
+                </a>
+              </li>
+            </ui:fragment>
+
           </ul>
         </h:panelGroup>
       </h:form>

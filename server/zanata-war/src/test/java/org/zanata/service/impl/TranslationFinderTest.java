@@ -16,6 +16,7 @@ import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.Mock;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -35,6 +36,7 @@ import org.zanata.test.DBUnitDataSetRunner;
 import org.zanata.test.ParamTestCdiExtension;
 import org.zanata.test.rule.DataSetOperation;
 import org.zanata.test.rule.JpaRule;
+import org.zanata.util.UrlUtil;
 import org.zanata.util.Zanata;
 
 import javax.enterprise.inject.Produces;
@@ -103,6 +105,9 @@ public class TranslationFinderTest {
 
         @Inject
         TranslationMemoryServiceImpl translationMemoryService;
+
+        @Produces @Mock
+        private UrlUtil urlUtil;
 
         @Parameterized.Parameter(0)
         Execution execution;
@@ -307,6 +312,9 @@ public class TranslationFinderTest {
         FullTextEntityManager getFullTextEntityManager() {
             return Search.getFullTextEntityManager(jpaRule.getEntityManager());
         }
+
+        @Produces @Mock
+        private UrlUtil urlUtil;
 
         @Produces @Zanata
         EntityManagerFactory getEntityManagerFactory() {

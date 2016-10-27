@@ -68,9 +68,11 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
 import org.zanata.service.ValidationService;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.service.impl.WebhookServiceImpl;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.UrlUtil;
+import org.zanata.webhook.events.VersionChangedEvent;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
@@ -145,6 +147,9 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Inject
     private ZanataIdentity identity;
+
+    @Inject
+    private WebhookServiceImpl webhookServiceImpl;
 
     private Map<ValidationId, ValidationAction> availableValidations = Maps
             .newHashMap();
@@ -429,10 +434,11 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     @Override
     @Transactional
     public String persist() {
-        if (!validateSlug(getInputSlugValue(), "slug")) {
+        String slug = getInputSlugValue();
+        if (!validateSlug(slug, "slug")) {
             return null;
         }
-        getInstance().setSlug(getInputSlugValue());
+        getInstance().setSlug(slug);
         updateProjectType();
 
         HProject project = getProject();
@@ -450,7 +456,11 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
         getInstance().getCustomizedValidations().putAll(
                 project.getCustomizedValidations());
-        return super.persist();
+        String result = super.persist();
+        webhookServiceImpl.processWebhookVersionChanged(getProjectSlug(), slug,
+                getProject().getWebHooks(),
+                VersionChangedEvent.ChangeType.CREATE);
+        return result;
     }
 
     @Override
@@ -559,7 +569,12 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
 
     @Transactional
     public void deleteSelf() {
+        String slug = getInstance().getSlug();
         updateStatus('O');
+
+        webhookServiceImpl.processWebhookVersionChanged(getProjectSlug(), slug,
+                getProject().getWebHooks(),
+                VersionChangedEvent.ChangeType.DELETE);
     }
 
     @Transactional

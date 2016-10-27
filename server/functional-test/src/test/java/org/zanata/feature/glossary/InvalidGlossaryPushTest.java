@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 public class InvalidGlossaryPushTest extends ZanataTestCase {
 
-    private String pushCommand = "mvn --batch-mode zanata:glossary-push -Dglossary.lang=fr -Dzanata.file=compendium_fr_invalid.po -Dzanata.userConfig=";
+    private String pushCommand = "mvn -e --batch-mode zanata:glossary-push -Dglossary.lang=fr -Dzanata.file=compendium_fr_invalid.po -Dzanata.userConfig=";
     private ClientWorkFlow clientWorkFlow;
     private String userConfigPath;
     private File projectRootPath;

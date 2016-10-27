@@ -29,6 +29,7 @@ import org.zanata.page.BasePage;
 import org.zanata.page.administration.AddLanguagePage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -36,20 +37,14 @@ import java.util.List;
 @Slf4j
 public class LanguagesPage extends BasePage {
 
-    private By moreActions = By.id("more-actions");
-    private By addLanguageLink = By.linkText("Add New Language");
-    private By enabledByDefaultLabel = By.className("label");
+    private By addLanguageButton = By.id("btn-language-add-new");
+    private By badgesLabel = By.className("badge");
 
     public LanguagesPage(WebDriver driver) {
         super(driver);
     }
 
-    public LanguagePage selectLanguage(String language) {
-        log.info("Select {} from the language list", language);
-        findRowByLocale(language).click();
-        return new LanguagePage(getDriver());
-    }
-
+    // return list of tr
     private WebElement findRowByLocale(final String localeId) {
         for (WebElement row : getRows()) {
             if (getShortLocale(row).equals(localeId)) {
@@ -60,52 +55,45 @@ public class LanguagesPage extends BasePage {
     }
 
     private String getShortLocale(WebElement row) {
-        String locale = getListEntryLocale(row);
-        return locale.substring(0, locale.indexOf('[')).trim();
+        WebElement span = row.findElement(By.name("language-name"));
+        return span.getText().substring(0, span.getText().indexOf('[')).trim();
     }
 
     private List<WebElement> getRows() {
-        return readyElement(existingElement(By.id("languageForm")),
-                By.className("list--stats"))
-                .findElements(By.name("entry"));
-    }
-
-    private String getListEntryLocale(WebElement listElement) {
-        return listElement.findElement(By.className("list__item__meta")).getText().trim();
+        return readyElement(existingElement(By.id("languages-form")),
+                By.id("languages-table"))
+                .findElements(By.name("language-entry"));
     }
 
     public List<String> getLanguageLocales() {
         log.info("Query list of languages");
-        List<String> names = new ArrayList<>();
-        for (WebElement listItem : getRows()) {
-            names.add(getShortLocale(listItem));
-        }
-        return names;
+        return getRows().stream().map(this::getShortLocale)
+            .collect(Collectors.toList());
     }
 
-    public LanguagesPage clickMoreActions() {
-        log.info("Click More Actions dropdown");
-        clickElement(moreActions);
-        return new LanguagesPage(getDriver());
-    }
-
-    public AddLanguagePage addNewLanguage() {
-        log.info("Click Add New Language");
-        clickElement(addLanguageLink);
+    public AddLanguagePage clickAddNewLanguage() {
+        log.info("Click add new language button");
+        clickElement(addLanguageButton);
         return new AddLanguagePage(getDriver());
     }
 
     public LanguagePage gotoLanguagePage(String localeId) {
         log.info("Click language {}", localeId);
-        findRowByLocale(localeId).click();
-        return new LanguagePage(getDriver());
+        WebElement element = findRowByLocale(localeId).findElement(
+            By.id("language-name-" + localeId));
+        if (element != null) {
+            element.click();
+            return new LanguagePage(getDriver());
+        }
+        throw new RuntimeException("Did not find locale " + localeId);
+
     }
 
     public boolean languageIsEnabledByDefault(String localeId) {
         log.info("Query is language enabled by default {}", localeId);
         // Search for enabledByDefaultLabel label
-        for (WebElement label: findRowByLocale(localeId).findElements(enabledByDefaultLabel)) {
-            if (label.getText().trim().equals("Default")) {
+        for (WebElement label: findRowByLocale(localeId).findElements(badgesLabel)) {
+            if (label.getText().trim().equalsIgnoreCase("DEFAULT")) {
                 return true;
             }
         }

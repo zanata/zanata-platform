@@ -23,6 +23,7 @@ package org.zanata.util;
 import java.util.List;
 
 import org.zanata.model.Activity;
+import org.zanata.model.Glossary;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HAccountResetPasswordKey;
@@ -76,7 +77,7 @@ public class ZanataEntities {
                 TransMemory.class);
         builder.add(Activity.class);
         // glossary
-        builder.add(HGlossaryTerm.class, HGlossaryEntry.class);
+        builder.add(HGlossaryTerm.class, HGlossaryEntry.class, Glossary.class);
         // text flows and targets
         builder.add(HPoTargetHeader.class, HTextFlowTargetHistory.class,
                 HTextFlowTargetReviewComment.class,

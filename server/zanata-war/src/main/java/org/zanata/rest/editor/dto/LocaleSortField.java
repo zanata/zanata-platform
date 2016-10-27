@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nullable;
+
 import lombok.Getter;
 
 /**
@@ -18,6 +20,12 @@ public class LocaleSortField implements Serializable {
     @Getter
     private final boolean ascending;
 
+    /**
+     * Sign for descending sort of a field.
+     * This should be placed in front of the sorting field.
+     */
+    private static final String DESCENDING_SIGN = "-";
+
     private static final Map<String, String> fieldMap;
     static {
         fieldMap = new HashMap<String, String>();
@@ -30,14 +38,18 @@ public class LocaleSortField implements Serializable {
         this.ascending = ascending;
     }
 
-    public static final LocaleSortField getByField(String field) {
+    /**
+     * Factory method to create a valid LocaleSortField.
+     * returns null if field is not in #fieldMap.
+     */
+    public static final @Nullable LocaleSortField getByField(String field) {
         if (field == null || field.length() <= 0) {
             throw new IllegalArgumentException(field);
         }
 
-        boolean isAscending = !field.startsWith("-");
+        boolean isAscending = !field.startsWith(DESCENDING_SIGN);
         String processedField =
-            field.startsWith("-") ? field.substring(1) : field;
+            field.startsWith(DESCENDING_SIGN) ? field.substring(1) : field;
 
         if (fieldMap.containsKey(processedField)) {
             return new LocaleSortField(fieldMap.get(processedField),

@@ -3,9 +3,9 @@ import { forOwn } from 'lodash'
 import CategoryItemMatrix from './CategoryItemMatrix'
 
 const CategoryMatrixTable = ({
-  categoryField,
-  categoryFieldTitle,
   matrixData,
+  category,
+  categoryTitle,
   categoryName,
   ...props
 }) => {
@@ -13,13 +13,13 @@ const CategoryMatrixTable = ({
   let rows = []
 
   matrixData.forEach(function (matrix) {
-    const field = matrix[categoryField]
+    const field = matrix[category]
     if (categoryMatrix[field] && categoryMatrix[field]['wordCount']) {
       categoryMatrix[field]['wordCount'] += matrix['wordCount']
     } else {
       categoryMatrix[field] = {
         wordCount: matrix['wordCount'],
-        title: matrix[categoryFieldTitle]
+        title: matrix[categoryTitle]
       }
     }
   })
@@ -45,9 +45,9 @@ const CategoryMatrixTable = ({
 }
 
 CategoryMatrixTable.propTypes = {
-  categoryField: PropTypes.string,
-  categoryFieldTitle: PropTypes.string,
   matrixData: PropTypes.array,
+  category: PropTypes.string,
+  categoryTitle: PropTypes.string,
   categoryName: PropTypes.string
 }
 

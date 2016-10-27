@@ -16,12 +16,32 @@ import {
   LANGUAGE_PERMISSION_FAILURE,
   LANGUAGE_DELETE_REQUEST,
   LANGUAGE_DELETE_SUCCESS,
-  LANGUAGE_DELETE_FAILURE
+  LANGUAGE_DELETE_FAILURE,
+  TOGGLE_NEW_LANGUAGE_DISPLAY,
+  LOAD_LANGUAGES_SUGGESTION_REQUEST,
+  LOAD_LANGUAGES_SUGGESTION_SUCCESS,
+  LOAD_LANGUAGES_SUGGESTION_FAILURE,
+  CREATE_LANGUAGE_REQUEST,
+  CREATE_LANGUAGE_SUCCESS,
+  CREATE_LANGUAGE_FAILURE
 } from '../actions/languages'
 
 const ERROR_MSG = 'We were unable load languages from server. ' +
   'Please refresh this page and try again.'
+
+const CREATE_LANGUAGE_ERROR_MSG = 'We were unable add new language. ' +
+  'Please refresh this page and try again.'
+
 export default handleActions({
+  [TOGGLE_NEW_LANGUAGE_DISPLAY]: (state, action) => {
+    return {
+      ...state,
+      newLanguage: {
+        ...state.newLanguage,
+        show: action.payload
+      }
+    }
+  },
   [CLEAR_MESSAGE]: (state, action) => {
     return {
       ...state,
@@ -43,12 +63,12 @@ export default handleActions({
         ...state,
         user: {
           ...state.user,
-          loading: true
+          loading: false
         },
         loading: false,
-        notification: {
-          severity: SEVERITY.ERROR,
-          message: ERROR_MSG
+        permission: {
+          canDeleteLocale: false,
+          canAddLocale: false
         }
       }
     } else {
@@ -73,9 +93,9 @@ export default handleActions({
         loading: false
       },
       loading: false,
-      notification: {
-        severity: SEVERITY.ERROR,
-        message: ERROR_MSG
+      permission: {
+        canDeleteLocale: false,
+        canAddLocale: false
       }
     }
   },
@@ -176,8 +196,103 @@ export default handleActions({
       deleting: false,
       notification: {
         severity: SEVERITY.ERROR,
-        message: 'We were unable delete this language. ' +
-        'Please refresh this page and try again.'
+        message: 'We were unable delete this language as it might ' +
+        'referenced by translations. Please disable it instead.'
+      }
+    }
+  },
+  [LOAD_LANGUAGES_SUGGESTION_REQUEST]: (state, action) => {
+    return {
+      ...state,
+      searchResults: []
+    }
+  },
+  [LOAD_LANGUAGES_SUGGESTION_SUCCESS]: (state, action) => {
+    if (action.error) {
+      return {
+        ...state,
+        loading: false,
+        notification: {
+          severity: SEVERITY.ERROR,
+          message: ERROR_MSG
+        }
+      }
+    } else {
+      return {
+        ...state,
+        newLanguage: {
+          ...state.newLanguage,
+          searchResults: action.payload
+        }
+      }
+    }
+  },
+  [LOAD_LANGUAGES_SUGGESTION_FAILURE]: (state, action) => {
+    return {
+      ...state,
+      newLanguage: {
+        ...state.newLanguage,
+        searchResults: []
+      },
+      notification: {
+        severity: SEVERITY.ERROR,
+        message: ERROR_MSG
+      }
+    }
+  },
+  [CREATE_LANGUAGE_REQUEST]: (state, action) => {
+    return {
+      ...state,
+      newLanguage: {
+        ...state.newLanguage,
+        saving: true
+      }
+    }
+  },
+  [CREATE_LANGUAGE_SUCCESS]: (state, action) => {
+    if (action.error) {
+      return {
+        ...state,
+        newLanguage: {
+          ...state.newLanguage,
+          saving: false,
+          show: false,
+          searchResults: []
+        },
+        notification: {
+          severity: SEVERITY.ERROR,
+          message: CREATE_LANGUAGE_ERROR_MSG
+        }
+      }
+    } else {
+      return {
+        ...state,
+        newLanguage: {
+          ...state.newLanguage,
+          saving: false,
+          show: false,
+          searchResults: []
+        },
+        notification: {
+          severity: SEVERITY.INFO,
+          message: 'Language ' + action.payload.displayName +
+            ' has been created.'
+        }
+      }
+    }
+  },
+  [CREATE_LANGUAGE_FAILURE]: (state, action) => {
+    return {
+      ...state,
+      newLanguage: {
+        ...state.newLanguage,
+        saving: false,
+        show: false,
+        searchResults: []
+      },
+      notification: {
+        severity: SEVERITY.ERROR,
+        message: CREATE_LANGUAGE_ERROR_MSG
       }
     }
   }
@@ -188,6 +303,11 @@ export default handleActions({
     locales: {
       results: [],
       totalCount: 0
+    },
+    newLanguage: {
+      saving: false,
+      show: false,
+      searchResults: []
     },
     permission: {
       canDeleteLocale: false,

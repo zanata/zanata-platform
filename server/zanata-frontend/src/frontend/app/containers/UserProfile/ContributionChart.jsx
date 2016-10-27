@@ -110,7 +110,7 @@ function convertMatrixDataToChartData (matrixData) {
 
 var ContributionChart = React.createClass({
   propTypes: {
-    dateRangeOption: React.PropTypes.object.isRequired,
+    dateRange: React.PropTypes.object.isRequired,
     wordCountForEachDay: React.PropTypes.arrayOf(
       React.PropTypes.shape(
         {
@@ -131,7 +131,7 @@ var ContributionChart = React.createClass({
   },
 
   shouldComponentUpdate: function (nextProps, nextState) {
-    return this.props.dateRangeOption !== nextProps.dateRangeOption ||
+    return this.props.dateRange !== nextProps.dateRange ||
       this.props.wordCountForEachDay.length !==
       nextProps.wordCountForEachDay.length
   },

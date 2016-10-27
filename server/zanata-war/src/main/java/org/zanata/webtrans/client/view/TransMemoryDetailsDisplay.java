@@ -34,6 +34,8 @@ public interface TransMemoryDetailsDisplay extends WidgetDisplay {
 
     void setLastModified(String lastModifiedBy, Date lastModifiedDate);
 
+    void setUrl(String url);
+
     void clearSourceAndTarget();
 
     void setSource(List<String> sourceContents);

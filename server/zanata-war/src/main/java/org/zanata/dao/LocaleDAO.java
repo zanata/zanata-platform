@@ -78,38 +78,8 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long> {
 
     public List<HLocale> find(int offset, int maxResults, String filter,
         List<LocaleSortField> sortFields, boolean onlyActive) {
-        StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("from HLocale l");
-
-        boolean hasCondition = StringUtils.isNotBlank(filter) || onlyActive;
-        if (hasCondition) {
-            queryBuilder.append(" where");
-        }
-
-        boolean joinQuery = false;
-        if (StringUtils.isNotBlank(filter)) {
-            joinQuery = true;
-            queryBuilder.append(" lower(l.localeId) like :query")
-                .append(" or lower(l.displayName) like :query")
-                .append(" or lower(l.nativeName) like :query");
-        }
-        if (onlyActive) {
-            if (joinQuery) {
-                queryBuilder.append(" and");
-            }
-            queryBuilder.append(" l.active = true");
-        }
-
-        if (sortFields != null && !sortFields.isEmpty()) {
-            queryBuilder.append(" ORDER BY ");
-            List<String> sortQuery = Lists.newArrayList();
-            for (LocaleSortField sortField : sortFields) {
-                String order = sortField.isAscending() ? " ASC" : " DESC";
-                sortQuery.add(sortField.getEntityField() + order);
-            }
-            queryBuilder.append(Joiner.on(", ").join(sortQuery));
-        }
-        Query query = getSession().createQuery(queryBuilder.toString());
+        Query query = getSession()
+                .createQuery(buildResultSearchQuery(filter, sortFields, onlyActive));
         if (StringUtils.isNotBlank(filter)) {
             query.setString("query", "%" + filter.toLowerCase() + "%");
         }
@@ -122,6 +92,66 @@ public class LocaleDAO extends AbstractDAOImpl<HLocale, Long> {
     }
 
     public int countByFind(String filter, boolean onlyActive) {
-        return find(0, -1, filter, null, onlyActive).size();
+        Query query = getSession()
+                .createQuery(buildCountSearchQuery(filter, null, onlyActive));
+        if (StringUtils.isNotBlank(filter)) {
+            query.setString("query", "%" + filter.toLowerCase() + "%");
+        }
+        query.setComment("LocaleDAO.countByFind");
+        Long totalCount = (Long) query.uniqueResult();
+        if (totalCount == null) {
+            return 0;
+        }
+        return totalCount.intValue();
+    }
+
+    private String buildCountSearchQuery(String filter,
+        List<LocaleSortField> sortFields, boolean onlyActive) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("select count(*) from HLocale");
+        queryBuilder.append(buildSearchQuery(filter, sortFields, onlyActive));
+        return queryBuilder.toString();
+    }
+
+    private String buildResultSearchQuery(String filter,
+        List<LocaleSortField> sortFields, boolean onlyActive) {
+        StringBuilder queryBuilder = new StringBuilder();
+        queryBuilder.append("from HLocale");
+        queryBuilder.append(buildSearchQuery(filter, sortFields, onlyActive));
+        return queryBuilder.toString();
+    }
+
+    private String buildSearchQuery(String filter,
+            List<LocaleSortField> sortFields, boolean onlyActive) {
+        StringBuilder queryBuilder = new StringBuilder();
+        boolean hasCondition = StringUtils.isNotBlank(filter) || onlyActive;
+        if (hasCondition) {
+            queryBuilder.append(" where");
+        }
+
+        boolean joinQuery = false;
+        if (StringUtils.isNotBlank(filter)) {
+            joinQuery = true;
+            queryBuilder.append(" lower(localeId) like :query")
+                    .append(" or lower(displayName) like :query")
+                    .append(" or lower(nativeName) like :query");
+        }
+        if (onlyActive) {
+            if (joinQuery) {
+                queryBuilder.append(" and");
+            }
+            queryBuilder.append(" active = true");
+        }
+
+        if (sortFields != null && !sortFields.isEmpty()) {
+            queryBuilder.append(" ORDER BY ");
+            List<String> sortQuery = Lists.newArrayList();
+            for (LocaleSortField sortField : sortFields) {
+                String order = sortField.isAscending() ? " ASC" : " DESC";
+                sortQuery.add(sortField.getEntityField() + order);
+            }
+            queryBuilder.append(Joiner.on(", ").join(sortQuery));
+        }
+        return queryBuilder.toString();
     }
 }

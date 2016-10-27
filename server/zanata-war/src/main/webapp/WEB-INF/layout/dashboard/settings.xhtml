@@ -153,7 +153,7 @@
                     <zanata:ajax-command-button styleClass="txt--danger button button--small reveal__target"
                       action="#{userSettingsAction.remove(cred)}"
                       render="credentialsList">
-                      <i class="i i--remove"></i>
+                      <i class="i i--cancel"></i>
                       <span class="is-hidden--m-l-down">#{msgs['jsf.dashboard.settings.removeIdentity.title']}</span>
                     </zanata:ajax-command-button>
                   </li>
@@ -259,7 +259,7 @@
                   title="#{msgs['jsf.LeaveLanguageTeam']}"
                   action="#{userSettingsAction.leaveLanguageTeam(locale.localeId.id)}"
                   render="languageListForm">
-                  <i class="i i--remove"></i>
+                  <i class="i i--cancel"></i>
                   <span class="is-hidden--m-l-down">#{msgs['jsf.LeaveLanguageTeam']}</span>
                 </zanata:ajax-command-button>
               </li>

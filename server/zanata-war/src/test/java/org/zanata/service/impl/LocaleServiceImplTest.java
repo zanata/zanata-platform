@@ -115,7 +115,7 @@ public class LocaleServiceImplTest {
         List<HLocale> lan = new ArrayList<HLocale>();
         lan.add(new HLocale(new LocaleId("as-IN")));
         lan.add(new HLocale(new LocaleId("pt-BR")));
-        when(localeDAO.findAll()).thenReturn(lan);
+        when(localeDAO.find(0, -1, null, null, false)).thenReturn(lan);
         List<HLocale> sup = testLocaleServiceImpl.getAllLocales();
         assertThat(sup.size()).isEqualTo(2);
         String loc1 = sup.get(0).getLocaleId().getId();

@@ -87,6 +87,7 @@ public class TransMemoryDetailsPresenter extends
         String iteration = "";
         String doc = "";
         String lastModifiedBy = "";
+        String url = "";
         Date lastModifiedDate = null;
 
         if (selected >= 0) {
@@ -98,6 +99,7 @@ public class TransMemoryDetailsPresenter extends
             doc = item.getDocId();
             lastModifiedBy = item.getLastModifiedBy();
             lastModifiedDate = item.getLastModifiedDate();
+            url = item.getUrl();
             display.setState(item.getState());
         }
 
@@ -106,7 +108,7 @@ public class TransMemoryDetailsPresenter extends
         display.setProjectName(project);
         display.setVersionName(iteration);
         display.setDocumentName(doc);
-
+        display.setUrl(url);
         display.setLastModified(lastModifiedBy, lastModifiedDate);
     }
 

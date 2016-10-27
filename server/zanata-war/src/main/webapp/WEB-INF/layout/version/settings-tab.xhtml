@@ -39,12 +39,6 @@
   <a4j:param name="val2" assignTo="#{checked}"/>
 </a4j:jsFunction>
 
-<a4j:jsFunction name="bindCopyTransValue" limitRender="true"
-  action="#{copyTransAction.updateCopyTrans(action, value)}">
-  <a4j:param name="val1" assignTo="#{action}"/>
-  <a4j:param name="val2" assignTo="#{value}"/>
-</a4j:jsFunction>
-
 <a4j:jsFunction name="runDelete" action="#{versionHome.deleteSelf()}" />
 
 <h1>#{msgs['jsf.iteration.VersionSettings']}</h1>
@@ -167,7 +161,7 @@
           acceptedDescriptions="#{versionHome.acceptedSourceFile}"
           url="#{request.contextPath}/files/upload?p=#{versionHome.projectSlug}&amp;v=#{versionHome.slug}"
           maxfiles="#{applicationConfiguration.maxFilesPerUpload}">
-          <i class="i i--plus"></i>
+          <i class="i i--add"></i>
         </zanata:multi-file-upload>
         <zanata:sortlist id="settings-document_sorting"
           sortAction="#{versionHomeAction.sortSettingsDocumentList()}"
@@ -227,7 +221,7 @@
                     <a href="#" class="txt--danger" onclick="setSelectedDoc('#{document.id}')"
                       title="#{msgs['jsf.iteration.files.DeleteDocument']}"
                       data-toggle="modal" data-target="#deleteDocModal">
-                      <i class="i i--remove"></i>
+                      <i class="i i--cancel"></i>
                     </a>
                   </li>
                 </ul>

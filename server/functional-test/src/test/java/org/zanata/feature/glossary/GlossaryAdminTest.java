@@ -63,7 +63,7 @@ public class GlossaryAdminTest extends ZanataTestCase {
 
         List<String> result = clientWorkFlow .callWithTimeout(
                 projectRootPath,
-                "mvn -U --batch-mode zanata:glossary-push " +
+                "mvn -e -U --batch-mode zanata:glossary-push " +
                         "-Dglossary.lang=hi " +
                         "-Dzanata.file=compendium.csv " +
                         "-Dzanata.userConfig=" + userConfigPath);

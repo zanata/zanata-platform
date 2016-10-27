@@ -6,48 +6,30 @@
     rendered="#{not empty applicationConfiguration.piwikUrl and not empty applicationConfiguration.piwikIdSite}">
     <!-- Piwik -->
     <script type="text/javascript">
-      //<![CDATA[remove any trailing slash
-      function stripTrailingSlash(url) {
-        return url.replace(/\/$/, "");
-      }
-
-      //if url doesn't contain protocol, append to it
-      function checkProtocol(url) {
-        var protocol = "";
-
-        if ((url.indexOf("http") == -1) && (url.indexOf("https") == -1)) {
-          protocol =
-            (("https:" == document.location.protocol) ? "https://" : "http://");
-        }
-        return stripTrailingSlash(protocol + url);
-      }
-
-      var pkBaseURL = checkProtocol("#{applicationConfiguration.piwikUrl}") +
-        "/";
-
-      document.write(unescape("%3Cscript src='" + pkBaseURL +
-        "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-      //]]>
-    </script>
-    <script type="text/javascript">//<![CDATA[
-    try {
-      var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php",
-        #{applicationConfiguration.piwikIdSite});
+      //<![CDATA[
       var username = "#{identity.accountUsername}";
-      if (#{identity.loggedIn} == false
-    )
-      {
+      if (#{identity.loggedIn} == false) {
         username = "anonymous";
       }
-      piwikTracker.setCustomVariable(1, "Visit", username, "visit");
-      piwikTracker.setCustomVariable(2, "View page", username, "page");
 
-      piwikTracker.trackPageView();
-      piwikTracker.enableLinkTracking();
-    } catch (err) {
-    }
-    //]]>
+      var _paq = _paq || [];
+      _paq.push(['setCustomVariable', '1', "Visit", username, "visit"]);
+      _paq.push(['setCustomVariable', '2', "View page", username, "page"]);
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="#{applicationConfiguration.piwikUrl}/";
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['setSiteId', #{applicationConfiguration.piwikIdSite}]);
+        var d=document, g=d.createElement('script'),
+          s=d.getElementsByTagName('script')[0];
+        g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js';
+        s.parentNode.insertBefore(g,s);
+      })();
+      //]]>
     </script>
+    <noscript><p><img src="#{applicationConfiguration.piwikUrl}/piwik.php?idsite=#{applicationConfiguration.piwikIdSite}&amp;rec=1"
+      style="border:0;" alt="" /></p></noscript>
     <!-- End Piwik Code -->
   </ui:fragment>
 

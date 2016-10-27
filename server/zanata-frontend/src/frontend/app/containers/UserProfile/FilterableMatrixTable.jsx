@@ -8,7 +8,6 @@ import {
   Flex
 } from 'zanata-ui'
 import {
-  DateRanges,
   ContentStates
 } from '../../constants/Options'
 /**
@@ -16,11 +15,9 @@ import {
  * See RecentContribution for main page.
  */
 const FilterableMatrixTable = ({
-  dateRangeOption,
-  fromDate,
+  dateRange,
   selectedContentState,
   selectedDay,
-  toDate,
   wordCountForEachDay,
   wordCountForSelectedDay,
   handleFilterChanged,
@@ -52,14 +49,12 @@ const FilterableMatrixTable = ({
             matrixData={wordCountForEachDay}
             selectedDay={selectedDay}
             selectedContentState={selectedContentState}
-            dateRangeOption={dateRangeOption}
+            dateRange={dateRange}
             handleSelectedDayChanged={handleSelectedDayChanged} />
         </div>
         <div className='W(100%) W(1/2)--lg Mstart(rh)--lg'>
           <CalendarPeriodHeading
-            fromDate={fromDate}
-            toDate={toDate}
-            dateRange={dateRangeOption.label}
+            dateRange={dateRange}
             selectedDay={selectedDay} />
           {categoryTables}
         </div>
@@ -89,9 +84,7 @@ FilterableMatrixTable.propTypes = {
         wordCount: PropTypes.number.isRequired
       })
   ).isRequired,
-  fromDate: PropTypes.string.isRequired,
-  toDate: PropTypes.string.isRequired,
-  dateRangeOption: PropTypes.oneOf(DateRanges).isRequired,
+  dateRange: PropTypes.object.isRequired,
   selectedContentState: PropTypes.oneOf(ContentStates).isRequired,
   selectedDay: PropTypes.string,
   handleFilterChanged: PropTypes.func,

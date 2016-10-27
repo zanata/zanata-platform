@@ -11,13 +11,13 @@ module.exports = _.merge({}, defaultConfig, {
     filename: 'frontend.bundle.min.js'
   },
   module: {
-    /* preLoaders: [
+    preLoaders: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'eslint'
       }
-    ], */
+    ],
     loaders: [
       {
         test: /\.jsx?$/,
@@ -25,7 +25,7 @@ module.exports = _.merge({}, defaultConfig, {
         include: path.join(__dirname, 'app'),
         loader: 'babel',
         query: {
-          presets: ['react', 'stage-0', 'es2015']
+          presets: ['react', 'es2015', 'stage-0']
         },
         babelrc: false
       },

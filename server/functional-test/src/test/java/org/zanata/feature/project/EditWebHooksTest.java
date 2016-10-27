@@ -20,6 +20,7 @@
  */
 package org.zanata.feature.project;
 
+import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -30,6 +31,8 @@ import org.zanata.page.projects.projectsettings.ProjectWebHooksTab;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 /**
@@ -52,11 +55,12 @@ public class EditWebHooksTest extends ZanataTestCase {
     public void addWebHook() throws Exception {
         String testUrl = "http://www.example.com";
         String key = "secret_key";
+        List<String> types = Lists.newArrayList("DocumentMilestoneEvent");
         ProjectWebHooksTab projectWebHooksTab = new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsWebHooksTab()
-                .enterUrl(testUrl, key);
+                .enterUrl(testUrl, key, types);
 
         assertThat(projectWebHooksTab.getWebHooks())
                 .extracting("url")
@@ -70,11 +74,12 @@ public class EditWebHooksTest extends ZanataTestCase {
     public void removeWebHook() throws Exception {
         String testUrl = "http://www.example.com";
         String key = "secret_key";
+        List<String> types = Lists.newArrayList("DocumentMilestoneEvent");
         ProjectWebHooksTab projectWebHooksTab = new ProjectWorkFlow()
                 .goToProjectByName("about fedora")
                 .gotoSettingsTab()
                 .gotoSettingsWebHooksTab()
-                .enterUrl(testUrl, key)
+                .enterUrl(testUrl, key, types)
                 .expectWebHooksContains(testUrl)
                 .clickRemoveOn(testUrl);
 

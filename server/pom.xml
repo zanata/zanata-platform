@@ -1,0 +1,2234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>server</artifactId>
+  <name>Zanata server modules</name>
+  <packaging>pom</packaging>
+  <parent>
+    <groupId>org.zanata</groupId>
+    <artifactId>parent</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
+    <relativePath>../parent</relativePath>
+  </parent>
+
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata-server.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-server.git</developerConnection>
+    <url>https://github.com/zanata/zanata-server</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <properties>
+    <byteman.version>2.1.2</byteman.version>
+    <cobertura.total-line-rate>50</cobertura.total-line-rate>
+    <cobertura.total-branch-rate>30</cobertura.total-branch-rate>
+    <cobertura.halt.failure>false</cobertura.halt.failure>
+    <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
+    <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
+    <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
+    <failsafe.useFile>false</failsafe.useFile>
+    <maven.javadoc.version>2.9.1</maven.javadoc.version>
+    <surefire.useFile>false</surefire.useFile>
+    <surefire.version>2.19.1</surefire.version>
+    <!-- Applies to surefire and failsafe (if enabled) -->
+    <failIfNoTests>true</failIfNoTests>
+
+    <deltaspike.version>1.7.0</deltaspike.version>
+    <picketlink.version>2.5.5.SP1</picketlink.version>
+    <!-- This is the WildFly 10 version: -->
+    <infinispan.version>8.1.0.Final</infinispan.version>
+    <lombok.version>1.16.6</lombok.version>
+    <weld.version>2.3.2.Final</weld.version>
+    <weld.se.version>${weld.version}</weld.se.version>
+    <groovy.version>2.4.5</groovy.version>
+    <guava.version>19.0</guava.version>
+    <gwt.version>2.7.0</gwt.version>
+    <icu4j.version>56.1</icu4j.version>
+    <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
+    <lucene.version>5.3.1</lucene.version>
+    <org.mock-server.version>3.9.17</org.mock-server.version>
+    <rewrite.version>3.0.0.Alpha10</rewrite.version>
+
+    <!--
+    Version of java compiler used for building. (Specified as major.minor,
+    as used by javac -source and -target).
+    -->
+    <required.java>1.8</required.java>
+    <!--
+      Version of Java used for runtime (major.minor) and for bytecode
+      generation. Should correspond with animal.sniffer.signature.
+    -->
+    <!-- NB: When changing this, be sure to update the rpm's spec file to match -->
+    <required.jvm>1.8</required.jvm>
+    <!--
+      Version of Java used for API compatibility checking. Should
+      correspond with required.jvm.
+    -->
+    <animal.sniffer.signature>org.codehaus.mojo.signature:java18:1.0</animal.sniffer.signature>
+
+    <!--
+    Not used yet.
+
+    When updating commonmark.js, please update the string jsf.project.about.markup in messages.properties.
+
+    <commonmark.spec.version>18.0</commonmark.spec.version>
+    -->
+
+    <solr.version>${lucene.version}</solr.version>
+    <seam.version>2.3.1.Final</seam.version>
+    <slf4j.version>1.7.18</slf4j.version>
+    <gwteventservice.version>1.2.1</gwteventservice.version>
+    <okapi.version>0.29</okapi.version>
+
+    <zanata.assets.version>10.0-SNAPSHOT</zanata.assets.version>
+    <zanata.api.version>4.0.0-SNAPSHOT</zanata.api.version>
+    <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
+    <zanata.api.compat.version>4.0.0-SNAPSHOT</zanata.api.compat.version>
+    <zanata.client.version>4.0.0-SNAPSHOT</zanata.client.version>
+    <zanata.common.version>4.0.0-SNAPSHOT</zanata.common.version>
+
+    <richfaces.version>4.5.17.Final</richfaces.version>
+
+    <arquillian.version>1.1.11.Final</arquillian.version>
+    <shrinkwrap.api.version>1.2.3</shrinkwrap.api.version>
+    <shrinkwrap.resolver.version>2.0.0</shrinkwrap.resolver.version>
+    <shrinkwrap.desc.version>2.0.0-alpha-8</shrinkwrap.desc.version>
+
+    <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
+    <!-- see also the jboss7 profile below -->
+    <hibernate.scope>provided</hibernate.scope>
+    <hibernate.version>5.0.7.Final</hibernate.version>
+
+    <!-- TODO try provided -->
+    <hibernate.search.scope>compile</hibernate.search.scope>
+    <hibernate.search.version>5.5.1.Final</hibernate.search.version>
+    <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
+    <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
+    <hibernate.validator.version>5.2.3.Final</hibernate.validator.version>
+
+    <!-- controls concordion output location-->
+    <concordion.output.dir>${project.build.directory}/concordion</concordion.output.dir>
+
+    <!-- JBoss version for Arquillian dependencies -->
+    <!-- TODO Update to WildFly 10 versions -->
+    <jboss.as.version>7.2.0.Final</jboss.as.version>
+
+    <jdbc.groupId>mysql</jdbc.groupId>
+    <jdbc.artifactId>mysql-connector-java</jdbc.artifactId>
+    <jdbc.version>5.1.26</jdbc.version>
+
+    <!-- TODO try provided -->
+    <resteasy.scope>compile</resteasy.scope>
+    <resteasy.version>3.0.19.Final</resteasy.version>
+    <jaxrsapi.version>3.0.12.Final</jaxrsapi.version>
+
+    <cargo.extract.dir>${project.build.directory}/cargo/installs</cargo.extract.dir>
+    <!-- This URL must be set by a profile (wildfly), settings.xml or mvn command line -->
+    <!-- <cargo.installation></cargo.installation> -->
+
+    <download.dir>${user.home}/Downloads</download.dir>
+    <victims.updates>daily</victims.updates>
+
+    <!-- Version of the management api used by Cargo -->
+    <wildfly.client.version>2.0.10.Final</wildfly.client.version>
+    <!-- Version of the management api used by Arquillian -->
+    <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>com.sun.mail</groupId>
+        <artifactId>javax.mail</artifactId>
+        <version>1.5.5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.4</version>
+      </dependency>
+
+      <!-- See https://issues.jboss.org/browse/WFK2-674
+ For some warnings in the console. It happens when deltaspike-jsf
+ doesn't run against jsf 2.1 (eap) -->
+      <dependency>
+        <groupId>org.apache.deltaspike.core</groupId>
+        <artifactId>deltaspike-core-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.core</groupId>
+        <artifactId>deltaspike-core-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-servlet-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-servlet-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-jsf-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-jsf-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-security-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-security-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-jpa-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-jpa-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>compile</scope>
+        <!--<scope>runtime</scope>-->
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.cdictrl</groupId>
+        <artifactId>deltaspike-cdictrl-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.cdictrl</groupId>
+        <artifactId>deltaspike-cdictrl-weld</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-scheduler-module-api</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.deltaspike.modules</groupId>
+        <artifactId>deltaspike-scheduler-module-impl</artifactId>
+        <version>${deltaspike.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.12</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxrs</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <artifactId>jcip-annotations</artifactId>
+            <groupId>net.jcip</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-api</artifactId>
+        <version>${shrinkwrap.api.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-impl-base</artifactId>
+        <version>${shrinkwrap.api.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.shrinkwrap</groupId>
+        <artifactId>shrinkwrap-spi</artifactId>
+        <version>${shrinkwrap.api.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>1.16</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.objenesis</groupId>
+        <artifactId>objenesis</artifactId>
+        <version>2.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.picketlink</groupId>
+        <artifactId>picketlink-idm-api</artifactId>
+        <version>${picketlink.version}</version>
+        <scope>compile</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>${lombok.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm</artifactId>
+        <version>5.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.ow2.asm</groupId>
+        <artifactId>asm-commons</artifactId>
+        <version>5.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.richfaces</groupId>
+        <artifactId>richfaces</artifactId>
+        <version>${richfaces.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.el</groupId>
+            <artifactId>jboss-el-api_3.0_spec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>jul-to-slf4j</artifactId>
+        <version>${slf4j.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.spec</groupId>
+        <artifactId>jboss-javaee-7.0</artifactId>
+        <version>1.0.3.Final</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>antlr</groupId>
+        <artifactId>antlr</artifactId>
+        <version>2.7.7</version>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.10</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.faces</groupId>
+        <artifactId>jsf-impl</artifactId>
+        <version>2.2.12</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.sun.xml.fastinfoset</groupId>
+        <artifactId>FastInfoset</artifactId>
+        <version>1.2.13</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.security</groupId>
+        <artifactId>jboss-negotiation-common</artifactId>
+        <version>3.0.0.Final</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>commons-beanutils</groupId>
+        <artifactId>commons-beanutils</artifactId>
+        <version>1.9.2</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.4.1</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpcore</artifactId>
+        <version>4.4.1</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-aether-provider</artifactId>
+        <version>3.0.5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-provider-api</artifactId>
+        <version>2.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-http-lightweight</artifactId>
+        <version>2.4</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>1.6.0</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.atteo.classindex</groupId>
+        <artifactId>classindex</artifactId>
+        <version>3.3</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.byteman</groupId>
+        <artifactId>byteman</artifactId>
+        <version>${byteman.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.byteman</groupId>
+        <artifactId>byteman-bmunit</artifactId>
+        <version>${byteman.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.byteman</groupId>
+        <artifactId>byteman-install</artifactId>
+        <version>${byteman.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.byteman</groupId>
+        <artifactId>byteman-submit</artifactId>
+        <version>${byteman.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.com.sun.httpserver</groupId>
+        <artifactId>httpserver</artifactId>
+        <version>1.0.1.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-client</artifactId>
+        <version>${resteasy.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-base</artifactId>
+        <version>${shrinkwrap.desc.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-javaee</artifactId>
+        <version>${shrinkwrap.desc.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-api-jboss</artifactId>
+        <version>${shrinkwrap.desc.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-impl-base</artifactId>
+        <version>${shrinkwrap.desc.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-impl-javaee</artifactId>
+        <version>${shrinkwrap.desc.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-impl-jboss</artifactId>
+        <version>${shrinkwrap.desc.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.shrinkwrap.descriptors</groupId>
+        <artifactId>shrinkwrap-descriptors-spi</artifactId>
+        <version>${shrinkwrap.desc.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.spec.javax.interceptor</groupId>
+        <artifactId>jboss-interceptors-api_1.1_spec</artifactId>
+        <version>1.0.1.Final</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.spec.javax.annotation</groupId>
+        <artifactId>jboss-annotations-api_1.1_spec</artifactId>
+        <version>1.0.1.Final</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.spec.javax.transaction</groupId>
+        <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+        <version>1.0.0.Final</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.xnio</groupId>
+        <artifactId>xnio-api</artifactId>
+        <version>3.3.4.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.xnio</groupId>
+        <artifactId>xnio-nio</artifactId>
+        <version>3.3.4.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.marshalling</groupId>
+        <artifactId>jboss-marshalling</artifactId>
+        <version>1.4.10.Final</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.marshalling</groupId>
+        <artifactId>jboss-marshalling-river</artifactId>
+        <version>1.4.10.Final</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jglue.cdi-unit</groupId>
+        <artifactId>cdi-unit</artifactId>
+        <version>3.1.4</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.weld.se</groupId>
+            <artifactId>weld-se-core</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.weld.se</groupId>
+        <artifactId>weld-se-core</artifactId>
+        <version>${weld.se.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
+            <groupId>org.jboss.spec.javax.annotation</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!-- Liquibase Dependencies -->
+      <!-- If the Liquibase version is being updated, please refer to
+      any changelog files that run 'on change' and make sure that they still run
+      after upgrading the version. -->
+      <dependency>
+        <groupId>org.liquibase</groupId>
+        <artifactId>liquibase-core</artifactId>
+        <version>3.4.2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.quartz-scheduler</groupId>
+        <artifactId>quartz</artifactId>
+        <version>2.2.1</version>
+      </dependency>
+
+      <!-- zanata assets -->
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-assets</artifactId>
+        <version>${zanata.assets.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-frontend</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <!-- zanata api -->
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-common-api</artifactId>
+        <version>${zanata.api.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxb-provider</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-common-api</artifactId>
+        <classifier>sources</classifier>
+        <version>${zanata.api.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>*</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-common-api</artifactId>
+        <version>${zanata.api.compat.version}</version>
+        <classifier>compat</classifier>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!-- zanata common -->
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-common-util</artifactId>
+        <version>${zanata.common.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xom</groupId>
+            <artifactId>xom</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-adapter-po</artifactId>
+        <version>${zanata.common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-adapter-glossary</artifactId>
+        <version>${zanata.common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-adapter-properties</artifactId>
+        <version>${zanata.common.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-adapter-xliff</artifactId>
+        <version>${zanata.common.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jsr173_api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <!-- zanata client -->
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-rest-client</artifactId>
+        <version>${zanata.client.version}</version>
+        <scope>test</scope>
+        <!-- The client uses a newer version of resteasy -->
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>jaxrs-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-rest-client</artifactId>
+        <version>${zanata.client.version}</version>
+        <type>test-jar</type>
+        <scope>test</scope>
+      </dependency>
+
+      <!-- zanata server -->
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-model</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-liquibase</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.github.huangp</groupId>
+        <artifactId>entityunit</artifactId>
+        <version>0.3</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.hibernate.javax.persistence</groupId>
+            <artifactId>hibernate-jpa-2.0-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-dev</artifactId>
+        <version>${gwt.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-servlet</artifactId>
+        <version>${gwt.version}</version>
+        <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.gwt</groupId>
+        <artifactId>gwt-user</artifactId>
+        <version>${gwt.version}</version>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>com.google.gwt.inject</groupId>
+        <artifactId>gin</artifactId>
+        <version>1.5.0</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.inject</groupId>
+        <artifactId>guice</artifactId>
+        <version>3.0</version>
+      </dependency>
+
+      <dependency>
+          <groupId>com.google.protobuf</groupId>
+          <artifactId>protobuf-java</artifactId>
+          <version>2.5.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.h2database</groupId>
+        <artifactId>h2</artifactId>
+        <version>1.4.180</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ibm.icu</groupId>
+        <artifactId>icu4j</artifactId>
+        <version>${icu4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.ibm.icu</groupId>
+        <artifactId>icu4j</artifactId>
+        <classifier>sources</classifier>
+        <version>${icu4j.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>${jdbc.groupId}</groupId>
+        <artifactId>${jdbc.artifactId}</artifactId>
+        <version>${jdbc.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.dbunit</groupId>
+        <artifactId>dbunit</artifactId>
+        <version>2.4.9</version>
+      </dependency>
+
+      <dependency>
+        <groupId>de.novanic.gwteventservice</groupId>
+        <artifactId>gwteventservice</artifactId>
+        <version>${gwteventservice.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>de.novanic.gwteventservice</groupId>
+        <artifactId>eventservice-rpc</artifactId>
+        <version>${gwteventservice.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>de.novanic.gwteventservice</groupId>
+        <artifactId>eventservice</artifactId>
+        <version>${gwteventservice.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-dtd</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-html</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-idml</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-json</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-openoffice</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-tmx</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-plaintext</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-regex</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.filters</groupId>
+        <artifactId>okapi-filter-ts</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.steps</groupId>
+        <artifactId>okapi-step-tokenization</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi.steps</groupId>
+        <artifactId>okapi-step-wordcount</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sf.okapi</groupId>
+        <artifactId>okapi-core</artifactId>
+        <version>${okapi.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>net.sf.okapi.logbind</groupId>
+            <artifactId>build-log4j</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>net.sourceforge.cssparser</groupId>
+        <artifactId>cssparser</artifactId>
+        <version>0.9.18</version>
+      </dependency>
+      <dependency>
+        <groupId>org.codehaus.jackson</groupId>
+        <artifactId>jackson-jaxrs</artifactId>
+        <version>1.9.13</version>
+      </dependency>
+      <dependency>
+        <groupId>org.richfaces</groupId>
+        <artifactId>richfaces-a4j</artifactId>
+        <version>${richfaces.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-orm</artifactId>
+        <version>${hibernate.search.version}</version>
+        <scope>${hibernate.search.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-search-engine</artifactId>
+        <version>${hibernate.search.version}</version>
+        <scope>${hibernate.search.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-directory-provider</artifactId>
+        <version>${infinispan.version}</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate.common</groupId>
+        <artifactId>hibernate-commons-annotations</artifactId>
+        <version>5.0.1.Final</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${hibernate.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.1_spec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          </exclusion>
+        </exclusions>
+        <!--<version>${hibernate.version}</version>-->
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+        <version>${hibernate.entitymanager.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javassist</groupId>
+            <artifactId>javassist</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.1_spec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate.javax.persistence</groupId>
+        <artifactId>hibernate-jpa-2.1-api</artifactId>
+        <version>1.0.0.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>${hibernate.validator.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator-cdi</artifactId>
+        <version>${hibernate.validator.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-testing</artifactId>
+        <version>${hibernate.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.1_spec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId>
+        <version>3.19.0-GA</version>
+      </dependency>
+
+      <dependency>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+        </exclusions>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>3.3.0.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging-annotations</artifactId>
+        <version>1.2.0.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging-processor</artifactId>
+        <version>1.2.0.Final</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>jaxrs-api</artifactId>
+        <version>${jaxrsapi.version}</version>
+        <scope>${resteasy.scope}</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-cdi</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jaxb-provider</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-jackson-provider</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-multipart-provider</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.logging</groupId>
+            <artifactId>jboss-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jboss.resteasy</groupId>
+        <artifactId>resteasy-servlet-initializer</artifactId>
+        <version>${resteasy.version}</version>
+        <scope>${resteasy.scope}</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.jboss.spec.javax.ws.rs</groupId>
+            <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>1.7.1</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-core</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-facet</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-phonetic</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-smartcn</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.lucene</groupId>
+        <artifactId>lucene-stempel</artifactId>
+        <version>${lucene.version}</version>
+      </dependency>
+
+      <!-- Solr dependencies -->
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-core</artifactId>
+        <version>${solr.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.restlet.jee</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>net.java.dev.stax-utils</groupId>
+            <artifactId>stax-utils</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-io</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-stax-api_1.0_spec</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>*</artifactId>
+          </exclusion>
+
+          <exclusion>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-lucene-analyzers</artifactId>
+          </exclusion>
+          <!-- NB: https://hibernate.atlassian.net/browse/HSEARCH-380 -->
+          <exclusion>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-lucene-core</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+          </exclusion>
+          <exclusion>
+            <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-solrj</artifactId>
+        <version>${solr.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>woodstox</groupId>
+            <artifactId>wstx-asl</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.solr</groupId>
+        <artifactId>solr-analysis-extras</artifactId>
+        <version>${solr.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>net.customware.gwt.presenter</groupId>
+        <artifactId>gwt-presenter</artifactId>
+        <version>1.1.1</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.activation</groupId>
+        <artifactId>activation</artifactId>
+        <version>1.1.1</version>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.xml.stream</groupId>
+        <artifactId>stax-api</artifactId>
+        <version>1.0-2</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.concordion</groupId>
+        <artifactId>concordion</artifactId>
+        <version>1.4.2</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>
+              junit-dep
+            </artifactId>
+            <groupId>junit</groupId>
+          </exclusion>
+          <exclusion>
+            <artifactId>xml-apis</artifactId>
+            <groupId>xml-apis</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>xom</groupId>
+            <artifactId>xom</artifactId>
+          </exclusion>
+        </exclusions>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.concordion</groupId>
+        <artifactId>concordion-extensions</artifactId>
+        <version>1.1.0</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>2.8.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.fedorahosted.tennera</groupId>
+        <artifactId>jgettext</artifactId>
+        <version>0.14</version>
+      </dependency>
+      <dependency>
+        <groupId>org.functionaljava</groupId>
+        <artifactId>functionaljava</artifactId>
+        <version>3.1</version>
+      </dependency>
+      <dependency>
+        <!-- New group Id -->
+        <groupId>com.io7m.xom</groupId>
+        <artifactId>xom</artifactId>
+        <version>1.2.10</version>
+        <exclusions>
+          <exclusion>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.jayway.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>1.6.3</version>
+        <exclusions>
+          <exclusion>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis</artifactId>
+          </exclusion>
+        </exclusions>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>1.2</version>
+        <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.annotation</groupId>
+            <artifactId>jsr250-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.interceptor</groupId>
+            <artifactId>javax.interceptor-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jandex</artifactId>
+        <version>2.0.1.Final</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.jboss.sasl</groupId>
+        <artifactId>jboss-sasl</artifactId>
+        <version>1.0.5.Final</version>
+        <scope>test</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <!--
+  https://community.jboss.org/wiki/MavenRepository
+  https://community.jboss.org/wiki/MavenSettings
+  https://community.jboss.org/wiki/MavenGettingStarted-Developers
+  https://community.jboss.org/wiki/MavenGettingStarted-Users
+  -->
+
+  <repositories>
+    <!-- This is needed for bootstrapping with a zanata-parent SNAPSHOT  -->
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Maven Repository Group</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>okapi-cloudbees-release</id>
+      <name>okapi-cloudbees-release</name>
+      <url>http://repository-okapi.forge.cloudbees.com/release/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <!-- Needed for totallylazy -->
+    <repository>
+      <id>repo.bodar.com</id>
+      <url>http://repo.bodar.com</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <!-- Needed for surefire/failsafe snapshots -->
+    <pluginRepository>
+      <id>apache.snapshots.https</id>
+      <url>https://repository.apache.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+    <pluginRepository>
+      <id>jboss-public-repository-group</id>
+      <name>JBoss Public Maven Repository Group</name>
+      <url>https://repository.jboss.org/nexus/content/groups/public/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </pluginRepository>
+
+    <pluginRepository>
+      <id>cobertura-it-maven-plugin-maven2-release</id>
+      <url>http://cobertura-it-maven-plugin.googlecode.com/svn/maven2/releases</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </pluginRepository>
+  </pluginRepositories>
+
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <executions>
+          <!-- NB: This execution needs to be before antrun, because it
+               creates the wildfly directory for the unzip tasks. -->
+          <execution>
+            <id>extract-appserver</id>
+            <!-- submodules should use 'prepare-package' to activate this -->
+            <phase>none</phase>
+            <goals><goal>execute</goal></goals>
+            <configuration>
+              <scripts>
+                <!-- Extracts app server and sets the Maven property
+                appserver.home (where the appserver is installed) -->
+                <script>file:///${project.basedir}/../etc/scripts/extractAppserver.groovy</script>
+              </scripts>
+            </configuration>
+          </execution>
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-nodeps</artifactId>
+            <version>1.8.1</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-maven-plugin</artifactId>
+        <version>${zanata.client.version}</version>
+        <configuration>
+          <srcDir>.</srcDir>
+          <transDir>.</transDir>
+          <!-- only one translation file has been prepared so far -->
+          <includes>zanata-war/src/main/resources/messages.properties</includes>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <configuration>
+          <rules>
+            <bannedDependencies>
+              <excludes combine.children="append">
+                <!-- Use org.jboss.spec.javax.annotation:jboss-annotations-api_1.1_spec -->
+                <exclude>javax.annotation:jsr250-api</exclude>
+
+                <!-- Use org.jboss.spec.javax.el:jboss-el-api_3.0_spec -->
+                <exclude>javax.el:el-api</exclude>
+                <exclude>javax.el:javax.el-api</exclude>
+                <exclude>org.jboss.spec.javax.el:jboss-el-api_2.2_spec</exclude>
+
+
+                <!-- Use com.sun.mail:javax.mail -->
+                <exclude>javax.mail:mail</exclude>
+                <!-- Use org.jboss.spec.javax.interceptor:jboss-interceptors-api_1.2_spec -->
+                <exclude>javax.interceptor:javax.interceptor-api</exclude>
+
+                <!-- Use org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec -->
+                <exclude>javax.xml.bind:jaxb-api</exclude>
+
+                <!-- use jdk and javax.xml.stream:stax-api -->
+                <exclude>javax.xml.bind:jsr173_api</exclude>
+
+                <!-- use org.jboss.spec.javax.transaction:jboss-transaction-api_1.2_spec -->
+                <exclude>org.apache.geronimo.specs:geronimo-jta_1.1_spec</exclude>
+                <exclude>org.jboss.spec.javax.transaction:jboss-transaction-api_1.1_spec</exclude>
+
+                <!-- Use jpa 2.1 -->
+                <exclude>org.hibernate.javax.persistence:hibernate-jpa-2.0-api</exclude>
+
+                <!-- Use org.jboss.marshalling:jboss-marshalling and -river -->
+                <exclude>org.jboss.marshalling:jboss-marshalling-osgi</exclude>
+
+                <!-- TODO use org.jboss.spec when we change resteasy to provided -->
+                <!-- Use org.jboss.resteasy:jaxrs-api (since we package resteasy) -->
+                <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_1.1_spec</exclude>
+                <exclude>org.jboss.spec.javax.ws.rs:jboss-jaxrs-api_2.0_spec</exclude>
+                <exclude>org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec</exclude>
+
+                <!-- use org.jboss.spec.javax.servlet:jboss-servlet-api_3.1_spec -->
+                <exclude>org.jboss.spec.javax.servlet:jboss-servlet-api_3.0_spec</exclude>
+
+                <!-- use org.jboss.spec.javax.annotation:jboss-annotations-api_1.2_spec -->
+                <exclude>org.jboss.spec.javax.annotation:jboss-annotations-api_1.1_spec</exclude>
+
+                <!-- use org.quartz-scheduler:quartz -->
+                <exclude>org.opensymphony.quartz:quartz</exclude>
+              </excludes>
+            </bannedDependencies>
+            <requireNoRepositories>
+              <allowedRepositories combine.children="append">
+                <allowedRepository>jboss-public-repository-group</allowedRepository>
+                <allowedRepository>okapi-cloudbees-release</allowedRepository>
+                <allowedRepository>repo.bodar.com</allowedRepository>
+              </allowedRepositories>
+              <allowedPluginRepositories combine.children="append">
+                <allowedPluginRepository>apache.snapshots.https</allowedPluginRepository>
+                <allowedPluginRepository>cobertura-it-maven-plugin-maven2-release</allowedPluginRepository>
+                <allowedPluginRepository>jboss-public-repository-group</allowedPluginRepository>
+              </allowedPluginRepositories>
+            </requireNoRepositories>
+          </rules>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>1.8</version>
+        <executions>
+          <execution>
+            <id>init-no-appserver</id>
+            <!-- submodules should use 'initialize' to activate this -->
+            <phase>none</phase>
+            <goals><goal>run</goal></goals>
+            <configuration combine.self="override">
+              <target xmlns:unless="ant:unless" unless="skipITs">
+                <echo message="appserver=${appserver}" />
+                <echo message="cargo.installation=${cargo.installation}" />
+                <echo message="appserver.home=${appserver.home}" />
+                <echo message="DISPLAY=${env.DISPLAY}" />
+                <echo message="WARNING: 'appserver' property must be set unless skipping integration tests" unless:set="appserver" />
+                <echo message="WARNING: 'cargo.installation' property is null. You might need to set the env var EAP7_URL" unless:set="cargo.installation" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <!--
+        This is how the Maven lifecycle phases install and configure the appserver:
+
+        prepare-package: download and extract appserver using cargo:install
+        package: download and extract modules using antrun [wildfly only]
+        pre-integration-test: cargo:start [functional tests only]
+        post-integration-test: cargo:stop [functional tests only]
+
+        If 'appserver` is not set, the build will fail in phase
+        'prepare-package'.
+         -->
+        <plugin>
+          <groupId>org.codehaus.cargo</groupId>
+          <artifactId>cargo-maven2-plugin</artifactId>
+          <version>1.5.0</version>
+          <configuration combine.self="append">
+            <container>
+              <containerId>${cargo.container}</containerId>
+            </container>
+          </configuration>
+        </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version>1.15</version>
+        <executions>
+          <execution>
+            <id>animal-sniffer</id>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <ignores>
+            <!-- not part of java18 sig, but seems to be public API -->
+            <ignore>jdk.nashorn.api.*</ignore>
+          </ignores>
+        </configuration>
+      </plugin>
+
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${surefire.version}</version>
+          <executions>
+            <execution>
+              <id>integration-test</id>
+              <goals>
+                <goal>integration-test</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>verify</id>
+              <goals>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-war-plugin</artifactId>
+          <version>2.1.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>gwt-maven-plugin</artifactId>
+          <!-- NB In some cases, we might not want to use gwt.version here -->
+          <version>${gwt.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>cobertura-maven-plugin</artifactId>
+          <version>2.7</version>
+          <configuration>
+            <formats>
+              <format>xml</format>
+            </formats>
+            <instrumentation>
+              <ignoreMethodAnnotations>
+                <ignoreMethodAnnotation>org.zanata.util.CoverageIgnore</ignoreMethodAnnotation>
+              </ignoreMethodAnnotations>
+              <ignoreTrivial>true</ignoreTrivial>
+            </instrumentation>
+          </configuration>
+        </plugin>
+        <!-- change maven-release-plugin back to defaults (instead of oss-parent's settings)  -->
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <configuration>
+            <mavenExecutorId>invoker</mavenExecutorId>
+            <useReleaseProfile>true</useReleaseProfile>
+            <arguments>${arguments}</arguments>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>sign-artifacts</id>
+              <phase>verify</phase>
+              <goals>
+                <goal>sign</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <skip>true</skip>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven.javadoc.version}</version>
+          <configuration>
+            <additionalparam>${javadoc.opts}</additionalparam>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>build-helper-maven-plugin</artifactId>
+          <version>1.8</version>
+        </plugin>
+        <plugin>
+          <groupId>com.jcabi</groupId>
+          <artifactId>jcabi-mysql-maven-plugin</artifactId>
+          <version>0.9</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.gmaven</groupId>
+          <artifactId>gmaven-plugin</artifactId>
+          <version>1.5</version>
+          <configuration>
+            <providerSelection>2.0</providerSelection>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.gmavenplus</groupId>
+          <artifactId>gmavenplus-plugin</artifactId>
+          <version>1.1</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <profiles>
+    <profile>
+      <id>doclint-java8-disable</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <properties>
+        <javadoc.opts>-Xdoclint:none</javadoc.opts>
+      </properties>
+    </profile>
+
+    <profile>
+      <!-- This profile runs a single integration test with
+        -Dit.test=<integration-test-name>, skipping unit tests. -->
+      <id>it.test</id>
+      <activation>
+        <property>
+          <name>it.test</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-failsafe-plugin</artifactId>
+            <configuration>
+              <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
+              <failIfNoTests>false</failIfNoTests>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <!--this is used to run GWT in dev mode. Adjust your IDE to include the delombok -->
+      <id>delombok</id>
+      <properties>
+        <zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <configuration>
+                  <target>
+                    <echo>include following as source in your IDE</echo>
+                    <echo>${delombok.dir}</echo>
+                    <echo>exclude following as source in your IDE</echo>
+                    <echo>${lombok.source.dir}</echo>
+                  </target>
+                </configuration>
+                <goals>
+                  <goal>run</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-maven-plugin</artifactId>
+            <version>1.16.6.1</version>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>delombok</goal>
+                </goals>
+                <configuration>
+                  <sourceDirectory>${lombok.source.dir}</sourceDirectory>
+                  <outputDirectory>${delombok.dir}</outputDirectory>
+                  <verbose>true</verbose>
+                </configuration>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>sun.jdk</groupId>
+                <artifactId>tools</artifactId>
+                <version>${required.jvm}</version>
+                <scope>system</scope>
+                <systemPath>${java.home}/../lib/tools.jar</systemPath>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>jbosseap6</id>
+      <activation>
+        <property>
+          <name>appserver</name>
+          <value>jbosseap6</value>
+        </property>
+      </activation>
+      <properties>
+        <cargo.container>wildfly10x</cargo.container>
+        <cargo.installation>${env.EAP7_URL}</cargo.installation>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>wildfly8</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+        <property>
+          <name>appserver</name>
+          <value>wildfly8</value>
+        </property>
+      </activation>
+      <properties>
+        <cargo.container>wildfly10x</cargo.container>
+        <!-- used in the wildfly8 profile in zanata-war -->
+        <!-- This is the server version -->
+        <wildfly.version>10.1.0.Final</wildfly.version>
+        <!-- In case this profile was activated by default: -->
+        <appserver>wildfly8</appserver>
+        <cargo.installation>https://repository.jboss.org/nexus/content/groups/developer/org/wildfly/wildfly-dist/${wildfly.version}/wildfly-dist-${wildfly.version}.zip</cargo.installation>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>build zanata-frontend module</id>
+      <activation>
+        <property>
+          <name>!excludeFrontend</name>
+        </property>
+      </activation>
+      <properties>
+        <required.maven>3.1.0</required.maven>
+      </properties>
+      <modules>
+        <module>zanata-frontend</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>victims</id>
+      <activation>
+        <property>
+          <name>victims</name>
+        </property>
+      </activation>
+      <properties>
+        <enforcer.skip>false</enforcer.skip>
+      </properties>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-enforcer-plugin</artifactId>
+            <configuration>
+              <rules>
+                <rule implementation="com.redhat.victims.VictimsRule">
+                  <!--
+                    Check the project's dependencies against the database using
+                    name and version. The default mode for this is 'warning'.
+
+                    Valid options are:
+
+                    disabled: Rule is still run but only INFO level messages and no errors.
+                    warning : Rule will spit out a warning message but doesn't result in a failure.
+                    fatal   : Rule will spit out an error message and fail the build.
+                  -->
+                  <metadata>warning</metadata>
+
+                  <!--
+                    Check the project's dependencies against the database using
+                    the SHA-512 checksum of the artifact. The default is fatal.
+
+                    Valid options are:
+
+                    disabled: Rule is still run but only INFO level messages and no errors.
+                    warning : Rule will spit out a warning message but doesn't result in a failure.
+                    fatal   : Rule will spit out an error message and fail the build.
+                  -->
+                  <!-- TODO change to fatal -->
+                  <fingerprint>warning</fingerprint>
+
+                  <!--
+                    Disables the synchronization mechansim. By default the rule will
+                    attempt to update the database for each build.
+
+                    Valid options are:
+
+                    auto  : Automatically update the database entries on each build.
+                    daily : Update the database entries once per day.
+                    off   : Disable the synchronization mechanism.
+                  -->
+                  <updates>${victims.updates}</updates>
+                </rule>
+              </rules>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>com.redhat.victims</groupId>
+                <artifactId>enforce-victims-rule</artifactId>
+                <version>1.3.4</version>
+                <type>jar</type>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+  </profiles>
+
+  <distributionManagement>
+    <repository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>cloudbees-private-release-repository</id>
+      <name>cloudbees-private-release-repository</name>
+      <url>dav:https://repository-zanata.forge.cloudbees.com/release/</url>
+      <layout>default</layout>
+    </repository>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>cloudbees-private-snapshot-repository</id>
+      <name>cloudbees-private-snapshot-repository</name>
+      <url>dav:https://repository-zanata.forge.cloudbees.com/snapshot/</url>
+      <layout>default</layout>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <modules>
+    <module>zanata-liquibase</module>
+    <module>zanata-model</module>
+    <module>zanata-war</module>
+    <module>zanata-test-war</module>
+    <module>functional-test</module>
+    <!-- <module>zanata-dist</module> -->
+  </modules>
+</project>

@@ -30,7 +30,9 @@ import java.util.TreeMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -50,6 +52,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.editor.dto.LocaleSortField;
 import org.zanata.service.LocaleService;
+import org.zanata.servlet.annotations.AllJavaLocales;
 import org.zanata.util.ComparatorUtil;
 
 import com.google.common.collect.Maps;
@@ -133,12 +136,7 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     public List<HLocale> getAllLocales() {
-        List<HLocale> hSupportedLanguages = localeDAO.findAll();
-        if (hSupportedLanguages == null) {
-            return Collections.EMPTY_LIST;
-        }
-        Collections.sort(hSupportedLanguages, ComparatorUtil.LOCALE_COMPARATOR);
-        return hSupportedLanguages;
+        return localeDAO.find(0, -1, null, null, false);
     }
 
     @Override
@@ -195,15 +193,19 @@ public class LocaleServiceImpl implements LocaleService {
         }
     }
 
+    @Produces
+    @ApplicationScoped
+    @AllJavaLocales
     public List<LocaleId> getAllJavaLanguages() {
+        List<LocaleId> allJavaLanguages = new ArrayList<LocaleId>();
         ULocale[] locales = ULocale.getAvailableLocales();
-        List<LocaleId> addedLocales = new ArrayList<LocaleId>();
+        allJavaLanguages = new ArrayList<LocaleId>();
         for (ULocale locale : locales) {
             String id = locale.toLanguageTag();
             LocaleId localeId = new LocaleId(id);
-            addedLocales.add(localeId);
+            allJavaLanguages.add(localeId);
         }
-        return addedLocales;
+        return allJavaLanguages;
     }
 
     public void enable(@Nonnull LocaleId localeId) {
@@ -439,5 +441,20 @@ public class LocaleServiceImpl implements LocaleService {
             hLocale.retrieveDisplayName(), alias, hLocale.retrieveNativeName(),
             hLocale.isActive(), hLocale.isEnabledByDefault(),
             hLocale.getPluralForms());
+    }
+
+    public static LocaleDetails convertToDTO(HLocale hLocale) {
+        return convertToDTO(hLocale, null);
+    }
+
+    public static HLocale convertToHLocale(LocaleDetails localeDetails) {
+        HLocale entity = new HLocale();
+        entity.setLocaleId(localeDetails.getLocaleId());
+        entity.setActive(localeDetails.isEnabled());
+        entity.setEnabledByDefault(localeDetails.isEnabledByDefault());
+        entity.setPluralForms(localeDetails.getPluralForms());
+        entity.setDisplayName(localeDetails.getDisplayName());
+        entity.setNativeName(localeDetails.getNativeName());
+        return entity;
     }
 }

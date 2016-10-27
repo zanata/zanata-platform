@@ -36,6 +36,7 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.InlineHTML;
@@ -81,13 +82,19 @@ public class TransMemoryView extends Composite implements
     HTMLPanel container;
 
     @UiField
-    RadioButton diffModeDiff;
-
-    @UiField
     RadioButton diffModeHighlight;
 
     @UiField
+    RadioButton diffModeDiff;
+
+    @UiField
     UiMessages messages;
+
+    @UiField
+    InlineLabel searchOnly, tmOnly, diffLegendLabel;
+
+    @UiField
+    FocusPanel diffLegend;
 
     private final FlexTable resultTable;
     private final Label loadingLabel, noResultFoundLabel;
@@ -128,22 +135,15 @@ public class TransMemoryView extends Composite implements
         formatter.setStyleName(0, SIMILARITY_COL, "zeta txt--align-center smallCol");
         formatter.setStyleName(0, ORIGIN_COL, "zeta txt--align-center smallCol");
 
-        Anchor diffLegendInfo = new Anchor();
-        diffLegendInfo.setStyleName("i i--info txt--lead l--push-left-quarter");
-        diffLegendInfo.setTitle(messages.colorLegend());
-
-        diffLegendInfo.addClickHandler(new ClickHandler() {
+        diffLegend.setTitle(messages.colorLegend());
+        diffLegend.addClickHandler(new ClickHandler() {
             @Override
             public void onClick(ClickEvent event) {
                 listener.showDiffLegend(true);
             }
         });
 
-        FlowPanel sourceHeader = new FlowPanel();
-        sourceHeader.add(new InlineLabel(messages.sourceLabel()));
-        sourceHeader.add(diffLegendInfo);
-
-        resultTable.setWidget(0, SOURCE_COL, sourceHeader);
+        resultTable.setWidget(0, SOURCE_COL, new Label(messages.sourceLabel()));
         resultTable.setWidget(0, TARGET_COL, new Label(messages.targetLabel()));
 
         Label numTrans = new Label(messages.hash());
@@ -228,6 +228,19 @@ public class TransMemoryView extends Composite implements
     @UiHandler({ "diffModeDiff", "diffModeHighlight" })
     public void onDiffModeOptionChange(ValueChangeEvent<Boolean> event) {
         listener.onDiffModeChanged();
+        updateDisplayMode();
+    }
+
+    private void updateDisplayMode() {
+        if (determineDiffMode() == DiffMode.NORMAL) {
+            tmOnly.removeStyleName("is-hidden");
+            searchOnly.removeStyleName("is-hidden");
+            diffLegendLabel.setText(messages.tmDiffHighlighting());
+        } else {
+            tmOnly.addStyleName("is-hidden");
+            searchOnly.addStyleName("is-hidden");
+            diffLegendLabel.setText(messages.tmHighlighting());
+        }
     }
 
     private DiffMode determineDiffMode() {
@@ -251,13 +264,12 @@ public class TransMemoryView extends Composite implements
         }
         if (determineDiffMode() == DiffMode.NORMAL) {
             SafeHtml safeHtml =
-                    TextContentsDisplay.asDiff(queriesPadded, sourceContents)
+                    TextContentsDisplay.asDiff(sourceContents, queriesPadded)
                             .toSafeHtml();
             panel.setWidget(new InlineHTML(safeHtml));
         } else {
             SafeHtml safeHtmlHighlight =
-                    TextContentsDisplay.asDiffHighlight(queriesPadded,
-                            sourceContents).toSafeHtml();
+                    TextContentsDisplay.asDiffHighlight(sourceContents, queriesPadded).toSafeHtml();
             panel.setWidget(new InlineHTML(safeHtmlHighlight));
         }
         return panel;
@@ -375,6 +387,7 @@ public class TransMemoryView extends Composite implements
         } else {
             diffModeHighlight.setValue(true);
         }
+        updateDisplayMode();
     }
 
     @UiHandler("tmTextBox")
@@ -395,7 +408,7 @@ public class TransMemoryView extends Composite implements
     @Override
     public void showDiffLegend(boolean show) {
         if (show) {
-            diffLegendPanel.show(ShortcutContext.TM);
+            diffLegendPanel.show(ShortcutContext.TM, determineDiffMode());
         } else {
             diffLegendPanel.hide(true);
         }

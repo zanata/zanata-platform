@@ -27,12 +27,9 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.deltaspike.core.api.scope.ConversationGroup;
-import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.ProjectIterationDAO;
@@ -87,12 +84,6 @@ public class CopyTransAction extends CopyAction implements Serializable {
 
     private HProjectIteration projectIteration;
 
-    @PostConstruct
-    public void onCreate() {
-        copyTransOptionsModel.setInstance(CopyTransOptionFactory
-                .getExplicitOptions());
-    }
-
     public boolean isInProgress() {
         return copyTransManager.isCopyTransRunning(getProjectIteration());
     }
@@ -118,7 +109,6 @@ public class CopyTransAction extends CopyAction implements Serializable {
                         getProjectSlug(), getVersionSlug()));
     }
 
-    // @Begin(join = true) /* TODO [CDI] commented out begin conversation. Verify it still works properly */
     public void updateCopyTrans(String action, String value) {
         copyTransOptionsModel.update(action, value);
     }
@@ -180,6 +170,8 @@ public class CopyTransAction extends CopyAction implements Serializable {
         copyTransManager.cancelCopyTrans(getProjectIteration());
         conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 msgs.get("jsf.iteration.CopyTrans.Cancelled"));
+        copyTransOptionsModel.setInstance(CopyTransOptionFactory
+            .getImplicitOptions());
     }
 
     public String getCurrentProgress() {

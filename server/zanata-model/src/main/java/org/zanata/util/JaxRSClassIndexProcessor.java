@@ -1,6 +1,7 @@
 package org.zanata.util;
 
 import org.atteo.classindex.processor.ClassIndexProcessor;
+import org.zanata.rest.service.RestResource;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.ext.Provider;
@@ -18,5 +19,8 @@ public class JaxRSClassIndexProcessor extends ClassIndexProcessor {
     public JaxRSClassIndexProcessor() {
         indexAnnotations(Path.class);
         indexAnnotations(Provider.class);
+        // We could put @IndexSubclasses on the interface RestResource, but
+        // then we would need org.atteo.classindex to compile the API.
+        indexSubclasses(RestResource.class);
     }
 }

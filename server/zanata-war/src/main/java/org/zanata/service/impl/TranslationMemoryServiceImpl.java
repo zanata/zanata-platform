@@ -68,6 +68,7 @@ import org.zanata.search.LevenshteinTokenUtil;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.util.SysProperties;
+import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
@@ -131,6 +132,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     @Inject @FullText
     private FullTextEntityManager entityManager;
 
+    @Inject
+    private UrlUtil urlUtil;
+
     // sort desc by lastChanged of HTextFlowTarget
     private final Sort lastChangedSort = new Sort(
             SortField.FIELD_SCORE,
@@ -153,9 +157,10 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             getTransMemoryDetail(HLocale hLocale, HTextFlow tf) {
         HTextFlowTarget tft = tf.getTargets().get(hLocale.getId());
 
-        String iterationName = tf.getDocument().getProjectIteration().getSlug();
-        String projectName =
-                tf.getDocument().getProjectIteration().getProject().getName();
+        HDocument document = tf.getDocument();
+        HProjectIteration version = document.getProjectIteration();
+        HProject project = version.getProject();
+
         String msgContext =
                 (tf.getPotEntryData() == null) ? null : tf.getPotEntryData()
                         .getContext();
@@ -164,10 +169,14 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 && tft.getLastModifiedBy().hasAccount()) {
             username = tft.getLastModifiedBy().getAccount().getUsername();
         }
+        String url = urlUtil.editorTransUnitUrl(project.getSlug(),
+                version.getSlug(), hLocale.getLocaleId(),
+                document.getSourceLocaleId(), document.getDocId(), tf.getId());
+
         return new TransMemoryDetails(HSimpleComment.toString(tf.getComment()),
-                HSimpleComment.toString(tft.getComment()), projectName,
-                iterationName, tf.getDocument().getDocId(), tf.getResId(),
-                msgContext, tft.getState(), username, tft.getLastChanged());
+                HSimpleComment.toString(tft.getComment()), project.getName(),
+            version.getSlug(), tf.getDocument().getDocId(), tf.getResId(),
+                msgContext, tft.getState(), username, tft.getLastChanged(), url);
     }
 
     /**

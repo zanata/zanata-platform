@@ -23,6 +23,10 @@
       margin-right: 0.2em;
     }
 
+    .legend {
+      cursor: pointer;
+    }
+
   </ui:style>
 
   <g:HTMLPanel styleName="l--scroll-auto {style.container}">
@@ -52,10 +56,24 @@
         </g:Button>
       </li>
       <li>
-        <g:RadioButton name="diffMode" ui:field="diffModeDiff" />
+        <g:RadioButton name="diffMode" ui:field="diffModeHighlight" />
       </li>
       <li>
-        <g:RadioButton name="diffMode" ui:field="diffModeHighlight" />
+        <g:RadioButton name="diffMode" ui:field="diffModeDiff" />
+      </li>
+    </ul>
+    <ul class="list--horizontal l--push-all-quarter legend">
+      <li class="bx--inline zeta">
+        <g:InlineLabel ui:field="diffLegendLabel">TM Diff Highlighting</g:InlineLabel>
+      </li>
+      <li class="bx--inline">
+        <g:FocusPanel ui:field="diffLegend" styleName="{style.legend} bx--inline">
+          <g:HTMLPanel styleName="bx--inline button--link">
+            <g:InlineLabel styleName="CodeMirror-searching l--pad-h-quarter" >Matching</g:InlineLabel>
+            <g:InlineLabel styleName="diff-delete l--pad-h-quarter" ui:field="tmOnly">TM only</g:InlineLabel>
+            <g:InlineLabel styleName="diff-insert l--pad-h-quarter" ui:field="searchOnly">Search only</g:InlineLabel>
+          </g:HTMLPanel>
+        </g:FocusPanel>
       </li>
     </ul>
     <g:HTMLPanel ui:field="container" styleName="txt--align-center" />

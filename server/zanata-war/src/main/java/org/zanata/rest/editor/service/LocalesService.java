@@ -22,7 +22,10 @@ package org.zanata.rest.editor.service;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DefaultValue;
@@ -39,20 +42,23 @@ import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.GlossarySortField;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HLocale;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.editor.dto.LocaleSortField;
 import org.zanata.rest.editor.dto.LocalesResults;
 import org.zanata.rest.editor.service.resource.LocalesResource;
 import org.zanata.rest.search.dto.LanguageTeamSearchResult;
+import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 
 import com.google.common.collect.Lists;
-import org.zanata.service.impl.LocaleServiceImpl;
-import org.zanata.webtrans.shared.model.Locale;
 
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.servlet.annotations.AllJavaLocales;
+
+import lombok.Setter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -72,6 +78,16 @@ public class LocalesService implements LocalesResource {
 
     @Inject
     private ZanataIdentity identity;
+
+    @Inject
+    private LocaleDAO localeDAO;
+
+    @Inject
+    private ResourceUtils resourceUtils;
+
+    @Inject
+    @AllJavaLocales
+    private List<LocaleId> allJavaLocales;
 
     @Transactional(readOnly = true)
     @Override
@@ -105,6 +121,42 @@ public class LocalesService implements LocalesResource {
         return Response.ok(localesResults).build();
     }
 
+    private final FilterLocaleDetails filterLocaleDetails =
+            new FilterLocaleDetails();
+
+    @Transactional(readOnly = true)
+    @Override
+    public Response getNewLocales(@QueryParam("filter") String filter,
+            @QueryParam("size") @DefaultValue("10") int size) {
+        List<LocaleId> supportedLocaleIds =
+                localeServiceImpl.getAllLocales().stream()
+                        .map(hLocale -> hLocale.getLocaleId())
+                        .collect(Collectors.toList());
+
+        List<LocaleDetails> localeDetails =
+                allJavaLocales.stream()
+                        .filter(localeId -> !supportedLocaleIds
+                                .contains(localeId))
+                        .map(convertToLocaleDetails)
+                        .collect(Collectors.toList());
+
+        if (StringUtils.isNotBlank(filter)) {
+            filterLocaleDetails.setQuery(filter);
+            localeDetails = localeDetails.stream().filter(filterLocaleDetails)
+                    .collect(Collectors.toList());
+        }
+
+        size = size <= 0 ? 10 : size;
+        if (localeDetails.size() > size) {
+            localeDetails = localeDetails.subList(0, size);
+        }
+        Type genericType = new GenericType<List<LocaleDetails>>() {
+        }.getGenericType();
+        Object entity =
+            new GenericEntity<List<LocaleDetails>>(localeDetails, genericType);
+        return Response.ok(entity).build();
+    }
+
     @Override
     public Response getDetails(String localeId) {
         if (StringUtils.isBlank(localeId)) {
@@ -113,7 +165,7 @@ public class LocalesService implements LocalesResource {
         }
         HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
         if (hLocale != null) {
-            LocaleDetails details = LocaleServiceImpl.convertToDTO(hLocale, "");
+            LocaleDetails details = LocaleServiceImpl.convertToDTO(hLocale);
             return Response.ok(details).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -127,7 +179,7 @@ public class LocalesService implements LocalesResource {
             Lists.newArrayListWithExpectedSize(locales.size());
         localesRefs.addAll(
             locales.stream()
-                .map(hLocale -> LocaleServiceImpl.convertToDTO(hLocale, ""))
+                .map(hLocale -> LocaleServiceImpl.convertToDTO(hLocale))
                 .collect(Collectors.toList()));
         Type genericType = new GenericType<List<LocaleDetails>>() {
         }.getGenericType();
@@ -147,11 +199,27 @@ public class LocalesService implements LocalesResource {
         identity.checkPermission("delete-language");
 
         try {
-//            localeServiceImpl.delete(locale);
+            localeServiceImpl.delete(locale);
             return Response.ok().build();
         } catch (ConstraintViolationException e) {
             return Response.status(Response.Status.METHOD_NOT_ALLOWED).build();
         }
+    }
+
+    @Transactional
+    @Override
+    public Response createLanguage(LocaleDetails localeDetails) {
+        identity.checkPermission("insert-language");
+
+        if (localeServiceImpl.localeExists(localeDetails.getLocaleId())) {
+            return Response.ok().build();
+        }
+        HLocale hLocale = LocaleServiceImpl.convertToHLocale(localeDetails);
+        localeDAO.makePersistent(hLocale);
+        localeDAO.flush();
+
+        return Response.status(Response.Status.CREATED)
+                .entity(LocaleServiceImpl.convertToDTO(hLocale)).build();
     }
 
     private int validatePage(int page) {
@@ -180,5 +248,35 @@ public class LocalesService implements LocalesResource {
             }
         }
         return result;
+    }
+
+    private final Function<LocaleId, LocaleDetails> convertToLocaleDetails =
+        new Function<LocaleId, LocaleDetails>() {
+            @Override
+            public LocaleDetails apply(LocaleId localeId) {
+                HLocale hLocale = new HLocale(localeId);
+                hLocale.setDisplayName(hLocale.retrieveDisplayName());
+                hLocale.setNativeName(hLocale.retrieveNativeName());
+                String pluralForms =
+                    resourceUtils.getPluralForms(localeId, false, true);
+                hLocale.setPluralForms(pluralForms);
+                return LocaleServiceImpl.convertToDTO(hLocale);
+            }
+        };
+
+    private class FilterLocaleDetails implements Predicate<LocaleDetails> {
+        @Setter
+        private String query;
+
+        @Override
+        public boolean test(LocaleDetails localeDetails) {
+            if (StringUtils.isBlank(query)) {
+                return true;
+            }
+            return StringUtils
+                .containsIgnoreCase(localeDetails.getDisplayName(), query)
+                || StringUtils
+                .containsIgnoreCase(localeDetails.getLocaleId().getId(), query);
+        }
     }
 }

@@ -21,6 +21,7 @@
 
 package org.zanata.service.impl;
 
+import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
@@ -32,7 +33,6 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.zanata.events.WebhookEventType;
 
-import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.HmacUtil;
 

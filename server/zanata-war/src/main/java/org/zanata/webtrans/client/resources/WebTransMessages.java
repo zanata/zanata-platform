@@ -412,23 +412,47 @@ public interface WebTransMessages extends Messages {
     @DefaultMessage("Description")
     String description();
 
-    @DefaultMessage("Green color")
-    String greenColor();
+    @DefaultMessage("Search only")
+    String searchOnly();
 
+    /**
+     * Used for color legend in search and replace view
+     * The label represent the color for the searched text
+     */
+    @DefaultMessage("Blue color")
+    String searchColor();
+
+    @DefaultMessage("Non-matching text")
+    String noMatch();
+
+    @DefaultMessage("Matching")
+    String noColor();
+
+    /**
+     * Used for color legend in search and replace view
+     * The label represent the color for no changes text
+     */
+    @DefaultMessage("Yellow color")
+    String highlightColor();
+
+    @DefaultMessage("TM only")
+    String tmOnly();
+
+    /**
+     * Used for color legend in search and replace view
+     * The label represent the color for text to be replaced
+     */
     @DefaultMessage("Red color")
-    String redColorCrossedOut();
+    String tmColor();
 
-    @DefaultMessage("Plain text")
-    String plainText();
-
-    @DefaultMessage("Text contain in result but not in search term")
+    @DefaultMessage("Text contained in search term but not in TM")
     String tmInsertTagDesc();
 
-    @DefaultMessage("Text contain in search term but not in result")
+    @DefaultMessage("Text contained in TM but not in search term")
     String tmDelTagDesc();
 
-    @DefaultMessage("Text contain in both search term and result")
-    String tmPlainTextDesc();
+    @DefaultMessage("Text contained in both search term and TM")
+    String tmHighlightTextDesc();
 
     @DefaultMessage("New replacement text")
     String searchReplaceInsertTagDesc();

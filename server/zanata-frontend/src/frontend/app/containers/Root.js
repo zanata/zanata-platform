@@ -3,6 +3,7 @@ import { Provider } from 'react-redux'
 import { Router, Route, Redirect } from 'react-router'
 import App from '../containers/App'
 import Glossary from '../containers/Glossary'
+import Languages from '../containers/Languages'
 import ManageUsers from '../containers/ManageUsers'
 import ManageRoles from '../containers/ManageRoles'
 import ManageSearch from '../containers/ManageSearch'
@@ -24,6 +25,7 @@ export default class Root extends Component {
             <Route component={App} >
               <Route path='explore' component={Explore} />
               <Route path='glossary' component={Glossary} />
+              <Route path='languages' component={Languages} />
               <Route path='manageusers' component={ManageUsers} />
               <Route path='manageroles' component={ManageRoles} />
               <Route path='managesearch' component={ManageSearch} />
