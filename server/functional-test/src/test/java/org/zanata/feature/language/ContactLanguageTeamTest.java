@@ -51,7 +51,7 @@ public class ContactLanguageTeamTest extends ZanataTestCase {
         LanguagesPage languagesPage = new LoginWorkFlow()
                 .signIn("translator", "translator")
                 .goToLanguages()
-                .selectLanguage("fr")
+                .gotoLanguagePage("fr")
                 .clickMoreActions()
                 .clickContactCoordinatorsButton()
                 .enterMessage("I love Zanata")

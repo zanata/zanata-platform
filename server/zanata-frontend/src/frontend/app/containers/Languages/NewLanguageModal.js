@@ -1,11 +1,8 @@
 import React, {PropTypes, Component} from 'react'
 import { connect } from 'react-redux'
-import { cloneDeep, isEmpty, debounce } from 'lodash'
-import {
-  Modal
-} from 'zanata-ui'
-
-import { Autosuggest } from 'react-autosuggest'
+import { isEmpty, debounce } from 'lodash'
+import { Modal, Icon } from 'zanata-ui'
+import Autosuggest from 'react-autosuggest'
 
 import {
   FormGroup,
@@ -21,36 +18,20 @@ import {
   handleSaveNewLanguage
 } from '../../actions/languages'
 
-const getSuggestions = value => {
-  const inputValue = value.trim().toLowerCase()
-  const query = value
-  const inputLength = inputValue.length
-
-  return inputLength === 0 ? [] : query.filter(lang =>
-      lang.name.toLowerCase().slice(0, inputLength) === inputValue
-  )
-}
-
-const {
-    show,
-    details,
-    saving,
-    validFields,
-    suggestions,
-    getSuggestionValue,
-    renderSuggestion,
-    inputProps
-} = this.props
-
 class NewLanguageModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      details: cloneDeep(props.details),
+      details: {
+        enabledByDefault: true,
+        enabled: true,
+        displayName: '',
+        nativeName: '',
+        pluralForms: ''
+      },
       query: '',
       validFields: true,
-      value: '',
-      suggestions: []
+      suggestions: props.searchResults
     }
   }
 
@@ -61,8 +42,12 @@ class NewLanguageModal extends Component {
 
   resetFields () {
     this.setState({
-      details: cloneDeep(this.props.details),
+      details: {
+        enabledByDefault: true,
+        enabled: true
+      },
       validFields: true,
+      suggestions: [],
       query: ''
     })
   }
@@ -86,37 +71,72 @@ class NewLanguageModal extends Component {
   }
 
   validateDetails () {
-    const displayName = this.state.details
-    if (!isEmpty(displayName)) {
-      this.props.handleOnSave(this.state.details)
-    } else {
+    const displayName = this.state.details.displayName
+    const query = this.state.query
+    if (isEmpty(displayName) && isEmpty(query)) {
       this.setState({
         validFields: false
       })
+    } else {
+      const details = {
+        ...this.state.details,
+        localeId: query.replace('_', '-')
+      }
+      this.props.handleOnSave(details)
     }
   }
 
-  onChange (event, {newValue}) {
+  onSearchChange = (event, { newValue }) => {
     this.setState({
-      value: newValue
+      query: newValue
     })
   }
 
-  onSuggestionsFetchRequested ({value}) {
-    this.setState({
-      suggestions: getSuggestions(value)
-    })
+  onSuggestionsClearRequested = () => {
   }
 
-  onSuggestionsClearRequested () {
+  getSuggestionValue (selectedLocale) {
+    return selectedLocale.localeId
+  }
+
+  renderSuggestion (suggestion) {
+    return (
+      <span name='new-language-displayName'>
+        <span className='Fw(400)'>
+          {suggestion.displayName}
+        </span>
+        <span className='C(muted) Fz(msn1) Mstart(eq)'>
+          {suggestion.localeId}
+        </span>
+      </span>
+    )
+  }
+
+  onSuggestionSelected = (event,
+    { suggestion, suggestionValue, sectionIndex, method }) => {
     this.setState({
-      suggestions: []
+      details: {
+        ...suggestion,
+        enabledByDefault: true,
+        enabled: true
+      }
     })
   }
 
   /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
   render () {
-    // TODO: search results from autocomplete
+    const {show, saving, loadSuggestion, searchResults} = this.props
+    const { details, query, validFields } = this.state
+
+    const inputProps = {
+      placeholder: 'Search for languages',
+      maxLength: 256,
+      onChange: this.onSearchChange,
+      value: query
+    }
+
+    const showPluralFormsWarning = isEmpty(searchResults) && !isEmpty(query)
+
     return (
       <Modal
         show={show}
@@ -126,56 +146,65 @@ class NewLanguageModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <div className='bootstrap'>
-            <FormGroup validationState={!validFields ? 'error' : ''}>
-              <ControlLabel>Language</ControlLabel>
+            <FormGroup validationState={!validFields ? 'error' : undefined}>
+              <ControlLabel>Language Code</ControlLabel>
               <Autosuggest
-                suggestions={suggestions}
-                onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                name='new-language-code'
+                suggestions={searchResults}
+                onSuggestionSelected={this.onSuggestionSelected}
+                getSuggestionValue={this.getSuggestionValue}
+                onSuggestionsFetchRequested={loadSuggestion}
                 onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                getSuggestionValue={getSuggestionValue}
-                renderSuggestion={renderSuggestion}
+                renderSuggestion={this.renderSuggestion}
                 inputProps={inputProps}
                 />
             </FormGroup>
-            <FormGroup validationState={!validFields ? 'error' : ''}>
+            <FormGroup validationState={!validFields ? 'error' : undefined}>
               <ControlLabel>Name</ControlLabel>
               <FormControl type='text'
+                maxLength={100}
+                id='new-language-name'
                 onChange={(e) => this.updateField('displayName', e)}
-                placeholder='Default display name'
+                placeholder='Display name'
                 value={details.displayName} />
               <FormControl.Feedback />
             </FormGroup>
             <FormGroup>
               <ControlLabel>Native Name</ControlLabel>
               <FormControl type='text'
+                id='new-language-nativeName'
+                maxLength={100}
                 onChange={(e) => this.updateField('nativeName', e)}
-                placeholder='Default native name'
+                placeholder='Native name'
                 value={details.nativeName} />
             </FormGroup>
-            <FormGroup>
-              <strong className='Mend(eq)'>Language Code</strong>
-              <span className={details.localeId ? '' : 'C(muted)'}>
-                {details.localeId || 'None'}
-              </span>
-            </FormGroup>
-            <FormGroup>
-              <ControlLabel>Alias</ControlLabel>
-              <FormControl type='text'
-                onChange={(e) => this.updateField('alias', e)}
-                placeholder='eg. en-US'
-                value={details.alias} />
-            </FormGroup>
-            <FormGroup>
-              <ControlLabel>Plural forms</ControlLabel>
+            <FormGroup validationState={showPluralFormsWarning
+              ? 'warning' : undefined}>
+              <ControlLabel>
+                Plural forms
+                <a href='http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms' // eslint-disable-line max-len
+                  target='_blank'>
+                  <Icon name='info'
+                    atomic={{m: 'Mstart(re) Va(sub)'}}
+                    title='Help' />
+                </a>
+                {showPluralFormsWarning &&
+                  <div className='Fz(msn1)'
+                    id='new-language-pluralforms-warning'>
+                    No plural information available. Assuming no plurals.
+                  </div>
+                }
+              </ControlLabel>
               <FormControl
                 type='text'
+                maxLength={255}
                 onChange={(e) => this.updateField('pluralForms', e)}
-                placeholder='Default plural forms (if empty):
-                nplurals=2;plural=(n>1)'
+                placeholder='Plural forms'
                 value={details.pluralForms} />
             </FormGroup>
             <FormGroup>
               <Checkbox
+                id='chk-new-language-enabled'
                 onChange={() => this.updateCheckbox('enabledByDefault')}
                 checked={details.enabledByDefault}>
                 Enabled by default
@@ -190,13 +219,16 @@ class NewLanguageModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <div className='bootstrap Ta(end)'>
-            <Button className='btn-left'
+            <Button id='btn-new-language-cancel' className='btn-left'
               disabled={saving}
               onClick={() => this.handleCancel()}>
               Close
             </Button>
             <Button
-              disabled={saving} bsStyle='primary'
+              disabled={saving ||
+                (isEmpty(details.localeId) && isEmpty(query))}
+              id='btn-new-language-save'
+              bsStyle='primary'
               onClick={() => this.validateDetails()}>
               Save
             </Button>
@@ -211,7 +243,6 @@ class NewLanguageModal extends Component {
 NewLanguageModal.propTypes = {
   show: PropTypes.bool,
   saving: PropTypes.bool,
-  details: PropTypes.object,
   searchResults: PropTypes.array,
   handleOnClose: PropTypes.func,
   handleOnSave: PropTypes.func,
@@ -222,13 +253,11 @@ const mapStateToProps = (state) => {
   const {
     show,
     saving,
-    details,
     searchResults
   } = state.languages.newLanguage
   return {
     show,
     saving,
-    details,
     searchResults
   }
 }
@@ -245,7 +274,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(handleSaveNewLanguage(details))
     },
     loadSuggestion: (query) => {
-      updateSuggestion(query || '')
+      updateSuggestion(query.value)
     }
   }
 }

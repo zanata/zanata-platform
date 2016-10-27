@@ -289,11 +289,11 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
             LocaleList locales) {
         String[] localesOnServer = new String[locales.size()];
         for (int i = 0; i < locales.size(); i++) {
-             localesOnServer[i] = locales.get(i).getLocale();
+            localesOnServer[i] = locales.get(i).getLocale();
         }
         return statsClient
-                    .getStatistics(getOpts().getProj(),
-                            getOpts().getProjectVersion(), true, false, localesOnServer);
+                .getStatistics(getOpts().getProj(),
+                        getOpts().getProjectVersion(), true, false, localesOnServer);
     }
 
     /**
@@ -332,11 +332,11 @@ public abstract class PushPullCommand<O extends PushPullOptions> extends
             log.debug("{} for locale {} is translated {}%", localDocName,
                     serverLocale, optionalStats.get()
                             .get(localDocName).get(serverLocale)
-                    .getTranslatedPercent());
+                            .getTranslatedPercent());
         }
         return !optionalStats.isPresent()
                 || optionalStats.get().get(localDocName).get(serverLocale)
-                        .isAboveThreshold(minDocPercent);
+                .isAboveThreshold(minDocPercent);
     }
 
     protected static class TranslatedPercent {

@@ -44,8 +44,10 @@ public class RedirectFilter implements ClientResponseFilter {
     @Override
     public void filter(ClientRequestContext requestContext,
             ClientResponseContext responseContext) throws IOException {
-        if (responseContext.getStatusInfo().getFamily() ==
-                Response.Status.Family.REDIRECTION) {
+        // 304 (not modified) is not redirect so we need to be explicit what
+        // status codes we want to target here
+        if (responseContext.getStatus() == 301 ||
+                responseContext.getStatus() == 302) {
             URI redirectTarget = responseContext.getLocation();
             throw new IllegalStateException(
                     String.format(

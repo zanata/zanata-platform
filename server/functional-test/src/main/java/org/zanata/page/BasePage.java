@@ -158,4 +158,7 @@ public class BasePage extends CorePage {
         return (getDriver().findElements(By.id("nav"))).size() > 0;
     }
 
+    public void closeNotification() {
+        getDriver().findElement(By.id("btn-notification-close")).click();
+    }
 }
