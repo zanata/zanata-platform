@@ -8,13 +8,13 @@ These instructions assume that you have installed Zanata-CLI as shown in [Instal
 
 The basic command for uploading documents is `zanata-cli push`. The push command should always be run from the directory that contains `zanata.xml` for your project (find information about `zanata.xml` at [Configuring the Client](/configuration).
 
-At the time of writing, you will have to specify source and translation directories with the command, even though the default push command will push only source documents to the server. This will be fixed in a future version. This means that the simplest push command is:
+The simplest push command is:
 
-`zanata-cli push -s src -t trans`
+`zanata-cli push`
 
 This command will:
 
- 1. search for source documents in a directory named `src` and any of its subdirectories.
+ 1. search for source documents in a directory specified as `src-dir` and any of its subdirectories (src-dir can be specified in zanata.xml or from command line option. Default is current directory).
  1. display the current settings and list of source documents that were found.
  1. confirm that you want to proceed with the upload.
  1. upload the located source documents to the server.
@@ -31,7 +31,7 @@ The push command can also upload translations. This is mainly for use when trans
 To push translations instead of source documents, add the option `--push-type trans`, like so:
 
 ```bash
-zanata-cli push --push-type trans -s src -t trans
+zanata-cli push --push-type trans --trans-dir trans
 ```
 
 To push source and translation documents together, use `--push-type both`.
@@ -52,7 +52,7 @@ trans
 If you are unsure about the layout and naming for translation files in the selected project type, you can do a trial pull and look at the output. This can be done by copying `zanata.xml` to an empty folder and running a pull command such as:
 
 ```bash
-zanata-cli pull -s src -t trans --create-skeletons
+zanata-cli pull --src-dir src --trans-dir trans --create-skeletons
 ```
 
 The option `--create-skeletons` is used to make sure files will be written even if there are no translations.
