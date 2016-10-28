@@ -26,6 +26,8 @@ import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 
+import static com.google.common.base.Throwables.getRootCause;
+
 /**
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -49,7 +51,8 @@ public class TestLogger extends RunListener {
 
     @Override
     public void testFailure(Failure failure) throws Exception {
-        log.error("Test FAILED: " + failure, failure.getException());
+        Throwable e = failure.getException();
+        log.error("Test FAILED: " + failure, getRootCause(e));
     }
 
     @Override
