@@ -54,7 +54,7 @@ body {
   width: 100%;
   margin-top: 1em;
   margin-bottom: 1em;
-  margin-left: 1em;
+  margin-left: 2em;
 }
 
 .scrollViewTheme {
@@ -186,11 +186,78 @@ a:focus {
   outline-offset: -2px;
 }
 
-// FROM HERE /////////////////////////
-//////////////////////////////////////
-
+abbr[data-original-title],
 abbr[title] {
-  border-bottom: 1px dotted;
+  cursor: help;
+  border-bottom: 1px dotted #777;
+}
+
+.initialism {
+  font-size: 90%;
+  text-transform: uppercase;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-size: 1em;
+}
+
+code {
+  font-size: 90%;
+  padding: 2px 4px;
+  color: #c7254e;
+  border-radius: 4px;
+  background-color: #f9f2f4;
+}
+
+kbd {
+  font-size: 90%;
+  padding: 2px 4px;
+  color: #fff;
+  border-radius: 3px;
+  background-color: #333;
+  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25);
+}
+
+kbd kbd {
+  font-size: 100%;
+  font-weight: 700;
+  padding: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+
+pre {
+  font-size: 13px;
+  line-height:@line-height-base;
+  display: block;
+  margin: 0 0 10px;
+  padding: @padding-small-horizontal;
+  word-wrap: break-word;
+  word-break: break-all;
+  color: @gray-dark;
+  border: 1px solid #ccc;
+  border-radius: @border-radius-base;
+  background-color: #f5f5f5;
+  overflow: auto;
+}
+
+pre code {
+  font-size: inherit;
+  padding: 0;
+  white-space: pre-wrap;
+  color: inherit;
+  border-radius: 0;
+  background-color: transparent;
+}
+
+.pre-scrollable {
+  overflow-y: scroll;
+  max-height: 340px;
 }
 
 b,
@@ -202,14 +269,15 @@ dfn {
   font-style: italic;
 }
 
+.small,
+small {
+  font-size: 85%;
+}
 
+.mark,
 mark {
   color: #000;
   background: #ff0;
-}
-
-small {
-  font-size: 0.8em;
 }
 
 sub,
@@ -230,6 +298,7 @@ sub {
 
 img {
   border: 0;
+  vertical-align: middle;
 }
 
 svg:not(:root) {
@@ -238,6 +307,7 @@ svg:not(:root) {
 
 figure {
   margin: 1em 40px;
+  margin: 0;
 }
 
 hr {
@@ -245,18 +315,10 @@ hr {
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   height: 0;
-}
-
-pre {
-  overflow: auto;
-}
-
-code,
-kbd,
-pre,
-samp {
-  font-family: monospace, monospace;
-  font-size: 1em;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 1px solid #eee;
 }
 
 button,
@@ -270,6 +332,9 @@ textarea {
   font-size: inherit;
   line-height: inherit;
 }
+
+// FROM HERE /////////////////////////
+//////////////////////////////////////
 
 button {
   overflow: visible;
@@ -368,19 +433,6 @@ td small {
   box-sizing: border-box;
 }
 
-a:focus {
-  outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
-  outline-offset: -2px;
-}
-
-figure {
-  margin: 0;
-}
-
-img {
-  vertical-align: middle;
-}
 
 .carousel-inner > .item > a > img,
 .carousel-inner > .item > img,
@@ -412,13 +464,6 @@ img {
 
 .img-circle {
   border-radius: 50%;
-}
-
-hr {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  border: 0;
-  border-top: 1px solid #eee;
 }
 
 .sr-only {
@@ -589,18 +634,6 @@ p {
     font-size: 21px;
   }
 }
-
-.small,
-small {
-  font-size: 85%;
-}
-
-.mark,
-mark {
-  padding: 0.2em;
-  background-color: #fcf8e3;
-}
-
 .text-left {
   text-align: left;
 }
@@ -717,78 +750,6 @@ dd {
   .dl-horizontal dd {
     margin-left: 180px;
   }
-}
-
-abbr[data-original-title],
-abbr[title] {
-  cursor: help;
-  border-bottom: 1px dotted #777;
-}
-
-.initialism {
-  font-size: 90%;
-  text-transform: uppercase;
-}
-
-code,
-kbd,
-pre,
-samp {
-  font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
-}
-
-code {
-  font-size: 90%;
-  padding: 2px 4px;
-  color: #c7254e;
-  border-radius: 4px;
-  background-color: #f9f2f4;
-}
-
-kbd {
-  font-size: 90%;
-  padding: 2px 4px;
-  color: #fff;
-  border-radius: 3px;
-  background-color: #333;
-  -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25);
-  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25);
-}
-
-kbd kbd {
-  font-size: 100%;
-  font-weight: 700;
-  padding: 0;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-
-pre {
-  font-size: 13px;
-  line-height:@line-height-base;
-  display: block;
-  margin: 0 0 10px;
-  padding: @padding-small-horizontal;
-  word-wrap: break-word;
-  word-break: break-all;
-  color: @gray-dark;
-  border: 1px solid #ccc;
-  border-radius: @border-radius-base;
-  background-color: #f5f5f5;
-}
-
-pre code {
-  font-size: inherit;
-  padding: 0;
-  white-space: pre-wrap;
-  color: inherit;
-  border-radius: 0;
-  background-color: transparent;
-}
-
-.pre-scrollable {
-  overflow-y: scroll;
-  max-height: 340px;
 }
 
 .container {
