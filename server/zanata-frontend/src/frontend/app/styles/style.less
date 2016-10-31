@@ -229,17 +229,17 @@ samp {
 
 code {
   font-size: 90%;
-  padding: 2px 4px;
+  padding: 0.143em 0.286em;
   color: #c7254e;
-  border-radius: 4px;
+  border-radius: @border-radius-base;
   background-color: #f9f2f4;
 }
 
 kbd {
   font-size: 90%;
-  padding: 2px 4px;
+  padding: 0.143em  0.286em;
   color: #fff;
-  border-radius: 3px;
+  border-radius: @border-radius-small;
   background-color: #333;
   -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25);
   box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .25);
@@ -254,10 +254,10 @@ kbd kbd {
 }
 
 pre {
-  font-size: 13px;
+  font-size: 0.929em;
   line-height: @line-height-base;
   display: block;
-  margin: 0 0 10px;
+  margin: 0 0 0.714em;
   padding: @padding-small-horizontal;
   word-wrap: break-word;
   word-break: break-all;
@@ -279,7 +279,7 @@ pre code {
 
 .pre-scrollable {
   overflow-y: scroll;
-  max-height: 340px;
+  max-height: 24.286em;
 }
 
 b,
@@ -336,8 +336,8 @@ hr {
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   height: 0;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 1.429em;
+  margin-bottom: 1.429em;
   border: 0;
   border-top: 1px solid #eee;
 }
@@ -657,8 +657,8 @@ h6 small {
 h1,
 h2,
 h3 {
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 1.429em;
+  margin-bottom: 0.714em;
   color: @brand-secondary;
 }
 
@@ -747,15 +747,15 @@ p {
 }
 
 .lead {
-  font-size: 16px;
+  font-size: 1.143em;
   font-weight: 300;
   line-height: 1.4;
-  margin-bottom: 20px;
+  margin-bottom: 1.429em;
 }
 
 @media (max-width: @screen-sm-max) {
   .lead {
-    font-size: 21px;
+    font-size: 1.5em;
   }
 }
 
@@ -857,7 +857,7 @@ a.bg-primary:hover {
 ol,
 ul {
   margin-top: 0;
-  margin-bottom: 10px;
+  margin-bottom: 0.714em;
 }
 
 ol ol,
@@ -880,13 +880,13 @@ ul ul {
 
 .list-inline > li {
   display: inline-block;
-  padding-right: 5px;
-  padding-left: 5px;
+  padding-right: @padding-small-vertical;
+  padding-left: @padding-small-vertical;
 }
 
 dl {
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 1.429em;
 }
 
 dd,
@@ -907,14 +907,13 @@ dd {
     float: left;
     clear: left;
     overflow: hidden;
-    width: 160px;
+    width: 11.429em;
     text-align: right;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-
   .dl-horizontal dd {
-    margin-left: 180px;
+    margin-left: 12.857em;
   }
 }
 
