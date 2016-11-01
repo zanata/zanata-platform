@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { merge } from 'lodash'
 import Row from 'react-bootstrap'
-import TextInput from '/TextInput'
+import TextInput from '../../components'
 
 const classes = {
     root: {
@@ -92,7 +92,7 @@ class EditableText extends Component {
         const emptyText = editable ? placeholder : emptyReadOnlyText
         const text = children || emptyText
         return (CD
-            <Row theme={textStateClasses} align='start'
+            <Row className={textStateClasses} align='start'
                  onClick={::this.handleClick} title={title}>
                 {text}
             </Row>
@@ -122,13 +122,6 @@ EditableText.propTypes = {
      * empty and there is not placeholder
      */
     emptyReadOnlyText: PropTypes.string,
-    /**
-     * Based on an [atomic classes](http://acss.io/reference) object.
-     * This should be merged to a single object before it is passed
-     * into the base component.
-     * Each component can have it's own structure for it's theme object.
-     */
-    theme: PropTypes.object,
     /**
      * Tooltip
      */

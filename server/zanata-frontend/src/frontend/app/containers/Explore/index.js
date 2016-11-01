@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
 import { Button } from 'react-bootstrap'
 import TeaserList from './TeaserList'
-import { TextInput } from '../../components'
+import { TextInput, Icon } from '../../components'
 import {
   searchTextChanged,
   searchPageInitialLoad,
@@ -121,7 +121,7 @@ class Explore extends Component {
         <div className='headerClasses'>
           <h1 className='headingTheme hidden' level='1'>Search</h1>
           <div className='view searchViewTheme'>
-            <i className='i icons i--search'></i>
+            <Icon name='search' classes='n1' />
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}

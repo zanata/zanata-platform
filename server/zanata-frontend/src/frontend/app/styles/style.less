@@ -40,7 +40,7 @@ body {
   width: 100%;
   margin-top: 1em;
   margin-bottom: 1em;
-  margin-left: 2em;
+  margin-left: 1.4em;
 }
 
 .scrollViewTheme {
@@ -48,7 +48,7 @@ body {
   overflow: hidden;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  margin-left: 1em;
+  margin-left: 2em;
 }
 
 .contentViewContainerTheme {
@@ -65,58 +65,6 @@ body {
   content: '';
 }
 
-#explore button.btn-link {
-  color: rgb(84, 102, 122);
-}
-
-#explore h1 {
-  font-size: 1.2em !important;
-  margin-bottom: 0;
-}
-
-#explore_search.textInput {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-color: transparent;
-  border: 2px solid rgb(189, 212, 220);
-  border-radius: 0.375em;
-  box-sizing: border-box;
-  color: inherit;
-  font-family: inherit;
-  font-weight: inherit;
-  font-size: 1em;
-  font-style: inherit;
-  outline: none;
-  padding-left: 0.375em;
-  padding-right: 0.375em;
-  width: 50%;
-}
-
-#explore_search.textInput:placeholder {
-  color: hsl(195, 32%, 80%);
-}
-
-#explore_search.textInput:focus {
-  border-color: rgb(27, 167, 217);
-}
-
-#explore_search svg.icons {
-  align-items: center;
-  color: neutral;
-  font-size: 1.2em;
-  justify-content: center;
-  height: 100%;
-  position: relative;
-  text-align: left;
-  width: 1.2rem;
-  left: 1.429em;
-}
-
-.getinvolved .btn-primary {
-  background-color: @brand-secondary;
-}
-
 #ddllist1,
 #ddllist2 {
   font-size: 1em;
@@ -129,12 +77,6 @@ body {
   background: #fff none;
 }
 
-.getinvolved .btn-primary:active,
-.getinvolved .btn-primary:focus,
-.getinvolved .btn-primary:hover {
-  background-color: @brand-primary;
-}
-
 .icon {
   display: inline-block;
   width: 1em;
@@ -142,6 +84,89 @@ body {
   stroke-width: 0;
   stroke: currentColor;
   fill: currentColor;
+}
+
+span.icons {
+  position:absolute;
+  height:100%;
+  width:100%;
+  top:0;
+  left:0;
+}
+
+span.svg {
+  display:inline-block;
+  position:relative;
+}
+
+.n2 {
+  width:0.694rem;
+  height:0.694rem;
+}
+
+.n1 {
+  width:0.833rem;
+  height:0.833rem;
+}
+
+.s0 {
+  width:1rem;
+  height:1rem;
+}
+
+.s1 {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+.s2 {
+  width: 1.44rem;
+  height: 1.44rem;
+}
+
+.s3 {
+  width: 1.728rem;
+  height: 1.728rem;
+
+}
+
+.s4 {
+  width: 2.074rem;
+  height: 2.074rem;
+}
+
+.s5 {
+  width: 2.488rem;
+  height: 2.488rem;
+}
+
+.s6 {
+  width: 2.986rem;
+  height: 2.986rem;
+}
+
+.s7 {
+  width: 3.583rem;
+  height: 3.583rem;
+}
+
+.s8 {
+  width: 4.3rem;
+  height: 4.3rem;
+}
+
+.s9 {
+  width: 5.16rem;
+  height: 5.16rem;
+}
+
+.s10 {
+  width: 6.192rem;
+  height: 6.192rem;
+}
+
+.abs {
+  position: absolute;
 }
 
 article,
@@ -3524,6 +3549,64 @@ button.close {
 .visible-xs-inline,
 .visible-xs-inline-block {
   display: none !important;
+}
+
+#explore button.btn-link {
+  color: rgb(84, 102, 122);
+}
+
+#explore h1 {
+  font-size: 1.2em !important;
+  margin-bottom: 0;
+}
+
+#explore_search.textInput {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: transparent;
+  border: 2px solid rgb(189, 212, 220);
+  border-radius: 0.375em;
+  box-sizing: border-box;
+  color: inherit;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: 1em;
+  font-style: inherit;
+  outline: none;
+  padding-left: 0.375em;
+  padding-right: 0.375em;
+  width: 50%;
+}
+
+#explore_search.textInput:placeholder {
+  color: hsl(195, 32%, 80%);
+}
+
+#explore_search.textInput:focus {
+  border-color: rgb(27, 167, 217);
+}
+
+#explore_search svg.icons {
+  align-items: center;
+  color: neutral;
+  font-size: 1.2em;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  text-align: left;
+  width: 1.2rem;
+  left: 1.429em;
+}
+
+.getinvolved .btn-primary {
+  background-color: @brand-secondary;
+}
+
+.getinvolved .btn-primary:active,
+.getinvolved .btn-primary:focus,
+.getinvolved .btn-primary:hover {
+  background-color: @brand-primary;
 }
 
 @media (min-width: @screen-sm-min) {
