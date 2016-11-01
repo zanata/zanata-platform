@@ -52,8 +52,6 @@
      -->
     <mysql.lower_case_table_names>0</mysql.lower_case_table_names>
 
-    <!-- target zanata instance will be built by war overlay -->
-    <zanata.test.war.name>zanata-test-${project.version}</zanata.test.war.name>
     <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</zanata.instance.url>
     <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
     <zanata.translatorkey>d83882201764f7d339e97c4b087f0806</zanata.translatorkey>
@@ -115,12 +113,11 @@
   </dependencyManagement>
 
   <dependencies>
-    <!-- TODO depend on zanata-test-war.war, not jar -->
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>zanata-test-war</artifactId>
       <version>${project.version}</version>
-      <type>jar</type>
+      <type>war</type>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -644,15 +641,15 @@
               </configuration>
               <deployables>
                 <deployable>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>zanata-test-war</artifactId>
                   <type>war</type>
-                  <location>${project.basedir}/../zanata-test-war/target/${zanata.test.war.name}.war</location>
                   <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
                   <pingTimeout>600000</pingTimeout>
                   <properties>
                     <context>${context.path}</context>
                   </properties>
                 </deployable>
-
               </deployables>
             </configuration>
             <executions>
