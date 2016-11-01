@@ -121,7 +121,7 @@ class Explore extends Component {
         <div className='headerClasses'>
           <h1 className='headingTheme hidden' level='1'>Search</h1>
           <div className='view searchViewTheme'>
-            <Icon name='search' classes='n1' />
+            <Icon name='search' classes='s0' />
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
