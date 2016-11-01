@@ -23,8 +23,13 @@ package org.zanata.action;
 import com.offbytwo.jenkins.JenkinsServer;
 import com.offbytwo.jenkins.model.Build;
 import com.offbytwo.jenkins.model.BuildWithDetails;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.model.HAccount;
+import org.zanata.model.HProject;
+import org.zanata.security.annotations.Authenticated;
 
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.IOException;
 import java.net.URI;
@@ -46,7 +51,7 @@ public class VersionSyncAction {
         "    <configVersion>2</configVersion>\n" +
         "    <userRemoteConfigs>\n" +
         "      <hudson.plugins.git.UserRemoteConfig>\n" +
-        "        <url>https://github.com/zanata/zanata-platform.git</url>\n" +
+        "        <url><<GIT_URL>></url>\n" +
         "      </hudson.plugins.git.UserRemoteConfig>\n" +
         "    </userRemoteConfigs>\n" +
         "    <branches>\n" +
@@ -69,9 +74,11 @@ public class VersionSyncAction {
         "      <command>#/bin/bash\n" +
         "cd server\n" +
         "/opt/zanata-cli/bin/zanata-cli -B push \\\n" +
-        "\t--username admin --key b6d7044e9ee3b2447c28fb7c50d86d98 \\\n" +
+        "\t--username <<USERNAME>> --key <<API_KEY>> \\\n" +
         "\t--includes &quot;zanata-war/src/main/resources/messages.properties&quot; \\\n" +
-        "    --url &quot;http://192.168.99.100:18080/&quot;</command>\n" +
+        "\t--project <<PROJECT_SLUG>> \\\n" +
+        "\t--project-version <<PROJECT_VERSION_SLUG>> \\\n" +
+        "    --url &quot;http://zanata:8080/&quot;</command>\n" +
         "    </hudson.tasks.Shell>\n" +
         "  </builders>\n" +
         "  <publishers/>\n" +
@@ -80,9 +87,15 @@ public class VersionSyncAction {
 
     private JenkinsServer jenkins;
 
+    @Inject @Authenticated
+    private HAccount authenticatedAccount;
+
+    @Inject
+    private ProjectDAO projectDAO;
+
     @PostConstruct
     public void initializeSyncConnection() throws URISyntaxException {
-        jenkins = new JenkinsServer(new URI("http://192.168.99.100:8080/"), "admin",
+        jenkins = new JenkinsServer(new URI("http://zanata-sync:8080/"), "admin",
             "admin");
     }
 
@@ -98,7 +111,15 @@ public class VersionSyncAction {
 
     public void createJob(String projectSlug, String versionSlug)
         throws IOException {
-        jenkins.createJob(getJobSlug(projectSlug, versionSlug), JOB_XML_TEMPLATE, true);
+        HProject project = projectDAO.getBySlug(projectSlug);
+        // Prepare the job xml
+        String jobXml = JOB_XML_TEMPLATE
+                .replace("<<GIT_URL>>", project.getSourceCheckoutURL())
+                .replace("<<USERNAME>>", authenticatedAccount.getUsername())
+                .replace("<<API_KEY>>", authenticatedAccount.getApiKey())
+                .replace("<<PROJECT_SLUG>>", projectSlug)
+                .replace("<<PROJECT_VERSION_SLUG>>", versionSlug);
+        jenkins.createJob(getJobSlug(projectSlug, versionSlug), jobXml, true);
     }
 
     private String getJobSlug(String projectSlug, String versionSlug) {
