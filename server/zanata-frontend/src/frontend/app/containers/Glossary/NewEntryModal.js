@@ -5,11 +5,12 @@ import { cloneDeep, isEmpty } from 'lodash'
 import {
   ButtonLink,
   ButtonRound,
-  EditableText,
   LoaderText,
   Modal,
   Row
 } from 'zanata-ui'
+
+import EditableText from '../../components'
 
 import {
   glossaryToggleNewEntryModal,
