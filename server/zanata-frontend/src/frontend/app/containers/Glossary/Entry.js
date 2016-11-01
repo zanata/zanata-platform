@@ -4,7 +4,6 @@ import { isEqual } from 'lodash'
 import {
   ButtonLink,
   ButtonRound,
-  EditableText,
   Icon,
   LoaderText,
   TableCell,
@@ -13,6 +12,7 @@ import {
 } from 'zanata-ui'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
+import EditableText from '../../components'
 /**
  * Component to display a GlossaryEntry
  */

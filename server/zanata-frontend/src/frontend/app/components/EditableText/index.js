@@ -4,17 +4,7 @@ import Row from 'react-bootstrap'
 import TextInput from '../../components'
 
 const classes = {
-    root: {
-        w: 'W(100%)'
-    },
-    textInput: {
-        base: {
-            ai: 'Ai(c)',
-            bgc: 'Bgc(#fff)',
-            h: 'H(r1h)',
-            w: 'W(100%)'
-        }
-    },
+
     text: {
         base: {
             ai: 'Ai(c)',
@@ -82,7 +72,6 @@ class EditableText extends Component {
                     autoFocus={this.state.focus}
                     onBlur={::this.handleBlur}
                     placeholder={placeholder}
-                    theme={classes.textInput}
                     ref={(ref) => { this.textInput = ref }}
                     value={children}
                 />
@@ -92,7 +81,7 @@ class EditableText extends Component {
         const emptyText = editable ? placeholder : emptyReadOnlyText
         const text = children || emptyText
         return (CD
-            <Row className={textStateClasses} align='start'
+            <Row className={textStateClasses}
                  onClick={::this.handleClick} title={title}>
                 {text}
             </Row>

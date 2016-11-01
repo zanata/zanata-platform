@@ -3,12 +3,12 @@ import { isEmpty } from 'lodash'
 import {
   ButtonLink,
   ButtonRound,
-  EditableText,
   Icon,
   LoaderText,
   Modal,
   Row
 } from 'zanata-ui'
+import EditableText from '../../components'
 
 /**
  * Popup windows to display a glossary entry
