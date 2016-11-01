@@ -43,7 +43,7 @@ class App extends Component {
         <Icons />
         <Helmet
           title='Zanata'
-          titleTemplate='%s | Zanata'
+          titleTemplate='Zanata: %s'
         />
         <Nav active={activePath} links={links} loading={loading} />
         {children}
