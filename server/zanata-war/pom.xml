@@ -139,32 +139,6 @@
               <goal>properties</goal>
             </goals>
           </execution>
-
-          <!-- this is used to unpack gwt-editor to war -->
-          <execution>
-            <id>extract gwt editor content</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>unpack</goal>
-            </goals>
-            <configuration>
-              <artifactItems>
-                <artifactItem>
-                  <groupId>org.zanata</groupId>
-                  <artifactId>gwt-editor</artifactId>
-                  <version>${project.version}</version>
-                  <type>jar</type>
-                  <overWrite>false</overWrite>
-                  <outputDirectory>${project.build.directory}/gwt-editor</outputDirectory>
-                  <includes>gwt-editor/**/*</includes>
-                </artifactItem>
-              </artifactItems>
-              <includes>gwt-editor/**/*</includes>
-              <outputDirectory>${project.build.directory}/${war.name}</outputDirectory>
-              <overWriteReleases>false</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
         </executions>
         <configuration>
           <usedDependencies combine.children="append">
@@ -273,6 +247,15 @@
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
           <warName>${war.name}-${project.version}</warName>
+          <overlays>
+            <overlay>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>gwt-editor</artifactId>
+            </overlay>
+            <overlay>
+              <!-- empty groupId/artifactId represents the current build -->
+            </overlay>
+          </overlays>
           <webResources>
             <resource>
               <directory>src/main/webapp-jboss</directory>
@@ -285,10 +268,7 @@
                 <include>images/**</include>
               </includes>
             </resource>
-            <!-- Include the GWT editor resources -->
-            <resource>
-              <directory>${project.build.directory}/gwt-editor/gwt-editor</directory>
-            </resource>
+
           </webResources>
           <archive>
             <manifest>
@@ -1127,11 +1107,6 @@
           <artifactId>servlet-api</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <dependency>
-      <groupId>org.zanata</groupId>
-      <artifactId>gwt-editor</artifactId>
     </dependency>
 
     <dependency>
@@ -2124,16 +2099,36 @@
       </exclusions>
     </dependency>
 
-    <!-- because some class references class under gwt shared package. e.g. IsSerializable-->
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-      <scope>runtime</scope>
+      <groupId>org.scannotation</groupId>
+      <artifactId>scannotation</artifactId>
+      <version>1.0.3</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+
+
+    <!-- for the war overlay -->
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gwt-editor</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
       <scope>provided</scope>
+    </dependency>
+
+    <!-- GWT Dependencies -->
+    <!-- NB: GWT and anything which depends on it should go last, to
+         avoid overriding Java APIs (especially javax.servlet) -->
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>gwt-editor</artifactId>
+      <classifier>classes</classifier>
     </dependency>
 
     <dependency>
@@ -2157,20 +2152,6 @@
         <exclusion>
           <groupId>org.mockito</groupId>
           <artifactId>mockito-all</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-
-    <dependency>
-      <groupId>org.scannotation</groupId>
-      <artifactId>scannotation</artifactId>
-      <version>1.0.3</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>javassist</groupId>
-          <artifactId>javassist</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

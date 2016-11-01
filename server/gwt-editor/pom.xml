@@ -9,6 +9,7 @@
   </parent>
   <artifactId>gwt-editor</artifactId>
   <name>gwt-editor</name>
+  <packaging>war</packaging>
   <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -281,41 +282,54 @@
         </configuration>
       </plugin>
 
-      <!-- add gwt output to final jar-->
       <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <warName>${project.artifactId}-${project.version}</warName>
+          <webResources>
+            <!-- Include the GWT editor resources -->
+            <resource>
+              <directory>${project.build.directory}/${project.artifactId}-${project.version}</directory>
+              <includes>
+                <include>WEB-INF/**</include>
+                <include>webtrans/**</include>
+              </includes>
+            </resource>
+          </webResources>
+          <archive>
+            <manifest>
+              <addClasspath>false</addClasspath>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+            <manifestEntries>
+              <Implementation-Build>${maven.build.timestamp}</Implementation-Build>
+            </manifestEntries>
+          </archive>
+          <failOnMissingWebXml>false</failOnMissingWebXml>
+          <packagingExcludes>
+            WEB-INF/lib/*,WEB-INF/classes/**
+          </packagingExcludes>
+        </configuration>
+
+      </plugin>
+
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
         <executions>
           <execution>
-            <id>copy-resources</id>
-            <phase>prepare-package</phase>
+            <id>classes-jar</id>
+            <phase>package</phase>
             <goals>
-              <goal>copy-resources</goal>
+              <goal>jar</goal>
             </goals>
             <configuration>
-              <outputDirectory>${project.build.outputDirectory}/${project.artifactId}</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>
-                    ${project.build.directory}/${project.artifactId}-${project.version}/
-                  </directory>
-                  <filtering>false</filtering>
-                </resource>
-              </resources>
+              <classifier>classes</classifier>
             </configuration>
           </execution>
         </executions>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <includes>
-            <include>**/*</include>
-            <include>${project.artifactId}-${project.version}/**</include>
-          </includes>
-        </configuration>
-      </plugin>
     </plugins>
 
   </build>
