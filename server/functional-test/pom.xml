@@ -112,6 +112,14 @@
   </dependencyManagement>
 
   <dependencies>
+    <!-- TODO depend on zanata-test-war.war, not jar -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>zanata-test-war</artifactId>
+      <version>${project.version}</version>
+      <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>net.lightbody.bmp</groupId>
       <artifactId>browsermob-core-littleproxy</artifactId>
