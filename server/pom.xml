@@ -81,7 +81,7 @@
     <zanata.assets.version>10.0-SNAPSHOT</zanata.assets.version>
     <zanata.api.version>4.0.0-SNAPSHOT</zanata.api.version>
     <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
-    <zanata.api.compat.version>4.0.0-SNAPSHOT</zanata.api.compat.version>
+    <zanata.api.compat.version>3.9.1</zanata.api.compat.version>
     <zanata.client.version>4.0.0-SNAPSHOT</zanata.client.version>
     <zanata.common.version>4.0.0-SNAPSHOT</zanata.common.version>
 
@@ -438,7 +438,7 @@
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>1.6.0</version>
+        <version>3.5.2</version>
         <scope>test</scope>
       </dependency>
 

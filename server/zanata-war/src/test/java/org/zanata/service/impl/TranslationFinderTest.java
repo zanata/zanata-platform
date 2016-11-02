@@ -380,18 +380,15 @@ public class TranslationFinderTest {
 
         private void checkTargetContents(HTextFlowTarget target,
                 final String searchString) {
-            assertThat(target.getContents()).has(
-                    new Condition<List<String>>("contains \""+searchString+"\"") {
-                        @Override
-                        public boolean matches(List<String> strings) {
-                            for (String value : strings) {
-                                if (value.contains(searchString)) {
-                                    return true;
-                                }
+            assertThat(target.getContents()).has(new Condition<>(
+                    contents -> {
+                        for (String content : contents) {
+                            if (content.contains(searchString)) {
+                                return true;
                             }
-                            return false;
                         }
-                    });
+                        return false;
+                    }, "contains \""+searchString+"\""));
         }
     }
 
