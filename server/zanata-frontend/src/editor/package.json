@@ -12,7 +12,7 @@
     "url": "http://zanata.org/issues/"
   },
   "scripts": {
-    "watch": "cd app && mkdir -p dist && cp index.html dist &&  webpack-dev-server -d --progress --config webpack.dev.config.js --inline --hot --content-base dist/",
+    "watch": "cd app && mkdir -p dist && cp index.html dist && webpack-dev-server -d --progress --config webpack.dev.config.js --inline --hot --content-base dist/",
     "build": "cd app && webpack --progress --config webpack.prod.config.js",
     "test": "jest",
     "storybook": "start-storybook -p 9001 -s ./app/dist",
