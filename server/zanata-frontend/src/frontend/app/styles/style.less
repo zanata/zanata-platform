@@ -228,6 +228,8 @@ template {
 a {
   text-decoration: none;
   background-color: transparent;
+  color:@brand-primary;
+  transition: all .3s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 a:link,
@@ -239,12 +241,14 @@ a:visited {
 a:active {
   outline: 0;
   text-decoration: underline;
+  filter: brightness(.5);
 }
 
 a:focus,
 a:hover {
   text-decoration: none;
   color: @brand-secondary;
+  filter: brightness(.75);
 }
 
 a:focus {
