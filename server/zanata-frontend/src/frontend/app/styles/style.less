@@ -397,10 +397,32 @@ textarea {
   color: inherit;
   font-size: inherit;
   line-height: inherit;
+  line-height: 2.25em;
 }
 
-button {
+button, .btn {
   overflow: visible;
+  color:#fff;
+  font-weight:600;
+  padding-left: 1.125em;
+  padding-right: 1.125em;
+  font-size: 1em;
+  display: inline-block;
+  margin-bottom: 0;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+  border: 1px solid transparent;
+  border-radius: @border-radius-small;
+  box-shadow: inset 0 0 0 2px currentColor;
+  background-image: none;
+  -ms-touch-action: manipulation;
+  touch-action: manipulation;
 }
 
 button,
@@ -1736,28 +1758,6 @@ textarea.input-lg {
   right: 1.071em;
 }
 
-.btn {
-  font-size: 1em;
-  font-weight: 400;
-  line-height: @line-height-base;
-  display: inline-block;
-  margin-bottom: 0;
-  padding: @padding-base-vertical @padding-base-horizontal;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  text-align: center;
-  vertical-align: middle;
-  white-space: nowrap;
-  border: 1px solid transparent;
-  border-radius: @border-radius-base;
-  background-image: none;
-  -ms-touch-action: manipulation;
-  touch-action: manipulation;
-}
-
 .btn.active.focus,
 .btn.active:focus,
 .btn.focus,
@@ -1767,6 +1767,8 @@ textarea.input-lg {
   outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 6px 10px 0 rgba(0, 0, 0, 0.15);
+  opacity: .85;
 }
 
 .btn.focus,
@@ -1774,6 +1776,8 @@ textarea.input-lg {
 .btn:hover {
   text-decoration: none;
   color: #333;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 6px 10px 0 rgba(0, 0, 0, 0.15);
+  opacity: .85;
 }
 
 .btn.active,
@@ -1781,7 +1785,7 @@ textarea.input-lg {
   outline: 0;
   background-image: none;
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-  box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.185);
 }
 
 .btn.disabled,
@@ -1797,6 +1801,7 @@ fieldset[disabled] .btn {
 a.btn.disabled,
 fieldset[disabled] a.btn {
   pointer-events: none;
+  box-shadow: none;
 }
 
 a.btn-primary {
