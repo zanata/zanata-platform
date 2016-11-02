@@ -22,20 +22,17 @@ package org.zanata.arquillian;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.google.common.base.Joiner;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -47,6 +44,7 @@ import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +72,8 @@ public class Deployments {
         System.out.println("resolving dependencies:");
         List<File> depList = Arrays.asList(runtimeAndTestDependenciesFromPom());
         Collections.sort(depList);
-        System.out.println(depList);
+        depList.forEach(System.out::println);
+//        System.out.println(depList);
         System.out.println("dependency count: " + depList.size());
     }
 
@@ -82,7 +81,7 @@ public class Deployments {
         return Maven
                 .resolver()
                 .loadPomFromFile("pom.xml")
-                .importRuntimeAndTestDependencies()
+                .importDependencies(ScopeType.COMPILE, ScopeType.RUNTIME, ScopeType.TEST)
                 .resolve()
                 .using(
                 // JavaMelody's ServletFilter/Listener interfere with test
@@ -94,7 +93,9 @@ public class Deployments {
                         "net.bull.javamelody:javamelody-core",
                         // org.zanata dependencies should be on classpath, provided by Maven
                         "org.zanata:zanata-liquibase",
-                        "org.zanata:zanata-model"
+                        "org.zanata:zanata-model",
+                        // we need to give the full form (G:A:P:C:V) if we want to specify classifier
+                        "org.zanata:gwt-editor:jar:classes:?"
                         // and any other org.zanata dependencies in future...
                         ))
                 .asFile();
@@ -109,7 +110,7 @@ public class Deployments {
 
         // Local packages
         Filter<ArchivePath> archivePathFilter = object ->
-                notUnusedGwtClientCode(object) &&
+                neededGwtCode(object) &&
                 notUnitTest(object);
         archive.addPackages(true, archivePathFilter, "org.zanata");
 
@@ -208,12 +209,13 @@ public class Deployments {
                 context.matches(".+Test(s)?\\$.*\\.class$"));
     }
 
-    private static boolean notUnusedGwtClientCode(ArchivePath object) {
+    private static boolean neededGwtCode(ArchivePath object) {
         String context = object.get();
         // we need this class in ValidationFactoryProvider
         return context.startsWith(
                 "/org/zanata/webtrans/client/resources/ValidationMessages") ||
-                !context.startsWith("/org/zanata/webtrans/client");
+                !context.startsWith("/org/zanata/webtrans/client") &&
+                !context.startsWith("/org/zanata/webtrans/server");
     }
 
     private static <T> void forEachRemaining(Enumeration<T> enumeration,

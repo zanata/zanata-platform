@@ -2131,6 +2131,15 @@
       <classifier>classes</classifier>
     </dependency>
 
+    <!-- because we want to get gwt-editor from maven reactor when running
+      arquillian test, the transitive dependencies of gwt-editor will not be
+      brought in automatically -->
+    <dependency>
+      <groupId>net.customware.gwt.dispatch</groupId>
+      <artifactId>gwt-dispatch</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
     <dependency>
       <groupId>net.customware.gwt.presenter</groupId>
       <artifactId>gwt-presenter</artifactId>
