@@ -13,7 +13,7 @@ See [glossary roles and permission](/user-guide/glossary/glossary-roles-permissi
 
 ### Delete via Zanata client
 The following instructions assume that you have installed and configured the Zanata client.
-Instructions for installation and configuration are available at [Installing Zanata client](http://docs.zanata.org/projects/zanata-client/en/latest/#installation).
+Instructions for installation and configuration are available at [Installing Zanata client](/client#installation).
 
 **Delete all system glossary entries**
 ```

@@ -31,4 +31,4 @@ Zanata allows anyone to download translations from a project version.
 
 ### From client
 
-See [Zanata-Client pull command](http://docs.zanata.org/projects/zanata-client/en/latest/commands/pull/) for more information.
+See [Zanata-Client pull command](/client/commands/pull) for more information.
