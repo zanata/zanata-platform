@@ -287,6 +287,16 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         return docTypeMappings.build();
     }
 
+    private boolean pushSource() {
+        return getOpts().getPushType() == PushPullType.Source
+                || getOpts().getPushType() == PushPullType.Both;
+    }
+
+    private boolean pushTrans() {
+        return getOpts().getPushType() == PushPullType.Trans
+                || getOpts().getPushType() == PushPullType.Both;
+    }
+
     @Override
     public void run() throws IOException {
         PushCommand.logOptions(log, getOpts());
@@ -301,6 +311,9 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             return;
         }
 
+        if (!pushSource() && !pushTrans()) {
+            throw new RuntimeException("Invalid option for push type");
+        }
         // only supporting single module for now
 
         File sourceDir = getOpts().getSrcDir();
@@ -383,8 +396,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             }
         }
 
-        if (getOpts().getPushType() == PushPullType.Trans
-                || getOpts().getPushType() == PushPullType.Both) {
+        if (pushTrans()) {
             if (getOpts().getLocaleMapList() == null)
                 throw new ConfigException("pushType set to '"
                         + getOpts().getPushType()
@@ -411,8 +423,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                 final FileTypeInfo fileType = getFileType(actualFileTypes,
                         srcExtension);
                 final String qualifiedDocName = qualifiedDocName(localDocName);
-                if (getOpts().getPushType() == PushPullType.Source
-                        || getOpts().getPushType() == PushPullType.Both) {
+                if (pushSource()) {
                     if (!getOpts().isDryRun()) {
                         boolean sourcePushed =
                                 pushSourceDocumentToServer(sourceDir,
@@ -429,9 +440,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                     }
                 }
 
-                if (getOpts().getPushType() == PushPullType.Trans
-                        || getOpts().getPushType() == PushPullType.Both) {
-
+                if (pushTrans()) {
                     Optional<String> translationFileExtension =
                             getTranslationFileExtension(fileType, srcExtension);
 
