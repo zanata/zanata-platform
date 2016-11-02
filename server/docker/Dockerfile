@@ -1,5 +1,7 @@
 FROM jboss/wildfly:10.1.0.Final
 
+ENV DB_HOSTNAME=zanatadb
+
 # create mysql module
 USER root
 COPY conf/mysql-module/ /opt/jboss/wildfly/modules/

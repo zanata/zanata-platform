@@ -30,8 +30,6 @@
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.useFile>false</surefire.useFile>
     <surefire.version>2.19.1</surefire.version>
-    <!-- Applies to surefire and failsafe (if enabled) -->
-    <failIfNoTests>true</failIfNoTests>
 
     <deltaspike.version>1.7.0</deltaspike.version>
     <picketlink.version>2.5.5.SP1</picketlink.version>
@@ -2021,7 +2019,6 @@
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
-              <failIfNoTests>false</failIfNoTests>
             </configuration>
           </plugin>
         </plugins>

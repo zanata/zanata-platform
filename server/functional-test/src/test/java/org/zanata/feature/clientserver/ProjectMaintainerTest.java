@@ -45,6 +45,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.MavenHome.mvn;
 import static org.zanata.util.TestFileGenerator.generateZanataXml;
 import static org.zanata.util.TestFileGenerator.makePropertiesFile;
 import static org.zanata.util.ZanataRestCaller.buildTextFlowTarget;
@@ -86,7 +87,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         // translator tries to push
         List<String> output =
                 client.callWithTimeout(projectRootPath,
-                        "mvn -e -B zanata:push -Dzanata.userConfig="
+                        mvn() + " -e -B zanata:push -Dzanata.userConfig="
                                 + translatorConfig);
 
         String joinedOutput = Joiner.on("\n").skipNulls().join(output);
@@ -105,7 +106,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         restCaller.createProjectAndVersion("plurals", "master", "podir");
         List<String> output =
                 client.callWithTimeout(projectRootPath,
-                        "mvn -e -B zanata:push -Dzanata.copyTrans=false -Dzanata.userConfig="
+                        mvn() + " -e -B zanata:push -Dzanata.copyTrans=false -Dzanata.userConfig="
                                 + translatorConfig);
 
         assertThat(client.isPushSuccessful(output)).isTrue();
@@ -121,7 +122,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         // push trans
         client.callWithTimeout(
                 projectRootPath,
-                "mvn -e -B zanata:push -Dzanata.pushType=trans -Dzanata.copyTrans=false -Dzanata.userConfig="
+                mvn() + " -e -B zanata:push -Dzanata.pushType=trans -Dzanata.copyTrans=false -Dzanata.userConfig="
                         + translatorConfig);
 
         versionPage.reload();
@@ -135,7 +136,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         // push source and run copyTrans
         client.callWithTimeout(
                 projectRootPath,
-                "mvn -e -B zanata:push -Dzanata.pushType=source -Dzanata.copyTrans=true -Dzanata.userConfig="
+                mvn() + " -e -B zanata:push -Dzanata.pushType=source -Dzanata.copyTrans=true -Dzanata.userConfig="
                         + translatorConfig
                         + " -Dzanata.projectConfig="
                         + updatedZanataXml.getAbsolutePath());
@@ -173,7 +174,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         generateZanataXml(new File(workDir, "zanata.xml"), projectSlug,
             iterationSlug, projectType, Lists.newArrayList("pl"));
         client.callWithTimeout(workDir,
-                "mvn -B " + MAVEN_PLUGIN + ":push -Dzanata.userConfig="
+                mvn() + " -B " + MAVEN_PLUGIN + ":push -Dzanata.userConfig="
                         + translatorConfig);
 
         // only message1 has translation
@@ -186,14 +187,14 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         // dryRun creates nothing
         File transDir = Files.createTempDir();
         client.callWithTimeout(workDir,
-                "mvn -e -B " + MAVEN_PLUGIN + ":pull -DdryRun -Dzanata.userConfig="
+                mvn() + " -e -B " + MAVEN_PLUGIN + ":pull -DdryRun -Dzanata.userConfig="
                         + translatorConfig + " -Dzanata.transDir=" + transDir);
         assertThat(transDir.listFiles(propFilter)).isEmpty();
 
         // create skeletons is false will only pull translated files
         client.callWithTimeout(
                 workDir,
-                "mvn -e -B " + MAVEN_PLUGIN + ":pull -Dzanata.createSkeletons=false -Dzanata.userConfig="
+                mvn() + " -e -B " + MAVEN_PLUGIN + ":pull -Dzanata.createSkeletons=false -Dzanata.userConfig="
                         + translatorConfig
                         + " -Dzanata.transDir="
                         + transDir.getAbsolutePath());
@@ -204,7 +205,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         // pull both
         client.callWithTimeout(
                 workDir,
-                "mvn -e -B " + MAVEN_PLUGIN + ":pull -Dzanata.pullType=both -Dzanata.userConfig="
+                mvn() + " -e -B " + MAVEN_PLUGIN + ":pull -Dzanata.pullType=both -Dzanata.userConfig="
                         + translatorConfig
                         + " -Dzanata.transDir="
                         + transDir.getAbsolutePath());

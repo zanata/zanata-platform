@@ -39,6 +39,9 @@ public class PropertiesHolder {
         InputStream inputStream =
                 Thread.currentThread().getContextClassLoader()
                         .getResourceAsStream(Constants.propFile.value());
+        if (inputStream == null) {
+            throw new RuntimeException("can't find setup.properties");
+        }
         Properties properties1 = new Properties();
         try {
             properties1.load(inputStream);

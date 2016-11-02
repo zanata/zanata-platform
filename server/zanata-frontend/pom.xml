@@ -81,9 +81,9 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
         <configuration>
-          <workingDirectory>${node.install.directory}</workingDirectory>
+          <installDirectory>${node.install.directory}</installDirectory>
         </configuration>
         <executions>
           <execution>
@@ -97,39 +97,16 @@
               <npmVersion>${npm.version}</npmVersion>
             </configuration>
           </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.4.0</version>
-        <configuration>
-          <environmentVariables>
-            <!-- Ensure that the locally installed (by frontend-maven-plugin) node
-                 and npm are at the start of PATH, so they will be used for any
-                 node/npm call. -->
-            <PATH>${node.install.directory}/node:${node.install.directory}/node/node_modules/npm/bin:${env.PATH}</PATH>
-          </environmentVariables>
-          <!-- Use the downloaded version of node to run all the commands. -->
-          <executable>${node.install.directory}/node/node</executable>
-        </configuration>
-        <executions>
           <!-- Download all dependency modules from npm (or mirror). -->
           <execution>
             <id>frontend: execute npm install</id>
             <phase>process-resources</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
               <workingDirectory>${frontend.build.directory}</workingDirectory>
-              <arguments>
-                <argument>${npm.executable}</argument>
-                <argument>install</argument>
-                <argument>--cache-min</argument>
-                <argument>${npm.cache.min}</argument>
-              </arguments>
+              <arguments>install --cache-min ${npm.cache.min}</arguments>
             </configuration>
           </execution>
 
@@ -138,16 +115,11 @@
             <id>editor: execute npm install</id>
             <phase>process-resources</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
               <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>
-                <argument>${npm.executable}</argument>
-                <argument>install</argument>
-                <argument>--cache-min</argument>
-                <argument>${npm.cache.min}</argument>
-              </arguments>
+              <arguments>install --cache-min ${npm.cache.min}</arguments>
             </configuration>
           </execution>
 
@@ -156,15 +128,11 @@
             <id>editor: npm run processhtml</id>
             <phase>process-resources</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
               <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>
-                <argument>${npm.executable}</argument>
-                <argument>run</argument>
-                <argument>processhtml</argument>
-              </arguments>
+              <arguments>run processhtml</arguments>
             </configuration>
           </execution>
 
@@ -173,15 +141,11 @@
             <id>frontend: execute npm run build</id>
             <phase>compile</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
               <workingDirectory>${frontend.build.directory}</workingDirectory>
-              <arguments>
-                <argument>${npm.executable}</argument>
-                <argument>run</argument>
-                <argument>build</argument>
-              </arguments>
+              <arguments>run build</arguments>
             </configuration>
           </execution>
 
@@ -190,15 +154,11 @@
             <id>editor: execute npm run build</id>
             <phase>compile</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
               <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>
-                <argument>${npm.executable}</argument>
-                <argument>run</argument>
-                <argument>build</argument>
-              </arguments>
+              <arguments>run build</arguments>
             </configuration>
           </execution>
 
@@ -207,15 +167,12 @@
             <id>frontend: execute npm test</id>
             <phase>test</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
               <skip>${skipTests}</skip>
               <workingDirectory>${frontend.build.directory}</workingDirectory>
-              <arguments>
-                <argument>${npm.executable}</argument>
-                <argument>test</argument>
-              </arguments>
+              <arguments>test</arguments>
             </configuration>
           </execution>
 
@@ -224,17 +181,15 @@
             <id>editor: execute npm test</id>
             <phase>test</phase>
             <goals>
-              <goal>exec</goal>
+              <goal>npm</goal>
             </goals>
             <configuration>
               <skip>${skipTests}</skip>
               <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>
-                <argument>${npm.executable}</argument>
-                <argument>test</argument>
-              </arguments>
+              <arguments>test</arguments>
             </configuration>
           </execution>
+
         </executions>
       </plugin>
 
@@ -242,7 +197,6 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <skip>true</skip>
-          <failIfNoTests>false</failIfNoTests>
         </configuration>
       </plugin>
 
@@ -308,6 +262,31 @@
       </activation>
       <properties>
         <npm.cache.min>9999999</npm.cache.min>
+      </properties>
+    </profile>
+    <profile>
+      <!-- Enable -DskipUnitTests to skip npm test -->
+      <id>skipUnitTests</id>
+      <activation>
+        <property>
+          <name>skipUnitTests</name>
+        </property>
+      </activation>
+      <properties>
+        <skipTests>true</skipTests>
+      </properties>
+    </profile>
+    <profile>
+      <!-- Enable -Dmaven.main.skip to skip node/npm install and build -->
+      <id>maven.main.skip</id>
+      <activation>
+        <property>
+          <name>maven.main.skip</name>
+        </property>
+      </activation>
+      <properties>
+        <skip.installnodenpm>true</skip.installnodenpm>
+        <skip.npm>true</skip.npm>
       </properties>
     </profile>
   </profiles>
