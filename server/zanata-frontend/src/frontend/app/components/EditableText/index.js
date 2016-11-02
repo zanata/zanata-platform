@@ -1,20 +1,9 @@
 import React, { Component, PropTypes } from 'react'
-import { merge } from 'lodash'
 import Row from 'react-bootstrap'
 import TextInput from '../../components'
 
-const classes = {
-
-    text: {
-        base: {
-            ai: 'Ai(c)',
-            bd: 'Bd(bd2) Bdc(t)',
-            c: 'Cur(t)',
-            h: 'H(r1h)',
-            lineClamp: 'LineClamp(1,36px)',
-            p: 'Px(rq) Py(re)',
-            w: 'W(100%)'
-        },
+/**
+    text: {}
         editable: {
             brds: 'Bdrs(rq)',
             trs: 'Trs(aeo)',
@@ -25,10 +14,8 @@ const classes = {
         placeholder: {
             c: 'C(muted)'
 
-    }
-}
 
-/**
+
  * Text input that can switch between text field and label
  * by using attribute `editing`
  */
@@ -52,18 +39,11 @@ class EditableText extends Component {
             editing = false,
             emptyReadOnlyText = '',
             placeholder = '',
-            theme,
             title,
+            textStateClasses,
             ...props
         } = this.props
-        const themed = merge({}, classes, theme)
-        const textStateClasses = {
-            base: merge({},
-                themed.text.base,
-                editable && classes.text.editable,
-                !children && classes.text.placeholder
-            )
-        }
+
         /* eslint-disable react/jsx-no-bind */
         if (editable && editing) {
             return (
