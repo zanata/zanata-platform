@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
 import { Button } from 'react-bootstrap'
 import TeaserList from './TeaserList'
-import { TextInput, Icon } from '../../components'
+import { TextInput, Icon, Link } from '../../components'
 import {
   searchTextChanged,
   searchPageInitialLoad,
@@ -138,6 +138,7 @@ class Explore extends Component {
               onClick={(e) => { this.handleClearSearch() }}>
               Cancel
             </Button>
+            <Link to={languageTeamPage}>{languageTeamPage}</Link>
           </div>
         </div>
         <div className='scrollViewTheme'>
