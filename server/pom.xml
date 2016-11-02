@@ -26,9 +26,7 @@
     <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <failsafe.useFile>false</failsafe.useFile>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
-    <surefire.useFile>false</surefire.useFile>
     <surefire.version>2.19.1</surefire.version>
 
     <deltaspike.version>1.7.0</deltaspike.version>
@@ -88,9 +86,9 @@
     <richfaces.version>4.5.17.Final</richfaces.version>
 
     <arquillian.version>1.1.11.Final</arquillian.version>
-    <shrinkwrap.api.version>1.2.3</shrinkwrap.api.version>
-    <shrinkwrap.resolver.version>2.0.0</shrinkwrap.resolver.version>
-    <shrinkwrap.desc.version>2.0.0-alpha-8</shrinkwrap.desc.version>
+    <shrinkwrap.api.version>1.2.6</shrinkwrap.api.version>
+    <shrinkwrap.resolver.version>2.2.4</shrinkwrap.resolver.version>
+    <shrinkwrap.desc.version>2.0.0-alpha-10</shrinkwrap.desc.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
@@ -420,7 +418,7 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-aether-provider</artifactId>
-        <version>3.0.5</version>
+        <version>3.3.9</version>
       </dependency>
 
       <dependency>
