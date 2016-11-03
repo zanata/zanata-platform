@@ -70,7 +70,7 @@ module.exports = {
         //     - the "." after the lookahead will match any single character (when the negative lookahead did not match)
         //     - the outer non-capturing group repeats the above any number of times
         //     - wrapped in ^ and $ so it must match the whole string
-        { from: /^(?:(?!bundle\.js|bundle\.css).)*$/, to: '/' }
+        { from: /^(?:(?!bundle\.js|bundle\.css).)*$/, to: '/index.html' }
       ]
     }
   },
