@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import Icon from '../../components'
 
 const Loader = ({
@@ -14,10 +14,5 @@ const Loader = ({
     </span>
   )
 }
-
-Loader.propTypes = {
-
-}
-
 
 export default Loader

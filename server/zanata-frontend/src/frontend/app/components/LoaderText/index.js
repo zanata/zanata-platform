@@ -8,14 +8,11 @@ const LoaderText = ({
   ...props
 }) => {
   return (
-    <span tagName='span' className='loader-text'
-          componentName='LoaderText'
-      {loading
-        ? <span>
-        {loadingText} <Loader />
-      </span>
-        : children
-      }
+    <span className='loader-text'
+      componentName='LoaderText' {...props}>
+          {loading
+            ? <span> {loadingText} <Loader /> </span>
+            : children}
     </span>
   )
 }
@@ -32,7 +29,7 @@ LoaderText.propTypes = {
   /**
    * If the component is loading or not
    */
-  loading: PropTypes.bool,
+  loading: PropTypes.bool
 }
 
 LoaderText.defaultProps = {
