@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +40,7 @@ import org.zanata.rest.client.RestClientFactory;
 import org.zanata.util.PathUtil;
 
 import com.google.common.base.Joiner;
+import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -66,11 +68,11 @@ public class GlossaryPullCommand extends
     @Override
     public void run() throws Exception {
         String fileType = StringUtils.isEmpty(getOpts().getFileType()) ? "csv"
-            : getOpts().getFileType();
+                : getOpts().getFileType();
         if (!fileType.equalsIgnoreCase("po")
-            && !fileType.equalsIgnoreCase("csv")) {
+                && !fileType.equalsIgnoreCase("csv")) {
             throw new RuntimeException(
-                "Option '--file-type' is not valid. Please use 'csv' or 'po'");
+                    "Option '--file-type' is not valid. Please use 'csv' or 'po'");
         }
 
         log.info("Server: {}", getOpts().getUrl());
@@ -86,17 +88,20 @@ public class GlossaryPullCommand extends
 
         String project = getOpts().getProject();
         String qualifiedName =
-            StringUtils.isBlank(project) ? client.getGlobalQualifiedName()
-                : client.getProjectQualifiedName(project);
+                StringUtils.isBlank(project) ? client.getGlobalQualifiedName()
+                        : client.getProjectQualifiedName(project);
 
         log.info("Pulling glossary from server");
         Response response;
         try {
             response =
                     client.downloadFile(fileType, transLang, qualifiedName);
-        } catch (NotFoundException e) {
-            log.info("No glossary file in server");
-            return;
+        } catch (ResponseProcessingException e) {
+            if (e.getResponse().getStatus() == 404) {
+                log.info("No glossary file in server");
+                return;
+            }
+            throw e;
         }
 
         InputStream glossaryFile = response.readEntity(InputStream.class);
@@ -105,7 +110,7 @@ public class GlossaryPullCommand extends
             return;
         }
         String fileName =
-            ClientUtil.getFileNameFromHeader(response.getStringHeaders());
+                ClientUtil.getFileNameFromHeader(response.getStringHeaders());
         File file = new File(fileName);
         PathUtil.makeDirs(file.getParentFile());
         try (OutputStream out = new FileOutputStream(file)) {

@@ -27,7 +27,7 @@ const LanguageTeamTeaser = ({
       <View theme={{ base: {fld: 'Fld(r)'} }}>
         <Link link={link}
           theme={{ base: { fw: 'Fw(600)' } }}>
-          {details.locale}
+          {details.localeDetails.displayName}
         </Link>
         <span className='C(muted) Mstart(rq)'>
           {details.id}
@@ -54,7 +54,7 @@ LanguageTeamTeaser.propTypes = {
    */
   details: PropTypes.shape({
     id: React.PropTypes.string,
-    locale: React.PropTypes.string,
+    localeDetails: React.PropTypes.object,
     memberCount: React.PropTypes.number
   }),
   /**

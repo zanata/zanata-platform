@@ -37,11 +37,17 @@ import java.util.Map;
 @Slf4j
 public class AddLanguagePage extends BasePage {
 
-    private By saveButton = By.id("addLanguageForm:save-button");
-    private By enabledByDefaultCheckbox = By.id("addLanguageForm:enabled");
-    private By languageInfo = By.id("addLanguageForm:output");
-    private By languageInfoItem = By.className("txt--meta");
-    private By pluralsWarning = By.id("addLanguageForm:localeNameMsgs");
+    private By saveButton = By.id("btn-new-language-save");
+    private By cancelButton = By.id("btn-new-language-cancel");
+    private By localeId = By.className("react-autosuggest__input");
+
+    private By suggestList = By.className("react-autosuggest__suggestions-list");
+    private By suggestRow = By.className("react-autosuggest__suggestion");
+
+
+    private By enabledByDefaultCheckbox = By.id("chk-new-language-enabled");
+
+    private By pluralsWarning = By.id("new-language-pluralforms-warning");
 
     public AddLanguagePage(final WebDriver driver) {
         super(driver);
@@ -49,8 +55,7 @@ public class AddLanguagePage extends BasePage {
 
     public AddLanguagePage enterSearchLanguage(String language) {
         log.info("Enter language {}", language);
-        WebElementUtil.searchAutocomplete(getDriver(),
-                "localeAutocomplete", language);
+        enterText(readyElement(localeId), language);
         // Pause for a moment, as quick actions can break here
         slightPause();
         return new AddLanguagePage(getDriver());
@@ -59,15 +64,13 @@ public class AddLanguagePage extends BasePage {
     public AddLanguagePage selectSearchLanguage(final String language) {
         log.info("Select language {}", language);
         waitForAMoment().until((Predicate<WebDriver>) driver -> {
-            List<WebElement> searchResults =
-                    WebElementUtil.getSearchAutocompleteResults(
-                            driver,
-                            "addLanguageForm",
-                            "localeAutocomplete");
+            List<WebElement> suggestions =
+                    existingElement(suggestList).findElements(suggestRow);
             boolean clickedLanguage = false;
-            for (WebElement searchResult : searchResults) {
-                if (searchResult.getText().contains(language)) {
-                    searchResult.click();
+            for (WebElement row : suggestions) {
+                if (row.findElement(By.name("new-language-displayName"))
+                        .getText().contains(language)) {
+                    row.click();
                     clickedLanguage = true;
                     break;
                 }
@@ -101,26 +104,16 @@ public class AddLanguagePage extends BasePage {
         return new AddLanguagePage(getDriver());
     }
 
-    public Map<String, String> getLanguageDetails() {
-        log.info("Query language details");
-        @SuppressWarnings("unchecked")
-        Map<String, String> map = new HashMap();
-        // Wait for the fields to be populated
-        waitForAMoment().until((Predicate<WebDriver>) webDriver ->
-                !existingElement(languageInfo)
-                        .findElements(By.className("l--push-top-half"))
-                        .get(0).findElement(languageInfoItem)
-                        .getText().isEmpty());
-        for (WebElement item : existingElement(languageInfo)
-                .findElements(By.className("l--push-top-half"))) {
-            String name = item.getText();
-            String value = item.findElement(languageInfoItem).getText();
-            // Truncate name at value
-            int cutoff = name.lastIndexOf(value);
-            name = name.substring(0, cutoff).trim();
-            map.put(name, value);
-        }
-        return map;
+    public String getNewLanguageName() {
+        return existingElement(By.id("new-language-name")).getAttribute("value");
+    }
+
+    public String getNewLanguageNativeName() {
+        return existingElement(By.id("new-language-nativeName")).getAttribute("value");
+    }
+
+    public String getNewLanguageCode() {
+        return existingElement(localeId).getAttribute("value");
     }
 
     public LanguagesPage saveLanguage() {

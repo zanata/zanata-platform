@@ -440,14 +440,6 @@
       </plugin>
 
       <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <useFile>false</useFile>
-          <failIfNoTests>true</failIfNoTests>
-        </configuration>
-      </plugin>
-
-      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
         <version>1.15</version>

@@ -7,16 +7,16 @@ These instructions assume that you have installed Zanata-CLI as shown in [Instal
 
 The basic command for downloading documents is `zanata-cli pull`. The pull command should always be run from the directory that contains `zanata.xml` for your project (find information about `zanata.xml` at [Configuring the Client](/configuration)).
 
-At the time of writing, you will have to specify source and translation directories with the command, even though the default pull command will pull only translated documents from the server. This will be fixed in a future version. This means that the simplest pull command is:
+The simplest pull command is:
 
 ```bash
-zanata-cli pull -s src -t trans
+zanata-cli pull
 ```
 
 
 This command will:
 
- 1. look up the locales to pull from `zanata.xml` (all the enabled locales by default).
+ 1. look up the project version locales to pull from the server (unless specified in zanata.xml or from command line option).
  1. display the current settings and list of locales that will be downloaded.
  1. confirm that you want to proceed with the download.
  1. download translated versions of any documents that have any translations.
@@ -35,7 +35,7 @@ The pull command can also download source documents. This is generally only for 
 To pull translations instead of source documents, add the option `--pull-type source`, like so:
 
 ```
-zanata-cli pull --pull-type source -s src -t source
+zanata-cli pull --pull-type source --src-dir src
 ```
 
 To pull source and translation documents together, use `--pull-type both`.

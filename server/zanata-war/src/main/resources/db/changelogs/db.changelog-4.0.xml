@@ -198,4 +198,10 @@
     </addColumn>
   </changeSet>
 
+  <changeSet id="10" author="aeng@redhat.com">
+    <comment>Increase pluralforms length to 255</comment>
+    <modifyDataType tableName="HLocale" columnName="pluralForms"
+      newDataType="varchar(255)"/>
+  </changeSet>
+
 </databaseChangeLog>

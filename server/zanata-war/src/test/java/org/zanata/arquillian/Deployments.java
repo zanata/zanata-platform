@@ -28,28 +28,34 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.google.common.base.Joiner;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
 import org.jboss.shrinkwrap.api.Filter;
+import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
-import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.CombinedStrategy;
 import org.jboss.shrinkwrap.resolver.api.maven.strategy.RejectDependenciesStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
+
+import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.*;
 
 /**
  * Contains Suite-wide deployments to avoid having to deploy the same package
@@ -69,35 +75,32 @@ public class Deployments {
     }
 
     public static void main(String[] args) {
-        System.out.println("resolving dependencies:");
-        List<File> depList = Arrays.asList(runtimeAndTestDependenciesFromPom());
-        Collections.sort(depList);
-        depList.forEach(System.out::println);
-//        System.out.println(depList);
-        System.out.println("dependency count: " + depList.size());
+        Archive<?> archive = Deployments.createDeployment();
+        // see what will be in the war
+        ArrayList<ArchivePath> paths =
+                new ArrayList<>(archive.getContent().keySet());
+        Collections.sort(paths);
+        String contents = "  " + Joiner.on("\n  ").join(paths);
+        System.out.println(contents);
     }
 
-    private static File[] runtimeAndTestDependenciesFromPom() {
-        return Maven
-                .resolver()
+    static File[] runtimeAndTestDependenciesFromPom() {
+        return Maven.configureResolver()
+                .workOffline()
+                // we want to get zanata-platform dependencies from Maven
+                // reactor classpath if possible, not from repositories
+                .withClassPathResolution(true)
                 .loadPomFromFile("pom.xml")
-                .importDependencies(ScopeType.COMPILE, ScopeType.RUNTIME, ScopeType.TEST)
+                .importDependencies(COMPILE, RUNTIME, TEST)
                 .resolve()
-                .using(
-                // JavaMelody's ServletFilter/Listener interfere with test
-                // deployments.
-                // google-collections gets pulled in by arquillian and
-                // conflict with guava.
-                new RejectDependenciesStrategy(false,
-                        "com.google.collections:google-collections",
-                        "net.bull.javamelody:javamelody-core",
-                        // org.zanata dependencies should be on classpath, provided by Maven
-                        "org.zanata:zanata-liquibase",
-                        "org.zanata:zanata-model",
-                        // we need to give the full form (G:A:P:C:V) if we want to specify classifier
-                        "org.zanata:gwt-editor:jar:classes:?"
-                        // and any other org.zanata dependencies in future...
-                        ))
+                .using(new CombinedStrategy(
+                        new RejectDependenciesStrategy(
+                                false,
+                                // JavaMelody's ServletFilter/Listener
+                                // interferes with test deployments.
+                                "net.bull.javamelody:javamelody-core"
+                        ),
+                        TransitiveStrategy.INSTANCE))
                 .asFile();
     }
 
@@ -108,28 +111,28 @@ public class Deployments {
         // TODO add org.zanata packages on classpath first, exclude any libraries with colliding classes
         archive.addAsLibraries(runtimeAndTestDependenciesFromPom());
 
-        // Local packages
+        // Local packages from zanata-war, minus GWT client and unit test classes.
+        // TODO apply the individual filters with importDirectory()
+        // instead of archive.merge() - paths may have different prefix.
         Filter<ArchivePath> archivePathFilter = object ->
                 neededGwtCode(object) &&
                 notUnitTest(object);
-        archive.addPackages(true, archivePathFilter, "org.zanata");
+        archive.merge(ShrinkWrap.create(GenericArchive.class)
+                        .as(ExplodedImporter.class)
+                        .importDirectory("target/classes")
+                        // this includes RemoteTestSignalerImpl
+                        // and RemoteAfter/RemoteBefore
+                        .importDirectory("target/test-classes")
+                        .as(GenericArchive.class),
+                "/WEB-INF/classes", archivePathFilter);
 
-        // Resources (descriptors, etc)
-        archive.addAsResource("pluralforms.properties");
-        archive.addAsResource("META-INF/apache-deltaspike.properties");
         // JaxRSClassIndexProcessor generated class index
         File jaxRsPathIndex = concatenatePathClassIndice();
         archive.addAsResource(jaxRsPathIndex,
                 "META-INF/annotations/javax.ws.rs.Path");
-        archive.addAsResource("META-INF/annotations/javax.ws.rs.ext.Provider");
-
-        archive.addAsResource(new ClassLoaderAsset("META-INF/orm.xml"),
-                "META-INF/orm.xml");
         archive.addAsResource(
                 new ClassLoaderAsset("arquillian/persistence.xml"),
                 "META-INF/persistence.xml");
-        archive.addAsResource("import.sql");
-        archive.addAsResource("messages.properties");
         archive.addAsWebInfResource(
                 new File("src/main/webapp-jboss/WEB-INF/jboss-web.xml"));
         archive.addAsWebInfResource(
@@ -137,8 +140,6 @@ public class Deployments {
         archive.addAsWebInfResource(new File(
                 "src/main/webapp-jboss/WEB-INF/jboss-deployment-structure.xml"));
         archive.setWebXML("arquillian/test-web.xml");
-
-        addRemoteHelpers(archive);
 
         // uncomment to see what will be in the war
 //        ArrayList<ArchivePath> paths =
@@ -223,11 +224,5 @@ public class Deployments {
         while (enumeration.hasMoreElements()) {
             consumer.accept(enumeration.nextElement());
         }
-    }
-
-    private static void addRemoteHelpers(WebArchive archive) {
-        archive.addPackages(true, "org.zanata.rest.helper");
-        archive.addPackages(true, "org.zanata.arquillian");
-        archive.addAsResource("org/zanata/test/model/");
     }
 }

@@ -227,20 +227,19 @@ public class TranslationMemoryServiceImplTest {
         // to check if any of the sourceContents contain searchString
         private void checkSourceContainQuery(List<TransMemoryResultItem> results,
                 final String searchString) {
-            assertThat(results).extracting("sourceContents").has(
-                    new Condition<List<Object>>() {
-                        @Override
-                        public boolean matches(List<Object> value) {
-                            for (Object obj : value) {
-                                for (String content : (List<String>) obj) {
-                                    if (content.contains(searchString)) {
-                                        return true;
+            assertThat(results)
+                    .extracting("sourceContents")
+                    .has(new Condition<>(
+                            contentsList -> {
+                                for (Object contents : contentsList) {
+                                    for (String content : (List<String>) contents) {
+                                        if (content.contains(searchString)) {
+                                            return true;
+                                        }
                                     }
                                 }
-                            }
-                            return false;
-                        }
-                    });
+                                return false;
+                            }, "contains \""+searchString+"\""));
         }
     }
 

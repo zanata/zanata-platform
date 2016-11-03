@@ -106,7 +106,7 @@ public class EmailStrategyTest {
     String htmlMessage = "some <b>HTML</b>";
 
     public EmailStrategyTest() throws UnsupportedEncodingException {
-        toAddr = new InternetAddress(toAddress, toName);
+        toAddr = Addresses.getAddress(toAddress, toName);
         toAddresses = new InternetAddress[] { toAddr };
     }
 
