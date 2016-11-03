@@ -21,15 +21,19 @@
 package org.zanata.arquillian;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.assertj.core.api.Condition;
 import org.junit.Assume;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * To run this test by itself in Maven, try this:
@@ -38,27 +42,46 @@ import org.junit.Test;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class DeploymentsSanityTest {
+    private static final Logger log = LoggerFactory.getLogger(DeploymentsSanityTest.class);
+
     @Test
     public void testSanity() {
         String classpath = System.getProperty("java.class.path");
-//        System.out.println(classpath.replaceAll(":", "\n"));
+        String pathSeparator = System.getProperty("path.separator");
+
+        System.out.println("zanata entries on classpath for unit test:");
+        Pattern classpathSplitter = Pattern.compile(pathSeparator);
+        classpathSplitter
+                .splitAsStream(classpath)
+                .filter(it -> it.contains("zanata"))
+                .forEach(it -> System.out.println("  " + it));
 
         // This is just a bellwether, representing Zanata classes which should be in the Maven reactor
-        String apiClasses = "/zanata-common-api/target/classes".replaceAll("/", File.separator);
+        String apiTargetClasses = ".*/zanata-common-api/target/classes/?".replaceAll("/", File.separator);
+        String apiTargetJar = ".*/zanata-common-api/target/zanata-common-api-.*jar".replaceAll("/", File.separator);
+        String apiTmpJar = ".*te?mp/zanata-common-api.*jar".replaceAll("/", File.separator);
+        String apiReactor = "(?i)" + apiTargetClasses + "|" + apiTmpJar + "|" + apiTargetJar;
+
+        boolean foundApiReactorClasses = classpathSplitter
+                .splitAsStream(classpath)
+                .anyMatch(it -> it.matches(apiReactor));
+
         // This test won't work when building zanata-war by itself (eg mvn test -pl :zanata-war or mvn test -rf :zanata-war)
-        Assume.assumeThat("classpath contains reactor dependencies", classpath, containsString(apiClasses));
-        System.out.println("resolving dependencies:");
+        Assume.assumeTrue("classpath contains zanata reactor dependencies", foundApiReactorClasses);
+
+        System.out.println("building deployment...");
         List<File> depList = Arrays.asList(Deployments.runtimeAndTestDependenciesFromPom());
         System.out.println("dependency count: " + depList.size());
-        System.out.println("zanata dependencies: ");
-        depList.stream().filter(f -> f.getPath().contains("zanata")).forEach(System.out::println);
+        System.out.println("zanata dependencies in deployment:");
+        depList.stream().filter(f -> f.getPath().contains("zanata")).forEach(
+                it -> System.out.println("  " + it));
         assertThat(depList.size()).isGreaterThan(200);
         // most zanata dependencies (except assets, frontend, api-compat) should come from reactor (/tmp or similar)
         assertThat(depList)
                 .has(new Condition<>(
                         list -> list.stream().anyMatch(
-                                f -> f.getPath().matches(".*te?mp.*zanata.*")),
-                        "contains some zanata reactor dependencies (under tmp)"));
+                                f -> f.getPath().matches(apiReactor)),
+                        "deployment contains zanata reactor dependencies"));
         assertThat(depList).doesNotHave(new Condition<>(list -> list.stream().anyMatch(f -> f.getName().contains("javamelody")), "javamelody"));
     }
 }

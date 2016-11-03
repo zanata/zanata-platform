@@ -79,8 +79,8 @@ public class Deployments {
         ArrayList<ArchivePath> paths =
                 new ArrayList<>(archive.getContent().keySet());
         Collections.sort(paths);
-        String contents = "  " + Joiner.on("\n  ").join(paths);
-        System.out.println(contents);
+        System.out.println("Deployment contents:");
+        paths.forEach(it -> System.out.println("  " + it));
     }
 
     static File[] runtimeAndTestDependenciesFromPom() {
