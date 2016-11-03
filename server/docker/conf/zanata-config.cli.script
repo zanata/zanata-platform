@@ -24,7 +24,6 @@ batch
 /subsystem=jca/cached-connection-manager=cached-connection-manager/:write-attribute(name=error,value=true)
 
 # ==== add datasource ====
-
 /subsystem=datasources/jdbc-driver=mysql:add(driver-name="mysql",\
     driver-module-name="com.mysql",\
     driver-xa-datasource-class-name="com.mysql.jdbc.jdbc2.optional.MysqlXADataSource",\
@@ -37,8 +36,7 @@ data-source add --name=zanataDatasource \
     --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker \
     --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter \
     --min-pool-size=0 --max-pool-size=20 --flush-strategy=FailingConnectionOnly \
-    --track-statements=NOWARN
-/subsystem=datasources/data-source=zanataDatasource/:write-attribute(name=use-ccm,value=true)
+    --track-statements=NOWARN --use-ccm=true
 
 # ==== logging configuration ====
 # /subsystem=logging/logger=LOG_CATEGORY:add
