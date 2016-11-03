@@ -3549,7 +3549,7 @@ button.list-group-item {
   padding: 0.214em @padding-base-vertical;
   color: #fff;
   text-align: center;
-  background-color: #000;
+  background-color: @brand-primary;
   border-radius: @border-radius-base;
 }
 
@@ -3574,6 +3574,22 @@ button.list-group-item {
   font-size: 0.857em;
   opacity: 0;
   filter: alpha(opacity=0);
+}
+
+.tooltip.top .tooltip-arrow {
+  bottom: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px 5px 0;
+  border-top-color: #000;
+}
+
+.tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
 }
 
 .well {

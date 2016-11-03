@@ -48,7 +48,7 @@ class Explore extends Component {
     } = this.props
 
     const tooltip = (
-      <Tooltip id='tooltip'><strong>Holy guacamole!</strong>
+      <Tooltip id='tooltip-right'><strong>Holy guacamole!</strong>
       Check this info.</Tooltip>
     )
 
@@ -144,19 +144,8 @@ class Explore extends Component {
               Cancel
             </Button>
             <ButtonToolbar>
-              <OverlayTrigger placement='left' overlay={tooltip}>
-                <Button bsStyle='default'>Holy guacamole!</Button>
-              </OverlayTrigger>
-
-              <OverlayTrigger placement='top' overlay={tooltip}>
-                <Button bsStyle='default'>Holy guacamole!</Button>
-              </OverlayTrigger>
-
-              <OverlayTrigger placement='bottom' overlay={tooltip}>
-                <Button bsStyle='default'>Holy guacamole!</Button>
-              </OverlayTrigger>
-
-              <OverlayTrigger placement='right' overlay={tooltip}>
+              <OverlayTrigger placement='right'
+                bsStyle='tooltip' overlay={tooltip}>
                 <Button bsStyle='default'>Holy guacamole!</Button>
               </OverlayTrigger>
             </ButtonToolbar>
