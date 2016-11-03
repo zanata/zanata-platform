@@ -43,6 +43,9 @@
         <!--<property name="zanata.security.adminusers" value=""/>-->
         <property name="zanata.email.defaultfromaddress" value="no-reply@zanata.org"/>
         <property name="zanata.file.directory" value="${user.home}/zanata/files"/>
+        <!-- Allows the editor development server to use the docker server as a backend.
+             The editor development server is run with `make watch` in zanata-frontend/src/editor -->
+        <property name="zanata.origin.whitelist" value="http://localhost:8000" />
     </system-properties>
 
 
