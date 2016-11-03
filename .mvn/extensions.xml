@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <extensions>
   <!-- Enable Takari's Concurrent Safe Local Repository -->
+  <!-- Disabled due to concurrency issues(!)
+       - https://github.com/takari/takari-local-repository/issues/4
+       - https://github.com/takari/takari-local-repository/issues/5
+  -->
+<!--
   <extension>
     <groupId>io.takari.aether</groupId>
     <artifactId>takari-local-repository</artifactId>
@@ -11,6 +16,7 @@
     <artifactId>takari-filemanager</artifactId>
     <version>0.8.3</version>
   </extension>
+ -->
   <!-- Enable Takari's Smart Builder -->
   <extension>
     <groupId>io.takari.maven</groupId>
