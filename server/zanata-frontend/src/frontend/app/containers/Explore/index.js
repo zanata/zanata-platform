@@ -2,9 +2,9 @@ import React, { Component, PropTypes } from 'react'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Button } from 'react-bootstrap'
+import { Button, Tooltip, OverlayTrigger, ButtonToolbar } from 'react-bootstrap'
 import TeaserList from './TeaserList'
-import { TextInput, Icon, Link } from '../../components'
+import { TextInput, Icon } from '../../components'
 import {
   searchTextChanged,
   searchPageInitialLoad,
@@ -46,6 +46,11 @@ class Explore extends Component {
       searchError,
       searchLoading
     } = this.props
+
+    const tooltip = (
+      <Tooltip id='tooltip'><strong>Holy guacamole!</strong>
+      Check this info.</Tooltip>
+    )
 
     let content
     if (searchError) {
@@ -138,7 +143,23 @@ class Explore extends Component {
               onClick={(e) => { this.handleClearSearch() }}>
               Cancel
             </Button>
-            <Link to={languageTeamPage}>{languageTeamPage}</Link>
+            <ButtonToolbar>
+              <OverlayTrigger placement='left' overlay={tooltip}>
+                <Button bsStyle='default'>Holy guacamole!</Button>
+              </OverlayTrigger>
+
+              <OverlayTrigger placement='top' overlay={tooltip}>
+                <Button bsStyle='default'>Holy guacamole!</Button>
+              </OverlayTrigger>
+
+              <OverlayTrigger placement='bottom' overlay={tooltip}>
+                <Button bsStyle='default'>Holy guacamole!</Button>
+              </OverlayTrigger>
+
+              <OverlayTrigger placement='right' overlay={tooltip}>
+                <Button bsStyle='default'>Holy guacamole!</Button>
+              </OverlayTrigger>
+            </ButtonToolbar>
           </div>
         </div>
         <div className='scrollViewTheme'>
