@@ -211,31 +211,25 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                 .addKey(new Keys(Keys.ALT_KEY, 'L'))
                 .setContext(ShortcutContext.Application)
                 .setDescription(messages.showDocumentListKeyShortcut())
-                .setHandler(new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        HistoryToken token = history.getHistoryToken();
-                        token.setView(MainView.Documents);
-                        history.newItem(token.toTokenString());
-                    }
+                .setHandler(event -> {
+                    HistoryToken token = history.getHistoryToken();
+                    token.setView(MainView.Documents);
+                    history.newItem(token.toTokenString());
                 }).build());
 
         keyShortcutPresenter.register(KeyShortcut.Builder.builder()
                 .addKey(new Keys(Keys.ALT_KEY, 'O'))
                 .setContext(ShortcutContext.Application)
                 .setDescription(messages.showEditorKeyShortcut())
-                .setHandler(new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        if (selectedDocument == null) {
-                            eventBus.fireEvent(new NotificationEvent(
-                                    Severity.Warning, messages
-                                            .noDocumentSelected()));
-                        } else {
-                            HistoryToken token = history.getHistoryToken();
-                            token.setView(MainView.Editor);
-                            history.newItem(token.toTokenString());
-                        }
+                .setHandler(event -> {
+                    if (selectedDocument == null) {
+                        eventBus.fireEvent(new NotificationEvent(
+                                Severity.Warning, messages
+                                        .noDocumentSelected()));
+                    } else {
+                        HistoryToken token = history.getHistoryToken();
+                        token.setView(MainView.Editor);
+                        history.newItem(token.toTokenString());
                     }
                 }).build());
 
@@ -243,13 +237,10 @@ public class AppPresenter extends WidgetPresenter<AppDisplay> implements
                 .addKey(new Keys(Keys.ALT_KEY, 'P'))
                 .setContext(ShortcutContext.Application)
                 .setDescription(messages.showProjectWideSearch())
-                .setHandler(new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        HistoryToken token = history.getHistoryToken();
-                        token.setView(MainView.Search);
-                        history.newItem(token.toTokenString());
-                    }
+                .setHandler(event -> {
+                    HistoryToken token = history.getHistoryToken();
+                    token.setView(MainView.Search);
+                    history.newItem(token.toTokenString());
                 }).build());
     }
 

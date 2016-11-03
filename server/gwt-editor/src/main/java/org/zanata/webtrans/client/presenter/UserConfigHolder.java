@@ -38,27 +38,12 @@ import javax.annotation.Nonnull;
 @Singleton
 public class UserConfigHolder {
     public static final Predicate<ContentState> INCOMPLETE_PREDICATE =
-            new Predicate<ContentState>() {
-                @Override
-                public boolean apply(ContentState contentState) {
-                    return contentState == ContentState.New
-                            || contentState.isRejectedOrFuzzy();
-                }
-            };
+            contentState -> contentState == ContentState.New
+                    || contentState.isRejectedOrFuzzy();
     public static final Predicate<ContentState> DRAFT_PREDICATE =
-            new Predicate<ContentState>() {
-                @Override
-                public boolean apply(@Nonnull ContentState contentState) {
-                    return contentState.isRejectedOrFuzzy();
-                }
-            };
+            ContentState::isRejectedOrFuzzy;
     public static final Predicate<ContentState> NEW_PREDICATE =
-            new Predicate<ContentState>() {
-                @Override
-                public boolean apply(ContentState contentState) {
-                    return contentState == ContentState.New;
-                }
-            };
+            contentState -> contentState == ContentState.New;
     private ConfigurationState state;
 
     public static final int DEFAULT_DOC_LIST_PAGE_SIZE = 25;

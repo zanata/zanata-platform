@@ -50,13 +50,7 @@ public class AttentionKeyShortcutPresenter extends
     protected void onBind() {
         registerHandler(eventBus.addHandler(
                 AttentionModeActivationEvent.getType(),
-                new AttentionModeActivationEventHandler() {
-                    @Override
-                    public void onAttentionModeActivationChanged(
-                            AttentionModeActivationEvent event) {
-                        respondToAttentionModeEvent(event);
-                    }
-                }));
+                this::respondToAttentionModeEvent));
     }
 
     @Override

@@ -158,13 +158,8 @@ public class TransMemoryMergePresenter extends
             MergeOptions mergeOptions) {
         List<TransUnitUpdateRequest> updateRequests =
                 Lists.newArrayList(Collections2.transform(untranslatedTUs,
-                        new Function<TransUnit, TransUnitUpdateRequest>() {
-                            @Override
-                            public TransUnitUpdateRequest apply(TransUnit from) {
-                                return new TransUnitUpdateRequest(from.getId(),
-                                        null, null, from.getVerNum(), sourceType);
-                            }
-                        }));
+                        from -> new TransUnitUpdateRequest(from.getId(),
+                                null, null, from.getVerNum(), sourceType)));
         return new TransMemoryMerge(threshold, updateRequests, mergeOptions);
     }
 
@@ -189,7 +184,7 @@ public class TransMemoryMergePresenter extends
     protected void onRevealDisplay() {
     }
 
-    private static enum SuccessRowIndexOrNullFunction implements
+    private enum SuccessRowIndexOrNullFunction implements
             Function<TransUnitUpdateInfo, String> {
         FUNCTION;
         @Override

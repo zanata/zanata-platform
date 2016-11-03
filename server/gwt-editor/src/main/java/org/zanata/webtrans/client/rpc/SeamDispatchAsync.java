@@ -53,6 +53,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
     @Override
     public <A extends Action<R>, R extends Result> void execute(final A action,
             final AsyncCallback<R> callback) {
+        // TODO deduplicate: see rollback()
         if (action instanceof AbstractWorkspaceAction<?>) {
             AbstractWorkspaceAction<?> wsAction =
                     (AbstractWorkspaceAction<?>) action;
@@ -126,6 +127,7 @@ public class SeamDispatchAsync implements CachingDispatchAsync {
     @Override
     public <A extends Action<R>, R extends Result> void rollback(
             final A action, final R result, final AsyncCallback<Void> callback) {
+        // TODO deduplicate: see execute()
         if (action instanceof AbstractWorkspaceAction<?>) {
             AbstractWorkspaceAction<?> wsAction =
                     (AbstractWorkspaceAction<?>) action;
