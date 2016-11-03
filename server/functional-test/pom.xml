@@ -32,6 +32,7 @@
     <ds.database>root</ds.database>
     <ds.username>root</ds.username>
     <ds.password>root</ds.password>
+    <!-- Note that mysql.port is not set initially -->
     <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
     <!-- skipAfterFailureCount=0 due to https://issues.apache.org/jira/browse/SUREFIRE-1219 -->
@@ -1036,7 +1037,7 @@
 
             <configfiles>
               <configfile>
-                <file>${project.build.testOutputDirectory}/datasource/zanata-ds.xml</file>
+                <file>${project.basedir}/src/test/conf/zanata-ds.xml</file>
                 <todir>deployments</todir>
               </configfile>
               <!-- see above zipUrlInstaller/extractDir-->
@@ -1044,7 +1045,7 @@
 
               <!-- security and jndi for properties -->
               <configfile>
-                <file>${project.build.testOutputDirectory}/conf/${standalone.xml.file}</file>
+                <file>${project.basedir}/src/test/conf/${standalone.xml.file}</file>
                 <tofile>configuration/standalone.xml</tofile>
               </configfile>
 
@@ -1061,6 +1062,12 @@
               <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
               <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
               <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
+              <!-- These properties will be interpolated by Cargo into the configfiles above -->
+              <ds.connection.url>${ds.connection.url}</ds.connection.url>
+              <ds.username>${ds.username}</ds.username>
+              <ds.password>${ds.password}</ds.password>
+              <jdbc.artifactId>${jdbc.artifactId}</jdbc.artifactId>
+              <smtp.port>${smtp.port}</smtp.port>
             </properties>
           </configuration>
         </configuration>
