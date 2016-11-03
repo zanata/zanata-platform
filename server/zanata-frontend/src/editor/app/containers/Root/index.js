@@ -112,9 +112,6 @@ function mapStateToProps (state, ownProps) {
 }
 
 function mapDispatchToProps (dispatch, ownProps) {
-  // FIXME may need to get 'lang' from query string of the router instead
-  //       (used to be a param, but it isn't any more).
-  // FIXME also need to make sure the language selection action updates the query string rather than the URL.
   const { projectSlug, versionSlug, lang, docId } = ownProps.params
   return {
     saveSuggestionPanelHeight: (pixelHeight) => {

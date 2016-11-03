@@ -10,20 +10,25 @@
  * require context information.
  */
 
+import { assign } from 'lodash'
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { routingParamsChanged } from '../actions'
 
 class ParamPropDispatcher extends React.Component {
   componentWillMount () {
+    const { dispatchParamsAndQuery, params, location } = this.props
     // always dispatch for initial render
-    this.props.dispatchParams(this.props.params)
+    dispatchParamsAndQuery(params, location.query)
   }
   componentWillReceiveProps (newProps) {
-    const oldPathname = this.props.location && this.props.location.pathname
-    const newPathname = newProps.location && newProps.location.pathname
-    if (oldPathname !== newPathname) {
-      this.props.dispatchParams(newProps.params)
+    const { location } = this.props
+    const newLocation = newProps.location
+
+    const oldPath = location && (location.pathname + location.search)
+    const newPath = newLocation && (newLocation.pathname + newLocation.search)
+    if (oldPath !== newPath) {
+      this.props.dispatchParamsAndQuery(newProps.params, newLocation.query)
     }
   }
   render () {
@@ -34,7 +39,7 @@ class ParamPropDispatcher extends React.Component {
 
 ParamPropDispatcher.propTypes = {
   children: PropTypes.node,
-  dispatchParams: PropTypes.func.isRequired,
+  dispatchParamsAndQuery: PropTypes.func.isRequired,
   location: PropTypes.shape({
     pathname: PropTypes.string
   }),
@@ -43,8 +48,8 @@ ParamPropDispatcher.propTypes = {
 
 function mapDispatchToProps (dispatch) {
   return {
-    dispatchParams: params => {
-      dispatch(routingParamsChanged(params))
+    dispatchParamsAndQuery: (params, query) => {
+      dispatch(routingParamsChanged(assign({}, query, params)))
     }
   }
 }

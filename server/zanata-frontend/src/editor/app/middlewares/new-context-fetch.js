@@ -35,15 +35,16 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
     }
   },
   (dispatch, oldState, newState) => {
-    const docChanged = oldState.context.docId !== newState.context.docId
-    const localeChanged = oldState.context.lang !== newState.context.lang
+    const { projectSlug, versionSlug, lang, docId } = newState.context
+
+    const docChanged = oldState.context.docId !== docId
+    const localeChanged = oldState.context.lang !== lang
 
     const newPageIndex = getPageIndexFromQuery(newState)
     const oldPageIndex = getPageIndexFromQuery(oldState)
 
     const updatePage = oldPageIndex !== newPageIndex
     if (docChanged || localeChanged) {
-      const { projectSlug, versionSlug, lang, docId } = newState.context
       const paging = {
         ...newState.phrases.paging,
         pageIndex: newPageIndex
@@ -52,6 +53,7 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
         dispatch(selectDoc(docId))
       }
       if (localeChanged) {
+        // FIXME just use selected locale from context.lang if possible
         dispatch(selectLocale(lang))
       }
       dispatch({type: UPDATE_PAGE, page: newPageIndex})
@@ -63,8 +65,7 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
         pageIndex: newPageIndex
       }
       dispatch({type: UPDATE_PAGE, page: newPageIndex})
-      dispatch(fetchPhraseDetails(phraseState.docStatus,
-        newState.context.lang, paging))
+      dispatch(fetchPhraseDetails(phraseState.docStatus, lang, paging))
     }
   }
 )
