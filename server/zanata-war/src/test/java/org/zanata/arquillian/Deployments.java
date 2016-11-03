@@ -27,7 +27,6 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -115,7 +114,7 @@ public class Deployments {
         // TODO apply the individual filters with importDirectory()
         // instead of archive.merge() - paths may have different prefix.
         Filter<ArchivePath> archivePathFilter = object ->
-                neededGwtCode(object) &&
+                notUnusedGwtClientCode(object) &&
                 notUnitTest(object);
         archive.merge(ShrinkWrap.create(GenericArchive.class)
                         .as(ExplodedImporter.class)
@@ -210,13 +209,14 @@ public class Deployments {
                 context.matches(".+Test(s)?\\$.*\\.class$"));
     }
 
-    private static boolean neededGwtCode(ArchivePath object) {
+    private static boolean notUnusedGwtClientCode(ArchivePath object) {
         String context = object.get();
         // we need this class in ValidationFactoryProvider
-        return context.startsWith(
-                "/org/zanata/webtrans/client/resources/ValidationMessages") ||
-                !context.startsWith("/org/zanata/webtrans/client") &&
-                !context.startsWith("/org/zanata/webtrans/server");
+        // the context appears to be /WEB-INF/classes/...
+        return context.matches(
+                ".*/org/zanata/webtrans/client/resources/ValidationMessages") ||
+                !context.contains("/org/zanata/webtrans/client") &&
+                !context.contains("/org/zanata/webtrans/server");
     }
 
     private static <T> void forEachRemaining(Enumeration<T> enumeration,
