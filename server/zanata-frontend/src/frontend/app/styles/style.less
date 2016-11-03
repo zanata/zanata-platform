@@ -203,20 +203,31 @@ span.svg {
 // FIX THESE //
 
 .dot-first {
-  animdur: 'Animdur(0.9s)',
-  animic: 'Animic(i)',
-  animtf: 'Animtf(eob)',
-  animn: 'Animn(anibd)',
-  h: 'H(27.8%)',
-  w: 'W(27.8%)'
+  animation-duration: 0.9s;
+  animation-iteration-count: infinite;
+  animation-timing-function: transform .3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  animation-name: bouncedelay;
+  height:27.8%;
+  width:27.8%;
 }
 
 .dot-second {
-  animdel: 'Animdel(0.15s)'
+  animation-delay: 0.315s;
 }
 
 .dot-third {
-  animdel: 'Animdel(0.3s)'
+  animation-delay: 0.3s;
+}
+
+span.loader-text {
+  align-items:center;
+  display: inline-block;
+  justify-content: space-between;
+  transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+span.loader-text .loader {
+  margin-left: 0.375em;
 }
 
 article,
