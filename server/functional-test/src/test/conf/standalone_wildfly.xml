@@ -574,7 +574,7 @@
     <socket-binding name="txn-status-manager"
      port="${jboss.txn.status.port,env.JBOSS_TXN_STATUS_PORT:4813}"/>
     <outbound-socket-binding name="mail-smtp">
-      <remote-destination host="localhost" port="${smtp.port,env.SMTP_PORT:2552}"/>
+      <remote-destination host="localhost" port="@smtp.port@"/>
     </outbound-socket-binding>
   </socket-binding-group>
 
