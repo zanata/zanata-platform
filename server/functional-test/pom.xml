@@ -715,7 +715,7 @@
                 </property>
               </properties>
               <systemPropertyVariables>
-                <featureInventoryLocation>${project.build.directory}/feature-inventory</featureInventoryLocation>
+                <featureInventoryLocation>${project.build.directory}/test-classes/feature-inventory</featureInventoryLocation>
                 <maven.home>${maven.home}</maven.home>
               </systemPropertyVariables>
             </configuration>
@@ -774,7 +774,9 @@
   </profiles>
 
   <build>
+    <!-- NB: targetPath MUST be relative to target/test-classes -->
     <testResources>
+      <!-- various config files, with filtering -->
       <testResource>
         <directory>src/test/resources</directory>
         <filtering>true</filtering>
@@ -783,6 +785,7 @@
           <include>**/*.xml</include>
         </includes>
       </testResource>
+      <!-- test documents, no filtering -->
       <testResource>
         <directory>src/test/resources</directory>
         <filtering>false</filtering>
@@ -794,37 +797,42 @@
           <include>**/*.idml</include>
         </includes>
       </testResource>
+      <!-- browser extension(s), no filtering -->
       <testResource>
         <directory>src/test/resources/zanata-testing-extension</directory>
         <filtering>false</filtering>
-        <targetPath>${project.build.testOutputDirectory}/zanata-testing-extension</targetPath>
+        <targetPath>zanata-testing-extension</targetPath>
       </testResource>
+      <!-- more config files, with filtering -->
       <testResource>
         <directory>src/test/resources/zanata-user-config</directory>
         <filtering>true</filtering>
       </testResource>
+      <!-- config files under sample-projects, with filtering -->
       <testResource>
         <directory>sample-projects</directory>
-        <targetPath>${zanata.sample.projects.basedir}</targetPath>
+        <targetPath>sample-projects</targetPath>
         <filtering>true</filtering>
         <includes>
           <include>**/zanata.xml</include>
           <include>**/pom.xml</include>
         </includes>
       </testResource>
+      <!-- non-config files under sample-projects, without filtering -->
       <testResource>
         <directory>sample-projects</directory>
-        <targetPath>${zanata.sample.projects.basedir}</targetPath>
+        <targetPath>sample-projects</targetPath>
         <filtering>false</filtering>
         <excludes>
           <exclude>**/zanata.xml</exclude>
           <exclude>**/pom.xml</exclude>
         </excludes>
       </testResource>
+      <!-- html/js files for displaying feature inventory -->
       <testResource>
         <directory>src/test/resources/feature-inventory</directory>
         <filtering>false</filtering>
-        <targetPath>${project.build.directory}/feature-inventory</targetPath>
+        <targetPath>feature-inventory</targetPath>
       </testResource>
     </testResources>
 
