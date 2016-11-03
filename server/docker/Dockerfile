@@ -5,17 +5,15 @@ ENV DB_HOSTNAME=zanatadb
 # create mysql module
 USER root
 COPY conf/mysql-module/ /opt/jboss/wildfly/modules/
-RUN yum -y install mysql-connector-java wget && yum clean all && \
+RUN yum -y install mysql-connector-java && yum clean all && \
     ln -sf /usr/share/java/mysql-connector-java.jar /opt/jboss/wildfly/modules/com/mysql/main/mysql-connector-java.jar
 
-COPY conf/zanata-config.cli.script /opt/jboss/wildfly/standalone/configuration/
+COPY conf/zanata-config.cli /opt/jboss/wildfly/standalone/configuration/
 
 USER jboss
 
-RUN /opt/jboss/wildfly/bin/jboss-cli.sh --file=/opt/jboss/wildfly/standalone/configuration/zanata-config.cli.script
+RUN /opt/jboss/wildfly/bin/jboss-cli.sh --file=/opt/jboss/wildfly/standalone/configuration/zanata-config.cli
 
-# Enable debugging of the appserver
-#RUN echo "JAVA_OPTS=\"\$JAVA_OPTS -agentlib:jdwp=transport=dt_socket,address=8787,server=y,suspend=n\"" >> /opt/jboss/wildfly/bin/standalone.conf
-
-# Use standandlone-full
+# Enable debugging of the appserver: --debug
+# Use standandlone-full: -c standalone-full.xml
 CMD ["/opt/jboss/wildfly/bin/standalone.sh", "--debug", "-b", "0.0.0.0", "-c", "standalone-full.xml"]

@@ -52,7 +52,6 @@ bin/
 
 # binary files
 *.class
-*.cli
 *.exe
 *.jar
 *.war
