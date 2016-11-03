@@ -107,13 +107,10 @@ public class TranslationPresenter extends
 
         // navigate to previous row shortcut
         KeyShortcutEventHandler gotoPreRowHandler =
-                new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        targetContentsPresenter
-                                .savePendingChangesIfApplicable();
-                        eventBus.fireEvent(NavTransUnitEvent.PREV_ENTRY_EVENT);
-                    }
+                event -> {
+                    targetContentsPresenter
+                            .savePendingChangesIfApplicable();
+                    eventBus.fireEvent(NavTransUnitEvent.PREV_ENTRY_EVENT);
                 };
         KeyShortcut movePreviousShortcut =
                 KeyShortcut.Builder.builder()
@@ -127,13 +124,10 @@ public class TranslationPresenter extends
 
         // navigate to next row shortcut
         KeyShortcutEventHandler gotoNextRowHandler =
-                new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        targetContentsPresenter
-                                .savePendingChangesIfApplicable();
-                        eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
-                    }
+                event -> {
+                    targetContentsPresenter
+                            .savePendingChangesIfApplicable();
+                    eventBus.fireEvent(NavTransUnitEvent.NEXT_ENTRY_EVENT);
                 };
         KeyShortcut moveNextShortcut =
                 KeyShortcut.Builder.builder()
@@ -153,16 +147,13 @@ public class TranslationPresenter extends
                         .setContext(ShortcutContext.Navigation)
                         .setDescription(messages.openEditorInSelectedRow())
                         .setKeyEvent(KeyEvent.KEY_UP)
-                        .setHandler(new KeyShortcutEventHandler() {
-                            @Override
-                            public void onKeyShortcut(KeyShortcutEvent event) {
-                                if (!isOtherInputFieldFocused()
-                                        && userWorkspaceContext
-                                                .getWorkspaceRestrictions()
-                                                .isHasEditTranslationAccess()) {
-                                    targetContentsPresenter.setFocus();
-                                    targetContentsPresenter.revealDisplay();
-                                }
+                        .setHandler(event -> {
+                            if (!isOtherInputFieldFocused()
+                                    && userWorkspaceContext
+                                            .getWorkspaceRestrictions()
+                                            .isHasEditTranslationAccess()) {
+                                targetContentsPresenter.setFocus();
+                                targetContentsPresenter.revealDisplay();
                             }
                         }).build();
         keyShortcutPresenter.register(startEditingShortcut);
