@@ -225,8 +225,8 @@
 }
 
 .TransUnit-status {
-  top: -1;
-  bottom: -1;
+  top: -1px;
+  bottom: -1px;
 }
 
 .TransUnit-status.is-loading,
