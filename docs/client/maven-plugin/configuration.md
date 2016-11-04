@@ -1,11 +1,11 @@
 To use the Maven Plugin, some Zanata configuration files and an installation of Apache Maven are needed. Some additional configuration will let you use a shorter command to run the Maven Plugin.
 
-For Apache Maven installation, see [Installing the Maven Plugin](/maven-plugin/installation).
+For Apache Maven installation, see [Installing the Maven Plugin](/client/maven-plugin/installation).
 
 
 ## Zanata Project Configuration
 
-The Zanata Maven plugin uses the general configuration files `zanata.ini` and `zanata.xml` in the same way as zanata-cli. For instructions on setting up these files, see [Configuring the Client](/configuration).
+The Zanata Maven plugin uses the general configuration files `zanata.ini` and `zanata.xml` in the same way as zanata-cli. For instructions on setting up these files, see [Configuring the Client](/client/configuration).
 
 In addition, parameters such as source directory can be specified in `pom.xml` so that they are not needed on the command line.
 

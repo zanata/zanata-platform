@@ -142,7 +142,7 @@ As the rule is defined as `{locale}/{path}/{filename}.po`, for locale `de-DE`,
 
 You can also replace `{locale}` with `{locale_with_underscore}` if you want all your locales to use underscore instead of hyphen. e.g. `de-DE` will become `de_DE` which results in translation files written to or read from `{projectRoot}/de_DE/messages/kdeedu/kalzium.po`.
 
-The mapping rules configuration is optional in zanata.xml. If not specified, standard rules are applied according to your [project type](http://docs.zanata.org/en/latest/user-guide/projects/project-types).
+The mapping rules configuration is optional in zanata.xml. If not specified, standard rules are applied according to your [project type](/user-guide/projects/project-types).
 
  1. gettext: `{path}/{locale_with_underscore}.po`
  1. podir: `{locale}/{path}/{filename}.po`

@@ -1,12 +1,12 @@
 To upload documents to your project-version, the command-line client's `push` command can be used.
 
-These instructions assume that you have installed Zanata-CLI as shown in [Installing the Client](/#installation), and have saved user and project configuration as shown in [Configuring the Client](/configuration).
+These instructions assume that you have installed Zanata-CLI as shown in [Installing the Client](/client#installation), and have saved user and project configuration as shown in [Configuring the Client](/client/configuration).
 
 
 
 ## Source Document Upload
 
-The basic command for uploading documents is `zanata-cli push`. The push command should always be run from the directory that contains `zanata.xml` for your project (find information about `zanata.xml` at [Configuring the Client](/configuration).
+The basic command for uploading documents is `zanata-cli push`. The push command should always be run from the directory that contains `zanata.xml` for your project (find information about `zanata.xml` at [Configuring the Client](/client/configuration).
 
 The simplest push command is:
 
