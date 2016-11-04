@@ -82,7 +82,6 @@
           </dependency>
         </dependencies>
       </plugin>
-      <!-- Installs correct version of node and npm locally. -->
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
@@ -91,6 +90,7 @@
           <installDirectory>${node.install.directory}</installDirectory>
         </configuration>
         <executions>
+          <!-- Installs correct version of node and npm locally. -->
           <execution>
             <id>install node and npm</id>
             <phase>initialize</phase>
@@ -100,31 +100,6 @@
             <configuration>
               <nodeVersion>${node.version}</nodeVersion>
               <npmVersion>${npm.version}</npmVersion>
-            </configuration>
-          </execution>
-          <!-- Download all dependency modules from npm (or mirror). -->
-          <execution>
-            <id>frontend: execute npm install</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${frontend.build.directory}</workingDirectory>
-              <arguments>install --ignore-scripts --cache-min ${npm.cache.min}</arguments>
-            </configuration>
-          </execution>
-
-          <!-- Download all dependency modules from npm (or mirror). -->
-          <execution>
-            <id>editor: execute npm install</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>install --ignore-scripts --cache-min ${npm.cache.min}</arguments>
             </configuration>
           </execution>
 
@@ -277,8 +252,51 @@
     </plugins>
   </build>
 
-  <!-- Attempts to avoid downloading anything from NPM. -->
   <profiles>
+    <profile>
+      <id>npm install</id>
+      <activation>
+        <property>
+          <name>!skip.npminstall</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <!-- Download all dependency modules from npm (or mirror). -->
+              <execution>
+                <id>frontend: execute npm install</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <workingDirectory>${frontend.build.directory}</workingDirectory>
+                  <arguments>install --ignore-scripts --cache-min ${npm.cache.min}</arguments>
+                </configuration>
+              </execution>
+
+              <!-- Download all dependency modules from npm (or mirror). -->
+              <execution>
+                <id>editor: execute npm install</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <workingDirectory>${editor.build.directory}</workingDirectory>
+                  <arguments>install --ignore-scripts --cache-min ${npm.cache.min}</arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Attempts to avoid downloading anything from NPM. -->
     <profile>
       <id>npmOffline</id>
       <activation>
