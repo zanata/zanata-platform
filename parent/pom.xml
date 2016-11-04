@@ -201,7 +201,7 @@
     <checkstyle.suppressions.location>https://raw.githubusercontent.com/zanata/zanata-platform/master/parent/checkstyle-suppressions.xml</checkstyle.suppressions.location>
     <checkstyle.suppressionsFileExpression />
     <checkstyle.maven.version>2.17</checkstyle.maven.version>
-    <checkstyle.version>7.0</checkstyle.version>
+    <checkstyle.version>7.2</checkstyle.version>
     <findbugs.excludeFilterFile>https://raw.githubusercontent.com/zanata/zanata-platform/master/parent/findbugs-filter.xml</findbugs.excludeFilterFile>
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
@@ -259,7 +259,8 @@
           <configLocation>${checkstyle.config.location}</configLocation>
           <!-- report violations to stdout (not console!) -->
           <consoleOutput>true</consoleOutput>
-          <includes>*.xml,*.txt,*.md,etc/**,src/**</includes>
+          <!-- This won't include frontend code. We should use eslint there. -->
+          <includes>*.xml,*.txt,*.md,etc/**,src/main/**,src/test/**,src/etc/**,src/conf/**</includes>
           <excludes>src/test/resources/**</excludes>
           <sourceDirectory>${project.basedir}</sourceDirectory>
         </configuration>
