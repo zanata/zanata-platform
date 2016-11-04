@@ -7,7 +7,7 @@
     <plugins>
       <plugin>
         <configuration>
-          <glossaryFile>${zanata.glossaryFile}</glossaryFile>
+          <!--<file>${zanata.glossaryFile}</file>-->
           <sourceLang>en-US</sourceLang>
           <transLang>${glossary.lang}</transLang>
         </configuration>
