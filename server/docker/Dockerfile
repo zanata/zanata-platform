@@ -8,11 +8,11 @@ COPY conf/mysql-module/ /opt/jboss/wildfly/modules/
 RUN yum -y install mysql-connector-java && yum clean all && \
     ln -sf /usr/share/java/mysql-connector-java.jar /opt/jboss/wildfly/modules/com/mysql/main/mysql-connector-java.jar
 
-COPY conf/zanata-config.cli /opt/jboss/wildfly/standalone/configuration/
+COPY conf/zanata-config.cli /tmp/
 
 USER jboss
 
-RUN /opt/jboss/wildfly/bin/jboss-cli.sh --file=/opt/jboss/wildfly/standalone/configuration/zanata-config.cli
+RUN /opt/jboss/wildfly/bin/jboss-cli.sh --file=/tmp/zanata-config.cli
 
 # Enable debugging of the appserver: --debug
 # Use standandlone-full: -c standalone-full.xml
