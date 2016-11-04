@@ -1,7 +1,7 @@
-site_name: Zanata Server
+site_name: Zanata Platform
 docs_dir: docs
 repo_name: GitHub
-repo_url: http://www.github.com/zanata/zanata-server
+repo_url: http://www.github.com/zanata/zanata-platform
 site_favicon: favicon.ico
 theme: readthedocs
 extra_css:
@@ -90,7 +90,27 @@ pages:
 # API
 - Zanata API: 'user-guide/api/api.md'
 # Client
-- Zanata client: 'user-guide/client/client.md'
+- Zanata client:
+  - Home: 'client/index.md'
+  - Installation:
+    - Linux Installation: 'client/installation/linux-installation.md'
+    - OS X Installation: 'client/installation/osx-installation.md'
+    - Windows Installation: 'client/installation/windows-installation.md'
+    - Ivy Installation: 'client/installation/ivy-installation.md'
+    - Manual Installation: 'client/installation/manual-installation.md'
+  - Configuration: 'client/configuration.md'
+  - Command Hook: 'client/command-hook.md'
+  - Commands:
+    - init: 'client/commands/init.md'
+    - push: 'client/commands/push.md'
+    - pull: 'client/commands/pull.md'
+    - glossary-push: 'client/commands/glossary-push.md'
+    - glossary-pull: 'client/commands/glossary-pull.md'
+    - glossary-delete: 'client/commands/glossary-delete.md'
+  - Maven Plugin:
+    - Installation: 'client/maven-plugin/installation.md'
+    - Configuration: 'client/maven-plugin/configuration.md'
+    - Commands: 'client/maven-plugin/commands.md'
 # Drupal
 - Drupal plugin: 'user-guide/drupal/drupal.md'
 # Admin

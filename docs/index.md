@@ -1,4 +1,4 @@
-Zanata Server
+Zanata Platform
 =============
 
 ![Zanata](http://assets-zanata.rhcloud.com/master/assets/img/logo/logo-128.png)
@@ -11,11 +11,12 @@ Getting started
 - [Project maintainer guide](user-guide/project-maintainer-guide.md)
 - [Translator guide](user-guide/translator-guide.md)
 - [System admin guide](user-guide/system-admin/configuration/installation.md)
+- [Zanata client guide](client/index.md)
 
 Contribute
 ----------
 
-- [Issue Tracker](http://bugzilla.redhat.com/buglist.cgi?product=Zanata)
+- [Issue Tracker](https://zanata.atlassian.net/)
 - [Source Code on GitHub](http://github.com/zanata)
 
 Release notes
@@ -43,4 +44,4 @@ License
 -------
 Zanata is Free software, licensed under the [LGPL](http://www.gnu.org/licenses/lgpl-2.1.html).
 
-Copyright &copy; 2015, <a href="http://www.redhat.com">Red Hat, Inc</a>.
+Copyright &copy; 2016, <a href="http://www.redhat.com">Red Hat, Inc</a>.

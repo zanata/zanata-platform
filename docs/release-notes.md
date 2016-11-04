@@ -68,6 +68,7 @@ Zanata's jboss-web.xml has been updated: if you maintain a custom version, you s
 ##### Bug Fixes
  * [ZNTA-1275](https://zanata.atlassian.net/browse/ZNTA-1275) - Fedora: login failed if name contains non-ascii characters
  * [ZNTA-1112](https://zanata.atlassian.net/browse/ZNTA-1112) - Yahoo login indicates "Login failed" despite login success
+ * [ZNTA-1178](https://zanata.atlassian.net/browse/ZNTA-1178) - File type project can not be pulled using zanata cli
 
 -----------------------
 
@@ -99,6 +100,8 @@ Zanata's jboss-web.xml has been updated: if you maintain a custom version, you s
 * [ZNTA-858](https://zanata.atlassian.net/browse/ZNTA-858) - New side menu bar replace top and bottom panel
 * [ZNTA-855](https://zanata.atlassian.net/browse/ZNTA-855) - Add system property to enforce username for registration
 
+##### Changes
+ * [ZNTA-1028](https://zanata.atlassian.net/browse/ZNTA-1028) - Refactor QualifiedSrcDocName and UnqualifiedSrcDocName
 
 -----------------------
 
@@ -212,9 +215,12 @@ Zanata's jboss-web.xml has been updated: if you maintain a custom version, you s
 * [ZNTA-1001](https://zanata.atlassian.net/browse/ZNTA-1001) - Investigate and fix: copy version fails silently after triggering
 
 
-<h5>Bug fixes</h5>
+##### Bug fixes
 * [ZNTA-959](https://zanata.atlassian.net/browse/ZNTA-959) - Copy version fails silently and leaves version readonly
 * [ZNTA-1013](https://zanata.atlassian.net/browse/ZNTA-1013) - Fix Merge translation exception
+* [ZNTA-1011](https://zanata.atlassian.net/browse/ZNTA-1011) - Zanata client 3.8.3 can't push file to server running on WildFly
+* [ZNTA-125](https://zanata.atlassian.net/browse/ZNTA-125) - zanata-cli on Fedora for xliff project has NullPointerException during push when --validate is not specified
+
 
 ## 3.8.3
 <h5>Bug fixes</h5>
@@ -223,18 +229,30 @@ Zanata's jboss-web.xml has been updated: if you maintain a custom version, you s
 ## 3.8.2
 <h5>Bug fixes</h5>
 * [ZNTA-854](https://zanata.atlassian.net/browse/ZNTA-854) - Fast scrolling(infinite scroll) in glossary table not loading data
+* [ZNTA-519](https://zanata.atlassian.net/browse/ZNTA-519) - Unable to push the POT file beginning from the underscore (_) in the filename
+* [ZNTA-843](https://zanata.atlassian.net/browse/ZNTA-843) - Improve/fix 0install bug
+* [ZNTA-901](https://zanata.atlassian.net/browse/ZNTA-901) - txw2 should be included in zanata-cli 0install
+* [ZNTA-930](https://zanata.atlassian.net/browse/ZNTA-930) - Zanata init command fails when specifying &quot;file&quot; project type
+* [ZNTA-937](https://zanata.atlassian.net/browse/ZNTA-937) - zanata-client: need better error message for unexpected html response
 
 ## 3.8.1
+##### Changes
+* Add a new parameter includeAutomatedEntry to API getContributionStatics
+* Downgrade dependency to keep enforcer happy
+* 0install feed for Zanata CLI has been migrated to https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml. Please see [installation](/#installation) for updated command.
+
 <h5>Bug fixes</h5>
 * [ZNTA-844](https://zanata.atlassian.net/browse/ZNTA-844) - Merge Translations dialog broken
 
 
 ## 3.8.0
-<h5>Infrastructure Changes</h5>
+##### Highlight
+* Copy Trans will no longer run by default. Option `--copy-trans` is now required to invoke copy trans when pushing
+
+##### Infrastructure Changes
 * In wildfly or EAP standalone.xml, change all occurrences of "org.jboss.seam.security.jaas.SeamLoginModule" to "org.zanata.security.jaas.InternalLoginModule"
 * Zanata now requires JBoss EAP 6.4.2.GA or later (recommended), or WildFly version 9.x.
 * Zanata now requires a Java 1.8 virtual machine.
-
 
 <h5>Bug fixes</h5>
 * [1235070](https://bugzilla.redhat.com/show_bug.cgi?id=1235070) - Copied translations (using copy trans) should not be taken into account as contributions in the stats
@@ -267,6 +285,8 @@ Zanata's jboss-web.xml has been updated: if you maintain a custom version, you s
 * [ZNTA-813](https://zanata.atlassian.net/browse/ZNTA-813) - Add tooltip for disabled account
 * [ZNTA-814](https://zanata.atlassian.net/browse/ZNTA-814) - handle enter key in inactive account page
 * [ZNTA-812](https://zanata.atlassian.net/browse/ZNTA-812) - Project text search and replace does bad html safe encoding on search text
+* [ZNTA-354](https://zanata.atlassian.net/browse/ZNTA-354) - Improve Zanata client installation documentation and workflow
+* [ZNTA-664](https://zanata.atlassian.net/browse/ZNTA-664) - Change client push command not to run copy trans by default
 
 -----------------------
 
