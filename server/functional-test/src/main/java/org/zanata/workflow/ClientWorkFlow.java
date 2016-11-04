@@ -89,6 +89,9 @@ public class ClientWorkFlow {
     public List<String> callWithTimeout(final File workingDirectory,
             String command) {
         log.info("=== about to call ===\n{}", command);
+        if (!workingDirectory.isDirectory()) {
+            throw new RuntimeException("working directory does not exist: " + workingDirectory);
+        }
         final List<String> commands =
                 Lists.newArrayList(Splitter.on(" ").split(command));
 
@@ -121,11 +124,8 @@ public class ClientWorkFlow {
             List<String> command) throws IOException {
         ProcessBuilder processBuilder =
                 new ProcessBuilder(command).redirectErrorStream(true);
-        Map<String, String> env = processBuilder.environment();
-        // mvn and java home
-        ClientWorkFlow.log.info("M2: {}", env.get("M2"));
-        ClientWorkFlow.log.info("JAVA_HOME: {}", env.get("JAVA_HOME"));
-        // log.debug("env: {}", env);
+//        Map<String, String> env = processBuilder.environment();
+//        log.debug("env: {}", env);
         processBuilder.directory(projectDir);
         return processBuilder.start();
     }
