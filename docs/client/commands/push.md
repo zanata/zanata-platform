@@ -57,4 +57,4 @@ zanata-cli pull --src-dir src --trans-dir trans --create-skeletons
 
 The option `--create-skeletons` is used to make sure files will be written even if there are no translations.
 
-For more information on the pull command, see [Document Download with Client](/commands/pull).
+For more information on the pull command, see [Document Download with Client](/client/commands/pull).
