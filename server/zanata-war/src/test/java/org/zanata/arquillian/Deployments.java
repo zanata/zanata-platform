@@ -211,10 +211,11 @@ public class Deployments {
 
     private static boolean notUnusedGwtClientCode(ArchivePath object) {
         String context = object.get();
-        // we need this class in ValidationFactoryProvider
+        // we need these classes in ValidationFactoryProvider
         // the context appears to be /WEB-INF/classes/...
         return context.matches(
                 ".*/org/zanata/webtrans/client/resources/ValidationMessages") ||
+                context.matches(".*/org/zanata/webtrans/server/locale/.*") ||
                 !context.contains("/org/zanata/webtrans/client") &&
                 !context.contains("/org/zanata/webtrans/server");
     }
