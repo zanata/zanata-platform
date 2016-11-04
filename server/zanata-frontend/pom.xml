@@ -223,9 +223,11 @@
               <outputDirectory>${bundle.dest}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>src/frontend/node_modules</directory>
+                  <directory>src/frontend/dist</directory>
                   <include>frontend.*.min.js</include>
                   <include>frontend.css</include>
+                  <!-- TODO eliminate generate bootstrap.css, bundle.js, style.css? -->
+                  <!-- TODO try including everything -->
                 </resource>
               </resources>
             </configuration>
@@ -243,7 +245,8 @@
               <outputDirectory>${editor.bundle.destination}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>src/frontend/node_modules</directory>
+                  <directory>src/editor/app/dist</directory>
+                  <!-- TODO try including everything -->
                   <include>index.html</include>
                   <include>bundle.js</include>
                   <include>bundle.js.map</include>
