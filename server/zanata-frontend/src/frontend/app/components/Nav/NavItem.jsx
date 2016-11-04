@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react'
 import NavIcon from './NavIcon'
+import { LogoLoader } from '../../components'
 import { merge } from 'lodash'
-import { LogoLoader, Link } from 'zanata-ui'
+import { Link } from 'zanata-ui'
 /**
  * Item of side menu. See Nav.jsx for usage.
  */

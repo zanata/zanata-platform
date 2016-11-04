@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import Loader from '../../components'
+import { Loader } from '../../components'
 
 const LoaderText = ({
   children,
@@ -11,8 +11,11 @@ const LoaderText = ({
     <span className='loader-text'
       componentName='LoaderText' {...props}>
           {loading
-            ? <span> {loadingText} <Loader /> </span>
-            : children}
+            ? <span>
+              {loadingText} <Loader />
+            </span>
+            : children
+          }
     </span>
   )
 }

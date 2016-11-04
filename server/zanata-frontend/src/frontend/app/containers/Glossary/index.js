@@ -4,7 +4,6 @@ import Helmet from 'react-helmet'
 import { isUndefined, size, map } from 'lodash'
 import ReactList from 'react-list'
 import {
-  LoaderText,
   Page,
   ScrollView,
   View,
@@ -13,7 +12,7 @@ import {
   Icon,
   Select
 } from 'zanata-ui'
-import { Notification } from '../../components'
+import { Notification, LoaderText } from '../../components/'
 import {
   glossaryDeleteTerm,
   glossaryResetTerm,
@@ -141,8 +140,7 @@ class Glossary extends Component {
     /* eslint-disable react/jsx-no-bind */
     if (termsLoading) {
       list = (<View theme={loadingContainerTheme}>
-        <LoaderText theme={{ base: { fz: 'Fz(ms1)' } }}
-          size='2' loading />
+        <LoaderText loading loadingText='loading test text...' />
       </View>)
     } else if (!termsLoading && termCount) {
       list = (<ReactList

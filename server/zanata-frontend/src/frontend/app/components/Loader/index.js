@@ -1,11 +1,11 @@
 import React from 'react'
-import Icon from '../../components'
+import { Icon } from '../../components'
 
 const Loader = ({
   ...props
 }) => {
   return (
-    <span
+    <span className='loader'
       componentName='Loader'
       {...props}>
       <Icon name='dot' className='dot dot-first' />
@@ -15,4 +15,7 @@ const Loader = ({
   )
 }
 
+Loader.defaultProps = {
+  className: 'n1'
+}
 export default Loader

@@ -194,37 +194,40 @@ span.svg {
   position: absolute;
 }
 
+.loader {
+  align-items: center;
+  justify-content: center;
+  width:100%;
+}
+
 .dot {
   align-items: center;
   display: inline-block;
-  justify-content: space-between;
-}
-
-.dot-first {
+  justify-content:left;
   animation-duration: 0.9s;
   animation-iteration-count: infinite;
   animation-timing-function: transform .3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   animation-name: bouncedelay;
-  height:27.8%;
   width:27.8%;
+  height:27.8%;
 }
 
 .dot-second {
-  animation-delay: 0.315s;
+  animation-delay: 0.15s;
 }
 
 .dot-third {
   animation-delay: 0.3s;
 }
 
-span.loader-text {
+.loader-text {
   align-items:center;
   display: inline-block;
   justify-content: space-between;
   transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-span.loader-text .loader {
+.loader-text .loader {
   margin-left: 0.375em;
 }
 
@@ -3916,9 +3919,10 @@ button.close {
   padding-left: 2.03125em;
   padding-right: 0.375em;
   width: 50%;
+
 }
 
-.searchViewTheme .textInput:placeholder {
+.searchViewTheme .textInput .placeholder {
   color: hsl(195, 32%, 80%);
 }
 
@@ -3932,7 +3936,9 @@ button.close {
   justify-content: center;
   position: relative;
   width: 1.2rem;
+  height: 1.2rem;
   left: 1.429em;
+  top:0.1em;
 }
 
 .getinvolved .btn-primary {

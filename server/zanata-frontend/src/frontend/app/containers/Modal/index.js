@@ -49,7 +49,7 @@ const ModalOverlay = React.createClass({
               </a></OverlayTrigger> here</p>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.close} className='close'>Close</Button>
+            <Button onClick={this.close}>Close</Button>
           </Modal.Footer>
         </Modal>
       </div>
