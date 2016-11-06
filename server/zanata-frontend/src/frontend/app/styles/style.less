@@ -3670,14 +3670,16 @@ button.list-group-item {
   }
 }
 
+
 .tooltip-inner {
   max-width: 14.286em;
-  padding: 0.214em @padding-base-vertical;
+  padding: @padding-base-vertical;
   color: #fff;
   text-align: center;
   background-color: @brand-primary;
   border-radius: @border-radius-base;
 }
+
 
 .tooltip {
   position: absolute;
@@ -3698,17 +3700,8 @@ button.list-group-item {
   word-spacing: normal;
   word-wrap: normal;
   font-size: 0.857em;
-  opacity: 0;
-  filter: alpha(opacity=0);
 }
 
-.tooltip.top .tooltip-arrow {
-  bottom: 0;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px 5px 0;
-  border-top-color: #000;
-}
 
 .tooltip-arrow {
   position: absolute;
@@ -3716,6 +3709,59 @@ button.list-group-item {
   height: 0;
   border-color: transparent;
   border-style: solid;
+}
+
+.tooltip.top {
+  margin-top: -3px;
+  padding: 5px 0;
+}
+
+.tooltip.right {
+  margin-left: 3px;
+  padding: 0 5px;
+}
+
+.tooltip.left {
+  margin-left: -3px;
+  padding: 0 5px;
+}
+
+.tooltip.bottom {
+  margin-top: 3px;
+  padding: 5px 0;
+}
+
+
+.tooltip.top .tooltip-arrow {
+  bottom:0;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px 5px 0;
+  border-top-color: @brand-primary;
+}
+
+.tooltip.right .tooltip-arrow {
+  top: 50%;
+  left: 0;
+  margin-top: -5px;
+  border-width: 5px 5px 5px 0;
+  border-right-color: @brand-primary;
+}
+
+.tooltip.left .tooltip-arrow {
+  top: 50%;
+  right: 0;
+  margin-top: -5px;
+  border-width: 5px 0 5px 5px;
+  border-left-color: @brand-primary;
+}
+
+.tooltip.bottom .tooltip-arrow {
+  top: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 0 5px 5px;
+  border-bottom-color: @brand-primary;
 }
 
 .well {
