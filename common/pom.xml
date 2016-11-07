@@ -34,7 +34,7 @@
   </repositories>
 
   <properties>
-    <zanata.api.version>4.0.0-SNAPSHOT</zanata.api.version>
+    <zanata.api.version>${project.version}</zanata.api.version>
   </properties>
 
   <build>
