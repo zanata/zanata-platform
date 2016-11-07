@@ -13,6 +13,7 @@
     <relativePath>parent</relativePath>
   </parent>
   <modules>
+    <module>build-tools</module>
     <module>parent</module>
     <module>api</module>
     <module>common</module>
