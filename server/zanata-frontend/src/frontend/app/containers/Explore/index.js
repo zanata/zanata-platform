@@ -2,7 +2,8 @@ import React, { Component, PropTypes } from 'react'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Button, OverlayTrigger, ButtonToolbar, Tooltip } from 'react-bootstrap'
+import { Button, OverlayTrigger, ButtonToolbar, Tooltip }
+  from 'react-bootstrap'
 import TeaserList from './TeaserList'
 import { TextInput, Icon } from '../../components'
 import {
@@ -51,7 +52,6 @@ class Explore extends Component {
       <Tooltip id='tooltip-bottom' role='tooltip'>
       This is some tooltip text</Tooltip>
     )
-
     let content
     if (searchError) {
       content = (<p>Error searching for '{searchText}'.<br />

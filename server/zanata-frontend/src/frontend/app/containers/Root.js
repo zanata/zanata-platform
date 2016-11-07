@@ -7,6 +7,7 @@ import Users from '../containers/Admin/Users'
 import Roles from '../containers/Admin/Roles'
 import Search from '../containers/Admin/Search'
 import Explore from '../containers/Explore'
+import Modal from '../containers/Modal'
 import UserProfile from '../containers/UserProfile'
 import { View } from 'zanata-ui'
 
@@ -22,6 +23,7 @@ export default class Root extends Component {
         <View>
           <Router history={history}>
             <Route component={App} >
+              <Route path='modal' component={Modal} />
               <Route path='explore' component={Explore} />
               <Route path='glossary' component={Glossary} />
               <Route path='users' component={Users} />
