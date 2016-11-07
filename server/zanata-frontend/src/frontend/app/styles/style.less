@@ -204,8 +204,8 @@ span.svg {
   align-items: center;
   display: inline-block;
   justify-content:left;
-  animation-duration: 0.9s;
-  animation-iteration-count: infinite;
+  animation-duration: 0.9s;s
+animation-iteration-count: infinite;
   animation-timing-function: transform .3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   animation-name: bouncedelay;
   width:27.8%;
@@ -224,13 +224,11 @@ span.svg {
   align-items:center;
   display: inline-block;
   justify-content: space-between;
-  transition: all .3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.loader-text .loader {
-  margin-left: 0.375em;
+.loader-text span {
+  vertical-align: middle;
 }
-
 
 :root {
   --LogoLoader-transition-ease: cubic-bezier(.175, .885, .320, 1.275);
@@ -326,6 +324,20 @@ span.svg {
   }
 }
 
+@keyframes bouncedelay {
+
+  0%, 90%, 100% {
+    transform: scale(0, 0);
+    opacity: .1;
+  }
+  40% {
+    transform: scale(0.3, 0.3);
+    opacity: 1;
+  }
+
+}
+
+
 @keyframes pulse {
   0% {
     transform: scale(.6);
@@ -353,6 +365,8 @@ span.svg {
     transform: rotate(15deg) scale(1.1, 1.1);
   }
 }
+
+
 
 article,
 aside,
@@ -3700,6 +3714,7 @@ button.list-group-item {
   word-spacing: normal;
   word-wrap: normal;
   font-size: 0.857em;
+  border-color:@brand-primary;
 }
 
 

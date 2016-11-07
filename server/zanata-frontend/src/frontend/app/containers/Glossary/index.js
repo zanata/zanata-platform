@@ -140,7 +140,7 @@ class Glossary extends Component {
     /* eslint-disable react/jsx-no-bind */
     if (termsLoading) {
       list = (<View theme={loadingContainerTheme}>
-        <LoaderText loading loadingText='loading test text...' />
+        <LoaderText loading loadingText='Loading...' />
       </View>)
     } else if (!termsLoading && termCount) {
       list = (<ReactList

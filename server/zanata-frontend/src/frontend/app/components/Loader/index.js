@@ -5,17 +5,13 @@ const Loader = ({
   ...props
 }) => {
   return (
-    <span className='loader'
-      componentName='Loader'
+    <span componentName='Loader' className='loader'
       {...props}>
-      <Icon name='dot' className='dot dot-first' />
+      <Icon name='dot' className='s2 dot' />
       <Icon name='dot' className='dot dot-second' />
       <Icon name='dot' className='dot dot-third' />
     </span>
   )
 }
 
-Loader.defaultProps = {
-  className: 'n1'
-}
 export default Loader
