@@ -10,5 +10,6 @@ export Link from './Link'
 export Loader from './Loader'
 export LoaderText from './LoaderText'
 export LogoLoader from './LogoLoader'
+export Modal from './Modal'
 export Select from './Select'
 
