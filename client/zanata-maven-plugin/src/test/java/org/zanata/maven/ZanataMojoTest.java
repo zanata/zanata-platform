@@ -37,7 +37,7 @@ public abstract class ZanataMojoTest<M extends Mojo, C extends ZanataCommand>
     protected void applyPomParams(String pomFile) throws Exception {
         URL resource = Thread.currentThread().getContextClassLoader()
                 .getResource("push-test/" + pomFile);
-        File testPom = new File(resource.getFile());
+        File testPom = new File(resource.toURI());
         // This will work with "mvn test", but not with Eclipse's JUnit runner:
         // PushSimpleMojo mojo = (PushSimpleMojo) lookupMojo("push", testPom);
         // assertNotNull(mojo);
