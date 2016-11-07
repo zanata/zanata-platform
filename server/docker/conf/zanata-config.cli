@@ -97,4 +97,10 @@ jms-queue add --queue-address=MailsQueue --durable=true --entries=["java:/jms/qu
 /subsystem=security/security-domain=zanata.openid/authentication=classic:add()
 /subsystem=security/security-domain=zanata.openid/authentication=classic/login-module=ZanataOpenIdLoginModule:add(code="org.zanata.security.OpenIdLoginModule",flag="required")
 
+# ==== mail session ====
+/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=my-smtp:add(host=${env.MAIL_HOST:localhost}, port=${MAIL_PORT:25})
+/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=outbound-socket-binding-ref,value=my-smtp)
+/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=username,value=${env.MAIL_USERNAME: })
+/subsystem=mail/mail-session=default/server=smtp:write-attribute(name=password,value=${env.MAIL_PASSWORD: })
+
 run-batch
