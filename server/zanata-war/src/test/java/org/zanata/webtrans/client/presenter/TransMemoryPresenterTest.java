@@ -3,15 +3,7 @@ package org.zanata.webtrans.client.presenter;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 
 import java.util.ArrayList;
@@ -512,7 +504,7 @@ public class TransMemoryPresenterTest {
         presenter
                 .onUserConfigChanged(UserConfigChangeEvent.DOCUMENT_CONFIG_CHANGE_EVENT);
 
-        verifyNoMoreInteractions(display);
+        Mockito.verifyNoMoreInteractions(display);
     }
 
     /**

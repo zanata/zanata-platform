@@ -26,7 +26,7 @@ import org.apache.commons.lang.StringUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.model.HAccount;

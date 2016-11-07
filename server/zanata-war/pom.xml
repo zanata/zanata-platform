@@ -26,7 +26,6 @@
     <!-- application properties -->
     <env.debug>false</env.debug>
     <war.name>zanata</war.name>
-    <zanata.gwt.module>org.zanata.webtrans.Application</zanata.gwt.module>
     <extra.servlets />
 
     <!-- Default MySql login -->
@@ -143,7 +142,6 @@
         </executions>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.jboss.spec.javax.xml.bind:jboss-jaxb-api_2.2_spec</usedDependency>
             <!-- runtime dep for liquibase logging -->
             <usedDependency>com.mattbertolini:liquibase-slf4j</usedDependency>
             <!-- Used indirectly by org.zanata.arquillian.Deployments -->
@@ -152,8 +150,6 @@
             <usedDependency>com.lowagie:itext</usedDependency>
             <!--used to log sql and parameters when debugging Hibernate -->
             <usedDependency>com.googlecode.log4jdbc:log4jdbc</usedDependency>
-            <!-- required for guava in gwt -->
-            <usedDependency>com.google.guava:guava-gwt</usedDependency>
             <!-- Used for StringUtils lib -->
             <!-- Needed by ui rendering at runtime -->
             <usedDependency>javax.servlet.jsp:jsp-api</usedDependency>
@@ -251,6 +247,15 @@
         <artifactId>maven-war-plugin</artifactId>
         <configuration>
           <warName>${war.name}-${project.version}</warName>
+          <overlays>
+            <overlay>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>gwt-editor</artifactId>
+            </overlay>
+            <overlay>
+              <!-- empty groupId/artifactId represents the current build -->
+            </overlay>
+          </overlays>
           <webResources>
             <resource>
               <directory>src/main/webapp-jboss</directory>
@@ -263,10 +268,7 @@
                 <include>images/**</include>
               </includes>
             </resource>
-            <!-- Include the GWT generated resources -->
-            <resource>
-              <directory>${project.build.directory}/zanata</directory>
-            </resource>
+
           </webResources>
           <archive>
             <manifest>
@@ -292,82 +294,6 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>gwt-maven-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-user</artifactId>
-            <version>${gwt.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-dev</artifactId>
-            <version>${gwt.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>com.google.gwt</groupId>
-            <artifactId>gwt-codeserver</artifactId>
-            <version>${gwt.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>compile</id>
-            <goals>
-              <goal>compile</goal>
-              <!-- compile, generateAsync, test -->
-            </goals>
-            <configuration>
-              <module>${zanata.gwt.module}</module>
-            </configuration>
-          </execution>
-          <execution>
-            <id>clean</id>
-            <phase>clean</phase>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>debug</id>
-            <goals>
-              <goal>debug</goal>
-            </goals>
-            <configuration>
-              <module>${zanata.gwt.module}</module>
-              <gen>${project.build.directory}/gwt-gen</gen>
-              <webappDirectory>
-                ${as.deploy}/zanata.war
-              </webappDirectory>
-              <hostedWebapp>
-                ${as.deploy}/zanata.war
-              </hostedWebapp>
-              <buildOutputDirectory>${project.build.directory}/gwt-gen</buildOutputDirectory>
-              <port>8080</port>
-            </configuration>
-          </execution>
-          <execution>
-            <id>run-codeserver</id>
-            <goals>
-              <goal>run-codeserver</goal>
-            </goals>
-            <configuration>
-              <module>${zanata.gwt.module}</module>
-            </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <runTarget>zanata/webtrans/Application.html</runTarget>
-          <noServer>true</noServer>
-          <!--below is needed if you want to use lombok on gwt code-->
-          <!--<extraJvmArgs>-javaagent:${lombok.lib}=ECJ</extraJvmArgs>-->
-          <!-- GWT needs more memory for more threads, or for Java 8+ -->
-          <extraJvmArgs>-Xmx1024M -Xss1024k</extraJvmArgs>
-        </configuration>
       </plugin>
 
       <plugin>
@@ -491,37 +417,6 @@
         <configuration>
           <!-- MEAD builds must deploy all artifacts, so we run them with -Dallow.deploy.skip=false -->
           <skip>${allow.deploy.skip}</skip>
-        </configuration>
-      </plugin>
-
-      <!--
-        This is to make the GWT plugin happy (http://code.google.com/p/google-web-toolkit/issues/detail?id=4600).
-        Taken from https://issues.sonatype.org/browse/MNGECLIPSE-864?focusedCommentId=148457&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-148457
-        See also https://code.google.com/p/gwt-m2e/
-      -->
-      <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>maven-replacer-plugin</artifactId>
-        <version>1.4.0</version>
-        <executions>
-          <execution>
-            <phase>clean</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <ignoreMissingFile>true</ignoreMissingFile>
-          <file>.classpath</file>
-          <regex>false</regex>
-          <replacements>
-            <replacement>
-              <xpath>/classpath/classpathentry[@path='src/main/resources' and @kind='src' and @excluding='**']/@excluding</xpath>
-              <token>**</token>
-              <value />
-            </replacement>
-          </replacements>
         </configuration>
       </plugin>
 
@@ -722,96 +617,6 @@
                 </goals>
               </execution>
             </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>nogwt</id>
-      <activation>
-        <property>
-          <name>nogwt</name>
-        </property>
-      </activation>
-      <properties>
-        <gwt.compiler.skip>true</gwt.compiler.skip>
-      </properties>
-    </profile>
-
-    <profile>
-      <!-- This profile tells GWT to use an alternative GWT module which has
-        only one permutation, and to compile in draft mode -->
-      <id>chrome</id>
-      <activation>
-        <property>
-          <name>chrome</name>
-        </property>
-      </activation>
-      <properties>
-        <zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <configuration>
-              <draftCompile>true</draftCompile>
-              <style>PRETTY</style>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <!-- This profile tells GWT to use an alternative GWT module which has
-        only one permutation, and to compile in draft mode -->
-      <id>firefox</id>
-      <activation>
-        <property>
-          <name>firefox</name>
-        </property>
-      </activation>
-      <properties>
-        <zanata.gwt.module>org.zanata.webtrans.ApplicationGecko18</zanata.gwt.module>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <configuration>
-              <draftCompile>true</draftCompile>
-              <style>PRETTY</style>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <!-- This profile tells GWT to use an alternative GWT module which has
-              only two permutations, and to compile in draft mode -->
-      <id>chromefirefox</id>
-      <activation>
-        <property>
-          <name>chromefirefox</name>
-        </property>
-      </activation>
-      <properties>
-        <zanata.gwt.module>org.zanata.webtrans.ApplicationChromeFirefox</zanata.gwt.module>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <configuration>
-              <draftCompile>true</draftCompile>
-              <style>PRETTY</style>
-            </configuration>
           </plugin>
         </plugins>
       </build>
@@ -1045,7 +850,6 @@
               </includes>
               <forkCount>1</forkCount>
               <reuseForks>true</reuseForks>
-              <redirectTestOutputToFile>false</redirectTestOutputToFile>
               <runOrder>alphabetical</runOrder>
               <systemPropertyVariables>
                 <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
@@ -1302,14 +1106,6 @@
           <artifactId>servlet-api</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-
-    <!-- For GWT compilation -->
-    <dependency>
-      <groupId>org.zanata</groupId>
-      <artifactId>zanata-common-api</artifactId>
-      <classifier>sources</classifier>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -1736,7 +1532,6 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
-      <version>3.2.1</version>
       <!-- We only need the class DefaultArtifactVersion -->
       <exclusions>
         <exclusion>
@@ -2023,7 +1818,7 @@
     <dependency>
       <groupId>org.jboss.shrinkwrap.resolver</groupId>
       <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
-      <version>2.0.0</version>
+      <version>${shrinkwrap.resolver.version}</version>
       <scope>test</scope>
     </dependency>
 
@@ -2302,21 +2097,55 @@
       </exclusions>
     </dependency>
 
+    <dependency>
+      <groupId>org.scannotation</groupId>
+      <artifactId>scannotation</artifactId>
+      <version>1.0.3</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>javassist</groupId>
+          <artifactId>javassist</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+
+    <!-- for the war overlay -->
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>gwt-editor</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- GWT Dependencies -->
     <!-- NB: GWT and anything which depends on it should go last, to
          avoid overriding Java APIs (especially javax.servlet) -->
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-      <scope>runtime</scope>
+      <groupId>org.zanata</groupId>
+      <artifactId>gwt-editor</artifactId>
+      <classifier>classes</classifier>
+    </dependency>
+
+    <!-- because we want to get gwt-editor from maven reactor when running
+      arquillian test, the transitive dependencies of gwt-editor will not be
+      brought in automatically -->
+    <dependency>
+      <groupId>net.customware.gwt.dispatch</groupId>
+      <artifactId>gwt-dispatch</artifactId>
+      <version>1.0.0</version>
     </dependency>
 
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
+      <groupId>net.customware.gwt.presenter</groupId>
+      <artifactId>gwt-presenter</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>de.novanic.gwteventservice</groupId>
+      <artifactId>gwteventservice</artifactId>
+    </dependency>
     <dependency>
       <groupId>com.google.gwt.gwtmockito</groupId>
       <artifactId>gwtmockito</artifactId>
@@ -2330,83 +2159,6 @@
         <exclusion>
           <groupId>org.mockito</groupId>
           <artifactId>mockito-all</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-
-    <!--to enable guava on gwt-->
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava-gwt</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>com.google.code.findbugs</groupId>
-          <artifactId>jsr305</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>annotations</artifactId>
-    </dependency>
-
-    <dependency>
-      <!-- needed for GWT compilation of JAXB annotated classes -->
-      <groupId>org.jboss.spec.javax.xml.bind</groupId>
-      <artifactId>jboss-jaxb-api_2.2_spec</artifactId>
-      <classifier>sources</classifier>
-      <version>1.0.4.Final</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.gwt.inject</groupId>
-      <artifactId>gin</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>net.customware.gwt.dispatch</groupId>
-      <artifactId>gwt-dispatch</artifactId>
-      <version>1.0.0</version>
-    </dependency>
-
-    <dependency>
-      <groupId>net.customware.gwt.presenter</groupId>
-      <artifactId>gwt-presenter</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.allen-sauer.gwt.log</groupId>
-      <artifactId>gwt-log</artifactId>
-      <version>3.2.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.novanic.gwteventservice</groupId>
-      <artifactId>eventservice</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>de.novanic.gwteventservice</groupId>
-      <artifactId>gwteventservice</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>de.novanic.gwteventservice</groupId>
-      <artifactId>eventservice-rpc</artifactId>
-    </dependency>
-
-    <!-- end of GWT related dependencies -->
-
-    <dependency>
-      <groupId>org.scannotation</groupId>
-      <artifactId>scannotation</artifactId>
-      <version>1.0.3</version>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>javassist</groupId>
-          <artifactId>javassist</artifactId>
         </exclusion>
       </exclusions>
     </dependency>

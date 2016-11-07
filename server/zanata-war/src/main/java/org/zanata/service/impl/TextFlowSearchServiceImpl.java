@@ -41,7 +41,7 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraintToQuery;
-import org.zanata.search.FilterConstraints;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
@@ -135,7 +135,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
     /**
      *
      * @see org.zanata.dao.TextFlowDAO#getTextFlowByDocumentIdWithConstraints(org.zanata.webtrans.shared.model.DocumentId,
-     *      org.zanata.model.HLocale, org.zanata.search.FilterConstraints, int,
+     *      org.zanata.model.HLocale, FilterConstraints, int,
      *      int)
      */
     private List<HTextFlow> findTextFlowsWithDatabaseSearch(String projectSlug,

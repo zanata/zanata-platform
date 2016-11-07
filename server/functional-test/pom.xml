@@ -696,8 +696,6 @@
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
-              <redirectTestOutputToFile>false</redirectTestOutputToFile>
-              <printSummary>true</printSummary>
               <runOrder>alphabetical</runOrder>
               <!--<forkMode>always</forkMode>-->
               <includes>
