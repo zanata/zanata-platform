@@ -11,7 +11,7 @@ const LoaderText = ({
     <span className='loader-text'
       componentName='LoaderText' {...props}>
           {loading
-            ? <span> {loadingText}
+            ? <span>{loadingText}
               <Loader /></span>
             : children
           }

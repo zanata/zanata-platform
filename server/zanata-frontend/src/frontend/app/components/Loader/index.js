@@ -7,7 +7,7 @@ const Loader = ({
   return (
     <span componentName='Loader' className='loader'
       {...props}>
-      <Icon name='dot' className='s2 dot' />
+      <Icon name='dot' className='dot' />
       <Icon name='dot' className='dot dot-second' />
       <Icon name='dot' className='dot dot-third' />
     </span>
