@@ -126,9 +126,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
         this.messages = messages;
         this.history = history;
         this.userOptionsService = userOptionsService;
-        docStatQueueDispatcher =
-                new QueueDispatcher<GetDocumentStats, GetDocumentStatsResult>(
-                        dispatcher);
+        docStatQueueDispatcher = new QueueDispatcher<>(dispatcher);
 
         localeId =
                 userWorkspaceContext.getWorkspaceContext().getWorkspaceId()

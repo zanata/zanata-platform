@@ -79,12 +79,7 @@ public class ForceReviewCommentPresenter extends
                 KeyShortcut.Builder.builder()
                         .addKey(new Keys(Keys.CTRL_KEY, KeyCodes.KEY_ENTER))
                         .setContext(ShortcutContext.RejectConfirmationPopup)
-                        .setHandler(new KeyShortcutEventHandler() {
-                            @Override
-                            public void onKeyShortcut(KeyShortcutEvent event) {
-                                addComment(display.getComment());
-                            }
-                        }).build();
+                        .setHandler(event -> addComment(display.getComment())).build();
         keyShortcutPresenter.register(confirmShortcut);
     }
 

@@ -121,12 +121,7 @@ public class SourceContentsPresenter implements ClickHandler,
     private Optional<HasSelectableSource> tryFindSelectedSourcePanel(
             List<HasSelectableSource> sourcePanelList) {
         return Iterables.tryFind(sourcePanelList,
-                new Predicate<HasSelectableSource>() {
-                    @Override
-                    public boolean apply(HasSelectableSource input) {
-                        return input == selectedSource;
-                    }
-                });
+                input -> input == selectedSource);
     }
 
     public String getSelectedSource() {

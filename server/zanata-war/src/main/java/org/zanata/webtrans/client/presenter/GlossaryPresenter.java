@@ -86,12 +86,7 @@ public class GlossaryPresenter extends WidgetPresenter<GlossaryDisplay>
                 .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
                 .setContext(ShortcutContext.Glossary)
                 .setDescription(messages.searchGlossary())
-                .setHandler(new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        fireSearchEvent();
-                    }
-                }).build());
+                .setHandler(event -> fireSearchEvent()).build());
 
         registerHandler(eventBus.addHandler(TransUnitSelectionEvent.getType(),
                 this));

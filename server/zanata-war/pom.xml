@@ -365,6 +365,8 @@
           <noServer>true</noServer>
           <!--below is needed if you want to use lombok on gwt code-->
           <!--<extraJvmArgs>-javaagent:${lombok.lib}=ECJ</extraJvmArgs>-->
+          <!-- GWT needs more memory for more threads, or for Java 8+ -->
+          <extraJvmArgs>-Xmx1024M -Xss1024k</extraJvmArgs>
         </configuration>
       </plugin>
 
