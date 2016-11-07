@@ -278,8 +278,8 @@ public class TransUnitsTablePresenter extends
                                 updatedTransUnit.getLastModifiedTime(),
                                 updatedTransUnit.getRevisionComment());
                 translationHistoryPresenter.displayEntries(latest,
-                        Collections.<TransHistoryItem> emptyList(),
-                        Collections.<ReviewComment> emptyList());
+                        Collections.emptyList(),
+                        Collections.emptyList());
             }
         }
         targetContentsPresenter.updateRow(updatedTransUnit);

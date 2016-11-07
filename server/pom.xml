@@ -37,9 +37,11 @@
     <weld.version>2.3.2.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
     <groovy.version>2.4.5</groovy.version>
-    <guava.version>19.0</guava.version>
-    <gwt.version>2.7.0</gwt.version>
     <icu4j.version>56.1</icu4j.version>
+    <!-- Only Guava 20+ supports GWT 2.8.
+         See https://github.com/google/guava/issues/1999 -->
+    <guava.version>20.0</guava.version>
+    <gwt.version>2.8.0</gwt.version>
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>5.3.1</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
@@ -77,11 +79,11 @@
     <okapi.version>0.29</okapi.version>
 
     <zanata.assets.version>10.0-SNAPSHOT</zanata.assets.version>
-    <zanata.api.version>4.0.0-SNAPSHOT</zanata.api.version>
+    <zanata.api.version>${project.version}</zanata.api.version>
     <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
     <zanata.api.compat.version>3.9.1</zanata.api.compat.version>
-    <zanata.client.version>4.0.0-SNAPSHOT</zanata.client.version>
-    <zanata.common.version>4.0.0-SNAPSHOT</zanata.common.version>
+    <zanata.client.version>${project.version}</zanata.client.version>
+    <zanata.common.version>${project.version}</zanata.common.version>
 
     <richfaces.version>4.5.17.Final</richfaces.version>
 
@@ -891,6 +893,10 @@
           <exclusion>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -1718,6 +1724,18 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <!-- Needed for GWT snapshots -->
+    <repository>
+      <id>google-maven-snapshot-repository</id>
+      <name>Google Maven Snapshot Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/google-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -1859,6 +1877,7 @@
                 <allowedRepository>jboss-public-repository-group</allowedRepository>
                 <allowedRepository>okapi-cloudbees-release</allowedRepository>
                 <allowedRepository>repo.bodar.com</allowedRepository>
+                <allowedRepository>google-maven-snapshot-repository</allowedRepository>
               </allowedRepositories>
               <allowedPluginRepositories combine.children="append">
                 <allowedPluginRepository>apache.snapshots.https</allowedPluginRepository>

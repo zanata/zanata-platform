@@ -61,72 +61,39 @@ public class EventProcessor implements RemoteEventListener {
 
             // put any additional factories here
             factories.put(TransUnitUpdated.class,
-                    new EventFactory<TransUnitUpdatedEvent>() {
-                        @Override
-                        public TransUnitUpdatedEvent create(
-                                SessionEventData event) {
-                            return new TransUnitUpdatedEvent(
-                                    (HasTransUnitUpdatedData) event);
-                        }
-                    });
+                    (EventFactory<TransUnitUpdatedEvent>) event ->
+                            new TransUnitUpdatedEvent(
+                                    (HasTransUnitUpdatedData) event));
 
             factories.put(ExitWorkspace.class,
-                    new EventFactory<ExitWorkspaceEvent>() {
-                        @Override
-                        public ExitWorkspaceEvent
-                                create(SessionEventData event) {
-                            return new ExitWorkspaceEvent(
-                                    (HasExitWorkspaceData) event);
-                        }
-                    });
+                    (EventFactory<ExitWorkspaceEvent>) event ->
+                            new ExitWorkspaceEvent(
+                                    (HasExitWorkspaceData) event));
 
             factories.put(EnterWorkspace.class,
-                    new EventFactory<EnterWorkspaceEvent>() {
-                        @Override
-                        public EnterWorkspaceEvent
-                                create(SessionEventData event) {
-                            return new EnterWorkspaceEvent(
-                                    (HasEnterWorkspaceData) event);
-                        }
-                    });
+                    (EventFactory<EnterWorkspaceEvent>) event ->
+                            new EnterWorkspaceEvent(
+                                    (HasEnterWorkspaceData) event));
 
             factories.put(WorkspaceContextUpdate.class,
-                    new EventFactory<WorkspaceContextUpdateEvent>() {
-                        @Override
-                        public WorkspaceContextUpdateEvent create(
-                                SessionEventData event) {
-                            return new WorkspaceContextUpdateEvent(
-                                    (HasWorkspaceContextUpdateData) event);
-                        }
-                    });
+                    (EventFactory<WorkspaceContextUpdateEvent>) event ->
+                            new WorkspaceContextUpdateEvent(
+                                    (HasWorkspaceContextUpdateData) event));
 
             factories.put(TransUnitEdit.class,
-                    new EventFactory<TransUnitEditEvent>() {
-                        @Override
-                        public TransUnitEditEvent
-                                create(SessionEventData event) {
-                            return new TransUnitEditEvent(
-                                    (HasTransUnitEditData) event);
-                        }
-                    });
+                    (EventFactory<TransUnitEditEvent>) event ->
+                            new TransUnitEditEvent(
+                                    (HasTransUnitEditData) event));
 
             factories.put(PublishWorkspaceChat.class,
-                    new EventFactory<PublishWorkspaceChatEvent>() {
-                        @Override
-                        public PublishWorkspaceChatEvent create(
-                                SessionEventData event) {
-                            return new PublishWorkspaceChatEvent(
-                                    (HasWorkspaceChatData) event);
-                        }
+                    (EventFactory<PublishWorkspaceChatEvent>) event ->
+                            new PublishWorkspaceChatEvent(
+                                    (HasWorkspaceChatData) event));
+            factories.put(AddReviewComment.class,
+                    (EventFactory<CommentChangedEvent>) event -> {
+                        AddReviewComment comment = (AddReviewComment) event;
+                        return new CommentChangedEvent(comment.getTransUnitId(), comment.getCommentCount());
                     });
-            factories.put(AddReviewComment.class, new EventFactory<CommentChangedEvent>() {
-                @Override
-                public CommentChangedEvent create(SessionEventData event) {
-                    AddReviewComment comment = (AddReviewComment) event;
-                    return new CommentChangedEvent(comment.getTransUnitId(), comment.getCommentCount());
-                }
-            });
-
         }
 
         public GwtEvent<?> getEvent(SessionEventData sessionEventData) {

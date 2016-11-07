@@ -51,14 +51,9 @@ public class WorkspaceUsersPresenter extends
                 .addKey(new Keys(Keys.NO_MODIFIER, KeyCodes.KEY_ENTER))
                 .setContext(ShortcutContext.Chat)
                 .setDescription(messages.publishChatContent())
-                .setHandler(new KeyShortcutEventHandler() {
-                    @Override
-                    public void onKeyShortcut(KeyShortcutEvent event) {
-                        dispatchChatAction(identity.getPerson().getId()
-                                .toString(), display.getChatInputText(),
-                                MESSAGE_TYPE.USER_MSG);
-                    }
-                }).build());
+                .setHandler(event -> dispatchChatAction(identity.getPerson().getId()
+                        .toString(), display.getChatInputText(),
+                        MESSAGE_TYPE.USER_MSG)).build());
 
         registerHandler(eventBus.addHandler(
                 PublishWorkspaceChatEvent.getType(), this));
@@ -79,7 +74,7 @@ public class WorkspaceUsersPresenter extends
             MESSAGE_TYPE messageType) {
         if (!Strings.isNullOrEmpty(msg)) {
             dispatcher.execute(new PublishWorkspaceChatAction(person, msg,
-                    messageType), new NoOpAsyncCallback<NoOpResult>());
+                    messageType), new NoOpAsyncCallback<>());
             display.setChatInputText("");
         }
     }

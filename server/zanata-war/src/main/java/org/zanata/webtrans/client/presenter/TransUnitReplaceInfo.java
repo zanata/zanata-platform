@@ -99,21 +99,16 @@ public class TransUnitReplaceInfo {
 
     public static Comparator<TransUnitReplaceInfo> getRowComparator() {
         if (comparator == null) {
-            comparator = new Comparator<TransUnitReplaceInfo>() {
-
-                @Override
-                public int compare(TransUnitReplaceInfo o1,
-                        TransUnitReplaceInfo o2) {
-                    if (o1 == o2) {
-                        return 0;
-                    }
-                    if (o1 != null) {
-                        return (o2 != null ? Integer.valueOf(
-                                o1.getTransUnit().getRowIndex()).compareTo(
-                                o2.getTransUnit().getRowIndex()) : 1);
-                    }
-                    return -1;
+            comparator = (o1, o2) -> {
+                if (o1 == o2) {
+                    return 0;
                 }
+                if (o1 != null) {
+                    return (o2 != null ? Integer.valueOf(
+                            o1.getTransUnit().getRowIndex()).compareTo(
+                            o2.getTransUnit().getRowIndex()) : 1);
+                }
+                return -1;
             };
         }
         return comparator;
