@@ -9,12 +9,10 @@
   <artifactId>stub-server</artifactId>
   <name>stub-server</name>
 
-  <!-- Should be the same as zanata-client/pom.xml -->
+  <!-- Connection URLs repeated as workaround for https://issues.apache.org/jira/browse/MPIR-234 -->
   <scm>
-    <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
-    <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
-    <url>https://github.com/zanata/zanata-client</url>
-    <tag>HEAD</tag>
+    <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
   </scm>
 
   <properties>

@@ -11,12 +11,17 @@
 
   <!--
     Maven likes to add the artifactIds to these URLs (thus breaking
-    them), so we have to specify these URLs again in each POM.
+    them), so we have to repeat these URLs again in each POM.
+    See https://issues.apache.org/jira/browse/MPIR-234
    -->
   <scm>
-    <connection>scm:git:git://github.com/zanata/zanata-parent.git</connection>
-    <developerConnection>scm:git:git@github.com:zanata/zanata-parent.git</developerConnection>
-    <url>https://github.com/zanata/zanata-parent</url>
+    <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
+    <!-- This url needs to work when Maven adds the artifactId in child modules.
+         (Use mvn help:effective-pom to check the result.)
+         See https://issues.apache.org/jira/browse/MPIR-234?focusedCommentId=14663321&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-14663321
+    -->
+    <url>https://github.com/zanata/zanata-platform/tree/master/</url>
     <tag>HEAD</tag>
   </scm>
 
