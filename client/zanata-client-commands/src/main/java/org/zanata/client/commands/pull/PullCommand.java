@@ -261,7 +261,7 @@ public class PullCommand extends PushPullCommand<PullOptions> {
                     }
 
                     // write the cache
-                    super.storeETagCache();
+                    super.storeETagCache(getOpts().getCacheDir());
                 }
 
             } catch (RuntimeException e) {

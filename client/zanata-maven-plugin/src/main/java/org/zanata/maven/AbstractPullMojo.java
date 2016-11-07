@@ -21,6 +21,8 @@
 
 package org.zanata.maven;
 
+import java.io.File;
+
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.pull.PullCommand;
@@ -82,6 +84,14 @@ public abstract class AbstractPullMojo extends
     private boolean useCache;
 
     /**
+     * The base directory for storing zanata cache files. Default is current
+     * directory.
+     *
+     * @parameter expression="${zanata.cacheDir}" default-value="."
+     */
+    private File cacheDir;
+
+    /**
      * Type of pull to perform from the server: "source" pulls source documents
      * only. "trans" pulls translation documents only. "both" pulls both source
      * and translation documents.
@@ -118,8 +128,8 @@ public abstract class AbstractPullMojo extends
     private int minDocPercent = 0;
 
     /**
-    *
-    */
+     *
+     */
     public AbstractPullMojo() {
         super();
         Preconditions
@@ -191,5 +201,10 @@ public abstract class AbstractPullMojo extends
     @Override
     public int getMinDocPercent() {
         return minDocPercent;
+    }
+
+    @Override
+    public File getCacheDir() {
+        return cacheDir;
     }
 }
