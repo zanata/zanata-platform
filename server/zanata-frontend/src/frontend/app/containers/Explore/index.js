@@ -145,7 +145,7 @@ class Explore extends Component {
             </Button>
             <ButtonToolbar>
               <OverlayTrigger placement='bottom' overlay={tooltip} >
-                <Button bsStyle='default'>Holy guacamole!</Button>
+                <Button bsStyle='default'>Test tooltip</Button>
               </OverlayTrigger>
             </ButtonToolbar>
           </div>

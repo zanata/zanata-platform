@@ -420,13 +420,26 @@ a:focus,
 a:hover {
   text-decoration: none;
   color: @brand-secondary;
-  filter: brightness(.75);
+  filter: brightness(.85);
 }
 
 a:focus {
   outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
+}
+
+#nav {
+  a:active {
+    outline: 0;
+    filter: brightness(1.0);
+  }
+
+  a:focus,
+  a:hover {
+    outline: 0;
+    filter: brightness(1.0);
+  }
 }
 
 abbr[data-original-title],
