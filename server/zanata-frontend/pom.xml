@@ -242,7 +242,8 @@
             <fileset>
               <directory>src</directory>
               <includes>
-                <include>*/node_modules/**</include>
+                <include>**/node_modules/**</include>
+                <include>**/dist/**</include>
               </includes>
               <followSymlinks>false</followSymlinks>
             </fileset>
