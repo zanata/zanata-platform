@@ -18,7 +18,7 @@
 
 ## Installing from source
 
-1. Run `git clone https://github.com/zanata/zanata-server.git`
+1. Run `git clone https://github.com/zanata/zanata-platform.git`
 2. Run `mvn clean package -Dchromefirefox -DskipTests -Dfunctional-test -Pwildfly8`
 3. Wait for the build and test to complete. This takes about 60 mins on our machine. You may want to go grab some coffee.
 4. Run `brew install gradle`

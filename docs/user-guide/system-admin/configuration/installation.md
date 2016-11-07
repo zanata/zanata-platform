@@ -32,7 +32,7 @@ The following packages are optional, but recommended:
 
 You can run Zanata on JBoss EAP 7 or Wildfly. Just download one of the installer archives below for your platform, and then extract it on top of your JBoss or Wildfly installation.
 
-- [Zanata for JBoss EAP or Wildfly](https://github.com/zanata/zanata-server/releases)
+- [Zanata for JBoss EAP or Wildfly](https://github.com/zanata/zanata-platform/releases)
 
 You'll find zip files for each platform, for example: `zanata-<version>-eap-7.zip` or `zanata-<version>-wildfly.zip`
 
