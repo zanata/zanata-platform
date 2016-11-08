@@ -39,6 +39,7 @@ MGMT_PORT=9090
 
 # default mail setting
 MAIL_HOST=localhost
+MAIL_CREDENTIAL_ENV=''
 
 while getopts ":e:p:n:hl:" opt; do
   case ${opt} in
@@ -59,6 +60,7 @@ while getopts ":e:p:n:hl:" opt; do
       fi
       MAIL_USERNAME=${CREDENTIAL[0]}
       MAIL_PASSWORD=${CREDENTIAL[1]}
+      MAIL_CREDENTIAL_ENV=" -e MAIL_USERNAME=\"${MAIL_USERNAME}\" -e MAIL_PASSWORD=\"${MAIL_PASSWORD}\" "
       ;;
     p)
       echo "===== set JBoss port offset to $OPTARG ====="
@@ -82,7 +84,7 @@ while getopts ":e:p:n:hl:" opt; do
     h)
       echo "========   HELP   ========="
       echo "-e <smtp email host>  : smtp mail host"
-      echo "-l <username:password>: smtp username and password separated by colon"
+      echo "-l <username:password>: smtp login: username and password separated by colon"
       echo "-p <offset number>    : set JBoss port offset"
       echo "-n <docker network>   : will connect container to given docker network (default is $DOCKER_NETWORK)"
       echo "-h                    : display help"
@@ -116,7 +118,7 @@ JBOSS_DEPLOYMENT_VOLUME=/opt/jboss/wildfly/standalone/deployments/
 docker run \
     -e JAVA_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata" \
     -e DB_USERNAME=${DB_USERNAME} -e DB_PASSWORD=${DB_PASSWORD} -e DB_SCHEMA=${DB_SCHEMA} -e DB_HOSTNAME=zanatadb\
-    -e MAIL_HOST=${MAIL_HOST} -e MAIL_USERNAME=${MAIL_USERNAME} -e MAIL_PASSWORD=${MAIL_PASSWORD} \
+    -e MAIL_HOST="${MAIL_HOST}" ${MAIL_CREDENTIAL_ENV} \
     --rm --name zanata --net=${DOCKER_NETWORK} \
     -p ${HTTP_PORT}:8080 -p ${DEBUG_PORT}:8787 -p ${MGMT_PORT}:9990 -it \
     -v ${ZANATA_DEPLOYMENTS_DIR}:${JBOSS_DEPLOYMENT_VOLUME} \

@@ -1,6 +1,6 @@
 FROM jboss/wildfly:10.1.0.Final
 
-ENV DB_HOSTNAME=zanatadb MAIL_HOST=localhost MAIL_USERNAME= MAIL_PASSWORD=
+ENV DB_HOSTNAME=zanatadb MAIL_HOST=localhost MAIL_USERNAME=' ' MAIL_PASSWORD=' '
 
 # create mysql module
 USER root
