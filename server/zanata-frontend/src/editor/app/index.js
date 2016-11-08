@@ -94,8 +94,9 @@ ReactDOM.render(
   <IntlProvider locale={locale} formats={formats}>
     <Provider store={store}>
       <Router history={history}>
+        {/* The ** is docId, captured as params.splat by react-router. */}
         <Route
-          path="/project/translate/:projectSlug/v/:versionSlug(/:docId)"
+          path="/project/translate/:projectSlug/v/:versionSlug/**"
           component={Root} />
         <Route path="/*" component={NeedSlugMessage} />
       </Router>
