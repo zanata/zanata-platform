@@ -58,7 +58,7 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.fedorahosted.tennera</groupId>
