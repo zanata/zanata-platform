@@ -79,15 +79,8 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                         "profile/",
                         "profile/view/[^/]*"))
 
-                // Using this instead of "/project/{project}/v/{version}/translate/{document}"
-                // needs discussion to decide whether to settle on this one
                 .addRule(Join.path("/project/translate/{project}/v/{version}/{document}").to("/editor/index.xhtml"))
                 .where("document").matches(".*")
-                // FIXME should also work when a document is not yet selected
-                //       but need to use the anyOf matcher to avoid issues
-//                .addRule(Join.path("/project/translate/{project}/v/{version}")
-//                        .to("/editor/index.xhtml"))
-
 
                 .addRule(Join.path("/").to("/home.xhtml"))
                 .addRule(Join.path("/a/more").to("/a/more.xhtml"))
