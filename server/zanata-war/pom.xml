@@ -293,7 +293,6 @@
       </plugin>
 
       <plugin>
-        <sourceLevel>auto</sourceLevel>
         <!-- server pom has same plugin definition with different includes -->
         <groupId>org.zanata</groupId>
         <configuration>
