@@ -1,0 +1,44 @@
+# See https://help.github.com/articles/dealing-with-line-endings
+
+# This setting tells git to always normalize the files specified. 
+# When committed they are stored with LF, on checkout they are 
+# converted to the OS's native line endings.
+* text
+
+# Explicitly declare text files we want to always be normalized and converted 
+# to native line endings on checkout.
+*.c text
+*.css text
+*.csv text
+*.groovy text
+*.h text
+*.html text
+*.ini text
+*.java text
+*.js text
+*.launch text
+*.po text
+*.pot text
+*.properties text
+*.sh text
+*.sql text
+*.txt text
+*.xhtml text
+*.xml text
+
+# Declare files that will always have CRLF line endings on checkout.
+*.sln text eol=crlf
+
+# Denote all files that are truly binary and should not be modified.
+*.gif binary
+*.jar binary
+*.jpg binary
+*.png binary
+*.idml binary
+*.odt binary
+*.odg binary
+*.odp binary
+*.ods binary
+*.ico binary
+*.eot binary
+*.ttf binary

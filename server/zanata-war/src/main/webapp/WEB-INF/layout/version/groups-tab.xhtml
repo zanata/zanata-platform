@@ -1,0 +1,69 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+  <div class="panel">
+    <div class="panel__header">
+      <h2 class="panel__heading">
+        <i class="i--left i--group"></i>#{msgs['jsf.Groups']}
+      </h2>
+    </div>
+
+    <div class="panel__sub-header js-reveal">
+      <zanata:list-filter status="groupTab-groupsLoader" listId="groups-form"
+        render="groups-form, groupSearchBottom-pager, groupSearchBottom-page-info"
+        id="groupSearch" iconClass="i--group"
+        placeholder="#{msgs['jsf.group.search.placeholder']}"
+        actionBean="#{versionHomeAction.groupFilter}"/>
+    </div>
+
+    <a4j:status name="groupTab-groupsLoader">
+      <f:facet name="start"><zanata:loader/></f:facet>
+    </a4j:status>
+
+    <h:form id="groups-form" styleClass="l--push-bottom-1">
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
+        rendered="#{empty versionHomeAction.groups}">
+        <p class="txt--meta">#{msgs['jsf.NoGroups']}</p>
+        <ui:fragment
+          rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
+          <p>
+            <h:link styleClass="button--primary"
+              value="#{msgs['jsf.group.FindGroup']}"
+              outcome="/version-group/home.xhtml"
+              >
+              <i class="i i--add i__item__icon"></i>
+            </h:link>
+          </p>
+        </ui:fragment>
+      </h:panelGroup>
+
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
+        rendered="#{not empty versionHomeAction.groups and empty versionHomeAction.groupFilter.currentPage}">
+        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
+      </h:panelGroup>
+
+      <ul class="list--slat">
+        <ui:repeat value="#{versionHomeAction.groupFilter.currentPage}"
+          var="group">
+          <li class="l--pad-all-half">
+            <h:link value="#{group.name}"
+              outcome="/version-group/version_group.xhtml">
+              <f:param name="versionGroupSlug" value="#{group.slug}"/>
+            </h:link>
+          </li>
+        </ui:repeat>
+      </ul>
+    </h:form>
+
+    <zanata:list-filter status="groupTab-groupsLoader" listId="groups-form"
+      render="groups-form, groupSearch-pager, groupSearch-page-info"
+      id="groupSearchBottom" iconClass="i--group" bottomPanel="true"
+      placeholder="#{msgs['jsf.group.search.placeholder']}"
+      actionBean="#{versionHomeAction.groupFilter}"/>
+
+  </div>
+</ui:composition>

@@ -1,0 +1,601 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  template="/WEB-INF/template/template.xhtml">
+
+  <f:metadata>
+    <f:viewParam name="projectSlug" value="#{versionHomeAction.projectSlug}" />
+    <f:viewParam name="iterationSlug" value="#{versionHomeAction.versionSlug}" />
+
+    <f:viewParam name="projectSlug" value="#{versionHome.projectSlug}" />
+    <f:viewParam name="iterationSlug" value="#{versionHome.slug}" />
+
+    <f:viewParam name="projectSlug" value="#{copyTransAction.projectSlug}" />
+    <f:viewParam name="iterationSlug" value="#{copyTransAction.versionSlug}" />
+
+    <f:viewParam name="projectSlug" value="#{mergeTransAction.targetProjectSlug}" />
+    <f:viewParam name="iterationSlug" value="#{mergeTransAction.targetVersionSlug}" />
+
+    <f:event type="preRenderView" listener="#{versionHome.init(false)}"/>
+    <f:event type="preRenderView" listener="#{versionHome.validateSuppliedId}"/>
+  </f:metadata>
+
+<ui:define name="page_title">
+  #{msgs['jsf.Version']} -
+  #{versionHomeAction.projectSlug}:#{versionHomeAction.versionSlug}
+</ui:define>
+
+<ui:define name="center_content">
+<script type="text/javascript">
+  //<![CDATA[
+  jQuery(function () {
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/languages/:lang::?query:',
+      function (pre, projectSlug, versionSlug, lang, query) {
+        zanata.tabs.activate(jQuery('#languages_tab'));
+        var clickEle = jQuery('a.' + lang);
+        if (lang && clickEle.length != 0) {
+          updateActiveRow(jQuery('a.' + lang));
+          toggleColumn('languages');
+          reloadLocale(lang)
+        }
+      });
+
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/documents:?query:',
+      function (pre, projectSlug, versionSlug, query) {
+        zanata.tabs.activate(jQuery('#documents_tab'));
+        var docId = encodeURIComponent(query.docId);
+        var clickEle = jQuery('#' + jqSelector(docId)).children().eq(1);
+        if (docId && clickEle.length != 0) {
+          updateActiveRow(clickEle);
+          toggleColumn('documents');
+          reloadDocument(projectSlug, versionSlug, docId)
+        }
+      });
+
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/settings/:setting::?query:',
+      function (pre, projectSlug, versionSlug, setting, query) {
+        zanata.tabs.activate(jQuery('#settings_tab'));
+        setting = setting || 'general';
+        setting =
+          validateTab("#settings-" + setting + '_tab', setting, 'general');
+        zanata.tabs.activate(jQuery('#settings-' + setting + "_tab"))
+      });
+
+
+    crossroads.addRoute(':pre*:/iteration/view/{projectSlug}/{versionSlug}/:section::?query:',
+      function (pre, projectSlug, versionSlug, section) {
+        section = section || 'languages';
+        section = validateTab('#' + section + "_tab", section, "languages");
+        zanata.tabs.activate(jQuery('#' + section + "_tab"))
+      });
+
+    updateStateFromUrl();
+    renderStatistics();
+  });
+  //]]>
+
+  function openUploadSourcePanel(docId) {
+    #{rich:element('uploadSourcePanelHeader')}
+  .
+    innerHTML =
+      '#{msgs['jsf.iteration.files.UpdateDocument']}: ' + docId;
+    #{rich:element('uploadSourceDocId')}
+  .
+    value = docId;
+    #{rich:component('uploadSourcePanel')}
+  .
+    show();
+    checkIfFileSelected();
+
+    setUploadSourceButtonEnabled(false);
+  }
+
+  function hideUploadSourcePanel() {
+    #{rich:component('uploadSourcePanel')}
+  .
+    hide();
+    return false;
+  }
+
+  function checkIfFileSelected() {
+    var isFileSelected = getSourceDocInput().val() != '';
+    setUploadSourceButtonEnabled(isFileSelected);
+    if (isFileSelected) {
+      renderSourceDocTypeSelector(getSourceDocInput().val());
+    }
+  }
+
+  function getSourceDocTypeSelection() {
+    return jQuery('#' + jqSelector('#{rich:clientId('sourceDocumentTypes')}'));
+  }
+
+  function getSourceDocInput() {
+    return jQuery('#' + jqSelector('#{rich:clientId('specificDocFileInput')}'));
+  }
+
+  function getUploadSourceDocButton() {
+    return jQuery('#' + jqSelector('#{rich:clientId('specificDocSubmitUploadButton')}'));
+  }
+
+  function setUploadSourceButtonEnabled(enable) {
+    var uploadButton = getUploadSourceDocButton();
+    uploadButton.prop('disabled', !enable);
+  }
+</script>
+
+  <ui:fragment
+    rendered="#{versionHomeAction.documentRemovalAllowed}">
+    <zanata:confirm-modal id="deleteDocModal"
+      title="#{msgs['jsf.iteration.files.DeleteDocument']}"
+      message="#{msgs['jsf.iteration.files.ConfirmDocDeletion']}"
+      onresponse="onDeleteDocResponse"/>
+
+    <script type="application/javascript">
+      var selectedDoc;
+      function setSelectedDoc(id) {
+        selectedDoc = id;
+      }
+      function onDeleteDocResponse(del) {
+        if (del) {
+          deleteDoc(selectedDoc)
+        } else {
+          selectedDoc = null
+        }
+        zanata.modal.hide('#deleteDocModal');
+      }
+    </script>
+  </ui:fragment>
+
+  <ui:fragment rendered="#{identity.loggedIn}">
+    <script type="application/javascript">
+      function onExportAllTMXResponse(exp) {
+        if (exp) {
+          window.open("#{request.contextPath}/rest/tm/projects/#{versionHomeAction.projectSlug}/iterations/#{versionHomeAction.versionSlug}");
+        }
+        zanata.modal.hide('#exportTMXVersionModal');
+      }
+    </script>
+    <zanata:confirm-modal id="exportTMXVersionModal"
+      title="#{msgs['jsf.iteration.ExportTMXIter']}"
+      message="#{msgs['jsf.ConfirmExportTMXIter']}"
+      onresponse="onExportAllTMXResponse"/>
+  </ui:fragment>
+
+  <h:form styleClass="l--push-bottom-0">
+
+    <a4j:jsFunction name="deleteDoc" action="#{versionHomeAction.deleteDocument(id)}"
+      render="documentsTabDocumentSearch-pager, documentsTabDocumentSearch-page-info, settingsTabDocumentSearch-pager, settingsTabDocumentSearch-page-info, settingsTabDocumentSearchBottom-pager, settingsTabDocumentSearchBottom-page-info"
+      oncomplete="refreshStatistics()">
+      <a4j:param name="val1" assignTo="#{id}" />
+    </a4j:jsFunction>
+
+    <a4j:jsFunction name="reloadLocale" status="languageTab-documentsLoader"
+      onbegin="clearHTML('#{rich:clientId('languages-document_list')}');clearHTML('#{rich:clientId('language-label')}');zanata.loader.activate('#languagesTab-language-label-loader')"
+      oncomplete="zanata.loader.deactivate('#languagesTab-language-label-loader'); zanata.panel.init()"
+      limitRender="true"
+      render="languages-document_list, language-label, languages-export_options, languageTabDocumentSearch-pager, languageTabDocumentSearch-page-info, languageTabDocumentSearchBottom-pager, languageTabDocumentSearchBottom-page-info">
+      <a4j:param name="val1" assignTo="#{versionHomeAction.selectedLocaleId}"/>
+    </a4j:jsFunction>
+
+    <a4j:jsFunction name="reloadDocument" status="documentsTab-languagesLoader"
+      onbegin="clearHTML('#{rich:clientId('documents-language_list')}');clearHTML('#{rich:clientId('document-label')}');zanata.loader.activate('#documentsTab-document-label-loader')"
+      oncomplete="zanata.loader.deactivate('#documentsTab-document-label-loader'); zanata.panel.init()"
+      limitRender="true"
+      render="documents-language_list, document-label, documents-language-size, documentsTabLanguageSearch-pager, documentsTabLanguageSearch-page-info, documentsTabLanguageSearchBottom-pager, documentsTabLanguageSearchBottom-page-info"
+      action="#{versionHomeAction.setSelectedDocumentId(projSlug, verSlug, docId)}">
+      <a4j:param name="val1" assignTo="#{projSlug}"/>
+      <a4j:param name="val2" assignTo="#{verSlug}"/>
+      <a4j:param name="val3" assignTo="#{docId}"/>
+    </a4j:jsFunction>
+
+    <a4j:jsFunction name="refreshStatistics" status="statistic-loader"
+      oncomplete="refreshTooltip('version-page')"
+      limitRender="true"
+      render="overall_statistic, languages-language_form, languages-document_list, documents-document_form, documents-language_list, settings-document_form, languages-size, documents-size, language-label, document-label"
+      action="#{versionHomeAction.resetPageData}"/>
+
+    <a4j:jsFunction name="renderStatistics" status="statistic-loader"
+      oncomplete="refreshTooltip('version-page'); updateStateFromUrl(); zanata.panel.init()"
+      limitRender="true"
+      render="overall_statistic, languages-language_form, languages-document_list, documents-document_form, documents-language_list, settings-document_form"
+      action="#{versionHomeAction.setPageRendered(true)}"/>
+
+    <a4j:jsFunction name="runCopyTrans" action="#{copyTransAction.startCopyTrans}"
+      render="copyTrans, copy-trans-buttons"/>
+
+    <a4j:jsFunction name="cancelCopyTrans" action="#{copyTransAction.cancel}"
+      render="copyTrans, copy-trans-buttons"/>
+
+    <a4j:jsFunction name="cancelCopyVersion" limitRender="true"
+      action="#{versionHomeAction.cancelCopyVersion()}"
+      render="version-info, version-more-actions, version-settings, copyVersion, messages"/>
+
+    <a4j:jsFunction name="cancelMergeTrans" action="#{mergeTransAction.cancel}"
+      render="mergeTrans, version-more-actions, merge-trans-buttons, selection-section"/>
+
+    <a4j:jsFunction name="onCopyTransComplete"
+      action="#{copyTransAction.onComplete()}"
+      limitRender="true"
+      render="copyTrans, copy-trans-buttons"
+      oncomplete="refreshStatistics();"/>
+
+    <a4j:jsFunction name="onCopyVersionComplete"
+      action="#{versionHomeAction.copyVersionHandler.onComplete()}"
+      limitRender="true"
+      render="copyVersion, version-info, version-more-actions, version-settings"
+      oncomplete="refreshStatistics();"/>
+
+    <a4j:jsFunction name="onMergeTransComplete"
+      action="#{mergeTransAction.onComplete()}"
+      limitRender="true"
+      render="mergeTrans, version-more-actions, merge-trans-buttons, selection-section"
+      oncomplete="refreshStatistics();"/>
+
+    <a4j:jsFunction name="renderSourceDocTypeSelector"
+      oncomplete="setUploadSourceButtonEnabled(getSourceDocTypeSelection().val() != '')"
+      limitRender="true"
+      render="source-documentType-selection">
+      <a4j:param name="val1" assignTo="#{selectedSourceDocName}"/>
+    </a4j:jsFunction>
+
+    <a4j:jsFunction name="bindSourceDocumentType"
+      onbegin="setUploadSourceButtonEnabled(getSourceDocTypeSelection().val() != '')"
+      action="#{versionHomeAction.sourceFileUpload.setDocumentType(docType)}">
+      <a4j:param name="val1" assignTo="#{docType}"/>
+    </a4j:jsFunction>
+
+  </h:form>
+
+
+<div class="g" id="version-page">
+<div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
+  <p class="txt--meta l--push-all-0">
+    #{msgs['jsf.Projects']}
+    <i class="i i--arrow-right"></i>
+    <h:link
+      value="#{versionHomeAction.version.project.name}"
+      outcome="/project/project.xhtml">
+      <f:param name="slug" value="#{versionHomeAction.projectSlug}"/>
+    </h:link>
+  </p>
+
+  <h:panelGroup layout="block"  styleClass="l--push-bottom-half" id="version-info">
+    <h1 class="l--push-all-0"><zanata:version-label version="#{versionHome.instance}"/></h1>
+  </h:panelGroup>
+
+  <h:panelGroup layout="block"  styleClass="progress-bar--large__expander l--pad-bottom-half"
+    id="overall_statistic">
+    <p class="d--top l--pad-top-half txt--mini">
+      <ui:fragment rendered="#{versionHomeAction.pageRendered}">
+        <h:outputFormat escape="false"
+          value="#{msgs.format('jsf.TotalSourceContains', versionHomeAction.overallStatistic.total)}"/>
+      </ui:fragment>
+    </p>
+    <ul class="g--tight g--fit">
+      <ui:param name="showApproved" value="#{versionHomeAction.overallStatistic.percentApproved ne 0 || versionHome.instance.requireTranslationReview}"/>
+      <ui:fragment rendered="#{showApproved}">
+        <li class="g__item l--push-bottom-half">
+          <span class="stats txt--state-highlight">
+            <zanata:loader type="loader--small" rendered="#{!versionHomeAction.pageRendered}"/>
+            <h:panelGroup styleClass="stats__figure" rendered="#{versionHomeAction.pageRendered}">
+              #{statisticBar.formatPercentage(versionHomeAction.overallStatistic.percentApproved)}%
+            </h:panelGroup>
+            <span class="stats__unit txt--lowercase">
+              #{msgs['jsf.stats.Approved']}
+            </span>
+          </span>
+        </li>
+      </ui:fragment>
+
+      <li class="g__item l--push-bottom-half">
+        <span
+          class="txt--state-success #{showApproved ? 'stats' : 'stats--large'}">
+          <zanata:loader type="loader--small" rendered="#{!versionHomeAction.pageRendered}"/>
+          <h:panelGroup styleClass="stats__figure" rendered="#{versionHomeAction.pageRendered}">
+            #{statisticBar.formatPercentage(versionHomeAction.overallStatistic.percentTranslated)}%
+          </h:panelGroup>
+          <span class="stats__unit txt--lowercase">
+            #{msgs['jsf.stats.Translated']}
+          </span>
+        </span>
+      </li>
+      <li class="g__item l--push-bottom-half">
+        <span class="#{showApproved ? 'stats' : 'stats--large'}">
+          <zanata:loader type="loader--small" rendered="#{!versionHomeAction.pageRendered}"/>
+          <h:panelGroup styleClass="stats__figure" rendered="#{versionHomeAction.pageRendered}">
+            #{statisticBar.formatHours(versionHomeAction.overallStatistic.remainingHours)}
+          </h:panelGroup>
+          <span class="stats__unit txt--lowercase">
+            #{msgs['jsf.stats.TotalHoursRemaining']}
+          </span>
+        </span>
+      </li>
+    </ul>
+    <zanata:statistic
+      value="#{versionHomeAction.overallStatistic}" type="large" rendered="#{versionHomeAction.pageRendered}"/>
+
+    <a4j:status name="statistic-loader">
+      <f:facet name="start">
+        <zanata:loader type="loader--large"/>
+      </f:facet>
+    </a4j:status>
+  </h:panelGroup>
+  <zanata:version-copy-action-loader id="copyTrans"
+    oncomplete="onCopyTransComplete()"
+    canCancelProcess="#{identity.hasPermission(versionHomeAction.version, 'update')}"
+    header="#{msgs['jsf.CopyTrans']}"
+    actionBean="#{copyTransAction}"
+    cancelTooltip="#{msgs['jsf.CopyTrans.cancel']}"
+    onCancel="cancelCopyTrans()" />
+
+  <zanata:version-copy-action-loader id="copyVersion"
+    oncomplete="onCopyVersionComplete()"
+    canCancelProcess="#{identity.hasPermission(versionHomeAction.version, 'update')}"
+    header="#{msgs['jsf.CopyVersion']}"
+    actionBean="#{versionHomeAction.copyVersionHandler}"
+    onCancel="cancelCopyVersion()"
+    cancelTooltip="#{msgs['jsf.copyVersion.cancel.message']}" />
+
+  <zanata:version-copy-action-loader id="mergeTrans"
+    oncomplete="onMergeTransComplete()"
+    canCancelProcess="#{identity.hasPermission(versionHomeAction.version, 'update')}"
+    header="#{msgs['jsf.iteration.mergeTrans']}"
+    actionBean="#{mergeTransAction}"
+    onCancel="cancelMergeTrans()"
+    cancelTooltip="#{msgs['jsf.iteration.mergeTrans.cancelMerge']}" />
+</div>
+
+<div class="g__item w--1-m w--5-8-l w--2-3">
+  <div class="tabs--lined js-tabs">
+    <ul class="tabs__nav js-tabs-nav">
+      <li>
+        <a id="languages_tab"
+          href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/languages"
+          class="js-url-mod" data-content="#languages">
+          <i class="i i--language"></i>
+          <span class="is-hidden--s i__text--right">
+            #{msgs['jsf.Languages']}
+            <h:panelGroup styleClass="txt--neutral" id="languages-size">
+              #{versionHomeAction.getSupportedLocale().size()}
+            </h:panelGroup>
+          </span>
+        </a>
+      </li>
+      <li>
+        <a id="documents_tab"
+          href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/documents"
+          class="js-url-mod" data-content="#documents">
+          <i class="i i--document"></i>
+          <span class="is-hidden--s i__text--right">
+            #{msgs['jsf.Documents']}
+            <h:panelGroup styleClass="txt--neutral" id="documents-size">
+              #{versionHomeAction.getDocuments().size()}
+            </h:panelGroup>
+          </span>
+        </a>
+      </li>
+      <ui:fragment rendered="#{not empty versionHomeAction.groups}">
+        <li>
+          <a id="groups_tab"
+            href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/groups"
+            class="js-url-mod" data-content="#groups">
+            <i class="i i--group"></i>
+            <span class="is-hidden--s i__text--right">
+              #{msgs['jsf.Groups']}
+              <h:panelGroup styleClass="txt--neutral" id="groups-size">
+                #{versionHomeAction.groups.size()}
+              </h:panelGroup>
+            </span>
+          </a>
+        </li>
+      </ui:fragment>
+      <li class="tab__end">
+        <h:form>
+          <h:panelGroup layout="block"
+            styleClass="dropdown dropdown--tab dropdown--small dropdown--right dropdown--inline js-dropdown"
+            id="version-more-actions">
+            <ui:fragment
+              rendered="#{identity.loggedIn}">
+              <a class="dropdown__toggle js-dropdown__toggle"
+                title="#{msgs['jsf.tooltip.MoreActions']}" href="#">
+                <i class="i i--ellipsis"></i>
+              </a>
+              <ul class="dropdown__content js-dropdown__content"
+                role="content" aria-labelledby="dropdownContent">
+                <ui:fragment rendered="#{not versionHomeAction.isCopyActionsRunning()}">
+                  <ui:fragment
+                    rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
+                    <li>
+                      <a href="javascript:void(0)" class="i__item--right"
+                          data-toggle="modal"
+                          data-target="#copy-trans-modal">
+                        #{msgs['jsf.CopyTrans']}
+                        <i class="i i--translate i__item__icon"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#" class="i__item--right"
+                        title="#{msgs['jsf.iteration.mergeTrans.header']}"
+                        data-toggle="modal"
+                        data-target="#mergeTransDialog">
+                        #{msgs['jsf.iteration.mergeTrans']}
+                        <i class="i i--import i__item__icon"></i>
+                      </a>
+                    </li>
+                  </ui:fragment>
+                  <ui:fragment
+                    rendered="#{identity.hasPermission(versionHome.instance, 'insert')}">
+                    <li>
+                      <h:link outcome="/project/add_iteration.xhtml"
+                        styleClass="i__item--right"
+                        value="#{msgs['jsf.copyVersion.versionPage.label']}">
+                        <f:param name="projectSlug"
+                          value="#{versionHome.projectSlug}"/>
+                        <f:param name="copyFromVersionSlug"
+                          value="#{versionHome.slug}"/>
+                        <i class="i i--add i__item__icon"></i>
+                      </h:link>
+                    </li>
+                  </ui:fragment>
+                </ui:fragment>
+                <li>
+                  <h:commandLink title="#{msgs['jsf.GenerateProjectConfig']}"
+                    styleClass="i__item--right"
+                    action="#{configurationAction.downloadGeneralConfig()}">
+                    <f:param name="projectSlug"
+                      value="#{versionHomeAction.projectSlug}"/>
+                    <f:param name="iterationSlug"
+                      value="#{versionHomeAction.versionSlug}"/>
+                    #{msgs['jsf.ConfigFile']}
+                    <i class="i i--export i__item__icon"></i>
+                  </h:commandLink>
+                </li>
+                <li>
+                  <a href="#" id="exportTMXIterLink" class="i__item--right"
+                    title="#{msgs['jsf.transmemory.Delete.Title']}"
+                    data-toggle="modal" data-target="#exportTMXVersionModal">
+                    #{msgs['jsf.iteration.ExportTMXIter']}<i
+                    class="i i--export i__item__icon"></i>
+                  </a>
+                </li>
+              </ul>
+            </ui:fragment>
+          </h:panelGroup>
+        </h:form>
+      </li>
+      <ui:fragment
+        rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
+        <li class="tab__end">
+          <a id="settings_tab"
+            title="#{msgs['jsf.iteration.tooltip.VersionSettings']}"
+            href="#{request.contextPath}/iteration/view/#{versionHomeAction.projectSlug}/#{versionHomeAction.versionSlug}/settings"
+            class="js-url-mod" data-content="#settings">
+            <span class="is-hidden--s i__text--left">
+              #{msgs['jsf.Settings']}
+            </span>
+            <i class="i i--settings"></i>
+          </a>
+        </li>
+      </ui:fragment>
+    </ul>
+
+    <ul class="tabs__content panels__container js-tabs-content l--push-top-1">
+      <li id="languages">
+        <ui:include
+          src="../WEB-INF/layout/version/languages-tab.xhtml"/>
+      </li>
+
+      <li id="documents">
+        <ui:include
+          src="../WEB-INF/layout/version/documents-tab.xhtml"/>
+      </li>
+
+      <ui:fragment rendered="#{!versionHomeAction.groups.isEmpty()}">
+        <li id="groups">
+          <ui:include
+            src="../WEB-INF/layout/version/groups-tab.xhtml"/>
+        </li>
+      </ui:fragment>
+
+      <ui:fragment
+        rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
+        <li id="settings">
+          <ui:include
+            src="../WEB-INF/layout/version/settings-tab.xhtml"/>
+        </li>
+      </ui:fragment>
+    </ul>
+  </div>
+</div>
+</div>
+
+  <ui:fragment
+    rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
+    <ui:include src="../WEB-INF/layout/version/merge_trans_modal.xhtml"/>
+  </ui:fragment>
+
+<rich:popupPanel id="uploadSourcePanel"
+  moveable="#{true}"
+  resizeable="#{false}"
+  autosized="#{true}">
+  <f:facet name="header">
+    <h:outputText id="uploadSourcePanelHeader"/>
+  </f:facet>
+  <h:form id="uploadSrcForm" >
+    <a4j:jsFunction name="clearSourceUpload" action="#{versionHomeAction.clearSourceFileUpload}"/>
+
+    <rich:fileUpload
+      fileUploadListener="#{versionHomeAction.sourceFileUploaded}"
+      addControlLabel="Select file..." clearAllLabel="Clear all" clearLabel="Clear"
+      uploadLabel="upload" immediateUpload="true" maxFilesQuantity="1" listHeight="60"
+      onclear="clearSourceUpload();setUploadSourceButtonEnabled(false);"
+      onfilesubmit="setUploadSourceButtonEnabled(true);"
+      />
+    <h:inputHidden id="uploadSourceDocId"
+      value="#{versionHomeAction.sourceFileUpload.docId}"/>
+    <br/>
+    <h:selectOneMenu
+      value="#{versionHomeAction.sourceFileUpload.sourceLang}">
+      <f:selectItem itemLabel="#{msgs['jsf.SelectALanguageFromList']}"
+        itemValue="#{null}" noSelectionOption="false" />
+      <f:selectItems
+        value="#{versionHomeAction.availableSourceLocales}" var="locale"
+        itemLabel="#{locale.retrieveNativeName()}" itemLabelEscaped="true"
+        itemValue="#{locale.localeId.toString()}"
+        />
+      <h:outputLabel value="#{msgs['jsf.SourceLanguage']}"/>
+    </h:selectOneMenu>
+
+    <h:panelGroup layout="block"  id="source-documentType-selection">
+      <ui:fragment rendered="#{versionHomeAction.needDocumentTypeSelection(selectedSourceDocName)}">
+        <h:outputLabel styleClass="l--push-top-half">#{msgs['jsf.iteration.documentType.select']}</h:outputLabel>
+        <h:selectOneMenu id="sourceDocumentTypes" onchange="bindSourceDocumentType(jQuery(this).val())"
+          value="#{versionHomeAction.sourceFileUpload.documentType}">
+          <f:selectItem itemLabel="#{msgs['jsf.upload.selectDocType']}" itemValue="#{null}"
+            noSelectionOption="false" />
+          <f:selectItems value="#{versionHomeAction.getDocumentTypes(selectedSourceDocName)}"
+            var="documentType"
+            itemLabel="#{documentType.name()}"
+            itemValue="#{documentType.name()}"/>
+        </h:selectOneMenu>
+      </ui:fragment>
+    </h:panelGroup>
+
+    <rich:collapsiblePanel
+      header="#{msgs['jsf.iteration.files.CustomParams']}"
+      switchType="client" styleClass="l--push-top-half"
+      expanded="false">
+      <h:outputLabel for="adapterParams"
+        value="#{msgs['jsf.iteration.files.CustomParams.description']}"/>
+      <br/>
+      <h:inputTextarea id="adapterParams"
+        value="#{versionHomeAction.sourceFileUpload.adapterParams}"/>
+      <br/>
+      <a target="_blank"
+        href="https://github.com/zanata/zanata-server/wiki/Custom-document-parameters">
+        #{msgs['jsf.iteration.files.CustomParams.linkText']}
+      </a>
+    </rich:collapsiblePanel>
+
+    <div class="txt--align-right l--push-top-quarter">
+      <h:commandButton id="specificDocSubmitUploadButton"
+        value="#{msgs['jsf.Upload']}"
+        action="#{versionHomeAction.uploadSourceFile}"/>
+      <h:commandButton value="#{msgs['jsf.Cancel']}"
+        onclick="return hideUploadSourcePanel();"/>
+    </div>
+  </h:form>
+</rich:popupPanel>
+
+<ui:include src="/WEB-INF/layout/copy_trans_inline_modal.xhtml"/>
+
+</ui:define>
+
+</ui:composition>

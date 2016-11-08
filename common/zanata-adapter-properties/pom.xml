@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>zanata-adapter-properties</artifactId>
+  <name>Zanata Adapter for Java Properties</name>
+  <parent>
+    <groupId>org.zanata</groupId>
+    <artifactId>common</artifactId>
+    <version>4.0.0-SNAPSHOT</version>
+  </parent>
+  <packaging>jar</packaging>
+
+  <!-- Should be the same as zanata-common/pom.xml -->
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata-common.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-common.git</developerConnection>
+    <url>https://github.com/zanata/zanata-common</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.fedorahosted.openprops</groupId>
+      <artifactId>openprops</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-common-util</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+    </dependency>
+
+  </dependencies>
+</project>

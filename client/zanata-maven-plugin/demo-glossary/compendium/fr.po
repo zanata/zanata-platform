@@ -1,0 +1,3564 @@
+# PO-Compendium fr
+# Copyright (C) 2003 Red Hat, Inc.
+# Bernd Groh <bgroh@redhat.com>, 2003
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: fr\n"
+"POT-Creation-Date: 2003-06-03 11:43+1000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: French <fr@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# asimons from 172.16.5.126
+#: asimons from
+msgid "filesystem"
+msgstr "système de fichiers"
+
+# asimons from 172.16.5.126
+#: asimons from
+msgid "device"
+msgstr "périphérique"
+
+# asimons from 172.16.5.126
+#: asimons from
+msgid "configuration file"
+msgstr "fichier de configuration"
+
+# #-#-#-#-#  fr.po (fr)  #-#-#-#-#
+# asimons from 172.16.5.126
+# ~ asimons@172.16.45.8
+# ~ msgid "hacker"
+# ~ msgstr "pirate"
+# asimons from 172.16.5.126
+msgid "breaker"
+msgstr ""
+"craqueur\n"
+"craqueur, digipirate (?), casseur"
+#: asimons from jpaubry@172.16.5.51
+msgid "cracker"
+msgstr "fichier de configuration"
+
+# asimons from 172.16.5.126
+# ~ asimons@172.16.5.126
+# ~ msgid "command"
+# ~ msgstr "commande"
+# asimons from 172.16.5.126
+# ~ asimons@172.16.5.126
+# ~ msgid "commands"
+# ~ msgstr "commandes"
+# asimons from 172.16.5.126
+# ~ asimons@172.16.5.126
+# ~ msgid "command line"
+# ~ msgstr "ligne de commande"
+#: asimons@172.16.5.126
+msgid "return packet"
+msgstr "paquet retour"
+
+#: asimons@172.16.5.126
+msgid "VLSM"
+msgstr "masque de sous-réseau à longueur variable"
+
+msgid ""
+"to states\n"
+"can remember in a state table, the connections "
+"course"
+msgstr ""
+"à états\n"
+"possibilité de garder en mémoire dans une table d'états, les connexions en "
+"cours"
+#: asimons@172.16.5.126 jpaubry@172.16.5.51
+msgid "stateful"
+msgstr "masque de sous-réseau à longueur variable"
+
+#: asimons@172.16.5.126
+msgid "well behaved"
+msgstr "à comportement acceptable"
+
+#: asimons@172.16.5.126
+msgid "link keys"
+msgstr "clés de liens"
+
+#: asimons@172.16.5.126
+msgid "side-holed paper"
+msgstr "papier listing"
+
+#: asimons@172.16.5.126
+msgid "system profile"
+msgstr "profil de système"
+
+# asimons@172.16.5.126
+#: asimons@172.16.44.75
+msgid "striping"
+msgstr "agrégat par bandes"
+
+#: asimons@172.16.5.126
+msgid "striped"
+msgstr "par bandes"
+
+#: asimons@172.16.5.126
+msgid "to stripe"
+msgstr "répartir par bandes"
+
+#: asimons@172.16.5.126
+msgid "stripe"
+msgstr "bande"
+
+#: asimons@172.16.5.126
+msgid "media card"
+msgstr "carte mémoire"
+
+#: asimons@172.16.5.126
+msgid "bastion host"
+msgstr "hôte bastion"
+
+# asimons@172.16.5.126
+# ~ jpaubry@172.16.44.115
+# ~ msgid "backwards compatibility"
+# ~ msgstr "compatibilité ascendante"
+#: jpaubry@172.16.5.51
+msgid "switch"
+msgstr "commutateur"
+
+# to double check
+#: jpaubry@172.16.5.51
+msgid "bonding"
+msgstr "liaison pas agrégat"
+
+#: jpaubry@172.16.5.51
+msgid "disk storage"
+msgstr "stockage disque"
+
+#: jpaubry@172.16.5.51
+msgid "shadow partition"
+msgstr "partition masquée"
+
+#: jpaubry@172.16.5.51
+msgid "shadow password"
+msgstr "mot de passe masqué"
+
+#: jpaubry@172.16.5.51
+msgid "storage enclosure"
+msgstr "baie de stockage"
+
+#: jpaubry@172.16.5.51
+msgid "RAID - mirroring"
+msgstr "dispositif RAID - mode miroir"
+
+#: jpaubry@172.16.5.51
+msgid "RAID - parity"
+msgstr "dispositif RAID - parité répartie"
+
+#: jpaubry@172.16.5.51
+msgid "RAID 0 - stripping"
+msgstr "RAID 0 - agrégat par tranches"
+
+#: jpaubry@172.16.5.51
+msgid "cluster software"
+msgstr "logiciel de cluster"
+
+#: jpaubry@172.16.5.51
+msgid "single-initiator SCSI bus"
+msgstr "bus SCSI initiateur-simple"
+
+#: jpaubry@172.16.5.51
+msgid "checksums"
+msgstr "sommes de contrôle "
+
+# jpaubry@172.16.5.51
+#: asimons@172.16.5.126
+msgid "raw devices"
+msgstr "périphériques bruts"
+
+#: jpaubry@172.16.5.51
+msgid "block devices"
+msgstr "périphériques blocs"
+
+#: jpaubry@172.16.5.51
+msgid "batch system"
+msgstr "système de traitement par lots"
+
+#: jpaubry@172.16.5.51
+msgid "queue"
+msgstr "file d'attente"
+
+#: jpaubry@172.16.5.51
+msgid "bash command shell"
+msgstr "shell de commande bash"
+
+# type de partition
+#: asimons@172.16.5.126
+msgid "Apple bootstrap"
+msgstr "Apple bootstrap"
+
+# Classless Inter-Domain Routing
+#: asimons@172.16.5.126
+msgid "CIDR"
+msgstr "routage inter-domaines sans classes"
+
+# logiciels piratés
+# asimons@172.16.5.126
+#: asimons@172.16.45.16
+msgid "warez"
+msgstr "warez, pirate"
+
+#: jpaubry@172.16.5.51
+msgid "transfer switch"
+msgstr "commutateur de transfert "
+
+#: jpaubry@172.16.5.51
+msgid "fiscal year"
+msgstr "exercice fiscal"
+
+#: jpaubry@172.16.5.51
+msgid "differential backup"
+msgstr "sauvegarde différentielle"
+
+#: jpaubry@172.16.5.51
+msgid "incremental backup"
+msgstr "sauvegarde incrémentielle"
+
+#: jpaubry@172.16.5.51
+msgid "full backup"
+msgstr "sauvegarde complète"
+
+#: jpaubry@172.16.5.51
+msgid "removable media"
+msgstr "supports amovibles"
+
+# asimons@172.16.5.126
+#: jpaubry@172.16.5.51
+msgid "slot"
+msgstr "slot, logement"
+
+#: asimons@172.16.5.126
+msgid "power switch"
+msgstr "interrupteur"
+
+#: asimons@172.16.5.126
+msgid "host bus adapter"
+msgstr "adaptateur bus hôte"
+
+#: asimons@172.16.5.126
+msgid "single-initiator"
+msgstr "initiateur-simple"
+
+#: asimons@172.16.5.126
+msgid "requirements"
+msgstr "besoins"
+
+#: jpaubry@172.16.5.51
+msgid "disaster recovery plan"
+msgstr "plan de récupération post-catastrophe"
+
+#: asimons@172.16.5.126
+msgid "Accounts Payable"
+msgstr "comptes de l'Actif"
+
+#: asimons@172.16.5.126
+msgid "Accounts Receivable "
+msgstr "comptes du Passif"
+
+#: asimons@172.16.5.126
+msgid "tradeshow"
+msgstr "salon"
+
+#: asimons@172.16.5.126
+msgid "time specification system"
+msgstr "système de spécification temporel"
+
+#: jpaubry@172.16.5.51
+msgid "knowledge base"
+msgstr "base de connaissances"
+
+#: asimons@172.16.5.126
+msgid "hand-code"
+msgstr "codifier"
+
+#: asimons@172.16.5.126
+msgid "email client"
+msgstr "client de messagerie"
+
+# asimons@172.16.5.126
+#: asimons@172.16.5.126
+msgid "Pluggable Authentication Modules"
+msgstr "Modules d'authentification enfichables"
+
+#: asimons@172.16.5.126
+msgid "intrusion detection system"
+msgstr "système de détection d'intrusions"
+
+# ou ACL
+#: asimons@172.16.5.126
+msgid "access control list"
+msgstr "liste de contrôle d'accès"
+
+# ou access control list
+# asimons@172.16.5.126
+#: asimons@172.16.5.126
+msgid "ACL"
+msgstr "liste de contrôle d'accès (LCA)"
+
+# ou Pluggable Authentication Modules
+# asimons@172.16.5.126
+#: jpaubry@172.16.5.106
+msgid "PAM"
+msgstr "Modules d'authentification enfichables, à brancher"
+
+# ou Intrusion Detection Sytem
+#: asimons@172.16.5.126
+msgid "ISD"
+msgstr "système de détection d'intrusions"
+
+#: asimons@172.16.5.126
+msgid "tutorial"
+msgstr "tutoriel"
+
+#: jpaubry@172.16.5.51
+msgid "to pipe"
+msgstr "tuber"
+
+#: asimons@172.16.5.126
+msgid "homepage"
+msgstr "page d'accueil"
+
+#: jpaubry@172.16.5.51
+msgid "holding disk"
+msgstr "disque intermédiaire"
+
+#: asimons@172.16.5.126
+msgid "registering"
+msgstr "enregistrement"
+
+# asimons@172.16.5.126
+# jpaubry@172.16.44.107
+msgid "allocation key, the key binding table, keymap "
+msgstr ""
+"allocation des touches, assignation des touches, table de mappe de clavier "
+
+#: jpaubry@172.16.44.107
+msgid "keymap, keyboard map"
+msgstr "enregistrement"
+
+#: jpaubry@172.16.5.51
+msgid "mass-storage device"
+msgstr "périphérique de stockage de masse"
+
+#: jpaubry@172.16.5.51
+msgid "random access"
+msgstr "accès aléatoire"
+
+#: jpaubry@172.16.5.51
+msgid "disk platter"
+msgstr "plateau de disque"
+
+#: jpaubry@172.16.5.51
+msgid "acces arm"
+msgstr "bras d'accès"
+
+# CD-ROM
+#: asimons@172.16.5.126
+msgid "recordable / rewriteable"
+msgstr "enregistrable / réinscriptible"
+
+#: asimons@172.16.5.126
+msgid "touchpad"
+msgstr "pavé tactile"
+
+#: asimons@172.16.5.126
+msgid "dual boot"
+msgstr "double démarrage"
+
+#: asimons@172.16.5.126
+msgid "chain-loading"
+msgstr "chargement en chaîne"
+
+# asimons@172.16.5.126
+#: asimons@172.16.44.75
+msgid "MBR"
+msgstr "bloc de démarrage principal / secteur de partition principal"
+
+#: asimons@172.16.5.126
+msgid "Master Boot Record"
+msgstr "secteur de partition principal"
+
+#: jpaubry@172.16.5.51
+msgid "surface platter"
+msgstr "face de plateau"
+
+# asimons@172.16.5.126
+#: jpaubry@172.16.44.107
+msgid "chipset"
+msgstr "jeu de puces, jeu de composants intégré "
+
+#: jpaubry@172.16.5.51
+msgid "attachment point "
+msgstr "point d'interconnexion"
+
+# Initial Program Loader
+#: asimons@172.16.5.126
+msgid "IPL"
+msgstr "chargement du programme initial"
+
+# IPL
+#: asimons@172.16.5.126
+msgid "Initial Program Load"
+msgstr "chargement du programme initial"
+
+#: asimons@172.16.5.126
+msgid "driver diskette"
+msgstr "disquette de pilotes"
+
+#: jpaubry@172.16.5.51
+msgid "bus topology"
+msgstr "topologie en bus"
+
+#: jpaubry@172.16.5.51
+msgid "jumper blocks"
+msgstr "blocs de cavaliers"
+
+# sommet et bas de l'impulsion
+#: jpaubry@172.16.5.51
+msgid "clock pulse"
+msgstr "impulsion d'horloge"
+
+# jpaubry@172.16.5.51
+#: asimons@172.16.44.75
+msgid "throughput"
+msgstr "débit / transfert"
+
+#: jpaubry@172.16.5.51
+msgid "throughput rate"
+msgstr "cadence"
+
+#: asimons@172.16.5.126
+msgid "load-balancing cluster"
+msgstr "cluster de répartition de charge"
+
+#: asimons@172.16.5.126
+msgid "heartbeat"
+msgstr "pulsations"
+
+#: asimons@172.16.5.126
+msgid "ARP spoofing"
+msgstr "usurpation d'adresse"
+
+#: asimons@172.16.5.126
+msgid "backup router"
+msgstr "routeur de secours"
+
+#: jpaubry@172.16.5.51
+msgid "electrical noise"
+msgstr "interférence"
+
+#: asimons@172.16.5.126
+msgid "NAT"
+msgstr "traduction d'adresses réseau"
+
+#: asimons@172.16.5.126
+msgid "Network Address Translation"
+msgstr "traduction d'adresses réseau"
+
+#: asimons@172.16.5.126
+msgid "masquerading"
+msgstr "masquage"
+
+#: asimons@172.16.5.126
+msgid "bottleneck"
+msgstr "goulot d'étranglement"
+
+#: asimons@172.16.5.126
+msgid "firewall marks"
+msgstr "balises pare-feu"
+
+#: asimons@172.16.5.126
+msgid "plain text"
+msgstr "texte clair"
+
+#: asimons@172.16.5.126
+msgid "watchdog timer"
+msgstr "horloge chien-de-garde"
+
+# Direct Access Storage Device
+#: asimons@172.16.5.126
+msgid "DASD"
+msgstr "périphérique de stockage à accès direct"
+
+# DASD
+#: asimons@172.16.5.126
+msgid "Direct Access Storage Device"
+msgstr "périphérique de stockage à accès direct"
+
+#: asimons@172.16.5.126
+msgid "vary on"
+msgstr "activer"
+
+#: asimons@172.16.5.126
+msgid "vary off"
+msgstr "désactiver"
+
+# verbe
+#: asimons@172.16.5.126
+msgid "to IPL"
+msgstr "amorcer"
+
+#: asimons@172.16.5.126
+msgid "netmask"
+msgstr "masque réseau"
+
+#: asimons@172.16.5.126
+msgid "toolkit"
+msgstr "boîte à outils"
+
+#: jpaubry@172.16.5.51
+msgid "slice"
+msgstr "tranche"
+
+#: jpaubry@172.16.5.51
+msgid "full-stroke seek time"
+msgstr "temps d'accès complet"
+
+#: asimons@172.16.5.126
+msgid "NFS export"
+msgstr "éléments exports NFS"
+
+# #-#-#-#-#  fr.po (fr)  #-#-#-#-#
+# asimons@172.16.5.126
+msgid ""
+"multicast\n"
+"multicast, address multiple interface"
+msgstr ""
+"multi-diffusion\n"
+"multicast, adresse à interface multiples"
+
+#: asimons@172.16.5.126 jpaubry@172.16.5.106
+msgid "multicast"
+msgstr "éléments exports NFS"
+
+#: asimons@172.16.5.126
+msgid "power controller"
+msgstr "contrôleur d'alimentation"
+
+#: jpaubry@172.16.5.51
+msgid "generic identifier"
+msgstr "identifiant générique"
+
+# asimons@172.16.5.126
+#: jpaubry@172.16.44.107
+msgid "tiebreaker"
+msgstr "décisive, disjoncteur"
+
+#: jpaubry@172.16.5.51
+msgid "network-accessible storage"
+msgstr "stockage en réseau "
+
+#: jpaubry@172.16.5.51
+msgid "chunk (RAID)"
+msgstr "morceau"
+
+#: asimons@172.16.5.126
+msgid "TCP wrapper"
+msgstr "enveloppeur TCP"
+
+#: asimons@172.16.5.126
+msgid "hosts access file"
+msgstr "fichier d'accès d'hôtes"
+
+# asimons@172.16.5.126
+# asimons@172.16.45.5
+# asimons@172.16.45.10
+#: asimons@172.16.45.10
+msgid "lookup"
+msgstr "consultation"
+
+msgid ""
+"stamp\n"
+"timestamp"
+msgstr ""
+"estampille\n"
+"horodatage"
+
+#: asimons@172.16.5.126 jpaubry@172.16.5.51
+msgid "timestamp"
+msgstr "consultation"
+
+# IXFR
+#: asimons@172.16.5.126
+msgid "Incremental Zone Transfers"
+msgstr "Transferts de zone incrémentaux"
+
+# Incremental Zone Transfers
+#: asimons@172.16.5.126
+msgid "IXFR"
+msgstr "Transferts de zone incrémentaux"
+
+#: asimons@172.16.5.126
+msgid "lightweight resolver daemon"
+msgstr "démon du résolveur léger"
+
+#: asimons@172.16.5.126
+msgid "channel bonding interface"
+msgstr "interface de liaison de canaux"
+
+# asimons@172.16.5.126
+# asimons@172.16.5.126
+#: asimons@10.64.68.4
+msgid "dialup connection"
+msgstr "connexion par modem"
+
+# asimons@172.16.5.126
+#: asimons@172.16.5.126
+msgid "baud rate"
+msgstr "débit en bauds"
+
+# asimons@172.16.5.126
+#: asimons@172.16.5.126
+msgid "raw character devices"
+msgstr "périphériques bruts"
+
+#: jpaubry@172.16.5.51
+msgid "rotating media"
+msgstr "support rotatif"
+
+#: jpaubry@172.16.5.51
+msgid "storage grouping"
+msgstr "groupement du stockage"
+
+#: jpaubry@172.16.5.51
+msgid "storage pool"
+msgstr "groupement de stockage"
+
+# APM
+#: asimons@172.16.5.126
+msgid "Advanced Power Management"
+msgstr "gestion de la consommation d'énergie"
+
+# Advanced Power Management
+#: asimons@172.16.5.126
+msgid "APM"
+msgstr "gestion de la consommation d'énergie"
+
+#: asimons@172.16.5.126
+msgid "standby mode"
+msgstr "mode veille"
+
+#: asimons@172.16.5.126
+msgid "System Request Key"
+msgstr "touche d'interrogation système"
+
+#: asimons@172.16.5.126
+msgid "snapshot"
+msgstr "instantané"
+
+msgid ""
+msgstr ""
+"dépassement de capacité de la mémoire tampon\n"
+"débordement de tampon"
+
+#: asimons@172.16.5.126 asimons@172.16.5.107
+msgid "buffer overflow"
+msgstr "instantané"
+
+#: asimons@172.16.5.126
+msgid "kernel panic"
+msgstr "panique du noyau"
+
+#: asimons@172.16.5.126
+msgid "denial of service attack"
+msgstr "attaque par déni de service"
+
+#: asimons@172.16.5.126
+msgid "line discipline"
+msgstr "procédure de transmission"
+
+# jpaubry@172.16.5.51
+#: asimons@172.16.5.107
+msgid "RAID array"
+msgstr "matrice RAID"
+
+# asimons@172.16.5.126
+# ~ asimons@172.16.5.107
+# ~ msgid "patch"
+# ~ msgstr "correctif"
+#: asimons@172.16.5.126
+msgid "pulldown menu"
+msgstr "menu déroulant"
+
+#: asimons@172.16.5.126
+msgid "FAQ"
+msgstr "Forum Aux Questions"
+
+#: asimons@172.16.5.126
+msgid "lease database"
+msgstr "base de données d'attribution"
+
+# Time To Live
+#: asimons@172.16.5.126
+msgid "TTL"
+msgstr "durée de vie"
+
+#: asimons@172.16.5.126
+msgid "reverse master zone"
+msgstr "zone maître inverse"
+
+#: asimons@172.16.5.126
+msgid "color depth"
+msgstr "profondeur de couleurs"
+
+#: asimons@172.16.5.126 jpaubry@172.16.5.51
+msgid "core dumps"
+msgstr "vidage de la mémoire"
+
+#: asimons@172.16.5.126
+msgid "power plug strip"
+msgstr "boîtier multi-prises"
+
+#: jpaubry@172.16.5.51
+msgid "naming convention"
+msgstr "convention de nommage (des périphériques)"
+
+#: asimons@172.16.5.126
+msgid "crossover cable"
+msgstr "cable croisé"
+
+#: asimons@172.16.5.126
+msgid "to power cycle"
+msgstr "prendre en relais"
+
+#: asimons@172.16.5.126
+msgid "CIPE-enabled"
+msgstr "activé par CIPE"
+
+#: asimons@172.16.5.126
+msgid "network driver"
+msgstr "pilote réseau"
+
+#: asimons@172.16.5.126
+msgid "seamless"
+msgstr "continu"
+
+#: jpaubry@172.16.5.51
+msgid "nested directories"
+msgstr "répertoires imbriqués"
+
+# CERT
+#: asimons@172.16.5.126
+msgid "Computer Emergency Response Team"
+msgstr "équipe de réponse aux urgences informatiques"
+
+#: asimons@172.16.5.126
+msgid "CERT"
+msgstr "équipe de réponse aux urgences informatiques"
+
+msgid ""
+msgstr ""
+"jeu de caractères, casse"
+#: jpaubry@172.16.5.51
+msgid "character set"
+msgstr "équipe de réponse aux urgences informatiques"
+
+#: jpaubry@172.16.5.51
+msgid "interchange"
+msgstr "interéchange"
+
+#: asimons@172.16.5.126
+msgid "forensics"
+msgstr "médico-légales"
+
+#: asimons@172.16.5.126
+msgid "trojan"
+msgstr "cheval de Troie"
+
+#: asimons@172.16.5.126
+msgid "mainframe"
+msgstr "ordinateur principal / central"
+
+#: asimons@172.16.5.126
+msgid "ring topology"
+msgstr "topologie en anneau"
+
+#: asimons@172.16.5.126
+msgid "star topology"
+msgstr "topologie en étoile"
+
+#: asimons@172.16.5.126
+msgid "token"
+msgstr "jeton"
+
+#: asimons@172.16.5.126
+msgid "Token ring"
+msgstr "anneau à jeton"
+
+#: asimons@172.16.5.126
+msgid "Linear Bus Topology"
+msgstr "Topologie de bus linéaire"
+
+#: asimons@172.16.5.126
+msgid "backbone"
+msgstr "dorsale"
+
+# Carrier Sensing Multiple Access and Collision Detection
+#: asimons@172.16.5.126
+msgid "CSMA/CD"
+msgstr "accès multiple avec détection de porteuse et détection de collision"
+
+# CSMA/CD
+#: asimons@172.16.5.126
+msgid "Carrier Sensing Multiple Access and Collision Detection "
+msgstr "accès multiple avec détection de porteuse et détection de collision"
+
+# Personal Digital Assistant
+#: asimons@172.16.5.126
+msgid "PDA"
+msgstr "assistant personnel"
+
+# PDA
+#: asimons@172.16.5.126
+msgid "Personal Digital Assistant"
+msgstr "assistant personnel"
+
+#: jpaubry@172.16.5.51
+msgid "diskette drive"
+msgstr "unité de disquette"
+
+#: jpaubry@172.16.5.51
+msgid "dump frequency"
+msgstr "fréquence de vidage"
+
+#: asimons@172.16.5.126
+msgid "broadband"
+msgstr "large bande"
+
+#: asimons@172.16.5.126
+msgid "scalability"
+msgstr "modulabilité"
+
+#: asimons@172.16.5.126
+msgid "DMZ"
+msgstr "zone démilitarisée"
+
+#: asimons@172.16.5.126
+msgid "sniffing"
+msgstr "reniflage"
+
+#: asimons@172.16.5.126
+msgid "AP"
+msgstr "arbre"
+
+#: jpaubry@172.16.5.51 jpaubry@172.16.44.107
+msgid "bad block"
+msgstr "bloc défectueux"
+
+#: asimons@172.16.5.126
+msgid "hardening"
+msgstr "renforcement"
+
+#: asimons@172.16.5.126
+msgid "IP spoofing"
+msgstr "usurpation d'identité"
+
+#: asimons@172.16.5.126
+msgid "pitfall"
+msgstr "piège"
+
+# asimons@172.16.5.126
+# asimons@172.16.5.107
+# ~ asimons@172.16.5.107
+# ~ msgid "patch"
+# ~ msgstr "correctif"
+#: asimons@172.16.5.126
+msgid "digital certificate"
+msgstr "certificat numérique"
+
+#: asimons@172.16.5.126
+msgid "metadata"
+msgstr "métadonnées"
+
+#: asimons@172.16.5.126
+msgid "uploading"
+msgstr "télécharger"
+
+#: asimons@172.16.5.126
+msgid "virtual private network"
+msgstr "réseau privé virtuel"
+
+#: asimons@172.16.5.126
+msgid "voice mail"
+msgstr "messagerie vocale"
+
+#: asimons@172.16.5.126
+msgid "wiretapping"
+msgstr "écoute téléphonique"
+
+#: asimons@172.16.5.126
+msgid "router"
+msgstr "routeur"
+
+#: asimons@172.16.5.126
+msgid "scheduling"
+msgstr "ordonnancement"
+
+#: asimons@172.16.5.126
+msgid "parity check"
+msgstr "contrôle de parité"
+
+#: asimons@172.16.5.126
+msgid "quality assurance"
+msgstr "assurance qualité"
+
+# asimons@172.16.5.126
+# ~ asimons@172.16.44.75
+# ~ msgid "queue"
+# ~ msgstr "file d'attente"
+#: asimons@172.16.5.126
+msgid "real-time processing"
+msgstr "traitement en temps réel"
+
+#: asimons@172.16.5.126
+msgid "record"
+msgstr "enregistrement"
+
+# asimons@172.16.5.126
+# ~ jpaubry@172.16.5.51
+# ~ msgid "repository"
+# ~ msgstr "logithèque"
+#: asimons@172.16.5.126
+msgid "node"
+msgstr "noeud"
+
+#: asimons@172.16.5.126
+msgid "outsourcing"
+msgstr "sous-traitance"
+
+#: asimons@172.16.5.126
+msgid "packet switching"
+msgstr "commutation de paquets"
+
+#: asimons@172.16.5.126 jpaubry@172.16.5.51
+msgid "gateway"
+msgstr "passerelle"
+
+#: asimons@172.16.5.126
+msgid "ISDN"
+msgstr "RNIS"
+
+#: asimons@172.16.5.126
+msgid "internet service provider (ISP)"
+msgstr "fournisseur de services internet"
+
+#: asimons@172.16.5.126
+msgid "eavesdropping"
+msgstr "écoute clandestine"
+
+#: asimons@172.16.5.126
+msgid "end-user"
+msgstr "utilisateur"
+
+# asimons@172.16.5.126
+#: asimons@172.16.5.126
+msgid "fault-tolerant"
+msgstr "tolérant aux pannes"
+
+#: asimons@172.16.5.126
+msgid "file layout"
+msgstr "description de fichier"
+
+#: asimons@172.16.5.126
+msgid "firewall"
+msgstr "pare-feu"
+
+#: asimons@172.16.5.126
+msgid "firmware"
+msgstr "microprogrammation"
+
+# asimons@172.16.5.126
+# ~ asimons@172.16.5.126
+# ~ msgid "data repository"
+# ~ msgstr "dépôt des données"
+#: asimons@172.16.5.126
+msgid "degauss"
+msgstr "démagnétisation"
+
+#: asimons@172.16.5.126
+msgid "demilitarized zone (DMZ)"
+msgstr "zone démilitarisée"
+
+msgid ""
+msgstr ""
+"résau commuté\n"
+"réseau commuté"
+
+#: asimons@172.16.5.126 jpaubry@172.16.5.51
+msgid "dial-up network"
+msgstr "zone démilitarisée"
+
+#: asimons@172.16.5.126
+msgid "browser"
+msgstr "navigateur"
+
+#: asimons@172.16.5.126
+msgid "buffer"
+msgstr "mémoire tampon"
+
+#: asimons@172.16.5.126
+msgid "compliance"
+msgstr "conformité"
+
+# asimons@172.16.5.126
+#: asimons@172.16.5.126
+msgid "asynchronous transfer mode (ATM)"
+msgstr "transmission temporelle asynchrone (TTA)"
+
+#: asimons@172.16.5.126
+msgid "buffs"
+msgstr "mordus"
+
+#: asimons@172.16.5.126
+msgid "shade"
+msgstr "nuance"
+
+# asimons@172.16.5.126
+#: jpaubry@172.16.44.107
+msgid "snooping"
+msgstr "espionnage, surveillance de trafic"
+
+#: asimons@172.16.5.126
+msgid "identifier"
+msgstr "identifiant"
+
+#: asimons@172.16.5.126
+msgid "offset"
+msgstr "décalage"
+
+#: asimons@172.16.5.126
+msgid "rendering"
+msgstr "rendu"
+
+#: asimons@172.16.5.126
+msgid "bug"
+msgstr "bogue"
+
+# asimons@172.16.5.126
+# ~ jpaubry@172.16.5.51
+# ~ msgid "Connectivity"
+# ~ msgstr "Connexité"
+#: asimons@172.16.5.126
+msgid "Conversational mode"
+msgstr "Mode dialogué"
+
+#: asimons@172.16.5.126
+msgid "Failure"
+msgstr "Défaillance"
+
+#: asimons@172.16.5.126
+msgid "shutdown"
+msgstr "arrêt"
+
+#: asimons@172.16.5.126
+msgid "tuning"
+msgstr "réglage"
+
+#: asimons@172.16.5.126
+msgid "debugging"
+msgstr "débogage"
+
+#: asimons@172.16.5.126
+msgid "login"
+msgstr "connexion"
+
+#: asimons@172.16.5.126
+msgid "toolset"
+msgstr "jeu d'outils"
+
+#: asimons@172.16.5.126
+msgid "training facility"
+msgstr "complexe de formation"
+
+#: asimons@172.16.5.126
+msgid "bootable CDROM"
+msgstr "CD-ROM amorçable"
+
+#: asimons@172.16.5.126
+msgid "scrollback buffer"
+msgstr "tampon de défilement arrière"
+
+# asimons@172.16.5.126
+# ~ asimons@172.16.5.126
+# ~ msgid "pulldown menu"
+# ~ msgstr "menu déroulant"
+#: asimons@172.16.5.126
+msgid "typeahead buffer"
+msgstr "tampon de clavier"
+
+#: asimons@172.16.5.126
+msgid "serial port"
+msgstr "port série"
+
+#: asimons@172.16.5.126
+msgid "hangup"
+msgstr "blocage"
+
+#: asimons@172.16.5.126
+msgid "slash"
+msgstr "oblique"
+
+# asimons@172.16.5.126
+# asimons@172.16.5.126
+# ~ asimons@172.16.44.75
+# ~ msgid "backslash"
+# ~ msgstr "antislash, oblique inverse"
+# asimons@172.16.5.126
+# asimons@172.16.44.75
+# ~ asimons@172.16.44.75
+# ~ msgid "offset"
+# ~ msgstr "décalage"
+#: asimons@172.16.5.126
+msgid "wrap"
+msgstr "retour à la ligne / enroulement de fin de ligne"
+
+#: asimons@172.16.5.126
+msgid "menu driven"
+msgstr "contrôlé par menu"
+
+#: asimons@172.16.5.126
+msgid "globbing"
+msgstr "globalisation"
+
+#: asimons@172.16.5.126
+msgid "wildcard"
+msgstr "caractère générique"
+
+#: asimons@172.16.5.126
+msgid "synopsis"
+msgstr "synthèse"
+
+#: asimons@172.16.5.126
+msgid "removable"
+msgstr "amovible"
+
+#: asimons@172.16.5.126
+msgid "forking"
+msgstr "ramification"
+
+#: asimons@172.16.5.126
+msgid "latency"
+msgstr "temps d'attente"
+
+#: asimons@172.16.5.126
+msgid "pinpointing"
+msgstr "localiser"
+
+#: asimons@172.16.5.126
+msgid "batch file"
+msgstr "lot de traitement"
+
+#: asimons@172.16.5.126
+msgid "override"
+msgstr "contourner"
+
+#: asimons@172.16.5.126
+msgid "format control"
+msgstr "commande de format"
+
+#: asimons@172.16.5.126
+msgid "idle times"
+msgstr "temps morts"
+
+#: asimons@172.16.5.126
+msgid "lab"
+msgstr "exercice / TP"
+
+#: asimons@172.16.5.126
+msgid "troubleshooting"
+msgstr "résolution de problèmes"
+
+#: asimons@172.16.5.126
+msgid "setup agent"
+msgstr "agent de mise à jour"
+
+#: asimons@172.16.5.126
+msgid "clipboard"
+msgstr "presse-papier"
+
+#: asimons@172.16.5.126
+msgid "time tracker"
+msgstr "minuteur"
+
+#: asimons@172.16.5.126
+msgid "thumbnail"
+msgstr "vignette / imagette"
+
+#: asimons@172.16.5.126
+msgid "ripping"
+msgstr "extraction"
+
+#: asimons@172.16.5.126
+msgid "SMP"
+msgstr "gestion multiple symétrique"
+
+#: asimons@172.16.5.126
+msgid "caracter device"
+msgstr "périphérique d'entrée-sortie de caractères"
+
+#: asimons@172.16.5.126
+msgid "read-ahead"
+msgstr "lecture anticipée"
+
+#: asimons@172.16.5.126
+msgid "to probe"
+msgstr "examiner / détecter"
+
+#: asimons@172.16.5.126
+msgid "hotswappable"
+msgstr "remplaçable à chaud"
+
+#: asimons@172.16.5.126
+msgid "to dim"
+msgstr "assombrir"
+
+#: asimons@172.16.5.126
+msgid "outage"
+msgstr "défaillance"
+
+#: asimons@172.16.5.126
+msgid "second stage boot loader"
+msgstr "chargeur de démarrage étape 2"
+
+#: asimons@172.16.5.126
+msgid "dumb terminal"
+msgstr "terminal idiot"
+
+#: asimons@172.16.5.126
+msgid "device recognition"
+msgstr "détection de périphériques"
+
+#: asimons@172.16.5.126
+msgid "subnet"
+msgstr "sous-réseau"
+
+#: asimons@172.16.5.126
+msgid "mainboard"
+msgstr "carte mère"
+
+#: asimons@172.16.5.126
+msgid "Power On Self Test (POST)"
+msgstr "autotest de l'allumage"
+
+#: asimons@172.16.5.126
+msgid "respawn"
+msgstr "redémarrage automatique"
+
+#: asimons@172.16.5.126
+msgid "flag"
+msgstr "indicateur"
+
+#: asimons@172.16.5.126
+msgid "bring up / down"
+msgstr "activer / désactiver"
+
+#: asimons@172.16.5.126
+msgid "deprecated"
+msgstr "déconseillé"
+
+msgid ""
+msgstr ""
+"va-et-vient\n"
+"pagination, utiliser un fichier d'échange, mémoire virtuelle"
+
+#: asimons@172.16.5.126 jpaubry@172.16.5.51
+msgid "swapping"
+msgstr "déconseillé"
+
+#: asimons@172.16.5.126
+msgid "bootable"
+msgstr "amorçable"
+
+# asimons@172.16.5.126
+#: asimons@172.16.5.126
+msgid "grace period"
+msgstr "délai"
+
+# asimons@172.16.5.126
+# ~ asimons@172.16.5.107
+# ~ msgid "timeout"
+# ~ msgstr "interruption"
+#: asimons@172.16.5.126
+msgid "exit status"
+msgstr "état de sortie"
+
+#: asimons@172.16.5.126
+msgid "hit-and-run"
+msgstr "délit de fuite"
+
+#: asimons@172.16.5.126
+msgid "Fully Qualified Domain Name (FQDN)"
+msgstr "nom complet de l'hôte"
+
+#: asimons@172.16.5.126
+msgid "tag"
+msgstr "balise"
+
+#: asimons@172.16.5.126
+msgid "package"
+msgstr "paquetage"
+
+#: asimons@172.16.5.126
+msgid "header / footer"
+msgstr "en-tête / pied de page"
+
+# asimons@172.16.5.126
+#: asimons@172.16.45.5
+msgid "template"
+msgstr "modèle, générique, prototype"
+
+#: asimons@172.16.5.126
+msgid "wizard"
+msgstr "assistant"
+
+# asimons@172.16.5.126
+# ~ asimons@172.16.45.2
+# ~ msgid "combobox"
+# ~ msgstr "liste déroulante"
+#: asimons@172.16.5.126
+msgid "scrollbar"
+msgstr "barre de défilement"
+
+#: asimons@172.16.5.126
+msgid "statusbar"
+msgstr "barre d'état"
+
+#: asimons@172.16.5.126
+msgid "tab"
+msgstr "onglet"
+
+#: asimons@172.16.5.126
+msgid "bookmark"
+msgstr "signet"
+
+#: asimons@172.16.5.126
+msgid "drag and drop"
+msgstr "glisser-déposer"
+
+#: jpaubry@172.16.50.31
+msgid "PIN"
+msgstr "NIP - Numéro d'Identification Personnel"
+
+#: asimons@172.16.5.126
+msgid "Key Distribution Centre (KDC)"
+msgstr "centre distributeur de tickets"
+
+#: asimons@172.16.5.126
+msgid "mail"
+msgstr "courriel"
+
+#: asimons@172.16.5.126
+msgid "label"
+msgstr "étiquette"
+
+# jpaubry@172.16.5.51
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.51
+msgid "backing Store "
+msgstr "mémoire de sauvegarde"
+
+# jpaubry@172.16.5.51
+# jpaubry@172.16.50.43
+msgid ""
+msgstr ""
+"temps système / temps de gestion  du système / temps de calculs/temps machine"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.51
+msgid "working set (virtual memory)"
+msgstr "jeu de pages de travail "
+
+#: jpaubry@172.16.5.51
+msgid "address space"
+msgstr "espace d'adressage"
+
+msgid ""
+msgstr ""
+"thrashing ou écroulement\n"
+"écroulement"
+
+#: jpaubry@172.16.5.51
+msgid "thrashing"
+msgstr "espace d'adressage"
+
+#: jpaubry@172.16.5.51
+msgid "to swap out "
+msgstr "décharger (pour des pages en mémoire)"
+
+#: jpaubry@172.16.5.51
+msgid "to degrade gracefully"
+msgstr "dégrader progressivement "
+
+msgid ""
+msgstr ""
+"bitouiller,  touiller les bits\n"
+"titiller, ajuster"
+
+#: jpaubry@172.16.5.51
+msgid "to tweak"
+msgstr "dégrader progressivement "
+
+#: asimons@172.16.5.126
+msgid "termination"
+msgstr "requête d'arrêt"
+
+# Temps de calcul du processeur central du PC
+#: jpaubry@172.16.5.51
+msgid "CPU time"
+msgstr "temps CPU"
+
+msgid ""
+msgstr ""
+"systèmes d'exploitation dotés de mémoire virtuelle paginée à la demande"
+
+#: jpaubry@172.16.5.51
+msgid "demand-paged virtual memory operating systems"
+msgstr "temps CPU"
+
+#: jpaubry@172.16.50.17
+msgid "uptime"
+msgstr "temps de fonctionnement"
+
+#: jpaubry@172.16.50.17
+msgid "process / interface count"
+msgstr "décompte des processus / interfaces"
+
+#: jpaubry@172.16.50.17
+msgid "multi-threaded process"
+msgstr "processus multi-fils"
+
+#: asimons@172.16.5.126
+msgid "flowchart"
+msgstr "organigramme"
+
+# jpaubry@172.16.50.43
+#: jpaubry@172.16.50.43
+msgid "sample rate"
+msgstr "taux/fréquence d'échantillonnage"
+
+#: asimons@172.16.5.126
+msgid "dip switch"
+msgstr "commutateur dip"
+
+#: asimons@172.16.5.126
+msgid "rotary switch"
+msgstr "commutateur rotatif"
+
+#: asimons@172.16.5.126
+msgid "diagnosis"
+msgstr "diagnostic"
+
+#: jpaubry@172.16.50.11
+msgid "forklift upgrade"
+msgstr "mise à jour massive (pas 100% sûr)"
+
+#: jpaubry@172.16.50.4
+msgid "CPU-bound"
+msgstr "limité par le CPU"
+
+#: asimons@172.16.5.126
+msgid "antialias"
+msgstr "lisser"
+
+# asimons@172.16.5.126
+#: jpaubry@172.16.5.51
+msgid "antialiasing"
+msgstr "lissage, anticrènelage"
+
+#: jpaubry@172.16.5.51
+msgid "help"
+msgstr "aide-mémoire"
+
+#: asimons@172.16.5.126
+msgid "single-user mode"
+msgstr "mode mono-utilisateur"
+
+#: asimons@172.16.5.126
+msgid "computer manufacturer"
+msgstr "fabricant d'ordinateurs"
+
+#: asimons@172.16.5.126
+msgid "desktop computer"
+msgstr "ordinateur de bureau"
+
+#: asimons@172.16.5.126
+msgid "md5 hash"
+msgstr "hachage md5"
+
+#: jpaubry@172.16.5.51
+msgid "stream of execution"
+msgstr "flux d'exécution"
+
+#: jpaubry@172.16.5.51
+msgid "hard-copy"
+msgstr "copie papier"
+
+#: asimons@172.16.5.126
+msgid "attachments"
+msgstr "pièces jointes"
+
+#: jpaubry@172.16.5.51
+msgid "glossy paper"
+msgstr "papier glacé"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.51
+msgid "dye-sublimation color printer"
+msgstr "imprimante couleur à sublimation "
+
+#: jpaubry@172.16.5.51
+msgid "thermal wax transfer color printer"
+msgstr "imprimante couleur à transfert thermique"
+
+#: asimons@172.16.5.126
+msgid "Trivial File Transfer Protocol (TFTP)"
+msgstr "Programme basique de transfert de fichiers"
+
+#: asimons@172.16.5.126
+msgid "Simple Network Management Protocol (SNMP)"
+msgstr "Protocole simple d’administration réseau"
+
+#: asimons@172.16.5.126
+msgid "Dynamic Host Configuration Protocol (DHCP)"
+msgstr "protocole de configuration dynamique d'hôtes"
+
+#: asimons@172.16.5.126
+msgid "Real Time Stream Control Protocol (RTSP)"
+msgstr "Protocole de contrôle de flux en temps réel"
+
+#: asimons@172.16.5.126
+msgid "Secure Socket Layer (SSL)"
+msgstr "Couche de sockets sécurisés"
+
+#: asimons@172.16.5.126
+msgid "Network News Transport Protocol (NNTP)"
+msgstr "Protocole d'échange d'informations sur le réseau"
+
+#: asimons@172.16.5.126
+msgid "Application Configuration Access Protocol (ACAP)"
+msgstr "Protocole d'accès à des configurations d'application"
+
+#: jpaubry@172.16.5.51
+msgid "colour fastness"
+msgstr "solidité des couleurs"
+
+#: jpaubry@172.16.5.51
+msgid "dot-matrix printer"
+msgstr "imprmante matricielle"
+
+#: jpaubry@172.16.5.51
+msgid "line printer"
+msgstr "imprimante ligne"
+
+#: jpaubry@172.16.5.51
+msgid "daisy-whell printer"
+msgstr "imprimante à margurerites"
+
+#: jpaubry@172.16.5.51
+msgid "carbon copy"
+msgstr "copie carbone"
+
+#: jpaubry@172.16.5.51
+msgid "blind carbon copy (BCC)"
+msgstr "copie carbone invisible (CCI)"
+
+#: jpaubry@172.16.5.51
+msgid "wheel (in daisy-wheel printers)"
+msgstr "galette"
+
+#: jpaubry@172.16.5.51
+msgid "home office"
+msgstr "bureau à domicile"
+
+#: jpaubry@172.16.5.51
+msgid "coated paper"
+msgstr "papier couché"
+
+#: asimons@172.16.5.126
+msgid "Network File System (NFS)"
+msgstr "Système de fichiers réseau"
+
+#: jpaubry@172.16.5.51
+msgid "advisory lock"
+msgstr "verrou consultatif"
+
+#: jpaubry@172.16.5.51
+msgid "to listen"
+msgstr "attendre des connexions sur une socket"
+
+#: jpaubry@172.16.5.51
+msgid "swapon / swapoff"
+msgstr "activer/désactiver un fichier ou un périphérique de swap"
+
+#: jpaubry@172.16.5.51
+msgid "address resolver"
+msgstr "solveur d'adresses"
+
+#: jpaubry@172.16.5.51
+msgid "backdoor"
+msgstr "porte dérobée"
+
+#: jpaubry@172.16.5.51
+msgid "boiler plate"
+msgstr "standard, bateau"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.106
+msgid "build "
+msgstr "moutûre, version"
+
+#: jpaubry@172.16.5.51
+msgid "to build"
+msgstr "bâtir"
+
+#: jpaubry@172.16.5.51
+msgid "to burden "
+msgstr "handicapper"
+
+#: jpaubry@172.16.5.51
+msgid "busmastering"
+msgstr "arbitrage de bus, contrôle de bus, gestion de bus"
+
+#: jpaubry@172.16.5.51
+msgid "callgraph"
+msgstr "graphe des appels, de dépendances"
+
+#: jpaubry@172.16.5.51
+msgid "to clobber"
+msgstr "corrompre"
+
+#: jpaubry@172.16.5.51
+msgid "consistent "
+msgstr "homogène"
+
+#: jpaubry@172.16.5.51
+msgid "dead connection timeout"
+msgstr "expiration pour connexion inactive"
+
+#: jpaubry@172.16.5.51
+msgid "disclaimer"
+msgstr "mise en garde"
+
+#: jpaubry@172.16.5.51
+msgid "driver"
+msgstr "pilote, gestionnaire de périphérique, pilote de périphérique"
+
+#: jpaubry@172.16.5.51
+msgid "(little, big) endian"
+msgstr "petit, grand boutiste"
+
+#: jpaubry@172.16.5.51
+msgid "enhancement"
+msgstr "extensions"
+
+#: jpaubry@172.16.5.51
+msgid "expand"
+msgstr "développer, étendre, élargir"
+
+#: jpaubry@172.16.5.51
+msgid "feedback"
+msgstr "comment contacter l'auteur, retour d'information"
+
+#: jpaubry@172.16.5.51
+msgid "GUI"
+msgstr "IHM grpahique, Interface Homme Machine"
+
+#: jpaubry@172.16.5.51
+msgid "hack"
+msgstr "modification 'personnelle', bricollage, bidouille, bitouillage"
+
+#: jpaubry@172.16.5.51
+msgid "to handle"
+msgstr "manipuler, s'occuper de, manier, diriger, conduire"
+
+#: jpaubry@172.16.5.51
+msgid "to hashjoin"
+msgstr "faire une jointure"
+
+#: jpaubry@172.16.5.51
+msgid "headless"
+msgstr "sans écran, et éventuellement sans clavier, ou juste unité centrale"
+
+#: jpaubry@172.16.5.51
+msgid "hostname"
+msgstr "nom d'hôte, nom de machine"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.51
+msgid "journaling file system"
+msgstr "système de fichiers journalisé"
+
+#: jpaubry@172.16.5.51
+msgid "legacy code"
+msgstr "code historique"
+
+#: jpaubry@172.16.5.51
+msgid "mail hub"
+msgstr "centre de tri"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.44.107
+msgid "map"
+msgstr "correspondance, carte, catalogue, association"
+
+#: jpaubry@172.16.5.51
+msgid "masquerade"
+msgstr "masquage, camouflage"
+
+#: jpaubry@172.16.5.51
+msgid "MTBF (Mean Time Between Failure)"
+msgstr "temps moyen entre deux pannes"
+
+#: jpaubry@172.16.5.51
+msgid "NaN - Not a Number"
+msgstr "non-nombre"
+
+#: jpaubry@172.16.5.51
+msgid "nix"
+msgstr "rejet"
+
+# jpaubry@172.16.5.51
+# jpaubry@172.16.5.51
+# jpaubry@172.16.5.51
+# ~ asimons@172.16.45.13
+# ~ msgid "overhead"
+# ~ msgstr "dépassement de capacité, rajout (nécessaire de capacité) temps de gestion du système"
+#: jpaubry@172.16.5.51
+msgid "to parse"
+msgstr "analyser un texte"
+
+#: jpaubry@172.16.5.51
+msgid "parsing"
+msgstr "analyse syntaxique"
+
+#: jpaubry@172.16.5.51
+msgid "patch"
+msgstr "correction, correctif, rustine"
+
+#: jpaubry@172.16.5.51
+msgid "payload"
+msgstr "charge utile"
+
+# jpaubry@172.16.5.51
+#: asimons@172.16.5.107
+msgid "ramdisk"
+msgstr "disque virtuel"
+
+#: jpaubry@172.16.5.51
+msgid "remote end"
+msgstr "hôte distant"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.51
+msgid "repository"
+msgstr "référentiel, logithèque"
+
+#: jpaubry@172.16.5.51
+msgid "reverse-engeneering"
+msgstr "retro-ingénierie"
+
+#: jpaubry@172.16.5.51
+msgid "run time"
+msgstr "au lancement"
+
+#: jpaubry@172.16.5.51
+msgid "scalable"
+msgstr "échelonnable, évolutif"
+
+#: jpaubry@172.16.5.51
+msgid "shipping and handling"
+msgstr "frais de port et d'emballage"
+
+#: jpaubry@172.16.5.51
+msgid "smart host"
+msgstr "machine 'intelligente'"
+
+#: jpaubry@172.16.5.51
+msgid "stand-alone"
+msgstr "autonome, à part entière, auto-suffisant, indépendant"
+
+msgid ""
+msgstr ""
+"système de pagination, système de pagination sur mémoire de masse\n"
+"permutation"
+
+#: jpaubry@172.16.5.51
+msgid "swap"
+msgstr "autonome, à part entière, auto-suffisant, indépendant"
+
+# jpaubry@172.16.5.51
+# ~ asimons@172.16.44.75
+# ~ msgid "switch"
+# ~ msgstr "commutateur"
+#: jpaubry@172.16.5.51
+msgid "switch tables"
+msgstr "tables de branchement"
+
+#: jpaubry@172.16.5.51
+msgid "to tear down"
+msgstr "désactiver"
+
+#: jpaubry@172.16.5.51
+msgid "to tear up"
+msgstr "activer"
+
+# jpaubry@172.16.5.51
+# ~ asimons@172.16.45.5
+# ~ msgid "template"
+# ~ msgstr "générique, prototype"
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.106
+msgid "timeout"
+msgstr "fin d'attente, délai d'attente"
+
+#: jpaubry@172.16.5.51
+msgid "tokenizer"
+msgstr "analyseur lexical"
+
+#: jpaubry@172.16.5.51
+msgid "turn-key"
+msgstr "clé en main"
+
+#: jpaubry@172.16.5.51
+msgid "typesetting"
+msgstr "typographie"
+
+#: jpaubry@172.16.5.51
+msgid "unscaled index address mode"
+msgstr "mode d'adresse indexé sans multiplicateur"
+
+#: jpaubry@172.16.5.51
+msgid "userland"
+msgstr "espace utilisateur"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.106
+msgid "verbose"
+msgstr "bruyant, prolixe, mode verbeux"
+
+#: jpaubry@172.16.5.51
+msgid "write-ahead"
+msgstr "écriture anticipée"
+
+#: jpaubry@172.16.5.51
+msgid "write-protected"
+msgstr "protégé en écriture"
+
+#: jpaubry@172.16.5.51
+msgid "WYSIWIG"
+msgstr "Tel écran, tel écrit"
+
+#: jpaubry@172.16.5.51
+msgid "application layer"
+msgstr "couche applicative"
+
+msgid ""
+msgstr ""
+"traçage logique et de cartographie de programmes applicatifs (outil de)"
+
+#: jpaubry@172.16.5.51
+msgid "application tracing and mapping"
+msgstr "couche applicative"
+
+# jpaubry@172.16.5.51
+# ~ asimons@172.16.45.11
+# ~ msgid "benchmark"
+# ~ msgstr "point de référence, banc d'essai"
+#: jpaubry@172.16.5.51
+msgid "circuit-switched network"
+msgstr "réseau à commutation de circuits"
+
+#: jpaubry@172.16.5.51
+msgid "completeness check"
+msgstr "contrôle d'intégrité"
+
+#: jpaubry@172.16.5.51
+msgid "console log"
+msgstr "journal de pupitre, console, journal machine"
+
+#: jpaubry@172.16.5.51
+msgid "data diddling"
+msgstr "falsification de données"
+
+#: jpaubry@172.16.5.51
+msgid "data mirroring"
+msgstr "mise en miroir de données"
+
+#: jpaubry@172.16.5.51
+msgid "data repository"
+msgstr "dépôt de données"
+
+#: jpaubry@172.16.5.51
+msgid "database replication"
+msgstr "duplication de base de données"
+
+#: jpaubry@172.16.5.51
+msgid "dial-back"
+msgstr "dispositif de rappel"
+
+#: jpaubry@172.16.5.51
+msgid "dial-in access control"
+msgstr "contrôles d'accès par réseau commuté"
+
+#: jpaubry@172.16.5.51
+msgid "Direct Access Storage Device (DASD)"
+msgstr "unité de stockage à accès direct"
+
+#: jpaubry@172.16.5.51
+msgid "Disaster recovery plan"
+msgstr "plan de secours"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.51
+msgid "down time report"
+msgstr "rapport de temps d'immobilisation"
+
+#: jpaubry@172.16.5.51
+msgid "exposure"
+msgstr "exposition aux risques"
+
+#: jpaubry@172.16.5.51
+msgid "aliasing"
+msgstr "dentelure, effet d'escalier"
+
+#: jpaubry@172.16.5.51
+msgid "ampersand"
+msgstr "perluète, esperluette, et commercial"
+
+#: jpaubry@172.16.5.51
+msgid "angle brackets"
+msgstr "parenthèses anguleuses"
+
+#: jpaubry@172.16.5.51
+msgid "anti-aliasing"
+msgstr "suppression de l'effet d'escalier, lissage"
+
+#: jpaubry@172.16.5.51
+msgid "appearing size"
+msgstr "hauteur de page"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.106
+msgid "application software"
+msgstr "progiciel, applicatif, logiciel d'application "
+
+#: jpaubry@172.16.5.51
+msgid "area make-up"
+msgstr "mise en page, empagement"
+
+#: jpaubry@172.16.5.51
+msgid "artwork"
+msgstr "original"
+
+#: jpaubry@172.16.5.51
+msgid "assembly"
+msgstr "montage"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.51
+msgid "at"
+msgstr "arobe, arrobas"
+
+#: jpaubry@172.16.5.51
+msgid "backslash"
+msgstr "barre oblique inversée, antislash, contre-cotice"
+
+#: jpaubry@172.16.5.51
+msgid "back-slant"
+msgstr "penché à l'envers, italique inversé"
+
+#: jpaubry@172.16.5.51
+msgid "to backspace"
+msgstr "reculer"
+
+#: jpaubry@172.16.5.51
+msgid "banner"
+msgstr "bandeau, manchette"
+
+#: jpaubry@172.16.5.51
+msgid "both justified, BT"
+msgstr "justication à droite et à gauche"
+
+#: jpaubry@172.16.5.51
+msgid "break line"
+msgstr "ligne creuse"
+
+#: jpaubry@172.16.5.51
+msgid "caching"
+msgstr "mise en mémoire cache"
+
+#: jpaubry@172.16.5.51
+msgid "to close up"
+msgstr "resserer"
+
+#: jpaubry@172.16.5.51
+msgid "double underscore"
+msgstr "double trait souscrit"
+
+#: jpaubry@172.16.5.51
+msgid "DTP, Desk-top publushing"
+msgstr "PAO, publication assistée par ordinateur"
+
+#: jpaubry@172.16.5.51
+msgid "embedding"
+msgstr "enchâssement"
+
+#: jpaubry@172.16.5.51
+msgid "embedded systeme"
+msgstr "système embarqué, parfois enchâssé"
+
+#: jpaubry@172.16.5.51
+msgid "font rendition"
+msgstr "génération d'une fonte"
+
+#: jpaubry@172.16.5.51
+msgid "hard space / no-break space"
+msgstr "blanc dur / espace insécable"
+
+#: jpaubry@172.16.5.51
+msgid "keypad"
+msgstr "bloc de touches"
+
+#: jpaubry@172.16.5.51
+msgid "landscape"
+msgstr "à l'italienne"
+
+#: jpaubry@172.16.5.51
+msgid "narrow setting"
+msgstr "composition serrée"
+
+#: jpaubry@172.16.5.51
+msgid "null"
+msgstr "zéro barré"
+
+#: jpaubry@172.16.5.51
+msgid "to overrun"
+msgstr "chasser à la ligne suivante"
+
+#: jpaubry@172.16.5.51
+msgid "pattern"
+msgstr "modèle"
+
+#: jpaubry@172.16.5.51
+msgid "pixel"
+msgstr "point, point de trame"
+
+#: jpaubry@172.16.5.51
+msgid "sensor key"
+msgstr "touche du curseur"
+
+#: jpaubry@172.16.5.51
+msgid "to shadow"
+msgstr "ombrer"
+
+#: jpaubry@172.16.5.51
+msgid "port-forwarding"
+msgstr "redirection de ports"
+
+#: jpaubry@172.16.5.51
+msgid "transparent proxying"
+msgstr "relaygae transparent"
+
+msgid ""
+msgstr ""
+"comptage des paquets (par ex. pour une eventuelle re-facturation en interne)"
+
+#: jpaubry@172.16.5.51
+msgid "paquet accounting"
+msgstr "relaygae transparent"
+
+#: jpaubry@172.16.5.51
+msgid "TMD - Time Division Multiplexing"
+msgstr "multiplexage remporaire"
+
+#: jpaubry@172.16.5.51
+msgid " BRI - Basic Rate Interface"
+msgstr "Accès de base isolé"
+
+#: jpaubry@172.16.5.51
+msgid " PRI - Primary Rate Interface"
+msgstr "Accès de primaire"
+
+#: jpaubry@172.16.5.51
+msgid "stub zone"
+msgstr "zone de tronçon"
+
+#: jpaubry@172.16.5.51
+msgid "forward zone"
+msgstr "zone de report"
+
+#: asimons@172.16.5.126
+msgid "shared disk storage"
+msgstr "stockage disque partagé"
+
+#: asimons@172.16.5.126
+msgid "trademark"
+msgstr "marque déposée"
+
+msgid ""
+msgstr ""
+"sécurisé\n"
+"de confiance"
+
+#: asimons@172.16.5.126 jpaubry@172.16.44.107
+msgid "trusted"
+msgstr "marque déposée"
+
+#: asimons@172.16.5.126
+msgid "bulk load"
+msgstr "chargement en masse"
+
+#: asimons@172.16.5.126
+msgid "Border Gateway Protocol BGP"
+msgstr "protocole de passerelle frontière"
+
+#: asimons@172.16.5.126
+msgid "name binding"
+msgstr "association de noms"
+
+#: asimons@172.16.5.126
+msgid "Service Location Protocol SLP"
+msgstr "protocole de localisation de services"
+
+msgid ""
+msgstr ""
+"Protocole de gestion de clés et des associations de sécurité pour Internet"
+
+#: asimons@172.16.5.126
+msgid "Internet Security Association and Key Management Protocol (ISAKMP)"
+msgstr "protocole de localisation de services"
+
+#: asimons@172.16.5.126
+msgid "Internet Inter-Orb Protocol (IIOP)"
+msgstr "Protocole Internet Inter-Orb"
+
+#: jpaubry@172.16.50.14
+msgid "spammer"
+msgstr "spammeur"
+
+#: jpaubry@172.16.50.14
+msgid "MAPS - Mail Abuse revention System"
+msgstr "MAPS - Système de prévention des abus de courrier"
+
+#: asimons@172.16.5.126
+msgid "Remote Expansion Enclosure"
+msgstr "boîtier d'extension à distance"
+
+#: asimons@172.16.5.126
+msgid "LPAR"
+msgstr "partition/partitionnement logique"
+
+#: asimons@172.16.5.126
+msgid "Network Server (NWS)"
+msgstr "serveur réseau"
+
+#: asimons@172.16.5.126
+msgid "localization guide"
+msgstr "guide par pays"
+
+#: asimons@172.16.5.126
+msgid "compatibility arch support"
+msgstr "support pour la compatibilité d'architecture"
+
+#: asimons@172.16.5.126
+msgid "compatibility arch development support"
+msgstr "support pour le développement d'une architecture compatible"
+
+#: asimons@172.16.5.126
+msgid "slider bar"
+msgstr "barre d'ascenseur"
+
+#: asimons@172.16.5.126
+msgid "onboard"
+msgstr "sur carte"
+
+#: asimons@172.16.5.126
+msgid "overcommit"
+msgstr "surcharge"
+
+#: asimons@172.16.5.126
+msgid "sample file"
+msgstr "fichier d'échantillons"
+
+#: asimons@172.16.5.126
+msgid "sampling rate"
+msgstr "taux d'échantillonnage"
+
+#: asimons@172.16.5.126
+msgid "thwart"
+msgstr "contrecarrer"
+
+#: asimons@172.16.5.126
+msgid "demangle"
+msgstr "décoder"
+
+#: asimons@172.16.5.126
+msgid "carrier network"
+msgstr "réseau de transport"
+
+#: jpaubry@172.16.5.51
+msgid "runtime software"
+msgstr "moteur d'exécution"
+
+#: jpaubry@172.16.5.51
+msgid "run time binding"
+msgstr "accés dynamique"
+
+#: jpaubry@172.16.5.51
+msgid "run-time version "
+msgstr "version exécutable"
+
+#: jpaubry@172.16.5.51
+msgid "run time library"
+msgstr "bibliothèque d'exécution"
+
+#: jpaubry@172.16.5.51
+msgid "datapath / data path"
+msgstr "chemin des données"
+
+#: jpaubry@172.16.5.51
+msgid "stanza"
+msgstr "strophe"
+
+#: jpaubry@172.16.5.51
+msgid "network tie-breaker"
+msgstr "disjoncteur du réseau"
+
+#: asimons@172.16.5.126
+msgid "single point of failure"
+msgstr "point unique de panne"
+
+#: asimons@172.16.5.126
+msgid "active-backup"
+msgstr "sauvegarde-active"
+
+# jpaubry@172.16.5.51
+# ~ jpaubry@172.16.5.51
+# ~ msgid "blowfish"
+# ~ msgstr "sauvegarde-active"
+#: jpaubry@172.16.5.51
+msgid "blowfish"
+msgstr "algorithme de chiffrement"
+
+# Du nom de ses inventeurs : Ron Rivest, Adi Shamir, Len Adleman. Algorithme asymétrique car il n'utilise pas la même clé pour le chiffrement et le déchiffrement.
+#: jpaubry@172.16.5.51
+msgid "RSA"
+msgstr "algorithme RSA"
+
+#: jpaubry@172.16.5.51
+msgid "IV"
+msgstr "vecteur d'initialisation "
+
+#: jpaubry@172.16.5.51
+msgid "CBC mode"
+msgstr "mode CBC (Cipher Block Chaining)"
+
+#: jpaubry@172.16.5.51
+msgid "security handshake"
+msgstr "établissement de liaison sécurisée"
+
+#: jpaubry@172.16.5.51
+msgid "SMBus"
+msgstr "chemin de communication et de transmission"
+
+#: jpaubry@172.16.5.51
+msgid "DSDT"
+msgstr "table de description différenciée du système"
+
+#: jpaubry@172.16.5.51
+msgid "Operating System Power management (OSPM)"
+msgstr "gestion d'énergie du système d'exploitation"
+
+#: jpaubry@172.16.5.51
+msgid "spamming"
+msgstr "courrier non sollicité"
+
+#: jpaubry@172.16.5.51
+msgid "Linux Documentation project (LDP)"
+msgstr "Projet de documentation Linux "
+
+#: jpaubry@172.16.5.51
+msgid "header"
+msgstr "UN en-tête"
+
+#: jpaubry@172.16.5.51
+msgid "completion "
+msgstr "auto-complètement"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.44.107
+msgid "passphrase"
+msgstr "clé (KDE), phrase-clé"
+
+#: jpaubry@172.16.5.51
+msgid "Print preview"
+msgstr "Aperçu avant impression"
+
+#: jpaubry@172.16.5.51
+msgid "From template/new from template"
+msgstr "créer à partir d'un modèle"
+
+#: jpaubry@172.16.5.51
+msgid "key bindings "
+msgstr "raccourcis clavier (KDE)"
+
+#: jpaubry@172.16.5.51
+msgid "taskbar"
+msgstr "barre des tâches"
+
+#: jpaubry@172.16.5.51
+msgid "dock"
+msgstr "placer sur le tableau de bord (placer)"
+
+#: jpaubry@172.16.5.51
+msgid "undock"
+msgstr "retirer du tableau de bord (retirer)"
+
+#: jpaubry@172.16.5.51
+msgid "show tool tips"
+msgstr "afficher les bulles d'aide"
+
+#: jpaubry@172.16.5.51
+msgid "documentation browser"
+msgstr "visualiseur de documentation"
+
+#: jpaubry@172.16.5.51
+msgid "frontend"
+msgstr "interface utilisateur"
+
+#: jpaubry@172.16.5.51
+msgid "application development framework"
+msgstr "environnement de développement d'applications"
+
+#: jpaubry@172.16.5.51
+msgid "to toggle"
+msgstr "(Dés)activer"
+
+#: jpaubry@172.16.5.51
+msgid "child window"
+msgstr "fenêtre fille"
+
+# jpaubry@172.16.5.51
+# ~ asimons@172.16.45.2
+# ~ msgid "combo(box)"
+# ~ msgstr "liste déroulante"
+#: jpaubry@172.16.5.51
+msgid "listbox"
+msgstr "liste de choix"
+
+#: jpaubry@172.16.5.51
+msgid "loook 'n feel"
+msgstr "apparence (et comportement graphique)"
+
+#: jpaubry@172.16.5.51
+msgid "parent window"
+msgstr "fenêtre mère"
+
+#: jpaubry@172.16.5.51
+msgid "textfield (QlineEdit)"
+msgstr "zone de saisie"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.44.107
+msgid "widget"
+msgstr "élément graphique, gadget graphique"
+
+#: jpaubry@172.16.5.51
+msgid "supercomputing"
+msgstr "calcul intensif"
+
+# jpaubry@172.16.5.51
+#: jpaubry@172.16.5.51
+msgid "connectivity"
+msgstr "connectabilité, connexité, connectivité"
+
+#: jpaubry@172.16.5.51
+msgid "Electronic Data Interchange (EDI)"
+msgstr "échange de données informatisé"
+
+#: jpaubry@172.16.5.51
+msgid "alaising"
+msgstr "crénelage"
+
+#: jpaubry@172.16.5.51
+msgid "facility management"
+msgstr "gérance de l'informatique"
+
+#: jpaubry@172.16.5.51
+msgid "digitizer"
+msgstr "munériseur"
+
+#: jpaubry@172.16.5.51
+msgid "hot keys"
+msgstr "reccourcis clavier"
+
+#: jpaubry@172.16.5.51
+msgid "Ad-hoc (mode)"
+msgstr "mode Ad-hoc ou indépendant"
+
+#: jpaubry@172.16.5.51
+msgid "Basic Service Set (BSS)"
+msgstr "Ensemble de services de base"
+
+#: jpaubry@172.16.5.51
+msgid "Extended Service Set (ESS)"
+msgstr "Ensemble de services étendus"
+
+#: jpaubry@172.16.5.51
+msgid "Frequency Hopping Spread Spectrum (FHSS)"
+msgstr "Étalement de spectre avec sauts de fréquence"
+
+#: jpaubry@172.16.5.51
+msgid "Direct Sequence Spread Spectrum (DSSS)"
+msgstr "Étalement de spectre en séquence directe"
+
+#: jpaubry@172.16.5.51
+msgid "background application"
+msgstr "application en arrière-plan, application tâche de fond"
+
+#: jpaubry@172.16.5.51
+msgid "bandwidth"
+msgstr "bande passante, largeur de bande, largeur de canal"
+
+#: jpaubry@172.16.5.51
+msgid "beta release"
+msgstr "pré-version, version béta"
+
+#: jpaubry@172.16.5.51
+msgid "cache"
+msgstr "antémémoire"
+
+#: jpaubry@172.16.5.51
+msgid "checkbox"
+msgstr "case à cocher, case d'options"
+
+#: jpaubry@172.16.5.51
+msgid "dot address"
+msgstr "numéro IP, adresse décimale, adresse en notation pointée"
+
+#: jpaubry@172.16.5.51
+msgid "enclosures"
+msgstr "pièces jointes, inclusions"
+
+#: jpaubry@172.16.5.51
+msgid "fat binary"
+msgstr "binaire gras"
+
+#: jpaubry@172.16.5.51
+msgid "freenet"
+msgstr "libterle"
+
+#: jpaubry@172.16.5.51
+msgid "freeware"
+msgstr "gratuiciel, graticiel"
+
+#: jpaubry@172.16.5.51
+msgid "FYI"
+msgstr "PVI: pourvotre info, Pour info"
+
+# jpaubry@172.16.5.51
+#: asimons@172.16.45.8
+msgid "hacker"
+msgstr "pirate, bidouilleur"
+
+#: jpaubry@172.16.5.51
+msgid "hub"
+msgstr "concentrateur, répartiteur, moyeu (au centre d'une toile)"
+
+#: jpaubry@172.16.5.51
+msgid "shell script"
+msgstr "script de commandes"
+
+#: jpaubry@172.16.5.51
+msgid "smiley"
+msgstr "émoticon"
+
+#: jpaubry@172.16.5.51
+msgid "swap file"
+msgstr "fichier de permutation"
+
+#: jpaubry@172.16.5.51
+msgid "workflow"
+msgstr "GED Gestion électronique de documents"
+
+msgid ""
+msgstr ""
+"Tel écran, tel écrit ; VISIVIG: VISualisation Imitant Virtuellement une "
+"Impression Graphique"
+
+#: jpaubry@172.16.5.51
+msgid "WYSIWYG"
+msgstr "GED Gestion électronique de documents"
+
+msgid ""
+msgstr ""
+"apparence et ergonomie\n"
+"l'aspect et la convivialité"
+
+#: asimons@172.16.5.107 asimons@172.16.44.75
+msgid "look and feel"
+msgstr "GED Gestion électronique de documents"
+
+#: asimons@172.16.5.107
+msgid "wheel"
+msgstr "molette (souris à)"
+
+#: jpaubry@172.16.5.51
+msgid "avalanche photodiode "
+msgstr "PDA, photodiode à avalanche "
+
+#: jpaubry@172.16.5.51
+msgid "cross-post, cross-posting"
+msgstr "postage croisé"
+
+#: jpaubry@172.16.5.51
+msgid "queue handler"
+msgstr "gestionnaire de file d'attente"
+
+#: jpaubry@172.16.5.51
+msgid "CAM, Computer Assisted Manufacturing"
+msgstr "FAO, Fabrication assistée par ordinateur"
+
+#: jpaubry@172.16.5.51
+msgid "CAD, Computer Assisted Design"
+msgstr "CAO, Conception assistée par ordinateur"
+
+# Environnement dans lequel la racine a été changée.
+#: jpaubry@172.16.5.118
+msgid "change rooted environnment"
+msgstr "environnement cherooté, chroot"
+
+#: asimons@172.16.5.107
+msgid "extended partition"
+msgstr "partition étendue"
+
+#: asimons@172.16.5.107
+msgid "software RAID"
+msgstr "RAID logiciel"
+
+# jpaubry@172.16.5.106
+#: jpaubry@172.16.5.106
+msgid "bookmarking"
+msgstr "mise en signet"
+
+#: jpaubry@172.16.5.106
+msgid "Digital Right Management, DRM"
+msgstr "Gestion Numérique des Droits"
+
+#: jpaubry@172.16.5.106
+msgid "preview, to"
+msgstr "prévisualiser"
+
+#: jpaubry@172.16.5.106
+msgid "process ID, PID"
+msgstr "numéro de processus"
+
+# jpaubry@172.16.5.106
+#: jpaubry@172.16.5.106
+msgid "chroot jail"
+msgstr "prison du chroot"
+
+#: jpaubry@172.16.5.106
+msgid "set a parameter, to"
+msgstr "valoriser un paramètre"
+
+#: jpaubry@172.16.5.106
+msgid "chrooted environment"
+msgstr "environnement chrooté"
+
+#: jpaubry@172.16.5.106
+msgid "framework "
+msgstr "composant logiciel réutilisable"
+
+# jpaubry@172.16.5.106
+#: jpaubry@172.16.5.106
+msgid "class loader"
+msgstr "chargeur de classes"
+
+#: jpaubry@172.16.5.106
+msgid "servlet"
+msgstr "servlet, applet exécutée sur le serveur"
+
+#: jpaubry@172.16.5.106
+msgid "distinguished name, DN"
+msgstr "nom distinct"
+
+#: jpaubry@172.16.5.106
+msgid "universal set"
+msgstr "référentiel, cadre commun"
+
+#: jpaubry@172.16.5.106
+msgid "user-friendly"
+msgstr "convivial"
+
+#: jpaubry@172.16.5.106
+msgid "on the fly"
+msgstr "à la volée"
+
+#: jpaubry@172.16.5.106
+msgid "patentability"
+msgstr "bevetabilité"
+
+#: jpaubry@172.16.5.106
+msgid "interperability"
+msgstr "interopérabilité"
+
+#: jpaubry@172.16.5.106
+msgid " scheduler"
+msgstr " ordonnanceur"
+
+#: jpaubry@172.16.5.106
+msgid "Common Gateway Interface, CGI"
+msgstr "interface de passerelle commune"
+
+#: jpaubry@172.16.5.106
+msgid "assignment "
+msgstr "affectation"
+
+#: jpaubry@172.16.5.106
+msgid "uncheck a ckeck box, to "
+msgstr " décocher une case à cocher"
+
+# jpaubry@172.16.5.106
+#: jpaubry@172.16.5.106
+msgid "stateful autoconfiguration"
+msgstr "autoconfiguration avec état"
+
+#: jpaubry@172.16.5.106
+msgid "stateless autoconfiguration"
+msgstr "autoconfiguration sans état"
+
+#: jpaubry@172.16.5.106
+msgid "unicast "
+msgstr "  unicast, pour une adresse, interface unique opposé de multicast"
+
+#: jpaubry@172.16.5.106
+msgid "address scope"
+msgstr "portée des adresses"
+
+#: jpaubry@172.16.5.106
+msgid "global scope"
+msgstr "portée globale"
+
+#: jpaubry@172.16.5.106
+msgid "site-local (1 of the 3 types of scope with IPv6)"
+msgstr " site-local "
+
+#: jpaubry@172.16.5.106
+msgid "link-local (1 of the 3 types of scope with IPv6)"
+msgstr "lien-local "
+
+#: jpaubry@172.16.5.106
+msgid "tentative address"
+msgstr "adresse provisoire"
+
+#: jpaubry@172.16.5.106
+msgid "double (for addresses)"
+msgstr "doublon"
+
+#: jpaubry@172.16.5.106
+msgid "u-bit"
+msgstr "but d'unicité universelle"
+
+#: jpaubry@172.16.5.106
+msgid "neighbor solicitation"
+msgstr "solicitation de voisin"
+
+#: jpaubry@172.16.5.106
+msgid "solicitated-node multicast address"
+msgstr "adresse multicast de type système solicité"
+
+#: jpaubry@172.16.5.106
+msgid "single schema authentication"
+msgstr "authentification schématique unique"
+
+#: jpaubry@172.16.5.106
+msgid "match, to"
+msgstr "correspondre"
+
+#: jpaubry@172.16.5.106
+msgid "pattern matching"
+msgstr "correspondance de motifs"
+
+#: jpaubry@172.16.5.106
+msgid "garbage collector"
+msgstr "ramasse miettes"
+
+# jpaubry@172.16.5.106
+#: jpaubry@172.16.44.107
+msgid "bind, to"
+msgstr "lier, se connecter au serveur avec LDAP"
+
+#: jpaubry@172.16.5.106
+msgid "call instruction "
+msgstr "instruction d'appel"
+
+#: jpaubry@172.16.5.106
+msgid "process-oriented language"
+msgstr "langage orienté processus"
+
+#: jpaubry@172.16.5.106
+msgid "connect timeout"
+msgstr "temps maximum pour se connecter "
+
+#: jpaubry@172.16.5.106
+msgid "trace a connection, to"
+msgstr "tracer une connexion"
+
+#: jpaubry@172.16.44.107
+msgid "fallback"
+msgstr "redémarrage après failover"
+
+#: jpaubry@172.16.44.107
+msgid "FQHN, Fully-qualified host name "
+msgstr "nom d'hôte pleinement qualifié"
+
+#: jpaubry@172.16.44.107
+msgid "resolve, to"
+msgstr "convertir (nom d'hôte vers adresse)"
+
+#: jpaubry@172.16.44.107
+msgid "realm"
+msgstr "zone, realm"
+
+#: jpaubry@172.16.44.107
+msgid "ping"
+msgstr "utilitaire ping, Paquet Internet Groper"
+
+# jpaubry@172.16.44.107
+# ~ jpaubry@172.16.44.107
+# ~ msgid "keymap"
+# ~ msgstr "table de mappe de clavier"
+#: jpaubry@172.16.44.107
+msgid "fetch, to"
+msgstr "extraire"
+
+#: jpaubry@172.16.44.107
+msgid "crypto error"
+msgstr "erreur de cryptographie"
+
+#: jpaubry@172.16.44.107
+msgid "Terms And Conditions"
+msgstr "Conditions générales"
+
+#: jpaubry@172.16.44.107
+msgid "referral"
+msgstr "délégation"
+
+#: jpaubry@172.16.44.107
+msgid "domain name space"
+msgstr "espace des noms"
+
+# jpaubry@172.16.44.107
+#: jpaubry@172.16.44.107
+msgid "resource records (RR)"
+msgstr "liste des ressources"
+
+#: jpaubry@172.16.44.107
+msgid "OPCODE"
+msgstr "code d'opération "
+
+#: jpaubry@172.16.44.107
+msgid "CNAME"
+msgstr "nom canonique"
+
+#: jpaubry@172.16.44.107
+msgid "Remote Procedure Call, RPC"
+msgstr "appel de procédure à distance"
+
+#: jpaubry@172.16.44.107
+msgid "grid and dots"
+msgstr "malin, morpion (jeu)"
+
+#: jpaubry@172.16.44.107
+msgid "heuristics"
+msgstr "heuristique "
+
+#: jpaubry@172.16.44.107
+msgid "backquote, backtick"
+msgstr "apostrophe inversée"
+
+#: jpaubry@172.16.44.107
+msgid "shareware"
+msgstr "logiciel contributif"
+
+#: jpaubry@172.16.44.107
+msgid "pre-release"
+msgstr "pré-version"
+
+#: jpaubry@172.16.44.107
+msgid "patch program"
+msgstr "programme de correction"
+
+# jpaubry@172.16.44.107
+# ~ jpaubry@172.16.44.107
+# ~ msgid "tutorial"
+# ~ msgstr "tutoriel"
+#: jpaubry@172.16.44.107
+msgid "sticky tag"
+msgstr "marque rémanente"
+
+#: jpaubry@172.16.44.107
+msgid "branchpoint"
+msgstr "point de divergence"
+
+#: jpaubry@172.16.44.107
+msgid "newsticker"
+msgstr "téléscripteur de nouvelles"
+
+#: jpaubry@172.16.44.107
+msgid "todo list"
+msgstr "liste de tâches"
+
+#: jpaubry@172.16.44.107
+msgid "hyphenation"
+msgstr "césure"
+
+#: jpaubry@172.16.44.107
+msgid "workflow software"
+msgstr "logiciel de gestion des processus opérationnels"
+
+#: jpaubry@172.16.44.107
+msgid "legacy application"
+msgstr "application héritée"
+
+#: jpaubry@172.16.44.107
+msgid "assign a value to a variable, to"
+msgstr "affecter une valeur à une variable"
+
+#: jpaubry@172.16.44.107
+msgid "bubble sort"
+msgstr "tri à bulles"
+
+#: jpaubry@172.16.44.107
+msgid "sort in ascending order"
+msgstr "tri ascendant"
+
+#: jpaubry@172.16.44.107
+msgid "sort in descending order"
+msgstr "tri descendant"
+
+#: jpaubry@172.16.44.107
+msgid " subroutine (functional programming)"
+msgstr "sous-programme"
+
+#: jpaubry@172.16.44.107
+msgid "backward compatibility"
+msgstr "compatibilité ascendante"
+
+#: jpaubry@172.16.44.107
+msgid "forward compatibility"
+msgstr "compatibilité descendante"
+
+#: jpaubry@172.16.44.107
+msgid "plain vanilla (for software)"
+msgstr "à part entière"
+
+#: jpaubry@172.16.44.107
+msgid "back office (for software)"
+msgstr "application de gestion et d'administration"
+
+#: jpaubry@172.16.44.107
+msgid "front office (for software)"
+msgstr "application de contact clientèle"
+
+# jpaubry@172.16.44.107
+#: asimons@172.16.45.2
+msgid " combo box"
+msgstr "boîte combinée / zone de liste"
+
+#: jpaubry@172.16.44.107
+msgid " progress bar"
+msgstr "barre d'avancement"
+
+#: jpaubry@172.16.44.107
+msgid "main view"
+msgstr "zone d'affichage principale"
+
+#: jpaubry@172.16.44.107
+msgid " help browser"
+msgstr "logiciel de consultation de l'aide"
+
+#: jpaubry@172.16.44.107
+msgid "tooltips, bubble help"
+msgstr "bulles d'aide, infobulles"
+
+#: jpaubry@172.16.44.107
+msgid "disk quotas"
+msgstr "quotas d'espace disque"
+
+#: jpaubry@172.16.44.107
+msgid "terminal based"
+msgstr "en mode terminal"
+
+#: jpaubry@172.16.44.107
+msgid "upload"
+msgstr "déposer sur le serveur"
+
+#: jpaubry@172.16.44.107
+msgid "swap partition, space"
+msgstr "partition, espace d'échange"
+
+#: jpaubry@172.16.44.107
+msgid "partition table"
+msgstr "table des partitions"
+
+#: jpaubry@172.16.44.107
+msgid " read-only mode"
+msgstr "mode protection d'écriture"
+
+#: jpaubry@172.16.44.107
+msgid "unpack, to"
+msgstr "décompacter"
+
+#: jpaubry@172.16.44.107
+msgid " lock file"
+msgstr "fichier verrou"
+
+#: jpaubry@172.16.44.107
+msgid " post-install"
+msgstr " post-installation"
+
+#: jpaubry@172.16.44.107
+msgid " pristine source"
+msgstr "sources inchangées "
+
+#: jpaubry@172.16.44.107
+msgid " panel"
+msgstr "tableau de bord"
+
+#: jpaubry@172.16.44.107
+msgid " system tray"
+msgstr "boîte à miniatures"
+
+#: jpaubry@172.16.44.107
+msgid "standalone machine"
+msgstr "machine isolée, indépendante"
+
+#: jpaubry@172.16.44.107
+msgid "proxy"
+msgstr "proxy, serveur de proximité"
+
+#: jpaubry@172.16.44.107
+msgid " backup DNS"
+msgstr "DNS de secours"
+
+#: jpaubry@172.16.44.107
+msgid "authenticity, confidentiality and liability"
+msgstr "authenticité, confidentialité et non répudiation"
+
+#: jpaubry@172.16.44.107
+msgid "   ports scan"
+msgstr "examen des ports"
+
+#: jpaubry@172.16.44.107
+msgid " appending virus"
+msgstr "virus procédant par ajout"
+
+#: jpaubry@172.16.44.107
+msgid " overwriting virus"
+msgstr "virus procédant par recouvrement"
+
+#: jpaubry@172.16.44.107
+msgid " backspace"
+msgstr "correction"
+
+#: jpaubry@172.16.44.107
+msgid " video card"
+msgstr "carte graphique"
+
+#: jpaubry@172.16.44.107
+msgid "video RAM"
+msgstr "mémoire graphique"
+
+#: jpaubry@172.16.44.107
+msgid " mode clock(s)"
+msgstr "horloge(s) du mode"
+
+#: jpaubry@172.16.44.107
+msgid " clock chip"
+msgstr "circuit d'horloge"
+
+#: jpaubry@172.16.44.107
+msgid " fixed clocks"
+msgstr " fréquences fixes"
+
+#: jpaubry@172.16.44.107
+msgid " sync range"
+msgstr "plage de sync."
+
+#: jpaubry@172.16.44.107
+msgid " flow control"
+msgstr "contrôle de flux"
+
+#: jpaubry@172.16.44.107
+msgid " init string"
+msgstr "chaîne d'initialisation"
+
+#: jpaubry@172.16.44.107
+msgid "dial-up networking"
+msgstr "accès distant"
+
+#: jpaubry@172.16.44.107
+msgid "spool"
+msgstr "mise en attente"
+
+#: jpaubry@172.16.44.107
+msgid "spool directory"
+msgstr "répertoire de mise en attente"
+
+#: jpaubry@172.16.44.107
+msgid " print job"
+msgstr "tâche d'impression"
+
+#: jpaubry@172.16.44.107
+msgid "UPS"
+msgstr "onduleur"
+
+#: jpaubry@172.16.44.107
+msgid "to beam"
+msgstr "transmettre par infrarouge"
+
+#: jpaubry@172.16.44.107
+msgid " cradle"
+msgstr "socle"
+
+#: jpaubry@172.16.44.107
+msgid "pickboard"
+msgstr "panneau de sélection"
+
+#: jpaubry@172.16.44.107
+msgid "high performance computing (HPC)"
+msgstr "calcul à haute performance"
+
+#: jpaubry@172.16.44.107
+msgid "hard-coded"
+msgstr "codé en dur"
+
+#: jpaubry@172.16.44.115
+msgid " Enterprise Resource Planning, ERP"
+msgstr "progiciel de gestion intégré, PGI"
+
+#: jpaubry@172.16.44.115
+msgid "ROM, read-only memory"
+msgstr "ROM, mémoire morte"
+
+#: jpaubry@172.16.44.115
+msgid " initial RAM disk"
+msgstr "disque RAM initialisé"
+
+#: jpaubry@172.16.44.115
+msgid "direct memory access, DMA"
+msgstr "accès direct à la mémoire, DMA"
+
+#: jpaubry@172.16.44.115
+msgid "middleware layer"
+msgstr "couche d'intergiciels"
+
+#: jpaubry@172.16.44.115
+msgid "middleware "
+msgstr "logiciel des couches intermédiaires"
+
+#: jpaubry@172.16.44.115
+msgid "rollout"
+msgstr "déploiement "
+
+#: jpaubry@172.16.44.115
+msgid " back-end computer"
+msgstr "ordinateur principal "
+
+#: jpaubry@172.16.44.115
+msgid "back-end computer"
+msgstr "ordinateur principal "
+
+#: jpaubry@172.16.44.115
+msgid "blog"
+msgstr "blogue"
+
+#: jpaubry@172.16.44.115
+msgid "raster"
+msgstr "trame"
+
+#: asimons@172.16.44.75
+msgid "test-bed"
+msgstr "banc d'essai"
+
+#: asimons@172.16.44.75
+msgid "power user"
+msgstr "utilisateur expérimenté"
+
+#: asimons@172.16.44.75
+msgid "block special file"
+msgstr "fichier spécial de type bloc"
+
+#: asimons@172.16.44.75
+msgid "character special file"
+msgstr "fichier spécial de type caractère"
+
+# asimons@172.16.44.75
+# ~ asimons@172.16.44.75
+# ~ msgid "PDA"
+# ~ msgstr "ANP (Assistant Numérique Personnel)"
+#: asimons@172.16.44.75
+msgid "rules of thumb"
+msgstr "règles générales"
+
+#: asimons@172.16.44.75
+msgid "crash dump"
+msgstr "vidage de la mémoire en cas de panne"
+
+#: jpaubry@172.16.44.124
+msgid "commodity hardware"
+msgstr "matériel de commodité"
+
+#: jpaubry@172.16.44.124
+msgid "assurance level"
+msgstr "niveau de certification"
+
+#: asimons@172.16.44.75
+msgid "driver disk"
+msgstr "support de pilotes"
+
+#: jpaubry@172.16.44.124
+msgid "Log viewer"
+msgstr "Afficheur de journal"
+
+# jpaubry@172.16.44.124
+#: jpaubry@172.16.44.124
+msgid "prelink"
+msgstr "pré-lien"
+
+#: jpaubry@172.16.44.124
+msgid "straight through processing (STP)"
+msgstr "traitement ininterrompu"
+
+#: jpaubry@172.16.44.124
+msgid "rollback recovery"
+msgstr "retour en arrière"
+
+#: asimons@172.16.44.75
+msgid "cubicle"
+msgstr "compartiment"
+
+#: asimons@172.16.44.75
+msgid "multipath storage"
+msgstr "mémoire multivoie"
+
+#: asimons@172.16.44.75
+msgid "EM64T"
+msgstr "technologie d'extensions 64 bits"
+
+# asimons@172.16.44.75
+# ~ asimons@172.16.44.75
+# ~ msgid "HPC or High Performance Computing"
+# ~ msgstr "calcul informatisé haute performance"
+#: asimons@172.16.44.75
+msgid "high performance cluster (HPC)"
+msgstr "groupement à haute performance"
+
+#: jpaubry@172.16.44.149
+msgid "SNMP"
+msgstr "Simple Network Management Protocole"
+
+#: jpaubry@172.16.44.149
+msgid "MRTG"
+msgstr "Multi Router Traffic Grapher"
+
+#: asimons@172.16.44.75
+msgid "postmortem"
+msgstr "rétrospective"
+
+#: jpaubry@172.16.44.149
+msgid "seasoned, senior"
+msgstr "chevronné, expérimenté"
+
+#: jpaubry@172.16.44.149
+msgid "RPC, remote process call"
+msgstr "appels de procédures à distance (RPC) "
+
+#: asimons@172.16.44.75
+msgid "white papers"
+msgstr "documents techniques"
+
+# jpaubry@172.16.44.149
+#: asimons@172.16.45.11
+msgid "benchmark"
+msgstr "test/évaluation des performances"
+
+#: jpaubry@172.16.44.149
+msgid "YAAPT"
+msgstr "Yet Another Advanced Packaging Tool"
+
+#: jpaubry@172.16.44.149
+msgid "Good Neighbor Policy"
+msgstr "Politique de bon voisinage"
+
+# asimons@172.16.44.154
+# ~ asimons@172.16.44.154
+# ~ msgid "test"
+# ~ msgstr "french test"
+# asimons@172.16.44.75
+# ~ asimons@172.16.44.75
+# ~ msgid "barebone"
+# ~ msgstr "Politique de bon voisinage"
+#: asimons@172.16.44.75
+msgid "nesting block"
+msgstr "bloc d'imbrication"
+
+#: asimons@172.16.44.75
+msgid "newsgroup"
+msgstr "forum"
+
+#: asimons@172.16.45.13
+msgid "guidelines"
+msgstr "directives"
+
+#: asimons@172.16.45.13
+msgid "hotpluggable"
+msgstr "enfichable à chaud"
+
+#: asimons@172.16.45.4
+msgid "input method"
+msgstr "méthode d'entrée"
+
+#: asimons@172.16.44.75
+msgid "system tray"
+msgstr "boîte à miniatures"
+
+#: asimons@172.16.44.75
+msgid "Howto"
+msgstr "guide pratique"
+
+#: asimons@172.16.44.75
+msgid "mini-howto"
+msgstr "petit guide"
+
+#: asimons@172.16.45.5
+msgid "padding"
+msgstr "bourrage, remplissage"
+
+#: asimons@172.16.45.2
+msgid "menu item"
+msgstr "option de menu"
+
+#: asimons@172.16.45.2
+msgid "pane"
+msgstr "volet"
+
+#: asimons@172.16.45.2
+msgid "screensaver"
+msgstr "économiseur d'écran"
+
+#: asimons@172.16.45.2
+msgid "tooltip"
+msgstr "Info-bulle"
+
+#: asimons@172.16.44.75
+msgid "screening"
+msgstr "sélection"
+
+# asimons from 172.16.5.126
+# ~ asimons@172.16.5.126
+#~ msgid "configuration files"
+#~ msgstr "fichiers de configuration"
+#: asimons@172.16.45.5
+msgid "linker"
+msgstr "éditeur de liens"
+
+#: asimons@172.16.45.5
+msgid "inline"
+msgstr "intégré"
+
+#: asimons@172.16.45.5
+msgid "heap"
+msgstr "tas"
+
+#: asimons@172.16.45.5
+msgid "NMI"
+msgstr "interruption non masquable"
+
+#: asimons@172.16.45.7
+msgid "NTP (Network Time Protocol)"
+msgstr "protocole de temps réseau"
+
+#: asimons@172.16.45.3
+msgid "base64 encoded"
+msgstr "codé en base 64"
+
+# asimons@172.16.45.7
+#: asimons@172.16.44.75
+msgid "USB pen drive"
+msgstr "stylo à bille avec disque USB"
+
+#: asimons@172.16.44.75
+msgid "dual homed host"
+msgstr "hôte à double réseau"
+
+#: asimons@172.16.44.75
+msgid "application level gateway"
+msgstr "passerelle de niveau application"
+
+#: jpaubry@172.16.44.201
+msgid "scope of coverage"
+msgstr "portée, étendue de la couverture"
+
+#: asimons@172.16.45.11
+msgid "Network Server Description (NWSD)"
+msgstr "description du serveur réseau"
+
+#: asimons@172.16.45.6
+msgid "System Management Services (SMS)"
+msgstr "Services de gestion de systèmes"
+
+#: asimons@172.16.45.10
+msgid "overhead"
+msgstr "temps système"
+
+#: asimons@172.16.45.6
+msgid "stealthy"
+msgstr "furtif/discret"
+
+#: jpaubry@172.16.44.201
+msgid "upcall"
+msgstr "appel ascendant"
+
+# IBM terminologogy
+#: jpaubry@172.16.45.7
+msgid "vary off"
+msgstr "désactiver, rendre indisponible"
+
+# IBM terminologogy
+#: jpaubry@172.16.45.7
+msgid "vary on"
+msgstr "activer, rendre disponible"
+
+#: asimons@172.16.44.75
+msgid "parser"
+msgstr "analyseur"
+
+#: asimons@172.16.44.75
+msgid "based off"
+msgstr "selon"
+
+#: asimons@172.16.44.75
+msgid "bindings"
+msgstr "liaisons"
+
+#: asimons@172.16.44.75
+msgid "inline code"
+msgstr "code incorporé"
+
+#: asimons@172.16.44.75
+msgid "leverage to"
+msgstr "influencer / compenser"
+
+#: asimons@172.16.44.75
+msgid "game board"
+msgstr "plateaux de jeu"
+
+#: asimons@172.16.44.75
+msgid "designer"
+msgstr "concepteur"
+
+#: asimons@172.16.44.75
+msgid "digest"
+msgstr "groupé"
+
+#: jpaubry@172.16.44.223
+msgid "multihoming"
+msgstr "hébergement multidomaine"
+
+# asimons@172.16.44.75
+#: asimons@172.16.44.75
+msgid "HAL - Hardware abstraction layer"
+msgstr "couche HAL (couche d'abstraction matérielle)"
+
+#: jpaubry@172.16.45.1
+msgid "passphrase"
+msgstr "phrase de passe"
+
+# Pour les portables..
+#: jpaubry@172.16.45.1
+msgid "plane safe mode"
+msgstr "mode Avion"
+
+#: jpaubry@172.16.45.1
+msgid "pop up"
+msgstr "fenêtre contextuelle"
+
+#: jpaubry@172.16.45.1
+msgid "hands free"
+msgstr "mains libres"
+
+#: jpaubry@172.16.45.1
+msgid "voicemail"
+msgstr "message vocal"
+
+#: jpaubry@172.16.45.1
+msgid "Spacing Modifier Letter"
+msgstr "Modificateurs d'espacement"
+
+#: asimons@172.16.44.75
+msgid "hotkey"
+msgstr "raccourci clavier"
+
+#: asimons@172.16.45.12
+msgid "groupware"
+msgstr "collecticiel"
+
+#: asimons@172.16.45.7
+msgid "two-way encryption"
+msgstr "cryptage réversible"
+
+#: asimons@172.16.44.75
+msgid "buddy pounce (GAIM)"
+msgstr "alerte"
+
+#: asimons@172.16.44.75
+msgid "end-to-end encryption"
+msgstr "cryptage de bout en bout"
+
+#: asimons@172.16.44.75
+msgid "network neighborhood"
+msgstr "voisinage réseau"
+
+#: asimons@172.16.45.2
+msgid "memory exhaustion"
+msgstr "saturation de mémoire"
+
+#: asimons@172.16.45.2
+msgid "OOM (out of memory)"
+msgstr "mémoire saturée"
+
+#: asimons@172.16.45.2
+msgid "preloaded"
+msgstr "préchargé"
+
+#: asimons@172.16.45.11
+msgid "fuzzy"
+msgstr "flou"
+
+#: asimons@172.16.45.12
+msgid "dual core"
+msgstr "double noyau"
+
+#: asimons@172.16.44.75
+msgid "provision"
+msgstr "dimensionner"
+
+#: asimons@172.16.44.75
+msgid "provisioning"
+msgstr "dimensionnement"
+
+#: asimons@172.16.44.75
+msgid "bundled"
+msgstr "intégré"
+
+#: asimons@172.16.44.75
+msgid "business logic"
+msgstr "logique applicative"
+
+#: asimons@172.16.44.75
+msgid "outdated"
+msgstr "périmé"
+
+#: asimons@172.16.45.6
+msgid "probe"
+msgstr "sonde"
+
+#: asimons@172.16.45.6
+msgid "backend"
+msgstr "serveur"
+
+#: asimons@172.16.45.6
+msgid "prerequisites"
+msgstr "conditions préalables"
+
+#: asimons@172.16.45.7
+msgid "advisory"
+msgstr "alerte"
+
+#: asimons@172.16.44.75
+msgid "scout"
+msgstr "agent"
+
+#: asimons@172.16.45.11
+msgid "trending"
+msgstr "famille"
+
+#: asimons@172.16.45.6
+msgid "redo log"
+msgstr "fichier Redo Log"
+
+#: asimons@172.16.44.75
+msgid "fine tune"
+msgstr "ajuster"
+
+#: asimons@172.16.44.55
+msgid "taint"
+msgstr "corrompu"
+
+#: asimons@172.16.44.55
+msgid "setting"
+msgstr "paramètre"
+
+#: asimons@172.16.44.55
+msgid "system-wide"
+msgstr "tout le système"
+
+#: asimons@172.16.44.55
+msgid "system administrator"
+msgstr "administrateur système"
+
+#: asimons@172.16.44.55
+msgid "deny"
+msgstr "interdire"
+
+#: asimons@172.16.44.75
+msgid "name service switch (NSS)"
+msgstr "commutateur de services de noms"
+
+#: asimons@172.16.44.55
+msgid "extent"
+msgstr "domaine"
+
+#: asimons@172.16.44.55
+msgid "setting"
+msgstr "réglage"
+
+#: asimons@10.64.68.4
+msgid "caching name server"
+msgstr "serveur cache de noms"
+
+#: asimons@172.16.50.138
+msgid "lease"
+msgstr "bail (baux)"
+
+#: asimons@10.64.68.4
+msgid "in-house"
+msgstr "interne"
+
+#: asimons@10.64.68.10
+msgid "staging"
+msgstr "de transit"
+
+#: asimons@172.16.45.104
+msgid "leading edge"
+msgstr "a l'avant garde"
+
+#: asimons@172.16.45.76
+msgid "fabric"
+msgstr "cœur de commutation"
+
+#: asimons@172.16.45.76
+msgid "unrecoverable"
+msgstr "irréparable"
+

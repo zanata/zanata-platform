@@ -1,0 +1,269 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+<h1>#{msgs['jsf.Settings']}</h1>
+
+<div class="tabs--vertical js-tabs">
+<ul class="tabs__nav js-tabs-nav">
+  <li>
+    <a
+      href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/general"
+      id="settings-general_tab" class="js-url-mod is-active"
+      data-content="#settings-general">
+      <i class="i i--settings"></i>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.General']}</span>
+    </a>
+  </li>
+  <li>
+    <a
+      href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/languages"
+      id="settings-languages_tab" class="js-url-mod"
+      data-content="#settings-languages">
+      <i class="i i--language"></i>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Languages']}</span>
+    </a>
+  </li>
+  <li>
+    <a
+      href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/projects"
+      id="settings-projects_tab" class="js-url-mod"
+      data-content="#settings-projects">
+      <i class="i i--project"></i>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Projects']}</span>
+    </a>
+  </li>
+  <li>
+    <a
+      href="#{request.contextPath}/version-group/view/#{versionGroupHomeAction.slug}/settings/maintainers"
+      id="settings-maintainers_tab" class="js-url-mod"
+      data-content="#settings-maintainers">
+      <i class="i i--users"></i>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Maintainers']}</span>
+    </a>
+  </li>
+</ul>
+<ul class="tabs__content js-tabs-content">
+  <li class="is-active" id="settings-general">
+    <h2 class="l--push-all-0 gamma d--bottom">#{msgs['jsf.General']}</h2>
+    <h:form styleClass="l--constrain-large">
+      <div>
+        <ui:include src="edit_form.xhtml"/>
+
+        <div class="l--push-top-1">
+          <a4j:commandLink value="#{msgs['jsf.UpdateGeneralSettings']}"
+            action="#{versionGroupHome.update}"
+            rendered="#{versionGroupHome.managed}"
+            render="group-info"
+            styleClass="l--push-right-half button--primary"/>
+        </div>
+        <hr/>
+        <h:panelGroup id="status">
+          <ui:fragment
+            rendered="#{versionGroupHome.instance.status == 'ACTIVE'}">
+            <p>
+              <a4j:commandLink styleClass="button--danger"
+                action="#{versionGroupHome.setStatus('O')}" render="status">
+                #{msgs['jsf.ArchiveThisGroup']}
+              </a4j:commandLink>
+            </p>
+
+            <p class="txt--meta">#{msgs['jsf.ArchiveGroupMessage']}</p>
+          </ui:fragment>
+
+          <ui:fragment
+            rendered="#{versionGroupHome.instance.status != 'ACTIVE'}">
+            <p>
+              <a4j:commandLink styleClass="button--success"
+                action="#{versionGroupHome.setStatus('A')}" render="status">
+                <i
+                  class="i--left i--archive"></i> #{msgs['jsf.UnArchiveThisGroup']}
+              </a4j:commandLink>
+            </p>
+
+            <p class="txt--meta">
+              <i
+                class="i--left i--archive"></i> #{msgs['jsf.ActivateGroupMessage']}
+            </p>
+          </ui:fragment>
+        </h:panelGroup>
+      </div>
+    </h:form>
+  </li>
+  <li id="settings-languages">
+    <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+      #{msgs['jsf.Languages']}
+    </h2>
+    <h:form id="settings-languages-form" styleClass="l--push-bottom-0">
+      <ul class="list--slat list--highlight l--push-top-half">
+        <ui:repeat value="#{versionGroupHome.getInstanceActiveLocales()}"
+          var="locale" varStatus="status">
+          <li class="reveal">#{locale.retrieveDisplayName()}<span
+            class="txt--understated l--push-left-quarter">[#{locale.localeId}]</span>
+            <a4j:commandLink
+              styleClass="button--link l--float-right reveal__target"
+              action="#{versionGroupHome.removeLanguage(locale)}"
+              onbegin="jQuery('#remove-language-#{status.index}').addClass('is-hidden')"
+              oncomplete="refreshStatistics()" execute="@this"
+              render="settings-languages-form"
+              title="#{msgs['jsf.group.RemoveLanguage.title']}">
+              <span class="is-sr-only">#{msgs['jsf.group.RemoveLanguage.sr.label']}</span>
+              <i id="remove-language-#{status.index}" class="i--large i--cancel txt--danger"></i>
+              <a4j:status>
+                <f:facet name="start">
+                  <zanata:loader layout="inline"/>
+                </f:facet>
+              </a4j:status>
+            </a4j:commandLink>
+          </li>
+        </ui:repeat>
+        <li class="list--highlight__item--none">
+          <label
+            for="#{rich:clientId('languageAutocomplete')}-autocomplete__input">
+            #{msgs['jsf.AddALanguage']}
+          </label>
+
+          <zanata:autocomplete
+            actionBean="#{versionGroupHome.localeAutocomplete}"
+            maxlength="80" searchWhenFocus="true"
+            id="languageAutocomplete"
+            fetchValue="#{result.localeId}" render="settings-languages-form"
+            oncomplete="refreshStatistics();focusCurrentActiveInput()"
+            placeholder="#{msgs['jsf.language.search.placeholder']}">
+
+            #{result.retrieveDisplayName()}<span
+            class="txt--understated l--push-left-quarter">[#{result.localeId}]</span>
+          </zanata:autocomplete>
+
+        </li>
+      </ul>
+    </h:form>
+  </li>
+  <li id="settings-projects">
+    <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+      #{msgs['jsf.Projects']}
+    </h2>
+    <h:form id="settings-projects-form" styleClass="l--push-bottom-0">
+      <ul class="list--slat list--highlight l--push-top-half">
+        <ui:repeat
+          value="#{versionGroupHome.getSortedInstanceProjectIterations()}"
+          var="version" varStatus="status">
+          <li class="reveal">
+            <h:link outcome="/iteration/view.xhtml">
+              <f:param name="projectSlug" value="#{version.project.slug}"/>
+              <f:param name="iterationSlug" value="#{version.slug}"/>
+              #{version.project.name} <i class="i i--version"></i> <zanata:version-label version="#{version}"/>
+              <ui:fragment rendered="#{version.status == 'OBSOLETE'}">
+                <span class="txt--danger l--push-left-half">#{msgs['jsf.group.ArchivedVersionNotIncluded']}</span>
+              </ui:fragment>
+            </h:link>
+            <a4j:commandLink
+              styleClass="button--link l--float-right reveal__target"
+              action="#{versionGroupHome.removeVersion(version)}"
+              onbegin="jQuery('#remove-version-#{status.index}').addClass('is-hidden')"
+              oncomplete="refreshStatistics()" execute="@this"
+              render="settings-projects-form"
+              title="#{msgs['jsf.group.RemoveVersion.title']}">
+              <span class="is-sr-only">#{msgs['jsf.group.RemoveVersion.sr.label']}</span>
+              <i id="remove-version-#{status.index}" class="i--large i--cancel txt--danger"></i>
+              <a4j:status>
+                <f:facet name="start">
+                  <zanata:loader layout="inline"/>
+                </f:facet>
+              </a4j:status>
+            </a4j:commandLink>
+          </li>
+        </ui:repeat>
+        <li class="list--highlight__item--none">
+          <label
+            for="#{rich:clientId('versionAutocomplete')}-autocomplete__input">
+            #{msgs['jsf.AddAProject']}
+          </label>
+
+          <zanata:autocomplete
+            actionBean="#{versionGroupHome.versionAutocomplete}"
+            maxlength="40" minlength="3" id="versionAutocomplete"
+            fetchValue="#{result.id}"
+            render="settings-projects-form"
+            oncomplete="refreshStatistics();focusCurrentActiveInput();"
+            placeholder="#{msgs['jsf.SearchProjects']}">
+
+            #{result.project.slug} <i class="i i--version"></i> <zanata:version-label version="#{result}"/>
+          </zanata:autocomplete>
+        </li>
+      </ul>
+    </h:form>
+  </li>
+  <li id="settings-maintainers">
+    <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+      #{msgs['jsf.Maintainers']}
+      <a4j:status name="maintainers-form-loader">
+        <f:facet name="start">
+          <zanata:loader layout="inline" type="loader--small"/>
+        </f:facet>
+      </a4j:status>
+    </h2>
+    <h:form id="settings-maintainers-form" styleClass="l--push-bottom-0">
+      <ul class="list--slat list--highlight l--push-top-half">
+        <ui:repeat value="#{versionGroupHome.getInstanceMaintainers()}"
+          var="maintainer">
+          <li class="reveal">
+            <span class="w--r-1 bx--round l--push-right-quarter">
+              <img
+                src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"
+                alt="#{maintainer.account.username}"/>
+            </span>
+            #{maintainer.name}
+            <span class="txt--meta">@#{maintainer.account.username}</span>
+            <a4j:commandLink
+              styleClass="button--link l--float-right reveal__target"
+              action="#{versionGroupHome.removeMaintainer(maintainer)}"
+              onbegin="jQuery('#remove-maintainer-#{status.index}').addClass('is-hidden')"
+              execute="@this"
+              render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers-form"
+              title="#{msgs['jsf.group.RemoveMaintainer.title']}">
+              <span class="is-sr-only">#{msgs['jsf.group.RemoveMaintainer.sr.label']}</span>
+              <i id="remove-maintainer-#{status.index}" class="i--large i--cancel txt--danger"></i>
+              <a4j:status>
+                <f:facet name="start">
+                  <zanata:loader layout="inline"/>
+                </f:facet>
+              </a4j:status>
+            </a4j:commandLink>
+          </li>
+        </ui:repeat>
+
+        <li class="list--highlight__item--none">
+          <label
+            for="#{rich:clientId('maintainerAutocomplete')}-autocomplete__input">
+            #{msgs['jsf.AddAMaintainer']}
+          </label>
+
+          <zanata:autocomplete
+            actionBean="#{versionGroupHome.maintainerAutocomplete}"
+            maxlength="80" minlength="3" id="maintainerAutocomplete"
+            fetchValue="#{result.account.username}"
+            render="settings-maintainers-form,maintainers-size,maintainers-list,maintainers-form"
+            oncomplete="focusCurrentActiveInput()"
+            placeholder="#{msgs['jsf.SearchUsers']}"
+            onSelectStatus="maintainers-form-loader">
+
+          <span class="w--r-1 bx--round l--push-right-quarter">
+            <img
+              src="#{gravatarServiceImpl.getUserImageUrl(48, result.email)}"
+              alt="#{result.name}"/>
+              </span>#{result.name}
+            <span
+              class="txt--meta">@#{result.account.username}</span>
+          </zanata:autocomplete>
+        </li>
+      </ul>
+    </h:form>
+  </li>
+</ul>
+</div>
+</ui:composition>

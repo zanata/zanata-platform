@@ -1,0 +1,28 @@
+site_name: Zanata Client
+docs_dir: docs
+repo_name: GitHub
+repo_url: http://www.github.com/zanata/zanata-client
+theme: readthedocs
+# theme_dir: For custom themes
+
+pages:
+- Home: 'index.md'
+- Release notes: 'release-notes.md'
+- User Guide:
+  - Linux Installation: 'installation/linux-installation.md'
+  - OS X Installation: 'installation/osx-installation.md'
+  - Windows Installation: 'installation/windows-installation.md'
+  - Manual Installation: 'installation/manual-installation.md'
+  - Configuration: 'configuration.md'
+  - Command Hook: 'command-hook.md'
+- Commands:
+  - init: 'commands/init.md'
+  - push: 'commands/push.md'
+  - pull: 'commands/pull.md'
+  - glossary-push: 'commands/glossary-push.md'
+  - glossary-pull: 'commands/glossary-pull.md'
+  - glossary-delete: 'commands/glossary-delete.md'
+- Maven Plugin:
+  - Installation: 'maven-plugin/installation.md'
+  - Configuration: 'maven-plugin/configuration.md'
+  - Commands: 'maven-plugin/commands.md'

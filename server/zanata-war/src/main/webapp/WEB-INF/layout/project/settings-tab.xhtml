@@ -1,0 +1,227 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:rich="http://richfaces.org/rich"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+<script type="text/javascript">
+  //<![CDATA[
+  function onRestrictedByRoleValueChanged(key, checked) {
+    bindRestrictedByRoleValue(key, checked);
+  }
+
+  function getUserRoleId() {
+    return "[id='#{rich:clientId('user-roles')}']";
+  }
+  //]]>
+</script>
+
+<h:form>
+  <a4j:jsFunction name="bindRestrictedByRoleValue" render="user-roles"
+    oncomplete="zanata.form.appendCheckboxes(getUserRoleId())"
+    action="#{projectHome.setRestrictedByRole(key, checked)}">
+    <a4j:param name="val1" assignTo="#{key}"/>
+    <a4j:param name="val2" assignTo="#{checked}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="bindRestrictRoleValue"
+    action="#{projectHome.updateRoles(roleName, isRestricted)}">
+    <a4j:param name="val1" assignTo="#{roleName}"/>
+    <a4j:param name="val2" assignTo="#{isRestricted}"/>
+  </a4j:jsFunction>
+
+  <a4j:jsFunction name="runDelete" action="#{projectHome.deleteSelf()}" />
+</h:form>
+
+<h1>#{msgs['jsf.project.ProjectSettings']}</h1>
+
+<div class="tabs--vertical js-tabs">
+<ul class="tabs__nav js-tabs-nav">
+  <li>
+    <a id="settings-general_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/general"
+      class="js-url-mod is-active" data-content="#settings-general">
+      <i class="i i--settings"></i>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.General']}</span>
+    </a>
+  </li>
+  <li>
+    <a id="settings-languages_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/languages"
+      class="js-url-mod" data-content="#settings-languages">
+      <i class="i i--language"></i>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Languages']}</span>
+    </a>
+  </li>
+  <li>
+    <a id="settings-translation_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/translation"
+      class="js-url-mod" data-content="#settings-translation">
+      <i class="i i--translate"></i>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Translation']}</span>
+    </a>
+  </li>
+  <li>
+    <a id="settings-permissions_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/permissions"
+      class="js-url-mod" data-content="#settings-permissions">
+      <i class="i i--users"></i>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.Permissions']}</span>
+    </a>
+  </li>
+  <li>
+    <a id="settings-webhooks_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/webhooks"
+      class="js-url-mod" data-content="#settings-webhooks">
+      <i class="i i--source"></i>
+      <span class="is-hidden--m-l-down">#{msgs['jsf.project.WebHooks']}</span>
+    </a>
+  </li>
+  <li>
+    <a id="settings-about_tab"
+      href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/settings/about"
+      class="js-url-mod" data-content="#settings-about">
+      <i class="i i--info"></i>
+          <span
+            class="is-hidden--m-l-down">#{msgs['jsf.project.About']}</span>
+    </a>
+  </li>
+</ul>
+<ul class="tabs__content js-tabs-content">
+<li class="is-active" id="settings-general">
+  <ui:include src="settings-tab-general.xhtml"/>
+</li>
+<li id="settings-languages" class="js-static-element">
+  <ui:include src="settings-tab-languages.xhtml" />
+</li>
+<li id="settings-translation">
+  <ui:include src="settings-tab-translation.xhtml" />
+</li>
+
+<li id="settings-permissions">
+  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+    #{msgs['jsf.Permissions']}
+  </h2>
+
+  <h3 class="heading--secondary">#{msgs['jsf.Maintainers']}</h3>
+  <h:form id="settings-permissions-form" styleClass="l--push-bottom-0">
+    <ul id="maintainers-list"
+      class="list--slat list--highlight l--push-top-half">
+      <ui:repeat value="#{projectHome.getInstanceMaintainers()}"
+        var="maintainer">
+        <li class="reveal--list-item">
+          <span class="w--r-1 bx--round l--push-right-quarter">
+            <img alt="#{maintainer.account.username}"
+              src="#{gravatarServiceImpl.getUserImageUrl(48, maintainer.email)}"/>
+          </span> #{maintainer.name}
+          <span class="txt--meta">@#{maintainer.account.username}</span>
+          <a4j:commandLink
+            id="remove-maintainer-button"
+            action="#{projectHome.removeMaintainer(maintainer)}"
+            oncomplete="zanata.form.appendCheckboxes(getUserRoleId())"
+            styleClass="l--float-right txt--danger reveal__target"
+            render="settings-permissions-form,maintainers-size,maintainers-form">
+            <i class="i--large i--cancel"></i>
+          </a4j:commandLink>
+        </li>
+      </ui:repeat>
+
+      <li class="list--highlight__item--none">
+        <label
+          for="#{rich:clientId('maintainerAutocomplete')}-autocomplete__input">
+          #{msgs['jsf.AddAMaintainer']}
+        </label>
+
+        <zanata:autocomplete
+          actionBean="#{projectHome.maintainerAutocomplete}"
+          maxlength="80" minlength="3" id="maintainerAutocomplete"
+          fetchValue="#{result.account.username}"
+          render="settings-permissions-form,maintainers-size, maintainers-form"
+          oncomplete="zanata.form.appendCheckboxes(getUserRoleId());focusCurrentActiveInput()"
+          placeholder="#{msgs['jsf.SearchUsers']}">
+
+          <span class="w--r-1 bx--round l--push-right-quarter">
+            <img
+              src="#{gravatarServiceImpl.getUserImageUrl(48, result.email)}"
+              alt="#{result.name}"/>
+          </span>#{result.name}
+          <span
+            class="txt--meta">@#{result.account.username}</span>
+        </zanata:autocomplete>
+      </li>
+    </ul>
+    <hr/>
+
+    <h:panelGroup layout="block"  styleClass="l--push-bottom-half" id="user-roles">
+      <zanata:checkbox label="#{msgs['jsf.RestrictRoleAccessMessage']}"
+        onValueChanged="onRestrictedByRoleValueChanged"
+        labelStyle="js-reveal__toggle l--push-bottom-0"
+        styleClass="js-form__restricted-by-role"
+        checked="#{projectHome.instance.isRestrictedByRoles()}"
+        value="restrict-access"/>
+      <h:panelGroup layout="block"  styleClass="bg--high l--pad-top-quarter l--pad-h-quarter"
+        rendered="#{projectHome.instance.restrictedByRoles}">
+        <ul class="g--tighter">
+          <ui:repeat value="#{projectHome.availableRoles}" var="availableRole">
+            <li class="g__item w--1-3 w--1-2-s">
+              <zanata:checkbox label="#{availableRole.name}"
+                onValueChanged="bindRestrictRoleValue"
+                checked="#{projectHome.isRoleRestrictionEnabled(availableRole.name)}"
+                value="#{availableRole.name}"/>
+            </li>
+          </ui:repeat>
+        </ul>
+      </h:panelGroup>
+    </h:panelGroup>
+  </h:form>
+</li>
+<li id="settings-webhooks" class="js-tabs-content">
+  <ui:include src="settings-tab-webhook.xhtml" />
+</li>
+
+<li id="settings-about" class="js-tabs-content">
+  <h2 class="l--push-all-0 gamma d--bottom l--push-bottom-half">
+    #{msgs['jsf.project.About']}
+  </h2>
+
+  <p class="message--highlight">
+    #{msgs['jsf.project.about.message']}
+  </p>
+  <h:form id="settings-about-form" styleClass="l--push-bottom-0">
+
+    <div class="js-commonmark">
+      <h:inputTextarea id="homeContent" required="false" rows="10"
+        value="#{projectHome.instance.homeContent}"
+        styleClass="text-editor js-commonmark__editor">
+      </h:inputTextarea>
+
+      <p class="txt--meta">
+        <h:outputText value="#{msgs['jsf.project.about.markup']}"
+          escape="false"/>
+      </p>
+
+      <a4j:commandLink value="#{msgs['jsf.project.saveNotes']}"
+        action="#{projectHome.updateAboutPage}" rendered="#{projectHome.managed}"
+        render="project-about"
+        styleClass="l--push-top-1 button button--primary"/>
+
+      <hr/>
+
+      <div id="home-content-preview" class="prose prose--preview js-commonmark__preview"></div>
+    </div>
+
+  </h:form>
+</li>
+</ul>
+</div>
+
+  <h:outputScript target="body" library="webjars" name="${commonMarkRenderer.outputScriptNameSanitizer}"/>
+  <h:outputScript target="body" library="webjars" name="${commonMarkRenderer.outputScriptName}"/>
+  <h:outputScript target="body" library="script" name="commonmark-preview.js"/>
+
+  <ui:include src="/WEB-INF/layout/delete_confirmation_modal.xhtml">
+    <ui:param name="copiedEntityType" value="#{msgs['jsf.Project']}" />
+    <ui:param name="entityName" value="#{projectHome.instance.name}" />
+  </ui:include>
+</ui:composition>

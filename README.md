@@ -1,13 +1,13 @@
-Zanata
-=====
+# Zanata
 
 Zanata is a web-based system for translators to translate
 documentation and software online using a web-browser. It is
-written in Java and uses modern web technologies like JBoss,
-Seam, GWT, Hibernate, and a REST API. It currently supports
+written in Java and uses modern web technologies like JBoss EAP,
+CDI, GWT, Hibernate, and a REST API. It currently supports
 translation of DocBook/Publican documentation through PO
-files. Projects can be uploaded to and downloaded from a Zanata
-server using a Maven plugin or a Python client.
+files, and a number of other formats. Projects can be uploaded
+to and downloaded from a Zanata server using a Maven plugin or
+a command line client.
 
 For *developers and writers*: By using Zanata for
 your document translations, you can open up your project for
@@ -20,44 +20,24 @@ a language team and start translating, with translation memory (history
 of similar translations) and the ability to see updates from other
 translators in seconds.
 
+Find out about Zanata here: http://zanata.org/
+
 
 Zanata is Free software, licensed under the [LGPL][].
 
 [LGPL]: http://www.gnu.org/licenses/lgpl-2.1.html
 
-Developers
-----------
+## Source code note
+Please note that any references to pull request numbers in commit
+messages (eg merge nodes) prior to 20 October 2016 are referring to the
+old repositories (before they were merged into the zanata-platform
+repository):
 
-### Prerequisites
+* https://github.com/zanata/zanata-api/pulls/
+* https://github.com/zanata/zanata-client/pulls/
+* https://github.com/zanata/zanata-common/pulls/
+* https://github.com/zanata/zanata-parent/pulls/
+* https://github.com/zanata/zanata-server/pulls/
 
-You will need:
-- Java SDK 8 (OpenJDK recommended)
-- npm
-- Mysql or MariaDB
-- JBoss EAP 7 or WildFly 10
-
-### Building
-
-#### Quickly build a .war file
-
-[`etc/scripts/quickbuild.sh`](etc/scripts/quickbuild.sh) - Builds the project
-as quickly as possible, targeting both Firefox and Chrome when building GWT
-components, and skipping all checks and verifications (i.e. tests, checkstyle, etc)
-
-If you wish to build GWT components for chrome or firefox only, you can specify the
-`-c` and `-f` arguments respectively.
-
-The `-h` argument prints the script's help.
-
-#### Build and run a server for testing
-
-[`etc/scripts/cargowait.sh`](etc/scripts/cargowait.sh) - Builds the Zanata artifact
-and starts a JBoss server using the cargo plugin. This script is particularly
-useful for starting a Zanata instance with the aim of running functional tests
-from an IDE.
-
-The `-h` argument prints the script's help.
-
-#### Development using docker (experimental)
-
-For a quick Zanata development environment with Docker, please visit the [docker README](docker/README.md).
+GitHub tries to auto-link numbers to pull requests, but such links will
+generally be incorrect for old commit messages.

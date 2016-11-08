@@ -1,0 +1,155 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
+  xmlns:a4j="http://richfaces.org/a4j">
+
+  <div class="panel">
+    <div class="panel__header">
+      <div class="panel__header__actions">
+        <ui:fragment
+          rendered="#{identity.loggedIn and identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+          <a href="#" class="button button--snug l--push-all-half"
+            id="add-team-member-button"
+            data-toggle="modal"
+            data-target="#searchUserDialog"
+            title="#{msgs['jsf.AddTeamMember']}">
+            <i class="i i--add"></i>
+          </a>
+        </ui:fragment>
+      </div>
+      <h2 class="panel__heading">#{msgs['jsf.Members']}</h2>
+    </div>
+
+    <div class="panel__sub-header js-reveal">
+      <zanata:list-filter status="membersTab-membersLoader"
+        listId="members-form"
+        render="members-form, membersSearchBottom-pager, membersSearchBottom-page-info"
+        id="membersSearch" iconClass="i--users"
+        placeholder="#{msgs['jsf.language.members.search.placeholder']}"
+        actionBean="#{languageAction.membersFilter}"/>
+    </div>
+
+    <a4j:status name="membersTab-membersLoader">
+      <f:facet name="start">
+        <zanata:loader/>
+      </f:facet>
+    </a4j:status>
+
+    <h:form id="members-form" styleClass="l--push-bottom-1">
+      <script type="application/javascript">
+        function memberTabBindAsCoordinator(personId, checked) {
+          var actionsRoles = jQuery('#' + personId + '-members-actions-roles');
+          toggleMemberRolesEntry(actionsRoles, checked);
+          bindAsCoordinator(personId, checked, refreshRequestsForm());
+        }
+
+        function memberTabBindAsTranslator(key, checked) {
+          bindAsTranslator(key, checked, refreshRequestsForm());
+        }
+
+        function memberTabBindAsReviewer(key, checked) {
+          bindAsReviewer(key, checked, refreshRequestsForm());
+        }
+      </script>
+
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
+        rendered="#{empty languageAction.localeMembers}">
+        <p class="txt--meta">#{msgs['jsf.language.members.empty']}</p>
+        <ui:fragment
+          rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+          <p>
+            <a id="addTeamMemberLink" href="#" class="button--primary"
+              data-toggle="modal" onclick="return false;"
+              data-target="#searchUserDialog">
+              #{msgs['jsf.AddTeamMember']}
+              <i class="i i--add i__item__icon"></i>
+            </a>
+          </p>
+        </ui:fragment>
+      </h:panelGroup>
+
+      <h:panelGroup layout="block"  styleClass="l--pad-all-half"
+        rendered="#{not empty languageAction.localeMembers and empty languageAction.membersFilter.currentPage}">
+        <p class="txt--meta">#{msgs['jsf.search.NoResult']}</p>
+      </h:panelGroup>
+
+
+      <ui:fragment rendered="#{not empty languageAction.membersFilter.currentPage}">
+        <ul class="list--stats">
+          <ui:repeat value="#{languageAction.membersFilter.currentPage}" var="member">
+            <li
+              class="#{identity.hasPermission(languageAction.locale, 'manage-language-team') ? 'list__item--actionable' : 'l--pad-all-quarter'}">
+              <h:panelGroup layout="block"  styleClass="list__item__action"
+                rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+                <div
+                  class="dropdown dropdown--small dropdown--inline dropdown--single list__item__dropdown js-dropdown">
+                  <a href="#" title="Options"
+                    class="dropdown__toggle js-dropdown__toggle txt--meta">
+                    <span class="is-invisible">Options</span>
+                  </a>
+                  <ul class="dropdown__content js-dropdown__content">
+                    <li>
+                      <a4j:commandLink value="#{msgs['jsf.Remove']}"
+                        render="contactMembersModal"
+                        action="#{languageAction.removeMembership(member)}"
+                        execute="@this" oncomplete="refreshMembersForm()"
+                        styleClass="i__item--right txt--danger">
+                        <i class="i i--cancel i__item__icon"></i>
+                      </a4j:commandLink>
+                    </li>
+                  </ul>
+                </div>
+              </h:panelGroup>
+
+              <div class="list__item__content">
+                <zanata:person-tile person="#{member.person}" styleClass="list__item__info"/>
+                <div id="#{member.person.id}-members-actions-roles" class="list__item__actions">
+                  <ul class="list--horizontal txt--meta">
+                    <ui:fragment rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+                      <ui:param name="isCoordinator" value="#{member.coordinator}"/>
+
+                      <li>
+                        <zanata:checkbox label="#{msgs['jsf.Translator']}" id="translator" styleClass="#{isCoordinator ? 'is-disabled' : ''}"
+                          checked="#{member.translator}" onValueChanged="memberTabBindAsTranslator"
+                          value="#{member.person.id}"/>
+                      </li>
+                      <li>
+                        <zanata:checkbox label="#{msgs['jsf.Reviewer']}" id="reviewer" styleClass="#{isCoordinator ? 'is-disabled' : ''}"
+                          checked="#{member.reviewer}" onValueChanged="memberTabBindAsReviewer"
+                          value="#{member.person.id}"/>
+                      </li>
+                      <li>
+                        <zanata:checkbox label="#{msgs['jsf.Coordinator']}" id="coordinator"
+                          checked="#{member.coordinator}" onValueChanged="memberTabBindAsCoordinator"
+                          value="#{member.person.id}"/>
+                      </li>
+                    </ui:fragment>
+                    <ui:fragment rendered="#{not identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+                      <li>
+                        #{languageAction.getLocalisedMemberRoles(member)}
+                      </li>
+                    </ui:fragment>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ui:repeat>
+        </ul>
+      </ui:fragment>
+    </h:form>
+
+    <zanata:list-filter listId="members-form"
+      render="members-form, membersSearch-pager, membersSearch-page-info"
+      id="membersSearchBottom" iconClass="i--users" bottomPanel="true"
+      placeholder="#{msgs['jsf.language.members.search.placeholder']}"
+      actionBean="#{languageAction.membersFilter}"/>
+
+  </div>
+  <ui:fragment
+    rendered="#{identity.hasPermission(languageAction.locale, 'manage-language-team')}">
+    <ui:include src="search_user_modal.xhtml"/>
+  </ui:fragment>
+
+</ui:composition>

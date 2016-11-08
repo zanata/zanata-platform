@@ -1,0 +1,23 @@
+#
+# AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: 0\n"
+"POT-Creation-Date: 2012-12-04T23:32:46\n"
+"PO-Revision-Date: 2012-12-04T23:32:46\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: None\n"
+"MIME-Version: 1.0\n"
+"Content-Type: application/x-publican; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Tag: para
+#, no-c-format
+msgid "Fedora is an open, innovative, forward looking operating system and platform, based on Linux, that is always free for anyone to use, modify and distribute, now and forever. It is developed by a large community of people who strive to provide and maintain the very best in free, open source software and standards. Fedora is part of the Fedora Project, sponsored by Red Hat, Inc."
+msgstr "Fedora 是一个开放的、创新的、前瞻性的操作系统和平台，基于 Linux，允许任何人自由地使用、修改和重发布，无论现在还是将来。它由一个庞大的社群开发，这个社群的成员以自己的不懈努力，提供并维护自由、开放源码的软件和开放的标准。Fedora 是 Fedora Project 的一部分，得到了 Red Hat, Inc. 的支持。"
+
+#. Tag: para
+#, no-c-format
+msgid "Visit the Fedora community Wiki at <ulink url=\"http://fedoraproject.org/wiki/\" />."
+msgstr "访问 Fedora 社区 Wiki <ulink url=\"http://fedoraproject.org/wiki/\" />。"
