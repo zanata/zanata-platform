@@ -126,11 +126,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
 
 
 
-                // FIXME no longer exists: /profile/add_identity.xhtml
-                .addRule(Join.path("/profile/add_identity").to("/profile/add_identity.xhtml"))
                 .addRule(Join.path("/profile/create").to("/profile/create_user.xhtml"))
-                // FIXME no longer exists: /profile/edit.xhtml
-                .addRule(Join.path("/profile/edit").to("/profile/edit.xhtml"))
                 .addRule(Join.path("/profile/merge_account").to("/profile/merge_account.xhtml"))
 
                 .addRule(Join.path("/project/add_iteration/{projectSlug}").to("/project/add_iteration.xhtml"))
