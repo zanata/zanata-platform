@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Button, OverlayTrigger, ButtonToolbar, Tooltip }
+import { Button }
   from 'react-bootstrap'
 import TeaserList from './TeaserList'
 import { TextInput, Icon } from '../../components'
@@ -47,11 +47,6 @@ class Explore extends Component {
       searchError,
       searchLoading
     } = this.props
-
-    const tooltip = (
-      <Tooltip id='tooltip-bottom' role='tooltip'>
-      This is some tooltip text</Tooltip>
-    )
     let content
     if (searchError) {
       content = (<p>Error searching for '{searchText}'.<br />
@@ -143,11 +138,6 @@ class Explore extends Component {
               onClick={(e) => { this.handleClearSearch() }}>
               Cancel
             </Button>
-            <ButtonToolbar>
-              <OverlayTrigger placement='bottom' overlay={tooltip} >
-                <Button bsStyle='default'>Test tooltip</Button>
-              </OverlayTrigger>
-            </ButtonToolbar>
           </div>
         </div>
         <div className='scrollViewTheme'>
