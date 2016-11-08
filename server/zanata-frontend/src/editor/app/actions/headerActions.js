@@ -151,6 +151,9 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
           throw e
         })
 
+    // FIXME Split to separate handlers for easier debugging and maintenance.
+    //       There is no real dependency for each of these requests to have to
+    //       all complete before storing the relevant data.
     Promise.all([docListPromise, projectInfoPromise,
       myInfoPromise, versionLocalesPromise])
         .then((all) => {
@@ -206,6 +209,7 @@ export function fetchHeaderInfo (projectSlug, versionSlug, docId, localeId) {
             selectedLocaleId = locales[0].localeId
           }
 
+          // TODO trigger in new-context-fetch.js instead
           fetchStatistics(projectSlug, versionSlug, selectedDocId,
             selectedLocaleId)
             .then(checkResponse('fetch statistics failed'))

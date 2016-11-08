@@ -1,9 +1,13 @@
 import stateChangeDispatchMiddleware from './state-change-dispatch'
 import { requestDocumentList } from '../actions'
 import { requestPhraseList, fetchPhraseDetails } from '../actions/phrases'
-import { selectDoc, selectLocale } from '../actions/headerActions'
+import {
+  fetchHeaderInfo,
+  selectDoc,
+  selectLocale
+} from '../actions/headerActions'
 import { UPDATE_PAGE } from '../actions/controlsHeaderActions'
-import { max } from 'lodash'
+import { every, isUndefined, max, negate } from 'lodash'
 
 /**
  * Get page query from url, and check is integer and >= 0
@@ -66,6 +70,18 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
       }
       dispatch({type: UPDATE_PAGE, page: newPageIndex})
       dispatch(fetchPhraseDetails(phraseState.docStatus, lang, paging))
+    }
+  },
+  // Fetch new header data only when the full workspace is first known
+  (dispatch, oldState, newState) => {
+    function hasAllContextInfo (state) {
+      const { projectSlug, versionSlug, docId } = state.context
+      return every([projectSlug, versionSlug, docId], negate(isUndefined))
+    }
+
+    if (!hasAllContextInfo(oldState) && hasAllContextInfo(newState)) {
+      const { projectSlug, versionSlug, lang, docId } = newState.context
+      dispatch(fetchHeaderInfo(projectSlug, versionSlug, docId, lang))
     }
   }
 )

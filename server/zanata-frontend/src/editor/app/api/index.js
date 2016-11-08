@@ -42,6 +42,7 @@ function getServiceUrl () {
 }
 
 export function fetchPhraseList (projectSlug, versionSlug, localeId, docId) {
+  // FIXME damason check that arguments are all defined
   const statusListUrl =
     `${baseRestUrl}/project/${projectSlug}/version/${versionSlug}/doc/${docId}/status/${localeId}` // eslint-disable-line max-len
 

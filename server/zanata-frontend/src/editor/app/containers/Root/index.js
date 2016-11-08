@@ -6,8 +6,7 @@ import EditorHeader from '../EditorHeader'
 import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
-import { requestPhraseDetail } from '../../actions/phrases'
-import { fetchHeaderInfo, fetchUiLocales } from '../../actions/headerActions'
+import { fetchUiLocales } from '../../actions/headerActions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions'
 import SplitPane from 'react-split-pane'
 import { Icons } from 'zanata-ui'
@@ -26,7 +25,6 @@ class Root extends Component {
 
   componentDidMount () {
     this.props.requestUiLocales()
-    this.props.requestHeaderInfo()
     window.addEventListener('resize', this.onWindowResize)
   }
 
@@ -93,7 +91,6 @@ Root.propTypes = {
   percentHeight: PropTypes.number.isRequired,
   showSuggestion: PropTypes.bool,
   requestUiLocales: PropTypes.func.isRequired,
-  requestHeaderInfo: PropTypes.func.isRequired,
   saveSuggestionPanelHeight: PropTypes.func.isRequired
 }
 
@@ -104,6 +101,7 @@ function mapStateToProps (state, ownProps) {
   const withDetail = flyweights.map(phrase => {
     return {...phrase, detail: phrases.detail[phrase.id]}
   })
+
   return {
     phrases: withDetail,
     percentHeight,
@@ -111,21 +109,14 @@ function mapStateToProps (state, ownProps) {
   }
 }
 
-function mapDispatchToProps (dispatch, ownProps) {
-  const { projectSlug, versionSlug, lang, docId } = ownProps.params
+function mapDispatchToProps (dispatch) {
   return {
     saveSuggestionPanelHeight: (pixelHeight) => {
       const percent = pixelHeight / window.innerHeight
       dispatch(saveSuggestionPanelHeight(percent))
     },
-    requestPhraseDetail: (id) => {
-      dispatch(requestPhraseDetail(lang, [id]))
-    },
     requestUiLocales: () => {
       dispatch(fetchUiLocales())
-    },
-    requestHeaderInfo: () => {
-      dispatch(fetchHeaderInfo(projectSlug, versionSlug, docId, lang))
     }
   }
 }
