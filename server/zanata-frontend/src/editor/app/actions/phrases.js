@@ -1,6 +1,6 @@
 import { fetchPhraseList, fetchPhraseDetail, savePhrase } from '../api'
 import { toggleDropdown } from '.'
-import { mapValues, slice } from 'lodash'
+import { isUndefined, mapValues, slice } from 'lodash'
 import {
   defaultSaveStatus,
   STATUS_NEW,
@@ -17,6 +17,13 @@ export function requestPhraseList (projectSlug, versionSlug, lang, docId,
                                    paging) {
   return (dispatch, getState) => {
     dispatch({ type: FETCHING_PHRASE_LIST })
+
+    if (isUndefined(lang)) {
+      // cannot request phrases without a language
+      dispatch(phraseListFetchFailed(
+        new Error('No language selected, cannot fetch phrases.')))
+      return
+    }
 
     fetchPhraseList(projectSlug, versionSlug, lang, docId)
       .then(response => {
