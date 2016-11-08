@@ -54,7 +54,7 @@ import static com.googlecode.totallylazy.collections.PersistentMap.constructors.
 @javax.enterprise.context.Dependent
 @Slf4j
 public class EmailBuilder {
-    public static final String MAIL_SESSION_JNDI = "jboss/mail/Default";
+    public static final String MAIL_SESSION_JNDI = "mail/Default";
     // Use this if you want emails logged on stderr
     // Warning: The full message may contain sensitive information
     private static final boolean LOG_FULL_MESSAGES = false;
@@ -63,7 +63,7 @@ public class EmailBuilder {
     public EmailBuilder() {
     }
 
-    @Resource(lookup = MAIL_SESSION_JNDI)
+    @Resource(name = MAIL_SESSION_JNDI)
     private Session mailSession;
     @Inject
     private Context emailContext;
