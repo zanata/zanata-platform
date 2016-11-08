@@ -136,7 +136,7 @@ function mapStateToProps (state, ownProps) {
     //      whether it comes with the response.
     translationLocale: {
       id: state.context.lang,
-      name: state.context.lang
+      name: getLocaleName(state)
     },
     phrase,
     openDropdown: state.dropdown.openDropdownKey,
@@ -152,6 +152,11 @@ function mapStateToProps (state, ownProps) {
     suggestionSearchType,
     showSuggestions
   }
+}
+
+function getLocaleName (state) {
+  const l = state.headerData.context.projectVersion.locales[state.context.lang]
+  return l ? l.name : state.context.lang
 }
 
 function mapDispatchToProps (dispatch, ownProps) {
