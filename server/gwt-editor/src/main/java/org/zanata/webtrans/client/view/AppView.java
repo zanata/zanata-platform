@@ -267,7 +267,7 @@ public class AppView extends Composite implements AppDisplay,
 
         newEditorLink.setHref(Application.getNewEditorLink(
                 userWorkspaceContext.getWorkspaceContext().getWorkspaceId(),
-                selectedDocId.replace("/", ",")));
+                selectedDocId));
     }
 
     @Override
