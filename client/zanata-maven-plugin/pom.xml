@@ -8,6 +8,9 @@
   </parent>
   <artifactId>zanata-maven-plugin</artifactId>
   <packaging>maven-plugin</packaging>
+  <!-- TODO try this again after https://github.com/zanata/zanata-platform/pull/17 -->
+  <!-- May need to bind maven-plugin-plugin:helpmojo to lifecycle phase -->
+  <!--<packaging>takari-maven-plugin</packaging>-->
 
   <name>Zanata Maven Plugin</name>
 

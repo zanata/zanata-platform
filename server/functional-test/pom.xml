@@ -9,6 +9,7 @@
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
   <!--<packaging>pom</packaging>-->
+  <packaging>takari-jar</packaging>
   <name>functional-test</name>
 
   <properties>
@@ -31,6 +32,7 @@
     <ds.database>root</ds.database>
     <ds.username>root</ds.username>
     <ds.password>root</ds.password>
+    <!-- Note that mysql.port is not set initially -->
     <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
     <!-- skipAfterFailureCount=0 due to https://issues.apache.org/jira/browse/SUREFIRE-1219 -->
@@ -48,8 +50,6 @@
      -->
     <mysql.lower_case_table_names>0</mysql.lower_case_table_names>
 
-    <!-- target zanata instance will be built by war overlay -->
-    <zanata.test.war.name>zanata-test-${project.version}</zanata.test.war.name>
     <zanata.instance.url>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</zanata.instance.url>
     <zanata.apikey>b6d7044e9ee3b2447c28fb7c50d86d98</zanata.apikey>
     <zanata.translatorkey>d83882201764f7d339e97c4b087f0806</zanata.translatorkey>
@@ -111,6 +111,13 @@
   </dependencyManagement>
 
   <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>zanata-test-war</artifactId>
+      <version>${project.version}</version>
+      <type>war</type>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>net.lightbody.bmp</groupId>
       <artifactId>browsermob-core-littleproxy</artifactId>
@@ -633,15 +640,15 @@
               </configuration>
               <deployables>
                 <deployable>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>zanata-test-war</artifactId>
                   <type>war</type>
-                  <location>${project.basedir}/../zanata-test-war/target/${zanata.test.war.name}.war</location>
                   <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}/</pingURL>
                   <pingTimeout>600000</pingTimeout>
                   <properties>
                     <context>${context.path}</context>
                   </properties>
                 </deployable>
-
               </deployables>
             </configuration>
             <executions>
@@ -708,7 +715,7 @@
                 </property>
               </properties>
               <systemPropertyVariables>
-                <featureInventoryLocation>${project.build.directory}/feature-inventory</featureInventoryLocation>
+                <featureInventoryLocation>${project.build.directory}/test-classes/feature-inventory</featureInventoryLocation>
                 <maven.home>${maven.home}</maven.home>
               </systemPropertyVariables>
             </configuration>
@@ -767,7 +774,9 @@
   </profiles>
 
   <build>
+    <!-- NB: targetPath MUST be relative to target/test-classes -->
     <testResources>
+      <!-- various config files, with filtering -->
       <testResource>
         <directory>src/test/resources</directory>
         <filtering>true</filtering>
@@ -776,6 +785,7 @@
           <include>**/*.xml</include>
         </includes>
       </testResource>
+      <!-- test documents, no filtering -->
       <testResource>
         <directory>src/test/resources</directory>
         <filtering>false</filtering>
@@ -787,41 +797,52 @@
           <include>**/*.idml</include>
         </includes>
       </testResource>
+      <!-- browser extension(s), no filtering -->
       <testResource>
         <directory>src/test/resources/zanata-testing-extension</directory>
         <filtering>false</filtering>
-        <targetPath>${project.build.testOutputDirectory}/zanata-testing-extension</targetPath>
+        <targetPath>zanata-testing-extension</targetPath>
       </testResource>
+      <!-- more config files, with filtering -->
       <testResource>
         <directory>src/test/resources/zanata-user-config</directory>
         <filtering>true</filtering>
       </testResource>
-      <testResource>
-        <directory>sample-projects</directory>
-        <targetPath>${zanata.sample.projects.basedir}</targetPath>
-        <filtering>true</filtering>
-        <includes>
-          <include>**/zanata.xml</include>
-          <include>**/pom.xml</include>
-        </includes>
-      </testResource>
-      <testResource>
-        <directory>sample-projects</directory>
-        <targetPath>${zanata.sample.projects.basedir}</targetPath>
-        <filtering>false</filtering>
-        <excludes>
-          <exclude>**/zanata.xml</exclude>
-          <exclude>**/pom.xml</exclude>
-        </excludes>
-      </testResource>
+      <!-- html/js files for displaying feature inventory -->
       <testResource>
         <directory>src/test/resources/feature-inventory</directory>
         <filtering>false</filtering>
-        <targetPath>${project.build.directory}/feature-inventory</targetPath>
+        <targetPath>feature-inventory</targetPath>
       </testResource>
     </testResources>
 
     <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default</id>
+            <phase>process-test-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <outputDirectory>target/test-classes/</outputDirectory>
+          <resources>
+            <!-- files under sample-projects, with filtering for config files -->
+            <resource>
+              <directory>sample-projects</directory>
+              <targetPath>sample-projects</targetPath>
+              <filtering>true</filtering>
+              <includes>
+                <include>**</include>
+              </includes>
+            </resource>
+          </resources>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.gmaven</groupId>
         <artifactId>gmaven-plugin</artifactId>
@@ -882,10 +903,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
       </plugin>
       <plugin>
         <!-- if including source jars, use the no-fork goals
@@ -1032,7 +1049,7 @@
 
             <configfiles>
               <configfile>
-                <file>${project.build.testOutputDirectory}/datasource/zanata-ds.xml</file>
+                <file>${project.basedir}/src/test/conf/zanata-ds.xml</file>
                 <todir>deployments</todir>
               </configfile>
               <!-- see above zipUrlInstaller/extractDir-->
@@ -1040,7 +1057,7 @@
 
               <!-- security and jndi for properties -->
               <configfile>
-                <file>${project.build.testOutputDirectory}/conf/${standalone.xml.file}</file>
+                <file>${project.basedir}/src/test/conf/${standalone.xml.file}</file>
                 <tofile>configuration/standalone.xml</tofile>
               </configfile>
 
@@ -1057,6 +1074,12 @@
               <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
               <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
               <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
+              <!-- These properties will be interpolated by Cargo into the configfiles above -->
+              <ds.connection.url>${ds.connection.url}</ds.connection.url>
+              <ds.username>${ds.username}</ds.username>
+              <ds.password>${ds.password}</ds.password>
+              <jdbc.artifactId>${jdbc.artifactId}</jdbc.artifactId>
+              <smtp.port>${smtp.port}</smtp.port>
             </properties>
           </configuration>
         </configuration>
