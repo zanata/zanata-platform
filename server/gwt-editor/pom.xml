@@ -243,6 +243,7 @@
           </execution>
         </executions>
         <configuration>
+          <sourceLevel>auto</sourceLevel>
           <runTarget>zanata/webtrans/Application.html</runTarget>
           <noServer>true</noServer>
           <!--below is needed if you want to use lombok on gwt code-->
