@@ -41,7 +41,6 @@ const ModalOverlay = React.createClass({
             <h4>Text in a modal</h4>
             <p>Duis mollis, est non commodo luctus,
             nisi erat porttitor ligula.</p>
-
             <p>There is a <OverlayTrigger overlay={tooltip}>
               <a href='#'>tooltip
               </a></OverlayTrigger> here</p>
