@@ -1,4 +1,4 @@
-import com.google.common.io.Files
+import java.nio.file.Files
 
 // This script will rename GWT generated properties for Zanata to use.
 log.info "===== Preparing GWT generated properties files ====="
@@ -35,7 +35,7 @@ properties.each {
         def fileName = (it.name - "$packageName.").replace("_default", "")
         def destFile = new File(resourceDir, fileName)
         log.info "     moved to: $destFile"
-        Files.move(it, destFile)
+        Files.move(it.toPath(), destFile.toPath())
         sourceCount++
     } else {
         log.debug "   * found target: $it.name"
@@ -46,7 +46,7 @@ properties.each {
         // Later we will base on pulled translation to repopulate the file.
         // see FillInTranslationGap.groovy
         log.info "     moved to :$destFile"
-        Files.move(it, destFile);
+        Files.move(it.toPath(), destFile.toPath())
         targetCount++
     }
 }
