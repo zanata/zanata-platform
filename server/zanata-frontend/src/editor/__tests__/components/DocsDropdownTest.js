@@ -48,15 +48,15 @@ describe('DocsDropdownTest', () => {
         <Dropdown.Content>
           <ul>
             <li key="snail.txt">
-              <a href="#/slimy/slick/translate/snail.txt/sluggish"
+              <a href="/project/translate/slimy/v/slick/snail.txt?lang=sluggish"
                  className="Dropdown-item">snail.txt</a>
             </li>
             <li key="gastropod.txt">
-              <a href="#/slimy/slick/translate/gastropod.txt/sluggish"
+              <a href="/project/translate/slimy/v/slick/gastropod.txt?lang=sluggish"
                  className="Dropdown-item">gastropod.txt</a>
             </li>
             <li key="cephalopod.txt">
-              <a href="#/slimy/slick/translate/cephalopod.txt/sluggish"
+              <a href="/project/translate/slimy/v/slick/cephalopod.txt?lang=sluggish"
                  className="Dropdown-item">cephalopod.txt</a>
             </li>
           </ul>
