@@ -62,6 +62,8 @@ public class ZanataTestCase {
         @Override
         protected void after() {
             WebDriverFactory.INSTANCE.unregisterLogListener();
+            // uncomment this if you need a fresh browser between test runs
+//            WebDriverFactory.INSTANCE.killWebDriver();
         }
     };
 
