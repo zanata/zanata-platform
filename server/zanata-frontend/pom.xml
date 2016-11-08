@@ -126,19 +126,6 @@
             </configuration>
           </execution>
 
-          <!-- editor: copy index.html to build directory. -->
-          <execution>
-            <id>editor: npm run processhtml</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>run processhtml</arguments>
-            </configuration>
-          </execution>
-
           <!-- frontend: Transpile and bundle all the javascript and css -->
           <execution>
             <id>frontend: execute npm run build</id>
