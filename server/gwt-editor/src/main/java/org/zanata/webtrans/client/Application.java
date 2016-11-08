@@ -284,11 +284,11 @@ public class Application implements EntryPoint {
     }
 
     public static String getNewEditorLink(WorkspaceId workspaceId, String docId) {
-        return getModuleParentBaseUrl() + "app/#/"
-                + workspaceId.getProjectIterationId().getProjectSlug() + "/"
+        return getModuleParentBaseUrl() + "project/translate/"
+                + workspaceId.getProjectIterationId().getProjectSlug() + "/v/"
                 + workspaceId.getProjectIterationId().getIterationSlug()
-                + "/translate/" + docId + "/"
-                + workspaceId.getLocaleId().getId() + getDswidQuery();
+                + "/" + docId
+                + getDswidQuery() + "&lang=" + workspaceId.getLocaleId().getId();
     }
 
     private static String getDswidQuery() {
