@@ -9,10 +9,11 @@ import {
   View,
   Row,
   ButtonLink,
+  LoaderText,
   Icon,
   Select
 } from 'zanata-ui'
-import { Notification, LoaderText } from '../../components/'
+import { Notification } from '../../components/'
 import {
   glossaryDeleteTerm,
   glossaryResetTerm,
