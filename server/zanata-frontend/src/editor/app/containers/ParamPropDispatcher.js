@@ -49,7 +49,9 @@ ParamPropDispatcher.propTypes = {
 function mapDispatchToProps (dispatch) {
   return {
     dispatchParamsAndQuery: (params, query) => {
-      dispatch(routingParamsChanged(assign({}, query, params)))
+      // params.splat is captured from ** at the end of the path (react-router)
+      dispatch(routingParamsChanged(
+        assign({ docId: params.splat }, query, params)))
     }
   }
 }
