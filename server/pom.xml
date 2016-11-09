@@ -79,11 +79,7 @@
     <okapi.version>0.29</okapi.version>
 
     <zanata.assets.version>10.0-SNAPSHOT</zanata.assets.version>
-    <zanata.api.version>${project.version}</zanata.api.version>
-    <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
-    <zanata.api.compat.version>3.9.1</zanata.api.compat.version>
     <zanata.client.version>${project.version}</zanata.client.version>
-    <zanata.common.version>${project.version}</zanata.common.version>
 
     <richfaces.version>4.5.17.Final</richfaces.version>
 
@@ -744,9 +740,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <!-- release plugin does not play nice with variable substitution
-        <version>${zanata.api.compat.version}</version>
-        -->
+        <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
         <version>3.9.1</version>
         <classifier>compat</classifier>
         <scope>test</scope>

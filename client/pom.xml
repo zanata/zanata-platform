@@ -34,8 +34,6 @@
   </repositories>
 
   <properties>
-    <zanata.api.version>${project.version}</zanata.api.version>
-    <zanata.common.version>${project.version}</zanata.common.version>
     <powermock.version>1.6.2</powermock.version>
     <resteasy.version>3.0.13.Final</resteasy.version>
   </properties>
