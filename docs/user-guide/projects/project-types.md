@@ -11,7 +11,9 @@ File types are _(selectively)_ supported via the Okapi Framework.
 This project type selection is only shown for old projects that were created before project types were shown on the server. If your project or project-version has this type, you should change it to the appropriate type.
 When project type is not specified, you will not be able to upload source files through the web interface, and you will have to manually add a project type to the client configuration file.
 
-#### File `.txt` `.odt` `.ods` `.odg` `.odp` `.idml` `.dtd` `.htm` `.html`
+#### File  
+See [supported format](/user-guide/documents/raw-documents).
+
 Previously _Raw_, File is an **experimental** project type that provides limited support for plain-text, LibreOffice, HTML, inDesign and DTD files. Source files must be under a separate directory to translation files. The behaviour of this project type is subject to change without notice while it is in experimental state.<br>
 The parser recognises newlines for `.txt`, and paragraphs for `.html`.
 
