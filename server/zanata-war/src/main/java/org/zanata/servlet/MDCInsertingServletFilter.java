@@ -37,6 +37,8 @@ import org.slf4j.MDC;
  * The values are removed after the request is processed.
  *
  * @author Ceki G&uuml;lc&uuml;
+ * @see <a href="http://www.slf4j.org/api/org/slf4j/MDC.html">MDC javadoc</a>
+ * @see <a href="http://logback.qos.ch/manual/mdc.html">Mapped Diagnostic Context</a>
  */
 @WebFilter(filterName = "MDCInsertingServletFilter")
 public class MDCInsertingServletFilter implements Filter {
