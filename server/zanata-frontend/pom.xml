@@ -57,7 +57,7 @@
         <artifactId>gmavenplus-plugin</artifactId>
         <executions>
           <execution>
-            <id>default</id>
+            <id>check-npmrc</id>
             <phase>initialize</phase>
             <goals>
               <goal>execute</goal>
@@ -67,10 +67,15 @@
         <!-- check for ignore-scripts = true in .npmrc, which breaks npm -->
         <configuration>
           <scripts>
-            <script>
-              def ignoreScripts = new File(System.getProperty('user.home'), '.npmrc').text.readLines().any{it.matches(/\s*ignore-scripts\s*=\s*true\s*/)}
-              if (ignoreScripts) throw new RuntimeException('ignore-scripts is set in ~/.npmrc: unable to run npm scripts')
-            </script>
+            <script><![CDATA[
+              def npmrcFile = new File(System.getProperty('user.home'), '.npmrc')
+              if (npmrcFile.exists()) {
+                def ignoreScripts = npmrcFile.text.readLines().any {
+                  it.matches(/\s*ignore-scripts\s*=\s*true\s*/)
+                }
+                if (ignoreScripts) throw new RuntimeException('ignore-scripts is set in ~/.npmrc: unable to run npm scripts')
+              }
+            ]]></script>
           </scripts>
         </configuration>
         <dependencies>
