@@ -32,7 +32,7 @@ import org.apache.maven.plugins.annotations.Parameter;
  * modules will be deleted as well.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Mojo(name = "push-module", requiresOnline = true, requiresProject = false)
+@Mojo(name = "push-module", requiresOnline = true, requiresProject = true)
 public class PushModuleMojo extends AbstractPushMojo {
     /**
      * Remove modules that are found in the server but not locally.
