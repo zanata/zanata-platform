@@ -79,11 +79,7 @@
     <okapi.version>0.29</okapi.version>
 
     <zanata.assets.version>10.0-SNAPSHOT</zanata.assets.version>
-    <zanata.api.version>${project.version}</zanata.api.version>
-    <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
-    <zanata.api.compat.version>3.9.1</zanata.api.compat.version>
     <zanata.client.version>${project.version}</zanata.client.version>
-    <zanata.common.version>${project.version}</zanata.common.version>
 
     <richfaces.version>4.5.17.Final</richfaces.version>
 
@@ -688,7 +684,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>com.sun.jersey</groupId>
@@ -732,7 +728,7 @@
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
         <classifier>sources</classifier>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>*</groupId>
@@ -744,7 +740,8 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>${zanata.api.compat.version}</version>
+        <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
+        <version>3.9.1</version>
         <classifier>compat</classifier>
         <scope>test</scope>
         <exclusions>
@@ -771,7 +768,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-util</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>xom</groupId>
@@ -782,17 +779,17 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-po</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-glossary</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-properties</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>javax.xml.bind</groupId>
@@ -803,7 +800,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-xliff</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>javax.xml.bind</groupId>
@@ -820,7 +817,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-rest-client</artifactId>
-        <version>${zanata.client.version}</version>
+        <version>${project.version}</version>
         <scope>test</scope>
         <!-- The client uses a newer version of resteasy -->
         <exclusions>
@@ -837,7 +834,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-rest-client</artifactId>
-        <version>${zanata.client.version}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
@@ -1818,7 +1815,7 @@
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>${zanata.client.version}</version>
+        <version>${project.version}</version>
         <configuration>
           <srcDir>.</srcDir>
           <transDir>.</transDir>

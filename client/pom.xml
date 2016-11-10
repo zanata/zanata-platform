@@ -34,8 +34,6 @@
   </repositories>
 
   <properties>
-    <zanata.api.version>${project.version}</zanata.api.version>
-    <zanata.common.version>${project.version}</zanata.common.version>
     <powermock.version>1.6.2</powermock.version>
     <resteasy.version>3.0.13.Final</resteasy.version>
   </properties>
@@ -71,7 +69,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <artifactId>commons-logging</artifactId>
@@ -83,7 +81,7 @@
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
         <type>test-jar</type>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
@@ -93,22 +91,22 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-glossary</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-po</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-properties</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-xliff</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>com.sun.xml.bind</groupId>
@@ -119,7 +117,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-util</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>

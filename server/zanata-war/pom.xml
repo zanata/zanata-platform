@@ -306,7 +306,7 @@
           <excludes>**/*_default.properties</excludes>
         </configuration>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>${zanata.client.version}</version>
+        <version>${project.version}</version>
       </plugin>
 
       <plugin>

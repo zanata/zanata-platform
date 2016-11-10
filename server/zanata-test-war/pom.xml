@@ -16,6 +16,7 @@
     <zanata.test.war.name>zanata-test-${project.version}</zanata.test.war.name>
     <!-- zanata-war package phase will copy the war to this location. Jenkins will override this -->
     <zanata.war.location>${project.build.directory}/zanata.war</zanata.war.location>
+    <maven.javadoc.skip>true</maven.javadoc.skip>
     <maven.site.skip>true</maven.site.skip>
   </properties>
 
