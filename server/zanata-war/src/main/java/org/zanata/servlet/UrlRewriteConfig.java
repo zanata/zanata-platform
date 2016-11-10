@@ -84,7 +84,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .where("document").matches(".*")
 
                 .addRule(Join.path("/").to("/home.xhtml"))
-                .addRule(Join.path("/a/more").to("/a/more.xhtml"))
+                .addRule(Join.path("/info").to("/a/more.xhtml"))
                 .addRule(Join.path("/account/activate/{key}").to("/account/activate.xhtml"))
                 .addRule(Join.path("/account/google_password_reset_request").to("/account/google_password_reset_request.xhtml"))
                 .addRule(Join.path("/account/password_reset/{key}").to("/account/password_reset.xhtml"))

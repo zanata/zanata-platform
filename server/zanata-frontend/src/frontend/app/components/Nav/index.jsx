@@ -6,12 +6,6 @@ import { getDswid } from '../../utils/UrlHelper'
 
 const dswid = getDswid()
 
-/**
- * URL path for frontend
- * e.g. http://localhost:8080/app/#explore
- */
-const prefixPath = '/a/'
-
 const basePath = window.config.baseUrl || ''
 
 const items = [
@@ -106,7 +100,7 @@ const items = [
   {
     small: true,
     icon: 'ellipsis',
-    link: prefixPath + 'more',
+    link: basePath + '/info',
     title: 'More',
     auth: 'public',
     id: 'nav_more'
