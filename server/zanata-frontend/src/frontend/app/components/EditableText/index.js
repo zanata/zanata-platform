@@ -3,22 +3,21 @@ import Row from 'react-bootstrap'
 import TextInput from '../../components'
 
 /**
-    text: {}
-        editable: {
+ text: {}
+ editable: {
             brds: 'Bdrs(rq)',
             trs: 'Trs(aeo)',
             hover: {
                 bd: 'editable:h_Bd(bd2) editable:h_Bdc(neutral)'
             }
         },
-        placeholder: {
+ placeholder: {
             c: 'C(muted)'
-
-
 
  * Text input that can switch between text field and label
  * by using attribute `editing`
  */
+
 class EditableText extends Component {
     constructor () {
         super()
@@ -26,6 +25,7 @@ class EditableText extends Component {
             focus: false
         }
     }
+
     handleClick () {
         this.setState({ focus: true })
     }
@@ -34,37 +34,38 @@ class EditableText extends Component {
     }
     render () {
         const {
-            children = '',
-            editable = false,
-            editing = false,
-            emptyReadOnlyText = '',
-            placeholder = '',
-            title,
-            textStateClasses,
-            ...props
+          children = '',
+          editable = false,
+          editing = false,
+          emptyReadOnlyText = '',
+          placeholder = '',
+          title,
+          ...props
         } = this.props
 
         /* eslint-disable react/jsx-no-bind */
         if (editable && editing) {
             return (
-                <TextInput
-                    {...props}
-                    autoFocus={this.state.focus}
-                    onBlur={::this.handleBlur}
-                    placeholder={placeholder}
-                    ref={(ref) => { this.textInput = ref }}
-                    value={children}
-                />
+              <TextInput
+                {...props}
+                autoFocus={this.state.focus}
+                onBlur={::this.handleBlur}
+                placeholder={placeholder}
+                ref={(ref) => {
+                    this.textInput = ref
+                }}
+                value={children}
+              />
             )
         }
         /* eslint-enable react/jsx-no-bind */
         const emptyText = editable ? placeholder : emptyReadOnlyText
         const text = children || emptyText
-        return (CD
-            <Row className={textStateClasses}
-                 onClick={::this.handleClick} title={title}>
-                {text}
-            </Row>
+        return (
+          <Row
+            onClick={::this.handleClick} title={title}>
+              {text}
+          </Row>
         )
     }
 }
@@ -79,7 +80,8 @@ EditableText.propTypes = {
      */
     editable: PropTypes.bool,
     /**
-     * Toggle whether the text field is in editing mode or not. Default is 'false'
+     * Toggle whether the text field is in editing mode or not.
+     * Default is 'false'
      */
     editing: PropTypes.bool,
     /**
