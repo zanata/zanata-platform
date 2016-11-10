@@ -36,7 +36,7 @@
     <lombok.version>1.16.6</lombok.version>
     <weld.version>2.3.2.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
-    <groovy.version>2.4.5</groovy.version>
+    <groovy.version>2.4.7</groovy.version>
     <icu4j.version>56.1</icu4j.version>
     <!-- Only Guava 20+ supports GWT 2.8.
          See https://github.com/google/guava/issues/1999 -->

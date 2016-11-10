@@ -178,7 +178,8 @@
 
     <hamcrest.version>1.3</hamcrest.version>
     <findbugs.maven.version>3.0.1</findbugs.maven.version>
-    <groovy.version>1.8.9</groovy.version>
+    <!-- Note: Fedora 23 has 2.4.4. -->
+    <groovy.version>2.4.4</groovy.version>
     <guava.version>18.0</guava.version>
     <jackson.version>1.9.13</jackson.version>
     <jaxb.api.version>2.2.12</jaxb.api.version>
@@ -655,7 +656,7 @@
           <artifactId>gmaven-plugin</artifactId>
           <version>1.5</version>
           <configuration>
-            <providerSelection>1.8</providerSelection>
+            <providerSelection>2.0</providerSelection>
           </configuration>
           <executions>
             <execution>
@@ -1051,7 +1052,7 @@
       <dependency>
         <groupId>org.spockframework</groupId>
         <artifactId>spock-core</artifactId>
-        <version>0.7-groovy-1.8</version>
+        <version>1.0-groovy-2.4</version>
         <scope>test</scope>
         <exclusions>
           <exclusion>
