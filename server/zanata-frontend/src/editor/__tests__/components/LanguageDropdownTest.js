@@ -61,25 +61,25 @@ describe('LanguageDropdownTest', () => {
         <Dropdown.Content>
           <ul>
             <li key="wes">
-              <a href="#/middle/earth/translate/misty-mountains.txt/wes"
+              <a href="/project/translate/middle/v/earth/misty-mountains.txt?lang=wes"
                  className="Dropdown-item">
                 Westron
               </a>
             </li>
             <li key="roh">
-              <a href="#/middle/earth/translate/misty-mountains.txt/roh"
+              <a href="/project/translate/middle/v/earth/misty-mountains.txt?lang=roh"
                  className="Dropdown-item">
                 Rohirric
               </a>
             </li>
             <li key="khu">
-              <a href="#/middle/earth/translate/misty-mountains.txt/khu"
+              <a href="/project/translate/middle/v/earth/misty-mountains.txt?lang=khu"
                  className="Dropdown-item">
                 Khuzdul
               </a>
             </li>
             <li key="val">
-              <a href="#/middle/earth/translate/misty-mountains.txt/val"
+              <a href="/project/translate/middle/v/earth/misty-mountains.txt?lang=val"
                  className="Dropdown-item">
                 Valarin
               </a>

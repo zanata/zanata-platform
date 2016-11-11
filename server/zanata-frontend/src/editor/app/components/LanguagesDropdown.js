@@ -33,8 +33,10 @@ const LanguagesDropdown = React.createClass({
     const docId = encode(selectedDoc.id)
     const project = projectVersion.project.slug
     const version = projectVersion.version
-    return '#/' + project + '/' + version + '/translate/' +
-           docId + '/' + locale.id
+    // FIXME this URL is too much information to keep in this component.
+    // FIXME loses any other query parameters
+    return '/project/translate/' + project + '/v/' + version + '/' + docId +
+      '?lang=' + locale.id
   },
 
   render: function () {

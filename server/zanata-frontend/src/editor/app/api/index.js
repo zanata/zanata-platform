@@ -14,43 +14,38 @@ import {
   STATUS_APPROVED
 } from '../utils/status'
 
-// FIXME use value from config
-const appPath = 'app'
+/* The part of the path that is just the server deployment path. e.g. if the
+ * server is deployed at example.com/zanata then this will be /zanata */
+const baseUrl = window.config.dataset.baseUrl || ''
+
+/* The URL of this editor app. Used as a base for all URLs in the app. */
 export const serviceUrl = getServiceUrl()
+
 export const dashboardUrl = serviceUrl + '/dashboard'
 
-export const baseRestUrl = serviceUrl + '/rest'
+/* The URL for the server where the REST API is deployed. Defaults to the
+ * current server if there is nothing specified in the config. */
+const apiOrigin = window.config.dataset.apiOrigin || serviceUrl
+
+/* The URL where the REST API is deployed.
+ * Used as a base for all REST URLs used by the API */
+const apiRoot = window.config.dataset.apiRoot || ''
+export const baseRestUrl = apiOrigin + apiRoot
 
 /**
- * if process.env.NODE_ENV === 'development'
- * @returns 'http://localhost:7878/zanata'
- *
- * else
  * @returns Root Zanata url with context path.
- * Url will start from index 0 to index of appPath
- *
- * e.g current url= http://localhost:7878/zanata/app/testurl/test.html
- * returns http://localhost:7878/zanata
  */
 function getServiceUrl () {
-  const isDev = process.env && process.env.NODE_ENV === 'development'
-  if (isDev) {
-    return 'http://localhost:7878/zanata'
-  } else {
-    let serviceUrl = location.origin + location.pathname
-    const index = location.href.indexOf(appPath)
-    if (index >= 0) {
-      // remove appPath onwards from url
-      serviceUrl = location.href.substring(0, index)
-    }
-    serviceUrl = serviceUrl.replace(/\/?$/, '') // remove trailing slash
-    return serviceUrl
-  }
+  let serviceUrl = location.origin + baseUrl
+  serviceUrl = serviceUrl.replace(/\/?$/, '') // remove trailing slash
+  return serviceUrl
 }
 
 export function fetchPhraseList (projectSlug, versionSlug, localeId, docId) {
+  // FIXME damason check that arguments are all defined
+  const encodedId = encode(docId)
   const statusListUrl =
-    `${baseRestUrl}/project/${projectSlug}/version/${versionSlug}/doc/${docId}/status/${localeId}` // eslint-disable-line max-len
+    `${baseRestUrl}/project/${projectSlug}/version/${versionSlug}/doc/${encodedId}/status/${localeId}` // eslint-disable-line max-len
 
   return fetch(statusListUrl, {
     credentials: 'include',

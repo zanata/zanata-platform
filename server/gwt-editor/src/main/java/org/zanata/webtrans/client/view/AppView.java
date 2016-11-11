@@ -267,7 +267,10 @@ public class AppView extends Composite implements AppDisplay,
 
         newEditorLink.setHref(Application.getNewEditorLink(
                 userWorkspaceContext.getWorkspaceContext().getWorkspaceId(),
-                selectedDocId.replace("/", ",")));
+                // docId does not need to substitute / with , since the redux
+                // editor treats everything between the version slug and query
+                // string as docId.
+                selectedDocId));
     }
 
     @Override

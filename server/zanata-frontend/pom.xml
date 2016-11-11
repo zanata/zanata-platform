@@ -45,6 +45,8 @@
               the editor at http://<server>/app -->
     <editor.bundle.destination>${bundle.dest}/app</editor.bundle.destination>
 
+    <!-- Do not run checkstyle (eslint is used instead for this module) -->
+    <checkstyle.skip>true</checkstyle.skip>
   </properties>
 
   <dependencies>
@@ -105,19 +107,6 @@
             <configuration>
               <nodeVersion>${node.version}</nodeVersion>
               <npmVersion>${npm.version}</npmVersion>
-            </configuration>
-          </execution>
-
-          <!-- editor: copy index.html to build directory. -->
-          <execution>
-            <id>editor: npm run processhtml</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>run processhtml</arguments>
             </configuration>
           </execution>
 
