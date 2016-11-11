@@ -13,7 +13,6 @@ import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.runner.RunWith;
-import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HAccount;

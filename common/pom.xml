@@ -33,10 +33,6 @@
     </repository>
   </repositories>
 
-  <properties>
-    <zanata.api.version>4.0.0-SNAPSHOT</zanata.api.version>
-  </properties>
-
   <build>
     <plugins>
       <plugin>
@@ -58,7 +54,7 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.fedorahosted.tennera</groupId>

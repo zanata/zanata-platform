@@ -72,8 +72,8 @@ public class GlossaryPushTest extends ZanataTestCase {
         log.info(resultByLines(result));
 
         assertThat(clientWorkFlow.isPushSuccessful(result))
-                .isTrue()
-                .as("The glossary push was successful");
+                .as("glossary push should succeed")
+                .isTrue();
 
         EditorPage editorPage = new LoginWorkFlow()
                 .signIn("admin", "admin")
@@ -85,18 +85,20 @@ public class GlossaryPushTest extends ZanataTestCase {
         editorPage.searchGlossary("filesystem");
 
         assertThat(editorPage.getGlossaryResultTable().get(1).get(2))
-                .isEqualTo("système de fichiers")
-                .as("The first glossary result is correct");
+                .as("first glossary result")
+                .isEqualTo("système de fichiers");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void failedCSVGlossaryPush() throws Exception {
-        List<String> result = push(pushCSVCommand, userConfigPath);
-        log.info(resultByLines(result));
+        List<String> resultList = push(pushCSVCommand, userConfigPath);
+        String output = resultByLines(resultList);
+        log.info("output:\n{}", output);
+        assertThat(output).containsIgnoringCase("Invalid CSV file");
 
-        assertThat(clientWorkFlow.isPushSuccessful(result))
-                .isFalse()
-                .as("The glossary push was not successful");
+        assertThat(clientWorkFlow.isPushSuccessful(resultList))
+                .as("glossary push should not succeed")
+                .isFalse();
     }
 
     private List<String> push(String command, String configPath)
@@ -109,12 +111,15 @@ public class GlossaryPushTest extends ZanataTestCase {
         return Joiner.on("\n").join(output);
     }
 
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void unauthorizedGlossaryPushRejected() throws Exception {
-        List<String> result = clientWorkFlow .callWithTimeout(
-                projectRootPath, pushCommand + userConfigPath);
-        assertThat(clientWorkFlow.isPushSuccessful(result)).isTrue()
-                .as("Glossary push was successful");
-    }
+    // this is just a subset of successfulGlossaryPush, and doesn't seem
+    // to test authorisation at all.
+//    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+//    public void unauthorizedGlossaryPushRejected() throws Exception {
+//        List<String> result = clientWorkFlow .callWithTimeout(
+//                projectRootPath, pushCommand + userConfigPath);
+//        assertThat(clientWorkFlow.isPushSuccessful(result))
+//                .as("glossary push should succeed")
+//                .isTrue();
+//    }
 
 }

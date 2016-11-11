@@ -75,8 +75,8 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
             testIDDir = ScreenshotDirForTest.screenshotForTest(testId);
             if (!testIDDir.exists()) {
                 log.info("Creating screenshot dir {}", testIDDir.getAbsolutePath());
-                boolean createdDirs = testIDDir.mkdirs();
-                assert createdDirs;
+                testIDDir.mkdirs();
+                assert testIDDir.isDirectory();
             }
             String filename = generateFileName(ofType);
             File screenshotFile = new File(testIDDir, filename);

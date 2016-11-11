@@ -21,8 +21,6 @@
 
 package org.zanata.rest.client;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -30,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -50,7 +49,7 @@ import org.zanata.rest.service.StubbingServerRule;
 import javax.ws.rs.core.Response;
 
 import static org.junit.Assert.*;
-import static org.zanata.rest.client.ClientUtil.calculateFileMD5;
+import static org.zanata.rest.client.ClientUtil.calculateMD5AndSize;
 
 public class FileResourceClientTest {
     private static final Logger log =
@@ -101,15 +100,19 @@ public class FileResourceClientTest {
             void testSourceFileUpload() throws Exception {
 //        client = clientTalkingToRealServer();
         DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-        File source = loadFileFromClasspath("test-odt.odt");
-        FileInputStream fileInputStream = new FileInputStream(source);
+        String resource = "test-odt.odt";
+        InputStream fileInputStream = loadFromClasspath(resource);
 
+        // TODO avoid direct file access
+        // use/copy commons-io CountingInputStream and DigestInputStream
         uploadForm.setFileStream(fileInputStream);
         uploadForm.setFileType("odt");
-        uploadForm.setHash(calculateFileMD5(source));
+        Pair<String, Long> fileHashAndSize =
+                calculateMD5AndSize(loadFromClasspath(resource));
+        uploadForm.setHash(fileHashAndSize.getLeft());
         uploadForm.setFirst(true);
         uploadForm.setLast(true);
-        uploadForm.setSize(source.length());
+        uploadForm.setSize(fileHashAndSize.getRight());
         ChunkUploadResponse uploadResponse = client
                 .uploadSourceFile("about-fedora", "master",
                         "test.odt",
@@ -118,25 +121,28 @@ public class FileResourceClientTest {
         assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
     }
 
-    private static File loadFileFromClasspath(String file) {
-        return new File(Thread.currentThread().getContextClassLoader()
-                .getResource(file).getFile());
+    private static InputStream loadFromClasspath(String resource) {
+        InputStream resourceStream =
+                Thread.currentThread().getContextClassLoader()
+                        .getResourceAsStream(resource);
+        return resourceStream;
     }
 
     @Test
-    public
-            void testTranslationFileUpload() throws Exception {
+    public void testTranslationFileUpload() throws Exception {
 //        client = clientTalkingToRealServer();
         DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-        File source = loadFileFromClasspath("zh-CN/test-odt.odt");
-        FileInputStream fileInputStream = new FileInputStream(source);
+        String resource = "zh-CN/test-odt.odt";
+        InputStream fileInputStream = loadFromClasspath(resource);
 
         uploadForm.setFileStream(fileInputStream);
         uploadForm.setFileType("odt");
-        uploadForm.setHash(calculateFileMD5(source));
+        Pair<String, Long> fileHashAndSize =
+                calculateMD5AndSize(loadFromClasspath(resource));
+        uploadForm.setHash(fileHashAndSize.getLeft());
         uploadForm.setFirst(true);
         uploadForm.setLast(true);
-        uploadForm.setSize(source.length());
+        uploadForm.setSize(fileHashAndSize.getRight());
         ChunkUploadResponse uploadResponse = client
                 .uploadTranslationFile("about-fedora", "master",
                         "zh",
@@ -145,6 +151,7 @@ public class FileResourceClientTest {
         log.info("response: {}", uploadResponse);
         assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
     }
+
 
     @Test
     public void testDownloadSourceFile() throws IOException {

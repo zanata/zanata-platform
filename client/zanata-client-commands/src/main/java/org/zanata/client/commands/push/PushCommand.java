@@ -279,6 +279,10 @@ public class PushCommand extends PushPullCommand<PushOptions> {
         AbstractPushStrategy strat = getStrategy(getOpts());
         File sourceDir = getOpts().getSrcDir();
 
+        if (!pushSource() && !pushTrans()) {
+            throw new RuntimeException("Invalid option for push type");
+        }
+
         if (!sourceDir.exists() && !strat.isTransOnly()) {
             if (getOpts().getEnableModules()) {
                 log.info("source directory '" + sourceDir
@@ -431,9 +435,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                 }
 
                 // Copy Trans after pushing (only when pushing source)
-                if (getOpts().getCopyTrans()
-                        && (getOpts().getPushType() == PushPullType.Both || getOpts()
-                        .getPushType() == PushPullType.Source)) {
+                if (getOpts().getCopyTrans() && (pushSource())) {
                     this.copyTransForDocument(qualifiedDocName);
                 }
             } catch (Exception e) {

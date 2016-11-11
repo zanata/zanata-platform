@@ -53,7 +53,6 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.RawDocumentDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
-import org.zanata.events.DocumentLocaleKey;
 import org.zanata.file.FileSystemPersistService;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;

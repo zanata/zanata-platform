@@ -5,7 +5,7 @@ import { mapValues } from 'lodash'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
-import { hashHistory } from 'react-router'
+import { history } from './history'
 import { syncHistory } from 'react-router-redux'
 import WebFont from 'webfontloader'
 import { apiMiddleware } from 'redux-api-middleware'
@@ -25,7 +25,7 @@ WebFont.load({
   timeout: 2000
 })
 
-const routerMiddleware = syncHistory(hashHistory)
+const routerMiddleware = syncHistory(history)
 
 const logger = createLogger({
   predicate: (getState, action) =>
@@ -60,6 +60,6 @@ window.config = mapValues(window.config, (value) =>
 window.config.baseUrl = window.config.baseUrl || ''
 
 render(
-  <Root store={store} history={hashHistory} />,
+  <Root store={store} history={history} />,
   document.getElementById('root')
 )

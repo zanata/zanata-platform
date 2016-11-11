@@ -74,7 +74,6 @@ import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 
 import com.google.common.base.Optional;
 
-import javax.enterprise.event.Event;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 

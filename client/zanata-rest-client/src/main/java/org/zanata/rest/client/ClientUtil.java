@@ -21,6 +21,7 @@
 
 package org.zanata.rest.client;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,7 +38,10 @@ import java.util.regex.Pattern;
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 
 /**
@@ -46,23 +50,29 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ClientUtil {
 
-    public static String calculateFileMD5(File srcFile) {
+    public static String calculateFileMD5(File f)
+            throws IOException {
+        try (BufferedInputStream in = new BufferedInputStream(
+                new FileInputStream(f))) {
+            return calculateMD5AndSize(in).getLeft();
+        }
+    }
+
+    public static Pair<String, Long> calculateMD5AndSize(InputStream in) {
+        CountingInputStream countingStream = new CountingInputStream(in);
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            InputStream fileStream = new FileInputStream(srcFile);
             try {
-                fileStream = new DigestInputStream(fileStream, md);
+                in = new DigestInputStream(countingStream, md);
                 byte[] buffer = new byte[256];
-                //noinspection StatementWithEmptyBody
-                while (fileStream.read(buffer) > 0) {
-                    // just keep digesting the input
+                while (in.read(buffer) > 0) {
+                    // continue
                 }
             } finally {
-                fileStream.close();
+                in.close();
             }
-            @SuppressWarnings("UnnecessaryLocalVariable")
-            String md5hash = new String(Hex.encodeHex(md.digest()));
-            return md5hash;
+            String hash = new String(Hex.encodeHex(md.digest()));
+            return new ImmutablePair<>(hash, countingStream.getByteCount());
         } catch (NoSuchAlgorithmException | IOException e) {
             throw new RuntimeException(e);
         }

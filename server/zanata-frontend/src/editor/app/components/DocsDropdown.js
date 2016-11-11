@@ -1,4 +1,3 @@
-import { encode } from '../utils/doc-id'
 import Dropdown from './Dropdown'
 import { Icon, Row } from 'zanata-ui'
 import React, { PropTypes } from 'react'
@@ -30,9 +29,8 @@ const DocsDropdown = React.createClass({
     const { projectVersion, selectedLocale } = this.props.context
     const project = projectVersion.project.slug
     const version = projectVersion.version
-    const encodedId = encode(docId)
-    return '#/' + project + '/' + version + '/translate/' +
-      encodedId + '/' + selectedLocale
+    return '/project/translate/' + project + '/v/' + version + '/' + docId +
+      '?lang=' + selectedLocale
   },
 
   render: function () {

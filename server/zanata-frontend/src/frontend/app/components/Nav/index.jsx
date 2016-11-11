@@ -1,17 +1,19 @@
 import React, { PropTypes } from 'react'
 import NavItem from './NavItem'
 import { flattenThemeClasses } from 'zanata-ui'
-// import { startsWith } from 'lodash'
 import { getDswid } from '../../utils/UrlHelper'
 
 const dswid = getDswid()
 
 /**
- * URL path for frontend
- * e.g. http://localhost:8080/app/#explore
+ * Item properties:
+ *
+ * - link: path to use for JSF pages, or when internalLink is not specified
+ *         OR a key in props.links to look up the path to use.
+ *         (FIXME inconsistent and error-prone, split this into 2 properties)
+ * - internalLink: path to use when the Nav component is part of the main
+ *                 frontend app
  */
-const prefixPath = '/a/'
-
 const items = [
   {
     icon: 'zanata',
@@ -23,7 +25,7 @@ const items = [
   },
   {
     icon: 'search',
-    link: prefixPath + dswid + '#explore',
+    link: '/explore' + dswid,
     internalLink: '/explore',
     title: 'Explore',
     auth: 'public',
@@ -56,7 +58,7 @@ const items = [
   {
     small: true,
     icon: 'user',
-    link: prefixPath + dswid + '#profile',
+    link: '/profile' + dswid,
     internalLink: '/profile',
     title: 'Profile',
     auth: 'loggedin',
@@ -64,7 +66,7 @@ const items = [
   },
   {
     icon: 'glossary',
-    link: prefixPath + dswid + '#glossary',
+    link: '/glossary' + dswid,
     internalLink: '/glossary',
     title: 'Glossary',
     auth: 'loggedin',
@@ -72,7 +74,7 @@ const items = [
   },
   {
     icon: 'language',
-    link: prefixPath + dswid + '#languages',
+    link: '/languages' + dswid,
     internalLink: '/languages',
     title: 'Languages',
     auth: 'loggedin',
@@ -102,7 +104,7 @@ const items = [
   {
     small: true,
     icon: 'ellipsis',
-    link: prefixPath + 'more',
+    link: '/info',
     title: 'More',
     auth: 'public',
     id: 'nav_more'
@@ -190,6 +192,8 @@ Nav.propTypes = {
   active: PropTypes.string,
   /**
    * Object of links
+   * FIXME this looks wrong, 'context' is prepended to all links so they
+   *       cannot include the protocol, server or port.
    * e.g.
    * {
    * 'context': http://localhost:8080,

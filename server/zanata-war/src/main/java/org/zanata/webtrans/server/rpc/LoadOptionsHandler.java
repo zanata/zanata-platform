@@ -30,7 +30,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;

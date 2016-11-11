@@ -86,8 +86,9 @@ public enum WebDriverFactory {
             };
     // can reuse, share globally
     private static ObjectMapper mapper = new ObjectMapper();
+    private static final boolean useProxy = true;
 
-    private volatile EventFiringWebDriver driver = createDriver();
+    private @Nullable EventFiringWebDriver driver;
     private @Nonnull DswidParamChecker dswidParamChecker;
     private DriverService driverService;
     private TestEventForScreenshotListener screenshotListener;
@@ -106,13 +107,19 @@ public enum WebDriverFactory {
 
     @Nullable
     private WebDriverEventListener logListener;
+    @Nullable
+    private BrowserMobProxy proxy;
 
     // we can't declare this as a field because it is needed during init
     private static final Logger log() {
         return LoggerFactory.getLogger(WebDriverFactory.class);
     }
 
-    public WebDriver getDriver() {
+    public synchronized EventFiringWebDriver getDriver() {
+        if (driver == null) {
+            driver = createDriver();
+        }
+
         return driver;
     }
 
@@ -188,6 +195,7 @@ public enum WebDriverFactory {
      * @throws WebDriverLogException exception containing the first warning/error message, if any
      */
     private void logLogs(String type, boolean throwIfWarn) {
+        WebDriver driver = getDriver();
         @Nullable
         WebDriverLogException firstException = null;
         String logName = WebDriverFactory.class.getName() + "." + type;
@@ -288,6 +296,7 @@ public enum WebDriverFactory {
 
     public void registerScreenshotListener(String testName) {
         log.info("Enabling screenshot module...");
+        EventFiringWebDriver driver = getDriver();
         if (screenshotListener == null && ScreenshotDirForTest.isScreenshotEnabled()) {
             screenshotListener = new TestEventForScreenshotListener(driver);
         }
@@ -312,16 +321,16 @@ public enum WebDriverFactory {
                         }
                     });
         }
-        driver.register(logListener);
+        getDriver().register(logListener);
     }
 
     public void unregisterLogListener() {
-        driver.unregister(logListener);
+        getDriver().unregister(logListener);
     }
 
     public void unregisterScreenshotListener() {
         log.info("Deregistering screenshot module...");
-        driver.unregister(screenshotListener);
+        getDriver().unregister(screenshotListener);
     }
 
     public void injectScreenshot(String tag) {
@@ -350,22 +359,24 @@ public enum WebDriverFactory {
 
         enableLogging(capabilities);
 
-        // start the proxy
-        BrowserMobProxy proxy = new BrowserMobProxyServer();
-        proxy.start(0);
+        if (useProxy) {
+            // start the proxy
+            proxy = new BrowserMobProxyServer();
+            proxy.start(0);
 
-        proxy.addFirstHttpFilterFactory(new ResponseFilterAdapter.FilterSource(
-                (response, contents, messageInfo) -> {
-                    // TODO fail test if response >= 500?
-                    if (response.getStatus().code() >= 400) {
-                        log.warn("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
-                    } else {
-                        log.info("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
-                    }
-                }, 0));
-        Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
-        capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
-        log().info("Setting proxy: {}", seleniumProxy.getHttpProxy());
+            proxy.addFirstHttpFilterFactory(new ResponseFilterAdapter.FilterSource(
+                    (response, contents, messageInfo) -> {
+                        // TODO fail test if response >= 500?
+                        if (response.getStatus().code() >= 400) {
+                            log.warn("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
+                        } else {
+                            log.info("Response {} for URI {}", response.getStatus(), messageInfo.getOriginalRequest().getUri());
+                        }
+                    }, 0));
+            Proxy seleniumProxy = ClientUtil.createSeleniumProxy(proxy);
+            capabilities.setCapability(CapabilityType.PROXY, seleniumProxy);
+            log().info("Setting proxy: {}", seleniumProxy.getHttpProxy());
+        }
         try {
             driverService.start();
         } catch (IOException e) {
@@ -447,21 +458,30 @@ public enum WebDriverFactory {
         }
     }
 
+    public synchronized void killWebDriver() {
+        // If webdriver is running, kill it
+        if (driver != null) {
+            try {
+                log.info("Quitting webdriver.");
+                driver.quit();
+                driver = null;
+            } catch (Throwable e) {
+                // Ignoring driver tear down errors.
+            }
+        }
+        if (driverService != null && driverService.isRunning()) {
+            driverService.stop();
+            driverService = null;
+        }
+        if (proxy != null) {
+            proxy.abort();
+            proxy = null;
+        }
+    }
+
     private class ShutdownHook extends Thread {
         public void run() {
-            // If webdriver is running quit.
-            WebDriver driver = getDriver();
-            if (driver != null) {
-                try {
-                    log.info("Quitting webdriver.");
-                    driver.quit();
-                } catch (Throwable e) {
-                    // Ignoring driver tear down errors.
-                }
-            }
-            if (driverService != null && driverService.isRunning()) {
-                driverService.stop();
-            }
+            killWebDriver();
         }
     }
 }

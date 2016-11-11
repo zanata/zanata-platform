@@ -38,7 +38,7 @@ const UserTeaser = ({
           src={details.avatarUrl}
           alt={details.id}
           className='Bdrs(rnd) Mend(rq) W(r1h) H(r1h)' />
-        <Link link={'/profile/' + details.id}
+        <Link link={'/profile/view/' + details.id}
           theme={{ base: { fw: 'Fw(600)' } }}>
           {details.description}
         </Link>

@@ -13,8 +13,8 @@ public class ConfigUtilTest {
     @Test
     public void testReadUser() throws Exception {
         HierarchicalINIConfiguration config =
-                new HierarchicalINIConfiguration(TestUtils.fileFromClasspath(
-                        "zanata.ini").getAbsolutePath());
+                new HierarchicalINIConfiguration(TestUtils.loadFromClasspath(
+                        "zanata.ini"));
         SubnodeConfiguration servers = config.getSection("servers");
         String url = "https://translate.jboss.org/";
         String username = "joe";

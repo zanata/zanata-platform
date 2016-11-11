@@ -12,7 +12,6 @@ import java.util.Map;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
