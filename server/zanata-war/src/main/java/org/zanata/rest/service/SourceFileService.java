@@ -81,6 +81,7 @@ public class SourceFileService implements SourceFileResource {
             String iterationSlug,
             String docId,
             InputStream fileStream,
+            long size,
             @Nullable ProjectType projectType) {
         String suffix = legacyFileMapper.getFilenameSuffix(projectSlug, iterationSlug, projectType, true);
         String actualDocId = StringUtils.removeEnd(docId, suffix);

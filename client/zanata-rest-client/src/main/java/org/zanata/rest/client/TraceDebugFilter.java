@@ -65,8 +65,8 @@ public class TraceDebugFilter implements ClientRequestFilter,
             entityInputStream.read(data);
             return new String(data, 0, available, Charsets.UTF_8);
         } catch (Exception e) {
-            log.warn("can't read response payload");
-            return "[error reading response]";
+            log.warn("can't read response payload as string");
+            return "[error reading response as string]";
         } finally {
             if (entityInputStream != null) {
                 entityInputStream.reset();

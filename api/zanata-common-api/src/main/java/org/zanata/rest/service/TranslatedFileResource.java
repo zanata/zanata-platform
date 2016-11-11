@@ -24,6 +24,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.rest.dto.FileUploadResponse;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -64,6 +65,7 @@ public interface TranslatedFileResource extends RestResource {
      * @param merge Indicates whether to merge translations or overwrite all
      *              translations with the contents of the uploaded file.
      * @param fileStream Contents of the file to be uploaded
+     * @param size size of the file in bytes (for sanity checking; use -1 if unknown)
      * @return A message with information about the upload operation.
      */
     @POST
@@ -78,6 +80,7 @@ public interface TranslatedFileResource extends RestResource {
             @QueryParam("docId") String docId,
             @QueryParam("merge") String merge,
             InputStream fileStream,
+            @QueryParam("size") @DefaultValue("-1") long size,
             @QueryParam("projectType") String projectType);
 
     /**

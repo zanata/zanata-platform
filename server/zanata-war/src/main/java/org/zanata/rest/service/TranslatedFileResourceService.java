@@ -99,6 +99,7 @@ public class TranslatedFileResourceService implements TranslatedFileResource {
     public Response uploadTranslationFile(String projectSlug,
             String iterationSlug, String localeId, String docId, String merge,
             InputStream fileStream,
+            long size,
             String projectType) {
         //assignCreditToUploader is not supported from here
         boolean assignCreditToUploader = false;

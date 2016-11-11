@@ -23,12 +23,15 @@ package org.zanata.rest.service;
 
 import static org.zanata.rest.service.MockFileResource.sampleResource;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.NullOutputStream;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.FileUploadResponse;
@@ -42,11 +45,18 @@ public class MockSourceFileResource implements SourceFileResource {
 
     @Override
     public Response uploadSourceFile(String projectSlug, String iterationSlug,
-            String docId, InputStream fileStream, ProjectType projectType) {
-        return Response.status(Response.Status.CREATED).entity(
-                new FileUploadResponse(1L, "Upload of new source document successful: " +
-                        projectSlug + "/" + iterationSlug + "/" + docId + ":" + projectType))
-                .build();
+            String docId, InputStream fileStream, long size, ProjectType projectType) {
+        try {
+            long actual = IOUtils
+                    .copyLarge(fileStream, new NullOutputStream());
+            return Response.status(Response.Status.CREATED).entity(
+                    new FileUploadResponse(1L, "Upload of new source document successful: (" +
+                            actual + "/" + size + " bytes): " +
+                            projectSlug + "/" + iterationSlug + "/" + docId + ":" + projectType))
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

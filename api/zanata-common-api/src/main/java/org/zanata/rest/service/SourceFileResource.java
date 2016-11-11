@@ -26,6 +26,7 @@ import java.io.InputStream;
 
 import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -63,6 +64,7 @@ public interface SourceFileResource extends RestResource {
      * @param iterationSlug The project version slug where to store the document.
      * @param docId The full Document identifier (including file extension)
      * @param fileStream Contents of the file to be uploaded
+     * @param size size of the file in bytes (for sanity checking; use -1 if unknown)
      * @param projectType A ProjectType used for mapping of file extensions.
      * @return A message with information about the upload operation.
      */
@@ -76,6 +78,7 @@ public interface SourceFileResource extends RestResource {
             @PathParam("iterationSlug") String iterationSlug,
             @QueryParam("docId") String docId,
             InputStream fileStream,
+            @QueryParam("size") @DefaultValue("-1") long size,
             @QueryParam("projectType") @Nullable ProjectType projectType);
 
     /**

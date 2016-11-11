@@ -24,12 +24,15 @@ package org.zanata.rest.service;
 import static org.zanata.rest.service.MockFileResource.sampleResource;
 import static org.zanata.rest.service.MockFileResource.sampleTransResource;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.NullOutputStream;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.rest.dto.FileUploadResponse;
 
@@ -42,11 +45,17 @@ public class MockTranslatedFileResource implements TranslatedFileResource {
     @Override
     public Response uploadTranslationFile(String projectSlug,
             String iterationSlug, String localeId, String docId, String merge,
-            InputStream fileStream, String projectType) {
-        return Response.ok(
-                new FileUploadResponse(1L, "Upload of translation document successful: " +
-                        projectSlug + "/" + iterationSlug + "/" + docId + ":" + projectType + ":" + localeId))
-                .build();
+            InputStream fileStream, long size, String projectType) {
+        try {
+            long actual = IOUtils.copyLarge(fileStream, new NullOutputStream());
+            return Response.ok(
+                    new FileUploadResponse(1L, "Upload of translation document successful (" +
+                            actual + "/" + size + " bytes): " +
+                            projectSlug + "/" + iterationSlug + "/" + docId + ":" + projectType + ":" + localeId))
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
