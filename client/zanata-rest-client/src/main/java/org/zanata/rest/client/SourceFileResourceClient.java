@@ -55,7 +55,8 @@ public class SourceFileResourceClient {
             String projectSlug,
             String iterationSlug, String docId,
             ProjectType projectType,
-            InputStream fileStream) {
+            InputStream fileStream,
+            long size) {
         Client client = factory.getClient();
         WebTarget target = client
                 .target(baseUri)
@@ -64,6 +65,7 @@ public class SourceFileResourceClient {
         Invocation.Builder builder = target
                 .queryParam("docId", docId)
                 .queryParam("projectType", projectType.name())
+                .queryParam("size", size)
                 .request(MediaType.APPLICATION_XML_TYPE);
 //        addBodyPartIfPresent(form, "adapterParams",
 //                documentFileUploadForm.getAdapterParams());

@@ -32,6 +32,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.NullOutputStream;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
@@ -90,20 +92,34 @@ public class MockFileResource implements FileResource {
     @Override
     public Response uploadSourceFile(String projectSlug, String iterationSlug,
             String docId, @MultipartForm DocumentFileUploadForm uploadForm) {
-        return Response.status(Response.Status.CREATED).entity(
-                new ChunkUploadResponse(1L, 1, false,
-                        "Upload of new source document successful."))
-                .build();
+        try {
+            long actual = IOUtils
+                    .copyLarge(uploadForm.getFileStream(), new NullOutputStream());
+            return Response.status(Response.Status.CREATED).entity(
+                    new ChunkUploadResponse(1L, 1, false,
+                            "Upload of new source document successful: (" +
+                                    actual + " bytes)"))
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public Response uploadTranslationFile(String projectSlug,
             String iterationSlug, String localeId, String docId, String merge,
             @MultipartForm DocumentFileUploadForm uploadForm) {
-        return Response.ok(
-                new ChunkUploadResponse(1L, 1, false,
-                        "Translations uploaded successfully"))
-                .build();
+        try {
+            long actual = IOUtils
+                    .copyLarge(uploadForm.getFileStream(), new NullOutputStream());
+            return Response.ok(
+                    new ChunkUploadResponse(1L, 1, false,
+                            "Translation uploaded successfully: (" +
+                                    actual + " bytes)"))
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

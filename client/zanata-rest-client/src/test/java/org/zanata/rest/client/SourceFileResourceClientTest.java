@@ -75,7 +75,7 @@ public class SourceFileResourceClientTest {
         FileUploadResponse uploadResponse = client
                 .uploadSourceFile("about-fedora", "master",
                         "test.odt", ProjectType.File,
-                        fileInputStream);
+                        fileInputStream, odtFile.length());
         log.info("response: {}", uploadResponse);
         assertThat(uploadResponse.getSuccessMessage(), Matchers.notNullValue());
     }
