@@ -1,13 +1,19 @@
 import React, { PropTypes } from 'react'
 import NavItem from './NavItem'
 import { flattenThemeClasses } from 'zanata-ui'
-// import { startsWith } from 'lodash'
 import { getDswid } from '../../utils/UrlHelper'
 
 const dswid = getDswid()
 
-const basePath = window.config.baseUrl || ''
-
+/**
+ * Item properties:
+ *
+ * - link: path to use for JSF pages, or when internalLink is not specified
+ *         OR a key in props.links to look up the path to use.
+ *         (FIXME inconsistent and error-prone, split this into 2 properties)
+ * - internalLink: path to use when the Nav component is part of the main
+ *                 frontend app
+ */
 const items = [
   {
     icon: 'zanata',
@@ -19,7 +25,7 @@ const items = [
   },
   {
     icon: 'search',
-    link: basePath + '/explore' + dswid,
+    link: '/explore' + dswid,
     internalLink: '/explore',
     title: 'Explore',
     auth: 'public',
@@ -52,9 +58,7 @@ const items = [
   {
     small: true,
     icon: 'user',
-    // FIXME should use react-router <Link> for these
-    //       as long as it will work for the jsf pages properly
-    link: basePath + '/profile' + dswid,
+    link: '/profile' + dswid,
     internalLink: '/profile',
     title: 'Profile',
     auth: 'loggedin',
@@ -62,7 +66,7 @@ const items = [
   },
   {
     icon: 'glossary',
-    link: basePath + '/glossary' + dswid,
+    link: '/glossary' + dswid,
     internalLink: '/glossary',
     title: 'Glossary',
     auth: 'loggedin',
@@ -70,7 +74,7 @@ const items = [
   },
   {
     icon: 'language',
-    link: basePath + '/languages' + dswid,
+    link: '/languages' + dswid,
     internalLink: '/languages',
     title: 'Languages',
     auth: 'loggedin',
@@ -100,7 +104,7 @@ const items = [
   {
     small: true,
     icon: 'ellipsis',
-    link: basePath + '/info',
+    link: '/info',
     title: 'More',
     auth: 'public',
     id: 'nav_more'
@@ -188,6 +192,8 @@ Nav.propTypes = {
   active: PropTypes.string,
   /**
    * Object of links
+   * FIXME this looks wrong, 'context' is prepended to all links so they
+   *       cannot include the protocol, server or port.
    * e.g.
    * {
    * 'context': http://localhost:8080,
