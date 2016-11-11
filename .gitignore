@@ -49,6 +49,7 @@ bin/
 # vim
 *.swp
 
+.mvn/timing.properties
 
 # binary files
 *.class

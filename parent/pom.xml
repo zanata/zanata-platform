@@ -155,11 +155,15 @@
     as used by javac -source and -target).
     -->
     <required.java>1.8</required.java>
+    <maven.compiler.source>${required.java}</maven.compiler.source>
     <!--
       Version of Java used for runtime (major.minor) and for bytecode
       generation. Should correspond with animal.sniffer.signature.
     -->
+    <!-- NB: When changing this, be sure to update the rpm's spec file to match -->
     <required.jvm>1.8</required.jvm>
+    <maven.compiler.target>${required.jvm}</maven.compiler.target>
+    <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
 
     <!--
       Version of Java used for API compatibility checking. Should
@@ -189,16 +193,22 @@
     <surefire.version>2.18.1</surefire.version>
     <maven.source.version>2.2.1</maven.source.version>
 
-    <!-- Avoid raw.github.com -->
-    <checkstyle.skip>false</checkstyle.skip>
-    <!-- When testing checkstyle changes, use -Dcheckstyle.config.location to point to a local file: -->
-    <checkstyle.config.location>https://raw.githubusercontent.com/zanata/zanata-platform/master/parent/checkstyle.xml</checkstyle.config.location>
-    <checkstyle.propertiesLocation />
-    <checkstyle.suppressions.location>https://raw.githubusercontent.com/zanata/zanata-platform/master/parent/checkstyle-suppressions.xml</checkstyle.suppressions.location>
-    <checkstyle.suppressionsFileExpression />
     <checkstyle.maven.version>2.17</checkstyle.maven.version>
-    <checkstyle.version>7.0</checkstyle.version>
-    <findbugs.excludeFilterFile>https://raw.githubusercontent.com/zanata/zanata-platform/master/parent/findbugs-filter.xml</findbugs.excludeFilterFile>
+    <checkstyle.version>7.2</checkstyle.version>
+    <checkstyle.skip>false</checkstyle.skip>
+    <checkstyle.config.location>zanata-build-tools/checkstyle.xml</checkstyle.config.location>
+    <checkstyle.suppressions.location>zanata-build-tools/checkstyle-suppressions.xml</checkstyle.suppressions.location>
+    <!-- <checkstyle.enable.rules.summary>false</checkstyle.enable.rules.summary> -->
+    <!-- report violations to stdout (not console!) -->
+    <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
+    <!-- This won't include frontend code. We should use eslint there. -->
+    <checkstyle.includes>*.xml,*.txt,*.md,etc/**,src/main/**,src/test/**,src/etc/**,src/conf/**</checkstyle.includes>
+    <checkstyle.excludes>src/test/resources/**</checkstyle.excludes>
+
+    <!-- NB: If we want to failOnError, we may need to
+         remove GuavaBetaDetector/library-detectors. -->
+    <findbugs.failOnError>false</findbugs.failOnError>
+    <findbugs.excludeFilterFile>zanata-build-tools/findbugs-filter.xml</findbugs.excludeFilterFile>
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
     <slf4j.version>1.7.12</slf4j.version>
@@ -206,6 +216,16 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>io.takari.maven.plugins</groupId>
+        <artifactId>takari-lifecycle-plugin</artifactId>
+        <!-- See also build-tools pom -->
+        <version>1.12.2</version>
+        <extensions>true</extensions>
+        <configuration>
+          <proc>proc</proc>
+        </configuration>
+      </plugin>
 
       <!--
         This plugin sorts and reformats the pom.xml.
@@ -243,11 +263,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <configLocation>${checkstyle.config.location}</configLocation>
-          <!-- report violations to stdout (not console!) -->
-          <consoleOutput>true</consoleOutput>
-          <includes>*.xml,*.txt,*.md,etc/**,src/**</includes>
-          <excludes>src/test/resources/**</excludes>
           <sourceDirectory>${project.basedir}</sourceDirectory>
         </configuration>
         <executions>
@@ -265,20 +280,14 @@
             <artifactId>checkstyle</artifactId>
             <version>${checkstyle.version}</version>
           </dependency>
+          <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>build-tools</artifactId>
+            <version>${project.version}</version>
+          </dependency>
         </dependencies>
       </plugin>
 
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <encoding>UTF-8</encoding>
-          <source>${required.java}</source>
-          <target>${required.java}</target>
-          <showDeprecation>true</showDeprecation>
-          <showWarnings>true</showWarnings>
-          <optimize>true</optimize>
-        </configuration>
-      </plugin>
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>
         <configuration>
@@ -466,10 +475,6 @@
         <artifactId>findbugs-maven-plugin</artifactId>
         <version>${findbugs.maven.version}</version>
         <configuration>
-          <excludeFilterFile>${findbugs.excludeFilterFile}</excludeFilterFile>
-          <!-- NB: If we want to failOnError, we may need to
-               remove GuavaBetaDetector/library-detectors. -->
-          <failOnError>false</failOnError>
           <plugins>
             <plugin>
               <groupId>com.overstock.findbugs</groupId>
@@ -478,6 +483,13 @@
             </plugin>
           </plugins>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>build-tools</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+        </dependencies>
         <executions>
           <execution>
             <id>default</id>
@@ -968,14 +980,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <configuration>
-              <configLocation>${checkstyle.config.location}</configLocation>
-              <propertiesLocation>${checkstyle.propertiesLocation}</propertiesLocation>
-              <suppressionsLocation>${checkstyle.suppressions.location}</suppressionsLocation>
-              <suppressionsFileExpression>${checkstyle.suppressionsFileExpression}</suppressionsFileExpression>
-              <enableRulesSummary>false</enableRulesSummary>
-              <skip>${checkstyle.skip}</skip>
-            </configuration>
           </plugin>
 
           <plugin>
