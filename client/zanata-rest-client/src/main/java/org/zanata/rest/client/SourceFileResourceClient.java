@@ -24,15 +24,17 @@ package org.zanata.rest.client;
 import java.io.InputStream;
 import java.net.URI;
 
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.FileUploadResponse;
 import org.zanata.rest.service.SourceFileResource;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.WebResource;
+import static javax.ws.rs.client.Entity.entity;
 
 /**
  * @author Sean Flanigan <a
@@ -55,32 +57,32 @@ public class SourceFileResourceClient {
             ProjectType projectType,
             InputStream fileStream) {
         Client client = factory.getClient();
-        WebResource.Builder builder = client
-                .resource(baseUri)
+        WebTarget target = client
+                .target(baseUri)
                 .path(SourceFileResource.SERVICE_PATH)
-                .path(projectSlug).path(iterationSlug)
+                .path(projectSlug).path(iterationSlug);
+        Invocation.Builder builder = target
                 .queryParam("docId", docId)
                 .queryParam("projectType", projectType.name())
-                .type(MediaType.APPLICATION_OCTET_STREAM);
+                .request(MediaType.APPLICATION_XML_TYPE);
 //        addBodyPartIfPresent(form, "adapterParams",
 //                documentFileUploadForm.getAdapterParams());
 //        addBodyPartIfPresent(form, "type", documentFileUploadForm.getFileType());
 
-        ClientResponse response = builder.post(ClientResponse.class, fileStream);
-        if (response.getStatus() == 404) {
-            throw new RuntimeException("Encountered 404 during post form");
-        }
-        return response.getEntity(FileUploadResponse.class);
+        return builder.post(entity(fileStream, MediaType.APPLICATION_OCTET_STREAM_TYPE),
+                FileUploadResponse.class);
     }
 
-    public ClientResponse downloadSourceFile(String projectSlug,
+    public Response downloadSourceFile(String projectSlug,
             String iterationSlug,
             String fileType, String docId, ProjectType projectType) {
-        WebResource webResource = factory.getClient().resource(baseUri)
+        Invocation.Builder builder = factory.getClient().target(baseUri)
                 .path(SourceFileResource.SERVICE_PATH)
                 .path(projectSlug).path(iterationSlug).path(fileType)
-                .queryParam("projectType", projectType.name());
-        return webResource.queryParam("docId", docId).get(ClientResponse.class);
+                .queryParam("projectType", projectType.name())
+                .queryParam("docId", docId)
+                .request(MediaType.APPLICATION_OCTET_STREAM_TYPE);
+        return builder.get();
     }
 
 }

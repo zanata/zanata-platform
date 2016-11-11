@@ -26,15 +26,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.sun.jersey.api.client.ClientResponse;
-import org.apache.commons.codec.binary.Hex;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -52,7 +47,8 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.StubbingServerRule;
 
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import javax.ws.rs.core.Response;
+
 import static org.junit.Assert.*;
 import static org.zanata.rest.client.ClientUtil.calculateFileMD5;
 
@@ -152,32 +148,33 @@ public class FileResourceClientTest {
 
     @Test
     public void testDownloadSourceFile() throws IOException {
-        ClientResponse response =
+        Response response =
                 client.downloadSourceFile("about-fedora", "master", "pot",
                         "About-Fedora");
         assertEquals(200, response.getStatus());
-        InputStream inputStream =
-                response.getEntity(InputStream.class);
-        PoReader2 reader = new PoReader2();
-        Resource resource =
-                reader.extractTemplate(new InputSource(inputStream),
-                        LocaleId.EN_US, "About-Fedora");
-        assertThat(resource.getTextFlows(), Matchers.hasSize(1));
+        try (InputStream inputStream = response.readEntity(InputStream.class)) {
+            PoReader2 reader = new PoReader2();
+            Resource resource =
+                    reader.extractTemplate(new InputSource(inputStream),
+                            LocaleId.EN_US, "About-Fedora");
+            assertThat(resource.getTextFlows(), Matchers.hasSize(1));
+        }
     }
 
     @Test
-    public void testDownloadTranslationFile() {
-        ClientResponse response =
+    public void testDownloadTranslationFile() throws IOException {
+        Response response =
                 client.downloadTranslationFile("about-fedora", "master", "es",
                         "po", "About-Fedora");
         assertEquals(200, response.getStatus());
-        InputStream inputStream =
-                response.getEntity(InputStream.class);
-        PoReader2 reader = new PoReader2();
-        TranslationsResource translationsResource =
-                reader.extractTarget(new InputSource(inputStream));
-        assertThat(translationsResource.getTextFlowTargets(),
-                Matchers.hasSize(1));
+        try (InputStream inputStream =
+                response.readEntity(InputStream.class)) {
+            PoReader2 reader = new PoReader2();
+            TranslationsResource translationsResource =
+                    reader.extractTarget(new InputSource(inputStream));
+            assertThat(translationsResource.getTextFlowTargets(),
+                    Matchers.hasSize(1));
+        }
     }
 
 }

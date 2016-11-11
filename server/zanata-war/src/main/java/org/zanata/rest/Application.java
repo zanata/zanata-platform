@@ -20,7 +20,7 @@ import static java.util.stream.Stream.concat;
 
 @ApplicationPath("/rest")
 @ApplicationScoped
-//@Slf4j
+@Slf4j
 public class Application extends javax.ws.rs.core.Application {
 
     private Set<Class<?>> classes = buildClassesSet();
@@ -41,9 +41,9 @@ public class Application extends javax.ws.rs.core.Application {
                 ClassIndex.getSubclasses(RestResource.class);
         log.debug("Indexed RestResource classes: {}", resourceClasses);
         Iterable<Class<?>> pathClasses = ClassIndex.getAnnotated(Path.class);
-//        log.debug("Indexed @Path classes: {}", pathClasses);
+        log.debug("Indexed @Path classes: {}", pathClasses);
         Iterable<Class<?>> providerClasses = ClassIndex.getAnnotated(Provider.class);
-//        log.debug("Indexed @Provider classes: {}", providerClasses);
+        log.debug("Indexed @Provider classes: {}", providerClasses);
         ImmutableSet<Class<?>> classes = concat(stream(resourceClasses), concat(
                 stream(pathClasses),
                 stream(providerClasses)))

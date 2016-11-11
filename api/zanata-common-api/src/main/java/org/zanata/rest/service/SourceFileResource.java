@@ -35,7 +35,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
+import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.FileUploadResponse;
 

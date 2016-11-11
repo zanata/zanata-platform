@@ -20,8 +20,7 @@
  */
 package org.zanata.rest.service;
 
-import org.codehaus.enunciate.jaxrs.TypeHint;
-import org.codehaus.enunciate.modules.jersey.ExternallyManagedLifecycle;
+import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.rest.dto.FileUploadResponse;
 
 import javax.ws.rs.Consumes;

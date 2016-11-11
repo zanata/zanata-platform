@@ -46,8 +46,6 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ClientUtil {
 
-    }
-
     public static String calculateFileMD5(File srcFile) {
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -68,6 +66,8 @@ public class ClientUtil {
         } catch (NoSuchAlgorithmException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
     public static String getBaseURL(String movedTo) {
         try {
             URL url = new URI(movedTo).toURL();

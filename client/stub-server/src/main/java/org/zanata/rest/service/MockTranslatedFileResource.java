@@ -44,7 +44,7 @@ public class MockTranslatedFileResource implements TranslatedFileResource {
             String iterationSlug, String localeId, String docId, String merge,
             InputStream fileStream, String projectType) {
         return Response.ok(
-                new FileUploadResponse(1L, "Upload of translation document successful: "+
+                new FileUploadResponse(1L, "Upload of translation document successful: " +
                         projectSlug + "/" + iterationSlug + "/" + docId + ":" + projectType + ":" + localeId))
                 .build();
     }

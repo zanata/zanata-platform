@@ -27,9 +27,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,11 +44,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ResponseProcessingException;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -104,26 +99,25 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
     private final ConsoleInteractor consoleInteractor;
 
-    // TODO rename to fileResource or similar
-    private final FileResourceClient client;
+    private final FileResourceClient fileResource;
 
     public RawPushCommand(PushOptions opts) {
         super(opts);
-        client = getClientFactory().getFileResourceClient();
+        fileResource = getClientFactory().getFileResourceClient();
         consoleInteractor = new ConsoleInteractorImpl(opts);
     }
 
     @VisibleForTesting
     public RawPushCommand(PushOptions opts, RestClientFactory clientFactory) {
         super(opts, clientFactory);
-        client = getClientFactory().getFileResourceClient();
+        fileResource = getClientFactory().getFileResourceClient();
         consoleInteractor = new ConsoleInteractorImpl(opts);
     }
 
     public RawPushCommand(PushOptions opts, RestClientFactory clientFactory,
             ConsoleInteractor console) {
         super(opts, clientFactory);
-        client = getClientFactory().getFileResourceClient();
+        fileResource = getClientFactory().getFileResourceClient();
         this.consoleInteractor = console;
     }
 
@@ -295,7 +289,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         consoleInteractor.printfln(DisplayMode.Warning,
                 "Using EXPERIMENTAL project type 'file'.");
 
-        List<FileTypeInfo> serverAcceptedTypes = fileTypeInfoList(client);
+        List<FileTypeInfo> serverAcceptedTypes = fileTypeInfoList(fileResource);
 
         if (getOpts().getListFileTypes()) {
             printFileTypes(serverAcceptedTypes);
@@ -621,11 +615,11 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         ChunkUploadResponse response;
         if (locale == null) {
             response =
-                    client.uploadSourceFile(getOpts().getProj(),
+                    fileResource.uploadSourceFile(getOpts().getProj(),
                             getOpts().getProjectVersion(), docName, uploadForm);
         } else {
             response =
-                    client.uploadTranslationFile(getOpts().getProj(),
+                    fileResource.uploadTranslationFile(getOpts().getProj(),
                             getOpts().getProjectVersion(), locale, docName,
                             getOpts().getMergeType(), uploadForm);
         }

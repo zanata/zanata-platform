@@ -44,7 +44,7 @@ public class MockSourceFileResource implements SourceFileResource {
     public Response uploadSourceFile(String projectSlug, String iterationSlug,
             String docId, InputStream fileStream, ProjectType projectType) {
         return Response.status(Response.Status.CREATED).entity(
-                new FileUploadResponse(1L, "Upload of new source document successful: "+
+                new FileUploadResponse(1L, "Upload of new source document successful: " +
                         projectSlug + "/" + iterationSlug + "/" + docId + ":" + projectType))
                 .build();
     }
