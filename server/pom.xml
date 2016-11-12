@@ -60,7 +60,7 @@
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.29</okapi.version>
 
-    <zanata.assets.version>9.0</zanata.assets.version>
+    <zanata.assets.version>10.0</zanata.assets.version>
     <zanata.client.version>${project.version}</zanata.client.version>
 
     <richfaces.version>4.5.17.Final</richfaces.version>
@@ -1259,18 +1259,6 @@
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>3.19.0-GA</version>
-      </dependency>
-
-      <dependency>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.el</groupId>
-            <artifactId>el-api</artifactId>
-          </exclusion>
-        </exclusions>
-        <groupId>org.jboss.logging</groupId>
-        <artifactId>jboss-logging</artifactId>
-        <version>3.3.0.Final</version>
       </dependency>
 
       <dependency>
