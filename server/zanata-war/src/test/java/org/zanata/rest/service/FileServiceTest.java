@@ -23,6 +23,7 @@ package org.zanata.rest.service;
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +34,6 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataTest;
-import org.zanata.common.ProjectType;
 import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
@@ -61,8 +61,6 @@ import javax.ws.rs.core.Response;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -71,6 +69,7 @@ import static org.mockito.Mockito.when;
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
 @RunWith(CdiUnitRunner.class)
+@AdditionalClasses({FileService.class})
 public class FileServiceTest extends ZanataTest {
     private static final String PROJ_SLUG = "project-slug";
     private static final String VER_SLUG = "version-slug";
@@ -101,16 +100,12 @@ public class FileServiceTest extends ZanataTest {
     // needed to override the producers of the original class
     @Produces @Mock ApplicationConfiguration applicationConfiguration;
     @Produces @Mock Messages messages;
-    @Produces @Mock LegacyFileMapper legacyFileMapper;
-//    @Inject LegacyFileMapper legacyFileMapper;
 
     @Captor
     private ArgumentCaptor<DocumentFileUploadForm> formCaptor;
 
     @Inject
-    private SourceFileService sourceFileService;
-    @Inject
-    private TranslatedFileResourceService translationFileResource;
+    private FileResource fileService;
 
     private GlobalDocumentId id;
     private DocumentFileUploadForm form;
@@ -122,9 +117,6 @@ public class FileServiceTest extends ZanataTest {
         id = new GlobalDocumentId(PROJ_SLUG, VER_SLUG, DOC_ID);
         form = new DocumentFileUploadForm();
         okResponse = Response.ok().build();
-        // just return unaltered docId
-        when(legacyFileMapper.getFilenameSuffix(any(), any(), any(), anyBoolean())).thenReturn("");
-//        when(legacyFileMapper.getServerDocId(any(), any(), any(), any())).thenAnswer(invoc -> invoc.getArguments()[2]);
     }
 
     @After
@@ -140,10 +132,8 @@ public class FileServiceTest extends ZanataTest {
     public void sourceUploadParamsHandledCorrectly() {
         when(sourceUploader.tryUploadSourceFile(eq(id), formCaptor.capture()))
                 .thenReturn(okResponse);
-        // FIXME
-//        sourceFileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form,
-//                ProjectType.File);
-//        assertThat(formCaptor.getValue(), is(sameInstance(form)));
+        fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
+        assertThat(formCaptor.getValue(), is(sameInstance(form)));
     }
 
     @Test
@@ -151,10 +141,9 @@ public class FileServiceTest extends ZanataTest {
     public void sourceUploadResponseReturnedDirectly() {
         when(sourceUploader.tryUploadSourceFile(id, form)).thenReturn(
                 okResponse);
-        // FIXME
-//        response =
-//                sourceFileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form, ProjectType.File);
-//        assertThat(response, is(sameInstance(okResponse)));
+        response =
+                fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
+        assertThat(response, is(sameInstance(okResponse)));
     }
 
     @Test
@@ -164,10 +153,9 @@ public class FileServiceTest extends ZanataTest {
                 transUploader.tryUploadTranslationFile(eq(id), eq(LOCALE),
                         eq(MERGE), eq(false), formCaptor.capture(), eq(TranslationSourceType.API_UPLOAD)))
                 .thenReturn(okResponse);
-        // FIXME
-//        translationFileResource.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID,
-//                MERGE, form, null);
-//        assertThat(formCaptor.getValue(), is(sameInstance(form)));
+        fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE, DOC_ID,
+                MERGE, form);
+        assertThat(formCaptor.getValue(), is(sameInstance(form)));
     }
 
     @Test
@@ -175,10 +163,9 @@ public class FileServiceTest extends ZanataTest {
     public void translationUploadResponseReturnedDirectly() {
         when(transUploader.tryUploadTranslationFile(id, LOCALE, MERGE, false, form, TranslationSourceType.API_UPLOAD))
                 .thenReturn(okResponse);
-        // FIXME
-//        response =
-//                translationFileResource.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE,
-//                        DOC_ID, MERGE, form, null);
-//        assertThat(response, is(sameInstance(okResponse)));
+        response =
+                fileService.uploadTranslationFile(PROJ_SLUG, VER_SLUG, LOCALE,
+                        DOC_ID, MERGE, form);
+        assertThat(response, is(sameInstance(okResponse)));
     }
 }

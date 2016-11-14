@@ -20,33 +20,20 @@
  */
 package org.zanata.rest.service;
 
-import static org.zanata.rest.service.FileResource.FILETYPE_POT;
-import static org.zanata.rest.service.FileResource.FILETYPE_RAW_SOURCE_DOCUMENT;
-
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
-import org.zanata.file.RawDocumentContentAccessException;
 import org.zanata.file.SourceDocumentUpload;
-import org.zanata.model.HDocument;
-import org.zanata.rest.dto.resource.Resource;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -58,11 +45,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Transactional
 public class SourceFileService implements SourceFileResource {
-
-    /**
-     * See also {@link TranslatedFileResourceService#FILE_TYPE_OFFLINE_PO}
-     */
-    private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
 
     @Inject
     private DocumentDAO documentDAO;
@@ -101,95 +83,8 @@ public class SourceFileService implements SourceFileResource {
             String fileType,
             String docId,
             String projectType) {
-        // TODO scan (again) for virus
-        HDocument document =
-                documentDAO.getByProjectIterationAndDocId(projectSlug,
-                        iterationSlug, docId);
-        if (document == null) {
-            return Response.status(Status.NOT_FOUND).build();
-        }
-
-        if (FILETYPE_RAW_SOURCE_DOCUMENT.equals(fileType)) {
-            if (document.getRawDocument() == null) {
-                return Response.status(Status.NOT_FOUND).build();
-            }
-            InputStream fileContents;
-            try {
-                fileContents =
-                        filePersistService
-                                .getRawDocumentContentAsStream(document
-                                        .getRawDocument());
-            } catch (RawDocumentContentAccessException e) {
-                log.error(e.toString(), e);
-                return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
-                        .build();
-            }
-            StreamingOutput output =
-                    new InputStreamStreamingOutput(fileContents);
-            return Response
-                    .ok()
-                    .header("Content-Disposition",
-                            "attachment; filename=\"" + document.getName()
-                                    + "\"").entity(output).build();
-        } else if (FILETYPE_POT.equals(fileType)
-                || FILE_TYPE_OFFLINE_PO_TEMPLATE.equals(fileType)) {
-            // Note: could give 404 or unsupported media type for "pot" in
-            // non-po projects,
-            // and suggest using offlinepo
-            Resource res = resourceUtils.buildResource(document);
-            StreamingOutput output =
-                    new POTStreamingOutput(res,
-                            FILE_TYPE_OFFLINE_PO_TEMPLATE.equals(fileType));
-            return Response
-                    .ok()
-                    .header("Content-Disposition",
-                            "attachment; filename=\"" + document.getName()
-                                    + ".pot\"").type(MediaType.TEXT_PLAIN)
-                    .entity(output).build();
-        } else {
-            return Response.status(Status.UNSUPPORTED_MEDIA_TYPE).build();
-        }
-    }
-
-    private class InputStreamStreamingOutput implements StreamingOutput {
-        private InputStream input;
-
-        InputStreamStreamingOutput(InputStream input) {
-            this.input = input;
-        }
-
-        @Override
-        public void write(OutputStream output) throws IOException,
-                WebApplicationException {
-            byte[] buffer = new byte[4096]; // To hold file contents
-            int bytesRead; // How many bytes in buffer
-
-            while ((bytesRead = input.read(buffer)) != -1) {
-                output.write(buffer, 0, bytesRead);
-            }
-        }
-    }
-
-    private class POTStreamingOutput implements StreamingOutput {
-        private Resource resource;
-        private boolean offlinePot;
-
-        /**
-         * @param offlinePot
-         *            true if text flow id should be inserted into msgctxt to
-         *            allow reverse mapping
-         */
-        POTStreamingOutput(Resource resource, boolean offlinePot) {
-            this.resource = resource;
-            this.offlinePot = offlinePot;
-        }
-
-        @Override
-        public void write(OutputStream output) throws IOException,
-                WebApplicationException {
-            PoWriter2 writer = new PoWriter2(false, offlinePot);
-            writer.writePot(output, "UTF-8", resource);
-        }
+        // FIXME
+        return null;
     }
 
 }
