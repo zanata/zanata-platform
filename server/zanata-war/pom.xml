@@ -293,19 +293,6 @@
       </plugin>
 
       <plugin>
-        <!-- server pom has same plugin definition with different includes -->
-        <groupId>org.zanata</groupId>
-        <configuration>
-          <srcDir>${project.build.directory}/gwt-extra/webtrans</srcDir>
-          <transDir>src/main/resources/zanata-editor</transDir>
-          <includes>**/*.properties</includes>
-          <excludes>**/*_default.properties</excludes>
-        </configuration>
-        <artifactId>zanata-maven-plugin</artifactId>
-        <version>${project.version}</version>
-      </plugin>
-
-      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>

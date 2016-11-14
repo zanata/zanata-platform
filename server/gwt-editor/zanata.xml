@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <config xmlns="http://zanata.org/namespace/config/">
-  <url>https://translate.zanata.org/zanata/</url>
+  <url>https://translate.zanata.org/</url>
   <project>zanata-editor</project>
   <project-version>master</project-version>
   <project-type>utf8properties</project-type>
+
+  <!--
+      We listed locales explicitly in here because we don't want to pull
+      unnecessary locales from the server. To enable a locale in GWT editor,
+      we need to change
+      gwt-editor/src/main/java/org/zanata/webtrans/ApplicationI18n.gwt.xml
+      Only enable a locale if the translation percentage is over 80% otherwise
+      it will just add more GWT compilation time to the build with no benefit.
+  -->
+  <locales>
+    <locale>uk</locale>
+    <locale>ja</locale>
+    <locale>en</locale>
+    <locale>zh-Hant-TW</locale>
+  </locales>
+
+  <src-dir>target/gwt-extra/webtrans</src-dir>
+  <trans-dir>src/main/resources/zanata-editor</trans-dir>
+  <includes>**/*.properties</includes>
+  <excludes>**/*_default.properties</excludes>
 
   <hooks>
     <hook command="push">
