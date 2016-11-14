@@ -76,15 +76,13 @@ const Modal = ({
     <OverlayModal
       {...props}
       containerClassName='has-modal'
-      backdropClassName='modal-backdrop'
       className='modal'
     >
       <div className='container'>
         <div className='modal-content'>
           {closeButton && (
             <Button aria-label={closeLabel}
-              bsStyle='link'
-              className='modal-close'
+              className='close s0'
               onClick={onHide}>
               <Icon name='cross' className='s2 closeIcon' />
             </Button>
@@ -118,7 +116,7 @@ Modal.propTypes = {
 }
 Modal.defaultProps = {
   closeButton: true,
-  closeLabel: 'Close'
+  closeLabel: 'cross'
 }
 
 export default Modal
