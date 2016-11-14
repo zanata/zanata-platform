@@ -7,8 +7,9 @@
     <version>4.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-maven-plugin</artifactId>
+
   <packaging>maven-plugin</packaging>
-  <!-- TODO try this again after https://github.com/zanata/zanata-platform/pull/17 -->
+  <!-- TODO try this again after https://github.com/takari/takari-lifecycle/issues/43 -->
   <!-- May need to bind maven-plugin-plugin:helpmojo to lifecycle phase -->
   <!--<packaging>takari-maven-plugin</packaging>-->
 
@@ -30,8 +31,14 @@
     <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
   </scm>
 
+  <properties>
+    <!-- Fedora 23 has 3.3.3 -->
+    <maven.version>2.0.11</maven.version>
+    <maven.plugin.version>3.5</maven.plugin.version>
+  </properties>
+
   <prerequisites>
-    <maven>2.0.8</maven>
+    <maven>${maven.version}</maven>
   </prerequisites>
   <inceptionYear>2010</inceptionYear>
 
@@ -56,8 +63,15 @@
       </exclusions>
     </dependency>
     <dependency>
+      <groupId>org.apache.maven.plugin-tools</groupId>
+      <artifactId>maven-plugin-annotations</artifactId>
+      <version>${maven.plugin.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-plugin-api</artifactId>
+      <version>${maven.version}</version>
     </dependency>
 
     <dependency>
@@ -108,33 +122,18 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>2.9</version>
+        <version>${maven.plugin.version}</version>
         <executions>
           <!-- Tell maven-plugin-plugin to generate the 'help' goal -->
           <execution>
-            <id>generated-helpmojo</id>
+            <id>help-goal</id>
             <goals>
               <goal>helpmojo</goal>
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <useJava5>true</useJava5>
-          <!-- Use only java mojo extractor -->
-          <extractors>
-            <extractor>java</extractor>
-          </extractors>
-        </configuration>
       </plugin>
 
-      <!-- This is just to tell Maven about our plugin prefix: -->
-      <!--  But Maven 3 won't like it without a version...
-            <plugin>
-              <groupId>${groupId}</groupId>
-              <artifactId>${artifactId}</artifactId>
-              <version>${version}</version>
-            </plugin>
-       -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-dependency-plugin</artifactId>
@@ -154,7 +153,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-plugin-plugin</artifactId>
-        <version>2.6</version>
+        <version>${maven.plugin.version}</version>
       </plugin>
     </plugins>
   </reporting>

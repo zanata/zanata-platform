@@ -22,6 +22,8 @@ package org.zanata.maven;
 
 import java.io.File;
 
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.glossary.push.GlossaryPushCommand;
 import org.zanata.client.commands.glossary.push.GlossaryPushOptions;
 
@@ -29,34 +31,28 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Pushes glossary file into Zanata.
- *
- * @goal glossary-push
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
- **/
+ */
+@Mojo(name = "glossary-push", requiresOnline = true, requiresProject = false)
 public class GlossaryPushMojo extends GlossaryMojo<GlossaryPushOptions>
         implements GlossaryPushOptions {
 
     /**
      * Translation language of document. Not required for csv file
-     *
-     * @parameter expression="${zanata.transLang}"
      */
+    @Parameter(property = "zanata.transLang")
     private String transLang;
 
     /**
      * Location path for the glossary file
-     *
-     * @parameter expression="${zanata.file}"
-     * @required
      */
+    @Parameter(property = "zanata.file", required = true)
     private File file;
 
     /**
      * Batch size for large glossary file
-     *
-     * @parameter expression="${zanata.batchSize}" default-value=50
      */
+    @Parameter(property = "zanata.batchSize", defaultValue = "50")
     private int batchSize = DEFAULT_BATCH_SIZE;
 
     public GlossaryPushMojo() throws Exception {

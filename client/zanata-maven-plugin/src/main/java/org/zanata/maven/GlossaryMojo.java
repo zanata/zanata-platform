@@ -2,6 +2,7 @@ package org.zanata.maven;
 
 import java.io.File;
 
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.ConfigurableGlossaryOptions;
 import org.zanata.client.commands.ConfigurableOptions;
 
@@ -14,17 +15,14 @@ public abstract class GlossaryMojo<O extends ConfigurableOptions>
         extends ConfigurableMojo<O> implements ConfigurableGlossaryOptions {
     /**
      * Zanata configuration file.
-     *
-     * @parameter expression="${zanata.config}"
-     *            default-value="${basedir}/zanata.xml"
      */
+    @Parameter(property = "zanata.config", defaultValue = "${basedir}/zanata.xml")
     private File config;
 
     /**
      * Project slug (id) within Zanata server. Required for project glossary.
-     *
-     * @parameter expression="${zanata.project}"
      */
+    @Parameter(property = "zanata.project")
     private String project;
 
     @Override
