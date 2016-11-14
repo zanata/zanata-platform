@@ -37,6 +37,9 @@
     <!-- Directory for frontend to run the build from. -->
     <frontend.build.directory>${project.basedir}/src/frontend</frontend.build.directory>
 
+    <!-- Command to use after 'npm ' for the frontend build. Default is the faster draft build. -->
+    <frontend.build.command>run draft</frontend.build.command>
+
     <!-- Directory for editor to run the build from. -->
     <editor.build.directory>${project.basedir}/src/editor</editor.build.directory>
 
@@ -124,7 +127,7 @@
             </goals>
             <configuration>
               <workingDirectory>${frontend.build.directory}</workingDirectory>
-              <arguments>run build</arguments>
+              <arguments>${frontend.build.command}</arguments>
             </configuration>
           </execution>
 
@@ -330,6 +333,18 @@
       <properties>
         <skip.installnodenpm>true</skip.installnodenpm>
         <skip.npm>true</skip.npm>
+      </properties>
+    </profile>
+    <!-- Trigger a fully optimized build, instead of the default fast build. -->
+    <profile>
+      <id>releaseBuild</id>
+      <activation>
+        <property>
+          <name>release</name>
+        </property>
+      </activation>
+      <properties>
+        <frontend.build.command>run build</frontend.build.command>
       </properties>
     </profile>
   </profiles>
