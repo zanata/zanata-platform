@@ -221,7 +221,6 @@
                 <resource>
                   <directory>src/editor/app/dist</directory>
                   <!-- TODO try including everything -->
-                  <include>index.html</include>
                   <include>bundle.js</include>
                   <include>bundle.js.map</include>
                   <include>bundle.css</include>
