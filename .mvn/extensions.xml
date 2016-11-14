@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extensions>
+  <!-- Enable Takari's Concurrent Safe Local Repository -->
+  <!-- Disabled due to concurrency issues(!)
+       - https://github.com/takari/takari-local-repository/issues/4
+       - https://github.com/takari/takari-local-repository/issues/5
+  -->
+<!--
+  <extension>
+    <groupId>io.takari.aether</groupId>
+    <artifactId>takari-local-repository</artifactId>
+    <version>0.11.2</version>
+  </extension>
+  <extension>
+    <groupId>io.takari</groupId>
+    <artifactId>takari-filemanager</artifactId>
+    <version>0.8.3</version>
+  </extension>
+ -->
+  <!-- Enable Takari's Smart Builder -->
+  <extension>
+    <groupId>io.takari.maven</groupId>
+    <artifactId>takari-smart-builder</artifactId>
+    <version>0.4.1</version>
+  </extension>
+  <!-- Enable faster downloads -->
+  <extension>
+    <groupId>io.takari.aether</groupId>
+    <artifactId>aether-connector-okhttp</artifactId>
+    <version>0.16.0</version>
+  </extension>
+  <!-- Enable build profiling.
+       Run mvn with -Dbuildtime.output.log to see timings.
+       NB: may give odd timings when running multi-threaded
+       builds with mvn's -T option, eg smart builder.
+  -->
+  <extension>
+    <groupId>co.leantechniques</groupId>
+    <artifactId>maven-buildtime-extension</artifactId>
+    <version>3.0.0</version>
+  </extension>
+</extensions>

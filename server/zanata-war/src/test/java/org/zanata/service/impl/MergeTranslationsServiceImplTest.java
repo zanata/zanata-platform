@@ -32,7 +32,6 @@ import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;

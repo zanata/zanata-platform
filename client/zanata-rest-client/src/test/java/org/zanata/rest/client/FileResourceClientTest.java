@@ -34,6 +34,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.input.CountingInputStream;
+import org.apache.commons.io.input.ProxyInputStream;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -103,15 +107,19 @@ public class FileResourceClientTest {
             void testSourceFileUpload() throws Exception {
 //        client = clientTalkingToRealServer();
         DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-        File source = loadFileFromClasspath("test-odt.odt");
-        FileInputStream fileInputStream = new FileInputStream(source);
+        String resource = "test-odt.odt";
+        InputStream fileInputStream = loadFromClasspath(resource);
 
+        // TODO avoid direct file access
+        // use/copy commons-io CountingInputStream and DigestInputStream
         uploadForm.setFileStream(fileInputStream);
         uploadForm.setFileType("odt");
-        uploadForm.setHash(calculateFileHash(source));
+        Pair<String, Long> fileHashAndSize =
+                calculateFileHashAndSize(loadFromClasspath(resource));
+        uploadForm.setHash(fileHashAndSize.getLeft());
         uploadForm.setFirst(true);
         uploadForm.setLast(true);
-        uploadForm.setSize(source.length());
+        uploadForm.setSize(fileHashAndSize.getRight());
         ChunkUploadResponse uploadResponse = client
                 .uploadSourceFile("about-fedora", "master",
                         "test.odt",
@@ -120,25 +128,28 @@ public class FileResourceClientTest {
         assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
     }
 
-    private static File loadFileFromClasspath(String file) {
-        return new File(Thread.currentThread().getContextClassLoader()
-                .getResource(file).getFile());
+    private static InputStream loadFromClasspath(String resource) {
+        InputStream resourceStream =
+                Thread.currentThread().getContextClassLoader()
+                        .getResourceAsStream(resource);
+        return resourceStream;
     }
 
     @Test
-    public
-            void testTranslationFileUpload() throws Exception {
+    public void testTranslationFileUpload() throws Exception {
 //        client = clientTalkingToRealServer();
         DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
-        File source = loadFileFromClasspath("zh-CN/test-odt.odt");
-        FileInputStream fileInputStream = new FileInputStream(source);
+        String resource = "zh-CN/test-odt.odt";
+        InputStream fileInputStream = loadFromClasspath(resource);
 
         uploadForm.setFileStream(fileInputStream);
         uploadForm.setFileType("odt");
-        uploadForm.setHash(calculateFileHash(source));
+        Pair<String, Long> fileHashAndSize =
+                calculateFileHashAndSize(loadFromClasspath(resource));
+        uploadForm.setHash(fileHashAndSize.getLeft());
         uploadForm.setFirst(true);
         uploadForm.setLast(true);
-        uploadForm.setSize(source.length());
+        uploadForm.setSize(fileHashAndSize.getRight());
         ChunkUploadResponse uploadResponse = client
                 .uploadTranslationFile("about-fedora", "master",
                         "zh",
@@ -148,20 +159,21 @@ public class FileResourceClientTest {
         assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
     }
 
-    private String calculateFileHash(File srcFile) {
+    private Pair<String, Long> calculateFileHashAndSize(InputStream in) {
+        CountingInputStream countingStream = new CountingInputStream(in);
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            InputStream fileStream = new FileInputStream(srcFile);
             try {
-                fileStream = new DigestInputStream(fileStream, md);
+                in = new DigestInputStream(countingStream, md);
                 byte[] buffer = new byte[256];
-                while (fileStream.read(buffer) > 0) {
+                while (in.read(buffer) > 0) {
                     // continue
                 }
             } finally {
-                fileStream.close();
+                in.close();
             }
-            return new String(Hex.encodeHex(md.digest()));
+            String hash = new String(Hex.encodeHex(md.digest()));
+            return new ImmutablePair<>(hash, countingStream.getByteCount());
         } catch (NoSuchAlgorithmException | IOException e) {
             throw new RuntimeException(e);
         }

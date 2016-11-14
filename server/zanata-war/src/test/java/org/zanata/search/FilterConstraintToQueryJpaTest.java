@@ -26,6 +26,7 @@ import org.zanata.model.type.WebhookType;
 import org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.maker.FixedValueMaker;

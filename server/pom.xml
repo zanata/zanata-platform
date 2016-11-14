@@ -11,11 +11,10 @@
     <relativePath>../parent</relativePath>
   </parent>
 
+  <!-- Connection URLs repeated as workaround for https://issues.apache.org/jira/browse/MPIR-234 -->
   <scm>
-    <connection>scm:git:git://github.com/zanata/zanata-server.git</connection>
-    <developerConnection>scm:git:git@github.com:zanata/zanata-server.git</developerConnection>
-    <url>https://github.com/zanata/zanata-server</url>
-    <tag>HEAD</tag>
+    <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
   </scm>
 
   <properties>
@@ -26,9 +25,7 @@
     <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <failsafe.useFile>false</failsafe.useFile>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
-    <surefire.useFile>false</surefire.useFile>
     <surefire.version>2.19.1</surefire.version>
 
     <deltaspike.version>1.7.0</deltaspike.version>
@@ -38,31 +35,16 @@
     <lombok.version>1.16.6</lombok.version>
     <weld.version>2.3.2.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
-    <groovy.version>2.4.5</groovy.version>
-    <guava.version>19.0</guava.version>
-    <gwt.version>2.7.0</gwt.version>
+    <groovy.version>2.4.7</groovy.version>
     <icu4j.version>56.1</icu4j.version>
+    <!-- Only Guava 20+ supports GWT 2.8.
+         See https://github.com/google/guava/issues/1999 -->
+    <guava.version>20.0</guava.version>
+    <gwt.version>2.8.0</gwt.version>
     <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>5.3.1</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
     <rewrite.version>3.0.0.Alpha10</rewrite.version>
-
-    <!--
-    Version of java compiler used for building. (Specified as major.minor,
-    as used by javac -source and -target).
-    -->
-    <required.java>1.8</required.java>
-    <!--
-      Version of Java used for runtime (major.minor) and for bytecode
-      generation. Should correspond with animal.sniffer.signature.
-    -->
-    <!-- NB: When changing this, be sure to update the rpm's spec file to match -->
-    <required.jvm>1.8</required.jvm>
-    <!--
-      Version of Java used for API compatibility checking. Should
-      correspond with required.jvm.
-    -->
-    <animal.sniffer.signature>org.codehaus.mojo.signature:java18:1.0</animal.sniffer.signature>
 
     <!--
     Not used yet.
@@ -79,18 +61,15 @@
     <okapi.version>0.29</okapi.version>
 
     <zanata.assets.version>10.0-SNAPSHOT</zanata.assets.version>
-    <zanata.api.version>4.0.0-SNAPSHOT</zanata.api.version>
-    <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
-    <zanata.api.compat.version>4.0.0-SNAPSHOT</zanata.api.compat.version>
-    <zanata.client.version>4.0.0-SNAPSHOT</zanata.client.version>
-    <zanata.common.version>4.0.0-SNAPSHOT</zanata.common.version>
+    <zanata.client.version>${project.version}</zanata.client.version>
 
     <richfaces.version>4.5.17.Final</richfaces.version>
 
     <arquillian.version>1.1.11.Final</arquillian.version>
-    <shrinkwrap.api.version>1.2.3</shrinkwrap.api.version>
-    <shrinkwrap.resolver.version>2.0.0</shrinkwrap.resolver.version>
-    <shrinkwrap.desc.version>2.0.0-alpha-8</shrinkwrap.desc.version>
+    <shrinkwrap.api.version>1.2.6</shrinkwrap.api.version>
+    <shrinkwrap.resolver.version>2.2.4</shrinkwrap.resolver.version>
+    <shrinkwrap.desc.version>2.0.0-alpha-10</shrinkwrap.desc.version>
+    <maven.model.version>3.3.9</maven.model.version>
 
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
@@ -388,18 +367,6 @@
       </dependency>
 
       <dependency>
-        <groupId>commons-beanutils</groupId>
-        <artifactId>commons-beanutils</artifactId>
-        <version>1.9.2</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>4.4.1</version>
@@ -420,25 +387,67 @@
       <dependency>
         <groupId>org.apache.maven</groupId>
         <artifactId>maven-aether-provider</artifactId>
-        <version>3.0.5</version>
+        <version>${maven.model.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-artifact</artifactId>
+        <version>${maven.model.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model</artifactId>
+        <version>${maven.model.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-model-builder</artifactId>
+        <version>${maven.model.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-repository-metadata</artifactId>
+        <version>${maven.model.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings</artifactId>
+        <version>${maven.model.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-settings-builder</artifactId>
+        <version>${maven.model.version}</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-provider-api</artifactId>
-        <version>2.4</version>
+        <version>2.6</version>
       </dependency>
 
       <dependency>
         <groupId>org.apache.maven.wagon</groupId>
         <artifactId>wagon-http-lightweight</artifactId>
-        <version>2.4</version>
+        <version>2.6</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.codehaus.plexus</groupId>
+        <artifactId>plexus-utils</artifactId>
+        <version>3.0.24</version>
       </dependency>
 
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>1.6.0</version>
+        <version>3.5.2</version>
         <scope>test</scope>
       </dependency>
 
@@ -634,11 +643,18 @@
         <version>${project.version}</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>gwt-editor</artifactId>
+        <classifier>classes</classifier>
+        <version>${project.version}</version>
+      </dependency>
+
       <!-- zanata api -->
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>com.sun.jersey</groupId>
@@ -682,7 +698,7 @@
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
         <classifier>sources</classifier>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>*</groupId>
@@ -694,7 +710,8 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>${zanata.api.compat.version}</version>
+        <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
+        <version>3.9.1</version>
         <classifier>compat</classifier>
         <scope>test</scope>
         <exclusions>
@@ -721,7 +738,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-util</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>xom</groupId>
@@ -732,17 +749,17 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-po</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-glossary</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-properties</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>javax.xml.bind</groupId>
@@ -753,7 +770,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-xliff</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>javax.xml.bind</groupId>
@@ -770,7 +787,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-rest-client</artifactId>
-        <version>${zanata.client.version}</version>
+        <version>${project.version}</version>
         <scope>test</scope>
         <!-- The client uses a newer version of resteasy -->
         <exclusions>
@@ -787,7 +804,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-rest-client</artifactId>
-        <version>${zanata.client.version}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
@@ -850,6 +867,10 @@
           <exclusion>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
           </exclusion>
         </exclusions>
       </dependency>
@@ -1351,7 +1372,7 @@
       <dependency>
         <groupId>org.jsoup</groupId>
         <artifactId>jsoup</artifactId>
-        <version>1.7.1</version>
+        <version>1.7.2</version>
         <scope>test</scope>
       </dependency>
 
@@ -1398,6 +1419,14 @@
           <exclusion>
             <groupId>org.restlet.jee</groupId>
             <artifactId>*</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.restlet.jee</groupId>
+            <artifactId>org.restlet</artifactId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.restlet.jee</groupId>
+            <artifactId>org.restlet.ext.servlet</artifactId>
           </exclusion>
           <exclusion>
             <groupId>commons-httpclient</groupId>
@@ -1669,6 +1698,18 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
+    <!-- Needed for GWT snapshots -->
+    <repository>
+      <id>google-maven-snapshot-repository</id>
+      <name>Google Maven Snapshot Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/google-snapshots/</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
   </repositories>
 
   <pluginRepositories>
@@ -1744,7 +1785,7 @@
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>${zanata.client.version}</version>
+        <version>${project.version}</version>
         <configuration>
           <srcDir>.</srcDir>
           <transDir>.</transDir>
@@ -1810,6 +1851,7 @@
                 <allowedRepository>jboss-public-repository-group</allowedRepository>
                 <allowedRepository>okapi-cloudbees-release</allowedRepository>
                 <allowedRepository>repo.bodar.com</allowedRepository>
+                <allowedRepository>google-maven-snapshot-repository</allowedRepository>
               </allowedRepositories>
               <allowedPluginRepositories combine.children="append">
                 <allowedPluginRepository>apache.snapshots.https</allowedPluginRepository>
@@ -2227,5 +2269,6 @@
     <module>zanata-test-war</module>
     <module>functional-test</module>
     <!-- <module>zanata-dist</module> -->
+    <module>gwt-editor</module>
   </modules>
 </project>

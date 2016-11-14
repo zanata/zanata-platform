@@ -51,7 +51,7 @@ public class FeatureInventoryRecorder extends RunListener {
         super.testRunStarted(description);
         String locationPath =
                 System.getProperty("featureInventoryLocation",
-                        "./target/feature-inventory");
+                        "./target/test-classes/feature-inventory");
         File location = new File(locationPath);
         report = new File(location, "features.json");
         location.mkdirs();

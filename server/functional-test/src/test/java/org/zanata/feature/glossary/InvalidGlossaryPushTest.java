@@ -60,13 +60,15 @@ public class InvalidGlossaryPushTest extends ZanataTestCase {
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Feature(summary = "Invalid glossary file will be rejected by the server")
-    public void successfulGlossaryPush() throws Exception {
+    public void invalidGlossaryPush() throws Exception {
         List<String> result = push(pushCommand, userConfigPath);
-        log.info(resultByLines(result));
+        String output = resultByLines(result);
+        log.info("output:\n{}", output);
+        assertThat(output).containsIgnoringCase("unexpected token");
 
         assertThat(clientWorkFlow.isPushSuccessful(result))
-                .isFalse()
-                .as("The glossary push was not successful");
+                .as("glossary push should fail")
+                .isFalse();
     }
 
     public List<String> push(String command, String configPath)

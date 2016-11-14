@@ -4,7 +4,7 @@ import { locale, formats } from './config/intl'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-import { hashHistory, Router, Route } from 'react-router'
+import { browserHistory, Router, Route } from 'react-router'
 import { syncHistory } from 'redux-simple-router'
 import newContextFetchMiddleware from './middlewares/new-context-fetch'
 import searchSelectedPhraseMiddleware
@@ -49,7 +49,7 @@ addLocaleData({
 // example uses createHistory, but the latest bundles history with react-router
 // and has some defaults, so now I am just using one of those.
 // const history = createHistory()
-const history = hashHistory
+const history = browserHistory
 
 const loggerMiddleware = createLogger({
   predicate: (getState, action) =>
@@ -94,8 +94,9 @@ ReactDOM.render(
   <IntlProvider locale={locale} formats={formats}>
     <Provider store={store}>
       <Router history={history}>
+        {/* The ** is docId, captured as params.splat by react-router. */}
         <Route
-          path="/:projectSlug/:versionSlug/translate(/:docId/:lang)"
+          path="/project/translate/:projectSlug/v/:versionSlug/**"
           component={Root} />
         <Route path="/*" component={NeedSlugMessage} />
       </Router>

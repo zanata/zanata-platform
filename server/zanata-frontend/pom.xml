@@ -8,8 +8,14 @@
   </parent>
   <artifactId>zanata-frontend</artifactId>
   <name>Zanata frontend</name>
+  <!-- TODO switch to takari-jar for more efficient resource copying -->
   <packaging>jar</packaging>
-  <url>https://github.com/zanata/zanata-server/tree/master/zanata-frontend</url>
+
+  <!-- Connection URLs repeated as workaround for https://issues.apache.org/jira/browse/MPIR-234 -->
+  <scm>
+    <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
+  </scm>
 
   <!-- Referenced later in the document with ${tagname}. -->
   <properties>
@@ -28,13 +34,11 @@
     <!-- Specified to ensure build is consistent cross-platform. -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <!-- Directory for frontend to run the build from. Source is copied here before installing
-     dependencies to this location then running the build. -->
-    <frontend.build.directory>${project.build.directory}/src/frontend</frontend.build.directory>
+    <!-- Directory for frontend to run the build from. -->
+    <frontend.build.directory>${project.basedir}/src/frontend</frontend.build.directory>
 
-    <!-- Directory for editor to run the build from. Source is copied here before installing
-     dependencies to this location then running the build. -->
-    <editor.build.directory>${project.build.directory}/src/editor</editor.build.directory>
+    <!-- Directory for editor to run the build from. -->
+    <editor.build.directory>${project.basedir}/src/editor</editor.build.directory>
 
     <!-- Root path within the jar to put the built artifacts.
          Note: META-INF/resources/* is served as static content, so this serves
@@ -46,46 +50,59 @@
               the editor at http://<server>/app -->
     <editor.bundle.destination>${bundle.dest}/app</editor.bundle.destination>
 
-    <!-- Directory that contains the actual built frontend app (index, script and styles) -->
-    <frontend.built.artifact.directory>${frontend.build.directory}/dist</frontend.built.artifact.directory>
-
-    <!-- Directory that contains the actual built editor app (index, script and styles) -->
-    <editor.built.artifact.directory>${editor.build.directory}/app/dist</editor.built.artifact.directory>
+    <!-- Do not run checkstyle (eslint is used instead for this module) -->
+    <checkstyle.skip>true</checkstyle.skip>
   </properties>
 
   <dependencies>
   </dependencies>
 
   <build>
-    <!-- Copy all the source files to the build directory.
-         This is done to keep the original source directory clean, because the
-         build will download dependencies and places built artifacts in the
-         same directory as the source files.
-         This happens in phase process-resources. -->
-    <resources>
-      <resource>
-        <!-- Do not substitute maven variables like ${variablename} in the
-             contents of these files. -->
-        <filtering>false</filtering>
-        <!-- Path from pom to the source files that will be used. -->
-        <directory>src</directory>
-        <excludes>
-          <exclude>**/node_modules/</exclude>
-        </excludes>
-        <!-- Location to copy source files to. -->
-        <targetPath>${project.build.directory}/src</targetPath>
-      </resource>
-    </resources>
     <plugins>
-      <!-- Installs correct version of node and npm locally. -->
+      <plugin>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <artifactId>gmavenplus-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>check-npmrc</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>execute</goal>
+            </goals>
+          </execution>
+        </executions>
+        <!-- check for ignore-scripts = true in .npmrc, which breaks npm -->
+        <configuration>
+          <scripts>
+            <script><![CDATA[
+              def npmrcFile = new File(System.getProperty('user.home'), '.npmrc')
+              if (npmrcFile.exists()) {
+                def ignoreScripts = npmrcFile.text.readLines().any {
+                  it.matches(/\s*ignore-scripts\s*=\s*true\s*/)
+                }
+                if (ignoreScripts) throw new RuntimeException('ignore-scripts is set in ~/.npmrc: unable to run npm scripts')
+              }
+            ]]></script>
+          </scripts>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>2.4.7</version>
+            <scope>runtime</scope>
+          </dependency>
+        </dependencies>
+      </plugin>
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.1</version>
+        <version>1.2</version>
         <configuration>
           <installDirectory>${node.install.directory}</installDirectory>
         </configuration>
         <executions>
+          <!-- Installs correct version of node and npm locally. -->
           <execution>
             <id>install node and npm</id>
             <phase>initialize</phase>
@@ -95,44 +112,6 @@
             <configuration>
               <nodeVersion>${node.version}</nodeVersion>
               <npmVersion>${npm.version}</npmVersion>
-            </configuration>
-          </execution>
-          <!-- Download all dependency modules from npm (or mirror). -->
-          <execution>
-            <id>frontend: execute npm install</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${frontend.build.directory}</workingDirectory>
-              <arguments>install --cache-min ${npm.cache.min}</arguments>
-            </configuration>
-          </execution>
-
-          <!-- Download all dependency modules from npm (or mirror). -->
-          <execution>
-            <id>editor: execute npm install</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>install --cache-min ${npm.cache.min}</arguments>
-            </configuration>
-          </execution>
-
-          <!-- editor: copy index.html to build directory. -->
-          <execution>
-            <id>editor: npm run processhtml</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>npm</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>run processhtml</arguments>
             </configuration>
           </execution>
 
@@ -170,7 +149,6 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <skip>${skipTests}</skip>
               <workingDirectory>${frontend.build.directory}</workingDirectory>
               <arguments>test</arguments>
             </configuration>
@@ -184,7 +162,6 @@
               <goal>npm</goal>
             </goals>
             <configuration>
-              <skip>${skipTests}</skip>
               <workingDirectory>${editor.build.directory}</workingDirectory>
               <arguments>test</arguments>
             </configuration>
@@ -214,12 +191,17 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <!-- Do not substitute maven variables like ${variablename} in the
+                   contents of these files. -->
+              <useBuildFilters>false</useBuildFilters>
               <outputDirectory>${bundle.dest}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${frontend.built.artifact.directory}</directory>
+                  <directory>src/frontend/dist</directory>
                   <include>frontend.*.min.js</include>
                   <include>frontend.css</include>
+                  <!-- TODO eliminate generate bootstrap.css, bundle.js, style.css? -->
+                  <!-- TODO try including everything -->
                 </resource>
               </resources>
             </configuration>
@@ -233,10 +215,12 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
+              <useBuildFilters>false</useBuildFilters>
               <outputDirectory>${editor.bundle.destination}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${editor.built.artifact.directory}</directory>
+                  <directory>src/editor/app/dist</directory>
+                  <!-- TODO try including everything -->
                   <include>index.html</include>
                   <include>bundle.js</include>
                   <include>bundle.js.map</include>
@@ -248,11 +232,71 @@
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>src</directory>
+              <includes>
+                <include>**/node_modules/**</include>
+                <include>**/dist/**</include>
+              </includes>
+              <followSymlinks>false</followSymlinks>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
-  <!-- Attempts to avoid downloading anything from NPM. -->
   <profiles>
+    <profile>
+      <id>npm install</id>
+      <activation>
+        <property>
+          <name>!skip.npminstall</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.github.eirslett</groupId>
+            <artifactId>frontend-maven-plugin</artifactId>
+            <executions>
+              <!-- Download all dependency modules from npm (or mirror). -->
+              <execution>
+                <id>frontend: execute npm install</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <workingDirectory>${frontend.build.directory}</workingDirectory>
+                  <arguments>install --ignore-scripts --cache-min ${npm.cache.min}</arguments>
+                </configuration>
+              </execution>
+
+              <!-- Download all dependency modules from npm (or mirror). -->
+              <execution>
+                <id>editor: execute npm install</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>npm</goal>
+                </goals>
+                <configuration>
+                  <workingDirectory>${editor.build.directory}</workingDirectory>
+                  <arguments>install --ignore-scripts --cache-min ${npm.cache.min}</arguments>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+    <!-- Attempts to avoid downloading anything from NPM. -->
     <profile>
       <id>npmOffline</id>
       <activation>

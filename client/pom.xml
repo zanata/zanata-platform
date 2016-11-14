@@ -11,11 +11,10 @@
     <relativePath>../parent</relativePath>
   </parent>
 
+  <!-- Connection URLs repeated as workaround for https://issues.apache.org/jira/browse/MPIR-234 -->
   <scm>
-    <connection>scm:git:git://github.com/zanata/zanata-client.git</connection>
-    <developerConnection>scm:git:git@github.com:zanata/zanata-client.git</developerConnection>
-    <url>https://github.com/zanata/zanata-client</url>
-    <tag>HEAD</tag>
+    <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
   </scm>
 
   <!-- This is needed for bootstrapping with a zanata-parent SNAPSHOT  -->
@@ -34,12 +33,9 @@
   </repositories>
 
   <properties>
-    <zanata.api.version>4.0.0-SNAPSHOT</zanata.api.version>
-    <zanata.common.version>4.0.0-SNAPSHOT</zanata.common.version>
     <powermock.version>1.6.2</powermock.version>
     <resteasy.version>3.0.13.Final</resteasy.version>
   </properties>
-
 
   <build>
     <plugins>
@@ -72,7 +68,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <artifactId>commons-logging</artifactId>
@@ -84,7 +80,7 @@
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
         <type>test-jar</type>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
@@ -94,22 +90,22 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-glossary</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-po</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-properties</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-xliff</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>com.sun.xml.bind</groupId>
@@ -120,7 +116,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-util</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
 
       <dependency>

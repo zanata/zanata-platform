@@ -30,7 +30,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
-import org.junit.Assert.*;
+
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 
 /**

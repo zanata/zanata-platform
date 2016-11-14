@@ -1,0 +1,34 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.zanata</groupId>
+  <artifactId>build-tools</artifactId>
+  <version>4.0.0-SNAPSHOT</version>
+  <name>Build Tools</name>
+  <packaging>takari-jar</packaging>
+
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.takari.maven.plugins</groupId>
+        <artifactId>takari-lifecycle-plugin</artifactId>
+        <!-- Unfortunately, we can't inherit this version from parent: -->
+        <version>1.12.2</version>
+        <extensions>true</extensions>
+        <configuration>
+          <proc>proc</proc>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

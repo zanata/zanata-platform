@@ -128,7 +128,7 @@ export const profileInitialLoad = (username) => {
     if (isEmpty(username) && !config.permission.isLoggedIn) {
       // redirect to login screen if no username is found url
       // and user is not logged in
-      window.location = config.baseUrl + config.links.loginUrl + '#profile'
+      window.location = config.baseUrl + config.links.loginUrl
     } else {
       dispatch(getUserInfo(dispatch, username,
         getState().profile.dateRange))

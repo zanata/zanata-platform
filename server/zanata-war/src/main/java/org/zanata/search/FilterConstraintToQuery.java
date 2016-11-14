@@ -13,6 +13,7 @@ import org.zanata.model.HLocale;
 import org.zanata.util.HqlCriterion;
 import org.zanata.util.QueryBuilder;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;

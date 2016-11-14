@@ -1,4 +1,8 @@
-<!DOCTYPE>
+<!DOCTYPE html>
+<!--
+    This file is for webpack dev server only.
+    It is not used in production.
+-->
 <html class="new-zanata" lang="en">
 
 <head>
@@ -9,14 +13,13 @@
 
   <meta name="description" content="Open Translation for Everyone">
   <meta name="author" content="Red Hat">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="cleartype" content="on">
 
   <link rel="icon" type="image/x-icon" href="http://assets-zanata.rhcloud.com/master/assets/img/logo/logo.ico">
-  <link rel="stylesheet" type="text/css" href="bundle.css">
+  <link rel="stylesheet" type="text/css" href="/bundle.css">
   <link rel="stylesheet" type="text/css" async
     href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic'>
-
 </head>
 
 <body class="new-zanata">
@@ -27,8 +30,20 @@
   </div>
 </noscript>
 
+<div id="config"
+     data-base-url=""
+     data-api-origin="http://localhost:8080"
+     data-api-root="/rest"
+     data-user="{}"
+     data-links='{
+       "loginUrl": "http://localhost:8080/account/sign_in",
+       "registerUrl": "http://localhost:8080/account/register"
+     }'>
+</div>
+
+
   <div id="appRoot"/>
-  <script type="text/javascript" src="bundle.js" charset="utf-8"></script>
+  <script type="text/javascript" src="/bundle.js" charset="utf-8"></script>
 
 </body>
 </html>
