@@ -1,11 +1,6 @@
 import React, { Component } from 'react'
-
-import {
-  ButtonLink,
-  ButtonRound
-} from 'zanata-ui'
-
 import { Modal } from '../../components'
+import { Button } from 'react-bootstrap'
 
 class TestModal extends Component {
 
@@ -26,7 +21,8 @@ class TestModal extends Component {
   render () {
     return (
       <div>
-        <ButtonRound onClick={() => this.showModal()}>Launch Modal</ButtonRound>
+        <Button bsStyle='default'
+          onClick={() => this.showModal()}>Launch Modal</Button>
         <Modal
           show={this.state.show}
           onHide={this.hideModal}>
@@ -35,10 +31,11 @@ class TestModal extends Component {
           </Modal.Header>
           <Modal.Body>Hi There</Modal.Body>
           <Modal.Footer>
-            <ButtonLink onClick={() => this.hideModal()}>Cancel</ButtonLink>
-            <ButtonRound onClick={() => this.hideModal()}>
+            <Button bsStyle='link'
+              onClick={() => this.hideModal()}>Cancel</Button>
+            <Button bsStyle='primary' onClick={() => this.hideModal()}>
               Submit
-            </ButtonRound>
+            </Button>
           </Modal.Footer>
         </Modal>
       </div>)

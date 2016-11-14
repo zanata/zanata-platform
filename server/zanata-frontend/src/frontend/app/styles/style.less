@@ -2219,6 +2219,7 @@ fieldset[disabled] .btn-link {
 .btn-link:focus,
 .btn-link:hover {
   border-color: transparent;
+  box-shadow: none;
 }
 
 .btn-link:focus,
@@ -2226,6 +2227,7 @@ fieldset[disabled] .btn-link {
   text-decoration: underline;
   color: #23527c;
   background-color: transparent;
+  box-shadow: none;
 }
 
 .btn-link[disabled]:focus,
@@ -3581,6 +3583,7 @@ button.list-group-item {
   overflow: hidden;
   -webkit-overflow-scrolling: touch;
   outline: 0;
+  padding:@padding-large-horizontal;
 }
 
 .modal.fade .modal-dialog {
@@ -3618,10 +3621,10 @@ button.list-group-item {
   background-clip: padding-box;
   border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, .2);
-  border-radius: 6px;
+  border-radius: @border-radius-small;
   outline: 0;
-  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
-  box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
+  box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
 }
 
 .modal-backdrop {
@@ -3664,7 +3667,7 @@ button.list-group-item {
 
 .modal-body {
   position: relative;
-  padding: 15px;
+  padding: 2rem;
   color: #333;
 }
 
@@ -3674,15 +3677,10 @@ button.list-group-item {
 }
 
 .modal-footer {
-  padding: 15px;
+  padding: 0.75rem;
   text-align: right;
   border-top: 0;
   background: rgba(0, 0, 0, .05);
-}
-
-.modal-footer button {
-  background-color: @brand-primary;
-  color: #fff;
 }
 
 .modal-footer .btn + .btn {
@@ -3846,6 +3844,7 @@ button.close {
   color: #f00;
   z-index:1;
   padding: 0.75rem;
+  outline:none;
 }
 
 button.close:focus,
@@ -3855,7 +3854,8 @@ button.close:hover {
   opacity: 0.5;
   color: #000;
   filter: alpha(opacity=50);
- box-shadow:none;
+  box-shadow:none;
+  outline:none;
 }
 
 .closeIcon svg {
