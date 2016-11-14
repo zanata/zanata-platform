@@ -12,7 +12,7 @@ import {
 } from 'zanata-ui'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
-import EditableText from '../../components'
+import { EditableText } from '../../components'
 /**
  * Component to display a GlossaryEntry
  */

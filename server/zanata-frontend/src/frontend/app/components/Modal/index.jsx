@@ -5,7 +5,7 @@ import ModalTitle from './ModalTitle'
 import ModalBody from './ModalBody'
 import ModalFooter from './ModalFooter'
 import { Button } from 'react-bootstrap'
-import Icon from '../../components'
+import { Icon } from '../../components'
 
 /*
 const commonClasses = {
@@ -81,14 +81,14 @@ const Modal = ({
     >
       <div className='container'>
         <div className='modal-content'>
-          {closeButton ? (
+          {closeButton && (
             <Button aria-label={closeLabel}
               bsStyle='link'
               className='modal-close'
               onClick={onHide}>
               <Icon name='cross' className='s2 closeIcon' />
             </Button>
-          ) : undefined}
+          )}
           {children}
         </div>
       </div>

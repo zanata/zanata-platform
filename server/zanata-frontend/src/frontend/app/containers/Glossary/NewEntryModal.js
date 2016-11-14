@@ -10,7 +10,7 @@ import {
   Row
 } from 'zanata-ui'
 
-import EditableText from '../../components'
+import { EditableText } from '../../components'
 
 import {
   glossaryToggleNewEntryModal,

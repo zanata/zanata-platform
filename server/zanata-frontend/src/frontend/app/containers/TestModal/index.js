@@ -5,38 +5,38 @@ import {
   ButtonRound
 } from 'zanata-ui'
 
-import Modal from '../../components'
+import { Modal } from '../../components'
 
 class TestModal extends Component {
 
   constructor () {
     super()
     this.state = {
-      isModal: false
+      show: false
     }
   }
 
   hideModal () {
-    this.setState({isModal: false})
+    this.setState({show: false})
   }
   showModal () {
-    this.setState({isModal: true})
+    this.setState({show: true})
   }
   /* eslint-disable react/jsx-no-bind */
   render () {
     return (
       <div>
-        <ButtonRound onClick={() => this.showModal}>Launch Modal</ButtonRound>
+        <ButtonRound onClick={() => this.showModal()}>Launch Modal</ButtonRound>
         <Modal
-          show={this.state.isModal}
+          show={this.state.show}
           onHide={this.hideModal}>
           <Modal.Header>
             <Modal.Title>Example Modal</Modal.Title>
           </Modal.Header>
           <Modal.Body>Hi There</Modal.Body>
           <Modal.Footer>
-            <ButtonLink onClick={this.hideModal}>Cancel</ButtonLink>
-            <ButtonRound onClick={this.hideModal}>
+            <ButtonLink onClick={() => this.hideModal()}>Cancel</ButtonLink>
+            <ButtonRound onClick={() => this.hideModal()}>
               Submit
             </ButtonRound>
           </Modal.Footer>

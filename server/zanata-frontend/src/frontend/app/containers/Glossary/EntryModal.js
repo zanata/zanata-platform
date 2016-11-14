@@ -8,7 +8,7 @@ import {
   Modal,
   Row
 } from 'zanata-ui'
-import EditableText from '../../components'
+import { EditableText } from '../../components'
 
 /**
  * Popup windows to display a glossary entry
