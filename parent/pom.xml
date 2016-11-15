@@ -1226,6 +1226,18 @@
         <version>2.2.11</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>3.3.0.Final</version>
+        <exclusions>
+          <exclusion>
+            <groupId>javax.el</groupId>
+            <artifactId>el-api</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
       <!-- RestEasy dependencies -->
       <!-- We still need RestEasy, as zanata-common-api need it -->
       <dependency>
