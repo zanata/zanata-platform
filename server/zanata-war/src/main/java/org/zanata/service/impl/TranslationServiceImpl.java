@@ -20,7 +20,7 @@
  */
 package org.zanata.service.impl;
 
-import static org.zanata.transaction.TransactionUtil.runInTransaction;
+import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

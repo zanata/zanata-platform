@@ -54,7 +54,6 @@ import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.ContentState;
 import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.AccountDAO;
 import org.zanata.file.FileSystemPersistService;
 import org.zanata.i18n.Messages;
 import org.zanata.jpa.FullText;
@@ -72,7 +71,7 @@ import org.zanata.service.VersionLocaleKey;
 import org.zanata.servlet.annotations.ContextPath;
 import org.zanata.servlet.annotations.SessionId;
 import org.zanata.test.CdiUnitRunner;
-import org.zanata.transaction.TXUtil;
+import org.zanata.transaction.TransactionUtil;
 import org.zanata.transaction.TestTransactionUtil;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DefaultLocale;
@@ -177,7 +176,7 @@ public class CopyVersionServiceImplPerformanceTest extends ZanataTest {
     }
 
     @Produces
-    protected TXUtil getTransactionUtil() {
+    protected TransactionUtil getTransactionUtil() {
         return new TestTransactionUtil(getEm());
     }
 

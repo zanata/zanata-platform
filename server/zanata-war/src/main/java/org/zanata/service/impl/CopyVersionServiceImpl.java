@@ -58,7 +58,7 @@ import org.zanata.model.type.TranslationSourceType;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyVersionService;
 import org.zanata.service.VersionStateCache;
-import org.zanata.transaction.TXUtil;
+import org.zanata.transaction.TransactionUtil;
 import org.zanata.util.JPACopier;
 import org.zanata.util.TranslationUtil;
 
@@ -107,7 +107,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     private ZanataIdentity identity;
 
     @Inject
-    private TXUtil transactionUtil;
+    private TransactionUtil transactionUtil;
 
     // Stop watch for textFlow and target copy process
     private Stopwatch copyTfAndTftStopWatch = Stopwatch.createUnstarted();

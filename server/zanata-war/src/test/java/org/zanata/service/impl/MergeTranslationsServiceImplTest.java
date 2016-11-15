@@ -54,7 +54,7 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.test.CdiUnitRunner;
-import org.zanata.transaction.TransactionUtil;
+import org.zanata.transaction.TransactionUtilImpl;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
@@ -86,7 +86,7 @@ import static org.mockito.Mockito.verifyZeroInteractions;
         VersionStateCacheImpl.class,
         TranslationStateCacheImpl.class,
         // classes invoked via ServiceLocator (they won't get autowired by cdiunit
-        TransactionUtil.class
+        TransactionUtilImpl.class
 })
 public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
 

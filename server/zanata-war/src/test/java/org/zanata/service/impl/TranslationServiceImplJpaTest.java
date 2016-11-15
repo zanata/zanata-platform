@@ -53,7 +53,7 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.test.CdiUnitRunner;
-import org.zanata.transaction.TransactionUtil;
+import org.zanata.transaction.TransactionUtilImpl;
 import org.zanata.util.IServiceLocator;
 
 import static org.mockito.Mockito.when;
@@ -64,7 +64,7 @@ import static org.mockito.Mockito.when;
 @AdditionalClasses({
         LocaleServiceImpl.class,
         ValidationServiceImpl.class,
-        TransactionUtil.class
+        TransactionUtilImpl.class
 })
 public class TranslationServiceImplJpaTest extends ZanataJpaTest {
 
