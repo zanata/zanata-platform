@@ -1227,15 +1227,15 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jboss.logging</groupId>
+        <artifactId>jboss-logging</artifactId>
+        <version>3.3.0.Final</version>
         <exclusions>
           <exclusion>
             <groupId>javax.el</groupId>
             <artifactId>el-api</artifactId>
           </exclusion>
         </exclusions>
-        <groupId>org.jboss.logging</groupId>
-        <artifactId>jboss-logging</artifactId>
-        <version>3.3.0.Final</version>
       </dependency>
 
       <!-- RestEasy dependencies -->
