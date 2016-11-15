@@ -20,9 +20,12 @@
  */
 package org.zanata.async.handle;
 
+import java.io.Serializable;
+
+import org.zanata.async.AsyncTaskHandle;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.zanata.async.AsyncTaskHandle;
 
 /**
  * Asynchronous task handle for the copy version process.
@@ -41,6 +44,10 @@ public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> {
     private long cancelledTime;
     @Getter @Setter
     private String triggeredBy;
+
+    public CopyVersionTaskHandle(Serializable key) {
+        super(key);
+    }
 
     /**
      * Increments the processed document count by 1

@@ -120,7 +120,7 @@ public class SearchIndexManager implements Serializable {
      */
     public void startProcess() {
         assert handle == null || handle.isDone();
-        this.handle = new AsyncTaskHandle<Void>();
+        this.handle = new AsyncTaskHandle<>();
         asyncTaskHandleManager.registerTaskHandle(handle);
         try {
             indexingServiceImpl.startIndexing(indexingOptions, handle);

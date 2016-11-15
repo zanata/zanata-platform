@@ -69,9 +69,8 @@ public class DownloadAllFilesHandler extends
                 projectIterationDAO.getBySlug(action.getProjectSlug(),
                         action.getVersionSlug());
         if (identity.hasPermission(version, "download-all")) {
-            AsyncTaskHandle<String> handle = new AsyncTaskHandle<String>();
-            Serializable taskKey =
-                    asyncTaskHandleManager.registerTaskHandle(handle);
+            AsyncTaskHandle<String> handle = new AsyncTaskHandle<>();
+            asyncTaskHandleManager.registerTaskHandle(handle);
             // TODO This should be in a service and share code with the JSF
             // pages that do the same thing
             try {
@@ -85,7 +84,7 @@ public class DownloadAllFilesHandler extends
 
             // NB Keys are currently strings, but this is tied to the
             // implementation
-            return new DownloadAllFilesResult(true, taskKey.toString());
+            return new DownloadAllFilesResult(true, handle.getKey().toString());
         }
 
         return new DownloadAllFilesResult(false, null);

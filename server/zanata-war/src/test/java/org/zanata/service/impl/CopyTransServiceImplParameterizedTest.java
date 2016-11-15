@@ -304,7 +304,7 @@ public class CopyTransServiceImplParameterizedTest {
                         copyTransExecution.getDocumentMismatchAction(),
                         copyTransExecution.getProjectMismatchAction());
         copyTransService.copyTransForIteration(projectIteration, options,
-                new CopyTransTaskHandle());
+                new CopyTransTaskHandle("dummyKey"));
         getEm().flush();
 
         // Validate copyTransExecution

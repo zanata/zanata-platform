@@ -20,10 +20,12 @@
  */
 package org.zanata.async.handle;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.io.Serializable;
 
 import org.zanata.async.AsyncTaskHandle;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Asynchronous task handle for the merge translations process.
@@ -39,4 +41,8 @@ public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> {
     private long cancelledTime;
     @Getter @Setter
     private String triggeredBy;
+
+    public MergeTranslationsTaskHandle(Serializable key) {
+        super(key);
+    }
 }

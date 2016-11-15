@@ -20,9 +20,12 @@
  */
 package org.zanata.async.handle;
 
+import java.io.Serializable;
+
+import org.zanata.async.AsyncTaskHandle;
+
 import lombok.Getter;
 import lombok.Setter;
-import org.zanata.async.AsyncTaskHandle;
 
 /**
  * @author Carlos Munoz <a
@@ -43,6 +46,10 @@ public class CopyTransTaskHandle extends AsyncTaskHandle<Void> {
 
     @Getter
     private boolean prepared;
+
+    public CopyTransTaskHandle(Serializable key) {
+        super(key);
+    }
 
     public void setPrepared() {
         this.prepared = true;

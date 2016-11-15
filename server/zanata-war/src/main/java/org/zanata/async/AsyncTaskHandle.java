@@ -20,6 +20,8 @@
  */
 package org.zanata.async;
 
+import java.io.Serializable;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +41,12 @@ import com.google.common.base.Optional;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class AsyncTaskHandle<V> {
+
+    /**
+     * A key to retrieve the handle later
+     */
+    @Getter
+    private final Serializable key;
 
     @Setter(AccessLevel.PACKAGE)
     private Future<V> futureResult;
@@ -60,6 +68,14 @@ public class AsyncTaskHandle<V> {
 
     @Getter
     private long finishTime = -1;
+
+    public AsyncTaskHandle() {
+        this(UUID.randomUUID().toString());
+    }
+
+    public AsyncTaskHandle(Serializable key) {
+        this.key = key;
+    }
 
     public int increaseProgress(int increaseBy) {
         currentProgress += increaseBy;

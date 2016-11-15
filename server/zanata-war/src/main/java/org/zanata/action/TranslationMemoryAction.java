@@ -106,8 +106,8 @@ public class TranslationMemoryAction implements Serializable {
 
     public void clearTransMemory(final String transMemorySlug) {
         lastTaskTMKey = new ClearTransMemoryProcessKey(transMemorySlug);
-        AsyncTaskHandle handle = new AsyncTaskHandle();
-        asyncTaskHandleManager.registerTaskHandle(handle, lastTaskTMKey);
+        AsyncTaskHandle handle = new AsyncTaskHandle(lastTaskTMKey);
+        asyncTaskHandleManager.registerTaskHandle(handle);
         translationMemoryResource
                 .deleteTranslationUnitsUnguardedAsync(transMemorySlug, handle);
         transMemoryList = null; // Force refresh next time list is requested

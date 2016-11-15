@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
-import org.jboss.resteasy.spi.NotFoundException;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -56,6 +54,7 @@ import com.google.common.collect.Lists;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 
 import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
@@ -129,12 +128,12 @@ public class AsynchronousProcessResourceService implements
         }
 
         String name = "SourceDocCreation: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
+        asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
                 resource, extensions, copytrans, true, handle);
 
-        return getProcessStatus(taskId.toString()); // TODO Change to return 202
+        return getProcessStatus(handle.getKey().toString()); // TODO Change to return 202
                                                     // Accepted,
                                                     // with a url to get the
                                                     // progress
@@ -155,12 +154,12 @@ public class AsynchronousProcessResourceService implements
         identity.checkPermission(hProjectIteration, "import-template");
 
         String name = "SourceDocCreationOrUpdate: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
+        asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
                 resource, extensions, copytrans, true, handle);
 
-        return getProcessStatus(taskId.toString()); // TODO Change to return 202
+        return getProcessStatus(handle.getKey().toString()); // TODO Change to return 202
                                                     // Accepted,
                                                     // with a url to get the
                                                     // progress
@@ -205,14 +204,14 @@ public class AsynchronousProcessResourceService implements
         final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         final MergeType finalMergeType = mergeType;
 
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
+        asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
                 iterationSlug, id, locale, translatedDoc, extensions,
                 finalMergeType, assignCreditToUploader, true, handle,
                 TranslationSourceType.API_UPLOAD);
 
-        return this.getProcessStatus(taskId.toString());
+        return this.getProcessStatus(handle.getKey().toString());
     }
 
     @Override
@@ -242,10 +241,12 @@ public class AsynchronousProcessResourceService implements
             try {
                 result = handle.getResult();
             } catch (InterruptedException e) {
+                log.debug("async task interrupted", e);
                 // The process was forcefully cancelled
                 status.setStatusCode(ProcessStatusCode.Failed);
                 status.setMessages(Lists.newArrayList(e.getMessage()));
             } catch (ExecutionException e) {
+                log.debug("async task interrupted", e);
                 // Exception thrown while running the task
                 status.setStatusCode(ProcessStatusCode.Failed);
                 status.setMessages(Lists

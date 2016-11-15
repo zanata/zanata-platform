@@ -46,8 +46,8 @@ public class CopyVersionManager implements Serializable {
     public void startCopyVersion(String projectSlug, String versionSlug,
             String newVersionSlug) {
         CopyVersionKey key = CopyVersionKey.getKey(projectSlug, newVersionSlug);
-        CopyVersionTaskHandle handle = new CopyVersionTaskHandle();
-        asyncTaskHandleManager.registerTaskHandle(handle, key);
+        CopyVersionTaskHandle handle = new CopyVersionTaskHandle(key);
+        asyncTaskHandleManager.registerTaskHandle(handle);
         copyVersionServiceImpl.startCopyVersion(projectSlug, versionSlug,
                 newVersionSlug, handle);
     }

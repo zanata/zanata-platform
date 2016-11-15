@@ -41,7 +41,7 @@ import com.google.common.collect.Maps;
 
 public class AsyncTaskHandleManager {
 
-    private Map<Serializable, AsyncTaskHandle> handlesByKey = Maps
+    private final Map<Serializable, AsyncTaskHandle> handlesByKey = Maps
             .newConcurrentMap();
 
     // Cache of recently completed tasks
@@ -49,8 +49,12 @@ public class AsyncTaskHandleManager {
             .newBuilder().expireAfterWrite(10, TimeUnit.MINUTES)
             .build();
 
-    public synchronized void registerTaskHandle(AsyncTaskHandle handle,
-            Serializable key) {
+    /**
+     * Registers a task handle.
+     * @param handle The handle to register.
+     */
+    public synchronized void registerTaskHandle(AsyncTaskHandle handle) {
+        Serializable key = handle.getKey();
         if (handlesByKey.containsKey(key)) {
             throw new RuntimeException("Task handle with key " + key
                     + " already exists");
@@ -58,27 +62,10 @@ public class AsyncTaskHandleManager {
         handlesByKey.put(key, handle);
     }
 
-    /**
-     * Registers a task handle.
-     * @param handle The handle to register.
-     * @return An auto generated key to retreive the handle later
-     */
-    public synchronized Serializable registerTaskHandle(AsyncTaskHandle handle) {
-        Serializable autoGenKey = UUID.randomUUID().toString();
-        registerTaskHandle(handle, autoGenKey);
-        return autoGenKey;
-    }
-
     void taskFinished(AsyncTaskHandle taskHandle) {
-        synchronized (handlesByKey) {
-            // TODO This operation is O(n). Maybe we can do better?
-            for (Map.Entry<Serializable, AsyncTaskHandle> entry : handlesByKey
-                    .entrySet()) {
-                if (entry.getValue().equals(taskHandle)) {
-                    handlesByKey.remove(entry.getKey());
-                    finishedTasks.put(entry.getKey(), entry.getValue());
-                }
-            }
+        AsyncTaskHandle removedHandle = handlesByKey.remove(taskHandle.getKey());
+        if (removedHandle != null) {
+            finishedTasks.put(removedHandle.getKey(), removedHandle);
         }
     }
 

@@ -106,8 +106,8 @@ public class CopyTransManager implements Serializable {
         }
 
         CopyTransProcessKey key = CopyTransProcessKey.getKey(document);
-        CopyTransTaskHandle handle = new CopyTransTaskHandle();
-        asyncTaskHandleManager.registerTaskHandle(handle, key);
+        CopyTransTaskHandle handle = new CopyTransTaskHandle(key);
+        asyncTaskHandleManager.registerTaskHandle(handle);
         copyTransServiceImpl.startCopyTransForDocument(document, options,
                 handle);
     }
@@ -125,8 +125,8 @@ public class CopyTransManager implements Serializable {
         }
 
         CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
-        CopyTransTaskHandle handle = new CopyTransTaskHandle();
-        asyncTaskHandleManager.registerTaskHandle(handle, key);
+        CopyTransTaskHandle handle = new CopyTransTaskHandle(key);
+        asyncTaskHandleManager.registerTaskHandle(handle);
         copyTransServiceImpl.startCopyTransForIteration(iteration, options,
                 handle);
     }
@@ -164,7 +164,7 @@ public class CopyTransManager implements Serializable {
     @Getter
     @Setter
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
-    private static final class CopyTransProcessKey implements Serializable {
+    static final class CopyTransProcessKey implements Serializable {
         private static final long serialVersionUID = -2054359069473618887L;
         private String projectSlug;
         private String iterationSlug;
