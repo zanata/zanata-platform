@@ -340,10 +340,10 @@
     </profile>
     <!-- Trigger a fully optimized build, instead of the default fast build. -->
     <profile>
-      <id>releaseBuild</id>
+      <id>optimisedBuild</id>
       <activation>
         <property>
-          <name>release</name>
+          <name>optimise</name>
         </property>
       </activation>
       <properties>
