@@ -73,10 +73,21 @@
         placeholder="#{cc.attrs.placeholder}…"
         onkeyup="filterList(this, #{cc.attrs.id}FilterList)"
         class="form--search__input js-reveal__target__input"/>
-      <button class="button--link panel__search__cancel js-reveal__cancel"
-        onclick="if(jQuery(#{cc.attrs.id}__input).val().length != 0) {#{cc.attrs.id}FilterList('')} else {setTimeout(zanata.panel.init, 10)}"
-        data-target="##{cc.attrs.id}">#{msgs['jsf.Cancel']}
-      </button>
+
+      <div class="panel__search__cancel">
+        <button
+          class="button--link js-reveal__reset l--push-right-half is-hidden "
+          data-target="##{cc.attrs.id}"
+          onclick="#{cc.attrs.id}FilterList('')"
+          title="#{msgs['jsf.ClearSearch']}">
+          #{msgs['jsf.Clear']}
+        </button>
+        <button class="button--link js-reveal__cancel"
+          onclick="if(jQuery(#{cc.attrs.id}__input).val().length != 0) {#{cc.attrs.id}FilterList('')} else {setTimeout(zanata.panel.init, 10)}"
+          data-target="##{cc.attrs.id}">#{msgs['jsf.Cancel']}
+        </button>
+      </div>
+
     </div>
   </ui:fragment>
 
@@ -127,13 +138,6 @@
 
 
       <ui:fragment rendered="#{!cc.attrs.bottomPanel}">
-        <button
-          class="button--link panel__search__reset js-reveal__reset is-hidden"
-          data-target="##{cc.attrs.id}"
-          onclick="#{cc.attrs.id}FilterList('')"
-          title="#{msgs['jsf.ClearSearch']}">
-          <i class="i--right i--cancel"></i>
-        </button>
         <button class="button--link panel__search__button js-reveal__show"
           onclick="setTimeout(zanata.panel.init, 10)"
           data-target="##{cc.attrs.id}">
