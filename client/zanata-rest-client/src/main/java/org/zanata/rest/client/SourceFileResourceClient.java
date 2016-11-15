@@ -24,6 +24,7 @@ package org.zanata.rest.client;
 import java.io.InputStream;
 import java.net.URI;
 
+import javax.ws.rs.Path;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
@@ -42,8 +43,9 @@ import static javax.ws.rs.client.Entity.entity;
  * @see SourceFileResource
  */
 public class SourceFileResourceClient {
+    private static final String SERVICE_PATH =
+            SourceFileResource.class.getAnnotation(Path.class).value();
     private final RestClientFactory factory;
-
     private final URI baseUri;
 
     SourceFileResourceClient(RestClientFactory restClientFactory) {
@@ -59,9 +61,10 @@ public class SourceFileResourceClient {
             InputStream fileStream,
             long size) {
         Client client = factory.getClient();
+
         WebTarget target = client
                 .target(baseUri)
-                .path(SourceFileResource.SERVICE_PATH)
+                .path(SERVICE_PATH)
                 .resolveTemplate("projectSlug", projectSlug)
                 .resolveTemplate("versionSlug", versionSlug);
         Invocation.Builder builder = target
@@ -77,7 +80,7 @@ public class SourceFileResourceClient {
             String versionSlug,
             String docId, ProjectType projectType) {
         Invocation.Builder builder = factory.getClient().target(baseUri)
-                .path(SourceFileResource.SERVICE_PATH)
+                .path(SERVICE_PATH)
                 .resolveTemplate("projectSlug", projectSlug)
                 .resolveTemplate("versionSlug", versionSlug)
                 .queryParam("projectType", projectType.name())

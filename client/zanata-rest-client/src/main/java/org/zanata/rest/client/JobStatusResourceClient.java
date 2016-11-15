@@ -21,7 +21,6 @@
 
 package org.zanata.rest.client;
 
-import java.io.InputStream;
 import java.net.URI;
 
 import javax.ws.rs.Path;
@@ -29,64 +28,37 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
-import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.JobStatus;
-import org.zanata.rest.service.SourceFileResource;
-import org.zanata.rest.service.TranslatedFileResource;
-
-import static javax.ws.rs.client.Entity.entity;
+import org.zanata.rest.service.JobStatusResource;
 
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- * @see TranslatedFileResource
+ * @see JobStatusResource
  */
-public class TranslatedFileResourceClient {
+public class JobStatusResourceClient {
     private static final String SERVICE_PATH =
-            TranslatedFileResource.class.getAnnotation(Path.class).value();
+            JobStatusResource.class.getAnnotation(Path.class).value();
     private final RestClientFactory factory;
     private final URI baseUri;
 
-    TranslatedFileResourceClient(RestClientFactory restClientFactory) {
+    JobStatusResourceClient(RestClientFactory restClientFactory) {
         this.factory = restClientFactory;
         baseUri = restClientFactory.getBaseUri();
     }
 
-    public JobStatus uploadTranslatedFile(
-            String projectSlug,
-            String versionSlug, String locale, String docId,
-            String mergeType,
-            ProjectType projectType,
-            InputStream fileStream) {
+    public JobStatus getJobStatus(
+            long jobId) {
         Client client = factory.getClient();
+
         WebTarget target = client
                 .target(baseUri)
                 .path(SERVICE_PATH)
-                .resolveTemplate("projectSlug", projectSlug)
-                .resolveTemplate("versionSlug", versionSlug)
-                .resolveTemplate("localeId", locale);
+                .resolveTemplate("jobId", jobId);
         Invocation.Builder builder = target
-                .queryParam("docId", docId)
-                .queryParam("merge", mergeType)
-                .queryParam("projectType", projectType.name())
                 .request(MediaType.APPLICATION_JSON_TYPE);
-        return builder.post(entity(fileStream, MediaType.APPLICATION_OCTET_STREAM_TYPE),
-                JobStatus.class);
+        return builder.get(JobStatus.class);
     }
 
-    public Response downloadTranslatedFile(String projectSlug,
-            String versionSlug, String locale,
-            String docId, ProjectType projectType) {
-        WebTarget target = factory.getClient().target(baseUri)
-                .path(SERVICE_PATH)
-                .resolveTemplate("projectSlug", projectSlug)
-                .resolveTemplate("versionSlug", versionSlug)
-                .resolveTemplate("localeId", locale);
-        return target
-                .queryParam("projectType", projectType.name())
-                .queryParam("docId", docId)
-                .request(MediaType.APPLICATION_OCTET_STREAM_TYPE).get();
-    }
 }

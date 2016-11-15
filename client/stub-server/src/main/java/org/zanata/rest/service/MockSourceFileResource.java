@@ -25,6 +25,9 @@ import static org.zanata.rest.service.MockFileResource.sampleResource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -49,11 +52,18 @@ public class MockSourceFileResource implements SourceFileResource {
         try {
             long actual = IOUtils
                     .copyLarge(fileStream, new NullOutputStream());
-            return Response.status(Response.Status.CREATED).entity(
-                    new JobStatus(1L, "Upload of new source document successful: (" +
+            String time = ZonedDateTime.now(ZoneId.systemDefault()).format(
+                    DateTimeFormatter.ISO_INSTANT);
+            JobStatus jobStatus = new JobStatus(1L,
+                    "Upload of new source document successful: (" +
                             actual + "/" + size + " bytes): " +
-                            projectSlug + "/" + versionSlug + "/" + docId + ":" + projectType))
-                    .build();
+                            projectType + ":" + projectSlug + "/" +
+                            versionSlug + "/" + docId);
+            jobStatus.setStartTime(time);
+            jobStatus.setStatusTime(time);
+            jobStatus.getMessages().add(new JobStatus.JobStatusMessage(
+                    time, "INFO", "upload has been scheduled"));
+            return Response.status(Response.Status.ACCEPTED).entity(jobStatus).build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

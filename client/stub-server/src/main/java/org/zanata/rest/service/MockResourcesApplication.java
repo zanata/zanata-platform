@@ -38,6 +38,7 @@ public class MockResourcesApplication extends Application {
         ImmutableSet.Builder<Class<?>> builder = ImmutableSet.builder();
         builder.add(
                 MockVersionResource.class,
+                MockJobStatusResource.class,
                 MockSourceDocResource.class,
                 MockTranslatedDocResource.class,
                 MockStatisticsResource.class,

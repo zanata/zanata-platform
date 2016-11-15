@@ -34,6 +34,7 @@ import org.zanata.file.FilePersistService;
 import org.zanata.file.SourceDocumentUpload;
 
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.rest.dto.JobStatus;
 
 /**
  * @author Sean Flanigan <a
@@ -69,7 +70,8 @@ public class SourceFileService implements SourceFileResource {
 //        GlobalDocumentId id =
 //                new GlobalDocumentId(projectSlug, versionSlug, actualDocId);
         // FIXME
-        return null;
+        JobStatus jobStatus = new JobStatus();
+        return Response.status(Response.Status.ACCEPTED).entity(jobStatus).build();
 //        return sourceUploader.tryUploadSourceFile(id, fileStream);
     }
 

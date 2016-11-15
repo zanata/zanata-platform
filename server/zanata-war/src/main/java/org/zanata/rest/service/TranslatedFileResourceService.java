@@ -31,6 +31,7 @@ import org.zanata.dao.DocumentDAO;
 import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.TranslationDocumentUpload;
+import org.zanata.rest.dto.JobStatus;
 import org.zanata.service.TranslationFileService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -72,7 +73,8 @@ public class TranslatedFileResourceService implements TranslatedFileResource {
         GlobalDocumentId id =
                 new GlobalDocumentId(projectSlug, versionSlug, docId);
         // FIXME
-        return null;
+        JobStatus jobStatus = new JobStatus();
+        return Response.status(Response.Status.ACCEPTED).entity(jobStatus).build();
 //        return translationUploader.tryUploadTranslationFile(id, localeId,
 //                merge, assignCreditToUploader, fileStream,
 //                TranslationSourceType.API_UPLOAD);

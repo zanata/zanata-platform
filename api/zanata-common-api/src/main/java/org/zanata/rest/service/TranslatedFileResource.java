@@ -36,18 +36,15 @@ import javax.ws.rs.core.Response;
 
 import java.io.InputStream;
 
-import static org.zanata.rest.service.TranslatedFileResource.SERVICE_PATH;
-
 /**
  * REST Interface for upload and download of translation files.
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Path(SERVICE_PATH)
+@Path("/proj/{projectSlug}/ver/{versionSlug}/document/trans/{localeId}")
 @Produces({ MediaType.WILDCARD })
 @Consumes({ MediaType.WILDCARD })
 public interface TranslatedFileResource extends RestResource {
-    String SERVICE_PATH = "/proj/{projectSlug}/ver/{versionSlug}/document/trans/{localeId}";
 
     /**
      * Upload a translation file (or file chunk) to Zanata. Allows breaking up files
@@ -66,7 +63,8 @@ public interface TranslatedFileResource extends RestResource {
      *              translations with the contents of the uploaded file.
      * @param fileStream Contents of the file to be uploaded
      * @param size size of the file in bytes (for sanity checking; use -1 if unknown)
-     * @return A message with information about the upload operation.
+     * @return A JobStatus with information about the upload operation.
+     * @see JobStatus
      */
     @POST
     @Produces({ MediaType.APPLICATION_JSON })

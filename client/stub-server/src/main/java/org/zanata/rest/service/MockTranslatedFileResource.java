@@ -26,6 +26,9 @@ import static org.zanata.rest.service.MockFileResource.sampleTransResource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -48,11 +51,18 @@ public class MockTranslatedFileResource implements TranslatedFileResource {
             InputStream fileStream, long size, String projectType) {
         try {
             long actual = IOUtils.copyLarge(fileStream, new NullOutputStream());
-            return Response.ok(
-                    new JobStatus(1L, "Upload of translation document successful (" +
+            String time = ZonedDateTime.now(ZoneId.systemDefault()).format(
+                    DateTimeFormatter.ISO_INSTANT);
+            JobStatus jobStatus = new JobStatus(1L,
+                    "Upload of translation document successful (" +
                             actual + "/" + size + " bytes): " +
-                            projectSlug + "/" + iterationSlug + "/" + docId + ":" + projectType + ":" + localeId))
-                    .build();
+                            projectType + ":" + projectSlug + "/" +
+                            iterationSlug + "/" + docId + ":" + localeId);
+            jobStatus.setStartTime(time);
+            jobStatus.setStatusTime(time);
+            jobStatus.getMessages().add(new JobStatus.JobStatusMessage(
+                    time, "INFO", "upload has been scheduled"));
+            return Response.status(Response.Status.ACCEPTED).entity(jobStatus).build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

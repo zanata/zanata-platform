@@ -39,7 +39,7 @@ public class MockServerTestUtil {
         return new RestClientFactory(serverBaseUri,
                 "admin",
                 "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
-                "3.6.0-SNAPSHOT", "unknown", "unknown"), true, true) {
+                "3.6.0-SNAPSHOT", "unknown", "unknown"), false, true) {
             @Override
             protected String getUrlPrefix() {
                 return "";
@@ -53,7 +53,7 @@ public class MockServerTestUtil {
         return new RestClientFactory(new URI("http://localhost:8080/zanata/"),
                 "admin",
                 "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
-                "3.6.0-SNAPSHOT", "unknown", "unknown"), true,
+                "3.6.0-SNAPSHOT", "unknown", "unknown"), false,
                 true);
     }
 

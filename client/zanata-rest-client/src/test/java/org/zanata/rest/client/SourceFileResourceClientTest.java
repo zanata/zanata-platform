@@ -50,6 +50,7 @@ public class SourceFileResourceClientTest {
     private static final Logger log =
             LoggerFactory.getLogger(SourceFileResourceClientTest.class);
     private SourceFileResourceClient client;
+    private JobStatusResourceClient jobClient;
 
     @ClassRule
     public static StubbingServerRule
@@ -60,6 +61,7 @@ public class SourceFileResourceClientTest {
         RestClientFactory restClientFactory = MockServerTestUtil
                 .createClientFactory(stubbingServerRule.getServerBaseUri());
         client = new SourceFileResourceClient(restClientFactory);
+        jobClient = new JobStatusResourceClient(restClientFactory);
     }
 
     private static File loadFileFromClasspath(String file) {
@@ -72,12 +74,17 @@ public class SourceFileResourceClientTest {
         File odtFile = loadFileFromClasspath("xliff/StringResource_en_US.xml");
         FileInputStream fileInputStream = new FileInputStream(odtFile);
 
-        JobStatus uploadResponse = client
+        JobStatus initialJobStatus = client
                 .uploadSourceFile("about-fedora", "master",
                         "test.odt", ProjectType.File,
                         fileInputStream, odtFile.length());
-        log.info("response: {}", uploadResponse);
-        assertThat(uploadResponse.getSuccessMessage(), Matchers.notNullValue());
+        log.info("response: {}", initialJobStatus);
+        assertThat(initialJobStatus.getSuccessMessage(), Matchers.notNullValue());
+        Long jobId = initialJobStatus.getJobId();
+        assertThat(jobId, Matchers.notNullValue());
+        JobStatus finalJobStatus = jobClient.getJobStatus(jobId);
+        log.info("response: {}", finalJobStatus);
+        assertThat(finalJobStatus.getPercentCompleted(), Matchers.equalTo(100));
     }
 
     @Test

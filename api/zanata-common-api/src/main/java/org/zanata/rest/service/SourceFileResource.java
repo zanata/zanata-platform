@@ -38,18 +38,15 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.JobStatus;
 
-import static org.zanata.rest.service.SourceFileResource.SERVICE_PATH;
-
 /**
  * REST Interface for upload and download of source files.
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Path(SERVICE_PATH)
+@Path("/proj/{projectSlug}/ver/{versionSlug}/document/source")
 @Consumes({ MediaType.WILDCARD })
 @Produces({ MediaType.WILDCARD })
 public interface SourceFileResource extends RestResource {
-    String SERVICE_PATH = "/proj/{projectSlug}/ver/{versionSlug}/document/source";
 
     /**
      * Upload a source file (or file chunk) to Zanata. Allows breaking up files
@@ -66,7 +63,8 @@ public interface SourceFileResource extends RestResource {
      * @param fileStream Contents of the file to be uploaded
      * @param size size of the file in bytes (for sanity checking; use -1 if unknown)
      * @param projectType A ProjectType used for mapping of file extensions.
-     * @return A message with information about the upload operation.
+     * @return A JobStatus with information about the upload operation.
+     * @see JobStatus
      */
     @POST
     @Consumes({ MediaType.WILDCARD })
