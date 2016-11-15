@@ -51,36 +51,26 @@ public class LegacyFileMapper {
     @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    /**
-     *
-     * @param projectSlug
-     * @param iterationSlug
-     * @param clientDocId
-     * @param projectType
-     * @return
-     */
-    String getServerDocId(String projectSlug, String iterationSlug,
+    String getServerDocId(@Nullable ProjectType serverProjectType,
             String clientDocId, @Nullable ProjectType projectType) {
-        String suffix = getFilenameSuffix(projectSlug, iterationSlug, projectType, true);
+        String suffix = getFilenameSuffix(serverProjectType, projectType, true);
         return StringUtils.removeEnd(clientDocId, suffix);
     }
 
-    public String getFilenameSuffix(String projectSlug, String iterationSlug, @Nullable ProjectType clientProjectType, boolean forSourceFiles) {
+    public String getFilenameSuffix(@Nullable ProjectType serverProjectType, @Nullable ProjectType clientProjectType, boolean forSourceFiles) {
         ProjectType projectType;
-        // check the database first
-        @Nullable ProjectType serverProjectType = getProjectType(projectSlug, iterationSlug);
         if (serverProjectType != null) {
             if (clientProjectType != null && serverProjectType != clientProjectType) {
-                log.warn("server project type '{}' doesn't match client project type '{}' for project '{}' iteration '{}'",
-                        serverProjectType, clientProjectType, projectSlug, iterationSlug);
+                log.warn("server project type '{}' doesn't match client project type '{}'",
+                        serverProjectType, clientProjectType);
             }
             projectType = serverProjectType;
         } else {
             if (clientProjectType != null) {
                 // otherwise use the client's projectType
                 projectType = clientProjectType;
-                log.info("server project type 'null' overridden by client project type '{}' for project '{}' iteration '{}'",
-                        clientProjectType, projectSlug, iterationSlug);
+                log.info("server project type 'null' overridden by client project type '{}'",
+                        clientProjectType);
             } else {
                 throw new WebApplicationException(
                         "Unknown project type: please update your Zanata client, or ask project maintainer to set the project type");

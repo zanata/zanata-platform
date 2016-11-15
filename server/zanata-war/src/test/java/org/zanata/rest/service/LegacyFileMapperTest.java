@@ -26,13 +26,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.test.CdiUnitRunner;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import javax.ws.rs.WebApplicationException;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
@@ -41,6 +44,8 @@ import static org.mockito.Mockito.when;
 @RunWith(CdiUnitRunner.class)
 @InRequestScope
 public class LegacyFileMapperTest {
+//    private String projectSlug = "projectSlug";
+//    private String iterSlug = "iterSlug";
 
     @Produces @Mock
     ProjectDAO projectDAO;
@@ -58,7 +63,32 @@ public class LegacyFileMapperTest {
 
     @Test
     public void serverPropertiesWithPropertiesHint() {
-//        mapper.getServerDocId()
+        String serverDocId = mapper.getServerDocId(ProjectType.Properties, "docId.properties", ProjectType.Properties);
+        assertThat(serverDocId).isEqualTo("docId");
     }
+
+    @Test
+    public void serverNullWithPropertiesHint() {
+        String serverDocId = mapper.getServerDocId(null, "docId.properties", ProjectType.Properties);
+        assertThat(serverDocId).isEqualTo("docId");
+    }
+
+    @Test
+    public void serverFileWithAnyHint() {
+        String serverDocId = mapper.getServerDocId(ProjectType.File, "docId.properties", ProjectType.Properties);
+        assertThat(serverDocId).isEqualTo("docId.properties");
+    }
+
+    @Test(expected = WebApplicationException.class)
+    public void serverNullWithNullHint() {
+        mapper.getServerDocId(null, "docId.properties", null);
+    }
+
+    // FIXME
+//    @Test
+//    public void serverXliffWithPropertiesHint() {
+//        String serverDocId = mapper.getServerDocId(ProjectType.Xliff, "docId.properties", ProjectType.Properties);
+//        assertThat(serverDocId).isEqualTo("docId");
+//    }
 
 }
