@@ -44,7 +44,3 @@ module.exports.module.preLoaders = []
 // do not minify/uglify the output
 module.exports.plugins = _.filter(module.exports.plugins,
   (plugin) => plugin.constructor.name !== 'UglifyJsPlugin')
-
-
-console.log('draft config plugins')
-console.log(module.exports.plugins)
