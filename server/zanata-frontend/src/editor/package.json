@@ -13,7 +13,8 @@
   },
   "scripts": {
     "watch": "cd app && mkdir -p dist && cp index.html dist && webpack-dev-server -d --progress --config webpack.dev.config.js --inline --hot --content-base dist/",
-    "build": "cd app && webpack --progress --config webpack.prod.config.js",
+    "build": "cd app && webpack --config webpack.prod.config.js --progress --bail --display-error-details",
+    "draft": "cd app && webpack --config webpack.draft.config.js --progress --bail --display-error-details",
     "test": "jest",
     "storybook": "start-storybook -p 9001 -s ./app/dist",
     "build-storybook": "build-storybook -s ./app/dist"
