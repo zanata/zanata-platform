@@ -19,7 +19,7 @@ public class EntityManagerFactoryRule extends ExternalResource {
     private static final Logger log =
             LoggerFactory.getLogger(EntityManagerFactoryRule.class);
     private static final String PERSIST_NAME = "zanataDatasourcePU";
-    private static final String MYSQL_TEST_DB_URL =
+    public static final String MYSQL_TEST_DB_URL =
             "jdbc:log4jdbc:mysql://localhost:3306/zanata_unit_test?characterEncoding=UTF-8";
     private static final String MYSQL_DIALECT =
             MySQL5Dialect.class.getCanonicalName();
