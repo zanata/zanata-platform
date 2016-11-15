@@ -62,7 +62,7 @@ public class TranslatedFileResourceService implements TranslatedFileResource {
 
     @Override
     public Response uploadTranslationFile(String projectSlug,
-            String iterationSlug, String localeId, String docId, String merge,
+            String versionSlug, String localeId, String docId, String merge,
             InputStream fileStream,
             long size,
             String projectType) {
@@ -70,7 +70,7 @@ public class TranslatedFileResourceService implements TranslatedFileResource {
         boolean assignCreditToUploader = false;
 
         GlobalDocumentId id =
-                new GlobalDocumentId(projectSlug, iterationSlug, docId);
+                new GlobalDocumentId(projectSlug, versionSlug, docId);
         // FIXME
         return null;
 //        return translationUploader.tryUploadTranslationFile(id, localeId,
@@ -80,7 +80,7 @@ public class TranslatedFileResourceService implements TranslatedFileResource {
 
     @Override
     public Response downloadTranslationFile(String projectSlug,
-            String iterationSlug, String locale, String fileType,
+            String versionSlug, String locale,
             String docId, String projectType) {
         // FIXME
         return null;

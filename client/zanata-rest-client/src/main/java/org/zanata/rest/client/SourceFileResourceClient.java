@@ -61,7 +61,8 @@ public class SourceFileResourceClient {
         WebTarget target = client
                 .target(baseUri)
                 .path(SourceFileResource.SERVICE_PATH)
-                .path(projectSlug).path(iterationSlug);
+                .resolveTemplate("projectSlug", projectSlug)
+                .resolveTemplate("versionSlug", iterationSlug);
         Invocation.Builder builder = target
                 .queryParam("docId", docId)
                 .queryParam("projectType", projectType.name())
@@ -77,10 +78,11 @@ public class SourceFileResourceClient {
 
     public Response downloadSourceFile(String projectSlug,
             String iterationSlug,
-            String fileType, String docId, ProjectType projectType) {
+            String docId, ProjectType projectType) {
         Invocation.Builder builder = factory.getClient().target(baseUri)
                 .path(SourceFileResource.SERVICE_PATH)
-                .path(projectSlug).path(iterationSlug).path(fileType)
+                .resolveTemplate("projectSlug", projectSlug)
+                .resolveTemplate("versionSlug", iterationSlug)
                 .queryParam("projectType", projectType.name())
                 .queryParam("docId", docId)
                 .request(MediaType.APPLICATION_OCTET_STREAM_TYPE);

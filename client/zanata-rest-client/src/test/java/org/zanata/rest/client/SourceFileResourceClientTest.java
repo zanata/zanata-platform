@@ -83,7 +83,7 @@ public class SourceFileResourceClientTest {
     @Test
     public void testDownloadSourceFile() throws IOException {
         Response response =
-                client.downloadSourceFile("about-fedora", "master", "pot",
+                client.downloadSourceFile("about-fedora", "master",
                         "About-Fedora", ProjectType.File);
         assertEquals(200, response.getStatus());
         try (InputStream inputStream = response.readEntity(InputStream.class)) {

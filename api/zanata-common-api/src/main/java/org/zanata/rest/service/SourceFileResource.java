@@ -20,8 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import static org.zanata.rest.service.SourceFileResource.SERVICE_PATH;
-
 import java.io.InputStream;
 
 import javax.annotation.Nullable;
@@ -40,6 +38,8 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.FileUploadResponse;
 
+import static org.zanata.rest.service.SourceFileResource.SERVICE_PATH;
+
 /**
  * REST Interface for upload and download of source files.
  * @author Sean Flanigan <a
@@ -49,7 +49,7 @@ import org.zanata.rest.dto.FileUploadResponse;
 @Produces({ MediaType.APPLICATION_OCTET_STREAM })
 @Consumes({ MediaType.APPLICATION_OCTET_STREAM })
 public interface SourceFileResource extends RestResource {
-    String SERVICE_PATH = "/file2/source";
+    String SERVICE_PATH = "/proj/{projectSlug}/ver/{versionSlug}/document/source";
 
     /**
      * Upload a source file (or file chunk) to Zanata. Allows breaking up files
@@ -61,7 +61,7 @@ public interface SourceFileResource extends RestResource {
      * indicate if it is the last expected chunk.
      *
      * @param projectSlug The project slug where to store the document.
-     * @param iterationSlug The project version slug where to store the document.
+     * @param versionSlug The project version slug where to store the document.
      * @param docId The full Document identifier (including file extension)
      * @param fileStream Contents of the file to be uploaded
      * @param size size of the file in bytes (for sanity checking; use -1 if unknown)
@@ -69,13 +69,11 @@ public interface SourceFileResource extends RestResource {
      * @return A message with information about the upload operation.
      */
     @POST
-    @Path("/{projectSlug}/{iterationSlug}")
-    // /file/source/{projectSlug}/{iterationSlug}?docId={docId}
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @TypeHint(FileUploadResponse.class)
     Response uploadSourceFile(
             @PathParam("projectSlug") String projectSlug,
-            @PathParam("iterationSlug") String iterationSlug,
+            @PathParam("versionSlug") String versionSlug,
             @QueryParam("docId") String docId,
             InputStream fileStream,
             @QueryParam("size") @DefaultValue("-1") long size,
@@ -85,10 +83,7 @@ public interface SourceFileResource extends RestResource {
      * Downloads a single source file.
      *
      * @param projectSlug
-     * @param iterationSlug
-     * @param fileType
-     *            use 'raw' for original source if available, or 'pot' to
-     *            generate pot from source strings
+     * @param versionSlug
      * @param docId The full Document identifier
      * @param projectType A ProjectType used for mapping of file extensions.
      * @return response with status code 404 if the document is not found, 415
@@ -96,12 +91,9 @@ public interface SourceFileResource extends RestResource {
      *         attached document.
      */
     @GET
-    @Path("/{projectSlug}/{iterationSlug}/{fileType}")
-    // /file/source/{projectSlug}/{iterationSlug}/{fileType}?docId={docId}
     Response downloadSourceFile(
             @PathParam("projectSlug") String projectSlug,
-            @PathParam("iterationSlug") String iterationSlug,
-            @PathParam("fileType") String fileType,
+            @PathParam("versionSlug") String versionSlug,
             @QueryParam("docId") String docId,
             @QueryParam("projectType") String projectType);
 

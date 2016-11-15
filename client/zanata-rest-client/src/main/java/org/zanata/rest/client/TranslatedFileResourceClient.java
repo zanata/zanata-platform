@@ -61,8 +61,9 @@ public class TranslatedFileResourceClient {
         WebTarget target = client
                 .target(baseUri)
                 .path(TranslatedFileResource.SERVICE_PATH)
-                .path(projectSlug).path(iterationSlug)
-                .path(locale);
+                .resolveTemplate("projectSlug", projectSlug)
+                .resolveTemplate("versionSlug", iterationSlug)
+                .resolveTemplate("localeId", locale);
         Invocation.Builder builder = target
                 .queryParam("docId", docId)
                 .queryParam("merge", mergeType)
@@ -77,12 +78,13 @@ public class TranslatedFileResourceClient {
     }
 
     public Response downloadTranslatedFile(String projectSlug,
-            String iterationSlug, String locale, String fileExtension,
+            String iterationSlug, String locale,
             String docId, ProjectType projectType) {
         WebTarget target = factory.getClient().target(baseUri)
                 .path(TranslatedFileResource.SERVICE_PATH)
-                .path(projectSlug).path(iterationSlug).path(locale)
-                .path(fileExtension);
+                .resolveTemplate("projectSlug", projectSlug)
+                .resolveTemplate("versionSlug", iterationSlug)
+                .resolveTemplate("localeId", locale);
         return target
                 .queryParam("projectType", projectType.name())
                 .queryParam("docId", docId)

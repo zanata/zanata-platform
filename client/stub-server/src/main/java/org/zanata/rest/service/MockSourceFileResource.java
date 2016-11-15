@@ -44,7 +44,7 @@ import org.zanata.rest.dto.resource.Resource;
 public class MockSourceFileResource implements SourceFileResource {
 
     @Override
-    public Response uploadSourceFile(String projectSlug, String iterationSlug,
+    public Response uploadSourceFile(String projectSlug, String versionSlug,
             String docId, InputStream fileStream, long size, ProjectType projectType) {
         try {
             long actual = IOUtils
@@ -52,7 +52,7 @@ public class MockSourceFileResource implements SourceFileResource {
             return Response.status(Response.Status.CREATED).entity(
                     new FileUploadResponse(1L, "Upload of new source document successful: (" +
                             actual + "/" + size + " bytes): " +
-                            projectSlug + "/" + iterationSlug + "/" + docId + ":" + projectType))
+                            projectSlug + "/" + versionSlug + "/" + docId + ":" + projectType))
                     .build();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -60,8 +60,8 @@ public class MockSourceFileResource implements SourceFileResource {
     }
 
     @Override
-    public Response downloadSourceFile(String projectSlug, String iterationSlug,
-            String fileType, final String docId, String projectType) {
+    public Response downloadSourceFile(String projectSlug, String versionSlug,
+            final String docId, String projectType) {
         StreamingOutput output = output1 -> {
             PoWriter2 writer = new PoWriter2(false, false);
             Resource doc = sampleResource(docId);

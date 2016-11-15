@@ -47,7 +47,7 @@ import static org.zanata.rest.service.TranslatedFileResource.SERVICE_PATH;
 @Produces({ MediaType.APPLICATION_OCTET_STREAM })
 @Consumes({ MediaType.APPLICATION_OCTET_STREAM })
 public interface TranslatedFileResource extends RestResource {
-    String SERVICE_PATH = "/file2/translation";
+    String SERVICE_PATH = "/proj/{projectSlug}/ver/{versionSlug}/document/trans/{localeId}";
 
     /**
      * Upload a translation file (or file chunk) to Zanata. Allows breaking up files
@@ -59,7 +59,7 @@ public interface TranslatedFileResource extends RestResource {
      * indicate if it is the last expected chunk.
      *
      * @param projectSlug The project slug where to store the document.
-     * @param iterationSlug The project version slug where to store the document.
+     * @param versionSlug The project version slug where to store the document.
      * @param localeId The locale (language) for the translation file.
      * @param docId The full Document identifier (including file extension)
      * @param merge Indicates whether to merge translations or overwrite all
@@ -69,14 +69,12 @@ public interface TranslatedFileResource extends RestResource {
      * @return A message with information about the upload operation.
      */
     @POST
-    @Path("/{projectSlug}/{iterationSlug}/{locale}")
-    // /file/translation/{projectSlug}/{iterationSlug}/{locale}?docId={docId}&merge={merge}
     @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @TypeHint(FileUploadResponse.class)
     Response uploadTranslationFile(
             @PathParam("projectSlug") String projectSlug,
-            @PathParam("iterationSlug") String iterationSlug,
-            @PathParam("locale") String localeId,
+            @PathParam("versionSlug") String versionSlug,
+            @PathParam("localeId") String localeId,
             @QueryParam("docId") String docId,
             @QueryParam("merge") String merge,
             InputStream fileStream,
@@ -92,14 +90,11 @@ public interface TranslatedFileResource extends RestResource {
      *
      * @param projectSlug
      *            Project identifier.
-     * @param iterationSlug
+     * @param versionSlug
      *            Project iteration identifier.
      * @param locale
      *            Translations for this locale will be contained in the
      *            downloaded document.
-     * @param fileType
-     *            File type to be downloaded. (Options: 'po', 'half_baked',
-     *            'baked')
      * @param docId
      *            Document identifier to fetch translations for.
      * @return The following response status codes will be returned from this
@@ -113,13 +108,10 @@ public interface TranslatedFileResource extends RestResource {
      *         the server while performing this operation.
      */
     @GET
-    @Path("/{projectSlug}/{iterationSlug}/{locale}/{fileType}")
-    // /file/translation/{projectSlug}/{iterationSlug}/{locale}/{fileType}?docId={docId}
     Response downloadTranslationFile(
             @PathParam("projectSlug") String projectSlug,
-            @PathParam("iterationSlug") String iterationSlug,
-            @PathParam("locale") String locale,
-            @PathParam("fileType") String fileType,
+            @PathParam("versionSlug") String versionSlug,
+            @PathParam("localeId") String locale,
             @QueryParam("docId") String docId,
             @QueryParam("projectType") String projectType);
 

@@ -27,12 +27,10 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.file.FilePersistService;
-import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
 
 import lombok.extern.slf4j.Slf4j;
@@ -60,16 +58,16 @@ public class SourceFileService implements SourceFileResource {
     @Override
     public Response uploadSourceFile(
             String projectSlug,
-            String iterationSlug,
+            String versionSlug,
             String docId,
             InputStream fileStream,
             long size,
             @Nullable ProjectType projectType) {
-        String suffix = legacyFileMapper.getFilenameSuffix(projectSlug, iterationSlug, projectType, true);
-        String actualDocId = StringUtils.removeEnd(docId, suffix);
-//        String actualDocId = legacyFileMapper.getServerDocId(projectSlug, iterationSlug, docId, projectType);
-        GlobalDocumentId id =
-                new GlobalDocumentId(projectSlug, iterationSlug, actualDocId);
+//        String suffix = legacyFileMapper.getFilenameSuffix(projectSlug, versionSlug, projectType, true);
+//        String actualDocId = StringUtils.removeEnd(docId, suffix);
+//        String actualDocId = legacyFileMapper.getServerDocId(projectSlug, versionSlug, docId, projectType);
+//        GlobalDocumentId id =
+//                new GlobalDocumentId(projectSlug, versionSlug, actualDocId);
         // FIXME
         return null;
 //        return sourceUploader.tryUploadSourceFile(id, fileStream);
@@ -79,8 +77,7 @@ public class SourceFileService implements SourceFileResource {
     @Override
     public Response downloadSourceFile(
             String projectSlug,
-            String iterationSlug,
-            String fileType,
+            String versionSlug,
             String docId,
             String projectType) {
         // FIXME

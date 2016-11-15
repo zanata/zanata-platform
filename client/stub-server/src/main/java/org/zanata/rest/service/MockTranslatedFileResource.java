@@ -60,7 +60,7 @@ public class MockTranslatedFileResource implements TranslatedFileResource {
 
     @Override
     public Response downloadTranslationFile(String projectSlug,
-            String iterationSlug, String locale, String fileExtension,
+            String versionSlug, String locale,
             final String docId, String projectType) {
         StreamingOutput output = output1 -> {
             PoWriter2 writer = new PoWriter2(false, false);
