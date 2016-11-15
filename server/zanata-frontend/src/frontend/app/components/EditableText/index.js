@@ -3,17 +3,6 @@ import Row from 'react-bootstrap'
 import TextInput from '../../components'
 
 /**
- text: {}
- editable: {
-            brds: 'Bdrs(rq)',
-            trs: 'Trs(aeo)',
-            hover: {
-                bd: 'editable:h_Bd(bd2) editable:h_Bdc(neutral)'
-            }
-        },
- placeholder: {
-            c: 'C(muted)'
-
  * Text input that can switch between text field and label
  * by using attribute `editing`
  */
@@ -47,6 +36,7 @@ class EditableText extends Component {
         if (editable && editing) {
             return (
               <TextInput
+                className='editable'
                 {...props}
                 autoFocus={this.state.focus}
                 onBlur={::this.handleBlur}

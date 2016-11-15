@@ -271,7 +271,7 @@
     margin-bottom: 10px;
 }
 
-  .contentx {
+  .content {
     background-color: white;
     padding-top: 20px;
     padding-bottom: 20px;
@@ -281,7 +281,7 @@
 
 @media (max-width: 767px) {
 
-      .contentx {
+      .content {
         min-height: 300px;
     }
 

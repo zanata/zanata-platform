@@ -79,7 +79,7 @@ class Languages extends Component {
           <View theme={contentViewContainerTheme}>
             <div className='row clearfix' id='admin-lang'>
               <div className='row-height'>
-                <div className='contentx clearfix center-block'
+                <div className='content clearfix center-block'
                   id='languages-form'>
                   <h2>
                     Languages {!loading &&

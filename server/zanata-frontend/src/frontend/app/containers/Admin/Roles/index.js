@@ -18,7 +18,7 @@ class Roles extends Component {
           <View theme={contentViewContainerTheme}>
             <div className='row clearfix' id='admin-lang'>
               <div className='row-height'>
-                <div className='contentx clearfix center-block'>
+                <div className='content clearfix center-block'>
                   <h2>Manage Roles&nbsp;<span className='badge'>6</span>
                   </h2>
                   <Button bsStyle='primary'>

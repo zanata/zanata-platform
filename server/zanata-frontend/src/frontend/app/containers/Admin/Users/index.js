@@ -18,7 +18,7 @@ class Users extends Component {
           <View theme={contentViewContainerTheme}>
             <div className='row clearfix' id='admin-lang'>
               <div className='row-height'>
-                <div className='contentx clearfix center-block'>
+                <div className='content clearfix center-block'>
                   <h2>Manage Users&nbsp;<span className='badge'>6</span>
                   </h2>
                   <div className='left-form toolbar col-xs-12'>

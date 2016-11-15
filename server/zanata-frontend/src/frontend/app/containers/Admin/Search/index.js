@@ -24,7 +24,7 @@ class Search extends Component {
           <View theme={contentViewContainerTheme}>
             <div className='row clearfix' id='manage-users'>
               <div className='row-height'>
-                <div className='contentx clearfix center-block'>
+                <div className='content clearfix center-block'>
                   <h2>Manage Search
                   </h2>
                   <div className='panel panel-primary'>

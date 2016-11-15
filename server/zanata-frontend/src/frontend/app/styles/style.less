@@ -229,6 +229,20 @@ span.svg {
   vertical-align: middle;
 }
 
+.editable {
+  border-radius: 0.375rem;
+  transition: all .3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.editable:hover {
+  border: solid 2px;
+  border-color: rgb(189, 212, 220);
+}
+
+.editable .placeholder {
+  color: @brand-muted;
+}
+
 :root {
   --LogoLoader-transition-ease: cubic-bezier(.175, .885, .320, 1.275);
 }
@@ -3826,7 +3840,7 @@ button.list-group-item {
   padding: 0.286em;
 }
 
-.contentx {
+.content {
   font-size: 1em;
   padding-top: 1.429em;
   padding-bottom: 1.429em;
@@ -4070,7 +4084,7 @@ button.close:hover {
     width: @container-tablet;
   }
 
-  .contentx {
+  .content {
     width: 65%;
   }
 
@@ -4429,7 +4443,7 @@ button.close:hover {
     display: inline-block !important;
   }
 
-  .contentx {
+  .content {
     min-height: 21.429em;
   }
 
