@@ -29,10 +29,6 @@ body {
   overflow: hidden;
 }
 
-.view {
-  overflow: hidden;
-}
-
 .searchViewTheme {
   align-items: center;
   color: rgb(84, 102, 122);
@@ -52,7 +48,7 @@ body {
   margin-left: 2em;
 }
 
-.contentViewContainerTheme {
+.contentViewContainer {
   max-width: 48em;
   margin-right: auto;
   width: 100%;
@@ -445,7 +441,7 @@ a:hover {
 
 a:focus {
   outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
+  outline: 5px auto @brand-secondary;
   outline-offset: -2px;
 }
 
@@ -742,7 +738,7 @@ input[type=checkbox]:focus,
 input[type=file]:focus,
 input[type=radio]:focus {
   outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
+  outline: 5px auto @brand-secondary;
   outline-offset: -2px;
 }
 
@@ -1974,7 +1970,7 @@ textarea.input-lg {
 .btn:active:focus,
 .btn:focus {
   outline: thin dotted;
-  outline: 5px auto -webkit-focus-ring-color;
+  outline: 5px auto @brand-secondary;
   outline-offset: -2px;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 6px 10px 0 rgba(0, 0, 0, 0.15);
   opacity: 0.85;
@@ -1985,7 +1981,7 @@ textarea.input-lg {
 .btn:hover {
   text-decoration: none;
   color: #333;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 6px 10px 0 rgba(0, 0, 0, 0.15);
+  //box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 6px 10px 0 rgba(0, 0, 0, 0.15);
   opacity: 0.85;
 }
 
@@ -4018,7 +4014,7 @@ button.close:hover {
   display: none !important;
 }
 
-#explore button.btn-link {
+button.btn-link {
   color: rgb(84, 102, 122);
 }
 
@@ -4046,12 +4042,12 @@ button.close:hover {
   width: 50%;
 }
 
-.searchViewTheme .textInput .placeholder {
+.textInput .placeholder {
   color: hsl(195, 32%, 80%);
 }
 
-.searchViewTheme .textInput:focus {
-  border-color: rgb(27, 167, 217);
+.textInput:focus {
+  border-color: @brand-secondary;
 }
 
 .searchViewTheme span svg {

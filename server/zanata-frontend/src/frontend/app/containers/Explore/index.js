@@ -120,13 +120,14 @@ class Explore extends Component {
         <Helmet title='Search' />
         <div className='headerClasses'>
           <h1 className='headingTheme hidden' level='1'>Search</h1>
-          <div className='view searchViewTheme'>
+          <div className='searchViewTheme'>
             <Icon name='search' className='s0 list-inline' />
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
               id='explore_search'
               type='search'
+              className='textInput'
               placeholder='Search Zanata…'
               accessibilityLabel='Search Zanata'
               defaultValue={searchText}
@@ -141,7 +142,7 @@ class Explore extends Component {
           </div>
         </div>
         <div className='scrollViewTheme'>
-          <div className='view contentViewContainerTheme'>
+          <div className='contentViewContainer'>
             {content}
           </div>
         </div>

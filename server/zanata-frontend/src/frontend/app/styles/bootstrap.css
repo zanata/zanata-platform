@@ -298,11 +298,6 @@
     color: #23527c;
     text-decoration: underline
 }
-  a:focus {
-    outline: thin dotted;
-    outline: 5px auto -webkit-focus-ring-color;
-    outline-offset: -2px
-}
   figure {
     margin: 0
 }
@@ -1673,7 +1668,7 @@
   input[type=checkbox]:focus,
   input[type=radio]:focus {
     outline: thin dotted;
-    outline: 5px auto -webkit-focus-ring-color;
+    outline: 5px auto #54667a;
     outline-offset: -2px
 }
   output {
@@ -2063,7 +2058,7 @@
   .btn:active:focus,
   .btn:focus {
     outline: thin dotted;
-    outline: 5px auto -webkit-focus-ring-color;
+    outline: 5px auto #1ba7d9;
     outline-offset: -2px
 }
   .btn.focus,
