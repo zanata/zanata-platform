@@ -62,7 +62,7 @@ import static javax.transaction.Status.STATUS_ROLLEDBACK;
 @ApplicationScoped
 //@Stateless
 //@TransactionManagement(TransactionManagementType.BEAN)
-public class TransactionUtil {
+public class TransactionUtil implements TXUtil {
 
     public static TransactionUtil get() {
         return ServiceLocator.instance().getInstance(TransactionUtil.class);
@@ -90,6 +90,7 @@ public class TransactionUtil {
         return get().call(function);
     }
 
+    @Override
     public <R> R call(Callable<R> function) throws Exception {
         UserTransaction transaction = null;
         // these values used to come from Seam's Transactional annotation
@@ -161,6 +162,7 @@ public class TransactionUtil {
         get().run(runnable);
     }
 
+    @Override
     public void run(Runnable runnable) throws Exception {
         runInTransaction(() -> {
             runnable.run();
@@ -168,6 +170,7 @@ public class TransactionUtil {
         });
     }
 
+    @Override
     public void runEx(RunnableEx runnable) throws Exception {
         runInTransaction(() -> {
             runnable.run();
