@@ -39,8 +39,7 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.DocumentFileUploadForm;
-import org.zanata.rest.dto.FileUploadResponse;
+import org.zanata.rest.dto.JobStatus;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.StubbingServerRule;
 
@@ -72,7 +71,7 @@ public class TranslatedFileResourceClientTest {
         File odtFile = loadFileFromClasspath("xliff/StringResource_fr.xml");
         FileInputStream fileInputStream = new FileInputStream(odtFile);
 
-        FileUploadResponse uploadResponse = client
+        JobStatus uploadResponse = client
                 .uploadTranslatedFile("about-fedora", "master",
                         "zh",
                         "test.odt", "auto",

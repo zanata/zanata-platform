@@ -1,44 +1,40 @@
 package org.zanata.rest.dto;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement(name = "fileUploadResponse")
-@XmlType(name = "fileUploadResponseType")
+@XmlRootElement(name = "jobStatus")
+@XmlType(name = "jobStatusType")
 // FIXME see also AsynchronousProcessResource.startSourceDocCreation() and ProcessStatus
-public class FileUploadResponse {
-    // FIXME eliminate this?
-    private Long uploadId;
-    private String successMessage;
-    private String errorMessage;
+public class JobStatus {
+    private @Nullable Long jobId;
+    private @Nullable String successMessage;
+    private @Nullable String errorMessage;
 
-    public FileUploadResponse() {
+    public JobStatus() {
     }
 
     /**
-     * Create a response indicating that something went wrong before starting an
-     * upload.
+     * Create a response indicating that something went wrong before starting
+     * the job.
      *
      * @param errorMessage
      *            detailing what went wrong
      */
-    public FileUploadResponse(String errorMessage) {
+    public JobStatus(@Nonnull String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
-    public FileUploadResponse(long uploadId, String successMessage) {
-        this.uploadId = uploadId;
+    public JobStatus(long jobId, @Nonnull String successMessage) {
+        this.jobId = jobId;
         this.successMessage = successMessage;
     }
 
-    @XmlElement
-    public Long getUploadId() {
-        return uploadId;
-    }
-
-    public void setUploadId(Long uploadId) {
-        this.uploadId = uploadId;
+    public @Nullable Long getJobId() {
+        return jobId;
     }
 
     @XmlElement
@@ -61,7 +57,7 @@ public class FileUploadResponse {
 
     @Override
     public String toString() {
-        return "FileUploadResponse: uploadId=" + uploadId
+        return "Job: uploadId=" + jobId
                 + " successMessage=\"" + successMessage + "\" errorMessage=\""
                 + errorMessage + "\".";
     }

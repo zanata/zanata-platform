@@ -21,7 +21,7 @@
 package org.zanata.rest.service;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
-import org.zanata.rest.dto.FileUploadResponse;
+import org.zanata.rest.dto.JobStatus;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -44,8 +44,8 @@ import static org.zanata.rest.service.TranslatedFileResource.SERVICE_PATH;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Path(SERVICE_PATH)
-@Produces({ MediaType.APPLICATION_OCTET_STREAM })
-@Consumes({ MediaType.APPLICATION_OCTET_STREAM })
+@Produces({ MediaType.WILDCARD })
+@Consumes({ MediaType.WILDCARD })
 public interface TranslatedFileResource extends RestResource {
     String SERVICE_PATH = "/proj/{projectSlug}/ver/{versionSlug}/document/trans/{localeId}";
 
@@ -69,8 +69,8 @@ public interface TranslatedFileResource extends RestResource {
      * @return A message with information about the upload operation.
      */
     @POST
-    @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    @TypeHint(FileUploadResponse.class)
+    @Produces({ MediaType.APPLICATION_JSON })
+    @TypeHint(JobStatus.class)
     Response uploadTranslationFile(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,

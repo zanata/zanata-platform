@@ -40,7 +40,7 @@ import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.dto.FileUploadResponse;
+import org.zanata.rest.dto.JobStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.service.StubbingServerRule;
 
@@ -72,7 +72,7 @@ public class SourceFileResourceClientTest {
         File odtFile = loadFileFromClasspath("xliff/StringResource_en_US.xml");
         FileInputStream fileInputStream = new FileInputStream(odtFile);
 
-        FileUploadResponse uploadResponse = client
+        JobStatus uploadResponse = client
                 .uploadSourceFile("about-fedora", "master",
                         "test.odt", ProjectType.File,
                         fileInputStream, odtFile.length());

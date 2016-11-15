@@ -34,7 +34,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.NullOutputStream;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ProjectType;
-import org.zanata.rest.dto.FileUploadResponse;
+import org.zanata.rest.dto.JobStatus;
 import org.zanata.rest.dto.resource.Resource;
 
 /**
@@ -50,7 +50,7 @@ public class MockSourceFileResource implements SourceFileResource {
             long actual = IOUtils
                     .copyLarge(fileStream, new NullOutputStream());
             return Response.status(Response.Status.CREATED).entity(
-                    new FileUploadResponse(1L, "Upload of new source document successful: (" +
+                    new JobStatus(1L, "Upload of new source document successful: (" +
                             actual + "/" + size + " bytes): " +
                             projectSlug + "/" + versionSlug + "/" + docId + ":" + projectType))
                     .build();

@@ -34,7 +34,7 @@ import javax.ws.rs.core.StreamingOutput;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.NullOutputStream;
 import org.zanata.adapter.po.PoWriter2;
-import org.zanata.rest.dto.FileUploadResponse;
+import org.zanata.rest.dto.JobStatus;
 
 /**
  * @author Sean Flanigan <a
@@ -49,7 +49,7 @@ public class MockTranslatedFileResource implements TranslatedFileResource {
         try {
             long actual = IOUtils.copyLarge(fileStream, new NullOutputStream());
             return Response.ok(
-                    new FileUploadResponse(1L, "Upload of translation document successful (" +
+                    new JobStatus(1L, "Upload of translation document successful (" +
                             actual + "/" + size + " bytes): " +
                             projectSlug + "/" + iterationSlug + "/" + docId + ":" + projectType + ":" + localeId))
                     .build();

@@ -31,7 +31,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.zanata.common.ProjectType;
-import org.zanata.rest.dto.FileUploadResponse;
+import org.zanata.rest.dto.JobStatus;
 import org.zanata.rest.service.TranslatedFileResource;
 
 import static javax.ws.rs.client.Entity.entity;
@@ -51,9 +51,9 @@ public class TranslatedFileResourceClient {
         baseUri = restClientFactory.getBaseUri();
     }
 
-    public FileUploadResponse uploadTranslatedFile(
+    public JobStatus uploadTranslatedFile(
             String projectSlug,
-            String iterationSlug, String locale, String docId,
+            String versionSlug, String locale, String docId,
             String mergeType,
             ProjectType projectType,
             InputStream fileStream) {
@@ -62,28 +62,24 @@ public class TranslatedFileResourceClient {
                 .target(baseUri)
                 .path(TranslatedFileResource.SERVICE_PATH)
                 .resolveTemplate("projectSlug", projectSlug)
-                .resolveTemplate("versionSlug", iterationSlug)
+                .resolveTemplate("versionSlug", versionSlug)
                 .resolveTemplate("localeId", locale);
         Invocation.Builder builder = target
                 .queryParam("docId", docId)
                 .queryParam("merge", mergeType)
                 .queryParam("projectType", projectType.name())
-                .request(MediaType.APPLICATION_XML_TYPE);
-//        addBodyPartIfPresent(form, "adapterParams",
-//                documentFileUploadForm.getAdapterParams());
-//        addBodyPartIfPresent(form, "type", documentFileUploadForm.getFileType());
-
+                .request(MediaType.APPLICATION_JSON_TYPE);
         return builder.post(entity(fileStream, MediaType.APPLICATION_OCTET_STREAM_TYPE),
-                FileUploadResponse.class);
+                JobStatus.class);
     }
 
     public Response downloadTranslatedFile(String projectSlug,
-            String iterationSlug, String locale,
+            String versionSlug, String locale,
             String docId, ProjectType projectType) {
         WebTarget target = factory.getClient().target(baseUri)
                 .path(TranslatedFileResource.SERVICE_PATH)
                 .resolveTemplate("projectSlug", projectSlug)
-                .resolveTemplate("versionSlug", iterationSlug)
+                .resolveTemplate("versionSlug", versionSlug)
                 .resolveTemplate("localeId", locale);
         return target
                 .queryParam("projectType", projectType.name())
