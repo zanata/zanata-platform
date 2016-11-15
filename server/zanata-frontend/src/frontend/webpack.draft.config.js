@@ -17,24 +17,29 @@ module.exports = _.merge({}, defaultConfig, {
   devtool: 'eval',
 
   // FRAGILE: merging, must line up with the same index or it will break
-  loaders: [
-    {},
-    {
-      loader: ExtractTextPlugin.extract(
-        'style',
-        'css?-minimize',
-        'autoprefixer?browsers=last 2 versions'
-      )
-    },
-    {
-      loader: ExtractTextPlugin.extract(
-        'style',
-        'css?-minimize!less',
-        'autoprefixer?browsers=last 2 versions'
-      )
-    }
-  ]
+  module: {
+    loaders: [
+      {},
+      {
+        loader: ExtractTextPlugin.extract(
+          'style',
+          'css?-minimize',
+          'autoprefixer?browsers=last 2 versions'
+        )
+      },
+      {
+        loader: ExtractTextPlugin.extract(
+          'style',
+          'css?-minimize!less',
+          'autoprefixer?browsers=last 2 versions'
+        )
+      }
+    ]
+  }
 })
+
+// wipe out eslint check (it is the only thing in preloaders)
+module.exports.module.preLoaders = []
 
 // do not minify/uglify the output
 module.exports.plugins = _.filter(module.exports.plugins,
