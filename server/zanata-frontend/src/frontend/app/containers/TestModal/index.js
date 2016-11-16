@@ -12,7 +12,6 @@ class TestModal extends Component {
   }
 
   hideModal () {
-    console.info('test')
     this.setState({show: false})
   }
   showModal () {
@@ -20,13 +19,14 @@ class TestModal extends Component {
   }
   /* eslint-disable react/jsx-no-bind */
   render () {
+    console.info(this)
     return (
       <div>
         <Button bsStyle='default'
           onClick={() => this.showModal()}>Launch Modal</Button>
         <Modal
           show={this.state.show}
-          onHide={this.hideModal}>
+          onHide={() => this.hideModal()}>
           <Modal.Header>
             <Modal.Title>Example Modal</Modal.Title>
           </Modal.Header>
