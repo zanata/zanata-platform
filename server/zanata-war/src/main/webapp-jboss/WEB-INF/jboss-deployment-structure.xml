@@ -30,6 +30,9 @@
       <module name="org.jboss.security.negotiation" />
       <!-- end of deprecated modules -->
 
+      <!-- for java melody heap dump. Remove if https://github.com/javamelody/javamelody/issues/585 is resolved -->
+      <module name="sun.jdk"/>
+
       <!-- other modules -->
       <module name="org.infinispan.commons" optional="true" />
       <module name="javax.annotation.api" />
