@@ -8,6 +8,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.util.RunnableEx;
 
+/**
+ * A TransactionUtil implementation used in tests.
+ */
 public class TestTransactionUtil implements TransactionUtil {
     private static final Logger log =
             LoggerFactory.getLogger(TestTransactionUtil.class);
