@@ -36,7 +36,7 @@ class EditableText extends Component {
         if (editable && editing) {
             return (
               <TextInput
-                className='editable'
+                className='editable textInput'
                 {...props}
                 autoFocus={this.state.focus}
                 onBlur={::this.handleBlur}

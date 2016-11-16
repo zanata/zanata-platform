@@ -1668,7 +1668,7 @@
   input[type=checkbox]:focus,
   input[type=radio]:focus {
     outline: thin dotted;
-    outline: 5px auto #54667a;
+    outline: 5px auto #03a6d7;
     outline-offset: -2px
 }
   output {
