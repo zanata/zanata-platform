@@ -11,16 +11,16 @@ import org.zanata.util.RunnableEx;
 /**
  * A TransactionUtil implementation used in tests.
  */
-public class TestTransactionUtil implements TransactionUtil {
+public class TransactionUtilForUnitTest implements TransactionUtil {
     private static final Logger log =
-            LoggerFactory.getLogger(TestTransactionUtil.class);
+            LoggerFactory.getLogger(TransactionUtilForUnitTest.class);
     private EntityManager em;
 
-    public TestTransactionUtil(EntityManager em) {
+    public TransactionUtilForUnitTest(EntityManager em) {
         this.em = em;
     }
 
-    public TestTransactionUtil() {
+    public TransactionUtilForUnitTest() {
     }
 
     @Override

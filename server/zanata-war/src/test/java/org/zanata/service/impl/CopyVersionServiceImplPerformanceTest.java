@@ -72,7 +72,7 @@ import org.zanata.servlet.annotations.ContextPath;
 import org.zanata.servlet.annotations.SessionId;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.transaction.TransactionUtil;
-import org.zanata.transaction.TestTransactionUtil;
+import org.zanata.transaction.TransactionUtilForUnitTest;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DefaultLocale;
 import org.zanata.util.Zanata;
@@ -177,7 +177,7 @@ public class CopyVersionServiceImplPerformanceTest extends ZanataTest {
 
     @Produces
     protected TransactionUtil getTransactionUtil() {
-        return new TestTransactionUtil(getEm());
+        return new TransactionUtilForUnitTest(getEm());
     }
 
 
