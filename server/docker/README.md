@@ -26,7 +26,7 @@ The `-t` parameter indicates the name and/or tag for the image.
 
 The steps to get a Zanata development server running are:
 
- 1. Check that you meet all the prerequisites.
+ 1. Ensure that docker is properly set up.
  2. Run a database server container.
  3. Run the Zanata development server container.
  4. Create an admin user.
@@ -38,9 +38,15 @@ If you build a new zanata war, kill the docker server (Ctrl+C) then re-run it
 in the same way you first started it.
 
 
-### Prerequisites
+### Docker setup
 
- - docker service should be running
+The following instructions are to set up docker on a Fedora system after it has
+been installed with `dnf install docker`. For docker setup on other operating
+systems, see [Install Docker Engine - Docker](https://docs.docker.com/engine/installation/)
+
+To set up docker you need to:
+
+ - ensure docker service is running
  - create a docker group and add yourself to it (otherwise you will have to
    use `sudo` for all your docker commands)
 
@@ -66,7 +72,7 @@ systemctl enable docker.service
 
 
 To create a docker group, follow these
-[instructions to create a docker group on fedora](https://docs.docker.com/engine/installation/linux/fedora/#/create-a-docker-group)
+[instructions to create a docker group on Fedora](https://docs.docker.com/engine/installation/linux/fedora/#/create-a-docker-group)
 
 
 ### Run a database server container
