@@ -14,6 +14,10 @@ USER jboss
 
 RUN /opt/jboss/wildfly/bin/jboss-cli.sh --file=/tmp/zanata-config.cli
 
+# override the sun jdk module file to support java melody (com.sun.management.* for heap dump)
+# TODO remove this when https://github.com/javamelody/javamelody/issues/585 is resolved
+RUN sed -i '/<\/paths>/ i <path name="com/sun/management"/>' /opt/jboss/wildfly/modules/system/layers/base/sun/jdk/main/module.xml
+
 # Enable debugging of the appserver: --debug
 # Use standandlone-full: -c standalone-full.xml
 CMD ["/opt/jboss/wildfly/bin/standalone.sh", "--debug", "-b", "0.0.0.0", "-c", "standalone-full.xml"]
