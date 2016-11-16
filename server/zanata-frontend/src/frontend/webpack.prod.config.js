@@ -1,7 +1,7 @@
 /**
  * Production build config.
  *
- * This should be optimized for production performance and a small download.
+ * This should be optimised for production performance and a small download.
  * Builds with this config should fail on any error, including linting errors.
  */
 

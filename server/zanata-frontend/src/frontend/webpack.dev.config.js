@@ -2,7 +2,7 @@
  * Dev build config.
  *
  * This build is meant to use with webpack-dev-server for hot redeployment. It
- * should be optimized primarily for in-browser debugging, then for fast
+ * should be optimised primarily for in-browser debugging, then for fast
  * incremental builds.
  */
 

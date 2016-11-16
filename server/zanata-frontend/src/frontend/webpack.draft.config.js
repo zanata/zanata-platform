@@ -4,7 +4,7 @@
  * This build is intended to build as fast as possible, while being semantically
  * the same as the production build.
  *
- * The output is not optimized for artifact size, human-readability or to work
+ * The output is not optimised for artifact size, human-readability or to work
  * well with development tools or debuggers. Use the prod or dev config if you
  * want those properties in the output.
  */

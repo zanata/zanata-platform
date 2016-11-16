@@ -338,7 +338,7 @@
         <skip.npm>true</skip.npm>
       </properties>
     </profile>
-    <!-- Trigger a fully optimized build, instead of the default fast build. -->
+    <!-- Trigger a fully optimised build, instead of the default fast build. -->
     <profile>
       <id>optimisedBuild</id>
       <activation>
