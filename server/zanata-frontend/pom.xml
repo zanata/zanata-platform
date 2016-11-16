@@ -45,7 +45,7 @@
     <editor.build.directory>${project.basedir}/src/editor</editor.build.directory>
 
     <!-- Command to use after 'npm ' for the editor build. Default is the faster draft build. -->
-    <editor.build.command>run draft</editor.build.command>
+    <editor.build.command>run draft --ignore-scripts=false</editor.build.command>
 
     <!-- Root path within the jar to put the built artifacts.
          Note: META-INF/resources/* is served as static content, so this serves
@@ -349,7 +349,7 @@
       </activation>
       <properties>
         <frontend.build.command>run build</frontend.build.command>
-        <editor.build.command>run build</editor.build.command>
+        <editor.build.command>run build --ignore-scripts=false</editor.build.command>
       </properties>
     </profile>
   </profiles>

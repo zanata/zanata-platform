@@ -1,6 +1,6 @@
 # Ensure all dependencies are present at appropriate versions.
 setup:
-	npm install
+	npm install --ignore-scripts
 
 # Save the current dependency versions, including transitive dependencies
 # This is to ensure the build will use consistent dependency versions.
@@ -16,7 +16,7 @@ fakeserver:
 # Run the app on a local development server, automatically rebuild and refresh
 # when the code changes (sprites are only built at the beginning).
 watch:
-	npm run watch
+	npm run watch --ignore-scripts=false
 
 # Run a local development server backed by a fake Zanata server
 watch-fakeserver:
@@ -24,7 +24,7 @@ watch-fakeserver:
 
 # Run react-storybook server for development and testing of React components.
 storybook:
-	npm run storybook
+	npm run storybook --ignore-scripts=false
 
 # Build a static version of the React component storybook
 #  - outputs to /storybook-static
@@ -33,15 +33,15 @@ storybook:
 #    it all (only needs icons.svg at this point). Not worth the extra complexity
 #    to prevent that.
 storybook-static:
-	npm run build-storybook
+	npm run build-storybook --ignore-scripts=false
 
 # Build the css and javascript bundles using webpack.
 # Files end up as app.css and bundle.js in /app/dist
 build:
-	npm run build
+	npm run build --ignore-scripts=false
 
 # Run the tests.
 test:
-	npm test
+	npm test --ignore-scripts=false
 
 .PHONY: test build
