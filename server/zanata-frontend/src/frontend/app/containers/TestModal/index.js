@@ -12,6 +12,7 @@ class TestModal extends Component {
   }
 
   hideModal () {
+    console.info('test')
     this.setState({show: false})
   }
   showModal () {
