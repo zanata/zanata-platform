@@ -6,10 +6,14 @@ import javax.persistence.EntityManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.arquillian.Deployments;
 import org.zanata.util.RunnableEx;
 
 /**
- * A TransactionUtil implementation used in tests.
+ * A TransactionUtil implementation used in unit tests. Arquillian deployment
+ * will exclude it from the deployment as the class name ends with Test.
+ *
+ * @see Deployments#notUnitTest(org.jboss.shrinkwrap.api.ArchivePath)
  */
 public class TransactionUtilForUnitTest implements TransactionUtil {
     private static final Logger log =
