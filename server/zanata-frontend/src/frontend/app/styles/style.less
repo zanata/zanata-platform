@@ -3858,7 +3858,8 @@ button.close {
 }
 
 button.close:focus,
-button.close:hover {
+button.close:hover,
+button.close:active:focus {
   cursor: pointer;
   text-decoration: none;
   opacity: 0.5;
@@ -3866,6 +3867,7 @@ button.close:hover {
   filter: alpha(opacity=50);
   box-shadow:none;
   outline:none;
+  background-color:#fff;
 }
 
 .closeIcon svg {
@@ -3873,6 +3875,7 @@ button.close:hover {
   height:1rem;
   width:1rem;
   text-align: center;
+  color:#f00;
 }
 
 .btn-group-vertical > .btn-group:before,
