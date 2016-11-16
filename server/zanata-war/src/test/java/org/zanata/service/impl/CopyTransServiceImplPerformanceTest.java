@@ -53,6 +53,9 @@ import lombok.extern.slf4j.Slf4j;
 import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.zanata.service.EntityManagerFactoryRule.mySqlPassword;
+import static org.zanata.service.EntityManagerFactoryRule.mySqlUrl;
+import static org.zanata.service.EntityManagerFactoryRule.mySqlUsername;
 
 /**
  * This is a JUnit test that will setup large data and test the performance of
@@ -209,7 +212,7 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
                         .lookup("java:global/zanata/files/document-storage-directory"))
                 .thenReturn("/tmp/doc");
         Connection conn = DriverManager
-                .getConnection(emfRule.MYSQL_TEST_DB_URL, "root", "root");
+                .getConnection(mySqlUrl(), mySqlUsername(), mySqlPassword());
 
         Statement statement = conn.createStatement();
         statement.executeUpdate("drop schema zanata_unit_test");

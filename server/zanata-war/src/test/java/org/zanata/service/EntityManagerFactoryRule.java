@@ -9,8 +9,9 @@ import org.hibernate.dialect.MySQL5Dialect;
 import org.junit.rules.ExternalResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.service.impl.CopyVersionServiceImplPerformanceTest;
 import com.google.common.collect.ImmutableMap;
+
+import static com.google.common.base.MoreObjects.firstNonNull;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -19,18 +20,19 @@ public class EntityManagerFactoryRule extends ExternalResource {
     private static final Logger log =
             LoggerFactory.getLogger(EntityManagerFactoryRule.class);
     private static final String PERSIST_NAME = "zanataDatasourcePU";
-    public static final String MYSQL_TEST_DB_URL =
+    private static final String MYSQL_TEST_DB_URL =
             "jdbc:log4jdbc:mysql://localhost:3306/zanata_unit_test?characterEncoding=UTF-8";
     private static final String MYSQL_DIALECT =
             MySQL5Dialect.class.getCanonicalName();
 
     private EntityManagerFactory emf;
     private TestProfile profile;
+
     // NOTE: if you use mysql and you have the schema created, just change it to
     // update will speed up subsequent test runs
     // private static String hbm2ddl = "create";
     // protected static String hbm2ddl = "validate";
-    private String hbm2ddlAuto = "create_drop";
+    private String hbm2ddlAuto = firstNonNull(System.getenv("test_hbm2ddl"), "create_drop");
 
     public EntityManagerFactoryRule(TestProfile profile) {
         this.profile = profile;
@@ -39,6 +41,18 @@ public class EntityManagerFactoryRule extends ExternalResource {
     public EntityManagerFactoryRule(TestProfile profile, String hbm2ddlAuto) {
         this.profile = profile;
         this.hbm2ddlAuto = hbm2ddlAuto;
+    }
+
+    public static String mySqlUrl() {
+        return firstNonNull(System.getenv("test_db_url"), MYSQL_TEST_DB_URL);
+    }
+
+    public static String mySqlUsername() {
+        return firstNonNull(System.getenv("test_db_username"), "root");
+    }
+
+    public static String mySqlPassword() {
+        return firstNonNull(System.getenv("test_db_password"), "root");
     }
 
     @Override
@@ -52,9 +66,9 @@ public class EntityManagerFactoryRule extends ExternalResource {
                 Map<String, String> MySQLProps =
                         ImmutableMap
                                 .<String, String>builder()
-                                .put(Environment.URL, MYSQL_TEST_DB_URL)
-                                .put(Environment.USER, "root")
-                                .put(Environment.PASS, "root")
+                                .put(Environment.URL, mySqlUrl())
+                                .put(Environment.USER, mySqlUsername())
+                                .put(Environment.PASS, mySqlPassword())
                                 .put(Environment.HBM2DDL_AUTO, hbm2ddlAuto)
                                 // .put(Environment.USE_DIRECT_REFERENCE_CACHE_ENTRIES,
                                 // "true")
