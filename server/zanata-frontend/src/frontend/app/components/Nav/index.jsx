@@ -166,8 +166,8 @@ const Nav = ({
           }
 
           const useHref = isJsfPage || !item.internalLink
-          const isActive = active === link
-
+          const isActive = active.includes(link)
+          console.info(active, link, isActive)
           return <NavItem key={itemId}
             loading={loading}
             id={item.id}
