@@ -1,6 +1,8 @@
 FROM jboss/wildfly:10.1.0.Final
 
-ENV DB_HOSTNAME=zanatadb
+# MAIL_USERNAME and MAIL_PASSWORD can not be empty as they are used in wildfly standalone-full.xml.
+# If the smtp server does not require authentication, these single space values will be used
+ENV DB_HOSTNAME=zanatadb MAIL_HOST=localhost MAIL_USERNAME=' ' MAIL_PASSWORD=' '
 
 # create mysql module
 USER root
