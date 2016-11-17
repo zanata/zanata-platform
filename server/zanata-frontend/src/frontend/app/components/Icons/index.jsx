@@ -8,7 +8,7 @@ class Icons extends Component {
       /* eslint-enable max-len */
     }
     return (
-      <div className='abs' dangerouslySetInnerHTML={icons()} />
+      <div className='Pos(a)' dangerouslySetInnerHTML={icons()} />
     )
   }
 }
