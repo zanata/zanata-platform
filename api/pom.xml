@@ -34,11 +34,6 @@
     </repository>
   </repositories>
 
-  <properties>
-    <required.java>1.7</required.java>
-    <required.jvm>1.7</required.jvm>
-  </properties>
-
   <build>
     <plugins>
       <plugin>

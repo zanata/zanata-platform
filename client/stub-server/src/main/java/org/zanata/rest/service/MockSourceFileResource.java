@@ -25,6 +25,7 @@ import static org.zanata.rest.service.MockFileResource.sampleResource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +39,9 @@ import org.apache.commons.io.output.NullOutputStream;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.JobStatus;
+import org.zanata.rest.dto.JobStatus.JobStatusCode;
+import org.zanata.rest.dto.JobStatus.JobStatusMessage;
+import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 
 /**
@@ -52,17 +56,19 @@ public class MockSourceFileResource implements SourceFileResource {
         try {
             long actual = IOUtils
                     .copyLarge(fileStream, new NullOutputStream());
-            String time = ZonedDateTime.now(ZoneId.systemDefault()).format(
-                    DateTimeFormatter.ISO_INSTANT);
-            JobStatus jobStatus = new JobStatus(1L,
-                    "Upload of new source document successful: (" +
-                            actual + "/" + size + " bytes): " +
-                            projectType + ":" + projectSlug + "/" +
-                            versionSlug + "/" + docId);
+            Instant time = Instant.now();
+            JobStatus jobStatus = new JobStatus("1");
+            jobStatus.setStatusCode(JobStatusCode.Waiting);
+            jobStatus.setPercentCompleted(0);
             jobStatus.setStartTime(time);
             jobStatus.setStatusTime(time);
-            jobStatus.getMessages().add(new JobStatus.JobStatusMessage(
-                    time, "INFO", "upload has been scheduled"));
+            jobStatus.getMessages().add(new JobStatusMessage(time, "INFO",
+                    "upload has been scheduled"));
+            jobStatus.getMessages().add(new JobStatusMessage(time, "INFO",
+                    "Uploading new source document (" +
+                            actual + "/" + size + " bytes): " +
+                            projectType + ":" + projectSlug + "/" +
+                            versionSlug + "/" + docId));
             return Response.status(Response.Status.ACCEPTED).entity(jobStatus).build();
         } catch (IOException e) {
             throw new RuntimeException(e);

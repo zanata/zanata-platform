@@ -3,8 +3,12 @@ package org.zanata.rest.dto;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,11 +16,10 @@ import java.util.List;
 @XmlType(name = "jobStatusType")
 // FIXME see also AsynchronousProcessResource.startSourceDocCreation() and ProcessStatus
 public class JobStatus {
-    private Long jobId;
-    private String successMessage;
-    private String errorMessage;
+    private String jobId;
+//    private String url;
     private String username;
-    // ISO8601 dates:
+    // ISO8601 timestamps:
     private String startTime;
     private String statusTime;
     private String estimatedCompletionTime;
@@ -25,54 +28,23 @@ public class JobStatus {
     private long totalItems;
     private boolean totalItemsIsEstimated;
     private List<JobStatusMessage> messages = new ArrayList<>();
+    private JobStatusCode statusCode;
 
     public JobStatus() {
     }
 
-    /**
-     * Create a response indicating that something went wrong before starting
-     * the job.
-     *
-     * @param errorMessage
-     *            detailing what went wrong
-     */
-    public JobStatus(@Nonnull String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public JobStatus(long jobId, @Nonnull String successMessage) {
+    public JobStatus(String jobId) {
         this.jobId = jobId;
-        this.successMessage = successMessage;
     }
 
-    public @Nullable Long getJobId() {
+    public @Nullable String getJobId() {
         return jobId;
-    }
-
-    @XmlElement
-    public String getSuccessMessage() {
-        return successMessage;
-    }
-
-    public void setSuccessMessage(String message) {
-        successMessage = message;
-    }
-
-    @XmlElement
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
     }
 
     @Override
     public String toString() {
         return "JobStatus{" +
                 "jobId=" + jobId +
-                ", successMessage='" + successMessage + '\'' +
-                ", errorMessage='" + errorMessage + '\'' +
                 ", username='" + username + '\'' +
                 ", startTime='" + startTime + '\'' +
                 ", statusTime='" + statusTime + '\'' +
@@ -101,12 +73,22 @@ public class JobStatus {
         this.startTime = startTime;
     }
 
+    @XmlTransient
+    public void setStartTime(Instant startTime) {
+        this.startTime = startTime.toString();
+    }
+
     public String getStatusTime() {
         return statusTime;
     }
 
     public void setStatusTime(String statusTime) {
         this.statusTime = statusTime;
+    }
+
+    @XmlTransient
+    public void setStatusTime(Instant statusTime) {
+        this.statusTime = statusTime.toString();
     }
 
     public String getEstimatedCompletionTime() {
@@ -158,16 +140,45 @@ public class JobStatus {
         this.messages = messages;
     }
 
+    @XmlElement
+    public JobStatusCode getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(JobStatusCode statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    @XmlEnum
+    public enum JobStatusCode {
+        @XmlEnumValue("Waiting")
+        Waiting,
+
+        @XmlEnumValue("Running")
+        Running,
+
+        @XmlEnumValue("Finished")
+        Finished,
+
+        @XmlEnumValue("Failed")
+        Failed,
+
+//        @XmlEnumValue("NotAccepted")
+//        NotAccepted,
+    }
+
     @XmlType(name = "jobStatusMessage")
     public static class JobStatusMessage {
+        // ISO8601 timestamp:
         private String time;
         private String level;
         private String text;
 
         public JobStatusMessage() {
         }
-        public JobStatusMessage(String time, String level, String text) {
-            this.time = time;
+
+        public JobStatusMessage(Instant instant, String level, String text) {
+            this.time = instant.toString();
             this.level = level;
             this.text = text;
         }

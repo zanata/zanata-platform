@@ -27,7 +27,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -42,5 +41,5 @@ public interface JobStatusResource {
      * @see JobStatus
      */
     @GET
-    Response getJobStatus(@PathParam("jobId") long jobId);
+    JobStatus getJobStatus(@PathParam("jobId") String jobId);
 }

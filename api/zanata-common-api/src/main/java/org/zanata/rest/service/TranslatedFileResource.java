@@ -22,6 +22,7 @@ package org.zanata.rest.service;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.rest.dto.JobStatus;
+import org.zanata.rest.dto.ProcessStatus;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -64,11 +65,11 @@ public interface TranslatedFileResource extends RestResource {
      * @param fileStream Contents of the file to be uploaded
      * @param size size of the file in bytes (for sanity checking; use -1 if unknown)
      * @return A JobStatus with information about the upload operation.
-     * @see JobStatus
+     * @see ProcessStatus
      */
     @POST
     @Produces({ MediaType.APPLICATION_JSON })
-    @TypeHint(JobStatus.class)
+    @TypeHint(ProcessStatus.class)
     Response uploadTranslationFile(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,

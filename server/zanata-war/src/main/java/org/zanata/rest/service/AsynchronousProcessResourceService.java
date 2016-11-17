@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
@@ -246,7 +245,7 @@ public class AsynchronousProcessResourceService implements
                 status.setStatusCode(ProcessStatusCode.Failed);
                 status.setMessages(Lists.newArrayList(e.getMessage()));
             } catch (ExecutionException e) {
-                log.debug("async task interrupted", e);
+                log.debug("async task failed", e);
                 // Exception thrown while running the task
                 status.setStatusCode(ProcessStatusCode.Failed);
                 status.setMessages(Lists

@@ -41,6 +41,8 @@ import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.JobStatus;
+import org.zanata.rest.dto.JobStatus.JobStatusCode;
+import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.service.StubbingServerRule;
 
@@ -50,7 +52,7 @@ public class SourceFileResourceClientTest {
     private static final Logger log =
             LoggerFactory.getLogger(SourceFileResourceClientTest.class);
     private SourceFileResourceClient client;
-    private JobStatusResourceClient jobClient;
+    private AsyncProcessClient jobClient;
 
     @ClassRule
     public static StubbingServerRule
@@ -61,7 +63,7 @@ public class SourceFileResourceClientTest {
         RestClientFactory restClientFactory = MockServerTestUtil
                 .createClientFactory(stubbingServerRule.getServerBaseUri());
         client = new SourceFileResourceClient(restClientFactory);
-        jobClient = new JobStatusResourceClient(restClientFactory);
+        jobClient = new AsyncProcessClient(restClientFactory);
     }
 
     private static File loadFileFromClasspath(String file) {
@@ -79,12 +81,13 @@ public class SourceFileResourceClientTest {
                         "test.odt", ProjectType.File,
                         fileInputStream, odtFile.length());
         log.info("response: {}", initialJobStatus);
-        assertThat(initialJobStatus.getSuccessMessage(), Matchers.notNullValue());
-        Long jobId = initialJobStatus.getJobId();
+        assertThat(initialJobStatus.getStatusCode(), Matchers.is(
+                JobStatusCode.Waiting));
+        String jobId = initialJobStatus.getJobId();
         assertThat(jobId, Matchers.notNullValue());
-        JobStatus finalJobStatus = jobClient.getJobStatus(jobId);
+        ProcessStatus finalJobStatus = jobClient.getProcessStatus(jobId);
         log.info("response: {}", finalJobStatus);
-        assertThat(finalJobStatus.getPercentCompleted(), Matchers.equalTo(100));
+        assertThat(finalJobStatus.getPercentageComplete(), Matchers.equalTo(100));
     }
 
     @Test

@@ -37,6 +37,7 @@ import javax.ws.rs.core.Response;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.JobStatus;
+import org.zanata.rest.dto.ProcessStatus;
 
 /**
  * REST Interface for upload and download of source files.
@@ -64,12 +65,12 @@ public interface SourceFileResource extends RestResource {
      * @param size size of the file in bytes (for sanity checking; use -1 if unknown)
      * @param projectType A ProjectType used for mapping of file extensions.
      * @return A JobStatus with information about the upload operation.
-     * @see JobStatus
+     * @see ProcessStatus
      */
     @POST
     @Consumes({ MediaType.WILDCARD })
     @Produces({ MediaType.APPLICATION_JSON })
-    @TypeHint(JobStatus.class)
+    @TypeHint(ProcessStatus.class)
     Response uploadSourceFile(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,

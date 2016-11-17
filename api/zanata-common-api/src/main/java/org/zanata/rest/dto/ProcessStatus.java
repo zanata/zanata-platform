@@ -59,13 +59,14 @@ public class ProcessStatus {
     }
 
     private String url;
-
     private int percentageComplete;
-
     private List<String> messages;
-
     private ProcessStatusCode statusCode;
 
+    /**
+     * NB: this is not really a url; it is just a processId. Field name kept for backwards compatibility.
+     * @return the processId
+     */
     @XmlElement(required = true)
     public String getUrl() {
         return url;

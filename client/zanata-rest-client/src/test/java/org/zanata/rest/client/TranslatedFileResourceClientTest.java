@@ -80,8 +80,7 @@ public class TranslatedFileResourceClientTest {
                         ProjectType.File,
                         fileInputStream);
         log.info("response: {}", initialJobStatus);
-        assertThat(initialJobStatus.getSuccessMessage(), Matchers.notNullValue());
-        Long jobId = initialJobStatus.getJobId();
+        String jobId = initialJobStatus.getJobId();
         assertThat(jobId, Matchers.notNullValue());
         JobStatus finalJobStatus = jobClient.getJobStatus(jobId);
         log.info("response: {}", finalJobStatus);

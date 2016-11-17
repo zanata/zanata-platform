@@ -46,10 +46,12 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @deprecated see {@link SourceFileResource}, {@link TranslatedFileResource} and {@link org.zanata.rest.dto.JobStatus}
  */
 @Path(AsynchronousProcessResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@Deprecated
 public interface AsynchronousProcessResource extends RestResource {
     public static final String SERVICE_PATH = "/async";
 

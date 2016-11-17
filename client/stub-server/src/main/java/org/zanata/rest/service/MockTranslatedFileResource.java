@@ -26,6 +26,7 @@ import static org.zanata.rest.service.MockFileResource.sampleTransResource;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +39,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.NullOutputStream;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.rest.dto.JobStatus;
+import org.zanata.rest.dto.JobStatus.JobStatusMessage;
 
 /**
  * @author Sean Flanigan <a
@@ -51,17 +53,15 @@ public class MockTranslatedFileResource implements TranslatedFileResource {
             InputStream fileStream, long size, String projectType) {
         try {
             long actual = IOUtils.copyLarge(fileStream, new NullOutputStream());
-            String time = ZonedDateTime.now(ZoneId.systemDefault()).format(
-                    DateTimeFormatter.ISO_INSTANT);
-            JobStatus jobStatus = new JobStatus(1L,
-                    "Upload of translation document successful (" +
-                            actual + "/" + size + " bytes): " +
-                            projectType + ":" + projectSlug + "/" +
-                            iterationSlug + "/" + docId + ":" + localeId);
+            Instant time = Instant.now();
+            JobStatus jobStatus = new JobStatus("1");
             jobStatus.setStartTime(time);
             jobStatus.setStatusTime(time);
-            jobStatus.getMessages().add(new JobStatus.JobStatusMessage(
-                    time, "INFO", "upload has been scheduled"));
+            jobStatus.getMessages().add(new JobStatusMessage(
+                    time, "INFO", "Upload of translation document successful (" +
+                    actual + "/" + size + " bytes): " +
+                    projectType + ":" + projectSlug + "/" +
+                    iterationSlug + "/" + docId + ":" + localeId));
             return Response.status(Response.Status.ACCEPTED).entity(jobStatus).build();
         } catch (IOException e) {
             throw new RuntimeException(e);

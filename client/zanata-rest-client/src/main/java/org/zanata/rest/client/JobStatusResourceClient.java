@@ -49,7 +49,7 @@ public class JobStatusResourceClient {
     }
 
     public JobStatus getJobStatus(
-            long jobId) {
+            String jobId) {
         Client client = factory.getClient();
 
         WebTarget target = client

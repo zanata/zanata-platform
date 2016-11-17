@@ -20,11 +20,22 @@
  */
 package org.zanata.rest.service;
 
+import static com.google.common.collect.Lists.newArrayList;
+import static org.zanata.util.ISO8601Util.toInstant;
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.core.Response;
+import javax.inject.Inject;
+import javax.ws.rs.NotFoundException;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.rest.dto.JobStatus;
+import org.zanata.rest.dto.JobStatus.JobStatusCode;
+import org.zanata.rest.dto.JobStatus.JobStatusMessage;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,10 +49,62 @@ import lombok.extern.slf4j.Slf4j;
 // FIXME see also AsynchronousProcessResourceService and ProcessStatus
 public class JobStatusService implements JobStatusResource {
 
+    @Inject
+    private AsyncTaskHandleManager asyncTaskHandleManager;
+
     @Override
-    public Response getJobStatus(long jobId) {
-        // FIXME
-        JobStatus jobStatus = new JobStatus();
-        return Response.status(Response.Status.OK).entity(jobStatus).build();
+    public JobStatus getJobStatus(String jobId) {
+        AsyncTaskHandle handle =
+                asyncTaskHandleManager.getHandleByKey(jobId);
+
+        if (handle == null) {
+            throw new NotFoundException("A job was not found for id "
+                    + jobId);
+        }
+
+        // FIXME check username
+
+        JobStatus status = new JobStatus(jobId);
+        status.setStatusCode(handle.isDone() ? JobStatusCode.Finished
+                : JobStatusCode.Running);
+        int perComplete = 100;
+        if (handle.getMaxProgress() > 0) {
+            perComplete =
+                    (handle.getCurrentProgress() * 100 / handle
+                            .getMaxProgress());
+        }
+        status.setPercentCompleted(perComplete);
+        status.setStartTime(toInstant(handle.getStartTime()));
+        // FIXME set username, time, current/total items
+
+        if (handle.isDone()) {
+            Object result = null;
+            try {
+                result = handle.getResult();
+            } catch (InterruptedException e) {
+                log.debug("async task interrupted", e);
+                // The process was forcefully cancelled
+                status.setStatusCode(JobStatusCode.Failed);
+                status.setMessages(newArrayList(
+                        new JobStatusMessage(toInstant(handle.getFinishTime()), "ERROR", e.getMessage())));
+            } catch (ExecutionException e) {
+                log.debug("async task failed", e);
+                // Exception thrown while running the task
+                status.setStatusCode(JobStatusCode.Failed);
+                status.setMessages(newArrayList(
+                        new JobStatusMessage(toInstant(handle.getFinishTime()), "ERROR", e.getCause().getMessage())));
+            }
+
+            // TODO Need to find a generic way of returning all object types.
+            // Since the only current
+            // scenario involves lists of strings, hardcoding to that
+            if (result != null && result instanceof List) {
+                status.getMessages().addAll((List) result);
+            }
+        }
+
+        return status;
     }
+
+
 }

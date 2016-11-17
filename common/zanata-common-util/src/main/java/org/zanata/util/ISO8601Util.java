@@ -18,25 +18,31 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.service;
+package org.zanata.util;
 
 import java.time.Instant;
-
-import org.zanata.rest.dto.JobStatus;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class MockJobStatusResource implements JobStatusResource {
-    @Override
-    public JobStatus getJobStatus(String jobId) {
-        Instant time = Instant.now();
-        JobStatus jobStatus = new JobStatus("1");
-        jobStatus.setStartTime(time);
-        jobStatus.setStatusTime(time);
-        jobStatus.setPercentCompleted(100);
-        jobStatus.getMessages().add(new JobStatus.JobStatusMessage(
-                time, "INFO", "Job complete for jobId: " + jobId));
-        return jobStatus;
+public class ISO8601Util {
+
+    public static String formatCurrentTime() {
+        return formatTime(Instant.now());
     }
+
+    public static String formatTime(Instant instant) {
+        return DateTimeFormatter.ISO_INSTANT.format(instant);
+    }
+
+    public static String formatTime(long timeInMillis) {
+        return formatTime(toInstant(timeInMillis));
+    }
+
+    public static Instant toInstant(long timeInMillis) {
+        return new Date(timeInMillis).toInstant();
+    }
+
 }

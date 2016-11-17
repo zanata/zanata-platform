@@ -33,6 +33,7 @@ import javax.ws.rs.core.Response;
 
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.JobStatus;
+import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.service.SourceFileResource;
 
 import static javax.ws.rs.client.Entity.entity;
