@@ -21,6 +21,7 @@
 package org.zanata.async;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -30,8 +31,6 @@ import java.util.concurrent.TimeoutException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-
-import com.google.common.base.Optional;
 
 /**
  * Asynchronous handle to provide communication between an asynchronous task and
@@ -128,7 +127,7 @@ public class AsyncTaskHandle<V> {
             return Optional.of(timeElapsed * remainingUnits
                     / this.currentProgress);
         } else {
-            return Optional.absent();
+            return Optional.empty();
         }
     }
 

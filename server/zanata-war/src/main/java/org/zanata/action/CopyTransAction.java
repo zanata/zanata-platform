@@ -21,12 +21,13 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.Optional;
+
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -41,8 +42,8 @@ import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransOptionFactory;
 import org.zanata.ui.CopyAction;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.DateUtil;
-import com.google.common.base.Optional;
 
 /**
  * Copy Trans page action bean.
@@ -76,7 +77,7 @@ public class CopyTransAction extends CopyAction implements Serializable {
     private ZanataIdentity identity;
 
     @Inject
-    private org.zanata.ui.faces.FacesMessages jsfMessages;
+    private FacesMessages jsfMessages;
 
     @Inject
     @Any

@@ -3,25 +3,23 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-
-import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
+
 import org.joda.time.Period;
 import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.service.SearchIndexManager;
 
-import com.google.common.base.Optional;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Named("reindexAction")
