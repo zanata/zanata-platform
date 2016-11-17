@@ -19,7 +19,6 @@ class TestModal extends Component {
   }
   /* eslint-disable react/jsx-no-bind */
   render () {
-    console.info(this)
     return (
       <div>
         <Button bsStyle='default'
