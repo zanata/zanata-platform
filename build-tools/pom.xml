@@ -4,6 +4,8 @@
   <artifactId>build-tools</artifactId>
   <version>4.0.0-SNAPSHOT</version>
   <name>Build Tools</name>
+  <description>Build tools for Zanata modules</description>
+  <url>http://zanata.org/</url>
   <packaging>takari-jar</packaging>
 
   <distributionManagement>
@@ -24,6 +26,74 @@
     <tag>HEAD</tag>
   </scm>
 
+  <licenses>
+    <license>
+      <name>GNU Lesser General Public License v2.1</name>
+      <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <!-- in alphabetical order (by id field) -->
+    <developer>
+      <id>aeng@redhat.com</id>
+      <name>Alex Eng</name>
+      <email>aeng@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>camunoz@redhat.com</id>
+      <name>Carlos Munoz</name>
+      <email>camunoz@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>damason@redhat.com</id>
+      <name>David Mason</name>
+      <email>damason@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>hding@redhat.com</id>
+      <name>Helen Ding</name>
+      <email>hding@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>jni@redhat.com</id>
+      <name>James Ni</name>
+      <email>jni@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>8</timezone>
+    </developer>
+    <developer>
+      <id>pahuang@redhat.com</id>
+      <name>Patrick Huang</name>
+      <email>pahuang@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+    <developer>
+      <id>sflaniga@redhat.com</id>
+      <name>Sean Flanigan</name>
+      <email>sflaniga@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <timezone>10</timezone>
+    </developer>
+  </developers>
+
   <build>
     <plugins>
       <plugin>
@@ -38,4 +108,66 @@
       </plugin>
     </plugins>
   </build>
+
+  <profiles>
+    <profile>
+      <id>release</id>
+      <build>
+        <plugins>
+          <!-- Deploy sources to OSSRH -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven.source.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar-no-fork</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- Deploy javadocs to OSSRH -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <configuration>
+              <additionalparam>${javadoc.opts}</additionalparam>
+            </configuration>
+            <executions>
+              <execution>
+                <id>attach-javadocs</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <!-- Deploy sign artifacts for OSSRH -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <useAgent>true</useAgent>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
+
 </project>

@@ -152,6 +152,26 @@
       </roles>
       <timezone>10</timezone>
     </contributor>
+    <contributor>
+      <name>Damian Jansen</name>
+      <email>djansen@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <roles>
+        <role>tester</role>
+      </roles>
+      <timezone>10</timezone>
+    </contributor>
+    <contributor>
+      <name>Sachin Pathare</name>
+      <email>spathare@redhat.com</email>
+      <organization>Red Hat</organization>
+      <organizationUrl>http://www.redhat.com/</organizationUrl>
+      <roles>
+        <role>tester</role>
+      </roles>
+      <timezone>IST</timezone>
+    </contributor>
   </contributors>
 
   <properties>
