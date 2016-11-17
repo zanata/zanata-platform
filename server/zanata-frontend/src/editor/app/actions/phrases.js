@@ -139,14 +139,13 @@ function extractTranslations (source, trans) {
     return []
   }
 
-  // For non-plurals, just use the singluar content
-  // API uses trans.content if nplurals=1, so treat them like singular if
-  // trans.contents are empty.
-  if (!source.plural || isEmpty(trans.contents)) {
-    return trans.content ? [trans.content] : []
-  }
+  const isPlural = source.plural
 
-  return trans.contents ? trans.contents.slice() : []
+  // API uses trans.content if nplurals=1, so use that regardless of plural
+  // forms when it is defined.
+  return trans.content ? [trans.content] : (
+    // Array.slice() efficiently makes a copy of the array.
+    (isPlural && trans.contents) ? trans.contents.slice() : [])
 }
 
 /**
