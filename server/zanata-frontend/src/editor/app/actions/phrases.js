@@ -1,6 +1,6 @@
 import { fetchPhraseList, fetchPhraseDetail, savePhrase } from '../api'
 import { toggleDropdown } from '.'
-import { isUndefined, mapValues, slice } from 'lodash'
+import { isEmpty, isUndefined, mapValues, slice } from 'lodash'
 import {
   defaultSaveStatus,
   STATUS_NEW,
@@ -128,12 +128,25 @@ function transUnitDetailToPhraseDetail (transUnitDetail, localeId) {
  * Get translations from a TransUnit in a consistent form (array of strings)
  *
  * This will always return an Array<String>, but the array may be empty.
+ *
+ * There is a problem with the API that means plurals for languages with a
+ * single plural form will use trans.content instead of trans.contents for the
+ * plural form. The result of this function has everything normalised to prevent
+ * it causing any problems.
  */
 function extractTranslations (source, trans) {
-  if (source.plural) {
-    return trans && trans.contents ? trans.contents.slice() : []
+  if (!trans) {
+    return []
   }
-  return trans ? [trans.content] : []
+
+  // For non-plurals, just use the singluar content
+  // API uses trans.content if nplurals=1, so treat them like singular if
+  // trans.contents are empty.
+  if (!source.plural || isEmpty(trans.contents)) {
+    return trans.content ? [trans.content] : []
+  }
+
+  return trans.contents ? trans.contents.slice() : []
 }
 
 /**
