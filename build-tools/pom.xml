@@ -17,6 +17,13 @@
     </repository>
   </distributionManagement>
 
+  <scm>
+    <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
+    <url>https://github.com/zanata/zanata-platform/tree/master/build-tools</url>
+    <tag>HEAD</tag>
+  </scm>
+
   <build>
     <plugins>
       <plugin>
