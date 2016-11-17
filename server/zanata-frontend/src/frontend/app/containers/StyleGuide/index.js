@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Modal, EditableText, Icon, Link,
   LoaderText, TextInput } from '../../components'
 import { Button, Row, Table, ButtonToolbar,
-  OverlayTrigger, Tooltip } from 'react-bootstrap'
+  OverlayTrigger, Tooltip, Grid, Col } from 'react-bootstrap'
 
 const tooltip = (
   <Tooltip id='tooltip'><strong>Tooltip ahoy!</strong> Check this info.
@@ -30,6 +30,38 @@ class StyleGuide extends Component {
     return (
 
       <div className='container'>
+        <h1>STYLES</h1>
+        <span>
+          <h2>Colours</h2>
+          <p className='primary'>#XXXXXX</p>
+          <h2>Grid</h2>
+          <Grid>
+            <Row className='show-grid'>
+              <Col xs={12} md={8}><code>
+                &lt;{'Col xs={12} md={8}'} /&gt;</code></Col>
+              <Col xs={6} md={4}><code>
+                &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
+            </Row>
+            <Row className='show-grid'>
+              <Col xs={6} md={4}><code>
+                &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
+              <Col xs={6} md={4}><code>
+                &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
+              <Col xsHidden md={4}><code>
+                &lt;{'Col xsHidden md={4}'} /&gt;</code></Col>
+            </Row>
+            <Row className='show-grid'>
+              <Col xs={6} xsOffset={6}><code>
+                &lt;{'Col xs={6} xsOffset={6}'} /&gt;</code></Col>
+            </Row>
+            <Row className='show-grid'>
+              <Col md={6} mdPush={6}><code>
+                &lt;{'Col md={6} mdPush={6}'} /&gt;</code></Col>
+              <Col md={6} mdPull={6}><code>
+                &lt;{'Col md={6} mdPull={6}'} /&gt;</code></Col>
+            </Row>
+          </Grid>
+        </span>
         <h1>COMPONENTS</h1>
         <span className='list-inline'>
           <h2>Buttons</h2>
