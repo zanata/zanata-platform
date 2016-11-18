@@ -9,6 +9,8 @@ const tooltip = (
   </Tooltip>
 )
 
+const wellStyles = {maxWidth: '400', margin: '0 auto 10px'}
+
 class StyleGuide extends Component {
 
   constructor () {
@@ -99,7 +101,7 @@ class StyleGuide extends Component {
         </span>
         <span>
           <h2>Font stack</h2>
-          <p>"Source Sans Pro", "Helvetica Neue",
+          <p>'Source Sans Pro', 'Helvetica Neue',
           Helvetica, Arial, sans-serif;</p>
         </span>
         <h1>COMPONENTS</h1>
@@ -112,6 +114,31 @@ class StyleGuide extends Component {
           <Button bsStyle='danger'>Danger</Button>
           <Button bsStyle='info'>Info</Button>
           <Button bsStyle='link'>Link</Button>
+
+          <ButtonToolbar>
+            <Button bsStyle='primary' bsSize='large'>
+            Large button</Button>
+            <Button bsSize='large'>Large button</Button>
+          </ButtonToolbar>
+          <ButtonToolbar>
+            <Button bsStyle='primary'>Default button</Button>
+            <Button>Default button</Button>
+          </ButtonToolbar>
+          <ButtonToolbar>
+            <Button bsStyle='primary' bsSize='small'>
+            Small button</Button>
+            <Button bsSize='small'>Small button</Button>
+          </ButtonToolbar>
+          <ButtonToolbar>
+            <Button bsStyle='primary' bsSize='xsmall'>
+            Extra small button</Button>
+            <Button bsSize='xsmall'>Extra small button</Button>
+          </ButtonToolbar>
+          <span className='well' style={wellStyles}>
+            <Button bsStyle='primary' bsSize='large' block>
+            Block level button</Button>
+            <Button bsSize='large' block>Block level button</Button>
+          </span>
         </span>
         <br />
         <span>
