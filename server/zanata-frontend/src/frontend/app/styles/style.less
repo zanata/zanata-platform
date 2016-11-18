@@ -2818,6 +2818,88 @@ textarea.input-group-sm > .input-group-btn > .btn {
   padding: 0;
 }
 
+.show-grid {
+  border:solid 1px #ccc;
+}
+
+.sg-animated {
+  -webkit-transition: all 0.6s ease-out;
+  -moz-transition: all 0.6s ease-out;
+  -ms-transition: all 0.6s ease-out;
+  -o-transition: all 0.6s ease-out;
+  transition: all 0.6s ease-out;
+}
+
+.sg-color {
+  background: #fff;
+  border: 1px solid #b3b3b3;
+  display: inline-block;
+  height: 80px;
+  margin: 0 .5em .5em 0;
+  padding: 5px;
+  position: relative;
+  width: 100px;
+}
+.sg-color-swatch {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+.sg-color-swatch span {
+  background: #000;
+  background: rgba(0, 0, 0, 0.7);
+  bottom: 5px;
+  color: #fff;
+  font-size: .8em;
+  margin: 0;
+  opacity: 0;
+  padding: 5px 0;
+  position: absolute;
+  text-align: center;
+  text-transform: uppercase;
+  width: 88px;
+}
+
+.sg-color-swatch:hover span {
+  opacity: 1;
+}
+/* -------------------------------------------------------------------------
+ Colors
+---------------------------------------------------------------------------- */
+.sg-brand-primary .sg-color-swatch {
+  background: #03A6D7;
+}
+.sg-gray-lighter .sg-color-swatch {
+  background: #546677;
+}
+.sg-gray-light .sg-color-swatch {
+  background: #629BAC;
+}
+.sg-gray .sg-color-swatch {
+  background: #FCFCFC;
+}
+.sg-gray-dark .sg-color-swatch {
+  background: #333333;
+}
+.sg-gray-darker .sg-color-swatch {
+  background: #dddddd;
+}
+.sg-brand-success .sg-color-swatch {
+  background: #62C876;
+}
+.sg-brand-info .sg-color-swatch {
+  background: #4E9FDD;
+}
+.sg-brand-unsure .sg-color-swatch {
+  background: #E9DD00;
+}
+.sg-brand-warning .sg-color-swatch {
+  background: #FFA800;
+}
+.sg-brand-danger .sg-color-swatch {
+  background: #FF3B3D;
+}
+
 .search-box input.form-control {
   line-height: 1.74em;
 }

@@ -32,35 +32,70 @@ class StyleGuide extends Component {
       <div className='container'>
         <h1>STYLES</h1>
         <span>
-          <h2>Colours</h2>
-          <p className='primary'>#XXXXXX</p>
           <h2>Grid</h2>
           <Grid>
             <Row className='show-grid'>
-              <Col xs={12} md={8}><code>
+              <Col className='show-grid' xs={12} md={8}><code>
                 &lt;{'Col xs={12} md={8}'} /&gt;</code></Col>
-              <Col xs={6} md={4}><code>
+              <Col className='show-grid' xs={6} md={4}><code>
                 &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
             </Row>
             <Row className='show-grid'>
-              <Col xs={6} md={4}><code>
+              <Col className='show-grid' xs={6} md={4}><code>
                 &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
-              <Col xs={6} md={4}><code>
+              <Col className='show-grid' xs={6} md={4}><code>
                 &lt;{'Col xs={6} md={4}'} /&gt;</code></Col>
-              <Col xsHidden md={4}><code>
+              <Col className='show-grid' xsHidden md={4}><code>
                 &lt;{'Col xsHidden md={4}'} /&gt;</code></Col>
             </Row>
             <Row className='show-grid'>
-              <Col xs={6} xsOffset={6}><code>
+              <Col className='show-grid' xs={6} xsOffset={6}><code>
                 &lt;{'Col xs={6} xsOffset={6}'} /&gt;</code></Col>
             </Row>
             <Row className='show-grid'>
-              <Col md={6} mdPush={6}><code>
+              <Col className='show-grid' md={6} mdPush={6}><code>
                 &lt;{'Col md={6} mdPush={6}'} /&gt;</code></Col>
-              <Col md={6} mdPull={6}><code>
+              <Col className='show-grid' md={6} mdPull={6}><code>
                 &lt;{'Col md={6} mdPull={6}'} /&gt;</code></Col>
             </Row>
           </Grid>
+        </span>
+        <span>
+          <h2>Main Colors</h2>
+          <div className='sg-color sg-brand-primary sg-lg'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#03A6D7</span></span></div>
+          <div className='sg-color sg-gray-lighter sg-lg'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#546677</span></span></div>
+          <div className='sg-color sg-gray-light sg-lg'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#629BAC</span></span></div>
+          <div className='sg-color sg-gray sg-lg'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#FCFCFC</span></span></div>
+          <div className='sg-color sg-gray-dark sg-lg'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#333333</span></span></div>
+          <div className='sg-color sg-gray-darker sg-lg'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#DDDDDD</span></span></div>
+          <h2>Status colours</h2>
+          <div className='sg-color sg-brand-success'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#62C876</span></span></div>
+          <div className='sg-color sg-brand-unsure'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#E9DD00</span></span></div>
+          <div className='sg-color sg-brand-warning'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#FFA800</span></span></div>
+          <div className='sg-color sg-brand-danger'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#FF3B3D</span></span></div>
+          <div className='sg-color sg-brand-info'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#4E9FDD</span></span></div>
         </span>
         <h1>COMPONENTS</h1>
         <span className='list-inline'>
@@ -107,7 +142,8 @@ class StyleGuide extends Component {
               className='s0' />chevron-double-down</li>
             <li><Icon name='chevron-down' className='s0' />chevron-down</li>
             <li><Icon name='chevron-left' className='s0' />chevron-left</li>
-            <li><Icon name='chevron-right' className='s0' />chevron-right</li>
+            <li><Icon name='chevron-right' className='s0' />
+            chevron-right</li>
             <li><Icon name='chevron-up-double'
               className='s0' />chevron-up-double</li>
             <li><Icon name='chevron-up' className='s0' />chevron-up</li>
