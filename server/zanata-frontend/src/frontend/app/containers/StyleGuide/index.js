@@ -97,6 +97,11 @@ class StyleGuide extends Component {
             <span className='sg-color-swatch'>
               <span className='sg-animated'>#4E9FDD</span></span></div>
         </span>
+        <span>
+          <h2>Font stack</h2>
+          <p>"Source Sans Pro", "Helvetica Neue",
+          Helvetica, Arial, sans-serif;</p>
+        </span>
         <h1>COMPONENTS</h1>
         <span className='list-inline'>
           <h2>Buttons</h2>
