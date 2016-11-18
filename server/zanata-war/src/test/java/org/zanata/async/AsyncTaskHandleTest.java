@@ -54,8 +54,7 @@ public class AsyncTaskHandleTest {
     @Test
     public void testResult() throws Exception {
         AsyncTaskHandle<String> handle = AsyncTaskHandle.withGeneratedKey("username");
-        AsyncTaskResult<String> result = new AsyncTaskResult<>();
-        handle.setFutureResult(result);
+        AsyncTaskResult<String> result = handle.getFutureResult();
 
         result.set("result");
 
@@ -66,8 +65,7 @@ public class AsyncTaskHandleTest {
 //            expectedExceptionsMessageRegExp = ".*Exception thrown.*"
     public void testException() throws Exception {
         AsyncTaskHandle<Void> handle = AsyncTaskHandle.withGeneratedKey("username");
-        AsyncTaskResult<Void> result = new AsyncTaskResult<>();
-        handle.setFutureResult(result);
+        AsyncTaskResult<Void> result = handle.getFutureResult();
 
         result.setException(new Exception("Exception thrown"));
 
@@ -77,8 +75,7 @@ public class AsyncTaskHandleTest {
     @Test
     public void testIsDone() throws Exception {
         AsyncTaskHandle<String> handle = AsyncTaskHandle.withGeneratedKey("username");
-        AsyncTaskResult<String> result = new AsyncTaskResult<>();
-        handle.setFutureResult(result);
+        AsyncTaskResult<String> result = handle.getFutureResult();
 
         result.set("result");
 
@@ -88,8 +85,6 @@ public class AsyncTaskHandleTest {
     @Test
     public void testIsCancelled() throws Exception {
         AsyncTaskHandle<Void> handle = AsyncTaskHandle.withGeneratedKey("username");
-        AsyncTaskResult<Void> result = new AsyncTaskResult<>();
-        handle.setFutureResult(result);
         handle.cancel(true);
 
         assertThat(handle.isCancelled()).isTrue();
@@ -99,8 +94,6 @@ public class AsyncTaskHandleTest {
     public void testEstimatedTimeRemaining() throws Exception {
         AsyncTaskHandle<Void> handle = AsyncTaskHandle.withGeneratedKey("username");
         handle.setMaxProgress(10);
-        AsyncTaskResult<Void> result = new AsyncTaskResult<>();
-        handle.setFutureResult(result);
         handle.startTiming();
 
         assertThat(handle.getEstimatedTimeRemaining().isPresent()).describedAs(

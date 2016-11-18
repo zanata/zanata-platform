@@ -83,8 +83,9 @@ public class AsyncTaskManager {
      * @param <V> The type of result expected.
      * @return A listenable future for the expected result.
      */
-    public <V> ListenableFuture<V> startTask(
-            final @Nonnull AsyncTask<Future<V>> task) {
+    public <V> AsyncTaskResult<V> startTask(
+            final @Nonnull AsyncTask<Future<V>> task,
+            final @Nonnull AsyncTaskResult<V> futureResult) {
         HAccount taskOwner = ServiceLocator.instance()
                 .getInstance(HAccount.class, new AuthenticatedLiteral());
         ZanataIdentity ownerIdentity = ZanataIdentity.instance();
@@ -94,9 +95,6 @@ public class AsyncTaskManager {
                 taskOwner != null ? taskOwner.getUsername() : null;
         final Principal runAsPpal = ownerIdentity.getPrincipal();
         final Subject runAsSubject = ownerIdentity.getSubject();
-
-        // final result
-        final AsyncTaskResult<V> taskFuture = new AsyncTaskResult<V>();
 
         // The logic to run to setup all necessary contexts and specific logic
         final Runnable executableCommand = () -> {
@@ -113,9 +111,9 @@ public class AsyncTaskManager {
                 prepareSecurityContext(taskOwnerUsername, runAsPpal, runAsSubject);
                 // run the task and capture the result
                 V returnValue = getReturnValue(task.call());
-                taskFuture.set(returnValue);
+                futureResult.set(returnValue);
             } catch (Throwable t) {
-                taskFuture.setException(t);
+                futureResult.setException(t);
                 log.error(
                         "Exception when executing an asynchronous task.", t);
             } finally {
@@ -128,7 +126,7 @@ public class AsyncTaskManager {
         };
 
         scheduler.execute(executableCommand);
-        return taskFuture;
+        return futureResult;
     }
 
     private static <V> V getReturnValue(Future<V> asyncTaskFuture)

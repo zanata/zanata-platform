@@ -56,14 +56,14 @@ public class AsyncMethodInterceptor {
 //    }
 
     @AroundInvoke
-    public Object aroundInvoke(final InvocationContext ctx) throws Exception {
+    public <V> Object aroundInvoke(final InvocationContext ctx) throws Exception {
 
         Class<?> methodReturnType = ctx.getMethod().getReturnType();
         if (methodReturnType != void.class
                 && !Future.class.isAssignableFrom(methodReturnType)) {
             throw new RuntimeException("Async method "
                     + ctx.getMethod().getName()
-                    + " must return java.lang.Future or nothing at all");
+                    + " must return java.lang.Future or void");
         }
         // if this is already an AsyncTask, this will be false:
         boolean shouldRunAsync = shouldRunAsyncThreadLocal.get();
@@ -102,11 +102,13 @@ public class AsyncMethodInterceptor {
                 }
             };
 
-            ListenableFuture<Object> futureResult =
-                    taskManager.startTask(asyncTask);
+            AsyncTaskResult<V> futureResult;
             if (handle.isPresent()) {
-                handle.get().setFutureResult(futureResult);
+                futureResult = handle.get().getFutureResult();
+            } else {
+                futureResult = new AsyncTaskResult<>();
             }
+            taskManager.startTask(asyncTask, futureResult);
             return futureResult;
             // Async methods should return ListenableFuture
         } else {

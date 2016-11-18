@@ -32,6 +32,7 @@ import java.util.concurrent.TimeoutException;
 import javax.annotation.Nullable;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.google.common.util.concurrent.AbstractFuture;
 import org.zanata.util.ISO8601Util;
 
 import lombok.AccessLevel;
@@ -59,8 +60,8 @@ public class AsyncTaskHandle<V> {
     @Getter
     private final @Nullable String username;
 
-    @Setter(AccessLevel.PACKAGE)
-    private Future<V> futureResult;
+    @Getter
+    private final AsyncTaskResult<V> futureResult = new AsyncTaskResult<>();
 
     @Getter
     @Setter
