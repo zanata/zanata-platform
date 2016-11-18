@@ -1,1 +1,1 @@
-All Zanata client documentation is located [here](http://docs.zanata.org/projects/zanata-client/en/latest/).
+All Zanata client documentation is located [here](http://docs.zanata.org/en/latest/client/).
