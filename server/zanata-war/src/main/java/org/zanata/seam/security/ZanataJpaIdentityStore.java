@@ -41,6 +41,7 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.util.PasswordUtil;
 import org.zanata.util.ServiceLocator;
 
+import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -180,7 +181,7 @@ public class ZanataJpaIdentityStore implements Serializable {
     }
 
     @Produces @Authenticated @Named(AUTHENTICATED_USER)
-    HAccount getAuthenticatedAccount() {
+    @Nullable HAccount getAuthenticatedAccount() {
         for (AuthenticatedAccountHolder accountHolder : authenticatedAccountHolders) {
             HAccount authenticatedAccount = accountHolder.getAuthenticatedAccount();
             if (authenticatedAccount != null) {
@@ -199,6 +200,16 @@ public class ZanataJpaIdentityStore implements Serializable {
     Optional<HAccount> getAuthenticatedAccount(
             @Authenticated HAccount account) {
         return Optional.ofNullable(account);
+    }
+
+    @Produces
+    @Authenticated
+    @Nullable String getAuthenticatedUsername(
+            @Authenticated HAccount account) {
+        if (account != null)
+            return account.getUsername();
+        else
+            return null;
     }
 
 

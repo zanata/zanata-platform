@@ -41,11 +41,11 @@ import com.google.common.collect.Maps;
 
 public class AsyncTaskHandleManager {
 
-    private final Map<Serializable, AsyncTaskHandle> handlesByKey = Maps
+    private final Map<Serializable, AsyncTaskHandle<?>> handlesByKey = Maps
             .newConcurrentMap();
 
     // Cache of recently completed tasks
-    private Cache<Serializable, AsyncTaskHandle> finishedTasks = CacheBuilder
+    private Cache<Serializable, AsyncTaskHandle<?>> finishedTasks = CacheBuilder
             .newBuilder().expireAfterWrite(10, TimeUnit.MINUTES)
             .build();
 
@@ -53,7 +53,7 @@ public class AsyncTaskHandleManager {
      * Registers a task handle.
      * @param handle The handle to register.
      */
-    public synchronized void registerTaskHandle(AsyncTaskHandle handle) {
+    public synchronized void registerTaskHandle(AsyncTaskHandle<?> handle) {
         Serializable key = handle.getKey();
         if (handlesByKey.containsKey(key)) {
             throw new RuntimeException("Task handle with key " + key
@@ -62,22 +62,22 @@ public class AsyncTaskHandleManager {
         handlesByKey.put(key, handle);
     }
 
-    void taskFinished(AsyncTaskHandle taskHandle) {
-        AsyncTaskHandle removedHandle = handlesByKey.remove(taskHandle.getKey());
+    void taskFinished(AsyncTaskHandle<?> taskHandle) {
+        AsyncTaskHandle<?> removedHandle = handlesByKey.remove(taskHandle.getKey());
         if (removedHandle != null) {
             finishedTasks.put(removedHandle.getKey(), removedHandle);
         }
     }
 
-    public AsyncTaskHandle getHandleByKey(Serializable key) {
+    public AsyncTaskHandle<?> getHandleByKey(Serializable key) {
         if (handlesByKey.containsKey(key)) {
             return handlesByKey.get(key);
         }
         return finishedTasks.getIfPresent(key);
     }
 
-    public Collection<AsyncTaskHandle> getAllHandles() {
-        Collection<AsyncTaskHandle> handles = Lists.newArrayList();
+    public Collection<AsyncTaskHandle<?>> getAllHandles() {
+        Collection<AsyncTaskHandle<?>> handles = Lists.newArrayList();
         handles.addAll(handlesByKey.values());
         handles.addAll(finishedTasks.asMap().values());
         return handles;

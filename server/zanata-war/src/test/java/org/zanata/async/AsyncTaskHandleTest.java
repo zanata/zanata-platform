@@ -33,7 +33,7 @@ public class AsyncTaskHandleTest {
 
     @Test
     public void testStartTiming() throws Exception {
-        AsyncTaskHandle handle = new AsyncTaskHandle();
+        AsyncTaskHandle<Void> handle = AsyncTaskHandle.withGeneratedKey("username");
         handle.startTiming();
 
         assertThat(handle.isStarted()).isTrue();
@@ -42,7 +42,7 @@ public class AsyncTaskHandleTest {
 
     @Test
     public void testFinishTiming() throws Exception {
-        AsyncTaskHandle handle = new AsyncTaskHandle();
+        AsyncTaskHandle<Void> handle = AsyncTaskHandle.withGeneratedKey("username");
         handle.startTiming();
         Thread.sleep(10); // Sleep as if something was executed
         handle.finishTiming();
@@ -53,8 +53,8 @@ public class AsyncTaskHandleTest {
 
     @Test
     public void testResult() throws Exception {
-        AsyncTaskHandle handle = new AsyncTaskHandle();
-        AsyncTaskResult result = new AsyncTaskResult();
+        AsyncTaskHandle<String> handle = AsyncTaskHandle.withGeneratedKey("username");
+        AsyncTaskResult<String> result = new AsyncTaskResult<>();
         handle.setFutureResult(result);
 
         result.set("result");
@@ -65,8 +65,8 @@ public class AsyncTaskHandleTest {
     @Test(expected = Exception.class)
 //            expectedExceptionsMessageRegExp = ".*Exception thrown.*"
     public void testException() throws Exception {
-        AsyncTaskHandle handle = new AsyncTaskHandle();
-        AsyncTaskResult result = new AsyncTaskResult();
+        AsyncTaskHandle<Void> handle = AsyncTaskHandle.withGeneratedKey("username");
+        AsyncTaskResult<Void> result = new AsyncTaskResult<>();
         handle.setFutureResult(result);
 
         result.setException(new Exception("Exception thrown"));
@@ -76,8 +76,8 @@ public class AsyncTaskHandleTest {
 
     @Test
     public void testIsDone() throws Exception {
-        AsyncTaskHandle handle = new AsyncTaskHandle();
-        AsyncTaskResult result = new AsyncTaskResult();
+        AsyncTaskHandle<String> handle = AsyncTaskHandle.withGeneratedKey("username");
+        AsyncTaskResult<String> result = new AsyncTaskResult<>();
         handle.setFutureResult(result);
 
         result.set("result");
@@ -87,8 +87,8 @@ public class AsyncTaskHandleTest {
 
     @Test
     public void testIsCancelled() throws Exception {
-        AsyncTaskHandle handle = new AsyncTaskHandle();
-        AsyncTaskResult result = new AsyncTaskResult();
+        AsyncTaskHandle<Void> handle = AsyncTaskHandle.withGeneratedKey("username");
+        AsyncTaskResult<Void> result = new AsyncTaskResult<>();
         handle.setFutureResult(result);
         handle.cancel(true);
 
@@ -97,10 +97,9 @@ public class AsyncTaskHandleTest {
 
     @Test
     public void testEstimatedTimeRemaining() throws Exception {
-        AsyncTaskHandle handle = new AsyncTaskHandle();
-        handle.setMinProgress(0);
+        AsyncTaskHandle<Void> handle = AsyncTaskHandle.withGeneratedKey("username");
         handle.setMaxProgress(10);
-        AsyncTaskResult result = new AsyncTaskResult();
+        AsyncTaskResult<Void> result = new AsyncTaskResult<>();
         handle.setFutureResult(result);
         handle.startTiming();
 

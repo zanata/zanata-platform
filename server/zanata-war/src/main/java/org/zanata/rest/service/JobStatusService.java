@@ -23,7 +23,9 @@ package org.zanata.rest.service;
 import static com.google.common.collect.Lists.newArrayList;
 import static org.zanata.util.ISO8601Util.toInstant;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import javax.enterprise.context.RequestScoped;
@@ -35,7 +37,6 @@ import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.rest.dto.JobStatus;
 import org.zanata.rest.dto.JobStatus.JobStatusCode;
-import org.zanata.rest.dto.JobStatus.JobStatusMessage;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -52,9 +53,14 @@ public class JobStatusService implements JobStatusResource {
     @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
+    /**
+     * @see AsynchronousProcessResourceService#getProcessStatus(String)
+     * @param jobId id of job
+     * @return
+     */
     @Override
     public JobStatus getJobStatus(String jobId) {
-        AsyncTaskHandle handle =
+        AsyncTaskHandle<?> handle =
                 asyncTaskHandleManager.getHandleByKey(jobId);
 
         if (handle == null) {
@@ -62,47 +68,55 @@ public class JobStatusService implements JobStatusResource {
                     + jobId);
         }
 
-        // FIXME check username
+        // FIXME security checks, eg username
 
         JobStatus status = new JobStatus(jobId);
-        status.setStatusCode(handle.isDone() ? JobStatusCode.Finished
-                : JobStatusCode.Running);
-        int perComplete = 100;
-        if (handle.getMaxProgress() > 0) {
-            perComplete =
-                    (handle.getCurrentProgress() * 100 / handle
-                            .getMaxProgress());
-        }
-        status.setPercentCompleted(perComplete);
-        status.setStartTime(toInstant(handle.getStartTime()));
-        // FIXME set username, time, current/total items
+
+        // FIXME all this field copying isn't threadsafe, and might be better inside AsyncTaskHandle
+
+        // FIXME set username
+//        status.setUsername(handle.getUsername());
+
+//        status.setStartTime(toInstant(handle.getStartTime()));
+//        status.setStatusTime(Instant.now());
+        Optional<Instant> completionTime = handle.getEstimatedCompletionTime();
+        completionTime.ifPresent(status::setEstimatedCompletionTime);
+
+        status.setCurrentItem(handle.getCurrentProgress());
+        status.setTotalItems(handle.getMaxProgress());
+//        status.setPercentCompleted(handle.getPercentComplete());
 
         if (handle.isDone()) {
-            Object result = null;
             try {
-                result = handle.getResult();
+                // getResult() should return instantly, because isDone() is true
+                Object result = handle.getResult();
+                status.setStatusCode(JobStatusCode.Finished);
+                // TODO Need to find a generic way of returning all object types.
+                // Since the only current
+                // scenario involves lists of strings, hardcoding to that
+                if (result != null && result instanceof List) {
+                    status.getMessages().addAll((List) result);
+                }
             } catch (InterruptedException e) {
                 log.debug("async task interrupted", e);
                 // The process was forcefully cancelled
-                status.setStatusCode(JobStatusCode.Failed);
-                status.setMessages(newArrayList(
-                        new JobStatusMessage(toInstant(handle.getFinishTime()), "ERROR", e.getMessage())));
+                status.setStatusCode(JobStatusCode.Aborted);
+//                status.setStatusTime(handle.getFinishTime());
+                status.setMessages(newArrayList(e.getMessage()));
             } catch (ExecutionException e) {
                 log.debug("async task failed", e);
                 // Exception thrown while running the task
                 status.setStatusCode(JobStatusCode.Failed);
-                status.setMessages(newArrayList(
-                        new JobStatusMessage(toInstant(handle.getFinishTime()), "ERROR", e.getCause().getMessage())));
+//                status.setStatusTime(handle.getFinishTime());
+                status.setMessages(newArrayList(e.getCause().getMessage()));
             }
-
-            // TODO Need to find a generic way of returning all object types.
-            // Since the only current
-            // scenario involves lists of strings, hardcoding to that
-            if (result != null && result instanceof List) {
-                status.getMessages().addAll((List) result);
-            }
+        } else if (handle.isStarted()) {
+            status.setStatusCode(JobStatusCode.Running);
+        } else if (handle.isCancelled()) {
+            status.setStatusCode(JobStatusCode.Aborted);
+        } else {
+            status.setStatusCode(JobStatusCode.Waiting);
         }
-
         return status;
     }
 

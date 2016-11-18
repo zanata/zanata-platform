@@ -52,7 +52,7 @@ public class MergeTranslationsManager implements Serializable {
                 Key.getKey(targetProjectSlug,
                     targetVersionSlug);
 
-        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle(key);
+        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle(identity.getAccountUsername(), key);
         asyncTaskHandleManager.registerTaskHandle(handle);
         mergeTranslationsServiceImpl.startMergeTranslations(sourceProjectSlug,
                 sourceVersionSlug, targetProjectSlug, targetVersionSlug,

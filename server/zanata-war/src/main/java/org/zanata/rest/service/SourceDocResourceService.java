@@ -93,6 +93,9 @@ public class SourceDocResourceService implements SourceDocResource {
     private ProjectIterationDAO projectIterationDAO;
 
     @Inject
+    private ProjectUtil projectUtil;
+
+    @Inject
     private DocumentDAO documentDAO;
 
     @Inject
@@ -389,30 +392,7 @@ public class SourceDocResourceService implements SourceDocResource {
     }
 
     private HProjectIteration retrieveAndCheckIteration(boolean writeOperation) {
-        HProjectIteration hProjectIteration =
-                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-        HProject hProject =
-                hProjectIteration == null ? null : hProjectIteration
-                        .getProject();
-
-        if (hProjectIteration == null) {
-            throw new NoSuchEntityException("Project Iteration '" + projectSlug
-                    + ":" + iterationSlug + "' not found.");
-        } else if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE)
-                || hProject.getStatus().equals(EntityStatus.OBSOLETE)) {
-            throw new NoSuchEntityException("Project Iteration '" + projectSlug
-                    + ":" + iterationSlug + "' not found.");
-        } else if (writeOperation) {
-            if (hProjectIteration.getStatus().equals(EntityStatus.READONLY)
-                    || hProject.getStatus().equals(EntityStatus.READONLY)) {
-                throw new ReadOnlyEntityException("Project Iteration '"
-                        + projectSlug + ":" + iterationSlug + "' is read-only.");
-            } else {
-                return hProjectIteration;
-            }
-        } else {
-            return hProjectIteration;
-        }
+        return projectUtil.retrieveAndCheckIteration(projectSlug, iterationSlug, writeOperation);
     }
 
     private HLocale validateTargetLocale(LocaleId locale, String projectSlug,

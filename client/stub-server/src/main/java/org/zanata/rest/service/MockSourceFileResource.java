@@ -26,9 +26,6 @@ import static org.zanata.rest.service.MockFileResource.sampleResource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -40,8 +37,6 @@ import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.JobStatus;
 import org.zanata.rest.dto.JobStatus.JobStatusCode;
-import org.zanata.rest.dto.JobStatus.JobStatusMessage;
-import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 
 /**
@@ -59,16 +54,15 @@ public class MockSourceFileResource implements SourceFileResource {
             Instant time = Instant.now();
             JobStatus jobStatus = new JobStatus("1");
             jobStatus.setStatusCode(JobStatusCode.Waiting);
-            jobStatus.setPercentCompleted(0);
-            jobStatus.setStartTime(time);
-            jobStatus.setStatusTime(time);
-            jobStatus.getMessages().add(new JobStatusMessage(time, "INFO",
-                    "upload has been scheduled"));
-            jobStatus.getMessages().add(new JobStatusMessage(time, "INFO",
+            jobStatus.setCurrentItem(0);
+            jobStatus.setTotalItems(100);
+            jobStatus.setEstimatedCompletionTime(time.plusSeconds(1));
+            jobStatus.getMessages().add("upload has been scheduled");
+            jobStatus.getMessages().add(
                     "Uploading new source document (" +
                             actual + "/" + size + " bytes): " +
                             projectType + ":" + projectSlug + "/" +
-                            versionSlug + "/" + docId));
+                            versionSlug + "/" + docId);
             return Response.status(Response.Status.ACCEPTED).entity(jobStatus).build();
         } catch (IOException e) {
             throw new RuntimeException(e);

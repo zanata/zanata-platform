@@ -179,7 +179,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         String sourceVersionSlug = "1.0";
         String targetVersionSlug = "non-exist-version";
 
-        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle("dummyKey");
+        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle("username", "dummyKey");
         Future<Void> future = service.startMergeTranslations(projectSlug,
                 sourceVersionSlug, projectSlug, targetVersionSlug, true,
                 handle);
@@ -196,7 +196,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         String sourceVersionSlug = "1.0";
         String targetVersionSlug = "3.0";
 
-        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle("dummyKey");
+        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle("username", "dummyKey");
         Future<Void> future = service.startMergeTranslations(projectSlug,
                 sourceVersionSlug, projectSlug, targetVersionSlug, true, null);
         verifyZeroInteractions(identity);

@@ -69,7 +69,7 @@ public class DownloadAllFilesHandler extends
                 projectIterationDAO.getBySlug(action.getProjectSlug(),
                         action.getVersionSlug());
         if (identity.hasPermission(version, "download-all")) {
-            AsyncTaskHandle<String> handle = new AsyncTaskHandle<>();
+            AsyncTaskHandle<String> handle = AsyncTaskHandle.withGeneratedKey(identity.getAccountUsername());
             asyncTaskHandleManager.registerTaskHandle(handle);
             // TODO This should be in a service and share code with the JSF
             // pages that do the same thing

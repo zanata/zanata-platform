@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Cacheable;
@@ -158,7 +159,7 @@ public class HProject extends SlugEntityBase implements Serializable,
     private List<WebHook> webHooks = Lists.newArrayList();
 
     @Enumerated(EnumType.STRING)
-    private ProjectType defaultProjectType;
+    private @Nullable ProjectType defaultProjectType;
 
     /**
      * Immutable set of maintainers for this project.

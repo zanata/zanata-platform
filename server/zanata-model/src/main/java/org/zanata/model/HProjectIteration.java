@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nullable;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Cacheable;
@@ -146,7 +147,7 @@ public class HProjectIteration extends SlugEntityBase implements
     private Map<String, String> customizedValidations = Maps.newHashMap();
 
     @Enumerated(EnumType.STRING)
-    private ProjectType projectType;
+    private @Nullable ProjectType projectType;
 
     @Type(type = "entityStatus")
     @NotNull
@@ -167,11 +168,18 @@ public class HProjectIteration extends SlugEntityBase implements
         return EntityType.HProjectIteration;
     }
 
-    public Boolean getRequireTranslationReview() {
+    public boolean getRequireTranslationReview() {
         if (requireTranslationReview == null) {
-            return Boolean.FALSE;
+            return false;
         }
         return requireTranslationReview;
+    }
+
+    @Transient
+    public @Nullable ProjectType resolveProjectType() {
+        // may return null for very old projects
+        return projectType != null ? projectType :
+                project.getDefaultProjectType();
     }
 
     @Override

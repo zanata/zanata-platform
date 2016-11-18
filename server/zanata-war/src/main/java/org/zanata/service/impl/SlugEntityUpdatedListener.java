@@ -93,7 +93,7 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
         if (!oldSlug.equals(newSlug)) {
             log.debug("HProject [{}] changed slug. old slug: {}, new slug: {}",
                     project, oldSlug, newSlug);
-            AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
+            AsyncTaskHandle<Void> handle = AsyncTaskHandle.withGeneratedKey();
             getAsyncTaskHandleManager().registerTaskHandle(handle);
             try {
                 getIndexingServiceImpl().reindexHTextFlowTargetsForProject(

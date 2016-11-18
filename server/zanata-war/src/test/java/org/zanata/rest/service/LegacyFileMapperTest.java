@@ -20,9 +20,13 @@
  */
 package org.zanata.rest.service;
 
-import org.jglue.cdiunit.AdditionalClasses;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.ws.rs.WebApplicationException;
+
 import org.jglue.cdiunit.InRequestScope;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -31,21 +35,12 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.test.CdiUnitRunner;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.ws.rs.WebApplicationException;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @RunWith(CdiUnitRunner.class)
 @InRequestScope
 public class LegacyFileMapperTest {
-//    private String projectSlug = "projectSlug";
-//    private String iterSlug = "iterSlug";
 
     @Produces @Mock
     ProjectDAO projectDAO;
@@ -55,11 +50,6 @@ public class LegacyFileMapperTest {
 
     @Inject
     LegacyFileMapper mapper;
-
-    @Before
-    public void before() {
-//        when(projectDAO.)
-    }
 
     @Test
     public void serverPropertiesWithPropertiesHint() {
@@ -84,11 +74,10 @@ public class LegacyFileMapperTest {
         mapper.getServerDocId(null, "docId.properties", null);
     }
 
-    // FIXME
-//    @Test
-//    public void serverXliffWithPropertiesHint() {
-//        String serverDocId = mapper.getServerDocId(ProjectType.Xliff, "docId.properties", ProjectType.Properties);
-//        assertThat(serverDocId).isEqualTo("docId");
-//    }
+    @Test
+    public void serverXliffWithPropertiesHint() {
+        String serverDocId = mapper.getServerDocId(ProjectType.Xliff, "docId.properties", ProjectType.Properties);
+        assertThat(serverDocId).isEqualTo("docId");
+    }
 
 }

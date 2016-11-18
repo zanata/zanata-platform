@@ -56,7 +56,7 @@ public class ProjectIterationZipFileAction implements Serializable {
         }
 
         // Start the zip file build
-        zipFilePrepHandle = new AsyncTaskHandle<>();
+        zipFilePrepHandle = AsyncTaskHandle.withGeneratedKey(identity.getAccountUsername());
         asyncTaskHandleManager.registerTaskHandle(zipFilePrepHandle);
         try {
             translationArchiveServiceImpl.startBuildingTranslationFileArchive(

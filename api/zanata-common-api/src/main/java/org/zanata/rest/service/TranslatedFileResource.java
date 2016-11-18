@@ -48,13 +48,7 @@ import java.io.InputStream;
 public interface TranslatedFileResource extends RestResource {
 
     /**
-     * Upload a translation file (or file chunk) to Zanata. Allows breaking up files
-     * into smaller chunks for very large files. In this case, the first invocation
-     * of this service will return an 'upload id' which needs to be used in
-     * subsequent calls to tie all the uploaded chunks together.
-     * The file will only be processed when all chunks have been fully uploaded.
-     * With each uploaded chunk, the multipart message's 'last' parameter will
-     * indicate if it is the last expected chunk.
+     * Upload a translation file as a stream to Zanata.
      *
      * @param projectSlug The project slug where to store the document.
      * @param versionSlug The project version slug where to store the document.
@@ -65,11 +59,11 @@ public interface TranslatedFileResource extends RestResource {
      * @param fileStream Contents of the file to be uploaded
      * @param size size of the file in bytes (for sanity checking; use -1 if unknown)
      * @return A JobStatus with information about the upload operation.
-     * @see ProcessStatus
+     * @see JobStatus
      */
     @POST
     @Produces({ MediaType.APPLICATION_JSON })
-    @TypeHint(ProcessStatus.class)
+    @TypeHint(JobStatus.class)
     Response uploadTranslationFile(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
@@ -112,6 +106,7 @@ public interface TranslatedFileResource extends RestResource {
             @PathParam("versionSlug") String versionSlug,
             @PathParam("localeId") String locale,
             @QueryParam("docId") String docId,
-            @QueryParam("projectType") String projectType);
+            @QueryParam("projectType") String projectType,
+            @QueryParam("includeFuzzy") @DefaultValue("false") boolean includeFuzzy);
 
 }

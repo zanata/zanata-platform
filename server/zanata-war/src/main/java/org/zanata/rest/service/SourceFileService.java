@@ -25,16 +25,24 @@ import java.io.InputStream;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.file.FilePersistService;
+import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
 
 import lombok.extern.slf4j.Slf4j;
+import org.zanata.model.HDocument;
+import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.JobStatus;
+import org.zanata.security.ZanataIdentity;
 
 /**
  * @author Sean Flanigan <a
@@ -45,36 +53,77 @@ import org.zanata.rest.dto.JobStatus;
 @Transactional
 public class SourceFileService implements SourceFileResource {
 
+    // NB we add 20% fudge factor to allow for processing time
+    // after final buffer is read from the file stream.
+    private static final double FUDGE_FACTOR = 1.2;
+
+    //    @Inject
+//    private DocumentDAO documentDAO;
     @Inject
-    private DocumentDAO documentDAO;
-    @Inject
-    private FilePersistService filePersistService;
+    private ProjectIterationDAO projectIterationDAO;
+//    @Inject
+//    private FilePersistService filePersistService;
     @Inject
     private LegacyFileMapper legacyFileMapper;
+//    @Inject
+//    private ResourceUtils resourceUtils;
+//    @Inject
+//    private SourceDocumentUpload sourceUploader;
     @Inject
-    private ResourceUtils resourceUtils;
+    private ProjectUtil projectUtil;
     @Inject
-    private SourceDocumentUpload sourceUploader;
+    private ZanataIdentity identity;
+    @Inject
+    private JobStatusService jobStatusService;
+    @Inject
+    private AsyncTaskHandleManager asyncTaskHandleManager;
 
+    // POST
     @Override
     public Response uploadSourceFile(
             String projectSlug,
             String versionSlug,
-            String docId,
+            String clientDocId,
             InputStream fileStream,
             long size,
-            @Nullable ProjectType projectType) {
-//        String suffix = legacyFileMapper.getFilenameSuffix(projectSlug, versionSlug, projectType, true);
-//        String actualDocId = StringUtils.removeEnd(docId, suffix);
-//        String actualDocId = legacyFileMapper.getServerDocId(projectSlug, versionSlug, docId, projectType);
-//        GlobalDocumentId id =
-//                new GlobalDocumentId(projectSlug, versionSlug, actualDocId);
-        // FIXME
-        JobStatus jobStatus = new JobStatus();
-        return Response.status(Response.Status.ACCEPTED).entity(jobStatus).build();
-//        return sourceUploader.tryUploadSourceFile(id, fileStream);
-    }
+            @Nullable ProjectType clientProjectType) {
+        HProjectIteration hProjectIteration =
+                projectUtil.retrieveAndCheckIteration(projectSlug, versionSlug, true);
+        // Check permission
+        identity.checkPermission(hProjectIteration, "import-template");
 
+        // TODO should we have PUT and POST, where POST rejects existing (non-obsolete) documents?
+        // (see AsynchronousProcessResourceService.startSourceDocCreation)
+
+        HProjectIteration iteration =
+                projectIterationDAO.getBySlug(projectSlug, versionSlug);
+        if (iteration == null) {
+            throw new WebApplicationException("Unknown project or version", 404);
+        }
+        ProjectType serverProjectType = iteration.resolveProjectType();
+        String serverDocId = legacyFileMapper
+                .getServerDocId(serverProjectType, clientDocId, clientProjectType);
+
+        GlobalDocumentId id =
+                new GlobalDocumentId(projectSlug, versionSlug, serverDocId);
+
+        // FIXME
+        AsyncTaskHandle<HDocument> handle = AsyncTaskHandle.withGeneratedKey(identity.getAccountUsername());
+        handle.setMaxProgress((long) (size * FUDGE_FACTOR));
+        asyncTaskHandleManager.registerTaskHandle(handle);
+
+        // see the following:
+        // DocumentServiceImpl.saveDocument
+        // FileSystemPersistService
+        // SourceDocumentUpload
+
+//        documentServiceImpl.saveDocumentAsync(projectSlug, versionSlug,
+//                resource, extensions, copytrans, true, handle);
+//        return sourceUploader.tryUploadSourceFile(id, fileStream);
+
+        JobStatus jobStatus = jobStatusService.getJobStatus(handle.getKey().toString());
+        return Response.status(Response.Status.ACCEPTED).entity(jobStatus).build();
+    }
 
     @Override
     public Response downloadSourceFile(

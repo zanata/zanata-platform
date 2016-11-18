@@ -20,19 +20,22 @@
  */
 package org.zanata.async;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.google.common.util.concurrent.AbstractFuture;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@ParametersAreNonnullByDefault
 public class AsyncTaskResult<V> extends AbstractFuture<V> {
 
     AsyncTaskResult() {
     }
 
-    public static <T> AsyncTaskResult<T> taskResult(T value) {
+    public static <T> AsyncTaskResult<T> taskResult(@Nullable T value) {
         AsyncTaskResult<T> result = new AsyncTaskResult<T>();
         result.set(value);
         return result;

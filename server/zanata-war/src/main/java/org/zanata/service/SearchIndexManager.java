@@ -11,6 +11,8 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.util.Synchronized;
 import org.zanata.ServerConstants;
 import org.zanata.action.ReindexClassOptions;
@@ -34,9 +36,10 @@ public class SearchIndexManager implements Serializable {
 
     @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
-
     @Inject
     private IndexingService indexingServiceImpl;
+    @Inject
+    private @Authenticated String username;
 
     // we use a list to ensure predictable order
     private final List<Class<?>> indexables = new ArrayList<Class<?>>();
@@ -120,7 +123,7 @@ public class SearchIndexManager implements Serializable {
      */
     public void startProcess() {
         assert handle == null || handle.isDone();
-        this.handle = new AsyncTaskHandle<>();
+        this.handle = AsyncTaskHandle.withGeneratedKey(username);
         asyncTaskHandleManager.registerTaskHandle(handle);
         try {
             indexingServiceImpl.startIndexing(indexingOptions, handle);

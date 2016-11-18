@@ -70,6 +70,7 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 @Path(AsynchronousProcessResource.SERVICE_PATH)
 @Transactional
 @Slf4j
+@Deprecated
 public class AsynchronousProcessResourceService implements
         AsynchronousProcessResource {
     @Inject
@@ -91,28 +92,32 @@ public class AsynchronousProcessResourceService implements
     private ProjectIterationDAO projectIterationDAO;
 
     @Inject
+    private ProjectUtil projectUtil;
+
+    @Inject
     private ResourceUtils resourceUtils;
 
     @Inject
     private ZanataIdentity identity;
 
+    // POST (fail if document already exists)
     @Override
     public ProcessStatus startSourceDocCreation(final String idNoSlash,
             final String projectSlug, final String iterationSlug,
             final Resource resource, final Set<String> extensions,
             final boolean copytrans) {
         HProjectIteration hProjectIteration =
-                retrieveAndCheckIteration(projectSlug, iterationSlug, true);
+                projectUtil.retrieveAndCheckIteration(projectSlug, iterationSlug, true);
 
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
 
-        resourceUtils.validateExtensions(extensions); // gettext, comment
+        ResourceUtils.validateExtensions(extensions); // gettext, comment
 
+        // (This section differs from startSourceDocCreationOrUpdate)
         HDocument document =
                 documentDAO.getByDocIdAndIteration(hProjectIteration,
                         resource.getName());
-
         // already existing non-obsolete document.
         if (document != null) {
             if (!document.isObsolete()) {
@@ -126,8 +131,8 @@ public class AsynchronousProcessResourceService implements
             }
         }
 
-        String name = "SourceDocCreation: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
+//        String name = "SourceDocCreation: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
+        AsyncTaskHandle<HDocument> handle = AsyncTaskHandle.withGeneratedKey(identity.getAccountUsername());
         asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
                 resource, extensions, copytrans, true, handle);
@@ -138,22 +143,22 @@ public class AsynchronousProcessResourceService implements
                                                     // progress
     }
 
+    // PUT
     @Override
     public ProcessStatus startSourceDocCreationOrUpdate(final String idNoSlash,
             final String projectSlug, final String iterationSlug,
             final Resource resource, final Set<String> extensions,
             final boolean copytrans) {
-
         HProjectIteration hProjectIteration =
-                retrieveAndCheckIteration(projectSlug, iterationSlug, true);
-
-        resourceUtils.validateExtensions(extensions); // gettext, comment
+                projectUtil.retrieveAndCheckIteration(projectSlug, iterationSlug, true);
 
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
 
-        String name = "SourceDocCreationOrUpdate: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
+        ResourceUtils.validateExtensions(extensions); // gettext, comment
+
+//        String name = "SourceDocCreationOrUpdate: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
+        AsyncTaskHandle<HDocument> handle = AsyncTaskHandle.withGeneratedKey(identity.getAccountUsername());
         asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
                 resource, extensions, copytrans, true, handle);
@@ -203,7 +208,7 @@ public class AsynchronousProcessResourceService implements
         final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         final MergeType finalMergeType = mergeType;
 
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
+        AsyncTaskHandle<HDocument> handle = AsyncTaskHandle.withGeneratedKey(identity.getAccountUsername());
         asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
                 iterationSlug, id, locale, translatedDoc, extensions,
@@ -213,9 +218,16 @@ public class AsynchronousProcessResourceService implements
         return this.getProcessStatus(handle.getKey().toString());
     }
 
+    /**
+     * @see JobStatusService#getJobStatus(String)
+     * @param processId
+     *            The process Id (as returned by one of the endpoints that
+     *            starts an async process).
+     * @return
+     */
     @Override
     public ProcessStatus getProcessStatus(String processId) {
-        AsyncTaskHandle handle =
+        AsyncTaskHandle<?> handle =
                 asyncTaskHandleManager.getHandleByKey(processId);
 
         if (handle == null) {
@@ -226,13 +238,7 @@ public class AsynchronousProcessResourceService implements
         ProcessStatus status = new ProcessStatus();
         status.setStatusCode(handle.isDone() ? ProcessStatusCode.Finished
                 : ProcessStatusCode.Running);
-        int perComplete = 100;
-        if (handle.getMaxProgress() > 0) {
-            perComplete =
-                    (handle.getCurrentProgress() * 100 / handle
-                            .getMaxProgress());
-        }
-        status.setPercentageComplete(perComplete);
+        status.setPercentageComplete((int) handle.getPercentComplete());
         status.setUrl("" + processId);
 
         if (handle.isDone()) {
@@ -263,36 +269,8 @@ public class AsynchronousProcessResourceService implements
         return status;
     }
 
-    private HProjectIteration retrieveAndCheckIteration(String projectSlug,
-            String iterationSlug, boolean writeOperation) {
-        HProjectIteration hProjectIteration =
-                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-        HProject hProject =
-                hProjectIteration == null ? null : hProjectIteration
-                        .getProject();
-
-        if (hProjectIteration == null) {
-            throw new NoSuchEntityException("Project Iteration '" + projectSlug
-                    + ":" + iterationSlug + "' not found.");
-        } else if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE)
-                || hProject.getStatus().equals(EntityStatus.OBSOLETE)) {
-            throw new NoSuchEntityException("Project Iteration '" + projectSlug
-                    + ":" + iterationSlug + "' not found.");
-        } else if (writeOperation) {
-            if (hProjectIteration.getStatus().equals(EntityStatus.READONLY)
-                    || hProject.getStatus().equals(EntityStatus.READONLY)) {
-                throw new ReadOnlyEntityException("Project Iteration '"
-                        + projectSlug + ":" + iterationSlug + "' is read-only.");
-            } else {
-                return hProjectIteration;
-            }
-        } else {
-            return hProjectIteration;
-        }
-    }
-
     public HProjectIteration getSecuredIteration(String projectSlug,
             String iterationSlug) {
-        return retrieveAndCheckIteration(projectSlug, iterationSlug, false);
+        return projectUtil.retrieveAndCheckIteration(projectSlug, iterationSlug, false);
     }
 }

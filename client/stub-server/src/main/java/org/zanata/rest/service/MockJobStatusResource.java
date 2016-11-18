@@ -32,11 +32,12 @@ public class MockJobStatusResource implements JobStatusResource {
     public JobStatus getJobStatus(String jobId) {
         Instant time = Instant.now();
         JobStatus jobStatus = new JobStatus("1");
-        jobStatus.setStartTime(time);
-        jobStatus.setStatusTime(time);
-        jobStatus.setPercentCompleted(100);
-        jobStatus.getMessages().add(new JobStatus.JobStatusMessage(
-                time, "INFO", "Job complete for jobId: " + jobId));
+        jobStatus.setCurrentItem(100);
+        jobStatus.setTotalItems(100);
+        jobStatus.setStatusCode(JobStatus.JobStatusCode.Finished);
+        jobStatus.setEstimatedCompletionTime(time.plusSeconds(1));
+        jobStatus.getMessages().add(
+                "Job complete for jobId: " + jobId);
         return jobStatus;
     }
 }

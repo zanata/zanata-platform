@@ -21,12 +21,18 @@
 package org.zanata.async;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import javax.annotation.Nullable;
+import javax.xml.bind.annotation.XmlTransient;
+
+import org.zanata.util.ISO8601Util;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -47,20 +53,25 @@ public class AsyncTaskHandle<V> {
     @Getter
     private final Serializable key;
 
+    /**
+     * NB: Used for security checks in JobStatusService
+     */
+    @Getter
+    private final @Nullable String username;
+
     @Setter(AccessLevel.PACKAGE)
     private Future<V> futureResult;
 
     @Getter
     @Setter
-    public int maxProgress = 100;
+    public long maxProgress = 100;
 
     @Getter
     @Setter
-    public int minProgress = 0;
+    public long currentProgress = 0;
 
     @Getter
-    @Setter
-    public int currentProgress = 0;
+    private long submitTime = System.currentTimeMillis();
 
     @Getter
     private long startTime = -1;
@@ -68,15 +79,24 @@ public class AsyncTaskHandle<V> {
     @Getter
     private long finishTime = -1;
 
-    public AsyncTaskHandle() {
-        this(UUID.randomUUID().toString());
-    }
-
-    public AsyncTaskHandle(Serializable key) {
+    public AsyncTaskHandle(String username, Serializable key) {
+        this.username = username;
         this.key = key;
     }
 
-    public int increaseProgress(int increaseBy) {
+    /**
+     * @deprecated use {@link #withGeneratedKey(String username)}
+     */
+    @Deprecated
+    public static <T> AsyncTaskHandle<T> withGeneratedKey() {
+        return withGeneratedKey(null);
+    }
+
+    public static <T> AsyncTaskHandle<T> withGeneratedKey(String username) {
+        return new AsyncTaskHandle<>(username, UUID.randomUUID().toString());
+    }
+
+    public long increaseProgress(long increaseBy) {
         currentProgress += increaseBy;
         return currentProgress;
     }
@@ -120,14 +140,33 @@ public class AsyncTaskHandle<V> {
      *         estimated.
      */
     public Optional<Long> getEstimatedTimeRemaining() {
+        long currentTime = System.currentTimeMillis();
+        return getEstimatedTimeRemaining(currentTime);
+    }
+
+    private Optional<Long> getEstimatedTimeRemaining(long currentTime) {
         if (this.startTime > 0 && currentProgress > 0) {
-            long currentTime = System.currentTimeMillis();
             long timeElapsed = currentTime - this.startTime;
-            int remainingUnits = this.maxProgress - this.currentProgress;
+            long remainingUnits = this.maxProgress - this.currentProgress;
             return Optional.of(timeElapsed * remainingUnits
                     / this.currentProgress);
         } else {
             return Optional.empty();
+        }
+    }
+
+    public Optional<Instant> getEstimatedCompletionTime() {
+        long currentTime = System.currentTimeMillis();
+        return getEstimatedTimeRemaining(currentTime).map(
+                remaining -> currentTime + remaining).map(ISO8601Util::toInstant);
+    }
+
+    @XmlTransient
+    public double getPercentComplete() {
+        if (getMaxProgress() > 0) {
+            return currentProgress * 100.0 / maxProgress;
+        } else {
+            return 100.0;
         }
     }
 
@@ -148,7 +187,7 @@ public class AsyncTaskHandle<V> {
     }
 
     /**
-     * @return The estimated elapsed time (in milliseconds) from the start of
+     * @return The elapsed time (in milliseconds) from the start of
      *         the process.
      */
     public long getTimeSinceStart() {
@@ -162,7 +201,7 @@ public class AsyncTaskHandle<V> {
     }
 
     /**
-     * @return The estimated elapsed time (in milliseconds) from the finish of
+     * @return The elapsed time (in milliseconds) from the finish of
      *         the process.
      */
     public long getTimeSinceFinish() {
@@ -174,4 +213,12 @@ public class AsyncTaskHandle<V> {
             return 0;
         }
     }
+
+//    // TODO
+//    public JobStatus toJobStatus() {
+//        JobStatus status = new JobStatus(getKey().toString());
+//        Optional<Instant> completionTime = getEstimatedCompletionTime();
+//        completionTime.ifPresent(status::setEstimatedCompletionTime);
+//        status.setPercentCompleted(getPercentComplete());
+//    }
 }

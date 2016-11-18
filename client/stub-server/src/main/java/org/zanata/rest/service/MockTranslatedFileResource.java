@@ -27,9 +27,6 @@ import static org.zanata.rest.service.MockFileResource.sampleTransResource;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -39,7 +36,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.NullOutputStream;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.rest.dto.JobStatus;
-import org.zanata.rest.dto.JobStatus.JobStatusMessage;
 
 /**
  * @author Sean Flanigan <a
@@ -55,13 +51,13 @@ public class MockTranslatedFileResource implements TranslatedFileResource {
             long actual = IOUtils.copyLarge(fileStream, new NullOutputStream());
             Instant time = Instant.now();
             JobStatus jobStatus = new JobStatus("1");
-            jobStatus.setStartTime(time);
-            jobStatus.setStatusTime(time);
-            jobStatus.getMessages().add(new JobStatusMessage(
-                    time, "INFO", "Upload of translation document successful (" +
-                    actual + "/" + size + " bytes): " +
-                    projectType + ":" + projectSlug + "/" +
-                    iterationSlug + "/" + docId + ":" + localeId));
+//            jobStatus.setStartTime(time);
+//            jobStatus.setStatusTime(time);
+            jobStatus.getMessages().add(
+                    "Upload of translation document successful (" +
+                            actual + "/" + size + " bytes): " +
+                            projectType + ":" + projectSlug + "/" +
+                            iterationSlug + "/" + docId + ":" + localeId);
             return Response.status(Response.Status.ACCEPTED).entity(jobStatus).build();
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -71,7 +67,8 @@ public class MockTranslatedFileResource implements TranslatedFileResource {
     @Override
     public Response downloadTranslationFile(String projectSlug,
             String versionSlug, String locale,
-            final String docId, String projectType) {
+            final String docId, String projectType,
+            boolean includeFuzzy) {
         StreamingOutput output = output1 -> {
             PoWriter2 writer = new PoWriter2(false, false);
             writer.writePo(output1, "UTF-8", sampleResource(docId),

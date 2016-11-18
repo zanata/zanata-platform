@@ -43,59 +43,42 @@ import lombok.extern.slf4j.Slf4j;
  */
 @RequestScoped
 @Slf4j
-public class LegacyFileMapper {
-
-    @Inject
-    private ProjectDAO projectDAO;
-
-    @Inject
-    private ProjectIterationDAO projectIterationDAO;
+class LegacyFileMapper {
 
     String getServerDocId(@Nullable ProjectType serverProjectType,
-            String clientDocId, @Nullable ProjectType projectType) {
-        String suffix = getFilenameSuffix(serverProjectType, projectType, true);
+            String clientDocId, @Nullable ProjectType clientProjectType) {
+        String suffix = getFilenameSuffix(serverProjectType, clientProjectType, true);
         return StringUtils.removeEnd(clientDocId, suffix);
     }
 
-    public String getFilenameSuffix(@Nullable ProjectType serverProjectType, @Nullable ProjectType clientProjectType, boolean forSourceFiles) {
-        ProjectType projectType;
+    private String getFilenameSuffix(@Nullable ProjectType serverProjectType,
+            @Nullable ProjectType clientProjectType, boolean forSourceFiles) {
+        if (serverProjectType == ProjectType.File) {
+            // for File projects, clientProjectType is irrelevant because we store the real extension
+            return getFilenameSuffix(ProjectType.File, forSourceFiles);
+        }
+        // otherwise use the client's projectType
         if (serverProjectType != null) {
             if (clientProjectType != null && serverProjectType != clientProjectType) {
-                log.warn("server project type '{}' doesn't match client project type '{}'",
+                log.warn("Server project type '{}' doesn't match client project type '{}'",
                         serverProjectType, clientProjectType);
             }
-            projectType = serverProjectType;
         } else {
             if (clientProjectType != null) {
-                // otherwise use the client's projectType
-                projectType = clientProjectType;
-                log.info("server project type 'null' overridden by client project type '{}'",
+                log.info("Server project type 'null' overridden by client project type '{}'",
                         clientProjectType);
+                // TODO we should store project type (but only if maintainer pushing source files)
             } else {
                 throw new WebApplicationException(
-                        "Unknown project type: please update your Zanata client, or ask project maintainer to set the project type");
+                        "Unknown project type: please ask project maintainer to set the project type (or add project type to your client config)");
             }
         }
-        return getFilenameSuffix(projectType, forSourceFiles);
+        // we want to remove the client project type's extension from the client's filename
+        return getFilenameSuffix(clientProjectType, forSourceFiles);
     }
 
-    public @Nullable ProjectType getProjectType(String projectSlug, String iterationSlug) {
-        HProject project = projectDAO.getBySlug(projectSlug);
-        if (project == null) {
-            throw new WebApplicationException("Unknown project", 404);
-        }
-        HProjectIteration iteration =
-                projectIterationDAO.getBySlug(project, iterationSlug);
-        if (iteration == null) {
-            throw new WebApplicationException("Unknown iteration", 404);
-        }
-        if (iteration.getProjectType() != null) {
-            return iteration.getProjectType();
-        }
-        return project.getDefaultProjectType();
-    }
-
-    public @Nonnull String getFilenameSuffix(@Nonnull ProjectType projectType,
+    @Nonnull
+    private String getFilenameSuffix(@Nonnull ProjectType projectType,
             boolean forSourceFiles) {
         // Get the file extension used by the client for old project types
         switch (projectType) {

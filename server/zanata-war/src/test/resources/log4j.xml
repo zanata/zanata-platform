@@ -5,7 +5,8 @@
   <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
     <param name="threshold" value="DEBUG" />
     <layout class="org.apache.log4j.PatternLayout">
-      <param name="ConversionPattern" value="%d %t %-5p [%c{1}] - %m%n" />
+      <!-- rel-time-ms thread level [category] - message -->
+      <param name="ConversionPattern" value="%6r %t %-5p [%c{1}] - %m%n" />
     </layout>
   </appender>
   <!--
@@ -16,6 +17,10 @@
           </layout>
       </appender>
    -->
+  <logger name="org.zanata.rest.service">
+    <level value="INFO" />
+  </logger>
+
   <!--
       <logger name="org.hibernate">
           <level value="info" />

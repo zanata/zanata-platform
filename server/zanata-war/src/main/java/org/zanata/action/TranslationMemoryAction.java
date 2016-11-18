@@ -39,6 +39,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
@@ -76,6 +77,9 @@ public class TranslationMemoryAction implements Serializable {
     @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
+    @Inject
+    private @Authenticated String username;
+
     private List<TransMemory> transMemoryList;
 
     private ClearTransMemoryProcessKey lastTaskTMKey;
@@ -106,7 +110,7 @@ public class TranslationMemoryAction implements Serializable {
 
     public void clearTransMemory(final String transMemorySlug) {
         lastTaskTMKey = new ClearTransMemoryProcessKey(transMemorySlug);
-        AsyncTaskHandle handle = new AsyncTaskHandle(lastTaskTMKey);
+        AsyncTaskHandle handle = new AsyncTaskHandle(username, lastTaskTMKey);
         asyncTaskHandleManager.registerTaskHandle(handle);
         translationMemoryResource
                 .deleteTranslationUnitsUnguardedAsync(transMemorySlug, handle);
@@ -115,7 +119,7 @@ public class TranslationMemoryAction implements Serializable {
 
     private boolean isProcessing() {
         if (lastTaskTMKey != null) {
-            AsyncTaskHandle<Void> handle =
+            AsyncTaskHandle<?> handle =
                     asyncTaskHandleManager.getHandleByKey(lastTaskTMKey);
             return handle != null && !handle.isDone();
         }
@@ -140,7 +144,7 @@ public class TranslationMemoryAction implements Serializable {
             return myProcessError;
         }
         if(lastTaskTMKey != null) {
-            AsyncTaskHandle<Void> handle =
+            AsyncTaskHandle<?> handle =
                 asyncTaskHandleManager.getHandleByKey(lastTaskTMKey);
             if(handle != null && handle.isDone()) {
                 try {
@@ -171,7 +175,7 @@ public class TranslationMemoryAction implements Serializable {
     }
 
     public boolean isTransMemoryBeingCleared(String transMemorySlug) {
-        AsyncTaskHandle<Void> handle =
+        AsyncTaskHandle<?> handle =
                 asyncTaskHandleManager.getHandleByKey(
                         new ClearTransMemoryProcessKey(transMemorySlug));
         return handle != null && !handle.isDone();

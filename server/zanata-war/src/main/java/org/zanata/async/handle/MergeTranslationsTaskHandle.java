@@ -42,7 +42,7 @@ public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> {
     @Getter @Setter
     private String triggeredBy;
 
-    public MergeTranslationsTaskHandle(Serializable key) {
-        super(key);
+    public MergeTranslationsTaskHandle(String username, Serializable key) {
+        super(username, key);
     }
 }

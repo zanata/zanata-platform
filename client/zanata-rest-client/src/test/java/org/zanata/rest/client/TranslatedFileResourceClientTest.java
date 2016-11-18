@@ -82,9 +82,12 @@ public class TranslatedFileResourceClientTest {
         log.info("response: {}", initialJobStatus);
         String jobId = initialJobStatus.getJobId();
         assertThat(jobId, Matchers.notNullValue());
+        assertThat(initialJobStatus.getStatusCode(), Matchers.equalTo(
+                JobStatus.JobStatusCode.Waiting));
         JobStatus finalJobStatus = jobClient.getJobStatus(jobId);
         log.info("response: {}", finalJobStatus);
-        assertThat(finalJobStatus.getPercentCompleted(), Matchers.equalTo(100));
+        assertThat(finalJobStatus.getStatusCode(), Matchers.equalTo(
+                JobStatus.JobStatusCode.Finished));
     }
 
     @Test

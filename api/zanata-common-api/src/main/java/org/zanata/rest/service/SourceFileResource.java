@@ -50,13 +50,8 @@ import org.zanata.rest.dto.ProcessStatus;
 public interface SourceFileResource extends RestResource {
 
     /**
-     * Upload a source file (or file chunk) to Zanata. Allows breaking up files
-     * into smaller chunks for very large files. In this case, the first invocation
-     * of this service will return an 'upload id' which needs to be used in
-     * subsequent calls to tie all the uploaded chunks together.
-     * The file will only be processed when all chunks have been fully uploaded.
-     * With each uploaded chunk, the multipart message's 'last' parameter will
-     * indicate if it is the last expected chunk.
+     * Upload a source file as a stream to Zanata. File will be streamed to
+     * disk as it uploads, then processed asynchronously.
      *
      * @param projectSlug The project slug where to store the document.
      * @param versionSlug The project version slug where to store the document.
@@ -64,19 +59,22 @@ public interface SourceFileResource extends RestResource {
      * @param fileStream Contents of the file to be uploaded
      * @param size size of the file in bytes (for sanity checking; use -1 if unknown)
      * @param projectType A ProjectType used for mapping of file extensions.
+     *                    This value may be stored if the project does not
+     *                    have a ProjectType set already.
      * @return A JobStatus with information about the upload operation.
-     * @see ProcessStatus
+     * @see JobStatus
      */
     @POST
     @Consumes({ MediaType.WILDCARD })
     @Produces({ MediaType.APPLICATION_JSON })
-    @TypeHint(ProcessStatus.class)
+    @TypeHint(JobStatus.class)
     Response uploadSourceFile(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
             @QueryParam("docId") String docId,
             InputStream fileStream,
             @QueryParam("size") @DefaultValue("-1") long size,
+            // TODO rename this to clientProjectType, asProjectType, asFileType, asType?
             @QueryParam("projectType") @Nullable ProjectType projectType);
 
     /**
@@ -88,7 +86,7 @@ public interface SourceFileResource extends RestResource {
      * @param projectType A ProjectType used for mapping of file extensions.
      * @return response with status code 404 if the document is not found, 415
      *         if fileType is not valid for the document, otherwise 200 with
-     *         attached document.
+     *         attached document in the response body.
      */
     @GET
     Response downloadSourceFile(

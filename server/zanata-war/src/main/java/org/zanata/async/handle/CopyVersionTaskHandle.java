@@ -45,8 +45,8 @@ public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> {
     @Getter @Setter
     private String triggeredBy;
 
-    public CopyVersionTaskHandle(Serializable key) {
-        super(key);
+    public CopyVersionTaskHandle(String username, Serializable key) {
+        super(username, key);
     }
 
     /**

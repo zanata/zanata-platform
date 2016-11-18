@@ -78,7 +78,7 @@ public class AsyncTaskITCase extends ArquillianTest {
     @Test
     public void taskDoesNotReturnValue() throws Exception {
         // Given a task handle
-        AsyncTaskHandle handle = new AsyncTaskHandle();
+        AsyncTaskHandle<Void> handle = AsyncTaskHandle.withGeneratedKey("username");
 
         // Start an asynchronous process
         testAsyncBean.doesNotReturn(handle);
@@ -106,13 +106,13 @@ public class AsyncTaskITCase extends ArquillianTest {
 
     @Test
     public void progressUpdates() throws Exception {
-        final List<Integer> progressUpdates = Lists.newArrayList();
+        final List<Long> progressUpdates = Lists.newArrayList();
 
         // Custom handle so that progress updates are recorded
         final AsyncTaskHandle<Void> taskHandle =
-                new AsyncTaskHandle<Void>() {
+                new AsyncTaskHandle<Void>(null, null) {
                     @Override
-                    public void setCurrentProgress(int progress) {
+                    public void setCurrentProgress(long progress) {
                         super.setCurrentProgress(progress);
                         progressUpdates.add(progress);
                     }
@@ -125,9 +125,9 @@ public class AsyncTaskITCase extends ArquillianTest {
         result.get();
 
         // Progress update calls should match the task's internal updates
-        assertThat(taskHandle.getCurrentProgress()).isEqualTo(100);
+        assertThat(taskHandle.getCurrentProgress()).isEqualTo(100L);
         assertThat(progressUpdates.size()).isEqualTo(4);
-        assertThat(progressUpdates).contains(25, 50, 75, 100);
+        assertThat(progressUpdates).contains(25L, 50L, 75L, 100L);
     }
 
 

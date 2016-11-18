@@ -83,7 +83,8 @@ public class TranslatedFileResourceService implements TranslatedFileResource {
     @Override
     public Response downloadTranslationFile(String projectSlug,
             String versionSlug, String locale,
-            String docId, String projectType) {
+            String docId, String projectType,
+            boolean includeFuzzy) {
         // FIXME
         return null;
     }

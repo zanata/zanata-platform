@@ -47,8 +47,8 @@ public class CopyTransTaskHandle extends AsyncTaskHandle<Void> {
     @Getter
     private boolean prepared;
 
-    public CopyTransTaskHandle(Serializable key) {
-        super(key);
+    public CopyTransTaskHandle(String username, Serializable key) {
+        super(username, key);
     }
 
     public void setPrepared() {
