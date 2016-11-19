@@ -121,7 +121,7 @@ public class UIInputContainer extends UIComponentBase implements
 
     /**
      * The name of the auto-generated composite component attribute that holds a
-     * boolean indicating whether the the template contains an invalid input.
+     * boolean indicating whether the template contains an invalid input.
      */
     public String getInvalidAttributeName() {
         return "invalid";
