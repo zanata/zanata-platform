@@ -39,7 +39,7 @@
     <frontend.build.directory>${project.basedir}/src/frontend</frontend.build.directory>
 
     <!-- Command to use after 'npm ' for the frontend build. Default is the faster draft build. -->
-    <frontend.build.command>run draft</frontend.build.command>
+    <frontend.build.command>run draft --ignore-scripts=false</frontend.build.command>
 
     <!-- Directory for editor to run the build from. -->
     <editor.build.directory>${project.basedir}/src/editor</editor.build.directory>
@@ -66,41 +66,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.codehaus.gmavenplus</groupId>
-        <artifactId>gmavenplus-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>check-npmrc</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>execute</goal>
-            </goals>
-          </execution>
-        </executions>
-        <!-- check for ignore-scripts = true in .npmrc, which breaks npm -->
-        <configuration>
-          <scripts>
-            <script><![CDATA[
-              def npmrcFile = new File(System.getProperty('user.home'), '.npmrc')
-              if (npmrcFile.exists()) {
-                def ignoreScripts = npmrcFile.text.readLines().any {
-                  it.matches(/\s*ignore-scripts\s*=\s*true\s*/)
-                }
-                if (ignoreScripts) throw new RuntimeException('ignore-scripts is set in ~/.npmrc: unable to run npm scripts')
-              }
-            ]]></script>
-          </scripts>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.codehaus.groovy</groupId>
-            <artifactId>groovy-all</artifactId>
-            <version>2.4.7</version>
-            <scope>runtime</scope>
-          </dependency>
-        </dependencies>
-      </plugin>
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
@@ -348,7 +313,7 @@
         </property>
       </activation>
       <properties>
-        <frontend.build.command>run build</frontend.build.command>
+        <frontend.build.command>run build --ignore-scripts=false</frontend.build.command>
         <editor.build.command>run build --ignore-scripts=false</editor.build.command>
       </properties>
     </profile>
