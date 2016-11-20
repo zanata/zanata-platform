@@ -934,7 +934,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
                 removed.add(localeId);
             }
         }
-
+        update();
         if (removed.isEmpty()) {
             // This should not be possible in the UI, but maybe if multiple users are editing it.
         } else if (removed.size() == 1) {
@@ -957,6 +957,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     public void disableLocale(HLocale locale) {
         identity.checkPermission(getInstance(), "update");
         boolean wasEnabled = disableLocaleSilently(locale);
+        update();
         if (wasEnabled) {
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.languageSettings.LanguageDisabled",
@@ -980,7 +981,6 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
             // TODO consider using alias from project as default rather than none.
             getLocaleAliases().remove(locale.getLocaleId());
             getSelectedEnabledLocales().remove(locale.getLocaleId());
-            update();
         } else {
             wasEnabled = false;
         }
@@ -1031,7 +1031,7 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
             }
         }
         selectedDisabledLocales.clear();
-
+        update();
         if (enabled.isEmpty()) {
             // This should not be possible in the UI, but maybe if multiple users are editing it.
         } else if (enabled.size() == 1) {
@@ -1071,7 +1071,6 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
             getInstance().getCustomizedLocales().add(locale);
             getSelectedEnabledLocales().put(locale.getLocaleId(), Boolean.FALSE);
             refreshDisabledLocales();
-            update();
         }
         // else locale already enabled, nothing to do.
         return wasDisabled;
