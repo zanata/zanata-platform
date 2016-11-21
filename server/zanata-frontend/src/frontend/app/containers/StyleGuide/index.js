@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, {PropTypes, Component} from 'react'
 import {
   Modal, EditableText, Icon, Link,
   LoaderText, TextInput
@@ -6,10 +6,11 @@ import {
 import {
   Alert, Button, Row, Table, ButtonToolbar, Tabs,
   Tab, OverlayTrigger, Tooltip, Grid, Col,
-  Badge, Nav, NavItem, ControlLabel,
+  Badge, Nav, NavItem, ControlLabel, Pagination,
   FormGroup, FormControl, Form, InputGroup,
-  Checkbox, Radio, Label, ListGroup,
-  ListGroupItem, ProgressBar, Well, Breadcrumb
+  Checkbox, Radio, Label, ListGroup, Panel,
+  ListGroupItem, ProgressBar, Well, Breadcrumb,
+  ButtonGroup, MenuItem, DropdownButton
 } from 'react-bootstrap'
 
 const tooltip = (
@@ -36,8 +37,16 @@ class StyleGuide extends Component {
     this.setState({show: true})
   }
 
+  handleSelect (eventKey) {
+    this.setState({
+      activePage: eventKey
+    })
+  }
   /* eslint-disable react/jsx-no-bind */
   render () {
+    const {
+      page
+    } = this.props
     return (
       <div className='container'>
         <h1>STYLES</h1>
@@ -204,6 +213,29 @@ class StyleGuide extends Component {
             Block level button</Button>
             <Button bsSize='large' block>Block level button</Button>
           </span>
+          <h3>Button groups</h3>
+          <ButtonGroup>
+            <Button>Left</Button>
+            <Button>Middle</Button>
+            <Button>Right</Button>
+          </ButtonGroup>
+          <h3>Button toolbar</h3>
+          <ButtonToolbar>
+            <ButtonGroup>
+              <Button>1</Button>
+              <Button>2</Button>
+              <Button>3</Button>
+              <Button>4</Button>
+            </ButtonGroup>
+            <ButtonGroup>
+              <Button>5</Button>
+              <Button>6</Button>
+              <Button>7</Button>
+            </ButtonGroup>
+            <ButtonGroup>
+              <Button>8</Button>
+            </ButtonGroup>
+          </ButtonToolbar>
         </span>
         <br />
         <span>
@@ -213,6 +245,19 @@ class StyleGuide extends Component {
           should be wrapped as inline.</p>
           <p>To switch directories, type <kbd>cd</kbd>
           followed by the name of the directory.</p>
+        </span>
+        <span>
+          <h2>Dropdowns</h2>
+          <ButtonToolbar>
+            <DropdownButton title='Default button' className='dropdown-toggle'
+              id='dropdown-size-medium'>
+              <MenuItem eventKey='1'>Action</MenuItem>
+              <MenuItem eventKey='2'>Another action</MenuItem>
+              <MenuItem eventKey='3'>Something else here</MenuItem>
+              <MenuItem divider />
+              <MenuItem eventKey='4'>Separated link</MenuItem>
+            </DropdownButton>
+          </ButtonToolbar>
         </span>
         <span>
           <h2>Forms</h2>
@@ -473,6 +518,50 @@ class StyleGuide extends Component {
           </Modal>
         </span>
         <span>
+          <h2>Pagination</h2>
+          <Pagination
+            bsSize='large'
+            items={10}
+            activePage={page}
+            onSelect={this.handleSelect} />
+          <br />
+          <Pagination
+            bsSize='medium'
+            items={10}
+            activePage={page}
+            onSelect={this.handleSelect} />
+          <br />
+          <Pagination
+            bsSize='small'
+            items={10}
+            activePage={page}
+            onSelect={this.handleSelect} />
+        </span>
+        <span>
+          <h2>Panels</h2>
+          <Panel>
+          Basic panel example
+          </Panel>
+          <Panel header='Panel header'>
+          Panel content
+          </Panel>
+          <Panel header='Panel header' bsStyle='primary'>
+          Panel content
+          </Panel>
+          <Panel header='Panel header' bsStyle='success'>
+          Panel content
+          </Panel>
+          <Panel header='Panel header' bsStyle='info'>
+          Panel content
+          </Panel>
+          <Panel header='Panel header' bsStyle='warning'>
+          Panel content
+          </Panel>
+          <Panel header='Panel header' bsStyle='danger'>
+          Panel content
+          </Panel>
+        </span>
+        <span>
           <h2>Progress bars</h2>
           <h3>Basic</h3>
           <ProgressBar now={now} label={`${now}%`} />
@@ -640,6 +729,10 @@ class StyleGuide extends Component {
   }
 
   /* eslint-enable react/jsx-no-bind */
+}
+
+StyleGuide.propTypes = {
+  page: PropTypes.number
 }
 
 export default StyleGuide
