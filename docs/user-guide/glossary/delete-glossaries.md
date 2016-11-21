@@ -12,7 +12,7 @@ Requires **Glossary-admin** role. See [glossary roles and permission](/user-guid
 
 ### Delete via Zanata Maven client
 The following instructions assume that you have installed and configured the Zanata Maven Plugin.
-Instructions for installation and configuration are available at [Installing Zanata client](http://docs.zanata.org/projects/zanata-client/en/latest/#installation).
+Instructions for installation and configuration are available at [Installing Zanata client](http://docs.zanata.org/en/latest/client/#installation).
 
 **Delete all glossary entries in Zanata**
 
