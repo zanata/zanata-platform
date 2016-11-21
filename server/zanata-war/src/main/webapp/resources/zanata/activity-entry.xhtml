@@ -45,7 +45,7 @@
           title="#{msgs['jsf.Document']}"></i>
         <span class="is-invisible">#{msgs['jsf.Document']}</span>
         <ui:fragment rendered="#{not isVersionDeleted}">
-          <a
+          <a class="bx--break-all"
             href="#{activityEntry.getDocumentUrl(cc.attrs.value)}">#{docName}</a>
         </ui:fragment>
         <ui:fragment rendered="#{isVersionDeleted}">
