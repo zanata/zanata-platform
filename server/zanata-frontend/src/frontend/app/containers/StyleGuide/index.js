@@ -10,7 +10,7 @@ import {
   FormGroup, FormControl, Form, InputGroup,
   Checkbox, Radio, Label, ListGroup, Panel,
   ListGroupItem, ProgressBar, Well, Breadcrumb,
-  ButtonGroup, MenuItem, DropdownButton
+  ButtonGroup, DropdownButton, MenuItem
 } from 'react-bootstrap'
 
 const tooltip = (
@@ -208,11 +208,9 @@ class StyleGuide extends Component {
             Extra small button</Button>
             <Button bsSize='xsmall'>Extra small button</Button>
           </ButtonToolbar>
-          <span>
-            <Button bsStyle='primary' bsSize='large' block>
-            Block level button</Button>
-            <Button bsSize='large' block>Block level button</Button>
-          </span>
+          <Button bsStyle='primary' bsSize='large' block>
+          Block level button</Button>
+          <Button bsSize='large' block>Block level button</Button>
           <h3>Button groups</h3>
           <ButtonGroup>
             <Button>Left</Button>
@@ -236,6 +234,15 @@ class StyleGuide extends Component {
               <Button>8</Button>
             </ButtonGroup>
           </ButtonToolbar>
+          <h3>Nesting</h3>
+          <ButtonGroup>
+            <Button>1</Button>
+            <Button>2</Button>
+            <DropdownButton title='Dropdown' id='bg-nested-dropdown'>
+              <MenuItem eventKey='1'>Dropdown link</MenuItem>
+              <MenuItem eventKey='2'>Dropdown link</MenuItem>
+            </DropdownButton>
+          </ButtonGroup>
         </span>
         <br />
         <span>
@@ -248,16 +255,14 @@ class StyleGuide extends Component {
         </span>
         <span>
           <h2>Dropdowns</h2>
-          <ButtonToolbar>
-            <DropdownButton title='Default button' className='dropdown-toggle'
-              id='dropdown-size-medium'>
-              <MenuItem eventKey='1'>Action</MenuItem>
-              <MenuItem eventKey='2'>Another action</MenuItem>
-              <MenuItem eventKey='3'>Something else here</MenuItem>
-              <MenuItem divider />
-              <MenuItem eventKey='4'>Separated link</MenuItem>
-            </DropdownButton>
-          </ButtonToolbar>
+          <DropdownButton bsStyle='default' title='Dropdown button'
+            id='dropdown-basic'>
+            <MenuItem eventKey='1'>Action</MenuItem>
+            <MenuItem eventKey='2'>Another action</MenuItem>
+            <MenuItem eventKey='3' active>Active Item</MenuItem>
+            <MenuItem divider />
+            <MenuItem eventKey='4'>Separated link</MenuItem>
+          </DropdownButton>
         </span>
         <span>
           <h2>Forms</h2>
