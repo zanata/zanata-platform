@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -64,6 +65,7 @@ import org.zanata.util.TranslationUtil;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -284,37 +286,73 @@ public class CopyVersionServiceImpl implements CopyVersionService {
      */
     private void copyTextFlowAndTarget(Long documentId, Long newDocumentId) {
         copyTfAndTftStopWatch.start();
-        int tfStart = 0, tftStart = 0, totalTftCount = 0;
+        int tfStart = 0;
+//        AtomicInteger totalTftCount = new AtomicInteger(0);
         int tfCount = textFlowDAO.countActiveTextFlowsInDocument(documentId);
 
         while (tfStart < tfCount) {
-            Map<Long, Long> tfMap =
-                    copyTextFlowBatch(documentId, newDocumentId, tfStart,
+            List<HTextFlow> textFlows = textFlowDAO
+                    .getTextFlowsByDocumentId(documentId, tfStart,
                             TF_BATCH_SIZE);
-            tfStart += TF_BATCH_SIZE;
-            textFlowDAO.clear();
-            documentDAO.clear();
+            try {
+                Map<Long, Long> copyTextFlowsResult = transactionUtil.call(() -> {
+                    Map<Long, HTextFlow> tfMap = Maps.newHashMap();
 
-            for (Map.Entry<Long, Long> entry : tfMap.entrySet()) {
-                tftStart = 0;
-                int tftCount =
-                        textFlowTargetDAO.countTextFlowTargetsInTextFlow(
-                                entry.getKey());
+                    HDocument newDocument = documentDAO.getById(newDocumentId);
+                    for (HTextFlow textFlow : textFlows) {
+                        HTextFlow newTextFlow =
+                                copyTextFlow(newDocument, textFlow);
+//                        newTextFlow.copyPos(textFlow);
+                        newDocument.getTextFlows().add(newTextFlow);
+                        textFlowDAO.makePersistent(newTextFlow);
 
-                while (tftStart < tftCount) {
-                    totalTftCount +=
-                            copyTextFlowTargetBatch(entry.getKey(),
-                                    entry.getValue(), tftStart, TFT_BATCH_SIZE);
-                    tftStart += TFT_BATCH_SIZE;
-                    textFlowDAO.clear();
-                    textFlowTargetDAO.clear();
-                }
+                        tfMap.put(textFlow.getId(), newTextFlow);
+                    }
+                    documentDAO.makePersistent(newDocument);
+                    documentDAO.flush();
+
+                    return Maps.transformEntries(tfMap,
+                            (key, value) -> value.getId());
+
+                });
+
+
+                tfStart += TF_BATCH_SIZE;
+                textFlowDAO.clear();
+                documentDAO.clear();
+
+                textFlows.forEach(tf -> {
+                    try {
+                        transactionUtil.run(() -> {
+                            HTextFlow newTextFlow = textFlowDAO
+                                    .findById(copyTextFlowsResult.get(tf.getId()));
+
+                            List<HTextFlowTarget> tfts = textFlowTargetDAO.getTextFlowtargetsWithAllProperties(tf);
+
+                            tfts.forEach((tft) -> {
+                                try {
+                                    HTextFlowTarget newTft =
+                                            copyTextFlowTarget(newTextFlow, tft);
+                                    newTft.setLocale(tft.getLocale());
+                                    textFlowTargetDAO.makePersistent(newTft);
+//                                    totalTftCount.incrementAndGet();
+                                } catch (Exception e) {
+                                    log.error("error copying textflow target {}", tft);
+                                }
+                            });
+                        });
+                    } catch (Exception e) {
+                        log.error("error copying text flow target bundle", e);
+                    }
+                });
+            } catch (Exception e) {
+                log.warn("exception during copy text flow", e);
             }
         }
         copyTfAndTftStopWatch.stop();
         log.info(
                 "copy document- textFlow:{}, textFlowTarget:{} copied for document:{} - {}",
-                tfCount, totalTftCount, newDocumentId, copyTfAndTftStopWatch);
+                tfCount, 0, newDocumentId, copyTfAndTftStopWatch);
         copyTfAndTftStopWatch.reset();
     }
 

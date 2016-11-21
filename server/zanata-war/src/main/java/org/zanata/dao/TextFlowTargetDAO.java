@@ -471,4 +471,14 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                                 "TextFlowTargetDAO.getTranslationCandidateCountWithProjectAndLocale");
         return (Long) query.uniqueResult();
     }
+
+    public List<HTextFlowTarget> getTextFlowtargetsWithAllProperties(HTextFlow textFlow) {
+        List result = getSession().createQuery(
+                "from HTextFlowTarget tft fetch all properties where tft.textFlow = :textFlow order by tft.id")
+                .setParameter("textFlow", textFlow)
+                .setCacheable(true)
+                .setComment("TextFLowTargetDAO.getByIdsWithAllProperties")
+                .list();
+        return result;
+    }
 }
