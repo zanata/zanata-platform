@@ -1,6 +1,6 @@
 import { fetchPhraseList, fetchPhraseDetail, savePhrase } from '../api'
 import { toggleDropdown } from '.'
-import { mapValues, slice } from 'lodash'
+import { isUndefined, mapValues, slice } from 'lodash'
 import {
   defaultSaveStatus,
   STATUS_NEW,
@@ -17,6 +17,13 @@ export function requestPhraseList (projectSlug, versionSlug, lang, docId,
                                    paging) {
   return (dispatch, getState) => {
     dispatch({ type: FETCHING_PHRASE_LIST })
+
+    if (isUndefined(lang)) {
+      // cannot request phrases without a language
+      dispatch(phraseListFetchFailed(
+        new Error('No language selected, cannot fetch phrases.')))
+      return
+    }
 
     fetchPhraseList(projectSlug, versionSlug, lang, docId)
       .then(response => {
@@ -103,7 +110,7 @@ function transUnitDetailToPhraseDetail (transUnitDetail, localeId) {
     const source = transUnit.source
     const plural = source.plural
     const trans = transUnit[localeId]
-    const translations = extractTranslations(source, trans)
+    const translations = extractTranslations(trans)
     return {
       id: parseInt(id, 10),
       plural,
@@ -122,11 +129,13 @@ function transUnitDetailToPhraseDetail (transUnitDetail, localeId) {
  *
  * This will always return an Array<String>, but the array may be empty.
  */
-function extractTranslations (source, trans) {
-  if (source.plural) {
-    return trans && trans.contents ? trans.contents.slice() : []
+function extractTranslations (trans) {
+  if (!trans) {
+    return []
   }
-  return trans ? [trans.content] : []
+  return trans.content ? [trans.content]
+    // Array.slice() efficiently makes a copy of the array.
+    : (trans.contents ? trans.contents.slice() : [])
 }
 
 /**

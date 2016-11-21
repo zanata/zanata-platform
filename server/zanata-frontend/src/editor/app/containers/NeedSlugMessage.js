@@ -11,18 +11,20 @@ import { connect } from 'react-redux'
  */
 class NeedSlugMessage extends React.Component {
   render () {
+    /* eslint-disable max-len */
     return (
       <div>
         <p>Need a URL in the form <code>
-          .../project-slug/version-slug/translate
+          .../project/translate/project-slug/v/version-slug/doc-id-with-slashes?lang=locale-id
         </code></p>
-        <p>If using <code>fake-zanata-server</code>, try using <Link
-          to="/tiny-project/1/translate/hello.txt/fr">
-              /tiny-project/1/translate/hello.txt/fr
+        <p>e.g. <Link
+          to="project/translate/my-project/v/my-version/document.txt?lang=fr">
+            project/translate/my-project/v/my-version/document.txt?lang=fr
         </Link>
         </p>
       </div>
     )
+    /* eslint-enable max-len */
   }
 }
 

@@ -1,56 +1,48 @@
 package org.zanata.maven;
 
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.PutProjectCommand;
 import org.zanata.client.commands.PutProjectOptions;
 
 /**
  * Creates or updates a Zanata project.
- *
- * @goal put-project
- * @requiresOnline true
- * @author Sean Flanigan <sflaniga@redhat.com>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
+@Mojo(name = "put-project", requiresOnline = true, requiresProject = false)
 public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions>
         implements PutProjectOptions {
 
     /**
      * Project slug/ID
-     *
-     * @parameter expression="${zanata.projectSlug}"
-     * @required
      */
+    @Parameter(property = "zanata.projectSlug", required = true)
     private String projectSlug;
 
     /**
      * Project name
-     *
-     * @parameter expression="${zanata.projectName}"
-     * @required
      */
+    @Parameter(property = "zanata.projectName", required = true)
     private String projectName;
 
     /**
      * Project description
-     *
-     * @parameter expression="${zanata.projectDesc}"
-     * @required
      */
+    @Parameter(property = "zanata.projectDesc", required = true)
     private String projectDesc;
 
     /**
      * URL for original source in a human-readable format, e.g.
      * https://github.com/zanata/zanata
-     *
-     * @parameter expression="${zanata.sourceViewUrl}"
      */
+    @Parameter(property = "zanata.sourceViewUrl")
     private String sourceViewUrl;
 
     /**
      * URL for original source in a machine-readable format, e.g.
      * git@github.com:zanata/zanata.git
-     *
-     * @parameter expression="${zanata.sourceCheckoutUrl}"
      */
+    @Parameter(property = "zanata.sourceCheckoutUrl")
     private String sourceCheckoutUrl;
 
     /**
@@ -59,10 +51,8 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions>
      * properties, gettext, podir, xliff, xml, file}.
      *
      * See https://github.com/zanata/zanata/wiki/Project-Types
-     *
-     * @parameter expression="${zanata.defaultProjectType}"
-     * @required
      */
+    @Parameter(property = "zanata.defaultProjectType", required = true)
     private String defaultProjectType;
 
     public PutProjectMojo() throws Exception {

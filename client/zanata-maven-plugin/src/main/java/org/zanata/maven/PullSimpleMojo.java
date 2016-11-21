@@ -20,22 +20,22 @@
  */
 package org.zanata.maven;
 
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.pull.PullOptions;
 
 /**
  * Pulls translated text from Zanata.
- *
- * @goal pull
- * @author Sean Flanigan <sflaniga@redhat.com>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
+@Mojo(name = "pull", requiresOnline = true, requiresProject = false)
 public class PullSimpleMojo extends AbstractPullMojo implements PullOptions {
 
     /**
      * Whether module processing should be enabled. This option is obsolete.
      * Please use pull-module instead.
-     *
-     * @parameter expression="${zanata.enableModules}"
      */
+    @Parameter(property = "zanata.enableModules")
     private boolean enableModules = false;
 
     public PullSimpleMojo() {

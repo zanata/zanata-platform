@@ -63,7 +63,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 .signInInactive(usernamepassword, usernamepassword);
 
         assertThat(inactiveAccountPage.getTitle())
-                .isEqualTo("Account is not activated")
+                .isEqualTo("Zanata: Account is not activated")
                 .as("The account is inactive");
 
         WiserMessage message = hasEmailRule.getMessages().get(0);
@@ -138,7 +138,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 .signInInactive(usernamepassword, usernamepassword);
 
         assertThat(inactiveAccountPage.getTitle())
-                .isEqualTo("Account is not activated")
+                .isEqualTo("Zanata: Account is not activated")
                 .as("The account is inactive");
 
         HomePage homePage = inactiveAccountPage

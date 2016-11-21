@@ -58,9 +58,27 @@ module.exports = {
     // TODO remove when components migrated to use .js (default is ['', '.js'])
     extensions: ['', '.js', '.jsx']
   },
+
+  eslint: {
+    failOnWarning: false,
+    failOnError: true
+  },
+
   devtool: 'source-map',
   devServer: {
-    historyApiFallback: true
+    port: 8000,
+    historyApiFallback: {
+      rewrites: [
+        // Anything other than bundle.js and bundle.css should get the app
+        //   regex notes:
+        //     - negative lookahead (?!bundle\.js|bundle.css) checks that the current character is not the start of
+        //       "bundle.js" or "bundle.css"
+        //     - the "." after the lookahead will match any single character (when the negative lookahead did not match)
+        //     - the outer non-capturing group repeats the above any number of times
+        //     - wrapped in ^ and $ so it must match the whole string
+        { from: /^(?:(?!bundle\.js|bundle\.css).)*$/, to: '/index.html' }
+      ]
+    }
   },
 
   /* Used just to run autoprefix */

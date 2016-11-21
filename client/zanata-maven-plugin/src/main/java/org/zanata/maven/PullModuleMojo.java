@@ -21,13 +21,13 @@
 
 package org.zanata.maven;
 
+import org.apache.maven.plugins.annotations.Mojo;
+
 /**
  * Pulls translated text from Zanata.
- *
- * @goal pull-module
- * @requiresProject true
- * @author Sean Flanigan <sflaniga@redhat.com>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
+@Mojo(name = "pull-module", requiresOnline = true, requiresProject = true)
 public class PullModuleMojo extends AbstractPullMojo {
     @Override
     public boolean getEnableModules() {

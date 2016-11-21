@@ -11,10 +11,10 @@
     <relativePath>../parent</relativePath>
   </parent>
 
+  <!-- Connection URLs repeated as workaround for https://issues.apache.org/jira/browse/MPIR-234 -->
   <scm>
-    <connection>scm:git:git://github.com/zanata/zanata-server.git</connection>
-    <developerConnection>scm:git:git@github.com:zanata/zanata-server.git</developerConnection>
-    <url>https://github.com/zanata/zanata-server</url>
+    <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
@@ -36,7 +36,7 @@
     <lombok.version>1.16.6</lombok.version>
     <weld.version>2.3.2.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
-    <groovy.version>2.4.5</groovy.version>
+    <groovy.version>2.4.7</groovy.version>
     <icu4j.version>56.1</icu4j.version>
     <!-- Only Guava 20+ supports GWT 2.8.
          See https://github.com/google/guava/issues/1999 -->
@@ -46,23 +46,6 @@
     <lucene.version>5.3.1</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
     <rewrite.version>3.0.0.Alpha10</rewrite.version>
-
-    <!--
-    Version of java compiler used for building. (Specified as major.minor,
-    as used by javac -source and -target).
-    -->
-    <required.java>1.8</required.java>
-    <!--
-      Version of Java used for runtime (major.minor) and for bytecode
-      generation. Should correspond with animal.sniffer.signature.
-    -->
-    <!-- NB: When changing this, be sure to update the rpm's spec file to match -->
-    <required.jvm>1.8</required.jvm>
-    <!--
-      Version of Java used for API compatibility checking. Should
-      correspond with required.jvm.
-    -->
-    <animal.sniffer.signature>org.codehaus.mojo.signature:java18:1.0</animal.sniffer.signature>
 
     <!--
     Not used yet.
@@ -78,12 +61,8 @@
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.29</okapi.version>
 
-    <zanata.assets.version>10.0-SNAPSHOT</zanata.assets.version>
-    <zanata.api.version>${project.version}</zanata.api.version>
-    <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
-    <zanata.api.compat.version>3.9.1</zanata.api.compat.version>
+    <zanata.assets.version>10.1</zanata.assets.version>
     <zanata.client.version>${project.version}</zanata.client.version>
-    <zanata.common.version>${project.version}</zanata.common.version>
 
     <richfaces.version>4.5.17.Final</richfaces.version>
 
@@ -389,18 +368,6 @@
       </dependency>
 
       <dependency>
-        <groupId>commons-beanutils</groupId>
-        <artifactId>commons-beanutils</artifactId>
-        <version>1.9.2</version>
-        <exclusions>
-          <exclusion>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-
-      <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
         <version>4.4.1</version>
@@ -688,7 +655,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>com.sun.jersey</groupId>
@@ -732,7 +699,7 @@
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
         <classifier>sources</classifier>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>*</groupId>
@@ -744,7 +711,8 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>${zanata.api.compat.version}</version>
+        <!-- This should always be the previous version of the used api version above (but only 3.0.1 or later will work) -->
+        <version>3.9.1</version>
         <classifier>compat</classifier>
         <scope>test</scope>
         <exclusions>
@@ -771,7 +739,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-common-util</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>xom</groupId>
@@ -782,17 +750,17 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-po</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-glossary</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-properties</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>javax.xml.bind</groupId>
@@ -803,7 +771,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-adapter-xliff</artifactId>
-        <version>${zanata.common.version}</version>
+        <version>${project.version}</version>
         <exclusions>
           <exclusion>
             <groupId>javax.xml.bind</groupId>
@@ -820,7 +788,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-rest-client</artifactId>
-        <version>${zanata.client.version}</version>
+        <version>${project.version}</version>
         <scope>test</scope>
         <!-- The client uses a newer version of resteasy -->
         <exclusions>
@@ -837,7 +805,7 @@
       <dependency>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-rest-client</artifactId>
-        <version>${zanata.client.version}</version>
+        <version>${project.version}</version>
         <type>test-jar</type>
         <scope>test</scope>
       </dependency>
@@ -1292,18 +1260,6 @@
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>3.19.0-GA</version>
-      </dependency>
-
-      <dependency>
-        <exclusions>
-          <exclusion>
-            <groupId>javax.el</groupId>
-            <artifactId>el-api</artifactId>
-          </exclusion>
-        </exclusions>
-        <groupId>org.jboss.logging</groupId>
-        <artifactId>jboss-logging</artifactId>
-        <version>3.3.0.Final</version>
       </dependency>
 
       <dependency>
@@ -1818,7 +1774,7 @@
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
-        <version>${zanata.client.version}</version>
+        <version>${project.version}</version>
         <configuration>
           <srcDir>.</srcDir>
           <transDir>.</transDir>

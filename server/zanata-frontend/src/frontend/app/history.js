@@ -18,28 +18,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.email;
-
-import javax.annotation.Resource;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Produces;
-import javax.inject.Named;
-import javax.mail.Session;
+import { useRouterHistory } from 'react-router'
+import { createHistory } from 'history'
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * Creates a history object used by the router.
+ *
+ * This is created in a separate module so that other modules can hook in and
+ * extend it.
  */
-@ApplicationScoped
-public class MailSessionProducer {
-
-    @Resource(mappedName = "java:jboss/mail/Default")
-    private Session session;
-
-    @Produces
-    @Dependent
-    @Named("mailSession")
-    public Session getSession() {
-        return session;
-    }
-}
+export const history = useRouterHistory(createHistory)({
+  basename: window.config.baseUrl
+})

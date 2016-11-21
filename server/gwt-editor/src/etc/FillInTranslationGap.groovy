@@ -1,4 +1,4 @@
-import com.google.common.io.Files
+import java.nio.file.Files
 
 // This script will used combine pulled translation files from Zanata server and GWT generated skeleton file.
 // This will enable GWT to compile locale permutation for not 100% translated locales.
@@ -42,7 +42,7 @@ genPropNames.each {
     def finalOutput = new File("$project.build.outputDirectory/$relativePath")
     finalOutput.getParentFile().mkdirs()
     log.debug("finalOutput: {}", finalOutput.absolutePath)
-    Files.copy(skeleton, finalOutput)
+    Files.copy(skeleton.toPath(), finalOutput.toPath())
 
     def translation = translationMap.get(skeleton.name)
     if (!translation) {

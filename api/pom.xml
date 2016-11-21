@@ -12,10 +12,10 @@
     <relativePath>../parent</relativePath>
   </parent>
 
+  <!-- Connection URLs repeated as workaround for https://issues.apache.org/jira/browse/MPIR-234 -->
   <scm>
-    <connection>scm:git:git://github.com/zanata/zanata-api.git</connection>
-    <developerConnection>scm:git:git@github.com:zanata/zanata-api.git</developerConnection>
-    <url>https://github.com/zanata/zanata-api</url>
+    <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
@@ -33,11 +33,6 @@
       </snapshots>
     </repository>
   </repositories>
-
-  <properties>
-    <required.java>1.7</required.java>
-    <required.jvm>1.7</required.jvm>
-  </properties>
 
   <build>
     <plugins>

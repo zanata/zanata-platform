@@ -35,7 +35,7 @@ This is an optional field to provide a machine-readable string that can be used 
 For example, a git checkout URL is provided for the Zanata server project that can be used with git command line to download a copy of the Zanata server source code as shown here:
 
 ```bash
-$ git clone git@github.com:zanata/zanata-server.git
+$ git clone git@github.com:zanata/zanata-platform.git
 ```
 
 ### Make this project read only

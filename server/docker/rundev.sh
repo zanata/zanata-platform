@@ -37,8 +37,31 @@ HTTP_PORT=8080
 DEBUG_PORT=8787
 MGMT_PORT=9090
 
-while getopts ":p:n:h" opt; do
+# default mail setting
+MAIL_HOST=localhost
+MAIL_CREDENTIAL_ENV=''
+
+while getopts ":e:p:n:hl:" opt; do
   case ${opt} in
+    e)
+      echo "==== use $OPTARG as mail host ===="
+      MAIL_HOST=$OPTARG
+      ;;
+    l)
+      echo "==== provide smtp host login (username:password) ===="
+      # set the internal field separator (IFS) variable, and then let it parse into an array.
+      # When this happens in a command, then the assignment to IFS only takes place to that single command's environment (to read ).
+      # It then parses the input according to the IFS variable value into an array
+      IFS=':' read -ra CREDENTIAL <<< "$OPTARG"
+      if [ ${#CREDENTIAL[@]} -ne 2 ]
+      then
+        echo "must provide smtp credentials in username:password format (colon separated)"
+        exit 1
+      fi
+      MAIL_USERNAME=${CREDENTIAL[0]}
+      MAIL_PASSWORD=${CREDENTIAL[1]}
+      MAIL_CREDENTIAL_ENV=" -e MAIL_USERNAME=\"${MAIL_USERNAME}\" -e MAIL_PASSWORD=\"${MAIL_PASSWORD}\" "
+      ;;
     p)
       echo "===== set JBoss port offset to $OPTARG ====="
       if [ "$OPTARG" -eq "$OPTARG" ] 2>/dev/null
@@ -60,9 +83,11 @@ while getopts ":p:n:h" opt; do
       ;;
     h)
       echo "========   HELP   ========="
-      echo "-p <offset number> : set JBoss port offset"
-      echo "-n <docker network>: will connect container to given docker network (default is $DOCKER_NETWORK)"
-      echo "-h                 : display help"
+      echo "-e <smtp email host>  : smtp mail host"
+      echo "-l <username:password>: smtp login: username and password separated by colon"
+      echo "-p <offset number>    : set JBoss port offset"
+      echo "-n <docker network>   : will connect container to given docker network (default is $DOCKER_NETWORK)"
+      echo "-h                    : display help"
       exit
       ;;
     \?)
@@ -93,6 +118,7 @@ JBOSS_DEPLOYMENT_VOLUME=/opt/jboss/wildfly/standalone/deployments/
 docker run \
     -e JAVA_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata" \
     -e DB_USERNAME=${DB_USERNAME} -e DB_PASSWORD=${DB_PASSWORD} -e DB_SCHEMA=${DB_SCHEMA} -e DB_HOSTNAME=zanatadb\
+    -e MAIL_HOST="${MAIL_HOST}" ${MAIL_CREDENTIAL_ENV} \
     --rm --name zanata --net=${DOCKER_NETWORK} \
     -p ${HTTP_PORT}:8080 -p ${DEBUG_PORT}:8787 -p ${MGMT_PORT}:9990 -it \
     -v ${ZANATA_DEPLOYMENTS_DIR}:${JBOSS_DEPLOYMENT_VOLUME} \

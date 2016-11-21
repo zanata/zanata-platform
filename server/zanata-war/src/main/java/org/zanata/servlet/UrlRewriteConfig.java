@@ -1,5 +1,6 @@
 package org.zanata.servlet;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.ocpsoft.rewrite.annotation.RewriteConfiguration;
@@ -20,6 +21,7 @@ import org.ocpsoft.urlbuilder.Address;
 import org.ocpsoft.urlbuilder.AddressBuilder;
 
 import javax.servlet.ServletContext;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -66,10 +68,24 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .perform(Redirect.permanent(contextPath +
                     "/iteration/view/{projectSlug}/{iterationSlug}/documents"))
 
+                .addRule(Join.path("/{path}").to("/a/index.xhtml"))
+                .where("path").matches(anyOf(
+                        "explore",
+                        "glossary",
+                        "glossary/project/[^/]*",
+                        "languages",
+                        // There is a 302 redirect from profile to profile/
+                        // I don't know why it does it, but it causes 403 Forbidden
+                        // unless there is also a rewrite for profile/ here
+                        "profile",
+                        "profile/",
+                        "profile/view/[^/]*"))
+
+                .addRule(Join.path("/project/translate/{project}/v/{version}/{document}").to("/editor/index.xhtml"))
+                .where("document").matches(".*")
 
                 .addRule(Join.path("/").to("/home.xhtml"))
-                .addRule(Join.path("/a/").to("/a/index.xhtml"))
-                .addRule(Join.path("/a/more").to("/a/more.xhtml"))
+                .addRule(Join.path("/info").to("/a/more.xhtml"))
                 .addRule(Join.path("/account/activate/{key}").to("/account/activate.xhtml"))
                 .addRule(Join.path("/account/google_password_reset_request").to("/account/google_password_reset_request.xhtml"))
                 .addRule(Join.path("/account/password_reset/{key}").to("/account/password_reset.xhtml"))
@@ -88,7 +104,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
 
                 .addRule(Join.path("/error/").to("/error.xhtml"))
                 .addRule(Join.pathNonBinding("/error/{path}").to("/error/{path}.xhtml"))
-                .addRule(Join.path("/glossary/").to("/glossary/view.xhtml"))
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}").to("/iteration/view.xhtml"))
 
                 .addRule(Join.path("/iteration/view/{projectSlug}/{iterationSlug}/{section}").to("/iteration/view.xhtml"))
@@ -105,18 +120,16 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .when(Direction.isInbound())
                 .where("path").matches(".*(?<!.xhtml)")
 
-                .addRule(Join.path("/language/list").to("/language/home.xhtml"))
                 .addRule(Join.path("/language/view/{id}").to("/language/language.xhtml"))
 
                 .addRule(Join.path("/language/view/{id}/{section}").to("/language/language.xhtml"))
                 .where("section").matches(".*")
 
-                .addRule(Join.path("/profile/").to("/profile/home.xhtml"))
-                .addRule(Join.path("/profile/add_identity").to("/profile/add_identity.xhtml"))
+
+
                 .addRule(Join.path("/profile/create").to("/profile/create_user.xhtml"))
-                .addRule(Join.path("/profile/edit").to("/profile/edit.xhtml"))
                 .addRule(Join.path("/profile/merge_account").to("/profile/merge_account.xhtml"))
-                .addRule(Join.path("/profile/view/{username}").to("/profile/home.xhtml"))
+
                 .addRule(Join.path("/project/add_iteration/{projectSlug}").to("/project/add_iteration.xhtml"))
                 .addRule(Join.path("/project/add_iteration/{projectSlug}/{copyFromVersionSlug}").to("/project/add_iteration.xhtml"))
                 .addRule(Join.path("/project/create").to("/project/create_project.xhtml"))
@@ -183,4 +196,20 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
         }
     }
 
+    /**
+     * Return a regex string that will match any of the given paths.
+     *
+     * Paths may include regular expression parts, or just be simple strings.
+     * All paths are just joined with the pipe character ("|").
+     *
+     * @param paths one or more path regular expressions to match against
+     * @return a regular expression that will match any of the given path expressions
+     */
+    private static String anyOf(@NotNull String... paths) {
+        if (paths.length == 0) {
+            throw new RuntimeException("anyOf() called with no paths. Specify at least one path.");
+        }
+
+        return StringUtils.join(paths, "|");
+    }
 }

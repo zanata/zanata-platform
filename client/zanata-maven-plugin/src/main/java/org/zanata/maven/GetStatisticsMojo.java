@@ -20,6 +20,8 @@
  */
 package org.zanata.maven;
 
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.stats.GetStatisticsCommand;
 import org.zanata.client.commands.stats.GetStatisticsOptions;
@@ -27,42 +29,39 @@ import org.zanata.client.commands.stats.GetStatisticsOptions;
 /**
  * Get translation statistics from Zanata.
  *
- * @goal stats
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
+@Mojo(name = "stats", requiresOnline = true, requiresProject = false)
 public class GetStatisticsMojo extends
         ConfigurableProjectMojo<GetStatisticsOptions> implements
         GetStatisticsOptions {
+
     /**
      * Include detailed statistics.
-     *
-     * @parameter expression="${zanata.details}" default-value="false"
      */
+    @Parameter(property = "zanata.details", defaultValue = "false")
     private boolean includeDetails;
 
     /**
      * Include word-level stats. By default, only message-level statistics will
      * be fetched.
-     *
-     * @parameter expression="${zanata.word}" default-value="false"
      */
+    @Parameter(property = "zanata.word", defaultValue = "false")
     private boolean includeWordLevelStats;
 
     /**
      * Output format for the statistics. Valid options are: csv - For a csv
      * format (via the console). console (default) - For regular console
      * printing.
-     *
-     * @parameter expression="${zanata.format}" default-value="console"
      */
+    @Parameter(property = "zanata.format", defaultValue = "console")
     private String format;
 
     /**
      * Document id to fetch statistics for.
-     *
-     * @parameter expression="${zanata.docId}"
      */
+    @Parameter(property = "zanata.docId")
     private String documentId;
 
     @Override

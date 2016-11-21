@@ -11,10 +11,10 @@
     <relativePath>../parent</relativePath>
   </parent>
 
+  <!-- Connection URLs repeated as workaround for https://issues.apache.org/jira/browse/MPIR-234 -->
   <scm>
-    <connection>scm:git:git://github.com/zanata/zanata-common.git</connection>
-    <developerConnection>scm:git:git@github.com:zanata/zanata-common.git</developerConnection>
-    <url>https://github.com/zanata/zanata-common</url>
+    <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
@@ -32,10 +32,6 @@
       </snapshots>
     </repository>
   </repositories>
-
-  <properties>
-    <zanata.api.version>${project.version}</zanata.api.version>
-  </properties>
 
   <build>
     <plugins>
@@ -58,7 +54,7 @@
       <dependency>
         <groupId>${project.groupId}</groupId>
         <artifactId>zanata-common-api</artifactId>
-        <version>${zanata.api.version}</version>
+        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.fedorahosted.tennera</groupId>

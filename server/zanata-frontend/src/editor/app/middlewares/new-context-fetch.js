@@ -1,9 +1,13 @@
 import stateChangeDispatchMiddleware from './state-change-dispatch'
 import { requestDocumentList } from '../actions'
 import { requestPhraseList, fetchPhraseDetails } from '../actions/phrases'
-import { selectDoc, selectLocale } from '../actions/headerActions'
+import {
+  fetchHeaderInfo,
+  selectDoc,
+  selectLocale
+} from '../actions/headerActions'
 import { UPDATE_PAGE } from '../actions/controlsHeaderActions'
-import { max } from 'lodash'
+import { every, isUndefined, max, negate } from 'lodash'
 
 /**
  * Get page query from url, and check is integer and >= 0
@@ -35,15 +39,16 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
     }
   },
   (dispatch, oldState, newState) => {
-    const docChanged = oldState.context.docId !== newState.context.docId
-    const localeChanged = oldState.context.lang !== newState.context.lang
+    const { projectSlug, versionSlug, lang, docId } = newState.context
+
+    const docChanged = oldState.context.docId !== docId
+    const localeChanged = oldState.context.lang !== lang
 
     const newPageIndex = getPageIndexFromQuery(newState)
     const oldPageIndex = getPageIndexFromQuery(oldState)
 
     const updatePage = oldPageIndex !== newPageIndex
     if (docChanged || localeChanged) {
-      const { projectSlug, versionSlug, lang, docId } = newState.context
       const paging = {
         ...newState.phrases.paging,
         pageIndex: newPageIndex
@@ -52,6 +57,7 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
         dispatch(selectDoc(docId))
       }
       if (localeChanged) {
+        // FIXME just use selected locale from context.lang if possible
         dispatch(selectLocale(lang))
       }
       dispatch({type: UPDATE_PAGE, page: newPageIndex})
@@ -63,8 +69,19 @@ const fetchDocsMiddleware = stateChangeDispatchMiddleware(
         pageIndex: newPageIndex
       }
       dispatch({type: UPDATE_PAGE, page: newPageIndex})
-      dispatch(fetchPhraseDetails(phraseState.docStatus,
-        newState.context.lang, paging))
+      dispatch(fetchPhraseDetails(phraseState.docStatus, lang, paging))
+    }
+  },
+  // Fetch new header data only when the full workspace is first known
+  (dispatch, oldState, newState) => {
+    function hasAllContextInfo (state) {
+      const { projectSlug, versionSlug, docId } = state.context
+      return every([projectSlug, versionSlug, docId], negate(isUndefined))
+    }
+
+    if (!hasAllContextInfo(oldState) && hasAllContextInfo(newState)) {
+      const { projectSlug, versionSlug, lang, docId } = newState.context
+      dispatch(fetchHeaderInfo(projectSlug, versionSlug, docId, lang))
     }
   }
 )

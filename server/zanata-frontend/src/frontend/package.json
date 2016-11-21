@@ -8,6 +8,11 @@
     "build": "webpack --config webpack.config.js && npm run build:webpack && npm run build:webpackLegacy",
     "build:webpack": "webpack -p --config webpack.prod.config.js --bail --display-error-details && npm run copycss",
     "build:webpackLegacy": "webpack -p --config webpack.legacy.config.js --bail --display-error-details && npm run copycss",
+
+    "draft": "webpack --config webpack.config.js && npm run draft:webpack && npm run draft:webpackLegacy",
+    "draft:webpack": "webpack --config webpack.draft.config.js --progress --bail --display-error-details",
+    "draft:webpackLegacy": "webpack --config webpack.draftlegacy.config.js --progress --bail --display-error-details",
+
     "hot-dev-server": "webpack-dev-server --config webpack.dev.config.js --progress --inline --hot --port 8000",
     "start": "npm run hot-dev-server",
     "styleguide-server": "styleguidist server",
