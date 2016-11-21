@@ -1080,7 +1080,51 @@ p {
   color: @brand-secondary;
 }
 
-.alert-error,
+.alert {
+  padding:@alert-padding;
+margin-bottom: @line-height-computed;
+border: 1px solid transparent;
+border-radius: @alert-border-radius;
+
+// Headings for larger alerts
+h4 {
+  margin-top: 0;
+  // Specified for the h4 to prevent conflicts of changing @headings-color
+  color: inherit;
+}
+// Provide class for links that match alerts
+.alert-link {
+  font-weight: @alert-link-font-weight;
+}
+
+// Improve alignment and spacing of inner content
+> p,
+> ul {
+  margin-bottom: 0;
+}
+> p + p {
+  margin-top: 5px;
+}
+}
+
+// Dismissable alerts
+//
+// Expand the right padding and account for the close button's positioning.
+
+.alert-dismissable {
+  padding-right: (@alert-padding + 20);
+
+  // Adjust close link position
+  .close {
+    position: relative;
+    top: -2px;
+    right: -21px;
+    color: inherit;
+  }
+}
+
+
+.alert-danger,
 .alert-info,
 .alert-success,
 .alert-warning {
@@ -1093,14 +1137,14 @@ p {
 }
 
 .alert-warning {
-  background-color: #ffa800;
+  background-color: @brand-warning;
 }
 
 .alert-success {
   background-color: @brand-success;
 }
 
-.alert-error {
+.alert-danger {
   background-color: @brand-danger;
 }
 
@@ -2869,30 +2913,33 @@ textarea.input-group-sm > .input-group-btn > .btn {
   z-index: 2;
   margin-left: -1px;
 }
+//
+// Breadcrumbs
+// --------------------------------------------------
+
 
 .breadcrumb {
-  margin-bottom: 1.429em;
-  padding: @padding-base-vertical @padding-large-horizontal;
+  padding: @breadcrumb-padding-vertical @breadcrumb-padding-horizontal;
+  margin-bottom: @line-height-computed;
   list-style: none;
-  border-radius: 4px;
-  background-color: @border-radius-base;
-  background-color: #fcfcfc;
+  background-color: @breadcrumb-bg;
+  border-radius: @border-radius-base;
+
+  > li {
+    display: inline-block;
+
+    + li:before {
+      content: "@{breadcrumb-separator}\00a0"; // Unicode space added since inline-block means non-collapsing white-space
+      padding: 0 5px;
+      color: @breadcrumb-color;
+    }
+  }
+
+  > .active {
+    color: @breadcrumb-active-color;
+  }
 }
 
-.breadcrumb > li {
-  display: inline-block;
-}
-
-.breadcrumb > li + li:before {
-  padding: 0 @padding-small-vertical;
-  font-family: FontAwesome;
-  content: '\f105';
-  color: #ccc;
-}
-
-.breadcrumb > .active {
-  color: #777;
-}
 
 .pagination,
 .search-box,
@@ -4243,14 +4290,36 @@ button.list-group-item {
   border-bottom-color: @brand-primary;
 }
 
+//
+// Wells
+// --------------------------------------------------
+
+
+// Base class
 .well {
-  margin-bottom: 0.714em;
-  background-color: #fff;
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: @well-bg;
+  border: 1px solid @well-border;
+  border-radius: @border-radius-base;
+  box-shadow:inset 0 1px 1px rgba(0,0,0,.05);
+  blockquote {
+    border-color: #ddd;
+    border-color: rgba(0,0,0,.15);
+  }
 }
 
-.well-sm {
-  padding: 0.286em;
+// Sizes
+.well-lg {
+  padding: 24px;
+  border-radius: @border-radius-large;
 }
+.well-sm {
+  padding: 9px;
+  border-radius: @border-radius-small;
+}
+
 
 .content {
   font-size: 1em;

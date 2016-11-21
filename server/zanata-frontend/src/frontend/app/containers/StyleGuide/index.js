@@ -4,12 +4,12 @@ import {
   LoaderText, TextInput
 } from '../../components'
 import {
-  Button, Row, Table, ButtonToolbar,
-  OverlayTrigger, Tooltip, Grid, Col,
+  Alert, Button, Row, Table, ButtonToolbar, Tabs,
+  Tab, OverlayTrigger, Tooltip, Grid, Col,
   Badge, Nav, NavItem, ControlLabel,
   FormGroup, FormControl, Form, InputGroup,
   Checkbox, Radio, Label, ListGroup,
-  ListGroupItem, ProgressBar
+  ListGroupItem, ProgressBar, Well, Breadcrumb
 } from 'react-bootstrap'
 
 const tooltip = (
@@ -18,8 +18,6 @@ const tooltip = (
 )
 
 const now = 60
-
-const wellStyles = {maxWidth: '400', margin: '0 auto 10px'}
 
 class StyleGuide extends Component {
 
@@ -116,6 +114,25 @@ class StyleGuide extends Component {
         </span>
         <h1>COMPONENTS</h1>
         <span>
+          <h2>Alerts</h2>
+          <Alert bsStyle='success'>
+            <strong>Holy guacamole!</strong> Best check yo self,
+            you're not looking too good.
+          </Alert>
+          <Alert bsStyle='warning'>
+            <strong>Holy guacamole!</strong> Best check yo self,
+            you're not looking too good.
+          </Alert>
+          <Alert bsStyle='danger'>
+            <strong>Holy guacamole!</strong> Best check yo self,
+            you're not looking too good.
+          </Alert>
+          <Alert bsStyle='info'>
+            <strong>Holy guacamole!</strong> Best check yo self,
+            you're not looking too good.
+          </Alert>
+        </span>
+        <span>
           <h2>Badges</h2>
           <p>Badge <Badge>23</Badge></p>
           <Nav bsStyle='pills' stacked className='sg-nav-pills'>
@@ -138,6 +155,20 @@ class StyleGuide extends Component {
           <Button bsStyle='primary' type='button'>
             Messages <Badge>4</Badge>
           </Button>
+        </span>
+        <span>
+          <h2>Breadcrumbs</h2>
+          <Breadcrumb>
+            <Breadcrumb.Item href='#'>
+              Home
+            </Breadcrumb.Item>
+            <Breadcrumb.Item href='#'>
+              Library
+            </Breadcrumb.Item>
+            <Breadcrumb.Item active>
+              Data
+            </Breadcrumb.Item>
+          </Breadcrumb>
         </span>
         <span className='list-inline'>
           <h2>Buttons</h2>
@@ -168,7 +199,7 @@ class StyleGuide extends Component {
             Extra small button</Button>
             <Button bsSize='xsmall'>Extra small button</Button>
           </ButtonToolbar>
-          <span className='well' style={wellStyles}>
+          <span>
             <Button bsStyle='primary' bsSize='large' block>
             Block level button</Button>
             <Button bsSize='large' block>Block level button</Button>
@@ -491,6 +522,74 @@ class StyleGuide extends Component {
           </Table>
         </span>
         <span>
+          <h2>Tabs</h2>
+          <Tabs defaultActiveKey={2} id='uncontrolled-tab-example'>
+            <Tab eventKey={1} title='Tab 1'>Tab 1 content</Tab>
+            <Tab eventKey={2} title='Tab 2'>Tab 2 content</Tab>
+            <Tab eventKey={3} title='Tab 3' disabled>Tab 3 content</Tab>
+          </Tabs>
+          <Tab.Container id='left-tabs-example' defaultActiveKey='first'>
+            <Row className='clearfix'>
+              <Col sm={4}>
+                <Nav bsStyle='pills' stacked>
+                  <NavItem eventKey='first'>
+                    Tab 1
+                  </NavItem>
+                  <NavItem eventKey='second'>
+                    Tab 2
+                  </NavItem>
+                </Nav>
+              </Col>
+              <Col sm={8}>
+                <Tab.Content animation>
+                  <Tab.Pane eventKey='first'>
+                    Tab 1 content
+                  </Tab.Pane>
+                  <Tab.Pane eventKey='second'>
+                    Tab 2 content
+                  </Tab.Pane>
+                </Tab.Content>
+              </Col>
+            </Row>
+          </Tab.Container>
+        </span>
+        <span>
+          <h2>Text Styles</h2>
+          <h3>Example body text</h3>
+          <p className='lead'>Lead paragraph: vivamus sagittis lacus
+            vel augue laoreet rutrum faucibus dolor auctor. Duis
+          mollis, est non commodo luctus.</p>
+          <p>Nullam quis risus eget <a href='#'>urna mollis ornare</a>
+            vel eu leo. Cum sociis natoque penatibus et magnis dis
+            parturient montes, nascetur ridiculus mus. Nullam
+          id dolor id nibh ultricies vehicula.</p>
+          <p><small>This line of text is meant to be treated as fine print.
+          </small></p>
+          <p>The following snippet of text is <strong>rendered as
+          bold text</strong>.</p>
+          <p>The following snippet of text is <em>rendered as
+          italicized text</em>.</p>
+          <p>An abbreviation of the word attribute is
+            <abbr title='attribute'>attr</abbr>.</p>
+          <p className='text-left'>Left aligned text.</p>
+          <p className='text-center'>Center aligned text.</p>
+          <p className='text-right'>Right aligned text.</p>
+          <p className='text-justify'>Justified text.</p>
+          <p className='text-muted'>Muted: Fusce dapibus,
+            tellus ac cursus commodo,
+          tortor mauris nibh.</p>
+          <p className='text-primary'>Primary: Nullam id dolor id nibh
+          ultricies vehicula ut id elit.</p>
+          <p className='text-warning'>Warning: Etiam porta sem malesuada
+          magna mollis euismod.</p>
+          <p className='text-danger'>Danger: Donec ullamcorper nulla non
+          metus auctor fringilla.</p>
+          <p className='text-success'>Success: Duis mollis, est non commodo
+          luctus, nisi erat porttitor ligula.</p>
+          <p className='text-info'>Info: Maecenas sed diam eget risus varius
+          blandit sit amet non magna.</p>
+        </span>
+        <span>
           <h2>TextInput</h2>
           <TextInput
             maxLength={100}
@@ -520,6 +619,12 @@ class StyleGuide extends Component {
               <Button bsStyle='default'>Holy guacamole!</Button>
             </OverlayTrigger>
           </ButtonToolbar>
+        </span>
+        <span>
+          <h2>Wells</h2>
+          <Well>Look I'm in a well!</Well>
+          <Well bsSize='large'>Look I'm in a large well!</Well>
+          <Well bsSize='small'>Look I'm in a small well!</Well>
         </span>
         <span>
           <h2>Removed components</h2>
