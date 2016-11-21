@@ -9,13 +9,15 @@ import {
   Badge, Nav, NavItem, ControlLabel,
   FormGroup, FormControl, Form, InputGroup,
   Checkbox, Radio, Label, ListGroup,
-  ListGroupItem
+  ListGroupItem, ProgressBar
 } from 'react-bootstrap'
 
 const tooltip = (
   <Tooltip id='tooltip'><strong>Tooltip ahoy!</strong> Check this info.
   </Tooltip>
 )
+
+const now = 60
 
 const wellStyles = {maxWidth: '400', margin: '0 auto 10px'}
 
@@ -402,6 +404,17 @@ class StyleGuide extends Component {
             <ListGroupItem>Item 2</ListGroupItem>
             <ListGroupItem>...</ListGroupItem>
           </ListGroup>
+          <ListGroup>
+            <ListGroupItem href='#' active>Active</ListGroupItem>
+            <ListGroupItem href='#'>Link</ListGroupItem>
+            <ListGroupItem href='#' disabled>Disabled</ListGroupItem>
+          </ListGroup>
+          <ListGroup>
+            <ListGroupItem header='Heading 1'>
+            Some body text</ListGroupItem>
+            <ListGroupItem header='Heading 2' href='#'>
+            Linked item</ListGroupItem>
+          </ListGroup>
         </span>
         <span>
           <h2>Loader</h2>
@@ -429,10 +442,21 @@ class StyleGuide extends Component {
           </Modal>
         </span>
         <span>
-          <h2>Row</h2>
-          <Row>
-            <Icon name='star' className='s1' />This is a row
-          </Row>
+          <h2>Progress bars</h2>
+          <h3>Basic</h3>
+          <ProgressBar now={now} label={`${now}%`} />
+          <ProgressBar now={60} />
+          <h3>Contextual alternatives</h3>
+          <ProgressBar bsStyle='success' now={40} />
+          <ProgressBar bsStyle='info' now={20} />
+          <ProgressBar bsStyle='warning' now={60} />
+          <ProgressBar bsStyle='danger' now={80} />
+          <h3>Stacked</h3>
+          <ProgressBar>
+            <ProgressBar striped bsStyle='success' now={35} key={1} />
+            <ProgressBar bsStyle='warning' now={20} key={2} />
+            <ProgressBar active bsStyle='danger' now={10} key={3} />
+          </ProgressBar>
         </span>
         <span>
           <h2>Table</h2>
