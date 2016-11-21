@@ -1,8 +1,16 @@
-import React, { Component } from 'react'
-import { Modal, EditableText, Icon, Link,
-  LoaderText, TextInput } from '../../components'
-import { Button, Row, Table, ButtonToolbar,
-  OverlayTrigger, Tooltip, Grid, Col } from 'react-bootstrap'
+import React, {Component} from 'react'
+import {
+  Modal, EditableText, Icon, Link,
+  LoaderText, TextInput
+} from '../../components'
+import {
+  Button, Row, Table, ButtonToolbar,
+  OverlayTrigger, Tooltip, Grid, Col,
+  Badge, Nav, NavItem, ControlLabel,
+  FormGroup, FormControl, Form, InputGroup,
+  Checkbox, Radio, Label, ListGroup,
+  ListGroupItem
+} from 'react-bootstrap'
 
 const tooltip = (
   <Tooltip id='tooltip'><strong>Tooltip ahoy!</strong> Check this info.
@@ -27,10 +35,10 @@ class StyleGuide extends Component {
   showModal () {
     this.setState({show: true})
   }
+
   /* eslint-disable react/jsx-no-bind */
   render () {
     return (
-
       <div className='container'>
         <h1>STYLES</h1>
         <span>
@@ -105,6 +113,30 @@ class StyleGuide extends Component {
           Helvetica, Arial, sans-serif;</p>
         </span>
         <h1>COMPONENTS</h1>
+        <span>
+          <h2>Badges</h2>
+          <p>Badge <Badge>23</Badge></p>
+          <Nav bsStyle='pills' stacked className='sg-nav-pills'>
+            <NavItem className='active'>Home
+              &nbsp;<Badge>42</Badge></NavItem>
+            <NavItem>Profile</NavItem>
+            <NavItem>Messages <Badge>3</Badge></NavItem>
+          </Nav>
+          <Nav bsStyle='pills' stacked className='sg-nav-pills'>
+            <NavItem className='active'>
+              <Badge className='pull-right'>42</Badge>
+                Home
+            </NavItem>
+            <NavItem>Profile</NavItem>
+            <NavItem>
+              <Badge className='pull-right'>3</Badge>
+                Messages
+            </NavItem>
+          </Nav>
+          <Button bsStyle='primary' type='button'>
+            Messages <Badge>4</Badge>
+          </Button>
+        </span>
         <span className='list-inline'>
           <h2>Buttons</h2>
           <Button bsStyle='default'>Default</Button>
@@ -142,25 +174,125 @@ class StyleGuide extends Component {
         </span>
         <br />
         <span>
+          <h2>Code</h2>
+          <pre>&lt;p&gt;A block of code is wrapped in pre tags&lt;/p&gt;</pre>
+          <p>For example, <code>&lt;section&gt;</code>
+          should be wrapped as inline.</p>
+          <p>To switch directories, type <kbd>cd</kbd>
+          followed by the name of the directory.</p>
+        </span>
+        <span>
+          <h2>Forms</h2>
+          <Form>
+            <FormGroup>
+              <FormControl type='text' placeholder='Text' />
+              <FormControl type='text' disabled placeholder='disabled' />
+            </FormGroup>
+            <FormGroup bsSize='lg'>
+              <FormControl type='text' placeholder='large' />
+            </FormGroup>
+            <FormGroup bsSize='sm'>
+              <FormControl type='text' placeholder='small' />
+            </FormGroup>
+          </Form>
+          <Form>
+            <FormGroup controlId='formValidationSuccess1'
+              validationState='success'>
+              <ControlLabel>Input with success</ControlLabel>
+              <FormControl type='text' />
+            </FormGroup>
+            <FormGroup controlId='formValidationWarning1'
+              validationState='warning'>
+              <ControlLabel>Input with warning</ControlLabel>
+              <FormControl type='text' />
+            </FormGroup>
+            <FormGroup controlId='formValidationError1' validationState='error'>
+              <ControlLabel>Input with error</ControlLabel>
+              <FormControl type='text' />
+            </FormGroup>
+            <FormGroup controlId='formValidationWarning3'
+              validationState='warning'>
+              <ControlLabel>Input group with warning</ControlLabel>
+              <InputGroup>
+                <InputGroup.Addon>@</InputGroup.Addon>
+                <FormControl type='text' />
+              </InputGroup>
+              <FormControl.Feedback />
+            </FormGroup>
+          </Form>
+          <Form componentClass='fieldset' horizontal>
+            <FormGroup controlId='formValidationError3' validationState='error'>
+              <Col componentClass={ControlLabel} xs={3}>
+                Input with error
+              </Col>
+              <Col xs={9}>
+                <FormControl type='text' />
+                <FormControl.Feedback />
+              </Col>
+            </FormGroup>
+            <FormGroup controlId='formValidationSuccess4'
+              validationState='success'>
+              <Col componentClass={ControlLabel} xs={3}>
+                Input group with success
+              </Col>
+              <Col xs={9}>
+                <InputGroup>
+                  <InputGroup.Addon>@</InputGroup.Addon>
+                  <FormControl type='text' />
+                </InputGroup>
+                <FormControl.Feedback />
+              </Col>
+            </FormGroup>
+          </Form>
+          <Form componentClass='fieldset' inline>
+            <FormGroup controlId='formValidationWarning4'
+              validationState='warning'>
+              <ControlLabel>Input with warning</ControlLabel>
+               {' '}
+              <FormControl type='text' />
+              <FormControl.Feedback />
+            </FormGroup>
+          {' '}
+            <FormGroup controlId='formValidationError4' validationState='error'>
+              <ControlLabel>Input group with error</ControlLabel>
+          {' '}
+              <InputGroup>
+                <InputGroup.Addon>@</InputGroup.Addon>
+                <FormControl type='text' />
+              </InputGroup>
+              <FormControl.Feedback />
+            </FormGroup>
+          </Form>
+          <Checkbox validationState='success'>
+            Checkbox with success
+          </Checkbox>
+          <Radio validationState='warning'>
+            Radio with warning
+          </Radio>
+          <Checkbox validationState='error'>
+            Checkbox with error
+          </Checkbox>
+        </span>
+        <span>
           <h2>EditableText</h2>
           <EditableText
             className='editable'
             maxLength={255}
             placeholder='Add a description…'
-            emptyReadOnlyText='No description' >
+            emptyReadOnlyText='No description'>
             'sting'
           </EditableText>
         </span>
         <span>
           <h2>Headings</h2>
-          <span className='form-inline'>
-            <h1>Heading 1 - H1</h1>
-            <h2>Heading 2 - H2</h2>
-            <h3>Heading 3 - H3</h3>
-            <h4>Heading 4 - H4</h4>
-            <h5>Heading 5 - H5</h5>
-            <h6>Heading 6 - H6</h6>
-          </span>
+          <h1 className='page-header'>Page Header <small>
+          With Small Text</small></h1>
+          <h1>h1. Bootstrap heading <small>Secondary text</small></h1>
+          <h2>h2. Bootstrap heading <small>Secondary text</small></h2>
+          <h3>h3. Bootstrap heading <small>Secondary text</small></h3>
+          <h4>h4. Bootstrap heading <small>Secondary text</small></h4>
+          <h5>h5. Bootstrap heading <small>Secondary text</small></h5>
+          <h6>h6. Bootstrap heading <small>Secondary text</small></h6>
         </span>
         <span>
           <h2>Icons</h2>
@@ -214,7 +346,8 @@ class StyleGuide extends Component {
             <li><Icon name='menu' className='s0' />menu</li>
             <li><Icon name='minus' className='s0' />minus</li>
             <li><Icon name='next' className='s0' />next</li>
-            <li><Icon name='notification' className='s0' />notification</li>
+            <li><Icon name='notification' className='s0' />
+            notification</li>
             <li><Icon name='piestats' className='s0' />piestats</li>
             <li><Icon name='plus' className='s0' />plus</li>
             <li><Icon name='previous' className='s0' />previous</li>
@@ -244,8 +377,31 @@ class StyleGuide extends Component {
           </ul>
         </span>
         <span>
+          <h2>Labels</h2>
+          <h1>Label <Label>New</Label></h1>
+          <h2>Label <Label>New</Label></h2>
+          <h3>Label <Label>New</Label></h3>
+          <h4>Label <Label>New</Label></h4>
+          <h5>Label <Label>New</Label></h5>
+          <p>Label <Label>New</Label></p>
+          <Label bsStyle='default'>Default</Label>&nbsp;
+          <Label bsStyle='primary'>Primary</Label>&nbsp;
+          <Label bsStyle='success'>Success</Label>&nbsp;
+          <Label bsStyle='info'>Info</Label>&nbsp;
+          <Label bsStyle='warning'>Warning</Label>&nbsp;
+          <Label bsStyle='danger'>Danger</Label>
+        </span>
+        <span>
           <h2>Link</h2>
           <Link link='www.google.com'>link</Link>
+        </span>
+        <span>
+          <h2>Lists</h2>
+          <ListGroup>
+            <ListGroupItem>Item 1</ListGroupItem>
+            <ListGroupItem>Item 2</ListGroupItem>
+            <ListGroupItem>...</ListGroupItem>
+          </ListGroup>
         </span>
         <span>
           <h2>Loader</h2>
@@ -319,7 +475,9 @@ class StyleGuide extends Component {
             placeholder='TextInput…'
             accessibilityLabel='TextInput'
             defaultValue='Default text'
-            onKeyDown={(e) => { this.handleKeyDown(e) }}
+            onKeyDown={(e) => {
+              this.handleKeyDown(e)
+            }}
           />
         </span>
         <span>
@@ -351,6 +509,7 @@ class StyleGuide extends Component {
         </span>
       </div>)
   }
+
   /* eslint-enable react/jsx-no-bind */
 }
 
