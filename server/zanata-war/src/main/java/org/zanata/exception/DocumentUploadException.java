@@ -28,18 +28,18 @@ import lombok.Getter;
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
-public class ChunkUploadException extends ZanataException {
+public class DocumentUploadException extends ZanataException {
     private static final long serialVersionUID = 1L;
 
     @Getter
     private Status statusCode;
 
-    public ChunkUploadException(Status statusCode, String message) {
+    public DocumentUploadException(Status statusCode, String message) {
         super(message);
         this.statusCode = statusCode;
     }
 
-    public ChunkUploadException(Status statusCode, String message,
+    public DocumentUploadException(Status statusCode, String message,
             Throwable cause) {
         super(message, cause);
         this.statusCode = statusCode;
