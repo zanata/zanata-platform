@@ -13,7 +13,7 @@ import {
   ButtonGroup, DropdownButton, MenuItem
 } from 'react-bootstrap'
 
-import reactElementToJSXString from 'react-element-to-jsx-string'
+import beautify from 'js-beautify'
 
 const tooltip = (
   <Tooltip id='tooltip'><strong>Tooltip ahoy!</strong> Check this info.
@@ -50,25 +50,24 @@ class StyleGuide extends Component {
       page
     } = this.props
 
-    const gridcode = reactElementToJSXString(
-      <Grid>
-        <Row className='show-grid'>
-          <Col className='show-grid' xs={12} md={8} />
-          <Col className='show-grid' xs={6} md={4} />
-        </Row>
-        <Row className='show-grid'>
-          <Col className='show-grid' xs={6} md={4} />
-          <Col className='show-grid' xs={6} md={4} />
-          <Col className='show-grid' xsHidden md={4} />
-        </Row>
-        <Row className='show-grid'>
-          <Col className='show-grid' xs={6} xsOffset={6} />
-        </Row>
-        <Row className='show-grid'>
-          <Col className='show-grid' md={6} mdPush={6} />
-          <Col className='show-grid' md={6} mdPull={6} />
-        </Row>
-      </Grid>)
+    const gridcode = '<Grid>' +
+      '<Row className=\'show-grid\'>' +
+      '<Col className=\'show-grid\' xs={12} md={8} />' +
+      '<Col className=\'show-grid\' xs={6} md={4} />' +
+      '</Row>' +
+      '<Row className=\'show-grid\'>' +
+      ' <Col className=\'show-grid\' xs={6} md={4} />' +
+      '<Col className=\'show-grid\' xs={6} md={4} />' +
+      ' <Col className=\'show-grid\' xsHidden md={4} />' +
+      ' </Row>' +
+      ' <Row className=\'show-grid\'>' +
+      '   <Col className=\'show-grid\' xs={6} xsOffset={6} />' +
+      ' </Row>' +
+      ' <Row className=\'show-grid\'>' +
+      '   <Col className=\'show-grid\' md={6} mdPush={6} />' +
+      '   <Col className=\'show-grid\' md={6} mdPull={6} />' +
+      ' </Row>' +
+      '</Grid>'
 
     return (
       <div className='container'>
@@ -106,7 +105,9 @@ class StyleGuide extends Component {
           Show code
           </Button>
           <Panel collapsible expanded={this.state.open}>
-            {gridcode}
+            <pre>
+              {beautify.html(gridcode)}
+            </pre>
           </Panel>
         </span>
         <span>
