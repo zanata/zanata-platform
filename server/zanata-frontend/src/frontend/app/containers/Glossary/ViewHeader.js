@@ -69,7 +69,7 @@ class ViewHeader extends Component {
   render () {
     const {
       title,
-      projectSlug,
+      project,
       filterText = '',
       termCount,
       statsLoading,
@@ -97,14 +97,14 @@ class ViewHeader extends Component {
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
-    const projectUrl = projectSlug && getProjectUrl(projectSlug)
+    const projectUrl = project && getProjectUrl(project)
 
-    const projectLink = projectSlug && (
+    const projectLink = project && (
       <div className='D(ib) Mstart(rh)'>
         <Link icon='project' link={projectUrl} useHref>
           <Row>
             <Icon name='project' atomic={{m: 'Mend(re)'}} />
-            <span className='Hidden--lesm'>{projectSlug}</span>
+            <span className='Hidden--lesm'>{project.name}</span>
           </Row>
         </Link>
       </div>
@@ -250,7 +250,7 @@ class ViewHeader extends Component {
 
 ViewHeader.propTypes = {
   title: PropTypes.string,
-  projectSlug: PropTypes.string,
+  project: PropTypes.object,
   results: PropTypes.object,
   termCount: PropTypes.number.isRequired,
   statsLoading: PropTypes.bool,
@@ -293,7 +293,7 @@ const mapStateToProps = (state) => {
     permission,
     sort,
     deleteAll,
-    projectSlug
+    project
   } = state.glossary
   const query = state.routing.location.query
   return {
@@ -305,7 +305,7 @@ const mapStateToProps = (state) => {
     permission,
     sort,
     deleteAll,
-    projectSlug
+    project
   }
 }
 
