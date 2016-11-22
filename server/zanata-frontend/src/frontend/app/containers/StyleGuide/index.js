@@ -419,15 +419,104 @@ class StyleGuide extends Component {
     '</tbody>' +
   '</Table>'
 
-    /* const tabcode
+    const tabcode = '<h3>Horizontal</h3>' +
+      '<Tabs defaultActiveKey={2} id=\'uncontrolled-tab-example\'>' +
+      '<Tab eventKey={1} title=\'Tab 1\' className=\'contentViewContainer\'>' +
+      'Tab 1 content</Tab>' +
+    '<Tab eventKey={2} title=\'Tab 2\' className=\'contentViewContainer\'>' +
+      'Tab 2 content</Tab>' +
+    '<Tab eventKey={3} title=\'Tab 3\' disabled' +
+    'className=\'contentViewContainer\'>' +
+      'Tab 3 content</Tab>' +
+    '</Tabs>' +
+    '<h3>Vertical</h3>' +
+    '<Tab.Container id=\'left-tabs-example\' defaultActiveKey=\'first\'' +
+    'className=\'contentViewContainer\'>' +
+      '<Row className=\'clearfix\'>' +
+      '<Col sm={4}>' +
+      '<Nav bsStyle=\'pills\' stacked>' +
+    '<NavItem eventKey=\'first\'>' +
+      'Tab 1' +
+    '</NavItem>' +
+    '<NavItem eventKey=\'second\'>' +
+      'Tab 2' +
+    '</NavItem>' +
+    '</Nav>' +
+    '</Col>' +
+    '<Col sm={8}>' +
+      '<Tab.Content animation>' +
+    '<Tab.Pane eventKey=\'first\'>' +
+      'Tab 1 content' +
+    '</Tab.Pane>' +
+    '<Tab.Pane eventKey=\'second\'>' +
+      'Tab 2 content' +
+    '</Tab.Pane>' +
+    '</Tab.Content>' +
+    '</Col>' +
+    '</Row>' +
+    '</Tab.Container>'
 
-    const textcode
+    const textcode = '<p className=\'lead\'>Lead paragraph:' +
+    'vivamus sagittis lacus vel augue laoreet rutrum faucibus' +
+    ' dolor auctor. Duis mollis, est non commodo luctus.</p>' +
+    '<p>Nullam quis risus eget <a href=\'#\'>urna mollis ornare</a>' +
+    'vel eu leo. Cum sociis natoque penatibus et magnis dis' +
+    'parturient montes, nascetur ridiculus mus. Nullam' +
+    'id dolor id nibh ultricies vehicula.</p>' +
+    '<p><small>This line of text is meant to be treated as fine print.' +
+    '</small></p>' +
+    '<p>The following snippet of text is <strong>rendered as' +
+    'bold text</strong>.</p>' +
+    'italicized text</em>.</p>' +
+    '<p>An abbreviation of the word attribute is' +
+    '<abbr title=\'attribute\'>attr</abbr>.</p>' +
+    '<p className=\'text-left\'>Left aligned text.</p>' +
+    '<p className=\'text-center\'>Center aligned text.</p>' +
+    '<p className=\'text-right\'>Right aligned text.</p>' +
+    '<p className=\'text-justify\'>Justified text.</p>' +
+    '<p className=\'text-muted\'>Muted: Fusce dapibus,' +
+    '  tellus ac cursus commodo,' +
+    ' tortor mauris nibh.</p>' +
+    '<p className=\'text-primary\'>Primary: Nullam id dolor id nibh' +
+    'ultricies vehicula ut id elit.</p>' +
+    '<p className=\'text-warning\'>Warning: Etiam porta sem malesuada' +
+    'magna mollis euismod.</p>' +
+    '<p className=\'text-danger\'>Danger: Donec ullamcorper nulla non' +
+    'metus auctor fringilla.</p>' +
+    '<p className=\'text-success\'>Success: Duis mollis, est non commodo' +
+    'luctus, nisi erat porttitor ligula.</p>' +
+    '<p className=\'text-info\'>Info: Maecenas sed diam eget risus varius' +
+    'blandit sit amet non magna.</p>'
 
-    const textinpcode
+    const inptextcode = '<TextInput' +
+    'maxLength={100}' +
+    'id=\'demo\'' +
+    'className=\'textInput\'' +
+    'placeholder=\'TextInput…\'' +
+    'accessibilityLabel=\'TextInput\'' +
+    'defaultValue=\'Default text\'' +
+    'onKeyDown={(e) => {' +
+      'this.handleKeyDown(e)' +
+    '}}'
 
-    const toolcode
+    const toolcode = '<ButtonToolbar>' +
+      '<OverlayTrigger placement=\'left\' overlay={tooltip}>' +
+      '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
+  '</OverlayTrigger>' +
+    '<OverlayTrigger placement=\'top\' overlay={tooltip}>' +
+      '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
+    '</OverlayTrigger>' +
+    '<OverlayTrigger placement=\'bottom\' overlay={tooltip}>' +
+      '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
+    '</OverlayTrigger>' +
+    '<OverlayTrigger placement=\'right\' overlay={tooltip}>' +
+     '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
+    '</OverlayTrigger>' +
+  '</ButtonToolbar>'
 
-    const wellcode */
+    const wellcode = '<Well>Look I am in a well!</Well>' +
+    '<Well bsSize=\'large\'>Look I am in a large well!</Well>' +
+    '<Well bsSize=\'small\'>Look I am in a small well!</Well>'
 
     return (
       <div className='container'>
@@ -1250,7 +1339,17 @@ class StyleGuide extends Component {
                 </Tab.Content>
               </Col>
             </Row>
-          </Tab.Container>
+          </Tab.Container><br />
+          <Button className='btn-code' bsStyle='default'
+            onClick={() => this.setState({ open: !this.state.open })}>
+              Show code
+          </Button>
+          <Panel className='panel-code' collapsible
+            expanded={this.state.open}>
+            <pre>
+             {beautify.html(tabcode)}
+            </pre>
+          </Panel>
         </span>
         <span>
           <h2>Text Styles</h2>
@@ -1286,7 +1385,17 @@ class StyleGuide extends Component {
           <p className='text-success'>Success: Duis mollis, est non commodo
           luctus, nisi erat porttitor ligula.</p>
           <p className='text-info'>Info: Maecenas sed diam eget risus varius
-          blandit sit amet non magna.</p>
+          blandit sit amet non magna.</p><br />
+          <Button className='btn-code' bsStyle='default'
+            onClick={() => this.setState({ open: !this.state.open })}>
+              Show code
+          </Button>
+          <Panel className='panel-code' collapsible
+            expanded={this.state.open}>
+            <pre>
+             {beautify.html(textcode)}
+            </pre>
+          </Panel>
         </span>
         <span>
           <h2>TextInput</h2>
@@ -1300,7 +1409,17 @@ class StyleGuide extends Component {
             onKeyDown={(e) => {
               this.handleKeyDown(e)
             }}
-          />
+          /><br />
+          <Button className='btn-code' bsStyle='default'
+            onClick={() => this.setState({ open: !this.state.open })}>
+              Show code
+          </Button>
+          <Panel className='panel-code' collapsible
+            expanded={this.state.open}>
+            <pre>
+             {beautify.html(inptextcode)}
+            </pre>
+          </Panel>
         </span>
         <span>
           <h2>Tooltip</h2>
@@ -1318,12 +1437,32 @@ class StyleGuide extends Component {
               <Button bsStyle='default'>Holy guacamole!</Button>
             </OverlayTrigger>
           </ButtonToolbar>
+          <Button className='btn-code' bsStyle='default'
+            onClick={() => this.setState({ open: !this.state.open })}>
+              Show code
+          </Button>
+          <Panel className='panel-code' collapsible
+            expanded={this.state.open}>
+            <pre>
+             {beautify.html(toolcode)}
+            </pre>
+          </Panel>
         </span>
         <span>
           <h2>Wells</h2>
           <Well>Look I'm in a well!</Well>
           <Well bsSize='large'>Look I'm in a large well!</Well>
           <Well bsSize='small'>Look I'm in a small well!</Well>
+          <Button className='btn-code' bsStyle='default'
+            onClick={() => this.setState({ open: !this.state.open })}>
+              Show code
+          </Button>
+          <Panel className='panel-code' collapsible
+            expanded={this.state.open}>
+            <pre>
+             {beautify.html(wellcode)}
+            </pre>
+          </Panel>
         </span>
         <span>
           <h2>Removed components</h2>
