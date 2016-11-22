@@ -56,7 +56,6 @@ import org.zanata.servlet.annotations.ServerPath;
  * @author David Mason, damason@redhat.com
  */
 
-@Named("urlUtil")
 @RequestScoped
 @Slf4j
 public class UrlUtil implements Serializable {

@@ -49,7 +49,7 @@ import org.zanata.test.CdiUnitRunner;
 import org.zanata.test.DBUnitDataSetRunner;
 import org.zanata.test.rule.DataSetOperation;
 import org.zanata.test.rule.JpaRule;
-import org.zanata.transaction.TransactionUtil;
+import org.zanata.transaction.TransactionUtilImpl;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.TMXParseException;
 
@@ -83,7 +83,7 @@ import static org.mockito.Mockito.when;
 @RunWith(CdiUnitRunner.class)
 @SupportDeltaspikeCore
 @AdditionalClasses({
-        TransactionUtil.class
+        TransactionUtilImpl.class
 })
 public class TMXParserTest {
 
