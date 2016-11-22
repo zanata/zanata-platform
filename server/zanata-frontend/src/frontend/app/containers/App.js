@@ -5,11 +5,8 @@ import React, { PropTypes, Component } from 'react'
  */
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import {
-  View,
-  Icons
-} from 'zanata-ui'
-import { Nav } from '../components'
+import { View } from 'zanata-ui'
+import { Nav, Icons } from '../components'
 import { getContextPath } from '../utils/UrlHelper'
 
 /**

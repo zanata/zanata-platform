@@ -31,7 +31,7 @@ export default class Root extends Component {
               <Route path='languages' component={Languages} />
               <Route path='styleguide' component={StyleGuide} />
               <Route path='profile/view/:username' component={UserProfile} />
-              <Route path='project/:projectSlug/glossary'
+              <Route path='glossary/project/:projectSlug'
                 component={Glossary} />
               <Route path='users' component={Users} />
               <Route path='roles' component={Roles} />
