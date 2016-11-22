@@ -70,17 +70,17 @@ class StyleGuide extends Component {
       '</Grid>'
 
     const alertcode = '<Alert bsStyle=\'success\'>' +
-    '<strong>Holy guacamole!</strong> Best check yo self' +
-    '</Alert>' +
-    '<Alert bsStyle=\'warning\'>' +
-    ' <strong>Holy guacamole!</strong> Best check yo self' +
-    '</Alert>' +
-    '<Alert bsStyle=\'danger\'>' +
-    '<strong>Holy guacamole!</strong> Best check yo self' +
-    '</Alert>' +
-    '<Alert bsStyle=\'info\'>' +
-    '<strong>Holy guacamole!</strong> Best check yo self' +
-    '</Alert>'
+      '<strong>Holy guacamole!</strong> Best check yo self' +
+      '</Alert>' +
+      '<Alert bsStyle=\'warning\'>' +
+      ' <strong>Holy guacamole!</strong> Best check yo self' +
+      '</Alert>' +
+      '<Alert bsStyle=\'danger\'>' +
+      '<strong>Holy guacamole!</strong> Best check yo self' +
+      '</Alert>' +
+      '<Alert bsStyle=\'info\'>' +
+      '<strong>Holy guacamole!</strong> Best check yo self' +
+      '</Alert>'
 
     const badgecode = '<p>Badge <Badge>23</Badge></p>'
 
@@ -163,13 +163,13 @@ class StyleGuide extends Component {
       'followed by the name of the directory.</p>'
 
     const dropcode = '<DropdownButton bsStyle=\'default\' ' +
-    'title=\'Dropdown button\' id=\'dropdown-basic\'>' +
-    '<MenuItem eventKey=\'1\'>Action</MenuItem>' +
-    '<MenuItem eventKey=\'2\'>Another action</MenuItem>' +
-    '<MenuItem eventKey=\'3\' active>Active Item</MenuItem>' +
-    '<MenuItem divider />' +
-    '<MenuItem eventKey=\'4\'>Separated link</MenuItem>' +
-    '</DropdownButton>'
+      'title=\'Dropdown button\' id=\'dropdown-basic\'>' +
+      '<MenuItem eventKey=\'1\'>Action</MenuItem>' +
+      '<MenuItem eventKey=\'2\'>Another action</MenuItem>' +
+      '<MenuItem eventKey=\'3\' active>Active Item</MenuItem>' +
+      '<MenuItem divider />' +
+      '<MenuItem eventKey=\'4\'>Separated link</MenuItem>' +
+      '</DropdownButton>'
 
     const formcode = '<Form>' +
       '<FormGroup>' +
@@ -203,29 +203,29 @@ class StyleGuide extends Component {
       'validationState=\'warning\'>' +
       '<ControlLabel>Input group with warning</ControlLabel>' +
       '<InputGroup>' +
-    '<InputGroup.Addon>@</InputGroup.Addon>' +
-    '<FormControl type=\'text\' />' +
+      '<InputGroup.Addon>@</InputGroup.Addon>' +
+      '<FormControl type=\'text\' />' +
       '</InputGroup>' +
       '<FormControl.Feedback />' +
       '</FormGroup>' +
       '</Form>' +
       '<Form componentClass=\'fieldset\' horizontal>' +
-    '<FormGroup controlId=\'formValidationError3\'' +
-     'validationState=\'error\'>' +
+      '<FormGroup controlId=\'formValidationError3\'' +
+      'validationState=\'error\'>' +
       '<Col componentClass={ControlLabel} xs={3}>' +
       'Input with error' +
-    '</Col>' +
-    '<Col xs={9}>' +
+      '</Col>' +
+      '<Col xs={9}>' +
       '<FormControl type=\'text\' />' +
       '<FormControl.Feedback />' +
       '</Col>' +
       '</FormGroup>' +
       '<FormGroup controlId=\'formValidationSuccess4\'' +
-    'validationState=\'success\'>' +
+      'validationState=\'success\'>' +
       '<Col componentClass={ControlLabel} xs={3}>' +
       'Input group with success' +
-    '</Col>' +
-    '<Col xs={9}>' +
+      '</Col>' +
+      '<Col xs={9}>' +
       '<InputGroup>' +
       '<InputGroup.Addon>@</InputGroup.Addon>' +
       '<FormControl type=\'text\' />' +
@@ -235,40 +235,40 @@ class StyleGuide extends Component {
       '</FormGroup>' +
       '</Form>' +
       '<Form componentClass=\'fieldset\' inline>' +
-    '<FormGroup controlId=\'formValidationWarning4\'' +
-    'validationState=\'warning\'>' +
+      '<FormGroup controlId=\'formValidationWarning4\'' +
+      'validationState=\'warning\'>' +
       '<ControlLabel>Input with warning</ControlLabel>' +
-    '{\' \'}' +
+      '{\' \'}' +
       '<FormControl type=\'text\' />' +
       '<FormControl.Feedback />' +
       '</FormGroup>' +
       '{\' \'}' +
-    '<FormGroup controlId=\'formValidationError4\'' +
-     'validationState=\'error\'>' +
+      '<FormGroup controlId=\'formValidationError4\'' +
+      'validationState=\'error\'>' +
       '<ControlLabel>Input group with error</ControlLabel>' +
       '{\' \'}' +
       '<InputGroup>' +
-        '<InputGroup.Addon>@</InputGroup.Addon>' +
-        '<FormControl type=\'text\' />' +
+      '<InputGroup.Addon>@</InputGroup.Addon>' +
+      '<FormControl type=\'text\' />' +
       '</InputGroup>' +
       '<FormControl.Feedback />' +
-    '</FormGroup>' +
-    '</Form>' +
-    '<Checkbox validationState=\'success\'>' +
+      '</FormGroup>' +
+      '</Form>' +
+      '<Checkbox validationState=\'success\'>' +
       'Checkbox with success' +
-    '</Checkbox>' +
-    '<Radio validationState=\'warning\'>' +
+      '</Checkbox>' +
+      '<Radio validationState=\'warning\'>' +
       'Radio with warning' +
-    '</Radio>' +
-    '<Checkbox validationState=\'error\'>' +
+      '</Radio>' +
+      '<Checkbox validationState=\'error\'>' +
       'Checkbox with error' +
-    '</Checkbox>'
+      '</Checkbox>'
 
     const editcode = '<EditableText' +
-    'className=\'editable\'' +
-    'maxLength={255}' +
-    'placeholder=\'Add a description…\'' +
-    'emptyReadOnlyText=\'No description\'>' +
+      'className=\'editable\'' +
+      'maxLength={255}' +
+      'placeholder=\'Add a description…\'' +
+      'emptyReadOnlyText=\'No description\'>' +
       '\'string\'' +
       '</EditableText> '
 
@@ -276,11 +276,11 @@ class StyleGuide extends Component {
       'Page Header <small>' +
       'With Small Text</small></h1>' +
       '<h1>h1. Bootstrap heading <small>Secondary text</small></h1>' +
-    '<h2>h2. Bootstrap heading <small>Secondary text</small></h2>' +
-    '<h3>h3. Bootstrap heading <small>Secondary text</small></h3>' +
-    '<h4>h4. Bootstrap heading <small>Secondary text</small></h4>' +
-    '<h5>h5. Bootstrap heading <small>Secondary text</small></h5>' +
-    '<h6>h6. Bootstrap heading <small>Secondary text</small></h6>'
+      '<h2>h2. Bootstrap heading <small>Secondary text</small></h2>' +
+      '<h3>h3. Bootstrap heading <small>Secondary text</small></h3>' +
+      '<h4>h4. Bootstrap heading <small>Secondary text</small></h4>' +
+      '<h5>h5. Bootstrap heading <small>Secondary text</small></h5>' +
+      '<h6>h6. Bootstrap heading <small>Secondary text</small></h6>'
 
     const iconcode = '<Icon name=\'users\' className=\'s0\' />'
 
@@ -291,94 +291,94 @@ class StyleGuide extends Component {
       '<h5>Label <Label>New</Label></h5>' +
       '<p>Label <Label>New</Label></p>' +
       '<Label bsStyle=\'default\'>Default</Label>' +
-    '<Label bsStyle=\'primary\'>Primary</Label>' +
-    '<Label bsStyle=\'success\'>Success</Label>' +
-    '<Label bsStyle=\'info\'>Info</Label>' +
-    '<Label bsStyle=\'warning\'>Warning</Label>' +
-    '<Label bsStyle=\'danger\'>Danger</Label>'
+      '<Label bsStyle=\'primary\'>Primary</Label>' +
+      '<Label bsStyle=\'success\'>Success</Label>' +
+      '<Label bsStyle=\'info\'>Info</Label>' +
+      '<Label bsStyle=\'warning\'>Warning</Label>' +
+      '<Label bsStyle=\'danger\'>Danger</Label>'
 
     const linkcode = '<Link link=\'www.zanata.org\'>link to zanata.org</Link>'
 
     const listcode = '<ListGroup>' +
       '<ListGroupItem>Item 1</ListGroupItem>' +
-    '<ListGroupItem>Item 2</ListGroupItem>' +
-    '<ListGroupItem>...</ListGroupItem>' +
-  '</ListGroup>' +
-    '<ListGroup>' +
+      '<ListGroupItem>Item 2</ListGroupItem>' +
+      '<ListGroupItem>...</ListGroupItem>' +
+      '</ListGroup>' +
+      '<ListGroup>' +
       '<ListGroupItem href=\'#\' active>Active</ListGroupItem>' +
       '<ListGroupItem href=\'#\'>Link</ListGroupItem>' +
       '<ListGroupItem href=\'#\' disabled>Disabled</ListGroupItem>' +
-    '</ListGroup>' +
-    '<ListGroup>' +
+      '</ListGroup>' +
+      '<ListGroup>' +
       '<ListGroupItem header=\'Heading 1\'>' +
-        'Some body text</ListGroupItem>' +
+      'Some body text</ListGroupItem>' +
       '<ListGroupItem header=\'Heading 2\' href=\'#\'>' +
-        'Linked item</ListGroupItem>' +
-    '</ListGroup>'
+      'Linked item</ListGroupItem>' +
+      '</ListGroup>'
 
     const loadercode = '<LoaderText loading loadingText=\'Loading\' />'
 
     const modalcode = '<Modal' +
-    'show={this.state.show}' +
-    'onHide={() => this.hideModal()}>' +
-  '<Modal.Header>' +
-    '<Modal.Title>Example Modal</Modal.Title>' +
-    '</Modal.Header>' +
-    '<Modal.Body>Hi There</Modal.Body>' +
-    '<Modal.Footer>' +
-    '<Button bsStyle=\'link\'' +
-    'onClick={() => this.hideModal()}>Cancel</Button>' +
-    '<Button bsStyle=\'primary\' onClick={() => this.hideModal()}>' +
-    'Submit' +
-    '</Button>' +
-    '</Modal.Footer>' +
-    '</Modal>'
+      'show={this.state.show}' +
+      'onHide={() => this.hideModal()}>' +
+      '<Modal.Header>' +
+      '<Modal.Title>Example Modal</Modal.Title>' +
+      '</Modal.Header>' +
+      '<Modal.Body>Hi There</Modal.Body>' +
+      '<Modal.Footer>' +
+      '<Button bsStyle=\'link\'' +
+      'onClick={() => this.hideModal()}>Cancel</Button>' +
+      '<Button bsStyle=\'primary\' onClick={() => this.hideModal()}>' +
+      'Submit' +
+      '</Button>' +
+      '</Modal.Footer>' +
+      '</Modal>'
 
     const pagcode = '<Pagination' +
-    'bsSize=\'large\'' +
-    'items={10}' +
-    'activePage={page}' +
-   'onSelect={this.handleSelect} />' +
-  '<br />' +
-    '<Pagination' +
-    'bsSize=\'medium\'' +
-    'items={10}' +
-    'activePage={page}' +
-    'onSelect={this.handleSelect} />' +
-  '<br />' +
-    '<Pagination' +
-    'bsSize=\'small\'' +
-    'items={10}' +
-    'activePage={page}' +
-    'onSelect={this.handleSelect} />'
+      'bsSize=\'large\'' +
+      'items={10}' +
+      'activePage={page}' +
+      'onSelect={this.handleSelect} />' +
+      '<br />' +
+      '<Pagination' +
+      'bsSize=\'medium\'' +
+      'items={10}' +
+      'activePage={page}' +
+      'onSelect={this.handleSelect} />' +
+      '<br />' +
+      '<Pagination' +
+      'bsSize=\'small\'' +
+      'items={10}' +
+      'activePage={page}' +
+      'onSelect={this.handleSelect} />'
 
     const panelcode = '<Panel>' +
-    'Basic panel example' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\'>' +
+      'Basic panel example' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\'>' +
       'Panel content' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\' bsStyle=\'primary\'>' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\' bsStyle=\'primary\'>' +
       'Panel content' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\' bsStyle=\'success\'>' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\' bsStyle=\'success\'>' +
       'Panel content' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\' bsStyle=\'info\'>' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\' bsStyle=\'info\'>' +
       'Panel content' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\' bsStyle=\'warning\'>' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\' bsStyle=\'warning\'>' +
       'Panel content' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\' bsStyle=\'danger\'>' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\' bsStyle=\'danger\'>' +
       'Panel content' +
-    '</Panel>'
+      '</Panel>'
 
     const progcode = '<h3>Basic</h3>' +
       '<ProgressBar now={now} label={`${now}%`} />' +
-  '<ProgressBar now={60} />' +
+      '<ProgressBar now={60} />' +
       '<h3>Contextual alternatives</h3>' +
-    '<ProgressBar bsStyle=\'success\' now={40} />' +
+      '<ProgressBar bsStyle=\'success\' now={40} />' +
       '<ProgressBar bsStyle=\'info\' now={20} />' +
       '<ProgressBar bsStyle=\'warning\' now={60} />' +
       '<ProgressBar bsStyle=\'danger\' now={80} />' +
@@ -390,133 +390,133 @@ class StyleGuide extends Component {
       '</ProgressBar>'
 
     const tablecode = '<Table striped bordered condensed hover>' +
-    '<thead>' +
-    '<tr>' +
-    '<th>#</th>' +
-    '<th>First Name</th>' +
-    '<th>Last Name</th>' +
-    '<th>Username</th>' +
-  '</tr>' +
-  '</thead>' +
-    '<tbody>' +
-    '<tr>' +
+      '<thead>' +
+      '<tr>' +
+      '<th>#</th>' +
+      '<th>First Name</th>' +
+      '<th>Last Name</th>' +
+      '<th>Username</th>' +
+      '</tr>' +
+      '</thead>' +
+      '<tbody>' +
+      '<tr>' +
       '<td>1</td>' +
       '<td>Mark</td>' +
       '<td>Otto</td>' +
       '<td>@mdo</td>' +
-    '</tr>' +
-    '<tr>' +
+      '</tr>' +
+      '<tr>' +
       '<td>2</td>' +
       '<td>Jacob</td>' +
       '<td>Thornton</td>' +
       '<td>@fat</td>' +
-    '</tr>' +
-    '<tr>' +
+      '</tr>' +
+      '<tr>' +
       '<td>3</td>' +
       '<td colSpan=\'2\'>Larry the Bird</td>' +
       '<td>@twitter</td>' +
-    '</tr>' +
-    '</tbody>' +
-  '</Table>'
+      '</tr>' +
+      '</tbody>' +
+      '</Table>'
 
     const tabcode = '<h3>Horizontal</h3>' +
       '<Tabs defaultActiveKey={2} id=\'uncontrolled-tab-example\'>' +
       '<Tab eventKey={1} title=\'Tab 1\' className=\'contentViewContainer\'>' +
       'Tab 1 content</Tab>' +
-    '<Tab eventKey={2} title=\'Tab 2\' className=\'contentViewContainer\'>' +
+      '<Tab eventKey={2} title=\'Tab 2\' className=\'contentViewContainer\'>' +
       'Tab 2 content</Tab>' +
-    '<Tab eventKey={3} title=\'Tab 3\' disabled' +
-    'className=\'contentViewContainer\'>' +
+      '<Tab eventKey={3} title=\'Tab 3\' disabled' +
+      'className=\'contentViewContainer\'>' +
       'Tab 3 content</Tab>' +
-    '</Tabs>' +
-    '<h3>Vertical</h3>' +
-    '<Tab.Container id=\'left-tabs-example\' defaultActiveKey=\'first\'' +
-    'className=\'contentViewContainer\'>' +
+      '</Tabs>' +
+      '<h3>Vertical</h3>' +
+      '<Tab.Container id=\'left-tabs-example\' defaultActiveKey=\'first\'' +
+      'className=\'contentViewContainer\'>' +
       '<Row className=\'clearfix\'>' +
       '<Col sm={4}>' +
       '<Nav bsStyle=\'pills\' stacked>' +
-    '<NavItem eventKey=\'first\'>' +
+      '<NavItem eventKey=\'first\'>' +
       'Tab 1' +
-    '</NavItem>' +
-    '<NavItem eventKey=\'second\'>' +
+      '</NavItem>' +
+      '<NavItem eventKey=\'second\'>' +
       'Tab 2' +
-    '</NavItem>' +
-    '</Nav>' +
-    '</Col>' +
-    '<Col sm={8}>' +
+      '</NavItem>' +
+      '</Nav>' +
+      '</Col>' +
+      '<Col sm={8}>' +
       '<Tab.Content animation>' +
-    '<Tab.Pane eventKey=\'first\'>' +
+      '<Tab.Pane eventKey=\'first\'>' +
       'Tab 1 content' +
-    '</Tab.Pane>' +
-    '<Tab.Pane eventKey=\'second\'>' +
+      '</Tab.Pane>' +
+      '<Tab.Pane eventKey=\'second\'>' +
       'Tab 2 content' +
-    '</Tab.Pane>' +
-    '</Tab.Content>' +
-    '</Col>' +
-    '</Row>' +
-    '</Tab.Container>'
+      '</Tab.Pane>' +
+      '</Tab.Content>' +
+      '</Col>' +
+      '</Row>' +
+      '</Tab.Container>'
 
     const textcode = '<p className=\'lead\'>Lead paragraph:' +
-    'vivamus sagittis lacus vel augue laoreet rutrum faucibus' +
-    ' dolor auctor. Duis mollis, est non commodo luctus.</p>' +
-    '<p>Nullam quis risus eget <a href=\'#\'>urna mollis ornare</a>' +
-    'vel eu leo. Cum sociis natoque penatibus et magnis dis' +
-    'parturient montes, nascetur ridiculus mus. Nullam' +
-    'id dolor id nibh ultricies vehicula.</p>' +
-    '<p><small>This line of text is meant to be treated as fine print.' +
-    '</small></p>' +
-    '<p>The following snippet of text is <strong>rendered as' +
-    'bold text</strong>.</p>' +
-    'italicized text</em>.</p>' +
-    '<p>An abbreviation of the word attribute is' +
-    '<abbr title=\'attribute\'>attr</abbr>.</p>' +
-    '<p className=\'text-left\'>Left aligned text.</p>' +
-    '<p className=\'text-center\'>Center aligned text.</p>' +
-    '<p className=\'text-right\'>Right aligned text.</p>' +
-    '<p className=\'text-justify\'>Justified text.</p>' +
-    '<p className=\'text-muted\'>Muted: Fusce dapibus,' +
-    '  tellus ac cursus commodo,' +
-    ' tortor mauris nibh.</p>' +
-    '<p className=\'text-primary\'>Primary: Nullam id dolor id nibh' +
-    'ultricies vehicula ut id elit.</p>' +
-    '<p className=\'text-warning\'>Warning: Etiam porta sem malesuada' +
-    'magna mollis euismod.</p>' +
-    '<p className=\'text-danger\'>Danger: Donec ullamcorper nulla non' +
-    'metus auctor fringilla.</p>' +
-    '<p className=\'text-success\'>Success: Duis mollis, est non commodo' +
-    'luctus, nisi erat porttitor ligula.</p>' +
-    '<p className=\'text-info\'>Info: Maecenas sed diam eget risus varius' +
-    'blandit sit amet non magna.</p>'
+      'vivamus sagittis lacus vel augue laoreet rutrum faucibus' +
+      ' dolor auctor. Duis mollis, est non commodo luctus.</p>' +
+      '<p>Nullam quis risus eget <a href=\'#\'>urna mollis ornare</a>' +
+      'vel eu leo. Cum sociis natoque penatibus et magnis dis' +
+      'parturient montes, nascetur ridiculus mus. Nullam' +
+      'id dolor id nibh ultricies vehicula.</p>' +
+      '<p><small>This line of text is meant to be treated as fine print.' +
+      '</small></p>' +
+      '<p>The following snippet of text is <strong>rendered as' +
+      'bold text</strong>.</p>' +
+      'italicized text</em>.</p>' +
+      '<p>An abbreviation of the word attribute is' +
+      '<abbr title=\'attribute\'>attr</abbr>.</p>' +
+      '<p className=\'text-left\'>Left aligned text.</p>' +
+      '<p className=\'text-center\'>Center aligned text.</p>' +
+      '<p className=\'text-right\'>Right aligned text.</p>' +
+      '<p className=\'text-justify\'>Justified text.</p>' +
+      '<p className=\'text-muted\'>Muted: Fusce dapibus,' +
+      '  tellus ac cursus commodo,' +
+      ' tortor mauris nibh.</p>' +
+      '<p className=\'text-primary\'>Primary: Nullam id dolor id nibh' +
+      'ultricies vehicula ut id elit.</p>' +
+      '<p className=\'text-warning\'>Warning: Etiam porta sem malesuada' +
+      'magna mollis euismod.</p>' +
+      '<p className=\'text-danger\'>Danger: Donec ullamcorper nulla non' +
+      'metus auctor fringilla.</p>' +
+      '<p className=\'text-success\'>Success: Duis mollis, est non commodo' +
+      'luctus, nisi erat porttitor ligula.</p>' +
+      '<p className=\'text-info\'>Info: Maecenas sed diam eget risus varius' +
+      'blandit sit amet non magna.</p>'
 
     const inptextcode = '<TextInput' +
-    'maxLength={100}' +
-    'id=\'demo\'' +
-    'className=\'textInput\'' +
-    'placeholder=\'TextInput…\'' +
-    'accessibilityLabel=\'TextInput\'' +
-    'defaultValue=\'Default text\'' +
-    'onKeyDown={(e) => {' +
+      'maxLength={100}' +
+      'id=\'demo\'' +
+      'className=\'textInput\'' +
+      'placeholder=\'TextInput…\'' +
+      'accessibilityLabel=\'TextInput\'' +
+      'defaultValue=\'Default text\'' +
+      'onKeyDown={(e) => {' +
       'this.handleKeyDown(e)' +
-    '}}'
+      '}}'
 
     const toolcode = '<ButtonToolbar>' +
       '<OverlayTrigger placement=\'left\' overlay={tooltip}>' +
       '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
-  '</OverlayTrigger>' +
-    '<OverlayTrigger placement=\'top\' overlay={tooltip}>' +
+      '</OverlayTrigger>' +
+      '<OverlayTrigger placement=\'top\' overlay={tooltip}>' +
       '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
-    '</OverlayTrigger>' +
-    '<OverlayTrigger placement=\'bottom\' overlay={tooltip}>' +
+      '</OverlayTrigger>' +
+      '<OverlayTrigger placement=\'bottom\' overlay={tooltip}>' +
       '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
-    '</OverlayTrigger>' +
-    '<OverlayTrigger placement=\'right\' overlay={tooltip}>' +
-     '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
-    '</OverlayTrigger>' +
-  '</ButtonToolbar>'
+      '</OverlayTrigger>' +
+      '<OverlayTrigger placement=\'right\' overlay={tooltip}>' +
+      '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
+      '</OverlayTrigger>' +
+      '</ButtonToolbar>'
 
     const wellcode = '<Well>Look I am in a well!</Well>' +
-    '<Well bsSize=\'large\'>Look I am in a large well!</Well>' +
-    '<Well bsSize=\'small\'>Look I am in a small well!</Well>'
+      '<Well bsSize=\'large\'>Look I am in a large well!</Well>' +
+      '<Well bsSize=\'small\'>Look I am in a small well!</Well>'
 
     return (
       <div className='container'>
@@ -550,11 +550,11 @@ class StyleGuide extends Component {
             </Row>
           </Grid>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
            Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
               {beautify.html(gridcode)}
             </pre>
@@ -604,11 +604,11 @@ class StyleGuide extends Component {
           <p>'Source Sans Pro', 'Helvetica Neue',
           Helvetica, Arial, sans-serif;</p>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
               font-family: 'Source Sans Pro', 'Helvetica Neue',
               Helvetica, Arial, sans-serif;
@@ -627,11 +627,11 @@ class StyleGuide extends Component {
           <Alert bsStyle='info'>
             <strong>Holy guacamole!</strong> Best check yo self</Alert>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(alertcode)}
             </pre>
@@ -662,11 +662,11 @@ class StyleGuide extends Component {
             Messages <Badge>4</Badge>
           </Button><br />
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(badgecode)}
             </pre>
@@ -686,11 +686,11 @@ class StyleGuide extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(breadcode)}
             </pre>
@@ -728,11 +728,11 @@ class StyleGuide extends Component {
           Block level button</Button>
           <Button bsSize='large' block>Block level button</Button>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(btncode1)}
             </pre>
@@ -771,11 +771,11 @@ class StyleGuide extends Component {
             </DropdownButton><br />
           </ButtonGroup>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
              Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(btncode2)}
             </pre>
@@ -790,11 +790,11 @@ class StyleGuide extends Component {
           <p>To switch directories, type <kbd>cd</kbd>
           followed by the name of the directory.</p>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
              Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(codecode)}
             </pre>
@@ -803,7 +803,7 @@ class StyleGuide extends Component {
         <span>
           <h2>Dropdowns</h2>
           <DropdownButton bsStyle='default' title='Dropdown button'
-            id='dropdown-basic'>
+                          id='dropdown-basic'>
             <MenuItem eventKey='1'>Action</MenuItem>
             <MenuItem eventKey='2'>Another action</MenuItem>
             <MenuItem eventKey='3' active>Active Item</MenuItem>
@@ -811,11 +811,11 @@ class StyleGuide extends Component {
             <MenuItem eventKey='4'>Separated link</MenuItem>
           </DropdownButton><br />
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
              Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(dropcode)}
             </pre>
@@ -837,12 +837,12 @@ class StyleGuide extends Component {
           </Form>
           <Form>
             <FormGroup controlId='formValidationSuccess1'
-              validationState='success'>
+                       validationState='success'>
               <ControlLabel>Input with success</ControlLabel>
               <FormControl type='text' />
             </FormGroup>
             <FormGroup controlId='formValidationWarning1'
-              validationState='warning'>
+                       validationState='warning'>
               <ControlLabel>Input with warning</ControlLabel>
               <FormControl type='text' />
             </FormGroup>
@@ -851,7 +851,7 @@ class StyleGuide extends Component {
               <FormControl type='text' />
             </FormGroup>
             <FormGroup controlId='formValidationWarning3'
-              validationState='warning'>
+                       validationState='warning'>
               <ControlLabel>Input group with warning</ControlLabel>
               <InputGroup>
                 <InputGroup.Addon>@</InputGroup.Addon>
@@ -871,7 +871,7 @@ class StyleGuide extends Component {
               </Col>
             </FormGroup>
             <FormGroup controlId='formValidationSuccess4'
-              validationState='success'>
+                       validationState='success'>
               <Col componentClass={ControlLabel} xs={3}>
                 Input group with success
               </Col>
@@ -886,16 +886,16 @@ class StyleGuide extends Component {
           </Form>
           <Form componentClass='fieldset' inline>
             <FormGroup controlId='formValidationWarning4'
-              validationState='warning'>
+                       validationState='warning'>
               <ControlLabel>Input with warning</ControlLabel>
-               {' '}
+              {' '}
               <FormControl type='text' />
               <FormControl.Feedback />
             </FormGroup>
-          {' '}
+            {' '}
             <FormGroup controlId='formValidationError4' validationState='error'>
               <ControlLabel>Input group with error</ControlLabel>
-          {' '}
+              {' '}
               <InputGroup>
                 <InputGroup.Addon>@</InputGroup.Addon>
                 <FormControl type='text' />
@@ -913,11 +913,11 @@ class StyleGuide extends Component {
             Checkbox with error
           </Checkbox><br />
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(formcode)}
             </pre>
@@ -933,11 +933,11 @@ class StyleGuide extends Component {
             'sting'
           </EditableText><br />
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(editcode)}
             </pre>
@@ -954,11 +954,11 @@ class StyleGuide extends Component {
           <h5>h5. Bootstrap heading <small>Secondary text</small></h5>
           <h6>h6. Bootstrap heading <small>Secondary text</small></h6>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(headcode)}
             </pre>
@@ -973,13 +973,13 @@ class StyleGuide extends Component {
             <li><Icon name='attach' className='s0' />attach</li>
             <li><Icon name='block' className='s0' />block</li>
             <li><Icon name='chevron-down-double'
-              className='s0' />chevron-double-down</li>
+                      className='s0' />chevron-double-down</li>
             <li><Icon name='chevron-down' className='s0' />chevron-down</li>
             <li><Icon name='chevron-left' className='s0' />chevron-left</li>
             <li><Icon name='chevron-right' className='s0' />
             chevron-right</li>
             <li><Icon name='chevron-up-double'
-              className='s0' />chevron-up-double</li>
+                      className='s0' />chevron-up-double</li>
             <li><Icon name='chevron-up' className='s0' />chevron-up</li>
             <li><Icon name='circle' className='s0' />circle</li>
             <li><Icon name='clock' className='s0' />clock</li>
@@ -996,7 +996,7 @@ class StyleGuide extends Component {
             <li><Icon name='ellipsis' className='s0' />ellipsis</li>
             <li><Icon name='export' className='s0' />export</li>
             <li><Icon name='external-link'
-              className='s0' />external-link</li>
+                      className='s0' />external-link</li>
             <li><Icon name='filter' className='s0' />filter</li>
             <li><Icon name='folder' className='s0' />folder</li>
             <li><Icon name='glossary' className='s0' />glossary</li>
@@ -1046,11 +1046,11 @@ class StyleGuide extends Component {
             <li><Icon name='zanata' className='s0' />zanata</li>
           </ul>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(iconcode)}
             </pre>
@@ -1072,11 +1072,11 @@ class StyleGuide extends Component {
           <Label bsStyle='danger'>Danger</Label>
         </span><br />
         <Button className='btn-code' bsStyle='default'
-          onClick={() => this.setState({ open: !this.state.open })}>
+                onClick={() => this.setState({ open: !this.state.open })}>
           Show code
         </Button>
         <Panel className='panel-code' collapsible
-          expanded={this.state.open}>
+               expanded={this.state.open}>
           <pre>
            {beautify.html(labelcode)}
           </pre>
@@ -1085,11 +1085,11 @@ class StyleGuide extends Component {
           <h2>Link</h2>
           <Link link='www.zanata.org'>link to zanata.org</Link><br />
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(linkcode)}
             </pre>
@@ -1114,11 +1114,11 @@ class StyleGuide extends Component {
             Linked item</ListGroupItem>
           </ListGroup>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(listcode)}
             </pre>
@@ -1129,11 +1129,11 @@ class StyleGuide extends Component {
           <h3>LoaderText</h3>
           <LoaderText loading loadingText='Loading' /><br />
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
             Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(loadercode)}
             </pre>
@@ -1142,7 +1142,7 @@ class StyleGuide extends Component {
         <span>
           <h2>Modal</h2>
           <Button bsStyle='info'
-            onClick={() => this.showModal()}>Launch Modal</Button>
+                  onClick={() => this.showModal()}>Launch Modal</Button>
           <Modal
             show={this.state.show}
             onHide={() => this.hideModal()}>
@@ -1152,18 +1152,18 @@ class StyleGuide extends Component {
             <Modal.Body>Hi There</Modal.Body>
             <Modal.Footer>
               <Button bsStyle='link'
-                onClick={() => this.hideModal()}>Cancel</Button>
+                      onClick={() => this.hideModal()}>Cancel</Button>
               <Button bsStyle='primary' onClick={() => this.hideModal()}>
               Submit
               </Button>
             </Modal.Footer>
           </Modal><br />
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
               Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(modalcode)}
             </pre>
@@ -1189,11 +1189,11 @@ class StyleGuide extends Component {
             activePage={page}
             onSelect={this.handleSelect} /><br />
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
               Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(pagcode)}
             </pre>
@@ -1223,11 +1223,11 @@ class StyleGuide extends Component {
           Panel content
           </Panel>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
               Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(panelcode)}
             </pre>
@@ -1250,11 +1250,11 @@ class StyleGuide extends Component {
             <ProgressBar active bsStyle='danger' now={10} key={3} />
           </ProgressBar>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
               Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(progcode)}
             </pre>
@@ -1292,11 +1292,11 @@ class StyleGuide extends Component {
             </tbody>
           </Table>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
               Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(tablecode)}
             </pre>
@@ -1311,12 +1311,12 @@ class StyleGuide extends Component {
             <Tab eventKey={2} title='Tab 2' className='contentViewContainer'>
             Tab 2 content</Tab>
             <Tab eventKey={3} title='Tab 3' disabled
-              className='contentViewContainer'>
+                 className='contentViewContainer'>
             Tab 3 content</Tab>
           </Tabs>
           <h3>Vertical</h3>
           <Tab.Container id='left-tabs-example' defaultActiveKey='first'
-            className='contentViewContainer'>
+                         className='contentViewContainer'>
             <Row className='clearfix'>
               <Col sm={4}>
                 <Nav bsStyle='pills' stacked>
@@ -1341,11 +1341,11 @@ class StyleGuide extends Component {
             </Row>
           </Tab.Container><br />
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
               Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(tabcode)}
             </pre>
@@ -1387,11 +1387,11 @@ class StyleGuide extends Component {
           <p className='text-info'>Info: Maecenas sed diam eget risus varius
           blandit sit amet non magna.</p><br />
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
               Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(textcode)}
             </pre>
@@ -1411,11 +1411,11 @@ class StyleGuide extends Component {
             }}
           /><br />
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
               Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(inptextcode)}
             </pre>
@@ -1438,11 +1438,11 @@ class StyleGuide extends Component {
             </OverlayTrigger>
           </ButtonToolbar>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
               Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(toolcode)}
             </pre>
@@ -1454,11 +1454,11 @@ class StyleGuide extends Component {
           <Well bsSize='large'>Look I'm in a large well!</Well>
           <Well bsSize='small'>Look I'm in a small well!</Well>
           <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
+                  onClick={() => this.setState({ open: !this.state.open })}>
               Show code
           </Button>
           <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+                 expanded={this.state.open}>
             <pre>
              {beautify.html(wellcode)}
             </pre>
