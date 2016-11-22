@@ -334,16 +334,92 @@ class StyleGuide extends Component {
     '</Modal.Footer>' +
     '</Modal>'
 
-    /*
-    const pagcode
+    const pagcode = '<Pagination' +
+    'bsSize=\'large\'' +
+    'items={10}' +
+    'activePage={page}' +
+   'onSelect={this.handleSelect} />' +
+  '<br />' +
+    '<Pagination' +
+    'bsSize=\'medium\'' +
+    'items={10}' +
+    'activePage={page}' +
+    'onSelect={this.handleSelect} />' +
+  '<br />' +
+    '<Pagination' +
+    'bsSize=\'small\'' +
+    'items={10}' +
+    'activePage={page}' +
+    'onSelect={this.handleSelect} />'
 
-    const panelcode
+    const panelcode = '<Panel>' +
+    'Basic panel example' +
+    '</Panel>' +
+    '<Panel header=\'Panel header\'>' +
+      'Panel content' +
+    '</Panel>' +
+    '<Panel header=\'Panel header\' bsStyle=\'primary\'>' +
+      'Panel content' +
+    '</Panel>' +
+    '<Panel header=\'Panel header\' bsStyle=\'success\'>' +
+      'Panel content' +
+    '</Panel>' +
+    '<Panel header=\'Panel header\' bsStyle=\'info\'>' +
+      'Panel content' +
+    '</Panel>' +
+    '<Panel header=\'Panel header\' bsStyle=\'warning\'>' +
+      'Panel content' +
+    '</Panel>' +
+    '<Panel header=\'Panel header\' bsStyle=\'danger\'>' +
+      'Panel content' +
+    '</Panel>'
 
-    const progcode
+    const progcode = '<h3>Basic</h3>' +
+      '<ProgressBar now={now} label={`${now}%`} />' +
+  '<ProgressBar now={60} />' +
+      '<h3>Contextual alternatives</h3>' +
+    '<ProgressBar bsStyle=\'success\' now={40} />' +
+      '<ProgressBar bsStyle=\'info\' now={20} />' +
+      '<ProgressBar bsStyle=\'warning\' now={60} />' +
+      '<ProgressBar bsStyle=\'danger\' now={80} />' +
+      '<h3>Stacked</h3>' +
+      '<ProgressBar>' +
+      '<ProgressBar striped bsStyle=\'success\' now={35} key={1} />' +
+      '<ProgressBar bsStyle=\'warning\' now={20} key={2} />' +
+      '<ProgressBar active bsStyle=\'danger\' now={10} key={3} />' +
+      '</ProgressBar>'
 
-    const tablecode
+    const tablecode = '<Table striped bordered condensed hover>' +
+    '<thead>' +
+    '<tr>' +
+    '<th>#</th>' +
+    '<th>First Name</th>' +
+    '<th>Last Name</th>' +
+    '<th>Username</th>' +
+  '</tr>' +
+  '</thead>' +
+    '<tbody>' +
+    '<tr>' +
+      '<td>1</td>' +
+      '<td>Mark</td>' +
+      '<td>Otto</td>' +
+      '<td>@mdo</td>' +
+    '</tr>' +
+    '<tr>' +
+      '<td>2</td>' +
+      '<td>Jacob</td>' +
+      '<td>Thornton</td>' +
+      '<td>@fat</td>' +
+    '</tr>' +
+    '<tr>' +
+      '<td>3</td>' +
+      '<td colSpan=\'2\'>Larry the Bird</td>' +
+      '<td>@twitter</td>' +
+    '</tr>' +
+    '</tbody>' +
+  '</Table>'
 
-    const tabcode
+    /* const tabcode
 
     const textcode
 
@@ -1022,7 +1098,17 @@ class StyleGuide extends Component {
             bsSize='small'
             items={10}
             activePage={page}
-            onSelect={this.handleSelect} />
+            onSelect={this.handleSelect} /><br />
+          <Button className='btn-code' bsStyle='default'
+            onClick={() => this.setState({ open: !this.state.open })}>
+              Show code
+          </Button>
+          <Panel className='panel-code' collapsible
+            expanded={this.state.open}>
+            <pre>
+             {beautify.html(pagcode)}
+            </pre>
+          </Panel>
         </span>
         <span>
           <h2>Panels</h2>
@@ -1047,6 +1133,16 @@ class StyleGuide extends Component {
           <Panel header='Panel header' bsStyle='danger'>
           Panel content
           </Panel>
+          <Button className='btn-code' bsStyle='default'
+            onClick={() => this.setState({ open: !this.state.open })}>
+              Show code
+          </Button>
+          <Panel className='panel-code' collapsible
+            expanded={this.state.open}>
+            <pre>
+             {beautify.html(panelcode)}
+            </pre>
+          </Panel>
         </span>
         <span>
           <h2>Progress bars</h2>
@@ -1064,6 +1160,16 @@ class StyleGuide extends Component {
             <ProgressBar bsStyle='warning' now={20} key={2} />
             <ProgressBar active bsStyle='danger' now={10} key={3} />
           </ProgressBar>
+          <Button className='btn-code' bsStyle='default'
+            onClick={() => this.setState({ open: !this.state.open })}>
+              Show code
+          </Button>
+          <Panel className='panel-code' collapsible
+            expanded={this.state.open}>
+            <pre>
+             {beautify.html(progcode)}
+            </pre>
+          </Panel>
         </span>
         <span>
           <h2>Table</h2>
@@ -1096,15 +1202,32 @@ class StyleGuide extends Component {
               </tr>
             </tbody>
           </Table>
+          <Button className='btn-code' bsStyle='default'
+            onClick={() => this.setState({ open: !this.state.open })}>
+              Show code
+          </Button>
+          <Panel className='panel-code' collapsible
+            expanded={this.state.open}>
+            <pre>
+             {beautify.html(tablecode)}
+            </pre>
+          </Panel>
         </span>
         <span>
           <h2>Tabs</h2>
+          <h3>Horizontal</h3>
           <Tabs defaultActiveKey={2} id='uncontrolled-tab-example'>
-            <Tab eventKey={1} title='Tab 1'>Tab 1 content</Tab>
-            <Tab eventKey={2} title='Tab 2'>Tab 2 content</Tab>
-            <Tab eventKey={3} title='Tab 3' disabled>Tab 3 content</Tab>
+            <Tab eventKey={1} title='Tab 1' className='contentViewContainer'>
+            Tab 1 content</Tab>
+            <Tab eventKey={2} title='Tab 2' className='contentViewContainer'>
+            Tab 2 content</Tab>
+            <Tab eventKey={3} title='Tab 3' disabled
+              className='contentViewContainer'>
+            Tab 3 content</Tab>
           </Tabs>
-          <Tab.Container id='left-tabs-example' defaultActiveKey='first'>
+          <h3>Vertical</h3>
+          <Tab.Container id='left-tabs-example' defaultActiveKey='first'
+            className='contentViewContainer'>
             <Row className='clearfix'>
               <Col sm={4}>
                 <Nav bsStyle='pills' stacked>
