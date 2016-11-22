@@ -52,4 +52,7 @@
   <!--uncomment once translated -->
   <!--<set-property name="locale" value="en,ja,zh_Hant_TW,uk" />-->
   <set-property-fallback name="locale" value="en" />
+
+  <!-- Eliminate permutation explosion: https://github.com/gwtproject/old_google_code_wiki/blob/master/SoftPermutations.wiki.md -->
+  <collapse-all-properties />
 </module>
