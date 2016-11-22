@@ -66,6 +66,10 @@ body {
   content: '';
 }
 
+.block-padding {
+  padding: 0.375em;
+}
+
 .textStateClasses {
   text-align: left;
   width: 100%;
@@ -891,6 +895,14 @@ h6 {
   font-weight: 500;
   line-height: 1.1;
   color: inherit;
+}
+
+h1:first-of-type {
+  padding-top:1rem;
+}
+
+h1:not(:first-of-type) {
+  padding-top:2rem;
 }
 
 .h1 .small,
@@ -2800,11 +2812,11 @@ button.btn.btn-warning.dropdown-toggle > span.caret {
 }
 
 .progress-bar-warning {
-  background-color:@progress-bar-warning-bg;
+  background-color:@progress-bar-unsure-bg;
 }
 
 .progress-bar-danger {
-  background-color:@progress-bar-danger-bg;
+  background-color:@progress-bar-warning-bg;
 }
 
 

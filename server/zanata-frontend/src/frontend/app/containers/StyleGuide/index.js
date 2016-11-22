@@ -13,6 +13,8 @@ import {
   ButtonGroup, DropdownButton, MenuItem
 } from 'react-bootstrap'
 
+import reactElementToJSXString from 'react-element-to-jsx-string'
+
 const tooltip = (
   <Tooltip id='tooltip'><strong>Tooltip ahoy!</strong> Check this info.
   </Tooltip>
@@ -47,6 +49,27 @@ class StyleGuide extends Component {
     const {
       page
     } = this.props
+
+    const gridcode = reactElementToJSXString(
+      <Grid>
+        <Row className='show-grid'>
+          <Col className='show-grid' xs={12} md={8} />
+          <Col className='show-grid' xs={6} md={4} />
+        </Row>
+        <Row className='show-grid'>
+          <Col className='show-grid' xs={6} md={4} />
+          <Col className='show-grid' xs={6} md={4} />
+          <Col className='show-grid' xsHidden md={4} />
+        </Row>
+        <Row className='show-grid'>
+          <Col className='show-grid' xs={6} xsOffset={6} />
+        </Row>
+        <Row className='show-grid'>
+          <Col className='show-grid' md={6} mdPush={6} />
+          <Col className='show-grid' md={6} mdPull={6} />
+        </Row>
+      </Grid>)
+
     return (
       <div className='container'>
         <h1>STYLES</h1>
@@ -78,6 +101,13 @@ class StyleGuide extends Component {
                 &lt;{'Col md={6} mdPull={6}'} /&gt;</code></Col>
             </Row>
           </Grid>
+          <Button bsStyle='primary'onClick={() =>
+             this.setState({ open: !this.state.open })}>
+          Show code
+          </Button>
+          <Panel collapsible expanded={this.state.open}>
+            {gridcode}
+          </Panel>
         </span>
         <span>
           <h2>Main Colors</h2>
