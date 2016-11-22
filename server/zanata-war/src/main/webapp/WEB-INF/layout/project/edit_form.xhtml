@@ -23,6 +23,22 @@
       jQuery(nameFieldId).find('input').focus()
     })
 
+    function validateDescriptionField(textArea) {
+      var len = 100 - textArea.value.length;
+      getDescriptionMessageCountField().text('Characters left: ' + len);
+      if (textArea.value.length > 100) {
+        getDescriptionMessageCountField().addClass("txt--danger");
+        getDescriptionMessageCountField().parent('div').addClass("form__item--error")
+      } else {
+        getDescriptionMessageCountField().removeClass("txt--danger");
+        getDescriptionMessageCountField().parent('div').removeClass("form__item--error")
+      }
+    }
+
+    function getDescriptionMessageCountField() {
+      return jQuery('#' + jqSelector('#{rich:clientId('project-desc-count')}'));
+    }
+
   </script>
 
   <div class="g--tight l--push-top-1">
@@ -62,10 +78,12 @@
       <span class="txt--meta">#{msgs['jsf.field.optional']}</span>
     </h:outputLabel>
     <zanata:decorate id="description" componentId="descriptionField">
-      <h:inputTextarea id="description" required="false"
+      <h:inputTextarea id="description" required="false" styleClass="l--push-bottom-0"
+        onkeyup="validateDescriptionField(this)"
         value="#{projectHome.instance.description}">
         <f:validateLength maximum="100"/>
       </h:inputTextarea>
+      <h:outputLabel id="project-desc-count" styleClass="txt--meta"></h:outputLabel>
     </zanata:decorate>
   </div>
 
