@@ -4,14 +4,14 @@ import { Router, Route, Redirect } from 'react-router'
 import App from '../containers/App'
 import Glossary from '../containers/Glossary'
 import Languages from '../containers/Languages'
+import Explore from '../containers/Explore'
+import UserProfile from '../containers/UserProfile'
+import { View } from 'zanata-ui'
 import StyleGuide from '../containers/StyleGuide'
 import Users from '../containers/Admin/Users'
 import Roles from '../containers/Admin/Roles'
 import Search from '../containers/Admin/Search'
 import TestModal from '../containers/TestModal'
-import Explore from '../containers/Explore'
-import UserProfile from '../containers/UserProfile'
-import { View } from 'zanata-ui'
 
 export default class Root extends Component {
   render () {
@@ -26,17 +26,17 @@ export default class Root extends Component {
           <Router history={history}>
             <Route component={App} >
               <Route path='explore' component={Explore} />
-              <Route path='testmodal' component={TestModal} />
-              <Route path='glossary' component={Glossary} />
-              <Route path='languages' component={Languages} />
-              <Route path='styleguide' component={StyleGuide} />
-              <Route path='profile/view/:username' component={UserProfile} />
               <Route path='glossary/project/:projectSlug'
                 component={Glossary} />
+              <Route path='glossary' component={Glossary} />
+              <Route path='languages' component={Languages} />
+              <Route path='profile/view/:username' component={UserProfile} />
+              <Redirect from='profile' to={`profile/view/${username}`} />
+              <Route path='testmodal' component={TestModal} />
+              <Route path='styleguide' component={StyleGuide} />
               <Route path='users' component={Users} />
               <Route path='roles' component={Roles} />
               <Route path='search' component={Search} />
-              <Redirect from='profile' to={`profile/view/${username}`} />
             </Route>
           </Router>
         </View>

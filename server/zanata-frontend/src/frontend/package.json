@@ -6,17 +6,21 @@
   "scripts": {
     "js": "webpack",
     "build": "webpack --config webpack.config.js && npm run build:icons && npm run build:webpack && npm run build:webpackLegacy",
-    "build:webpack": "webpack -p --config webpack.prod.config.js --bail --display-error-details && npm run copycss",
-    "build:webpackLegacy": "webpack -p --config webpack.legacy.config.js --bail --display-error-details && npm run copycss",
+    "build:webpack": "webpack -p --config webpack.prod.config.js --bail --display-error-details",
+    "build:webpackLegacy": "webpack -p --config webpack.legacy.config.js --bail --display-error-details",
     "build:icons": "npm run svg && npm run icons",
+
+    "draft": "webpack --config webpack.config.js && npm run draft:webpack --ignore-scripts=false && npm run draft:webpackLegacy --ignore-scripts=false",
+    "draft:webpack": "webpack --config webpack.draft.config.js --progress --bail --display-error-details",
+    "draft:webpackLegacy": "webpack --config webpack.draftlegacy.config.js --progress --bail --display-error-details",
+
     "hot-dev-server": "webpack-dev-server --config webpack.dev.config.js --progress --inline --hot --port 8000",
-    "start": "npm run hot-dev-server",
+    "start": "npm run hot-dev-server --ignore-scripts=false",
     "styleguide-server": "styleguidist server",
     "styleguide-build": "styleguidist build",
     "icons": "node scripts/createIconsComponent && node scripts/generateIconList",
     "svg": "svg-sprite -sD app/components/Icons --symbol-dest '' --ss icons.svg --si app/components/Icons/svgs/*.svg",
-    "test": "jest",
-    "copycss": "cp ./app/styles/style.css ./dist && cp ./app/styles/bootstrap.css ./dist"
+    "test": "jest"
   },
   "license": "LGPL",
   "devDependencies": {

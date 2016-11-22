@@ -72,6 +72,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .where("path").matches(anyOf(
                         "explore",
                         "glossary",
+                        "glossary/project/[^/]*",
                         "languages",
                         // There is a 302 redirect from profile to profile/
                         // I don't know why it does it, but it causes 403 Forbidden

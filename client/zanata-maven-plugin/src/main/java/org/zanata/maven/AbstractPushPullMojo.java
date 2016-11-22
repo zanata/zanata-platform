@@ -1,21 +1,18 @@
 package org.zanata.maven;
 
-import java.io.File;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import com.google.common.collect.ImmutableSet;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullOptions;
 import org.zanata.client.config.LocaleList;
 
 /**
- * @requiresOnline true
- * @author Sean Flanigan <sflaniga@redhat.com>
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends
+abstract class AbstractPushPullMojo<O extends PushPullOptions> extends
         ConfigurableProjectMojo<O> implements PushPullOptions {
     protected static final String PROJECT_TYPE_FILE = "file";
 
@@ -90,31 +87,23 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends
                 + module.getArtifactId();
     }
 
-    /**
-     * @parameter expression="${project}"
-     * @readonly
-     */
+    @Parameter(defaultValue = "${project}", readonly = true)
     private MavenProject project;
 
     /**
      * Dry run: don't change any data, on the server or on the filesystem.
-     *
-     * @parameter expression="${dryRun}"
      */
+    @Parameter(property = "dryRun")
     private boolean dryRun = false;
 
-    /**
-     * @parameter expression="${zanata.skip}"
-     */
+    @Parameter(property = "zanata.skip")
     private boolean skip;
 
     /**
      * The projects in the reactor.
-     *
-     * @parameter expression="${reactorProjects}"
-     * @readonly
      */
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    @Parameter(defaultValue = "${reactorProjects}", readonly = true)
     private List<MavenProject> reactorProjects;
 
     /**
@@ -125,9 +114,8 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends
      * required.
      *
      * Use this option to resume a failed push operation.
-     *
-     * @parameter expression="${zanata.fromDoc}"
      */
+    @Parameter(property = "zanata.fromDoc")
     private String fromDoc;
 
     /**
@@ -135,9 +123,8 @@ public abstract class AbstractPushPullMojo<O extends PushPullOptions> extends
      * configured for the project will be pushed/pulled.
      * Usage:
      * -Dzanata.locales=locale1,locale2,locale3
-     *
-     * @parameter expression="${zanata.locales}"
      */
+    @Parameter(property = "zanata.locales")
     private String[] locales;
 
     private LocaleList effectiveLocales;

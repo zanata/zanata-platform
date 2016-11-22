@@ -23,6 +23,7 @@ package org.zanata.maven;
 
 import java.io.File;
 
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.pull.PullCommand;
@@ -37,50 +38,45 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public abstract class AbstractPullMojo extends
+abstract class AbstractPullMojo extends
         AbstractPushPullMojo<PullOptions> implements PullOptions {
     /**
      * Export source-language text from Zanata to local files, overwriting or
-     * erasing existing files (DANGER!). This option is deprecated, replaced by
-     * pullType.
-     *
-     * @parameter expression="${zanata.pullSrc}"
+     * erasing existing files (DANGER!).
+     * @deprecated Replaced by pullType=source
      */
+    @Parameter(property = "zanata.pullSrc")
     @Deprecated
     private String pullSrc;
 
     /**
      * Whether to create skeleton entries for strings/files which have not been
      * translated yet
-     *
-     * @parameter expression="${zanata.createSkeletons}"
      */
+    @Parameter(property = "zanata.createSkeletons")
     private boolean createSkeletons;
 
     /**
      * Whether to include fuzzy translations in translation files when using
      * project type 'file'. If this option is false, source text will be used
      * for any string that does not have an approved translation.
-     *
-     * @parameter expression="${zanata.includeFuzzy}" default-value="false"
      */
+    @Parameter(property = "zanata.includeFuzzy", defaultValue = "false")
     private boolean includeFuzzy = false;
 
     /**
      * Whether to purge the cache before performing the pull operation. This
      * means that all documents will be fetched from the server anew.
-     *
-     * @parameter expression="${zanata.purgeCache}" default-value="false"
      */
+    @Parameter(property = "zanata.purgeCache", defaultValue = "false")
     private boolean purgeCache;
 
     /**
      * Whether to use an Entity cache when fetching documents. When using the
      * cache, documents that have been retrieved previously and have not changed
      * since then will not be retrieved again.
-     *
-     * @parameter expression="${zanata.useCache}" default-value="true"
      */
+    @Parameter(property = "zanata.useCache", defaultValue = "true")
     private boolean useCache;
 
     /**
@@ -95,16 +91,14 @@ public abstract class AbstractPullMojo extends
      * Type of pull to perform from the server: "source" pulls source documents
      * only. "trans" pulls translation documents only. "both" pulls both source
      * and translation documents.
-     *
-     * @parameter expression="${zanata.pullType}" default-value="trans"
      */
+    @Parameter(property = "zanata.pullType", defaultValue = "trans")
     private String pullType;
 
     /**
      * Whether tabs should be encoded as \t (true) or left as tabs (false).
-     *
-     * @parameter expression="${zanata.encodeTabs}" default-value="true"
      */
+    @Parameter(property = "zanata.encodeTabs", defaultValue = "true")
     private boolean encodeTabs = true;
 
     /**
@@ -112,25 +106,19 @@ public abstract class AbstractPullMojo extends
      * text flow or fail the process. i.e. when encounter a mismatch plural
      * form, it will try to use singular form. Note: This option may not work on
      * all circumstances.
-     *
-     * @parameter expression="${zanata.continueAfterError}"
-     *            default-value="false"
      */
+    @Parameter(property = "zanata.continueAfterError", defaultValue = "false")
     private boolean continueAfterError = false;
 
     /**
      * Accepts integer from 0 to 100. Only pull translation documents which are
      * at least PERCENT % (message based) completed. Please note specifying this
      * option may cause longer time to pull for a large project.
-     *
-     * @parameter expression="${zanata.minDocPercent}" default-value="0"
      */
+    @Parameter(property = "zanata.minDocPercent", defaultValue = "0")
     private int minDocPercent = 0;
 
-    /**
-     *
-     */
-    public AbstractPullMojo() {
+    AbstractPullMojo() {
         super();
         Preconditions
                 .checkArgument(minDocPercent >= 0 && minDocPercent <= 100,

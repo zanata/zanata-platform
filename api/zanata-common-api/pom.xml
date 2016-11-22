@@ -15,6 +15,7 @@
   <scm>
     <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -242,13 +243,13 @@
         </exclusion>
       </exclusions>
       <!--this is needed for now. Aftet AS7 upgrade may need to revisit this-->
-      <version>4.2.0.Final</version>
+      <version>5.2.3.Final</version>
     </dependency>
 
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
-      <version>1.0.0.GA</version>
+      <version>1.1.0.Final</version>
     </dependency>
 
     <dependency>

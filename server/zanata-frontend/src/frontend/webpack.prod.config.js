@@ -1,3 +1,10 @@
+/**
+ * Production build config.
+ *
+ * This should be optimised for production performance and a small download.
+ * Builds with this config should fail on any error, including linting errors.
+ */
+
 var webpack = require('webpack')
 var path = require('path')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
@@ -49,7 +56,6 @@ module.exports = _.merge({}, defaultConfig, {
   },
   plugins: defaultConfig.plugins.concat([
     new ExtractTextPlugin('frontend.css'),
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false

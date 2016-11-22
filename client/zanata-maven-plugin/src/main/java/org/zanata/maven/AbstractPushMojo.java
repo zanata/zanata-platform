@@ -21,30 +21,27 @@
 
 package org.zanata.maven;
 
-import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableList;
-import org.apache.commons.lang3.StringUtils;
+import javax.annotation.Nonnull;
+
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.PushPullCommand;
 import org.zanata.client.commands.PushPullType;
 import org.zanata.client.commands.push.PushCommand;
 import org.zanata.client.commands.push.PushOptions;
 import org.zanata.client.commands.push.RawPushCommand;
 
-import javax.annotation.Nonnull;
+import com.google.common.collect.ImmutableList;
 
 /**
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public abstract class AbstractPushMojo extends
+abstract class AbstractPushMojo extends
         AbstractPushPullMojo<PushOptions> implements PushOptions {
 
     /**
      * Language of source documents
-     *
-     * @parameter expression="${zanata.sourceLang}" default-value="en-US"
      */
+    @Parameter(property = "zanata.sourceLang", defaultValue = "en-US")
     private String sourceLang = "en-US";
 
     @Override
@@ -58,10 +55,10 @@ public abstract class AbstractPushMojo extends
 
     /**
      * Push translations from local files to the server (merge or import: see
-     * mergeType). This option is deprecated, replaced by pushType.
-     *
-     * @parameter expression="${zanata.pushTrans}"
+     * mergeType).
+     * @deprecated Replaced by pushType=trans
      */
+    @Parameter(property = "zanata.pushTrans")
     @Deprecated
     private String pushTrans;
 
@@ -69,31 +66,27 @@ public abstract class AbstractPushMojo extends
      * Type of push to perform on the server: "source" pushes source documents
      * only. "trans" pushes translation documents only. "both" pushes both
      * source and translation documents.
-     *
-     * @parameter expression="${zanata.pushType}" default-value="source"
      */
+    @Parameter(property = "zanata.pushType", defaultValue = "source")
     private String pushType = "source";
 
     /**
      * Whether the server should copy latest translations from equivalent
      * messages/documents in the database
-     *
-     * @parameter expression="${zanata.copyTrans}" default-value="false"
      */
+    @Parameter(property = "zanata.copyTrans", defaultValue = "false")
     private boolean copyTrans;
 
     /**
      * Merge type: "auto" (default) or "import" (DANGER!).
-     *
-     * @parameter expression="${zanata.merge}" default-value="auto"
      */
+    @Parameter(property = "zanata.merge", defaultValue = "auto")
     private String merge = "auto";
 
     /**
      * Add default excludes (.svn, .git, etc) to the exclude filters.
-     *
-     * @parameter expression="${zanata.defaultExcludes}" default-value="true"
      */
+    @Parameter(property = "zanata.defaultExcludes", defaultValue = "true")
     private boolean defaultExcludes = true;
 
     /**
@@ -102,9 +95,8 @@ public abstract class AbstractPushMojo extends
      * single request, larger documents will be sent over multiple requests.
      *
      * Usage -Dzanata.maxChunkSize=12345
-     *
-     * @parameter expression="${zanata.maxChunkSize}" default-value="1048576"
      */
+    @Parameter(property = "zanata.maxChunkSize", defaultValue = "1048576")
     private int maxChunkSize = 1024 * 1024;
 
     /**
@@ -127,23 +119,21 @@ public abstract class AbstractPushMojo extends
      * Use push with the option -Dzanata.listFileTypes to see the server's
      * supported types and their default extensions.
      * </p>
-     * @parameter expression="${zanata.fileTypes}"
      */
+    @Parameter(property = "zanata.fileTypes")
     private String[] fileTypes = new String[0];
 
     /**
      * List file types supported by the configured server, instead
      * of pushing files.
-     *
-     * @parameter expression="${zanata.listFileTypes}"
      */
+    @Parameter(property = "zanata.listFileTypes")
     private boolean listFileTypes = false;
 
     /**
      * Case sensitive for includes and excludes options.
-     *
-     * @parameter expression="${zanata.caseSensitive}" default-value="true"
      */
+    @Parameter(property = "zanata.caseSensitive", defaultValue = "true")
     private boolean caseSensitive = true;
 
     /**
@@ -154,10 +144,8 @@ public abstract class AbstractPushMojo extends
      * <p>
      * NB: This parameter will be ignored for some project types which use
      * different file naming conventions (eg podir, gettext).
-     *
-     * @parameter expression="${zanata.excludeLocaleFilenames}"
-     *            default-value="true"
      */
+    @Parameter(property = "zanata.excludeLocaleFilenames", defaultValue = "true")
     private boolean excludeLocaleFilenames = true;
 
     /**
@@ -165,17 +153,14 @@ public abstract class AbstractPushMojo extends
      * "CONTENT" - content validation check (quick). "XSD" - validation check
      * against xliff 1.1 schema -
      * http://www.oasis-open.org/committees/xliff/documents/xliff-core-1.1.xsd.
-     *
-     * @parameter expression="${zanata.validate}" default-value="content"
      */
+    @Parameter(property = "zanata.validate", defaultValue = "content")
     private String validate = "content";
 
     /**
      * Indicates if all uploaded translations were translated by you.
-     *
-     * @parameter expression="${zanata.myTrans}"
-     *            default-value="false"
      */
+    @Parameter(property = "zanata.myTrans", defaultValue = "false")
     private boolean myTrans = false;
 
     @Override

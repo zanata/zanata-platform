@@ -26,7 +26,7 @@ import static org.zanata.common.ContentState.New;
 import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
-import static org.zanata.transaction.TransactionUtil.runInTransaction;
+import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 
 import java.util.List;
 import java.util.Map;

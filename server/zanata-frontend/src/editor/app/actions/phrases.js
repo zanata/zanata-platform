@@ -110,7 +110,7 @@ function transUnitDetailToPhraseDetail (transUnitDetail, localeId) {
     const source = transUnit.source
     const plural = source.plural
     const trans = transUnit[localeId]
-    const translations = extractTranslations(source, trans)
+    const translations = extractTranslations(trans)
     return {
       id: parseInt(id, 10),
       plural,
@@ -129,11 +129,13 @@ function transUnitDetailToPhraseDetail (transUnitDetail, localeId) {
  *
  * This will always return an Array<String>, but the array may be empty.
  */
-function extractTranslations (source, trans) {
-  if (source.plural) {
-    return trans && trans.contents ? trans.contents.slice() : []
+function extractTranslations (trans) {
+  if (!trans) {
+    return []
   }
-  return trans ? [trans.content] : []
+  return trans.content ? [trans.content]
+    // Array.slice() efficiently makes a copy of the array.
+    : (trans.contents ? trans.contents.slice() : [])
 }
 
 /**
