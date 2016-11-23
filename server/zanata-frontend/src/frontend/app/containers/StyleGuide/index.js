@@ -423,83 +423,6 @@ class StyleGuide extends Component {
       '<Tabs defaultActiveKey={2} id=\'uncontrolled-tab-example\'>' +
       '<Tab eventKey={1} title=\'Tab 1\' className=\'contentViewContainer\'>' +
       'Tab 1 content</Tab>' +
-<<<<<<< HEAD
-    '<Tab eventKey={2} title=\'Tab 2\' className=\'contentViewContainer\'>' +
-      'Tab 2 content</Tab>' +
-    '<Tab eventKey={3} title=\'Tab 3\' disabled' +
-    'className=\'contentViewContainer\'>' +
-      'Tab 3 content</Tab>' +
-    '</Tabs>' +
-    '<h3>Vertical</h3>' +
-    '<Tab.Container id=\'left-tabs-example\' defaultActiveKey=\'first\'' +
-    'className=\'contentViewContainer\'>' +
-      '<Row className=\'clearfix\'>' +
-      '<Col sm={4}>' +
-      '<Nav bsStyle=\'pills\' stacked>' +
-    '<NavItem eventKey=\'first\'>' +
-      'Tab 1' +
-    '</NavItem>' +
-    '<NavItem eventKey=\'second\'>' +
-      'Tab 2' +
-    '</NavItem>' +
-    '</Nav>' +
-    '</Col>' +
-    '<Col sm={8}>' +
-      '<Tab.Content animation>' +
-    '<Tab.Pane eventKey=\'first\'>' +
-      'Tab 1 content' +
-    '</Tab.Pane>' +
-    '<Tab.Pane eventKey=\'second\'>' +
-      'Tab 2 content' +
-    '</Tab.Pane>' +
-    '</Tab.Content>' +
-    '</Col>' +
-    '</Row>' +
-    '</Tab.Container>'
-
-    const textcode = '<p className=\'lead\'>Lead paragraph:' +
-    'vivamus sagittis lacus vel augue laoreet rutrum faucibus' +
-    ' dolor auctor. Duis mollis, est non commodo luctus.</p>' +
-    '<p>Nullam quis risus eget <a href=\'#\'>urna mollis ornare</a>' +
-    'vel eu leo. Cum sociis natoque penatibus et magnis dis' +
-    'parturient montes, nascetur ridiculus mus. Nullam' +
-    'id dolor id nibh ultricies vehicula.</p>' +
-    '<p><small>This line of text is meant to be treated as fine print.' +
-    '</small></p>' +
-    '<p>The following snippet of text is <strong>rendered as' +
-    'bold text</strong>.</p>' +
-    'italicized text</em>.</p>' +
-    '<p>An abbreviation of the word attribute is' +
-    '<abbr title=\'attribute\'>attr</abbr>.</p>' +
-    '<p className=\'text-left\'>Left aligned text.</p>' +
-    '<p className=\'text-center\'>Center aligned text.</p>' +
-    '<p className=\'text-right\'>Right aligned text.</p>' +
-    '<p className=\'text-justify\'>Justified text.</p>' +
-    '<p className=\'text-muted\'>Muted: Fusce dapibus,' +
-    '  tellus ac cursus commodo,' +
-    ' tortor mauris nibh.</p>' +
-    '<p className=\'text-primary\'>Primary: Nullam id dolor id nibh' +
-    'ultricies vehicula ut id elit.</p>' +
-    '<p className=\'text-warning\'>Warning: Etiam porta sem malesuada' +
-    'magna mollis euismod.</p>' +
-    '<p className=\'text-danger\'>Danger: Donec ullamcorper nulla non' +
-    'metus auctor fringilla.</p>' +
-    '<p className=\'text-success\'>Success: Duis mollis, est non commodo' +
-    'luctus, nisi erat porttitor ligula.</p>' +
-    '<p className=\'text-info\'>Info: Maecenas sed diam eget risus varius' +
-    'blandit sit amet non magna.</p>'
-
-    const inptextcode = '<TextInput' +
-    'maxLength={100}' +
-    'id=\'demo\'' +
-    'className=\'textInput\'' +
-    'placeholder=\'TextInput…\'' +
-    'accessibilityLabel=\'TextInput\'' +
-    'defaultValue=\'Default text\'' +
-    'onKeyDown={(e) => {' +
-      'this.handleKeyDown(e)' +
-    '}}'
-=======
       '<Tab eventKey={2} title=\'Tab 2\' className=\'contentViewContainer\'>' +
       'Tab 2 content</Tab>' +
       '<Tab eventKey={3} title=\'Tab 3\' disabled' +
@@ -575,28 +498,10 @@ class StyleGuide extends Component {
       'onKeyDown={(e) => {' +
       'this.handleKeyDown(e)' +
       '}}'
->>>>>>> 80bf473c6ddb2bfec12d8b1288e29c28d894d806
 
     const toolcode = '<ButtonToolbar>' +
       '<OverlayTrigger placement=\'left\' overlay={tooltip}>' +
       '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
-<<<<<<< HEAD
-  '</OverlayTrigger>' +
-    '<OverlayTrigger placement=\'top\' overlay={tooltip}>' +
-      '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
-    '</OverlayTrigger>' +
-    '<OverlayTrigger placement=\'bottom\' overlay={tooltip}>' +
-      '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
-    '</OverlayTrigger>' +
-    '<OverlayTrigger placement=\'right\' overlay={tooltip}>' +
-     '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
-    '</OverlayTrigger>' +
-  '</ButtonToolbar>'
-
-    const wellcode = '<Well>Look I am in a well!</Well>' +
-    '<Well bsSize=\'large\'>Look I am in a large well!</Well>' +
-    '<Well bsSize=\'small\'>Look I am in a small well!</Well>'
-=======
       '</OverlayTrigger>' +
       '<OverlayTrigger placement=\'top\' overlay={tooltip}>' +
       '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
@@ -612,7 +517,6 @@ class StyleGuide extends Component {
     const wellcode = '<Well>Look I am in a well!</Well>' +
       '<Well bsSize=\'large\'>Look I am in a large well!</Well>' +
       '<Well bsSize=\'small\'>Look I am in a small well!</Well>'
->>>>>>> 80bf473c6ddb2bfec12d8b1288e29c28d894d806
 
     return (
       <div className='container'>
@@ -864,8 +768,8 @@ class StyleGuide extends Component {
             <DropdownButton title='Dropdown' id='bg-nested-dropdown'>
               <MenuItem eventKey='1'>Dropdown link</MenuItem>
               <MenuItem eventKey='2'>Dropdown link</MenuItem>
-            </DropdownButton><br />
-          </ButtonGroup>
+            </DropdownButton>
+          </ButtonGroup><br />
           <Button className='btn-code' bsStyle='default'
             onClick={() => this.setState({ open: !this.state.open })}>
              Show code
@@ -1063,83 +967,83 @@ class StyleGuide extends Component {
         <span>
           <h2>Icons</h2>
           <ul>
-            <li><Icon name='admin' className='s0' />admin</li>
-            <li><Icon name='all' className='s0' />all</li>
-            <li><Icon name='assign' className='s0' />assign</li>
-            <li><Icon name='attach' className='s0' />attach</li>
-            <li><Icon name='block' className='s0' />block</li>
+            <li><Icon name='admin' className='s1' />admin</li>
+            <li><Icon name='all' className='s1' />all</li>
+            <li><Icon name='assign' className='s1' />assign</li>
+            <li><Icon name='attach' className='s1' />attach</li>
+            <li><Icon name='block' className='s1' />block</li>
             <li><Icon name='chevron-down-double'
               className='s0' />chevron-double-down</li>
-            <li><Icon name='chevron-down' className='s0' />chevron-down</li>
-            <li><Icon name='chevron-left' className='s0' />chevron-left</li>
-            <li><Icon name='chevron-right' className='s0' />
+            <li><Icon name='chevron-down' className='s1' />chevron-down</li>
+            <li><Icon name='chevron-left' className='s1' />chevron-left</li>
+            <li><Icon name='chevron-right' className='s1' />
             chevron-right</li>
             <li><Icon name='chevron-up-double'
               className='s0' />chevron-up-double</li>
-            <li><Icon name='chevron-up' className='s0' />chevron-up</li>
-            <li><Icon name='circle' className='s0' />circle</li>
-            <li><Icon name='clock' className='s0' />clock</li>
-            <li><Icon name='code' className='s0' />code</li>
-            <li><Icon name='comment' className='s0' />comment</li>
-            <li><Icon name='copy' className='s0' />copy</li>
-            <li><Icon name='cross-circle' className='s0' />cross-circle</li>
-            <li><Icon name='cross' className='s0' />cross</li>
-            <li><Icon name='dashboard' className='s0' />dashboard</li>
-            <li><Icon name='document' className='s0' />document</li>
-            <li><Icon name='dot' className='s0' />dot</li>
-            <li><Icon name='download' className='s0' />download</li>
-            <li><Icon name='edit' className='s0' />edit</li>
-            <li><Icon name='ellipsis' className='s0' />ellipsis</li>
-            <li><Icon name='export' className='s0' />export</li>
+            <li><Icon name='chevron-up' className='s1' />chevron-up</li>
+            <li><Icon name='circle' className='s1' />circle</li>
+            <li><Icon name='clock' className='s1' />clock</li>
+            <li><Icon name='code' className='s1' />code</li>
+            <li><Icon name='comment' className='s1' />comment</li>
+            <li><Icon name='copy' className='s1' />copy</li>
+            <li><Icon name='cross-circle' className='s1' />cross-circle</li>
+            <li><Icon name='cross' className='s1' />cross</li>
+            <li><Icon name='dashboard' className='s1' />dashboard</li>
+            <li><Icon name='document' className='s1' />document</li>
+            <li><Icon name='dot' className='s1' />dot</li>
+            <li><Icon name='download' className='s1' />download</li>
+            <li><Icon name='edit' className='s1' />edit</li>
+            <li><Icon name='ellipsis' className='s1' />ellipsis</li>
+            <li><Icon name='export' className='s1' />export</li>
             <li><Icon name='external-link'
-              className='s0' />external-link</li>
-            <li><Icon name='filter' className='s0' />filter</li>
-            <li><Icon name='folder' className='s0' />folder</li>
-            <li><Icon name='glossary' className='s0' />glossary</li>
-            <li><Icon name='help' className='s0' />help</li>
-            <li><Icon name='history' className='s0' />history</li>
-            <li><Icon name='import' className='s0' />import</li>
-            <li><Icon name='inbox' className='s0' />inbox</li>
-            <li><Icon name='info' className='s0' />info</li>
-            <li><Icon name='keyboard' className='s0' />keyboard</li>
-            <li><Icon name='language' className='s0' />language</li>
-            <li><Icon name='link' className='s0' />link</li>
-            <li><Icon name='location' className='s0' />location</li>
-            <li><Icon name='locked' className='s0' />locked</li>
-            <li><Icon name='logout' className='s0' />logout</li>
-            <li><Icon name='mail' className='s0' />mail</li>
-            <li><Icon name='maintain' className='s0' />maintain</li>
-            <li><Icon name='menu' className='s0' />menu</li>
-            <li><Icon name='minus' className='s0' />minus</li>
-            <li><Icon name='next' className='s0' />next</li>
-            <li><Icon name='notification' className='s0' />
+              className='s1' />external-link</li>
+            <li><Icon name='filter' className='s1' />filter</li>
+            <li><Icon name='folder' className='s1' />folder</li>
+            <li><Icon name='glossary' className='s1' />glossary</li>
+            <li><Icon name='help' className='s1' />help</li>
+            <li><Icon name='history' className='s1' />history</li>
+            <li><Icon name='import' className='s1' />import</li>
+            <li><Icon name='inbox' className='s1' />inbox</li>
+            <li><Icon name='info' className='s1' />info</li>
+            <li><Icon name='keyboard' className='s1' />keyboard</li>
+            <li><Icon name='language' className='s1' />language</li>
+            <li><Icon name='link' className='s1' />link</li>
+            <li><Icon name='location' className='s1' />location</li>
+            <li><Icon name='locked' className='s1' />locked</li>
+            <li><Icon name='logout' className='s1' />logout</li>
+            <li><Icon name='mail' className='s1' />mail</li>
+            <li><Icon name='maintain' className='s1' />maintain</li>
+            <li><Icon name='menu' className='s1' />menu</li>
+            <li><Icon name='minus' className='s1' />minus</li>
+            <li><Icon name='next' className='s1' />next</li>
+            <li><Icon name='notification' className='s1' />
             notification</li>
-            <li><Icon name='piestats' className='s0' />piestats</li>
-            <li><Icon name='plus' className='s0' />plus</li>
-            <li><Icon name='previous' className='s0' />previous</li>
-            <li><Icon name='project' className='s0' />project</li>
-            <li><Icon name='refresh' className='s0' />refresh</li>
-            <li><Icon name='review' className='s0' />review</li>
-            <li><Icon name='search' className='s0' />search</li>
-            <li><Icon name='servmon' className='s0' />servmon</li>
-            <li><Icon name='settings' className='s0' />settings</li>
-            <li><Icon name='star-outline' className='s0' />star-outline</li>
-            <li><Icon name='star' className='s0' />star</li>
-            <li><Icon name='statistics' className='s0' />statistics</li>
-            <li><Icon name='suggestions' className='s0' />suggestions</li>
-            <li><Icon name='tick-circle' className='s0' />tick-circle</li>
-            <li><Icon name='tick' className='s0' />tick</li>
-            <li><Icon name='tm' className='s0' />tm</li>
-            <li><Icon name='translate' className='s0' />translate</li>
-            <li><Icon name='trash' className='s0' />trash</li>
-            <li><Icon name='undo' className='s0' />undo</li>
-            <li><Icon name='unlocked' className='s0' />unlocked</li>
-            <li><Icon name='upload' className='s0' />upload</li>
-            <li><Icon name='user' className='s0' />user</li>
-            <li><Icon name='users' className='s0' />users</li>
-            <li><Icon name='version' className='s0' />version</li>
-            <li><Icon name='warning' className='s0' />warning</li>
-            <li><Icon name='zanata' className='s0' />zanata</li>
+            <li><Icon name='piestats' className='s1' />piestats</li>
+            <li><Icon name='plus' className='s1' />plus</li>
+            <li><Icon name='previous' className='s1' />previous</li>
+            <li><Icon name='project' className='s1' />project</li>
+            <li><Icon name='refresh' className='s1' />refresh</li>
+            <li><Icon name='review' className='s1' />review</li>
+            <li><Icon name='search' className='s1' />search</li>
+            <li><Icon name='servmon' className='s1' />servmon</li>
+            <li><Icon name='settings' className='s1' />settings</li>
+            <li><Icon name='star-outline' className='s1' />star-outline</li>
+            <li><Icon name='star' className='s1' />star</li>
+            <li><Icon name='statistics' className='s1' />statistics</li>
+            <li><Icon name='suggestions' className='s1' />suggestions</li>
+            <li><Icon name='tick-circle' className='s1' />tick-circle</li>
+            <li><Icon name='tick' className='s1' />tick</li>
+            <li><Icon name='tm' className='s1' />tm</li>
+            <li><Icon name='translate' className='s1' />translate</li>
+            <li><Icon name='trash' className='s1' />trash</li>
+            <li><Icon name='undo' className='s1' />undo</li>
+            <li><Icon name='unlocked' className='s1' />unlocked</li>
+            <li><Icon name='upload' className='s1' />upload</li>
+            <li><Icon name='user' className='s1' />user</li>
+            <li><Icon name='users' className='s1' />users</li>
+            <li><Icon name='version' className='s1' />version</li>
+            <li><Icon name='warning' className='s1' />warning</li>
+            <li><Icon name='zanata' className='s1' />zanata</li>
           </ul>
           <Button className='btn-code' bsStyle='default'
             onClick={() => this.setState({ open: !this.state.open })}>
