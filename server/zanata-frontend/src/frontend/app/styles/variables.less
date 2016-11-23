@@ -7,11 +7,11 @@
 //
 //## Gray and brand colors for use across Bootstrap.
 
-@gray-darker:            lighten(#000, 13.5%); // #222
-@gray-dark:              lighten(#000, 20%);   // #333
-@gray:                   lighten(#000, 33.5%); // #555
-@gray-light:             #808080;   // #999
-@gray-lighter:           #ddd; // #eee
+@gray-darker:            #333; // #222
+@gray-dark:              #555;   // #333
+@gray:                   #ddd; // #555
+@gray-light:             #f7f7f7;   // #999
+@gray-lighter:           #fcfcfc; // #eee
 
 @brand-secondary:       #03A6D7;
 @brand-primary:         #546677;
@@ -36,13 +36,13 @@
 //** Success progress bar color
 @progress-bar-success-bg:     @brand-success;
 //** Warning progress bar color
-@progress-bar-unsure-bg:     @brand-unsure;
+@progress-bar-unsure-bg:      @brand-unsure;
 //** Danger progress bar color
-@progress-bar-warning-bg:      @brand-warning;
+@progress-bar-warning-bg:     @brand-warning;
 //** Info progress bar color
 @progress-bar-info-bg:        @brand-info;
 
-@well-bg:                     darken(@body-bg, 3%);
+@well-bg:                     @gray-lighter;
 @well-border:                 darken(@well-bg, 7%);
 
 //== Scaffolding
@@ -745,7 +745,7 @@
 //
 //##
 
-@well-bg:                     darken(@body-bg, 3%);
+@well-bg:                     @gray-lighter;
 @well-border:                 darken(@well-bg, 7%);
 
 

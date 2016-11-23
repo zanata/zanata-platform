@@ -549,12 +549,7 @@ class StyleGuide extends Component {
                 &lt;{'Col md={6} mdPull={6}'} /&gt;</code></Col>
             </Row>
           </Grid>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-           Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
               {beautify.html(gridcode)}
             </pre>
@@ -578,10 +573,14 @@ class StyleGuide extends Component {
               <span className='sg-animated'>#FCFCFC</span></span></div>
           <div className='sg-color sg-gray-dark sg-lg'>
             <span className='sg-color-swatch'>
-              <span className='sg-animated'>#333333</span></span></div>
+              <span className='sg-animated'>#F5F5F5</span></span></div>
           <div className='sg-color sg-gray-darker sg-lg'>
             <span className='sg-color-swatch'>
               <span className='sg-animated'>#DDDDDD</span></span></div>
+          <div className='sg-color sg-gray-darkest sg-lg'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#555555</span></span></div>
+          <h3>Status colours</h3>
           <h3>Status colours</h3>
           <div className='sg-color sg-brand-success'>
             <span className='sg-color-swatch'>
@@ -603,12 +602,7 @@ class StyleGuide extends Component {
           <h2>Font stack</h2>
           <p>'Source Sans Pro', 'Helvetica Neue',
           Helvetica, Arial, sans-serif;</p>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
               font-family: 'Source Sans Pro', 'Helvetica Neue',
               Helvetica, Arial, sans-serif;
@@ -626,12 +620,7 @@ class StyleGuide extends Component {
             <strong>Holy guacamole!</strong> Best check yo self</Alert>
           <Alert bsStyle='info'>
             <strong>Holy guacamole!</strong> Best check yo self</Alert>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(alertcode)}
             </pre>
@@ -641,12 +630,6 @@ class StyleGuide extends Component {
           <h2>Badges</h2>
           <p>Badge <Badge>23</Badge></p>
           <h3>Example uses</h3>
-          <Nav bsStyle='pills' stacked className='sg-nav-pills'>
-            <NavItem className='active'>Home
-              &nbsp;<Badge>42</Badge></NavItem>
-            <NavItem>Profile</NavItem>
-            <NavItem>Messages <Badge>3</Badge></NavItem>
-          </Nav>
           <Nav bsStyle='pills' stacked className='sg-nav-pills'>
             <NavItem className='active'>
               <Badge className='pull-right'>42</Badge>
@@ -661,12 +644,7 @@ class StyleGuide extends Component {
           <Button bsStyle='primary' type='button'>
             Messages <Badge>4</Badge>
           </Button><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(badgecode)}
             </pre>
@@ -685,12 +663,7 @@ class StyleGuide extends Component {
               Data
             </Breadcrumb.Item>
           </Breadcrumb>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(breadcode)}
             </pre>
@@ -727,12 +700,7 @@ class StyleGuide extends Component {
           <Button bsStyle='primary' bsSize='large' block>
           Block level button</Button>
           <Button bsSize='large' block>Block level button</Button>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(btncode1)}
             </pre>
@@ -770,12 +738,7 @@ class StyleGuide extends Component {
               <MenuItem eventKey='2'>Dropdown link</MenuItem>
             </DropdownButton>
           </ButtonGroup><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-             Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(btncode2)}
             </pre>
@@ -789,12 +752,7 @@ class StyleGuide extends Component {
           should be wrapped as inline.</p>
           <p>To switch directories, type <kbd>cd</kbd>
           followed by the name of the directory.</p>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-             Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(codecode)}
             </pre>
@@ -810,12 +768,7 @@ class StyleGuide extends Component {
             <MenuItem divider />
             <MenuItem eventKey='4'>Separated link</MenuItem>
           </DropdownButton><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-             Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(dropcode)}
             </pre>
@@ -912,12 +865,7 @@ class StyleGuide extends Component {
           <Checkbox validationState='error'>
             Checkbox with error
           </Checkbox><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(formcode)}
             </pre>
@@ -932,12 +880,7 @@ class StyleGuide extends Component {
             emptyReadOnlyText='No description'>
             'sting'
           </EditableText><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(editcode)}
             </pre>
@@ -953,12 +896,7 @@ class StyleGuide extends Component {
           <h4>h4. Bootstrap heading <small>Secondary text</small></h4>
           <h5>h5. Bootstrap heading <small>Secondary text</small></h5>
           <h6>h6. Bootstrap heading <small>Secondary text</small></h6>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel>
             <pre>
              {beautify.html(headcode)}
             </pre>
@@ -1045,12 +983,7 @@ class StyleGuide extends Component {
             <li><Icon name='warning' className='s1' />warning</li>
             <li><Icon name='zanata' className='s1' />zanata</li>
           </ul>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel>
             <pre>
              {beautify.html(iconcode)}
             </pre>
@@ -1071,12 +1004,7 @@ class StyleGuide extends Component {
           <Label bsStyle='warning'>Warning</Label>&nbsp;
           <Label bsStyle='danger'>Danger</Label>
         </span><br />
-        <Button className='btn-code' bsStyle='default'
-          onClick={() => this.setState({ open: !this.state.open })}>
-          Show code
-        </Button>
-        <Panel className='panel-code' collapsible
-          expanded={this.state.open}>
+        <Panel className='panel-code'>
           <pre>
            {beautify.html(labelcode)}
           </pre>
@@ -1084,12 +1012,7 @@ class StyleGuide extends Component {
         <span>
           <h2>Link</h2>
           <Link link='www.zanata.org'>link to zanata.org</Link><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(linkcode)}
             </pre>
@@ -1113,12 +1036,7 @@ class StyleGuide extends Component {
             <ListGroupItem header='Heading 2' href='#'>
             Linked item</ListGroupItem>
           </ListGroup>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(listcode)}
             </pre>
@@ -1128,12 +1046,7 @@ class StyleGuide extends Component {
           <h2>Loader</h2>
           <h3>LoaderText</h3>
           <LoaderText loading loadingText='Loading' /><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-            Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(loadercode)}
             </pre>
@@ -1158,12 +1071,7 @@ class StyleGuide extends Component {
               </Button>
             </Modal.Footer>
           </Modal><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-              Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(modalcode)}
             </pre>
@@ -1188,12 +1096,7 @@ class StyleGuide extends Component {
             items={10}
             activePage={page}
             onSelect={this.handleSelect} /><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-              Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(pagcode)}
             </pre>
@@ -1222,12 +1125,7 @@ class StyleGuide extends Component {
           <Panel header='Panel header' bsStyle='danger'>
           Panel content
           </Panel>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-              Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(panelcode)}
             </pre>
@@ -1249,12 +1147,7 @@ class StyleGuide extends Component {
             <ProgressBar bsStyle='warning' now={20} key={2} />
             <ProgressBar active bsStyle='danger' now={10} key={3} />
           </ProgressBar>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-              Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(progcode)}
             </pre>
@@ -1291,12 +1184,7 @@ class StyleGuide extends Component {
               </tr>
             </tbody>
           </Table>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-              Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(tablecode)}
             </pre>
@@ -1340,12 +1228,7 @@ class StyleGuide extends Component {
               </Col>
             </Row>
           </Tab.Container><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-              Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(tabcode)}
             </pre>
@@ -1386,12 +1269,7 @@ class StyleGuide extends Component {
           luctus, nisi erat porttitor ligula.</p>
           <p className='text-info'>Info: Maecenas sed diam eget risus varius
           blandit sit amet non magna.</p><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-              Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(textcode)}
             </pre>
@@ -1410,12 +1288,7 @@ class StyleGuide extends Component {
               this.handleKeyDown(e)
             }}
           /><br />
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-              Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(inptextcode)}
             </pre>
@@ -1437,12 +1310,7 @@ class StyleGuide extends Component {
               <Button bsStyle='default'>Holy guacamole!</Button>
             </OverlayTrigger>
           </ButtonToolbar>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-              Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(toolcode)}
             </pre>
@@ -1453,12 +1321,7 @@ class StyleGuide extends Component {
           <Well>Look I'm in a well!</Well>
           <Well bsSize='large'>Look I'm in a large well!</Well>
           <Well bsSize='small'>Look I'm in a small well!</Well>
-          <Button className='btn-code' bsStyle='default'
-            onClick={() => this.setState({ open: !this.state.open })}>
-              Show code
-          </Button>
-          <Panel className='panel-code' collapsible
-            expanded={this.state.open}>
+          <Panel className='panel-code'>
             <pre>
              {beautify.html(wellcode)}
             </pre>
@@ -1467,11 +1330,11 @@ class StyleGuide extends Component {
         <span>
           <h2>Removed components</h2>
           <ul>
-            <li>Base</li>
-            <li>Flex</li>
-            <li>Page</li>
-            <li>Scrollview</li>
-            <li>View</li>
+            <li>Base - no longer needed</li>
+            <li>Flex - no longer needed - use bootstrap 12 column layout</li>
+            <li>Page - style added to css as .page</li>
+            <li>Scrollview - style added to css as .scrollview</li>
+            <li>View - style aded to css as .view</li>
           </ul>
         </span>
       </div>)
