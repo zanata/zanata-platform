@@ -550,6 +550,7 @@ class StyleGuide extends Component {
             </Row>
           </Grid>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
               {beautify.html(gridcode)}
             </pre>
@@ -603,6 +604,7 @@ class StyleGuide extends Component {
           <p>'Source Sans Pro', 'Helvetica Neue',
           Helvetica, Arial, sans-serif;</p>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
               font-family: 'Source Sans Pro', 'Helvetica Neue',
               Helvetica, Arial, sans-serif;
@@ -610,6 +612,10 @@ class StyleGuide extends Component {
           </Panel>
         </span>
         <h1>COMPONENTS</h1>
+        <Well><p>Please see
+          <a href='https://react-bootstrap.github.io/components.html'>
+          &nbsp;react-bootstrap</a> for detailed information on using these
+        components</p></Well>
         <span>
           <h2>Alerts</h2>
           <Alert bsStyle='success'>
@@ -621,6 +627,7 @@ class StyleGuide extends Component {
           <Alert bsStyle='info'>
             <strong>Holy guacamole!</strong> Best check yo self</Alert>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(alertcode)}
             </pre>
@@ -645,6 +652,7 @@ class StyleGuide extends Component {
             Messages <Badge>4</Badge>
           </Button><br />
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(badgecode)}
             </pre>
@@ -664,6 +672,7 @@ class StyleGuide extends Component {
             </Breadcrumb.Item>
           </Breadcrumb>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(breadcode)}
             </pre>
@@ -701,6 +710,7 @@ class StyleGuide extends Component {
           Block level button</Button>
           <Button bsSize='large' block>Block level button</Button>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(btncode1)}
             </pre>
@@ -739,6 +749,7 @@ class StyleGuide extends Component {
             </DropdownButton>
           </ButtonGroup><br />
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(btncode2)}
             </pre>
@@ -753,6 +764,7 @@ class StyleGuide extends Component {
           <p>To switch directories, type <kbd>cd</kbd>
           followed by the name of the directory.</p>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(codecode)}
             </pre>
@@ -769,6 +781,7 @@ class StyleGuide extends Component {
             <MenuItem eventKey='4'>Separated link</MenuItem>
           </DropdownButton><br />
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(dropcode)}
             </pre>
@@ -866,6 +879,7 @@ class StyleGuide extends Component {
             Checkbox with error
           </Checkbox><br />
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(formcode)}
             </pre>
@@ -881,6 +895,7 @@ class StyleGuide extends Component {
             'sting'
           </EditableText><br />
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(editcode)}
             </pre>
@@ -896,7 +911,8 @@ class StyleGuide extends Component {
           <h4>h4. Bootstrap heading <small>Secondary text</small></h4>
           <h5>h5. Bootstrap heading <small>Secondary text</small></h5>
           <h6>h6. Bootstrap heading <small>Secondary text</small></h6>
-          <Panel>
+          <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(headcode)}
             </pre>
@@ -983,7 +999,8 @@ class StyleGuide extends Component {
             <li><Icon name='warning' className='s1' />warning</li>
             <li><Icon name='zanata' className='s1' />zanata</li>
           </ul>
-          <Panel>
+          <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(iconcode)}
             </pre>
@@ -1005,6 +1022,7 @@ class StyleGuide extends Component {
           <Label bsStyle='danger'>Danger</Label>
         </span><br />
         <Panel className='panel-code'>
+          <h4>Code</h4>
           <pre>
            {beautify.html(labelcode)}
           </pre>
@@ -1013,6 +1031,7 @@ class StyleGuide extends Component {
           <h2>Link</h2>
           <Link link='www.zanata.org'>link to zanata.org</Link><br />
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(linkcode)}
             </pre>
@@ -1037,6 +1056,7 @@ class StyleGuide extends Component {
             Linked item</ListGroupItem>
           </ListGroup>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(listcode)}
             </pre>
@@ -1046,6 +1066,7 @@ class StyleGuide extends Component {
           <h2>Loader</h2>
           <h3>LoaderText</h3>
           <LoaderText loading loadingText='Loading' /><br />
+          <h4>Code</h4>
           <Panel className='panel-code'>
             <pre>
              {beautify.html(loadercode)}
@@ -1072,6 +1093,7 @@ class StyleGuide extends Component {
             </Modal.Footer>
           </Modal><br />
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(modalcode)}
             </pre>
@@ -1097,6 +1119,7 @@ class StyleGuide extends Component {
             activePage={page}
             onSelect={this.handleSelect} /><br />
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(pagcode)}
             </pre>
@@ -1126,6 +1149,7 @@ class StyleGuide extends Component {
           Panel content
           </Panel>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(panelcode)}
             </pre>
@@ -1148,6 +1172,7 @@ class StyleGuide extends Component {
             <ProgressBar active bsStyle='danger' now={10} key={3} />
           </ProgressBar>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(progcode)}
             </pre>
@@ -1185,6 +1210,7 @@ class StyleGuide extends Component {
             </tbody>
           </Table>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(tablecode)}
             </pre>
@@ -1229,6 +1255,7 @@ class StyleGuide extends Component {
             </Row>
           </Tab.Container><br />
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(tabcode)}
             </pre>
@@ -1270,6 +1297,7 @@ class StyleGuide extends Component {
           <p className='text-info'>Info: Maecenas sed diam eget risus varius
           blandit sit amet non magna.</p><br />
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(textcode)}
             </pre>
@@ -1289,6 +1317,7 @@ class StyleGuide extends Component {
             }}
           /><br />
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(inptextcode)}
             </pre>
@@ -1311,6 +1340,7 @@ class StyleGuide extends Component {
             </OverlayTrigger>
           </ButtonToolbar>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(toolcode)}
             </pre>
@@ -1318,10 +1348,12 @@ class StyleGuide extends Component {
         </span>
         <span>
           <h2>Wells</h2>
-          <Well>Look I'm in a well!</Well>
+          <Well>Look I'm in a well! <a href='#'>I am a link
+          in a well!</a></Well>
           <Well bsSize='large'>Look I'm in a large well!</Well>
           <Well bsSize='small'>Look I'm in a small well!</Well>
           <Panel className='panel-code'>
+            <h4>Code</h4>
             <pre>
              {beautify.html(wellcode)}
             </pre>
