@@ -1,28 +1,48 @@
 package org.zanata.service.impl;
 
-import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
-import java.util.Hashtable;
-import java.util.Map;
-
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.naming.Context;
-import javax.naming.NamingException;
-import javax.naming.spi.InitialContextFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.assertj.core.api.Assertions;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.search.jpa.FullTextEntityManager;
+import org.hibernate.search.jpa.Search;
 import org.jglue.cdiunit.AdditionalClasses;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.ClassRule;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.zanata.PerformanceProfiling;
+import org.zanata.SlowTest;
 import org.zanata.ZanataTest;
+import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
+import org.zanata.dao.AccountDAO;
+import org.zanata.jpa.FullText;
+import org.zanata.model.HAccount;
+import org.zanata.model.HCopyTransOptions;
+import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
+import org.zanata.model.HProject;
+import org.zanata.model.HTextFlowBuilder;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.service.EntityManagerFactoryRule;
+import org.zanata.service.MockInitialContextRule;
+import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.ZanataEntities;
+import com.github.huangp.entityunit.entity.EntityMakerBuilder;
+import com.github.huangp.entityunit.maker.FixedValueMaker;
 import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
@@ -30,46 +50,16 @@ import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.assertj.core.api.Assertions;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Environment;
-import org.hibernate.dialect.MySQL5Dialect;
-import org.hibernate.search.jpa.Search;
-import org.zanata.jpa.FullText;
-import org.zanata.model.HAccount;
-import org.junit.Before;
-import org.junit.ClassRule;
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExternalResource;
-import org.junit.rules.TestRule;
-import org.zanata.PerformanceProfiling;
-import org.zanata.SlowTest;
-import org.zanata.common.ContentState;
-import org.zanata.common.LocaleId;
-import org.zanata.dao.AccountDAO;
-import org.zanata.model.HCopyTransOptions;
-import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
-import org.zanata.model.HProject;
-import org.zanata.model.HTextFlowBuilder;
-import org.zanata.security.annotations.Authenticated;
-import org.zanata.test.CdiUnitRunner;
-import org.zanata.util.ZanataEntities;
-
-import com.github.huangp.entityunit.entity.EntityMakerBuilder;
-import com.github.huangp.entityunit.maker.FixedValueMaker;
-import com.google.common.collect.ImmutableMap;
+import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.zanata.service.EntityManagerFactoryRule.mySqlPassword;
+import static org.zanata.service.EntityManagerFactoryRule.mySqlUrl;
+import static org.zanata.service.EntityManagerFactoryRule.mySqlUsername;
 
 /**
  * This is a JUnit test that will setup large data and test the performance of
- * copyTrans. JUnit will NOT be executed by maven at the moment (only testNg)
- * which is desirable right now, as we don't have a benchmark and do not want to
- * slow down our build.
+ * copyTrans.
  *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -81,93 +71,16 @@ import com.google.common.collect.ImmutableMap;
                     VersionStateCacheImpl.class,
                     ValidationServiceImpl.class})
 public class CopyTransServiceImplPerformanceTest extends ZanataTest {
-    private static final String PERSIST_NAME = "zanataDatasourcePU";
-    private static final String MYSQL_TEST_DB_URL =
-            "jdbc:log4jdbc:mysql://localhost:3306/zanata_unit_test?characterEncoding=UTF-8";
-    private static final String MYSQL_DIALECT =
-            MySQL5Dialect.class.getCanonicalName();
-
-    protected static boolean useMysql = true;
-    // NOTE: if you use mysql and you have the schema created, just change it to
-    // update will speed up subsequent test run
-    // private static String hbm2ddl = "create";
-    protected static String hbm2ddl = "update";
-    // protected static String hbm2ddl = "validate";
-    private static final Map<String, String> MySQLProps =
-            ImmutableMap
-                    .<String, String> builder()
-                    .put(Environment.URL, MYSQL_TEST_DB_URL)
-                    .put(Environment.USER, "root")
-                    .put(Environment.PASS, "root")
-                    .put(Environment.HBM2DDL_AUTO, "")
-                    // .put(Environment.USE_DIRECT_REFERENCE_CACHE_ENTRIES,
-                    // "true")
-                    // .put(Environment.DEFAULT_BATCH_FETCH_SIZE, "50")
-                    // .put(Environment.STATEMENT_BATCH_SIZE, "50")
-                    // .put(Environment.USE_SECOND_LEVEL_CACHE, "false")
-                    // .put(Environment.USE_QUERY_CACHE, "false")
-                    .put(Environment.DIALECT, MYSQL_DIALECT).build();
 
     @ClassRule
-    public static TestRule entityManagerFactoryRule = new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            log.debug("Initializing EMF");
-            emf =
-                    Persistence.createEntityManagerFactory(PERSIST_NAME,
-                            useMysql ? MySQLProps : null);
-        }
-
-        @Override
-        protected void after() {
-            log.debug("Shutting down EMF");
-            emf.close();
-            emf = null;
-        }
-    };
-
-    @Rule
-    public TestRule emRule = new ExternalResource() {
-        @Override
-        protected void before() throws Throwable {
-            log.debug("Setting up EM");
-            em = emf.createEntityManager();
-            em.getTransaction().begin();
-        }
-
-        @Override
-        protected void after() {
-            log.debug("Shutting down EM");
-            clearHibernateSecondLevelCache();
-            em.getTransaction().commit();
-            if (em.isOpen()) {
-                em.close();
-            }
-            em = null;
-        }
-
-        /**
-         * Clears the Hibernate Second Level cache.
-         */
-        private void clearHibernateSecondLevelCache() {
-            SessionFactory sessionFactory =
-                    ((Session) em.getDelegate()).getSessionFactory();
-            try {
-                sessionFactory.getCache().evictEntityRegions();
-                sessionFactory.getCache().evictCollectionRegions();
-            } catch (Exception e) {
-                System.out.println(" *** Cache Exception " + e.getMessage());
-            }
-        }
-    };
+    public static EntityManagerFactoryRule emfRule = new EntityManagerFactoryRule(
+            EntityManagerFactoryRule.TestProfile.ManualPerformanceProfiling);
 
     private static final Context jndiContext = mock(Context.class);
     @ClassRule
     public static MockInitialContextRule initialContextRule =
-            new MockInitialContextRule(
-                    jndiContext);
+            new MockInitialContextRule(jndiContext);
 
-    private static EntityManagerFactory emf;
     protected EntityManager em;
     private int numOfTextFlows;
     @Inject
@@ -186,7 +99,7 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
 
     @Produces
     protected EntityManagerFactory getEmf() {
-        return emf;
+        return emfRule.getEmf();
     }
 
     @Produces
@@ -202,6 +115,9 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
     @Before
     public void setUp() throws Exception {
         // runLiquibase();
+        log.debug("Setting up EM");
+        em = emfRule.getEmf().createEntityManager();
+        em.getTransaction().begin();
 
         deleteAll(getEm(), ZanataEntities.entitiesForRemoval());
 
@@ -271,6 +187,24 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
                 .setLevel(Level.DEBUG);
     }
 
+    @After
+    public void tearDown() {
+        log.debug("Shutting down EM");
+        SessionFactory sessionFactory =
+                ((Session) em.getDelegate()).getSessionFactory();
+        try {
+            sessionFactory.getCache().evictEntityRegions();
+            sessionFactory.getCache().evictCollectionRegions();
+        } catch (Exception e) {
+            log.error(" *** Cache Exception " + e.getMessage());
+        }
+        em.getTransaction().commit();
+        if (em.isOpen()) {
+            em.close();
+        }
+        em = null;
+    }
+
     // This method will ensure database schema is up to date
     private static void runLiquibase() throws Exception {
         when(
@@ -278,7 +212,7 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
                         .lookup("java:global/zanata/files/document-storage-directory"))
                 .thenReturn("/tmp/doc");
         Connection conn = DriverManager
-                .getConnection(MYSQL_TEST_DB_URL, "root", "root");
+                .getConnection(mySqlUrl(), mySqlUsername(), mySqlPassword());
 
         Statement statement = conn.createStatement();
         statement.executeUpdate("drop schema zanata_unit_test");
@@ -332,50 +266,6 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
                 getEm().createQuery("select count(*) from HTextFlowTarget",
                         Long.class).getSingleResult();
         Assertions.assertThat(totalTranslation).isEqualTo(numOfTextFlows * 2);
-    }
-
-    public static class MockInitialContextFactory implements
-            InitialContextFactory {
-
-        private static final ThreadLocal<Context> currentContext =
-                new ThreadLocal<Context>();
-
-        @Override
-        public Context getInitialContext(Hashtable<?, ?> environment) throws
-                NamingException {
-            return currentContext.get();
-        }
-
-        public static void setCurrentContext(Context context) {
-            currentContext.set(context);
-        }
-
-        public static void clearCurrentContext() {
-            currentContext.remove();
-        }
-
-    }
-
-    public static class MockInitialContextRule extends ExternalResource {
-
-        private final Context context;
-
-        private MockInitialContextRule(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        protected void before() throws Throwable {
-            System.setProperty(Context.INITIAL_CONTEXT_FACTORY,
-                    MockInitialContextFactory.class.getName());
-            MockInitialContextFactory.setCurrentContext(context);
-        }
-
-        @Override
-        protected void after() {
-            System.clearProperty(Context.INITIAL_CONTEXT_FACTORY);
-            MockInitialContextFactory.clearCurrentContext();
-        }
     }
 
 }

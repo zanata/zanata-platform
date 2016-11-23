@@ -5,4 +5,9 @@
   <project-version>master</project-version>
   <project-type>properties</project-type>
 
+  <src-dir>.</src-dir>
+  <trans-dir>.</trans-dir>
+  <!-- only one translation file has been prepared so far -->
+  <includes>zanata-war/src/main/resources/messages.properties</includes>
+
 </config>

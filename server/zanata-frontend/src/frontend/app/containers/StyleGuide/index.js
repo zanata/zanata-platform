@@ -70,17 +70,17 @@ class StyleGuide extends Component {
       '</Grid>'
 
     const alertcode = '<Alert bsStyle=\'success\'>' +
-    '<strong>Holy guacamole!</strong> Best check yo self' +
-    '</Alert>' +
-    '<Alert bsStyle=\'warning\'>' +
-    ' <strong>Holy guacamole!</strong> Best check yo self' +
-    '</Alert>' +
-    '<Alert bsStyle=\'danger\'>' +
-    '<strong>Holy guacamole!</strong> Best check yo self' +
-    '</Alert>' +
-    '<Alert bsStyle=\'info\'>' +
-    '<strong>Holy guacamole!</strong> Best check yo self' +
-    '</Alert>'
+      '<strong>Holy guacamole!</strong> Best check yo self' +
+      '</Alert>' +
+      '<Alert bsStyle=\'warning\'>' +
+      ' <strong>Holy guacamole!</strong> Best check yo self' +
+      '</Alert>' +
+      '<Alert bsStyle=\'danger\'>' +
+      '<strong>Holy guacamole!</strong> Best check yo self' +
+      '</Alert>' +
+      '<Alert bsStyle=\'info\'>' +
+      '<strong>Holy guacamole!</strong> Best check yo self' +
+      '</Alert>'
 
     const badgecode = '<p>Badge <Badge>23</Badge></p>'
 
@@ -163,13 +163,13 @@ class StyleGuide extends Component {
       'followed by the name of the directory.</p>'
 
     const dropcode = '<DropdownButton bsStyle=\'default\' ' +
-    'title=\'Dropdown button\' id=\'dropdown-basic\'>' +
-    '<MenuItem eventKey=\'1\'>Action</MenuItem>' +
-    '<MenuItem eventKey=\'2\'>Another action</MenuItem>' +
-    '<MenuItem eventKey=\'3\' active>Active Item</MenuItem>' +
-    '<MenuItem divider />' +
-    '<MenuItem eventKey=\'4\'>Separated link</MenuItem>' +
-    '</DropdownButton>'
+      'title=\'Dropdown button\' id=\'dropdown-basic\'>' +
+      '<MenuItem eventKey=\'1\'>Action</MenuItem>' +
+      '<MenuItem eventKey=\'2\'>Another action</MenuItem>' +
+      '<MenuItem eventKey=\'3\' active>Active Item</MenuItem>' +
+      '<MenuItem divider />' +
+      '<MenuItem eventKey=\'4\'>Separated link</MenuItem>' +
+      '</DropdownButton>'
 
     const formcode = '<Form>' +
       '<FormGroup>' +
@@ -203,29 +203,29 @@ class StyleGuide extends Component {
       'validationState=\'warning\'>' +
       '<ControlLabel>Input group with warning</ControlLabel>' +
       '<InputGroup>' +
-    '<InputGroup.Addon>@</InputGroup.Addon>' +
-    '<FormControl type=\'text\' />' +
+      '<InputGroup.Addon>@</InputGroup.Addon>' +
+      '<FormControl type=\'text\' />' +
       '</InputGroup>' +
       '<FormControl.Feedback />' +
       '</FormGroup>' +
       '</Form>' +
       '<Form componentClass=\'fieldset\' horizontal>' +
-    '<FormGroup controlId=\'formValidationError3\'' +
-     'validationState=\'error\'>' +
+      '<FormGroup controlId=\'formValidationError3\'' +
+      'validationState=\'error\'>' +
       '<Col componentClass={ControlLabel} xs={3}>' +
       'Input with error' +
-    '</Col>' +
-    '<Col xs={9}>' +
+      '</Col>' +
+      '<Col xs={9}>' +
       '<FormControl type=\'text\' />' +
       '<FormControl.Feedback />' +
       '</Col>' +
       '</FormGroup>' +
       '<FormGroup controlId=\'formValidationSuccess4\'' +
-    'validationState=\'success\'>' +
+      'validationState=\'success\'>' +
       '<Col componentClass={ControlLabel} xs={3}>' +
       'Input group with success' +
-    '</Col>' +
-    '<Col xs={9}>' +
+      '</Col>' +
+      '<Col xs={9}>' +
       '<InputGroup>' +
       '<InputGroup.Addon>@</InputGroup.Addon>' +
       '<FormControl type=\'text\' />' +
@@ -235,40 +235,40 @@ class StyleGuide extends Component {
       '</FormGroup>' +
       '</Form>' +
       '<Form componentClass=\'fieldset\' inline>' +
-    '<FormGroup controlId=\'formValidationWarning4\'' +
-    'validationState=\'warning\'>' +
+      '<FormGroup controlId=\'formValidationWarning4\'' +
+      'validationState=\'warning\'>' +
       '<ControlLabel>Input with warning</ControlLabel>' +
-    '{\' \'}' +
+      '{\' \'}' +
       '<FormControl type=\'text\' />' +
       '<FormControl.Feedback />' +
       '</FormGroup>' +
       '{\' \'}' +
-    '<FormGroup controlId=\'formValidationError4\'' +
-     'validationState=\'error\'>' +
+      '<FormGroup controlId=\'formValidationError4\'' +
+      'validationState=\'error\'>' +
       '<ControlLabel>Input group with error</ControlLabel>' +
       '{\' \'}' +
       '<InputGroup>' +
-        '<InputGroup.Addon>@</InputGroup.Addon>' +
-        '<FormControl type=\'text\' />' +
+      '<InputGroup.Addon>@</InputGroup.Addon>' +
+      '<FormControl type=\'text\' />' +
       '</InputGroup>' +
       '<FormControl.Feedback />' +
-    '</FormGroup>' +
-    '</Form>' +
-    '<Checkbox validationState=\'success\'>' +
+      '</FormGroup>' +
+      '</Form>' +
+      '<Checkbox validationState=\'success\'>' +
       'Checkbox with success' +
-    '</Checkbox>' +
-    '<Radio validationState=\'warning\'>' +
+      '</Checkbox>' +
+      '<Radio validationState=\'warning\'>' +
       'Radio with warning' +
-    '</Radio>' +
-    '<Checkbox validationState=\'error\'>' +
+      '</Radio>' +
+      '<Checkbox validationState=\'error\'>' +
       'Checkbox with error' +
-    '</Checkbox>'
+      '</Checkbox>'
 
     const editcode = '<EditableText' +
-    'className=\'editable\'' +
-    'maxLength={255}' +
-    'placeholder=\'Add a description…\'' +
-    'emptyReadOnlyText=\'No description\'>' +
+      'className=\'editable\'' +
+      'maxLength={255}' +
+      'placeholder=\'Add a description…\'' +
+      'emptyReadOnlyText=\'No description\'>' +
       '\'string\'' +
       '</EditableText> '
 
@@ -276,11 +276,11 @@ class StyleGuide extends Component {
       'Page Header <small>' +
       'With Small Text</small></h1>' +
       '<h1>h1. Bootstrap heading <small>Secondary text</small></h1>' +
-    '<h2>h2. Bootstrap heading <small>Secondary text</small></h2>' +
-    '<h3>h3. Bootstrap heading <small>Secondary text</small></h3>' +
-    '<h4>h4. Bootstrap heading <small>Secondary text</small></h4>' +
-    '<h5>h5. Bootstrap heading <small>Secondary text</small></h5>' +
-    '<h6>h6. Bootstrap heading <small>Secondary text</small></h6>'
+      '<h2>h2. Bootstrap heading <small>Secondary text</small></h2>' +
+      '<h3>h3. Bootstrap heading <small>Secondary text</small></h3>' +
+      '<h4>h4. Bootstrap heading <small>Secondary text</small></h4>' +
+      '<h5>h5. Bootstrap heading <small>Secondary text</small></h5>' +
+      '<h6>h6. Bootstrap heading <small>Secondary text</small></h6>'
 
     const iconcode = '<Icon name=\'users\' className=\'s0\' />'
 
@@ -291,94 +291,94 @@ class StyleGuide extends Component {
       '<h5>Label <Label>New</Label></h5>' +
       '<p>Label <Label>New</Label></p>' +
       '<Label bsStyle=\'default\'>Default</Label>' +
-    '<Label bsStyle=\'primary\'>Primary</Label>' +
-    '<Label bsStyle=\'success\'>Success</Label>' +
-    '<Label bsStyle=\'info\'>Info</Label>' +
-    '<Label bsStyle=\'warning\'>Warning</Label>' +
-    '<Label bsStyle=\'danger\'>Danger</Label>'
+      '<Label bsStyle=\'primary\'>Primary</Label>' +
+      '<Label bsStyle=\'success\'>Success</Label>' +
+      '<Label bsStyle=\'info\'>Info</Label>' +
+      '<Label bsStyle=\'warning\'>Warning</Label>' +
+      '<Label bsStyle=\'danger\'>Danger</Label>'
 
     const linkcode = '<Link link=\'www.zanata.org\'>link to zanata.org</Link>'
 
     const listcode = '<ListGroup>' +
       '<ListGroupItem>Item 1</ListGroupItem>' +
-    '<ListGroupItem>Item 2</ListGroupItem>' +
-    '<ListGroupItem>...</ListGroupItem>' +
-  '</ListGroup>' +
-    '<ListGroup>' +
+      '<ListGroupItem>Item 2</ListGroupItem>' +
+      '<ListGroupItem>...</ListGroupItem>' +
+      '</ListGroup>' +
+      '<ListGroup>' +
       '<ListGroupItem href=\'#\' active>Active</ListGroupItem>' +
       '<ListGroupItem href=\'#\'>Link</ListGroupItem>' +
       '<ListGroupItem href=\'#\' disabled>Disabled</ListGroupItem>' +
-    '</ListGroup>' +
-    '<ListGroup>' +
+      '</ListGroup>' +
+      '<ListGroup>' +
       '<ListGroupItem header=\'Heading 1\'>' +
-        'Some body text</ListGroupItem>' +
+      'Some body text</ListGroupItem>' +
       '<ListGroupItem header=\'Heading 2\' href=\'#\'>' +
-        'Linked item</ListGroupItem>' +
-    '</ListGroup>'
+      'Linked item</ListGroupItem>' +
+      '</ListGroup>'
 
     const loadercode = '<LoaderText loading loadingText=\'Loading\' />'
 
     const modalcode = '<Modal' +
-    'show={this.state.show}' +
-    'onHide={() => this.hideModal()}>' +
-  '<Modal.Header>' +
-    '<Modal.Title>Example Modal</Modal.Title>' +
-    '</Modal.Header>' +
-    '<Modal.Body>Hi There</Modal.Body>' +
-    '<Modal.Footer>' +
-    '<Button bsStyle=\'link\'' +
-    'onClick={() => this.hideModal()}>Cancel</Button>' +
-    '<Button bsStyle=\'primary\' onClick={() => this.hideModal()}>' +
-    'Submit' +
-    '</Button>' +
-    '</Modal.Footer>' +
-    '</Modal>'
+      'show={this.state.show}' +
+      'onHide={() => this.hideModal()}>' +
+      '<Modal.Header>' +
+      '<Modal.Title>Example Modal</Modal.Title>' +
+      '</Modal.Header>' +
+      '<Modal.Body>Hi There</Modal.Body>' +
+      '<Modal.Footer>' +
+      '<Button bsStyle=\'link\'' +
+      'onClick={() => this.hideModal()}>Cancel</Button>' +
+      '<Button bsStyle=\'primary\' onClick={() => this.hideModal()}>' +
+      'Submit' +
+      '</Button>' +
+      '</Modal.Footer>' +
+      '</Modal>'
 
     const pagcode = '<Pagination' +
-    'bsSize=\'large\'' +
-    'items={10}' +
-    'activePage={page}' +
-   'onSelect={this.handleSelect} />' +
-  '<br />' +
-    '<Pagination' +
-    'bsSize=\'medium\'' +
-    'items={10}' +
-    'activePage={page}' +
-    'onSelect={this.handleSelect} />' +
-  '<br />' +
-    '<Pagination' +
-    'bsSize=\'small\'' +
-    'items={10}' +
-    'activePage={page}' +
-    'onSelect={this.handleSelect} />'
+      'bsSize=\'large\'' +
+      'items={10}' +
+      'activePage={page}' +
+      'onSelect={this.handleSelect} />' +
+      '<br />' +
+      '<Pagination' +
+      'bsSize=\'medium\'' +
+      'items={10}' +
+      'activePage={page}' +
+      'onSelect={this.handleSelect} />' +
+      '<br />' +
+      '<Pagination' +
+      'bsSize=\'small\'' +
+      'items={10}' +
+      'activePage={page}' +
+      'onSelect={this.handleSelect} />'
 
     const panelcode = '<Panel>' +
-    'Basic panel example' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\'>' +
+      'Basic panel example' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\'>' +
       'Panel content' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\' bsStyle=\'primary\'>' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\' bsStyle=\'primary\'>' +
       'Panel content' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\' bsStyle=\'success\'>' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\' bsStyle=\'success\'>' +
       'Panel content' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\' bsStyle=\'info\'>' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\' bsStyle=\'info\'>' +
       'Panel content' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\' bsStyle=\'warning\'>' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\' bsStyle=\'warning\'>' +
       'Panel content' +
-    '</Panel>' +
-    '<Panel header=\'Panel header\' bsStyle=\'danger\'>' +
+      '</Panel>' +
+      '<Panel header=\'Panel header\' bsStyle=\'danger\'>' +
       'Panel content' +
-    '</Panel>'
+      '</Panel>'
 
     const progcode = '<h3>Basic</h3>' +
       '<ProgressBar now={now} label={`${now}%`} />' +
-  '<ProgressBar now={60} />' +
+      '<ProgressBar now={60} />' +
       '<h3>Contextual alternatives</h3>' +
-    '<ProgressBar bsStyle=\'success\' now={40} />' +
+      '<ProgressBar bsStyle=\'success\' now={40} />' +
       '<ProgressBar bsStyle=\'info\' now={20} />' +
       '<ProgressBar bsStyle=\'warning\' now={60} />' +
       '<ProgressBar bsStyle=\'danger\' now={80} />' +
@@ -390,39 +390,40 @@ class StyleGuide extends Component {
       '</ProgressBar>'
 
     const tablecode = '<Table striped bordered condensed hover>' +
-    '<thead>' +
-    '<tr>' +
-    '<th>#</th>' +
-    '<th>First Name</th>' +
-    '<th>Last Name</th>' +
-    '<th>Username</th>' +
-  '</tr>' +
-  '</thead>' +
-    '<tbody>' +
-    '<tr>' +
+      '<thead>' +
+      '<tr>' +
+      '<th>#</th>' +
+      '<th>First Name</th>' +
+      '<th>Last Name</th>' +
+      '<th>Username</th>' +
+      '</tr>' +
+      '</thead>' +
+      '<tbody>' +
+      '<tr>' +
       '<td>1</td>' +
       '<td>Mark</td>' +
       '<td>Otto</td>' +
       '<td>@mdo</td>' +
-    '</tr>' +
-    '<tr>' +
+      '</tr>' +
+      '<tr>' +
       '<td>2</td>' +
       '<td>Jacob</td>' +
       '<td>Thornton</td>' +
       '<td>@fat</td>' +
-    '</tr>' +
-    '<tr>' +
+      '</tr>' +
+      '<tr>' +
       '<td>3</td>' +
       '<td colSpan=\'2\'>Larry the Bird</td>' +
       '<td>@twitter</td>' +
-    '</tr>' +
-    '</tbody>' +
-  '</Table>'
+      '</tr>' +
+      '</tbody>' +
+      '</Table>'
 
     const tabcode = '<h3>Horizontal</h3>' +
       '<Tabs defaultActiveKey={2} id=\'uncontrolled-tab-example\'>' +
       '<Tab eventKey={1} title=\'Tab 1\' className=\'contentViewContainer\'>' +
       'Tab 1 content</Tab>' +
+<<<<<<< HEAD
     '<Tab eventKey={2} title=\'Tab 2\' className=\'contentViewContainer\'>' +
       'Tab 2 content</Tab>' +
     '<Tab eventKey={3} title=\'Tab 3\' disabled' +
@@ -498,10 +499,88 @@ class StyleGuide extends Component {
     'onKeyDown={(e) => {' +
       'this.handleKeyDown(e)' +
     '}}'
+=======
+      '<Tab eventKey={2} title=\'Tab 2\' className=\'contentViewContainer\'>' +
+      'Tab 2 content</Tab>' +
+      '<Tab eventKey={3} title=\'Tab 3\' disabled' +
+      'className=\'contentViewContainer\'>' +
+      'Tab 3 content</Tab>' +
+      '</Tabs>' +
+      '<h3>Vertical</h3>' +
+      '<Tab.Container id=\'left-tabs-example\' defaultActiveKey=\'first\'' +
+      'className=\'contentViewContainer\'>' +
+      '<Row className=\'clearfix\'>' +
+      '<Col sm={4}>' +
+      '<Nav bsStyle=\'pills\' stacked>' +
+      '<NavItem eventKey=\'first\'>' +
+      'Tab 1' +
+      '</NavItem>' +
+      '<NavItem eventKey=\'second\'>' +
+      'Tab 2' +
+      '</NavItem>' +
+      '</Nav>' +
+      '</Col>' +
+      '<Col sm={8}>' +
+      '<Tab.Content animation>' +
+      '<Tab.Pane eventKey=\'first\'>' +
+      'Tab 1 content' +
+      '</Tab.Pane>' +
+      '<Tab.Pane eventKey=\'second\'>' +
+      'Tab 2 content' +
+      '</Tab.Pane>' +
+      '</Tab.Content>' +
+      '</Col>' +
+      '</Row>' +
+      '</Tab.Container>'
+
+    const textcode = '<p className=\'lead\'>Lead paragraph:' +
+      'vivamus sagittis lacus vel augue laoreet rutrum faucibus' +
+      ' dolor auctor. Duis mollis, est non commodo luctus.</p>' +
+      '<p>Nullam quis risus eget <a href=\'#\'>urna mollis ornare</a>' +
+      'vel eu leo. Cum sociis natoque penatibus et magnis dis' +
+      'parturient montes, nascetur ridiculus mus. Nullam' +
+      'id dolor id nibh ultricies vehicula.</p>' +
+      '<p><small>This line of text is meant to be treated as fine print.' +
+      '</small></p>' +
+      '<p>The following snippet of text is <strong>rendered as' +
+      'bold text</strong>.</p>' +
+      'italicized text</em>.</p>' +
+      '<p>An abbreviation of the word attribute is' +
+      '<abbr title=\'attribute\'>attr</abbr>.</p>' +
+      '<p className=\'text-left\'>Left aligned text.</p>' +
+      '<p className=\'text-center\'>Center aligned text.</p>' +
+      '<p className=\'text-right\'>Right aligned text.</p>' +
+      '<p className=\'text-justify\'>Justified text.</p>' +
+      '<p className=\'text-muted\'>Muted: Fusce dapibus,' +
+      '  tellus ac cursus commodo,' +
+      ' tortor mauris nibh.</p>' +
+      '<p className=\'text-primary\'>Primary: Nullam id dolor id nibh' +
+      'ultricies vehicula ut id elit.</p>' +
+      '<p className=\'text-warning\'>Warning: Etiam porta sem malesuada' +
+      'magna mollis euismod.</p>' +
+      '<p className=\'text-danger\'>Danger: Donec ullamcorper nulla non' +
+      'metus auctor fringilla.</p>' +
+      '<p className=\'text-success\'>Success: Duis mollis, est non commodo' +
+      'luctus, nisi erat porttitor ligula.</p>' +
+      '<p className=\'text-info\'>Info: Maecenas sed diam eget risus varius' +
+      'blandit sit amet non magna.</p>'
+
+    const inptextcode = '<TextInput' +
+      'maxLength={100}' +
+      'id=\'demo\'' +
+      'className=\'textInput\'' +
+      'placeholder=\'TextInput…\'' +
+      'accessibilityLabel=\'TextInput\'' +
+      'defaultValue=\'Default text\'' +
+      'onKeyDown={(e) => {' +
+      'this.handleKeyDown(e)' +
+      '}}'
+>>>>>>> 80bf473c6ddb2bfec12d8b1288e29c28d894d806
 
     const toolcode = '<ButtonToolbar>' +
       '<OverlayTrigger placement=\'left\' overlay={tooltip}>' +
       '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
+<<<<<<< HEAD
   '</OverlayTrigger>' +
     '<OverlayTrigger placement=\'top\' overlay={tooltip}>' +
       '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
@@ -517,6 +596,23 @@ class StyleGuide extends Component {
     const wellcode = '<Well>Look I am in a well!</Well>' +
     '<Well bsSize=\'large\'>Look I am in a large well!</Well>' +
     '<Well bsSize=\'small\'>Look I am in a small well!</Well>'
+=======
+      '</OverlayTrigger>' +
+      '<OverlayTrigger placement=\'top\' overlay={tooltip}>' +
+      '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
+      '</OverlayTrigger>' +
+      '<OverlayTrigger placement=\'bottom\' overlay={tooltip}>' +
+      '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
+      '</OverlayTrigger>' +
+      '<OverlayTrigger placement=\'right\' overlay={tooltip}>' +
+      '<Button bsStyle=\'default\'>Holy guacamole!</Button>' +
+      '</OverlayTrigger>' +
+      '</ButtonToolbar>'
+
+    const wellcode = '<Well>Look I am in a well!</Well>' +
+      '<Well bsSize=\'large\'>Look I am in a large well!</Well>' +
+      '<Well bsSize=\'small\'>Look I am in a small well!</Well>'
+>>>>>>> 80bf473c6ddb2bfec12d8b1288e29c28d894d806
 
     return (
       <div className='container'>
@@ -888,14 +984,14 @@ class StyleGuide extends Component {
             <FormGroup controlId='formValidationWarning4'
               validationState='warning'>
               <ControlLabel>Input with warning</ControlLabel>
-               {' '}
+              {' '}
               <FormControl type='text' />
               <FormControl.Feedback />
             </FormGroup>
-          {' '}
+            {' '}
             <FormGroup controlId='formValidationError4' validationState='error'>
               <ControlLabel>Input group with error</ControlLabel>
-          {' '}
+              {' '}
               <InputGroup>
                 <InputGroup.Addon>@</InputGroup.Addon>
                 <FormControl type='text' />

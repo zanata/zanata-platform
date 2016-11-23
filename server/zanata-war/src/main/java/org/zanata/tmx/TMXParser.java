@@ -47,7 +47,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.util.ElementBuilder;
 import org.zanata.model.tm.TransMemory;
-import org.zanata.transaction.TransactionUtil;
+import org.zanata.transaction.TransactionUtilImpl;
 import org.zanata.util.RunnableEx;
 import org.zanata.util.TMXParseException;
 import org.zanata.xml.TmxDtdResolver;
@@ -101,7 +101,7 @@ public class TMXParser {
             while (reader.hasNext()) {
                 CommitBatch commitBatch =
                         new CommitBatch(reader, 0, transMemory);
-                TransactionUtil.get().runEx(commitBatch);
+                TransactionUtilImpl.get().runEx(commitBatch);
                 handledTUs += commitBatch.handledTUs;
             }
         } catch (EntityExistsException e) {

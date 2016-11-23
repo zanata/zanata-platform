@@ -20,6 +20,8 @@
  */
 package org.zanata.maven;
 
+import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.glossary.pull.GlossaryPullCommand;
 import org.zanata.client.commands.glossary.pull.GlossaryPullOptions;
 
@@ -28,11 +30,9 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Pull glossary file from Zanata.
- *
- * @goal glossary-pull
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
- **/
+ */
+@Mojo(name = "glossary-pull", requiresOnline = true, requiresProject = false)
 public class GlossaryPullMojo extends GlossaryMojo<GlossaryPullOptions>
         implements GlossaryPullOptions {
 
@@ -40,16 +40,14 @@ public class GlossaryPullMojo extends GlossaryMojo<GlossaryPullOptions>
      * File type to be downloaded.
      * csv - csv file format with comma separated
      * po - a zip file of po files on available locales
-     *
-     * @parameter expression="${zanata.fileType}" default-value="csv"
      */
+    @Parameter(property = "zanata.fileType", defaultValue = "csv")
     private String fileType = "csv";
 
     /**
      * Optional translation languages to pull. Leave empty for all available locales
-     *
-     * @parameter expression="${zanata.transLang}"
      */
+    @Parameter(property = "zanata.transLang")
     private String[] transLang;
 
     public GlossaryPullMojo() throws Exception {

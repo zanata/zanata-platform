@@ -65,7 +65,7 @@ import com.google.common.base.Stopwatch;
 import com.google.common.collect.Maps;
 
 import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetStateChange;
-import static org.zanata.transaction.TransactionUtil.runInTransaction;
+import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 
 /**
  * Service provider for merge translations task.

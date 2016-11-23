@@ -96,6 +96,11 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl
     }
 
     @Override
+    public File getUserConfig() {
+        return userConfig;
+    }
+
+    @Override
     public String getUsername() {
         return username;
     }
@@ -104,11 +109,6 @@ public abstract class ConfigurableOptionsImpl extends BasicOptionsImpl
     @Option(name = "--username", metaVar = "USER", usage = "Username")
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    @Override
-    public File getUserConfig() {
-        return userConfig;
     }
 
     @Override

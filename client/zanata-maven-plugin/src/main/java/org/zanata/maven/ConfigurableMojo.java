@@ -8,6 +8,7 @@ import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.ConfigurableCommand;
 import org.zanata.client.commands.ConfigurableOptions;
 import org.zanata.client.commands.OptionsUtil;
@@ -18,8 +19,6 @@ import com.pyx4j.log4j.MavenLogAppender;
 
 /**
  * Base class for mojos which support configuration by the user's zanata.ini
- *
- * @requiresProject false
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
  */
@@ -27,50 +26,29 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
         AbstractMojo implements ConfigurableOptions {
     private static final String BUG_URL = "https://zanata.atlassian.net/";
 
-    // @formatter:off
-   /*
-    * Note: The following fields are only here to hold Maven's @parameter
-    * markup, since all the setter methods actually delegate to the
-    * ZanataCommand.  @parameter should work on setter methods - see
-    * http://www.sonatype.com/books/mvnref-book/reference/writing-plugins-sect-param-annot.html
-    * - but it doesn't.
-    */
-   // @formatter:on
-
     /**
      * Client configuration file for Zanata.
-     *
-     * @parameter expression="${zanata.userConfig}"
-     *            default-value="${user.home}/.config/zanata.ini"
      */
-    /*
-     * NB the annotation 'default-value' overrides the default in
-     * ConfigurableCommand (even though the values are virtually identical)
-     * because Mojos aren't meant to use System properties directly (since they
-     * may be sharing a VM and its System properties)
-     */
+    @Parameter(property = "zanata.userConfig", defaultValue = "${user.home}/.config/zanata.ini")
     private File userConfig;
 
     /**
      * Base URL for the server. Defaults to the value in zanata.xml (if
      * present).
-     *
-     * @parameter expression="${zanata.url}"
      */
+    @Parameter(property = "zanata.url")
     private URL url;
 
     /**
      * Username for accessing the REST API. Defaults to the value in zanata.ini.
-     *
-     * @parameter expression="${zanata.username}"
      */
+    @Parameter(property = "zanata.username")
     private String username;
 
     /**
      * API key for accessing the REST API. Defaults to the value in zanata.ini.
-     *
-     * @parameter expression="${zanata.key}"
      */
+    @Parameter(property = "zanata.key")
     private String key;
 
     private List<CommandHook> commandHooks = new ArrayList<CommandHook>();
@@ -78,24 +56,21 @@ public abstract class ConfigurableMojo<O extends ConfigurableOptions> extends
     /**
      * Interactive mode is enabled by default, but can be disabled using Maven's
      * -B/--batch-mode option.
-     *
-     * @parameter default-value="${settings.interactiveMode}"
      */
+    @Parameter(defaultValue = "${settings.interactiveMode}")
     private boolean interactiveMode = true;
 
     /**
      * Enable HTTP message logging.
-     *
-     * @parameter expression="${zanata.logHttp}" default-value="false"
      */
+    @Parameter(property = "zanata.logHttp", defaultValue = "false")
     private boolean logHttp = false;
 
     /**
      * Disable SSL certificate verification when connecting to Zanata host by
      * https.
-     *
-     * @parameter expression="${zanata.disableSSLCert}" default-value="false"
      */
+    @Parameter(property = "zanata.disableSSLCert", defaultValue = "false")
     private boolean disableSSLCert = false;
 
     public ConfigurableMojo() {

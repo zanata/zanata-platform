@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.ConfigurableOptions;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.config.FileMappingRule;
@@ -14,9 +15,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Base class for mojos which support configuration by the user's zanata.ini and
  * by a project's zanata.xml
- *
  * @author Sean Flanigan <sflaniga@redhat.com>
- *
  */
 public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions>
         extends ConfigurableMojo<O> implements ConfigurableProjectOptions {
@@ -31,24 +30,20 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions>
 
     /**
      * Zanata project configuration file.
-     *
-     * @parameter expression="${zanata.projectConfig}"
-     *            default-value="${basedir}/zanata.xml"
      */
+    @Parameter(property = "zanata.projectConfig", defaultValue = "${basedir}/zanata.xml")
     private File projectConfig;
 
     /**
      * Project slug (id) within Zanata server.
-     *
-     * @parameter expression="${zanata.project}"
      */
+    @Parameter(property = "zanata.project")
     private String project;
 
     /**
      * Project version slug (id) within Zanata server.
-     *
-     * @parameter expression="${zanata.projectVersion}"
      */
+    @Parameter(property = "zanata.projectVersion")
     private String projectVersion;
 
     /**
@@ -59,39 +54,34 @@ public abstract class ConfigurableProjectMojo<O extends ConfigurableOptions>
      *
      * If 'file' is used, transDir must not be the same as or nested within
      * srcDir, and vice versa.
-     *
-     * @parameter expression="${zanata.projectType}"
      */
+    @Parameter(property = "zanata.projectType")
     private String projectType;
 
     private LocaleList localeMapList;
 
     /**
      * Base directory for source-language files
-     *
-     * @parameter expression="${zanata.srcDir}"
      */
+    @Parameter(property = "zanata.srcDir")
     private File srcDir;
     /**
      * Base directory for target-language files (translations)
-     *
-     * @parameter expression="${zanata.transDir}"
      */
+    @Parameter(property = "zanata.transDir")
     private File transDir;
     /**
      * Wildcard pattern to include files and directories. This parameter is only
      * needed for some project types, eg XLIFF, Properties. Usage
      * -Dzanata.includes="src/myfile*.xml,**&#47*.xliff.xml"
-     *
-     * @parameter expression="${zanata.includes}"
      */
+    @Parameter(property = "zanata.includes")
     private String includes;
     /**
      * Wildcard pattern to exclude files and directories. Usage
      * -Dzanata.excludes="Pattern1,Pattern2,Pattern3"
-     *
-     * @parameter expression="${zanata.excludes}"
      */
+    @Parameter(property = "zanata.excludes")
     private String excludes;
     private Splitter splitter = Splitter.on(",").omitEmptyStrings()
             .trimResults();

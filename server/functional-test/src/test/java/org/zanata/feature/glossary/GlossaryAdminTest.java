@@ -48,7 +48,7 @@ public class GlossaryAdminTest extends ZanataTestCase {
     /**
      * Validates that a pushed glossary appears in the Glossary table.
      * After pushing, a table with Glossary statistics should be shown.
-     * Validate that the the number of glossary entries per language matches
+     * Validate that the number of glossary entries per language matches
      * the number of entries pushed from each of the test cases mentioned in the
      * Setup.
      */

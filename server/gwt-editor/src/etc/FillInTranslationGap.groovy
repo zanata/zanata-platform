@@ -11,6 +11,10 @@ File basedir = pom.basedir
 // zanata pull target dir is here
 File pulledTargetDir = new File(basedir.absolutePath + "/src/main/resources/zanata-editor")
 
+log.info("pulled target dir: {}", pulledTargetDir)
+
+assert pulledTargetDir.exists() :pulledTargetDir.toString() + " does not exist"
+
 // find properties file with underscore (translation properties)
 def targetNames = new FileNameByRegexFinder().
     getFileNames(pulledTargetDir.absolutePath, /.+_.+\.properties$/)
