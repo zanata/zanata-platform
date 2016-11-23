@@ -124,7 +124,7 @@ class Glossary extends Component {
       page,
       pageSize,
       handlePageSizeChange,
-      projectSlug
+      project
     } = this.props
 
     const intPageSize = pageSize ? parseInt(pageSize) : PAGE_SIZE_DEFAULT
@@ -135,7 +135,7 @@ class Glossary extends Component {
     const pageSizeOption = map(PAGE_SIZE_SELECTION, (size) => {
       return {label: size, value: size}
     })
-    const headerTitle = projectSlug ? 'Project Glossary' : 'Glossary'
+    const headerTitle = project ? 'Project Glossary' : 'Glossary'
     let list
 
     /* eslint-disable react/jsx-no-bind */
@@ -239,7 +239,7 @@ Glossary.propTypes = {
    * Object of glossary id with term
    */
   terms: PropTypes.object,
-  projectSlug: PropTypes.string,
+  project: PropTypes.object,
   params: PropTypes.object,
   termIds: PropTypes.array,
   termCount: PropTypes.number,
@@ -286,7 +286,7 @@ const mapStateToProps = (state) => {
     saving,
     deleting,
     notification,
-    projectSlug
+    project
   } = state.glossary
   const query = state.routing.location.query
   return {
@@ -306,7 +306,7 @@ const mapStateToProps = (state) => {
     notification,
     page: query.page,
     pageSize: query.size,
-    projectSlug
+    project
   }
 }
 
