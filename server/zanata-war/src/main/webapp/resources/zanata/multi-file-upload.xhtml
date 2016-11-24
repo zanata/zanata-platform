@@ -305,7 +305,7 @@ site: http://www.fsf.org.
             <li class="template-upload js-upload-queued">
               <div class="list__item__content">
                 <div class="list__item__info">
-                  <span class="list__title">{%=file.name%}</span>
+                  <span class="list__title bx--inline-block">{%=file.name%}</span>
                   {% if (file.error) { %}
                     <span class="fileupload-error message message--danger app-error">{%=file.error%}</span>
                   {% } else { %}
@@ -350,7 +350,7 @@ site: http://www.fsf.org.
             <li class="template-download">
               <div class="list__item__content">
                 <div class="list__item__info">
-                  <span class="list__title">{%=file.name%}</span>
+                  <span class="list__title bx--inline-block">{%=file.name%}</span>
                   {% if (file.error) { %}
                     <span class="txt--danger l--push-left-quarter">{%=file.error%}</span>
                   {% } %}
