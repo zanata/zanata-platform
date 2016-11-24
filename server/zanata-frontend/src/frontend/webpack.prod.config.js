@@ -18,13 +18,13 @@ module.exports = _.merge({}, defaultConfig, {
     filename: 'frontend.bundle.min.js'
   },
   module: {
-    /* preLoaders: [
+    preLoaders: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'eslint'
       }
-    ], */
+    ],
     loaders: [
       {
         test: /\.jsx?$/,
