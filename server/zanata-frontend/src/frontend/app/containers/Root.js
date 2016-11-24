@@ -8,10 +8,6 @@ import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
 import { View } from 'zanata-ui'
 import StyleGuide from '../containers/StyleGuide'
-import Users from '../containers/Admin/Users'
-import Roles from '../containers/Admin/Roles'
-import Search from '../containers/Admin/Search'
-import TestModal from '../containers/TestModal'
 
 export default class Root extends Component {
   render () {
@@ -32,11 +28,7 @@ export default class Root extends Component {
               <Route path='languages' component={Languages} />
               <Route path='profile/view/:username' component={UserProfile} />
               <Redirect from='profile' to={`profile/view/${username}`} />
-              <Route path='testmodal' component={TestModal} />
               <Route path='styleguide' component={StyleGuide} />
-              <Route path='users' component={Users} />
-              <Route path='roles' component={Roles} />
-              <Route path='search' component={Search} />
             </Route>
           </Router>
         </View>
