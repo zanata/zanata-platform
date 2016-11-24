@@ -1,13 +1,13 @@
 import React, {PropTypes, Component} from 'react'
 import { connect } from 'react-redux'
-import {Button, InputGroup, FormGroup, FormControl, Pagination}
+import { Button, InputGroup, FormGroup, FormControl,
+  Badge, Pagination }
     from 'react-bootstrap'
 import Helmet from 'react-helmet'
-import {Page, ScrollView, View, LoaderText, Icon} from 'zanata-ui'
 import { debounce, find } from 'lodash'
 import Entry from './Entry'
 import NewLanguageModal from './NewLanguageModal'
-import { Notification } from '../../components'
+import { Icon, Notification, LoaderText } from '../../components'
 
 import {
   initialLoad,
@@ -20,21 +20,6 @@ import {
   pageSizeOption,
   sortOption
 } from '../../actions/languages'
-
-const contentViewContainerTheme = {
-  base: {
-    w: 'W(100%)'
-  }
-}
-
-const loadingContainerTheme = {
-  base: {
-    ai: 'Ai(c)',
-    flxg: 'Flxg(1)',
-    jc: 'Jc(c)',
-    w: 'W(100%)'
-  }
-}
 
 class Languages extends Component {
   componentDidMount () {
@@ -66,7 +51,7 @@ class Languages extends Component {
       (totalCount % size > 0 ? 1 : 0)
 
     return (
-      <Page>
+      <div className='page'>
         {notification &&
         (<Notification severity={notification.severity}
           message={notification.message}
@@ -75,23 +60,22 @@ class Languages extends Component {
         )
         }
         <Helmet title='Languages' />
-        <ScrollView>
-          <View theme={contentViewContainerTheme}>
-            <div className='row clearfix' id='admin-lang'>
-              <div className='row-height'>
+        <div className='scrollViewTheme'>
+          <div className='contentViewContainer'>
+            <div className=''>
+              <div className=''>
                 <div className='content clearfix center-block'
                   id='languages-form'>
                   <h2>
                     Languages {!loading &&
-                      <span className='badge'>{totalCount}</span>}
+                      <Badge className='default'>{totalCount}</Badge>}
                   </h2>
                   {permission.canAddLocale &&
                     <div>
-                      <Button className='btn-primary'
+                      <Button className='primary'
                         id='btn-language-add-new'
                         onClick={handleOnDisplayNewLanguage}>
                         <Icon name='plus'
-                          atomic={{m: 'Mend(re) Va(sub)'}}
                           title='plus' /> Add new language
                       </Button>
                       <NewLanguageModal />
@@ -108,7 +92,7 @@ class Languages extends Component {
                           <InputGroup.Button>
                             <Button>
                               <Icon name='search'
-                                atomic={{m: 'Va(sub)'}}
+                                className='s1'
                                 title='search' />&nbsp;
                             </Button>
                           </InputGroup.Button>
@@ -117,10 +101,10 @@ class Languages extends Component {
                     </div>
 
                   {loading
-                      ? <View theme={loadingContainerTheme}>
+                      ? <div className='contentViewContainer'>
                         <LoaderText theme={{ base: { fz: 'Fz(ms1)' } }}
                           size='2' loading />
-                      </View>
+                      </div>
                       : (<div>
                         <div className='sort-items col-xs-6 col-sm-4 col-md-4
                           col-lg-3'>
@@ -182,9 +166,9 @@ class Languages extends Component {
                 </div>
               </div>
             </div>
-          </View>
-        </ScrollView>
-      </Page>
+          </div>
+        </div>
+      </div>
     )
   }
 }
