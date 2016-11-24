@@ -41,32 +41,17 @@ class EditableText extends Component {
       ...props
     } = this.props
 
-    /* eslint-disable react/jsx-no-bind */
     if (editable && editing) {
       return (
         <TextInput className='editable textInput'
           {...props}
-          autoFocus={
-           this.state.focus
-        }
-          onBlur={
-          ::this.handleBlur
-        }
-          placeholder={
-         placeholder
-        }
-          ref={
-          (ref) => {
-            this.textInput = ref
-          }
-        }
-          value={
-            children
-        }
+          autoFocus={this.state.focus}
+          onBlur={::this.handleBlur}
+          placeholder={placeholder}
+          value={children}
         />
       )
     }
-    /* eslint-enable react/jsx-no-bind */
     const emptyText = editable ? placeholder : emptyReadOnlyText
     const text = children || emptyText
     return (
