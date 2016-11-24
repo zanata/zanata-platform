@@ -7,7 +7,7 @@
 }
 
 span ul li span {
-  vertical-align: super;
+  vertical-align: top;
   margin-left: 10px;
 }
 
@@ -237,6 +237,7 @@ span.svg {
 .editable {
   border-radius: 0.375rem;
   transition: all .3s cubic-bezier(0.19, 1, 0.22, 1);
+  vertical-align: middle;
 }
 
 .editable:hover {
@@ -247,6 +248,9 @@ span.svg {
 .editable .placeholder {
   color: @brand-muted;
 }
+
+.editable.row {
+padding:0.375em;}
 
 :root {
   --LogoLoader-transition-ease: cubic-bezier(.175, .885, .320, 1.275);

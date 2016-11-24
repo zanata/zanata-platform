@@ -1,8 +1,6 @@
 import React, {PropTypes, Component} from 'react'
-import {
-  Modal, EditableText, Icon, Link,
-  LoaderText, TextInput
-} from '../../components'
+import { Modal, Icon, Link,
+  LoaderText, TextInput, EditableText } from '../../components'
 import {
   Alert, Button, Row, Table, ButtonToolbar, Tabs,
   Tab, OverlayTrigger, Tooltip, Grid, Col,
@@ -265,12 +263,12 @@ class StyleGuide extends Component {
       '</Checkbox>'
 
     const editcode = '<EditableText' +
-      'className=\'editable\'' +
-      'maxLength={255}' +
-      'placeholder=\'Add a description…\'' +
-      'emptyReadOnlyText=\'No description\'>' +
-      '\'string\'' +
-      '</EditableText> '
+    'className=\'editable textInput\'' +
+    'maxLength={255}' +
+    'placeholder=\'Add a description…\'' +
+    'emptyReadOnlyText=\'No description\'>' +
+    '\'Test text\'' +
+    '</EditableText>'
 
     const headcode = '<h1 className=\'page-header\'>' +
       'Page Header <small>' +
@@ -888,12 +886,13 @@ class StyleGuide extends Component {
         <span>
           <h2>EditableText</h2>
           <EditableText
-            className='editable'
+            className='editable textInput'
             maxLength={255}
             placeholder='Add a description…'
             emptyReadOnlyText='No description'>
-            'sting'
-          </EditableText><br />
+            Test text
+          </EditableText>
+          <br />
           <Panel className='panel-code'>
             <h4>Code</h4>
             <pre>
