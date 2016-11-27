@@ -53,6 +53,12 @@ body {
   max-width:48em;
   margin-left: auto;
   margin-right: auto;
+  padding-left: 1em;
+  padding-right: 1em;
+}
+
+.scrollViewTheme h2 {
+  padding-left: 0.4em;
 }
 
 .contentViewContainer {
@@ -1727,7 +1733,7 @@ table th[class*=col-] {
   line-height: @line-height-base;
   display: block;
   width: 100%;
-  height: 3em;
+  height: 2em;
   padding: @padding-small-vertical @padding-base-horizontal;
   -webkit-transition: border-color ease-in-out 0.15s, -webkit-box-shadow ease-in-out 0.15s;
   -o-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
@@ -3248,11 +3254,29 @@ textarea.input-group-sm > .input-group-btn > .btn {
   }
 }
 
-
 .pagination,
 .search-box,
 .show-items {
   padding: 0;
+  height:2em;
+}
+
+.show-items {
+  display:inline-flex;
+}
+
+.show-items .form-control {
+  margin-left:0.2em;
+}
+
+.show-items span {
+  margin-top:@padding-small-vertical;
+  margin-left:@padding-small-horizontal;
+}
+
+.usericon {
+  fill:currentColor;
+  margin-right:0.4em;
 }
 
 .show-grid {
@@ -3596,6 +3620,7 @@ ul.nav-pills > li.active > a {
   margin: 0;
   padding-left: 0;
   border-radius: @border-radius-base;
+  clear:none;
 }
 
 .pagination > li {
@@ -3799,7 +3824,7 @@ a.label:hover {
   line-height: 1;
   display: inline-block;
   min-width: 1em;
-  padding: 0.214em 0.5em;
+  padding: 0.38em 0.5em;
   text-align: center;
   vertical-align: middle;
   white-space: nowrap;
@@ -4758,13 +4783,19 @@ button.close:active:focus {
   padding-top: 1.429em;
 }
 
-.toolbar .search-box,
 .toolbar .sort-items {
   padding-bottom: @padding-small-horizontal;
+  padding-right: 0;
+}
+
+.toolbar .show-items {
+  padding-bottom: @padding-small-horizontal;
+  padding-right: 0;
 }
 
 .toolbar .page-count {
   padding-bottom: @padding-large-horizontal;
+  padding-left: 0;
 }
 
 .center-block {
@@ -4863,6 +4894,15 @@ button.btn-link {
   margin-left: -1.2em;
 }
 
+.search-box .btn-primary {
+  margin:0;
+  padding:5.5px;
+}
+
+.search-box svg {
+  fill:#fff;
+}
+
 .textInput .placeholder {
   color: hsl(195, 32%, 80%);
 }
@@ -4880,10 +4920,6 @@ button.btn-link {
 .getinvolved .btn-primary:focus,
 .getinvolved .btn-primary:hover {
   background-color: @brand-primary;
-}
-
-.search-box button {
-  margin:10px;
 }
 
 @media (min-width: @screen-sm-min) {
@@ -5952,7 +5988,7 @@ button.btn-link {
   input[type=datetime-local].form-control,
   input[type=month].form-control,
   input[type=time].form-control {
-    line-height: 3em;
+    line-height: 2em;
   }
 
   .input-group-sm input[type=date],
@@ -5963,7 +5999,7 @@ button.btn-link {
   input[type=datetime-local].input-sm,
   input[type=month].input-sm,
   input[type=time].input-sm {
-    line-height: 3em;
+    line-height: 1em;
   }
 
   .input-group-lg input[type=date],
@@ -5974,7 +6010,7 @@ button.btn-link {
   input[type=datetime-local].input-lg,
   input[type=month].input-lg,
   input[type=time].input-lg {
-    line-height: 4em;
+    line-height: 3em;
   }
 }
 

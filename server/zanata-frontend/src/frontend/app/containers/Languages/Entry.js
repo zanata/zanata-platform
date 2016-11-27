@@ -1,7 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { includes } from 'lodash'
 import DeleteEntry from './DeleteEntry'
-import { Loader } from 'zanata-ui'
+import { Loader, Icon }
+ from '../../components'
+import { Badge } from 'react-bootstrap'
 
 class Entry extends Component {
   constructor () {
@@ -40,19 +42,19 @@ class Entry extends Component {
               {localeDetails.localeId} [{localeDetails.nativeName}]
             </span>
             {localeDetails.enabledByDefault &&
-              <span className='greentext badge Mstart(rq)'>
+              <Badge bsStyle='primary'>
                 DEFAULT
-              </span>
+              </Badge>
             }
             {!localeDetails.enabled &&
-              <span className='dis badge Mstart(rq)'>
+              <Badge bsStyle='info'>
                 DISABLED
-              </span>
+              </Badge>
             }
             {isUserInTeam &&
-              <span className='greentext badge Mstart(rq)'>
+              <Badge bsStyle='success'>
                 Member
-              </span>
+              </Badge>
             }
           </a>
           <br />
@@ -62,7 +64,10 @@ class Entry extends Component {
         </td>
         <td>
           <span>
-            <i className='fa fa-user'></i> {locale.memberCount}
+            <Icon name='user'
+              title='user' className='s1
+              usericon' />
+            {locale.memberCount}
           </span>
         </td>
         {permission.canDeleteLocale &&

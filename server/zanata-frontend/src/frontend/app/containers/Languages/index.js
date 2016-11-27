@@ -62,8 +62,9 @@ class Languages extends Component {
         )
         }
         <Helmet title='Languages' />
-        <div className='scrollViewTheme contentViewContainer'>
-          <div className='content clearfix center-block'
+        <div className='scrollViewTheme center-block
+          contentViewContainer'>
+          <div className='clearfix'
             id='languages-form'>
             <h2>
               Languages {!loading &&
@@ -71,17 +72,18 @@ class Languages extends Component {
             </h2>
             {permission.canAddLocale &&
               <div>
-                <Button className='primary'
+                <Button bsStyle='primary'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
-                  <Icon name='plus'
-                    title='plus' /> Add new language
+                  <Icon name='plus' className='s0'
+                    title='plus' />
+                  Add new language
                 </Button>
                 <NewLanguageModal />
               </div>
             }
-            <div className='left-form toolbar col-xs-12'>
-              <div className='search-box col-xs-6 col-sm-8 col-md-6
+            <div className='form-group toolbar col-xs-12'>
+              <div className='search-box col-xs-6 col-sm-5 col-md-6
                          col-lg-7'>
                 <FormGroup>
                   <InputGroup>
@@ -89,7 +91,7 @@ class Languages extends Component {
                       defaultValue={searchText}
                       onChange={handleOnUpdateSearch} />
                     <InputGroup.Button>
-                      <Button>
+                      <Button bsStyle='primary'>
                         <Icon name='search'
                           className='s1'
                           title='search' />&nbsp;
@@ -105,8 +107,8 @@ class Languages extends Component {
                     size='2' loading />
                 </div>
                 : (<div>
-                  <div className='sort-items col-xs-6 col-sm-4 col-md-4
-                          col-lg-3'>
+                  <div className='sort-items
+                    col-xs-6 col-sm-4 col-md-4 col-lg-3'>
                     <FormControl componentClass='select'
                       className='pull-right' id='sort-options'
                       onChange={handleOnUpdateSort} value={sort.value}>
@@ -116,8 +118,8 @@ class Languages extends Component {
                     })}
                     </FormControl>
                   </div>
-                  <div className='show-items col-xs-5 col-sm-3 col-md-2
-                          col-lg-2'>
+                  <div className='show-items pull-right col-xs-5
+                    col-sm-3 col-md-2 col-lg-2'>
                     <span>Show</span>
                     <FormControl inline componentClass='select'
                       onChange={handleOnUpdatePageSize} value={size}
@@ -128,7 +130,7 @@ class Languages extends Component {
                     })}
                     </FormControl>
                   </div>
-                  <div className='page-count pull-right col-xs-7 col-sm-8
+                  <div className='page-count col-xs-7 col-sm-8
                     col-md-12'>
                     <Pagination
                       prev
