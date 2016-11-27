@@ -75,7 +75,7 @@ class Languages extends Component {
                 <Button bsStyle='primary'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
-                  <Icon name='plus' className='s0'
+                  <Icon name='plus' className='n2 plusicon'
                     title='plus' />
                   Add new language
                 </Button>
@@ -93,7 +93,7 @@ class Languages extends Component {
                     <InputGroup.Button>
                       <Button bsStyle='primary'>
                         <Icon name='search'
-                          className='s1'
+                          className='s0'
                           title='search' />&nbsp;
                       </Button>
                     </InputGroup.Button>

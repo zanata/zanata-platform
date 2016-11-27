@@ -59,6 +59,7 @@ body {
 
 .scrollViewTheme h2 {
   padding-left: 0.4em;
+  margin-top:0;
 }
 
 .contentViewContainer {
@@ -2196,9 +2197,18 @@ span.caret {
   color: #546675;
 }
 
+.btn-primary .plusicon {
+  margin-right:0.4em;
+  margin-left:0.2em;
+}
+
 span.langcode {
   font-size: 0.9em;
   color: #aaa;
+}
+
+#btn-language-add-new {
+  margin-left:0.8em;
 }
 
 .btn-primary {
@@ -2757,19 +2767,19 @@ button.btn.btn-warning.dropdown-toggle > span.caret {
 }
 
 .label-success {
-  background-color: @brand-success;
+  background-color: @label-success-bg;
 }
 
 .label-info {
-  background-color: @brand-info;
+  background-color: @label-info-bg;
 }
 
 .label-warning {
-  background-color: @brand-warning;
+  background-color: @label-warning-bg;
 }
 
 .label-danger {
-  background-color: @brand-danger;
+  background-color: @label-danger-bg;
 }
 
 //
@@ -3275,8 +3285,9 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 
 .usericon {
-  fill:currentColor;
+  fill:#03A6D7;
   margin-right:0.4em;
+  vertical-align: sub;
 }
 
 .show-grid {
@@ -3772,11 +3783,11 @@ ul.nav-pills > li.active > a {
 }
 
 .label {
-  font-size: 75%;
+  font-size: 0.7em;
   font-weight: 700;
   line-height: 1;
   display: inline;
-  padding: 0.2em 0.6em 0.3em;
+  padding: 0.1em 0.2em 0.1em;
   text-align: center;
   vertical-align: baseline;
   white-space: nowrap;
@@ -3810,7 +3821,7 @@ a.label:hover {
 }
 
 .label-primary {
-  background-color: #337ab7;
+  background-color: @brand-secondary;
 }
 
 .label-primary[href]:focus,
@@ -3830,7 +3841,7 @@ a.label:hover {
   white-space: nowrap;
   color: #fff;
   border-radius: 0.714em;
-  background-color: #777;
+  background-color: @brand-primary;
 }
 
 .nav-pills .badge, p .badge {
@@ -4896,7 +4907,7 @@ button.btn-link {
 
 .search-box .btn-primary {
   margin:0;
-  padding:5.5px;
+  padding:@padding-button-left;
 }
 
 .search-box svg {

@@ -3,7 +3,7 @@ import { includes } from 'lodash'
 import DeleteEntry from './DeleteEntry'
 import { Loader, Icon }
  from '../../components'
-import { Badge } from 'react-bootstrap'
+import { Label } from 'react-bootstrap'
 
 class Entry extends Component {
   constructor () {
@@ -42,19 +42,19 @@ class Entry extends Component {
               {localeDetails.localeId} [{localeDetails.nativeName}]
             </span>
             {localeDetails.enabledByDefault &&
-              <Badge bsStyle='primary'>
+              <Label className='label-primary'>
                 DEFAULT
-              </Badge>
+              </Label>
             }
             {!localeDetails.enabled &&
-              <Badge bsStyle='info'>
+              <Label className='label-info'>
                 DISABLED
-              </Badge>
+              </Label>
             }
             {isUserInTeam &&
-              <Badge bsStyle='success'>
+              <Label className='label-success'>
                 Member
-              </Badge>
+              </Label>
             }
           </a>
           <br />
