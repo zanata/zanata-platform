@@ -41,9 +41,9 @@
       <div
         class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-small'}">
         <div class="l--push-v-1">
-          <h:form styleClass="l--push-bottom-0">
-            <a4j:outputPanel ajaxRendered="true" layout="block">
-              <h:messages id="messages" globalOnly="true"
+          <h:form styleClass="l--push-bottom-0" id="messages">
+            <a4j:outputPanel ajaxRendered="true" layout="block" >
+              <h:messages globalOnly="true"
                 styleClass="list--no-bullets"
                 errorClass="message--danger app-error l--push-bottom-half"
                 infoClass="message--highlight l--push-bottom-half"
