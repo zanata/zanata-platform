@@ -50,15 +50,14 @@ var DateHelper = {
 
   getDate: function (milliseconds) {
     if (!isEmpty(milliseconds)) {
-      const intMiliseconds = parseInt(milliseconds)
-      return new Date(intMiliseconds)
+      return new Date(parseInt(milliseconds))
     } else {
       return undefined
     }
   },
 
   formatDate: function (date, format) {
-    return moment(date, this.dateFormat).format(format)
+    return moment(date).format(format)
   },
 
   shortDate: function (date) {
