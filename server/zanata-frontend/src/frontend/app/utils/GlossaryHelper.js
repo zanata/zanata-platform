@@ -85,7 +85,7 @@ var GlossaryHelper = {
     const srcDate = toString(srcTerm.lastModifiedDate)
     if (!isEmpty(srcDate)) {
       srcTerm.lastModifiedDate =
-        DateHelpers.shortDate(DateHelpers.getDate(srcDate))
+        DateHelpers.shortDateTime(DateHelpers.getDate(srcDate))
     }
 
     let transTerm
@@ -95,7 +95,7 @@ var GlossaryHelper = {
         const transDate = toString(transTerm.lastModifiedDate)
         if (!isEmpty(transDate)) {
           transTerm.lastModifiedDate =
-            DateHelpers.shortDate(DateHelpers.getDate(transDate))
+            DateHelpers.shortDateTime(DateHelpers.getDate(transDate))
         }
         if (isEmpty(transTerm.comment)) {
           transTerm.comment = ''
