@@ -26,7 +26,6 @@ import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.zanata.ZanataJpaTest;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.servlet.annotations.ContextPath;
@@ -38,7 +37,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.util.UrlUtil.FRONT_END_PREFIX;
 
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -65,7 +63,7 @@ public class UrlUtilTest extends ZanataTest {
         LocaleId localeId = LocaleId.FR;
 
         String expectedUrl =
-            contextPath + FRONT_END_PREFIX + "/#glossary?filter=" +
+            contextPath + "/glossary?filter=" +
                 UrlUtil.encodeString(filter) + "&locale=fr";
 
         String url = urlUtil.glossaryUrl(qualifiedName, filter, localeId);
@@ -80,7 +78,7 @@ public class UrlUtilTest extends ZanataTest {
         LocaleId localeId = LocaleId.FR;
 
         String expectedUrl =
-            contextPath + FRONT_END_PREFIX + "/#project/project1/glossary?filter=" +
+            contextPath + "/glossary/project/project1?filter=" +
                 UrlUtil.encodeString(filter) + "&locale=fr";
 
         String url = urlUtil.glossaryUrl(qualifiedName, filter, localeId);
