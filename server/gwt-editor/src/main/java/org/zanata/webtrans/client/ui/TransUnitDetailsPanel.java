@@ -110,6 +110,15 @@ public class TransUnitDetailsPanel extends Composite {
         return header + ": " + value;
     }
 
+    public void setVisible(boolean visible) {
+        if (visible) {
+            addStyleName(style.table());
+        } else {
+            removeStyleName(style.table());
+        }
+        super.setVisible(visible);
+    }
+
     public boolean hasNoMetaInfo() {
         return Strings.isNullOrEmpty(metaInfo);
     }
