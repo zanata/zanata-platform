@@ -112,6 +112,7 @@ public class ZanataInit {
     public void initZanata(ServletContext context) throws Exception {
         checkAppServerVersion();
         String appServerHome = context.getRealPath("/");
+        new ObsoleteJNDIChecker().noObsoleteJNDIEntriesOrThrow();
 
         File manifestFile = new File(appServerHome, "META-INF/MANIFEST.MF");
 
