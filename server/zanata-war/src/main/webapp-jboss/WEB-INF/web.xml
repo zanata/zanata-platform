@@ -156,7 +156,7 @@
   <listener>
     <!-- this listener will check invalid/missing system properties so should be
      ran before liquibase -->
-    <listener-class>org.zanata.config.SystemConfigListener</listener-class>
+    <listener-class>org.zanata.config.SystemConfigStartupCheck</listener-class>
   </listener>
 
   <listener>
