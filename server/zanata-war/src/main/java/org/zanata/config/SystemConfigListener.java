@@ -28,7 +28,6 @@ import javax.servlet.ServletContextListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.migration.ObsoleteJNDIChecker;
 import org.zanata.security.AuthenticationType;
 import com.google.common.collect.Lists;
 

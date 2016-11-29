@@ -1,4 +1,4 @@
-package org.zanata.migration;
+package org.zanata.config;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mockito;
+import org.zanata.config.ObsoleteJNDIChecker;
 import org.zanata.service.MockInitialContextRule;
 import com.google.common.collect.Lists;
 
