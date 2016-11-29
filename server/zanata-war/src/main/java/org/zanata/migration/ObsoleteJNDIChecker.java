@@ -20,11 +20,14 @@
  */
 package org.zanata.migration;
 
+import java.util.Set;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Check whether the application server has defined obsolete JNDI entries. If
@@ -37,20 +40,35 @@ import org.slf4j.LoggerFactory;
 public final class ObsoleteJNDIChecker {
     private static final Logger log =
             LoggerFactory.getLogger(ObsoleteJNDIChecker.class);
+
+    @VisibleForTesting
+    protected static final Set<String> OBSOLETE_ENTRIES = ImmutableSet.of(
+            "java:global/zanata/email/default-from-address",
+            "java:global/zanata/files/document-storage-directory",
+            "java:global/zanata/security/admin-users",
+            "java:global/zanata/smtp/port",
+            "java:global/zanata/security/auth-policy-names/internal",
+            "java:global/zanata/security/auth-policy-names/jaas",
+            "java:global/zanata/security/auth-policy-names/openid",
+            "java:global/zanata/security/auth-policy-names/kerberos",
+            "java:jboss/exported/zanata/files/document-storage-directory"
+    );
     private ObsoleteJNDIChecker() {
     }
 
     public static void ensureNoObsoleteJNDIEntries() {
-        try {
-            Object zanataJNDI = new InitialContext()
-                    .lookup("java:global/zanata/security/auth-policy-names");
-            if (zanataJNDI != null) {
-                throw new RuntimeException(
-                        "Zanata has replaced JNDI entries to system properties in version 4.0. See release note http://zanata.readthedocs.io/en/release/release-notes/ for how to migrate.");
+        OBSOLETE_ENTRIES.forEach(entry -> {
+            try {
+                Object zanataJNDI = new InitialContext().lookup(entry);
+                if (zanataJNDI != null) {
+                    throw new RuntimeException(
+                            "Zanata has replaced JNDI entries to system properties in version 4.0. See release note http://zanata.readthedocs.io/en/release/release-notes/ for how to migrate.");
+                }
+            } catch (NamingException e) {
+                // it's good that we don't have this JNDI entry defined
+                log.trace("obsolete JNDI entries not found: {}", e.getExplanation());
             }
-        } catch (NamingException e) {
-            // it's good that we don't have this JNDI entry defined
-            log.trace("obsolete JNDI entries not found: {}", e.getExplanation());
-        }
+        });
+
     }
 }
