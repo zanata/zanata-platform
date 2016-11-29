@@ -122,6 +122,11 @@ public class ServerConfigurationBean implements Serializable {
 
     @Getter
     @Setter
+    private boolean allowAnonymousUser;
+    private PropertyWithKey<Boolean> allowAnonymousUserProperty = new PropertyWithKey<Boolean>("allowAnonymousUser", KEY_ALLOW_ANONYMOUS_USER);
+
+    @Getter
+    @Setter
     private String logDestinationEmails;
 
     @Getter
@@ -193,6 +198,7 @@ public class ServerConfigurationBean implements Serializable {
     public void onCreate() {
         setPropertiesFromConfigIfNotNull(commonStringProperties);
         setBooleanPropertyFromConfigIfNotNull(enableLogEmailProperty);
+        setBooleanPropertyFromConfigIfNotNull(allowAnonymousUserProperty);
         this.fromEmailAddr = applicationConfiguration.getFromEmailAddr();
     }
 
@@ -209,10 +215,8 @@ public class ServerConfigurationBean implements Serializable {
         if (valueHolder != null) {
             try {
                 property.set(valueHolder.getValue());
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                log.error("error setting property value:" + property.getKey() + " -> " + valueHolder.getValue(), e);
             }
         }
     }
@@ -222,10 +226,8 @@ public class ServerConfigurationBean implements Serializable {
         if (valueHolder != null) {
             try {
                 property.set(Boolean.parseBoolean(valueHolder.getValue()));
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                log.error("error setting property value:" + property.getKey() + " -> " + valueHolder.getValue(), e);
             }
         }
     }
@@ -247,6 +249,16 @@ public class ServerConfigurationBean implements Serializable {
             emailLogEventsValue.setValue(Boolean.toString(enableLogEmail));
         }
         applicationConfigurationDAO.makePersistent(emailLogEventsValue);
+        HApplicationConfiguration allowAnonymousUserValue =
+                applicationConfigurationDAO.findByKey(KEY_ALLOW_ANONYMOUS_USER);
+        if (allowAnonymousUserValue == null) {
+            allowAnonymousUserValue =
+                    new HApplicationConfiguration(KEY_ALLOW_ANONYMOUS_USER,
+                            Boolean.toString(allowAnonymousUser));
+        } else {
+            allowAnonymousUserValue.setValue(Boolean.toString(allowAnonymousUser));
+        }
+        applicationConfigurationDAO.makePersistent(allowAnonymousUserValue);
 
         applicationConfigurationDAO.flush();
         facesMessages.clear();
@@ -267,12 +279,8 @@ public class ServerConfigurationBean implements Serializable {
             ServerConfigurationService.persistApplicationConfig(
                     property.getKey(), value, property.get(),
                     applicationConfigurationDAO);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            log.error("error persisting property value:" + property.getKey() + " -> " + value, e);
         }
     }
 
