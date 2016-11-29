@@ -2253,5 +2253,6 @@
     <module>functional-test</module>
     <!-- <module>zanata-dist</module> -->
     <module>gwt-editor</module>
+    <module>zanata-security</module>
   </modules>
 </project>
