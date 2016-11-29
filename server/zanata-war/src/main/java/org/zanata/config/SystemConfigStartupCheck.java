@@ -20,7 +20,6 @@
  */
 package org.zanata.config;
 
-import java.util.List;
 import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.ServletContextEvent;
@@ -29,7 +28,6 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.security.AuthenticationType;
-import com.google.common.collect.Lists;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
@@ -39,9 +37,9 @@ import static com.google.common.base.Strings.isNullOrEmpty;
  *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class SystemConfigListener implements ServletContextListener {
+public class SystemConfigStartupCheck implements ServletContextListener {
     private static final Logger log =
-            LoggerFactory.getLogger(SystemConfigListener.class);
+            LoggerFactory.getLogger(SystemConfigStartupCheck.class);
     @Inject
     private SystemPropertyConfigStore sysPropConfigStore;
 
@@ -49,41 +47,22 @@ public class SystemConfigListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         ObsoleteJNDIChecker.ensureNoObsoleteJNDIEntries();
 
-        List<String> missingSysProps = Lists.newArrayList();
-        addMissingKeyIfNoValue(missingSysProps,
-                SystemPropertyConfigStore.KEY_HIBERNATE_SEARCH_INDEX_BASE,
-                sysPropConfigStore.getHibernateSearchIndexBase());
-        addMissingKeyIfNoValue(missingSysProps,
-                SystemPropertyConfigStore.KEY_JAVAMELODY_STORAGE_DIRECTORY,
-                sysPropConfigStore.getJavamelodyStorageDirectory());
-        addMissingKeyIfNoValue(missingSysProps,
-                SystemPropertyConfigStore.KEY_DOCUMENT_FILE_STORE,
-                sysPropConfigStore.getDocumentFileStorageLocation());
+        boolean errorFound = sysPropConfigStore.areRequiredPropertiesSet();
 
-        boolean validAuthPolicyValue = validateConfiguration();
+        errorFound |= validateAuthenticationConfig();
 
         // obsolete properties
         String obsoleteProp = "ehcache.disk.store.dir";
-        boolean hasObsoleteEntry = isNullOrEmpty(
-                sysPropConfigStore.get(obsoleteProp));
-        if (hasObsoleteEntry) {
+        String ehcacheDir = sysPropConfigStore.get(obsoleteProp);
+        if (!isNullOrEmpty(ehcacheDir)) {
             log.error(
-                    "{} is no longer needed. Please remove it from your system properties.", obsoleteProp);
+                    "{} is no longer needed. Please remove it from your system properties and remove any obsolete cache files from the directory {}.", obsoleteProp, ehcacheDir);
+            errorFound = true;
         }
 
-        if (!missingSysProps.isEmpty() || !validAuthPolicyValue ||
-                hasObsoleteEntry) {
+        if (errorFound) {
             throw new RuntimeException(
                     "System properties for Zanata are not configured properly. Check the log for details.");
-        }
-    }
-
-    private static void addMissingKeyIfNoValue(List<String> missingSysProps,
-            String propKey,
-            String propValue) {
-        if (isNullOrEmpty(propValue)) {
-            missingSysProps.add(propKey);
-            log.error("Missing system property: {}", propKey);
         }
     }
 
@@ -93,7 +72,7 @@ public class SystemConfigListener implements ServletContextListener {
      *
      * @return true if auth policy value looks ok otherwise false
      */
-    private boolean validateConfiguration() {
+    private boolean validateAuthenticationConfig() {
         Map<AuthenticationType, String> loginModuleNames =
                 sysPropConfigStore.getLoginModuleNames();
         // Validate that only internal / openid authentication is enabled at

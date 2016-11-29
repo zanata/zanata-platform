@@ -62,11 +62,11 @@ public final class ObsoleteJNDIChecker {
                 Object zanataJNDI = new InitialContext().lookup(entry);
                 if (zanataJNDI != null) {
                     throw new RuntimeException(
-                            "Zanata has replaced JNDI entries to system properties in version 4.0. See release note http://zanata.readthedocs.io/en/release/release-notes/ for how to migrate.");
+                            "Zanata has replaced JNDI entries with system properties in version 4.0. See release note http://docs.zanata.org/en/release/release-notes/#400 for how to migrate.");
                 }
             } catch (NamingException e) {
                 // it's good that we don't have this JNDI entry defined
-                log.trace("obsolete JNDI entries not found: {}", e.getExplanation());
+                log.trace("obsolete JNDI entry was not found: {}", e.getExplanation());
             }
         });
 
