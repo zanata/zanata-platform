@@ -2,6 +2,7 @@ import cx from 'classnames'
 import React, { PropTypes } from 'react'
 import SuggestionsHeader from './SuggestionsHeader'
 import SuggestionsBody from './SuggestionsBody'
+import SuggestionDetailsModal from './SuggestionDetailsModal'
 import { pick } from 'lodash'
 import { connect } from 'react-redux'
 import {
@@ -57,6 +58,7 @@ const SuggestionsPanel = React.createClass({
         className={className}>
         <SuggestionsHeader {...headerProps} />
         <SuggestionsBody {...bodyProps} />
+        <SuggestionDetailsModal />
       </aside>
     )
   }
