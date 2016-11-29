@@ -65,7 +65,6 @@ import javax.inject.Named;
 import org.zanata.email.EmailBuilder;
 import org.zanata.events.ServerStarted;
 import org.zanata.exception.ZanataInitializationException;
-import org.zanata.migration.ObsoleteJNDIChecker;
 import org.zanata.rest.dto.VersionInfo;
 import javax.enterprise.event.Event;
 import org.zanata.util.VersionUtility;
@@ -114,7 +113,6 @@ public class ZanataInit {
     public void initZanata(ServletContext context) throws Exception {
         checkAppServerVersion();
         String appServerHome = context.getRealPath("/");
-        ObsoleteJNDIChecker.ensureNoObsoleteJNDIEntries();
 
         File manifestFile = new File(appServerHome, "META-INF/MANIFEST.MF");
 

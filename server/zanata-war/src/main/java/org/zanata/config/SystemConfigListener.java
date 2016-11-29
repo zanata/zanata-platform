@@ -28,6 +28,7 @@ import javax.servlet.ServletContextListener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.migration.ObsoleteJNDIChecker;
 import org.zanata.security.AuthenticationType;
 import com.google.common.collect.Lists;
 
@@ -47,6 +48,8 @@ public class SystemConfigListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
+        ObsoleteJNDIChecker.ensureNoObsoleteJNDIEntries();
+
         List<String> missingSysProps = Lists.newArrayList();
         addMissingKeyIfNoValue(missingSysProps,
                 SystemPropertyConfigStore.KEY_HIBERNATE_SEARCH_INDEX_BASE,
