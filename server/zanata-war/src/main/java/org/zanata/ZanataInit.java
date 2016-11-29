@@ -158,7 +158,7 @@ public class ZanataInit {
                 System.getProperty("javamelody.storage-directory");
         log.info("JavaMelody stats directory: " + javamelodyDir);
         String indexBase =
-                System.getProperty("hibernate.search.default.indexBase");
+                applicationConfiguration.getHibernateSearchIndexBase();
         log.info("Lucene index directory: " + indexBase);
         if (indexBase != null) {
             checkLuceneLocks(new File(indexBase));

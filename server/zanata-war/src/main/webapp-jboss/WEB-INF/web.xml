@@ -154,6 +154,12 @@
   </listener>
 
   <listener>
+    <!-- this listener will check invalid/missing system properties so should be
+     ran before liquibase -->
+    <listener-class>org.zanata.config.SystemConfigListener</listener-class>
+  </listener>
+
+  <listener>
     <listener-class>liquibase.integration.servlet.LiquibaseServletListener</listener-class>
   </listener>
 

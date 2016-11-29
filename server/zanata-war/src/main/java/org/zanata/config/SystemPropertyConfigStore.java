@@ -20,14 +20,20 @@
  */
 package org.zanata.config;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.security.AuthenticationType;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -37,11 +43,10 @@ import static java.util.stream.Collectors.toSet;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Named("systemPropertyConfigStore")
-@javax.enterprise.context.Dependent
+@Dependent
 public class SystemPropertyConfigStore implements ConfigStore {
 
-    private static final String KEY_AUTH_POLICY =
+    protected static final String KEY_AUTH_POLICY =
             "zanata.security.authpolicy.";
     private static final String KEY_ADMIN_USERS =
             "zanata.security.adminusers";
@@ -49,6 +54,10 @@ public class SystemPropertyConfigStore implements ConfigStore {
             "zanata.email.defaultfromaddress";
     public static final String KEY_DOCUMENT_FILE_STORE =
             "zanata.file.directory";
+    protected static final String KEY_HIBERNATE_SEARCH_INDEX_BASE =
+            "hibernate.search.default.indexBase";
+    protected static final String KEY_JAVAMELODY_STORAGE_DIRECTORY =
+            "javamelody.storage-directory";
 
     /**
      * Server-wide switch to enable/disable OAuth support
@@ -112,6 +121,31 @@ public class SystemPropertyConfigStore implements ConfigStore {
 
     public String getDocumentFileStorageLocation() {
         return System.getProperty(KEY_DOCUMENT_FILE_STORE);
+    }
+
+    public String getHibernateSearchIndexBase() {
+        return System.getProperty(KEY_HIBERNATE_SEARCH_INDEX_BASE);
+    }
+
+    public String getJavamelodyStorageDirectory() {
+        return System.getProperty(KEY_JAVAMELODY_STORAGE_DIRECTORY);
+    }
+
+    public Map<AuthenticationType, String> getLoginModuleNames() {
+        ImmutableMap.Builder<AuthenticationType, String> builder = ImmutableMap.builder();
+        for (String policyName : getEnabledAuthenticationPolicies()) {
+            try {
+                AuthenticationType authType =
+                        AuthenticationType.valueOf(policyName.toUpperCase());
+                builder.put(authType,
+                        getAuthPolicyName(policyName));
+            } catch (IllegalArgumentException e) {
+                log.warn(
+                        "Attempted to configure an unrecognized authentication policy: " +
+                                policyName);
+            }
+        }
+        return builder.build();
     }
 
     /**
