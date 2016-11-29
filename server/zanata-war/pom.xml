@@ -1083,6 +1083,11 @@
       <artifactId>zanata-adapter-xliff</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-security</artifactId>
+    </dependency>
+
     <!-- Compatibility Dependencies -->
 
     <dependency>

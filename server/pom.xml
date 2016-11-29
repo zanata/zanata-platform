@@ -783,6 +783,11 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>zanata-security</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- zanata client -->
       <dependency>
