@@ -7,7 +7,6 @@ import Languages from '../containers/Languages'
 import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
 import { View } from 'zanata-ui'
-import StyleGuide from '../containers/StyleGuide'
 
 export default class Root extends Component {
   render () {
