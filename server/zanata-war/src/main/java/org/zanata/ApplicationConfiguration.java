@@ -153,7 +153,6 @@ public class ApplicationConfiguration implements Serializable {
     public void load() {
         log.info("Reloading configuration");
         this.loadLoginModuleNames();
-        this.validateConfiguration();
         this.applyLoggingConfiguration();
         this.loadJaasConfig();
         authenticatedSessionTimeoutMinutes = sysPropConfigStore
@@ -169,43 +168,7 @@ public class ApplicationConfiguration implements Serializable {
      * configuration
      */
     private void loadLoginModuleNames() {
-        for (String policyName : sysPropConfigStore
-                .getEnabledAuthenticationPolicies()) {
-            try {
-                AuthenticationType authType =
-                        AuthenticationType.valueOf(policyName.toUpperCase());
-                loginModuleNames.put(authType,
-                        sysPropConfigStore.getAuthPolicyName(policyName));
-            } catch (IllegalArgumentException e) {
-                log.warn(
-                        "Attempted to configure an unrecognized authentication policy: " +
-                                policyName);
-            }
-        }
-    }
-
-    /**
-     * Validates that there are no invalid values set on the zanata
-     * configuration
-     */
-    private void validateConfiguration() {
-        // Validate that only internal / openid authentication is enabled at
-        // once
-        if (loginModuleNames.size() > 2) {
-            throw new RuntimeException(
-                    "Multiple invalid authentication types present in Zanata configuration.");
-        } else if (loginModuleNames.size() == 2) {
-            // Internal and Open id are the only allowed combined authentication
-            // types
-            if (!(loginModuleNames.containsKey(AuthenticationType.OPENID) && loginModuleNames
-                    .containsKey(AuthenticationType.INTERNAL))) {
-                throw new RuntimeException(
-                        "Multiple invalid authentication types present in Zanata configuration.");
-            }
-        } else if (loginModuleNames.size() < 1) {
-            throw new RuntimeException(
-                    "At least one authentication type must be configured in Zanata configuration.");
-        }
+        loginModuleNames = sysPropConfigStore.getLoginModuleNames();
     }
 
     /**
@@ -279,6 +242,10 @@ public class ApplicationConfiguration implements Serializable {
 
     public String getDocumentFileStorageLocation() {
         return sysPropConfigStore.getDocumentFileStorageLocation();
+    }
+
+    public String getHibernateSearchIndexBase() {
+        return sysPropConfigStore.getHibernateSearchIndexBase();
     }
 
     public String getDomainName() {
