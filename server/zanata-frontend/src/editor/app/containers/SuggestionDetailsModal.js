@@ -8,6 +8,7 @@ class SuggestionDetailsModal extends Component {
     super()
     this.state = {
       // FIXME make it false
+      // FIXME use props instead
       show: true
     }
   }
@@ -22,6 +23,7 @@ class SuggestionDetailsModal extends Component {
   render () {
     return (
       <div>
+        {/* FIXME use the "X more" match detail link to do this instead */}
         <Button bsStyle="default"
           onClick={::this.showModal}>Launch Modal</Button>
         <Modal
