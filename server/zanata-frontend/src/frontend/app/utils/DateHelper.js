@@ -5,6 +5,7 @@ import { isEmpty, findKey } from 'lodash'
 
 var DateHelper = {
   shortDateFormat: 'DD/MM/YYYY',
+  shortDateTimeFormat: 'DD/MM/YYYY HH:mm',
   dateFormat: 'YYYY-MM-DD',
   dateRangeDisplayFmt: 'DD MMM, YYYY',
   dateSingleDisplayFmt: 'DD MMM, YYYY (dddd)',
@@ -50,20 +51,27 @@ var DateHelper = {
 
   getDate: function (milliseconds) {
     if (!isEmpty(milliseconds)) {
-      const intMiliseconds = parseInt(milliseconds)
-      return new Date(intMiliseconds)
+      return new Date(parseInt(milliseconds))
     } else {
       return undefined
     }
   },
 
   formatDate: function (date, format) {
-    return moment(date, this.dateFormat).format(format)
+    return moment(date).format(format)
   },
 
   shortDate: function (date) {
     if (date) {
       return this.formatDate(date, this.shortDateFormat)
+    } else {
+      return undefined
+    }
+  },
+
+  shortDateTime: function (date) {
+    if (date) {
+      return this.formatDate(date, this.shortDateTimeFormat)
     } else {
       return undefined
     }

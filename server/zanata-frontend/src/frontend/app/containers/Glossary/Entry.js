@@ -131,7 +131,7 @@ class Entry extends Component {
             </EditableText>)
           }
         </TableCell>
-        <TableCell size={'3'} tight={transSelected}>
+        <TableCell size='3' tight={transSelected}>
           {secondColumnContent}
         </TableCell>
         <TableCell hideSmall>
@@ -169,15 +169,17 @@ class Entry extends Component {
                   handleTermFieldUpdate(field, e)}
                 handleUpdateTerm={(entry) =>
                   handleUpdateTerm(entry, false)} />
-                {updateButton}
-              <div
-                className='Op(0) row--selected_Op(1) editable:h_Op(1) Trs(eo)'>
-                {displayUpdateButton && !isSaving ? (
-                  <ButtonLink
-                    onClick={() => handleResetTerm(entry.id)}>
-                    Cancel
-                  </ButtonLink>
-                ) : ''}
+              <div className='Op(0) row--selected_Op(1)
+                editable:h_Op(1) Trs(eo)'>
+                <div className='Hidden--lesm D(ib)'>
+                  {updateButton}
+                  {displayUpdateButton && !isSaving ? (
+                    <ButtonLink
+                      onClick={() => handleResetTerm(entry.id)}>
+                      Cancel
+                    </ButtonLink>
+                  ) : ''}
+                </div>
                 {!transSelected && permission.canDeleteEntry && !isSaving &&
                 !displayUpdateButton && (
                   <DeleteEntryModal entry={entry}
