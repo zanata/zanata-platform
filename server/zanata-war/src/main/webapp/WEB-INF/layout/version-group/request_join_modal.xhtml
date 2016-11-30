@@ -125,16 +125,19 @@
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
         <div class="txt--align-right">
-          <button id="request-join-group-cancel-button" onclick="cancelJoinGroupEmail();return false;"
-            class="cancel button--link l--push-right-half"
-            data-dismiss="modal">
-            #{msgs['jsf.Cancel']}
-          </button>
-
-          <button id="request-join-group-send-button" class="button loader button--primary"
-            onclick="sendJoinGroupEmail();return false;" disabled="disabled">
-            <span class="loader__label">#{msgs['jsf.email.Send']}</span>
-          </button>
+          <div class="bx--inline-block">
+            <button id="request-join-group-cancel-button" onclick="cancelJoinGroupEmail();return false;"
+              class="cancel button--link l--push-right-half"
+              data-dismiss="modal">
+              #{msgs['jsf.Cancel']}
+            </button>
+          </div>
+          <div class="bx--inline-block">
+            <button id="request-join-group-send-button" class="button loader button--primary"
+              onclick="sendJoinGroupEmail();return false;" disabled="disabled">
+              <span class="loader__label">#{msgs['jsf.email.Send']}</span>
+            </button>
+          </div>
         </div>
       </footer>
     </h:form>

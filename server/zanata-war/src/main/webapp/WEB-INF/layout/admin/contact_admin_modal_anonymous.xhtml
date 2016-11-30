@@ -66,16 +66,19 @@
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
         <div class="txt--align-right">
-          <button id="contact-admin-anonymous-cancel-button" onclick="cancelContactAdminAnonymous();return false;"
-            class="cancel button--link l--push-right-half"
-            data-dismiss="modal">
-            #{msgs['jsf.Cancel']}
-          </button>
-
-          <button id="contact-admin-anonymous-send-button" class="button loader button--primary" disabled="disabled"
-            onclick="sendContactAdminAnonymousEmail();return false;">
-            <span class="loader__label">#{msgs['jsf.email.Send']}</span>
-          </button>
+          <div class="bx--inline-block">
+            <button id="contact-admin-anonymous-cancel-button" onclick="cancelContactAdminAnonymous();return false;"
+              class="cancel button--link l--push-right-half"
+              data-dismiss="modal">
+              #{msgs['jsf.Cancel']}
+            </button>
+          </div>
+          <div class="bx--inline-block">
+            <button id="contact-admin-anonymous-send-button" class="button loader button--primary" disabled="disabled"
+              onclick="sendContactAdminAnonymousEmail();return false;">
+              <span class="loader__label">#{msgs['jsf.email.Send']}</span>
+            </button>
+          </div>
         </div>
       </footer>
     </h:form>
