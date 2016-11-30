@@ -3,7 +3,12 @@ var path = require('path')
 
 module.exports = {
   title: 'Zanata Style Guide',
-  components: './app/components/**/index.jsx',
+  sections: [
+    {
+      name:'Components folder',
+      components: './app/components/**/index.jsx',
+    }
+  ],
   template: './styleguide.html',
   updateWebpackConfig: function (webpackConfig, env) {
     webpackConfig.entry.push(path.join(__dirname, 'app/styles/atomic.css'))

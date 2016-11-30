@@ -7,7 +7,7 @@ import {
 } from 'zanata-ui'
 import { clearMessage } from '../../actions/common'
 import { isEmpty } from 'lodash'
-import { Button } from 'react-bootstrap'
+import { Button, ButtonGroup } from 'react-bootstrap'
 
 /**
  * Notification popup modal that overlays on the page.
