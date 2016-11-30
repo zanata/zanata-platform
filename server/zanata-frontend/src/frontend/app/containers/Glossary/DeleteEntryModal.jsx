@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import {
-  ButtonLink,
-  ButtonRound,
   LoaderText,
   Icon,
   Tooltip,
   Overlay
 } from 'zanata-ui'
+import { Button } from 'react-bootstrap'
 
 class DeleteEntryModal extends Component {
 
@@ -45,13 +44,13 @@ class DeleteEntryModal extends Component {
           onHide={() => handleDeleteEntryDisplay(false)}>
           <Tooltip id='delete-glossary' title='Delete term and translations'>
             {info}
-            <div className='Mt(rq)'>
-              <ButtonLink
+            <div className='pull-right'>
+              <Button bsStyle='link'
                 atomic={{m: 'Mend(rh)'}}
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
-              </ButtonLink>
-              <ButtonRound type='danger' size='n1'
+              </Button>
+              <Button bsStyle='danger' type='danger' size='n1'
                 disabled={isDeleting}
                 onClick={() => {
                   handleDeleteEntry(entry.id)
@@ -61,18 +60,18 @@ class DeleteEntryModal extends Component {
                   loadingText='Deleting'>
                   Delete all
                 </LoaderText>
-              </ButtonRound>
+              </Button>
             </div>
           </Tooltip>
         </Overlay>
-        <ButtonLink type='danger'
+        <Button bsStyle='link danger' type='danger'
           onClick={() => handleDeleteEntryDisplay(true)}
           disabled={isDeleting}>
           <LoaderText loading={isDeleting} loadingText='Deleting'>
             <Icon name='trash' atomic={{m: 'Mend(re)'}} />
             <span className='Hidden--lesm'>Delete</span>
           </LoaderText>
-        </ButtonLink>
+        </Button>
       </div>
     )
     /* eslint-enable react/jsx-no-bind */

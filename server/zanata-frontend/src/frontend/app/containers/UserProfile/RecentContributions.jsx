@@ -5,13 +5,12 @@ import { DateRange } from 'react-date-range'
 import utilsDate from '../../utils/DateHelper'
 import {
   Base,
-  ButtonLink,
-  ButtonRound,
   Flex,
-  Icon,
-  TextInput,
   Modal
 } from 'zanata-ui'
+
+import TextInput from '../../components'
+import { Button, ButtonGroup } from 'react-bootstrap'
 
 const classes = {
   root: {
@@ -112,11 +111,10 @@ var RecentContributions = React.createClass({
             Recent Contributions
           </Base>
           <Base atomic={classes.dateRangeContainer}>
-            <ButtonLink onClick={() => this.onToggleShowDateRange()}>
+            <Button bsStyle='link' onClick={() => this.onToggleShowDateRange()}>
               <TextInput editable={false} value={displayDateRange}
                 theme={classes.dataRangeTextField} />
-              <Icon name='chevron-down' size='1' />
-            </ButtonLink>
+            </Button>
 
             {this.state.showDateRange &&
               <Modal show={this.state.showDateRange}
@@ -134,14 +132,17 @@ var RecentContributions = React.createClass({
                     onChange={this.onDateRangeChanged} />
                 </Modal.Body>
                 <Modal.Footer>
-                  <ButtonLink onClick={() => this.onToggleShowDateRange()}>
-                    Cancel
-                  </ButtonLink>
-                  <ButtonRound atomic={{m: 'Mstart(r1)'}}
-                    onClick={
-                    () => handleDateRangeChanged(this.state.dateRange)}>
-                    Apply
-                  </ButtonRound>
+                  <ButtonGroup className='pull-right'>
+                    <Button bsStyle='link' onClick={() =>
+                      this.onToggleShowDateRange()}>
+                      Cancel
+                    </Button>
+                    <Button bsStyle='default' atomic={{m: 'Mstart(r1)'}}
+                      onClick={
+                      () => handleDateRangeChanged(this.state.dateRange)}>
+                      Apply
+                    </Button>
+                  </ButtonGroup>
                 </Modal.Footer>
               </Modal>
             }

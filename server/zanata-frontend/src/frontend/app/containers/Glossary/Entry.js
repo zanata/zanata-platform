@@ -2,8 +2,6 @@ import React, { Component, PropTypes } from 'react'
 import { isEqual } from 'lodash'
 
 import {
-  ButtonLink,
-  ButtonRound,
   Icon,
   LoaderText,
   TableCell,
@@ -13,6 +11,7 @@ import {
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
 import { EditableText } from '../../components'
+import { Button } from 'react-bootstrap'
 /**
  * Component to display a GlossaryEntry
  */
@@ -80,14 +79,14 @@ class Entry extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
-      <ButtonRound atomic={{m: 'Mend(rh)'}}
+      <Button bsStyle='primary' atomic={{m: 'Mend(rh)'}}
         type='primary'
         disabled={isSaving}
         onClick={() => handleUpdateTerm(entry, transSelected)}>
         <LoaderText loading={isSaving} loadingText='Updating'>
           Update
         </LoaderText>
-      </ButtonRound>
+      </Button>
     )
 
     const loadingDiv = (
@@ -152,11 +151,11 @@ class Entry extends Component {
           {termsLoading
             ? loadingDiv
             : (<Row>
-              <ButtonLink atomic={{m: 'Mend(rq)'}}
+              <Button bsStyle='link' atomic={{m: 'Mend(rq)'}}
                 disabled={isDeleting}
                 onClick={() => this.setShowingEntryModal(true)}>
                 <Icon name='info' />
-              </ButtonLink>
+              </Button>
               <EntryModal entry={entry}
                 show={this.state.showEntryModal}
                 isSaving={isSaving}
@@ -173,10 +172,10 @@ class Entry extends Component {
               <div
                 className='Op(0) row--selected_Op(1) editable:h_Op(1) Trs(eo)'>
                 {displayUpdateButton && !isSaving ? (
-                  <ButtonLink
+                  <Button bsStyle='link'
                     onClick={() => handleResetTerm(entry.id)}>
                     Cancel
-                  </ButtonLink>
+                  </Button>
                 ) : ''}
                 {!transSelected && permission.canDeleteEntry && !isSaving &&
                 !displayUpdateButton && (

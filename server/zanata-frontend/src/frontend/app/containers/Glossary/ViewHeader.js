@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { debounce, isEmpty } from 'lodash'
 import {
-  ButtonLink,
   Icon,
   Row,
   Select,
@@ -13,6 +12,7 @@ import {
   Link
 } from 'zanata-ui'
 import Header from './Header'
+import { Button } from 'react-bootstrap'
 import {
   glossaryChangeLocale,
   glossaryFilterTextChanged,
@@ -124,45 +124,46 @@ class ViewHeader extends Component {
               accessibilityLabel='Search Terms'
               defaultValue={filterText}
               onChange={handleFilterFieldUpdate} />
-            <ButtonLink
+            <Button bsStyle='link'
               title='Cancel search'
               disabled={isEmpty(filterText)}
               onClick={(e) => { this.handleClearSearch() }}>
               <Icon name='cross' />
-            </ButtonLink>
+            </Button>
 
             {permission.canAddNewEntry && (
               <div className='Mstart(rh)--md Mstart(rq)'>
-                <ButtonLink type='default'
+                <Button bsStyle='link' type='default'
                   onClick={() => handleImportFileDisplay(true)}>
                   <Row>
                     <Icon name='import' atomic={{m: 'Mend(re)'}} />
                     <span className='Hidden--lesm'>Import</span>
                   </Row>
-                </ButtonLink>
+                </Button>
                 <ImportModal />
               </div>)}
 
             {permission.canDownload && !isEmptyTerms && (
               <div className='Mstart(rh)--md Mstart(rq)'>
-                <ButtonLink type='default'
+                <Button bsStyle='link' type='default'
                   onClick={() => handleExportFileDisplay(true)}>
                   <Row>
                     <Icon name='export' atomic={{m: 'Mend(re)'}} />
                     <span className='Hidden--lesm'>Export</span>
                   </Row>
-                </ButtonLink>
+                </Button>
                 <ExportModal />
               </div>)}
 
              {permission.canAddNewEntry && (
                <div className='Mstart(rh)--md Mstart(rq)'>
-                 <ButtonLink onClick={() => handleNewEntryDisplay(true)}>
+                 <Button bsStyle='link' onClick={() =>
+                   handleNewEntryDisplay(true)}>
                    <Row>
                      <Icon name='plus' atomic={{m: 'Mend(re)'}} />
                      <span className='Hidden--lesm'>New</span>
                    </Row>
-                 </ButtonLink>
+                 </Button>
                  <NewEntryModal />
                </div>)}
 
@@ -186,7 +187,7 @@ class ViewHeader extends Component {
             className='Flxg(1)'>
             <TableCell size='3'
               onClick={() => handleSortColumn('src_content')}>
-              <ButtonLink type='default'>
+              <Button bsStyle='link' type='default'>
                 <Row>
                   {'src_content' in sort
                     ? (sort.src_content === true)
@@ -195,12 +196,12 @@ class ViewHeader extends Component {
                     : ''}
                   <Icon name='glossary'
                     atomic={{c: 'C(neutral)', m: 'Mend(re) MStart(rq)'}} />
-                  <span className='LineClamp(1,24px)'>
+                  <span>
                     English (United States)
                   </span>
                   <span className='C(muted) Mstart(rq)'>{termCount}</span>
                 </Row>
-              </ButtonLink>
+              </Button>
             </TableCell>
             <TableCell tight size={'3'}
               theme={{base: {lineClamp: ''}}}>
@@ -227,18 +228,18 @@ class ViewHeader extends Component {
             </TableCell>
             <TableCell hideSmall
               onClick={() => handleSortColumn('part_of_speech')}>
-              <ButtonLink type='default'>
+              <Button bsStyle='link' type='default'>
                 <Row>
                   {'part_of_speech' in sort
                     ? (sort.part_of_speech === true)
                     ? <Icon name='chevron-down' />
                     : <Icon name='chevron-up' />
                     : ''}
-                  <span className='LineClamp(1,24px) MStart(rq)'>
+                  <span className='MStart(rq)'>
                     Part of Speech
                   </span>
                 </Row>
-              </ButtonLink>
+              </Button>
             </TableCell>
             <TableCell size='2' />
           </TableRow>

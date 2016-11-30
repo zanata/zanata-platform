@@ -1,14 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import { isEmpty } from 'lodash'
 import {
-  ButtonLink,
-  ButtonRound,
   Icon,
   LoaderText,
-  Modal,
-  Row
+  Modal
 } from 'zanata-ui'
 import { EditableText } from '../../components'
+import { Button, ButtonGroup } from 'react-bootstrap'
 
 /**
  * Popup windows to display a glossary entry
@@ -150,27 +148,28 @@ class EntryModal extends Component {
           }
         </Modal.Body>
         <Modal.Footer>
-          <Row theme={{ base: {j: 'Jc(c)'} }}>
-            <ButtonLink atomic={{m: 'Mstart(rh)'}}
+          <ButtonGroup className='pull-right'>
+            <Button bsStyle='link' atomic={{m: 'Mstart(rh)'}}
               onClick={
                 () => {
                   handleResetTerm(entry.id); handleEntryModalDisplay(false)
                 }
               }>
               Cancel
-            </ButtonLink>
+            </Button>
 
             {isSaving
-              ? (<ButtonRound atomic={{m: 'Mstart(rh)'}}
+              ? (<Button bsStyle='primary' atomic={{m: 'Mstart(rh)'}}
                 type='primary' disabled={true}>
                 <LoaderText loading loadingText='Updating'>Update</LoaderText>
-              </ButtonRound>)
-              : (<ButtonRound atomic={{m: 'Mstart(rh)'}} type='primary'
-                onClick={() => handleUpdateTerm(entry)} disabled={!canUpdate}>
+              </Button>)
+              : (<Button bsStyle='primary' atomic={{m: 'Mstart(rh)'}}
+                type='primary' onClick={() => handleUpdateTerm(entry)}
+                disabled={!canUpdate}>
                   Update
-              </ButtonRound>)
+              </Button>)
             }
-          </Row>
+          </ButtonGroup>
         </Modal.Footer>
       </Modal>
     )

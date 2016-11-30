@@ -3,14 +3,12 @@ import { connect } from 'react-redux'
 import { cloneDeep, isEmpty } from 'lodash'
 
 import {
-  ButtonLink,
-  ButtonRound,
   LoaderText,
-  Modal,
-  Row
+  Modal
 } from 'zanata-ui'
 
 import { EditableText } from '../../components'
+import { ButtonGroup, Button } from 'react-bootstrap'
 
 import {
   glossaryToggleNewEntryModal,
@@ -125,14 +123,14 @@ class NewEntryModal extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Row theme={{ base: {j: 'Jc(c)'} }}>
-            <ButtonLink
+          <ButtonGroup className='pull-right'>
+            <Button bsStyle='link'
               atomic={{m: 'Mend(r1)'}}
               disabled={isSaving}
               onClick={() => this.handleCancel()}>
               Cancel
-            </ButtonLink>
-            <ButtonRound
+            </Button>
+            <Button bsStyle='primary'
               type='primary'
               disabled={!isAllowSave || isSaving}
               onClick={
@@ -143,8 +141,8 @@ class NewEntryModal extends Component {
               <LoaderText loading={isSaving} loadingText='Saving'>
                 Save
               </LoaderText>
-            </ButtonRound>
-          </Row>
+            </Button>
+          </ButtonGroup>
         </Modal.Footer>
       </Modal>)
     /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */

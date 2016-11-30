@@ -4,9 +4,9 @@ import {
   ContentStateStyles
 } from '../../constants/Options'
 import {
-  ButtonLink,
   Base
 } from 'zanata-ui'
+import { Button } from 'react-bootstrap'
 
 const classes = {
   root: {
@@ -80,13 +80,13 @@ const ContentStateFilter = ({
     }
     /* eslint-disable react/jsx-no-bind */
     return (
-      <ButtonLink key={option}
+      <Button bsStyle='link' key={option}
         states={states}
         theme={classes.button}
         type={ContentStateStyles[index]}
         onClick={() => handleFilterChanged(option)}>
         {option}
-      </ButtonLink>
+      </Button>
     )
     /* eslint-enable react/jsx-no-bind */
   })

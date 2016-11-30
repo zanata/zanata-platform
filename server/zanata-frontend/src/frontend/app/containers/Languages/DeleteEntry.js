@@ -1,9 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
-import {Button} from 'react-bootstrap'
+import { ButtonGroup, Button } from 'react-bootstrap'
 import {
-  ButtonLink,
-  ButtonRound,
   Tooltip,
   Overlay
 } from 'zanata-ui'
@@ -38,20 +36,20 @@ class DeleteEntry extends Component {
               Are you sure you want to delete
               <span className='Fw(b)'> {locale.displayName}</span>?
             </p>
-            <div className='Mt(rq)'>
-              <ButtonLink
+            <ButtonGroup className='Mt(rq) pull-right'>
+              <Button bsStyle='link'
                 atomic={{m: 'Mend(rh)'}}
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
-              </ButtonLink>
-              <ButtonRound type='danger' size='n1'
+              </Button>
+              <Button bsStyle='danger' type='danger'
                 onClick={() => {
                   handleDeleteEntry(locale.localeId)
                   handleDeleteEntryDisplay(false)
                 }}>
                 Delete
-              </ButtonRound>
-            </div>
+              </Button>
+            </ButtonGroup>
           </Tooltip>
         </Overlay>
 
