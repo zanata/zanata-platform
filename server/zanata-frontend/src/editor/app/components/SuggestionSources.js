@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import SuggestionContents from './SuggestionContents'
-import SuggestionSourceDetails from './SuggestionSourceDetails'
+import SuggestionDetailsSummary from './SuggestionDetailsSummary'
 
 /**
  * Display all the source strings for a suggestion, with
@@ -28,7 +28,7 @@ const SuggestionSources = React.createClass({
           plural={sourceContents.length > 1}
           contents={sourceContents}
           compareTo={diffWith} />
-        <SuggestionSourceDetails
+        <SuggestionDetailsSummary
           suggestion={this.props.suggestion} />
       </div>
     )
