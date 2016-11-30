@@ -10,7 +10,6 @@
   <artifactId>zanata-security</artifactId>
   <name>zanata-security</name>
   <packaging>takari-jar</packaging>
-  <url>http://maven.apache.org</url>
 
   <!-- Should be the same as zanata-server/pom.xml -->
   <scm>
@@ -20,7 +19,6 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <dependencies>
     <dependency>
