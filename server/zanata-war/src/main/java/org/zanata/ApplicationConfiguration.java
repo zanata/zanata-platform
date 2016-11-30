@@ -442,4 +442,8 @@ public class ApplicationConfiguration implements Serializable {
     protected boolean isOAuthSupported() {
         return sysPropConfigStore.isOAuthEnabled();
     }
+
+    public boolean isAnonymousUserAllowed() {
+        return databaseBackedConfig.isAnonymousUserAllowed();
+    }
 }

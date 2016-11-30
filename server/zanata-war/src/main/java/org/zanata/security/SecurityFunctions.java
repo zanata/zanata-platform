@@ -596,43 +596,6 @@ public class SecurityFunctions extends PermissionProvider {
     }
 
     /**
-     * Check if the REST api allow anonymous access
-     * If request is from anonymous user,
-     * only 'Read' action and certain specific endpoints are allowed.
-     * Additionally, role-based check will be performed in the REST service
-     * class.
-     * @param httpMethod {@link javax.ws.rs.HttpMethod}
-     * @param servicePath service path of rest request.
-     *                        See annotation @Path in REST service class.
-     * @return
-     */
-    public static boolean doesRestPathAllowAnonymousAccess(String httpMethod,
-            String servicePath) {
-        return HttpUtil.isReadMethod(httpMethod) ||
-                isTestServicePath(servicePath) ||
-                isRefreshingOAuthAccessToken(servicePath);
-    }
-
-    private static boolean isRefreshingOAuthAccessToken(String servicePath) {
-        return servicePath != null &&
-                servicePath.startsWith("/oauth/token");
-    }
-
-    /**
-     * Check if request path are from functional test or RestTest
-     *
-     * @param servicePath - service path of rest request.
-     *                        See annotation @Path in REST service class.
-     */
-    private static boolean isTestServicePath(String servicePath) {
-        // This is to allow data injection for function-test/rest-test
-        return servicePath != null
-                &&
-                // when being called in ZanataRestSecurityInterceptor
-                servicePath.startsWith("/test/");
-    }
-
-    /**
      * Check if request path is Zanata UI locale endpoint.
      * This endpoint is used for getting list of locales internationalised
      * in Zanata, update locale in Zanata instance.

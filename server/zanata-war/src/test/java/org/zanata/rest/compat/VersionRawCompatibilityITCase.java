@@ -23,18 +23,27 @@ package org.zanata.rest.compat;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 
+import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.apicompat.rest.dto.VersionInfo;
+import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
 
 public class VersionRawCompatibilityITCase extends RestTest {
 
     @Override
     protected void prepareDBUnitOperations() {
+        addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
+                "org/zanata/test/model/ApplicationConfigurationData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+
+        addAfterTestOperation(new DBUnitProvider.DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
     }
 
     /**

@@ -7,18 +7,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.Provider;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.rs.response.OAuthRSResponse;
-import org.jboss.resteasy.annotations.interception.SecurityPrecedence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.config.SupportOAuth;
 import org.zanata.model.HAccount;
 import org.zanata.rest.oauth.OAuthUtil;
@@ -32,7 +32,6 @@ import org.zanata.util.ServiceLocator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.googlecode.totallylazy.Either;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class is responsible for checking for all REST requests:
@@ -46,11 +45,12 @@ import lombok.extern.slf4j.Slf4j;
  * @see org.zanata.security.annotations.CheckRole
  * @see org.zanata.security.annotations.CheckLoggedIn
  */
-@Provider
-@PreMatching
-@SecurityPrecedence
-@Slf4j
+//@Provider
+//@PreMatching
+//@SecurityPrecedence
 public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
+    private static final Logger log =
+            LoggerFactory.getLogger(ZanataRestSecurityInterceptor.class);
     @Context
     private HttpServletRequest request;
 
@@ -65,6 +65,9 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     private boolean isOAuthEnabled;
     private IServiceLocator serviceLocator = ServiceLocator.instance();
 
+    @Inject
+    private ApplicationConfiguration applicationConfiguration;
+
 
     @SuppressWarnings("unused")
     public ZanataRestSecurityInterceptor() {
@@ -73,12 +76,14 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     @VisibleForTesting
     protected ZanataRestSecurityInterceptor(HttpServletRequest request,
             SecurityTokens securityTokens, ZanataIdentity zanataIdentity,
-            boolean isOAuthEnabled, IServiceLocator serviceLocator) {
+            boolean isOAuthEnabled, IServiceLocator serviceLocator,
+            ApplicationConfiguration appConfig) {
         this.request = request;
         this.securityTokens = securityTokens;
         this.zanataIdentity = zanataIdentity;
         this.isOAuthEnabled = isOAuthEnabled;
         this.serviceLocator = serviceLocator;
+        applicationConfiguration = appConfig;
     }
 
     @Override
@@ -119,9 +124,8 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             // login will always success since the check was done above
             // here the tryLogin() will just set up the correct system state
             zanataIdentity.tryLogin();
-        } else if (!SecurityFunctions
-                .doesRestPathAllowAnonymousAccess(context.getMethod(),
-                        context.getUriInfo().getPath())){
+        } else if (!applicationConfiguration.isAnonymousUserAllowed() ||
+                !HttpUtil.isReadMethod(context.getMethod())){
             // if we don't have any information to authenticate and the
             // requesting API does NOT allow anonymous access
             log.info("can not authenticate REST request: {}", restCredentials);

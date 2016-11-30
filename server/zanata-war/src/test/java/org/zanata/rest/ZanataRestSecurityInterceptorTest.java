@@ -33,6 +33,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.model.HAccount;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
@@ -68,13 +69,15 @@ public class ZanataRestSecurityInterceptorTest {
     private IServiceLocator serviceLocator;
     @Mock
     private UriInfo uriInfo;
+    @Mock
+    private ApplicationConfiguration appConfig;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         securityInterceptor =
                 new ZanataRestSecurityInterceptor(request, securityTokens, identity,
-                        true, serviceLocator);
+                        true, serviceLocator, appConfig);
         headers = new MultivaluedHashMap<>();
 
         // some common set up
@@ -180,6 +183,7 @@ public class ZanataRestSecurityInterceptorTest {
 
     @Test
     public void willAllowAnonymousAccessToReadOnlyResources() throws Exception {
+        when(appConfig.isAnonymousUserAllowed()).thenReturn(true);
         when(context.getMethod()).thenReturn("GET");
 
         securityInterceptor.filter(context);
