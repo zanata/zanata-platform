@@ -1035,7 +1035,6 @@
             <home>${appserver.home}</home>
 
             <systemProperties>
-              <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
               <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
               <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
               <javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>
