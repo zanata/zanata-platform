@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react'
 import { isEqual } from 'lodash'
-
 import {
   Icon,
   LoaderText,
