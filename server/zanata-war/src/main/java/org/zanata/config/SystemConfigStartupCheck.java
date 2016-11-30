@@ -49,7 +49,7 @@ public class SystemConfigStartupCheck implements ServletContextListener {
 
         boolean errorFound = sysPropConfigStore.hasMissingRequiredSystemProperties();
 
-        errorFound |= validateAuthenticationConfig();
+        errorFound |= !validateAuthenticationConfig();
 
         // obsolete properties
         String obsoleteProp = "ehcache.disk.store.dir";
