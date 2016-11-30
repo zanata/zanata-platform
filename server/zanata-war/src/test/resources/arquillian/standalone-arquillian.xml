@@ -38,7 +38,6 @@
       <property name="jboss.as.management.blocking.timeout" value="1000"/>
       <property name="javamelody.storage-directory" value="./target/data/zanata/stats"/>
       <property name="hibernate.search.default.indexBase" value="./target/data/zanata/indexes"/>
-      <property name="ehcache.disk.store.dir" value="./target/data/zanata/ehcache"/>
       <property name="zanata.security.authpolicy.internal" value="zanata.internal"/>
       <property name="zanata.security.authpolicy.openid" value="zanata.openid"/>
       <property name="zanata.security.adminusers" value="admin"/>

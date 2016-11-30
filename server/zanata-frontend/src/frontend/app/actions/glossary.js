@@ -71,6 +71,10 @@ export const GLOSSARY_GET_QUALIFIED_NAME_SUCCESS =
 export const GLOSSARY_GET_QUALIFIED_NAME_FAILURE =
   'GLOSSARY_GET_QUALIFIED_NAME_FAILURE'
 
+export const PROJECT_GET_DETAILS_REQUEST = 'PROJECT_GET_DETAILS_REQUEST'
+export const PROJECT_GET_DETAILS_SUCCESS = 'PROJECT_GET_DETAILS_SUCCESS'
+export const PROJECT_GET_DETAILS_FAILURE = 'PROJECT_GET_DETAILS_FAILURE'
+
 export const glossaryUpdateLocale = createAction(GLOSSARY_UPDATE_LOCALE)
 export const glossaryUpdateFilter = createAction(GLOSSARY_UPDATE_FILTER)
 export const glossaryUpdateField = createAction(GLOSSARY_UPDATE_FIELD)
@@ -204,6 +208,27 @@ const getQualifiedName = (dispatch, projectSlug) => {
       }
     },
     GLOSSARY_GET_QUALIFIED_NAME_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
+}
+
+const getProjectDetails = (projectSlug) => {
+  const endpoint = window.config.baseUrl + window.config.apiRoot +
+    '/projects/p/' + projectSlug
+
+  const apiTypes = [
+    PROJECT_GET_DETAILS_REQUEST,
+    {
+      type: PROJECT_GET_DETAILS_SUCCESS,
+      payload: (action, state, res) => {
+        return res.json().then((json) => {
+          return json
+        })
+      }
+    },
+    PROJECT_GET_DETAILS_FAILURE
   ]
   return {
     [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
@@ -396,8 +421,11 @@ export const glossaryInitStateFromUrl =
 export const glossaryInitialLoad = (projectSlug) => {
   return (dispatch, getState) => {
     const query = getState().routing.location.query
-    dispatch(glossaryInitStateFromUrl({ query, projectSlug }))
-    dispatch(getQualifiedName(dispatch, projectSlug))
+    dispatch(glossaryInitStateFromUrl({ query, projectSlug })).then(
+    dispatch(getQualifiedName(dispatch, projectSlug)))
+    if (projectSlug) {
+      dispatch(getProjectDetails(projectSlug))
+    }
   }
 }
 

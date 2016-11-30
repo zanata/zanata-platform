@@ -85,7 +85,7 @@
     "redux-thunk": "1.0.3",
     "svg-sprite": "1.3.6",
     "webfontloader": "1.6.24",
-    "zanata-ui": "3.0.3"
+    "zanata-ui": "3.0.4"
   },
   "jest": {
     "unmockedModulePathPatterns": [

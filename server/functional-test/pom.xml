@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -1035,7 +1035,6 @@
             <home>${appserver.home}</home>
 
             <systemProperties>
-              <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
               <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
               <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
               <javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>

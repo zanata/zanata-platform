@@ -20,14 +20,22 @@
  */
 package org.zanata.config;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.security.AuthenticationType;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
 
 import static java.util.stream.Collectors.toSet;
 
@@ -37,8 +45,7 @@ import static java.util.stream.Collectors.toSet;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Named("systemPropertyConfigStore")
-@javax.enterprise.context.Dependent
+@Dependent
 public class SystemPropertyConfigStore implements ConfigStore {
 
     private static final String KEY_AUTH_POLICY =
@@ -49,6 +56,14 @@ public class SystemPropertyConfigStore implements ConfigStore {
             "zanata.email.defaultfromaddress";
     public static final String KEY_DOCUMENT_FILE_STORE =
             "zanata.file.directory";
+    private static final String KEY_HIBERNATE_SEARCH_INDEX_BASE =
+            "hibernate.search.default.indexBase";
+    private static final String KEY_JAVAMELODY_STORAGE_DIRECTORY =
+            "javamelody.storage-directory";
+
+    private static final Set<String> REQUIRED_PROP_KEYS = ImmutableSet
+            .of(KEY_DOCUMENT_FILE_STORE, KEY_JAVAMELODY_STORAGE_DIRECTORY,
+                    KEY_HIBERNATE_SEARCH_INDEX_BASE);
 
     /**
      * Server-wide switch to enable/disable OAuth support
@@ -114,6 +129,28 @@ public class SystemPropertyConfigStore implements ConfigStore {
         return System.getProperty(KEY_DOCUMENT_FILE_STORE);
     }
 
+    public String getHibernateSearchIndexBase() {
+        return System.getProperty(KEY_HIBERNATE_SEARCH_INDEX_BASE);
+    }
+
+    public Map<AuthenticationType, String> getLoginModuleNames() {
+        ImmutableMap.Builder<AuthenticationType, String> builder = ImmutableMap.builder();
+        for (String policyName : getEnabledAuthenticationPolicies()) {
+            try {
+                AuthenticationType authType =
+                        AuthenticationType.valueOf(policyName.toUpperCase());
+                builder.put(authType,
+                        getAuthPolicyName(policyName));
+            } catch (IllegalArgumentException e) {
+                log.error(
+                        "Attempted to configure an unrecognized authentication policy: " +
+                                policyName);
+                throw new RuntimeException(policyName + " is not a recognized authentication policy");
+            }
+        }
+        return builder.build();
+    }
+
     /**
      *
      * @return whether this server instance supports OAuth
@@ -121,5 +158,20 @@ public class SystemPropertyConfigStore implements ConfigStore {
     public boolean isOAuthEnabled() {
         return Boolean
                 .parseBoolean(System.getProperty(KEY_SUPPORT_OAUTH, "false"));
+    }
+
+    /**
+     *
+     * @return true if there are required system properties that are not defined
+     */
+    boolean hasMissingRequiredSystemProperties() {
+        boolean missing = false;
+        for (String requiredPropKey : REQUIRED_PROP_KEYS) {
+            if (Strings.isNullOrEmpty(get(requiredPropKey))) {
+                log.error("Missing system property: {}", requiredPropKey);
+                missing = true;
+            }
+        }
+        return missing;
     }
 }
