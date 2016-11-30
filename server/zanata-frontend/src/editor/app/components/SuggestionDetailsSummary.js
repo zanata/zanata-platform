@@ -4,7 +4,7 @@ import { Icon, Row } from 'zanata-ui'
 /**
  * Display metadata for suggestion source.
  */
-const SuggestionSourceDetails = React.createClass({
+const SuggestionDetailsSummary = React.createClass({
   propTypes: {
     suggestion: PropTypes.shape({
       matchDetails: PropTypes.arrayOf(PropTypes.shape({
@@ -83,4 +83,4 @@ const SuggestionSourceDetails = React.createClass({
   }
 })
 
-export default SuggestionSourceDetails
+export default SuggestionDetailsSummary
