@@ -952,7 +952,6 @@
   </profiles>
 
   <dependencies>
-
     <dependency>
       <groupId>io.javaslang</groupId>
       <artifactId>javaslang</artifactId>
@@ -1017,12 +1016,6 @@
     <dependency>
       <groupId>org.atteo.classindex</groupId>
       <artifactId>classindex</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.googlecode.totallylazy</groupId>
-      <artifactId>totallylazy</artifactId>
-      <version>1.10</version>
     </dependency>
 
     <!-- Zanata-specific dependencies -->

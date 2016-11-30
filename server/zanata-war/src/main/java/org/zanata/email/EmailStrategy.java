@@ -23,7 +23,7 @@ package org.zanata.email;
 import javax.mail.internet.InternetAddress;
 
 import com.google.common.base.Optional;
-import com.googlecode.totallylazy.collections.PersistentMap;
+import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 
 /**
@@ -70,10 +70,10 @@ public abstract class EmailStrategy {
      * @param genericContext
      * @param toAddresses
      */
-    public PersistentMap<String, Object> makeContext(
-            PersistentMap<String, Object> genericContext,
+    public Map<String, Object> makeContext(
+            Map<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        return genericContext.insert("body", getBodyResourceName());
+        return genericContext.put("body", getBodyResourceName());
     }
 
 }

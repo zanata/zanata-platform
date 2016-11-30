@@ -1676,17 +1676,6 @@
         <enabled>false</enabled>
       </snapshots>
     </repository>
-    <!-- Needed for totallylazy -->
-    <repository>
-      <id>repo.bodar.com</id>
-      <url>http://repo.bodar.com</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
     <!-- Needed for GWT snapshots -->
     <repository>
       <id>google-maven-snapshot-repository</id>
@@ -1833,7 +1822,6 @@
               <allowedRepositories combine.children="append">
                 <allowedRepository>jboss-public-repository-group</allowedRepository>
                 <allowedRepository>okapi-cloudbees-release</allowedRepository>
-                <allowedRepository>repo.bodar.com</allowedRepository>
                 <allowedRepository>google-maven-snapshot-repository</allowedRepository>
               </allowedRepositories>
               <allowedPluginRepositories combine.children="append">
