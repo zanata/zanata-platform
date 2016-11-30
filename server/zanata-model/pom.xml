@@ -182,7 +182,7 @@
 
     <dependency>
       <groupId>org.zanata</groupId>
-      <artifactId>zanata-security</artifactId>
+      <artifactId>security-common</artifactId>
     </dependency>
 
     <dependency>

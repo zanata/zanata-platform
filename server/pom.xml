@@ -785,7 +785,7 @@
       </dependency>
       <dependency>
         <groupId>org.zanata</groupId>
-        <artifactId>zanata-security</artifactId>
+        <artifactId>security-common</artifactId>
         <version>${project.version}</version>
       </dependency>
 
@@ -2258,6 +2258,6 @@
     <module>functional-test</module>
     <!-- <module>zanata-dist</module> -->
     <module>gwt-editor</module>
-    <module>zanata-security</module>
+    <module>security-common</module>
   </modules>
 </project>

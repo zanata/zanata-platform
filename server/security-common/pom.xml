@@ -7,17 +7,10 @@
     <artifactId>server</artifactId>
     <version>4.1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>zanata-security</artifactId>
-  <name>zanata-security</name>
+  <artifactId>security-common</artifactId>
+  <name>security-common</name>
   <packaging>takari-jar</packaging>
 
-  <!-- Should be the same as zanata-server/pom.xml -->
-  <scm>
-    <connection>scm:git:git://github.com/zanata/zanata.git</connection>
-    <developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
-    <url>https://github.com/zanata/zanata</url>
-    <tag>HEAD</tag>
-  </scm>
   <properties>
   </properties>
   <dependencies>
