@@ -7,8 +7,6 @@
 # Options are subject to change without notice.
 
 # TODO list:
-# - new option (or -f?) to run individual functional test by name
-# - new option to run cargo:run (to allow IDE to run some functional tests)
 # - xvfb-run, and new option -X to turn off
 # - allocate-jboss-ports, and new option -p to turn off
 # - new option (-r? -d?) to package server and run docker/rundev.sh
@@ -90,8 +88,9 @@ Server options:
         -f 9 enable all functional tests
     --verify                equivalent to -a -f 1
     --verify-all            equivalent to -a -f 9
-    --eap                   (-Dappserver=jbosseap6)
-    --wildfly               (-Dappserver=wildfly8)
+    -E, --eap               (-Dappserver=jbosseap6, requires EAP7_URL env var)
+    -W, --wildfly           (-Dappserver=wildfly8)
+    -w, --wait              quick-build, install Zanata then wait for IDE to run functional tests
 EOF
 }
 
@@ -116,7 +115,7 @@ fi
 # -long-arg=arg puts any --long-arg params into the array arg also
 
 # NB: please keep help() and zparseopts in sync!
-zparseopts -D -K -- \
+zparseopts -E -D -K -- \
   -client=client \
   -server=server \
   -all=all \
@@ -142,8 +141,9 @@ zparseopts -D -K -- \
   f:=funcTests -functional-tests=funcTests \
   -verify=verify \
   -verify-all=verifyAll \
-  -eap=eap \
-  -wildfly=wildfly \
+  E=eap -eap=eap \
+  W=wildfly -wildfly=wildfly \
+  w=wait -wait=wait \
 # don't remove this comment: note the line continuation above (\)
 
 #############################################
@@ -178,15 +178,15 @@ if (( $+all || (( $+client && $+server )) )); then
   targetopts=all
 elif (( $+client )); then
   targetopts=client
-elif (( $+server )); then
+elif (( $+server || $+wait )); then
   targetopts=server
 fi
 
 if (( $+targetopts )); then
   if [[ $targetopts == 'client' ]]; then
-    targets=(-pl :zanata-maven-client,:zanata-cli${skipProjects} -am)
+    targets=(-pl :zanata-maven-plugin,:zanata-cli${skipProjects} -am)
   elif [[ $targetopts == 'server' ]]; then
-    targets=(-pl :zanata-war${skipProjects} -am)
+    targets=(-pl :zanata-test-war${skipProjects} -am)
   elif (( $+skipProjects )) ; then
     targets=(-pl "${skipProjects}" -am)
   else
@@ -210,17 +210,20 @@ if (( $+clean )); then
 else
   goals=()
 fi
-if (( $+skipPackage )); then
+
+# In the default Maven lifecycle:
+# - 'install' includes 'verify'
+# - 'verify' includes 'package'
+# - 'package' includes 'test'
+
+if (( $+install || $+wait )); then
+  goals+=(install)
+elif (( $+verify || $+verifyAll || $+arqTests || $+funcTests )); then
+  goals+=(verify)
+elif (( $+skipPackage )); then
   goals+=(test)
 else
   goals+=(package)
-fi
-
-if (( $+verify || $+verifyAll || $+arqTests || $+funcTests )); then
-  goals+=(verify)
-fi
-if (( $+install )); then
-  goals+=(install)
 fi
 
 echo goals: $goals
@@ -237,7 +240,7 @@ if (( $+arqTests || $+verify || $+verifyAll )); then
 else
   skipArq=-DskipArqTests
 fi
-if (( $+funcTests || $+verify || $+verifyAll )); then
+if (( $+funcTests || $+wait || $+verify || $+verifyAll )); then
   skipFunc=''
 else
   skipFunc=-DskipFuncTests
@@ -245,11 +248,22 @@ fi
 
 mvnopts=($skipArq $skipFunc)
 
-if (( $+verifyAll || funcTests[2] == 9 )); then
+if (( $+funcTests )); then
+  if (( funcTests[2] == 9 )); then
+    mvnopts+=(-DallFuncTests)
+  elif (( funcTests[2] == 1 )); then
+    # do nothing, 'verify' goal is added elsewhere
+  else
+    die "-f only accepts 1 or 9 (for now)"
+  fi
+elif (( $+verifyAll )); then
   mvnopts+=(-DallFuncTests)
 fi
+
 if (( $+quick )); then
   mvnopts+=(-DskipTests -DskipArqTests -DskipFuncTests)
+elif (( $+wait )); then
+  mvnopts+=(-DskipTests)
 fi
 
 if (( $+quiet )); then
@@ -278,8 +292,9 @@ if (( $+skipNpmInstall )); then
 fi
 if (( $+eap )); then
   mvnopts+=(-Dappserver=jbosseap6)
-fi
-if (( $+wildfly )); then
+else # default to wildfly
+#fi
+#if (( $+wildfly )); then
   mvnopts+=(-Dappserver=wildfly8)
 fi
 
@@ -306,8 +321,28 @@ fi
 
 
 #############################################
+# cargo:run (for --wait)
+#############################################
+
+unset cargocommandline
+if (($+wait)); then
+  unset cargogoals
+  if (($+clean)); then
+    cargogoals=(clean)
+  fi
+  # we include `package` to trigger lifecycle bindings, eg start mysql
+  cargogoals+=(package cargo:run)
+  cargocommandline="$mvn $cargogoals $mvnopts -Dmysql.port=13306 -pl :functional-test $@"
+fi
+
+#############################################
+
+
+#############################################
 # build command line and run commands
 #############################################
+
+echo "leftovers (passing to Maven): $@"
 
 commandline="$mvn $goals $targets $mvnopts $@"
 
@@ -316,6 +351,9 @@ if (( $+dryRun )); then
     echo '[dry-run]' "$precommandline"
   fi
   echo '[dry-run]' "$commandline"
+  if (( $+wait )); then
+    echo '[dry-run]' "$cargocommandline"
+  fi
 else
   if (( $+precommandline )); then
     echo '[exec]' "$precommandline"
@@ -323,6 +361,10 @@ else
   fi
   echo '[exec]' "$commandline"
   sh -c "$commandline"
+  if (( $+wait )); then
+    echo '[exec]' "$cargocommandline"
+    sh -c "$cargocommandline"
+  fi
 fi
 
 #############################################
