@@ -131,15 +131,6 @@ public class ZanataRestSecurityInterceptorTest {
     }
 
     @Test
-    public void canAccessOAuthTokenAPIAnonymously() throws Exception {
-        when(uriInfo.getPath()).thenReturn("/oauth/token");
-
-        securityInterceptor.filter(context);
-
-        verify(context, never()).abortWith(any(Response.class));
-    }
-
-    @Test
     public void willAbortIfAuthorizationCodeIsInvalid() throws Exception {
         when(request.getParameter(OAuth.OAUTH_CODE)).thenReturn("invalidAuthCode");
         when(securityTokens.findUsernameForAuthorizationCode("invalidAuthCode")).thenReturn(

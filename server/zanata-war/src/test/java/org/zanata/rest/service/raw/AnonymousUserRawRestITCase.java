@@ -109,6 +109,21 @@ public class AnonymousUserRawRestITCase extends RestTest {
     @Test
     @RunAsClient
     public void doGETProjectsWithAnonymousWhenSystemDisallowIt() throws Exception {
+        // update system configuration to allow anonymous user
+        new ResourceRequest(
+                getRestEndpointUrl("/configurations/c/allow.anonymous.user"),
+                "PUT", getAuthorizedEnvironment()) {
+
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(MediaType.APPLICATION_JSON_TYPE, "false");
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), greaterThan(200));
+            }
+        }.run();
         new ResourceRequest(getRestEndpointUrl("/projects"), "GET") {
             @Override
             protected void prepareRequest(ClientRequest request) {

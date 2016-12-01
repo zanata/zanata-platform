@@ -122,7 +122,7 @@ public class ServerConfigurationBean implements Serializable {
 
     @Getter
     @Setter
-    private boolean allowAnonymousUser;
+    private boolean allowAnonymousUser = true;
     private PropertyWithKey<Boolean> allowAnonymousUserProperty = new PropertyWithKey<Boolean>("allowAnonymousUser", KEY_ALLOW_ANONYMOUS_USER);
 
     @Getter

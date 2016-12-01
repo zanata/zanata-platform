@@ -1,6 +1,7 @@
 package org.zanata.util;
 
 import static org.zanata.model.HAccountRole.RoleType.MANUAL;
+import static org.zanata.model.HApplicationConfiguration.KEY_ALLOW_ANONYMOUS_USER;
 
 import java.util.List;
 
@@ -27,9 +28,11 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountRoleDAO;
+import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
+import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.HLocale;
 
 /**
@@ -58,17 +61,23 @@ public class EssentialDataCreator {
     @Inject
     private LocaleDAO localeDAO;
 
+    @Inject
+    private ApplicationConfigurationDAO applicationConfigurationDAO;
+
     public EssentialDataCreator() {
     }
 
     @VisibleForTesting
     protected EssentialDataCreator(
             ApplicationConfiguration applicationConfiguration,
-            AccountDAO accountDAO, AccountRoleDAO accountRoleDAO, LocaleDAO localeDAO) {
+            AccountDAO accountDAO, AccountRoleDAO accountRoleDAO,
+            LocaleDAO localeDAO,
+            ApplicationConfigurationDAO applicationConfigurationDAO) {
         this.applicationConfiguration = applicationConfiguration;
         this.accountDAO = accountDAO;
         this.accountRoleDAO = accountRoleDAO;
         this.localeDAO = localeDAO;
+        this.applicationConfigurationDAO = applicationConfigurationDAO;
     }
 
     // Do it when the application starts (but after everything else has been
@@ -124,15 +133,24 @@ public class EssentialDataCreator {
                 log.warn("No admin users found. Admin users can be enabled via system property: zanata.security.adminusers");
             }
 
+            boolean isNewInstance = false;
+
             // Enable en-US by default
             LocaleId localeId = new LocaleId("en-US");
             if (localeDAO.findByLocaleId(localeId) == null) {
+                isNewInstance = true;
                 HLocale en_US = new HLocale(localeId);
                 en_US.setActive(true);
                 en_US.setEnabledByDefault(false);
                 if (localeDAO.makePersistent(en_US) == null) {
                     throw new RuntimeException("Could not create 'en-US' locale");
                 }
+            }
+
+            if (isNewInstance) {
+                // for new instance, we want to disable anonymous access by default
+                applicationConfigurationDAO.makePersistent(new HApplicationConfiguration(
+                        KEY_ALLOW_ANONYMOUS_USER, "false"));
             }
 
             prepared = true;
