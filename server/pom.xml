@@ -783,6 +783,11 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>security-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
 
       <!-- zanata client -->
       <dependency>
@@ -2253,5 +2258,6 @@
     <module>functional-test</module>
     <!-- <module>zanata-dist</module> -->
     <module>gwt-editor</module>
+    <module>security-common</module>
   </modules>
 </project>
