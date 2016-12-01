@@ -50,7 +50,7 @@ const items = [
   {
     small: true,
     icon: 'dashboard',
-    link: '/dashboard',
+    link: '/dashboard' + dswid,
     title: 'Dashboard',
     auth: 'loggedin',
     id: 'nav_dashboard'
@@ -82,21 +82,21 @@ const items = [
   },
   {
     icon: 'settings',
-    link: '/dashboard/settings',
+    link: '/dashboard/settings' + dswid,
     title: 'Settings',
     auth: 'loggedin',
     id: 'nav_settings'
   },
   {
     icon: 'admin',
-    link: '/admin/home',
+    link: '/admin/home' + dswid,
     title: 'Admin',
     auth: 'admin',
     id: 'nav_admin'
   },
   {
     icon: 'logout',
-    link: '/account/sign_out',
+    link: '/account/sign_out' + dswid,
     title: 'Log Out',
     auth: 'loggedin',
     id: 'nav_logout'
@@ -104,7 +104,7 @@ const items = [
   {
     small: true,
     icon: 'ellipsis',
-    link: '/info',
+    link: '/info' + dswid,
     title: 'More',
     auth: 'public',
     id: 'nav_more'
@@ -166,7 +166,19 @@ const Nav = ({
           }
 
           const useHref = isJsfPage || !item.internalLink
-          const isActive = active.includes(link)
+          let linkWithoutDswid = link.replace(dswid, '')
+
+          /**
+           * TODO: remove this check, need better handling of
+           * selected page for side navigation
+           * 
+           * This is to handle profile page selection as url
+           * in server will be rewritten with /profile/username
+           */
+          if (linkWithoutDswid === '/profile' && username) {
+            linkWithoutDswid += '/view/' + username
+          }
+          const isActive = active === linkWithoutDswid
           return <NavItem key={itemId}
             loading={loading}
             id={item.id}
