@@ -34,10 +34,19 @@ mvn=$ROOT/mvnw
 # utility function(s)
 #############################################
 
-die() {
+# exit abnormally with an error message
+function die() {
   echo ERROR: "$@"
   exit 1
 }
+
+function shouldRunArqTests() {
+  return $(( !($+arqTests || $+full || $+verify || $+verifyAll) ))
+}
+function shouldRunFuncTests() {
+  return $(( !($+funcTests || $+full || $+verify || $+verifyAll) ))
+}
+
 
 #############################################
 
@@ -174,11 +183,11 @@ if (( $+skipFrontend )); then
 fi
 
 unset targetopts
-if (( $+all || (( $+client && $+server )) )); then
+if (( $+all || (( $+client && $+server )) || $+wait )) || shouldRunFuncTests; then
   targetopts=all
 elif (( $+client )); then
   targetopts=client
-elif (( $+server || $+wait )); then
+elif (( $+server )); then
   targetopts=server
 fi
 
@@ -216,7 +225,7 @@ fi
 # - 'verify' includes 'package'
 # - 'package' includes 'test'
 
-if (( $+install || $+wait || $+full )); then
+if (( $+full || $+install || $+wait )); then
   goals+=(install)
 elif (( $+verify || $+verifyAll || $+arqTests || $+funcTests )); then
   goals+=(verify)
@@ -234,13 +243,6 @@ echo goals: $goals
 #############################################
 # set Maven properties
 #############################################
-
-function shouldRunArqTests() {
-  return $(( !($+arqTests || $+full || $+verify || $+verifyAll) ))
-}
-function shouldRunFuncTests() {
-  return $(( !($+funcTests || $+full || $+verify || $+verifyAll) ))
-}
 
 if shouldRunArqTests;  then skipArq='';  else skipArq=-DskipArqTests;   fi
 if shouldRunFuncTests; then skipFunc=''; else skipFunc=-DskipFuncTests; fi
@@ -331,7 +333,12 @@ if (($+wait)); then
   fi
   # we include `package` to trigger lifecycle bindings, eg start mysql
   cargogoals+=(package cargo:run)
-  cargocommandline="$mvn $cargogoals $mvnopts -Dmysql.port=13306 -pl :functional-test $@"
+
+  # copy mvnopts array without -DskipFuncTests
+  skipFuncOpt=(-DskipFuncTests)
+  cargoopts=${mvnopts:|skipFuncOpt}
+
+  cargocommandline="$mvn $cargogoals $cargoopts -Dmysql.port=13306 -pl :functional-test $@"
 fi
 
 #############################################
