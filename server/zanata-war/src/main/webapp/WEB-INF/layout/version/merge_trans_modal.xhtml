@@ -149,7 +149,6 @@
               styleClass="button button--primary" disabled="#{empty mergeTransAction.sourceVersions}"
               action="#{mergeTransAction.startMergeTranslations}"
               value="#{msgs['jsf.iteration.mergeTrans']}"/>
-
             <ui:fragment rendered="#{mergeTransAction.isCopyActionsRunning()}">
               <zanata:loader type="loader--small" layout="inline" jsHandle="true"
                 id="merge-trans-loader"/>
