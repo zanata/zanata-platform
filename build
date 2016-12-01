@@ -71,7 +71,7 @@ General options:
                     (-DskipUnitTests)
     -A, --analyse   checkstyle,findbugs,... (-DstaticAnalysis)
     -O, --optimise  enables JS/GWT optimisations (-Doptimise)
-    --full          equivalent to -O --analyse --verify-all; all possible tests and optimisations
+    --full          equivalent to -O --analyse --verify-all -i; all possible tests and optimisations
     -n, --dry-run   output the mvn command line, don't run it
     --              pass through remaining options to mvn command line
                     eg ./build.sh --server -Q -- -Dchrome
@@ -216,7 +216,7 @@ fi
 # - 'verify' includes 'package'
 # - 'package' includes 'test'
 
-if (( $+install || $+wait )); then
+if (( $+install || $+wait || $+full )); then
   goals+=(install)
 elif (( $+verify || $+verifyAll || $+arqTests || $+funcTests )); then
   goals+=(verify)
@@ -235,16 +235,15 @@ echo goals: $goals
 # set Maven properties
 #############################################
 
-if (( $+arqTests || $+verify || $+verifyAll )); then
-  skipArq=''
-else
-  skipArq=-DskipArqTests
-fi
-if (( $+funcTests || $+wait || $+verify || $+verifyAll )); then
-  skipFunc=''
-else
-  skipFunc=-DskipFuncTests
-fi
+function shouldRunArqTests() {
+  return $(( !($+arqTests || $+full || $+verify || $+verifyAll) ))
+}
+function shouldRunFuncTests() {
+  return $(( !($+funcTests || $+full || $+verify || $+verifyAll) ))
+}
+
+if shouldRunArqTests;  then skipArq='';  else skipArq=-DskipArqTests;   fi
+if shouldRunFuncTests; then skipFunc=''; else skipFunc=-DskipFuncTests; fi
 
 mvnopts=($skipArq $skipFunc)
 
@@ -256,7 +255,7 @@ if (( $+funcTests )); then
   else
     die "-f only accepts 1 or 9 (for now)"
   fi
-elif (( $+verifyAll )); then
+elif (( $+verifyAll || $+full )); then
   mvnopts+=(-DallFuncTests)
 fi
 
