@@ -282,7 +282,7 @@ const createGlossaryTerm = (dispatch, qualifiedName, term) => {
       type: GLOSSARY_CREATE_SUCCESS,
       payload: (action, state, res) => {
         return res.json().then((json) => {
-          dispatch(getGlossaryStats(dispatch, state.qualifiedName, true))
+          dispatch(getGlossaryStats(dispatch, qualifiedName, true))
           return json
         })
       }
@@ -316,7 +316,7 @@ const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
       payload: (action, state, res) => {
         return res.json().then((json) => {
           needRefresh &&
-            dispatch(getGlossaryStats(dispatch, state.qualifiedName, false))
+            dispatch(getGlossaryStats(dispatch, qualifiedName, false))
           return json
         })
       }
@@ -343,7 +343,8 @@ const deleteGlossaryTerm = (dispatch, id) => {
       type: GLOSSARY_DELETE_SUCCESS,
       payload: (action, state, res) => {
         return res.json().then((json) => {
-          dispatch(getGlossaryStats(dispatch, state.qualifiedName, true))
+          dispatch(getGlossaryStats(dispatch, state.glossary.qualifiedName,
+            true))
           return json
         })
       }
@@ -368,7 +369,7 @@ const deleteAllGlossaryEntry = (dispatch, qualifiedName) => {
     {
       type: GLOSSARY_DELETE_ALL_SUCCESS,
       payload: (action, state, res) => {
-        return dispatch(getGlossaryStats(dispatch, state.qualifiedName, true))
+        return dispatch(getGlossaryStats(dispatch, qualifiedName, true))
       }
     },
     GLOSSARY_DELETE_ALL_FAILURE
