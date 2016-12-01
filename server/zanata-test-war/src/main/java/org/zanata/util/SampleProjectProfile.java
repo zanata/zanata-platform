@@ -258,4 +258,14 @@ public class SampleProjectProfile {
 
     }
 
+    public void setAllowAnonymousUserConfig(boolean value) {
+        HApplicationConfiguration config = entityManager
+                .createQuery("from HApplicationConfiguration where key = :key",
+                        HApplicationConfiguration.class)
+                .setParameter("key",
+                        HApplicationConfiguration.KEY_ALLOW_ANONYMOUS_USER)
+                .getSingleResult();
+        config.setValue(Boolean.toString(value));
+        entityManager.persist(config);
+    }
 }

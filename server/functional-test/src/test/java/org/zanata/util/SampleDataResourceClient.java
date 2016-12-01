@@ -64,6 +64,10 @@ public class SampleDataResourceClient {
                 EMPTY_ENTITY);
     }
 
+    public static void allowAnonymousUser(boolean allow) {
+        createRequest("/allowAnonymousUser/" + allow).put(EMPTY_ENTITY);
+    }
+
     /**
      * @param username
      *            username to join language team

@@ -45,9 +45,6 @@ import com.googlecode.totallylazy.Either;
  * @see org.zanata.security.annotations.CheckRole
  * @see org.zanata.security.annotations.CheckLoggedIn
  */
-//@Provider
-//@PreMatching
-//@SecurityPrecedence
 public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     private static final Logger log =
             LoggerFactory.getLogger(ZanataRestSecurityInterceptor.class);

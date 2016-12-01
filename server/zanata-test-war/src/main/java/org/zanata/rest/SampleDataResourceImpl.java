@@ -140,6 +140,17 @@ public class SampleDataResourceImpl implements SampleDataResource {
     }
 
     @Override
+    public Response allowAnonymousUser(boolean value) {
+        new RunAsOperationForTest() {
+            @Override
+            public void execute() {
+                sampleProjectProfile.setAllowAnonymousUserConfig(value);
+            }
+        }.run();
+        return Response.ok().build();
+    }
+
+    @Override
     public Response dummyService(long timeInMillis,
             String qualifiedExceptionClass) throws Throwable {
         if (timeInMillis > 0) {

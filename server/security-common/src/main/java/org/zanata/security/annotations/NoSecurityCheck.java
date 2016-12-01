@@ -27,7 +27,14 @@ import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
+/**
+ * A marker annotation indicates a REST endpoint does not need to perform a
+ * security check (bypass ZanataRestSecurityInterceptor).
+ *
+ * @see "org.zanata.rest.ZanataRestSecurityBinder in zanata-war"
+ * @see "org.zanata.rest.ZanataRestSecurityInterceptor in zanata-war"
+ */
 @Retention(RUNTIME)
-@Target({METHOD, TYPE})
+@Target({ METHOD, TYPE })
 public @interface NoSecurityCheck {
 }

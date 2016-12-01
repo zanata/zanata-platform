@@ -11,6 +11,9 @@ import javax.ws.rs.ext.Provider;
 import org.zanata.security.annotations.NoSecurityCheck;
 
 /**
+ * This will based on {@code NoSecurityCheck} annotation and only apply security
+ * to endpoints that don't have that annotation.
+ *
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Provider
