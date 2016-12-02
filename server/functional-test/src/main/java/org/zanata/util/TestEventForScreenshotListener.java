@@ -82,6 +82,7 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
             File screenshotFile = new File(testIDDir, filename);
 
             Optional<Alert> alert = getAlert(driver);
+            BufferedImage capture;
             if (alert.isPresent()) {
                 log.error("ChromeDriver screenshot({}) prevented by browser " +
                         "alert. Attempting Robot screenshot instead. " +
@@ -95,18 +96,17 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
 
                 Rectangle captureRectangle = new Rectangle(pos.x, pos.y, size.width, size.height);
 //                Rectangle captureRectangle = getScreenRectangle();
-
-                BufferedImage capture = new Robot().createScreenCapture(
-                        captureRectangle);
-                if (!ImageIO.write(capture, "png", screenshotFile)) {
-                    log.error("png writer not found for screenshot");
-                }
+                capture = new Robot().createScreenCapture(captureRectangle);
             } else {
                 File tempFile =
                         ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-                FileUtils.moveFile(tempFile, screenshotFile);
+                capture = ImageIO.read(tempFile);
             }
-            log.info("Screenshot saved to file: {}", filename);
+            capture = stampOnImage(capture, driver.getCurrentUrl());
+            if (!ImageIO.write(capture, "png", screenshotFile)) {
+                log.error("png writer not found for screenshot");
+            }
+            log.info("Screenshot ({})saved to file: {}", driver.getCurrentUrl(), filename);
         } catch (WebDriverException e) {
             throw new RuntimeException("[Screenshot]: Invalid WebDriver: ", e);
         } catch (IOException e) {
@@ -117,6 +117,15 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
         } catch (AWTException e) {
             throw new RuntimeException("[Screenshot]: ", e);
         }
+    }
+
+    private BufferedImage stampOnImage(BufferedImage input, String textStamp) {
+        Graphics graphics = input.getGraphics();
+        graphics.setFont(new Font("TimesRoman", Font.PLAIN, 10));
+        graphics.setColor(new Color(0));
+        graphics.drawString(textStamp, 20, 20);
+        graphics.dispose();
+        return input;
     }
 
     private Rectangle getScreenRectangle() {
