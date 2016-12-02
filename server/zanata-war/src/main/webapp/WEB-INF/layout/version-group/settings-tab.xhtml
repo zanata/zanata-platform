@@ -192,7 +192,7 @@
             oncomplete="refreshStatistics();focusCurrentActiveInput();"
             placeholder="#{msgs['jsf.SearchProjects']}">
 
-            #{result.project.slug} <i class="i i--version"></i> <zanata:version-label version="#{result}"/>
+            <span>#{result.project.name}</span> <span class="txt--neutral">#{result.project.slug}</span> <i class="i i--version"></i> <zanata:version-label version="#{result}"/>
           </zanata:autocomplete>
         </li>
       </ul>
