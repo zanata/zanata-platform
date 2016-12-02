@@ -6,7 +6,6 @@ import Glossary from '../containers/Glossary'
 import Languages from '../containers/Languages'
 import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
-import { View } from '../components'
 
 export default class Root extends Component {
   render () {
@@ -17,19 +16,17 @@ export default class Root extends Component {
     } = this.props
     return (
       <Provider store={store}>
-        <View>
-          <Router history={history}>
-            <Route component={App} >
-              <Route path='explore' component={Explore} />
-              <Route path='glossary/project/:projectSlug'
-                component={Glossary} />
-              <Route path='glossary' component={Glossary} />
-              <Route path='languages' component={Languages} />
-              <Route path='profile/view/:username' component={UserProfile} />
-              <Redirect from='profile' to={`profile/view/${username}`} />
-            </Route>
-          </Router>
-        </View>
+        <Router history={history}>
+          <Route component={App} >
+            <Route path='explore' component={Explore} />
+            <Route path='glossary/project/:projectSlug'
+              component={Glossary} />
+            <Route path='glossary' component={Glossary} />
+            <Route path='languages' component={Languages} />
+            <Route path='profile/view/:username' component={UserProfile} />
+            <Redirect from='profile' to={`profile/view/${username}`} />
+          </Route>
+        </Router>
       </Provider>
     )
   }

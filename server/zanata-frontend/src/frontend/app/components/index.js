@@ -12,5 +12,3 @@ export LoaderText from './LoaderText'
 export LogoLoader from './LogoLoader'
 export Modal from './Modal'
 export Select from './Select'
-export View from './View'
-

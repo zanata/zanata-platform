@@ -5,7 +5,7 @@ import React, { PropTypes, Component } from 'react'
  */
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import { Nav, Icons, View } from '../components'
+import { Nav, Icons } from '../components'
 import { getContextPath } from '../utils/UrlHelper'
 
 /**
@@ -26,9 +26,8 @@ class App extends Component {
       '/login': window.config.links.loginUrl,
       '/signup': window.config.links.registerUrl
     }
-
     return (
-      <View>
+      <div className='view H(100vh) Fld(c) Fld(r)--sm'>
         <Icons />
         <Helmet
           title='Zanata'
@@ -36,7 +35,7 @@ class App extends Component {
         />
         <Nav active={activePath} links={links} loading={loading} />
         {children}
-      </View>
+      </div>
     )
   }
 }
