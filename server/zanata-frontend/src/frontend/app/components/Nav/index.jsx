@@ -171,7 +171,7 @@ const Nav = ({
           /**
            * TODO: remove this check, need better handling of
            * selected page for side navigation
-           * 
+           *
            * This is to handle profile page selection as url
            * in server will be rewritten with /profile/username
            */
