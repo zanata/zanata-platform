@@ -27,7 +27,7 @@ class App extends Component {
       '/signup': window.config.links.registerUrl
     }
     return (
-      <div className='view H(100vh) Fld(c) Fld(r)--sm'>
+      <div className='view H(100vh)! Fld(c) Fld(r)--sm'>
         <Icons />
         <Helmet
           title='Zanata'
