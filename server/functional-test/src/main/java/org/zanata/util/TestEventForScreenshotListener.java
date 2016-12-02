@@ -23,6 +23,7 @@ package org.zanata.util;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
@@ -82,6 +83,7 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
             File screenshotFile = new File(testIDDir, filename);
 
             Optional<Alert> alert = getAlert(driver);
+            BufferedImage capture;
             if (alert.isPresent()) {
                 log.error("ChromeDriver screenshot({}) prevented by browser " +
                         "alert. Attempting Robot screenshot instead. " +
@@ -95,18 +97,17 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
 
                 Rectangle captureRectangle = new Rectangle(pos.x, pos.y, size.width, size.height);
 //                Rectangle captureRectangle = getScreenRectangle();
-
-                BufferedImage capture = new Robot().createScreenCapture(
-                        captureRectangle);
-                if (!ImageIO.write(capture, "png", screenshotFile)) {
-                    log.error("png writer not found for screenshot");
-                }
+                capture = new Robot().createScreenCapture(captureRectangle);
             } else {
-                File tempFile =
-                        ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-                FileUtils.moveFile(tempFile, screenshotFile);
+                capture = ImageIO.read(new ByteArrayInputStream(
+                        ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
             }
-            log.info("Screenshot saved to file: {}", filename);
+            capture = addHeader(capture, driver.getCurrentUrl());
+            if (!ImageIO.write(capture, "png", screenshotFile)) {
+                log.error("png writer not found for screenshot {}", filename);
+            } else {
+                log.info("Screenshot ({})saved to file: {}", driver.getCurrentUrl(), filename);
+            }
         } catch (WebDriverException e) {
             throw new RuntimeException("[Screenshot]: Invalid WebDriver: ", e);
         } catch (IOException e) {
@@ -117,6 +118,20 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
         } catch (AWTException e) {
             throw new RuntimeException("[Screenshot]: ", e);
         }
+    }
+
+    private BufferedImage addHeader(BufferedImage input, String textStamp) {
+        BufferedImage newImg = new BufferedImage(input.getWidth(), input.getHeight() + 40, input.getType());
+        Graphics graphics = newImg.getGraphics();
+        graphics.setColor(new Color(255, 255, 255));
+        graphics.fillRect(0, 0, newImg.getWidth(), newImg.getHeight());
+        graphics.drawImage(input, 0, 40, null);
+        graphics.setFont(new Font("TimesRoman", Font.PLAIN, 12));
+        graphics.setColor(new Color(0));
+        graphics.drawLine(0, 40, newImg.getWidth(), 40);
+        graphics.drawString(textStamp, 20, 20);
+        graphics.dispose();
+        return newImg;
     }
 
     private Rectangle getScreenRectangle() {
