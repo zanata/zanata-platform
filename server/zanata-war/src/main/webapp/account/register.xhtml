@@ -32,8 +32,8 @@
       <div
         class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-small'}">
         <div class="l--push-v-2">
-          <a4j:outputPanel ajaxRendered="true" layout="block">
-            <h:messages id="messages" globalOnly="true"
+          <a4j:outputPanel ajaxRendered="true" layout="block" id="messages">
+            <h:messages globalOnly="true"
               styleClass="list--no-bullets"
               errorClass="message--danger app-error l--push-bottom-half"
               infoClass="message--highlight l--push-bottom-half"
@@ -105,7 +105,7 @@
                 </ui:fragment>
 
                 <div class="l--push-top-1">
-                  <h:commandButton value="Sign Up" action="#{register.register}"
+                  <h:commandButton value="#{msgs['jsf.Signup']}" action="#{register.register}"
                     styleClass="button--primary button--full"/>
 
                   <div
