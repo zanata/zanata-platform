@@ -5,8 +5,7 @@ import React, { PropTypes, Component } from 'react'
  */
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import { View } from 'zanata-ui'
-import { Nav, Icons } from '../components'
+import { Nav, Icons, View } from '../components'
 import { getContextPath } from '../utils/UrlHelper'
 
 /**
@@ -16,17 +15,10 @@ import { getContextPath } from '../utils/UrlHelper'
 
 class App extends Component {
   render () {
-    const theme = {
-      base: {
-        h: 'H(100vh)',
-        fld: 'Fld(c) Fld(r)--sm'
-      }
-    }
     const {
       children,
       activePath,
-      loading,
-      ...props
+      loading
     } = this.props
 
     const links = {
@@ -36,7 +28,7 @@ class App extends Component {
     }
 
     return (
-      <View {...props} theme={theme}>
+      <View>
         <Icons />
         <Helmet
           title='Zanata'

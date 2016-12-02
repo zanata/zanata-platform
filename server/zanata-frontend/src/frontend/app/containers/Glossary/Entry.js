@@ -167,7 +167,6 @@ class Entry extends Component {
                   handleTermFieldUpdate(field, e)}
                 handleUpdateTerm={(entry) =>
                   handleUpdateTerm(entry, false)} />
-<<<<<<< HEAD
                 {updateButton}
               <div
                 className='Op(0) row--selected_Op(1) editable:h_Op(1) Trs(eo)'>
@@ -177,19 +176,6 @@ class Entry extends Component {
                     Cancel
                   </Button>
                 ) : ''}
-=======
-              <div className='Op(0) row--selected_Op(1)
-                editable:h_Op(1) Trs(eo)'>
-                <div className='Hidden--lesm D(ib)'>
-                  {updateButton}
-                  {displayUpdateButton && !isSaving ? (
-                    <ButtonLink
-                      onClick={() => handleResetTerm(entry.id)}>
-                      Cancel
-                    </ButtonLink>
-                  ) : ''}
-                </div>
->>>>>>> origin/master
                 {!transSelected && permission.canDeleteEntry && !isSaving &&
                 !displayUpdateButton && (
                   <DeleteEntryModal entry={entry}

@@ -71,9 +71,6 @@ html {
   padding-left: 10px;
 }
 
-
-
-
 body {
   margin: 0;
   line-height: @line-height-base;
@@ -83,9 +80,17 @@ body {
   line-height:1.5em;
 }
 
+.view {
+  width:100%;
+  height:100%;
+}
+
 .page {
-  width: 100%;
   overflow: hidden;
+}
+
+#nav {
+  height:initial;
 }
 
 .searchViewTheme {
@@ -105,6 +110,7 @@ body {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   max-width:48em;
+  width:inherit;
   margin-left: auto;
   margin-right: auto;
   padding-left: 1em;
@@ -4987,6 +4993,25 @@ button.btn-link {
 .getinvolved .btn-primary:focus,
 .getinvolved .btn-primary:hover {
   background-color: @brand-primary;
+}
+
+@media (max-width: 29.375rem) {
+  .view {
+    flex-direction:column;
+    display:inline-flex;
+  }
+  .page {
+    flex:1;
+  }
+}
+
+@media (min-width: 29.376rem) {
+  .view {
+    align-items: flex-start;
+    flex-direction:column;
+    display:-webkit-box;
+    flex-shrink: 0;
+  }
 }
 
 @media (min-width: @screen-sm-min) {

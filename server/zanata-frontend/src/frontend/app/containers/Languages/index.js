@@ -53,7 +53,7 @@ class Languages extends Component {
       (totalCount % size > 0 ? 1 : 0)
 
     return (
-      <div className='page'>
+      <div className='page scrollViewTheme'>
         {notification &&
         (<Notification severity={notification.severity}
           message={notification.message}
@@ -62,7 +62,7 @@ class Languages extends Component {
         )
         }
         <Helmet title='Languages' />
-        <div className='scrollViewTheme center-block
+        <div className='center-block
           contentViewContainer'>
           <div className='clearfix'
             id='languages-form'>

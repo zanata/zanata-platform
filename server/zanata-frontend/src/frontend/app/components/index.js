@@ -1,4 +1,3 @@
-export Button from './Button'
 export Nav from './Nav'
 export NavItem from './Nav/NavItem'
 export NavIcon from './Nav/NavIcon'
@@ -13,4 +12,5 @@ export LoaderText from './LoaderText'
 export LogoLoader from './LogoLoader'
 export Modal from './Modal'
 export Select from './Select'
+export View from './View'
 
