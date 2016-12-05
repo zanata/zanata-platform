@@ -90,10 +90,6 @@ body {
   overflow: hidden;
 }
 
-#nav {
-  height:initial;
-}
-
 .searchViewTheme {
   align-items: center;
   color: rgb(84, 102, 122);
@@ -535,6 +531,7 @@ a:focus {
 }
 
 #nav {
+  height:initial;
   a:active {
     outline: 0;
     filter: brightness(1.0);
@@ -5004,6 +5001,9 @@ button.btn-link {
   .page {
     flex:1;
   }
+  #nav {
+    height:initial;
+  }
 }
 
 @media (min-width: 29.376rem) {
@@ -5012,6 +5012,11 @@ button.btn-link {
     flex-direction:row;
     flex-shrink: 0;
   }
+
+  #nav {
+    min-height:100%;
+  }
+
 }
 
 @media (min-width: @screen-sm-min) {
