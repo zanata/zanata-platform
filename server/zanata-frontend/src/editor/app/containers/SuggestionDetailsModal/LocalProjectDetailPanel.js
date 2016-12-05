@@ -98,14 +98,16 @@ class LocalProjectDetailPanel extends Component {
          now as a shortcut. */}
         {header}
         <ListGroup>
-          <ListGroupItem className="small" header="Source">
+          <ListGroupItem className="small">
+            <h4 className="list-group-item-heading">Source</h4>
             <h3>{source}</h3>
             <ListGroupItem className="comment-box"><h4>Comments
               &nbsp;<Badge>{sourceComment ? 1 : 0}</Badge></h4>
               {sourceComment}
             </ListGroupItem>
           </ListGroupItem>
-          <ListGroupItem className="small" header="Target">
+          <ListGroupItem className="small">
+            <h4 className="list-group-item-heading">Target</h4>
             <h3>{target}{/* <Label bsStyle="success">Translated
             </Label>*/}</h3>
             <SuggestionUpdateMessage
