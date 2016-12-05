@@ -28,6 +28,7 @@ import java.util.List;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
+import javax.faces.event.ValueChangeEvent;
 import javax.validation.constraints.Pattern;
 
 import lombok.Data;
@@ -120,6 +121,7 @@ public class ServerConfigurationBean implements Serializable {
     private boolean displayUserEmail;
     private PropertyWithKey<Boolean> displayUserEmailProperty = new PropertyWithKey<Boolean>("displayUserEmail", KEY_DISPLAY_USER_EMAIL);
 
+    @EmailList
     @Getter
     @Setter
     private String logDestinationEmails;
