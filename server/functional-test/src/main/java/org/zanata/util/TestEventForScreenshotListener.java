@@ -75,7 +75,7 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
         try {
             testIDDir = ScreenshotDirForTest.screenshotForTest(testId);
             if (!testIDDir.exists()) {
-                log.info("Creating screenshot dir {}", testIDDir.getAbsolutePath());
+                log.info("[Screenshot]: Creating screenshot dir {}", testIDDir.getAbsolutePath());
                 testIDDir.mkdirs();
                 assert testIDDir.isDirectory();
             }
@@ -85,28 +85,25 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
             Optional<Alert> alert = getAlert(driver);
             BufferedImage capture;
             if (alert.isPresent()) {
-                log.error("ChromeDriver screenshot({}) prevented by browser " +
+                log.error("[Screenshot]: ChromeDriver screenshot({}) prevented by browser " +
                         "alert. Attempting Robot screenshot instead. " +
                         "Alert text: {}",
                         testId, alert.get().getText());
 
-                // warning: beta API: if it breaks, you can always use getScreenRectangle()
-                WebDriver.Window window = driver.manage().window();
-                Point pos = window.getPosition();
-                Dimension size = window.getSize();
-
-                Rectangle captureRectangle = new Rectangle(pos.x, pos.y, size.width, size.height);
-//                Rectangle captureRectangle = getScreenRectangle();
+                // Warning: beta API: if it breaks, try getScreenRectangle()
+                Rectangle captureRectangle = getWindowRectangle();
+                // Rectangle captureRectangle = getScreenRectangle();
                 capture = new Robot().createScreenCapture(captureRectangle);
             } else {
                 capture = ImageIO.read(new ByteArrayInputStream(
                         ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES)));
             }
-            capture = addHeader(capture, driver.getCurrentUrl());
-            if (!ImageIO.write(capture, "png", screenshotFile)) {
-                log.error("png writer not found for screenshot {}", filename);
+
+            BufferedImage captureWithHeader = addHeader(capture, driver.getCurrentUrl());
+            if (!ImageIO.write(captureWithHeader, "png", screenshotFile)) {
+                log.error("[Screenshot]: PNG writer not found for {}", filename);
             } else {
-                log.info("Screenshot ({})saved to file: {}", driver.getCurrentUrl(), filename);
+                log.info("[Screenshot]: ({})saved to file: {}", driver.getCurrentUrl(), filename);
             }
         } catch (WebDriverException e) {
             throw new RuntimeException("[Screenshot]: Invalid WebDriver: ", e);
@@ -120,6 +117,9 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
         }
     }
 
+    /*
+     * Create a header above the given image, containing the given text
+     */
     private BufferedImage addHeader(BufferedImage input, String textStamp) {
         BufferedImage newImg = new BufferedImage(input.getWidth(), input.getHeight() + 40, input.getType());
         Graphics graphics = newImg.getGraphics();
@@ -134,6 +134,16 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
         return newImg;
     }
 
+    // Get the capture dimensions using WebDriver.Window (beta)
+    private Rectangle getWindowRectangle() {
+        WebDriver.Window window = driver.manage().window();
+        Point pos = window.getPosition();
+        Dimension size = window.getSize();
+        return new Rectangle(pos.x, pos.y, size.width, size.height);
+    }
+
+    // Get the capture dimensions using GraphicsEnvironment
+    @SuppressWarnings("unused")
     private Rectangle getScreenRectangle() {
         // http://stackoverflow.com/a/13380999/14379
         Rectangle2D result = new Rectangle2D.Double();
@@ -177,7 +187,7 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
     @Override
     public void onException(Throwable throwable, WebDriver driver) {
         if (handlingException) {
-            log.error("skipping screenshot for exception in exception handler", throwable);
+            log.error("[Screenshot]: Skipping screenshot for exception in exception handler", throwable);
             return;
         }
         handlingException = true;
@@ -186,11 +196,12 @@ public class TestEventForScreenshotListener extends AbstractWebDriverEventListen
             // try to let the browser recover for the next test
             Optional<Alert> alert = getAlert(driver);
             if (alert.isPresent()) {
-                log.error("dismissing unexpected alert with text: ", alert.get().getText());
+                log.error("[Screenshot]: dismissing unexpected alert with text: ",
+                        alert.get().getText());
                 alert.get().dismiss();
             }
         } catch (Throwable screenshotThrowable) {
-            log.error("unable to create exception screenshot", screenshotThrowable);
+            log.error("[Screenshot]: Unable to create exception screenshot", screenshotThrowable);
         } finally {
             handlingException = false;
         }
