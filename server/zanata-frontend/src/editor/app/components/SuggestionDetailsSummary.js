@@ -42,7 +42,7 @@ const SuggestionDetailsSummary = React.createClass({
     )
 
     const documentPath = topMatch.documentPath
-      ? topMatch.documentPath + '/'
+      ? topMatch.documentPath
       : ''
     const documentIcon = isTextFlow && (
       <li title={documentPath + topMatch.documentName}>
