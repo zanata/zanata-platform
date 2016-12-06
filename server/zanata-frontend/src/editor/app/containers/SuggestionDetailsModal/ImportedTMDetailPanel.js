@@ -61,7 +61,7 @@ class ImportedTMDetailPanel extends Component {
                   }} /> {transMemorySlug}
               </Row>
             </li>
-            <Label style={{'backgroundColor': '#20718a'}}>Imported</Label>
+            <Label bsStyle="info">Imported</Label>
           </ul>
         </div>
         <ul>
