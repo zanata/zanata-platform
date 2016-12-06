@@ -7,7 +7,7 @@ import React, { Component, PropTypes } from 'react'
 import { Icon, Row } from 'zanata-ui'
 import { Panel, Label } from 'react-bootstrap'
 import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'
-import { matchType } from '../../utils/suggestion-util'
+import { matchType, MATCH_TYPE } from '../../utils/suggestion-util'
 
 class LocalProjectDetailPanel extends Component {
 
@@ -37,6 +37,17 @@ class LocalProjectDetailPanel extends Component {
     )
   }
 
+  stateLabel (matchDetail) {
+    switch (matchType(matchDetail)) {
+      case MATCH_TYPE.TRANSLATED:
+        return <Label bsStyle="success">Translated</Label>
+      case MATCH_TYPE.APPROVED:
+        return <Label bsStyle="info">Approved</Label>
+      default:
+        console.error('unrecognised match type')
+    }
+  }
+
   matchProperties (matchDetail) {
     const {
       documentName,
@@ -48,24 +59,6 @@ class LocalProjectDetailPanel extends Component {
     // FIXME example has document name shortened with an ellipsis in the middle
     //       when it is wider than the available space.
     const fullDocName = this.fullDocName(documentPath, documentName)
-
-    // FIXME use standard styles when they are available
-    // these values are based on variables in TransUnit/index.css but are
-    // somehow transformed when the CSS is compiled, so values are taken from
-    // the bundle file.
-    const styleByMatchType = {
-      // --TransUnit-color-success
-      translated: {'backgroundColor': '#5cca7b'},
-      // --TransUnit-color-highlight
-      approved: {'backgroundColor': '#03a6d7'}
-    }
-
-    const labelTextByMatchType = {
-      translated: 'Translated',
-      approved: 'Approved'
-    }
-
-    const currentMatchType = matchType(matchDetail)
 
     return (
       <div className="transUnit-details">
@@ -86,8 +79,7 @@ class LocalProjectDetailPanel extends Component {
             </Row>
           </li>
           <li>
-            <Label style={styleByMatchType[currentMatchType]}>
-              {labelTextByMatchType[currentMatchType]}</Label>
+            {this.stateLabel(matchDetail)}
           </li>
         </ul>
       </div>
