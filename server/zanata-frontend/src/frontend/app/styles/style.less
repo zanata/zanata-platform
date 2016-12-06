@@ -101,6 +101,20 @@ body {
   margin-left: @margin-left;
 }
 
+
+.wideViewTheme {
+  align-items: center;
+  overflow: hidden;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  max-width:90%;
+  width:inherit;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: @padding-base-em;
+  padding-right: @padding-base-em;
+}
+
 .scrollViewTheme {
   align-items: center;
   overflow: hidden;
@@ -146,6 +160,7 @@ body {
   width: 100%;
 }
 
+
 .textStateClasses.textInput {
   align-items: center;
   background-color: #fff;
@@ -160,6 +175,17 @@ body {
   height: 2.25rem;
   padding: @padding-text-small @padding-text-large;
   width: 100%;
+}
+
+input.textInput {
+  align-items: center;
+  border: solid 2px transparent;
+  cursor: text;
+  background-color: #fff;
+  height: 2.25rem;
+  padding: @padding-text-small @padding-text-large;
+  width: 100%;
+  border-radius: @border-radius-small;
 }
 
 #ddllist1,
@@ -4991,8 +5017,8 @@ button.btn-link {
 }
 
 .textInput:focus {
-  border-color: @brand-secondary;
-  outline: auto 5px @brand-secondary;
+  border: solid 3px @brand-secondary;
+  outline: none;
 }
 
 .getinvolved .btn-primary {
@@ -5364,6 +5390,10 @@ button.btn-link {
 @media (max-width: @screen-sm-max) {
   .searchViewTheme span svg {
     font-size: 1.4em;
+  }
+
+  .wideViewTheme {
+    max-width:100%;
   }
 
   #profile-matrix {

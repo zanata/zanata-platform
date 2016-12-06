@@ -78,7 +78,7 @@ class Entry extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
-      <Button bsStyle='primary' atomic={{m: 'Mend(rh)'}}
+      <Button bsStyle='primary'
         type='primary'
         disabled={isSaving}
         onClick={() => handleUpdateTerm(entry, transSelected)}>
@@ -123,7 +123,7 @@ class Entry extends Component {
             ? loadingDiv
             : (<EditableText
               title={entry.srcTerm.content}
-              editable={false}
+              editable={true}
               editing={selected}>
               {entry.srcTerm.content}
             </EditableText>)

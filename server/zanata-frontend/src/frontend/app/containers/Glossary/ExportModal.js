@@ -69,7 +69,6 @@ class ExportModal extends Component {
         <Modal.Footer>
           <ButtonGroup className='pull-right'>
             <Button bsStyle='link'
-              atomic={{m: 'Mend(r1)'}}
               disabled={isExporting}
               onClick={() => handleExportFileDisplay(false)}>
               Cancel

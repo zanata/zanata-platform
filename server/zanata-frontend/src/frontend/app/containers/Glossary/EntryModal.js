@@ -94,6 +94,7 @@ class EntryModal extends Component {
             <EditableText
               editable={!transSelected}
               editing={true}
+              className='textStateClasses'
               maxLength={255}
               placeholder='Add part of speech…'
               emptyReadOnlyText='No part of speech'
@@ -149,7 +150,7 @@ class EntryModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <ButtonGroup className='pull-right'>
-            <Button bsStyle='link' atomic={{m: 'Mstart(rh)'}}
+            <Button bsStyle='link'
               onClick={
                 () => {
                   handleResetTerm(entry.id); handleEntryModalDisplay(false)
@@ -159,11 +160,11 @@ class EntryModal extends Component {
             </Button>
 
             {isSaving
-              ? (<Button bsStyle='primary' atomic={{m: 'Mstart(rh)'}}
+              ? (<Button bsStyle='primary'
                 type='button' disabled={true}>
                 <LoaderText loading loadingText='Updating'>Update</LoaderText>
               </Button>)
-              : (<Button bsStyle='primary' atomic={{m: 'Mstart(rh)'}}
+              : (<Button bsStyle='primary'
                 type='button' onClick={() => handleUpdateTerm(entry)}
                 disabled={!canUpdate}>
                   Update

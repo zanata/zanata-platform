@@ -105,7 +105,6 @@ class ImportModal extends Component {
         <Modal.Footer>
           <ButtonGroup className='pull-right'>
             <Button bsStyle='link'
-              atomic={{m: 'Mend(r1)'}}
               disabled={isUploading}
               onClick={() => handleImportFileDisplay(false)}>
               Cancel

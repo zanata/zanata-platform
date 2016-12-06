@@ -38,7 +38,6 @@ class DeleteEntry extends Component {
             </p>
             <ButtonGroup className='Mt(rq) pull-right'>
               <Button bsStyle='link'
-                atomic={{m: 'Mend(rh)'}}
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
               </Button>
