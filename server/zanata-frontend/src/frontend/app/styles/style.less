@@ -127,12 +127,6 @@ body {
   margin-left: @margin-base;
 }
 
-
-#explore .contentViewContainer svg {
-  height:2em;
-  margin-right:@margin-large;
-}
-
 .container:focus {
   outline:0;
 }
@@ -328,6 +322,16 @@ span.svg {
 :root {
   --LogoLoader-transition-ease: cubic-bezier(.175, .885, .320, 1.275);
 }
+
+#profile-matrix {
+  padding-left:@padding-xl;
+}
+
+#profile-matrix tbody tr td:not(:first-child),
+#profile-matrix tr th:not(:first-child) {
+  text-align: center;
+}
+
 
 .LogoLoader {
   position: relative;
@@ -980,12 +984,8 @@ h6 {
   color: inherit;
 }
 
-h1:first-of-type {
-  padding-top:1rem;
-}
-
 h1:not(:first-of-type) {
-  padding-top:2rem;
+  padding-top:1rem;
 }
 
 .h1 .small,
@@ -3650,6 +3650,13 @@ textarea.input-group-sm > .input-group-btn > .btn {
   }
 }
 
+#activity-table td .btn-primary {
+  border:0;
+}
+
+#activity-table td .btn-primary:focus {
+  background-color: @brand-secondary;
+}
 
 // Tabbable tabs
 // -------------------------
@@ -3868,6 +3875,10 @@ a.label:hover {
 .btn .label {
   position: relative;
   top: -1px;
+}
+
+.btn-clear {
+  margin-top:0.8em;
 }
 
 .label-default {
@@ -4968,7 +4979,7 @@ button.btn-link {
 
 .search-box .btn-primary {
   margin:0;
-  padding:@padding-button-left;
+  padding:@padding-search-button;
 }
 
 .search-box svg {
@@ -5049,6 +5060,7 @@ button.btn-link {
 
   .dl-horizontal dd {
     margin-left: @margin-left-dd;
+  }
 
   .col-sm-1,
   .col-sm-10,
@@ -5352,6 +5364,10 @@ button.btn-link {
 @media (max-width: @screen-sm-max) {
   .searchViewTheme span svg {
     font-size: 1.4em;
+  }
+
+  #profile-matrix {
+    padding-left:0;
   }
 
   .lead {

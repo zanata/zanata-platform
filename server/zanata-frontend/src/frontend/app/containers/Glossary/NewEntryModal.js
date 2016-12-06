@@ -90,6 +90,7 @@ class NewEntryModal extends Component {
           <div className='Mb(rh)'>
             <label className='Fw(b)'>Term</label>
             <EditableText
+              className='editable textStateClasses'
               editable={true}
               editing={true}
               placeholder='The new term'
@@ -101,6 +102,7 @@ class NewEntryModal extends Component {
           <div className='Mb(rh)'>
             <label className='Fw(b)'>Part of speech</label>
             <EditableText
+              className='textInput'
               editable={true}
               editing={true}
               theme={{root: {m: 'Mb(rh)'}}}
@@ -113,6 +115,7 @@ class NewEntryModal extends Component {
           <div className='Mb(rh)'>
             <label className='Fw(b)'>Description</label>
             <EditableText
+              className='textInput'
               editable={true}
               editing={true}
               placeholder='The definition of this term'

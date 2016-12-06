@@ -5,10 +5,10 @@ import DayMatrix from './DayMatrix'
 import { ContentStates } from '../../constants/Options'
 import {
   Base,
-  ButtonLink,
   Flex
 } from 'zanata-ui'
 import utilsDate from '../../utils/DateHelper'
+import { Button } from 'react-bootstrap'
 
 const classes = {
   calendar: {
@@ -100,7 +100,7 @@ const CalendarMonthMatrix = ({
       utilsDate.formatDate(dateRange.endDate, utilsDate.dateRangeDisplayFmt)
   /* eslint-disable react/jsx-no-bind */
   return (
-    <div>
+    <div id='activity-table'>
       <Flex atomic={{m: 'Mb(rh)'}}>
         <div>
           <h3 className='Fw(600) Tt(u)'>
@@ -108,11 +108,12 @@ const CalendarMonthMatrix = ({
           </h3>
         </div>
         {selectedDay &&
-        (<div className='Mstart(a)'>
-          <ButtonLink
+        (<div>
+          <Button bsStyle='link'
+            className='btn-clear'
             onClick={() => handleSelectedDayChanged(null)}>
             Clear selection
-          </ButtonLink>
+          </Button>
         </div>)}
       </Flex>
       <Base tagName='table' theme={calTheme}>

@@ -35,9 +35,8 @@ class DeleteAllEntriesModal extends Component {
               Are you sure you want to delete&nbsp;
               <strong>all entries</strong>&nbsp;?
             </p>
-            <div className='Mt(rq) pull-right'>
-              <Button bsStyle='link'
-                atomic={{m: 'Mend(rh)'}}
+            <div className='pull-right'>
+              <Button bsStyle='default'
                 onClick={() => handleDeleteAllEntriesDisplay(false)}>
                 Cancel
               </Button>
@@ -56,7 +55,7 @@ class DeleteAllEntriesModal extends Component {
           onClick={() => handleDeleteAllEntriesDisplay(true)}
           disabled={isDeleting}>
           <Row>
-            <Icon name='trash' atomic={{m: 'Mend(re)'}} />
+            <Icon name='trash' />
             <span className='Hidden--lesm'>Delete</span>
           </Row>
         </Button>
