@@ -7,13 +7,9 @@ import { Modal } from 'zanata-ui'
 import { PanelGroup } from 'react-bootstrap'
 import LocalProjectDetailPanel from './LocalProjectDetailPanel'
 import ImportedTMDetailPanel from './ImportedTMDetailPanel'
+import PlainSuggestionContents from './PlainSuggestionContents'
 
-const sampleProps = {
-  source: 'The Source Text',
-  target: 'The Translated Text'
-}
-
-const sampleData = [
+const sampleMatchDetails = [
   {
     'type': 'LOCAL_PROJECT',
     'textFlowId': 6,
@@ -73,6 +69,12 @@ const sampleData = [
   }
 ]
 
+const sampleSuggestion = {
+  sourceContents: ['The Source Text', 'The Source Texts'],
+  targetContents: ['The Translated Text', 'The Translated Texts'],
+  matchDetails: sampleMatchDetails
+}
+
 class SuggestionDetailsModal extends Component {
   constructor () {
     super()
@@ -89,13 +91,12 @@ class SuggestionDetailsModal extends Component {
 
   render () {
     // FIXME use real data
-    const { source, target } = sampleProps
-    const matchDetails = sampleData
+    const { matchDetails } = sampleSuggestion
 
     // FIXME better variable name
     const panels = matchDetails.map((matchDetail, index) => {
       const props = {
-        source, target, matchDetail, key: index, eventKey: index
+        matchDetail, key: index, eventKey: index
       }
       switch (matchDetail.type) {
         case 'LOCAL_PROJECT':
@@ -119,20 +120,11 @@ class SuggestionDetailsModal extends Component {
             Translation Memory Details</span></small></Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <ul className="list-inline">
-              <li className="diff">{source}</li>
-              <li>{target}{/* <Label bsStyle="sucess">Translated
-              </Label>*/}</li>
-            </ul>
+            <PlainSuggestionContents suggestion={sampleSuggestion} />
             <PanelGroup defaultActiveKey={0} accordion>
               {panels}
             </PanelGroup>
           </Modal.Body>
-          <Modal.Footer>
-            {/*
-            <p>Last modified on 30/04/16 13:15 by <a href="">sdickers</a></p>
-            */}
-          </Modal.Footer>
         </Modal>
       </div>)
   }
