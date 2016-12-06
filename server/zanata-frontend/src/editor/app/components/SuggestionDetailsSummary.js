@@ -6,6 +6,7 @@ import { Icon, Row } from 'zanata-ui'
  */
 const SuggestionDetailsSummary = React.createClass({
   propTypes: {
+    onClick: PropTypes.func,
     suggestion: PropTypes.shape({
       matchDetails: PropTypes.arrayOf(PropTypes.shape({
         type: PropTypes.oneOf(
@@ -70,7 +71,7 @@ const SuggestionDetailsSummary = React.createClass({
     )
 
     return (
-      <div className="TransUnit-details">
+      <div className="TransUnit-details" onClick={this.props.onClick}>
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           {projectIcon}
           {versionIcon}

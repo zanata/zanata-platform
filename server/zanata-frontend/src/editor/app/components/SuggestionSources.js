@@ -16,7 +16,8 @@ const SuggestionSources = React.createClass({
       sourceContents: PropTypes.arrayOf(PropTypes.string).isRequired
     }),
     search: PropTypes.arrayOf(PropTypes.string),
-    showDiff: PropTypes.bool.isRequired
+    showDiff: PropTypes.bool.isRequired,
+    showDetail: PropTypes.func.isRequired
   },
 
   render: function () {
@@ -29,6 +30,7 @@ const SuggestionSources = React.createClass({
           contents={sourceContents}
           compareTo={diffWith} />
         <SuggestionDetailsSummary
+          onClick={this.props.showDetail}
           suggestion={this.props.suggestion} />
       </div>
     )
