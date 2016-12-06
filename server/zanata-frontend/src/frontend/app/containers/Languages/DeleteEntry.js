@@ -42,7 +42,7 @@ class DeleteEntry extends Component {
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
               </Button>
-              <Button bsStyle='danger' type='danger'
+              <Button bsStyle='danger' type='button'
                 onClick={() => {
                   handleDeleteEntry(locale.localeId)
                   handleDeleteEntryDisplay(false)

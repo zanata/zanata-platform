@@ -103,8 +103,7 @@ class Languages extends Component {
 
               {loading
                 ? <div className='contentViewContainer'>
-                  <LoaderText theme={{base: {fz: 'Fz(ms1)'}}}
-                    size='2' loading />
+                  <LoaderText loading />
                 </div>
                 : (<div>
                   <div className='sort-items

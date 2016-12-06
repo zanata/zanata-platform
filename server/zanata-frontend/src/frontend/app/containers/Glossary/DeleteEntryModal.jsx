@@ -50,7 +50,7 @@ class DeleteEntryModal extends Component {
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
               </Button>
-              <Button bsStyle='danger' type='danger' size='n1'
+              <Button bsStyle='danger' type='button' size='n1'
                 disabled={isDeleting}
                 onClick={() => {
                   handleDeleteEntry(entry.id)
@@ -64,7 +64,7 @@ class DeleteEntryModal extends Component {
             </div>
           </Tooltip>
         </Overlay>
-        <Button bsStyle='link danger' type='danger'
+        <Button bsStyle='link' type='button'
           onClick={() => handleDeleteEntryDisplay(true)}
           disabled={isDeleting}>
           <LoaderText loading={isDeleting} loadingText='Deleting'>

@@ -36,12 +36,12 @@ class DeleteAllEntriesModal extends Component {
               <strong>all entries</strong>&nbsp;?
             </p>
             <div className='Mt(rq) pull-right'>
-              <Button bsStyle='default'
+              <Button bsStyle='link'
                 atomic={{m: 'Mend(rh)'}}
                 onClick={() => handleDeleteAllEntriesDisplay(false)}>
                 Cancel
               </Button>
-              <Button bsStyle='danger' type='danger'
+              <Button bsStyle='danger' type='button'
                 disabled={isDeleting}
                 onClick={() => handleDeleteAllEntries()}>
                 <LoaderText loading={isDeleting} size='n1'
@@ -52,7 +52,7 @@ class DeleteAllEntriesModal extends Component {
             </div>
           </Tooltip>
         </Overlay>
-        <Button bsStyle='link danger' type='danger'
+        <Button bsStyle='link' type='button'
           onClick={() => handleDeleteAllEntriesDisplay(true)}
           disabled={isDeleting}>
           <Row>

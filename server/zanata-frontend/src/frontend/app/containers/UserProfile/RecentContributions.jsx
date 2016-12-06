@@ -137,7 +137,7 @@ var RecentContributions = React.createClass({
                       this.onToggleShowDateRange()}>
                       Cancel
                     </Button>
-                    <Button bsStyle='default' atomic={{m: 'Mstart(r1)'}}
+                    <Button atomic={{m: 'Mstart(r1)'}}
                       onClick={
                       () => handleDateRangeChanged(this.state.dateRange)}>
                       Apply

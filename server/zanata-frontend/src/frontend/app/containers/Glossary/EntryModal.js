@@ -160,11 +160,11 @@ class EntryModal extends Component {
 
             {isSaving
               ? (<Button bsStyle='primary' atomic={{m: 'Mstart(rh)'}}
-                type='primary' disabled={true}>
+                type='button' disabled={true}>
                 <LoaderText loading loadingText='Updating'>Update</LoaderText>
               </Button>)
               : (<Button bsStyle='primary' atomic={{m: 'Mstart(rh)'}}
-                type='primary' onClick={() => handleUpdateTerm(entry)}
+                type='button' onClick={() => handleUpdateTerm(entry)}
                 disabled={!canUpdate}>
                   Update
               </Button>)

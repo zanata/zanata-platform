@@ -133,7 +133,7 @@ class ViewHeader extends Component {
 
             {permission.canAddNewEntry && (
               <div className='Mstart(rh)--md Mstart(rq)'>
-                <Button bsStyle='link' type='default'
+                <Button bsStyle='link' type='button'
                   onClick={() => handleImportFileDisplay(true)}>
                   <Row>
                     <Icon name='import' atomic={{m: 'Mend(re)'}} />
@@ -145,7 +145,7 @@ class ViewHeader extends Component {
 
             {permission.canDownload && !isEmptyTerms && (
               <div className='Mstart(rh)--md Mstart(rq)'>
-                <Button bsStyle='link' type='default'
+                <Button bsStyle='link' type='button'
                   onClick={() => handleExportFileDisplay(true)}>
                   <Row>
                     <Icon name='export' atomic={{m: 'Mend(re)'}} />
@@ -187,7 +187,7 @@ class ViewHeader extends Component {
             className='Flxg(1)'>
             <TableCell size='3'
               onClick={() => handleSortColumn('src_content')}>
-              <Button bsStyle='link' type='default'>
+              <Button bsStyle='link' type='button'>
                 <Row>
                   {'src_content' in sort
                     ? (sort.src_content === true)
@@ -228,7 +228,7 @@ class ViewHeader extends Component {
             </TableCell>
             <TableCell hideSmall
               onClick={() => handleSortColumn('part_of_speech')}>
-              <Button bsStyle='link' type='default'>
+              <Button bsStyle='link' type='button'>
                 <Row>
                   {'part_of_speech' in sort
                     ? (sort.part_of_speech === true)

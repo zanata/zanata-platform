@@ -131,7 +131,7 @@ class NewEntryModal extends Component {
               Cancel
             </Button>
             <Button bsStyle='primary'
-              type='primary'
+              type='button'
               disabled={!isAllowSave || isSaving}
               onClick={
                 () => {

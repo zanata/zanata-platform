@@ -3,7 +3,7 @@ import React, {
   PropTypes
 } from 'react'
 import { Row } from 'react-bootstrap'
-import TextInput from '../../components'
+import { TextInput } from '../../components'
 
 /**
  * Text input that can switch between text field and label

@@ -111,7 +111,7 @@ class ImportModal extends Component {
               Cancel
             </Button>
             <Button bsStyle='primary'
-              type='primary'
+              type='button'
               disabled={disableUpload}
               onClick={handleImportFile}>
               <LoaderText loading={isUploading} loadingText='Importing'>
