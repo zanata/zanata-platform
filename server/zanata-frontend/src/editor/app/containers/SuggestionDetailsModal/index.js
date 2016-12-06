@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react'
 import { Modal } from 'zanata-ui'
-import { Button, PanelGroup } from 'react-bootstrap'
+import { PanelGroup } from 'react-bootstrap'
 import LocalProjectDetailPanel from './LocalProjectDetailPanel'
 import ImportedTMDetailPanel from './ImportedTMDetailPanel'
 
@@ -86,9 +86,6 @@ class SuggestionDetailsModal extends Component {
   hideModal () {
     this.setState({show: false})
   }
-  showModal () {
-    this.setState({show: true})
-  }
 
   render () {
     // FIXME use real data
@@ -114,8 +111,6 @@ class SuggestionDetailsModal extends Component {
       <div>
         {/* FIXME use the "X more" match detail link to do this instead
                   or maybe just use a click on any of those detail items */}
-        <Button bsStyle="default"
-          onClick={::this.showModal}>Launch Modal</Button>
         <Modal
           show={this.state.show}
           onHide={::this.hideModal}>
