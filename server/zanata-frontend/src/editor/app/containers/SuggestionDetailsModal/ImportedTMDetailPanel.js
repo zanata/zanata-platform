@@ -7,6 +7,7 @@ import React, { Component, PropTypes } from 'react'
 import { Icon, Row } from 'zanata-ui'
 import { Panel, Label } from 'react-bootstrap'
 import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'
+import { MATCH_TYPE } from '../../utils/suggestion-util'
 
 class ImportedTMDetailPanel extends Component {
 
@@ -67,7 +68,7 @@ class ImportedTMDetailPanel extends Component {
           <li>
             <SuggestionUpdateMessage
               lastChanged={lastChangedDate}
-              matchType={'imported'}
+              matchType={MATCH_TYPE.IMPORTED}
             />
           </li>
           <br />
