@@ -124,7 +124,11 @@ class SuggestionDetailsModal extends Component {
             Translation Memory Details</span></small></Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <h3>Locations</h3>
+            <ul className="list-inline">
+              <li className="diff">{source}</li>
+              <li>{target}{/* <Label bsStyle="sucess">Translated
+              </Label>*/}</li>
+            </ul>
             <PanelGroup defaultActiveKey={0} accordion>
               {panels}
             </PanelGroup>

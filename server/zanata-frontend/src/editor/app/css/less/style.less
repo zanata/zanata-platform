@@ -12,7 +12,7 @@ span ul li span {
 }
 
 html {
-  font-family: Source Sans Pro, Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-family: 'Source Sans Pro',"Helvetica Neue",HelveticaNeue,Helvetica,Arial,sans-serif;
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -115,6 +115,10 @@ body {
   stroke-width: 0;
   stroke: currentColor;
   fill: currentColor;
+}
+
+.diff {
+  background-color:#ffe0e0;
 }
 
 span.icons {
@@ -2703,21 +2707,47 @@ button.btn.btn-warning.dropdown-toggle > span.caret {
   color: #fff;
 }
 
-span.comment-box {
-  background-color:#ECEFF0;
-  vertical-align: super;
+.panel-body hr {
+  margin-top:0.725em;
+  margin-bottom:0.725em;
+}
+.transUnit-details li {
+  padding-right:0.4em;
 }
 
-span.comment-box .badge {
+.transUnit-details li span {
+  margin-right: 0.1em;
+}
+
+.transUnit-details panel-title svg {
+  height:2em;
+  width:2em;
+}
+
+.comment-box {
+  margin-bottom:0;
+  color:#546677;
+  font-size:0.875em;
+}
+
+.comment-box li span {
+  margin-left:0;
+  vertical-align: sub;
+}
+
+.comment-box ul.list-inline {
+  margin:0;
+}
+
+.comment-box .badge {
   font-size: 1em;
   height:1.4em;
 }
 
-span.comment-box h4 {
-  color:@brand-primary;
-  margin:0;
-  padding:0;
+.u-textMeta {
+  margin-bottom:1em;
 }
+
 
 .has-success .control-label, .checkbox.has-success, .radio.has-success {
   color: @brand-success;
