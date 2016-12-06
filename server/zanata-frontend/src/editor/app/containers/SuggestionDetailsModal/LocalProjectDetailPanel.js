@@ -100,8 +100,8 @@ class LocalProjectDetailPanel extends Component {
       return false
     }
     return [
-      <hr />,
-      <span className="comment-box">
+      <hr key="0" />,
+      <span key="1" className="comment-box">
         <h4 className="list-group-item-heading">Comments</h4>
         <ul className="list-inline">
           <li><Icon name="comment" title="comment" /></li>

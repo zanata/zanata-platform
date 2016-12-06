@@ -2,99 +2,18 @@
  * Modal to display the details for a group of suggestion matches.
  */
 
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
 import { Modal } from 'zanata-ui'
 import { PanelGroup } from 'react-bootstrap'
 import LocalProjectDetailPanel from './LocalProjectDetailPanel'
 import ImportedTMDetailPanel from './ImportedTMDetailPanel'
 import PlainSuggestionContents from './PlainSuggestionContents'
 
-const sampleMatchDetails = [
-  {
-    'type': 'LOCAL_PROJECT',
-    'textFlowId': 6,
-    'contentState': 'Translated',
-    'projectId': 'test',
-    'projectName': 'Test Projacked',
-    'version': '1',
-    'documentName': 'document.txt',
-    'documentPath': 'path/to/file/',
-    'resId': '9cef980fa92eaf64699cf1a07a279313',
-    'lastModifiedDate': '2016-11-10T00:51:21.000Z',
-    'lastModifiedBy': 'admin'
-  },
-  {
-    'type': 'LOCAL_PROJECT',
-    'textFlowId': 1,
-    'contentState': 'Approved',
-    'projectId': 'test',
-    'projectName': 'Test Projacked',
-    'version': '1',
-    'documentName': 'document.txt',
-    'documentPath': '',
-    'resId': '9cef980fa92eaf64699cf1a07a279313',
-    'lastModifiedDate': '2016-11-23T23:55:19.000Z',
-    'lastModifiedBy': 'admin'
-  },
-  {
-    'type': 'LOCAL_PROJECT',
-    'textFlowId': 7,
-    'contentState': 'Translated',
-    'projectId': 'test',
-    'projectName': 'Test Projacked',
-    'version': '1',
-    'documentName': 'document.txt',
-    'documentPath':
-      'really/long/path/to/file/that/should/be/shortened/in/the/heading',
-    'resId': '9cef980fa92eaf64699cf1a07a279313',
-    'lastModifiedDate': '2016-11-23T23:55:19.000Z',
-    'lastModifiedBy': 'admin',
-    'sourceComment': 'This is a source comment right here.',
-    'targetComment': 'This one is a target comment.'
-  },
-  {
-    'type': 'IMPORTED_TM',
-    'transMemoryUnitId': 1,
-    'transMemorySlug': 'some-generic-tm',
-    'transUnitId': 'test:1:document.txt:9cef980fa92eaf64699cf1a07a279313',
-    'lastChanged': '2016-12-05T04:01:08.000Z'
-  },
-  {
-    'type': 'IMPORTED_TM',
-    'transMemoryUnitId': 2,
-    'transMemorySlug': 'some-generic-tm',
-    'transUnitId':
-      'test:1:path/to/file/document.txt:9cef980fa92eaf64699cf1a07a279313',
-    'lastChanged': '2016-12-05T04:01:08.000Z'
-  }
-]
-
-const sampleSuggestion = {
-  sourceContents: ['The Source Text', 'The Source Texts'],
-  targetContents: ['The Translated Text', 'The Translated Texts'],
-  matchDetails: sampleMatchDetails
-}
-
 class SuggestionDetailsModal extends Component {
-  constructor () {
-    super()
-    this.state = {
-      // FIXME make it false
-      // FIXME use props instead
-      show: true
-    }
-  }
-
-  hideModal () {
-    this.setState({show: false})
-  }
-
   render () {
-    // FIXME use real data
-    const { matchDetails } = sampleSuggestion
+    const { matchDetails } = this.props.suggestion
 
-    // FIXME better variable name
-    const panels = matchDetails.map((matchDetail, index) => {
+    const detailPanels = matchDetails.map((matchDetail, index) => {
       const props = {
         matchDetail, key: index, eventKey: index
       }
@@ -110,19 +29,17 @@ class SuggestionDetailsModal extends Component {
 
     return (
       <div>
-        {/* FIXME use the "X more" match detail link to do this instead
-                  or maybe just use a click on any of those detail items */}
         <Modal
-          show={this.state.show}
-          onHide={::this.hideModal}>
+          show
+          onHide={this.props.onClose}>
           <Modal.Header>
             <Modal.Title><small><span className="pull-left">
             Translation Memory Details</span></small></Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <PlainSuggestionContents suggestion={sampleSuggestion} />
+            <PlainSuggestionContents suggestion={this.props.suggestion} />
             <PanelGroup defaultActiveKey={0} accordion>
-              {panels}
+              {detailPanels}
             </PanelGroup>
           </Modal.Body>
         </Modal>
@@ -130,7 +47,11 @@ class SuggestionDetailsModal extends Component {
   }
 }
 
-// TODO make this a connected component, it can pull out the right suggestion
-//      detail based on an on/off state and the appropriate id.
+SuggestionDetailsModal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  suggestion: PropTypes.shape({
+    matchDetails: PropTypes.array.isRequired
+  }).isRequired
+}
 
 export default SuggestionDetailsModal
