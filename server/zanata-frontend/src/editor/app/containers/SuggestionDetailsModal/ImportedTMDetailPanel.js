@@ -5,7 +5,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { Icon, Row } from 'zanata-ui'
-import { Panel, ListGroup, ListGroupItem, Label } from 'react-bootstrap'
+import { Panel, Label } from 'react-bootstrap'
 import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'
 
 class ImportedTMDetailPanel extends Component {
@@ -31,8 +31,6 @@ class ImportedTMDetailPanel extends Component {
 
   render () {
     const {
-      source,
-      target,
       matchDetail,
       /* The collected ...props are used to make sure the returned Panel will
        * work properly with the enclosing PanelGroup/Accordion. If the props
@@ -52,26 +50,21 @@ class ImportedTMDetailPanel extends Component {
          non-truncated document id display. Just using the same header for
          now as a shortcut. */}
         {header}
-        <ListGroup>
-          <ListGroupItem className="small">
-            <h4 className="list-group-item-heading">Source</h4>
-            <h3>{source}</h3>
-          </ListGroupItem>
-          <ListGroupItem className="small">
-            <h4 className="list-group-item-heading">Target</h4>
-            <h3>{target}</h3>
+        <ul>
+          <li>
             <SuggestionUpdateMessage
               lastChanged={lastChangedDate}
               matchType={'imported'}
             />
-          </ListGroupItem>
-          <ListGroupItem className="small">
+          </li>
+          <br />
+          <li className="small">
             <h4 className="list-group-item-heading">Properties</h4>
             <ul>
               <li>Id: {transUnitId}</li>
             </ul>
-          </ListGroupItem>
-        </ListGroup>
+          </li>
+        </ul>
       </Panel>
     )
   }
@@ -80,10 +73,6 @@ class ImportedTMDetailPanel extends Component {
 ImportedTMDetailPanel.propTypes = {
   /* Key of this panel within the group, used to expand/collapse */
   eventKey: PropTypes.number.isRequired,
-  /* Source text for the match */
-  source: PropTypes.string.isRequired,
-  /* Translated text for the match */
-  target: PropTypes.string.isRequired,
   /* Detailed descriptive and context information for the match. */
   matchDetail: PropTypes.shape({
     // This only renders things from local projects

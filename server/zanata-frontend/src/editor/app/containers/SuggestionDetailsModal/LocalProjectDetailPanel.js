@@ -5,7 +5,7 @@
 
 import React, { Component, PropTypes } from 'react'
 import { Icon, Row } from 'zanata-ui'
-import { Panel, ListGroup, ListGroupItem, Badge, Label } from 'react-bootstrap'
+import { Panel, Label } from 'react-bootstrap'
 import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'
 import { matchType } from '../../utils/suggestion-util'
 
@@ -43,7 +43,7 @@ class LocalProjectDetailPanel extends Component {
     const currentMatchType = matchType(matchDetail)
 
     return (
-      <div className="TransUnit-details">
+      <div className="transUnit-details">
         <ul className="u-listInline u-sMB-1-4">
           <li title={projectId}>
             <Row>
@@ -70,8 +70,6 @@ class LocalProjectDetailPanel extends Component {
 
   render () {
     const {
-      source,
-      target,
       matchDetail,
       /* The collected ...props are used to make sure the returned Panel will
        * work properly with the enclosing PanelGroup/Accordion. If the props
@@ -97,30 +95,25 @@ class LocalProjectDetailPanel extends Component {
          non-truncated document id display. Just using the same header for
          now as a shortcut. */}
         {header}
-        <ListGroup>
-          <ListGroupItem className="small">
-            <h4 className="list-group-item-heading">Source</h4>
-            <h3>{source}</h3>
-            <ListGroupItem className="comment-box"><h4>Comments
-              &nbsp;<Badge>{sourceComment ? 1 : 0}</Badge></h4>
-              {sourceComment}
-            </ListGroupItem>
-          </ListGroupItem>
-          <ListGroupItem className="small">
-            <h4 className="list-group-item-heading">Target</h4>
-            <h3>{target}{/* <Label bsStyle="success">Translated
-            </Label>*/}</h3>
-            <SuggestionUpdateMessage
-              user={lastModifiedBy || 'Anonymous'}
-              lastChanged={lastChanged}
-              matchType={currentMatchType}
+        <SuggestionUpdateMessage
+          user={lastModifiedBy || 'Anonymous'}
+          lastChanged={lastChanged}
+          matchType={currentMatchType}
             />
-            <ListGroupItem className="comment-box">
-              <h4>Comments&nbsp;<Badge>{targetComment ? 1 : 0}</Badge></h4>
-              {targetComment}
-            </ListGroupItem>
-          </ListGroupItem>
-        </ListGroup>
+        <hr />
+        <span className="comment-box">
+          <h4 className="list-group-item-heading">Comments</h4>
+          <ul className="list-inline">
+            <li><Icon name="comment" title="comment" /></li>
+            <li>Source</li>
+          </ul>
+          {sourceComment}
+          <ul className="list-inline">
+            <li><Icon name="comment" title="comment" /></li>
+            <li>Target</li>
+          </ul>
+          {targetComment}
+        </span>
       </Panel>
     )
   }
