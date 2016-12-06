@@ -152,10 +152,6 @@ class LocalProjectDetailPanel extends Component {
 LocalProjectDetailPanel.propTypes = {
   /* Key of this panel within the group, used to expand/collapse */
   eventKey: PropTypes.number.isRequired,
-  /* Source text for the match */
-  source: PropTypes.string.isRequired,
-  /* Translated text for the match */
-  target: PropTypes.string.isRequired,
   /* Detailed descriptive and context information for the match. */
   matchDetail: PropTypes.shape({
     // This only renders things from local projects
