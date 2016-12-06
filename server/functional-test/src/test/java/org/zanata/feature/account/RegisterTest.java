@@ -82,9 +82,9 @@ public class RegisterTest extends ZanataTestCase {
                 .as("No errors are shown")
                 .isEmpty();
 
-        homePage = registerPage.register();
+        SignInPage signInPage = registerPage.register();
 
-        assertThat(homePage.getNotificationMessage())
+        assertThat(signInPage.getNotificationMessage())
                 .isEqualTo(HomePage.SIGNUP_SUCCESS_MESSAGE)
                 .as("Sign up is successful");
     }

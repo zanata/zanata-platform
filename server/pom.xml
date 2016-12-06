@@ -61,7 +61,7 @@
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.29</okapi.version>
 
-    <zanata.assets.version>10.1</zanata.assets.version>
+    <zanata.assets.version>10.2-SNAPSHOT</zanata.assets.version>
     <zanata.client.version>${project.version}</zanata.client.version>
 
     <richfaces.version>4.5.17.Final</richfaces.version>
@@ -782,6 +782,11 @@
             <artifactId>jaxb-impl</artifactId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.zanata</groupId>
+        <artifactId>security-common</artifactId>
+        <version>${project.version}</version>
       </dependency>
 
       <!-- zanata client -->
@@ -2253,5 +2258,6 @@
     <module>functional-test</module>
     <!-- <module>zanata-dist</module> -->
     <module>gwt-editor</module>
+    <module>security-common</module>
   </modules>
 </project>

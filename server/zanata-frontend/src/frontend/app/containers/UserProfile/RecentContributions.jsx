@@ -5,12 +5,13 @@ import { DateRange } from 'react-date-range'
 import utilsDate from '../../utils/DateHelper'
 import {
   Base,
+  ButtonLink,
+  ButtonRound,
   Flex,
+  Icon,
+  TextInput,
   Modal
 } from 'zanata-ui'
-
-import TextInput from '../../components'
-import { Button, ButtonGroup } from 'react-bootstrap'
 
 const classes = {
   root: {
@@ -111,10 +112,11 @@ var RecentContributions = React.createClass({
             Recent Contributions
           </Base>
           <Base atomic={classes.dateRangeContainer}>
-            <Button bsStyle='link' onClick={() => this.onToggleShowDateRange()}>
+            <ButtonLink onClick={() => this.onToggleShowDateRange()}>
               <TextInput editable={false} value={displayDateRange}
                 theme={classes.dataRangeTextField} />
-            </Button>
+              <Icon name='chevron-down' size='1' />
+            </ButtonLink>
 
             {this.state.showDateRange &&
               <Modal show={this.state.showDateRange}
@@ -132,17 +134,14 @@ var RecentContributions = React.createClass({
                     onChange={this.onDateRangeChanged} />
                 </Modal.Body>
                 <Modal.Footer>
-                  <ButtonGroup className='pull-right'>
-                    <Button bsStyle='link' onClick={() =>
-                      this.onToggleShowDateRange()}>
-                      Cancel
-                    </Button>
-                    <Button atomic={{m: 'Mstart(r1)'}}
-                      onClick={
-                      () => handleDateRangeChanged(this.state.dateRange)}>
-                      Apply
-                    </Button>
-                  </ButtonGroup>
+                  <ButtonLink onClick={() => this.onToggleShowDateRange()}>
+                    Cancel
+                  </ButtonLink>
+                  <ButtonRound atomic={{m: 'Mstart(r1)'}}
+                    onClick={
+                    () => handleDateRangeChanged(this.state.dateRange)}>
+                    Apply
+                  </ButtonRound>
                 </Modal.Footer>
               </Modal>
             }

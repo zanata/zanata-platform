@@ -2,9 +2,9 @@ import React, { PropTypes } from 'react'
 import { merge } from 'lodash'
 import dateUtil from '../../utils/DateHelper'
 import {
-  Base
+  Base,
+  Button
 } from 'zanata-ui'
-import { Button } from 'react-bootstrap'
 
 const classes = {
   root: {

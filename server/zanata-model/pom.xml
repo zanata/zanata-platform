@@ -181,6 +181,11 @@
     </dependency>
 
     <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>security-common</artifactId>
+    </dependency>
+
+    <dependency>
       <groupId>net.sf.okapi</groupId>
       <artifactId>okapi-core</artifactId>
       <exclusions>

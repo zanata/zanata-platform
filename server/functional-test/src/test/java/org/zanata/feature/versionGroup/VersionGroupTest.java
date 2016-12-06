@@ -159,7 +159,7 @@ public class VersionGroupTest extends ZanataTestCase {
                 .clickProjectsTab()
                 .clickAddProjectVersionsButton()
                 .enterProjectVersion("about-fedora")
-                .selectProjectVersion("about-fedora master")
+                .selectProjectVersion("about fedora about-fedora master")
                 .clickProjectsTab();
 
         assertThat(versionGroupPage.getProjectVersionsInGroup())

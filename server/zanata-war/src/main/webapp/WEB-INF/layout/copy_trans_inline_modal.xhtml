@@ -28,18 +28,19 @@
       </div>
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
-        <div class="g--tight">
-          <h:panelGroup layout="block"  styleClass="g__item txt--align-right"
-            id="copy-trans-buttons">
+        <h:panelGroup layout="block"  styleClass="txt--align-right"
+          id="copy-trans-buttons">
+          <div class="bx--inline-block">
             <button styleClass="button--primary" jsfc="a4j:commandButton"
               rendered="#{!copyTransAction.inProgress}"
               onclick="runCopyTrans();zanata.modal.hide('#copy-trans-modal')" value="#{msgs['jsf.CopyTrans.run']}"></button>
-
+          </div>
+          <div class="bx--inline-block">
             <button styleClass="button--danger" jsfc="a4j:commandButton"
               rendered="#{copyTransAction.inProgress}"
               onclick="cancelCopyTrans()" value="#{msgs['jsf.Cancel']}"></button>
-          </h:panelGroup>
-        </div>
+          </div>
+        </h:panelGroup>
       </footer>
     </div>
   </div>

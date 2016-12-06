@@ -55,7 +55,7 @@ const links = {
   '/signup': window.config.links.registerUrl
 }
 
-const activePath = window.location.pathname
+const activePath = window.location.pathname.replace(/\/$/, '')
 
 render(
   <div className='H(a) H(100%)--sm'>
