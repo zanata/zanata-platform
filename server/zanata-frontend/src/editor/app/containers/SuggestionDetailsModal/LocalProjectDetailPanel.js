@@ -94,6 +94,29 @@ class LocalProjectDetailPanel extends Component {
     )
   }
 
+  buildCommentBox ({ sourceComment, targetComment }) {
+    // no comment box when there are no comments
+    if (!sourceComment && !targetComment) {
+      return false
+    }
+    return [
+      <hr />,
+      <span className="comment-box">
+        <h4 className="list-group-item-heading">Comments</h4>
+        <ul className="list-inline">
+          <li><Icon name="comment" title="comment" /></li>
+          <li>Source</li>
+        </ul>
+        {sourceComment}
+        <ul className="list-inline">
+          <li><Icon name="comment" title="comment" /></li>
+          <li>Target</li>
+        </ul>
+        {targetComment}
+      </span>
+    ]
+  }
+
   render () {
     const {
       matchDetail,
@@ -103,9 +126,7 @@ class LocalProjectDetailPanel extends Component {
       ...props } = this.props
     const {
       lastModifiedBy,
-      lastModifiedDate,
-      sourceComment,
-      targetComment } = matchDetail
+      lastModifiedDate } = matchDetail
 
     const lastChanged = new Date(lastModifiedDate)
     const currentMatchType = matchType(matchDetail)
@@ -122,20 +143,7 @@ class LocalProjectDetailPanel extends Component {
           lastChanged={lastChanged}
           matchType={currentMatchType}
             />
-        <hr />
-        <span className="comment-box">
-          <h4 className="list-group-item-heading">Comments</h4>
-          <ul className="list-inline">
-            <li><Icon name="comment" title="comment" /></li>
-            <li>Source</li>
-          </ul>
-          {sourceComment}
-          <ul className="list-inline">
-            <li><Icon name="comment" title="comment" /></li>
-            <li>Target</li>
-          </ul>
-          {targetComment}
-        </span>
+        {this.buildCommentBox(matchDetail)}
       </Panel>
     )
   }
