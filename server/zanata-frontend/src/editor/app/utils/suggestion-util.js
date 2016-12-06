@@ -1,6 +1,12 @@
 /**
- * Utility functions for suggestions.
+ * Utility functions and constants for suggestions.
  */
+
+export const MATCH_TYPE = {
+  TRANSLATED: 'translated',
+  APPROVED: 'approved',
+  IMPORTED: 'imported'
+}
 
 /**
  * Figure out the match type for a suggestion match based on its details.
@@ -11,14 +17,14 @@
 export function matchType (suggestionDetail) {
   const { contentState, type } = suggestionDetail
   if (type === 'IMPORTED_TM') {
-    return 'imported'
+    return MATCH_TYPE.IMPORTED
   }
   if (type === 'LOCAL_PROJECT') {
     if (contentState === 'Translated') {
-      return 'translated'
+      return MATCH_TYPE.TRANSLATED
     }
     if (contentState === 'Approved') {
-      return 'approved'
+      return MATCH_TYPE.APPROVED
     }
   }
   console.error('Unrecognised suggestion type or contentState: ',
