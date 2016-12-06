@@ -28,7 +28,6 @@ import java.util.List;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 import lombok.Getter;
@@ -40,9 +39,12 @@ import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
@@ -147,19 +149,22 @@ public class ServerConfigurationBean implements Serializable {
     @Setter
     private String helpUrl;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
+    @Pattern(regexp = "\\d{0,5}",
+            message = "value must be an integer number between 0 to 99999")
     private String maxConcurrentRequestsPerApiKey;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
+    @Pattern(regexp = "\\d{0,5}",
+            message = "value must be an integer number between 0 to 99999")
     private String maxActiveRequestsPerApiKey;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
+    @Pattern(regexp = "\\d{0,5}",
+            message = "value must be an integer number between 0 to 99999")
     private String maxFilesPerUpload;
 
     private List<PropertyWithKey<String>> commonStringProperties = Arrays.asList(
