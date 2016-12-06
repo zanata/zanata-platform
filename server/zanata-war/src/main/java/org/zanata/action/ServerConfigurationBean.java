@@ -28,7 +28,6 @@ import java.util.List;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 import lombok.Getter;
@@ -40,9 +39,10 @@ import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
@@ -147,20 +147,23 @@ public class ServerConfigurationBean implements Serializable {
     @Setter
     private String helpUrl;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
-    private String maxConcurrentRequestsPerApiKey;
+    @Min(value = 0)
+    @Max(value = 99999)
+    private Integer maxConcurrentRequestsPerApiKey;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
-    private String maxActiveRequestsPerApiKey;
+    @Min(value = 0)
+    @Max(value = 99999)
+    private Integer maxActiveRequestsPerApiKey;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
-    private String maxFilesPerUpload;
+    @Min(value = 0)
+    @Max(value = 99999)
+    private Integer maxFilesPerUpload;
 
     private List<PropertyWithKey<String>> commonStringProperties = Arrays.asList(
             new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
