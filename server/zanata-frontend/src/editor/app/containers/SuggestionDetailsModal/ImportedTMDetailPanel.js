@@ -10,20 +10,22 @@ import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'
 
 class ImportedTMDetailPanel extends Component {
 
-  matchHeader (matchDetail) {
-    const { transMemorySlug } = matchDetail
-
+  matchHeader (transMemorySlug) {
     // FIXME use standard styles when they are available, instead of hard-coded
-
     return (
       <div className="TransUnit-details">
         <ul className="u-listInline u-sMB-1-4">
           <li>
             <Row>
-              <Icon name="import" size="n1" /> {transMemorySlug}
+              <Icon name="import"
+                size="1"
+                theme={{
+                  base: {
+                    mend: 'Mend(rh)'
+                  }
+                }} /> {transMemorySlug}
             </Row>
           </li>
-          <Label style={{'backgroundColor': '#20718a'}}>Imported</Label>
         </ul>
       </div>
     )
@@ -36,8 +38,8 @@ class ImportedTMDetailPanel extends Component {
        * work properly with the enclosing PanelGroup/Accordion. If the props
        * are not passed through, panels do not work properly in a group. */
       ...props } = this.props
-    const { lastChanged, transUnitId } = matchDetail
-    const header = this.matchHeader(matchDetail)
+    const { lastChanged, transUnitId, transMemorySlug } = matchDetail
+    const header = this.matchHeader(transMemorySlug)
 
     const lastChangedDate = new Date(lastChanged)
 
@@ -46,10 +48,21 @@ class ImportedTMDetailPanel extends Component {
         header={header}
         {...props}
         bsStyle="info">
-        {/* this stuff is really similar to the header, but includes a
-         non-truncated document id display. Just using the same header for
-         now as a shortcut. */}
-        {header}
+        <div className="TransUnit-details">
+          <ul className="u-listInline u-sMB-1-4">
+            <li>
+              <Row>
+                <Icon name="import" size="1"
+                  theme={{
+                    base: {
+                      mend: 'Mend(rh)'
+                    }
+                  }} /> {transMemorySlug}
+              </Row>
+            </li>
+            <Label style={{'backgroundColor': '#20718a'}}>Imported</Label>
+          </ul>
+        </div>
         <ul>
           <li>
             <SuggestionUpdateMessage

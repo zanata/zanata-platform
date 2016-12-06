@@ -11,7 +11,33 @@ import { matchType } from '../../utils/suggestion-util'
 
 class LocalProjectDetailPanel extends Component {
 
+  fullDocName (path, name) {
+    return (path || '') + name
+  }
+
   matchHeader (matchDetail) {
+    const { documentName, documentPath } = matchDetail
+    const fullDocName = this.fullDocName(documentPath, documentName)
+    return (
+      <div className="transUnit-details">
+        <ul className="u-listInline u-sMB-1-4">
+          <li title={fullDocName}>
+            <Row>
+              <Icon name="document"
+                size="1"
+                theme={{
+                  base: {
+                    px: 'Px(rh)'
+                  }
+                }} /> {fullDocName}
+            </Row>
+          </li>
+        </ul>
+      </div>
+    )
+  }
+
+  matchProperties (matchDetail) {
     const {
       documentName,
       documentPath,
@@ -21,8 +47,7 @@ class LocalProjectDetailPanel extends Component {
 
     // FIXME example has document name shortened with an ellipsis in the middle
     //       when it is wider than the available space.
-    const adjustedDocumentPath = documentPath || ''
-    const fullDocName = adjustedDocumentPath + documentName
+    const fullDocName = this.fullDocName(documentPath, documentName)
 
     // FIXME use standard styles when they are available
     // these values are based on variables in TransUnit/index.css but are
@@ -47,22 +72,23 @@ class LocalProjectDetailPanel extends Component {
         <ul className="u-listInline u-sMB-1-4">
           <li title={projectId}>
             <Row>
-              <Icon name="project" size="n1" /> {projectName}
+              <Icon name="project" size="1" /> {projectName}
             </Row>
           </li>
           <li>
             <Row>
-              <Icon name="version" size="n1" /> {version}
+              <Icon name="version" size="1" /> {version}
             </Row>
           </li>
           <li title={fullDocName}>
             <Row>
-              <Icon name="document"
-                size="n1" /> {fullDocName}
+              <Icon name="document" size="1" /> {fullDocName}
             </Row>
           </li>
-          <Label style={styleByMatchType[currentMatchType]}>
-            {labelTextByMatchType[currentMatchType]}</Label>
+          <li>
+            <Label style={styleByMatchType[currentMatchType]}>
+              {labelTextByMatchType[currentMatchType]}</Label>
+          </li>
         </ul>
       </div>
     )
@@ -81,20 +107,16 @@ class LocalProjectDetailPanel extends Component {
       sourceComment,
       targetComment } = matchDetail
 
-    const header = this.matchHeader(matchDetail)
     const lastChanged = new Date(lastModifiedDate)
     const currentMatchType = matchType(matchDetail)
 
     return (
       <Panel
-        header={header}
+        header={this.matchHeader(matchDetail)}
         {...props}
         bsStyle="info"
       >
-        {/* this stuff is really similar to the header, but includes a
-         non-truncated document id display. Just using the same header for
-         now as a shortcut. */}
-        {header}
+        {this.matchProperties(matchDetail)}
         <SuggestionUpdateMessage
           user={lastModifiedBy || 'Anonymous'}
           lastChanged={lastChanged}
