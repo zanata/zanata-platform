@@ -49,16 +49,20 @@
         <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
           <div class="txt--align-right">
             <ui:fragment rendered="#{cc.attrs.type ne 'alert'}">
-              <button id="confirm-cancel-button" onclick="#{cc.attrs.onresponse}(false)"
-                class="cancel button--link l--push-right-half l--push-top-quarter"
-                data-dismiss="modal">
-                #{msgs['jsf.Cancel']}
-              </button>
+              <div class="bx--inline-block">
+                <button id="confirm-cancel-button" onclick="#{cc.attrs.onresponse}(false)"
+                  class="cancel button--link l--push-right-half"
+                  data-dismiss="modal">
+                  #{msgs['jsf.Cancel']}
+                </button>
+              </div>
             </ui:fragment>
-            <button id="confirm-ok-button" class="button button--primary"
-              onclick="#{cc.attrs.onresponse}(true)">
-              #{msgs['jsf.confirmation.button.ok']}
-            </button>
+            <div class="bx--inline-block">
+              <button id="confirm-ok-button" class="button button--primary"
+                onclick="#{cc.attrs.onresponse}(true)">
+                #{msgs['jsf.confirmation.button.ok']}
+              </button>
+            </div>
           </div>
         </footer>
       </div>
