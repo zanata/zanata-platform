@@ -61,7 +61,7 @@ class ImportedTMDetailPanel extends Component {
                   }} /> {transMemorySlug}
               </Row>
             </li>
-            <Label bsStyle="info">Imported</Label>
+            <Label bsStyle="primary">Imported</Label>
           </ul>
         </div>
         <ul>
