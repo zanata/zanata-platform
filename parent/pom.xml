@@ -722,11 +722,6 @@
           <version>${surefire.version}</version>
         </plugin>
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>cobertura-maven-plugin</artifactId>
-          <version>2.4</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-surefire-report-plugin</artifactId>
           <version>${surefire.version}</version>
         </plugin>
@@ -1048,11 +1043,6 @@
       <id>allReports</id>
       <reporting>
         <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-maven-plugin</artifactId>
-          </plugin>
-
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>

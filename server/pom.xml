@@ -20,9 +20,6 @@
 
   <properties>
     <byteman.version>2.1.2</byteman.version>
-    <cobertura.total-line-rate>50</cobertura.total-line-rate>
-    <cobertura.total-branch-rate>30</cobertura.total-branch-rate>
-    <cobertura.halt.failure>false</cobertura.halt.failure>
     <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
@@ -1732,17 +1729,6 @@
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </pluginRepository>
-
-    <pluginRepository>
-      <id>cobertura-it-maven-plugin-maven2-release</id>
-      <url>http://cobertura-it-maven-plugin.googlecode.com/svn/maven2/releases</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-    </pluginRepository>
   </pluginRepositories>
 
 
@@ -1843,7 +1829,6 @@
               </allowedRepositories>
               <allowedPluginRepositories combine.children="append">
                 <allowedPluginRepository>apache.snapshots.https</allowedPluginRepository>
-                <allowedPluginRepository>cobertura-it-maven-plugin-maven2-release</allowedPluginRepository>
                 <allowedPluginRepository>jboss-public-repository-group</allowedPluginRepository>
               </allowedPluginRepositories>
             </requireNoRepositories>
@@ -1948,22 +1933,6 @@
           <artifactId>gwt-maven-plugin</artifactId>
           <!-- NB In some cases, we might not want to use gwt.version here -->
           <version>${gwt.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>cobertura-maven-plugin</artifactId>
-          <version>2.7</version>
-          <configuration>
-            <formats>
-              <format>xml</format>
-            </formats>
-            <instrumentation>
-              <ignoreMethodAnnotations>
-                <ignoreMethodAnnotation>org.zanata.util.CoverageIgnore</ignoreMethodAnnotation>
-              </ignoreMethodAnnotations>
-              <ignoreTrivial>true</ignoreTrivial>
-            </instrumentation>
-          </configuration>
         </plugin>
         <!-- change maven-release-plugin back to defaults (instead of oss-parent's settings)  -->
         <plugin>
