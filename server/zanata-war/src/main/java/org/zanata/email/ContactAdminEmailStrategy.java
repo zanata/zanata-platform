@@ -21,7 +21,7 @@
 package org.zanata.email;
 
 import com.google.common.base.Optional;
-import com.googlecode.totallylazy.collections.PersistentMap;
+import javaslang.collection.Map;
 import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
@@ -58,16 +58,16 @@ public class ContactAdminEmailStrategy extends EmailStrategy {
     }
 
     @Override
-    public PersistentMap<String, Object> makeContext(
-            PersistentMap<String, Object> genericContext,
+    public Map<String, Object> makeContext(
+            Map<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        PersistentMap<String, Object> context = super.makeContext(
+        Map<String, Object> context = super.makeContext(
                 genericContext, toAddresses);
         String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context
-                .insert("fromLoginName", fromLoginName)
-                .insert("fromName", fromName)
-                .insert("replyEmail", replyEmail)
-                .insert("htmlMessage", safeHTML);
+                .put("fromLoginName", fromLoginName)
+                .put("fromName", fromName)
+                .put("replyEmail", replyEmail)
+                .put("htmlMessage", safeHTML);
     }
 }

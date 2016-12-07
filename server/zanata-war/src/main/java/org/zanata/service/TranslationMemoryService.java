@@ -21,6 +21,7 @@
 package org.zanata.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
@@ -30,8 +31,6 @@ import org.zanata.rest.editor.dto.suggestion.Suggestion;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
-
-import com.google.common.base.Optional;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
