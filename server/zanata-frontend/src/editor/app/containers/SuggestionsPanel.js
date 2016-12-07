@@ -10,7 +10,7 @@ import {
   clearSearch,
   changeSearchText,
   diffSettingChanged,
-  showDetailForSuggestionN,
+  showDetailForSuggestionByIndex,
   toggleSearchType,
   toggleSuggestions
 } from '../actions/suggestions'
@@ -150,7 +150,7 @@ function mapDispatchToProps (dispatch) {
       dispatch(copySuggestionN(index))
     },
     showDetail: (index) => {
-      dispatch(showDetailForSuggestionN(index))
+      dispatch(showDetailForSuggestionByIndex(index))
     }
   }
 }
