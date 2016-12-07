@@ -28,22 +28,21 @@ class SuggestionDetailsModal extends Component {
     })
 
     return (
-      <div>
-        <Modal
-          show
-          onHide={this.props.onClose}>
-          <Modal.Header>
-            <Modal.Title><small><span className="pull-left">
-            Translation Memory Details</span></small></Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <PlainSuggestionContents suggestion={this.props.suggestion} />
-            <PanelGroup defaultActiveKey={0} accordion>
-              {detailPanels}
-            </PanelGroup>
-          </Modal.Body>
-        </Modal>
-      </div>)
+      <Modal
+        show
+        onHide={this.props.onClose}>
+        <Modal.Header>
+          <Modal.Title><small><span className="pull-left">
+          Translation Memory Details</span></small></Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <PlainSuggestionContents suggestion={this.props.suggestion} />
+          <PanelGroup defaultActiveKey={0} accordion>
+            {detailPanels}
+          </PanelGroup>
+        </Modal.Body>
+      </Modal>
+    )
   }
 }
 
