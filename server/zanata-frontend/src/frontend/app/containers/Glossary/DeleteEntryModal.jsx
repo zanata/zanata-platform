@@ -6,7 +6,8 @@ import {
   LoaderText,
   Icon,
   Tooltip,
-  Overlay
+  Overlay,
+  Row
 } from 'zanata-ui'
 
 class DeleteEntryModal extends Component {
@@ -46,22 +47,24 @@ class DeleteEntryModal extends Component {
           <Tooltip id='delete-glossary' title='Delete term and translations'>
             {info}
             <div className='Mt(rq)'>
-              <ButtonLink
-                atomic={{m: 'Mend(rh)'}}
-                onClick={() => handleDeleteEntryDisplay(false)}>
-                Cancel
-              </ButtonLink>
-              <ButtonRound type='danger' size='n1'
-                disabled={isDeleting}
-                onClick={() => {
-                  handleDeleteEntry(entry.id)
-                  handleDeleteEntryDisplay(false)
-                }}>
-                <LoaderText loading={isDeleting} size='n1'
-                  loadingText='Deleting'>
-                  Delete all
-                </LoaderText>
-              </ButtonRound>
+              <Row theme={{ base: {j: 'Jc(c)'} }}>
+                <ButtonLink
+                  atomic={{m: 'Mend(rh)'}}
+                  onClick={() => handleDeleteEntryDisplay(false)}>
+                  Cancel
+                </ButtonLink>
+                <ButtonRound type='danger' size='n1'
+                  disabled={isDeleting}
+                  onClick={() => {
+                    handleDeleteEntry(entry.id)
+                    handleDeleteEntryDisplay(false)
+                  }}>
+                  <LoaderText loading={isDeleting} size='n1'
+                    loadingText='Deleting'>
+                    Delete all
+                  </LoaderText>
+                </ButtonRound>
+              </Row>
             </div>
           </Tooltip>
         </Overlay>
