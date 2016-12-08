@@ -120,6 +120,7 @@ public class ServerConfigurationBean implements Serializable {
     private boolean displayUserEmail;
     private PropertyWithKey<Boolean> displayUserEmailProperty = new PropertyWithKey<Boolean>("displayUserEmail", KEY_DISPLAY_USER_EMAIL);
 
+    @EmailList
     @Getter
     @Setter
     private String logDestinationEmails;
