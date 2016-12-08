@@ -123,7 +123,7 @@ class Entry extends Component {
             ? loadingDiv
             : (<EditableText
               title={entry.srcTerm.content}
-              editable={true}
+              editable={false}
               editing={selected}>
               {entry.srcTerm.content}
             </EditableText>)
