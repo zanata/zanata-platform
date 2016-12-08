@@ -1,15 +1,21 @@
 package org.zanata.rest;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Optional;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.DynamicFeature;
+import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.ext.Provider;
 
 import javaslang.control.Either;
 import org.apache.commons.lang.StringUtils;
@@ -26,6 +32,7 @@ import org.zanata.rest.oauth.OAuthUtil;
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.AuthenticatedLiteral;
+import org.zanata.security.annotations.NoSecurityCheck;
 import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.IServiceLocator;
@@ -45,6 +52,7 @@ import com.google.common.base.MoreObjects;
  * @see org.zanata.security.annotations.CheckRole
  * @see org.zanata.security.annotations.CheckLoggedIn
  */
+// TODO rename this class to Filter since it's no longer a seam JAX-RS interceptor
 public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     private static final Logger log =
             LoggerFactory.getLogger(ZanataRestSecurityInterceptor.class);
@@ -123,6 +131,12 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             zanataIdentity.tryLogin();
         } else if (!applicationConfiguration.isAnonymousUserAllowed() ||
                 !HttpUtil.isReadMethod(context.getMethod())){
+            // special cases for path such as '/test/' or '/oauth/' are now
+            // handled by having annotation @NoSecurityCheck on those API
+            // methods/classes. ZanataRestSecurityBinder will ensure that this
+            // ContainerRequestFilter will not be called for those annotated
+            // services.
+
             // if we don't have any information to authenticate and the
             // requesting API does NOT allow anonymous access
             log.info("can not authenticate REST request: {}", restCredentials);
@@ -218,6 +232,30 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
                     .add("apiKey", apiKey)
                     .add("accessToken", accessToken)
                     .toString();
+        }
+    }
+
+    /**
+     * This will based on {@code NoSecurityCheck} annotation and only apply security
+     * to endpoints that don't have that annotation.
+     *
+     * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+     */
+    @Provider
+    @PreMatching
+    public static class ZanataRestSecurityBinder implements DynamicFeature {
+        @Inject
+        private ZanataRestSecurityInterceptor securityInterceptor;
+
+        @Override
+        public void configure(ResourceInfo resourceInfo,
+                FeatureContext featureContext) {
+            Class<?> clazz = resourceInfo.getResourceClass();
+            Method method = resourceInfo.getResourceMethod();
+            if (!method.isAnnotationPresent(NoSecurityCheck.class)
+                    && !clazz.isAnnotationPresent(NoSecurityCheck.class)) {
+                featureContext.register(securityInterceptor);
+            }
         }
     }
 }

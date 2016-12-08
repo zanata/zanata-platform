@@ -29,7 +29,7 @@ public class AnonymousUserPermissionCheckerTest {
     }
 
     @Test
-    public void willPassCheckIfItsSignInPage() {
+    public void anonymousAccessToLoginPageIsAllowed() {
         when(request.getRequestURI()).thenReturn("account/login.xhtml");
         checker.beforePhase(phaseEvent);
 
@@ -37,7 +37,7 @@ public class AnonymousUserPermissionCheckerTest {
     }
 
     @Test
-    public void willPassCheckIfItsRegisterPage() {
+    public void anonymousAccessToRegisterPageIsAllowed() {
         when(request.getRequestURI()).thenReturn("account/register.xhtml");
         checker.beforePhase(phaseEvent);
 
@@ -45,7 +45,7 @@ public class AnonymousUserPermissionCheckerTest {
     }
 
     @Test
-    public void willPassIfAnonymousAccessIsAllowed() {
+    public void anonymousAccessToUnprotectedPageIsAllowed() {
         when(request.getRequestURI()).thenReturn("home.xhtml");
         when(appConfig.isAnonymousUserAllowed()).thenReturn(true);
 
@@ -55,7 +55,7 @@ public class AnonymousUserPermissionCheckerTest {
     }
 
     @Test
-    public void willPassIfAnonymousAccessIsDisallowedAndUserIsLoggedIn() {
+    public void loggedInAccessToProtectedPageIsAllowed() {
         when(request.getRequestURI()).thenReturn("home.xhtml");
         when(appConfig.isAnonymousUserAllowed()).thenReturn(false);
         when(identity.isLoggedIn()).thenReturn(true);
@@ -65,7 +65,7 @@ public class AnonymousUserPermissionCheckerTest {
     }
 
     @Test(expected = NotLoggedInException.class)
-    public void willFailIfAnonymousAccessIsDisallowedAndUserIsNotLoggedIn() {
+    public void anonymousAccessToProtectedPageIsDenied() {
         when(request.getRequestURI()).thenReturn("home.xhtml");
         when(appConfig.isAnonymousUserAllowed()).thenReturn(false);
         when(identity.isLoggedIn()).thenReturn(false);
