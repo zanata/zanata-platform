@@ -42,8 +42,10 @@ class EditableText extends Component {
     } = this.props
 
     if (editable && editing) {
+      const cssClass = 'textInput textStateClasses ' +
+        (editable ? 'editable' : 'text')
       return (
-        <TextInput className='editable textInput textStateClasses'
+        <TextInput className={cssClass}
           {...props}
           autoFocus={this.state.focus}
           onBlur={::this.handleBlur}
@@ -55,7 +57,7 @@ class EditableText extends Component {
     const emptyText = editable ? placeholder : emptyReadOnlyText
     const text = children || emptyText
     return (
-      <Row className='textInput textStateClasses editable'
+      <Row className='textInput textStateClasses text'
         onClick={::this.handleClick} title={title}>
         {text}
       </Row>
