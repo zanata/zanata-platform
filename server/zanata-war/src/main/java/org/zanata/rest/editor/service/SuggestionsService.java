@@ -21,8 +21,6 @@
 package org.zanata.rest.editor.service;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
-import com.googlecode.totallylazy.Option;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -41,6 +39,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import java.util.List;
+import java.util.Optional;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
 import static org.zanata.webtrans.shared.rpc.HasSearchType.*;
@@ -66,20 +65,20 @@ public class SuggestionsService implements SuggestionsResource {
     public Response query(List<String> query, String sourceLocaleString,
             String transLocaleString, String searchTypeString, long textFlowTargetId) {
 
-        Option<SearchType> searchType = getSearchType(searchTypeString);
-        if (searchType.isEmpty()) {
+        Optional<SearchType> searchType = getSearchType(searchTypeString);
+        if (!searchType.isPresent()) {
             return unknownSearchTypeResponse(searchTypeString);
         }
 
-        Option<LocaleId> sourceLocale = getLocale(sourceLocaleString);
-        if (sourceLocale.isEmpty()) {
+        Optional<LocaleId> sourceLocale = getLocale(sourceLocaleString);
+        if (!sourceLocale.isPresent()) {
             return Response.status(BAD_REQUEST)
                     .entity(String.format("Unrecognized source locale: \"%s\"", sourceLocaleString))
                     .build();
         }
 
-        Option<LocaleId> transLocale = getLocale(transLocaleString);
-        if (transLocale.isEmpty()) {
+        Optional<LocaleId> transLocale = getLocale(transLocaleString);
+        if (!transLocale.isPresent()) {
             return Response.status(BAD_REQUEST)
                     .entity(String.format("Unrecognized translation locale: \"%s\"", transLocaleString))
                     .build();
@@ -87,7 +86,7 @@ public class SuggestionsService implements SuggestionsResource {
 
         Optional<Long> tft;
         if (textFlowTargetId < 0) {
-            tft = Optional.absent();
+            tft = Optional.empty();
         } else {
             tft = Optional.of(textFlowTargetId);
         }
@@ -108,12 +107,12 @@ public class SuggestionsService implements SuggestionsResource {
      * @param localeString used to look up the locale
      * @return a wrapped LocaleId if the given string matches one, otherwise an empty option.
      */
-    private Option<LocaleId> getLocale(String localeString) {
+    private Optional<LocaleId> getLocale(String localeString) {
         @Nullable HLocale hLocale = localeService.getByLocaleId(localeString);
         if (hLocale == null) {
-            return Option.none();
+            return Optional.empty();
         }
-        return Option.option(hLocale.getLocaleId());
+        return Optional.of(hLocale.getLocaleId());
     }
 
     /**
@@ -122,13 +121,13 @@ public class SuggestionsService implements SuggestionsResource {
      * @param searchTypeString used to look up the search type. Case insensitive.
      * @return A wrapped SearchType if the given string matches one, otherwise an empty option.
      */
-    private Option<SearchType> getSearchType(String searchTypeString) {
+    private Optional<SearchType> getSearchType(String searchTypeString) {
         for (SearchType type : SearchType.values()) {
             if (type.name().equalsIgnoreCase(searchTypeString)) {
-                return Option.option(type);
+                return Optional.of(type);
             }
         }
-        return Option.none();
+        return Optional.empty();
     }
 
     /**

@@ -193,7 +193,7 @@ public class RegisterAction implements Serializable {
         facesMessages.addGlobal(message);
 
         conversation.close();
-        return "/home.xhtml";
+        return "/account/login.xhtml";
     }
 
     public boolean isValid() {

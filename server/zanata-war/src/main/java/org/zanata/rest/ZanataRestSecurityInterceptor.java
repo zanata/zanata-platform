@@ -11,6 +11,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import javaslang.control.Either;
 import org.apache.commons.lang.StringUtils;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -31,7 +32,6 @@ import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
-import com.googlecode.totallylazy.Either;
 
 /**
  * This class is responsible for checking for all REST requests:
@@ -109,13 +109,13 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
                         .build());
             }
         } else if (restCredentials.hasOAuthToken()) {
-            Either<String, Response> usernameOrError =
+            Either<Response, String> usernameOrError =
                 getAuthenticatedUsernameOrError();
-            if (usernameOrError.isRight()) {
-                context.abortWith(usernameOrError.right());
+            if (usernameOrError.isLeft()) {
+                context.abortWith(usernameOrError.getLeft());
                 return;
             }
-            String username = usernameOrError.left();
+            String username = usernameOrError.get();
             zanataIdentity.getCredentials().setUsername(username);
             zanataIdentity.setRequestUsingOAuth(true);
             // login will always success since the check was done above
@@ -132,7 +132,7 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
         }
     }
 
-    private Either<String, Response> getAuthenticatedUsernameOrError() {
+    private Either<Response, String> getAuthenticatedUsernameOrError() {
 
         Optional<String> usernameOpt;
         Optional<String> accessTokenOpt =
@@ -144,13 +144,12 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             log.info(
                     "Bad OAuth request, invalid or expired tokens: access token: {}",
                     accessTokenOpt);
-            return Either.right(buildUnauthorizedResponse(
+            return Either.left(buildUnauthorizedResponse(
                     "Bad OAuth request, invalid or expired tokens: access token [" +
                             accessTokenOpt + "]"));
         }
         String username = usernameOpt.get();
-        return Either.left(username);
-
+        return Either.right(username);
     }
 
     private Response buildUnauthorizedResponse(String message) {

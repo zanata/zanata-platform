@@ -20,11 +20,11 @@
  */
 package org.zanata.service;
 
-import com.google.common.base.Optional;
 import org.zanata.common.LocaleId;
-import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+
+import java.util.Optional;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>

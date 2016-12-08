@@ -53,7 +53,7 @@ public class RegisterPage extends CorePage {
     private By emailField = By.id("loginForm:email:input:email");
     public By usernameField = By.id("loginForm:username:input:username");
     private By passwordField = By.id("loginForm:passwordField:input:password");
-    private By signUpButton = By.xpath("//input[@value='Sign Up']");
+    private By signUpButton = By.xpath("//input[@value='Sign up']");
     private By showHideToggleButton = By.className("js-form-password-toggle");
     private By loginLink = By.linkText("Log In");
     private By titleLabel = By.className("heading--sub");
@@ -86,11 +86,10 @@ public class RegisterPage extends CorePage {
         return new RegisterPage(getDriver());
     }
 
-    // TODO: Add a "signup success" page
-    public HomePage register() {
+    public SignInPage register() {
         log.info("Click Sign Up");
         clickElement(signUpButton);
-        return new HomePage(getDriver());
+        return new SignInPage(getDriver());
     }
 
     public RegisterPage registerFailure() {
