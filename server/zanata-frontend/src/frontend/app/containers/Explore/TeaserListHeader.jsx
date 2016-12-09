@@ -55,12 +55,14 @@ const TeaserListHeader = ({
         <div className='Mstart(rh) C(pri) D(f) Ai(c)'>
           <Button bsStyle='link' disabled={currentPage === 1}
             onClick={() => { updatePage(type, currentPage, totalPage, false) }}>
-            <Icon name='chevron-left' size='1' />
+            <Icon theme={{ base: { va: 'Va(sub)' } }}
+              name='chevron-left' size='1' />
           </Button>
           <span className='C(muted) Mx(re)'>{currentPage} of {totalPage}</span>
           <Button bsStyle='link' disabled={currentPage === totalPage}
             onClick={() => { updatePage(type, currentPage, totalPage, true) }}>
-            <Icon name='chevron-right' size='1' />
+            <Icon theme={{ base: { va: 'Va(sub)' } }}
+              name='chevron-right' size='1' />
           </Button>
         </div>
       )}
