@@ -35,7 +35,7 @@ class DeleteAllEntriesModal extends Component {
               Are you sure you want to delete&nbsp;
               <strong>all entries</strong>&nbsp;?
             </p>
-            <div className='pull-right'>
+            <span className='two-spaced'>
               <Button bsStyle='default'
                 onClick={() => handleDeleteAllEntriesDisplay(false)}>
                 Cancel
@@ -48,7 +48,7 @@ class DeleteAllEntriesModal extends Component {
                   Delete
                 </LoaderText>
               </Button>
-            </div>
+            </span>
           </Tooltip>
         </Overlay>
         <Button bsStyle='link' type='button'
