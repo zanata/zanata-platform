@@ -18,27 +18,39 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.service;
+package org.zanata.util;
 
-import java.time.Instant;
-
-import org.zanata.rest.dto.JobStatus;
+import javaslang.API;
 
 /**
+ * Stand-ins for some of Javaslang 2.1's methods
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @see API
  */
-public class MockJobStatusResource implements JobStatusResource {
-    @Override
-    public JobStatus getJobStatus(String jobId) {
-        Instant time = Instant.now();
-        JobStatus jobStatus = new JobStatus("1");
-        jobStatus.setCurrentItem(100);
-        jobStatus.setTotalItems(100);
-        jobStatus.setStatusCode(JobStatus.JobStatusCode.Finished);
-//        jobStatus.setEstimatedCompletionTime(time.plusSeconds(1));
-        jobStatus.setEstimatedRemainingTimeMillis(1000L);
-        jobStatus.getMessages().add(
-                "Job complete for jobId: " + jobId);
-        return jobStatus;
+public class JavaslangNext {
+    private JavaslangNext() {
     }
+
+    /**
+     * A temporary replacement for an implementation used during prototyping.
+     * @param <T> The result type of the missing implementation.
+     * @return always throws an exception
+     * @throws RuntimeException when called
+     */
+    public static <T> T TODO() {
+        throw new RuntimeException("Not Implemented: An implementation is missing.");
+    }
+
+    /**
+     * A temporary replacement for an implementation used during prototyping.
+     * @param <T> The result type of the missing implementation.
+     * @param message An error message
+     * @return always throws an exception
+     * @throws RuntimeException when called
+     */
+    public static <T> T TODO(String message) {
+        throw new RuntimeException("Not Implemented: " + message);
+    }
+
+    // TODO bring in Tuple, [Checked]Function helpers?
 }

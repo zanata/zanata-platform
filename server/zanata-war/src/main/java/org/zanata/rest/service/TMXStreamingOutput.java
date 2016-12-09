@@ -56,19 +56,18 @@ import com.google.common.collect.PeekingIterator;
 @ParametersAreNonnullByDefault
 @Slf4j
 public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
-    private final @Nonnull
-    Iterator<T> tuIter;
+    private final @Nonnull Iterator<T> transUnitIterator;
     private final TMXExportStrategy<T> exportStrategy;
     private final Closeable closeable;
     private final String jobName;
 
-    private TMXStreamingOutput(String jobName, Iterator<T> tuIter,
+    private TMXStreamingOutput(String jobName, Iterator<T> transUnitIterator,
             TMXExportStrategy<T> exportTUStrategy, Closeable closeable) {
         this.jobName = jobName;
-        this.tuIter = tuIter;
+        this.transUnitIterator = transUnitIterator;
         this.exportStrategy = exportTUStrategy;
         this.closeable =
-                (Closeable) (tuIter instanceof Closeable ? tuIter
+                (Closeable) (transUnitIterator instanceof Closeable ? transUnitIterator
                         : NullCloseable.INSTANCE);
     }
 
@@ -76,7 +75,7 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
      * Constructs an instance which will write the translation units using the
      * specified export strategy.
      *
-     * @param tuIter
+     * @param transUnitIterator
      *            an iterator over translation units to be exported. It will be
      *            closed after write() is called, or call close() to close it
      *            earlier.
@@ -84,9 +83,9 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
      *            strategy to use when converting from translation units into
      *            TMX.
      */
-    public TMXStreamingOutput(String jobName, CloseableIterator<T> tuIter,
+    public TMXStreamingOutput(String jobName, CloseableIterator<T> transUnitIterator,
             TMXExportStrategy<T> exportTUStrategy) {
-        this(jobName, tuIter, exportTUStrategy, tuIter);
+        this(jobName, transUnitIterator, exportTUStrategy, transUnitIterator);
     }
 
     /**
@@ -129,7 +128,7 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
         try {
             log.info("streaming output started for: {}", jobName);
             @SuppressWarnings("null")
-            PeekingIterator<T> iter = Iterators.peekingIterator(tuIter);
+            PeekingIterator<T> iter = Iterators.peekingIterator(transUnitIterator);
             // Fetch the first result, so that we can fail fast, before
             // writing any output. This should enable RESTEasy to return an
             // error instead of simply aborting the output stream.

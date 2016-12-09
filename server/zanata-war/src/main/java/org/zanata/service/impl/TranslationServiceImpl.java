@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import static com.google.common.base.Throwables.throwIfUnchecked;
 import static org.zanata.transaction.TransactionUtil.runInTransaction;
 
 import java.text.MessageFormat;
@@ -545,31 +546,27 @@ public class TranslationServiceImpl implements TranslationService {
     // within the method itself.
     @Async
     public
-    Future<List<String>> translateAllInDocAsync(String projectSlug,
+    Future<List<String>> translateAllInDocWithLockAsync(String projectSlug,
             String iterationSlug, String docId, LocaleId locale,
             TranslationsResource translations, Set<String> extensions,
-            MergeType mergeType, boolean assignCreditToUploader, boolean lock,
+            MergeType mergeType, boolean assignCreditToUploader,
             AsyncTaskHandle handle, TranslationSourceType translationSourceType) {
-        // Lock this document for push
-        Lock transLock = null;
-        if (lock) {
-            transLock =
-                    new Lock(projectSlug, iterationSlug, docId, locale, "push");
-            lockManagerServiceImpl.attain(transLock);
-        }
-
-        List<String> messages = Lists.newArrayList();
         try {
-            messages =
-                    this.translateAllInDoc(projectSlug, iterationSlug, docId,
-                            locale, translations, extensions, mergeType,
-                            assignCreditToUploader, handle, translationSourceType);
-        } finally {
-            if (lock) {
-                lockManagerServiceImpl.release(transLock);
-            }
+            // Lock this document for push
+            Lock transLock =
+                    new Lock(projectSlug, iterationSlug, docId, locale, "push");
+            return lockManagerServiceImpl.tryExecuteWithLock(transLock, () -> {
+                List<String> messages = this.translateAllInDoc(
+                        projectSlug, iterationSlug, docId, locale,
+                        translations, extensions, mergeType,
+                        assignCreditToUploader, handle,
+                        translationSourceType);
+                return AsyncTaskResult.taskResult(messages);
+            });
+        } catch (Exception e) {
+            throwIfUnchecked(e);
+            throw new RuntimeException(e);
         }
-        return AsyncTaskResult.taskResult(messages);
     }
 
     /**

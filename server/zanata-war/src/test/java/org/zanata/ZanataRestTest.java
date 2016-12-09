@@ -46,7 +46,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     private SystemPropertyConfigStore systemPropertyConfigStore;
 
     @Before
-    public final void prepareRestEasyFramework() {
+    public void prepareRestEasyFramework() {
         MockitoAnnotations.initMocks(this);
         when(systemPropertyConfigStore.getEnabledAuthenticationPolicies())
                 .thenReturn(
@@ -104,7 +104,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     }
 
     @After
-    public final void cleanUpRestEasyFramework() {
+    public void cleanUpRestEasyFramework() {
         exceptionMappers.clear();
         resources.clear();
         providers.clear();
@@ -145,7 +145,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
      *
      * @return a ClientRequestFactory configured for your environment.
      */
-    protected final ClientRequestFactory getClientRequestFactory() {
+    protected ClientRequestFactory getClientRequestFactory() {
         return clientRequestFactory;
     }
 
@@ -158,7 +158,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
      * @return a URI suitable for passing to ClientRequestFactory for the
      *         resource being tested.
      */
-    protected final URI createBaseURI(String resourcePath) {
+    protected URI createBaseURI(String resourcePath) {
         return MOCK_BASE_URI.resolve(resourcePath);
     }
 }

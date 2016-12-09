@@ -43,7 +43,8 @@ public class JsonAdapter extends OkapiFilterAdapter {
 
     @Override
     protected void updateParamsWithDefaults(IParameters params) {
+        // json Parameters
         Parameters p = (Parameters) params;
-        p.fromString("extractIsolatedStrings.b=true");
+        p.setExtractStandalone(true);
     }
 }

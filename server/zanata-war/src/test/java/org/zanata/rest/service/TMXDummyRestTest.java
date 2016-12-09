@@ -1,31 +1,83 @@
 package org.zanata.rest.service;
 
+import static org.mockito.Answers.RETURNS_SMART_NULLS;
+import static org.mockito.Mockito.when;
+import static org.zanata.util.CloseableIterator.closeable;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Collection;
+
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
 
+import org.apache.commons.io.IOUtils;
 import org.hibernate.Session;
+import org.jboss.resteasy.client.ClientResponse;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.TextFlowStreamingDAO;
+import org.zanata.dao.TransMemoryDAO;
+import org.zanata.dao.TransMemoryStreamingDAO;
+import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.LocaleService;
+import org.zanata.service.LockManagerService;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.tmx.TransMemoryAdapter;
+import org.zanata.util.CloseableIterator;
 
 @RunWith(CdiUnitRunner.class)
 public class TMXDummyRestTest extends ZanataRestTest {
 
     @Produces
-    @Mock
+    @Mock(answer = RETURNS_SMART_NULLS)
     private ZanataIdentity mockIdentity;
 
+    @Produces
+    @Mock(answer = RETURNS_SMART_NULLS)
+    TransMemoryAdapter tmAdapter;
+
+    @Produces
+    @Mock(answer = RETURNS_SMART_NULLS)
+    LocaleService localeService;
+
+    @Produces
+    @Mock(answer = RETURNS_SMART_NULLS)
+    LockManagerService lockManagerServiceImpl;
+
+    @Produces
+    @Mock
+    TextFlowStreamingDAO textFlowStreamDAO;
+
+    @Produces
+    @Mock
+    TransMemoryStreamingDAO transMemoryStreamingDAO;
+
+    @Produces
+    @Mock
+    TransMemoryDAO transMemoryDAO;
+
+    @Produces
+    @Mock(answer = RETURNS_SMART_NULLS)
+    RestSlugValidator restSlugValidator;
+
     @Inject
-    private TranslationMemoryResource tmService;
+    private TranslationMemoryResourceService tmService;
+
+    // our proxy for invoking the mock REST resource
+    private TranslationMemoryResource tmResource;
+    private HProjectIteration projVer;
 
     @Override
     @Produces
@@ -40,11 +92,8 @@ public class TMXDummyRestTest extends ZanataRestTest {
 
     @Before
     public void createClient() {
-        MockitoAnnotations.initMocks(this);
-        this.tmService =
-                getClientRequestFactory().createProxy(
-                        TranslationMemoryResource.class,
-                        createBaseURI("/rest/tm"));
+        this.tmResource = getClientRequestFactory()
+                .createProxy(TranslationMemoryResource.class, "");
     }
 
     @Override
@@ -66,19 +115,25 @@ public class TMXDummyRestTest extends ZanataRestTest {
 
     @Override
     protected void prepareResources() {
-//        TranslationMemoryResourceService tmService =
-//                seam.autowire(TranslationMemoryResourceService.class);
-//        resources.add(seam.autowire(TextFlowStreamingDAO.class));
         resources.add(tmService);
     }
 
+    // TODO: To run, this test needs more mock interactions defined.
+    // TODO: Then it needs to include assertions about the result.
     @Ignore
     @Test
-    public void testGetTmx() {
-        Response response =
-                tmService.getProjectIterationTranslationMemory("iok", "6.4",
-                        new LocaleId("as"));
-        System.out.println(response.getEntity());
+    @InRequestScope
+    public void testGetTmx() throws IOException {
+        projVer = new HProjectIteration();
+        // TODO set up test data
+        Collection<HTextFlow> textFlows = Arrays.asList();
+        CloseableIterator<HTextFlow> textFlowIter = closeable(textFlows.iterator());
+        when(this.textFlowStreamDAO.findTextFlowsByProjectIteration(projVer)).thenReturn(textFlowIter);
+        ClientResponse<InputStream> response =
+            (ClientResponse<InputStream>) tmResource.getProjectIterationTranslationMemory("iok", "6.4",
+                    new LocaleId("as"));
+        String entity = IOUtils.toString(response.getEntity(InputStream.class), StandardCharsets.UTF_8);
+        System.out.println(entity);
     }
 
 }

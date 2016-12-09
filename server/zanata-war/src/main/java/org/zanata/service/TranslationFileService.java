@@ -22,16 +22,15 @@ package org.zanata.service;
 
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.common.DocumentType;
+import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-import com.google.common.base.Optional;
-
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -114,6 +113,7 @@ public interface TranslationFileService {
     /**
      * Extracts the translatable strings from a document file to a usable form.
      *
+     * @param sourceLocale
      * @param documentFile
      *            location of the document to parse
      * @param path
@@ -129,13 +129,15 @@ public interface TranslationFileService {
      *             there is an error during parsing
      */
     Resource parseAdapterDocumentFile(URI documentFile, String path,
-            String fileName, Optional<String> params, Optional<String> documentType)
+            String fileName, Optional<String> params,
+            Optional<String> documentType, LocaleId sourceLocale)
             throws ZanataServiceException;
 
     /**
      * Extract the translatable strings from a new version of an existing
      * document file to a usable form.
      *
+     * @param sourceLocale
      * @param documentFile
      *            location of the document to parse
      * @param docId
@@ -150,15 +152,15 @@ public interface TranslationFileService {
      * @throws ZanataServiceException
      */
     Resource parseUpdatedAdapterDocumentFile(URI documentFile, String docId,
-            String uploadFileName, Optional<String> params, Optional<String> documentType)
+            String uploadFileName, Optional<String> params,
+            Optional<String> fileTypeName, LocaleId sourceLocale)
             throws ZanataServiceException;
 
     /**
      * Check whether a handler for the given document type is available.
      *
-     * @param fileNameOrExtension
-     *            full filename with extension, or just extension
-     * @return
+     * @param type
+     * @return true if there is an adapter
      */
     boolean hasAdapterFor(DocumentType type);
 
@@ -169,27 +171,15 @@ public interface TranslationFileService {
     Set<DocumentType> getSupportedDocumentTypes();
 
     /**
-     * Persist an input stream to a temporary file.
+     * Persists an input stream to a temporary file.
      *
-     * The created file should be removed using {@link #removeTempFile(File)}
-     * when it is no longer required.
+     * The created file should be deleted when it is no longer required.
      *
      * @param fileContents
      *            stream of bytes to persist
      * @return reference to the created file
      */
     File persistToTempFile(InputStream fileContents);
-
-    /**
-     * Attempts to remove a temporary file from disk.
-     *
-     * If the file cannot be removed, it is marked for removal on application
-     * exit.
-     *
-     * @param tempFile
-     *            file to remove
-     */
-    void removeTempFile(File tempFile);
 
     String getSourceFileExtension(String projectSlug, String iterationSlug,
             String docPath, String docName);

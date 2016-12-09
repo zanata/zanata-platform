@@ -24,6 +24,10 @@ public final class URIHelper {
                 + RestUtil.convertToDocumentURIId(documentId);
     }
 
+    /**
+     * @see RestUtil#convertToDocumentURIId(String)
+     */
+    // just converts commas to slashes
     public static String convertFromDocumentURIId(String uriId) {
         return uriId.replace(',', '/');
     }
@@ -31,8 +35,8 @@ public final class URIHelper {
     /**
      * @deprecated Use {@link RestUtil#convertToDocumentURIId(String)} instead
      */
-    public static String convertToDocumentURIId(String id) {
-        return RestUtil.convertToDocumentURIId(id);
+    public static String convertToDocumentURIId(String docId) {
+        return RestUtil.convertToDocumentURIId(docId);
     }
 
 }

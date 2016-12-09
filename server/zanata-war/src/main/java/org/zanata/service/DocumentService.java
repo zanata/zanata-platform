@@ -37,7 +37,8 @@ public interface DocumentService {
     public static final int DOC_EVENT_MILESTONE= 100;
 
     /**
-     * Creates or Updates a document.
+     * Creates or Updates a document with locking. No other document save
+     * will be allowed for the same document until this invocation has finished.
      *
      * @param projectSlug
      *            The document's project id.
@@ -52,14 +53,10 @@ public interface DocumentService {
      *            Whether to copy translations from other projects or not. A
      *            true value does not guarantee that this will happen, it is
      *            only a suggestion.
-     * @param lock
-     *            If true, no other document save will be allowed for the same
-     *            document until this invocation has finished.
      * @return The created / updated document
      */
-    public HDocument saveDocument(String projectSlug, String iterationSlug,
-            Resource sourceDoc, Set<String> extensions, boolean copyTrans,
-            boolean lock);
+    public HDocument saveDocumentWithLock(String projectSlug, String iterationSlug,
+            Resource sourceDoc, Set<String> extensions, boolean copyTrans);
 
     /**
      * Creates or Updates a document.
@@ -91,15 +88,14 @@ public interface DocumentService {
      * @param sourceDoc
      * @param extensions
      * @param copyTrans
-     * @param lock
      * @return A future object that will eventually contain the result of the
      * document save.
-     * @see {@link org.zanata.service.DocumentService#saveDocument(String, String, org.zanata.rest.dto.resource.Resource, java.util.Set, boolean, boolean)}
+     * @see {@link org.zanata.service.DocumentService#saveDocumentWithLock(String, String, org.zanata.rest.dto.resource.Resource, java.util.Set, boolean)}
      */
-    public Future<HDocument> saveDocumentAsync(String projectSlug,
+    public Future<HDocument> saveDocumentWithLockAsync(String projectSlug,
             String iterationSlug,
             Resource sourceDoc, Set<String> extensions, boolean copyTrans,
-            boolean lock, AsyncTaskHandle<HDocument> handle);
+            AsyncTaskHandle<HDocument> handle);
 
     /**
      * Makes a document obsolete.

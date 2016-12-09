@@ -22,6 +22,7 @@ package org.zanata.rest;
 
 import java.io.InputStream;
 import java.io.Serializable;
+import javax.annotation.Nonnull;
 import javax.ws.rs.FormParam;
 
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
@@ -51,11 +52,6 @@ public class DocumentFileUploadForm implements Serializable {
     @PartType("application/octet-stream")
     private transient InputStream fileStream;
 
-    /**
-     * This should correspond to a FileTypeName (or DocumentType on the server)
-     * @see org.zanata.common.FileTypeName
-     * @see org.zanata.common.DocumentType
-     */
     @FormParam("type")
     @PartType("text/plain")
     private String fileType;
@@ -92,10 +88,20 @@ public class DocumentFileUploadForm implements Serializable {
         this.fileStream = fileStream;
     }
 
+    /**
+     * This should correspond to a FileTypeName (or DocumentType on the server)
+     * @see org.zanata.common.FileTypeName
+     * @see org.zanata.common.DocumentType
+     */
     public String getFileType() {
         return fileType;
     }
 
+    /**
+     * This should correspond to a FileTypeName (or DocumentType on the server)
+     * @see org.zanata.common.FileTypeName
+     * @see org.zanata.common.DocumentType
+     */
     public void setFileType(String fileType) {
         this.fileType = fileType;
     }

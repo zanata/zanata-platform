@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.MapMaker;
 import lombok.extern.slf4j.Slf4j;
 
@@ -70,6 +69,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.zanata.common.DocumentType.GETTEXT;
@@ -158,7 +158,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
                 return parseAdapterTranslationFile(tempFile, projectSlug,
                         iterationSlug, docId, localeId, fileName, documentType);
             } finally {
-                removeTempFile(tempFile);
+                FileUtil.tryDeleteFile(tempFile);
             }
         } else if (fileName.endsWith(".po")) {
             return parsePoFile(fileContents, projectSlug, iterationSlug, docId);
@@ -207,10 +207,10 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         if (doc != null) {
             HRawDocument rawDoc = doc.getRawDocument();
             if (rawDoc != null) {
-                return Optional.fromNullable(rawDoc.getAdapterParameters());
+                return Optional.ofNullable(rawDoc.getAdapterParameters());
             }
         }
-        return Optional.<String> absent();
+        return Optional.empty();
     }
 
 
@@ -250,27 +250,26 @@ public class TranslationFileServiceImpl implements TranslationFileService {
     @Override
     public Resource parseAdapterDocumentFile(URI documentFile,
             String documentPath, String fileName, Optional<String> params,
-            Optional<String> documentType) throws ZanataServiceException {
+            Optional<String> documentType, LocaleId sourceLocale) throws ZanataServiceException {
         return parseUpdatedAdapterDocumentFile(documentFile,
             FileUtil.convertToValidPath(documentPath) + fileName, fileName,
-            params, documentType);
+            params, documentType, sourceLocale);
     }
 
     @Override
     public Resource parseUpdatedAdapterDocumentFile(URI documentFile,
-            String docId, String fileName, Optional<String> params,
-            Optional<String> documentType) throws ZanataServiceException {
-        FileFormatAdapter adapter = getAdapterFor(documentType, fileName);
-        Resource doc;
+            String docId, String uploadFileName, Optional<String> params,
+            Optional<String> fileTypeName, LocaleId sourceLocale) throws ZanataServiceException {
+        FileFormatAdapter adapter = getAdapterFor(fileTypeName, uploadFileName);
         try {
-            doc = adapter.parseDocumentFile(documentFile, new LocaleId(
-                            "en"), params);
+            Resource doc = adapter.parseDocumentFile(
+                    documentFile, sourceLocale, params);
+            doc.setName(docId);
+            return doc;
         } catch (FileFormatAdapterException e) {
             throw new ZanataServiceException(
-                    "Error parsing document file: " + fileName, e);
+                    "Error parsing document file: " + uploadFileName, e);
         }
-        doc.setName(docId);
-        return doc;
     }
 
     private TranslationsResource parsePoFile(InputStream fileContents,
@@ -324,7 +323,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         String extension = FilenameUtils.getExtension(fileNameOrExtension);
         if (extension == null) {
             throw new RuntimeException(
-                    "Cannot find adapter for null filename or extension.");
+                    "Cannot find adapter for null filename.");
         }
         DocumentType documentType = DocumentType.getByName(extension);
         if (documentType == null) {
@@ -365,27 +364,25 @@ public class TranslationFileServiceImpl implements TranslationFileService {
     /**
      * Get an appropriate adapter for a document type or file name.
      *
-     * @param documentType
+     * @param fileTypeName
      * @param fileName
      * @return adapter for given documentType if present, otherwise return adapter
      * with given fileName.
      */
-    private FileFormatAdapter getAdapterFor(Optional<String> documentType,
+    private FileFormatAdapter getAdapterFor(Optional<String> fileTypeName,
         @Nonnull String fileName) {
-        if (documentType.isPresent() && StringUtils.isNotEmpty(
-                documentType.get())) {
-            DocumentType docType = DocumentType.valueOf(documentType.get());
-            return docType != null ? getAdapterFor(docType)
-                : getAdapterFor(fileName);
+        if (fileTypeName.isPresent() && StringUtils.isNotEmpty(
+                fileTypeName.get())) {
+            DocumentType docType = DocumentType.valueOf(fileTypeName.get());
+            return getAdapterFor(docType);
         }
         return getAdapterFor(fileName);
     }
 
     @Override
-    public File persistToTempFile(InputStream fileContents) {
-        File tempFile = null;
+    public @Nonnull File persistToTempFile(InputStream fileContents) {
         try {
-            tempFile = File.createTempFile("zupload", ".tmp");
+            File tempFile = File.createTempFile("zupload", ".tmp");
             byte[] buffer = new byte[4096]; // To hold file contents
             int bytesRead;
             FileOutputStream output = new FileOutputStream(tempFile);
@@ -393,23 +390,11 @@ public class TranslationFileServiceImpl implements TranslationFileService {
                 output.write(buffer, 0, bytesRead);
             }
             output.close();
+            return tempFile;
         } catch (IOException e) {
             throw new ZanataServiceException(
                     "Error while writing uploaded file to temporary location",
                     e);
-        }
-        return tempFile;
-    }
-
-    @Override
-    public void removeTempFile(File tempFile) {
-        if (tempFile != null) {
-            if (!tempFile.delete()) {
-                log.warn(
-                        "unable to remove temporary file {}, marking for delete on exit",
-                        tempFile.getAbsolutePath());
-                tempFile.deleteOnExit();
-            }
         }
     }
 

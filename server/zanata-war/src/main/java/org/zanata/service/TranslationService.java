@@ -78,7 +78,9 @@ public interface TranslationService {
     /**
      * Translates all text flows in a document. Implementations of this method
      * should run in a separate thread and use the returned
-     * {@link java.util.concurrent.Future} to return a value.
+     * {@link java.util.concurrent.Future} to return a value. No other caller
+     * will be allowed to translate All for the same project, iteration,
+     * document and locale.
      *
      * @param projectSlug
      *            The project to translate
@@ -99,18 +101,15 @@ public interface TranslationService {
      * @param assignCreditToUploader
      *           The translator field for all uploaded translations will be
      *           set to the user who performs the upload.
-     * @param lock
-     *            If true, no other caller will be allowed to translate All for
-     *            the same project, iteration, document and locale.
-     * @see TranslationService#translateAllInDoc(String, String, String,
+     * @see TranslationService#translateAllInDocWithLock(String, String, String,
      * org.zanata.common.LocaleId, org.zanata.rest.dto.resource.TranslationsResource,
      * java.util.Set, org.zanata.common.MergeType,
      * org.zanata.async.AsyncTaskHandle)
      */
-    public Future<List<String>> translateAllInDocAsync(String projectSlug,
+    public Future<List<String>> translateAllInDocWithLockAsync(String projectSlug,
             String iterationSlug, String docId, LocaleId locale,
             TranslationsResource translations, Set<String> extensions,
-            MergeType mergeType, boolean assignCreditToUploader, boolean lock,
+            MergeType mergeType, boolean assignCreditToUploader,
             AsyncTaskHandle handle, TranslationSourceType translationSourceType);
 
     /**

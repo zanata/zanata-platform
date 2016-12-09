@@ -31,9 +31,28 @@ import java.lang.annotation.Target;
  * Marks a method as running asynchronously. This means the actual method
  * execution will happen in its own thread. Methods marked with this annotation
  * must return an object of type {@link java.util.concurrent.Future} or void.
- *
+ * <p>
+ *     If the method returns a Future, an AsyncTaskResult will be created
+ *     (unless there is an AsyncTaskHandleParameter with its own
+ *     AsyncTaskResult; see below) and returned to the caller immediately.
+ *     When the method is invoked in a worker thread, the Future it returns
+ *     (eg an AsyncTaskResult) will have its value extracted and passed to
+ *     the caller's Future.
+ * </p>
+ * <p>
+ *     If the method has an AsyncTaskHandle parameter, its
+ *     Future/AsyncTaskResult will be returned to the client, and the handle
+ *     can also be used by the method to provide progress information.
+ * </p>
+ * <p>
+ *     If the method both accepts an AsyncTaskHandle and returns a Future,
+ *     it gets really confusing. It's probably better to return void in that
+ *     case.
+ *     TODO document what happens, or just disallow it.
+ * </p>
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @see AsyncMethodInterceptor
  */
 @InterceptorBinding
 @Target({ ElementType.METHOD, ElementType.TYPE })

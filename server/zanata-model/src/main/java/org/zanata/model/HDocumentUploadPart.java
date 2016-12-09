@@ -36,8 +36,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@NoArgsConstructor
-// is this necessary?
 public class HDocumentUploadPart implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -48,6 +46,9 @@ public class HDocumentUploadPart implements Serializable {
     private HDocumentUpload upload;
     @Setter
     private Blob content;
+
+    public HDocumentUploadPart() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

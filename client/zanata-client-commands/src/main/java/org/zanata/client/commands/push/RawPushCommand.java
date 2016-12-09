@@ -43,6 +43,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.ws.rs.client.ResponseProcessingException;
 
@@ -415,8 +416,11 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         for (final String localDocName : docsToPush) {
             try {
                 final String srcExtension = FilenameUtils.getExtension(localDocName);
-                final FileTypeInfo fileType = getFileType(actualFileTypes,
+                final @Nullable FileTypeInfo fileType = getFileType(actualFileTypes,
                         srcExtension);
+                if (fileType == null) {
+                    throw new RuntimeException("Unable to find file type for file " + localDocName);
+                }
                 final String qualifiedDocName = qualifiedDocName(localDocName);
                 if (pushSource()) {
                     if (!getOpts().isDryRun()) {
@@ -537,22 +541,22 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
      * @throws IOException
      */
     private boolean pushSourceDocumentToServer(File sourceDir,
-            String localDocName, String qualifiedDocName, String fileType)
+            String localDocName, String qualifiedDocName, String fileTypeName)
             throws IOException {
         log.info("pushing source document [{}] to server", qualifiedDocName);
 
         File srcFile = new File(sourceDir, localDocName);
-        pushDocumentToServer(qualifiedDocName, fileType, null /*locale*/, srcFile);
+        pushDocumentToServer(qualifiedDocName, fileTypeName, null /*locale*/, srcFile);
         return true;
     }
 
     /**
      * @param docId
-     * @param fileType
+     * @param fileTypeName
      * @param locale
      * @param docFile
      */
-    private void pushDocumentToServer(String docId, String fileType,
+    private void pushDocumentToServer(String docId, @Nonnull String fileTypeName,
             @Nullable String locale, File docFile) {
         try {
             String md5hash = calculateFileMD5(docFile);
@@ -561,7 +565,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                         docFile.getAbsolutePath());
                 try (InputStream fileStream = new FileInputStream(docFile)) {
                     DocumentFileUploadForm uploadForm =
-                            generateUploadForm(true, true, fileType, md5hash,
+                            generateUploadForm(true, true, fileTypeName, md5hash,
                                     docFile.length(), fileStream);
                     uploadDocumentPart(docId, locale, uploadForm);
                 }
@@ -582,7 +586,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
                         boolean isLast = chunker.getRemainingChunks() == 0;
                         long chunkSize = chunker.currentChunkSize();
                         uploadForm =
-                                generateUploadForm(isFirst, isLast, fileType,
+                                generateUploadForm(isFirst, isLast, fileTypeName,
                                         md5hash,
                                         chunkSize, chunkStream);
                         if (!isFirst) {
@@ -606,12 +610,12 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     }
 
     private DocumentFileUploadForm generateUploadForm(boolean isFirst,
-            boolean isLast, String fileType, String md5hash, long streamSize,
+            boolean isLast, String fileTypeName, String md5hash, long streamSize,
             InputStream fileStream) {
         DocumentFileUploadForm uploadForm = new DocumentFileUploadForm();
         uploadForm.setFirst(isFirst);
         uploadForm.setLast(isLast);
-        uploadForm.setFileType(fileType);
+        uploadForm.setFileType(fileTypeName);
         uploadForm.setHash(md5hash);
         uploadForm.setSize(streamSize);
         uploadForm.setFileStream(fileStream);

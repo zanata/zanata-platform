@@ -204,4 +204,11 @@
       newDataType="varchar(255)"/>
   </changeSet>
 
+  <changeSet id="1" author="sflaniga@redhat.com">
+    <comment>Add fileSize to HRawDocument</comment>
+    <addColumn tableName="HRawDocument">
+      <column name="fileSize" type="bigint"/>
+    </addColumn>
+  </changeSet>
+
 </databaseChangeLog>

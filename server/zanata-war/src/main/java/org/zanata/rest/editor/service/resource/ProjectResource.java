@@ -8,9 +8,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.zanata.rest.service.RestConstants;
+import com.webcohesion.enunciate.metadata.rs.TypeHint;
+import org.zanata.rest.dto.Project;
 import org.zanata.rest.editor.MediaTypes;
 import org.zanata.rest.service.RestResource;
+
+import static org.zanata.rest.service.RestConstants.PROJECT_SLUG_TEMPLATE;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -18,11 +21,7 @@ import org.zanata.rest.service.RestResource;
 @Produces({ MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_JSON })
 public interface ProjectResource extends RestResource {
-
-    public static final String PROJECT_SLUG_TEMPLATE = "/{projectSlug:"
-            + RestConstants.SLUG_PATTERN + "}";
-
-    public static final String SERVICE_PATH = "/project";
+    String SERVICE_PATH = "/project";
 
     /**
      * Returns data for a single Project.
@@ -42,5 +41,6 @@ public interface ProjectResource extends RestResource {
     @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_JSON,
             MediaType.APPLICATION_JSON })
     @Path(PROJECT_SLUG_TEMPLATE)
-    public Response getProject(@PathParam("projectSlug") String projectSlug);
+    @TypeHint(Project.class)
+    Response getProject(@PathParam("projectSlug") String projectSlug);
 }

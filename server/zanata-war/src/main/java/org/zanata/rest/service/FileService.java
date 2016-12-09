@@ -28,8 +28,10 @@ import java.io.OutputStream;
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -75,7 +77,6 @@ import org.zanata.service.FileSystemService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 import org.zanata.service.TranslationFileService;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.ByteStreams;
@@ -153,7 +154,7 @@ public class FileService implements FileResource {
         Set<DocumentType> supportedDocumentTypes = translationFileServiceImpl.
                 getSupportedDocumentTypes();
         List<FileTypeInfo> docTypes = supportedDocumentTypes.stream()
-                .sorted((a, b) -> a.toString().compareTo(b.toString()))
+                .sorted(Comparator.comparing(Enum::toString))
                 .map(DocumentType::toFileTypeInfo)
                 .collect(Collectors.toList());
         Object entity = new GenericEntity<>(docTypes, genericType);
@@ -165,7 +166,9 @@ public class FileService implements FileResource {
             String docId, DocumentFileUploadForm uploadForm) {
         GlobalDocumentId id =
                 new GlobalDocumentId(projectSlug, iterationSlug, docId);
-        return sourceUploader.tryUploadSourceFile(id, uploadForm);
+        // TODO allow client to specify source lang
+        return sourceUploader.tryUploadSourceFile(id, uploadForm,
+                LocaleId.EN_US);
     }
 
     @Override
@@ -332,7 +335,7 @@ public class FileService implements FileResource {
                     translationFileServiceImpl.getAdapterFor(hRawDocument.getType());
             String rawParamString = hRawDocument.getAdapterParameters();
             Optional<String> params =
-                    Optional.<String> fromNullable(Strings
+                    Optional.ofNullable(Strings
                             .emptyToNull(rawParamString));
             StreamingOutput output =
                     new FormatAdapterStreamingOutput(uri, res, transRes,

@@ -81,9 +81,9 @@ public class AsyncTaskManager {
      * {@code Future} result.
      * @param task The task to run.
      * @param <V> The type of result expected.
-     * @return A listenable future for the expected result.
+     * @param futureResult the future which will receive the task result
      */
-    public <V> AsyncTaskResult<V> startTask(
+    public <V> void startTask(
             final @Nonnull AsyncTask<Future<V>> task,
             final @Nonnull AsyncTaskResult<V> futureResult) {
         HAccount taskOwner = ServiceLocator.instance()
@@ -126,7 +126,6 @@ public class AsyncTaskManager {
         };
 
         scheduler.execute(executableCommand);
-        return futureResult;
     }
 
     private static <V> V getReturnValue(Future<V> asyncTaskFuture)

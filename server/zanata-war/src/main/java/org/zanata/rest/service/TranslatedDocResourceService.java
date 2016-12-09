@@ -64,8 +64,7 @@ import org.zanata.service.TranslationService;
 import com.google.common.base.Optional;
 
 /**
- * This service allows clients to push and pull both source documents and
- * translations.
+ * This service allows clients to push and pull translated documents.
  */
 @RequestScoped
 @Named("translatedDocResourceService")
@@ -140,7 +139,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     public Response getTranslations(String idNoSlash, LocaleId locale,
             Set<String> extensions, boolean skeletons, String eTag) {
         log.debug("start to get translation");
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String docId = URIHelper.convertFromDocumentURIId(idNoSlash);
         HProjectIteration hProjectIteration =
                 restSlugValidator.retrieveAndCheckIteration(projectSlug,
                         iterationSlug, false);
@@ -153,7 +152,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         // Check Etag header
         EntityTag generatedEtag =
                 eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
-                        id, hLocale);
+                        docId, hLocale);
         List<String> requestedEtagHeaders =
                 headers.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
         if (requestedEtagHeaders != null && !requestedEtagHeaders.isEmpty()) {
@@ -168,7 +167,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         }
 
         HDocument document =
-                documentDAO.getByDocIdAndIteration(hProjectIteration, id);
+                documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
         if (document == null || document.isObsolete()) {
             return Response.status(Status.NOT_FOUND).build();
         }
@@ -195,7 +194,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     public
             Response deleteTranslations(String idNoSlash, LocaleId locale) {
         identity.checkPermission(getSecuredIteration().getProject(), "modify-translation");
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String docId = URIHelper.convertFromDocumentURIId(idNoSlash);
         HProjectIteration hProjectIteration =
                 restSlugValidator.retrieveAndCheckIteration(projectSlug,
                         iterationSlug, true);
@@ -205,7 +204,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
         EntityTag etag =
                 eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
-                        id, hLocale);
+                        docId, hLocale);
 
         ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
@@ -213,7 +212,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         }
 
         HDocument document =
-                documentDAO.getByDocIdAndIteration(hProjectIteration, id);
+                documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
         if (document == null || document.isObsolete()) {
             return Response.status(Status.NOT_FOUND).build();
         }
@@ -249,7 +248,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
             return Response.status(Status.BAD_REQUEST)
                     .entity("bad merge type " + merge).build();
         }
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String docId = URIHelper.convertFromDocumentURIId(idNoSlash);
 
         HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug);
@@ -259,7 +258,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
         EntityTag etag =
                 eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
-                        id, hLocale);
+                        docId, hLocale);
 
         ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
@@ -272,14 +271,14 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         // Translate
         List<String> warnings =
                 this.translationServiceImpl.translateAllInDoc(projectSlug,
-                        iterationSlug, id, locale, messageBody, extensions,
+                        iterationSlug, docId, locale, messageBody, extensions,
                         mergeType, assignCreditToUploader,
                         TranslationSourceType.API_UPLOAD);
 
         // Regenerate etag in case it has changed
         etag =
                 eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
-                        id, hLocale);
+                        docId, hLocale);
 
         log.debug("successful put translation");
         // TODO lastChanged

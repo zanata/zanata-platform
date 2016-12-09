@@ -21,9 +21,10 @@ public class JobStatus {
     private JobStatusCode statusCode;
     // ISO8601 timestamp:
     // TODO should this be remaining time instead? should it be here at all?
-    private String estimatedCompletionTime;
+//    private String estimatedCompletionTime;
     private long currentItem;
     private long totalItems;
+    private @Nullable Long estimatedRemainingTimeMillis;
     private List<String> messages = new ArrayList<>();
 
     public JobStatus() {
@@ -46,17 +47,27 @@ public class JobStatus {
         this.statusCode = statusCode;
     }
 
-    public String getEstimatedCompletionTime() {
-        return estimatedCompletionTime;
+//    public String getEstimatedCompletionTime() {
+//        return estimatedCompletionTime;
+//    }
+//
+//    public void setEstimatedCompletionTime(String estimatedCompletionTime) {
+//        this.estimatedCompletionTime = estimatedCompletionTime;
+//    }
+//
+//    @XmlTransient
+//    public void setEstimatedCompletionTime(Instant estimatedCompletionTime) {
+//        this.estimatedCompletionTime = estimatedCompletionTime.toString();
+//    }
+
+
+    public @Nullable Long getEstimatedRemainingTimeMillis() {
+        return estimatedRemainingTimeMillis;
     }
 
-    public void setEstimatedCompletionTime(String estimatedCompletionTime) {
-        this.estimatedCompletionTime = estimatedCompletionTime;
-    }
-
-    @XmlTransient
-    public void setEstimatedCompletionTime(Instant estimatedCompletionTime) {
-        this.estimatedCompletionTime = estimatedCompletionTime.toString();
+    public void setEstimatedRemainingTimeMillis(
+            @Nullable Long estimatedRemainingTimeMillis) {
+        this.estimatedRemainingTimeMillis = estimatedRemainingTimeMillis;
     }
 
     public long getCurrentItem() {
@@ -89,7 +100,8 @@ public class JobStatus {
         return "JobStatus{" +
                 "jobId=" + jobId +
                 ", statusCode='" + statusCode + '\'' +
-                ", estimatedCompletionTime='" + estimatedCompletionTime + '\'' +
+                ", estimatedRemainingTimeMillis='" + estimatedRemainingTimeMillis + '\'' +
+//                ", estimatedCompletionTime='" + estimatedCompletionTime + '\'' +
                 ", currentItem=" + currentItem +
                 ", totalItems=" + totalItems +
                 ", messages=" + messages +

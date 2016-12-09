@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Red Hat, Inc. and individual contributors
+ * Copyright 2017, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,27 +18,29 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.rest.service;
+package org.zanata.file;
 
-import java.time.Instant;
-
-import org.zanata.rest.dto.JobStatus;
+import java.io.InputStream;
+import javax.annotation.Nullable;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class MockJobStatusResource implements JobStatusResource {
-    @Override
-    public JobStatus getJobStatus(String jobId) {
-        Instant time = Instant.now();
-        JobStatus jobStatus = new JobStatus("1");
-        jobStatus.setCurrentItem(100);
-        jobStatus.setTotalItems(100);
-        jobStatus.setStatusCode(JobStatus.JobStatusCode.Finished);
-//        jobStatus.setEstimatedCompletionTime(time.plusSeconds(1));
-        jobStatus.setEstimatedRemainingTimeMillis(1000L);
-        jobStatus.getMessages().add(
-                "Job complete for jobId: " + jobId);
-        return jobStatus;
+public interface DocumentPersistService {
+    @Nullable
+    PersistedDocumentInfo getSourceDocumentForStreaming(GlobalDocumentId id);
+
+    class PersistedDocumentInfo {
+        public final String basename;
+        public final @Nullable Long size;
+        public final InputStream inputStream;
+
+        public PersistedDocumentInfo(String basename, @Nullable Long size,
+                InputStream inputStream) {
+            this.basename = basename;
+            this.size = size;
+            this.inputStream = inputStream;
+        }
     }
 }

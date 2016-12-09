@@ -36,6 +36,8 @@ import org.zanata.rest.dto.QualifiedName;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import static org.zanata.rest.service.RestConstants.PROJECT_SERVICE_PATH;
+
 /**
  * projectSlug: Project Identifier.
  *
@@ -43,14 +45,11 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Path(ProjectResource.SERVICE_PATH)
+@Path(PROJECT_SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface ProjectResource extends RestResource {
-    public static final String PROJECT_SLUG_TEMPLATE = "{projectSlug:"
-            + RestConstants.SLUG_PATTERN + "}";
-    public static final String SERVICE_PATH = "/projects/p/"
-            + PROJECT_SLUG_TEMPLATE;
+    String SERVICE_PATH = PROJECT_SERVICE_PATH;
 
     /**
      * Returns header information for a project.

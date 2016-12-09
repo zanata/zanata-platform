@@ -20,12 +20,18 @@
  */
 package org.zanata.file;
 
+import static java.util.Optional.ofNullable;
+import static com.google.common.base.Strings.emptyToNull;
 import static org.zanata.file.DocumentUploadUtil.getInputStream;
 import static org.zanata.file.DocumentUploadUtil.isSinglePart;
+import static org.zanata.util.FileUtil.tryDeleteFile;
+import static org.zanata.util.JavaslangNext.TODO;
+import static org.zanata.util.Optionals.optional;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
@@ -38,8 +44,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.async.Async;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncTaskResult;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.FileTypeName;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
@@ -60,15 +71,17 @@ import org.zanata.rest.dto.extensions.ExtensionType;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.service.AsynchronousProcessResourceService;
 import org.zanata.rest.service.VirusScanner;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Strings;
+import org.zanata.util.FileUtil;
 
 //TODO damason: add thorough unit testing
+// This warning is probably a good idea, but it's making the code hard to read:
+@SuppressWarnings({ "OptionalUsedAsFieldOrParameterType", "Guava" })
 @Slf4j
 @Dependent
 @Named("sourceDocumentUploader")
@@ -95,33 +108,78 @@ public class SourceDocumentUpload {
     @Inject
     private DocumentService documentServiceImpl;
 
-    public Response tryUploadSourceFileWithoutHash(GlobalDocumentId id,
-            DocumentFileUploadForm uploadForm) {
-        try {
-            failIfSourceUploadNotValid(id, uploadForm);
-        } catch (DocumentUploadException e) {
-            return Response.status(e.getStatusCode())
-                    .entity(new ChunkUploadResponse(e.getMessage())).build();
+
+    /**
+     * The tmpFile will be deleted unless an exception is thrown.
+     * @param id
+     * @param lang
+     * @param tmpFile
+     * @param fileTypeName
+     * @param handle
+     * @return
+     */
+    @Async
+    public @Nonnull AsyncTaskResult<HDocument> processUploadedTempFile(
+            GlobalDocumentId id, LocaleId lang, File tmpFile,
+            FileTypeName fileTypeName, AsyncTaskHandle<HDocument> handle) {
+
+        // see the following:
+        /*
+            tryUploadSourceFile: uses failIfSourceUploadNotValid, DocumentUploadUtil.failIfUploadNotValid
+            ** then tryValidatedUploadSourceFile **
+
+            also AsynchronousProcessResourceService.startSourceDocCreationOrUpdate
+         */
+        if (false) {
+            tryUploadSourceFile(null, (DocumentFileUploadForm) null, null);
+            tryValidatedUploadSourceFile(null, null, null);
+            // alternatively
+            new AsynchronousProcessResourceService().startSourceDocCreationOrUpdate(
+                    "", "", "", null, null, false);
         }
 
-        return tryValidatedUploadSourceFile(id, uploadForm);
+        Optional<String> docType = TODO("determine doctype from headers");
+//        a) processAdapterFile: uses DocumentServiceImpl.saveDocument and persistRawDocument
+        HDocument document = processAdapterFile(tmpFile, id,
+                Optional.empty(), docType, Optional.empty(), lang);
+//        OR b) parsePotFile: uses DocumentServiceImpl.saveDocument
+        tryDeleteFile(tmpFile);
+        return AsyncTaskResult.taskResult(document);
     }
 
     public Response tryUploadSourceFile(GlobalDocumentId id,
-            DocumentFileUploadForm uploadForm) {
+            FileTypeName fileType, LocaleId sourceLocale) {
         try {
-            failIfSourceUploadNotValid(id, uploadForm);
-            util.failIfHashNotPresent(uploadForm);
+            failIfSourceUploadNotValid(id, fileType);
         } catch (DocumentUploadException e) {
             return Response.status(e.getStatusCode())
                     .entity(new ChunkUploadResponse(e.getMessage())).build();
         }
 
-        return tryValidatedUploadSourceFile(id, uploadForm);
+//        return tryValidatedUploadSourceFile(id, fileType, sourceLocale);
+        return TODO();
+    }
+
+    public Response tryUploadSourceFileWithoutHash(GlobalDocumentId id,
+            DocumentFileUploadForm uploadForm, LocaleId sourceLocale) {
+        try {
+            failIfSourceUploadNotValid(id, uploadForm);
+        } catch (DocumentUploadException e) {
+            return Response.status(e.getStatusCode())
+                    .entity(new ChunkUploadResponse(e.getMessage())).build();
+        }
+
+        return tryValidatedUploadSourceFile(id, uploadForm, sourceLocale);
+    }
+
+    public Response tryUploadSourceFile(GlobalDocumentId id,
+            DocumentFileUploadForm uploadForm, LocaleId sourceLocale) {
+        util.failIfHashNotPresent(uploadForm);
+        return tryUploadSourceFileWithoutHash(id, uploadForm, sourceLocale);
     }
 
     public Response tryValidatedUploadSourceFile(GlobalDocumentId id,
-            DocumentFileUploadForm uploadForm) {
+            DocumentFileUploadForm uploadForm, LocaleId sourceLocale) {
         try {
             Optional<File> tempFile;
             int totalChunks;
@@ -140,12 +198,13 @@ public class SourceDocumentUpload {
 
             if (isSinglePart(uploadForm)) {
                 totalChunks = 1;
-                tempFile = Optional.<File> absent();
+                tempFile = Optional.<File> empty();
             } else {
                 HDocumentUpload previousParts =
                         documentUploadDAO.findById(uploadForm.getUploadId());
                 totalChunks = previousParts.getParts().size();
                 totalChunks++; // add final part
+                // FIXME ensure tmpFile is deleted in all cases (async or not)
                 tempFile =
                         Optional.of(util
                                 .combineToTempFileAndDeleteUploadRecord(
@@ -166,25 +225,27 @@ public class SourceDocumentUpload {
                     tempFile = Optional.of(util
                             .persistTempFileFromUpload(uploadForm));
                 }
-                processAdapterFile(tempFile.get(), id, uploadForm);
+                assert tempFile.isPresent();
+                processAdapterFile(tempFile.get(), id, uploadForm,
+                        sourceLocale);
             } else if (DocumentType.getByName(uploadForm.getFileType()) == DocumentType.GETTEXT) {
-                InputStream potStream = getInputStream(tempFile, uploadForm);
-                parsePotFile(potStream, id);
+                try (InputStream potStream = getInputStream(tempFile,
+                        uploadForm)) {
+                    parsePotFile(potStream, id);
+                }
             } else {
                 throw new ZanataServiceException("Unsupported source file: "
                     + id.getDocId());
             }
 
-            if (tempFile.isPresent()) {
-                tempFile.get().delete();
-            }
+            tempFile.ifPresent(File::delete);
             return sourceUploadSuccessResponse(util.isNewDocument(id),
                     totalChunks);
         } catch (DocumentUploadException e) {
             return Response.status(e.getStatusCode())
                     .entity(new ChunkUploadResponse(e.getMessage())).build();
-        } catch (FileNotFoundException e) {
-            log.error("failed to create input stream from temp file", e);
+        } catch (IOException e) {
+            log.error("error using input stream from temp file", e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
                     .build();
         }
@@ -194,10 +255,17 @@ public class SourceDocumentUpload {
             DocumentFileUploadForm uploadForm) throws DocumentUploadException {
         util.failIfUploadNotValid(id, uploadForm);
         failIfSourceUploadNotAllowed(id);
-        failIfFileTypeNotValid(uploadForm);
+        failIfFileTypeNotValid(uploadForm.getFileType());
     }
 
-    private void failIfSourceUploadNotAllowed(GlobalDocumentId id)
+    private void failIfSourceUploadNotValid(GlobalDocumentId id,
+            FileTypeName fileType) throws DocumentUploadException {
+        util.failIfUploadNotValid(id, fileType.getName());
+        failIfSourceUploadNotAllowed(id);
+        failIfFileTypeNotValid(fileType.getName());
+    }
+
+    public void failIfSourceUploadNotAllowed(GlobalDocumentId id)
             throws DocumentUploadException {
         if (!isDocumentUploadAllowed(id)) {
             throw new DocumentUploadException(Status.FORBIDDEN,
@@ -218,13 +286,12 @@ public class SourceDocumentUpload {
                 projectIteration);
     }
 
-    private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm)
+    private void failIfFileTypeNotValid(String fileType)
             throws DocumentUploadException {
-        DocumentType type = DocumentType.getByName(uploadForm.getFileType());
+        DocumentType type = DocumentType.getByName(fileType);
         if (!isSourceDocumentType(type)) {
             throw new DocumentUploadException(Status.BAD_REQUEST, "The type \""
-                    + uploadForm.getFileType()
-                    + "\" specified in form parameter 'type' "
+                    + fileType
                     + "is not valid for a source file on this server.");
         }
     }
@@ -263,7 +330,20 @@ public class SourceDocumentUpload {
     }
 
     private void processAdapterFile(@Nonnull File tempFile,
-            GlobalDocumentId id, DocumentFileUploadForm uploadForm) {
+            GlobalDocumentId id, DocumentFileUploadForm uploadForm,
+            LocaleId sourceLocale) {
+        Optional<String> params =
+                ofNullable(emptyToNull(uploadForm.getAdapterParams()));
+        Optional<String> fileTypeName = ofNullable(uploadForm.getFileType());
+        Optional<String> contentHash = ofNullable(uploadForm.getHash());
+        processAdapterFile(tempFile, id,
+                params, fileTypeName, contentHash, sourceLocale);
+    }
+
+    public HDocument processAdapterFile(@Nonnull File tempFile,
+            GlobalDocumentId id, Optional<String> requestedParams,
+            Optional<String> fileTypeName, Optional<String> contentHash,
+            LocaleId sourceLocale) {
         String name =
                 id.getProjectSlug() + ":" + id.getVersionSlug() + ":"
                         + id.getDocId();
@@ -275,51 +355,47 @@ public class SourceDocumentUpload {
                     "Uploaded file did not pass virus scan");
         }
 
-        HDocument document;
-        Optional<String> params;
-        params =
-                Optional.fromNullable(Strings.emptyToNull(uploadForm
-                        .getAdapterParams()));
-        if (!params.isPresent()) {
-            params =
-                    documentDAO.getAdapterParams(id.getProjectSlug(),
-                            id.getVersionSlug(), id.getDocId());
-        }
-        try {
-            Optional<String> docType =
-                Optional.fromNullable(uploadForm.getFileType());
+        Optional<String> adapterParams =
+                requestedParams.isPresent() ? requestedParams
+                        : documentDAO.getAdapterParams(id.getProjectSlug(),
+                                id.getVersionSlug(), id.getDocId());
 
+        try {
             Resource doc =
                     translationFileServiceImpl.parseUpdatedAdapterDocumentFile(
                             tempFile.toURI(), id.getDocId(),
-                            uploadForm.getFileType(), params, docType);
-            doc.setLang(LocaleId.EN_US);
-            // TODO Copy Trans values
-            document =
+                            // FIXME is this fileTypeName, or is it uploadFileName??
+                            fileTypeName.orElse(null), adapterParams, fileTypeName,
+                            sourceLocale);
+            // Copy Trans should be invoked by client separately after source/translation upload
+            HDocument document =
                     documentServiceImpl.saveDocument(id.getProjectSlug(),
                             id.getVersionSlug(), doc,
                             Sets.newHashSet(PotEntryHeader.ID, SimpleComment.ID), false);
+
+            DocumentType documentType =
+                    DocumentType.getByName(fileTypeName.orElse(null));
+
+            persistRawDocument(document, tempFile, contentHash, documentType,
+                    adapterParams);
+
+            // FIXME use a finally
+            FileUtil.tryDeleteFile(tempFile);
+
+            return document;
         } catch (SecurityException | ZanataServiceException e) {
             throw new DocumentUploadException(Status.INTERNAL_SERVER_ERROR,
                     e.getMessage(), e);
         }
-
-        String contentHash = uploadForm.getHash();
-        DocumentType documentType =
-                DocumentType.getByName(uploadForm.getFileType());
-
-        persistRawDocument(document, tempFile, contentHash, documentType,
-                params);
-
-        translationFileServiceImpl.removeTempFile(tempFile);
     }
 
     private void persistRawDocument(HDocument document, File rawFile,
-            String contentHash, DocumentType documentType,
+            Optional<String> contentHash, DocumentType documentType,
             Optional<String> params) {
         HRawDocument rawDocument = new HRawDocument();
         rawDocument.setDocument(document);
-        rawDocument.setContentHash(contentHash);
+        rawDocument.setContentHash(contentHash.orElse(null));
+        rawDocument.setFileSize(rawFile.length());
         rawDocument.setType(documentType);
         rawDocument.setUploadedBy(identity.getCredentials().getUsername());
         filePersistService.persistRawDocumentContentFromFile(rawDocument,

@@ -25,6 +25,7 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.List;
 
+import javax.annotation.Nonnull;
 import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceException;
 import javax.servlet.ServletConfig;
@@ -50,6 +51,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.zanata.common.DocumentType;
+import org.zanata.common.LocaleId;
+import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
 import org.zanata.file.UserFileUploadTracker;
@@ -331,22 +334,32 @@ public class MultiFileUploadServlet extends HttpServlet {
 
             try {
                 DocumentFileUploadForm form = createUploadFormForItem(item);
-                Response response = sourceUploader.tryUploadSourceFileWithoutHash(id, form);
+                // TODO allow user to specify source lang
+                Response response = sourceUploader.tryUploadSourceFileWithoutHash(id, form,
+                        LocaleId.EN_US);
                 ChunkUploadResponse responseEntity = (ChunkUploadResponse) response.getEntity();
                 errorMessage = optionalStringEmptyIsAbsent(responseEntity.getErrorMessage());
                 successMessage = optionalStringEmptyIsAbsent(responseEntity.getSuccessMessage());
+            } catch (FileFormatAdapterException e) {
+                log.warn(e.toString(), e);
+                errorMessage = Optional.of(e.getMessage());
             } catch (IOException e) {
+                log.warn(e.toString(), e);
                 errorMessage = Optional.of("could not access file data");
             } catch (OptimisticLockException e) {
+                log.warn(e.toString(), e);
                 errorMessage = concurrentUploadError;
             } catch (StaleStateException e) {
+                log.warn(e.toString(), e);
                 // this happens in the same circumstances as OptimisticLockException
                 // but is thrown because we are using hibernate directly rather than
                 // through JPA.
                 errorMessage = concurrentUploadError;
             } catch (ConstraintViolationException e) {
+                log.warn(e.toString(), e);
                 errorMessage = concurrentUploadError;
             } catch (PersistenceException e) {
+                log.warn(e.toString(), e);
                 errorMessage = Optional.of("Timed out: failed because the file took too long to process");
             }
 
@@ -357,27 +370,27 @@ public class MultiFileUploadServlet extends HttpServlet {
          * Create JSON summary of outcome of an attempt to process an item.
          */
         private JSONObject createJSONInfo(FileItem item, String docId, Optional<String> error, Optional<String> success) {
-            JSONObject jsono = new JSONObject();
+            JSONObject jsonObj = new JSONObject();
 
             try {
-                jsono.put("name", docId);
-                jsono.put("size", item.getSize());
+                jsonObj.put("name", docId);
+                jsonObj.put("size", item.getSize());
                 if (error.isPresent()) {
                     if (error.get().equals("Valid combination of username and api-key for this server were not included in the request.")) {
                         error = Optional.of("not logged in");
                     }
-                    jsono.put("error", error.get());
+                    jsonObj.put("error", error.get());
                 } else {
                     if (success.isPresent()) {
-                        jsono.put("message", success.get());
+                        jsonObj.put("message", success.get());
                     }
                     // TODO could provide REST URL for this file
-//                            jsono.put("url", "upload?getfile=" + item.getName());
+//                  jsonObj.put("url", "upload?getfile=" + item.getName());
                 }
             } catch (JSONException e) {
                 log.error("Error while generating JSON", e);
             }
-            return jsono;
+            return jsonObj;
         }
 
         /**
@@ -397,7 +410,7 @@ public class MultiFileUploadServlet extends HttpServlet {
             return form;
         }
 
-        private String getFileTypeForItem(String filename) {
+        private @Nonnull String getFileTypeForItem(String filename) {
             String extension = FilenameUtils.getExtension(filename);
             /**
              * TODO: Implement docType selection for multifile upload.
@@ -418,7 +431,11 @@ public class MultiFileUploadServlet extends HttpServlet {
                     }
                 }
             }
-            return fileType == null ? extension : fileType.name();
+            if (fileType == null) {
+                throw new FileFormatAdapterException(
+                        "unknown file type for file " + filename);
+            }
+            return fileType.name();
         }
 
 

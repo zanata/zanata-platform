@@ -27,6 +27,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import net.sf.okapi.common.*;
 import net.sf.okapi.common.exceptions.OkapiIOException;
@@ -51,7 +52,6 @@ import org.zanata.util.FileUtil;
 import org.zanata.util.HashUtil;
 
 import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
 
 /**

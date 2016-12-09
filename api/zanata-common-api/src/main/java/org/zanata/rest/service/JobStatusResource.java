@@ -28,10 +28,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import static org.zanata.rest.service.RestConstants.JOB_STATUS_SERVICE_PATH;
+
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Path("/job/{jobId}")
+@Path(JOB_STATUS_SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_JSON })
 public interface JobStatusResource {
     /**

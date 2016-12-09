@@ -21,6 +21,7 @@
 package org.zanata.util;
 
 import java.io.Closeable;
+import java.io.IOException;
 import java.util.Iterator;
 
 /**
@@ -28,4 +29,31 @@ import java.util.Iterator;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public interface CloseableIterator<E> extends Iterator<E>, Closeable {
+    /**
+     * Decorates an ordinary Iterator to satisfy the CloseableIterator
+     * interface. Note: this should only be used for ordinary iterators
+     * (eg iterating a collection in memory), because it doesn't actually
+     * close anything.
+     * @param iterator the ordinary iterator to wrap
+     * @param <E> the type of elements returned by this iterator
+     * @return the decorated Iterator
+     */
+    static <E> CloseableIterator<E> closeable(Iterator<E> iterator) {
+        return new CloseableIterator<E>() {
+            @Override
+            public void close() throws IOException {
+                // do nothing
+            }
+
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public E next() {
+                return iterator.next();
+            }
+        };
+    }
 }

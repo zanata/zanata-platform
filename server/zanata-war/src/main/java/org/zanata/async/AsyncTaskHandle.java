@@ -102,6 +102,7 @@ public class AsyncTaskHandle<V> {
         return currentProgress;
     }
 
+    // execution has started in the worker thread
     void startTiming() {
         startTime = System.currentTimeMillis();
     }

@@ -22,11 +22,11 @@
 package org.zanata.adapter;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,7 +38,6 @@ import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
-import com.google.common.base.Optional;
 import org.zanata.util.FileUtil;
 
 /**

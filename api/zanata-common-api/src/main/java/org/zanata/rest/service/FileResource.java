@@ -39,14 +39,16 @@ import org.zanata.rest.dto.ChunkUploadResponse;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import static org.zanata.rest.service.RestConstants.FILE_SERVICE_PATH;
+
 /**
  * Interface for file upload and download REST methods.
  */
-@Path(FileResource.SERVICE_PATH)
+@Path(FILE_SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_OCTET_STREAM })
 @Consumes({ MediaType.APPLICATION_OCTET_STREAM })
 public interface FileResource extends RestResource {
-    public static final String SERVICE_PATH = "/file";
+    public static final String SERVICE_PATH = FILE_SERVICE_PATH;
     @Deprecated
     public static final String FILE_RESOURCE = SERVICE_PATH;
     @Deprecated
@@ -150,6 +152,8 @@ public interface FileResource extends RestResource {
      * @param uploadForm The multi-part form body for the file or chunk.
      * @return A message with information about the upload operation.
      */
+    // This might have been better as @PUT, since it is idempotent and
+    // includes the docId in the URL:
     @POST
     @Path(SOURCE_UPLOAD_TEMPLATE)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -184,6 +188,8 @@ public interface FileResource extends RestResource {
      * @param uploadForm The multi-part form body for the file or chunk.
      * @return A message with information about the upload operation.
      */
+    // This might have been better as @PUT, since it is idempotent and
+    // includes the docId in the URL:
     @POST
     @Path(TRANSLATION_UPLOAD_TEMPLATE)
     @Consumes(MediaType.MULTIPART_FORM_DATA)

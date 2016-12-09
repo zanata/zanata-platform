@@ -25,6 +25,8 @@ import java.io.InputStream;
 
 import org.zanata.model.HRawDocument;
 
+import javax.annotation.Nonnull;
+
 public interface FilePersistService {
     // TODO damason: add persistRawDocumentContentFromStream(HRawDocument,
     // InputStream)
@@ -42,8 +44,11 @@ public interface FilePersistService {
     // with the
     // document resource and cleanup is possible, in case temp files were
     // generated.
-    public InputStream getRawDocumentContentAsStream(HRawDocument document)
+    @Nonnull InputStream getRawDocumentContentAsStream(@Nonnull HRawDocument document)
             throws RawDocumentContentAccessException;
+
+    long getRawDocumentSize(@Nonnull HRawDocument document)
+        throws RawDocumentContentAccessException;
 
     boolean hasPersistedDocument(GlobalDocumentId id);
 

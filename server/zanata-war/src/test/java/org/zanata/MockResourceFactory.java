@@ -16,6 +16,7 @@ public class MockResourceFactory implements ResourceFactory {
     private Object obj;
 
     public MockResourceFactory(Object obj) {
+        assert obj != null;
         this.obj = obj;
     }
 

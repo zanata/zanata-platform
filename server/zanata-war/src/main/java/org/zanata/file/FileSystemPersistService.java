@@ -30,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.io.FilenameUtils;
 
+import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -128,7 +129,7 @@ public class FileSystemPersistService implements FilePersistService {
     }
 
     @Override
-    public InputStream getRawDocumentContentAsStream(HRawDocument document)
+    public @Nonnull InputStream getRawDocumentContentAsStream(@Nonnull HRawDocument document)
             throws RawDocumentContentAccessException {
         File rawFile = getFileForRawDocument(document);
         try {
@@ -138,6 +139,12 @@ public class FileSystemPersistService implements FilePersistService {
             // sites
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public long getRawDocumentSize(@Nonnull HRawDocument document) throws RawDocumentContentAccessException {
+        File file = getFileForRawDocument(document);
+        return file.length();
     }
 
     @Override

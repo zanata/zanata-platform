@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
@@ -46,7 +47,7 @@ public class MockTranslatedFileResource implements TranslatedFileResource {
     @Override
     public Response uploadTranslationFile(String projectSlug,
             String iterationSlug, String localeId, String docId, String merge,
-            InputStream fileStream, long size, String projectType) {
+            InputStream fileStream, @Nullable Long size, String projectType) {
         try {
             long actual = IOUtils.copyLarge(fileStream, new NullOutputStream());
             Instant time = Instant.now();

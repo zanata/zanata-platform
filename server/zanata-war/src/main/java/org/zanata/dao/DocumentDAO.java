@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import javax.annotation.Nullable;
 
@@ -31,7 +32,6 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
-import com.google.common.base.Optional;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,9 +48,9 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
     }
 
     public @Nullable
-    HDocument getByDocIdAndIteration(HProjectIteration iteration, String id) {
+    HDocument getByDocIdAndIteration(HProjectIteration iteration, String docId) {
         return (HDocument) getSession().byNaturalId(HDocument.class)
-                .using("docId", id).using("projectIteration", iteration).load();
+                .using("docId", docId).using("projectIteration", iteration).load();
     }
 
     public HDocument getById(Long id) {
@@ -399,13 +399,14 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         return returnStats;
     }
 
-    public HDocument getByGlobalId(GlobalDocumentId id) {
+    public @Nullable HDocument getByGlobalId(GlobalDocumentId id) {
         return getByProjectIterationAndDocId(id.getProjectSlug(),
                 id.getVersionSlug(), id.getDocId());
     }
 
-    public HDocument getByProjectIterationAndDocId(final String projectSlug,
-            final String iterationSlug, final String docId) {
+    public @Nullable HDocument getByProjectIterationAndDocId(
+            final String projectSlug, final String iterationSlug,
+            final String docId) {
         // TODO caching might be better with
         // getByDocIdAndIteration(ProjectIterationDAO.getBySlug(), docId)
         Session session = getSession();
@@ -595,10 +596,10 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         if (doc != null) {
             HRawDocument rawDoc = doc.getRawDocument();
             if (rawDoc != null) {
-                return Optional.fromNullable(rawDoc.getAdapterParameters());
+                return Optional.ofNullable(rawDoc.getAdapterParameters());
             }
         }
-        return Optional.<String> absent();
+        return Optional.empty();
     }
 
     public List<HDocument> getDocumentsByIds(List<Long> docIds) {

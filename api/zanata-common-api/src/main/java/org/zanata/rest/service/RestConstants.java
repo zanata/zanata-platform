@@ -26,8 +26,40 @@ package org.zanata.rest.service;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface RestConstants {
+public final class RestConstants {
+    private RestConstants() {
+    }
+
     public static final String SLUG_PATTERN =
             "[a-zA-Z0-9]+([a-zA-Z0-9_\\-{.}]*[a-zA-Z0-9]+)?";
 
+    // slug patterns:
+    public static final String PROJECT_SLUG_TEMPLATE =
+            "{projectSlug:" + SLUG_PATTERN + "}";
+    private static final String ITERATION_SLUG_TEMPLATE =
+            "{iterationSlug:" + SLUG_PATTERN + "}";
+    static final String VERSION_SLUG_TEMPLATE =
+            "/{versionSlug:" + SLUG_PATTERN + "}";
+
+    // project-related service paths:
+    static final String PROJECT_SERVICE_PATH =
+            "/projects/p/" + PROJECT_SLUG_TEMPLATE;
+    static final String PROJECT_ITERATION_SERVICE_PATH =
+            PROJECT_SERVICE_PATH + "/iterations/i/" + ITERATION_SLUG_TEMPLATE;
+    static final String SOURCE_DOC_SERVICE_PATH =
+            PROJECT_ITERATION_SERVICE_PATH + "/r";
+
+    // file-stream service paths:
+    static final String SOURCE_FILE_SERVICE_PATH =
+            "/proj/{projectSlug}/ver/{versionSlug}/document/source";
+    static final String TRANSLATED_FILE_SERVICE_PATH =
+            "/proj/{projectSlug}/ver/{versionSlug}/document/trans/{localeId}";
+
+    // other service paths:
+    static final String ASYNC_SERVICE_PATH =
+            "/async";
+    static final String FILE_SERVICE_PATH =
+            "/file";
+    static final String JOB_STATUS_SERVICE_PATH =
+            "/job/{jobId}";
 }

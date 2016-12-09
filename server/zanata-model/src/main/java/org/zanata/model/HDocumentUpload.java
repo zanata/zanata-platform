@@ -39,6 +39,10 @@ import org.hibernate.annotations.IndexColumn;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
 
+/**
+ * Represents a partially uploaded document by grouping its parts,
+ * before becoming an HRawDocument plus a file.
+ */
 @Entity
 @Getter
 @Setter

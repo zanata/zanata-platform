@@ -20,13 +20,10 @@
  */
 package org.zanata.rest.service;
 
-import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.ws.rs.WebApplicationException;
 
 import org.zanata.common.EntityStatus;
-import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;

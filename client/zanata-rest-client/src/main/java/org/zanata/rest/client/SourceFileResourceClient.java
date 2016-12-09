@@ -33,7 +33,6 @@ import javax.ws.rs.core.Response;
 
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.JobStatus;
-import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.service.SourceFileResource;
 
 import static javax.ws.rs.client.Entity.entity;
@@ -73,7 +72,7 @@ public class SourceFileResourceClient {
                 .queryParam("projectType", projectType.name())
                 .queryParam("size", size)
                 .request(MediaType.APPLICATION_JSON_TYPE);
-        return builder.post(entity(fileStream, MediaType.APPLICATION_OCTET_STREAM_TYPE),
+        return builder.put(entity(fileStream, MediaType.APPLICATION_OCTET_STREAM_TYPE),
                 JobStatus.class);
     }
 

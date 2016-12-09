@@ -47,7 +47,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestScoped
 @Slf4j
 @Transactional
-// FIXME see also AsynchronousProcessResourceService and ProcessStatus
+// see also AsynchronousProcessResourceService and ProcessStatus
 public class JobStatusService implements JobStatusResource {
 
     @Inject
@@ -68,7 +68,7 @@ public class JobStatusService implements JobStatusResource {
                     + jobId);
         }
 
-        // FIXME security checks, eg username
+        // FIXME check current user against project users (or admin)
 
         JobStatus status = new JobStatus(jobId);
 
@@ -79,11 +79,14 @@ public class JobStatusService implements JobStatusResource {
 
 //        status.setStartTime(toInstant(handle.getStartTime()));
 //        status.setStatusTime(Instant.now());
-        Optional<Instant> completionTime = handle.getEstimatedCompletionTime();
-        completionTime.ifPresent(status::setEstimatedCompletionTime);
+//        Optional<Instant> completionTime = handle.getEstimatedCompletionTime();
+//        completionTime.ifPresent(status::setEstimatedCompletionTime);
+
+        status.setEstimatedRemainingTimeMillis(handle.getEstimatedTimeRemaining().orElse(null));
 
         status.setCurrentItem(handle.getCurrentProgress());
         status.setTotalItems(handle.getMaxProgress());
+        // not sure if this is needed:
 //        status.setPercentCompleted(handle.getPercentComplete());
 
         if (handle.isDone()) {

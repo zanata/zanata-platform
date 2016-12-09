@@ -10,7 +10,6 @@
   <artifactId>gwt-editor</artifactId>
   <name>gwt-editor</name>
   <packaging>war</packaging>
-  <url>http://maven.apache.org</url>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <zanata.gwt.module>org.zanata.webtrans.Application</zanata.gwt.module>

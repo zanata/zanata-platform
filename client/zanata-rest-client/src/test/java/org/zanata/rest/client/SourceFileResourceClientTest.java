@@ -42,7 +42,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.JobStatus;
 import org.zanata.rest.dto.JobStatus.JobStatusCode;
-import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.service.StubbingServerRule;
 
@@ -52,7 +51,7 @@ public class SourceFileResourceClientTest {
     private static final Logger log =
             LoggerFactory.getLogger(SourceFileResourceClientTest.class);
     private SourceFileResourceClient client;
-    private AsyncProcessClient jobClient;
+    private JobStatusResourceClient jobClient;
 
     @ClassRule
     public static StubbingServerRule
@@ -63,31 +62,32 @@ public class SourceFileResourceClientTest {
         RestClientFactory restClientFactory = MockServerTestUtil
                 .createClientFactory(stubbingServerRule.getServerBaseUri());
         client = new SourceFileResourceClient(restClientFactory);
-        jobClient = new AsyncProcessClient(restClientFactory);
+        jobClient = new JobStatusResourceClient(restClientFactory);
     }
 
-    private static File loadFileFromClasspath(String file) {
+    // Getting a File for a classpath resource is nasty, but we need the size.
+    private static File getFileFromClasspath(String resource) {
         return new File(Thread.currentThread().getContextClassLoader()
-                .getResource(file).getFile());
+                .getResource(resource).getFile());
     }
 
     @Test
     public void testSourceFileUpload() throws Exception {
-        File odtFile = loadFileFromClasspath("xliff/StringResource_en_US.xml");
-        FileInputStream fileInputStream = new FileInputStream(odtFile);
+        File testFile = getFileFromClasspath("xliff/StringResource_en_US.xml");
+        FileInputStream fileInputStream = new FileInputStream(testFile);
 
         JobStatus initialJobStatus = client
                 .uploadSourceFile("about-fedora", "master",
                         "test.odt", ProjectType.File,
-                        fileInputStream, odtFile.length());
+                        fileInputStream, testFile.length());
         log.info("response: {}", initialJobStatus);
         assertThat(initialJobStatus.getStatusCode(), Matchers.is(
                 JobStatusCode.Waiting));
         String jobId = initialJobStatus.getJobId();
         assertThat(jobId, Matchers.notNullValue());
-        ProcessStatus finalJobStatus = jobClient.getProcessStatus(jobId);
+        JobStatus finalJobStatus = jobClient.getJobStatus(jobId);
         log.info("response: {}", finalJobStatus);
-        assertThat(finalJobStatus.getPercentageComplete(), Matchers.equalTo(100));
+        assertThat(finalJobStatus.getStatusCode(), Matchers.equalTo(JobStatusCode.Finished));
     }
 
     @Test

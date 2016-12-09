@@ -22,6 +22,9 @@ package org.zanata.service;
 
 import org.zanata.lock.Lock;
 import org.zanata.lock.LockNotAcquiredException;
+import org.zanata.util.RunnableEx;
+
+import java.util.concurrent.Callable;
 
 /**
  * @author Carlos Munoz <a
@@ -65,4 +68,20 @@ public interface LockManagerService {
      *            The lock to release.
      */
     public void release(Lock l);
+
+    /**
+     * Obtains a lock, executes the RunnableEx, then releases the lock.
+     * @param lock identifies the lock to obtain
+     * @param callable code to execute
+     * @throws LockNotAcquiredException if unable to obtain lock
+     * @throws Exception if the RunnableEx throws an exception
+     */
+    default <V> V tryExecuteWithLock(Lock lock, Callable<V> callable) throws Exception {
+        attain(lock);
+        try {
+            return callable.call();
+        } finally {
+            release(lock);
+        }
+    }
 }

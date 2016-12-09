@@ -22,6 +22,7 @@ package org.zanata.file;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,6 +32,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Vector;
 
 import javax.enterprise.context.Dependent;
@@ -57,12 +59,12 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 import org.zanata.util.PasswordUtil;
 
-import com.google.common.base.Optional;
-
 // TODO damason: add thorough unit testing
 @Slf4j
 @Named("documentUploadUtil")
 @Dependent
+// This warning is probably a good idea, but it's making the code hard to read:
+@SuppressWarnings({ "OptionalUsedAsFieldOrParameterType", "Guava" })
 public class DocumentUploadUtil {
 
     @Inject
@@ -85,12 +87,17 @@ public class DocumentUploadUtil {
     // TODO damason: move all validation checks to separate class
     public void failIfUploadNotValid(GlobalDocumentId id,
             DocumentFileUploadForm uploadForm) throws DocumentUploadException {
-        failIfNotLoggedIn();
-        failIfDocIdMissing(id);
+        failIfUploadNotValid(id, uploadForm.getFileType());
         failIfUploadFormIncomplete(uploadForm);
         failIfUploadPartIsOrphaned(id, uploadForm);
-        failIfDocumentTypeNotRecognized(uploadForm.getFileType());
+    }
+
+    public void failIfUploadNotValid(GlobalDocumentId id,
+            String fileType) throws DocumentUploadException {
+        failIfNotLoggedIn();
         failIfVersionCannotAcceptUpload(id);
+        failIfDocIdMissing(id);
+        failIfDocumentTypeNotRecognized(fileType);
     }
 
     public void failIfHashNotPresent(DocumentFileUploadForm uploadForm) {
@@ -319,7 +326,7 @@ public class DocumentUploadUtil {
     protected static InputStream getInputStream(Optional<File> tempFile,
             DocumentFileUploadForm uploadForm) throws FileNotFoundException {
         if (tempFile.isPresent()) {
-            return new FileInputStream(tempFile.get());
+            return new BufferedInputStream(new FileInputStream(tempFile.get()));
         } else {
             return uploadForm.getFileStream();
         }

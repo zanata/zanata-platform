@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, Red Hat, Inc. and individual contributors
+ * Copyright 2017, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,26 +18,42 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.util;
+package org.zanata.async;
 
-import static com.google.common.base.Throwables.throwIfUnchecked;
+import javax.annotation.Nonnull;
+
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+
+import java.util.function.Consumer;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@FunctionalInterface
-public interface RunnableEx <E extends Exception>  {
+public class AsyncUtil {
+    private AsyncUtil() {
+    }
 
-    void run() throws E;
+    public static void onFailure(ListenableFuture<?> future, Consumer<Throwable> consumer) {
+        Futures.addCallback(future, onFailure(consumer));
+    }
 
-    static Runnable runnable(RunnableEx r) {
-        return () -> {
-            try {
-                r.run();
-            } catch (Exception e) {
-                throwIfUnchecked(e);
-                throw new RuntimeException(e);
+    public static void onFailure(ListenableFuture<?> future, Runnable runnable) {
+        Futures.addCallback(future, onFailure(e -> runnable.run()));
+    }
+
+    private static <T> FutureCallback<T> onFailure(Consumer<Throwable> consumer) {
+        return new FutureCallback<T>() {
+            @Override
+            public void onSuccess(T result) {
+            }
+
+            @Override
+            public void onFailure(@Nonnull Throwable e) {
+                consumer.accept(e);
             }
         };
     }
+
 }

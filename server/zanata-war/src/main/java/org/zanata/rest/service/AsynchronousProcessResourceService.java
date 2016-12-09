@@ -55,7 +55,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 
+import static org.apache.commons.lang3.StringUtils.stripStart;
 import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 
 /**
@@ -100,12 +103,51 @@ public class AsynchronousProcessResourceService implements
     @Inject
     private ZanataIdentity identity;
 
-    // POST (fail if document already exists)
+    // POST (fail if document already exists) - not currently used by the Java client
     @Override
+    // TODO docId (idNoSlash) should not be part of the URL for POST - should use resource.name
     public ProcessStatus startSourceDocCreation(final String idNoSlash,
             final String projectSlug, final String iterationSlug,
             final Resource resource, final Set<String> extensions,
             final boolean copytrans) {
+        return startSourceDocCreationOrUpdate(idNoSlash, projectSlug, iterationSlug, resource, extensions, copytrans, true);
+    }
+
+    // PUT
+    // TODO it should, when the doc already exists
+    @Override
+    public ProcessStatus startSourceDocCreationOrUpdate(final String idNoSlash,
+            final String projectSlug, final String iterationSlug,
+            final Resource resource, final Set<String> extensions,
+            final boolean copytrans) {
+        return startSourceDocCreationOrUpdate(idNoSlash, projectSlug, iterationSlug, resource, extensions, copytrans, false);
+    }
+
+    private ProcessStatus startSourceDocCreationOrUpdate(final String idNoSlash,
+            final String projectSlug, final String iterationSlug,
+            final Resource resource, final Set<String> extensions,
+            final boolean copytrans, final boolean httpPost) {
+        // The client really ought to provide clean docIds, but we strip
+        // leading '/' chars to make the comparison as lenient as possible
+        // before throwing an error.
+        String normalisedDocId = stripStart(URIHelper.convertFromDocumentURIId(idNoSlash), "/");
+        String normalisedResourceName = stripStart(resource.getName(), "/");
+
+        // We used to use resource.getName() without checking (ie no
+        // BAD_REQUEST), but if these strings don't match, we don't really
+        // know what to do.
+        if (!normalisedResourceName.equals(normalisedDocId)) {
+            String message = "ID contained in Resource ("
+                    + normalisedResourceName + ") does not match decoded docId ("
+                    + normalisedDocId + ") from URL";
+            log.error(message);
+            throw new WebApplicationException(message, Response.Status.BAD_REQUEST);
+        }
+
+        if (copytrans) {
+            log.warn("Ignoring copyTrans request. Async-aware clients should call CopyTransResource.startCopyTrans()");
+        }
+
         HProjectIteration hProjectIteration =
                 projectUtil.retrieveAndCheckIteration(projectSlug, iterationSlug, true);
 
@@ -114,74 +156,34 @@ public class AsynchronousProcessResourceService implements
 
         ResourceUtils.validateExtensions(extensions); // gettext, comment
 
-        // (This section differs from startSourceDocCreationOrUpdate)
-        HDocument document =
-                documentDAO.getByDocIdAndIteration(hProjectIteration,
-                        resource.getName());
-        // already existing non-obsolete document.
-        if (document != null) {
-            if (!document.isObsolete()) {
-                // updates must happen through PUT on the actual resource
-                ProcessStatus status = new ProcessStatus();
-                status.setStatusCode(ProcessStatusCode.Failed);
-                status.getMessages().add(
-                        "A document with name " + resource.getName()
-                                + " already exists.");
-                return status;
+        if (httpPost) {
+            HDocument document =
+                    documentDAO.getByDocIdAndIteration(hProjectIteration,
+                            normalisedResourceName);
+            // already existing non-obsolete document.
+            if (document != null) {
+                if (!document.isObsolete()) {
+                    // updates must happen through PUT on the actual resource
+                    ProcessStatus status = new ProcessStatus();
+                    status.setStatusCode(ProcessStatusCode.Failed);
+                    status.getMessages().add(
+                            "A document with name " + normalisedResourceName
+                                    + " already exists.");
+                    return status;
+                }
             }
         }
 
 //        String name = "SourceDocCreation: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
         AsyncTaskHandle<HDocument> handle = AsyncTaskHandle.withGeneratedKey(identity.getAccountUsername());
         asyncTaskHandleManager.registerTaskHandle(handle);
-        documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
-                resource, extensions, copytrans, true, handle);
+        documentServiceImpl.saveDocumentWithLockAsync(projectSlug, iterationSlug,
+                resource, extensions, false, handle);
 
-        return getProcessStatus(handle.getKey().toString()); // TODO Change to return 202
-                                                    // Accepted,
-                                                    // with a url to get the
-                                                    // progress
+        // TODO Change to return 202 Accepted, with a url to get the progress
+        return getProcessStatus(handle.getKey().toString());
     }
 
-    // PUT
-    @Override
-    public ProcessStatus startSourceDocCreationOrUpdate(final String idNoSlash,
-            final String projectSlug, final String iterationSlug,
-            final Resource resource, final Set<String> extensions,
-            final boolean copytrans) {
-        HProjectIteration hProjectIteration =
-                projectUtil.retrieveAndCheckIteration(projectSlug, iterationSlug, true);
-
-        // Check permission
-        identity.checkPermission(hProjectIteration, "import-template");
-
-        ResourceUtils.validateExtensions(extensions); // gettext, comment
-
-//        String name = "SourceDocCreationOrUpdate: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
-        AsyncTaskHandle<HDocument> handle = AsyncTaskHandle.withGeneratedKey(identity.getAccountUsername());
-        asyncTaskHandleManager.registerTaskHandle(handle);
-        documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
-                resource, extensions, copytrans, true, handle);
-
-        return getProcessStatus(handle.getKey().toString()); // TODO Change to return 202
-                                                    // Accepted,
-                                                    // with a url to get the
-                                                    // progress
-    }
-
-    /**
-     *
-     * @param idNoSlash
-     * @param projectSlug
-     * @param iterationSlug
-     * @param locale
-     * @param translatedDoc
-     * @param extensions
-     * @param merge
-     * @param assignCreditToUploader
-     * @return
-     */
-    @Override
     public ProcessStatus startTranslatedDocCreationOrUpdate(
             final String idNoSlash, final String projectSlug,
             final String iterationSlug, final LocaleId locale,
@@ -210,9 +212,9 @@ public class AsynchronousProcessResourceService implements
 
         AsyncTaskHandle<HDocument> handle = AsyncTaskHandle.withGeneratedKey(identity.getAccountUsername());
         asyncTaskHandleManager.registerTaskHandle(handle);
-        translationServiceImpl.translateAllInDocAsync(projectSlug,
+        translationServiceImpl.translateAllInDocWithLockAsync(projectSlug,
                 iterationSlug, id, locale, translatedDoc, extensions,
-                finalMergeType, assignCreditToUploader, true, handle,
+                finalMergeType, assignCreditToUploader, handle,
                 TranslationSourceType.API_UPLOAD);
 
         return this.getProcessStatus(handle.getKey().toString());
@@ -234,6 +236,8 @@ public class AsynchronousProcessResourceService implements
             throw new NotFoundException("A process was not found for id "
                     + processId);
         }
+
+        // FIXME check current user against project users (or admin)
 
         ProcessStatus status = new ProcessStatus();
         status.setStatusCode(handle.isDone() ? ProcessStatusCode.Finished

@@ -35,6 +35,8 @@ import org.zanata.rest.dto.ProjectIteration;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import static org.zanata.rest.service.RestConstants.PROJECT_ITERATION_SERVICE_PATH;
+
 /**
  * Deprecated. See {@link ProjectVersionResource}
  *
@@ -45,15 +47,12 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Path(ProjectIterationResource.SERVICE_PATH)
+@Path(PROJECT_ITERATION_SERVICE_PATH)
 @Deprecated
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface ProjectIterationResource extends RestResource {
-    public static final String ITERATION_SLUG_TEMPLATE = "{iterationSlug:"
-            + RestConstants.SLUG_PATTERN + "}";
-    public static final String SERVICE_PATH = ProjectResource.SERVICE_PATH
-            + "/iterations/i/" + ITERATION_SLUG_TEMPLATE;
+    String SERVICE_PATH = PROJECT_ITERATION_SERVICE_PATH;
 
     /**
      * Returns header information for a project iteration.

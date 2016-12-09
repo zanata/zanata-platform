@@ -20,14 +20,21 @@
  */
 package org.zanata.async;
 
-import javax.annotation.Nonnull;
+import com.google.common.util.concurrent.AbstractFuture;
+
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
-import com.google.common.util.concurrent.AbstractFuture;
-
 /**
+ * This class allows @Async methods to return a value which will be
+ * extracted and then provided to the original thread's Future object.
+ * <p>
+ *     Currently extends Guava's AbstractFuture (ListenableFuture).
+ *     TODO: switch to CompletableFuture (Java 8).
+ * </p>
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @see javax.ejb.AsyncResult
+ * @see AsyncTaskManager
  */
 @ParametersAreNonnullByDefault
 public class AsyncTaskResult<V> extends AbstractFuture<V> {

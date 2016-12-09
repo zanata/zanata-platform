@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
@@ -74,6 +75,8 @@ import org.zanata.util.UrlUtil;
 import org.zanata.webhook.events.SourceDocumentChangedEvent;
 
 import javax.enterprise.event.Observes;
+
+import static com.google.common.base.Throwables.throwIfUnchecked;
 
 /**
  * Default implementation of the {@link DocumentService} business service
@@ -134,38 +137,31 @@ public class DocumentServiceImpl implements DocumentService {
 
     @Override
     @Transactional
-    public HDocument saveDocument(String projectSlug, String iterationSlug,
-            Resource sourceDoc, Set<String> extensions, boolean copyTrans,
-            boolean lock) {
-        Lock docLock = null;
-        if (lock) {
-            // Lock this document for push
-            docLock =
-                    new Lock(projectSlug, iterationSlug, sourceDoc.getName(),
-                            "push");
-            lockManagerServiceImpl.attain(docLock);
-        }
-
+    public HDocument saveDocumentWithLock(String projectSlug, String iterationSlug,
+            Resource sourceDoc, Set<String> extensions, boolean copyTrans) {
         try {
-            return this.saveDocument(projectSlug, iterationSlug, sourceDoc,
-                    extensions, copyTrans);
-        } finally {
-            if (lock) {
-                lockManagerServiceImpl.release(docLock);
-            }
+            // Lock this document for push
+            Lock docLock = new Lock(projectSlug, iterationSlug, sourceDoc.getName(),
+                    "push");
+            return lockManagerServiceImpl.tryExecuteWithLock(
+                    docLock, () -> this.saveDocument(projectSlug,
+                            iterationSlug, sourceDoc, extensions, copyTrans));
+        } catch (Exception e) {
+            throwIfUnchecked(e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     @Async
     @Transactional
-    public Future<HDocument> saveDocumentAsync(String projectSlug,
+    public Future<HDocument> saveDocumentWithLockAsync(String projectSlug,
             String iterationSlug,
             Resource sourceDoc, Set<String> extensions, boolean copyTrans,
-            boolean lock, AsyncTaskHandle<HDocument> handle) {
-        // TODO Use the pased in handle
-        return AsyncTaskResult.taskResult(saveDocument(projectSlug,
-                iterationSlug, sourceDoc, extensions, copyTrans, lock));
+            AsyncTaskHandle<HDocument> handle) {
+        // TODO Use the passed in handle
+        return AsyncTaskResult.taskResult(saveDocumentWithLock(projectSlug,
+                iterationSlug, sourceDoc, extensions, copyTrans));
     }
 
     @Override

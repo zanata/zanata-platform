@@ -41,18 +41,19 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import static org.zanata.rest.service.RestConstants.SOURCE_DOC_SERVICE_PATH;
+
 /**
  * projectSlug: Project Identifier. iterationSlug: Project Iteration identifier.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Path(SourceDocResource.SERVICE_PATH)
+@Path(SOURCE_DOC_SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface SourceDocResource extends RestResource {
-    String SERVICE_PATH =
-            ProjectIterationResource.SERVICE_PATH + "/r";
+    String SERVICE_PATH = SOURCE_DOC_SERVICE_PATH;
     String RESOURCE_SLUG_REGEX =
             "[\\-_a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?";
     String RESOURCE_NAME_REGEX =

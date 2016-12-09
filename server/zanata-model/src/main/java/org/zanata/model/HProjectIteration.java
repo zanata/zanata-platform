@@ -182,6 +182,18 @@ public class HProjectIteration extends SlugEntityBase implements
                 project.getDefaultProjectType();
     }
 
+    @Transient
+    public boolean isObsolete() {
+        return this.getStatus().equals(EntityStatus.OBSOLETE) ||
+                project.getStatus().equals(EntityStatus.OBSOLETE);
+    }
+
+    @Transient
+    public boolean isReadOnly() {
+        return this.getStatus().equals(EntityStatus.READONLY) ||
+                project.getStatus().equals(EntityStatus.READONLY);
+    }
+
     @Override
     public String userFriendlyToString() {
         return String.format("Project version(slug=%s, status=%s)", getSlug(),

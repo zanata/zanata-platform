@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.Instant;
 
+import javax.annotation.Nullable;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
@@ -34,6 +36,7 @@ import javax.ws.rs.core.StreamingOutput;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.NullOutputStream;
 import org.zanata.adapter.po.PoWriter2;
+import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.JobStatus;
 import org.zanata.rest.dto.JobStatus.JobStatusCode;
@@ -47,7 +50,8 @@ public class MockSourceFileResource implements SourceFileResource {
 
     @Override
     public Response uploadSourceFile(String projectSlug, String versionSlug,
-            String docId, InputStream fileStream, long size, ProjectType projectType) {
+            String docId, LocaleId lang, InputStream fileStream,
+            @Nullable Long size, ProjectType projectType) {
         try {
             long actual = IOUtils
                     .copyLarge(fileStream, new NullOutputStream());
@@ -56,13 +60,14 @@ public class MockSourceFileResource implements SourceFileResource {
             jobStatus.setStatusCode(JobStatusCode.Waiting);
             jobStatus.setCurrentItem(0);
             jobStatus.setTotalItems(100);
-            jobStatus.setEstimatedCompletionTime(time.plusSeconds(1));
+//            jobStatus.setEstimatedCompletionTime(time.plusSeconds(1));
+            jobStatus.setEstimatedRemainingTimeMillis(1000L);
             jobStatus.getMessages().add("upload has been scheduled");
             jobStatus.getMessages().add(
                     "Uploading new source document (" +
                             actual + "/" + size + " bytes): " +
                             projectType + ":" + projectSlug + "/" +
-                            versionSlug + "/" + docId);
+                            versionSlug + "/" + docId + ":" + lang);
             return Response.status(Response.Status.ACCEPTED).entity(jobStatus).build();
         } catch (IOException e) {
             throw new RuntimeException(e);

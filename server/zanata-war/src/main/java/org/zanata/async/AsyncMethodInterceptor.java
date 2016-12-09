@@ -20,15 +20,15 @@
  */
 package org.zanata.async;
 
-import com.google.common.base.Optional;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.zanata.util.ServiceLocator;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Optional;
 import java.util.concurrent.Future;
 
 /**
@@ -60,12 +60,12 @@ public class AsyncMethodInterceptor {
 
         Class<?> methodReturnType = ctx.getMethod().getReturnType();
         if (methodReturnType != void.class
-                && !Future.class.isAssignableFrom(methodReturnType)) {
+                && !methodReturnType.isAssignableFrom(AsyncTaskResult.class)) {
             throw new RuntimeException("Async method "
                     + ctx.getMethod().getName()
-                    + " must return java.lang.Future or void");
+                    + " must return java.lang.Future (or AsyncTaskResult) or void");
         }
-        // if this is already an AsyncTask, this will be false:
+        // if this is already an AsyncTask in a worker thread, this will be false:
         boolean shouldRunAsync = shouldRunAsyncThreadLocal.get();
         // reset the state in case this thread triggers *other* Async methods
         shouldRunAsyncThreadLocal.remove();
@@ -73,44 +73,41 @@ public class AsyncMethodInterceptor {
             // If there is a Task handle parameter (only the first one will be
             // registered)
             final Optional<AsyncTaskHandle> handle =
-                    Optional.fromNullable(findHandleIfPresent(ctx
+                    Optional.ofNullable(findHandleIfPresent(ctx
                             .getParameters()));
 
-            AsyncTask asyncTask = () -> {
+            AsyncTask<Future<V>> asyncTask = () -> {
                 // ensure that the next invocation of this interceptor in this
                 // thread will skip the AsyncTask:
                 shouldRunAsyncThreadLocal.set(false);
                 try {
-                    if (handle.isPresent()) {
-                        handle.get().startTiming();
-                    }
+                    handle.ifPresent(AsyncTaskHandle::startTiming);
                     // TODO Handle CDI Qualifiers
                     Object target =
                             ServiceLocator.instance().getInstance(
                                     ctx.getMethod()
                                             .getDeclaringClass());
-                    return ctx.getMethod().invoke(target,
+                    // NB: might be null - if method returns void
+                    //noinspection unchecked
+                    return (Future<V>) ctx.getMethod().invoke(target,
                             ctx.getParameters());
                 } catch (InvocationTargetException itex) {
                     // exception thrown from the invoked method
                     throw itex.getCause();
                 } finally {
-                    if (handle.isPresent()) {
-                        handle.get().finishTiming();
-                        taskHandleManager.taskFinished(handle.get());
-                    }
+                    handle.ifPresent(h -> {
+                        h.finishTiming();
+                        taskHandleManager.taskFinished(h);
+                    });
                 }
             };
 
-            AsyncTaskResult<V> futureResult;
-            if (handle.isPresent()) {
-                futureResult = handle.get().getFutureResult();
-            } else {
-                futureResult = new AsyncTaskResult<>();
-            }
+            @SuppressWarnings("RedundantTypeArguments")
+            AsyncTaskResult<V> futureResult =
+                    handle.map(AsyncTaskHandle<V>::getFutureResult)
+                            .orElseGet(AsyncTaskResult::new);
             taskManager.startTask(asyncTask, futureResult);
             return futureResult;
-            // Async methods should return ListenableFuture
         } else {
             return ctx.proceed();
         }

@@ -22,6 +22,7 @@ package org.zanata.model;
 
 import java.io.Serializable;
 
+import javax.annotation.Nullable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -39,9 +40,9 @@ import com.google.common.base.Objects;
 @Entity
 @Getter
 @Setter
-@NoArgsConstructor
-// is this necessary?
 public class HRawDocument extends ModelEntityBase implements Serializable {
+    public HRawDocument() {
+    }
 
     private static final long serialVersionUID = 5129552589912687504L;
 
@@ -49,8 +50,12 @@ public class HRawDocument extends ModelEntityBase implements Serializable {
     // HRawDocument
     private HDocument document;
 
+    // These may be null when first created (in case of streaming)
+    private @Nullable String contentHash;
+    // This is optional for now
+    private @Nullable Long fileSize;
+
     // TODO none of these should allow null
-    private String contentHash;
     private String fileId;
     private DocumentType type;
     private String uploadedBy;

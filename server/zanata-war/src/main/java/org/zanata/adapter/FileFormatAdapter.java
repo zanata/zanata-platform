@@ -22,9 +22,9 @@ package org.zanata.adapter;
 
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.Optional;
 
 import javax.annotation.Nonnull;
-import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -34,8 +34,6 @@ import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-
-import com.google.common.base.Optional;
 
 /**
  * Common interface for classes wrapping Okapi filters. Each implementation must

@@ -24,10 +24,11 @@ import static org.zanata.file.DocumentUploadUtil.getInputStream;
 import static org.zanata.file.DocumentUploadUtil.isSinglePart;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.enterprise.context.Dependent;
@@ -60,9 +61,9 @@ import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Optional;
 
 //TODO damason: add thorough unit testing
+@SuppressWarnings("Guava")
 @Slf4j
 @Dependent
 @Named("translationDocumentUploader")
@@ -96,7 +97,7 @@ public class TranslationDocumentUpload {
 
             if (isSinglePart(uploadForm)) {
                 totalChunks = 1;
-                tempFile = Optional.<File> absent();
+                tempFile = Optional.<File> empty();
             } else {
                 if (!uploadForm.getLast()) {
                     HDocumentUpload upload =
@@ -124,11 +125,13 @@ public class TranslationDocumentUpload {
 
             TranslationsResource transRes;
             if (uploadForm.getFileType().equals(".po")) {
-                InputStream poStream = getInputStream(tempFile, uploadForm);
-                transRes =
-                        translationFileServiceImpl.parsePoFile(poStream,
-                                id.getProjectSlug(), id.getVersionSlug(),
-                                id.getDocId());
+                try (InputStream poStream = getInputStream(tempFile,
+                        uploadForm)) {
+                    transRes =
+                            translationFileServiceImpl.parsePoFile(poStream,
+                                    id.getProjectSlug(), id.getVersionSlug(),
+                                    id.getDocId());
+                }
             } else {
                 if (!tempFile.isPresent()) {
                     tempFile =
@@ -139,7 +142,7 @@ public class TranslationDocumentUpload {
                 // should probably take a
                 // type anyway
                 Optional<String> docType =
-                    Optional.fromNullable(uploadForm.getFileType());
+                    Optional.ofNullable(uploadForm.getFileType());
 
                 transRes =
                         translationFileServiceImpl.parseAdapterTranslationFile(
@@ -162,8 +165,8 @@ public class TranslationDocumentUpload {
                             assignCreditToUploader, translationSourceType);
 
             return transUploadResponse(totalChunks, warnings);
-        } catch (FileNotFoundException e) {
-            log.error("failed to create input stream from temp file", e);
+        } catch (IOException e) {
+            log.error("error using input stream from temp file", e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
                     .build();
         } catch (DocumentUploadException e) {

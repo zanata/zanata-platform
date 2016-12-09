@@ -31,6 +31,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
 
 /**
  * Utility class for file related operations.
@@ -71,16 +72,22 @@ public class FileUtil {
     }
 
     /**
-     * Try delete given file or use File#deleteOnExit
+     * Attempts to remove a file from disk.
      *
-     * @param file
+     * If the file cannot be removed, it is marked for removal on application
+     * exit.
+     *
+     * @param file file to remove
      */
     public static void tryDeleteFile(@Nullable File file) {
-        if (file != null) {
-            if (!file.delete()) {
-                log.warn(
-                        "unable to remove file {}, marked for delete on exit",
-                        file.getAbsolutePath());
+        if (file != null && file.exists()) {
+            try {
+                Files.delete(file.toPath());
+            } catch (IOException e) {
+                // deleteOnExit is a bit useless on an app server, hence the error log
+                log.error(
+                        "unable to remove file {}; marking for delete on exit",
+                        file.getAbsolutePath(), e);
                 file.deleteOnExit();
             }
         }

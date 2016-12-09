@@ -34,6 +34,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataTest;
+import org.zanata.common.LocaleId;
 import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
@@ -130,7 +131,8 @@ public class FileServiceTest extends ZanataTest {
     @Test
     @InRequestScope
     public void sourceUploadParamsHandledCorrectly() {
-        when(sourceUploader.tryUploadSourceFile(eq(id), formCaptor.capture()))
+        when(sourceUploader.tryUploadSourceFile(eq(id), formCaptor.capture(),
+                LocaleId.EN_US))
                 .thenReturn(okResponse);
         fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);
         assertThat(formCaptor.getValue(), is(sameInstance(form)));
@@ -139,7 +141,7 @@ public class FileServiceTest extends ZanataTest {
     @Test
     @InRequestScope
     public void sourceUploadResponseReturnedDirectly() {
-        when(sourceUploader.tryUploadSourceFile(id, form)).thenReturn(
+        when(sourceUploader.tryUploadSourceFile(id, form, LocaleId.EN_US)).thenReturn(
                 okResponse);
         response =
                 fileService.uploadSourceFile(PROJ_SLUG, VER_SLUG, DOC_ID, form);

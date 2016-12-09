@@ -33,7 +33,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+import javax.annotation.Nonnull;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
@@ -102,7 +104,6 @@ import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.util.TokenUtil;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -111,6 +112,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+
+import static java.util.Collections.emptySet;
 
 @Named("versionHomeAction")
 @ViewScoped
@@ -358,7 +361,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             webhookService.processManualEvent(projectSlug, versionSlug,
                     selectedLocale.getLocaleId(), manualWebhooks);
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
-                    msgs.format("jsf.iteration.manualWebhook.triggered"));
+                    msgs.get("jsf.iteration.manualWebhook.triggered"));
         }
     }
 
@@ -756,14 +759,14 @@ public class VersionHomeAction extends AbstractSortAction implements
             Set<DocumentType> documentTypes = translationFileServiceImpl
                     .getDocumentTypes(sourceFileUpload.getFileName());
             if (documentTypes.isEmpty()) {
-                return Optional.absent();
+                return Optional.empty();
             }
             type = documentTypes.iterator().next();
         } else {
             // if docType not null, adapter is selected by user from drop down
             type = DocumentType.getByName(docType.get());
         }
-        return Optional.of(type);
+        return Optional.ofNullable(type);
     }
 
     public String uploadSourceFile() {
@@ -774,7 +777,7 @@ public class VersionHomeAction extends AbstractSortAction implements
         } else {
 
             Optional<String> docType =
-                Optional.fromNullable(sourceFileUpload.documentType);
+                Optional.ofNullable(sourceFileUpload.documentType);
 
             Optional<DocumentType> documentTypeOpt = getDocumentType(docType);
             if (documentTypeOpt.isPresent()
@@ -876,7 +879,7 @@ public class VersionHomeAction extends AbstractSortAction implements
     }
 
     private Optional<String> getOptionalParams() {
-        return Optional.fromNullable(Strings.emptyToNull(sourceFileUpload
+        return Optional.ofNullable(Strings.emptyToNull(sourceFileUpload
             .getAdapterParams()));
     }
 
@@ -904,7 +907,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             documentPath = docId.substring(0, docId.lastIndexOf('/'));
         }
 
-        File tempFile = null;
+        @Nonnull File tempFile;
         byte[] md5hash;
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
@@ -933,20 +936,21 @@ public class VersionHomeAction extends AbstractSortAction implements
 
         HDocument document = null;
         try {
+            LocaleId sourceLocale = new LocaleId(sourceFileUpload.getSourceLang());
             Resource doc;
-
             if (docId == null) {
                 doc = translationFileServiceImpl.parseAdapterDocumentFile(
                                 tempFile.toURI(), documentPath, fileName,
-                                getOptionalParams(), Optional.of(docType.name()));
+                                getOptionalParams(), Optional.of(docType.name()),
+                        sourceLocale);
             } else {
                 doc = translationFileServiceImpl
                                 .parseUpdatedAdapterDocumentFile(
                                         tempFile.toURI(), docId, fileName,
-                                        getOptionalParams(), Optional.of(docType.name()));
+                                        getOptionalParams(), Optional.of(docType.name()),
+                                        sourceLocale);
             }
-            doc.setLang(new LocaleId(sourceFileUpload.getSourceLang()));
-            Set<String> extensions = Collections.<String> emptySet();
+            Set<String> extensions = emptySet();
             // TODO Copy Trans values
             document =
                     documentServiceImpl.saveDocument(projectSlug, versionSlug,
@@ -992,7 +996,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             documentDAO.flush();
         }
 
-        translationFileServiceImpl.removeTempFile(tempFile);
+        FileUtil.tryDeleteFile(tempFile);
     }
 
     // Check if copy-trans, copy version or merge-trans is running for given
@@ -1042,7 +1046,7 @@ public class VersionHomeAction extends AbstractSortAction implements
             }
 
             Optional<String> docType =
-                Optional.fromNullable(translationFileUpload.documentType);
+                Optional.ofNullable(translationFileUpload.documentType);
             TranslationsResource transRes =
                     translationFileServiceImpl.parseTranslationFile(
                             translationFileUpload.getFileContents(),

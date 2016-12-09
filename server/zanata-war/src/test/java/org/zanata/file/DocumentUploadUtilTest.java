@@ -37,6 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.util.Optional;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
@@ -54,7 +55,6 @@ import org.zanata.model.HDocumentUploadPart;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.service.TranslationFileService;
 
-import com.google.common.base.Optional;
 import com.google.common.io.Files;
 import org.zanata.servlet.annotations.ContextPath;
 import org.zanata.servlet.annotations.ServerPath;
@@ -300,7 +300,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
                 new ByteArrayInputStream("test".getBytes());
         conf = defaultUpload().fileStream(streamFromForm).build();
         InputStream returnedStream =
-                getInputStream(Optional.<File> absent(), conf.uploadForm);
+                getInputStream(Optional.empty(), conf.uploadForm);
 
         assertThat(returnedStream, is(sameInstance(streamFromForm)));
     }

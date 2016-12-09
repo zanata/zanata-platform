@@ -35,11 +35,15 @@ import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
 
+import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.exception.VirusDetectedException;
 
 import com.google.common.base.Stopwatch;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.strip;
 
 /**
  * <code>VirusScanner</code> scans files using ClamAV's <code>clamdscan</code>
@@ -91,11 +95,10 @@ public class VirusScanner {
             SCANNER_NAME = scannerProperty;
             USING_CLAM = false;
         } else {
-            if (scannerProperty == null || scannerProperty.isEmpty()) {
+            if (isBlank(scannerProperty)) {
                 SCANNER_NAME = "clamdscan";
                 SCANNER_SET = false;
-                log.info("defaulting to clamdscan (system property 'virusScanner' is null or empty)");
-                log.warn("failure to run scanner will be logged but otherwise ignored");
+                log.info("defaulting to clamdscan (system property 'virusScanner' is blank). Any failure to run scanner will be logged, but otherwise ignored.");
             } else {
                 SCANNER_NAME = scannerProperty;
                 SCANNER_SET = true;
@@ -171,7 +174,7 @@ public class VirusScanner {
     }
 
     private void
-            handleResult(int exitValue, String documentName, Object output) {
+            handleResult(int exitValue, String documentName, @Nonnull Object output) {
         // The following return codes are taken from the clamdscan manpage.
         // If another scanner is used, we may not use the ideal
         // exception when something goes wrong, but as long as zero
@@ -181,8 +184,10 @@ public class VirusScanner {
         final int someErrorOccurred = 2;
         switch (exitValue) {
         case noVirusFound:
-            log.info("{} says file '{}' is clean: {}", SCANNER_NAME,
-                    documentName, output);
+            if (log.isInfoEnabled()) {
+                log.info("{} says doc '{}' is clean. {}", SCANNER_NAME,
+                        documentName, strip(output.toString()));
+            }
             return;
         case virusFound:
             throw new VirusDetectedException(SCANNER_NAME + " detected virus: "

@@ -116,12 +116,11 @@ public class XliffReader extends XliffCommon {
             validateXliffFile(new StreamSource(file));
         }
 
-        try {
+        try (InputStream inputStream = new BufferedInputStream(
+                new FileInputStream(file))) {
             // decode entities into one string
             xmlif.setProperty(XMLInputFactory.IS_COALESCING, true);
-
-            InputSource inputSource =
-                    new InputSource(new FileInputStream(file));
+            InputSource inputSource = new InputSource(inputStream);
             inputSource.setEncoding("utf8");
             final XMLStreamReader xmlr =
                     xmlif.createXMLStreamReader(inputSource.getByteStream());
@@ -169,6 +168,8 @@ public class XliffReader extends XliffCommon {
             xmlr.close();
         } catch (XMLStreamException e) {
             throw new RuntimeException("Invalid XLIFF file format", e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

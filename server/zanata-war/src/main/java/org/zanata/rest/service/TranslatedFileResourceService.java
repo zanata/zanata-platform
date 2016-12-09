@@ -22,11 +22,14 @@ package org.zanata.rest.service;
 
 import java.io.InputStream;
 
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.core.Response;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.file.FilePersistService;
 import org.zanata.file.GlobalDocumentId;
@@ -42,9 +45,10 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @RequestScoped
-@Slf4j
 @Transactional
 public class TranslatedFileResourceService implements TranslatedFileResource {
+
+    private static final Logger log = LoggerFactory.getLogger(SourceFileService.class);
 
     @Inject
     private DocumentDAO documentDAO;
@@ -61,11 +65,12 @@ public class TranslatedFileResourceService implements TranslatedFileResource {
     @Inject
     private VirusScanner virusScanner;
 
+    // PUT
     @Override
     public Response uploadTranslationFile(String projectSlug,
             String versionSlug, String localeId, String docId, String merge,
             InputStream fileStream,
-            long size,
+            @Nullable Long size,
             String projectType) {
         //assignCreditToUploader is not supported from here
         boolean assignCreditToUploader = false;

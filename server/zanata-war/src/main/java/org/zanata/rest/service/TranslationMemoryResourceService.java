@@ -245,10 +245,10 @@ public class TranslationMemoryResourceService implements
     }
 
     private Response buildTMX(String jobName,
-            @Nonnull CloseableIterator<? extends ITextFlow> iter,
+            @Nonnull CloseableIterator<? extends ITextFlow> iterator,
             @Nullable LocaleId locale, @Nonnull String filename) {
         TMXStreamingOutput<HTextFlow> output =
-                new TMXStreamingOutput(jobName, iter,
+                new TMXStreamingOutput(jobName, iterator,
                         new TranslationsTMXExportStrategy(locale));
         return okResponse(filename, output);
     }

@@ -29,7 +29,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -42,6 +41,9 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import static org.zanata.rest.service.RestConstants.PROJECT_SLUG_TEMPLATE;
+import static org.zanata.rest.service.RestConstants.VERSION_SLUG_TEMPLATE;
+
 /**
  * Project version resource API, replacing {@link ProjectIterationResource}.
  *
@@ -51,13 +53,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 public interface ProjectVersionResource extends RestResource {
-    public static final String PROJECT_SERVICE_PATH = "/project";
-
-    public static final String VERSION_SLUG_TEMPLATE = "/{versionSlug:"
-            + RestConstants.SLUG_PATTERN + "}";
-
-    public static final String SERVICE_PATH = PROJECT_SERVICE_PATH
-            + "/" + ProjectResource.PROJECT_SLUG_TEMPLATE
+    String SERVICE_PATH = "/project/" + PROJECT_SLUG_TEMPLATE
             + "/version";
 
     /**

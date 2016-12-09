@@ -21,7 +21,6 @@
 
 package org.zanata.adapter;
 
-import com.google.common.base.Optional;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.okapi.common.Event;
 import net.sf.okapi.common.EventType;
@@ -52,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

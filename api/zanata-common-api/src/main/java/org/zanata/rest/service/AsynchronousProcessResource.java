@@ -40,6 +40,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+import static org.zanata.rest.service.RestConstants.ASYNC_SERVICE_PATH;
+
 /**
  * Represents a resource for an asynchronous process. Only certain processes are
  * exposed as an asynchronous resource.
@@ -48,12 +50,12 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @deprecated see {@link SourceFileResource}, {@link TranslatedFileResource} and {@link org.zanata.rest.dto.JobStatus}
  */
-@Path(AsynchronousProcessResource.SERVICE_PATH)
+@Path(ASYNC_SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Deprecated
 public interface AsynchronousProcessResource extends RestResource {
-    public static final String SERVICE_PATH = "/async";
+    String SERVICE_PATH = ASYNC_SERVICE_PATH;
 
     /**
      * Attempts to start the creation of a source document. NOTE: Still
@@ -86,6 +88,8 @@ public interface AsynchronousProcessResource extends RestResource {
      *         indicating what happened.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
+     *         SERVICE_UNAVAILABLE(503) - if a lock
+     *         prevents a simultaneous upload.
      */
     @POST
     @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r")
@@ -129,6 +133,8 @@ public interface AsynchronousProcessResource extends RestResource {
      *         indicating what happened.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
+     *         SERVICE_UNAVAILABLE(503) - if a lock
+     *         prevents a simultaneous upload.
      */
     @PUT
     @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r"
@@ -181,6 +187,8 @@ public interface AsynchronousProcessResource extends RestResource {
      *         indicating what happened.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
+     *         SERVICE_UNAVAILABLE(503) - if a lock
+     *         prevents a simultaneous upload.
      */
     @PUT
     @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/translations/{locale}")

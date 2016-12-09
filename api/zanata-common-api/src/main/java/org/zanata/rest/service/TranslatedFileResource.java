@@ -22,12 +22,12 @@ package org.zanata.rest.service;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.rest.dto.JobStatus;
-import org.zanata.rest.dto.ProcessStatus;
 
+import javax.annotation.Nullable;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -37,12 +37,14 @@ import javax.ws.rs.core.Response;
 
 import java.io.InputStream;
 
+import static org.zanata.rest.service.RestConstants.TRANSLATED_FILE_SERVICE_PATH;
+
 /**
  * REST Interface for upload and download of translation files.
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Path("/proj/{projectSlug}/ver/{versionSlug}/document/trans/{localeId}")
+@Path(TRANSLATED_FILE_SERVICE_PATH)
 @Produces({ MediaType.WILDCARD })
 @Consumes({ MediaType.WILDCARD })
 public interface TranslatedFileResource extends RestResource {
@@ -61,7 +63,7 @@ public interface TranslatedFileResource extends RestResource {
      * @return A JobStatus with information about the upload operation.
      * @see JobStatus
      */
-    @POST
+    @PUT
     @Produces({ MediaType.APPLICATION_JSON })
     @TypeHint(JobStatus.class)
     Response uploadTranslationFile(
@@ -71,7 +73,7 @@ public interface TranslatedFileResource extends RestResource {
             @QueryParam("docId") String docId,
             @QueryParam("merge") String merge,
             InputStream fileStream,
-            @QueryParam("size") @DefaultValue("-1") long size,
+            @QueryParam("size") @Nullable Long size,
             @QueryParam("projectType") String projectType);
 
     /**
