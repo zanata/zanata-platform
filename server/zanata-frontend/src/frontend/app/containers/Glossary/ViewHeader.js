@@ -117,6 +117,7 @@ class ViewHeader extends Component {
         extraElements={(
           <View theme={{base: { ai: 'Ai(c)', fld: '' }}}>
             <TextInput
+              className='textInput'
               ref={(ref) => this.searchInput = ref}
               theme={{base: { flx: 'Flx(flx1)', m: 'Mstart(rh)--md' }}}
               type='search'

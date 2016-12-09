@@ -81,24 +81,20 @@ class Languages extends Component {
                 <NewLanguageModal />
               </div>
             }
-            <div className='form-group toolbar col-xs-12'>
-              <div className='search-box col-xs-6 col-sm-5 col-md-6
-                         col-lg-7'>
-                <FormGroup>
-                  <InputGroup>
-                    <FormControl type='text'
-                      defaultValue={searchText}
-                      onChange={handleOnUpdateSearch} />
-                    <InputGroup.Button>
-                      <Button bsStyle='primary'>
-                        <Icon name='search'
-                          className='s0'
-                          title='search' />&nbsp;
-                      </Button>
-                    </InputGroup.Button>
-                  </InputGroup>
-                </FormGroup>
-              </div>
+            <div className='toolbar col-xs-12'>
+              <FormGroup className='search-box col-xs-6 col-sm-5 col-md-6
+                col-lg-7'>
+                <InputGroup>
+                  <FormControl type='text'
+                    defaultValue={searchText}
+                    onChange={handleOnUpdateSearch} />
+                  <InputGroup.Addon>
+                    <Icon name='search'
+                      className='s1'
+                      title='search' />
+                  </InputGroup.Addon>
+                </InputGroup>
+              </FormGroup>
 
               {loading
                 ? <div className='contentViewContainer'>
