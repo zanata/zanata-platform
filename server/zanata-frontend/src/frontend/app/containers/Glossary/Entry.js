@@ -114,25 +114,26 @@ class Entry extends Component {
     }
 
     return (
-      <TableRow highlight
-        className='editable'
-        selected={selected}
-        onClick={() => handleSelectTerm(entry.id)}>
-        <TableCell size='3' tight>
-          {termsLoading
-            ? loadingDiv
-            : (<EditableText
-              title={entry.srcTerm.content}
-              editable={false}
-              editing={selected}>
-              {entry.srcTerm.content}
-            </EditableText>)
-          }
-        </TableCell>
-        <TableCell size='3' tight={transSelected}>
-          {secondColumnContent}
-        </TableCell>
-        <TableCell hideSmall>
+      <div className='H(100%)--sm'>
+        <TableRow highlight
+          className='editable'
+          selected={selected}
+          onClick={() => handleSelectTerm(entry.id)}>
+          <TableCell size='3' tight>
+            {termsLoading
+              ? loadingDiv
+              : (<EditableText
+                title={entry.srcTerm.content}
+                editable={false}
+                editing={selected}>
+                {entry.srcTerm.content}
+              </EditableText>)
+            }
+          </TableCell>
+          <TableCell size='3' tight={transSelected}>
+            {secondColumnContent}
+          </TableCell>
+          <TableCell hideSmall>
           {termsLoading
             ? loadingDiv
             : (<EditableText
@@ -146,51 +147,53 @@ class Entry extends Component {
               {entry.pos}
             </EditableText>)
           }
-        </TableCell>
-        <TableCell size='2'>
-          {termsLoading
-            ? loadingDiv
-            : (<Row>
-              <Button bsStyle='link' atomic={{m: 'Mend(rq)'}}
-                disabled={isDeleting}
-                onClick={() => this.setShowingEntryModal(true)}>
-                <Icon name='info' />
-              </Button>
-              <EntryModal entry={entry}
-                show={this.state.showEntryModal}
-                isSaving={isSaving}
-                selectedTransLocale={selectedTransLocale}
-                canUpdate={displayUpdateButton}
-                handleEntryModalDisplay={(display) =>
-                  this.setShowingEntryModal(display)}
-                handleResetTerm={(entryId) => handleResetTerm(entryId)}
-                handleTermFieldUpdate={(field, e) =>
-                  handleTermFieldUpdate(field, e)}
-                handleUpdateTerm={(entry) =>
-                  handleUpdateTerm(entry, false)} />
-                {updateButton}
-              <div
-                className='Op(0) row--selected_Op(1) editable:h_Op(1) Trs(eo)'>
-                {displayUpdateButton && !isSaving ? (
-                  <Button bsStyle='link'
-                    onClick={() => handleResetTerm(entry.id)}>
-                    Cancel
-                  </Button>
-                ) : ''}
-                {!transSelected && permission.canDeleteEntry && !isSaving &&
-                !displayUpdateButton && (
-                  <DeleteEntryModal entry={entry}
-                    isDeleting={isDeleting}
-                    show={this.state.showDeleteModal}
-                    handleDeleteEntryDisplay={(display) =>
-                  this.setShowingDeleteEntryModal(display)}
-                    handleDeleteEntry={handleDeleteTerm} />)
-                }
-              </div>
-            </Row>)
-          }
-        </TableCell>
-      </TableRow>
+          </TableCell>
+          <TableCell size='2'>
+            {termsLoading
+              ? loadingDiv
+              : (<Row>
+                <Button bsStyle='link' atomic={{m: 'Mend(rq)'}}
+                  disabled={isDeleting}
+                  onClick={() => this.setShowingEntryModal(true)}>
+                  <Icon name='info' />
+                </Button>
+                <EntryModal entry={entry}
+                  show={this.state.showEntryModal}
+                  isSaving={isSaving}
+                  selectedTransLocale={selectedTransLocale}
+                  canUpdate={displayUpdateButton}
+                  handleEntryModalDisplay={(display) =>
+                    this.setShowingEntryModal(display)}
+                  handleResetTerm={(entryId) => handleResetTerm(entryId)}
+                  handleTermFieldUpdate={(field, e) =>
+                    handleTermFieldUpdate(field, e)}
+                  handleUpdateTerm={(entry) =>
+                    handleUpdateTerm(entry, false)} />
+                  {updateButton}
+                <div
+                  className='Op(0) row--selected_Op(1) editable:h_Op(1)
+                    Trs(eo)'>
+                  {displayUpdateButton && !isSaving ? (
+                    <Button bsStyle='link'
+                      onClick={() => handleResetTerm(entry.id)}>
+                      Cancel
+                    </Button>
+                  ) : ''}
+                  {!transSelected && permission.canDeleteEntry && !isSaving &&
+                  !displayUpdateButton && (
+                    <DeleteEntryModal entry={entry}
+                      isDeleting={isDeleting}
+                      show={this.state.showDeleteModal}
+                      handleDeleteEntryDisplay={(display) =>
+                    this.setShowingDeleteEntryModal(display)}
+                      handleDeleteEntry={handleDeleteTerm} />)
+                  }
+                </div>
+              </Row>)
+            }
+          </TableCell>
+        </TableRow>
+      </div>
     )
     /* eslint-enable react/jsx-no-bind */
   }
