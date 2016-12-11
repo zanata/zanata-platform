@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
-import { ButtonGroup, Button } from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import {
   Tooltip,
   Overlay
@@ -33,11 +33,11 @@ class DeleteEntry extends Component {
           onHide={() => handleDeleteEntryDisplay(false)}>
           <Tooltip id='delete-glossary' title='Delete language'>
             <p>
-              Are you sure you want to delete
-              <span className='Fw(b)'> {locale.displayName}</span>?
+            Are you sure you want to delete&nbsp;
+              <strong>{locale.displayName}</strong>?&nbsp;
             </p>
-            <ButtonGroup className='Mt(rq) pull-right'>
-              <Button bsStyle='link'
+            <span className='two-spaced'>
+              <Button bsStyle='default'
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
               </Button>
@@ -48,10 +48,9 @@ class DeleteEntry extends Component {
                 }}>
                 Delete
               </Button>
-            </ButtonGroup>
+            </span>
           </Tooltip>
         </Overlay>
-
         <Button bsSize='small'
           onClick={() => handleDeleteEntryDisplay(true)}>
           <i className='fa fa-times Mend(ee)'></i>Delete
