@@ -14,20 +14,14 @@ class ImportedTMDetailPanel extends Component {
   matchHeader (transMemorySlug) {
     // FIXME use standard styles when they are available, instead of hard-coded
     return (
-      <div className="TransUnit-details">
-        <ul className="u-listInline u-sMB-1-4">
-          <li>
-            <Row>
-              <Icon name="import"
-                size="1"
-                theme={{
-                  base: {
-                    mend: 'Mend(rh)'
-                  }
-                }} /> {transMemorySlug}
-            </Row>
-          </li>
-        </ul>
+      <div title={transMemorySlug} className="TransUnit-details ellipsis">
+        <Icon name="import"
+          size="1"
+          theme={{
+            base: {
+              mend: 'Mend(rh)'
+            }
+          }} /> {transMemorySlug}
       </div>
     )
   }

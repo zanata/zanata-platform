@@ -1,4 +1,12 @@
 
+/* Shorten with an ellipsis when overflowing */
+.ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+
 /* Based on bootstrap styles. */
 
 :root {
