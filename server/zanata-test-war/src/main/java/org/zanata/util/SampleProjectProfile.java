@@ -266,8 +266,9 @@ public class SampleProjectProfile {
                         HApplicationConfiguration.KEY_ALLOW_ANONYMOUS_USER)
                 .getResultList();
         if (config.size() == 1) {
-            config.get(0).setValue(Boolean.toString(value));
-            entityManager.persist(config);
+            HApplicationConfiguration configEntity = config.get(0);
+            configEntity.setValue(Boolean.toString(value));
+            entityManager.persist(configEntity);
         }
         // since we assume null value means allow anonymous access, we don't need to do anything here.
     }

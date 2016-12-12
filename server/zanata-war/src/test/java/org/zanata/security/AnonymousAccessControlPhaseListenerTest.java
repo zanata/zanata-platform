@@ -27,12 +27,12 @@ public class AnonymousAccessControlPhaseListenerTest {
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         checker = new AnonymousAccessControlPhaseListener(appConfig, identity, request);
-
+        when(request.getContextPath()).thenReturn("");
     }
 
     @Test
     public void anonymousAccessToLoginPageIsAllowed() {
-        when(request.getRequestURI()).thenReturn("account/login.xhtml");
+        when(request.getRequestURI()).thenReturn("/account/login.xhtml");
         checker.beforePhase(phaseEvent);
 
         verifyZeroInteractions(identity, appConfig);
@@ -40,7 +40,7 @@ public class AnonymousAccessControlPhaseListenerTest {
 
     @Test
     public void anonymousAccessToRegisterPageIsAllowed() {
-        when(request.getRequestURI()).thenReturn("account/register.xhtml");
+        when(request.getRequestURI()).thenReturn("/account/register.xhtml");
         checker.beforePhase(phaseEvent);
 
         verifyZeroInteractions(identity, appConfig);
