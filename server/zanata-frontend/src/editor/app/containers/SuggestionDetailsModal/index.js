@@ -8,8 +8,23 @@ import { PanelGroup } from 'react-bootstrap'
 import LocalProjectDetailPanel from './LocalProjectDetailPanel'
 import ImportedTMDetailPanel from './ImportedTMDetailPanel'
 import PlainSuggestionContents from './PlainSuggestionContents'
+import { matchType } from '../../utils/suggestion-util'
 
 class SuggestionDetailsModal extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      activeKey: 0
+    }
+  }
+
+  /**
+   * One of the detail panels is selected.
+   */
+  handleSelect (activeKey) {
+    this.setState({activeKey})
+  }
+
   render () {
     const { matchDetails } = this.props.suggestion
 
@@ -27,6 +42,8 @@ class SuggestionDetailsModal extends Component {
       }
     })
 
+    const activeMatchType = matchType(matchDetails[this.state.activeKey])
+
     return (
       <Modal
         show
@@ -36,8 +53,11 @@ class SuggestionDetailsModal extends Component {
           Translation Memory Details</span></small></Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <PlainSuggestionContents suggestion={this.props.suggestion} />
-          <PanelGroup defaultActiveKey={0} accordion>
+          <PlainSuggestionContents suggestion={this.props.suggestion}
+            matchType={activeMatchType} />
+          <PanelGroup accordion
+            activeKey={this.state.activeKey}
+            onSelect={::this.handleSelect}>
             {detailPanels}
           </PanelGroup>
         </Modal.Body>
