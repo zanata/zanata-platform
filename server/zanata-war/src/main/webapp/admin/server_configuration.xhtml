@@ -94,7 +94,7 @@
           <zanata:decorate id="permittedEmailDomains" componentId="permittedEmailDomainsField" >
             <h:inputText id="permittedEmailDomainsElm" value="#{serverConfigurationBean.permittedUserEmailDomains}">
               <a4j:ajax event="blur" render="permittedEmailDomains" execute="@this"/>
-              <rich:placeholder value="#{msgs['jsf.email.placeholder']} #{msgs['jsf.email.list.placeholder']}"
+              <rich:placeholder value="#{msgs['jsf.email.domainName.placeholder']} #{msgs['jsf.email.list.placeholder']}"
                 styleClass="txt--neutral" />
             </h:inputText>
           </zanata:decorate>

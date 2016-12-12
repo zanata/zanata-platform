@@ -126,4 +126,8 @@ public class DatabaseBackedConfig implements Serializable {
     public boolean isDisplayUserEmail() {
         return Boolean.valueOf(getConfigValue(HApplicationConfiguration.KEY_DISPLAY_USER_EMAIL));
     }
+
+    public String getPermittedEmailDomains() {
+        return getConfigValue(HApplicationConfiguration.KEY_PERMITTED_USER_EMAIL_DOMAIN);
+    }
 }
