@@ -38,6 +38,7 @@
  */
 
 @import './containers/Root/index.css';
+@import './containers/SuggestionDetailsModal/index.css';
 
 
 /**
