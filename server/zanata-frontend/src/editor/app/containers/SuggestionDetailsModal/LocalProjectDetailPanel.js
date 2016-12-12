@@ -19,20 +19,14 @@ class LocalProjectDetailPanel extends Component {
     const { documentName, documentPath } = matchDetail
     const fullDocName = this.fullDocName(documentPath, documentName)
     return (
-      <div className="transUnit-details">
-        <ul className="u-listInline u-sMB-1-4">
-          <li title={fullDocName}>
-            <Row>
-              <Icon name="document"
-                size="1"
-                theme={{
-                  base: {
-                    px: 'Px(rh)'
-                  }
-                }} /> {fullDocName}
-            </Row>
-          </li>
-        </ul>
+      <div title={fullDocName} className="transUnit-details ellipsis">
+        <Icon name="document"
+          size="1"
+          theme={{
+            base: {
+              px: 'Px(rh)'
+            }
+          }} /> {fullDocName}
       </div>
     )
   }
