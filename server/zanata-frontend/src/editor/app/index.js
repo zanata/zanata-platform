@@ -19,9 +19,6 @@ import Root from './containers/Root'
 import NeedSlugMessage from './containers/NeedSlugMessage'
 
 import './index.css'
-// FIXME this duplicates the bootstrap file from frontend module
-//       refer to that instead when it is available.
-import './css/less/style.less'
 
 /**
  * Top level of the Zanata editor app.
