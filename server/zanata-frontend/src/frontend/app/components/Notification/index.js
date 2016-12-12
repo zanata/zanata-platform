@@ -73,7 +73,7 @@ class Notification extends Component {
           <ButtonGroup className='pull-right'>
             <Button bsStyle='primary'
               id='btn-notification-close'
-              type='primary' onClick={() => this.clearMessage()}>
+              type='button' onClick={() => this.clearMessage()}>
               Close
             </Button>
           </ButtonGroup>
