@@ -142,11 +142,10 @@
 .label {
     font-size: 70%;
     font-weight: 600;
-    line-height: 1;
     display: inline;
     padding: 0.2em 0.6em 0.3em;
     text-align: center;
-    vertical-align: baseline;
+    vertical-align: text-top;
     white-space: nowrap;
     color: #fff;
     border-radius: 0.25em;
