@@ -11,7 +11,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.enterprise.context.RequestScoped;
-import javax.persistence.EntityNotFoundException;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -334,19 +333,17 @@ public class GlossaryService implements GlossaryResource {
         if (response != null) {
             return response;
         }
-        try {
-            HGlossaryEntry entry = glossaryDAO.findById(id);
-            if(entry != null) {
-                GlossaryEntry deletedEntry = generateGlossaryEntry(entry);
-                glossaryDAO.makeTransient(entry);
-                glossaryDAO.flush();
-                return Response.ok(deletedEntry).build();
-            }
-        } catch (EntityNotFoundException enfe) {
-            // Drop to NOT FOUND response
+        HGlossaryEntry entry = glossaryDAO.findById(id);
+
+        if(entry != null) {
+            GlossaryEntry deletedEntry = generateGlossaryEntry(entry);
+            glossaryDAO.makeTransient(entry);
+            glossaryDAO.flush();
+            return Response.ok(deletedEntry).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND)
+                .entity("Glossary entry not found: " + id).build();
         }
-        return Response.status(Response.Status.NOT_FOUND)
-                .entity("Glossary entry " + id + " not found").build();
     }
 
     @Override
