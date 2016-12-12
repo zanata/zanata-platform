@@ -13,6 +13,7 @@
   <name>functional-test</name>
 
   <properties>
+    <allow.deploy.skip>true</allow.deploy.skip>
     <selenium.version>2.45.0</selenium.version>
 
     <!--Cargo Settings -->
