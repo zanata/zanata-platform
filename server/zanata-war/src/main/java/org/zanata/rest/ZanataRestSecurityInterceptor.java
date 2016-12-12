@@ -3,6 +3,7 @@ package org.zanata.rest;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Optional;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,18 +42,24 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 
 /**
- * This class is responsible for checking for all REST requests:
- * a) valid authentication presents when accessing protected resources (e.g. no open to anonymous access)
- * b) no authentication when accessing resource that allows anonymous access
- * This class will not do specific access control for individual end-points.
- * Individual REST services can and should control their specific access rules
- * by using annotation or identity.checkPermission etc.
+ * This class is responsible for checking for all REST requests: a) valid
+ * authentication presents when accessing protected resources (e.g. no open to
+ * anonymous access) b) no authentication when accessing resource that allows
+ * anonymous access This class will not do specific access control for
+ * individual end-points. Individual REST services can and should control their
+ * specific access rules by using annotation or identity.checkPermission etc.
+ * <p>
+ * NOTE: This security filter is for REST call only and work on the HTTP request
+ * level. We've also registered {@code org.apache.deltaspike.security.impl.extension.SecurityInterceptor}
+ * as a CDI interceptor in beans.xml. It will handle CDI bean level security on
+ * method level.
  *
  * @see org.zanata.security.Identity
  * @see org.zanata.security.annotations.CheckRole
  * @see org.zanata.security.annotations.CheckLoggedIn
  */
 // TODO rename this class to Filter since it's no longer a seam JAX-RS interceptor
+@ApplicationScoped
 public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     private static final Logger log =
             LoggerFactory.getLogger(ZanataRestSecurityInterceptor.class);
@@ -236,8 +243,8 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     }
 
     /**
-     * This will based on {@code NoSecurityCheck} annotation and only apply security
-     * to endpoints that don't have that annotation.
+     * This will use the {@code NoSecurityCheck} annotation and only apply
+     * security request filter to endpoints that don't have that annotation.
      *
      * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
      */

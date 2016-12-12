@@ -3,6 +3,7 @@ package org.zanata.security;
 import javax.faces.event.PhaseEvent;
 import javax.servlet.http.HttpServletRequest;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -10,12 +11,13 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.exception.NotLoggedInException;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
-public class AnonymousUserPermissionCheckerTest {
+public class AnonymousAccessControlPhaseListenerTest {
 
-    private AnonymousUserPermissionChecker checker;
+    private AnonymousAccessControlPhaseListener checker;
     @Mock private ApplicationConfiguration appConfig;
     @Mock private ZanataIdentity identity;
     @Mock private HttpServletRequest request;
@@ -24,7 +26,7 @@ public class AnonymousUserPermissionCheckerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        checker = new AnonymousUserPermissionChecker(appConfig, identity, request);
+        checker = new AnonymousAccessControlPhaseListener(appConfig, identity, request);
 
     }
 
@@ -64,13 +66,15 @@ public class AnonymousUserPermissionCheckerTest {
         // all good
     }
 
-    @Test(expected = NotLoggedInException.class)
+    @Test
     public void anonymousAccessToProtectedPageIsDenied() {
         when(request.getRequestURI()).thenReturn("home.xhtml");
         when(appConfig.isAnonymousUserAllowed()).thenReturn(false);
         when(identity.isLoggedIn()).thenReturn(false);
 
-        checker.beforePhase(phaseEvent);
+        assertThatThrownBy(() -> checker.beforePhase(phaseEvent))
+                .isInstanceOf(NotLoggedInException.class);
+
     }
 
 }

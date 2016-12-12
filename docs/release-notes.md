@@ -1,8 +1,8 @@
 ## 4.1.0
-### breaking changes
+### Breaking changes
 New Zanata instances will now block anonymous users from accessing any resources. 
-For existing instances, anonymous user can still access read-only resource 
-which including web pages and REST resources. To change the behavior, admin user 
+For existing instances, anonymous users can still access read-only resources
+including web pages and REST resources. To change the behavior, admin user
 can sign in and go to server configuration page to change the value there.
 
 ## 4.0.0

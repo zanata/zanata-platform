@@ -40,14 +40,14 @@ import org.zanata.exception.NotLoggedInException;
  */
 @ApplicationScoped
 @JsfPhaseListener
-public class AnonymousUserPermissionChecker implements PhaseListener {
+public class AnonymousAccessControlPhaseListener implements PhaseListener {
     private ApplicationConfiguration appConfig;
     private ZanataIdentity identity;
 
     private HttpServletRequest request;
 
     @Inject
-    public AnonymousUserPermissionChecker(ApplicationConfiguration appConfig,
+    public AnonymousAccessControlPhaseListener(ApplicationConfiguration appConfig,
             ZanataIdentity identity, @DeltaSpike HttpServletRequest request) {
         this.appConfig = appConfig;
         this.identity = identity;
@@ -55,7 +55,7 @@ public class AnonymousUserPermissionChecker implements PhaseListener {
     }
 
     @SuppressWarnings("unused")
-    AnonymousUserPermissionChecker() {
+    AnonymousAccessControlPhaseListener() {
     }
 
     @Override
@@ -76,8 +76,9 @@ public class AnonymousUserPermissionChecker implements PhaseListener {
 
     private boolean requestingPageIsSignInOrRegister() {
         // the request URI will be the internal URI
-        return request.getRequestURI().contains("account/login.xhtml") ||
-                request.getRequestURI().contains("account/register.xhtml");
+        String contextPath = request.getContextPath();
+        return request.getRequestURI().startsWith(contextPath + "/account/login.xhtml") ||
+                request.getRequestURI().contains(contextPath + "/account/register.xhtml");
     }
 
     @Override
