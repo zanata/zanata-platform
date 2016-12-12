@@ -25,3 +25,7 @@ iframe {
 [tabindex="-1"]:focus {
   outline: none !important;
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}

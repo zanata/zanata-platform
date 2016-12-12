@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Icon, Row } from 'zanata-ui'
+import cx from 'classnames'
 
 /**
  * Display metadata for suggestion source.
@@ -70,8 +71,12 @@ const SuggestionDetailsSummary = React.createClass({
       </li>
     )
 
+    const className = cx('TransUnit-details', {
+      'cursor-pointer': this.props.onClick
+    })
+
     return (
-      <div className="TransUnit-details" onClick={this.props.onClick}>
+      <div className={className} onClick={this.props.onClick}>
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           {projectIcon}
           {versionIcon}
