@@ -24,7 +24,7 @@ From version 4.0.0, Zanata platform depends on JBossEAP 7 or Wildfly 10, thus pl
 or [Migrate my appliction from AS7 to WildFly](https://docs.jboss.org/author/display/WFLY10/How+do+I+migrate+my+application+from+AS7+to+WildFly) to migrate your configuration.
 
 We use system properties instead of JNDI from 4.0.0, 
-thus, following configuration are become obsolete and deployment will abort.
+thus, following configuration became obsolete and deployment will abort on presence of these obsolete JNDI entries
 ```xml
 <subsystem xmlns="urn:jboss:domain:naming:1.3">
   <bindings>
@@ -42,12 +42,12 @@ thus, following configuration are become obsolete and deployment will abort.
   <remote-naming/>
 </subsystem>
 ```
-Most of the settings should be moved to `<system-properties>` section.
+Settings have moved to `<system-properties>` section.
 
-Zanata aborts deployment when *required* properties are absents or 
+Zanata aborts deployment when *required* properties are absent or 
 *obsolete* properties are present in `standalone.xml`.
 
-###### Required Directory Paths
+###### Required System Properties and Directory Paths
 **All** of the following properties are required in `<system-properties>` section:
 
 * `<property name="hibernate.search.default.indexBase" value="${jboss.server.data.dir}/zanata/indexes"/>`
@@ -65,6 +65,8 @@ Zanata aborts deployment when *required* properties are absents or
 ###### Obsolete Properties
 **None** of the following properties should present, otherwise the deployment will abort.
  * `<property name="ehcache.disk.store.dir" value=.../>`
+
+Directory of `ehcache.disk.store.dir` needs to be cleaned.
 
 ##### Changes
  * [ZNTA-1516](https://zanata.atlassian.net/browse/ZNTA-1516) - Update Zanata-cli documentation link in readthedoc release
