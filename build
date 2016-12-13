@@ -352,6 +352,7 @@ echo "leftovers (passing to Maven): $@"
 
 commandline="$mvn $goals $targets $mvnopts $@"
 
+echo 'INFO: command lines may need escaping in your shell:'
 if (( $+dryRun )); then
   if (( $+precommandline )); then
     echo '[dry-run]' "$precommandline"
