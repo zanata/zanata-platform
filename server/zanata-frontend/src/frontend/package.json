@@ -5,14 +5,8 @@
   "main": "index.js",
   "scripts": {
     "js": "webpack",
-    "build": "webpack --config webpack.config.js && npm run build:webpack --ignore-scripts=false && npm run build:webpackLegacy --ignore-scripts=false",
-    "build:webpack": "webpack -p --config webpack.prod.config.js --bail --display-error-details",
-    "build:webpackLegacy": "webpack -p --config webpack.legacy.config.js --bail --display-error-details",
-
-    "draft": "webpack --config webpack.config.js && npm run draft:webpack --ignore-scripts=false && npm run draft:webpackLegacy --ignore-scripts=false",
-    "draft:webpack": "webpack --config webpack.draft.config.js --progress --bail --display-error-details",
-    "draft:webpackLegacy": "webpack --config webpack.draftlegacy.config.js --progress --bail --display-error-details",
-
+    "build": "webpack -p --config webpack.prod.config.js --bail --display-error-details",
+    "draft": "webpack --config webpack.draft.config.js --progress --bail --display-error-details",
     "hot-dev-server": "webpack-dev-server --config webpack.dev.config.js --progress --inline --hot --port 8000",
     "start": "npm run hot-dev-server --ignore-scripts=false",
     "styleguide-server": "styleguidist server",
