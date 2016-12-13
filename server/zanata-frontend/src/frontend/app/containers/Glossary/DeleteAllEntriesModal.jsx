@@ -37,19 +37,21 @@ class DeleteAllEntriesModal extends Component {
               <strong>all entries</strong>&nbsp;?
             </p>
             <div className='Mt(rq)'>
-              <ButtonLink
-                atomic={{m: 'Mend(rh)'}}
-                onClick={() => handleDeleteAllEntriesDisplay(false)}>
-                Cancel
-              </ButtonLink>
-              <ButtonRound type='danger' size='n1'
-                disabled={isDeleting}
-                onClick={() => handleDeleteAllEntries()}>
-                <LoaderText loading={isDeleting} size='n1'
-                  loadingText='Deleting'>
-                  Delete
-                </LoaderText>
-              </ButtonRound>
+              <Row theme={{ base: {j: 'Jc(c)'} }}>
+                <ButtonLink
+                  atomic={{m: 'Mend(rh)'}}
+                  onClick={() => handleDeleteAllEntriesDisplay(false)}>
+                  Cancel
+                </ButtonLink>
+                <ButtonRound type='danger' size='n1'
+                  disabled={isDeleting}
+                  onClick={() => handleDeleteAllEntries()}>
+                  <LoaderText loading={isDeleting} size='n1'
+                    loadingText='Deleting'>
+                    Delete
+                  </LoaderText>
+                </ButtonRound>
+              </Row>
             </div>
           </Tooltip>
         </Overlay>

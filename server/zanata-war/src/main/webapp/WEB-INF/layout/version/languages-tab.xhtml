@@ -201,7 +201,7 @@
           <ul class="dropdown__content js-dropdown__content" role="content"
             aria-labelledby="dropdownContent">
             <ui:fragment
-              rendered="#{versionHomeAction.zipFileDownloadAllowed}">
+              rendered="#{versionHomeAction.zipFileDownloadAllowed and versionHomeAction.getDocuments().size() > 0}">
               <li>
                 <a href="#" class="i__item--right"
                   title="#{versionHomeAction.zipFileDownloadTitle}"
