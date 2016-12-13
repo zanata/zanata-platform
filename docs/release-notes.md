@@ -48,42 +48,23 @@ Zanata aborts deployment when *required* properties are absents or
 *obsolete* properties are present in `standalone.xml`.
 
 ###### Required Directory Paths
-**All** of the following properties are required in `<system-properties>` section.
+**All** of the following properties are required in `<system-properties>` section:
 
-<dl>
-  <dt>hibernate.search.default.indexBase</dt>
-  <dd>Example: <pre><property name="hibernate.search.default.indexBase" value="${jboss.server.data.dir}/zanata/indexes"/></pre></dd>
-
-  <dt>javamelody.storage-directory</dt>
-  <dd>Example: <pre><property name="javamelody.storage-directory" value="${jboss.server.data.dir}/zanata/stats"/></pre></dd>
-
-  <dt>zanata.file.directory</dt>
-  <dd>Example: <pre><property name="zanata.file.directory" value="${jboss.server.data.dir}/zanata/files"/></pre></dd>
-</dl>
+* `<property name="hibernate.search.default.indexBase" value="${jboss.server.data.dir}/zanata/indexes"/>`
+* `<property name="javamelody.storage-directory" value="${jboss.server.data.dir}/zanata/stats"/>`
+* `<property name="zanata.file.directory" value="${jboss.server.data.dir}/zanata/files"/>`
 
 ###### Required Auth Policy
-**Exactly one** auth policy is required. The only exception is combining `internal` and `openid`.
+**Exactly one** auth policy is required in `<system-properties>` section. The only exception is combining `internal` and `openid`.
 
-<dl>
-  <dt>zanata.security.authpolicy.internal</dt>
-  <dd>Example:<pre><property name="zanata.security.authpolicy.internal" value="zanata.internal"/></pre></dd>
-
-  <dt>zanata.security.authpolicy.jaas</dt>
-  <dd>Example:<pre><property name="zanata.security.authpolicy.jass" value="zanata.jaas"/></pre></dd>
-  
-  <dt>zanata.security.authpolicy.kerberos</dt>
-  <dd>Example:<pre><property name="zanata.security.authpolicy.kerberos" value="zanata.kerberos"/></pre></dd>
-
-  <dt>zanata.security.authpolicy.openid</dt>
-  <dd>Example:<pre><property name="zanata.security.authpolicy.openid" value="zanata.openid"/></pre></dd>
-</dl>
+ * `<property name="zanata.security.authpolicy.internal" value="zanata.internal"/>`
+ * `<property name="zanata.security.authpolicy.jass" value="zanata.jaas"/>`
+ * `<property name="zanata.security.authpolicy.kerberos" value="zanata.kerberos"/>`
+ * `<property name="zanata.security.authpolicy.openid" value="zanata.openid"/>`
 
 ###### Obsolete Properties
-**None** of the properties should present, otherwise the deployment will abort.
-<dl>
-  <dt>ehcache.disk.store.dir</dt>
-  <dd>Remove the property line:<pre><property name="ehcache.disk.store.dir" value=.../></pre>
-</dl>
+**None** of the following properties should present, otherwise the deployment will abort.
+ * `<property name="ehcache.disk.store.dir" value=.../>`
 
 ##### Changes
  * [ZNTA-1516](https://zanata.atlassian.net/browse/ZNTA-1516) - Update Zanata-cli documentation link in readthedoc release
