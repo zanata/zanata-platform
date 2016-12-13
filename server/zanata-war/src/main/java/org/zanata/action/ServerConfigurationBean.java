@@ -122,12 +122,12 @@ public class ServerConfigurationBean implements Serializable {
     private boolean displayUserEmail;
     private PropertyWithKey<Boolean> displayUserEmailProperty = new PropertyWithKey<Boolean>("displayUserEmail", KEY_DISPLAY_USER_EMAIL);
 
-    @EmailList
     @Getter
     @Setter
     private boolean allowAnonymousUser = true;
     private PropertyWithKey<Boolean> allowAnonymousUserProperty = new PropertyWithKey<Boolean>("allowAnonymousUser", KEY_ALLOW_ANONYMOUS_USER);
 
+    @EmailList
     @Getter
     @Setter
     private String logDestinationEmails;
