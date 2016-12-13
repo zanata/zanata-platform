@@ -22,6 +22,7 @@
 package org.zanata.rest;
 
 import java.util.Optional;
+import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -70,14 +71,14 @@ public class ZanataRestSecurityInterceptorTest {
     @Mock
     private UriInfo uriInfo;
     @Mock
-    private ApplicationConfiguration appConfig;
+    private Provider<Boolean> allowAnonymousAccessProvider;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         securityInterceptor =
                 new ZanataRestSecurityInterceptor(request, securityTokens, identity,
-                        true, serviceLocator, appConfig);
+                        true, serviceLocator, allowAnonymousAccessProvider);
         headers = new MultivaluedHashMap<>();
 
         // some common set up
@@ -85,6 +86,7 @@ public class ZanataRestSecurityInterceptorTest {
         when(uriInfo.getPath()).thenReturn("/rest/some/resource");
         when(context.getHeaders()).thenReturn(headers);
         when(identity.getCredentials()).thenReturn(credential);
+        when(allowAnonymousAccessProvider.get()).thenReturn(true);
     }
 
     @Test
@@ -174,7 +176,7 @@ public class ZanataRestSecurityInterceptorTest {
 
     @Test
     public void willAllowAnonymousAccessToReadOnlyResources() throws Exception {
-        when(appConfig.isAnonymousUserAllowed()).thenReturn(true);
+        when(allowAnonymousAccessProvider.get()).thenReturn(true);
         when(context.getMethod()).thenReturn("GET");
 
         securityInterceptor.filter(context);

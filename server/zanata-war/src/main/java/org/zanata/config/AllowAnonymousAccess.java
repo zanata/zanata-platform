@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,31 +18,25 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.util;
 
-import org.junit.rules.ExternalResource;
-import com.google.common.base.Throwables;
+package org.zanata.config;
 
-import static org.zanata.util.SampleDataResourceClient.deleteExceptEssentialData;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import javax.inject.Qualifier;
+
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * Whether this instance allows anonymous read access.
+ *
  */
-public class CleanDatabaseRule extends ExternalResource {
-
-
-    @Override
-    protected void before() throws Throwable {
-        deleteExceptEssentialData();
-    }
-
-    @Override
-    protected void after() {
-        try {
-            deleteExceptEssentialData();
-        } catch (Exception e) {
-            throw Throwables.propagate(e);
-        }
-    }
+@Qualifier
+@Retention(RUNTIME)
+@Target({ TYPE, METHOD, FIELD, PARAMETER })
+public @interface AllowAnonymousAccess {
 }

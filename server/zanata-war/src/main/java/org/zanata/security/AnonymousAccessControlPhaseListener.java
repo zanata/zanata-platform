@@ -25,11 +25,13 @@ import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.deltaspike.jsf.api.listener.phase.JsfPhaseListener;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.exception.NotLoggedInException;
 
 /**
@@ -41,15 +43,16 @@ import org.zanata.exception.NotLoggedInException;
 @ApplicationScoped
 @JsfPhaseListener
 public class AnonymousAccessControlPhaseListener implements PhaseListener {
-    private ApplicationConfiguration appConfig;
+    private Provider<Boolean> allowAnonymousAccessProvider;
     private ZanataIdentity identity;
 
     private HttpServletRequest request;
 
     @Inject
-    public AnonymousAccessControlPhaseListener(ApplicationConfiguration appConfig,
+    public AnonymousAccessControlPhaseListener(
+            @AllowAnonymousAccess Provider<Boolean> allowAnonymousAccessProvider,
             ZanataIdentity identity, @DeltaSpike HttpServletRequest request) {
-        this.appConfig = appConfig;
+        this.allowAnonymousAccessProvider = allowAnonymousAccessProvider;
         this.identity = identity;
         this.request = request;
     }
@@ -71,7 +74,7 @@ public class AnonymousAccessControlPhaseListener implements PhaseListener {
     }
 
     private boolean anonymousAccessIsNotAllowed() {
-        return !appConfig.isAnonymousUserAllowed() && !identity.isLoggedIn();
+        return !allowAnonymousAccessProvider.get() && !identity.isLoggedIn();
     }
 
     private boolean requestingPageIsSignInOrRegister() {

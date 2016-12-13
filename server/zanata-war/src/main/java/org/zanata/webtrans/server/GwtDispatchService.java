@@ -1,6 +1,7 @@
 package org.zanata.webtrans.server;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.servlet.annotation.WebServlet;
 
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
 import org.zanata.ApplicationConfiguration;
+import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.shared.DispatchService;
 
@@ -44,9 +46,13 @@ public class GwtDispatchService extends RemoteServiceServlet implements
     @Inject
     private ApplicationConfiguration appConfig;
 
+    @Inject
+    @AllowAnonymousAccess
+    private Provider<Boolean> allowAnonymousAccessProvider;
+
     @Override
     public Result execute(final Action<?> action) throws Exception {
-        if (!appConfig.isAnonymousUserAllowed()) {
+        if (!allowAnonymousAccessProvider.get()) {
             identity.checkLoggedIn();
         }
         return dispatch.execute(action);

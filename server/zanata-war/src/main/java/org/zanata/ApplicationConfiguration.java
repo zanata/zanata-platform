@@ -44,8 +44,10 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.servlet.http.HttpSession;
 
+import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.config.OAuthTokenExpiryInSeconds;
 import org.zanata.config.SupportOAuth;
 import org.zanata.config.SystemPropertyConfigStore;
@@ -443,7 +445,9 @@ public class ApplicationConfiguration implements Serializable {
         return sysPropConfigStore.isOAuthEnabled();
     }
 
-    public boolean isAnonymousUserAllowed() {
+    @Produces
+    @AllowAnonymousAccess
+    protected boolean isAnonymousUserAllowed() {
         return databaseBackedConfig.isAnonymousUserAllowed();
     }
 }

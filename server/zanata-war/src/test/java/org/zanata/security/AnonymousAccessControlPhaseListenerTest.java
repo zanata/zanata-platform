@@ -1,9 +1,9 @@
 package org.zanata.security;
 
 import javax.faces.event.PhaseEvent;
+import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 public class AnonymousAccessControlPhaseListenerTest {
 
     private AnonymousAccessControlPhaseListener checker;
-    @Mock private ApplicationConfiguration appConfig;
+    @Mock private Provider<Boolean> anonymousAccessProvider;
     @Mock private ZanataIdentity identity;
     @Mock private HttpServletRequest request;
     @Mock private PhaseEvent phaseEvent;
@@ -26,7 +26,8 @@ public class AnonymousAccessControlPhaseListenerTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        checker = new AnonymousAccessControlPhaseListener(appConfig, identity, request);
+        checker = new AnonymousAccessControlPhaseListener(
+                anonymousAccessProvider, identity, request);
         when(request.getContextPath()).thenReturn("");
     }
 
@@ -35,7 +36,7 @@ public class AnonymousAccessControlPhaseListenerTest {
         when(request.getRequestURI()).thenReturn("/account/login.xhtml");
         checker.beforePhase(phaseEvent);
 
-        verifyZeroInteractions(identity, appConfig);
+        verifyZeroInteractions(identity, anonymousAccessProvider);
     }
 
     @Test
@@ -43,13 +44,13 @@ public class AnonymousAccessControlPhaseListenerTest {
         when(request.getRequestURI()).thenReturn("/account/register.xhtml");
         checker.beforePhase(phaseEvent);
 
-        verifyZeroInteractions(identity, appConfig);
+        verifyZeroInteractions(identity, anonymousAccessProvider);
     }
 
     @Test
     public void anonymousAccessToUnprotectedPageIsAllowed() {
         when(request.getRequestURI()).thenReturn("home.xhtml");
-        when(appConfig.isAnonymousUserAllowed()).thenReturn(true);
+        when(anonymousAccessProvider.get()).thenReturn(true);
 
         checker.beforePhase(phaseEvent);
 
@@ -59,7 +60,7 @@ public class AnonymousAccessControlPhaseListenerTest {
     @Test
     public void loggedInAccessToProtectedPageIsAllowed() {
         when(request.getRequestURI()).thenReturn("home.xhtml");
-        when(appConfig.isAnonymousUserAllowed()).thenReturn(false);
+        when(anonymousAccessProvider.get()).thenReturn(false);
         when(identity.isLoggedIn()).thenReturn(true);
 
         checker.beforePhase(phaseEvent);
@@ -69,7 +70,7 @@ public class AnonymousAccessControlPhaseListenerTest {
     @Test
     public void anonymousAccessToProtectedPageIsDenied() {
         when(request.getRequestURI()).thenReturn("home.xhtml");
-        when(appConfig.isAnonymousUserAllowed()).thenReturn(false);
+        when(anonymousAccessProvider.get()).thenReturn(false);
         when(identity.isLoggedIn()).thenReturn(false);
 
         assertThatThrownBy(() -> checker.beforePhase(phaseEvent))
