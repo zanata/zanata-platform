@@ -13,7 +13,11 @@
     "styleguide-build": "styleguidist build",
     "test": "jest --coverage"
   },
-  "license": "LGPL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zanata/zanata-platform.git"
+  },
+  "license": "LGPL-2.1",
   "devDependencies": {
     "atomic-loader": "0.2.2",
     "autoprefixer-loader": "3.2.0",
