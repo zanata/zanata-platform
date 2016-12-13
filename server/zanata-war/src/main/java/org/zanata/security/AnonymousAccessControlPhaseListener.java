@@ -80,8 +80,7 @@ public class AnonymousAccessControlPhaseListener implements PhaseListener {
     private boolean requestingPageIsSignInOrRegister() {
         // the request URI will be the internal URI
         String contextPath = request.getContextPath();
-        return request.getRequestURI().startsWith(contextPath + "/account/login.xhtml") ||
-                request.getRequestURI().contains(contextPath + "/account/register.xhtml");
+        return request.getRequestURI().startsWith(contextPath + "/account/");
     }
 
     @Override
