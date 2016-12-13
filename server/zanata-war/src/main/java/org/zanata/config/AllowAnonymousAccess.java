@@ -32,8 +32,9 @@ import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Whether this instance allows anonymous read access.
- *
+ * CDI qualifier for a dependent-scope boolean which describes whether this
+ * instance allows anonymous read access. Use @Inject @AllowAnonymousAccess
+ * Provider<Boolean> to use the latest value at all times.
  */
 @Qualifier
 @Retention(RUNTIME)

@@ -43,18 +43,8 @@ public class GwtDispatchService extends RemoteServiceServlet implements
     @Inject
     private ZanataIdentity identity;
 
-    @Inject
-    private ApplicationConfiguration appConfig;
-
-    @Inject
-    @AllowAnonymousAccess
-    private Provider<Boolean> allowAnonymousAccessProvider;
-
     @Override
     public Result execute(final Action<?> action) throws Exception {
-        if (!allowAnonymousAccessProvider.get()) {
-            identity.checkLoggedIn();
-        }
         return dispatch.execute(action);
     }
 

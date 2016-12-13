@@ -24,6 +24,7 @@ package org.zanata.rest.service.raw;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
+import org.assertj.core.api.Assertions;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
@@ -35,6 +36,7 @@ import org.zanata.rest.ResourceRequest;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 
 public class TokenServiceRestITCase extends RestTest {
@@ -57,7 +59,7 @@ public class TokenServiceRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void canAccessTokenRegisterWithAnonymousWhenSystemDisallowIt() throws Exception {
+    public void anonymousCanRegisterTokenEvenWithPrivateServer() throws Exception {
         // update system configuration to allow anonymous user
         new ResourceRequest(
                 getRestEndpointUrl("/configurations/c/allow.anonymous.user"),
@@ -80,16 +82,14 @@ public class TokenServiceRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                // we did not supply the correct client id and auth code so we will receive bad request. But not 401.
-                assertThat(response.getStatus(),
-                    is(Status.BAD_REQUEST.getStatusCode()));
+                Assertions.assertThat(response.getStatus()).isNotEqualTo(Status.UNAUTHORIZED);
             }
         }.run();
     }
 
     @Test
     @RunAsClient
-    public void canAccessTokenRefreshWithAnonymousWhenSystemDisallowIt() throws Exception {
+    public void anonymousCanRefreshTokenEvenWithPrivateServer() throws Exception {
         // update system configuration to allow anonymous user
         new ResourceRequest(
                 getRestEndpointUrl("/configurations/c/allow.anonymous.user"),
@@ -112,9 +112,7 @@ public class TokenServiceRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                // we did not supply the correct client id and auth code so we will receive bad request. But not 401.
-                assertThat(response.getStatus(),
-                        is(Status.BAD_REQUEST.getStatusCode()));
+                Assertions.assertThat(response.getStatus()).isNotEqualTo(Status.UNAUTHORIZED);
             }
         }.run();
     }
