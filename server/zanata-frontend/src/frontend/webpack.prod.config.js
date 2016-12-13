@@ -12,10 +12,14 @@ var _ = require('lodash')
 var defaultConfig = require('./webpack.config.js')
 
 module.exports = _.merge({}, defaultConfig, {
+  entry: {
+    'bundle': './app/index',
+    'bundle.legacy': './app/legacy'
+  },
   cache: false,
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'frontend.bundle.min.js'
+    filename: 'frontend.[name].min.js'
   },
   module: {
     preLoaders: [
