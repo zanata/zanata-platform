@@ -141,6 +141,7 @@
         <div class="form__item l--push-top-1">
           <h3 class="heading--secondary l--push-all-0">#{msgs['jsf.config.allowAnonymousUser.heading']}</h3>
           <p>#{msgs['jsf.config.allowAnonymousUser.description']}</p>
+          <p class="txt--warning">#{msgs['jsf.config.allowAnonymousUser.warning']}</p>
           <h:outputLabel for="allowAnonymousUser">#{msgs['jsf.config.allowAnonymousUser.label']}</h:outputLabel>
           <h:selectBooleanCheckbox id="allowAnonymousUser" styleClass="l--push-h-quarter"
             value="#{serverConfigurationBean.allowAnonymousUser}"/>
@@ -194,6 +195,7 @@
         <div class="form__item l--push-top-1">
           <h3 class="heading--secondary l--push-all-0">#{msgs['jsf.config.Piwik']}</h3>
           <p>#{msgs['jsf.config.Piwiktooltip']}</p>
+          <p class="txt--warning">#{msgs['jsf.config.Piwik.warning']}</p>
           <div class="g--tight">
             <div class="w--3-4 w--s-3-4 g__item">
               <zanata:decorate id="piwikUrl" componentId="piwikUrlField">
