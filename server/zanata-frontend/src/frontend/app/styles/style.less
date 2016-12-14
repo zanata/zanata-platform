@@ -95,10 +95,10 @@ body {
   color: rgb(84, 102, 122);
   position: relative;
   max-width: 48em;
-  width: 100%;
   margin-top: @margin-top;
   margin-bottom: @margin-base;
-  margin-left: 0;
+  margin-left: 1.5em;
+  margin-right: auto;
 }
 
 .wideViewTheme {
@@ -161,7 +161,7 @@ body {
 
 .searchViewTheme svg {
   vertical-align: sub;
-  margin-left: @margin-tooltip;
+  margin-left: 2em;
 }
 
 .textStateClasses.textInput {
@@ -3719,6 +3719,10 @@ ul.nav-pills > li.active > a {
   background-color: #03a6d7;
 }
 
+.headerClasses {
+  margin-left: 0;
+  margin-bottom:@margin-xl;
+}
 
 .pagination {
   display: inline-block;
@@ -5007,7 +5011,7 @@ button.btn-link {
   outline: none;
   padding-left: @padding-search-input-left;
   padding-right: @padding-search-input-right;
-  width: 87%;
+  width: 80%;
   margin-left: -@margin-left-search-input;
 }
 
@@ -5396,6 +5400,15 @@ button.btn-link {
     font-size: 1.4em;
   }
 
+  .headerClasses {
+    margin-left: 0;
+    margin-bottom: @margin-hr;
+  }
+
+  .searchViewTheme .textInput {
+    width:60%;
+  }
+
   .wideViewTheme {
     max-width:100%;
   }
@@ -5451,6 +5464,7 @@ button.btn-link {
     display: block !important;
   }
 
+
   table.visible-sm {
     display: table !important;
   }
@@ -5495,9 +5509,6 @@ button.btn-link {
 }
 
 @media (min-width: @screen-md-min) {
-  .headerClasses {
-    padding: @padding-base-and-a-half;
-  }
 
   .show-items {
     clear: none !important;
@@ -6012,6 +6023,13 @@ button.btn-link {
     display: none !important;
   }
 }
+
+@media (min-width: @screen-md-min) and (max-width: @screen-md-max) {
+  .headerClasses {
+    margin-left: @margin-hr;
+  }
+}
+
 
 @media (min-width: @screen-md-min) and (max-width: @screen-lg) {
   .hidden-md {
