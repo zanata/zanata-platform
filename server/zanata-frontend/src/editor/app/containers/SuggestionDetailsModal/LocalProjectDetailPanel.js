@@ -64,7 +64,12 @@ class LocalProjectDetailPanel extends Component {
           </li>
           <li>
             <Row>
-              <Icon name="version" size="1" className="Mend(rh)"/> {version}
+              <Icon name="version" size="1"
+                theme={{
+                  base: {
+                    mend: 'Mend(rh)'
+                  }
+                }} /> {version}
             </Row>
           </li>
           <li title={fullDocName}>
