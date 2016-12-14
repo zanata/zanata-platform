@@ -5400,6 +5400,11 @@ button.btn-link {
     font-size: 1.4em;
   }
 
+  .langselect {
+    right: 0;
+    position:absolute;
+  }
+
   .headerClasses {
     margin-left: 0;
     margin-bottom: @margin-hr;
@@ -5464,7 +5469,6 @@ button.btn-link {
     display: block !important;
   }
 
-
   table.visible-sm {
     display: table !important;
   }
@@ -5509,6 +5513,9 @@ button.btn-link {
 }
 
 @media (min-width: @screen-md-min) {
+  .langselect {
+    position: relative;
+  }
 
   .show-items {
     clear: none !important;

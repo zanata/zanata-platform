@@ -185,7 +185,7 @@ class ViewHeader extends Component {
           }}}>
           <TableRow
             theme={{ base: { bd: '' } }}
-            className='Flxg(1)'>
+            className='Flx(flx1)'>
             <TableCell size='3'
               onClick={() => handleSortColumn('src_content')}>
               <Button bsStyle='link' type='button'>
@@ -205,12 +205,13 @@ class ViewHeader extends Component {
               </Button>
             </TableCell>
             <TableCell tight size={'3'}
+              className='langselect'
               theme={{base: {lineClamp: ''}}}>
               <Select
                 name='language-selection'
                 placeholder={statsLoading
                       ? 'Loading…' : 'Select a language…'}
-                className='Flx(flx1)'
+                className='Flxg(1)'
                 isLoading={statsLoading}
                 value={selectedTransLocale}
                 options={transLocales}
