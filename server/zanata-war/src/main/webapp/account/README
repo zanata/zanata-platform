@@ -1,0 +1,5 @@
+All JSF pages under this folder are:
+- accessible anonymously (despite what admin option you have set up for anonymous access).
+  see org.zanata.security.AnonymousAccessControlPhaseListener
+- are not cached
+  see web.xml noCacheFilter mapping

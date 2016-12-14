@@ -277,6 +277,7 @@
               <SCM-Describe>${gitDescribe}</SCM-Describe>
             </manifestEntries>
           </archive>
+          <packagingExcludes>account/README</packagingExcludes>
         </configuration>
         <executions>
           <!-- Internal auth war -->

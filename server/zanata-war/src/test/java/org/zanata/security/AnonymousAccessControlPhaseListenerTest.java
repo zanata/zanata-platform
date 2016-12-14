@@ -12,6 +12,7 @@ import org.zanata.ApplicationConfiguration;
 import org.zanata.exception.NotLoggedInException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
@@ -29,22 +30,21 @@ public class AnonymousAccessControlPhaseListenerTest {
         checker = new AnonymousAccessControlPhaseListener(
                 anonymousAccessProvider, identity, request);
         when(request.getContextPath()).thenReturn("");
+
+        // set up the authentication state to unauthenticated
+        doThrow(new NotLoggedInException()).when(identity).checkLoggedIn();
     }
 
     @Test
     public void anonymousAccessToLoginPageIsAllowed() {
         when(request.getRequestURI()).thenReturn("/account/login.xhtml");
         checker.beforePhase(phaseEvent);
-
-        verifyZeroInteractions(identity, anonymousAccessProvider);
     }
 
     @Test
     public void anonymousAccessToRegisterPageIsAllowed() {
         when(request.getRequestURI()).thenReturn("/account/register.xhtml");
         checker.beforePhase(phaseEvent);
-
-        verifyZeroInteractions(identity, anonymousAccessProvider);
     }
 
     @Test
@@ -54,7 +54,6 @@ public class AnonymousAccessControlPhaseListenerTest {
 
         checker.beforePhase(phaseEvent);
 
-        verifyZeroInteractions(identity);
     }
 
     @Test

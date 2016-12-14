@@ -191,9 +191,7 @@ public class SeamDispatch implements Dispatch {
             throw new ActionException("Invalid (non-wrapped) action received: "
                     + action.getClass());
         }
-        if (!allowAnonymousAccessProvider.get()) {
-            identity.checkLoggedIn();
-        }
+        checkLogInIfRequired();
         WrappedAction<?> a = (WrappedAction<?>) action;
         HttpSession session = request.getSession(false);
         if (session != null && !session.getId().equals(a.getCsrfToken())) {
