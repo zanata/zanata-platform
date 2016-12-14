@@ -142,7 +142,7 @@ class Entry extends Component {
               editable={!transSelected && editable}
               editing={selected}
               onChange={(e) => handleTermFieldUpdate('pos', e)}
-              placeholder='Add part of speech…'
+              placeholder='Add part of speech'
               emptyReadOnlyText='No part of speech'>
               {entry.pos}
             </EditableText>)
