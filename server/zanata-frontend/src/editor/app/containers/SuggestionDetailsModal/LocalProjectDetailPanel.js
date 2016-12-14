@@ -64,12 +64,13 @@ class LocalProjectDetailPanel extends Component {
           </li>
           <li>
             <Row>
-              <Icon name="version" size="1" /> {version}
+              <Icon name="version" size="1" className="Mend(rh)"/> {version}
             </Row>
           </li>
           <li title={fullDocName}>
             <Row>
-              <Icon name="document" size="1" /> {fullDocName}
+              <Icon name="document" size="1" />
+              {fullDocName}
             </Row>
           </li>
           <li>

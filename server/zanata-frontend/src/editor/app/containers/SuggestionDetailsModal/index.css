@@ -136,6 +136,7 @@
 
 .label-primary {
     background-color: #337ab7;
+    vertical-align: text-top;
 }
 
 .label-success {
@@ -157,4 +158,15 @@
     white-space: nowrap;
     color: #fff;
     border-radius: 0.25em;
+}
+
+.transUnit-details {
+    white-space:normal;
+    word-break: break-all;
+    line-height:1em;
+}
+
+.transUnit-details .u-listInline {
+    display:inline-flex;
+    align-items: baseline;
 }
