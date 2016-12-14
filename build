@@ -22,7 +22,7 @@ set -e # exit script in case of error
 # :a allows this script be linked in to a different zanata
 # worktree and run against it.
 # :A will follow symlinks, :a will not
-DIR=${0:a:h}
+DIR=${0:A:h}
 
 ROOT=$(realpath --relative-to="$PWD" "$DIR")
 scriptname="$0"
