@@ -27,7 +27,7 @@ public class SeamDispatchTest {
     @Mock
     private HttpServletRequest request;
     @Mock
-    private Provider<Boolean> allowAnonymousProvider;
+    private Provider<Boolean> allowAnonymous;
     @Mock
     private ZanataIdentity identity;
     @Mock
@@ -41,7 +41,7 @@ public class SeamDispatchTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        dispatch = new SeamDispatch(request, allowAnonymousProvider, identity,
+        dispatch = new SeamDispatch(request, allowAnonymous, identity,
                 actionHandlers);
         when(actionHandlers.select(any())).thenReturn(handlerInstance);
         when(handlerInstance.isAmbiguous()).thenReturn(false);
@@ -54,7 +54,7 @@ public class SeamDispatchTest {
     @Test
     public void willCheckLogInOnExecuteWhenAnonymousAccessIsBlocked()
             throws ActionException {
-        when(allowAnonymousProvider.get()).thenReturn(false);
+        when(allowAnonymous.get()).thenReturn(false);
 
         assertThatThrownBy(() -> dispatch.execute(wrappedAction))
                 .isInstanceOf(NotLoggedInException.class);
@@ -64,7 +64,7 @@ public class SeamDispatchTest {
     @Test
     public void willNotCheckLogInOnExecuteWhenAnonymousAccessIsAllowed()
             throws ActionException {
-        when(allowAnonymousProvider.get()).thenReturn(true);
+        when(allowAnonymous.get()).thenReturn(true);
 
         dispatch.execute(wrappedAction);
 
@@ -74,7 +74,7 @@ public class SeamDispatchTest {
     @Test
     public void willCheckLogInOnRollBackWhenAnonymousAccessIsBlocked()
             throws ActionException {
-        when(allowAnonymousProvider.get()).thenReturn(false);
+        when(allowAnonymous.get()).thenReturn(false);
 
         assertThatThrownBy(() -> dispatch.rollback(wrappedAction, null))
                 .isInstanceOf(NotLoggedInException.class);
@@ -84,7 +84,7 @@ public class SeamDispatchTest {
     @Test
     public void willNotCheckLogInOnRollBackWhenAnonymousAccessIsAllowed()
             throws ActionException {
-        when(allowAnonymousProvider.get()).thenReturn(true);
+        when(allowAnonymous.get()).thenReturn(true);
 
         dispatch.rollback(wrappedAction, null);
 
