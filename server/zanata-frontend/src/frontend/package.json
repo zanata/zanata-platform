@@ -17,7 +17,7 @@
     "start": "npm run hot-dev-server --ignore-scripts=false",
     "styleguide-server": "styleguidist server",
     "styleguide-build": "styleguidist build",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "license": "LGPL",
   "devDependencies": {
