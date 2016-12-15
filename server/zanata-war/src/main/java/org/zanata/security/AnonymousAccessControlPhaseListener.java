@@ -51,7 +51,8 @@ public class AnonymousAccessControlPhaseListener implements PhaseListener {
 
     @Inject
     public AnonymousAccessControlPhaseListener(
-            @AllowAnonymousAccess Provider<Boolean> allowAnonymousAccessProvider,
+            @AllowAnonymousAccess
+                    Provider<Boolean> allowAnonymousAccessProvider,
             ZanataIdentity identity, @DeltaSpike HttpServletRequest request) {
         this.allowAnonymousAccessProvider = allowAnonymousAccessProvider;
         this.identity = identity;
@@ -81,7 +82,8 @@ public class AnonymousAccessControlPhaseListener implements PhaseListener {
     private boolean requestingPageIsSignInOrRegister() {
         // the request URI will be the internal URI
         String contextPath = request.getContextPath();
-        return request.getRequestURI().startsWith(contextPath + "/account/");
+        return request.getRequestURI().startsWith(contextPath + "/account/") ||
+                request.getRequestURI().startsWith(contextPath + "/public/");
     }
 
     @Override

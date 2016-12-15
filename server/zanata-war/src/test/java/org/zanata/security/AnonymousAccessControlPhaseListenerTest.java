@@ -36,14 +36,14 @@ public class AnonymousAccessControlPhaseListenerTest {
     }
 
     @Test
-    public void anonymousAccessToLoginPageIsAllowed() {
+    public void anonymousAccessToAnyPageUnderAccountIsAllowed() {
         when(request.getRequestURI()).thenReturn("/account/login.xhtml");
         checker.beforePhase(phaseEvent);
     }
 
     @Test
-    public void anonymousAccessToRegisterPageIsAllowed() {
-        when(request.getRequestURI()).thenReturn("/account/register.xhtml");
+    public void anonymousAccessToAnyPageUnderPublicIsAllowed() {
+        when(request.getRequestURI()).thenReturn("/public/info.xhtml");
         checker.beforePhase(phaseEvent);
     }
 
