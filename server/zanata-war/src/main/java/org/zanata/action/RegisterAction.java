@@ -25,7 +25,6 @@ import java.io.Serializable;
 import javax.enterprise.inject.Model;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -53,7 +51,7 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 @Model
 @Transactional
 @Slf4j
-public class RegisterAction implements Serializable {
+public class RegisterAction implements HasUserDetail, Serializable {
 
     private static final long serialVersionUID = -7883627570614588182L;
 
@@ -108,10 +106,7 @@ public class RegisterAction implements Serializable {
         this.username = username;
     }
 
-    @NotEmpty
-    @Size(min = 3, max = 20)
-    @Pattern(regexp = AbstractProfileAction.USERNAME_REGEX,
-            message = "{validation.username.constraints}")
+    @Override
     public String getUsername() {
         return username;
     }
@@ -120,9 +115,8 @@ public class RegisterAction implements Serializable {
         this.email = email;
     }
 
-    @NotEmpty
-    @Email
     @NotDuplicateEmail(message = "This email address is already taken.")
+    @Override
     public String getEmail() {
         return email;
     }
