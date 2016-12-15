@@ -136,7 +136,6 @@
 
 .label-primary {
     background-color: #337ab7;
-    vertical-align: text-top;
 }
 
 .label-success {
@@ -154,7 +153,7 @@
     display: inline;
     padding: 0.2em 0.6em 0.3em;
     text-align: center;
-    vertical-align: text-top;
+    vertical-align: super;
     white-space: nowrap;
     color: #fff;
     border-radius: 0.25em;
