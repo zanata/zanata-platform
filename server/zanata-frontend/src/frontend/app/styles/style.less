@@ -3678,12 +3678,39 @@ textarea.input-group-sm > .input-group-btn > .btn {
   }
 }
 
-#activity-table td .btn-primary {
-  border:0;
+
+
+.activity-graph {
+  background-clip: padding-box;
+  border-width: 0.375rem;
+  border-color: transparent;
+  border-style: solid;
+  overflow: hidden;
+  padding:0;
+  position:relative;
+  text-align: center;
+  vertical-align: top;
 }
 
-#activity-table td .btn {
-  line-height: inherit !important;
+.activity-graph .btn-primary {
+  background-color: currentColor;
+}
+
+
+.activity-graph .calDate {
+  font-size: 0.833rem !important;
+  padding-top: 0.1875rem;
+  padding-bottom: 0.1875rem;
+}
+
+.activity-graph .calInfo {
+  background-color: rgba(255,255,255,0.4);
+  padding-top: 0.1875rem;
+  padding-bottom: 0.1875rem;
+  font-weight:600;
+}
+#activity-table td .btn-primary {
+  border:0;
 }
 
 button.plain.btn.btn-link:focus, button.plain.btn.btn-link:hover  {
