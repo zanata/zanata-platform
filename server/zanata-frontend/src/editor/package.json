@@ -99,6 +99,10 @@
     "zanata-ui": "3.0.3"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "app/**/*.{js,jsx}",
+      "!**/node_modules/**"
+    ],
     "coverageReporters": ["cobertura", "html", "text"],
     "moduleNameMapper": {
       "^.+\\.(css)$": "./__tests__/mock/cssMock.js"
