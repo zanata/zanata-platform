@@ -82,6 +82,7 @@
     "zanata-ui": "3.0.4"
   },
   "jest": {
+    "coverageReporters": ["cobertura", "html", "text"],
     "unmockedModulePathPatterns": [
       "/node_modules",
       "/app"
