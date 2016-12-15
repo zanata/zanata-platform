@@ -13,10 +13,10 @@ can sign in and go to server configuration page to change the value there.
 Zanata now requires EAP 7 or WildFly 10 with no extra modules.
 
 If using EAP, you must upgrade to EAP 7 and apply the various Zanata
-changes to JBOSS_HOME/standalone/configuration/standalone.xml.
+changes to `JBOSS_HOME/standalone/configuration/standalone.xml`.
 
 If using WildFly, you must remove any previously installed JSF or Hibernate
-modules from WILDFLY_HOME/modules/{com,javax,org}.
+modules from `WILDFLY_HOME/modules/{com,javax,org}`.
 
 Also, Hibernate Search and Lucene have been upgraded - before starting
 Zanata 4.0 you will need to clear your index directory (as configured
@@ -24,6 +24,56 @@ in the system property `hibernate.search.default.indexBase`) and then
 trigger a complete re-index from the admin pages once Zanata has loaded.
 
 Zanata's jboss-web.xml has been updated: if you maintain a custom version, you should remove the "valve" section.
+
+##### Migration Guide
+From version 4.0.0, Zanata platform depends on JBossEAP 7 or Wildfly 10, thus please refer 
+[JBoss EAP 7 Migration Guide](https://access.redhat.com/documentation/en/red-hat-jboss-enterprise-application-platform/7.0/single/migration-guide/)
+or [Migrate my appliction from AS7 to WildFly](https://docs.jboss.org/author/display/WFLY10/How+do+I+migrate+my+application+from+AS7+to+WildFly) to migrate your configuration.
+
+We use system properties instead of JNDI from 4.0.0, 
+thus, following configuration became obsolete and deployment will abort on presence of these obsolete JNDI entries
+```xml
+<subsystem xmlns="urn:jboss:domain:naming:1.3">
+  <bindings>
+    <simple name="java:global/zanata/security/auth-policy-names/kerberos" value="zanata.kerberos"/>
+    <simple name="java:global/zanata/security/admin-users" value="admin"/>
+    <simple name="java:global/zanata/files/document-storage-directory" value="/var/lib/zanata/files"/>
+    <simple name="java:global/zanata/email/default-from-address" value="{{ zanata_noreply_address }}"/>
+    <simple name="java:global/zanata/security/auth-policy-names/internal" value="zanata.internal"/>
+    <simple name="java:global/zanata/security/auth-policy-names/jaas" value="zanata.jaas"/>		
+    <simple name="java:global/zanata/security/auth-policy-names/openid" value="zanata.openid"/>		
+    <simple name="java:global/zanata/smtp/port" value="${smtp.port,env.SMTP_PORT:2552}" />		
+    <lookup name="java:jboss/exported/zanata/files/document-storage-directory"
+      lookup="java:global/zanata/files/document-storage-directory"/>
+  </bindings>
+  <remote-naming/>
+</subsystem>
+```
+Settings have moved to `<system-properties>` section.
+
+Zanata aborts deployment when *required* properties are absent or 
+*obsolete* properties are present in `standalone.xml`.
+
+###### Required System Properties and Directory Paths
+**All** of the following properties are required in `<system-properties>` section:
+
+* `<property name="hibernate.search.default.indexBase" value="${jboss.server.data.dir}/zanata/indexes"/>`
+* `<property name="javamelody.storage-directory" value="${jboss.server.data.dir}/zanata/stats"/>`
+* `<property name="zanata.file.directory" value="${jboss.server.data.dir}/zanata/files"/>`
+
+###### Required Auth Policy
+**Exactly one** auth policy is required in `<system-properties>` section. The only exception is combining `internal` and `openid`.
+
+ * `<property name="zanata.security.authpolicy.internal" value="zanata.internal"/>`
+ * `<property name="zanata.security.authpolicy.jass" value="zanata.jaas"/>`
+ * `<property name="zanata.security.authpolicy.kerberos" value="zanata.kerberos"/>`
+ * `<property name="zanata.security.authpolicy.openid" value="zanata.openid"/>`
+
+###### Obsolete Properties
+**None** of the following properties should present, otherwise the deployment will abort.
+ * `<property name="ehcache.disk.store.dir" value=.../>`
+
+Directory of `ehcache.disk.store.dir` needs to be cleaned.
 
 ##### Changes
  * [ZNTA-1516](https://zanata.atlassian.net/browse/ZNTA-1516) - Update Zanata-cli documentation link in readthedoc release

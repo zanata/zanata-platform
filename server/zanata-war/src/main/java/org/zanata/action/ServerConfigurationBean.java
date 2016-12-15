@@ -45,6 +45,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.action.validator.DomainList;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
@@ -173,6 +174,11 @@ public class ServerConfigurationBean implements Serializable {
             message = "value must be an integer number between 0 to 99999")
     private String maxFilesPerUpload;
 
+    @DomainList
+    @Getter
+    @Setter
+    private String permittedUserEmailDomains;
+
     private List<PropertyWithKey<String>> commonStringProperties = Arrays.asList(
             new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
             new PropertyWithKey<String>("serverUrl", KEY_HOST),
@@ -188,6 +194,8 @@ public class ServerConfigurationBean implements Serializable {
             new PropertyWithKey<String>("maxActiveRequestsPerApiKey", KEY_MAX_ACTIVE_REQ_PER_API_KEY),
             new PropertyWithKey<String>("maxFilesPerUpload", KEY_MAX_FILES_PER_UPLOAD),
             new PropertyWithKey<String>("displayUserEmail", KEY_DISPLAY_USER_EMAIL),
+            new PropertyWithKey<String>("permittedUserEmailDomains",
+                    KEY_PERMITTED_USER_EMAIL_DOMAIN),
             homeContentProperty
     );
 

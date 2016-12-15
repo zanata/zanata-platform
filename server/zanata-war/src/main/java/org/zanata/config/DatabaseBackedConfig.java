@@ -127,6 +127,10 @@ public class DatabaseBackedConfig implements Serializable {
         return Boolean.valueOf(getConfigValue(HApplicationConfiguration.KEY_DISPLAY_USER_EMAIL));
     }
 
+    public String getPermittedEmailDomains() {
+        return getConfigValue(HApplicationConfiguration.KEY_PERMITTED_USER_EMAIL_DOMAIN);
+    }
+
     public boolean isAnonymousUserAllowed() {
         String dbValue = getConfigValue(
                 HApplicationConfiguration.KEY_ALLOW_ANONYMOUS_USER);

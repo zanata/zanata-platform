@@ -86,6 +86,21 @@
         </div>
 
         <div class="form__item l--push-top-1">
+          <h:outputLabel for="adminEml">#{msgs['jsf.config.permittedUserEmailDomain']}
+            <span class="txt--meta">
+              <i class="i i--info" title="#{msgs['jsf.config.permittedUserEmailDomain.tooltip']}"></i>
+            </span>
+          </h:outputLabel>
+          <zanata:decorate id="permittedEmailDomains" componentId="permittedEmailDomainsField" >
+            <h:inputText id="permittedEmailDomainsElm" value="#{serverConfigurationBean.permittedUserEmailDomains}">
+              <a4j:ajax event="blur" render="permittedEmailDomains" execute="@this"/>
+              <rich:placeholder value="#{msgs['jsf.email.domainName.placeholder']} #{msgs['jsf.email.list.placeholder']}"
+                styleClass="txt--neutral" />
+            </h:inputText>
+          </zanata:decorate>
+        </div>
+
+        <div class="form__item l--push-top-1">
           <h:outputLabel for="fromEml">#{msgs['jsf.config.FromEmailAddr']}
             <span class="txt--meta">
               <i class="i i--info" title="#{msgs['jsf.config.FromEmailAddr.tooltip']}"></i>

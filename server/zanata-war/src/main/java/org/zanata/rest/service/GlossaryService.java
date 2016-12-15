@@ -357,8 +357,8 @@ public class GlossaryService implements GlossaryResource {
         }
 
         int rowCount = glossaryDAO.deleteAllEntries(qualifiedName);
-        log.info("Glossary delete all: " + rowCount);
-        return Response.ok().build();
+        log.info("Delete all glossary entry: " + rowCount);
+        return Response.ok(rowCount).build();
     }
 
     private Response checkGlossaryPermission(String qualifiedName,
