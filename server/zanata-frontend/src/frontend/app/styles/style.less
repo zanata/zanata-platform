@@ -3682,8 +3682,44 @@ textarea.input-group-sm > .input-group-btn > .btn {
   border:0;
 }
 
-#activity-table td .btn-primary:focus {
-  background-color: @brand-secondary;
+#activity-table td .btn {
+  line-height: inherit !important;
+}
+
+button.plain.btn.btn-link:focus, button.plain.btn.btn-link:hover  {
+  background-color:@brand-primary;
+  border-radius:@border-radius-base;
+  color:#fff;
+  text-decoration: none;
+  outline:0;
+}
+
+button.primary.btn.btn-link:focus, button.primary.btn.btn-link:hover {
+  background-color:@brand-secondary;
+  border-radius:@border-radius-base;
+  color:#fff;
+  text-decoration: none;
+  outline:0;
+}
+
+button.success.btn.btn-link:focus, button.success.btn.btn-link:hover   {
+  background-color:@brand-success;
+  border-radius:@border-radius-base;
+  color:#fff;
+  text-decoration: none;
+  outline:0;
+}
+
+ button.unsure.btn.btn-link:focus, button.unsure.btn.btn-link:hover {
+   background-color:@brand-unsure !important;
+   border-radius:@border-radius-base;
+   color:#fff;
+   text-decoration: none;
+   outline:0;
+ }
+
+#activity-table th {
+  text-align: center;
 }
 
 // Tabbable tabs
@@ -3699,6 +3735,9 @@ textarea.input-group-sm > .input-group-btn > .btn {
   }
 }
 
+.rdr-Calendar {
+  max-width:240px;
+}
 
 // Dropdowns
 // -------------------------
@@ -5419,7 +5458,7 @@ button.btn-link {
   }
 
   #profile-matrix {
-    padding-left:0;
+    padding-left: 0;
   }
 
   .lead {
