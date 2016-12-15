@@ -171,6 +171,7 @@
                 <resource>
                   <directory>src/frontend/dist</directory>
                   <include>frontend.*.min.js</include>
+                  <include>atomic.css</include>
                   <include>frontend.css</include>
                   <!-- TODO eliminate generate bootstrap.css, bundle.js, style.css? -->
                   <!-- TODO try including everything -->
