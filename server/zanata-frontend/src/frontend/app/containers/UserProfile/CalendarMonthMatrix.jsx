@@ -1,10 +1,9 @@
 import React, { PropTypes } from 'react'
 import moment from 'moment'
-import { merge, range } from 'lodash'
+import { range } from 'lodash'
 import DayMatrix from './DayMatrix'
 import { ContentStates } from '../../constants/Options'
 import {
-  Base,
   Flex
 } from 'zanata-ui'
 import utilsDate from '../../utils/DateHelper'
@@ -12,24 +11,11 @@ import { Button } from 'react-bootstrap'
 
 const classes = {
   calendar: {
-    base: {
-      m: 'Mb(r1)',
-      tbl: 'Tbl(f)',
-      w: 'W(100%)'
-    },
     types: {
-      total: {
-        c: ''
-      },
-      approved: {
-        c: 'C(pri)'
-      },
-      translated: {
-        c: 'C(success)'
-      },
-      needswork: {
-        c: 'C(unsure)'
-      }
+      total: '',
+      approved: 'C(pri)',
+      translated: 'C(success)',
+      needswork: 'C(unsure)'
     }
   }
 }
@@ -45,11 +31,8 @@ const CalendarMonthMatrix = ({
     return <table><tbody><tr><td>Loading</td></tr></tbody></table>
   }
 
-  const calTheme = merge({},
-    classes.calendar.base,
-    classes.calendar
+  const calClass = 'activity-graph Mb(r1) Tbl(f) W(100%) ' + classes.calendar
       .types[selectedContentState.toLowerCase().replace(' ', '')]
-  )
 
   let days = []
   let result = []
@@ -66,6 +49,7 @@ const CalendarMonthMatrix = ({
     const date = entry['date']
     days.push(
       <DayMatrix key={date}
+        selectedContentState={selectedContentState}
         dateLabel={moment(date).format('Do')}
         date={date}
         wordCount={entry['wordCount']}
@@ -116,12 +100,12 @@ const CalendarMonthMatrix = ({
           </Button>
         </div>)}
       </Flex>
-      <Base tagName='table' theme={calTheme}>
+      <table className={calClass}>
         <thead>
           <tr>{weekDays}</tr>
         </thead>
         <tbody>{result}</tbody>
-      </Base>
+      </table>
     </div>
   )
   /* eslint-enable react/jsx-no-bind */

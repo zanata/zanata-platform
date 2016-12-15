@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react'
+import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
 import {
   Base
@@ -8,31 +9,44 @@ import { Button } from 'react-bootstrap'
 /**
  * Clickable date and word count component for daily statistics
  */
+const cssClass = {
+  total: 'primary',
+  approved: 'info',
+  translated: 'success',
+  needswork: 'warning'
+}
 
 const DayMatrix = ({
   dateLabel,
   date,
   wordCount,
   selectedDay,
+  selectedContentState,
   handleSelectedDayChanged,
   ...props
 }) => {
   const dateIsInFuture = date ? dateUtil.isInFuture(date) : false
+  const btnStyle = selectedContentState
+    ? cssClass[selectedContentState.toLowerCase().replace(' ', '')]
+    : cssClass['total']
+
   /* eslint-disable react/jsx-no-bind */
   return (
-    <Base tagName='td' className='activity-graph'>
+    <td>
       {date
-        ? <Button bsStyle='primary'
+        ? <Button
+          bsStyle={btnStyle}
           onClick={() => handleSelectedDayChanged(date)}
+          className={date === selectedDay ? 'active ' : ''}
           disabled={dateIsInFuture || !date}
           title={wordCount + ' words'}>
-          <Base className='calDate'>{date ? dateLabel : '\u00a0'}</Base>
-          <Base className='calInfo'>
+          <div className='calDate'>{date ? dateLabel : '\u00a0'}</div>
+          <div className='calInfo'>
             {dateIsInFuture ? '\u00a0' : wordCount}
-          </Base>
+          </div>
         </Button>
         : <Base atomic={{bgc: 'Bgc(#fff.85)', stretchedBox: 'StretchedBox'}} />}
-    </Base>
+    </td>
   )
   /* eslint-enable react/jsx-no-bind */
 }
@@ -42,6 +56,7 @@ DayMatrix.propTypes = {
   date: PropTypes.string,
   wordCount: PropTypes.number,
   selectedDay: PropTypes.string,
+  selectedContentState: PropTypes.oneOf(ContentStates),
   handleSelectedDayChanged: PropTypes.func.isRequired
 }
 
