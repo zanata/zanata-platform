@@ -60,7 +60,7 @@ import org.zanata.service.impl.LocaleServiceImpl;
 @Slf4j
 @Transactional
 public class GlossaryService implements GlossaryResource {
-    public static String PROJECT_QUALIFIER_PREFIX = "project/";
+    public static final String PROJECT_QUALIFIER_PREFIX = "project/";
 
     @Inject
     private GlossaryDAO glossaryDAO;
