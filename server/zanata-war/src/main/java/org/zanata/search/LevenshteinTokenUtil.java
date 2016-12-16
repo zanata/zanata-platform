@@ -3,6 +3,7 @@ package org.zanata.search;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -15,21 +16,17 @@ public class LevenshteinTokenUtil {
     private static final Set<String> stopwords;
 
     static {
-        Set<String> stopwordsSet = new HashSet<String>();
-        try {
-            BufferedReader reader =
+        Set<String> stopwordsSet = new HashSet<>();
+        try (BufferedReader reader =
                     new BufferedReader(new InputStreamReader(
                             LevenshteinTokenUtil.class
-                                    .getResourceAsStream("stopwords.txt")));
-            try {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (!line.startsWith("#")) {
-                        stopwordsSet.add(line);
-                    }
+                                    .getResourceAsStream("stopwords.txt"),
+                            StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!line.startsWith("#")) {
+                    stopwordsSet.add(line);
                 }
-            } finally {
-                reader.close();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
