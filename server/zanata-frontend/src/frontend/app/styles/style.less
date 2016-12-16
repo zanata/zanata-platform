@@ -3716,7 +3716,8 @@ button.primary.btn.btn-default, button.unsure.btn.btn-default {
 }
 
 
-button.plain.btn.btn-default:focus, button.plain.btn.btn-default:hover  {
+button.plain.btn.btn-default:focus, button.plain.btn.btn-default:hover,
+button.plain.btn.btn-default:active {
   background-color:rgba(84, 102, 119, 0.8);
   color:#fff;
   text-decoration: none;
@@ -3724,7 +3725,8 @@ button.plain.btn.btn-default:focus, button.plain.btn.btn-default:hover  {
   box-shadow: none;
 }
 
-button.primary.btn.btn-default:focus, button.primary.btn.btn-default:hover {
+button.primary.btn.btn-default:focus, button.primary.btn.btn-default:hover,
+button.primary.btn.btn-default:active {
   background-color:rgba(3, 166, 215, 0.8);
   color:#fff;
   text-decoration: none;
@@ -3732,7 +3734,8 @@ button.primary.btn.btn-default:focus, button.primary.btn.btn-default:hover {
   box-shadow: none;
 }
 
-button.success.btn.btn-default:focus, button.success.btn.btn-default:hover   {
+button.success.btn.btn-default:focus, button.success.btn.btn-default:hover,
+button.success.btn.btn-default:active {
   background-color:rgba(98, 200, 118, 0.8);
   color:#fff;
   text-decoration: none;
@@ -3740,13 +3743,23 @@ button.success.btn.btn-default:focus, button.success.btn.btn-default:hover   {
   box-shadow: none;
 }
 
- button.unsure.btn.btn-default:focus, button.unsure.btn.btn-default:hover {
+ button.unsure.btn.btn-default:focus, button.unsure.btn.btn-default:hover,
+ button.unsure.btn.btn-default:hover {
    background-color:rgba(233, 221, 0, 0.8);
    color:#fff;
    text-decoration: none;
    outline:0;
    box-shadow: none;
  }
+
+ #activity-table td button.btn-warning {
+   background-color: @brand-unsure;
+ }
+
+#activity-table td button {
+  border:none;
+}
+
 
 #activity-table th {
   text-align: center;
