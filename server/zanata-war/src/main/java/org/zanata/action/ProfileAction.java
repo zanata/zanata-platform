@@ -21,6 +21,8 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
@@ -46,6 +48,7 @@ public class ProfileAction extends AbstractProfileAction implements Serializable
     private static final long serialVersionUID = 1L;
 
     @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     EmailChangeService emailChangeService;
 
     @PostConstruct

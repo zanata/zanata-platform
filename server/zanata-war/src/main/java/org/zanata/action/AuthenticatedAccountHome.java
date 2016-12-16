@@ -20,6 +20,7 @@
  */
 package org.zanata.action;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.context.RequestScoped;
@@ -63,6 +64,7 @@ public class AuthenticatedAccountHome extends EntityHome<HAccount>
     private ZanataIdentity identity;
 
     @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private UserService userService;
 
     @Override

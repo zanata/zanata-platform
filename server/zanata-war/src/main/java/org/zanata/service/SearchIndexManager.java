@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.PostConstruct;
@@ -33,6 +34,7 @@ public class SearchIndexManager implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @Inject

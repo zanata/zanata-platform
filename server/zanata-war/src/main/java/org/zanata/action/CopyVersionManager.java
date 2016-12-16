@@ -2,6 +2,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,6 +26,7 @@ import org.zanata.service.CopyVersionService;
 public class CopyVersionManager implements Serializable {
     private static final long serialVersionUID = 3414395834255069870L;
     @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @Inject

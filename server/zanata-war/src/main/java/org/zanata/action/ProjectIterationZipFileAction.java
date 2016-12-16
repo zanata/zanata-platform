@@ -3,6 +3,7 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.Getter;
 
 import javax.enterprise.inject.Model;
@@ -30,6 +31,7 @@ public class ProjectIterationZipFileAction implements Serializable {
     private GroupedConversation conversation;
 
     @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @Getter

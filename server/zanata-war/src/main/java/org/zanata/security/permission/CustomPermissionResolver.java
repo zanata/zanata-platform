@@ -21,6 +21,8 @@
 package org.zanata.security.permission;
 
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.io.Serializable;
 
 import javax.inject.Inject;
@@ -40,6 +42,7 @@ import javax.inject.Named;
 public class CustomPermissionResolver implements Serializable {
 
     @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private PermissionEvaluator evaluator;
 
     private static final long serialVersionUID = 6302681723997573877L;

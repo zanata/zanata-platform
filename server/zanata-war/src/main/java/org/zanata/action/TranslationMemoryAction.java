@@ -28,6 +28,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -74,6 +75,7 @@ public class TranslationMemoryAction implements Serializable {
     private TranslationMemoryResourceService translationMemoryResource;
 
     @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     private List<TransMemory> transMemoryList;
