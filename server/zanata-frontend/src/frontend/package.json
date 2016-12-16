@@ -17,7 +17,7 @@
     "start": "npm run hot-dev-server --ignore-scripts=false",
     "styleguide-server": "styleguidist server",
     "styleguide-build": "styleguidist build",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "license": "LGPL",
   "devDependencies": {
@@ -82,6 +82,11 @@
     "zanata-ui": "3.0.4"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "app/**/*.{js,jsx}",
+      "!**/node_modules/**"
+    ],
+    "coverageReporters": ["cobertura", "html", "lcov", "text"],
     "unmockedModulePathPatterns": [
       "/node_modules",
       "/app"
