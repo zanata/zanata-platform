@@ -22,6 +22,7 @@ import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HPerson;
+import org.zanata.model.validator.EmailDomain;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.ZanataCredentials;
@@ -65,6 +66,7 @@ public class InactiveAccountAction implements Serializable {
     @Setter
     @Email
     @NotDuplicateEmail(message = "This email address is already taken.")
+    @EmailDomain
     private String email;
 
     private HAccount account;

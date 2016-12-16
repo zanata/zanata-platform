@@ -20,7 +20,7 @@
  */
 package org.zanata.email;
 
-import com.googlecode.totallylazy.collections.PersistentMap;
+import javaslang.collection.Map;
 import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 
@@ -45,13 +45,13 @@ public class PasswordResetEmailStrategy extends
     }
 
     @Override
-    public PersistentMap<String, Object> makeContext(
-            PersistentMap<String, Object> genericContext,
+    public Map<String, Object> makeContext(
+            Map<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        PersistentMap<String, Object> context = super.makeContext(genericContext,
+        Map<String, Object> context = super.makeContext(genericContext,
                 toAddresses);
         return context
-                .insert("activationKey", key)
-                .insert("toName", toAddresses[0].getPersonal());
+                .put("activationKey", key)
+                .put("toName", toAddresses[0].getPersonal());
     }
 }

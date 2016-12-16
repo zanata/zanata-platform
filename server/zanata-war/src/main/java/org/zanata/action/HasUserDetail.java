@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2016, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,20 +18,27 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.service;
+package org.zanata.action;
 
-import org.zanata.common.LocaleId;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
-import java.util.Optional;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.zanata.model.validator.EmailDomain;
 
-/**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- */
-public interface TranslationFinder {
-    // TODO rename to findBestMatchingTranslation?
-    Optional<HTextFlowTarget> searchBestMatchTransMemory(HTextFlow textFlow,
-            LocaleId targetLocaleId, LocaleId sourceLocaleId,
-            boolean checkContext, boolean checkDocument, boolean checkProject);
+public interface HasUserDetail {
+    String USERNAME_REGEX = "^([a-z\\d][a-z\\d_]*){3,20}$";
+    int USERNAME_MAX_LENGTH = 20;
+
+    @Email
+    @NotEmpty
+    @EmailDomain
+    String getEmail();
+
+    @NotEmpty
+    @Size(min = 3, max = USERNAME_MAX_LENGTH)
+    @Pattern(regexp = USERNAME_REGEX,
+            message = "{validation.username.constraints}")
+    String getUsername();
 }

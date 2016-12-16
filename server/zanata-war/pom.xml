@@ -295,7 +295,9 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
+          <!-- We use late property evaluation (@{argLine}) so that surefire
+               will pick up the argLine set by jacoco:prepare-agent. -->
+          <argLine>@{argLine} -Dconcordion.output.dir=${concordion.output.dir}</argLine>
           <testNGArtifactName>none:none</testNGArtifactName>
           <!-- TODO ensure that stateful tests (eg using Hibernate Search)
                are isolated, or rename them to ITCase (Arquillian), and
@@ -311,60 +313,6 @@
             <include>**/*Tests.java</include>
           </includes>
           <runOrder>alphabetical</runOrder>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <configuration>
-          <instrumentation>
-            <excludes>
-              <!--WebTran exclusion-->
-              <!--TODO move all gwt wrapper class under specific package. i.e boundary-->
-              <!--<exclude>**/boundary/**/*</exclude>-->
-              <exclude>**/test/**/*</exclude>
-              <exclude>**/Sample*</exclude>
-              <exclude>**/dto/**</exclude>
-              <!--<exclude>**/supersource/**/*</exclude>-->
-              <exclude>**/client/**/*View</exclude>
-              <exclude>**/client/Application*</exclude>
-              <exclude>**/client/auth/**</exclude>
-              <exclude>**/client/events/**</exclude>
-              <exclude>**/client/gin/**</exclude>
-              <exclude>**/client/rpc/**</exclude>
-              <exclude>**/client/ui/**</exclude>
-              <exclude>**/client/view/**</exclude>
-              <exclude>**/client/util/**</exclude>
-              <exclude>**/EventWrapperImpl*</exclude>
-              <exclude>**/*DataProvider*</exclude>
-              <exclude>**/*SelectionModel*</exclude>
-              <!--below are some trivial classes(java bean) at the moment-->
-              <exclude>**/shared/auth/**</exclude>
-              <exclude>**/shared/model/**</exclude>
-              <exclude>**/shared/rpc/**</exclude>
-              <exclude>**/shared/util/**</exclude>
-              <!--hard to test due to environment dependent-->
-              <exclude>org/zanata/security/**</exclude>
-
-              <!--Server exclusion-->
-              <exclude>**/job/**</exclude>
-              <exclude>**/liquibase/**</exclude>
-              <exclude>**/log4j/**</exclude>
-              <exclude>**/seam/**</exclude>
-              <exclude>**/rest/files/*</exclude>
-              <exclude>**/rest/*Mapper</exclude>
-              <exclude>**/openid/*</exclude>
-              <exclude>**/servlet/*</exclude>
-
-              <!--General exclusion-->
-              <exclude>**/*Exception*</exclude>
-            </excludes>
-          </instrumentation>
-          <check>
-            <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate>
-            <totalLineRate>${cobertura.total-line-rate}</totalLineRate>
-            <haltOnFailure>${cobertura.halt.failure}</haltOnFailure>
-          </check>
         </configuration>
       </plugin>
 
@@ -606,115 +554,6 @@
     </profile>
 
     <profile>
-      <id>it-coverage</id>
-      <!-- In order to combine unit test and integration test coverage together, it requires below two commands:
-      mvn clean verify -Pit-coverage,nogwt
-      mvn cobertura:cobertura
-      Adding -Dcobertura.report.format=html to the second command will output report as html.
-      Jenkins requires xml format.
-      -->
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-it-maven-plugin</artifactId>
-            <version>2.5</version>
-            <configuration>
-              <instrumentation>
-                <excludes>
-                  <!--WebTran exclusion-->
-                  <!--TODO move all gwt wrapper class under specific package. i.e boundary-->
-                  <!--<exclude>**/boundary/**/*</exclude>-->
-                  <exclude>**/test/**/*</exclude>
-                  <!--<exclude>**/supersource/**/*</exclude>-->
-                  <exclude>**/client/**/*View</exclude>
-                  <exclude>**/client/Application*</exclude>
-                  <exclude>**/client/auth/**</exclude>
-                  <exclude>**/client/events/**</exclude>
-                  <exclude>**/client/gin/**</exclude>
-                  <exclude>**/client/rpc/**</exclude>
-                  <exclude>**/client/ui/**</exclude>
-                  <exclude>**/client/view/**</exclude>
-                  <exclude>**/EventWrapperImpl*</exclude>
-                  <exclude>**/*DataProvider*</exclude>
-                  <exclude>**/*SelectionModel*</exclude>
-                  <!--below are some trivial classes(java bean) at the moment-->
-                  <exclude>**/shared/auth/**</exclude>
-                  <exclude>**/shared/model/**</exclude>
-                  <exclude>**/shared/rpc/**</exclude>
-
-                  <!--Server exclusion-->
-                  <exclude>**/job/**</exclude>
-                  <exclude>**/liquibase/**</exclude>
-                  <exclude>**/log4j/**</exclude>
-                  <exclude>**/seam/**</exclude>
-                  <exclude>**/rest/files/*</exclude>
-                  <exclude>**/rest/*Mapper</exclude>
-                  <exclude>**/openid/*</exclude>
-                  <exclude>**/servlet/*</exclude>
-
-                  <!--General exclusion-->
-                  <exclude>**/*Exception*</exclude>
-                </excludes>
-              </instrumentation>
-              <formats>
-                <format>xml</format>
-              </formats>
-              <check>
-                <haltOnFailure>false</haltOnFailure>
-              </check>
-            </configuration>
-            <executions>
-              <execution>
-                <id>cobertura-clean</id>
-                <phase>clean</phase>
-                <goals>
-                  <goal>clean</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>cobertura-instrument</id>
-                <phase>process-classes</phase>
-                <goals>
-                  <goal>instrument</goal>
-                </goals>
-              </execution>
-              <execution>
-                <id>cobertura-check-only</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>check-only</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-
-      <reporting>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>cobertura-it-maven-plugin</artifactId>
-            <configuration>
-              <formats>
-                <format>html</format>
-                <!--<format>xml</format>-->
-              </formats>
-            </configuration>
-            <reportSets>
-              <reportSet>
-                <reports>
-                  <report>report-only</report>
-                </reports>
-              </reportSet>
-            </reportSets>
-          </plugin>
-        </plugins>
-      </reporting>
-    </profile>
-
-    <profile>
       <id>skipArqTests</id>
       <activation>
         <property>
@@ -952,6 +791,11 @@
   </profiles>
 
   <dependencies>
+    <dependency>
+      <groupId>io.javaslang</groupId>
+      <artifactId>javaslang</artifactId>
+      <version>2.0.5</version>
+    </dependency>
 
     <dependency>
       <groupId>com.tngtech.java</groupId>
@@ -1011,12 +855,6 @@
     <dependency>
       <groupId>org.atteo.classindex</groupId>
       <artifactId>classindex</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>com.googlecode.totallylazy</groupId>
-      <artifactId>totallylazy</artifactId>
-      <version>1.10</version>
     </dependency>
 
     <!-- Zanata-specific dependencies -->

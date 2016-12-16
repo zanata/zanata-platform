@@ -4,7 +4,8 @@ import {
   LoaderText,
   Icon,
   Tooltip,
-  Overlay
+  Overlay,
+  Row
 } from 'zanata-ui'
 import { Button } from 'react-bootstrap'
 

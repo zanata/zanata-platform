@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2016, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,20 +18,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.service;
+package org.zanata.action.validator;
 
-import org.zanata.common.LocaleId;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import javax.validation.Constraint;
+import javax.validation.Payload;
 
-import java.util.Optional;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
-/**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- */
-public interface TranslationFinder {
-    // TODO rename to findBestMatchingTranslation?
-    Optional<HTextFlowTarget> searchBestMatchTransMemory(HTextFlow textFlow,
-            LocaleId targetLocaleId, LocaleId sourceLocaleId,
-            boolean checkContext, boolean checkDocument, boolean checkProject);
+@Constraint(validatedBy = { DomainListValidator.class })
+@Target({ METHOD, FIELD })
+@Retention(RUNTIME)
+public @interface DomainList {
+    Class<?>[] groups() default {};
+
+    String message() default "{javax.validation.constraints.DomainList.message}";
+
+    Class<? extends Payload>[] payload() default {};
 }

@@ -28,7 +28,6 @@ import java.util.List;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 import lombok.Getter;
@@ -40,9 +39,13 @@ import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
+import org.zanata.action.validator.DomainList;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
@@ -120,6 +123,7 @@ public class ServerConfigurationBean implements Serializable {
     private boolean displayUserEmail;
     private PropertyWithKey<Boolean> displayUserEmailProperty = new PropertyWithKey<Boolean>("displayUserEmail", KEY_DISPLAY_USER_EMAIL);
 
+    @EmailList
     @Getter
     @Setter
     private String logDestinationEmails;
@@ -147,20 +151,28 @@ public class ServerConfigurationBean implements Serializable {
     @Setter
     private String helpUrl;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
+    @Pattern(regexp = "\\d{0,5}",
+            message = "value must be an integer number between 0 to 99999")
     private String maxConcurrentRequestsPerApiKey;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
+    @Pattern(regexp = "\\d{0,5}",
+            message = "value must be an integer number between 0 to 99999")
     private String maxActiveRequestsPerApiKey;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
+    @Pattern(regexp = "\\d{0,5}",
+            message = "value must be an integer number between 0 to 99999")
     private String maxFilesPerUpload;
+
+    @DomainList
+    @Getter
+    @Setter
+    private String permittedUserEmailDomains;
 
     private List<PropertyWithKey<String>> commonStringProperties = Arrays.asList(
             new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
@@ -177,6 +189,8 @@ public class ServerConfigurationBean implements Serializable {
             new PropertyWithKey<String>("maxActiveRequestsPerApiKey", KEY_MAX_ACTIVE_REQ_PER_API_KEY),
             new PropertyWithKey<String>("maxFilesPerUpload", KEY_MAX_FILES_PER_UPLOAD),
             new PropertyWithKey<String>("displayUserEmail", KEY_DISPLAY_USER_EMAIL),
+            new PropertyWithKey<String>("permittedUserEmailDomains",
+                    KEY_PERMITTED_USER_EMAIL_DOMAIN),
             homeContentProperty
     );
 
