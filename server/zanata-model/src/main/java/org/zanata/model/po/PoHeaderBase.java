@@ -28,9 +28,7 @@ import javax.persistence.OneToOne;
 import lombok.Setter;
 import lombok.ToString;
 
-import org.hibernate.annotations.Type;
 import org.zanata.model.HSimpleComment;
-import org.zanata.model.HashableState;
 import org.zanata.model.ModelEntityBase;
 
 /**
@@ -42,8 +40,7 @@ import org.zanata.model.ModelEntityBase;
 @MappedSuperclass
 @Setter
 @ToString
-public abstract class PoHeaderBase extends ModelEntityBase implements
-        HashableState {
+public abstract class PoHeaderBase extends ModelEntityBase {
 
     private static final long serialVersionUID = 4675225923343857779L;
     private HSimpleComment comment;

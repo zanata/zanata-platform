@@ -20,8 +20,6 @@
  */
 package org.zanata.model;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -53,7 +51,7 @@ import com.google.common.annotations.VisibleForTesting;
 @Slf4j
 @EntityListeners({ ModelEntityBase.EntityListener.class })
 @MappedSuperclass
-public class ModelEntityBase implements Serializable, HashableState {
+public class ModelEntityBase implements Serializable {
 
     private static final long serialVersionUID = -6139220551322868743L;
 
@@ -177,11 +175,6 @@ public class ModelEntityBase implements Serializable, HashableState {
 
     protected boolean logPersistence() {
         return true;
-    }
-
-    @Override
-    public void writeHashState(ByteArrayOutputStream buff) throws IOException {
-        buff.write(versionNum.byteValue());
     }
 
     public static class EntityListener {
