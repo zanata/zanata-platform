@@ -1181,7 +1181,12 @@ p {
 }
 
 .text-muted {
-  color: #777;
+  color: @brand-muted;
+}
+
+td span.txt--understated {
+  color: @brand-muted;
+  font-size:0.9em;
 }
 
 .text-primary {
@@ -2651,7 +2656,7 @@ fieldset[disabled] .btn-primary:focus,
 fieldset[disabled] .btn-primary:hover {
   border-color: #2e6da4;
   color: #fff;
-  background-color: #337ab7;
+  background-color:rgb(84, 102, 119);
 }
 
 .btn-primary .badge {
@@ -3678,7 +3683,11 @@ textarea.input-group-sm > .input-group-btn > .btn {
   }
 }
 
-
+#profile-matrix h2, #profile-matrix h3 {
+  color:@brand-primary;
+  font-size: 1.4em;
+  margin-bottom: 0;
+}
 
 .activity-graph {
   background-clip: padding-box;
@@ -3692,6 +3701,9 @@ textarea.input-group-sm > .input-group-btn > .btn {
   vertical-align: top;
 }
 
+.activity-graph h3 {
+  color:@brand-primary;
+}
 .activity-graph .calDate {
   font-size: 0.833rem !important;
   padding-top: 0.1875rem;
@@ -3718,7 +3730,7 @@ button.primary.btn.btn-default, button.unsure.btn.btn-default {
 
 button.plain.btn.btn-default:focus, button.plain.btn.btn-default:hover,
 button.plain.btn.btn-default:active {
-  background-color:rgba(84, 102, 119, 0.8);
+  background-color:rgba(84, 102, 119, 0.85);
   color:#fff;
   text-decoration: none;
   outline:0;
@@ -3727,7 +3739,7 @@ button.plain.btn.btn-default:active {
 
 button.primary.btn.btn-default:focus, button.primary.btn.btn-default:hover,
 button.primary.btn.btn-default:active {
-  background-color:rgba(3, 166, 215, 0.8);
+  background-color:rgba(3, 166, 215, 0.85);
   color:#fff;
   text-decoration: none;
   outline:0;
@@ -3736,7 +3748,7 @@ button.primary.btn.btn-default:active {
 
 button.success.btn.btn-default:focus, button.success.btn.btn-default:hover,
 button.success.btn.btn-default:active {
-  background-color:rgba(98, 200, 118, 0.8);
+  background-color:rgba(98, 200, 118, 0.85);
   color:#fff;
   text-decoration: none;
   outline:0;
@@ -3745,7 +3757,7 @@ button.success.btn.btn-default:active {
 
  button.unsure.btn.btn-default:focus, button.unsure.btn.btn-default:hover,
  button.unsure.btn.btn-default:hover {
-   background-color:rgba(233, 221, 0, 0.8);
+   background-color:rgba(233, 221, 0, 0.85);
    color:#fff;
    text-decoration: none;
    outline:0;
@@ -3755,6 +3767,28 @@ button.success.btn.btn-default:active {
  #activity-table td button.btn-warning {
    background-color: @brand-unsure;
  }
+
+#activity-table td button.btn-primary:focus,
+#activity-table td button.btn-info:focus,
+#activity-table td button.btn-warning:focus,
+#activity-table td button.btn-success:focus
+{
+  outline:none;
+  color:#fff;
+  box-shadow:none;
+}
+
+#activity-table td button.btn-warning {
+  background-color: @brand-unsure;
+}
+
+#activity-table td button.btn-warning {
+  background-color: @brand-unsure;
+}
+
+#activity-table td button.btn-warning {
+  background-color: @brand-unsure;
+}
 
 #activity-table td button {
   border:none;
@@ -3766,7 +3800,7 @@ button.success.btn.btn-default:active {
 }
 
 #activity-table td .btn {
-  width:4.2em;
+  width:100%;
   line-height:1.4em;
   padding-left:0;
   padding-right:0;
