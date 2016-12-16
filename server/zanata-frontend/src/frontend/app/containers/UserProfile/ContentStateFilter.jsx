@@ -23,7 +23,7 @@ const ContentStateFilter = ({
     }
     /* eslint-disable react/jsx-no-bind */
     return (
-      <Button bsStyle='link' key={option}
+      <Button bsStyle='default' key={option}
         states={states}
         className={ContentStateStyles[index]}
         onClick={() => handleFilterChanged(option)}>
