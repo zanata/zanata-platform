@@ -10,10 +10,10 @@ import { Button } from 'react-bootstrap'
  * Clickable date and word count component for daily statistics
  */
 const cssClass = {
-  total: 'primary',
-  approved: 'info',
-  translated: 'success',
-  needswork: 'warning'
+    total: 'btn-primary',
+    approved: 'btn-primary',
+    translated: 'btn-success',
+    needswork: 'btn-warning'
 }
 
 const DayMatrix = ({
@@ -25,19 +25,16 @@ const DayMatrix = ({
   handleSelectedDayChanged,
   ...props
 }) => {
+  let btnClass = date === selectedDay ? 'Bgc(t) C(#fff)' : ''
+  btnClass += selectedContentState ? cssClass[selectedContentState.toLowerCase().replace(' ', '')] : 'btn-primary'
   const dateIsInFuture = date ? dateUtil.isInFuture(date) : false
-  const btnStyle = selectedContentState
-    ? cssClass[selectedContentState.toLowerCase().replace(' ', '')]
-    : cssClass['total']
-
   /* eslint-disable react/jsx-no-bind */
   return (
     <td>
       {date
-        ? <Button
-          bsStyle={btnStyle}
+        ? <Button bsStyle='primary'
           onClick={() => handleSelectedDayChanged(date)}
-          className={date === selectedDay ? 'active ' : ''}
+          className={btnClass}
           disabled={dateIsInFuture || !date}
           title={wordCount + ' words'}>
           <div className='calDate'>{date ? dateLabel : '\u00a0'}</div>
