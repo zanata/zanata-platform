@@ -1,5 +1,6 @@
 package org.zanata.service.impl;
 
+import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -51,7 +52,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.test.rule.FunctionalTestRule.reentrant;

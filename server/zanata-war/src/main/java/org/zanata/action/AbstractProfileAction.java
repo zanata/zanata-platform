@@ -1,7 +1,8 @@
 package org.zanata.action;
 
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
+import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.inject.Inject;
 
@@ -17,7 +18,9 @@ import org.zanata.ui.faces.FacesMessages;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public abstract class AbstractProfileAction implements HasUserDetail {
+public abstract class AbstractProfileAction {
+    public final static String USERNAME_REGEX = "^([a-z\\d][a-z\\d_]*){3,20}$";
+    public final static int USERNAME_MAX_LENGTH = 20;
 
 
     protected String name;
@@ -75,7 +78,8 @@ public abstract class AbstractProfileAction implements HasUserDetail {
         this.name = name;
     }
 
-    @Override
+    @Email
+    @NotEmpty
     public String getEmail() {
         return email;
     }
@@ -85,7 +89,10 @@ public abstract class AbstractProfileAction implements HasUserDetail {
         this.email = email;
     }
 
-    @Override
+    @NotEmpty
+    @Size(min = 3, max = USERNAME_MAX_LENGTH)
+    @Pattern(regexp = USERNAME_REGEX,
+            message = "{validation.username.constraints}")
     public String getUsername() {
         return username;
     }

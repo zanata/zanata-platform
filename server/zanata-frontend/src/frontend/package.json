@@ -88,11 +88,6 @@
     "zanata-ui": "3.0.4"
   },
   "jest": {
-    "collectCoverageFrom": [
-      "app/**/*.{js,jsx}",
-      "!**/node_modules/**"
-    ],
-    "coverageReporters": ["cobertura", "html", "lcov", "text"],
     "unmockedModulePathPatterns": [
       "/node_modules",
       "/app"

@@ -20,7 +20,7 @@
  */
 package org.zanata.email;
 
-import javaslang.collection.Map;
+import com.googlecode.totallylazy.collections.PersistentMap;
 import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
@@ -52,15 +52,15 @@ public class ContactLanguageTeamMembersEmailStrategy
     }
 
     @Override
-    public Map<String, Object> makeContext(
-            Map<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(
+            PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context = super.makeContext(genericContext,
+        PersistentMap<String, Object> context = super.makeContext(genericContext,
                 toAddresses);
         String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context
-                .put("contactCoordinatorLink", contactCoordinatorLink)
-                .put("localeNativeName", localeNativeName)
-                .put("htmlMessage", safeHTML);
+                .insert("contactCoordinatorLink", contactCoordinatorLink)
+                .insert("localeNativeName", localeNativeName)
+                .insert("htmlMessage", safeHTML);
     }
 }

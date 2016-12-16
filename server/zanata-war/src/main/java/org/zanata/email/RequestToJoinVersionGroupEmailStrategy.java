@@ -21,7 +21,7 @@
 package org.zanata.email;
 
 import com.google.common.base.Optional;
-import javaslang.collection.Map;
+import com.googlecode.totallylazy.collections.PersistentMap;
 import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
@@ -62,19 +62,19 @@ public class RequestToJoinVersionGroupEmailStrategy
     }
 
     @Override
-    public Map<String, Object> makeContext(
-            Map<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(
+            PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context = super.makeContext(
+        PersistentMap<String, Object> context = super.makeContext(
                 genericContext, toAddresses);
         String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context
-                .put("fromLoginName", fromLoginName)
-                .put("fromName", fromName)
-                .put("replyEmail", replyEmail)
-                .put("groupName", groupName)
-                .put("versionGroupSlug", groupSlug)
-                .put("projectIterationIds", projectIterationIds)
-                .put("htmlMessage", safeHTML);
+                .insert("fromLoginName", fromLoginName)
+                .insert("fromName", fromName)
+                .insert("replyEmail", replyEmail)
+                .insert("groupName", groupName)
+                .insert("versionGroupSlug", groupSlug)
+                .insert("projectIterationIds", projectIterationIds)
+                .insert("htmlMessage", safeHTML);
     }
 }

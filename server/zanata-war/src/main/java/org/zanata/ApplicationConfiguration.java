@@ -30,7 +30,6 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 
@@ -42,6 +41,7 @@ import lombok.Setter;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.log4j.Level;
 import javax.annotation.PostConstruct;
+import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
@@ -49,7 +49,6 @@ import javax.servlet.http.HttpSession;
 import org.zanata.config.OAuthTokenExpiryInSeconds;
 import org.zanata.config.SupportOAuth;
 import org.zanata.config.SystemPropertyConfigStore;
-import org.zanata.model.validator.AcceptedEmailDomainsForNewAccount;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.DefaultLocale;
@@ -65,7 +64,6 @@ import org.zanata.security.AuthenticationType;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.zanata.security.OpenIdLoginModule;
@@ -443,18 +441,5 @@ public class ApplicationConfiguration implements Serializable {
     @SupportOAuth
     protected boolean isOAuthSupported() {
         return sysPropConfigStore.isOAuthEnabled();
-    }
-
-    @Produces
-    @AcceptedEmailDomainsForNewAccount
-    protected Set<String> permittedEmailDomains() {
-        String domains =
-                databaseBackedConfig.getPermittedEmailDomains();
-        if (Strings.isNullOrEmpty(domains)) {
-            return ImmutableSet.of();
-        }
-        return ImmutableSet
-                .copyOf(Splitter.on(",").trimResults().omitEmptyStrings()
-                        .split(domains));
     }
 }

@@ -2,7 +2,6 @@ package org.zanata.dao;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -20,6 +19,8 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationFinder;
+
+import com.google.common.base.Optional;
 
 @Named("textFlowTargetDAO")
 @RequestScoped
@@ -270,7 +271,7 @@ public class TextFlowTargetDAO extends AbstractDAOImpl<HTextFlowTarget, Long>
                 .getProjectIteration().getProject().getId());
         sqlQuery.setParameter("localeId", targetLocaleId.getId());
         sqlQuery.addEntity(HTextFlowTarget.class);
-        return Optional.ofNullable((HTextFlowTarget) sqlQuery.uniqueResult());
+        return Optional.fromNullable((HTextFlowTarget) sqlQuery.uniqueResult());
     }
 
     /**

@@ -43,6 +43,8 @@ import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
 
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+
 /**
  * This action handles new user profile creation.
  *
@@ -121,7 +123,7 @@ public class NewProfileAction extends AbstractProfileAction implements Serializa
 
     /**
      * Manual check if username is valid pattern
-     * {@link HasUserDetail#USERNAME_REGEX}
+     * {@link #USERNAME_REGEX}
      */
     private boolean isUsernameValid(String username) {
         Pattern p = Pattern.compile(USERNAME_REGEX);

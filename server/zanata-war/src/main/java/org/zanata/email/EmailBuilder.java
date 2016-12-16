@@ -7,6 +7,7 @@ import static javax.mail.Message.RecipientType.TO;
 import java.io.StringWriter;
 import java.net.ConnectException;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
@@ -19,8 +20,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
 import com.google.common.base.Throwables;
-import javaslang.collection.HashMap;
-import javaslang.collection.Map;
+import com.googlecode.totallylazy.collections.PersistentMap;
 import lombok.AllArgsConstructor;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +33,7 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.action.LocaleSelectorAction;
 import org.zanata.i18n.Messages;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -40,6 +41,8 @@ import com.google.common.base.Optional;
 import org.zanata.i18n.MessagesFactory;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.HtmlUtil;
+
+import static com.googlecode.totallylazy.collections.PersistentMap.constructors.map;
 
 /**
  * Uses an instance of EmailBuilderStrategy to build an email from a Velocity
@@ -166,14 +169,14 @@ public class EmailBuilder {
         // optional future extension
 //        strategy.setMailHeaders(msg, msgs);
 
-        Map<String, Object> genericContext = HashMap.of(
+        PersistentMap<String, Object> genericContext = map(
                 "msgs",  msgs,
                 "receivedReasons", receivedReasons,
                 "serverPath", emailContext.getServerPath());
 
         // the Map needs to be mutable for "foreach" to work
         VelocityContext context = new VelocityContext(
-                strategy.makeContext(genericContext, toAddresses).toJavaMap());
+                strategy.makeContext(genericContext, toAddresses).toMutableMap());
         Template template =
                 velocityEngine.getTemplate(strategy.getTemplateResourceName());
         StringWriter writer = new StringWriter();

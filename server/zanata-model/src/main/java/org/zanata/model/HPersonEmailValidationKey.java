@@ -41,7 +41,6 @@ import lombok.ToString;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.zanata.model.validator.EmailDomain;
 
 @Entity
 @EntityListeners({HPersonEmailValidationKey.EntityListener.class})
@@ -93,7 +92,6 @@ public class HPersonEmailValidationKey implements Serializable {
 
     @Email
     @NotEmpty
-    @EmailDomain
     public String getEmail() {
         return email;
     }

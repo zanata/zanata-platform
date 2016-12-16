@@ -1,6 +1,6 @@
 package org.zanata.email;
 
-import javaslang.collection.Map;
+import com.googlecode.totallylazy.collections.PersistentMap;
 import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
@@ -30,17 +30,17 @@ public class DeclineLanguageRequestEmailStrategy extends EmailStrategy {
     }
 
     @Override
-    public Map<String, Object> makeContext(
-        Map<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(
+        PersistentMap<String, Object> genericContext,
         InternetAddress[] toAddresses) {
-        Map<String, Object> context = super.makeContext(
+        PersistentMap<String, Object> context = super.makeContext(
             genericContext, toAddresses);
         String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context
-            .put("toName", toName)
-            .put("roles", roles)
-            .put("localeDisplayName", localeDisplayName)
-            .put("contactCoordinatorLink", contactCoordinatorLink)
-            .put("htmlMessage", safeHTML);
+            .insert("toName", toName)
+            .insert("roles", roles)
+            .insert("localeDisplayName", localeDisplayName)
+            .insert("contactCoordinatorLink", contactCoordinatorLink)
+            .insert("htmlMessage", safeHTML);
     }
 }

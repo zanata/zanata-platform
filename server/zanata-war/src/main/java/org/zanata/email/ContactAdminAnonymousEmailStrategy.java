@@ -22,13 +22,14 @@ package org.zanata.email;
 
 import javax.mail.internet.InternetAddress;
 
-import javaslang.collection.Map;
 import lombok.RequiredArgsConstructor;
 
 import org.zanata.i18n.Messages;
 
 import com.google.common.base.Optional;
+import com.googlecode.totallylazy.collections.PersistentMap;
 import org.zanata.util.HtmlUtil;
+
 
 @RequiredArgsConstructor
 public class ContactAdminAnonymousEmailStrategy extends EmailStrategy {
@@ -53,14 +54,14 @@ public class ContactAdminAnonymousEmailStrategy extends EmailStrategy {
     }
 
     @Override
-    public Map<String, Object> makeContext(
-            Map<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(
+            PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context = super.makeContext(
+        PersistentMap<String, Object> context = super.makeContext(
                 genericContext, toAddresses);
         String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
         return context
-                .put("ipAddress", ipAddress)
-                .put("htmlMessage", safeHTML);
+                .insert("ipAddress", ipAddress)
+                .insert("htmlMessage", safeHTML);
     }
 }

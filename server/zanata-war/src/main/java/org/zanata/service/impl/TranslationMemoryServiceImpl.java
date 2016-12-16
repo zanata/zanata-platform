@@ -76,6 +76,7 @@ import org.zanata.webtrans.shared.rpc.LuceneQuery;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
+import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
@@ -88,7 +89,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.annotation.Nonnull;
 
@@ -201,10 +201,10 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
         Collection<Object[]> matches =
                 findMatchingTranslation(targetLocaleId, sourceLocaleId, query,
-                        0, Optional.empty(), HTextFlowTarget.class);
+                        0, Optional.absent(), HTextFlowTarget.class);
 
         if (matches.isEmpty()) {
-            return Optional.empty();
+            return Optional.absent();
         }
 
         return Optional.of((HTextFlowTarget) matches.iterator().next()[1]);
@@ -241,7 +241,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                         thresholdPercent));
 
         if (aboveThreshold.isEmpty()) {
-            return Optional.empty();
+            return Optional.absent();
         }
         return Optional.of(aboveThreshold.iterator()
                 .next());
@@ -254,7 +254,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         // NB: If we want to, we could pass the TFT id from the editor
         // via GWT-RPC(TransMemoryQuery), allowing Lucene to rank results
         // by metadata too.
-        Optional<Long> textFlowTargetId = Optional.empty();
+        Optional<Long> textFlowTargetId = Optional.absent();
         Collection<Object[]> matches =
                 findMatchingTranslation(targetLocaleId, sourceLocaleId,
                         transMemoryQuery, SEARCH_MAX_RESULTS,

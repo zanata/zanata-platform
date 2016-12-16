@@ -20,7 +20,7 @@
  */
 package org.zanata.email;
 
-import javaslang.collection.Map;
+import com.googlecode.totallylazy.collections.PersistentMap;
 import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 
@@ -44,13 +44,13 @@ public class ActivationEmailStrategy extends EmailStrategy {
     }
 
     @Override
-    public Map<String, Object> makeContext(
-            Map<String, Object> genericContext,
+    public PersistentMap<String, Object> makeContext(
+            PersistentMap<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context = super.makeContext(
+        PersistentMap<String, Object> context = super.makeContext(
                 genericContext, toAddresses);
         return context
-                .put("activationKey", key)
-                .put("toName", toAddresses[0].getPersonal());
+                .insert("activationKey", key)
+                .insert("toName", toAddresses[0].getPersonal());
     }
 }

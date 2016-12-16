@@ -33,7 +33,6 @@ import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLUR
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -72,6 +71,8 @@ import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
+
+import com.google.common.base.Optional;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -279,7 +280,7 @@ public class TransMemoryMergeServiceImplTest {
                 newArrayList(hTextFlow));
 
         Optional<TransMemoryResultItem> matches =
-                Optional.empty();
+                Optional.absent();
 
         when(
                 translationMemoryService.searchBestMatchTransMemory(hTextFlow,
@@ -349,7 +350,7 @@ public class TransMemoryMergeServiceImplTest {
                 Optional.of(tmResult(tmResultSource.getId(), 90));
         Optional<TransMemoryResultItem> tm80 =
                 Optional.of(tmResult(tmResultSource.getId(), 80));
-        Optional<TransMemoryResultItem> noMatch = Optional.empty();
+        Optional<TransMemoryResultItem> noMatch = Optional.absent();
 
         when(
                 translationMemoryService.searchBestMatchTransMemory(

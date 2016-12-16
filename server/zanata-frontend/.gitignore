@@ -7,9 +7,6 @@ bundle.css
 bundle.js
 dist/
 
-# jest coverage reports
-coverage/
-
 # generated css
 src/frontend/app/styles/atomic.css
 

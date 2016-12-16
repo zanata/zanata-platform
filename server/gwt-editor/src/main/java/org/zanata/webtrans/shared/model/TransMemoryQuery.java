@@ -24,6 +24,7 @@ package org.zanata.webtrans.shared.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.ToString;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

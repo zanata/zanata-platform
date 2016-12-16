@@ -84,7 +84,6 @@ class NewLanguageModal extends Component {
         localeId: query.replace('_', '-')
       }
       this.props.handleOnSave(details)
-      this.resetFields()
     }
   }
 

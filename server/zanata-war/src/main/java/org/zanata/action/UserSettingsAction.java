@@ -51,7 +51,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
-import org.zanata.model.validator.EmailDomain;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.seam.security.IdentityManager;
@@ -123,7 +122,6 @@ public class UserSettingsAction implements Serializable {
     @Setter
     @Email
     @NotEmpty
-    @EmailDomain
     private String emailAddress;
 
     @Getter

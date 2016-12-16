@@ -185,11 +185,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     @Transactional
     public String update() {
         identity.checkPermission(getInstance(), "update");
-        String state = super.update();
-        conversationScopeMessages.setMessage(
-                FacesMessage.SEVERITY_INFO,
-                msgs.get("jsf.group.settings.updated"));
-        return state;
+        return super.update();
     }
 
     // TODO ask camunoz if this is still needed
