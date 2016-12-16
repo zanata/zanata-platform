@@ -21,7 +21,7 @@ import static java.util.stream.Stream.concat;
 @ApplicationPath("/rest")
 @ApplicationScoped
 @Slf4j
-public class Application extends javax.ws.rs.core.Application {
+public class JaxRSApplication extends javax.ws.rs.core.Application {
 
     private Set<Class<?>> classes = buildClassesSet();
 
