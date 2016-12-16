@@ -86,7 +86,7 @@
       "app/**/*.{js,jsx}",
       "!**/node_modules/**"
     ],
-    "coverageReporters": ["cobertura", "html", "text"],
+    "coverageReporters": ["cobertura", "html", "lcov", "text"],
     "unmockedModulePathPatterns": [
       "/node_modules",
       "/app"
