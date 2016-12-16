@@ -8,12 +8,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.exception.NotLoggedInException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 public class AnonymousAccessControlPhaseListenerTest {
@@ -36,13 +34,13 @@ public class AnonymousAccessControlPhaseListenerTest {
     }
 
     @Test
-    public void anonymousAccessToAnyPageUnderAccountIsAllowed() {
+    public void anonymousAccessToPageUnderAccountIsAllowed() {
         when(request.getRequestURI()).thenReturn("/account/login.xhtml");
         checker.beforePhase(phaseEvent);
     }
 
     @Test
-    public void anonymousAccessToAnyPageUnderPublicIsAllowed() {
+    public void anonymousAccessToPageUnderPublicIsAllowed() {
         when(request.getRequestURI()).thenReturn("/public/info.xhtml");
         checker.beforePhase(phaseEvent);
     }
