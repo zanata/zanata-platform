@@ -34,7 +34,7 @@ public class TransUnitUpdatedEvent extends
     /**
      * Handler type.
      */
-    private static Type<TransUnitUpdatedEventHandler> TYPE;
+    private static final Type<TransUnitUpdatedEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -42,9 +42,6 @@ public class TransUnitUpdatedEvent extends
      * @return returns the handler type
      */
     public static Type<TransUnitUpdatedEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<TransUnitUpdatedEventHandler>();
-        }
         return TYPE;
     }
 

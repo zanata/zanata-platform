@@ -112,7 +112,7 @@ public class PrintfXSIExtensionValidation extends PrintfVariablesValidation {
 
     private static int extractPositionIndex(String positionAndDollar) {
         try {
-            return Integer.valueOf(positionAndDollar.substring(0,
+            return Integer.parseInt(positionAndDollar.substring(0,
                     positionAndDollar.length() - 1)) - 1;
         } catch (Exception e) {
             return -1;

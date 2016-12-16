@@ -34,7 +34,7 @@ public class WorkspaceContextUpdateEvent extends
     /**
      * Handler type.
      */
-    private static Type<WorkspaceContextUpdateEventHandler> TYPE;
+    private static final Type<WorkspaceContextUpdateEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -42,9 +42,6 @@ public class WorkspaceContextUpdateEvent extends
      * @return returns the handler type
      */
     public static Type<WorkspaceContextUpdateEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<WorkspaceContextUpdateEventHandler>();
-        }
         return TYPE;
     }
 

@@ -13,7 +13,7 @@ public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler>
     /**
      * Handler type.
      */
-    private static Type<DocumentSelectionHandler> TYPE;
+    private static final Type<DocumentSelectionHandler> TYPE = new Type<>();
     private final DocumentInfo document;
 
     /**
@@ -22,8 +22,7 @@ public class DocumentSelectionEvent extends GwtEvent<DocumentSelectionHandler>
      * @return returns the handler type
      */
     public static Type<DocumentSelectionHandler> getType() {
-        return TYPE != null ? TYPE : (TYPE =
-                new Type<DocumentSelectionHandler>());
+        return TYPE;
     }
 
     public DocumentSelectionEvent(DocumentInfo documentInfo) {

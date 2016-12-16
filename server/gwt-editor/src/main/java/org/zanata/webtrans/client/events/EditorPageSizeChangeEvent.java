@@ -8,8 +8,8 @@ import com.google.gwt.event.shared.GwtEvent;
 public class EditorPageSizeChangeEvent extends
         GwtEvent<EditorPageSizeChangeEventHandler> implements
         NavigationService.UpdateContextCommand {
-    public static Type<EditorPageSizeChangeEventHandler> TYPE =
-            new Type<EditorPageSizeChangeEventHandler>();
+    public static final Type<EditorPageSizeChangeEventHandler> TYPE =
+            new Type<>();
 
     private int pageSize;
 

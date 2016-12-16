@@ -150,7 +150,7 @@ public class TMMergeForm extends Composite implements
     private int getSelectedMatchThreshold() {
         String percent =
                 matchThreshold.getValue(matchThreshold.getSelectedIndex());
-        return Integer.valueOf(percent);
+        return Integer.parseInt(percent);
     }
 
     @UiHandler("cancelButton")

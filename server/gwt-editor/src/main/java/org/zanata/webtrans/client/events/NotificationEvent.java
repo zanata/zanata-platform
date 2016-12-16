@@ -11,7 +11,7 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
     /**
      * Handler type.
      */
-    private static Type<NotificationEventHandler> TYPE;
+    private static final Type<NotificationEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -19,9 +19,6 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
      * @return returns the handler type
      */
     public static Type<NotificationEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<NotificationEventHandler>();
-        }
         return TYPE;
     }
 

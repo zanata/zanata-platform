@@ -23,7 +23,7 @@ public class PublishWorkspaceChatEvent extends
     /**
      * Handler type.
      */
-    private static Type<PublishWorkspaceChatEventHandler> TYPE;
+    private static final Type<PublishWorkspaceChatEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -31,9 +31,6 @@ public class PublishWorkspaceChatEvent extends
      * @return returns the handler type
      */
     public static Type<PublishWorkspaceChatEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<PublishWorkspaceChatEventHandler>();
-        }
         return TYPE;
     }
 

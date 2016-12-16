@@ -37,7 +37,7 @@ public class RequestValidationEvent extends
     /**
      * Handler type.
      */
-    private static Type<RequestValidationEventHandler> TYPE;
+    private static final Type<RequestValidationEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -45,8 +45,7 @@ public class RequestValidationEvent extends
      * @return returns the handler type
      */
     public static Type<RequestValidationEventHandler> getType() {
-        return TYPE != null ? TYPE : (TYPE =
-                new Type<RequestValidationEventHandler>());
+        return TYPE;
     }
 
     private RequestValidationEvent() {

@@ -25,7 +25,7 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler> {
     /**
      * Handler type.
      */
-    private static Type<NavTransUnitHandler> TYPE;
+    private static final Type<NavTransUnitHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -33,7 +33,7 @@ public class NavTransUnitEvent extends GwtEvent<NavTransUnitHandler> {
      * @return returns the handler type
      */
     public static Type<NavTransUnitHandler> getType() {
-        return TYPE != null ? TYPE : (TYPE = new Type<NavTransUnitHandler>());
+        return TYPE;
     }
 
     public NavTransUnitEvent(NavigationType typeValue) {

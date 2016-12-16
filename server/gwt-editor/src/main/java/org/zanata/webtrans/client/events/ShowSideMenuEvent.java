@@ -7,7 +7,7 @@ public class ShowSideMenuEvent extends GwtEvent<ShowSideMenuEventHandler> {
     /**
      * Handler type.
      */
-    private static Type<ShowSideMenuEventHandler> TYPE;
+    private static final Type<ShowSideMenuEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -15,9 +15,6 @@ public class ShowSideMenuEvent extends GwtEvent<ShowSideMenuEventHandler> {
      * @return returns the handler type
      */
     public static Type<ShowSideMenuEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<ShowSideMenuEventHandler>();
-        }
         return TYPE;
     }
 

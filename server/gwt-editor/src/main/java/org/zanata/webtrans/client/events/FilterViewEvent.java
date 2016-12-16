@@ -13,7 +13,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
     /**
      * Handler type.
      */
-    private static Type<FilterViewEventHandler> TYPE;
+    private static final Type<FilterViewEventHandler> TYPE = new Type<>();
     public static final FilterViewEvent DEFAULT = new FilterViewEvent(false,
             false, false, false, false, false, EditorFilter.ALL, false);
 
@@ -23,9 +23,6 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
      * @return returns the handler type
      */
     public static Type<FilterViewEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<FilterViewEventHandler>();
-        }
         return TYPE;
     }
 

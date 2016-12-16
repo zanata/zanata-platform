@@ -28,6 +28,7 @@ import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.JAXBContext;
@@ -55,7 +56,7 @@ import lombok.Setter;
 public class TestFileGenerator {
     // Length is maximum filename length - 4 (.xxx) - 19 (for tmp file
     // randomness)
-    private static String longFileName = "lRRDXddgEnKzT2Wpu3VfT3Zs4pYuPXaqorA" +
+    private static final String longFileName = "lRRDXddgEnKzT2Wpu3VfT3Zs4pYuPXaqorA" +
             "1CAtGcaZq6xydHdOghbsyPu5GnbbmknPNRZ0vc7IEaiPm59CBQ9NkIH1if9Y4uHH" +
             "YgjWJT8Yhs5qibcEZDNAZwLmDNHaRJhQr2Y1z3VslMFGGSP25eqzU1lDjejCsd26" +
             "wRhT1UOkbhRRlm0ybGk8lTQgHEqT9sno1Veuw8A0StLGDfHAmCDFcUzAz9HMeuMU" +
@@ -214,7 +215,7 @@ public class TestFileGenerator {
         for (Map.Entry<String, String> entry : entries.entrySet()) {
             resource.setProperty(entry.getKey(), entry.getValue());
         }
-        resource.store(new FileWriter(file), null);
+        resource.store(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8), null);
     }
 
     @XmlRootElement(namespace = ZanataXml.NS,
