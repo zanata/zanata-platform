@@ -205,7 +205,7 @@ public class ServerConfigurationBean implements Serializable {
 
         facesMessages.addGlobal("Home content was successfully updated.");
         homeContentChangedEventEvent.fire(new HomeContentChangedEvent());
-        return "/public/home.xhtml";
+        return "/home.xhtml";
     }
 
     @PostConstruct

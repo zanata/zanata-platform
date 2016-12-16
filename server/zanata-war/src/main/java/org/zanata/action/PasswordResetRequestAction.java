@@ -112,7 +112,7 @@ public class PasswordResetRequestAction implements Serializable {
                 facesMessages.addGlobal(message);
             }
         }
-        return "/public/home.xhtml";
+        return "/home.xhtml";
     }
 
     public boolean isAccountWaitingForActivation() {
