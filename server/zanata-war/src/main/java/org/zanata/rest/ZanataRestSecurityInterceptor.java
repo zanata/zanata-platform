@@ -15,11 +15,13 @@ import javax.ws.rs.container.PreMatching;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.FeatureContext;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import javaslang.control.Either;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
@@ -63,22 +65,15 @@ import com.google.common.base.MoreObjects;
 public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     private static final Logger log =
             LoggerFactory.getLogger(ZanataRestSecurityInterceptor.class);
-    @Context
     private HttpServletRequest request;
 
-    @Inject
     private SecurityTokens securityTokens;
 
-    @Inject
     private ZanataIdentity zanataIdentity;
 
-    @Inject
-    @SupportOAuth
     private boolean isOAuthEnabled;
     private IServiceLocator serviceLocator = ServiceLocator.instance();
 
-    @Inject
-    @AllowAnonymousAccess
     private Provider<Boolean> allowAnonymousAccessProvider;
 
 
@@ -86,11 +81,11 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
     public ZanataRestSecurityInterceptor() {
     }
 
-    @VisibleForTesting
-    protected ZanataRestSecurityInterceptor(HttpServletRequest request,
+    @Inject
+    protected ZanataRestSecurityInterceptor(@DeltaSpike HttpServletRequest request,
             SecurityTokens securityTokens, ZanataIdentity zanataIdentity,
-            boolean isOAuthEnabled, IServiceLocator serviceLocator,
-            Provider<Boolean> allowAnonymousAccessProvider) {
+            @SupportOAuth boolean isOAuthEnabled, IServiceLocator serviceLocator,
+            @AllowAnonymousAccess Provider<Boolean> allowAnonymousAccessProvider) {
         this.request = request;
         this.securityTokens = securityTokens;
         this.zanataIdentity = zanataIdentity;
@@ -149,6 +144,7 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             // requesting API does NOT allow anonymous access
             log.info("can not authenticate REST request: {}", restCredentials);
             context.abortWith(Response.status(Status.UNAUTHORIZED)
+                    .header("Content-Type", MediaType.TEXT_PLAIN)
                     .entity("User authentication required for REST request")
                     .build());
         }
