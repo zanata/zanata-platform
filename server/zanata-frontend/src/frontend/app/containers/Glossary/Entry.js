@@ -114,7 +114,7 @@ class Entry extends Component {
     }
 
     return (
-      <div className='H(100%)--sm'>
+      <div>
         <TableRow highlight
           className='editable'
           selected={selected}
