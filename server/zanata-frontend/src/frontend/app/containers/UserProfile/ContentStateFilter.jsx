@@ -18,13 +18,12 @@ const ContentStateFilter = ({
   ...props
 }) => {
   const optionItems = ContentStates.map(function (option, index) {
-    const states = {
-      active: selectedContentState === option
-    }
+    const active = selectedContentState === option
+
     /* eslint-disable react/jsx-no-bind */
     return (
       <Button bsStyle='default' key={option}
-        states={states}
+        active={active}
         className={ContentStateStyles[index]}
         onClick={() => handleFilterChanged(option)}>
         {option}
