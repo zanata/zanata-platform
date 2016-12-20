@@ -21,8 +21,7 @@ faster builds and immediate feedback on code changes.
 Make sure you test changes against the current server before checking them in.
 
 ## Setup and Deployment
-
-1. Make sure [node and npm](http://nodejs.org/) are installed. Version v5.4.1
+1. Make sure [node and yarn](http://nodejs.org/) are installed. Node: v5.6.0, Yarn: v0.18.1
 2. Setup dependencies: `make setup`.
 3. Build compressed files: `make build`, files will be in /app/dist
 

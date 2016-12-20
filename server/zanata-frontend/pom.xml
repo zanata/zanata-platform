@@ -20,17 +20,12 @@
 
   <!-- Referenced later in the document with ${tagname}. -->
   <properties>
-    <!-- Node and NPM versions that will be downloaded and used for zanata-frontend. -->
+    <!-- Node and Yarn versions that will be downloaded and used for zanata-frontend. -->
     <node.version>v5.6.0</node.version>
-    <npm.version>3.6.0</npm.version>
-    <!-- Keep cached npm modules for 6 hours (21600 seconds) before re-checking for an updated one. -->
-    <!-- To avoid slow builds due to excessive network activity to npm -->
-    <npm.cache.min>21600</npm.cache.min>
-    <!-- The location to download the correct version of Node and NPM to.
+    <yarn.version>v0.18.1</yarn.version>
+    <!-- The location to download the correct version of Node and Yarn to.
         ${download.dir} comes from zanata-server/pom.xml -->
-    <node.install.directory>${download.dir}/zanata/node-${node.version}-npm-${npm.version}</node.install.directory>
-    <!-- NPM executable to use to run builds -->
-    <npm.executable>${node.install.directory}/node/node_modules/npm/bin/npm-cli.js</npm.executable>
+    <yarn.install.directory>${download.dir}/zanata/node-${node.version}-yarn-${yarn.version}</yarn.install.directory>
 
     <!-- Specified to ensure build is consistent cross-platform. -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -71,30 +66,30 @@
       <plugin>
         <groupId>com.github.eirslett</groupId>
         <artifactId>frontend-maven-plugin</artifactId>
-        <version>1.2</version>
+        <version>1.3</version>
         <configuration>
-          <installDirectory>${node.install.directory}</installDirectory>
+          <installDirectory>${yarn.install.directory}</installDirectory>
         </configuration>
         <executions>
-          <!-- Installs correct version of node and npm locally. -->
+          <!-- Installs correct version of node and yarn locally. -->
           <execution>
-            <id>install node and npm</id>
+            <id>install node and yarn</id>
             <phase>initialize</phase>
             <goals>
-              <goal>install-node-and-npm</goal>
+              <goal>install-node-and-yarn</goal>
             </goals>
             <configuration>
               <nodeVersion>${node.version}</nodeVersion>
-              <npmVersion>${npm.version}</npmVersion>
+              <yarnVersion>${yarn.version}</yarnVersion>
             </configuration>
           </execution>
 
           <!-- frontend: Transpile and bundle all the javascript and css -->
           <execution>
-            <id>frontend: execute npm run build</id>
+            <id>frontend: execute yarn run build</id>
             <phase>compile</phase>
             <goals>
-              <goal>npm</goal>
+              <goal>yarn</goal>
             </goals>
             <configuration>
               <workingDirectory>${frontend.build.directory}</workingDirectory>
@@ -104,10 +99,10 @@
 
           <!-- editor: Transpile and bundle all the javascript and css. -->
           <execution>
-            <id>editor: execute npm run build</id>
+            <id>editor: execute yarn run build</id>
             <phase>compile</phase>
             <goals>
-              <goal>npm</goal>
+              <goal>yarn</goal>
             </goals>
             <configuration>
               <workingDirectory>${editor.build.directory}</workingDirectory>
@@ -117,10 +112,10 @@
 
           <!-- Run javascript tests for frontend -->
           <execution>
-            <id>frontend: execute npm test</id>
+            <id>frontend: execute yarn test</id>
             <phase>test</phase>
             <goals>
-              <goal>npm</goal>
+              <goal>yarn</goal>
             </goals>
             <configuration>
               <workingDirectory>${frontend.build.directory}</workingDirectory>
@@ -130,10 +125,10 @@
 
           <!-- Run javascript tests for editor -->
           <execution>
-            <id>editor: execute npm test</id>
+            <id>editor: execute yarn test</id>
             <phase>test</phase>
             <goals>
-              <goal>npm</goal>
+              <goal>yarn</goal>
             </goals>
             <configuration>
               <workingDirectory>${editor.build.directory}</workingDirectory>
@@ -227,7 +222,7 @@
 
   <profiles>
     <profile>
-      <id>npm install</id>
+      <id>yarn install</id>
       <activation>
         <property>
           <name>!skip.npminstall</name>
@@ -239,47 +234,35 @@
             <groupId>com.github.eirslett</groupId>
             <artifactId>frontend-maven-plugin</artifactId>
             <executions>
-              <!-- Download all dependency modules from npm (or mirror). -->
+              <!-- Download all dependency modules from yarn (or mirror). -->
               <execution>
                 <id>frontend: execute npm install</id>
                 <phase>generate-sources</phase>
                 <goals>
-                  <goal>npm</goal>
+                  <goal>yarn</goal>
                 </goals>
                 <configuration>
                   <workingDirectory>${frontend.build.directory}</workingDirectory>
-                  <arguments>install --ignore-scripts --cache-min ${npm.cache.min}</arguments>
+                  <arguments>--ignore-scripts</arguments>
                 </configuration>
               </execution>
 
-              <!-- Download all dependency modules from npm (or mirror). -->
+              <!-- Download all dependency modules from yarn (or mirror). -->
               <execution>
-                <id>editor: execute npm install</id>
+                <id>editor: execute yarn install</id>
                 <phase>generate-sources</phase>
                 <goals>
-                  <goal>npm</goal>
+                  <goal>yarn</goal>
                 </goals>
                 <configuration>
                   <workingDirectory>${editor.build.directory}</workingDirectory>
-                  <arguments>install --ignore-scripts --cache-min ${npm.cache.min}</arguments>
+                  <arguments>--ignore-scripts</arguments>
                 </configuration>
               </execution>
             </executions>
           </plugin>
         </plugins>
       </build>
-    </profile>
-    <!-- Attempts to avoid downloading anything from NPM. -->
-    <profile>
-      <id>npmOffline</id>
-      <activation>
-        <property>
-          <name>npmOffline</name>
-        </property>
-      </activation>
-      <properties>
-        <npm.cache.min>9999999</npm.cache.min>
-      </properties>
     </profile>
     <profile>
       <!-- Enable -DskipUnitTests to skip npm test -->
