@@ -179,7 +179,7 @@ public class ApplicationConfiguration implements Serializable {
         final org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
 
         if (isEmailLogAppenderEnabled()) {
-            // NB: This appender uses Seam's email configuration (no need for
+            // NB: This appender uses JBoss's email configuration (no need for
             // host or port)
             smtpAppenderInstance.setName(EMAIL_APPENDER_NAME);
             smtpAppenderInstance.setFrom(getFromEmailAddr());
