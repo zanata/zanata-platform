@@ -334,15 +334,15 @@ public class GlossaryService implements GlossaryResource {
             return response;
         }
         HGlossaryEntry entry = glossaryDAO.findById(id);
-        GlossaryEntry deletedEntry = generateGlossaryEntry(entry);
 
         if(entry != null) {
+            GlossaryEntry deletedEntry = generateGlossaryEntry(entry);
             glossaryDAO.makeTransient(entry);
             glossaryDAO.flush();
             return Response.ok(deletedEntry).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND)
-                .entity("Glossary " + id + "entry not found").build();
+                .entity("Glossary entry not found: " + id).build();
         }
     }
 

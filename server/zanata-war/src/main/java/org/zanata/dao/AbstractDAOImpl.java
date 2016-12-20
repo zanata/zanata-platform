@@ -49,16 +49,23 @@ public class AbstractDAOImpl<T, ID extends Serializable> implements
         return persistentClass;
     }
 
+    /**
+     * Use session.get() instead of session.load() to prevent non-null entity
+     * being return if does not exists.
+     *
+     * See {@link org.hibernate.Session#get(Class, Serializable)} and
+     * {@link org.hibernate.Session#load(Class, Serializable)} for documentation.
+     */
     @SuppressWarnings("unchecked")
     @Override
     public T findById(ID id, boolean lock) {
         T entity;
         if (lock) {
             entity =
-                    (T) getSession().load(getPersistentClass(), id,
+                    (T) getSession().get(getPersistentClass(), id,
                             LockOptions.UPGRADE);
         } else {
-            entity = (T) getSession().load(getPersistentClass(), id);
+            entity = (T) getSession().get(getPersistentClass(), id);
         }
 
         return entity;
