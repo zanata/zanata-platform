@@ -36,7 +36,7 @@ class DeleteEntry extends Component {
             Are you sure you want to delete&nbsp;
               <strong>{locale.displayName}</strong>?&nbsp;
             </p>
-            <span className='two-spaced'>
+            <span className='button-spacing'>
               <Button bsStyle='default'
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel

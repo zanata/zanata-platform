@@ -205,7 +205,7 @@ class ViewHeader extends Component {
               </Button>
             </TableCell>
             <TableCell tight size={'3'}
-              className='langselect'
+              className='langSelect'
               theme={{base: {lineClamp: ''}}}>
               <Select
                 name='language-selection'
