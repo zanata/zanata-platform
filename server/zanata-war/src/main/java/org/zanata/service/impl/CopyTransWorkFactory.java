@@ -30,6 +30,7 @@ import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -56,7 +57,6 @@ import org.zanata.service.VersionStateCache;
 import org.zanata.util.TranslationUtil;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;

@@ -4,14 +4,12 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>gwt-editor</artifactId>
   <name>gwt-editor</name>
   <packaging>war</packaging>
-  <url>http://maven.apache.org</url>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <zanata.gwt.module>org.zanata.webtrans.Application</zanata.gwt.module>
   </properties>
   <dependencies>
