@@ -20,25 +20,24 @@
  */
 package org.zanata.log4j;
 
-import it.openutils.log4j.AlternateSMTPAppender;
-
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.naming.NamingException;
 
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.ErrorCode;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.TriggeringEventEvaluator;
 import org.zanata.util.ServiceLocator;
+import it.openutils.log4j.AlternateSMTPAppender;
 
 /**
  * Extension of the {@link AlternateSMTPAppender} class that allows Zanata to
- * use Seam's email configuration. This appender should only be used within the
- * context of a Seam application.
+ * use email configuration.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -50,13 +49,14 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender {
 
     @Override
     public void activateOptions() {
-        // Get Seam's email session instead
-        Session session =
-                ServiceLocator.instance().getInstance(Session.class);
-        // session.setDebug(true);
-        msg = new MimeMessage(session);
-
         try {
+            // for some reason this has to use the FQ jndi address
+            Session session = ServiceLocator.instance()
+                    .getJndiComponent("java:jboss/mail/Default",
+                            Session.class);
+            // session.setDebug(true);
+            msg = new MimeMessage(session);
+
             if (getFrom() != null) {
                 msg.setFrom(getAddress(getFrom()));
             } else {
@@ -68,7 +68,7 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender {
             }
 
             msg.setRecipients(Message.RecipientType.TO, parseAddress(getTo()));
-        } catch (MessagingException e) {
+        } catch (MessagingException | NamingException e) {
             LogLog.error("Could not activate SMTPAppender options.", e);
         }
     }
@@ -86,11 +86,7 @@ public class ZanataSMTPAppender extends AlternateSMTPAppender {
     InternetAddress[] parseAddress(String addressStr) {
         try {
             return InternetAddress.parse(addressStr, true);
-        } catch (AddressException e) {
-            errorHandler.error("Could not parse address [" + addressStr + "].",
-                    e, ErrorCode.ADDRESS_PARSE_FAILURE);
-            return null;
-        } catch (NullPointerException e) {
+        } catch (AddressException | NullPointerException e) {
             errorHandler.error("Could not parse address [" + addressStr + "].",
                     e, ErrorCode.ADDRESS_PARSE_FAILURE);
             return null;
