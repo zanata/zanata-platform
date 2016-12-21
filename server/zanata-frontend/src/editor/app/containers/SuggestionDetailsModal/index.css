@@ -167,8 +167,21 @@
 
 .transUnit-details .u-listInline {
     display:inline-flex;
+    width:100%;
 }
 
 .transUnit-details .u-listInline li div {
     align-items: stretch;
+}
+
+.transUnit-details li.project {
+        width: 25%;
+}
+
+.transUnit-details  li.version {
+        width:25%;
+}
+
+.transUnit-details li.document {
+        max-width:50%;
 }
