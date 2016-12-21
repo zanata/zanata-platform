@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2016, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,20 +18,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.service;
+package org.zanata.model.validator;
 
-import org.zanata.common.LocaleId;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.HTextFlowTarget;
-
-import java.util.Optional;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import javax.inject.Qualifier;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * Qualifier for permitted email domains.
+ *
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public interface TranslationFinder {
-    // TODO rename to findBestMatchingTranslation?
-    Optional<HTextFlowTarget> searchBestMatchTransMemory(HTextFlow textFlow,
-            LocaleId targetLocaleId, LocaleId sourceLocaleId,
-            boolean checkContext, boolean checkDocument, boolean checkProject);
+@Qualifier
+@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.PARAMETER })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AcceptedEmailDomainsForNewAccount {
 }
