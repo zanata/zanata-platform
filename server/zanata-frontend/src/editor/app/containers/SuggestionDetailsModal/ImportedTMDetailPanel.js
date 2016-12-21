@@ -16,12 +16,7 @@ class ImportedTMDetailPanel extends Component {
     return (
       <div title={transMemorySlug} className="TransUnit-details ellipsis">
         <Icon name="import"
-          size="1"
-          theme={{
-            base: {
-              mend: 'Mend(rh)'
-            }
-          }} /> {transMemorySlug}
+          size="1" /> {transMemorySlug}
       </div>
     )
   }
@@ -47,12 +42,7 @@ class ImportedTMDetailPanel extends Component {
           <ul className="u-listInline u-sMB-1-4">
             <li>
               <Row>
-                <Icon name="import" size="1"
-                  theme={{
-                    base: {
-                      mend: 'Mend(rh)'
-                    }
-                  }} /> {transMemorySlug}
+                <Icon name="import" size="1" /> {transMemorySlug}
               </Row>
             </li>
             <Label bsStyle="primary">Imported</Label>

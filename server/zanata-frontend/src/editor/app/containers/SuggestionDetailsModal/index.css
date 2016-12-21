@@ -167,5 +167,8 @@
 
 .transUnit-details .u-listInline {
     display:inline-flex;
-    align-items: baseline;
+}
+
+.transUnit-details .u-listInline li div {
+    align-items: stretch;
 }

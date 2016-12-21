@@ -57,19 +57,15 @@ class LocalProjectDetailPanel extends Component {
     return (
       <div className="transUnit-details">
         <ul className="u-listInline u-sMB-1-4">
-          <li title={projectId}>
+          <li title={projectId} className="W(50%)">
             <Row>
-              <Icon name="project" size="1" /> {projectName}
+              <Icon name="project" size="1" />
+              {projectName}
             </Row>
           </li>
-          <li>
+          <li className="W(50%)">
             <Row>
-              <Icon name="version" size="1"
-                theme={{
-                  base: {
-                    mend: 'Mend(rh)'
-                  }
-                }} /> {version}
+              <Icon name="version" size="1" /> {version}
             </Row>
           </li>
           <li title={fullDocName}>
