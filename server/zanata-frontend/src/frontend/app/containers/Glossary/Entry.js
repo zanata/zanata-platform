@@ -171,14 +171,16 @@ class Entry extends Component {
                   handleUpdateTerm(entry, false)} />
               <div className='Op(0) row--selected_Op(1)
                 editable:h_Op(1) Trs(eo)'>
-                <div className='Hidden--lesm D(ib)'>
-                  {updateButton}
-                  {displayUpdateButton && !isSaving ? (
-                    <ButtonLink
-                      onClick={() => handleResetTerm(entry.id)}>
-                      Cancel
-                    </ButtonLink>
-                  ) : ''}
+                <div className='Hidden--lesm D(ib) Va(m)'>
+                  <Row>
+                    {updateButton}
+                    {displayUpdateButton && !isSaving ? (
+                      <ButtonLink
+                        onClick={() => handleResetTerm(entry.id)}>
+                        Cancel
+                      </ButtonLink>
+                    ) : ''}
+                  </Row>
                 </div>
                 {!transSelected && permission.canDeleteEntry && !isSaving &&
                 !displayUpdateButton && (
