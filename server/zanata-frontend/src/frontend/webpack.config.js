@@ -12,10 +12,12 @@ var webpack = require('webpack')
 var path = require('path')
 
 module.exports = {
-  entry: './app/index',
+  entry: {
+    'bundle': './app/index'
+  },
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js'
+    filename: '[name].js'
   },
   module: {
     preLoaders: [
