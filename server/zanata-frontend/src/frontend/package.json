@@ -20,7 +20,11 @@
     "svg": "svg-sprite -sD app/components/Icons --symbol-dest '' --ss icons.svg --si app/components/Icons/svgs/*.svg --ignore-scripts=false",
     "test": "jest"
   },
-  "license": "LGPL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zanata/zanata-platform.git"
+  },
+  "license": "LGPL-2.1",
   "devDependencies": {
     "atomic-loader": "0.2.2",
     "autoprefixer-loader": "3.2.0",
@@ -52,7 +56,8 @@
     "style-loader": "0.13.1",
     "webpack": "1.13.0",
     "webpack-dev-middleware": "1.6.1",
-    "webpack-dev-server": "1.14.1"
+    "webpack-dev-server": "1.14.1",
+    "webpack-merge": "1.1.1"
   },
   "dependencies": {
     "babel-polyfill": "6.9.1",
