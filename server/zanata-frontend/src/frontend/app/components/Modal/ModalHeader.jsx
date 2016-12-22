@@ -1,9 +1,5 @@
 import React, { PropTypes } from 'react'
 
-/* const classes = {
-  p: 'P(r1)'
-} */
-
 const ModalHeader = ({
   children,
   ...props

@@ -1,12 +1,5 @@
 import React, { PropTypes } from 'react'
 
-/* const classes = {
-  c: 'C(pri)',
-  fz: 'Fz(ms3)',
-  fw: 'Fw(300)',
-  lh: 'Lh(1)'
-}*/
-
 const ModalTitle = ({
   children,
   ...props
