@@ -51,7 +51,7 @@ class DeleteAllEntriesModal extends Component {
             </span>
           </Tooltip>
         </Overlay>
-        <Button bsStyle='link' className='delete-link' type='button'
+        <Button bsStyle='link' type='button'
           onClick={() => handleDeleteAllEntriesDisplay(true)}
           disabled={isDeleting}>
           <Row>
