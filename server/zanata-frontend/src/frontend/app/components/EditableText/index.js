@@ -30,6 +30,10 @@ class EditableText extends Component {
     })
   }
 
+  bindTextInput (textInput) {
+    this.textInput = textInput
+  }
+
   render () {
     const {
       children = '',
@@ -49,6 +53,7 @@ class EditableText extends Component {
           {...props}
           autoFocus={this.state.focus}
           onBlur={::this.handleBlur}
+          ref={this.bindTextInput}
           placeholder={placeholder}
           value={children}
         />

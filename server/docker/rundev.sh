@@ -18,7 +18,7 @@ ZANATA_WAR=$(echo $PWD/zanata-war/target/zanata-*.war)
 # volume mapping for JBoss deployment folder (put exploded war or war file here to deploy)
 ZANATA_DEPLOYMENTS_DIR=$HOME/docker-volumes/zanata-deployments
 # make zanata deployment directory accessible to docker containers (SELinux)
-mkdir -p ${ZANATA_DEPLOYMENTS_DIR} && chcon -Rt svirt_sandbox_file_t ${ZANATA_DEPLOYMENTS_DIR}
+mkdir -p ${ZANATA_DEPLOYMENTS_DIR}
 
 if [ -f "$ZANATA_WAR" ]
 then
@@ -102,7 +102,7 @@ ensure_docker_network
 # volume mapping for zanata server files
 ZANATA_DIR=$HOME/docker-volumes/zanata
 # create the data directory and set permissions (SELinux)
-mkdir -p $ZANATA_DIR && chcon -Rt svirt_sandbox_file_t "$ZANATA_DIR"
+mkdir -p $ZANATA_DIR
 
 # build the docker dev image
 docker build -t zanata/server-dev docker/

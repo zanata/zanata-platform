@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "js": "webpack",
-    "build": "webpack --config webpack.config.js && npm run build:icons && npm run build:webpack && npm run build:webpackLegacy --ignore-scripts=false",
+    "build": "webpack --config webpack.config.js --ignore-scripts=false && npm run build:icons --ignore-scripts=false && npm run build:webpack && npm run build:webpackLegacy --ignore-scripts=false",
     "build:webpack": "webpack -p --config webpack.prod.config.js --bail --display-error-details",
     "build:webpackLegacy": "webpack -p --config webpack.legacy.config.js --bail --display-error-details",
     "build:icons": "npm run svg --ignore-scripts=false && npm run icons --ignore-scripts=false",
@@ -18,8 +18,8 @@
     "start": "npm run hot-dev-server --ignore-scripts=false",
     "styleguide-server": "styleguidist server",
     "styleguide-build": "styleguidist build",
-    "icons": "node scripts/createIconsComponent && node scripts/generateIconList",
-    "svg": "svg-sprite -sD app/components/Icons --symbol-dest '' --ss icons.svg --si app/components/Icons/svgs/*.svg",
+    "icons": "node scripts/createIconsComponent && node scripts/generateIconList --ignore-scripts=false",
+    "svg": "svg-sprite -sD app/components/Icons --symbol-dest '' --ss icons.svg --si app/components/Icons/svgs/*.svg --ignore-scripts=false",
     "test": "jest"
   },
   "license": "LGPL",
@@ -67,7 +67,7 @@
     "moment-range": "2.2.0",
     "normalizr": "2.1.0",
     "react": "0.14.8",
-    "react-autosuggest": "6.1.0",
+    "react-autosuggest": "6.0.4",
     "react-bootstrap": "0.30.3",
     "react-chartjs": "0.4.0",
     "react-date-range": "0.2.4",

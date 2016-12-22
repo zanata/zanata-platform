@@ -4,13 +4,17 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>gwt-editor</artifactId>
   <name>gwt-editor</name>
   <packaging>war</packaging>
   <properties>
-    <zanata.gwt.module>org.zanata.webtrans.Application</zanata.gwt.module>
+    <gwt.module>org.zanata.webtrans.Application</gwt.module>
+    <!-- Enable draft-mode and PRETTY style by default. The
+         optimisedBuild profile overrides these. -->
+    <gwt.draftCompile>true</gwt.draftCompile>
+    <gwt.style>PRETTY</gwt.style>
   </properties>
   <dependencies>
     <dependency>
@@ -200,9 +204,6 @@
               <goal>compile</goal>
               <!-- compile, generateAsync, test -->
             </goals>
-            <configuration>
-              <module>${zanata.gwt.module}</module>
-            </configuration>
           </execution>
           <execution>
             <id>clean</id>
@@ -217,7 +218,6 @@
               <goal>debug</goal>
             </goals>
             <configuration>
-              <module>${zanata.gwt.module}</module>
               <gen>${project.build.directory}/gwt-gen</gen>
               <webappDirectory>
                 ${as.deploy}/zanata.war
@@ -234,9 +234,6 @@
             <goals>
               <goal>run-codeserver</goal>
             </goals>
-            <configuration>
-              <module>${zanata.gwt.module}</module>
-            </configuration>
           </execution>
         </executions>
         <configuration>
@@ -407,7 +404,7 @@
 
     <profile>
       <!-- This profile tells GWT to use an alternative GWT module which has
-        only one permutation, and to compile in draft mode -->
+           only one permutation -->
       <id>chrome</id>
       <activation>
         <property>
@@ -415,25 +412,13 @@
         </property>
       </activation>
       <properties>
-        <zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
+        <gwt.module>org.zanata.webtrans.ApplicationSafari</gwt.module>
       </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <configuration>
-              <draftCompile>true</draftCompile>
-              <style>PRETTY</style>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
 
     <profile>
       <!-- This profile tells GWT to use an alternative GWT module which has
-        only one permutation, and to compile in draft mode -->
+           only one permutation -->
       <id>firefox</id>
       <activation>
         <property>
@@ -441,25 +426,13 @@
         </property>
       </activation>
       <properties>
-        <zanata.gwt.module>org.zanata.webtrans.ApplicationGecko18</zanata.gwt.module>
+        <gwt.module>org.zanata.webtrans.ApplicationGecko18</gwt.module>
       </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <configuration>
-              <draftCompile>true</draftCompile>
-              <style>PRETTY</style>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
 
     <profile>
       <!-- This profile tells GWT to use an alternative GWT module which has
-              only two permutations, and to compile in draft mode -->
+           only two permutations -->
       <id>chromefirefox</id>
       <activation>
         <property>
@@ -467,20 +440,23 @@
         </property>
       </activation>
       <properties>
-        <zanata.gwt.module>org.zanata.webtrans.ApplicationChromeFirefox</zanata.gwt.module>
+        <gwt.module>org.zanata.webtrans.ApplicationChromeFirefox</gwt.module>
       </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>gwt-maven-plugin</artifactId>
-            <configuration>
-              <draftCompile>true</draftCompile>
-              <style>PRETTY</style>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
+
+    <!-- Trigger an optimised build (for production), instead of the default draft build. -->
+    <profile>
+      <id>optimisedBuild</id>
+      <activation>
+        <property>
+          <name>optimise</name>
+        </property>
+      </activation>
+      <properties>
+        <gwt.draftCompile>false</gwt.draftCompile>
+        <gwt.style>OBFUSCATED</gwt.style>
+      </properties>
+    </profile>
+
   </profiles>
 </project>
