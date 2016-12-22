@@ -23,7 +23,7 @@
     <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
     <url>https://github.com/zanata/zanata-platform/tree/master/build-tools</url>
-    <tag>HEAD</tag>
+    <tag>platform-4.0.0</tag>
   </scm>
 
   <licenses>
