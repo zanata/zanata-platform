@@ -45,6 +45,9 @@ public interface EnumMessages extends com.google.gwt.i18n.client.Messages {
     String downgradeToFuzzy();
 
     @DefaultMessage("Translated")
+    String translatedStatus();
+
+    @DefaultMessage("Approved")
     String approvedStatus();
 
     @DefaultMessage("Next Fuzzy or Rejected")
