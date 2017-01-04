@@ -231,7 +231,7 @@ site: http://www.fsf.org.
                   <span id="#{cc.clientId}-fileupload-file-params"
                     class="is-hidden">
                     <a
-                      href="https://github.com/zanata/zanata-server/wiki/Custom-document-parameters"
+                      href="http://docs.zanata.org/en/release/user-guide/documents/custom-document-param/"
                       title="#{msgs['jsf.upload.FileParametersHelp']}"><i
                       class="i i--help"></i></a>
                     <textarea name="fileparams" id="fileparams"
@@ -257,22 +257,30 @@ site: http://www.fsf.org.
               </div>
               <!-- fileupload-buttonbar is used in the script to find the global 'start' and 'cancel' buttons -->
               <div class="fileupload-buttonbar g__item w--1-3 txt--align-right">
-                <button id="#{cc.clientId}-cancel-upload"
-                  type="button"
-                  class="fileupload-cancel cancel button--link l--push-right-half"
-                  data-dismiss="modal">#{msgs['jsf.Cancel']}
-                </button>
-                <button id="#{cc.clientId}-start-upload"
-                  class="js-upload-supported js-fileupload-main-start start button--primary"
-                  disabled="disabled">
-                  #{msgs['jsf.upload.UploadDocuments']}
-                </button>
-                <button id="#{cc.clientId}-done-upload"
-                  type="button"
-                  class="js-upload-supported fileupload-done button--primary is-hidden"
-                  disabled="disabled"
-                  data-dismiss="modal">#{msgs['jsf.Done']}
-                </button>
+                <div class="bx--inline-block">
+                  <button id="#{cc.clientId}-cancel-upload"
+                          type="button"
+                          class="fileupload-cancel cancel button--link l--push-right-half"
+                          data-dismiss="modal">#{msgs['jsf.Cancel']}
+                  </button>
+                </div>
+                <div class="bx--inline-block">
+                  <button id="#{cc.clientId}-start-upload"
+                          class="js-upload-supported js-fileupload-main-start start button--primary"
+                          disabled="disabled">
+                    #{msgs['jsf.upload.UploadDocuments']}
+                  </button>
+                </div>
+                <div class="bx--inline-block">
+
+                  <button id="#{cc.clientId}-done-upload"
+                          type="button"
+                          class="js-upload-supported fileupload-done button--primary is-hidden"
+                          disabled="disabled"
+                          data-dismiss="modal">#{msgs['jsf.Done']}
+                  </button>
+
+                </div>
               </div>
             </div>
           </footer>

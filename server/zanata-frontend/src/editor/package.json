@@ -15,7 +15,7 @@
     "watch": "cd app && mkdir -p dist && cp index.html dist && webpack-dev-server -d --progress --config webpack.dev.config.js --inline --hot --content-base dist/",
     "build": "cd app && webpack --config webpack.prod.config.js --progress --bail --display-error-details",
     "draft": "cd app && webpack --config webpack.draft.config.js --progress --bail --display-error-details",
-    "test": "jest",
+    "test": "jest --coverage",
     "storybook": "start-storybook -p 9001 -s ./app/dist",
     "build-storybook": "build-storybook -s ./app/dist"
   },
@@ -103,6 +103,11 @@
     "zanata-ui": "3.0.3"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "app/**/*.{js,jsx}",
+      "!**/node_modules/**"
+    ],
+    "coverageReporters": ["cobertura", "html", "lcov", "text"],
     "moduleNameMapper": {
       "^.+\\.(css)$": "./__tests__/mock/cssMock.js"
     },

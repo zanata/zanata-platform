@@ -42,6 +42,10 @@ public interface SampleDataResource extends RestResource {
     @DELETE
     Response deleteExceptEssentialData();
 
+    @PUT
+    @Path("/allowAnonymousUser/{value}")
+    Response allowAnonymousUser(@PathParam("value") boolean value);
+
     /**
      * This dummy service can be used to simulate long running operation or throws exception.
      *

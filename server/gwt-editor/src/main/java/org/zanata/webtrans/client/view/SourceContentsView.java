@@ -37,6 +37,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Preconditions;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -212,11 +213,7 @@ public class SourceContentsView extends Composite implements
 
     @Override
     public void toggleTransUnitDetails(boolean showTransUnitDetails) {
-        if (transUnitDetailsPanel.hasNoMetaInfo() && !showTransUnitDetails) {
-            transUnitDetailsPanel.setVisible(showTransUnitDetails);
-        } else {
-            transUnitDetailsPanel.setVisible(true);
-        }
+        transUnitDetailsPanel.setVisible(showTransUnitDetails);
     }
 
     @Override

@@ -28,13 +28,13 @@ import java.net.URL;
 import java.security.SecureRandom;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.function.Consumer;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.Client;
-import javax.ws.rs.core.MediaType;
 
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -71,7 +71,7 @@ public class RestClientFactory {
         this.clientApiVersion = clientApiVersion;
         clientVersion = clientApiVersion.getVersionNo();
 
-        this.client = ResteasyClientBuilder.newBuilder()
+        this.client = new ResteasyClientBuilder()
                 .sslContext(sslConfiguration(sslCertDisabled))
                 .register(new RedirectFilter())
                 .register(new ResponseStatusFilter())
@@ -79,7 +79,46 @@ public class RestClientFactory {
                 .register(new TraceDebugFilter(logHttp))
                 .register(new InvalidContentTypeFilter())
                 .build();
+    }
 
+    /**
+     * This constructor will provider an extension point for other class to
+     * customize resteasy client builder.
+     *
+     * @param base
+     *         zanata server REST api base url
+     * @param username
+     *         zanata username
+     * @param apiKey
+     *         zanata api key
+     * @param clientApiVersion
+     *         client api version
+     * @param logHttp
+     *         whether to log http request and response
+     * @param sslCertDisabled
+     *         whether ssl certificate verification will be disabled
+     * @param resteasyClientBuilderModifier
+     *         resteasy client builder customization function
+     */
+    public RestClientFactory(URI base, String username, String apiKey,
+            VersionInfo clientApiVersion, boolean logHttp,
+            boolean sslCertDisabled,
+            Consumer<ResteasyClientBuilder> resteasyClientBuilderModifier) {
+        this.baseURI = base;
+        this.clientApiVersion = clientApiVersion;
+        this.clientVersion = clientApiVersion.getVersionNo();
+        ResteasyClientBuilder clientBuilder = new ResteasyClientBuilder()
+                .sslContext(sslConfiguration(sslCertDisabled))
+                .register(new RedirectFilter())
+                .register(new ResponseStatusFilter())
+                .register(
+                        new ApiKeyHeaderFilter(username, apiKey, clientVersion))
+                .register(new TraceDebugFilter(logHttp))
+                .register(new InvalidContentTypeFilter());
+        resteasyClientBuilderModifier.accept(clientBuilder);
+        this.client = clientBuilder
+                .build();
+        ;
     }
 
     private static SSLContext sslConfiguration(boolean sslCertDisabled) {

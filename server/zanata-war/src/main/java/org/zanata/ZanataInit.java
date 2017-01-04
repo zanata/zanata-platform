@@ -61,6 +61,7 @@ import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.zanata.email.EmailBuilder;
 import org.zanata.events.ServerStarted;
 import org.zanata.exception.ZanataInitializationException;
@@ -155,7 +156,7 @@ public class ZanataInit {
                 System.getProperty("javamelody.storage-directory");
         log.info("JavaMelody stats directory: " + javamelodyDir);
         String indexBase =
-                System.getProperty("hibernate.search.default.indexBase");
+                applicationConfiguration.getHibernateSearchIndexBase();
         log.info("Lucene index directory: " + indexBase);
         if (indexBase != null) {
             checkLuceneLocks(new File(indexBase));

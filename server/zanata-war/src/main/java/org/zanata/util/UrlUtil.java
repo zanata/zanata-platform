@@ -81,11 +81,6 @@ public class UrlUtil implements Serializable {
     private String dswidParam;
 
     /**
-     * URL prefix for zanata-frontend/frontend module
-     */
-    public static final String FRONT_END_PREFIX = "/a";
-
-    /**
      * Get the local url part, including context path, for the given page
      * request.
      *
@@ -329,7 +324,7 @@ public class UrlUtil implements Serializable {
     }
 
     public String createUserPage() {
-        return contextPath + "/profile/create" + dswidQuery;
+        return contextPath + "/account/create_user" + dswidQuery;
     }
 
     public String inactiveAccountPage() {
@@ -341,12 +336,12 @@ public class UrlUtil implements Serializable {
      */
     public String glossaryUrl(String qualifiedName, String filter,
             LocaleId localeId) {
-        String url = contextPath + FRONT_END_PREFIX;
+        String url = contextPath;
         if (GlossaryService.isProjectGlossary(qualifiedName)) {
             String projectSlug = GlossaryService.getProjectSlug(qualifiedName);
-            url = url + "/#project/" + projectSlug + "/glossary";
+            url = url + "/glossary/project/" + projectSlug;
         } else {
-            url = url + "/#glossary";
+            url = url + "/glossary";
         }
         boolean hasFilter = StringUtils.isNotBlank(filter);
         if (hasFilter) {

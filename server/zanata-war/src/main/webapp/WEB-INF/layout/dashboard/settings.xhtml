@@ -265,9 +265,9 @@
               </li>
             </ui:repeat>
           </ul>
-          <h:link styleClass="button"
-            value="#{msgs['jsf.dashboard.settings.joinLangTeam.message']}"
-            outcome="/language/home.xhtml"/>
+          <a href="${request.contextPath}/languages#{dswidQuery}" class="button">
+            #{msgs['jsf.dashboard.settings.joinLangTeam.message']}
+          </a>
         </h:form>
       </li>
       <li id="client">

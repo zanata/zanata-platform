@@ -11,7 +11,6 @@ batch
 # ==== system properties /system-property=foo:add(value=bar) ====
 /system-property="javamelody.storage-directory":add(value="${user.home}/zanata/stats: ")
 /system-property="hibernate.search.default.indexBase":add(value="${user.home}/zanata/indexes: ")
-/system-property="ehcache.disk.store.dir":add(value="${user.home}/zanata/indexes: ")
 /system-property="jboss.as.management.blocking.timeout":add(value="1000")
 /system-property="zanata.security.authpolicy.internal":add(value="zanata.internal")
 /system-property="zanata.security.authpolicy.openid":add(value="zanata.openid")

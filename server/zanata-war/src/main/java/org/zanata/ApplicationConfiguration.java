@@ -30,6 +30,7 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 
@@ -41,14 +42,16 @@ import lombok.Setter;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.log4j.Level;
 import javax.annotation.PostConstruct;
-import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.servlet.http.HttpSession;
 
+import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.config.OAuthTokenExpiryInSeconds;
 import org.zanata.config.SupportOAuth;
 import org.zanata.config.SystemPropertyConfigStore;
+import org.zanata.model.validator.AcceptedEmailDomainsForNewAccount;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.DefaultLocale;
@@ -64,6 +67,7 @@ import org.zanata.security.AuthenticationType;
 
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.zanata.security.OpenIdLoginModule;
@@ -153,7 +157,6 @@ public class ApplicationConfiguration implements Serializable {
     public void load() {
         log.info("Reloading configuration");
         this.loadLoginModuleNames();
-        this.validateConfiguration();
         this.applyLoggingConfiguration();
         this.loadJaasConfig();
         authenticatedSessionTimeoutMinutes = sysPropConfigStore
@@ -169,43 +172,7 @@ public class ApplicationConfiguration implements Serializable {
      * configuration
      */
     private void loadLoginModuleNames() {
-        for (String policyName : sysPropConfigStore
-                .getEnabledAuthenticationPolicies()) {
-            try {
-                AuthenticationType authType =
-                        AuthenticationType.valueOf(policyName.toUpperCase());
-                loginModuleNames.put(authType,
-                        sysPropConfigStore.getAuthPolicyName(policyName));
-            } catch (IllegalArgumentException e) {
-                log.warn(
-                        "Attempted to configure an unrecognized authentication policy: " +
-                                policyName);
-            }
-        }
-    }
-
-    /**
-     * Validates that there are no invalid values set on the zanata
-     * configuration
-     */
-    private void validateConfiguration() {
-        // Validate that only internal / openid authentication is enabled at
-        // once
-        if (loginModuleNames.size() > 2) {
-            throw new RuntimeException(
-                    "Multiple invalid authentication types present in Zanata configuration.");
-        } else if (loginModuleNames.size() == 2) {
-            // Internal and Open id are the only allowed combined authentication
-            // types
-            if (!(loginModuleNames.containsKey(AuthenticationType.OPENID) && loginModuleNames
-                    .containsKey(AuthenticationType.INTERNAL))) {
-                throw new RuntimeException(
-                        "Multiple invalid authentication types present in Zanata configuration.");
-            }
-        } else if (loginModuleNames.size() < 1) {
-            throw new RuntimeException(
-                    "At least one authentication type must be configured in Zanata configuration.");
-        }
+        loginModuleNames = sysPropConfigStore.getLoginModuleNames();
     }
 
     /**
@@ -216,7 +183,7 @@ public class ApplicationConfiguration implements Serializable {
         final org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
 
         if (isEmailLogAppenderEnabled()) {
-            // NB: This appender uses Seam's email configuration (no need for
+            // NB: This appender uses JBoss's email configuration (no need for
             // host or port)
             smtpAppenderInstance.setName(EMAIL_APPENDER_NAME);
             smtpAppenderInstance.setFrom(getFromEmailAddr());
@@ -279,6 +246,10 @@ public class ApplicationConfiguration implements Serializable {
 
     public String getDocumentFileStorageLocation() {
         return sysPropConfigStore.getDocumentFileStorageLocation();
+    }
+
+    public String getHibernateSearchIndexBase() {
+        return sysPropConfigStore.getHibernateSearchIndexBase();
     }
 
     public String getDomainName() {
@@ -474,5 +445,24 @@ public class ApplicationConfiguration implements Serializable {
     @SupportOAuth
     protected boolean isOAuthSupported() {
         return sysPropConfigStore.isOAuthEnabled();
+    }
+
+    @Produces
+    @AcceptedEmailDomainsForNewAccount
+    protected Set<String> permittedEmailDomains() {
+        String domains =
+                databaseBackedConfig.getPermittedEmailDomains();
+        if (Strings.isNullOrEmpty(domains)) {
+            return ImmutableSet.of();
+        }
+        return ImmutableSet
+                .copyOf(Splitter.on(",").trimResults().omitEmptyStrings()
+                        .split(domains));
+    }
+
+    @Produces
+    @AllowAnonymousAccess
+    protected boolean isAnonymousUserAllowed() {
+        return databaseBackedConfig.isAnonymousUserAllowed();
     }
 }

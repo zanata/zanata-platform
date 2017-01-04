@@ -98,9 +98,19 @@
           </td>
           <td>
             <g:InlineLabel styleName="label--success l--pad-v-quarter l--pad-h-half"
-              text="{enumMessages.approvedStatus}" />
+              text="{enumMessages.translatedStatus}" />
           </td>
         </tr>
+      <tr>
+        <td>
+          <ui:text from="{messages.approval}" />
+        </td>
+        <td>
+          <g:InlineLabel
+                  styleName="label--approved l--pad-v-quarter l--pad-h-half"
+                         text="{enumMessages.approvedStatus}" />
+        </td>
+      </tr>
       </tbody>
     </table>
     <div class="l--float-right">

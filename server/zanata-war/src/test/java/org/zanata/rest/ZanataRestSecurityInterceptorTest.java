@@ -22,6 +22,7 @@
 package org.zanata.rest;
 
 import java.util.Optional;
+import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.MultivaluedHashMap;
@@ -33,6 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.model.HAccount;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataIdentity;
@@ -68,13 +70,15 @@ public class ZanataRestSecurityInterceptorTest {
     private IServiceLocator serviceLocator;
     @Mock
     private UriInfo uriInfo;
+    @Mock
+    private Provider<Boolean> allowAnonymousAccessProvider;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         securityInterceptor =
                 new ZanataRestSecurityInterceptor(request, securityTokens, identity,
-                        true, serviceLocator);
+                        true, serviceLocator, allowAnonymousAccessProvider);
         headers = new MultivaluedHashMap<>();
 
         // some common set up
@@ -82,6 +86,7 @@ public class ZanataRestSecurityInterceptorTest {
         when(uriInfo.getPath()).thenReturn("/rest/some/resource");
         when(context.getHeaders()).thenReturn(headers);
         when(identity.getCredentials()).thenReturn(credential);
+        when(allowAnonymousAccessProvider.get()).thenReturn(true);
     }
 
     @Test
@@ -128,15 +133,6 @@ public class ZanataRestSecurityInterceptorTest {
     }
 
     @Test
-    public void canAccessOAuthTokenAPIAnonymously() throws Exception {
-        when(uriInfo.getPath()).thenReturn("/oauth/token");
-
-        securityInterceptor.filter(context);
-
-        verify(context, never()).abortWith(any(Response.class));
-    }
-
-    @Test
     public void willAbortIfAuthorizationCodeIsInvalid() throws Exception {
         when(request.getParameter(OAuth.OAUTH_CODE)).thenReturn("invalidAuthCode");
         when(securityTokens.findUsernameForAuthorizationCode("invalidAuthCode")).thenReturn(
@@ -180,6 +176,7 @@ public class ZanataRestSecurityInterceptorTest {
 
     @Test
     public void willAllowAnonymousAccessToReadOnlyResources() throws Exception {
+        when(allowAnonymousAccessProvider.get()).thenReturn(true);
         when(context.getMethod()).thenReturn("GET");
 
         securityInterceptor.filter(context);

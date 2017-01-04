@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-frontend</artifactId>
   <name>Zanata frontend</name>
@@ -46,6 +46,8 @@
 
     <!-- Command to use after 'npm ' for the editor build. Default is the faster draft build. -->
     <editor.build.command>run draft --ignore-scripts=false</editor.build.command>
+
+    <test.command>test --ignore-scripts=false</test.command>
 
     <!-- Root path within the jar to put the built artifacts.
          Note: META-INF/resources/* is served as static content, so this serves
@@ -122,7 +124,7 @@
             </goals>
             <configuration>
               <workingDirectory>${frontend.build.directory}</workingDirectory>
-              <arguments>test</arguments>
+              <arguments>${test.command}</arguments>
             </configuration>
           </execution>
 
@@ -135,7 +137,7 @@
             </goals>
             <configuration>
               <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>test</arguments>
+              <arguments>${test.command}</arguments>
             </configuration>
           </execution>
 
@@ -171,6 +173,7 @@
                 <resource>
                   <directory>src/frontend/dist</directory>
                   <include>frontend.*.min.js</include>
+                  <include>atomic.css</include>
                   <include>frontend.css</include>
                   <!-- TODO eliminate generate bootstrap.css, bundle.js, style.css? -->
                   <!-- TODO try including everything -->
