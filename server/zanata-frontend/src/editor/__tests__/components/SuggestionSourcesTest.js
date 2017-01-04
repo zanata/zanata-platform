@@ -11,6 +11,7 @@ describe('SuggestionSourcesTest', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <SuggestionSources
         showDiff={false}
+        showDetail={() => {}}
         suggestion={{
           matchDetails: [
             {
@@ -35,6 +36,7 @@ describe('SuggestionSourcesTest', () => {
           ]}
           compareTo={undefined}/>
         <SuggestionDetailsSummary
+          onClick={() => {}}
           suggestion={{
             matchDetails: [
               {
