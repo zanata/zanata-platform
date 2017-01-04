@@ -24,6 +24,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
+import org.zanata.security.annotations.NoSecurityCheck;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -36,6 +37,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Path("/remote/signal")
 @Slf4j
+@NoSecurityCheck
 public class RemoteTestSignalerImpl {
     @POST
     @Path("/before")

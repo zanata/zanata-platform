@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -277,6 +277,7 @@
               <SCM-Describe>${gitDescribe}</SCM-Describe>
             </manifestEntries>
           </archive>
+          <packagingExcludes>account/README</packagingExcludes>
         </configuration>
         <executions>
           <!-- Internal auth war -->

@@ -47,12 +47,14 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AllowedAppDAO;
 import org.zanata.model.AllowedApp;
 import org.zanata.model.HAccount;
+import org.zanata.security.annotations.NoSecurityCheck;
 import org.zanata.security.oauth.SecurityTokens;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Path("/oauth/token")
+@NoSecurityCheck
 public class TokenService {
     private static final Logger log =
             LoggerFactory.getLogger(TokenService.class);

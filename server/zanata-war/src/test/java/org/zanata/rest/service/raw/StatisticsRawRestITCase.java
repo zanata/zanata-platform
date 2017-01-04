@@ -33,6 +33,7 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
+import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
@@ -66,6 +67,9 @@ public class StatisticsRawRestITCase extends RestTest {
                 DatabaseOperation.CLEAN_INSERT));
         addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/TextFlowTestData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
+                "org/zanata/test/model/ApplicationConfigurationData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
 
         addAfterTestOperation(new DataSetOperation(

@@ -4,6 +4,12 @@
 # Instead we can just invoke `make <command>`.
 # We also get tab-completion of the make commands.
 
+# Save the current dependency versions, including transitive dependencies
+# This is to ensure the build will use consistent dependency versions.
+# The --dev flag is needed or anything in devDependencies will be ignored.
+shrinkwrap:
+	npm shrinkwrap --dev
+
 install:
 	yarn --ignore-scripts
 

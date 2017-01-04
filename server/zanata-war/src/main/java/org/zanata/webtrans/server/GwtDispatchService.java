@@ -1,12 +1,16 @@
 package org.zanata.webtrans.server;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.servlet.annotation.WebServlet;
 
 import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
 
+import org.zanata.ApplicationConfiguration;
+import org.zanata.config.AllowAnonymousAccess;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.shared.DispatchService;
 
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -35,6 +39,9 @@ public class GwtDispatchService extends RemoteServiceServlet implements
         DispatchService {
     @Inject
     private SeamDispatch dispatch;
+
+    @Inject
+    private ZanataIdentity identity;
 
     @Override
     public Result execute(final Action<?> action) throws Exception {

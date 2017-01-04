@@ -324,7 +324,7 @@ public class UrlUtil implements Serializable {
     }
 
     public String createUserPage() {
-        return contextPath + "/profile/create" + dswidQuery;
+        return contextPath + "/account/create_user" + dswidQuery;
     }
 
     public String inactiveAccountPage() {

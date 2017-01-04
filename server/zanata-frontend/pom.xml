@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-frontend</artifactId>
   <name>Zanata frontend</name>
@@ -168,6 +168,7 @@
                 <resource>
                   <directory>src/frontend/dist</directory>
                   <include>frontend.*.min.js</include>
+                  <include>atomic.css</include>
                   <include>frontend.css</include>
                   <!-- TODO eliminate generate bootstrap.css, bundle.js, style.css? -->
                   <!-- TODO try including everything -->

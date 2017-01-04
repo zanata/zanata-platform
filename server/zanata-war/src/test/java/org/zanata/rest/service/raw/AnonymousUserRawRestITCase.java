@@ -25,11 +25,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.is;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
@@ -48,10 +50,6 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
     private final String invalidAPI = "InvalidAPIKEY";
 
-    //NOTE: keep in sync with RestLimitingSynchronousDispatcher.API_KEY_ABSENCE_WARNING
-    private final String API_KEY_ABSENCE_WARNING =
-        "You must have a valid API key. You can create one by logging in to Zanata and visiting the settings page.";
-
     @Override
     protected void prepareDBUnitOperations() {
         addBeforeTestOperation(new DataSetOperation(
@@ -63,6 +61,10 @@ public class AnonymousUserRawRestITCase extends RestTest {
         addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/ProjectsData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
+
+        addAfterTestOperation(new DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
     }
 
     @Test
@@ -106,7 +108,22 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
     @Test
     @RunAsClient
-    public void doGETProjectsWithAnonymous() throws Exception {
+    public void doGETProjectsWithAnonymousWhenSystemDisallowIt() throws Exception {
+        // update system configuration to allow anonymous user
+        new ResourceRequest(
+                getRestEndpointUrl("/configurations/c/allow.anonymous.user"),
+                "PUT", getAuthorizedEnvironment()) {
+
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(MediaType.APPLICATION_JSON_TYPE, "false");
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), greaterThan(200));
+            }
+        }.run();
         new ResourceRequest(getRestEndpointUrl("/projects"), "GET") {
             @Override
             protected void prepareRequest(ClientRequest request) {
@@ -117,7 +134,41 @@ public class AnonymousUserRawRestITCase extends RestTest {
             @Override
             protected void onResponse(ClientResponse response) {
                 assertThat(response.getStatus(),
-                    is(Status.OK.getStatusCode()));
+                    is(Status.UNAUTHORIZED.getStatusCode()));
+            }
+        }.run();
+    }
+
+    @Test
+    @RunAsClient
+    public void doGETProjectsWithAnonymousWhenSystemAllowsIt() throws Exception {
+        // update system configuration to allow anonymous user
+        new ResourceRequest(
+                getRestEndpointUrl("/configurations/c/allow.anonymous.user"),
+                "PUT", getAuthorizedEnvironment()) {
+
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.body(MediaType.APPLICATION_JSON_TYPE, "true");
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(), greaterThan(200));
+            }
+        }.run();
+
+        new ResourceRequest(getRestEndpointUrl("/projects"), "GET") {
+            @Override
+            protected void prepareRequest(ClientRequest request) {
+                request.header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_PROJECTS_XML);
+            }
+
+            @Override
+            protected void onResponse(ClientResponse response) {
+                assertThat(response.getStatus(),
+                        is(Status.OK.getStatusCode()));
             }
         }.run();
     }

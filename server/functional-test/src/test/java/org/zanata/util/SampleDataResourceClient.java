@@ -56,12 +56,16 @@ public class SampleDataResourceClient {
     }
 
     public static void deleteExceptEssentialData() throws Exception {
-        createRequest("").delete();
+        createRequest("").delete().close();
     }
 
     public static void makeSampleUsers() throws Exception {
         createRequest("/users").put(
-                EMPTY_ENTITY);
+                EMPTY_ENTITY).close();
+    }
+
+    public static void allowAnonymousUser(boolean allow) {
+        createRequest("/allowAnonymousUser/" + allow).put(EMPTY_ENTITY).close();
     }
 
     /**
@@ -82,20 +86,20 @@ public class SampleDataResourceClient {
                 .header("X-Auth-Token",
                         PropertiesHolder.getProperty(Constants.zanataApiKey
                                 .value()))
-                .put(EMPTY_ENTITY);
+                .put(EMPTY_ENTITY).close();
     }
 
     public static void makeSampleProject() throws Exception {
-        createRequest("/project").put(EMPTY_ENTITY);
+        createRequest("/project").put(EMPTY_ENTITY).close();
     }
 
     public static void makeSampleLanguages() throws Exception {
-        createRequest("/languages").put(EMPTY_ENTITY);
+        createRequest("/languages").put(EMPTY_ENTITY).close();
     }
 
     public static void addLanguage(String localeId, @Nullable String pluralForms) throws Exception {
         String path = "/languages/l/" + localeId + (pluralForms != null ? "?pluralForms=" + pluralForms : "");
-        createRequest(path).put(EMPTY_ENTITY);
+        createRequest(path).put(EMPTY_ENTITY).close();
     }
 
 }

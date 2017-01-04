@@ -19,6 +19,7 @@ import org.zanata.security.Identity;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
+import org.zanata.security.annotations.NoSecurityCheck;
 import org.zanata.util.SampleProjectProfile;
 
 import com.google.common.base.Function;
@@ -35,6 +36,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @RequestScoped
 @Path("/data/sample")
+@NoSecurityCheck
 public class SampleDataResourceImpl implements SampleDataResource {
     private static final Logger log = getLogger(SampleDataResourceImpl.class);
 
@@ -134,6 +136,17 @@ public class SampleDataResourceImpl implements SampleDataResource {
             }
         }.run();
 
+        return Response.ok().build();
+    }
+
+    @Override
+    public Response allowAnonymousUser(boolean value) {
+        new RunAsOperationForTest() {
+            @Override
+            public void execute() {
+                sampleProjectProfile.setAllowAnonymousUserConfig(value);
+            }
+        }.run();
         return Response.ok().build();
     }
 

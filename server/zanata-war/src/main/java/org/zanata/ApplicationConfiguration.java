@@ -44,8 +44,10 @@ import org.apache.log4j.Level;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.servlet.http.HttpSession;
 
+import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.config.OAuthTokenExpiryInSeconds;
 import org.zanata.config.SupportOAuth;
 import org.zanata.config.SystemPropertyConfigStore;
@@ -181,7 +183,7 @@ public class ApplicationConfiguration implements Serializable {
         final org.apache.log4j.Logger rootLogger = org.apache.log4j.Logger.getRootLogger();
 
         if (isEmailLogAppenderEnabled()) {
-            // NB: This appender uses Seam's email configuration (no need for
+            // NB: This appender uses JBoss's email configuration (no need for
             // host or port)
             smtpAppenderInstance.setName(EMAIL_APPENDER_NAME);
             smtpAppenderInstance.setFrom(getFromEmailAddr());
@@ -456,5 +458,11 @@ public class ApplicationConfiguration implements Serializable {
         return ImmutableSet
                 .copyOf(Splitter.on(",").trimResults().omitEmptyStrings()
                         .split(domains));
+    }
+
+    @Produces
+    @AllowAnonymousAccess
+    protected boolean isAnonymousUserAllowed() {
+        return databaseBackedConfig.isAnonymousUserAllowed();
     }
 }
