@@ -9,7 +9,7 @@ const Link = ({
   id,
   children,
   link,
-  useHref,
+  useHref = false,
   ...props
 }) => {
   if (useHref) {

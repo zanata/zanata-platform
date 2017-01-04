@@ -43,7 +43,7 @@ class EditableText extends Component {
 
     if (editable && editing) {
       const cssClass = 'textInput textStateClasses ' +
-        (editable ? 'editable' : 'text')
+        (editable ? 'editable' : 'text') + (children ? '' : ' text-muted')
       return (
         <TextInput className={cssClass}
           {...props}
