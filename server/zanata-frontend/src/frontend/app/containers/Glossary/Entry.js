@@ -3,7 +3,6 @@ import { isEqual } from 'lodash'
 
 import {
   ButtonLink,
-  ButtonRound,
   EditableText,
   Icon,
   LoaderText,
@@ -80,14 +79,14 @@ class Entry extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
-      <ButtonRound atomic={{m: 'Mend(rh)'}}
+      <ButtonLink atomic={{m: 'Mend(rh)'}}
         type='primary'
         disabled={isSaving}
         onClick={() => handleUpdateTerm(entry, transSelected)}>
         <LoaderText loading={isSaving} loadingText='Updating'>
           Update
         </LoaderText>
-      </ButtonRound>
+      </ButtonLink>
     )
 
     const loadingDiv = (
@@ -171,11 +170,11 @@ class Entry extends Component {
                   handleUpdateTerm(entry, false)} />
               <div className='Op(0) row--selected_Op(1)
                 editable:h_Op(1) Trs(eo)'>
-                <div className='Hidden--lesm D(ib) Va(m)'>
+                <div className='Hidden--lesm'>
                   <Row>
                     {updateButton}
                     {displayUpdateButton && !isSaving ? (
-                      <ButtonLink
+                      <ButtonLink atomic={{m: 'Mend(re)'}} type='danger'
                         onClick={() => handleResetTerm(entry.id)}>
                         Cancel
                       </ButtonLink>
