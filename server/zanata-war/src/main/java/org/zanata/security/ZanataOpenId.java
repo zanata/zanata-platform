@@ -329,13 +329,11 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
     }
 
     private String realm() {
-        // TODO use applicationConfiguration.getServerPath() + "/" as realm (ZNTA-1181)
-        return applicationConfiguration.getServerPath() + "/openid.xhtml";
+        return applicationConfiguration.getServerPath() + "/";
     }
 
     public String returnToUrl() {
-        String url = applicationConfiguration.getServerPath() + "/openid.xhtml";
-        // TODO run this through Rewrite to make the URL pretty (ZNTA-1181)
+        String url = applicationConfiguration.getServerPath() + "/openid";
         return urlUtil.addWindowId(url);
     }
 

@@ -1,3 +1,10 @@
+## 4.1.0
+### Breaking changes
+New Zanata instances will now block anonymous users from accessing any resources. 
+For existing instances, anonymous users can still access read-only resources
+including web pages and REST resources. To change the behavior, admin user
+can sign in and go to server configuration page to change the value there.
+
 ## 4.0.0
 ##### Infrastructure Changes
 * Recommended platform: JBoss EAP 7 (7.0.1.GA or later).

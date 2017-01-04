@@ -62,7 +62,7 @@ public class ProjectIterationRawRestITCase extends RestTest {
     public void head() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
             }
@@ -80,7 +80,7 @@ public class ProjectIterationRawRestITCase extends RestTest {
     public void getXml() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
@@ -105,7 +105,7 @@ public class ProjectIterationRawRestITCase extends RestTest {
     public void getJson() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
@@ -130,7 +130,7 @@ public class ProjectIterationRawRestITCase extends RestTest {
     public void getCurrentIterationOnObsoleteProject() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/obsolete-project/iterations/i/obsolete-current"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
@@ -156,7 +156,7 @@ public class ProjectIterationRawRestITCase extends RestTest {
     public void getCurrentIterationOnRetiredProject() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/retired-project/iterations/i/retired-current"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
@@ -178,7 +178,7 @@ public class ProjectIterationRawRestITCase extends RestTest {
     public void getNotExistProjectIteration() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/obsolete-project/iterations/i/i-dont-exist"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,
@@ -198,7 +198,7 @@ public class ProjectIterationRawRestITCase extends RestTest {
     public void getObsoleteIterationOnCurrentProject() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/current-project/iterations/i/current-obsolete"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,

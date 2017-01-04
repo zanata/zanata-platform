@@ -65,7 +65,7 @@ public class FileRawRestITCase extends RestTest {
     public void getPo() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/file/translation/sample-project/1.0/en-US/po"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.queryParameter("docId", "my/path/document.txt");
@@ -91,7 +91,7 @@ public class FileRawRestITCase extends RestTest {
     public void getPo2() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/file/translation/sample-project/1.0/en-US/po"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.queryParameter("docId", "my/path/document-2.txt");

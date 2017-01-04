@@ -29,6 +29,7 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountRoleDAO;
+import org.zanata.dao.ApplicationConfigurationDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
@@ -60,11 +61,13 @@ public class EssentialDataCreatorTest {
     private HLocale enUS;
     @Mock
     private HAccount adminAccount;
+    @Mock
+    private ApplicationConfigurationDAO applicationConfigurationDAO;
 
     @Before
     public void beforeMethod() {
         MockitoAnnotations.initMocks(this);
-        creator = new EssentialDataCreator(applicationConfiguration, accountDAO, accountRoleDAO, localeDAO);
+        creator = new EssentialDataCreator(applicationConfiguration, accountDAO, accountRoleDAO, localeDAO, applicationConfigurationDAO);
         when(localeDAO.makePersistent(any(HLocale.class))).thenReturn(enUS);
     }
 

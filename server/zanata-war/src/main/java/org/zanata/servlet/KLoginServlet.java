@@ -76,7 +76,7 @@ public class KLoginServlet extends HttpServlet {
                 break;
 
             case "edit":
-                resp.sendRedirect("/profile/create_user");
+                resp.sendRedirect("/account/create_user");
                 break;
 
             case "inactive":

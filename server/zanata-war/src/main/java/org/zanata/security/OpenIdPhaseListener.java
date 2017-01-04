@@ -44,7 +44,7 @@ public class OpenIdPhaseListener implements PhaseListener {
         String viewId = FacesNavigationUtil.getCurrentViewId();
         event.getFacesContext().getExternalContext().getRequestParameterMap();
 
-        if (viewId == null || !viewId.startsWith("/openid.")) {
+        if (viewId == null || !viewId.startsWith("/account/openid.")) {
             return;
         }
 
