@@ -8,7 +8,7 @@ const Loader = ({
     <span componentName='Loader' className='loader'
       {...props}>
       <span>
-        <Loading type='bubbles' color='#e3e3e3' />
+        <Loading type='bubbles' color='#546677' />
       </span>
     </span>
   )
