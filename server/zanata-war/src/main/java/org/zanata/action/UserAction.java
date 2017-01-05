@@ -191,19 +191,7 @@ public class UserAction implements Serializable {
             }
         }
 
-        List<String> grantedRoles = identityManager.getGrantedRoles(username);
-
-        if (grantedRoles != null) {
-            for (String role : grantedRoles) {
-                if (!roles.contains(role)) identityManager.revokeRole(username, role);
-            }
-        }
-
-        for (String role : roles) {
-            if (grantedRoles == null || !grantedRoles.contains(role)) {
-                identityManager.grantRole(username, role);
-            }
-        }
+        identityManager.grantRoles(username, roles);
 
         if (enabled) {
             enableAccount(username);

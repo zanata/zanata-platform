@@ -58,6 +58,27 @@
 
         <div class="panel l--push-top-1">
           <div class="panel__header">
+            <div class="panel__header__actions">
+              <div id="rolemanage-more-actions"
+                class="dropdown dropdown--header dropdown--small dropdown--right dropdown--inline js-dropdown">
+                <a class="dropdown__toggle js-dropdown__toggle" href="#"
+                  title="#{msgs['jsf.tooltip.MoreActions']}">
+                  <i class="i i--ellipsis"></i>
+                </a>
+                <ul class="dropdown__content js-dropdown__content"
+                  role="content"
+                  aria-labelledby="dropdownContent">
+                  <li>
+                    <h:link styleClass="i__item--right"
+                      outcome="/admin/create_user.xhtml"
+                      rendered="#{identity.hasPermission('seam.account', 'create')}"
+                      value="#{msgs['jsf.CreateNewUser']}">
+                      <i class="i i--add i__item__icon"></i>
+                    </h:link>
+                  </li>
+                </ul>
+              </div>
+            </div>
             <h2 class="panel__heading">#{msgs['jsf.admin.manageuser.header']}</h2>
           </div>
           <div class="panel__sub-header js-reveal">
