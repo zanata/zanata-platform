@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon } from '../../components'
+import Loading from 'react-loading'
 
 const Loader = ({
   ...props
@@ -7,9 +7,9 @@ const Loader = ({
   return (
     <span componentName='Loader' className='loader'
       {...props}>
-      <Icon name='dot' className='dot' />
-      <Icon name='dot' className='dot dot-second' />
-      <Icon name='dot' className='dot dot-third' />
+      <span>
+        <Loading type='bubbles' color='#e3e3e3' />
+      </span>
     </span>
   )
 }
