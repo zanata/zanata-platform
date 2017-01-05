@@ -58,7 +58,7 @@
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.29</okapi.version>
 
-    <zanata.assets.version>10.1</zanata.assets.version>
+    <zanata.assets.version>10.2-SNAPSHOT</zanata.assets.version>
     <zanata.client.version>${project.version}</zanata.client.version>
 
     <richfaces.version>4.5.17.Final</richfaces.version>
