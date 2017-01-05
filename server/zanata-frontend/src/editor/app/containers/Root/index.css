@@ -36,6 +36,13 @@
   transform: translate(-50%, calc(var(--Editor-rhythm) * .25));
 }
 
+.Editor-docsDropdown button.Link--invert div span {
+  max-width: 25em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .Editor-loader.is-minimised {
   transform: translateX(-50%) scale(.75, .75);
 }
