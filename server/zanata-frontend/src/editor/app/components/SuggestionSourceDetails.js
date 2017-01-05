@@ -45,9 +45,10 @@ const SuggestionSourceDetails = React.createClass({
       ? topMatch.documentPath + '/'
       : ''
     const documentIcon = isTextFlow && (
-      <li title={documentPath + topMatch.documentName}>
+      <li className="docName" title={documentPath + topMatch.documentName}>
         <Row>
-          <Icon name="document" size="n1" /> {topMatch.documentName}
+          <Icon name="document" size="n1" />
+          <span className="ellipsis">{topMatch.documentName}</span>
         </Row>
       </li>
     )

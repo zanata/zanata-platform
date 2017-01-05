@@ -43,6 +43,16 @@
   overflow: hidden;
 }
 
+li.docName {
+  max-width:20em;
+}
+
+li.docName span.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .Editor-loader.is-minimised {
   transform: translateX(-50%) scale(.75, .75);
 }
