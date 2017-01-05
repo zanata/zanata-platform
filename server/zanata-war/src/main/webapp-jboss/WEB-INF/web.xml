@@ -218,10 +218,7 @@
 
   <filter-mapping>
     <filter-name>noCacheFilter</filter-name>
-    <url-pattern>/account/login.xhtml</url-pattern>
-    <url-pattern>/account/sign_in</url-pattern>
-    <url-pattern>/account/klogin.xhtml</url-pattern>
-    <url-pattern>/account/klogin</url-pattern>
+    <url-pattern>/account/*</url-pattern>
     <url-pattern>/version-group/version_group.xhtml</url-pattern>
     <url-pattern>/version-group/view/*</url-pattern>
     <url-pattern>/project/project.xhtml</url-pattern>

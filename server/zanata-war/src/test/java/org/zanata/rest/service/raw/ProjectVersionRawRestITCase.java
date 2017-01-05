@@ -38,6 +38,14 @@ public class ProjectVersionRawRestITCase extends RestTest {
         addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
             "org/zanata/test/model/ProjectsData.dbunit.xml",
             DatabaseOperation.CLEAN_INSERT));
+
+        addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
+                "org/zanata/test/model/ApplicationConfigurationData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+
+        addAfterTestOperation(new DBUnitProvider.DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
     }
 
     @Test

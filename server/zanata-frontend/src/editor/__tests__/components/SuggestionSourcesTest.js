@@ -4,13 +4,14 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import SuggestionSources from '../../app/components/SuggestionSources'
 import SuggestionContents from '../../app/components/SuggestionContents'
-import SuggestionSourceDetails from '../../app/components/SuggestionSourceDetails'
+import SuggestionDetailsSummary from '../../app/components/SuggestionDetailsSummary'
 
 describe('SuggestionSourcesTest', () => {
   it('SuggestionSources markup', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <SuggestionSources
         showDiff={false}
+        showDetail={() => {}}
         suggestion={{
           matchDetails: [
             {
@@ -34,7 +35,8 @@ describe('SuggestionSourcesTest', () => {
             'for the word had passed around'
           ]}
           compareTo={undefined}/>
-        <SuggestionSourceDetails
+        <SuggestionDetailsSummary
+          onClick={() => {}}
           suggestion={{
             matchDetails: [
               {

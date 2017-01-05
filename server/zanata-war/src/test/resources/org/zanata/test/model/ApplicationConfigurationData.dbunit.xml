@@ -16,4 +16,12 @@
     config_key="pages.help.content"
     config_value="This is the help content"
     />
+  <HApplicationConfiguration
+    id="3"
+    creationDate="2009-01-14 11:39:00"
+    lastChanged="2009-01-14 11:39:00"
+    versionNum="1"
+    config_key="allow.anonymous.user"
+    config_value="true"
+  />
 </dataset>

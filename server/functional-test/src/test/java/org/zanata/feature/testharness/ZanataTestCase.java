@@ -37,7 +37,9 @@ import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.zanata.page.WebDriverFactory;
+import org.zanata.util.AllowAnonymousAccessRule;
 import org.zanata.util.EnsureLogoutRule;
+import org.zanata.util.SampleDataResourceClient;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 
@@ -72,7 +74,8 @@ public class ZanataTestCase {
 
     @Rule
     public RuleChain theOneRule = RuleChain
-            .outerRule(new EnsureLogoutRule())
+            .outerRule(new AllowAnonymousAccessRule())
+            .around(new EnsureLogoutRule())
             .around(new SampleProjectRule());
 
     /*

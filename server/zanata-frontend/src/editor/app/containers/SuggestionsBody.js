@@ -32,6 +32,7 @@ const SuggestionsBody = React.createClass({
       }))
     }).isRequired,
     showDiff: PropTypes.bool.isRequired,
+    showDetail: PropTypes.func.isRequired,
     phraseSelected: PropTypes.bool.isRequired
   },
 
@@ -80,6 +81,7 @@ const SuggestionsBody = React.createClass({
       <SuggestionList
         search={this.props.search.searchStrings}
         showDiff={this.props.showDiff}
+        showDetail={this.props.showDetail}
         suggestions={this.props.search.suggestions}
         copySuggestion={this.props.copySuggestion} />
     )

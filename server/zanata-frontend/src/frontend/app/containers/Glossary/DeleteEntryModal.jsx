@@ -44,7 +44,7 @@ class DeleteEntryModal extends Component {
           onHide={() => handleDeleteEntryDisplay(false)}>
           <Tooltip id='delete-glossary' title='Delete term and translations'>
             {info}
-            <div className='pull-right'>
+            <span className='button-spacing'>
               <Button bsStyle='default'
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
@@ -60,12 +60,12 @@ class DeleteEntryModal extends Component {
                   Delete all
                 </LoaderText>
               </Button>
-            </div>
+            </span>
           </Tooltip>
         </Overlay>
-        <Button bsStyle='link' className='delete-link' type='button'
-          onClick={() => handleDeleteEntryDisplay(true)}
-          disabled={isDeleting}>
+        <Button bsStyle='link' bsSize='small' className='delete-link'
+          type='button' disabled={isDeleting}
+          onClick={() => handleDeleteEntryDisplay(true)}>
           <LoaderText loading={isDeleting} loadingText='Deleting'>
             <Icon name='trash' atomic={{m: 'Mend(re)'}} />
             <span className='Hidden--lesm'>Delete</span>

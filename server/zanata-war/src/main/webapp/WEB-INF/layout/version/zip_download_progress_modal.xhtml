@@ -90,8 +90,8 @@
           <div class="txt--align-right">
             <div class="bx--inline-block">
               <button id="cancel" onclick="cancelDownload();return false;"
-                class="cancel button--link l--push-right-half"
-                data-dismiss="modal">
+                      class="cancel button--link l--push-right-half"
+                      data-dismiss="modal">
                 #{msgs['jsf.Cancel']}
               </button>
             </div>
@@ -99,9 +99,9 @@
               <button id="download-button" class="button button--primary" onclick="enableDownload(false);downloadZip();return false">
                 #{msgs['jsf.iteration.files.Download']}
               </button>
-              <zanata:loader layout="inline" jsHandle="true"
-                type="loader--small" id="zip-download-loader"/>
             </div>
+            <zanata:loader layout="inline" jsHandle="true"
+                           type="loader--small" id="zip-download-loader"/>
           </div>
         </footer>
       </h:form>

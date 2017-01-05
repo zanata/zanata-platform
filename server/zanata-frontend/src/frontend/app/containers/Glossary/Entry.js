@@ -78,8 +78,7 @@ class Entry extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
-      <Button bsStyle='primary'
-        type='primary'
+      <Button bsSize='small' bsStyle='primary'
         disabled={isSaving}
         onClick={() => handleUpdateTerm(entry, transSelected)}>
         <LoaderText loading={isSaving} loadingText='Updating'>
@@ -169,16 +168,19 @@ class Entry extends Component {
                     handleTermFieldUpdate(field, e)}
                   handleUpdateTerm={(entry) =>
                     handleUpdateTerm(entry, false)} />
-                  {updateButton}
-                <div
-                  className='Op(0) row--selected_Op(1) editable:h_Op(1)
-                    Trs(eo)'>
-                  {displayUpdateButton && !isSaving ? (
-                    <Button bsStyle='link'
-                      onClick={() => handleResetTerm(entry.id)}>
-                      Cancel
-                    </Button>
-                  ) : ''}
+                <div className='Op(0) row--selected_Op(1)
+                  editable:h_Op(1) Trs(eo)'>
+                  <div className='Hidden--lesm'>
+                    <Row>
+                      {updateButton}
+                      {displayUpdateButton && !isSaving ? (
+                        <Button bsStyle='link' bsSize='small'
+                          onClick={() => handleResetTerm(entry.id)}>
+                          Cancel
+                        </Button>
+                      ) : ''}
+                    </Row>
+                  </div>
                   {!transSelected && permission.canDeleteEntry && !isSaving &&
                   !displayUpdateButton && (
                     <DeleteEntryModal entry={entry}

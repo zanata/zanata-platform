@@ -3,6 +3,7 @@ package org.zanata.client.commands;
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -21,10 +22,8 @@ import org.zanata.client.config.ZanataConfig;
 import org.zanata.client.exceptions.ConfigException;
 import org.zanata.rest.client.ProjectIterationLocalesClient;
 import org.zanata.rest.client.RestClientFactory;
-import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.util.VersionUtility;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -48,57 +47,17 @@ public class OptionsUtil {
      */
     public static void applyConfigFiles(ConfigurableOptions opts)
             throws ConfigurationException, JAXBException {
-        boolean shouldFetchLocalesFromServer = false;
+        Optional<ZanataConfig> zanataConfig = Optional.empty();
         if (opts instanceof ConfigurableProjectOptions) {
             ConfigurableProjectOptions projOpts =
                     (ConfigurableProjectOptions) opts;
-            if (projOpts.getProjectConfig() != null) {
-                JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
-                Unmarshaller unmarshaller = jc.createUnmarshaller();
-                File projectConfigFile = projOpts.getProjectConfig();
-                if (projectConfigFile.exists()) {
-                    log.info("Loading project config from {}",
-                            projectConfigFile);
-                    ZanataConfig projectConfig =
-                            (ZanataConfig) unmarshaller
-                                    .unmarshal(projectConfigFile);
-                    // local project config is supposed to override user's
-                    // zanata.ini,
-                    // so we apply it first
-                    applyProjectConfig(projOpts, projectConfig);
-                    boolean localesDefinedInFile =
-                            projectConfig.getLocales() != null
-                                    && !projectConfig.getLocales().isEmpty();
-                    if (localesDefinedInFile) {
-                        ConsoleInteractorImpl console = new ConsoleInteractorImpl(opts);
-                        console.printfln(Warning, get(
-                                "locales.in.config.deprecated"));
-                    } else {
-                        shouldFetchLocalesFromServer = true;
-                    }
-                } else {
-                    log.warn("Project config file '{}' not found; ignoring.",
-                            projectConfigFile);
-                }
-            }
+            zanataConfig = applyProjectConfigToProjectOptions(projOpts);
         } else if (opts instanceof ConfigurableGlossaryOptions) {
-            ConfigurableGlossaryOptions glossaryOpts =
-                    (ConfigurableGlossaryOptions) opts;
-            File configFile = glossaryOpts.getConfig();
-            if (configFile != null) {
-                JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
-                Unmarshaller unmarshaller = jc.createUnmarshaller();
-                if (configFile.exists()) {
-                    log.info("Loading config from {}", configFile);
-                    ZanataConfig projectConfig = (ZanataConfig) unmarshaller
-                            .unmarshal(configFile);
-                    applyBasicConfig(glossaryOpts, projectConfig);
-                } else {
-                    log.warn("Config file '{}' not found; ignoring.",
-                            configFile);
-                }
-            }
+            applyConfigToGlossaryOptions(
+                    (ConfigurableGlossaryOptions) opts);
         }
+        boolean shouldFetchLocalesFromServer =
+                shouldFetchLocalesFromServer(zanataConfig, opts);
         if (opts.getUserConfig() != null) {
             if (opts.getUserConfig().exists()) {
                 log.info("Loading user config from {}", opts.getUserConfig());
@@ -115,28 +74,104 @@ public class OptionsUtil {
         if (shouldFetchLocalesFromServer) {
             ConfigurableProjectOptions projectOptions =
                     (ConfigurableProjectOptions) opts;
-            LocaleList localeMappings = fetchLocalesFromServer(projectOptions);
+            LocaleList localeMappings = fetchLocalesFromServer(projectOptions,
+                    createClientFactoryWithoutVersionCheck(projectOptions));
             projectOptions.setLocaleMapList(localeMappings);
         }
     }
 
-    private static LocaleList fetchLocalesFromServer(
-            ConfigurableProjectOptions projectOpts) {
+    public static Optional<ZanataConfig> applyProjectConfigToProjectOptions(ConfigurableProjectOptions opts)
+            throws JAXBException {
+        Optional<ZanataConfig> projectConfig =
+                readProjectConfigFile(opts);
+        if (projectConfig.isPresent()) {
+            // local project config is supposed to override user's
+            // zanata.ini,
+            // so we apply it first
+            applyProjectConfig(opts, projectConfig.get());
+        } else if (opts.getProjectConfig() != null) {
+            log.warn("Project config file '{}' not found; ignoring.",
+                    opts.getProjectConfig());
+        }
+        return projectConfig;
+    }
+
+    public static boolean shouldFetchLocalesFromServer(
+            Optional<ZanataConfig> projectConfig, ConfigurableOptions opts) {
+        if (!projectConfig.isPresent()) {
+            return false;
+        }
+        ZanataConfig zanataConfig = projectConfig.get();
+        boolean localesDefinedInFile =
+                zanataConfig.getLocales() != null
+                        && !zanataConfig.getLocales().isEmpty();
+        if (localesDefinedInFile) {
+            ConsoleInteractor console = new ConsoleInteractorImpl(opts);
+            console.printfln(Warning, get(
+                    "locales.in.config.deprecated"));
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static void applyConfigToGlossaryOptions(ConfigurableGlossaryOptions opts)
+            throws JAXBException {
+        File configFile = opts.getConfig();
+        if (configFile != null) {
+            JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
+            Unmarshaller unmarshaller = jc.createUnmarshaller();
+            if (configFile.exists()) {
+                log.info("Loading config from {}", configFile);
+                ZanataConfig projectConfig = (ZanataConfig) unmarshaller
+                        .unmarshal(configFile);
+                applyBasicConfig(opts, projectConfig);
+            } else {
+                log.warn("Config file '{}' not found; ignoring.",
+                        configFile);
+            }
+        }
+    }
+
+    /**
+     * Unmarshal project config (zanata.xml) file.
+     *
+     * @param projOpts
+     *         project options
+     * @return optional ZanataConfig object
+     * @throws JAXBException
+     */
+    public static Optional<ZanataConfig> readProjectConfigFile(
+            ConfigurableProjectOptions projOpts) throws JAXBException {
+        if (projOpts.getProjectConfig() != null) {
+            File projectConfigFile = projOpts.getProjectConfig();
+            if (projectConfigFile.exists()) {
+                JAXBContext jc = JAXBContext.newInstance(ZanataConfig.class);
+                Unmarshaller unmarshaller = jc.createUnmarshaller();
+                log.info("Loading project config from {}",
+                        projectConfigFile);
+                return Optional.of((ZanataConfig) unmarshaller
+                        .unmarshal(projectConfigFile));
+            }
+        }
+        return Optional.empty();
+
+    }
+
+
+    public static LocaleList fetchLocalesFromServer(
+            ConfigurableProjectOptions projectOpts,
+            RestClientFactory restClientFactory) {
         LocaleList localeList = new LocaleList();
         ProjectIterationLocalesClient projectIterationLocalesClient =
-                createClientFactoryWithoutVersionCheck(projectOpts)
+                restClientFactory
                         .getProjectLocalesClient(projectOpts.getProj(),
                                 projectOpts.getProjectVersion());
         List<LocaleMapping> localeMappings =
                 Lists.transform(projectIterationLocalesClient.getLocales(),
-                        new Function<LocaleDetails, LocaleMapping>() {
-                            @Override
-                            public LocaleMapping apply(LocaleDetails input) {
-                                return input == null ? null : new LocaleMapping(
-                                        input.getLocaleId().getId(),
-                                        input.getAlias());
-                            }
-                        });
+                        input -> input == null ? null : new LocaleMapping(
+                                input.getLocaleId().getId(),
+                                input.getAlias()));
         localeList.addAll(localeMappings);
         return localeList;
     }

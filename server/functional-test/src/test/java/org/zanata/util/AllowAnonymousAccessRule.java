@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -22,44 +22,28 @@ package org.zanata.util;
 
 import org.junit.rules.ExternalResource;
 import com.google.common.base.Throwables;
-import lombok.extern.slf4j.Slf4j;
 
-import static org.zanata.util.SampleDataResourceClient.deleteExceptEssentialData;
-import static org.zanata.util.SampleDataResourceClient.makeSampleLanguages;
-import static org.zanata.util.SampleDataResourceClient.makeSampleUsers;
-import static org.zanata.util.SampleDataResourceClient.userJoinsLanguageTeam;
+import static org.zanata.util.SampleDataResourceClient.allowAnonymousUser;
 
 /**
+ * This will allow anonymous user to access Zanata read only resources.
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
-public class AddUsersRule extends ExternalResource {
+public class AllowAnonymousAccessRule extends ExternalResource {
 
-    public static final int MAX_ERRORS = 3;
 
     @Override
-    protected void before() throws Exception {
-        deleteExceptEssentialData();
-        makeSampleUsers();
-        makeSampleLanguages();
-        userJoinsLanguageTeam("translator", "fr,hi,pl");
+    protected void before() throws Throwable {
+        allowAnonymousUser(true);
     }
 
     @Override
     protected void after() {
-        for (int i = 0; ; i++) {
-            try {
-                deleteExceptEssentialData();
-                break;
-            } catch (Exception e) {
-                if (i >= MAX_ERRORS) {
-                    throw Throwables.propagate(e);
-                } else {
-//                    log.warn("exception cleaning up (enable DEBUG for stack trace)", e.toString());
-                    log.warn("exception cleaning up", e);
-                }
-            }
+        try {
+            allowAnonymousUser(false);
+        } catch (Exception e) {
+            throw Throwables.propagate(e);
         }
     }
 }

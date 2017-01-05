@@ -38,6 +38,7 @@ import javax.ws.rs.QueryParam;
 
 import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
+import org.zanata.security.annotations.NoSecurityCheck;
 
 /**
  * Default implementation for the Remote Signaler interface.
@@ -48,6 +49,7 @@ import org.zanata.arquillian.RemoteBefore;
 @Path("/test/remote/signal")
 @Named("remoteTestSignalerImpl")
 @Slf4j
+@NoSecurityCheck
 public class RemoteTestSignalerImpl {
     @POST
     @Path("/before")
