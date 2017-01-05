@@ -3,12 +3,12 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { Icon, Row } from 'zanata-ui'
-import SuggestionSourceDetails from '../../app/components/SuggestionSourceDetails'
+import SuggestionDetailsSummary from '../../app/components/SuggestionDetailsSummary'
 
-describe('SuggestionSourceDetailsTest', () => {
-  it('SuggestionSourceDetails markup (imported)', () => {
+describe('SuggestionDetailsSummaryTest', () => {
+  it('SuggestionDetailsSummary markup (imported)', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
-      <SuggestionSourceDetails
+      <SuggestionDetailsSummary
         suggestion={{
           matchDetails: [
             {
@@ -35,9 +35,9 @@ describe('SuggestionSourceDetailsTest', () => {
     expect(actual).toEqual(expected)
   })
 
-  it('SuggestionSourceDetails markup (local project)', () => {
+  it('SuggestionDetailsSummary markup (local project)', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
-      <SuggestionSourceDetails
+      <SuggestionDetailsSummary
         suggestion={{
           matchDetails: [
             {
@@ -76,7 +76,7 @@ describe('SuggestionSourceDetailsTest', () => {
     expect(actual).toEqual(expected)
   })
 
-  it('SuggestionSourceDetails markup (imported)', () => {
+  it('SuggestionDetailsSummary markup (imported)', () => {
     // different type from top match so it is obvious
     // if display is based on the wrong one
     const remainingMatch = {
@@ -89,7 +89,7 @@ describe('SuggestionSourceDetailsTest', () => {
     }
 
     const actual = ReactDOMServer.renderToStaticMarkup(
-      <SuggestionSourceDetails
+      <SuggestionDetailsSummary
         suggestion={{
           matchDetails: [
             {
