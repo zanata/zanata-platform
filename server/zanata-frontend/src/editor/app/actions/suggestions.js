@@ -336,3 +336,19 @@ export function saveSuggestionPanelHeight (percentageHeight) {
     percentageHeight
   }
 }
+
+export const SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX =
+  Symbol('SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX')
+
+/**
+ * Open or close the suggestion detail modal.
+ *
+ * @param indexOrUndefined undefined to hide the modal, index of suggestion in
+ *   the current suggestion list to show detail for that suggestion in the modal
+ */
+export function showDetailForSuggestionByIndex (indexOrUndefined) {
+  return {
+    type: SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX,
+    index: indexOrUndefined
+  }
+}

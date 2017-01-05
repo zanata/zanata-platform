@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import SuggestionContents from './SuggestionContents'
-import SuggestionSourceDetails from './SuggestionSourceDetails'
+import SuggestionDetailsSummary from './SuggestionDetailsSummary'
 
 /**
  * Display all the source strings for a suggestion, with
@@ -16,7 +16,8 @@ const SuggestionSources = React.createClass({
       sourceContents: PropTypes.arrayOf(PropTypes.string).isRequired
     }),
     search: PropTypes.arrayOf(PropTypes.string),
-    showDiff: PropTypes.bool.isRequired
+    showDiff: PropTypes.bool.isRequired,
+    showDetail: PropTypes.func.isRequired
   },
 
   render: function () {
@@ -28,7 +29,8 @@ const SuggestionSources = React.createClass({
           plural={sourceContents.length > 1}
           contents={sourceContents}
           compareTo={diffWith} />
-        <SuggestionSourceDetails
+        <SuggestionDetailsSummary
+          onClick={this.props.showDetail}
           suggestion={this.props.suggestion} />
       </div>
     )

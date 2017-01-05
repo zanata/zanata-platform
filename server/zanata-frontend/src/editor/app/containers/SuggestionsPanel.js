@@ -2,13 +2,15 @@ import cx from 'classnames'
 import React, { PropTypes } from 'react'
 import SuggestionsHeader from './SuggestionsHeader'
 import SuggestionsBody from './SuggestionsBody'
-import { pick } from 'lodash'
+import SuggestionDetailsModal from './SuggestionDetailsModal'
+import { isUndefined, pick } from 'lodash'
 import { connect } from 'react-redux'
 import {
   copySuggestionN,
   clearSearch,
   changeSearchText,
   diffSettingChanged,
+  showDetailForSuggestionByIndex,
   toggleSearchType,
   toggleSuggestions
 } from '../actions/suggestions'
@@ -25,10 +27,19 @@ const SuggestionsPanel = React.createClass({
     searchToggle: PropTypes.func.isRequired,
     clearSearch: PropTypes.func.isRequired,
     changeSearchText: PropTypes.func.isRequired,
+    showDetail: PropTypes.func.isRequired,
+    showDetailModalForIndex: PropTypes.number,
     // likely want to move this switching to a higher level
     showPanel: PropTypes.bool.isRequired,
     searchType: PropTypes.oneOf(
-      [SEARCH_TYPE_PHRASE, SEARCH_TYPE_TEXT]).isRequired
+      [SEARCH_TYPE_PHRASE, SEARCH_TYPE_TEXT]).isRequired,
+    search: PropTypes.shape({
+      suggestions: PropTypes.array.isRequired
+    }).isRequired
+  },
+
+  hideDetail () {
+    this.props.showDetail(undefined)
   },
 
   render: function () {
@@ -49,7 +60,19 @@ const SuggestionsPanel = React.createClass({
     headerProps.search.changeText = this.props.changeSearchText
 
     const bodyProps = pick(this.props, ['copySuggestion', 'showDiff',
-      'phraseSelected', 'search', 'searchType'])
+      'showDetail', 'phraseSelected', 'search', 'searchType'])
+
+    const { showDetailModalForIndex, search } = this.props
+    var detailModal
+    if (isUndefined(showDetailModalForIndex)) {
+      detailModal = undefined
+    } else {
+      detailModal = (
+        <SuggestionDetailsModal
+          onClose={this.hideDetail}
+          suggestion={search.suggestions[showDetailModalForIndex]} />
+      )
+    }
 
     return (
       <aside
@@ -57,6 +80,7 @@ const SuggestionsPanel = React.createClass({
         className={className}>
         <SuggestionsHeader {...headerProps} />
         <SuggestionsBody {...bodyProps} />
+        {detailModal}
       </aside>
     )
   }
@@ -124,6 +148,9 @@ function mapDispatchToProps (dispatch) {
     },
     copySuggestion: (index) => {
       dispatch(copySuggestionN(index))
+    },
+    showDetail: (index) => {
+      dispatch(showDetailForSuggestionByIndex(index))
     }
   }
 }
