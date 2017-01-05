@@ -45,6 +45,9 @@ public interface EmailService {
     String sendActivationEmail(String toName,
             String toEmailAddr, String activationKey);
 
+    String sendActivationAndResetPasswordEmail(String toName,
+            String toEmailAddr, String activationKey, String resetPasswordKey);
+
     String sendEmailValidationEmail(String toName,
             String toEmailAddr, String activationKey);
 

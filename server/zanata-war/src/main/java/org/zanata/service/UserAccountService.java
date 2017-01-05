@@ -20,6 +20,8 @@
  */
 package org.zanata.service;
 
+import javax.annotation.Nullable;
+
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.model.security.HCredentials;
@@ -33,7 +35,8 @@ import org.zanata.model.security.HCredentials;
 public interface UserAccountService {
     void clearPasswordResetRequests(HAccount account);
 
-    HAccountResetPasswordKey requestPasswordReset(HAccount account);
+    @Nullable HAccountResetPasswordKey requestPasswordReset(HAccount account);
+    HAccountResetPasswordKey requestPasswordReset(String username, String email);
 
     /**
      * Runs all dynamic role assignment rules against an account.

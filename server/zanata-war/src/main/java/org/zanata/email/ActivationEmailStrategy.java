@@ -21,7 +21,6 @@
 package org.zanata.email;
 
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 
 import javax.mail.internet.InternetAddress;
@@ -29,9 +28,19 @@ import javax.mail.internet.InternetAddress;
 /**
 * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
 */
-@RequiredArgsConstructor
 public class ActivationEmailStrategy extends EmailStrategy {
     private final String key;
+    private final String resetPasswordKey;
+
+    public ActivationEmailStrategy(String key) {
+        this.key = key;
+        resetPasswordKey = null;
+    }
+
+    public ActivationEmailStrategy(String key, String resetPasswordKey) {
+        this.key = key;
+        this.resetPasswordKey = resetPasswordKey;
+    }
 
     @Override
     public String getSubject(Messages msgs) {
@@ -51,6 +60,7 @@ public class ActivationEmailStrategy extends EmailStrategy {
                 genericContext, toAddresses);
         return context
                 .put("activationKey", key)
+                .put("resetPasswordKey", resetPasswordKey)
                 .put("toName", toAddresses[0].getPersonal());
     }
 }

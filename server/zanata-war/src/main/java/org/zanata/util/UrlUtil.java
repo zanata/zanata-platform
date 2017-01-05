@@ -316,6 +316,10 @@ public class UrlUtil implements Serializable {
         return contextPath + "/account/sign_in" + dswidQuery;
     }
 
+    public String resetPasswordPage(String resetPasswordKey) {
+        return contextPath + "/account/password_reset/" + resetPasswordKey + dswidQuery;
+    }
+
     /**
      * Get home url with dswid parameter
      */

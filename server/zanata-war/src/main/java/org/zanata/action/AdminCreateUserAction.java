@@ -34,10 +34,14 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.action.validator.NotDuplicateEmail;
+import org.zanata.dao.AccountDAO;
 import org.zanata.i18n.Messages;
+import org.zanata.model.HAccountResetPasswordKey;
+import org.zanata.rest.service.AccountService;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
+import org.zanata.service.UserAccountService;
 import org.zanata.ui.faces.FacesMessages;
 
 
@@ -66,6 +70,12 @@ public class AdminCreateUserAction implements HasUserDetail, Serializable {
     @Inject
     private RegisterService registerService;
 
+    @Inject
+    private UserAccountService userAccountService;
+
+    @Inject
+    private AccountDAO accountDAO;
+
     private List<String> roles;
     private String username;
     private String email;
@@ -81,14 +91,20 @@ public class AdminCreateUserAction implements HasUserDetail, Serializable {
         }
 
 
-        String key =
-                registerService.register(username, RandomStringUtils.randomAlphanumeric(8), username,
+        String activationKey =
+                registerService.register(username,
+                        RandomStringUtils.randomAlphanumeric(8), username,
                         email);
-        log.info("get register key:" + key);
+        log.info("get register key:" + activationKey);
 
         identityManager.grantRoles(username, roles);
-        String message =
-                emailServiceImpl.sendActivationEmail(username, email, key);
+        HAccountResetPasswordKey resetPasswordKey =
+                userAccountService.requestPasswordReset(username, email);
+
+        String message = emailServiceImpl
+                .sendActivationAndResetPasswordEmail(username, email,
+                        activationKey, resetPasswordKey.getKeyHash());
+
         facesMessages.addGlobal(message);
 
         return "success";

@@ -42,6 +42,7 @@ import org.zanata.seam.security.IdentityManager;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
 
+import com.google.common.base.Strings;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -75,8 +76,9 @@ public class ActivateAction implements Serializable {
     private String activationKey;
 
     private HAccountActivationKey key;
+    private String resetPasswordKey;
 
-//    @Begin(join = true)
+    //    @Begin(join = true)
     public void validateActivationKey() {
         if (getActivationKey() == null) {
             throw new KeyNotFoundException("null activation key");
@@ -111,10 +113,23 @@ public class ActivateAction implements Serializable {
         }.addRole("admin").run();
         accountActivationKeyDAO.makeTransient(key);
 
-        facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
-                "Your account was successfully activated. You can now sign in.");
+        if (Strings.isNullOrEmpty(resetPasswordKey)) {
+            facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
+                    "Your account was successfully activated. You can now sign in.");
 
-        urlUtil.redirectToInternal(urlUtil.signInPage());
+            urlUtil.redirectToInternal(urlUtil.signInPage());
+        } else {
+            urlUtil.redirectToInternal(urlUtil.resetPasswordPage(resetPasswordKey));
+        }
+
         conversation.close();
+    }
+
+    public void setResetPasswordKey(String resetPasswordKey) {
+        this.resetPasswordKey = resetPasswordKey;
+    }
+
+    public String getResetPasswordKey() {
+        return resetPasswordKey;
     }
 }
