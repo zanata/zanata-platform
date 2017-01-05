@@ -295,7 +295,7 @@ span.svg {
 .dot {
   align-items: center;
   display: inline-block;
-  animation-duration: 0.9s;
+  animation-duration: 0.0s;
   animation-iteration-count: infinite;
   animation-timing-function: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   animation-name: bouncedelay;
@@ -510,7 +510,7 @@ a {
 }
 
 a:link, a:visited {
-  color: @brand-primary;
+  color: @brand-secondary;
   text-decoration: none;
 }
 
@@ -527,9 +527,7 @@ a:focus, a:hover {
 }
 
 a:focus {
-  outline: thin dotted;
-  outline: @padding-small-vertical auto @brand-secondary;
-  outline-offset: -2px;
+  outline: none;
 }
 
 #nav {
@@ -1811,10 +1809,8 @@ select[multiple].input-lg, textarea.input-lg {
 }
 
 .btn.active.focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn:active:focus, .btn:focus {
-  outline: thin dotted;
-  outline: @padding-xs-horizontal auto @brand-secondary;
-  outline-offset: -2px;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 6px 10px 0 rgba(0, 0, 0, 0.15);
+  outline: 0;
+  box-shadow: none;
   opacity: 0.85;
 }
 
@@ -1828,8 +1824,8 @@ select[multiple].input-lg, textarea.input-lg {
 .btn.active, .btn:active {
   outline: 0;
   background-image: none;
-  -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, .125);
-  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.185);
+  -webkit-box-shadow: none;
+  box-shadow: none;
 }
 
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn {
@@ -4394,7 +4390,7 @@ button.close:focus, button.close:hover, button.close:active:focus {
 }
 
 button.btn-link {
-  color: rgb(84, 102, 122);
+  color: @brand-secondary;
 }
 
 #explore h1 {
@@ -4431,9 +4427,7 @@ button.btn-link {
 }
 
 .textInput:focus {
-  outline: thin dotted;
-  outline: 5px auto @brand-secondary;
-  outline-offset: -2px;
+  outline: 1px solid @brand-secondary;
 }
 
 .getinvolved .btn-primary {
