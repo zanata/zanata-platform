@@ -96,9 +96,9 @@ class Languages extends Component {
                 </InputGroup>
               </FormGroup>
 
-              {!loading
+              {loading
                 ? <div className='contentViewContainer'>
-                  <span className="list-inline">
+                  <span className='list-inline'>
                     <LoaderText loading />
                   </span>
                 </div>
