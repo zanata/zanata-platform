@@ -34,13 +34,13 @@
     <frontend.build.directory>${project.basedir}/src/frontend</frontend.build.directory>
 
     <!-- Command to use after 'npm ' for the frontend build. Default is the faster draft build. -->
-    <frontend.build.command>run draft --ignore-scripts=false</frontend.build.command>
+    <frontend.build.command>draft --ignore-scripts=false</frontend.build.command>
 
     <!-- Directory for editor to run the build from. -->
     <editor.build.directory>${project.basedir}/src/editor</editor.build.directory>
 
     <!-- Command to use after 'npm ' for the editor build. Default is the faster draft build. -->
-    <editor.build.command>run draft --ignore-scripts=false</editor.build.command>
+    <editor.build.command>draft --ignore-scripts=false</editor.build.command>
 
     <test.command>test --ignore-scripts=false</test.command>
 
@@ -86,7 +86,7 @@
 
           <!-- frontend: Transpile and bundle all the javascript and css -->
           <execution>
-            <id>frontend: execute yarn run build</id>
+            <id>frontend: execute yarn build</id>
             <phase>compile</phase>
             <goals>
               <goal>yarn</goal>
@@ -99,7 +99,7 @@
 
           <!-- editor: Transpile and bundle all the javascript and css. -->
           <execution>
-            <id>editor: execute yarn run build</id>
+            <id>editor: execute yarn build</id>
             <phase>compile</phase>
             <goals>
               <goal>yarn</goal>
@@ -290,7 +290,6 @@
         <skip.npm>true</skip.npm>
       </properties>
     </profile>
-    <!-- Trigger a fully optimised build, instead of the default fast build. -->
     <profile>
       <id>optimisedBuild</id>
       <activation>
@@ -299,8 +298,8 @@
         </property>
       </activation>
       <properties>
-        <frontend.build.command>run build --ignore-scripts=false</frontend.build.command>
-        <editor.build.command>run build --ignore-scripts=false</editor.build.command>
+        <frontend.build.command>build --ignore-scripts=false</frontend.build.command>
+        <editor.build.command>build --ignore-scripts=false</editor.build.command>
       </properties>
     </profile>
   </profiles>

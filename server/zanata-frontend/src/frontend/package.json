@@ -8,7 +8,7 @@
     "build": "webpack -p --config webpack.prod.config.js --bail --display-error-details",
     "draft": "webpack --config webpack.draft.config.js --progress --bail --display-error-details",
     "hot-dev-server": "webpack-dev-server --config webpack.dev.config.js --progress --inline --hot --port 8000",
-    "start": "npm run hot-dev-server --ignore-scripts=false",
+    "start": "yarn hot-dev-server --ignore-scripts=false",
     "styleguide-server": "styleguidist server",
     "styleguide-build": "styleguidist build",
     "test": "jest --coverage"
@@ -16,6 +16,10 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/zanata/zanata-platform.git"
+  },
+  "engines": {
+    "node": "5.6.0",
+    "yarn": "0.18.1"
   },
   "license": "LGPL-2.1",
   "devDependencies": {

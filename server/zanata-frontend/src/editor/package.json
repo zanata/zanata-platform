@@ -25,7 +25,7 @@
   },
   "engines": {
     "node": "5.6.0",
-    "npm": "3.6.0"
+    "yarn": "0.18.1"
   },
   "license": "LGPL-2.1",
   "devDependencies": {
