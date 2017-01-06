@@ -99,7 +99,7 @@ const NavHeader = React.createClass({
             <span className="Editor-docsDropdown">
               <DocsDropdown {...docsDropdownProps} />
             </span>
-              <span className="u-sMH-1-4"></span>
+            <span className="u-sMH-1-4"></span>
             <LanguagesDropdown {...langsDropdownProps} />
           </Row>
         </div>
