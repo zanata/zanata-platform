@@ -129,7 +129,7 @@ class Entry extends Component {
               </EditableText>)
             }
           </TableCell>
-          <TableCell size='3' tight={transSelected}>
+          <TableCell>
             {secondColumnContent}
           </TableCell>
           <TableCell hideSmall>
@@ -147,7 +147,7 @@ class Entry extends Component {
             </EditableText>)
           }
           </TableCell>
-          <TableCell size='2'>
+          <TableCell size='3'>
             {termsLoading
               ? loadingDiv
               : (<Row>

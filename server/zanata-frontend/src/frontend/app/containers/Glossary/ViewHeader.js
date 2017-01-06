@@ -204,7 +204,7 @@ class ViewHeader extends Component {
                 </Row>
               </Button>
             </TableCell>
-            <TableCell tight size={'3'}
+            <TableCell
               className='langSelect'
               theme={{base: {lineClamp: ''}}}>
               <Select
@@ -228,7 +228,7 @@ class ViewHeader extends Component {
                 </span>
               </Row>)}
             </TableCell>
-            <TableCell hideSmall
+            <TableCell hideSmall size='3'
               onClick={() => handleSortColumn('part_of_speech')}>
               <Button bsStyle='link' type='button'>
                 <Row>
@@ -243,7 +243,7 @@ class ViewHeader extends Component {
                 </Row>
               </Button>
             </TableCell>
-            <TableCell size='2' />
+            <TableCell size='3' />
           </TableRow>
         </View>
       </Header>
