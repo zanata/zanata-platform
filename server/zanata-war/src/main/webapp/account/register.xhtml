@@ -10,6 +10,7 @@
 
   <f:metadata>
     <f:event type="preRenderView" listener="#{register.redirectIfLoggedIn()}"/>
+    <f:event type="preRenderView" listener="#{register.checkRegistrationAvailability()}"/>
   </f:metadata>
 
   <ui:define name="page_title">#{msgs['jsf.Register']}</ui:define>

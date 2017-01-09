@@ -141,6 +141,13 @@ const Nav = ({
   const admin = (auth === 'admin')
 
   const username = window.config.user ? window.config.user.username : ''
+
+  if (!window.config.allowRegister) {
+    // we don't allow public registration
+    const signUpIndex = items.findIndex(item => item.id === 'nav_sign_up')
+    items.splice(signUpIndex, 1)
+  }
+
   return (
     <nav
       {...props}
