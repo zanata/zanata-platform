@@ -164,6 +164,10 @@ public class ZanataClient extends BasicOptionsImpl {
                 if (helpCmd.getCommand() == null) {
                     // generic help
                     printHelp(out);
+                } else if (!OPTIONS.containsKey(helpCmd.getCommand())) {
+                    // sub-command not recognised
+                    out.println("Error: Unknown command '" + helpCmd.getCommand() + "'");
+                    printHelp(out);
                 } else {
                     // help for a sub-command
                     String cmdName = helpCmd.getCommand();
