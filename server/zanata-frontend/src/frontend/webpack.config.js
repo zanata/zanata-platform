@@ -38,11 +38,16 @@ module.exports = {
       },
       {
         test: /\.css$/,
+        include: [
+          path.join(__dirname, 'app/styles'),
+          path.join(__dirname, 'node_modules/zanata-ui/lib/styles'),
+        ],
         loader: 'style!css!autoprefixer?browsers=last 2 versions'
       },
       {
         test: /\.less$/,
         exclude: /node_modules/,
+        include: path.join(__dirname, 'app/styles'),
         loader: "style!css!autoprefixer!less"
       },
     ]

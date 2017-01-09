@@ -1,14 +1,12 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import {
-  ButtonLink,
-  ButtonRound,
   LoaderText,
   Icon,
   Tooltip,
-  Overlay,
-  Row
+  Overlay
 } from 'zanata-ui'
+import { Button } from 'react-bootstrap'
 
 class DeleteEntryModal extends Component {
 
@@ -46,36 +44,33 @@ class DeleteEntryModal extends Component {
           onHide={() => handleDeleteEntryDisplay(false)}>
           <Tooltip id='delete-glossary' title='Delete term and translations'>
             {info}
-            <div className='Mt(rq)'>
-              <Row theme={{ base: {j: 'Jc(c)'} }}>
-                <ButtonLink
-                  atomic={{m: 'Mend(rh)'}}
-                  onClick={() => handleDeleteEntryDisplay(false)}>
-                  Cancel
-                </ButtonLink>
-                <ButtonRound type='danger' size='n1'
-                  disabled={isDeleting}
-                  onClick={() => {
-                    handleDeleteEntry(entry.id)
-                    handleDeleteEntryDisplay(false)
-                  }}>
-                  <LoaderText loading={isDeleting} size='n1'
-                    loadingText='Deleting'>
-                    Delete all
-                  </LoaderText>
-                </ButtonRound>
-              </Row>
-            </div>
+            <span className='button-spacing'>
+              <Button bsStyle='default'
+                onClick={() => handleDeleteEntryDisplay(false)}>
+                Cancel
+              </Button>
+              <Button bsStyle='danger' type='button'
+                disabled={isDeleting}
+                onClick={() => {
+                  handleDeleteEntry(entry.id)
+                  handleDeleteEntryDisplay(false)
+                }}>
+                <LoaderText loading={isDeleting} size='n1'
+                  loadingText='Deleting'>
+                  Delete all
+                </LoaderText>
+              </Button>
+            </span>
           </Tooltip>
         </Overlay>
-        <ButtonLink type='danger'
-          onClick={() => handleDeleteEntryDisplay(true)}
-          disabled={isDeleting}>
+        <Button bsStyle='link' bsSize='small' className='delete-link'
+          type='button' disabled={isDeleting}
+          onClick={() => handleDeleteEntryDisplay(true)}>
           <LoaderText loading={isDeleting} loadingText='Deleting'>
             <Icon name='trash' atomic={{m: 'Mend(re)'}} />
             <span className='Hidden--lesm'>Delete</span>
           </LoaderText>
-        </ButtonLink>
+        </Button>
       </div>
     )
     /* eslint-enable react/jsx-no-bind */

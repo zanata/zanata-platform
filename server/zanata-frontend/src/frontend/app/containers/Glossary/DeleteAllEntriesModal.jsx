@@ -1,14 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
 import {
-  ButtonLink,
-  ButtonRound,
   LoaderText,
   Icon,
   Tooltip,
   Overlay,
   Row
 } from 'zanata-ui'
+import { Button } from 'react-bootstrap'
 
 /**
  * Confirmation modal dialog for delete all glossary entries
@@ -36,33 +35,30 @@ class DeleteAllEntriesModal extends Component {
               Are you sure you want to delete&nbsp;
               <strong>all entries</strong>&nbsp;?
             </p>
-            <div className='Mt(rq)'>
-              <Row theme={{ base: {j: 'Jc(c)'} }}>
-                <ButtonLink
-                  atomic={{m: 'Mend(rh)'}}
-                  onClick={() => handleDeleteAllEntriesDisplay(false)}>
-                  Cancel
-                </ButtonLink>
-                <ButtonRound type='danger' size='n1'
-                  disabled={isDeleting}
-                  onClick={() => handleDeleteAllEntries()}>
-                  <LoaderText loading={isDeleting} size='n1'
-                    loadingText='Deleting'>
-                    Delete
-                  </LoaderText>
-                </ButtonRound>
-              </Row>
-            </div>
+            <span className='button-spacing'>
+              <Button bsStyle='default'
+                onClick={() => handleDeleteAllEntriesDisplay(false)}>
+                Cancel
+              </Button>
+              <Button bsStyle='danger' type='button'
+                disabled={isDeleting}
+                onClick={() => handleDeleteAllEntries()}>
+                <LoaderText loading={isDeleting} size='n1'
+                  loadingText='Deleting'>
+                  Delete
+                </LoaderText>
+              </Button>
+            </span>
           </Tooltip>
         </Overlay>
-        <ButtonLink type='danger'
+        <Button bsStyle='link' type='button'
           onClick={() => handleDeleteAllEntriesDisplay(true)}
           disabled={isDeleting}>
           <Row>
-            <Icon name='trash' atomic={{m: 'Mend(re)'}} />
+            <Icon name='trash' />
             <span className='Hidden--lesm'>Delete</span>
           </Row>
-        </ButtonLink>
+        </Button>
       </div>
     )
     /* eslint-enable react/jsx-no-bind */

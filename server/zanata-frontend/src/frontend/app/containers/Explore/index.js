@@ -2,17 +2,10 @@ import React, { Component, PropTypes } from 'react'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import {
-  Base,
-  Page,
-  ScrollView,
-  View,
-  Heading,
-  Icon,
-  Button,
-  TextInput
-} from 'zanata-ui'
+import { Button }
+  from 'react-bootstrap'
 import TeaserList from './TeaserList'
+import { TextInput, Icon } from '../../components'
 import {
   searchTextChanged,
   searchPageInitialLoad,
@@ -20,69 +13,6 @@ import {
   SIZE_PER_PAGE
 } from '../../actions/explore'
 
-const headerClasses = {
-  ai: 'Ai(c)',
-  bxsh: 'Bxsh(shw)',
-  bxz: 'Bxz(cb)', // For chrome bug that doesn't keep height of container
-  d: 'D(f)',
-  fz: 'Fz(ms1)--md',
-  jc: 'Jc(c)',
-  p: 'Py(rq) Px(rh) P(r1)--sm',
-  pos: 'Pos(r)'
-}
-const headingTheme = {
-  base: {
-    hidden: 'Hidden'
-  }
-}
-const searchViewTheme = {
-  base: {
-    ai: 'Ai(c)',
-    c: 'C(dark)',
-    fld: '',
-    pos: 'Pos(r)',
-    maw: 'Maw(r32)',
-    w: 'W(100%)'
-  }
-}
-const iconClasses = {
-  ai: 'Ai(c)',
-  c: 'C(neutral)',
-  fz: 'Fz(ms1) Fz(ms2)--sm',
-  jc: 'Jc(c)',
-  h: 'H(100%)',
-  l: 'Start(rq) Start(rh)--md',
-  m: 'Mstart(re) Mstart(0)--md',
-  pos: 'Pos(a)',
-  t: 'T(0)',
-  ta: 'Ta(c)',
-  w: 'W(ms1) W(ms2)--md'
-}
-const inputTheme = {
-  base: {
-    bdrs: 'Bdrs(rnd)',
-    p: 'Py(rq) Py(rh)--md Pstart(r1q) Pstart(r1h)--md Pend(rq)',
-    w: 'W(100%)'
-  }
-}
-const buttonTheme = {
-  base: {
-    c: 'C(pri)',
-    m: 'Mstart(rq)'
-  }
-}
-const scrollViewTheme = {
-  base: {
-    ai: 'Ai(c)'
-  }
-}
-const contentViewContainerTheme = {
-  base: {
-    maw: 'Maw(r32)',
-    m: 'Mx(a)',
-    w: 'W(100%)'
-  }
-}
 /**
  * Root component for Explore page
  */
@@ -117,19 +47,18 @@ class Explore extends Component {
       searchError,
       searchLoading
     } = this.props
-
     let content
     if (searchError) {
       content = (<p>Error searching for '{searchText}'.<br />
-                    {searchResults.message}. Please try again.</p>)
+        {searchResults.message}. Please try again.</p>)
     } else {
       const projectContent = (<TeaserList
         loading={searchLoading['Project'] === true}
         items={searchResults['Project']
-            ? searchResults['Project'].results : []}
+          ? searchResults['Project'].results : []}
         title='Projects'
         totalCount={searchResults['Project']
-            ? parseInt(searchResults['Project'].totalCount) : 0}
+          ? parseInt(searchResults['Project'].totalCount) : 0}
         type='Project'
         key='Project'
         sizePerPage={SIZE_PER_PAGE}
@@ -139,16 +68,15 @@ class Explore extends Component {
       const groupContent = (<TeaserList
         loading={isEmpty(searchResults) && searchLoading['Group']}
         items={searchResults['Group']
-            ? searchResults['Group'].results : []}
+          ? searchResults['Group'].results : []}
         title='Groups'
         totalCount={searchResults['Group']
-            ? parseInt(searchResults['Group'].totalCount) : 0}
+          ? parseInt(searchResults['Group'].totalCount) : 0}
         type='Group'
         key='Group'
         sizePerPage={SIZE_PER_PAGE}
         updatePage={handleUpdateSearchPage}
         page={groupPage} />)
-
       const personContent = searchText &&
         (<TeaserList
           loading={searchLoading['Person'] === true}
@@ -179,45 +107,43 @@ class Explore extends Component {
 
       content = (
         <div>
-            {projectContent}
-            {personContent}
-            {languageTeamContent}
-            {groupContent}
+          {projectContent}
+          {personContent}
+          {languageTeamContent}
+          {groupContent}
         </div>)
     }
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
-      <Page>
+      <div className='page scrollViewTheme' id='explore'>
         <Helmet title='Search' />
-        <Base tagName='header' theme={headerClasses}>
-          <Heading level='1' theme={headingTheme}>Search</Heading>
-          <View theme={searchViewTheme}>
-            <Icon name='search' atomic={iconClasses} />
+        <div className='headerClasses'>
+          <h1 className='headingTheme hidden' level='1'>Search</h1>
+          <div className='searchViewTheme'>
+            <Icon name='search' className='s0 list-inline' />
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
               id='explore_search'
               type='search'
+              className='textInput'
               placeholder='Search Zanata…'
               accessibilityLabel='Search Zanata'
-              theme={inputTheme}
               defaultValue={searchText}
               onKeyDown={(e) => { this.handleKeyDown(e) }}
               onChange={handleSearchTextChange}
             />
             <Button
-              theme={buttonTheme} disabled={isEmpty(searchText)}
+              bsStyle='link' disabled={isEmpty(searchText)}
               onClick={(e) => { this.handleClearSearch() }}>
               Cancel
             </Button>
-          </View>
-        </Base>
-        <ScrollView theme={scrollViewTheme}>
-          <View theme={contentViewContainerTheme}>
+          </div>
+        </div>
+        <div className='contentViewContainer'>
             {content}
-          </View>
-        </ScrollView>
-      </Page>
+        </div>
+      </div>
     )
     /* eslint-enable react/jsx-no-bind, no-return-assign */
   }

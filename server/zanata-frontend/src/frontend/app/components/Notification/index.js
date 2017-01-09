@@ -1,13 +1,13 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import {
-  ButtonRound,
   Icon,
   Modal,
   Row
 } from 'zanata-ui'
 import { clearMessage } from '../../actions/common'
 import { isEmpty } from 'lodash'
+import { Button, ButtonGroup } from 'react-bootstrap'
 
 /**
  * Notification popup modal that overlays on the page.
@@ -70,12 +70,13 @@ class Notification extends Component {
             </div>)}
         </Modal.Body>
         <Modal.Footer>
-          <Row theme={{ base: {j: 'Jc(c)'} }}>
-            <ButtonRound id='btn-notification-close'
-              type='primary' onClick={() => this.clearMessage()}>
+          <ButtonGroup className='pull-right'>
+            <Button bsStyle='primary'
+              id='btn-notification-close'
+              type='button' onClick={() => this.clearMessage()}>
               Close
-            </ButtonRound>
-          </Row>
+            </Button>
+          </ButtonGroup>
         </Modal.Footer>
       </Modal>
     )

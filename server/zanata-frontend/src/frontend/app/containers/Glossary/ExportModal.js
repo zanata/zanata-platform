@@ -2,13 +2,12 @@ import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
 
 import {
-  ButtonLink,
-  ButtonRound,
   LoaderText,
   Modal,
-  Select,
-  Row
+  Select
 } from 'zanata-ui'
+
+import { Button, ButtonGroup } from 'react-bootstrap'
 
 import {
   glossaryUpdateExportType,
@@ -68,22 +67,21 @@ class ExportModal extends Component {
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <Row theme={{ base: {j: 'Jc(c)'} }}>
-            <ButtonLink
-              atomic={{m: 'Mend(r1)'}}
+          <ButtonGroup className='pull-right'>
+            <Button bsStyle='link'
               disabled={isExporting}
               onClick={() => handleExportFileDisplay(false)}>
               Cancel
-            </ButtonLink>
-            <ButtonRound
-              type='primary'
+            </Button>
+            <Button bsStyle='primary'
+              type='button'
               disabled={isExporting}
               onClick={handleExport}>
               <LoaderText loading={isExporting} loadingText='Exporting'>
                 Export
               </LoaderText>
-            </ButtonRound>
-          </Row>
+            </Button>
+          </ButtonGroup>
         </Modal.Footer>
       </Modal>)
     /* eslint-enable react/jsx-no-bind */

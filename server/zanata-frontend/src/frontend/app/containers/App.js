@@ -5,11 +5,7 @@ import React, { PropTypes, Component } from 'react'
  */
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
-import {
-  View,
-  Icons
-} from 'zanata-ui'
-import { Nav } from '../components'
+import { Nav, Icons } from '../components'
 import { getContextPath } from '../utils/UrlHelper'
 
 /**
@@ -19,17 +15,10 @@ import { getContextPath } from '../utils/UrlHelper'
 
 class App extends Component {
   render () {
-    const theme = {
-      base: {
-        h: 'H(100vh)',
-        fld: 'Fld(c) Fld(r)--sm'
-      }
-    }
     const {
       children,
       activePath,
-      loading,
-      ...props
+      loading
     } = this.props
 
     const links = {
@@ -37,9 +26,8 @@ class App extends Component {
       '/login': window.config.links.loginUrl,
       '/signup': window.config.links.registerUrl
     }
-
     return (
-      <View {...props} theme={theme}>
+      <div className='view H(100vh)! Fld(c) Fld(r)--sm'>
         <Icons />
         <Helmet
           title='Zanata'
@@ -47,7 +35,7 @@ class App extends Component {
         />
         <Nav active={activePath} links={links} loading={loading} />
         {children}
-      </View>
+      </div>
     )
   }
 }

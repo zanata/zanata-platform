@@ -9,7 +9,8 @@ import {
   FormControl,
   ControlLabel,
   Button,
-  Checkbox
+  Checkbox,
+  Row
 } from 'react-bootstrap'
 
 import {
@@ -149,16 +150,18 @@ class NewLanguageModal extends Component {
           <div className='bootstrap'>
             <FormGroup validationState={!validFields ? 'error' : undefined}>
               <ControlLabel>Language Code</ControlLabel>
-              <Autosuggest
-                name='new-language-code'
-                suggestions={searchResults}
-                onSuggestionSelected={this.onSuggestionSelected}
-                getSuggestionValue={this.getSuggestionValue}
-                onSuggestionsFetchRequested={loadSuggestion}
-                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                renderSuggestion={this.renderSuggestion}
-                inputProps={inputProps}
+              <span className='form-control'>
+                <Autosuggest
+                  name='new-language-code'
+                  suggestions={searchResults}
+                  onSuggestionSelected={this.onSuggestionSelected}
+                  getSuggestionValue={this.getSuggestionValue}
+                  onSuggestionsFetchRequested={loadSuggestion}
+                  onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                  renderSuggestion={this.renderSuggestion}
+                  inputProps={inputProps}
                 />
+              </span>
             </FormGroup>
             <FormGroup validationState={!validFields ? 'error' : undefined}>
               <ControlLabel>Name</ControlLabel>
@@ -219,21 +222,24 @@ class NewLanguageModal extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <div className='bootstrap Ta(end)'>
-            <Button id='btn-new-language-cancel' className='btn-left'
-              disabled={saving}
-              onClick={() => this.handleCancel()}>
-              Close
-            </Button>
-            <Button
-              disabled={saving ||
-                (isEmpty(details.localeId) && isEmpty(query))}
-              id='btn-new-language-save'
-              bsStyle='primary'
-              onClick={() => this.validateDetails()}>
-              Save
-            </Button>
-          </div>
+          <span className='bootstrap pull-right'>
+            <Row>
+              <Button bsStyle='link'
+                id='btn-new-language-cancel' className='btn-left'
+                disabled={saving}
+                onClick={() => this.handleCancel()}>
+                Close
+              </Button>
+              <Button
+                disabled={saving ||
+                  (isEmpty(details.localeId) && isEmpty(query))}
+                id='btn-new-language-save'
+                bsStyle='primary'
+                onClick={() => this.validateDetails()}>
+                Save
+              </Button>
+            </Row>
+          </span>
         </Modal.Footer>
       </Modal>
     )
