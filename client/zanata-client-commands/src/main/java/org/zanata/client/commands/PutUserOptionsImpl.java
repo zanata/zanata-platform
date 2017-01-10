@@ -1,6 +1,8 @@
 package org.zanata.client.commands;
 
 import org.kohsuke.args4j.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -15,7 +17,10 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     private String userKey;
     private String userRoles;
     private String userLangs;
-    private boolean userDisabled;
+    private boolean userEnabled;
+
+    private static final Logger log = LoggerFactory
+            .getLogger(PutUserCommand.class);
 
     @Override
     public String getCommandName() {
@@ -33,35 +38,35 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     }
 
     @Override
-    @Option(name = "--user-name", required = true,
-            usage = "Full name of the user")
+    @Option(name = "--user-name",
+            usage = "Full name of the user (required for new user)")
     public void setUserName(String name) {
         this.userName = name;
     }
 
     @Override
-    @Option(name = "--user-email", required = true,
-            usage = "Email address of the user")
+    @Option(name = "--user-email",
+            usage = "Email address of the user (required for new user)")
     public void setUserEmail(String email) {
         this.userEmail = email;
     }
 
     @Override
     @Option(name = "--user-username", required = true,
-            usage = "Login/username of the user")
+            usage = "Login/username of the user (required)")
     public void setUserUsername(String username) {
         this.userUsername = username;
     }
 
     @Override
-    @Option(name = "--user-passwordhash", required = true,
+    @Option(name = "--user-passwordhash",
             usage = "User password hash")
     public void setUserPasswordHash(String passwordHash) {
         this.userPasswordHash = passwordHash;
     }
 
     @Override
-    @Option(name = "--user-key", required = true,
+    @Option(name = "--user-key",
             usage = "User's api key (empty for none)")
     public void setUserKey(String userKey) {
         if (userKey == null || userKey.length() == 0)
@@ -70,7 +75,7 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
             this.userKey = userKey;
     }
 
-    @Option(name = "--user-langs", required = true,
+    @Option(name = "--user-langs",
             usage = "Language teams for the user")
     @Override
     public void setUserLangs(String userLangs) {
@@ -78,17 +83,31 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     }
 
     @Override
-    @Option(name = "--user-roles", required = true,
+    @Option(name = "--user-roles",
             usage = "Security roles for the user")
     public void setUserRoles(String roles) {
         this.userRoles = roles;
     }
 
     @Override
-    @Option(name = "--user-disabled", required = false,
-            usage = "Whether the account should be disabled")
+    @Option(name = "--user-disabled",
+            usage = "Disables the user account")
     public void setUserDisabled(boolean disabled) {
-        this.userDisabled = disabled;
+        log.warn("Deprecated, use '--set-enabled false' instead");
+        this.userEnabled = false;
+    }
+
+    @Override
+    @Option(name = "--user-enabled",
+            usage = "Whether the account should be enabled or disabled (true/false)")
+    public void setUserEnabled(String enabled) {
+        if (enabled.equalsIgnoreCase("true")) {
+            this.userEnabled = true;
+        } else if (enabled.equalsIgnoreCase("false")) {
+            this.userEnabled = false;
+        } else {
+            throw new RuntimeException("--user-enabled requires true or false");
+        }
     }
 
     @Override
@@ -97,8 +116,8 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     }
 
     @Override
-    public boolean isUserDisabled() {
-        return userDisabled;
+    public boolean isUserEnabled() {
+        return userEnabled;
     }
 
     @Override

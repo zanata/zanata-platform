@@ -46,10 +46,15 @@ public interface PutUserOptions extends ConfigurableOptions {
 
     public String getUserRoles();
 
-    @Option(name = "--user-disabled", required = false,
+    @Deprecated
+    @Option(name = "--user-disabled",
             usage = "Whether the account should be disabled")
     public void setUserDisabled(boolean disabled);
 
-    public boolean isUserDisabled();
+    @Option(name = "--user-enabled",
+            usage = "Enable or disable the user (true, false). Defaults to true for a new user")
+    public void setUserEnabled(String enabled);
+
+    public boolean isUserEnabled();
 
 }
