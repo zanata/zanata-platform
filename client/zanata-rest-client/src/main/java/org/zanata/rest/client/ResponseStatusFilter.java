@@ -81,11 +81,6 @@ public class ResponseStatusFilter implements ClientResponseFilter {
                         "Service is currently unavailable. " +
                                 "Please check outage notification or try again later.");
             } else {
-                if (responseStatus == Response.Status.SERVICE_UNAVAILABLE) {
-                    msg = "Service is currently unavailable. " +
-                            "Please check outage notification or try again later.";
-                    throw new ServiceUnavailableException(msg);
-                }
                 throw new ServerErrorException(msg, statusCode);
             }
         }

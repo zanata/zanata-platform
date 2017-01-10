@@ -25,7 +25,7 @@ import java.net.URI;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.MediaType;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
 
 import org.zanata.rest.MediaTypes;
@@ -45,8 +45,16 @@ public class AccountClient {
     }
 
     public Account get(String username) {
-        return webResource(username)
-                .get(Account.class);
+        try {
+            return webResource(username)
+                    .get(Account.class);
+        } catch (ResponseProcessingException nfe) {
+            if (nfe.getResponse().getStatusInfo().equals(Response.Status.NOT_FOUND)) {
+                return null;
+            } else {
+                throw nfe;
+            }
+        }
     }
 
     public void put(String username, Account account) {

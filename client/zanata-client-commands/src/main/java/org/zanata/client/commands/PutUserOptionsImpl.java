@@ -33,14 +33,14 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     }
 
     @Override
-    @Option(name = "--user-name", required = true,
+    @Option(name = "--user-name", required = false,
             usage = "Full name of the user")
     public void setUserName(String name) {
         this.userName = name;
     }
 
     @Override
-    @Option(name = "--user-email", required = true,
+    @Option(name = "--user-email", required = false,
             usage = "Email address of the user")
     public void setUserEmail(String email) {
         this.userEmail = email;
@@ -54,14 +54,14 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     }
 
     @Override
-    @Option(name = "--user-passwordhash", required = true,
+    @Option(name = "--user-passwordhash", required = false,
             usage = "User password hash")
     public void setUserPasswordHash(String passwordHash) {
         this.userPasswordHash = passwordHash;
     }
 
     @Override
-    @Option(name = "--user-key", required = true,
+    @Option(name = "--user-key", required = false,
             usage = "User's api key (empty for none)")
     public void setUserKey(String userKey) {
         if (userKey == null || userKey.length() == 0)
@@ -70,7 +70,7 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
             this.userKey = userKey;
     }
 
-    @Option(name = "--user-langs", required = true,
+    @Option(name = "--user-langs", required = false,
             usage = "Language teams for the user")
     @Override
     public void setUserLangs(String userLangs) {
@@ -78,7 +78,7 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     }
 
     @Override
-    @Option(name = "--user-roles", required = true,
+    @Option(name = "--user-roles", required = false,
             usage = "Security roles for the user")
     public void setUserRoles(String roles) {
         this.userRoles = roles;
