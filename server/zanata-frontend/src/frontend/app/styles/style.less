@@ -221,6 +221,7 @@ span.icons {
 span.svg {
   display: inline-block;
   position: relative;
+  vertical-align: middle;
 }
 
 .n2, .n2 svg {
@@ -246,6 +247,7 @@ span.svg {
 .s2, .s2 svg {
   width: 1.44rem;
   height: 1.44rem;
+  vertical-align: middle;
 }
 
 .s3, .s3 svg {
@@ -1134,6 +1136,15 @@ ol ol, ol ul, ul ol, ul ul {
   margin-left: -5px;
   padding-left: 0;
   list-style: none;
+}
+
+.search-box .list-inline {
+  vertical-align: text-bottom;
+}
+
+h2.modal-title .list-inline {
+  vertical-align: baseline;
+  font-weight:400;
 }
 
 .list-inline > li {
@@ -2538,6 +2549,45 @@ tbody.collapse {
 .row {
   display: inline-table;
 }
+
+.notify-row {
+  width:100%;
+  justify-content: center;
+}
+
+.notification-modal {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.danger.notification-modal, .row-danger {
+  color: rgb(234, 66, 86);
+}
+
+.warning.notification-modal, .row-warning {
+  color: rgb(252, 153, 71);
+}
+
+.row-info {
+  color:@brand-secondary;
+}
+
+.info.notification-modal {
+  color:#000;
+}
+
+
+
+
+.notification-modal-content {
+  border-radius: 0.375em;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.185);
+  padding: 0.75rem;
+  font-size: 1.2rem;
+}
+
+
 
 .collapsing {
   position: relative;
@@ -4079,7 +4129,6 @@ button.list-group-item {
   padding: @padding-modal-footer;
   text-align: right;
   right: 0;
-  float: right !important;
   border-top: 0;
   background: rgba(0, 0, 0, .05);
 }
@@ -4263,7 +4312,7 @@ button.close {
   font-weight: 700;
   line-height: 1;
   top: 0;
-  right: @padding-small-horizontal;
+  right: @margin-btn-icon-right;
   position: absolute;
   border: 0;
   color: #f00;
