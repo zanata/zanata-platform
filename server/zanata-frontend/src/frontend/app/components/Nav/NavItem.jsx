@@ -74,7 +74,7 @@ const NavItem = ({
 
   const child = isLogo
     ? <LogoLoader inverted={inverted} loading={loading} />
-    : <NavIcon name={icon} size='1' />
+    : <NavIcon name={icon} size='s1' />
 
   return (
     <Link {...props} id={id} link={link} theme={themeClasses} useHref={useHref}>
