@@ -67,7 +67,7 @@ class Notification extends Component {
             </div>)}
         </Modal.Body>
         <Modal.Footer>
-          <span className='bootstrap pull-right'>
+          <span className='pull-right'>
             <Row>
               <ButtonGroup className='pull-right'>
                 <Button bsStyle='primary'

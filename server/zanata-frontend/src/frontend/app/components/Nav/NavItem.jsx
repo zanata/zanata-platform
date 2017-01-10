@@ -9,6 +9,7 @@ import { Link } from '../../components'
 const NavItem = ({
   id,
   link,
+  small,
   icon,
   active,
   title,
@@ -20,6 +21,7 @@ const NavItem = ({
   const isSearchLink = (link === '/search')
 
   let cssClass = 'nav-link' + (active ? ' active' : '')
+  cssClass += (small ? ' small' : '')
   cssClass += (isSearchLink ? ' search' : '')
 
   const text = isLogo ? (<span className='nav-logo'>{title}</span>) : title
@@ -30,7 +32,7 @@ const NavItem = ({
     : <NavIcon name={icon} className='s1' />
 
   return (
-    <Link {...props} id={id} link={link} className={cssClass + ' small'} useHref={useHref}>
+    <Link {...props} id={id} link={link} className={cssClass} useHref={useHref}>
       {child}
       {text}
     </Link>
@@ -40,6 +42,7 @@ const NavItem = ({
 NavItem.propTypes = {
   id: PropTypes.string,
   link: PropTypes.string,
+  small: PropTypes.bool,
   icon: PropTypes.string,
   active: PropTypes.bool,
   title: PropTypes.string,
