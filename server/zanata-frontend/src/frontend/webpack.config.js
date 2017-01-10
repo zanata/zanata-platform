@@ -10,6 +10,7 @@
 
 var webpack = require('webpack')
 var path = require('path')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 module.exports = {
   entry: {
@@ -42,20 +43,21 @@ module.exports = {
           path.join(__dirname, 'app/styles'),
           path.join(__dirname, 'node_modules/zanata-ui/lib/styles'),
         ],
-        loader: 'style!css!autoprefixer?browsers=last 2 versions'
+        loader: ExtractTextPlugin.extract('style', 'css!autoprefixer?browsers=last 2 versions')
       },
       {
         test: /\.less$/,
         exclude: /node_modules/,
         include: path.join(__dirname, 'app/styles'),
-        loader: "style!css!autoprefixer!less"
+        loader: ExtractTextPlugin.extract('style', 'css!autoprefixer!less')
       },
     ]
   },
   plugins: [
+    new ExtractTextPlugin('bundle.css'),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
-    new webpack.NoErrorsPlugin()
+    new webpack.NoErrorsPlugin(),
   ],
   resolve: {
     extensions: ['', '.js', '.jsx', '.json', '.css', '.less']
