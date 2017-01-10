@@ -98,6 +98,9 @@ public class UserAccountServiceImpl implements UserAccountService {
         return key;
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     public HAccountResetPasswordKey requestPasswordReset(String username,
             String email) {

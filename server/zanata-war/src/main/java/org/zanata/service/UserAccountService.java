@@ -36,6 +36,14 @@ public interface UserAccountService {
     void clearPasswordResetRequests(HAccount account);
 
     @Nullable HAccountResetPasswordKey requestPasswordReset(HAccount account);
+
+    /**
+     * This will generate a reset password key for an account that has the
+     * matching username. Email will be used to generate the random hash key.
+     * @param username username for an account
+     * @param email email for that account
+     * @return key that contains a randomly generated hash
+     */
     HAccountResetPasswordKey requestPasswordReset(String username, String email);
 
     /**

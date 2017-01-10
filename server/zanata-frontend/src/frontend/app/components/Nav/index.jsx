@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import NavItem from './NavItem'
 import { flattenThemeClasses } from 'zanata-ui'
 import { getDswid } from '../../utils/UrlHelper'
+import {remove} from 'lodash'
 
 const dswid = getDswid()
 
@@ -144,8 +145,7 @@ const Nav = ({
 
   if (!window.config.allowRegister) {
     // we don't allow public registration
-    const signUpIndex = items.findIndex(item => item.id === 'nav_sign_up')
-    items.splice(signUpIndex, 1)
+    remove(items, item => item.id === 'nav_sign_up')
   }
 
   return (
