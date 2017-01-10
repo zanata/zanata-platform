@@ -167,4 +167,14 @@ public class UserAccountServiceImpl implements UserAccountService {
         // Because a Natural Id was modified:
         session.getSessionFactory().getCache().evictQueryRegion(AccountDAO.REGION);
     }
+
+    @Override
+    public boolean isUsernameUsed(String username) {
+        Long usernameCount = (Long) session.createQuery(
+                "select count(*) from HAccount where username = :username")
+                .setParameter("username", username)
+                .setComment("UserAccountServiceImpl.isUsernameUsed")
+                .uniqueResult();
+        return usernameCount != 0;
+    }
 }

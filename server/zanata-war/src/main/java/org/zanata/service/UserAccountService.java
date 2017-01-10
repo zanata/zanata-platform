@@ -61,5 +61,14 @@ public interface UserAccountService {
      * @param newUsername
      *            The new user name for the account.
      */
-    public void editUsername(String currentUsername, String newUsername);
+    void editUsername(String currentUsername, String newUsername);
+
+    /**
+     * Check to see if a username is used already.
+     *
+     * @param username
+     *         username
+     * @return true if username is already used
+     */
+    boolean isUsernameUsed(String username);
 }

@@ -26,18 +26,14 @@ import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.action.validator.NotDuplicateEmail;
-import org.zanata.dao.AccountDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccountResetPasswordKey;
-import org.zanata.rest.service.AccountService;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
@@ -52,34 +48,38 @@ public class AdminCreateUserAction implements HasUserDetail, Serializable {
     private static final long serialVersionUID = 1L;
     private static final Logger log = LoggerFactory.getLogger(AdminCreateUserAction.class);
 
-    @Inject
     private IdentityManager identityManager;
 
-    @Inject
-    private EntityManager entityManager;
-
-    @Inject
     private FacesMessages facesMessages;
 
-    @Inject
     private Messages msgs;
 
-    @Inject
-    private EmailService emailServiceImpl;
+    private EmailService emailService;
 
-    @Inject
     private RegisterService registerService;
 
-    @Inject
     private UserAccountService userAccountService;
-
-    @Inject
-    private AccountDAO accountDAO;
 
     private List<String> roles;
     private String username;
     private String email;
 
+    @Inject
+    public AdminCreateUserAction(IdentityManager identityManager,
+            FacesMessages facesMessages, Messages msgs,
+            EmailService emailService, RegisterService registerService,
+            UserAccountService userAccountService) {
+        this.identityManager = identityManager;
+        this.facesMessages = facesMessages;
+        this.msgs = msgs;
+        this.emailService = emailService;
+        this.registerService = registerService;
+        this.userAccountService = userAccountService;
+    }
+
+    @SuppressWarnings("unused")
+    public AdminCreateUserAction() {
+    }
 
     @Transactional
     public String saveNewUser() {
@@ -101,7 +101,7 @@ public class AdminCreateUserAction implements HasUserDetail, Serializable {
         HAccountResetPasswordKey resetPasswordKey =
                 userAccountService.requestPasswordReset(username, email);
 
-        String message = emailServiceImpl
+        String message = emailService
                 .sendActivationAndResetPasswordEmail(username, email,
                         activationKey, resetPasswordKey.getKeyHash());
 
@@ -115,15 +115,7 @@ public class AdminCreateUserAction implements HasUserDetail, Serializable {
      * account
      */
     private boolean isNewUsernameValid(String username) {
-        try {
-            entityManager
-                    .createQuery("from HAccount a where a.username = :username")
-                    .setParameter("username", username).getSingleResult();
-            return false;
-        } catch (NoResultException e) {
-            // pass
-            return true;
-        }
+        return !userAccountService.isUsernameUsed(username);
     }
 
     @Override
