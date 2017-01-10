@@ -110,19 +110,6 @@ const items = [
     id: 'nav_more'
   }
 ]
-const classes = {
-  base: {
-    bgc: 'Bgc(pri)',
-    bxsh: 'Bxsh(ish1)',
-    d: 'D(f)!',
-    fld: 'Fld(c)--sm',
-    flxs: 'Flxs(0)',
-    h: 'H(100%)--sm',
-    or: 'Or(1) Or(0)--sm',
-    ov: 'Ov(h)',
-    w: 'W(r3)--sm'
-  }
-}
 
 /**
  * Generates side menu bar with icons
@@ -146,7 +133,7 @@ const Nav = ({
       {...props}
       id='nav'
       name={username}
-      className={flattenThemeClasses(classes)}>
+      className='nav-bar'>
       {items.map((item, itemId) => {
         if (((item.auth === 'public') || (item.auth === auth) ||
           (item.auth === 'loggedin' && admin))) {

@@ -89,6 +89,14 @@ body {
   overflow: hidden;
 }
 
+.nav-bar {
+  background-color: @brand-secondary;
+  box-shadow: inset 0 1px 4px 0 rgba(0, 0, 0, 0.185);
+  display: flex !important;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
 .searchViewTheme {
   align-items: center;
   color: rgb(84, 102, 122);
@@ -507,6 +515,7 @@ a:focus, a:hover {
 a:focus {
   outline: none;
 }
+
 
 #nav {
   height: initial;
@@ -4491,6 +4500,11 @@ button.btn-link {
     height: initial;
     width: 100%;
   }
+
+  .nav-bar {
+    order:1;
+    width:100%;
+  }
 }
 
 @media (min-width: 29.376rem) {
@@ -4504,6 +4518,13 @@ button.btn-link {
 
   #nav {
     min-height: 100%;
+  }
+
+  .nav-bar {
+    flex-direction: column;
+    height:100%;
+    order: 0;
+    width:4.5rem;
   }
 }
 
