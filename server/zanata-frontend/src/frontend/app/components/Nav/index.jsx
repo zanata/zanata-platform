@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import NavItem from './NavItem'
-import { flattenThemeClasses } from 'zanata-ui'
 import { getDswid } from '../../utils/UrlHelper'
 
 const dswid = getDswid()
@@ -32,7 +31,6 @@ const items = [
     id: 'nav_search'
   },
   {
-    small: true,
     icon: 'import',
     link: '/login',
     title: 'Log In',
@@ -40,7 +38,6 @@ const items = [
     id: 'nav_login'
   },
   {
-    small: true,
     icon: 'upload',
     link: '/signup',
     title: 'Sign Up',
@@ -48,7 +45,6 @@ const items = [
     id: 'nav_sign_up'
   },
   {
-    small: true,
     icon: 'dashboard',
     link: '/dashboard' + dswid,
     title: 'Dashboard',
@@ -56,7 +52,6 @@ const items = [
     id: 'nav_dashboard'
   },
   {
-    small: true,
     icon: 'user',
     link: '/profile' + dswid,
     internalLink: '/profile',
@@ -102,7 +97,6 @@ const items = [
     id: 'nav_logout'
   },
   {
-    small: true,
     icon: 'ellipsis',
     link: '/info' + dswid,
     title: 'More',
@@ -169,7 +163,6 @@ const Nav = ({
           return <NavItem key={itemId}
             loading={loading}
             id={item.id}
-            small={item.small}
             active={isActive}
             link={link}
             useHref={useHref}
