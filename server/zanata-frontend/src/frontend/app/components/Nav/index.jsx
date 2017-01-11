@@ -1,6 +1,5 @@
 import React, { PropTypes } from 'react'
 import NavItem from './NavItem'
-import { flattenThemeClasses } from 'zanata-ui'
 import { getDswid } from '../../utils/UrlHelper'
 
 const dswid = getDswid()
