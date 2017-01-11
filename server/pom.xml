@@ -22,6 +22,7 @@
     <byteman.version>2.1.2</byteman.version>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
+    <kotlin.version>1.0.6</kotlin.version>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
@@ -260,6 +261,18 @@
         <groupId>org.jboss.shrinkwrap</groupId>
         <artifactId>shrinkwrap-spi</artifactId>
         <version>${shrinkwrap.api.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-stdlib</artifactId>
+        <version>${kotlin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-test-junit</artifactId>
+        <version>${kotlin.version}</version>
+        <scope>test</scope>
       </dependency>
 
       <dependency>
@@ -1711,10 +1724,67 @@
 
   <build>
     <plugins>
+
+      <!-- We declare the compiler plugins in this order: Kotlin, then Groovy, then Java/Takari.
+           Java code can depend on either Groovy or Kotlin (because they are compiled first).
+           Groovy code can depend on Kotlin because it is compiled first, and on Java because of "joint compilation"
+           http://groovy-lang.org/groovyc.html#section-jointcompilation https://github.com/groovy/GMavenPlus/wiki/Examples#joint-compilation
+           Kotlin code can't depend on Groovy (because Groovy is compiled later), but can depend on Java because
+           the Kotlin compiler can read .java files: https://discuss.kotlinlang.org/t/compiling-mixed-java-and-kotlin-files-on-the-command-line/1553/2
+      -->
+
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <version>${kotlin.version}</version>
+        <executions>
+          <execution>
+            <id>compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <sourceDirs>
+                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                <sourceDir>${project.basedir}/src/main/java</sourceDir>
+              </sourceDirs>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
+            <configuration>
+              <sourceDirs>
+                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                <sourceDir>${project.basedir}/src/test/java</sourceDir>
+              </sourceDirs>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
         <executions>
+          <execution>
+            <id>default</id>
+            <goals>
+              <!-- src/main/groovy disabled, because such code would be invisible to Kotlin classes -->
+              <!--<goal>addSources</goal>-->
+              <goal>addTestSources</goal>
+              <!--<goal>generateStubs</goal>-->
+              <!--<goal>compile</goal>-->
+              <goal>testGenerateStubs</goal>
+              <goal>testCompile</goal>
+              <!--<goal>removeStubs</goal>-->
+              <goal>removeTestStubs</goal>
+            </goals>
+          </execution>
           <!-- NB: This execution needs to be before antrun, because it
                creates the wildfly directory for the unzip tasks. -->
           <execution>
@@ -1739,6 +1809,38 @@
           </dependency>
         </dependencies>
       </plugin>
+
+      <plugin>
+        <groupId>io.takari.maven.plugins</groupId>
+        <artifactId>takari-lifecycle-plugin</artifactId>
+        <extensions>true</extensions>
+
+        <executions>
+          <!-- Replacing default-compile as it is treated specially by Maven.
+               We need kotlin-maven-plugin to compile first. -->
+          <execution>
+            <id>default-compile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java-compile</id>
+            <phase>compile</phase>
+            <goals> <goal>compile</goal> </goals>
+          </execution>
+          <!-- Replacing default-testCompile as it is treated specially by Maven.
+               We need kotlin-maven-plugin to compile first. -->
+          <execution>
+            <id>default-testCompile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java-test-compile</id>
+            <phase>test-compile</phase>
+            <goals> <goal>testCompile</goal> </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
@@ -1962,7 +2064,7 @@
         <plugin>
           <groupId>org.codehaus.gmavenplus</groupId>
           <artifactId>gmavenplus-plugin</artifactId>
-          <version>1.1</version>
+          <version>1.5</version>
         </plugin>
       </plugins>
     </pluginManagement>

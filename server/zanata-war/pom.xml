@@ -78,19 +78,6 @@
         <artifactId>gmavenplus-plugin</artifactId>
         <executions>
           <execution>
-            <id>default</id>
-            <goals>
-              <goal>addSources</goal>
-              <goal>addTestSources</goal>
-              <goal>generateStubs</goal>
-              <goal>compile</goal>
-              <goal>testGenerateStubs</goal>
-              <goal>testCompile</goal>
-              <goal>removeStubs</goal>
-              <goal>removeTestStubs</goal>
-            </goals>
-          </execution>
-          <execution>
             <id>dependency-versions</id>
             <phase>generate-resources</phase>
             <goals>
@@ -99,7 +86,6 @@
             <configuration>
               <scripts>
                 <script>file:///${project.basedir}/src/etc/dependencyVersions.groovy</script>
-
               </scripts>
             </configuration>
           </execution>
