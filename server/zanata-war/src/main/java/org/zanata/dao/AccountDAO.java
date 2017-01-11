@@ -42,7 +42,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         super(HAccount.class, session);
     }
 
-    public HAccount getByUsername(String username) {
+    public @Nullable HAccount getByUsername(String username) {
         Criteria cr = getSession().createCriteria(HAccount.class);
         cr.add(Restrictions.eq("username", username));
         cr.setCacheRegion(REGION).setCacheable(true).setComment("AccountDAO.getByUsername");

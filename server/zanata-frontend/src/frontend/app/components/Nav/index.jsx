@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import NavItem from './NavItem'
 import { flattenThemeClasses } from 'zanata-ui'
 import { getDswid } from '../../utils/UrlHelper'
+import {remove} from 'lodash'
 
 const dswid = getDswid()
 
@@ -141,6 +142,12 @@ const Nav = ({
   const admin = (auth === 'admin')
 
   const username = window.config.user ? window.config.user.username : ''
+
+  if (!window.config.allowRegister) {
+    // we don't allow public registration
+    remove(items, item => item.id === 'nav_sign_up')
+  }
+
   return (
     <nav
       {...props}

@@ -36,7 +36,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.action.validator.NotDuplicateEmail;
+import org.zanata.config.AllowPublicRegistration;
 import org.zanata.dao.PersonDAO;
+import org.zanata.exception.AuthorizationException;
 import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.EmailService;
@@ -79,6 +81,10 @@ public class RegisterAction implements HasUserDetail, Serializable {
     @Inject
     private UrlUtil urlUtil;
 
+    @Inject
+    @AllowPublicRegistration
+    private boolean allowRegistration;
+
     private String username;
     private String email;
     private String password;
@@ -93,6 +99,13 @@ public class RegisterAction implements HasUserDetail, Serializable {
             urlUtil.redirectToInternal(urlUtil.dashboardUrl());
         }
         return null;
+    }
+
+    public void checkRegistrationAvailability() {
+        if (!allowRegistration) {
+            throw new AuthorizationException(
+                    "Public registration is disabled on this instance. Please contact admin to create your account");
+        }
     }
 
     public HPerson getPerson() {

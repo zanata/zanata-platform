@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HAccount;
+import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
@@ -151,5 +152,21 @@ public class UserAccountServiceImplTest extends ZanataDbunitJpaTest {
         assertThat(new ArrayList<HAccountRole>(account.getRoles()),
                 not(Matchers.<HAccountRole> hasItem(hasProperty("name",
                         Matchers.is("Fedora")))));
+    }
+
+    @Test
+    @InRequestScope
+    public void requestPasswordReset() {
+        // account with no reset password key
+        HAccount account = em.find(HAccount.class, 3L);
+        assertThat(account.getAccountResetPasswordKey(), Matchers.nullValue());
+
+
+        HAccountResetPasswordKey resetPasswordKey = userAccountService
+                .requestPasswordReset(account.getUsername(),
+                        account.getPerson().getEmail());
+        // Now it has reset password key
+        assertThat(account.getAccountResetPasswordKey(),
+                Matchers.notNullValue(HAccountResetPasswordKey.class));
     }
 }

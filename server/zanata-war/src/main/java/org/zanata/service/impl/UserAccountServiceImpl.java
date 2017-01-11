@@ -35,10 +35,10 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.hibernate.cache.internal.StandardQueryCacheFactory;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountResetPasswordKeyDAO;
 import org.zanata.dao.RoleAssignmentRuleDAO;
+import org.zanata.exception.NoSuchUserException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.model.HRoleAssignmentRule;
@@ -98,6 +98,31 @@ public class UserAccountServiceImpl implements UserAccountService {
         return key;
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
+    public HAccountResetPasswordKey requestPasswordReset(String username,
+            String email) {
+        HAccount account = accountDAO.getByUsername(username);
+        if (account == null) {
+            throw new NoSuchUserException(username + " can not be found");
+        }
+
+        clearPasswordResetRequests(account);
+
+        HAccountResetPasswordKey key = new HAccountResetPasswordKey();
+        key.setAccount(account);
+        key.setKeyHash(HashUtil.generateHash(username
+                + account.getPasswordHash() + email
+                + System.currentTimeMillis()));
+
+        account.setAccountResetPasswordKey(key);
+        key = accountResetPasswordKeyDAO.makePersistent(key);
+
+        return key;
+    }
+
     @Override
     public HAccount runRoleAssignmentRules(HAccount account,
             HCredentials credentials, String policyName) {
@@ -144,5 +169,15 @@ public class UserAccountServiceImpl implements UserAccountService {
         updateQuery.executeUpdate();
         // Because a Natural Id was modified:
         session.getSessionFactory().getCache().evictQueryRegion(AccountDAO.REGION);
+    }
+
+    @Override
+    public boolean isUsernameUsed(String username) {
+        Long usernameCount = (Long) session.createQuery(
+                "select count(*) from HAccount where username = :username")
+                .setParameter("username", username)
+                .setComment("UserAccountServiceImpl.isUsernameUsed")
+                .uniqueResult();
+        return usernameCount != 0;
     }
 }

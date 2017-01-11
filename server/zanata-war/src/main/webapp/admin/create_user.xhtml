@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:a4j="http://richfaces.org/a4j"
+  xmlns:zanata="http://java.sun.com/jsf/composite/zanata">
+
+<ui:composition template="/WEB-INF/template/template.xhtml">
+  <f:metadata>
+    <f:event type="preRenderView" listener="#{identity.checkRole('admin')}"/>
+  </f:metadata>
+
+  <ui:define name="head">
+    <style type="text/css">
+      .checkbox label {
+        padding: 0 0.40625em;
+      }
+    </style>
+  </ui:define>
+
+  <ui:define
+    name="page_title">#{msgs['jsf.AccountDetails']}</ui:define>
+  <ui:define name="center_content">
+    <div class="g--centered">
+      <div class="g__item w--3-4-m w--5-8-l w--1-3 l--push-bottom-1">
+        <p class="txt--meta l--push-all-0">
+          <h:link outcome="/admin/home.xhtml">
+            #{msgs['jsf.Administration']}
+          </h:link>
+          <i class="i i--arrow-right"></i>
+          <h:link outcome="/admin/usermanager.xhtml">
+            #{msgs['jsf.ManageUsers']}
+          </h:link>
+        </p>
+
+        <h1 class="l--push-all-0">#{msgs['jsf.AccountDetails']}</h1>
+
+        <h:form id="newUserForm">
+
+          <div class="form__item l--push-top-1">
+            <h:outputLabel for="username">#{msgs['jsf.Username']}</h:outputLabel>
+            <zanata:decorate id="username" componentId="usernameField">
+              <h:inputText id="username" value="#{adminCreateUserAction.username}"
+                tabindex="3">
+                <a4j:ajax event="blur" render="usernameField" />
+              </h:inputText>
+            </zanata:decorate>
+          </div>
+
+          <div class="form__item l--push-top-1">
+            <h:outputLabel for="email">#{msgs['jsf.Email']}</h:outputLabel>
+            <zanata:decorate id="email" componentId="emailField">
+              <h:inputText id="email" value="#{adminCreateUserAction.email}"
+                tabindex="4">
+                <a4j:ajax event="blur" render="emailField" execute="@this"/>
+              </h:inputText>
+            </zanata:decorate>
+          </div>
+
+          <div class="form__item l--push-top-1">
+            <h:outputLabel>#{msgs['jsf.MemberOf']}</h:outputLabel>
+            <zanata:decorate id="roles" componentId="rolesField">
+              <h:selectManyCheckbox id="newUserRoles" value="#{adminCreateUserAction.roles}"
+                layout="pageDirection" styleClass="checkbox">
+                <f:selectItems value="#{identityManager.listGrantableRoles()}" var="role"
+                  itemLabel="#{role}"/>
+              </h:selectManyCheckbox>
+            </zanata:decorate>
+          </div>
+
+
+          <h:commandButton id="newUserSave" value="#{msgs['jsf.Save']}"
+            action="#{adminCreateUserAction.saveNewUser}" styleClass="button--primary"/>
+
+          <h:link outcome="/admin/usermanager.xhtml" styleClass="button button--link l--push-left-half">
+            #{msgs['jsf.Cancel']}
+          </h:link>
+        </h:form>
+      </div>
+    </div>
+  </ui:define>
+
+</ui:composition>
+</html>

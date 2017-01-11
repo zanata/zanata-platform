@@ -98,6 +98,7 @@ public class EmailStrategyTest {
 
     // context values needed for some templates:
     String key = "123456";
+    String passowrdResetKey = "abcdefg";
     String fromLoginName = "LOGIN_NAME[测试]";
     String replyEmail = "REPLY_EMAIL[测试]";
     String userSubject = "USER_SUBJECT[测试]";
@@ -176,6 +177,27 @@ public class EmailStrategyTest {
                 "jsf.email.activation.ClickLinkToActivateAccount"));
         assertThat(html).contains(
                 testServerPath + "/account/activate/123456");
+    }
+
+    @Test
+    public void activationAndReset() throws Exception {
+        EmailStrategy strategy =
+                new ActivationEmailStrategy(key, passowrdResetKey);
+
+        builder.buildMessage(message, strategy, toAddresses,
+                Lists.newArrayList("activation test"));
+
+        checkFromAndTo(message);
+        assertThat(message.getSubject()).isEqualTo(msgs.get(
+                "jsf.email.activation.Subject"));
+
+        String html = extractHtmlPart(message);
+        checkGenericTemplate(html);
+
+        assertThat(html).contains(msgs.get(
+                "jsf.email.activation.ClickLinkToActivateAccount"));
+        assertThat(html).contains(
+                testServerPath + "/account/activate/123456?resetPasswordKey=" + passowrdResetKey);
     }
 
     @Test

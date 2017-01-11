@@ -33,12 +33,12 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * CDI qualifier for a dependent-scope boolean which describes whether this
- * instance allows anonymous read access. Use {@code @Inject
- * @AllowAnonymousAccess Provider<Boolean>} to use the latest value at all
+ * instance allows public account registration. Use {@code @Inject
+ * @AllowPublicRegistration Provider<Boolean>} to use the latest value at all
  * times.
  */
 @Qualifier
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD, FIELD, PARAMETER })
-public @interface AllowAnonymousAccess {
+public @interface AllowPublicRegistration {
 }

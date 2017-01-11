@@ -161,6 +161,15 @@
   </navigation-rule>
 
   <navigation-rule>
+    <from-view-id>/admin/create_user.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/admin/usermanager.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
     <from-view-id>/admin/server_configuration.xhtml</from-view-id>
     <navigation-case>
       <from-action>#{serverConfigurationBean.update}</from-action>

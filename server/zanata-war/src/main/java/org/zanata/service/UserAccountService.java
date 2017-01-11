@@ -20,6 +20,8 @@
  */
 package org.zanata.service;
 
+import javax.annotation.Nullable;
+
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.model.security.HCredentials;
@@ -33,7 +35,16 @@ import org.zanata.model.security.HCredentials;
 public interface UserAccountService {
     void clearPasswordResetRequests(HAccount account);
 
-    HAccountResetPasswordKey requestPasswordReset(HAccount account);
+    @Nullable HAccountResetPasswordKey requestPasswordReset(HAccount account);
+
+    /**
+     * This will generate a reset password key for an account that has the
+     * matching username. Email will be used to generate the random hash key.
+     * @param username username for an account
+     * @param email email for that account
+     * @return key that contains a randomly generated hash
+     */
+    HAccountResetPasswordKey requestPasswordReset(String username, String email);
 
     /**
      * Runs all dynamic role assignment rules against an account.
@@ -58,5 +69,14 @@ public interface UserAccountService {
      * @param newUsername
      *            The new user name for the account.
      */
-    public void editUsername(String currentUsername, String newUsername);
+    void editUsername(String currentUsername, String newUsername);
+
+    /**
+     * Check to see if a username is used already.
+     *
+     * @param username
+     *         username
+     * @return true if username is already used
+     */
+    boolean isUsernameUsed(String username);
 }

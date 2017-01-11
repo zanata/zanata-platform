@@ -48,6 +48,7 @@ import javax.inject.Provider;
 import javax.servlet.http.HttpSession;
 
 import org.zanata.config.AllowAnonymousAccess;
+import org.zanata.config.AllowPublicRegistration;
 import org.zanata.config.OAuthTokenExpiryInSeconds;
 import org.zanata.config.SupportOAuth;
 import org.zanata.config.SystemPropertyConfigStore;
@@ -464,5 +465,12 @@ public class ApplicationConfiguration implements Serializable {
     @AllowAnonymousAccess
     protected boolean isAnonymousUserAllowed() {
         return databaseBackedConfig.isAnonymousUserAllowed();
+    }
+
+    @Named("allowPublicRegistration")
+    @Produces
+    @AllowPublicRegistration
+    protected boolean isPublicRegistrationAllowed(@AllowAnonymousAccess boolean allowAnonymous) {
+        return allowAnonymous;
     }
 }
