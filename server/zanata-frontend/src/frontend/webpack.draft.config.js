@@ -14,15 +14,10 @@ var _ = require('lodash')
 var merge = require('webpack-merge')
 var defaultConfig = require('./webpack.prod.config.js')
 
-module.exports = merge.smartStrategy({
-  'module.preLoaders': 'replace',
-  plugins: 'replace'
-})(defaultConfig, {
+module.exports = merge.smart(defaultConfig, {
   devtool: 'eval',
 
   module: {
-    // wipe out eslint check (it is the only thing in preloaders)
-    preLoaders: [],
     loaders: [
       {
         test: /\.css$/,
