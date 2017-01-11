@@ -51,6 +51,20 @@ Disclaimer: may not cover all your Zanata-building needs.
 
 The `-h` argument prints the build script's help.
 
+#### Building on Mac OS X and macOS Sierra
+
+Currently, there is an extra step needed to build Zanata on a Mac.
+For `./build` to work, you will need to point to the correct Java directory using 
+the following command (using the correct JDK version on your Mac):  
+
+`export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk1.8.X_XX.jdk/Contents/Home"`
+
+
+This JAVA_HOME workaround will not be needed in the next release of the 
+Maven wrapper: io.takari:maven-wrapper:0.1.7. 
+
+See [https://github.com/takari/maven-wrapper/pull/14](https://github.com/takari/maven-wrapper/pull/14) for details.
+
 #### Build everything with unit tests
 
 `./build --all` - Builds the entire project (client and server ) fairly
