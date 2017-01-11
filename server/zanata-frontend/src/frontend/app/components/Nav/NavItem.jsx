@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react'
 import NavIcon from './NavIcon'
-import { LogoLoader } from '../../components'
-import { merge } from 'lodash'
-import { Link } from '../../components'
+import { LogoLoader, Link } from '../../components'
 /**
  * Item of side menu. See Nav.jsx for usage.
  */
