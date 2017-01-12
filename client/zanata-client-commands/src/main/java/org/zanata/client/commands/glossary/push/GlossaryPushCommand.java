@@ -45,6 +45,8 @@ import org.zanata.rest.dto.GlossaryEntry;
 
 import com.google.common.collect.Lists;
 
+import javax.ws.rs.client.ResponseProcessingException;
+
 import static org.zanata.client.commands.glossary.push.GlossaryPushOptions.DEFAULT_SOURCE_LANG;
 
 /**
@@ -130,10 +132,19 @@ public class GlossaryPushCommand extends
         String fileExtension = validateFileExtensionWithTransLang();
 
         String project = getOpts().getProject();
-        String qualifiedName =
-                StringUtils.isBlank(project) ? client.getGlobalQualifiedName()
-                        : client.getProjectQualifiedName(project);
-
+        String qualifiedName;
+        try {
+            qualifiedName = StringUtils.isBlank(project)
+                    ? client.getGlobalQualifiedName()
+                    : client.getProjectQualifiedName(project);
+        } catch (ResponseProcessingException rpe) {
+            if (rpe.getResponse().getStatus() == 404) {
+                log.error("Project {} not found", project);
+                return;
+            } else {
+                throw rpe;
+            }
+        }
         AbstractGlossaryPushReader reader = getReader(fileExtension);
 
         log.info("Pushing glossary document [{}] to server",

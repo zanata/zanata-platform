@@ -31,6 +31,8 @@ import org.zanata.client.commands.OptionsUtil;
 import org.zanata.rest.client.GlossaryClient;
 import org.zanata.rest.client.RestClientFactory;
 
+import javax.ws.rs.client.ResponseProcessingException;
+
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode.Question;
 
 /**
@@ -71,10 +73,19 @@ public class GlossaryDeleteCommand extends
         }
 
         String project = getOpts().getProject();
-        String qualifiedName =
-            StringUtils.isBlank(project) ? client.getGlobalQualifiedName()
-                : client.getProjectQualifiedName(project);
-
+        String qualifiedName;
+        try {
+            qualifiedName = StringUtils.isBlank(project)
+                    ? client.getGlobalQualifiedName()
+                    : client.getProjectQualifiedName(project);
+        } catch (ResponseProcessingException rpe) {
+            if (rpe.getResponse().getStatus() == 404) {
+                log.error("Project {} not found", project);
+                return;
+            } else {
+                throw rpe;
+            }
+        }
         if (getOpts().getAllGlossary()) {
             if (getOpts().isInteractiveMode()) {
                 ConsoleInteractor console = new ConsoleInteractorImpl(getOpts());
@@ -82,9 +93,17 @@ public class GlossaryDeleteCommand extends
                 console.expectYes();
             }
             Integer deletedCount = client.deleteAll(qualifiedName);
-            log.info("Deleted glossary entry: " + deletedCount.intValue());
+            log.info("Deleted glossary entries: {}", deletedCount);
         } else  {
-            client.delete(getOpts().getId(), qualifiedName);
+            try {
+                client.delete(getOpts().getId(), qualifiedName);
+            } catch (ResponseProcessingException rpe) {
+                if (rpe.getResponse().getStatus() == 404) {
+                    log.error("Glossary entry {} not found", getOpts().getId());
+                } else {
+                    throw rpe;
+                }
+            }
         }
     }
 }
