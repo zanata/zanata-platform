@@ -24,8 +24,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.zip.ZipFile;
 
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
 
@@ -40,7 +40,6 @@ import org.zanata.rest.client.RestClientFactory;
 import org.zanata.util.PathUtil;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
 /**
@@ -87,9 +86,18 @@ public class GlossaryPullCommand extends
         }
 
         String project = getOpts().getProject();
-        String qualifiedName =
-                StringUtils.isBlank(project) ? client.getGlobalQualifiedName()
-                        : client.getProjectQualifiedName(project);
+        String qualifiedName;
+        try {
+            qualifiedName = StringUtils.isBlank(project)
+                    ? client.getGlobalQualifiedName()
+                    : client.getProjectQualifiedName(project);
+        } catch (ResponseProcessingException rpe) {
+            if (rpe.getResponse().getStatus() == 404) {
+                log.info("Project {} not found", project);
+                return;
+            }
+            throw rpe;
+        }
 
         log.info("Pulling glossary from server");
         Response response;
@@ -109,8 +117,15 @@ public class GlossaryPullCommand extends
             log.info("No glossary file in server");
             return;
         }
+
         String fileName =
                 ClientUtil.getFileNameFromHeader(response.getStringHeaders());
+        if (fileName == null) {
+            log.error("Null filename response from server: " +
+                    response.getStatusInfo());
+            return;
+        }
+
         File file = new File(fileName);
         PathUtil.makeDirs(file.getParentFile());
         try (OutputStream out = new FileOutputStream(file)) {
@@ -122,6 +137,12 @@ public class GlossaryPullCommand extends
             out.flush();
         } finally {
             glossaryFile.close();
+        }
+        if (fileType.equalsIgnoreCase("po") &&
+                new ZipFile(file).size() == 0) {
+            log.warn("Glossary file {} is empty", fileName);
+        } else {
+            log.info("Glossary pulled to {}", fileName);
         }
     }
 }
