@@ -120,7 +120,7 @@ class Explore extends Component {
         <div className='headerClasses'>
           <h1 className='headingTheme hidden' level='1'>Search</h1>
           <div className='searchViewTheme'>
-            <Icon name='search' className='s0 list-inline' />
+            <Icon name='search' className='s1 list-inline' />
             <TextInput
               maxLength={100}
               ref={(ref) => this.searchInput = ref}
