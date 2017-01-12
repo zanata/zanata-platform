@@ -21,16 +21,16 @@
 
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
   xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-  <g:HTMLPanel styleName="g--tight">
-    <div class="g__item w--1-12 txt--align-right">
+  <g:HTMLPanel>
+    <div class="g__item w--1-12">
       <i class="i--comment i--large txt--neutral" />
       <span class="is-invisible">Comment</span>
     </div>
-    <div class="w--9-12 g__item">
+    <div class="g__item">
       <g:TextArea name="comment" styleName="basic-input"
         ui:field="commentTextArea" />
     </div>
-    <div class="w--2-12 g__item">
+    <div class="g__item">
       <g:Button addStyleNames="button--full" text="Add Comment"
         title="Ctrl + Enter" ui:field="addCommentButton" />
     </div>
