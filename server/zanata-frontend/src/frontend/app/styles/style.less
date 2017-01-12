@@ -671,7 +671,7 @@ button {
   vertical-align: middle;
   white-space: nowrap;
   border: 1px solid transparent;
-  border-radius: @border-radius-small;
+  border-radius: @border-radius-base;
   background-image: none;
   -ms-touch-action: manipulation;
   touch-action: manipulation;
@@ -1905,7 +1905,7 @@ span.langcode {
 .btn-primary {
   color: #fff;
   border-color: #ccc;
-  background-color: @brand-primary;
+  background-color: @brand-secondary;
 }
 
 .btn-primary .fa, .btn-primary:focus .fa {
@@ -2749,7 +2749,6 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   padding: @padding-search-box @padding-base-horizontal;
   text-align: center;
   color: #fff;
-  border: 1px solid #ccc;
   border-radius: @border-radius-base;
   background-color: @brand-primary;
 }
@@ -4408,6 +4407,7 @@ button.btn-link {
 
 .search-box svg {
   fill: #fff;
+  vertical-align:text-bottom;
 }
 
 .textInput .placeholder {

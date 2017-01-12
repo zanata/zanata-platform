@@ -71,7 +71,7 @@ class Languages extends Component {
             </h2>
             {permission.canAddLocale &&
               <div>
-                <Button bsStyle='primary'
+                <Button small bsStyle='primary'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
                   <Icon name='plus' className='n2 plusicon'
