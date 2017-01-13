@@ -119,6 +119,18 @@ public class ZanataClientTest {
     }
 
     /**
+     * zanata-cli help nosuchcommand
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testHelpInvalidSubOption() throws Exception {
+        client.processArgs("help", "nosuchcommand");
+        assertOutputIncludesUsage(out);
+        assertThat("Usage should list subcommands", outputListsCommands(out));
+    }
+
+    /**
      * zanata-cli nosuchcommand
      *
      * @throws Exception
