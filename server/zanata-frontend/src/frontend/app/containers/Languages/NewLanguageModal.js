@@ -1,7 +1,7 @@
 import React, {PropTypes, Component} from 'react'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Modal, Icon } from 'zanata-ui'
+import { Modal, Icon } from '../../components'
 import Autosuggest from 'react-autosuggest'
 
 import {
@@ -142,8 +142,8 @@ class NewLanguageModal extends Component {
     return (
       <Modal
         show={show}
-        onHide={() => this.handleCancel()} rootClose>
-        <Modal.Header closeButton>
+        onHide={() => this.handleCancel()}>
+        <Modal.Header>
           <Modal.Title>Add a new language</Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -189,7 +189,7 @@ class NewLanguageModal extends Component {
                 <a href='http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms' // eslint-disable-line max-len
                   target='_blank'>
                   <Icon name='info'
-                    atomic={{m: 'Mstart(re) Va(sub)'}}
+                    className='s0' atomic={{m: 'Mstart(re) Va(sub)'}}
                     title='Help' />
                 </a>
                 {showPluralFormsWarning &&

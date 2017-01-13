@@ -29,7 +29,7 @@ html {
 }
 
 .react-autosuggest__input:focus {
-  outline: none;
+  outline:0;
 }
 
 .react-autosuggest__container--open .react-autosuggest__input {
@@ -807,6 +807,11 @@ label {
   margin-bottom: @margin-label;
 }
 
+label.control-label span.s0 {
+  vertical-align: text-top;
+  margin-left:@margin-btn-icon-left;
+}
+
 input[type=search] {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -832,8 +837,7 @@ select[multiple], select[size] {
 }
 
 input[type=checkbox]:focus, input[type=file]:focus, input[type=radio]:focus {
-  outline: thin dotted;
-  outline: 5px auto @brand-secondary;
+  outline: 2px solid @brand-secondary;
   outline-offset: -2px;
 }
 
@@ -1591,8 +1595,7 @@ table td[class*=col-], table th[class*=col-] {
 }
 
 .form-control:focus {
-  outline: thin dotted;
-  outline: 5px auto @brand-secondary;
+  outline: 2px solid @brand-secondary;
   outline-offset: -2px;
 }
 
@@ -4127,7 +4130,7 @@ button.list-group-item {
   background-clip: padding-box;
   border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, .2);
-  border-radius: @border-radius-small;
+  border-radius: @border-radius-base;
   outline: 0;
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
   box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
@@ -4369,7 +4372,7 @@ button.close {
   font-weight: 700;
   line-height: 1;
   top: 0;
-  right: @margin-btn-icon-right;
+  right:1em;
   position: absolute;
   border: 0;
   color: #f00;
@@ -4522,7 +4525,7 @@ button.btn-link {
 }
 
 .textInput:focus {
-  outline: 1px solid @brand-secondary;
+  outline: 2px solid @brand-secondary;
 }
 
 .getinvolved .btn-primary {
