@@ -18,11 +18,10 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata
+package org.zanata.liquibase.custom
 
 import antlr.ANTLRException
 import antlr.RecognitionException
-import liquibase.logging.Logger
 import liquibase.logging.core.DefaultLogger
 import org.apache.commons.lang.StringUtils
 import org.jsoup.Jsoup
@@ -35,58 +34,54 @@ import org.jsoup.select.NodeVisitor
 import org.junit.Assert
 import org.junit.ComparisonFailure
 import org.junit.Test
-import org.zanata.liquibase.custom.MigrateSeamTextToCommonMark
 import org.zanata.util.CommonMarkRenderer
 import org.zanata.seam.text.SeamTextLexer
 import org.zanata.seam.text.SeamTextParser
+
+// non-breaking spaces
+private val NBSP_CHAR = "\u00A0"
+private val NBSP_ENTITY = "&nbsp;"
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 class MigrateSeamTextToCommonMarkTest {
 
-    private Logger logger = new DefaultLogger()
+    private val logger = DefaultLogger()
 
-    private static String stripNonBreakSpace(String text) {
-        return text.replace('\u00A0', ' ').replace("&nbsp;", " ")
-    }
+    private fun stripNonBreakSpace(text: String) =
+            text.replace(NBSP_CHAR, " ").replace(NBSP_ENTITY, " ")
 
-    private String convertToHtml(String seamText) {
-        Reader r = new StringReader(stripNonBreakSpace(seamText))
-        SeamTextLexer lexer = new SeamTextLexer(r)
-        SeamTextParser parser = new SeamTextParser(lexer)
+    private fun convertToHtml(seamText: String): String {
+        val strippedSeamText = stripNonBreakSpace(seamText)
+        val parser = SeamTextParser(SeamTextLexer(strippedSeamText.reader()))
         parser.startRule()
         return parser.toString()
     }
 
-    private String convertToCommonMark(String seamText, String name) {
-        return MigrateSeamTextToCommonMark.convertToCommonMark(seamText, name, logger)
-    }
+    private fun convertToCommonMark(seamText: String, name: String) =
+            MigrateSeamTextToCommonMark.convertToCommonMark(seamText, name, logger)
 
-    private CommonMarkRenderer renderer = new CommonMarkRenderer()
+    private val cmRenderer = CommonMarkRenderer()
+    private val jsoupSettings = OutputSettings().prettyPrint(true).indentAmount(2)
 
-    OutputSettings settings = new OutputSettings().prettyPrint(true).indentAmount(2)
-
-    NodeTraversor nodeCleaner = new NodeTraversor(new NodeVisitor() {
-        @Override
-        public void head(Node node, int depth) {
+    private val nodeCleaner = NodeTraversor(object: NodeVisitor {
+        override fun head(node: Node, depth: Int) {
         }
 
-        @Override
-        public void tail(Node node, int depth) {
-            if (node instanceof Element) {
-                Element e = (Element) node
+        override fun tail(node: Node, depth: Int) {
+            if (node is Element) {
                 // remove class="seamTextPara" etc
-                e.removeAttr("class")
-                e.removeAttr("id")
-            } else if (node instanceof TextNode) {
-                if (node.blank) {
+                node.removeAttr("class")
+                node.removeAttr("id")
+            } else if (node is TextNode) {
+                if (node.isBlank) {
                     // trim empty text nodes
-                    node.text('')
+                    node.text("")
                 } else {
-                    def oldText = node.text()
+                    val oldText = node.text()
                     // replace nbsp with ordinary space
-                    String text = oldText.replace('\u00A0', ' ')
+                    val text = oldText.replace(NBSP_CHAR, " ")
                     // and trim
                     node.text(text.trim())
                 }
@@ -95,101 +90,104 @@ class MigrateSeamTextToCommonMarkTest {
     })
 
     /**
-     * Replaces <code>tt</code> with <code>code</code>, strips out
-     * <code>class</code> and <code>id</code>, trims whitespace and
-     * removes blank text nodes.
-     * @param body
+     * Replaces `tt` with `code`, strips out `class` and `id`, trims
+     * whitespace and removes blank text nodes.
      */
-    void clean(Element body) {
-        body.select('tt').tagName('code')
-        body.select('i').tagName('em')
+    fun clean(body: Element) {
+        body.select("tt").tagName("code")
+        body.select("i").tagName("em")
         nodeCleaner.traverse(body)
     }
 
     /**
      * Prettifies the HTML and normalises some of the minor differences
      * between Seam Text's rendering and CommonMark's.
-     * @param html
-     * @return
      */
-    String normalise(String html) {
+    fun normalise(html: String): String {
         // 1. replace Seam's <q> elements with simple quote characters (")
         // 2. replace Seam's (often erroneous) underlining with underscores.
         // 3. replace CM's <pre><code> with <pre> ala Seam
-        String someTagsRemoved = html.replaceAll("</?q>", '"').replaceAll("</?u>", '_').replace('<pre><code>', '<pre>').replace('</code></pre>', '</pre>')
-        Element body = Jsoup.parse(someTagsRemoved).outputSettings(settings).body()
+        val someTagsRemoved = html.replace("</?q>".toRegex(), "\"").replace("</?u>".toRegex(), "_").replace("<pre><code>", "<pre>").replace("</code></pre>", "</pre>")
+        val body = Jsoup.parse(someTagsRemoved).outputSettings(jsoupSettings).body()
         clean(body)
-        String souped = body.html()
+        val souped = body.html()
         // CommonMark sometimes puts <p></p> elements around block-level
         // elements like address, which Jsoup converts to an empty para
         // before and after.  They doesn't seem to affect rendering in
         // browsers though, so we ignore them.
-        String noEmptyParas = souped.replaceAll('\\s*<p>\\s*</p>', '')
+        val noEmptyParas = souped.replace("""\s*<p>\s*</p>""".toRegex(), "")
         // Remove paras because Seam sometimes fails to wrap inline elements in <p></p>
         // Convert em to * because CommonMark ignores markdown inside <p> (converter limitation)
         // Convert _* and *_ to ** because converter does not convert strong emphasis to *** (converter limitation)
-        String moreCleaning = noEmptyParas.replaceAll('</?p>', '').replaceAll('</?em>', '*').replace('_*', '**').replace('*_', '**')
-        String stripped = StringUtils.strip(moreCleaning)
+        val moreCleaning = noEmptyParas.replace("</?p>".toRegex(), "").replace("</?em>".toRegex(), "*").replace("_*", "**").replace("*_", "**")
+        val stripped = StringUtils.strip(moreCleaning)
         return stripped
     }
 
-    static Closure eprintln = System.err.&println
+    private fun eprintln() {
+        System.err.println()
+    }
+
+    private fun eprintln(arg: String?) {
+        System.err.println(arg)
+    }
 
     /**
      * Checks that the HTML rendering of the Seam Text is (almost) the same as
      * the HTML rendering of the CommonMark after conversion from Seam Text.
      */
-    private void verifyConversion(String name, String seamText, String expectedCM) {
-        String commonMark = ''
-        String seamToHtml
-        String commonMarkToHtml
-        String prettySeamHtml
-        String prettyCMHtml
+    private fun verifyConversion(name: String, seamText: String, expectedCM: String) {
+        var commonMark = ""
+        var seamToHtml = ""
+        var commonMarkToHtml = ""
+        var prettySeamHtml = ""
+        var prettyCMHtml = ""
         try {
             commonMark = convertToCommonMark(seamText, name)
             Assert.assertEquals(expectedCM, commonMark)
 
             seamToHtml = convertToHtml(seamText)
             prettySeamHtml = normalise(seamToHtml)
-            commonMarkToHtml = renderer.renderToHtmlUnsafe(commonMark)
+            commonMarkToHtml = cmRenderer.renderToHtmlUnsafe(commonMark)
             prettyCMHtml = normalise(commonMarkToHtml)
             Assert.assertEquals(prettySeamHtml, prettyCMHtml)
-        } catch (ComparisonFailure e) {
-            eprintln "$name:"
-            eprintln "Seam Text: $seamText"
-            eprintln "CommonMark: $commonMark"
-            eprintln "Seam Text HTML: $seamToHtml"
-            eprintln "CommonMark HTML: $commonMarkToHtml"
-            eprintln "CommonMark HTML normalised: $prettyCMHtml"
+        } catch (e: ComparisonFailure) {
+            eprintln("$name:")
+            eprintln("Seam Text: $seamText")
+            eprintln("CommonMark: $commonMark")
+            eprintln("Seam Text HTML: $seamToHtml")
+            eprintln("Pretty Seam HTML: $prettySeamHtml")
+            eprintln("CommonMark HTML: $commonMarkToHtml")
+            eprintln("CommonMark HTML normalised: $prettyCMHtml")
             throw e
-        } catch (ANTLRException e) {
-            eprintln name + ":"
+        } catch (e: ANTLRException) {
+            eprintln(name + ":")
             eprintln()
-            eprintln e.message
-            if (e instanceof RecognitionException) {
-                eprintln "line=${e.line} col=${e.column}"
+            eprintln(e.message)
+            if (e is RecognitionException) {
+                eprintln("line=${e.line} col=${e.column}")
                 if (e.line >= 0) {
-                    seamText.readLines().each(eprintln)
-                    eprintln seamText.readLines().get(e.line)
-                    eprintln ' ' * e.column + '^'
-                    eprintln '-' * e.column + '|'
+                    // seamText.reader().forEachLine { eprintln(it) }
+                    eprintln(seamText.reader().readLines().get(e.line))
+                    eprintln(" ".repeat(e.column) + "^")
+                    eprintln("-".repeat(e.column) + "|")
                 } else {
-                    seamText.readLines().take(10).each { eprintln it }
+                    seamText.reader().readLines().take(10).forEach { eprintln(it) }
                 }
             } else {
-                seamText.readLines().take(10).each { eprintln it }
+                seamText.reader().readLines().take(10).forEach { eprintln(it) }
             }
-            eprintln ''
-            eprintln '\n'
-            eprintln '\n'
-            eprintln '\n'
+            eprintln()
+            eprintln("\n")
+            eprintln("\n")
+            eprintln("\n")
             throw e
         }
     }
 
     @Test
-    void testCompressedSeamText() {
-        String seamText = """
+    fun `compact Seam Text`() {
+        val seamText = """
 It's easy to make *emphasis*, |monospace|,
 ~deleted text~, super^scripts^ or _underlines_.
 
@@ -220,8 +218,8 @@ The other guy said:
 
 But what do you think he means by "nyeah-nee"?
 
-You can write down equations like 2\\*3\\=6 and HTML tags
-like \\<body\\> using the escape character: \\\\.
+You can write down equations like 2\*3\=6 and HTML tags
+like \<body\> using the escape character: \\.
 
 My code doesn't work:
 
@@ -244,7 +242,7 @@ cool</a>, or even include an image: <img src="/logo.jpg"/>
     <tr><td>Last name:</td><td>King</td></tr>
 </table>
 """
-        String expectedCM =
+        val expectedCM =
 """<!-- The following text was converted from Seam Text to CommonMark by Zanata.  Some formatting changes may have occurred. -->
 
 
@@ -284,7 +282,7 @@ Nyeah nyeah-nee
 But what do you think he means by "nyeah-nee"?
 
 You can write down equations like 2*3=6 and HTML tags
-like &lt;body&gt; using the escape character: \\\\.
+like &lt;body&gt; using the escape character: \\.
 
 My code doesn't work:
 
@@ -315,8 +313,8 @@ cool</a>, or even include an image: <img src="/logo.jpg"/>
     }
 
     @Test
-    void testGeneralSeamText() {
-        String seamText = """
+    fun `ordinary Seam Text`() {
+        val seamText = """
 
 It's easy to make *emphasis*, |monospace|,
 ~deleted text~, super^scripts^ or _underlines_.
@@ -360,8 +358,8 @@ But what do you think he means by "nyeah-nee"?
 
 
 
-You can write down equations like 2\\*3\\=6 and HTML tags
-like \\<body\\> using the escape character: \\\\.
+You can write down equations like 2\*3\=6 and HTML tags
+like \<body\> using the escape character: \\.
 
 
 
@@ -398,7 +396,7 @@ cool</a>, or even include an image: <img src="/logo.jpg"/>
 </table>
 
 """
-        String expectedCM =
+        val expectedCM =
 """<!-- The following text was converted from Seam Text to CommonMark by Zanata.  Some formatting changes may have occurred. -->
 
 
@@ -450,7 +448,7 @@ But what do you think he means by "nyeah-nee"?
 
 
 You can write down equations like 2*3=6 and HTML tags
-like &lt;body&gt; using the escape character: \\\\.
+like &lt;body&gt; using the escape character: \\.
 
 
 
