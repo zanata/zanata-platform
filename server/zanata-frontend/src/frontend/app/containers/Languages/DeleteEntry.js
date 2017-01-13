@@ -1,10 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import ReactDOM from 'react-dom'
-import { Button } from 'react-bootstrap'
-import {
-  Tooltip,
-  Overlay
-} from 'zanata-ui'
+import { Button, ButtonToolbar, OverlayTrigger, Popover } from 'react-bootstrap'
 
 class DeleteEntry extends Component {
 
@@ -18,43 +13,40 @@ class DeleteEntry extends Component {
   render () {
     const {
       locale,
-      show,
       handleDeleteEntryDisplay,
       handleDeleteEntry
     } = this.props
+
+    const popoverClickRootClose =
+      (<ButtonToolbar>
+        <Popover id='popover-trigger-click-root-close' title='Popover bottom'>
+          <p>Are you sure you want to delete&nbsp;
+            <strong>{locale.displayName}</strong>?&nbsp;
+          </p>
+          <span className='button-spacing'>
+            <Button bsStyle='default'
+              onClick={handleDeleteEntryDisplay(false)}>
+              Cancel
+            </Button>
+            <Button bsStyle='danger' type='button'
+              onClick={handleDeleteEntryDisplay +
+              handleDeleteEntry(locale.localeId)(false)}>
+              Delete
+            </Button>
+          </span>
+        </Popover>
+      </ButtonToolbar>)
+
     /* eslint-disable react/jsx-no-bind */
     return (
       <div className='D(ib)'>
-        <Overlay
-          placement='top'
-          target={() => ReactDOM.findDOMNode(this)}
-          rootClose
-          show={show}
-          onHide={() => handleDeleteEntryDisplay(false)}>
-          <Tooltip id='delete-glossary' title='Delete language'>
-            <p>
-            Are you sure you want to delete&nbsp;
-              <strong>{locale.displayName}</strong>?&nbsp;
-            </p>
-            <span className='button-spacing'>
-              <Button bsStyle='default'
-                onClick={() => handleDeleteEntryDisplay(false)}>
-                Cancel
-              </Button>
-              <Button bsStyle='danger' type='button'
-                onClick={() => {
-                  handleDeleteEntry(locale.localeId)
-                  handleDeleteEntryDisplay(false)
-                }}>
-                Delete
-              </Button>
-            </span>
-          </Tooltip>
-        </Overlay>
-        <Button bsSize='small'
-          onClick={() => handleDeleteEntryDisplay(true)}>
-          <i className='fa fa-times Mend(ee)'></i>Delete
-        </Button>
+        <OverlayTrigger trigger='click' rootClose placement='bottom'
+          overlay={popoverClickRootClose}>
+          <Button bsSize='small'
+            onClick={() => handleDeleteEntryDisplay(true)}>
+            <i className='fa fa-times Mend(ee)'></i>Delete
+          </Button>
+        </OverlayTrigger>
       </div>
     )
     /* eslint-enable react/jsx-no-bind */
@@ -63,7 +55,6 @@ class DeleteEntry extends Component {
 
 DeleteEntry.propTypes = {
   locale: React.PropTypes.object,
-  show: React.PropTypes.bool,
   handleDeleteEntryDisplay: PropTypes.func.isRequired,
   handleDeleteEntry: React.PropTypes.func.isRequired
 }
