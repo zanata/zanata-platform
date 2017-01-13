@@ -796,6 +796,13 @@
     </dependency>
 
     <dependency>
+      <groupId>net.wuerl.kotlin</groupId>
+      <artifactId>assertj-core-kotlin</artifactId>
+      <version>0.1.3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
       <artifactId>kotlin-stdlib</artifactId>
     </dependency>
