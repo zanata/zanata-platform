@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -119,7 +120,7 @@ public class GetTransUnitList extends
     @Override
     public String toString() {
         // @formatter:off
-      return Objects.toStringHelper(this).
+      return MoreObjects.toStringHelper(this).
             add("offset", offset).
             add("count", count).
             add("documentId", documentId).

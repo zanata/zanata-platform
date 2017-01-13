@@ -23,6 +23,7 @@ package org.zanata.webtrans.shared.model;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 
 import com.google.common.base.Objects;
@@ -122,7 +123,7 @@ public class TransUnitUpdateRequest implements IsSerializable {
     @Override
     public String toString() {
         // @formatter:off
-      return Objects.toStringHelper(this).
+      return MoreObjects.toStringHelper(this).
             add("transUnitId", transUnitId).
             add("newContents", newContents).
             add("newContentState", newContentState).

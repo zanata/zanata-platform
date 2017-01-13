@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.rpc;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 
@@ -45,7 +46,7 @@ public class UpdateTransUnit extends
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("updateRequests", updateRequests)
                 .add("updateType", updateType).toString();
     }

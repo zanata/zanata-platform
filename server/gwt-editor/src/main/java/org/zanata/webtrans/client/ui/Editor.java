@@ -5,6 +5,7 @@ import static org.zanata.webtrans.client.view.TargetContentsDisplay.EditingState
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.client.view.TargetContentsDisplay;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationAction;
@@ -212,7 +213,7 @@ public class Editor extends Composite implements ToggleEditor {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("id", id)
+        return MoreObjects.toStringHelper(this).add("id", id)
                 // .add("label", label.getText())
                 // .add("textArea", textArea.getText())
                 .add("isFocused", isFocused()).toString();

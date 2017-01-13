@@ -22,6 +22,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -141,7 +142,7 @@ public class EditorFilter implements IsSerializable {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("textInContent", textInContent)
                 .add("resId", resId)
                 .add("lastModifiedBefore", lastModifiedBefore)

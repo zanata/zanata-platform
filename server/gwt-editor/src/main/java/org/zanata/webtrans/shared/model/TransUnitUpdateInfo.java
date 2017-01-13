@@ -105,7 +105,7 @@ public class TransUnitUpdateInfo implements IsSerializable {
     @Override
     public String toString() {
         // @formatter:off
-      return Objects.toStringHelper(this).
+      return MoreObjects.toStringHelper(this).
             add("success", success).
             add("documentId", documentId).
             add("transUnit", transUnit).

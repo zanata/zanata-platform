@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.events;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 import org.zanata.common.util.ContentStateUtil;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -124,7 +125,7 @@ public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler> {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("transUnitId", transUnitId)
+        return MoreObjects.toStringHelper(this).add("transUnitId", transUnitId)
                 .add("verNum", verNum).toString();
     }
 }
