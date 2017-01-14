@@ -282,9 +282,16 @@
       </dependency>
 
       <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>2.6.2</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.objenesis</groupId>
         <artifactId>objenesis</artifactId>
-        <version>2.1</version>
+        <version>2.4</version>
       </dependency>
 
       <dependency>
@@ -1765,6 +1772,21 @@
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <compilerPlugins>
+            <plugin>all-open</plugin>
+          </compilerPlugins>
+          <pluginOptions>
+            <option>all-open:annotation=org.junit.runner.RunWith</option>
+          </pluginOptions>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-allopen</artifactId>
+            <version>${kotlin.version}</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <plugin>
