@@ -12,7 +12,9 @@ import { apiMiddleware } from 'redux-api-middleware'
 import rootReducer from './reducers'
 import Root from './containers/Root'
 import { isJsonString } from './utils/StringUtils'
+
 import './styles/style.less'
+import 'zanata-ui/dist/zanata-ui.css'
 
 WebFont.load({
   google: {

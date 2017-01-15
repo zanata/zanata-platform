@@ -41,20 +41,28 @@ module.exports = {
         test: /\.css$/,
         include: [
           path.join(__dirname, 'app/styles'),
-          path.join(__dirname, 'node_modules/zanata-ui/lib/styles'),
+          path.join(__dirname, 'node_modules/zanata-ui/dist'),
         ],
-        loader: ExtractTextPlugin.extract('style', 'css!autoprefixer?browsers=last 2 versions')
+        loader: ExtractTextPlugin.extract(
+          'style',
+          'css',
+          'autoprefixer?browsers=last 2 versions'
+        )
       },
       {
         test: /\.less$/,
         exclude: /node_modules/,
         include: path.join(__dirname, 'app/styles'),
-        loader: ExtractTextPlugin.extract('style', 'css!autoprefixer!less')
+        loader: ExtractTextPlugin.extract(
+          'style',
+          'css!less',
+          'autoprefixer?browsers=last 2 versions'
+        )
       },
     ]
   },
   plugins: [
-    new ExtractTextPlugin('bundle.css'),
+    new ExtractTextPlugin('frontend.css'),
     new webpack.optimize.OccurenceOrderPlugin(),
     new webpack.optimize.DedupePlugin(),
     new webpack.NoErrorsPlugin(),
