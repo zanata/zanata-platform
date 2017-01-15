@@ -34,15 +34,15 @@
     <frontend.build.directory>${project.basedir}/src/frontend</frontend.build.directory>
 
     <!-- Command to use after 'npm ' for the frontend build. Default is the faster draft build. -->
-    <frontend.build.command>draft --ignore-scripts=false</frontend.build.command>
+    <frontend.build.command>draft</frontend.build.command>
 
     <!-- Directory for editor to run the build from. -->
     <editor.build.directory>${project.basedir}/src/editor</editor.build.directory>
 
     <!-- Command to use after 'npm ' for the editor build. Default is the faster draft build. -->
-    <editor.build.command>draft --ignore-scripts=false</editor.build.command>
+    <editor.build.command>draft</editor.build.command>
 
-    <test.command>test --ignore-scripts=false</test.command>
+    <test.command>test</test.command>
 
     <!-- Root path within the jar to put the built artifacts.
          Note: META-INF/resources/* is served as static content, so this serves
@@ -244,7 +244,6 @@
                 </goals>
                 <configuration>
                   <workingDirectory>${frontend.build.directory}</workingDirectory>
-                  <arguments>--ignore-scripts</arguments>
                 </configuration>
               </execution>
 
@@ -257,7 +256,6 @@
                 </goals>
                 <configuration>
                   <workingDirectory>${editor.build.directory}</workingDirectory>
-                  <arguments>--ignore-scripts</arguments>
                 </configuration>
               </execution>
             </executions>
@@ -298,8 +296,8 @@
         </property>
       </activation>
       <properties>
-        <frontend.build.command>build --ignore-scripts=false</frontend.build.command>
-        <editor.build.command>build --ignore-scripts=false</editor.build.command>
+        <frontend.build.command>build</frontend.build.command>
+        <editor.build.command>build</editor.build.command>
       </properties>
     </profile>
   </profiles>

@@ -64,6 +64,7 @@ Always add documentation.
 
 For CSS I am aiming to move to [these guidelines](https://github.com/suitcss/suit/blob/master/doc/README.md).
 
-## License
+## ignore-scripts
 
-Zanata is Free software, licensed under the [LGPL](http://www.gnu.org/licenses/lgpl-2.1.html).
+This module is setup to disable lifecycle scripts for yarn command by default. See help using `yarn -h`
+The configuration is in .yarnrc in this module.

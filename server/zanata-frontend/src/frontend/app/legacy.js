@@ -26,9 +26,12 @@ import { mapValues } from 'lodash'
 import { Nav } from './components'
 import { Icons } from 'zanata-ui'
 import WebFont from 'webfontloader'
-import './styles/style.less'
 import { isJsonString } from './utils/StringUtils'
 import { getContextPath } from './utils/UrlHelper'
+
+import 'zanata-ui/dist/zanata-ui.css'
+import './styles/style.less'
+
 /**
  * Root component that display only side menu bar.
  * Used jsf page that only needs side menu bar from frontend.
