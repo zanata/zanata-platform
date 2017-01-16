@@ -16,7 +16,7 @@ class DeleteEntry extends Component {
       handleDeleteEntryDisplay,
       handleDeleteEntry
     } = this.props
-
+    /* eslint-disable react/jsx-no-bind */
     const popoverClickRootClose =
       (<ButtonToolbar>
         <Popover id='popover-trigger-click-root-close' title='Popover bottom'>
@@ -29,17 +29,16 @@ class DeleteEntry extends Component {
               Cancel
             </Button>
             <Button bsStyle='danger' type='button'
-              onClick={
+              onClick={() => {
                 handleDeleteEntry(locale.localeId)
                 handleDeleteEntryDisplay(false)
-              }>
+              }}>
               Delete
             </Button>
           </span>
         </Popover>
       </ButtonToolbar>)
 
-    /* eslint-disable react/jsx-no-bind */
     return (
       <div className='D(ib)'>
         <OverlayTrigger trigger='click' rootClose placement='bottom'
