@@ -58,7 +58,7 @@ class TranslatableSeparatorTest {
     }
 
     @Test
-    fun complexLeadingWhitespaceStripped() {
+    fun mixedLeadingWhitespaceStripped() {
         val stripped = TranslatableSeparator.separate("\n                    Some text")
         assertThat(stripped).isEqualTo(SplitString("\n                    ", "Some text", ""))
     }
