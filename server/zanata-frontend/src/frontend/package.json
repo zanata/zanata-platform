@@ -13,7 +13,9 @@
     "styleguide-build": "styleguidist build",
     "icons": "node scripts/createIconsComponent && node scripts/generateIconList",
     "svg": "svg-sprite -sD app/components/Icons --symbol-dest '' --ss icons.svg --si app/components/Icons/svgs/*.svg --ignore-scripts=false",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "repository": {
     "type": "git",
@@ -56,7 +58,8 @@
     "webpack": "1.13.0",
     "webpack-dev-middleware": "1.6.1",
     "webpack-dev-server": "1.14.1",
-    "webpack-merge": "1.1.1"
+    "webpack-merge": "1.1.1",
+    "@kadira/storybook": "2.21.0"
   },
   "dependencies": {
     "babel-polyfill": "6.9.1",
