@@ -17,15 +17,17 @@ class DeleteEntry extends Component {
       handleDeleteEntry
     } = this.props
     /* eslint-disable react/jsx-no-bind */
-    const popoverClickRootClose =
+    const popoverTop =
       (<ButtonToolbar>
-        <Popover id='popover-trigger-click-root-close' title='Popover bottom'>
+        <Popover id='popover-positioned-top'>
           <p>Are you sure you want to delete&nbsp;
             <strong>{locale.displayName}</strong>?&nbsp;
           </p>
           <span className='button-spacing'>
             <Button bsStyle='default'
-              onClick={() => handleDeleteEntryDisplay(false)}>
+              onClick={() =>
+                handleDeleteEntryDisplay(false)
+              }>
               Cancel
             </Button>
             <Button bsStyle='danger' type='button'
@@ -41,8 +43,8 @@ class DeleteEntry extends Component {
 
     return (
       <div className='D(ib)'>
-        <OverlayTrigger trigger='click' rootClose placement='bottom'
-          overlay={popoverClickRootClose}>
+        <OverlayTrigger rootClose trigger='click' placement='top'
+          overlay={popoverTop} >
           <Button bsSize='small'
             onClick={() => handleDeleteEntryDisplay(true)}>
             <i className='fa fa-times Mend(ee)'></i>Delete
