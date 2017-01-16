@@ -1774,9 +1774,12 @@
         </executions>
         <configuration>
           <compilerPlugins>
+            <plugin>jpa</plugin>
             <plugin>all-open</plugin>
           </compilerPlugins>
           <pluginOptions>
+            <option>all-open:annotation=javax.enterprise.context.NormalScope</option>
+            <option>all-open:annotation=javax.persistence.Entity</option>
             <option>all-open:annotation=org.junit.runner.RunWith</option>
           </pluginOptions>
         </configuration>
@@ -1784,6 +1787,11 @@
           <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-maven-allopen</artifactId>
+            <version>${kotlin.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-noarg</artifactId>
             <version>${kotlin.version}</version>
           </dependency>
         </dependencies>
@@ -1830,6 +1838,35 @@
             <version>1.8.1</version>
           </dependency>
         </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <!-- Replacing default-compile as it is treated specially by Maven.
+               We need kotlin-maven-plugin to compile first. -->
+          <execution>
+            <id>default-compile</id>
+            <phase>none</phase>
+          </execution>
+          <!-- Replacing default-testCompile as it is treated specially by Maven.
+               We need kotlin-maven-plugin to compile first. -->
+          <execution>
+            <id>default-testCompile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java-compile</id>
+            <phase>compile</phase>
+            <goals> <goal>compile</goal> </goals>
+          </execution>
+          <execution>
+            <id>java-test-compile</id>
+            <phase>test-compile</phase>
+            <goals> <goal>testCompile</goal> </goals>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>

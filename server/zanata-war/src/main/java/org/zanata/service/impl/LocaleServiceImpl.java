@@ -158,8 +158,7 @@ public class LocaleServiceImpl implements LocaleService {
     public void save(@Nonnull LocaleId localeId, boolean enabledByDefault) {
         if (localeExists(localeId))
             return;
-        HLocale entity = new HLocale();
-        entity.setLocaleId(localeId);
+        HLocale entity = new HLocale(localeId);
         entity.setActive(true);
         entity.setEnabledByDefault(enabledByDefault);
         localeDAO.makePersistent(entity);
@@ -443,8 +442,7 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     public static HLocale convertToHLocale(LocaleDetails localeDetails) {
-        HLocale entity = new HLocale();
-        entity.setLocaleId(localeDetails.getLocaleId());
+        HLocale entity = new HLocale(localeDetails.getLocaleId());
         entity.setActive(localeDetails.isEnabled());
         entity.setEnabledByDefault(localeDetails.isEnabledByDefault());
         entity.setPluralForms(localeDetails.getPluralForms());

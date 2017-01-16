@@ -218,7 +218,7 @@ public class TransMemoryMergeStatusResolverTest {
         action = mergeTMActionWhenProjectNameIsDifferent(MergeRule.FUZZY);
 
         HTextFlowTarget oldTarget =
-                new HTextFlowTarget(textFlow, new HLocale());
+                new HTextFlowTarget(textFlow, new HLocale(LocaleId.DE));
         oldTarget.setState(ContentState.NeedReview);
 
         assertThat(resolver.decideStatus(action, textFlow, tmDetail,

@@ -121,7 +121,7 @@ public class PermissionEvaluatorTest {
                         "evaluatesForMultiTarget"));
 
         assertThat(granter.shouldInvokeGranter(
-                "multi-target-action", new HProject(), new HLocale()
+                "multi-target-action", new HProject(), new HLocale(LocaleId.DE)
         )).isTrue();
     }
 
@@ -133,7 +133,7 @@ public class PermissionEvaluatorTest {
                         "evaluatesForMultiTarget"));
 
         assertThat(granter.shouldInvokeGranter(
-                "multi-target-action", new HLocale(), new HProject()
+                "multi-target-action", new HLocale(LocaleId.DE), new HProject()
         )).isTrue();
     }
 
@@ -145,7 +145,7 @@ public class PermissionEvaluatorTest {
                                 "evaluatesForMultiTarget"));
 
         assertThat(granter.shouldInvokeGranter(
-                "multi-target-action", new HLocale()
+                "multi-target-action", new HLocale(LocaleId.DE)
         )).isFalse();
     }
 
@@ -158,7 +158,7 @@ public class PermissionEvaluatorTest {
 
         assertThat(
                 granter.shouldInvokeGranter(
-                        "multi-target-action", new HLocale(), new HProject(),
+                        "multi-target-action", new HLocale(LocaleId.DE), new HProject(),
                         new HProjectIteration(), new StringBuilder()
                         )).isTrue();
     }
@@ -302,7 +302,7 @@ public class PermissionEvaluatorTest {
                 complexPermissionEvaluator
                         .checkPermission("only-when-all-args-present",
                                 new HProject(),
-                                new HProjectIteration(), new HLocale()))
+                                new HProjectIteration(), new HLocale(LocaleId.DE)))
                 .isTrue();
     }
 
@@ -311,7 +311,7 @@ public class PermissionEvaluatorTest {
         assertThat(
                 complexPermissionEvaluator
                         .checkPermission("only-when-all-args-present",
-                                new HLocale(),
+                                new HLocale(LocaleId.DE),
                                 new HProjectIteration(), new HProject()))
                 .isTrue();
     }

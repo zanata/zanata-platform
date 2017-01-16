@@ -119,7 +119,7 @@ public class SampleProjectProfile {
             LocaleId localeId, String displayName, String nativeName, String pluralForms) {
         return EntityMakerBuilder
                 .builder()
-                .addFieldOrPropertyMaker(HLocale.class, "active",
+                .addFieldOrPropertyMaker(HLocale.class, "isActive",
                     FixedValueMaker.ALWAYS_TRUE_MAKER)
                 .addFieldOrPropertyMaker(HLocale.class, "displayName",
                         FixedValueMaker.fix(displayName))
@@ -127,7 +127,7 @@ public class SampleProjectProfile {
                     FixedValueMaker.fix(nativeName))
                 .addFieldOrPropertyMaker(HLocale.class, "pluralForms",
                     FixedValueMaker.fix(pluralForms))
-                .addFieldOrPropertyMaker(HLocale.class, "enabledByDefault",
+                .addFieldOrPropertyMaker(HLocale.class, "isEnabledByDefault",
                         FixedValueMaker.fix(enabledByDefault))
                 .addConstructorParameterMaker(HLocale.class, 0,
                     FixedValueMaker.fix(localeId)).build();
