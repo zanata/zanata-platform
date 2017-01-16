@@ -25,7 +25,7 @@ class DeleteEntry extends Component {
           </p>
           <span className='button-spacing'>
             <Button bsStyle='default'
-              onClick={handleDeleteEntryDisplay(false)}>
+              onClick={() => handleDeleteEntryDisplay(false)}>
               Cancel
             </Button>
             <Button bsStyle='danger' type='button'
