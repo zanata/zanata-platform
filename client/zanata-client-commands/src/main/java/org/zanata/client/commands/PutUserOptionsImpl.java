@@ -4,6 +4,8 @@ import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
  *
@@ -17,7 +19,7 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     private String userKey;
     private String userRoles;
     private String userLangs;
-    private boolean userEnabled;
+    private String userEnabled = "auto";
 
     private static final Logger log = LoggerFactory
             .getLogger(PutUserCommand.class);
@@ -29,7 +31,7 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
 
     @Override
     public String getCommandDescription() {
-        return "Creates or updates a user.";
+        return "Creates or updates a user. Unspecified options will not be updated.";
     }
 
     @Override
@@ -90,24 +92,14 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     }
 
     @Override
-    @Option(name = "--user-disabled",
-            usage = "Disables the user account")
-    public void setUserDisabled(boolean disabled) {
-        log.warn("Deprecated, use '--set-enabled false' instead");
-        this.userEnabled = false;
-    }
-
-    @Override
     @Option(name = "--user-enabled",
             usage = "Whether the account should be enabled or disabled (true/false)")
     public void setUserEnabled(String enabled) {
-        if (enabled.equalsIgnoreCase("true")) {
-            this.userEnabled = true;
-        } else if (enabled.equalsIgnoreCase("false")) {
-            this.userEnabled = false;
-        } else {
-            throw new RuntimeException("--user-enabled requires true or false");
+        String[] options = { "auto", "true", "false" };
+        if (!Arrays.asList(options).contains(enabled.toLowerCase())) {
+            throw new RuntimeException("--user-enabled requires true or false (or auto)");
         }
+        this.userEnabled = enabled.toLowerCase();
     }
 
     @Override
@@ -116,7 +108,7 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     }
 
     @Override
-    public boolean isUserEnabled() {
+    public String isUserEnabled() {
         return userEnabled;
     }
 

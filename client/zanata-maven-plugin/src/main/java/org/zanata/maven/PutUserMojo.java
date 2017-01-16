@@ -4,6 +4,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.zanata.client.commands.PutUserCommand;
 import org.zanata.client.commands.PutUserOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Arrays;
 
 /**
  * Creates or updates a Zanata user.
@@ -12,17 +16,19 @@ import org.zanata.client.commands.PutUserOptions;
 @Mojo(name = "put-user", requiresOnline = true, requiresProject = false)
 public class PutUserMojo extends ConfigurableMojo<PutUserOptions> implements
         PutUserOptions {
+    private static final Logger log = LoggerFactory
+            .getLogger(PutUserCommand.class);
 
     /**
      * Full name of the user
      */
-    @Parameter(property = "zanata.userName", required = true)
+    @Parameter(property = "zanata.userName")
     private String userName;
 
     /**
      * Email address of the user
      */
-    @Parameter(property = "zanata.userEmail", required = true)
+    @Parameter(property = "zanata.userEmail")
     private String userEmail;
 
     /**
@@ -34,32 +40,32 @@ public class PutUserMojo extends ConfigurableMojo<PutUserOptions> implements
     /**
      * User password hash
      */
-    @Parameter(property = "zanata.userPasswordHash", required = true)
+    @Parameter(property = "zanata.userPasswordHash")
     private String userPasswordHash;
 
     /**
      * User's api key (empty for none)
      */
-    @Parameter(property = "zanata.userKey", required = true)
+    @Parameter(property = "zanata.userKey")
     private String userKey;
 
     /**
      * Security roles for the user
      */
-    @Parameter(property = "zanata.userRoles", required = true)
+    @Parameter(property = "zanata.userRoles")
     private String userRoles;
 
     /**
      * Language teams for the user
      */
-    @Parameter(property = "zanata.userLangs", required = true)
+    @Parameter(property = "zanata.userLangs")
     private String userLangs;
 
     /**
-     * Whether the account should be disabled
+     * Whether the account should be enabled
      */
-    @Parameter(property = "zanata.userDisabled", required = true)
-    private boolean userDisabled;
+    @Parameter(property = "zanata.userEnabled")
+    private String userEnabled;
 
     public PutUserMojo() throws Exception {
         super();
@@ -125,12 +131,18 @@ public class PutUserMojo extends ConfigurableMojo<PutUserOptions> implements
         this.userLangs = userLangs;
     }
 
-    public boolean isUserDisabled() {
-        return userDisabled;
+    public String isUserEnabled() {
+        return userEnabled;
     }
 
-    public void setUserDisabled(boolean userDisabled) {
-        this.userDisabled = userDisabled;
+    public void setUserEnabled(String userEnabled) {
+        String[] options = { "auto", "true", "false" };
+        if (!Arrays.asList(options).contains(userEnabled.toLowerCase())) {
+            log.info("zanata.userEnabled requires true or false (or auto)");
+            System.exit(1);
+        } else {
+            this.userEnabled = userEnabled.toLowerCase();
+        }
     }
 
     @Override
