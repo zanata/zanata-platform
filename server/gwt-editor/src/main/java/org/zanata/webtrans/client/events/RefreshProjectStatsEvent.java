@@ -12,7 +12,7 @@ public class RefreshProjectStatsEvent extends
     /**
      * Handler type.
      */
-    private static Type<ProjectStatsUpdatedEventHandler> TYPE;
+    private static final Type<ProjectStatsUpdatedEventHandler> TYPE = new Type<>();
 
     private List<DocumentNode> documentNodes;
 
@@ -22,8 +22,7 @@ public class RefreshProjectStatsEvent extends
      * @return returns the handler type
      */
     public static Type<ProjectStatsUpdatedEventHandler> getType() {
-        return TYPE != null ? TYPE : (TYPE =
-                new Type<ProjectStatsUpdatedEventHandler>());
+        return TYPE;
     }
 
     public RefreshProjectStatsEvent(List<DocumentNode> documentNodes) {

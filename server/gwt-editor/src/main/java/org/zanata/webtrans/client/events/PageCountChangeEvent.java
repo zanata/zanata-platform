@@ -3,8 +3,8 @@ package org.zanata.webtrans.client.events;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class PageCountChangeEvent extends GwtEvent<PageCountChangeEventHandler> {
-    public static Type<PageCountChangeEventHandler> TYPE =
-            new Type<PageCountChangeEventHandler>();
+    public static final Type<PageCountChangeEventHandler> TYPE =
+            new Type<>();
 
     private int pageCount;
 

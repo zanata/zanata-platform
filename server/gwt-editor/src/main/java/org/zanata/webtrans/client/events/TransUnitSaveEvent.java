@@ -35,8 +35,8 @@ import com.google.gwt.event.shared.GwtEvent;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class TransUnitSaveEvent extends GwtEvent<TransUnitSaveEventHandler> {
-    public static Type<TransUnitSaveEventHandler> TYPE =
-            new Type<TransUnitSaveEventHandler>();
+    public static final Type<TransUnitSaveEventHandler> TYPE =
+            new Type<>();
 
     private TransUnitId transUnitId;
     private Integer verNum;

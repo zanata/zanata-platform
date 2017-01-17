@@ -15,7 +15,7 @@ public class EnterWorkspaceEvent extends GwtEvent<EnterWorkspaceEventHandler>
     /**
      * Handler type.
      */
-    private static Type<EnterWorkspaceEventHandler> TYPE;
+    private static final Type<EnterWorkspaceEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -23,9 +23,6 @@ public class EnterWorkspaceEvent extends GwtEvent<EnterWorkspaceEventHandler>
      * @return returns the handler type
      */
     public static Type<EnterWorkspaceEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<EnterWorkspaceEventHandler>();
-        }
         return TYPE;
     }
 

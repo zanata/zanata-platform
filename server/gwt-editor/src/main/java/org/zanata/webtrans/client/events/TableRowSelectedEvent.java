@@ -5,8 +5,8 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class TableRowSelectedEvent extends
         GwtEvent<TableRowSelectedEventHandler> {
-    public static Type<TableRowSelectedEventHandler> TYPE =
-            new Type<TableRowSelectedEventHandler>();
+    public static final Type<TableRowSelectedEventHandler> TYPE =
+            new Type<>();
 
     private TransUnitId selectedId;
     private boolean suppressSavePending = false;

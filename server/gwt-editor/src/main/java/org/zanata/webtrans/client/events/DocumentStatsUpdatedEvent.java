@@ -10,7 +10,7 @@ public class DocumentStatsUpdatedEvent extends
     /**
      * Handler type.
      */
-    private static Type<DocumentStatsUpdatedEventHandler> TYPE;
+    private static final Type<DocumentStatsUpdatedEventHandler> TYPE = new Type<>();
 
     private DocumentId docId;
     private ContainerTranslationStatistics newStats;
@@ -21,8 +21,7 @@ public class DocumentStatsUpdatedEvent extends
      * @return returns the handler type
      */
     public static Type<DocumentStatsUpdatedEventHandler> getType() {
-        return TYPE != null ? TYPE : (TYPE =
-                new Type<DocumentStatsUpdatedEventHandler>());
+        return TYPE;
     }
 
     public DocumentStatsUpdatedEvent(DocumentId docId,

@@ -59,7 +59,6 @@ public class SampleProjectProfile {
         EntityCleaner.deleteAll(entityManager, ZanataEntities
                 .entitiesForRemoval());
 
-        ULocale uLocale = new ULocale(LocaleId.EN_US.getId());
         enUSLocale = makeLanguage(false, LocaleId.EN_US, "nplurals=2; plural=(n != 1);");
 
         List<HApplicationConfiguration> configurations = entityManager

@@ -8,8 +8,8 @@ import com.google.gwt.event.shared.GwtEvent;
 public class BookmarkedTextFlowEvent extends
         GwtEvent<BookmarkedTextFlowEventHandler> implements
         NavigationService.UpdateContextCommand {
-    public static Type<BookmarkedTextFlowEventHandler> TYPE =
-            new Type<BookmarkedTextFlowEventHandler>();
+    public static final Type<BookmarkedTextFlowEventHandler> TYPE =
+            new Type<>();
 
     private int offset;
     private TransUnitId targetTransUnitId;
