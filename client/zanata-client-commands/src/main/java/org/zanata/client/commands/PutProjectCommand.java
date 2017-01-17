@@ -24,8 +24,9 @@ public class PutProjectCommand extends ConfigurableCommand<PutProjectOptions> {
     public void run() throws Exception {
         String projectId = getOpts().getProjectSlug();
         Project project = getClientFactory().getProjectClient(projectId).get();
+        String op;
         if (project == null) {
-            log.info("Creating new project {}", projectId);
+            op = "Create new project {}";
             project = new Project();
             project.setId(getOpts().getProjectSlug());
             if (isBlank(getOpts().getProjectName()) ||
@@ -34,8 +35,10 @@ public class PutProjectCommand extends ConfigurableCommand<PutProjectOptions> {
                     "default-project-type and project-name must be specified for new projects");
             }
         } else {
-            log.info("Updating project {}", projectId);
+            op = "Update project {}";
         }
+        log.info(op, projectId);
+
         project.setStatus(firstNonNull(statusFromString(getOpts().getProjectStatus()),
                 project.getStatus()));
         project.setName(firstNonNull(getOpts().getProjectName(),
@@ -61,7 +64,7 @@ public class PutProjectCommand extends ConfigurableCommand<PutProjectOptions> {
         ProjectClient client = getClientFactory().getProjectClient(
                 getOpts().getProjectSlug());
         client.put(project);
-        log.info("Done");
+        log.info(op, projectId + " complete");
     }
 
     private EntityStatus statusFromString(String status) throws Exception {
