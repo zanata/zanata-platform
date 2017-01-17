@@ -157,6 +157,22 @@ body {
   margin-right: auto;
 }
 
+.searchViewTheme .textInput {
+  background-color: transparent;
+  border: 2px solid rgb(189, 212, 220) !important;
+  border-radius: @border-radius-text-input;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-weight: inherit;
+  color: inherit;
+  font-size: 1.1em;
+  font-style: inherit;
+  outline: none;
+  padding-left: @padding-search-input-left;
+  padding-right: @padding-search-input-right;
+  margin-left: -@margin-left-search-input;
+}
+
 .wideViewTheme {
   align-items: center;
   overflow: hidden;
@@ -4267,6 +4283,10 @@ button.list-group-item {
   overflow: scroll;
 }
 
+.hidden {
+  display: none !important;
+}
+
 @media (min-width: 768px) {
   .modal-dialog {
     width: 600px;
@@ -4284,6 +4304,7 @@ button.list-group-item {
 }
 
 @media (min-width: 992px) {
+
   .modal-lg {
     width: 900px;
   }
@@ -4518,10 +4539,6 @@ button.list-group-item {
     text-shadow: none;
   }
 
-  .hidden {
-    display: none !important;
-  }
-
   .affix {
     position: fixed;
   }
@@ -4548,23 +4565,7 @@ button.list-group-item {
   }
 
   .searchViewTheme .textInput {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    background-color: transparent;
-    border: 2px solid rgb(189, 212, 220);
-    border-radius: @border-radius-text-input;
-    box-sizing: border-box;
-    color: inherit;
-    font-family: inherit;
-    font-weight: inherit;
-    font-size: 1.1em;
-    font-style: inherit;
-    outline: none;
-    padding-left: @padding-search-input-left;
-    padding-right: @padding-search-input-right;
     width: 80%;
-    margin-left: -@margin-left-search-input;
   }
 
   .search-box svg {
