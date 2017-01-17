@@ -237,8 +237,9 @@ public class ProjectService implements ProjectResource {
                 to.setDefaultProjectType(projectType);
             }
         }
-        // TODO Currently all Projects are created as Current
-        // to.setStatus(from.getStatus());
+        if (from.getStatus() != null) {
+            to.setStatus(from.getStatus());
+        }
 
         // keep source URLs unless they are specifically overwritten
         if (from.getSourceViewURL() != null) {

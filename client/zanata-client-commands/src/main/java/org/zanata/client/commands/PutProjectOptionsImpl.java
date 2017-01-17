@@ -15,6 +15,7 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements
     private String sourceViewUrl;
     private String sourceCheckoutUrl;
     private String defaultProjectType;
+    private String projectStatus;
 
     @Override
     public String getCommandName() {
@@ -23,7 +24,7 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements
 
     @Override
     public String getCommandDescription() {
-        return "Creates or updates a Zanata project.";
+        return "Creates or updates a Zanata project. Unspecified options will not be updated.";
     }
 
     @Override
@@ -39,50 +40,48 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements
     }
 
     @Override
-    @Option(name = "--project-name", metaVar = "NAME", required = true,
-            usage = "Project name")
+    @Option(name = "--project-name", metaVar = "NAME",
+            usage = "Project name (required for new projects)")
     public void setProjectName(String name) {
         this.projectName = name;
     }
 
     @Override
-    @Option(name = "--project-desc", metaVar = "DESC", required = true,
+    @Option(name = "--project-desc", metaVar = "DESC",
             usage = "Project description")
     public void setProjectDesc(String desc) {
         this.projectDesc = desc;
     }
 
     @Override
-    @Option(
-            name = "--source-view-url",
+    @Option(name = "--source-view-url",
             metaVar = "SRCVURL",
-            required = false,
             usage = "URL for original source in a human-readable format, e.g. https://github.com/zanata/zanata")
-    public
-            void setSourceViewUrl(String sourceViewUrl) {
+    public void setSourceViewUrl(String sourceViewUrl) {
         this.sourceViewUrl = sourceViewUrl;
     }
 
     @Override
-    @Option(
-            name = "--source-checkout-url",
+    @Option(name = "--source-checkout-url",
             metaVar = "SRCURL",
-            required = false,
             usage = "URL for original source in a machine-readable format, e.g. git@github.com:zanata/zanata.git")
-    public
-            void setSourceCheckoutUrl(String sourceCheckoutUrl) {
+    public void setSourceCheckoutUrl(String sourceCheckoutUrl) {
         this.sourceCheckoutUrl = sourceCheckoutUrl;
     }
 
     @Override
-    @Option(
-            name = "--default-project-type",
+    @Option(name = "--default-project-type",
             metaVar = "TYPE",
-            required = true,
-            usage = "Default project type. Versions under this project that do not specify a project type will use this default. Valid values are : Utf8Properties, Properties, Gettext, Podir, Xliff, Xml, File. See https://github.com/zanata/zanata/wiki/Project-Types")
-    public
-            void setDefaultProjectType(String defaultProjectType) {
+            usage = "Default project type (required for new projects). Versions under this project that do not specify a project type will use this default. Valid values are : Utf8Properties, Properties, Gettext, Podir, Xliff, Xml, File. See https://github.com/zanata/zanata/wiki/Project-Types")
+    public void setDefaultProjectType(String defaultProjectType) {
         this.defaultProjectType = defaultProjectType;
+    }
+
+    @Option(name = "--project-status",
+            metaVar = "STATUS",
+            usage = "Project status (active, readonly)")
+    public void setProjectStatus(String status) {
+        this.projectStatus = status;
     }
 
     @Override
@@ -115,4 +114,8 @@ public class PutProjectOptionsImpl extends ConfigurableOptionsImpl implements
         return defaultProjectType;
     }
 
+    @Override
+    public String getProjectStatus() {
+        return projectStatus;
+    }
 }
