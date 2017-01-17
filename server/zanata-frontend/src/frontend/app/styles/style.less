@@ -91,11 +91,10 @@ body {
 
 .popover {
   position: absolute;
-  top: 0;
-  right: 0;
+  margin-top: -10px;
   z-index: 1060;
   display: none;
-  max-width: 276px;
+  max-width: 250px;
   padding: @padding-badge-horizontal;
   font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
   font-style: normal;
@@ -117,6 +116,47 @@ body {
   border: 1px solid rgba(0,0,0,.2);
   border-radius: 6px;
   box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+h3.popover-title {
+  font-size:1em;
+  text-transform: uppercase;
+}
+
+.popover-content p {
+  margin-bottom: .714em;
+}
+
+.popover.top>.arrow {
+  left:50%;
+  margin-left: -11px;
+  border-bottom-width: 0;
+  border-top-color: #999;
+  border-top-color: rgba(0,0,0,.25);
+  bottom: -11px;
+}
+.popover>.arrow {
+  border-width: 11px;
+}
+.popover>.arrow, .popover>.arrow:after {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+
+.popover.top>.arrow:after {
+  content: " ";
+  bottom: 1px;
+  margin-left: -10px;
+  border-bottom-width: 0;
+  border-top-color: #fff;
+}
+.popover>.arrow:after {
+  border-width: 10px;
+  content: "";
 }
 
 .nav-bar {

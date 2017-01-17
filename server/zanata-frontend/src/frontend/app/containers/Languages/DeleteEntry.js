@@ -4,6 +4,7 @@ import {
   Popover,
   Overlay
 } from 'react-bootstrap'
+import ReactDOM from 'react-dom'
 
 class DeleteEntry extends Component {
 
@@ -24,12 +25,13 @@ class DeleteEntry extends Component {
     /* eslint-disable react/jsx-no-bind */
     return (
       <div className='D(ib)'>
-        <Button bsSize='small'
+        <Button bsSize='small' className='langdel-btn'
           onClick={() => handleDeleteEntryDisplay(true)}>
           <i className='fa fa-times Mend(ee)'></i>Delete
         </Button>
-        <Overlay show={show} container={this} placement='right'>
-          <Popover id='popover-positioned-top'>
+        <Overlay show={show} placement='top'
+          target={() => ReactDOM.findDOMNode(this)}>
+          <Popover id='popover-contained' title='Delete language'>
             <p>Are you sure you want to delete&nbsp;
               <strong>{locale.displayName}</strong>?&nbsp;
             </p>
