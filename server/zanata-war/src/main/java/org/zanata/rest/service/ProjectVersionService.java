@@ -1,5 +1,6 @@
 package org.zanata.rest.service;
 
+import static org.zanata.common.EntityStatus.ACTIVE;
 import static org.zanata.common.EntityStatus.OBSOLETE;
 import static org.zanata.common.EntityStatus.READONLY;
 import static org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService.TextFlowResultTransformer;
@@ -181,16 +182,18 @@ public class ProjectVersionService implements ProjectVersionResource {
                 .status(Response.Status.FORBIDDEN)
                 .entity("Project Iiteration '" + projectSlug + ":"
                     + versionSlug + "' is obsolete.").build();
-        } else if (Objects.equal(hProjectVersion.getStatus(), READONLY)) {
-            // Iteration is ReadOnly
-            return Response
-                .status(Response.Status.FORBIDDEN)
-                .entity("Project Iteration '" + projectSlug + ":"
-                    + versionSlug + "' is read-only.").build();
         } else { // must be an update operation
             // pre-emptive entity permission check
             identity.checkPermission(hProjectVersion, "update");
 
+            if (Objects.equal(hProjectVersion.getStatus(), READONLY)
+                    && !Objects.equal(projectVersion.getStatus(), ACTIVE)) {
+                // User is attempting to update a ReadOnly version
+                return Response
+                        .status(Response.Status.FORBIDDEN)
+                        .entity("Project Iteration '" + projectSlug + ":"
+                                + versionSlug + "' is read-only.").build();
+            }
             copyProjectConfiguration(projectVersion, hProjectVersion, null);
 
             etag = eTagUtils.generateETagForIteration(projectSlug, versionSlug);
@@ -417,6 +420,9 @@ public class ProjectVersionService implements ProjectVersionResource {
             projectType = null;
         }
 
+        if (from.getStatus() != null) {
+            to.setStatus(from.getStatus());
+        }
         if (projectType == null) {
             if (hProject != null) {
                 to.setProjectType(hProject.getDefaultProjectType());

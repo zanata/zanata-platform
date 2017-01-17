@@ -16,10 +16,15 @@ public interface PutVersionOptions extends ConfigurableOptions {
             required = false)
     public void setProjectType(String type);
 
+    @Option(name = "--version-status", metaVar = "STATUS", usage = "Version status (active, readonly)")
+    public void setVersionStatus(String status);
+
     public String getVersionProject();
 
     public String getVersionSlug();
 
     public String getProjectType();
+
+    public String getVersionStatus();
 
 }
