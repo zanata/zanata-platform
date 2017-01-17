@@ -11,7 +11,7 @@ const LanguageTeamTeaser = ({
 }) => {
   const link = window.config.baseUrl + '/language/view/' + details.id
   return (
-    <div className='langTeamTeaserView' name={name}>
+    <div className='teamTeaserView' name={name}>
       <div className='flex-row'>
         <Link link={link} className='bold-font'>
           {details.localeDetails.displayName}
@@ -19,10 +19,10 @@ const LanguageTeamTeaser = ({
         <span className='text-muted langTeamTeaserViewId '>
           {details.id}
         </span>
-      </div>
-      <div className='langTeamTeaserViewMembers'>
-        <Icon name='users' classname='usersicon-muted' />
-      {details.memberCount}
+        <div className='langTeamTeaserViewMembers'>
+          <Icon name='users' className='s0 usersicon-muted' />
+          {details.memberCount}
+        </div>
       </div>
     </div>
   )

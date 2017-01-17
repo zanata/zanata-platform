@@ -206,10 +206,10 @@ body {
 
 .contentViewContainer {
   max-width: 48em;
-  margin-right: auto;
   width: 100%;
   margin-top: @margin-base;
   margin-left: @margin-base;
+  margin-right: @margin-base;
 }
 
 .container:focus {
@@ -3806,13 +3806,13 @@ button.list-group-item {
   margin-top: 1.5rem;
 }
 
-.groupTeaserViewTheme {
+.teaserViewTheme {
   align-items:center ;
   flex-direction: '';
   margin-bottom:@margin-rh;
 }
 
-.groupTeaserInner {
+.teaserInner {
   flex-direction:column;
   flex:1;
 }
@@ -3823,7 +3823,7 @@ button.list-group-item {
   font-size: 0.833rem;
 }
 
-.langTeamTeaserView {
+.teamTeaserView {
   align-items: center;
   flex-direction: '';
   margin-bottom: 0.75rem;
@@ -3845,6 +3845,8 @@ button.list-group-item {
   align-items: center;
   margin-left:auto;
   flex-direction:'';
+  float:right;
+  padding-right:2em;
 }
 
 .embed-responsive {
@@ -4626,7 +4628,7 @@ button.list-group-item {
     margin-left: auto;
   }
 
-  .groupTeaserInner {
+  .teaserInner {
     flex-direction:row;
     flex:1;
   }

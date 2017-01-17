@@ -34,11 +34,11 @@ const GroupTeaser = ({
                   ? 'Fw(600) C(muted)'
                   : 'Fw(600)'
   return (
-    <div className='groupTeaserViewTheme' name={name}>
+    <div className='teaserViewTheme' name={name}>
       {/* <View className='Mend(rh)'>
         TODO: Statistics Donut here
       </View> */}
-      <div className='groupTeaserInner'>
+      <div className='teaserInner'>
         <div>
           <Link link={link} useHref className={className}>
             {status !== statusIcons.ACTIVE &&
