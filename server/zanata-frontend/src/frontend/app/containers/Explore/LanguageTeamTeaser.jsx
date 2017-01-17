@@ -1,17 +1,5 @@
 import React, { PropTypes } from 'react'
-import {
-  Link,
-  View,
-  Icon
-} from 'zanata-ui'
-
-const viewTheme = {
-  base: {
-    ai: 'Ai(c)',
-    fld: '',
-    m: 'Mb(rh)'
-  }
-}
+import { Link, Icon } from '../../components'
 
 /**
  * Entry of Language team search results
@@ -23,28 +11,20 @@ const LanguageTeamTeaser = ({
 }) => {
   const link = window.config.baseUrl + '/language/view/' + details.id
   return (
-    <View theme={viewTheme} name={name}>
-      <View theme={{ base: {fld: 'Fld(r)'} }}>
-        <Link link={link}
-          theme={{ base: { fw: 'Fw(600)' } }}>
+    <div className='langTeamTeaserView' name={name}>
+      <div className='flex-row'>
+        <Link link={link} className='bold-font'>
           {details.localeDetails.displayName}
         </Link>
-        <span className='C(muted) Mstart(rq)'>
+        <span className='text-muted langTeamTeaserViewId '>
           {details.id}
         </span>
-      </View>
-      <View theme={{ base: { ai: 'Ai(c)', fld: '', m: 'Mstart(a)' } }} >
-        <Icon name='users'
-          theme={{
-            base: {
-              c: 'C(muted)',
-              m: 'Mend(rq) Mstart(rh)'
-            }
-          }}
-        />
+      </div>
+      <div className='langTeamTeaserViewMembers'>
+        <Icon name='users' classname='usersicon-muted' />
       {details.memberCount}
-      </View>
-    </View>
+      </div>
+    </div>
   )
 }
 
