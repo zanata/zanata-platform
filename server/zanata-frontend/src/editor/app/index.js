@@ -18,7 +18,9 @@ import rootReducer from './reducers'
 import Root from './containers/Root'
 import NeedSlugMessage from './containers/NeedSlugMessage'
 
+import 'zanata-ui/dist/zanata-ui.css'
 import './index.css'
+
 
 /**
  * Top level of the Zanata editor app.

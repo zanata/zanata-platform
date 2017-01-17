@@ -42,3 +42,9 @@ By default it will try to install npm modules from npm registry (default cache T
 
 For extensive details on each part of the front-end see the
 [documentation](./docs).
+
+
+## ignore-scripts
+
+This module is setup to disable lifecycle scripts for yarn command by default. See help using `yarn -h`
+The configuration is in .yarnrc in this module.

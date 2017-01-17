@@ -5,7 +5,7 @@ import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
 import Pager from '../../app/components/Pager'
 import { Icon } from 'zanata-ui'
-import mockGettextCatalog from '../mockAngularGettext'
+import mockGettextCatalog from '../mock/mockAngularGettext'
 
 describe('PagerTest', () => {
   it('Pager markup', () => {
