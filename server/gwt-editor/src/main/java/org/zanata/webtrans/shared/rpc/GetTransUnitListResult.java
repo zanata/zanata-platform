@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 
@@ -61,7 +62,7 @@ public class GetTransUnitListResult implements DispatchResult {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("documentId", documentId)
+        return MoreObjects.toStringHelper(this).add("documentId", documentId)
                 .add("units.size", units == null ? 0 : units.size())
                 .add("gotoRow", gotoRow).add("targetOffset", targetOffset)
                 .add("targetPage", targetPage)

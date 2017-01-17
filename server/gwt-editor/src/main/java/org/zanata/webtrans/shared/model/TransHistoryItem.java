@@ -3,6 +3,7 @@ package org.zanata.webtrans.shared.model;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 
 import com.google.common.base.Objects;
@@ -73,7 +74,7 @@ public class TransHistoryItem extends ComparableByDate implements
     @Override
     public String toString() {
         // @formatter:off
-      return Objects.toStringHelper(this).
+      return MoreObjects.toStringHelper(this).
             add("versionNum", versionNum).
             add("contents", contents).
             add("status", status).

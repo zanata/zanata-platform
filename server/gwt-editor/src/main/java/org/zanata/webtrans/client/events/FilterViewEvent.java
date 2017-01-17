@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.events;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.shared.rpc.EditorFilter;
@@ -103,7 +104,7 @@ public class FilterViewEvent extends GwtEvent<FilterViewEventHandler> implements
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("filterTranslated", filterTranslated)
                 .add("filterFuzzy", filterFuzzy)
                 .add("filterUntranslated", filterUntranslated)

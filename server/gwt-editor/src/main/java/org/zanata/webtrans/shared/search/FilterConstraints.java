@@ -23,6 +23,7 @@ package org.zanata.webtrans.shared.search;
 //TODO May want to add document(someDocument) to these constraints
 //so that only one search method is needed on the interface.
 
+import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 
@@ -80,7 +81,7 @@ public class FilterConstraints {
     @Override
     public String toString() {
         // @formatter:off
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("searchString", searchString)
                 .add("isCaseSensitive", isCaseSensitive)
                 .add("searchInSource", searchInSource)

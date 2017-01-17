@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.model;
 
 import java.util.Date;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 
 import com.google.common.base.Objects;
@@ -89,7 +90,7 @@ public class TransMemoryDetails implements IsSerializable {
     @Override
     public String toString() {
         // @formatter:off
-      return Objects.toStringHelper(this).
+      return MoreObjects.toStringHelper(this).
             add("sourceComment", sourceComment).
             add("targetComment", targetComment).
             add("projectName", projectName).

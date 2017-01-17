@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import com.google.common.base.Objects;
@@ -67,7 +68,7 @@ public class TransUnitUpdated implements SessionEventData,
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("tuUpdateInfo", tuUpdateInfo)
                 .add("updatedInSession", updatedInSession)
                 .add("updateType", updateType)

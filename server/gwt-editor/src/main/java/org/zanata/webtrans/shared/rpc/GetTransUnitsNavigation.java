@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.search.FilterConstraints;
@@ -56,7 +57,7 @@ public class GetTransUnitsNavigation {
     @Override
     public String toString() {
         // @formatter:off
-      return Objects.toStringHelper(this).
+      return MoreObjects.toStringHelper(this).
             add("documentId", documentId).
             add("activeStates", activeStates).
             add("editorFilter", editorFilter).
