@@ -62,7 +62,9 @@ import org.zanata.rest.client.CopyTransClient;
 import org.zanata.rest.client.FileResourceClient;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.client.SourceDocResourceClient;
+import org.zanata.rest.client.SourceFileResourceClient;
 import org.zanata.rest.client.TransDocResourceClient;
+import org.zanata.rest.client.TranslatedFileResourceClient;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
@@ -117,6 +119,10 @@ public class MockServerRule extends ExternalResource {
     private TransDocResourceClient transDocClient;
     @Mock
     private FileResourceClient fileResourceClient;
+    @Mock
+    private SourceFileResourceClient sourceFileResourceClient;
+    @Mock
+    private TranslatedFileResourceClient translatedFileResourceClient;
 
     public MockServerRule() {
         MockitoAnnotations.initMocks(this);
@@ -348,6 +354,8 @@ public class MockServerRule extends ExternalResource {
                         pullOpts.getProjectVersion())).thenReturn(
                 sourceDocClient);
         when(clientFactory.getFileResourceClient()).thenReturn(fileResourceClient);
+        when(clientFactory.getSourceFileResourceClient()).thenReturn(sourceFileResourceClient);
+        when(clientFactory.getTranslatedFileResourceClient()).thenReturn(translatedFileResourceClient);
         // return provided remote doc meta list
         when(sourceDocClient.getResourceMeta(null)).thenReturn(remoteDocList);
         // return provided source stream
@@ -370,7 +378,7 @@ public class MockServerRule extends ExternalResource {
                 Response.Status.OK);
         when(downloadTransResponse.readEntity(InputStream.class))
                 .thenReturn(transFileStream);
-        return new RawPullCommand(pullOpts, fileResourceClient, clientFactory);
+        return new RawPullCommand(pullOpts, clientFactory);
     }
 }
 

@@ -271,6 +271,10 @@ public class RestClientFactory {
         return new SourceDocResourceClient(this, projectSlug, versionSlug);
     }
 
+    public SourceFileResourceClient getSourceFileResourceClient() {
+        return new SourceFileResourceClient(this);
+    }
+
     public StatisticsResourceClient getStatisticsClient() {
         return new StatisticsResourceClient(this);
     }
@@ -278,6 +282,10 @@ public class RestClientFactory {
     public TransDocResourceClient getTransDocResourceClient(String projectSlug,
             String versionSlug) {
         return new TransDocResourceClient(this, projectSlug, versionSlug);
+    }
+
+    public TranslatedFileResourceClient getTranslatedFileResourceClient() {
+        return new TranslatedFileResourceClient(this);
     }
 
     public ProjectIterationLocalesClient getProjectLocalesClient(

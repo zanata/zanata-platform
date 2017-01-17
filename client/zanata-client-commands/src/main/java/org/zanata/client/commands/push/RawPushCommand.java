@@ -27,9 +27,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,11 +44,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ResponseProcessingException;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -81,6 +76,7 @@ import com.google.common.collect.ImmutableList;
 
 import static org.zanata.client.commands.ConsoleInteractor.DisplayMode;
 import static org.zanata.client.commands.StringUtil.multiline;
+import static org.zanata.rest.client.ClientUtil.calculateFileMD5;
 
 /**
  * Command to send files directly to the server without parsing on the client.
@@ -103,26 +99,25 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
     private final ConsoleInteractor consoleInteractor;
 
-    // TODO rename to fileResource or similar
-    private final FileResourceClient client;
+    private final FileResourceClient fileResource;
 
     public RawPushCommand(PushOptions opts) {
         super(opts);
-        client = getClientFactory().getFileResourceClient();
+        fileResource = getClientFactory().getFileResourceClient();
         consoleInteractor = new ConsoleInteractorImpl(opts);
     }
 
     @VisibleForTesting
     public RawPushCommand(PushOptions opts, RestClientFactory clientFactory) {
         super(opts, clientFactory);
-        client = getClientFactory().getFileResourceClient();
+        fileResource = getClientFactory().getFileResourceClient();
         consoleInteractor = new ConsoleInteractorImpl(opts);
     }
 
     public RawPushCommand(PushOptions opts, RestClientFactory clientFactory,
             ConsoleInteractor console) {
         super(opts, clientFactory);
-        client = getClientFactory().getFileResourceClient();
+        fileResource = getClientFactory().getFileResourceClient();
         this.consoleInteractor = console;
     }
 
@@ -304,7 +299,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         consoleInteractor.printfln(DisplayMode.Warning,
                 "Using EXPERIMENTAL project type 'file'.");
 
-        List<FileTypeInfo> serverAcceptedTypes = fileTypeInfoList(client);
+        List<FileTypeInfo> serverAcceptedTypes = fileTypeInfoList(fileResource);
 
         if (getOpts().getListFileTypes()) {
             printFileTypes(serverAcceptedTypes);
@@ -560,7 +555,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
     private void pushDocumentToServer(String docId, String fileType,
             @Nullable String locale, File docFile) {
         try {
-            String md5hash = calculateFileHash(docFile);
+            String md5hash = calculateFileMD5(docFile);
             if (docFile.length() <= getOpts().getChunkSize()) {
                 log.info("    transmitting file [{}] as single chunk",
                         docFile.getAbsolutePath());
@@ -629,39 +624,17 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         ChunkUploadResponse response;
         if (locale == null) {
             response =
-                    client.uploadSourceFile(getOpts().getProj(),
+                    fileResource.uploadSourceFile(getOpts().getProj(),
                             getOpts().getProjectVersion(), docName, uploadForm);
         } else {
             response =
-                    client.uploadTranslationFile(getOpts().getProj(),
+                    fileResource.uploadTranslationFile(getOpts().getProj(),
                             getOpts().getProjectVersion(), locale, docName,
                             getOpts().getMergeType(), uploadForm);
         }
         log.debug("response from server: {}", response);
         ConsoleUtils.endProgressFeedback();
         return response;
-    }
-
-    private String calculateFileHash(File srcFile) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            InputStream fileStream = new FileInputStream(srcFile);
-            try {
-                fileStream = new DigestInputStream(fileStream, md);
-                byte[] buffer = new byte[256];
-                //noinspection StatementWithEmptyBody
-                while (fileStream.read(buffer) > 0) {
-                    // just keep digesting the input
-                }
-            } finally {
-                fileStream.close();
-            }
-            @SuppressWarnings("UnnecessaryLocalVariable")
-            String md5hash = new String(Hex.encodeHex(md.digest()));
-            return md5hash;
-        } catch (NoSuchAlgorithmException | IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**

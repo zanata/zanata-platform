@@ -59,4 +59,9 @@ public class Application extends javax.ws.rs.core.Application {
     private static <T> Stream<T> stream(Iterable<T> iterable) {
         return StreamSupport.stream(iterable.spliterator(), false);
     }
+
+    public static void main(String[] args) {
+        Set<Class<?>> classes = buildClassesSet();
+        classes.forEach(System.out::println);
+    }
 }

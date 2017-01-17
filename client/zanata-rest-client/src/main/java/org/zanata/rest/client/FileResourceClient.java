@@ -24,6 +24,7 @@ package org.zanata.rest.client;
 import java.lang.annotation.Annotation;
 import java.net.URI;
 import java.util.List;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
@@ -38,8 +39,6 @@ import org.zanata.common.DocumentType;
 import org.zanata.rest.DocumentFileUploadForm;
 import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.rest.service.FileResource;
-import com.google.common.base.Throwables;
-
 
 /**
  * @author Patrick Huang <a
@@ -55,7 +54,6 @@ public class FileResourceClient {
     FileResourceClient(RestClientFactory restClientFactory) {
         this.factory = restClientFactory;
         baseUri = restClientFactory.getBaseUri();
-
     }
 
     @Deprecated
@@ -99,8 +97,10 @@ public class FileResourceClient {
         // otherwise Resteasy can't find the writer for multipart form
         Response response = builder.post(Entity.entity(documentFileUploadForm,
                 MediaType.MULTIPART_FORM_DATA_TYPE, multipartFormAnnotations));
+        if (response.getStatus() == 404) {
+            throw new NotFoundException("Encountered 404 during post form", response);
+        }
         response.bufferEntity();
-
         return response.readEntity(ChunkUploadResponse.class);
     }
 
@@ -124,6 +124,9 @@ public class FileResourceClient {
 
         Response response = builder.post(Entity.entity(documentFileUploadForm,
                 MediaType.MULTIPART_FORM_DATA_TYPE, multipartFormAnnotations));
+        if (response.getStatus() == 404) {
+            throw new NotFoundException("Encountered 404 during post form", response);
+        }
         response.bufferEntity();
         return response.readEntity(ChunkUploadResponse.class);
     }

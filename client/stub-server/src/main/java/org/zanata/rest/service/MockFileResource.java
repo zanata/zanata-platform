@@ -26,13 +26,14 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.ws.rs.Path;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.output.NullOutputStream;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
@@ -54,7 +55,6 @@ import static org.zanata.common.ProjectType.fileProjectSourceDocTypes;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Path(FileResource.SERVICE_PATH)
 public class MockFileResource implements FileResource {
     @Override
     @Deprecated
@@ -92,20 +92,34 @@ public class MockFileResource implements FileResource {
     @Override
     public Response uploadSourceFile(String projectSlug, String iterationSlug,
             String docId, @MultipartForm DocumentFileUploadForm uploadForm) {
-        return Response.status(Response.Status.CREATED).entity(
-                new ChunkUploadResponse(1L, 1, false,
-                        "Upload of new source document successful."))
-                .build();
+        try {
+            long actual = IOUtils
+                    .copyLarge(uploadForm.getFileStream(), new NullOutputStream());
+            return Response.status(Response.Status.CREATED).entity(
+                    new ChunkUploadResponse(1L, 1, false,
+                            "Upload of new source document successful: (" +
+                                    actual + " bytes)"))
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
     public Response uploadTranslationFile(String projectSlug,
             String iterationSlug, String localeId, String docId, String merge,
             @MultipartForm DocumentFileUploadForm uploadForm) {
-        return Response.ok(
-                new ChunkUploadResponse(1L, 1, false,
-                        "Translations uploaded successfully"))
-                .build();
+        try {
+            long actual = IOUtils
+                    .copyLarge(uploadForm.getFileStream(), new NullOutputStream());
+            return Response.ok(
+                    new ChunkUploadResponse(1L, 1, false,
+                            "Translation uploaded successfully: (" +
+                                    actual + " bytes)"))
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -129,7 +143,7 @@ public class MockFileResource implements FileResource {
                 .entity(output).build();
     }
 
-    private static Resource sampleResource(String docId) {
+    static Resource sampleResource(String docId) {
         Resource doc = new Resource(docId);
         doc.getTextFlows().add(new TextFlow("hello", LocaleId.EN_US,
                 "hello world"));
@@ -157,7 +171,7 @@ public class MockFileResource implements FileResource {
                 .entity(output).build();
     }
 
-    private static TranslationsResource sampleTransResource() {
+    static TranslationsResource sampleTransResource() {
         TranslationsResource resource = new TranslationsResource();
         resource.getExtensions(true);
         TextFlowTarget hello = new TextFlowTarget("hello");

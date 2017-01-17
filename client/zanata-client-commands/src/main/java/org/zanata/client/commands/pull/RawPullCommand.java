@@ -27,7 +27,6 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.Response;
 
@@ -44,6 +43,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.client.ClientUtil;
 import org.zanata.rest.client.FileResourceClient;
 import org.zanata.rest.client.RestClientFactory;
+import org.zanata.rest.client.SourceFileResourceClient;
 import org.zanata.rest.service.FileResource;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -59,19 +59,21 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
     private static final Logger log = LoggerFactory
             .getLogger(RawPullCommand.class);
 
-    private FileResourceClient fileResourceClient;
+    private final FileResourceClient fileResource;
+    private final SourceFileResourceClient sourceFileResource;
 
     public RawPullCommand(PullOptions opts) {
         super(opts);
-        fileResourceClient = getClientFactory().getFileResourceClient();
+        fileResource = getClientFactory().getFileResourceClient();
+        sourceFileResource = getClientFactory().getSourceFileResourceClient();
     }
 
     @VisibleForTesting
     public RawPullCommand(PullOptions opts,
-            FileResourceClient fileResourceClient,
             RestClientFactory clientFactory) {
         super(opts, clientFactory);
-        this.fileResourceClient = fileResourceClient;
+        this.fileResource = clientFactory.getFileResourceClient();
+        this.sourceFileResource = clientFactory.getSourceFileResourceClient();
     }
 
     @Override
@@ -165,7 +167,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
                 if (pullSrc) {
                     Response response;
                     try {
-                        response = fileResourceClient.downloadSourceFile(
+                        response = fileResource.downloadSourceFile(
                                 getOpts().getProj(), getOpts()
                                         .getProjectVersion(),
                                 FileResource.FILETYPE_RAW_SOURCE_DOCUMENT,
@@ -234,7 +236,7 @@ public class RawPullCommand extends PushPullCommand<PullOptions> {
             LocaleMapping locMapping, LocaleId locale) throws IOException {
         try {
             Response response =
-                    fileResourceClient.downloadTranslationFile(getOpts()
+                    fileResource.downloadTranslationFile(getOpts()
                                     .getProj(), getOpts()
                                     .getProjectVersion(), locale.getId(),
                             fileExtension, qualifiedDocName);

@@ -21,15 +21,27 @@
 
 package org.zanata.rest.client;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.input.CountingInputStream;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 
 /**
@@ -37,6 +49,34 @@ import org.apache.commons.lang3.StringUtils;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class ClientUtil {
+
+    public static String calculateFileMD5(File f)
+            throws IOException {
+        try (BufferedInputStream in = new BufferedInputStream(
+                new FileInputStream(f))) {
+            return calculateMD5AndSize(in).getLeft();
+        }
+    }
+
+    public static Pair<String, Long> calculateMD5AndSize(InputStream in) {
+        CountingInputStream countingStream = new CountingInputStream(in);
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            try {
+                in = new DigestInputStream(countingStream, md);
+                byte[] buffer = new byte[256];
+                while (in.read(buffer) > 0) {
+                    // continue
+                }
+            } finally {
+                in.close();
+            }
+            String hash = new String(Hex.encodeHex(md.digest()));
+            return new ImmutablePair<>(hash, countingStream.getByteCount());
+        } catch (NoSuchAlgorithmException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public static String getBaseURL(String movedTo) {
         try {

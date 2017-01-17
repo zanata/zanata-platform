@@ -16,7 +16,7 @@
       <!-- We can use the JAVA_HOME env variable instead of this -->
       <!--             <property name="javaHome">/usr/lib/jvm/jre-1.6.0-openjdk.x86_64</property> -->
       <!--
-                  <property name="javaVmArguments">-Xms1536m -Xmx1536m -XX:MaxPermSize=256m -Dorg.jboss.as.logging.per-deployment=false -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8787</property>
+                  <property name="javaVmArguments">-Xms1536m -Xmx1536m -Dorg.jboss.as.logging.per-deployment=false -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8787</property>
       -->
       <property name="javaVmArguments">-Dorg.jboss.as.logging.per-deployment=false -XX:-OmitStackTraceInFastThrow -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=target</property>
       <!-- From JBOSS_HOME/standalone/configuration -->

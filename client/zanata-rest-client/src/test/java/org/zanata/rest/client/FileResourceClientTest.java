@@ -21,22 +21,13 @@
 
 package org.zanata.rest.client;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.input.CountingInputStream;
-import org.apache.commons.io.input.ProxyInputStream;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -55,8 +46,10 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.StubbingServerRule;
 
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
+import javax.ws.rs.core.Response;
+
 import static org.junit.Assert.*;
+import static org.zanata.rest.client.ClientUtil.calculateMD5AndSize;
 
 public class FileResourceClientTest {
     private static final Logger log =
@@ -115,7 +108,7 @@ public class FileResourceClientTest {
         uploadForm.setFileStream(fileInputStream);
         uploadForm.setFileType("odt");
         Pair<String, Long> fileHashAndSize =
-                calculateFileHashAndSize(loadFromClasspath(resource));
+                calculateMD5AndSize(loadFromClasspath(resource));
         uploadForm.setHash(fileHashAndSize.getLeft());
         uploadForm.setFirst(true);
         uploadForm.setLast(true);
@@ -145,7 +138,7 @@ public class FileResourceClientTest {
         uploadForm.setFileStream(fileInputStream);
         uploadForm.setFileType("odt");
         Pair<String, Long> fileHashAndSize =
-                calculateFileHashAndSize(loadFromClasspath(resource));
+                calculateMD5AndSize(loadFromClasspath(resource));
         uploadForm.setHash(fileHashAndSize.getLeft());
         uploadForm.setFirst(true);
         uploadForm.setLast(true);
@@ -159,48 +152,36 @@ public class FileResourceClientTest {
         assertThat(uploadResponse.getAcceptedChunks(), Matchers.equalTo(1));
     }
 
-    private Pair<String, Long> calculateFileHashAndSize(InputStream in) {
-        CountingInputStream countingStream = new CountingInputStream(in);
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            try {
-                in = new DigestInputStream(countingStream, md);
-                byte[] buffer = new byte[256];
-                while (in.read(buffer) > 0) {
-                    // continue
-                }
-            } finally {
-                in.close();
-            }
-            String hash = new String(Hex.encodeHex(md.digest()));
-            return new ImmutablePair<>(hash, countingStream.getByteCount());
-        } catch (NoSuchAlgorithmException | IOException e) {
-            throw new RuntimeException(e);
+
+    @Test
+    public void testDownloadSourceFile() throws IOException {
+        Response response =
+                client.downloadSourceFile("about-fedora", "master", "pot",
+                        "About-Fedora");
+        assertEquals(200, response.getStatus());
+        try (InputStream inputStream = response.readEntity(InputStream.class)) {
+            PoReader2 reader = new PoReader2();
+            Resource resource =
+                    reader.extractTemplate(new InputSource(inputStream),
+                            LocaleId.EN_US, "About-Fedora");
+            assertThat(resource.getTextFlows(), Matchers.hasSize(1));
         }
     }
 
     @Test
-    public void testDownloadSourceFile() throws IOException {
-        InputStream inputStream =
-                client.downloadSourceFile("about-fedora", "master", "pot",
-                        "About-Fedora").readEntity(InputStream.class);
-        PoReader2 reader = new PoReader2();
-        Resource resource =
-                reader.extractTemplate(new InputSource(inputStream),
-                        LocaleId.EN_US, "About-Fedora");
-        assertThat(resource.getTextFlows(), Matchers.hasSize(1));
-    }
-
-    @Test
-    public void testDownloadTranslationFile() {
-        InputStream inputStream =
+    public void testDownloadTranslationFile() throws IOException {
+        Response response =
                 client.downloadTranslationFile("about-fedora", "master", "es",
-                        "po", "About-Fedora").readEntity(InputStream.class);
-        PoReader2 reader = new PoReader2();
-        TranslationsResource translationsResource =
-                reader.extractTarget(new InputSource(inputStream));
-        assertThat(translationsResource.getTextFlowTargets(),
-                Matchers.hasSize(1));
+                        "po", "About-Fedora");
+        assertEquals(200, response.getStatus());
+        try (InputStream inputStream =
+                response.readEntity(InputStream.class)) {
+            PoReader2 reader = new PoReader2();
+            TranslationsResource translationsResource =
+                    reader.extractTarget(new InputSource(inputStream));
+            assertThat(translationsResource.getTextFlowTargets(),
+                    Matchers.hasSize(1));
+        }
     }
 
 }
