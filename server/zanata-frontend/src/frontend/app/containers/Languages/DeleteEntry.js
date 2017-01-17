@@ -5,6 +5,7 @@ import {
   Overlay
 } from 'react-bootstrap'
 import ReactDOM from 'react-dom'
+import { Icon } from '../../components'
 
 class DeleteEntry extends Component {
 
@@ -27,7 +28,8 @@ class DeleteEntry extends Component {
       <div className='D(ib)'>
         <Button bsSize='small' className='langdel-btn'
           onClick={() => handleDeleteEntryDisplay(true)}>
-          <i className='fa fa-times Mend(ee)'></i>Delete
+          <Icon name='cross' className='n1 crossicon' title='cross' />
+          Delete
         </Button>
         <Overlay show={show} placement='top'
           target={() => ReactDOM.findDOMNode(this)}>
