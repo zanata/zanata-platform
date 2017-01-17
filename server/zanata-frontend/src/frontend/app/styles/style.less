@@ -3011,11 +3011,18 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   vertical-align:sub;
 }
 
-.usersicon-muted {
+.usersicon-muted, .translateicon-muted {
   color:@brand-muted;
   margin-right: @margin-rh;
   margin-left: @margin-rq;
   vertical-align:sub;
+}
+
+img.avatar-round {
+  margin-right:@margin-rq;
+  border-radius:@border-radius-img;
+  height: 2.25rem;
+  width: 2.25rem;
 }
 
 .recordCount {
@@ -3855,6 +3862,11 @@ button.list-group-item {
   flex:1;
 }
 
+.userTeaserInner {
+  align-items:center;
+  flex-direction:row;
+}
+
 .teaserHeaderInner {
   margin-left:@margin-rh;
   color:@brand-secondary;
@@ -3872,6 +3884,11 @@ button.list-group-item {
   align-items: center;
   flex-direction: '';
   margin-bottom: 0.75rem;
+}
+
+.wordsTranslatedView {
+  align-items: center;
+  margin-left: auto;
 }
 
 .flex-row {
