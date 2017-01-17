@@ -20,7 +20,7 @@ const LanguageTeamTeaser = ({
           {details.id}
         </span>
         <div className='langTeamTeaserViewMembers'>
-          <Icon name='users' className='s0 usersicon-muted' />
+          <Icon name='users' className='s1 usersicon-muted' />
           {details.memberCount}
         </div>
       </div>
