@@ -4214,10 +4214,13 @@ button.list-group-item {
   background-clip: padding-box;
   border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, .2);
-  border-radius: @border-radius-base;
+  border-radius: 1.125rem;
   outline: 0;
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
   box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .modal-backdrop {
@@ -4300,7 +4303,6 @@ button.list-group-item {
 
 @media (min-width: 768px) {
   .modal-dialog {
-    width: 600px;
     margin: @margin-modal-dialog auto;
   }
 
