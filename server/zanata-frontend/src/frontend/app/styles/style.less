@@ -29,7 +29,7 @@ html {
 }
 
 .react-autosuggest__input:focus {
-  outline: none;
+  outline:0;
 }
 
 .react-autosuggest__container--open .react-autosuggest__input {
@@ -87,6 +87,76 @@ body {
 
 .page {
   overflow: hidden;
+}
+
+.popover {
+  position: absolute;
+  margin-top: -10px;
+  z-index: 1060;
+  display: none;
+  max-width: 250px;
+  padding: @padding-badge-horizontal;
+  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-break: auto;
+  line-height: 1.42857143;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  white-space: normal;
+  word-break: normal;
+  word-spacing: normal;
+  word-wrap: normal;
+  font-size: 14px;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: 6px;
+  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+h3.popover-title {
+  font-size:1em;
+  text-transform: uppercase;
+}
+
+.popover-content p {
+  margin-bottom: .714em;
+}
+
+.popover.top>.arrow {
+  left:50%;
+  margin-left: -11px;
+  border-bottom-width: 0;
+  border-top-color: #999;
+  border-top-color: rgba(0,0,0,.25);
+  bottom: -11px;
+}
+.popover>.arrow {
+  border-width: 11px;
+}
+.popover>.arrow, .popover>.arrow:after {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+
+.popover.top>.arrow:after {
+  content: " ";
+  bottom: 1px;
+  margin-left: -10px;
+  border-bottom-width: 0;
+  border-top-color: #fff;
+}
+.popover>.arrow:after {
+  border-width: 10px;
+  content: "";
 }
 
 .nav-bar {
@@ -807,6 +877,11 @@ label {
   margin-bottom: @margin-label;
 }
 
+label.control-label span.s0 {
+  vertical-align: text-top;
+  margin-left:@margin-btn-icon-left;
+}
+
 input[type=search] {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
@@ -832,8 +907,7 @@ select[multiple], select[size] {
 }
 
 input[type=checkbox]:focus, input[type=file]:focus, input[type=radio]:focus {
-  outline: thin dotted;
-  outline: 5px auto @brand-secondary;
+  outline: 2px solid @brand-secondary;
   outline-offset: -2px;
 }
 
@@ -1591,8 +1665,7 @@ table td[class*=col-], table th[class*=col-] {
 }
 
 .form-control:focus {
-  outline: thin dotted;
-  outline: 5px auto @brand-secondary;
+  outline: 2px solid @brand-secondary;
   outline-offset: -2px;
 }
 
@@ -1959,7 +2032,17 @@ span.caret {
 
 .btn-primary .plusicon {
   margin-right: @margin-btn-icon-right;
-  margin-left: @margin-btn-icon-left;
+  vertical-align: middle;
+}
+
+.crossicon {
+  margin-right:@margin-icon;
+  vertical-align: middle;
+}
+
+.infoicon {
+  margin-left: @margin-icon;
+  vertical-align:sub;
 }
 
 span.langcode {
@@ -2699,6 +2782,10 @@ tbody.collapse {
 
 .btn-toolbar .btn, .btn-toolbar .btn-group, .btn-toolbar .input-group {
   float: left;
+}
+
+.btn-toolbar #popover-positioned-top .btn {
+  float:none;
 }
 
 .btn-toolbar > .btn, .btn-toolbar > .btn-group, .btn-toolbar > .input-group {
@@ -4143,10 +4230,13 @@ button.list-group-item {
   background-clip: padding-box;
   border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, .2);
-  border-radius: @border-radius-small;
+  border-radius: 1.125rem;
   outline: 0;
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
   box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .modal-backdrop {
@@ -4229,7 +4319,6 @@ button.list-group-item {
 
 @media (min-width: 768px) {
   .modal-dialog {
-    width: 600px;
     margin: @margin-modal-dialog auto;
   }
 
@@ -4385,7 +4474,7 @@ button.close {
   font-weight: 700;
   line-height: 1;
   top: 0;
-  right: @margin-btn-icon-right;
+  right:1em;
   position: absolute;
   border: 0;
   color: #f00;
@@ -4538,7 +4627,7 @@ button.btn-link {
 }
 
 .textInput:focus {
-  outline: 1px solid @brand-secondary;
+  outline: 2px solid @brand-secondary;
 }
 
 .getinvolved .btn-primary {
@@ -4601,7 +4690,6 @@ button.btn-link {
   .nav-link {
     display:flex;
     flex-grow:0;
-    padding-left: 0.375rem;
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
   }
