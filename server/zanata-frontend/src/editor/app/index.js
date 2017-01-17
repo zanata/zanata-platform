@@ -21,7 +21,6 @@ import NeedSlugMessage from './containers/NeedSlugMessage'
 import 'zanata-ui/dist/zanata-ui.css'
 import './index.css'
 
-
 /**
  * Top level of the Zanata editor app.
  *

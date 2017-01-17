@@ -20,11 +20,9 @@
  */
 package org.zanata.page.administration;
 
-import com.google.common.base.Predicate;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
@@ -37,10 +35,10 @@ import org.zanata.page.BasePage;
 public class ServerConfigurationPage extends BasePage {
 
     private By urlField = By.id("serverConfigForm:url:input:url");
-    public static By registerUrlField = By.id("serverConfigForm:register:input:registerUrl");
+    public static final By registerUrlField = By.id("serverConfigForm:register:input:registerUrl");
     private By emailDomainField = By.id("serverConfigForm:emailDomainField:emailDomain");
     private By adminEmailField = By.id("serverConfigForm:adminEmail:input:adminEml");
-    public static By fromEmailField = By.id("serverConfigForm:fromEmail:input:fromEml");
+    public static final By fromEmailField = By.id("serverConfigForm:fromEmail:input:fromEml");
     private By enableLogCheck = By.id("serverConfigForm:enableLogCheck");
     private By logLevelSelect = By.id("serverConfigForm:logEmailLvl");
     private By emailDestinationField = By.id("serverConfigForm:logDestEmail:input:logDestEml");

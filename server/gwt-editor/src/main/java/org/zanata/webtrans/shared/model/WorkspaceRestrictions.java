@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.model;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -76,7 +77,7 @@ public class WorkspaceRestrictions implements IsSerializable {
     @Override
     public String toString() {
         // @formatter:off
-      return Objects.toStringHelper(this).
+      return MoreObjects.toStringHelper(this).
             add("isProjectActive", isProjectActive).
             add("hasEditTranslationAccess", hasEditTranslationAccess).
             add("hasGlossaryUpdateAccess", hasGlossaryUpdateAccess).

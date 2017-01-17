@@ -12,8 +12,8 @@ public class RequestPageValidationEvent extends
     /**
      * Handler type.
      */
-    public static Type<RequestPageValidationHandler> TYPE =
-            new Type<RequestPageValidationHandler>();
+    public static final Type<RequestPageValidationHandler> TYPE =
+            new Type<>();
 
     public RequestPageValidationEvent() {
     }

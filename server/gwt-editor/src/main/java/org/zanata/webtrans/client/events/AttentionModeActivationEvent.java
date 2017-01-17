@@ -11,8 +11,8 @@ public class AttentionModeActivationEvent extends
     /**
      * Handler type.
      */
-    private static Type<AttentionModeActivationEventHandler> TYPE =
-            new Type<AttentionModeActivationEventHandler>();
+    public static final Type<AttentionModeActivationEventHandler> TYPE =
+            new Type<>();
 
     /**
      * Gets the type associated with this event.

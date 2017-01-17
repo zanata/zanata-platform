@@ -5,6 +5,7 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.UserRedirectBean;
@@ -27,6 +28,7 @@ public class OpenIdAction implements Serializable {
     private UserRedirectBean userRedirect;
 
     @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private AuthenticationManager authenticationManager;
 
     @Inject

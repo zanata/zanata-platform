@@ -20,8 +20,6 @@
  */
 package org.zanata.model;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -53,7 +51,7 @@ import org.hibernate.annotations.BatchSize;
 @BatchSize(size = 20)
 @Setter
 @NoArgsConstructor
-public class HSimpleComment implements HashableState, Serializable {
+public class HSimpleComment implements Serializable {
     private static final long serialVersionUID = 5684831285769022524L;
 
     private Long id;
@@ -82,11 +80,6 @@ public class HSimpleComment implements HashableState, Serializable {
 
     public static String toString(HSimpleComment comment) {
         return comment != null ? comment.getComment() : null;
-    }
-
-    @Override
-    public void writeHashState(ByteArrayOutputStream buff) throws IOException {
-        buff.write(comment.getBytes());
     }
 
     /**

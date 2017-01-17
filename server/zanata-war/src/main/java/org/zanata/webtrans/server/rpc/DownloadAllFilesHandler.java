@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.server.rpc;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -60,6 +61,7 @@ public class DownloadAllFilesHandler extends
     private TranslationArchiveService translationArchiveServiceImpl;
 
     @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @Override

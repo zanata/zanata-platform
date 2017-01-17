@@ -9,6 +9,7 @@ import javax.jms.Message;
 import javax.jms.ObjectMessage;
 import javax.jms.TextMessage;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
@@ -99,7 +100,7 @@ class MessageUnwrapper {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("payload", payload)
                 .add("properties", properties)
                 .toString();

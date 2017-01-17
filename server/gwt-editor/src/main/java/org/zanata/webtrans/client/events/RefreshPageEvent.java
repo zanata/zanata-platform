@@ -3,8 +3,8 @@ package org.zanata.webtrans.client.events;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class RefreshPageEvent extends GwtEvent<RefreshPageEventHandler> {
-    public static Type<RefreshPageEventHandler> TYPE =
-            new Type<RefreshPageEventHandler>();
+    public static final Type<RefreshPageEventHandler> TYPE =
+            new Type<>();
     /**
      * When firing this event, code mirror instances will be refreshed.
      */

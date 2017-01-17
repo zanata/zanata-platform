@@ -23,6 +23,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
 import com.google.common.base.Objects;
@@ -83,7 +84,7 @@ public class TransMemoryMerge extends
     @Override
     public String toString() {
         // @formatter:off
-      return Objects.toStringHelper(this).
+      return MoreObjects.toStringHelper(this).
             add("thresholdPercent", thresholdPercent).
             add("updateRequests", updateRequests).
             add("differentProjectRule", getDifferentProjectRule()).

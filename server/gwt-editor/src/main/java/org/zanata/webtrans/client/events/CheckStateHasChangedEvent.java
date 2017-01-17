@@ -18,8 +18,8 @@ public class CheckStateHasChangedEvent extends
     /**
      * Handler type.
      */
-    public static Type<CheckStateHasChangedHandler> TYPE =
-            new Type<CheckStateHasChangedHandler>();
+    public static final Type<CheckStateHasChangedHandler> TYPE =
+            new Type<>();
 
     private final TransUnitId transUnitId;
     private final List<String> targets;

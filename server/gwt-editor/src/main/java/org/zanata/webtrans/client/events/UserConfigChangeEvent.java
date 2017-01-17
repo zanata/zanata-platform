@@ -10,8 +10,8 @@ import com.google.gwt.event.shared.GwtEvent;
  *
  */
 public class UserConfigChangeEvent extends GwtEvent<UserConfigChangeHandler> {
-    public static Type<UserConfigChangeHandler> TYPE =
-            new Type<UserConfigChangeHandler>();
+    public static final Type<UserConfigChangeHandler> TYPE =
+            new Type<>();
     public static final UserConfigChangeEvent EDITOR_CONFIG_CHANGE_EVENT =
             new UserConfigChangeEvent(MainView.Editor);
     public static final UserConfigChangeEvent DOCUMENT_CONFIG_CHANGE_EVENT =

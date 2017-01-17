@@ -2,6 +2,7 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,6 +27,7 @@ import org.zanata.service.MergeTranslationsService;
 public class MergeTranslationsManager implements Serializable {
     private static final long serialVersionUID = -8717740654253262530L;
     @Inject
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
     @Inject

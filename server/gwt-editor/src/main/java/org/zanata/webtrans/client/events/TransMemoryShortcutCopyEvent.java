@@ -8,7 +8,7 @@ public class TransMemoryShortcutCopyEvent extends
     /**
      * Handler type.
      */
-    private static Type<TransMemoryShorcutCopyHandler> TYPE;
+    private static final Type<TransMemoryShorcutCopyHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -16,18 +16,11 @@ public class TransMemoryShortcutCopyEvent extends
      * @return returns the handler type
      */
     public static Type<TransMemoryShorcutCopyHandler> getType() {
-        return TYPE != null ? TYPE : (TYPE =
-                new Type<TransMemoryShorcutCopyHandler>());
+        return TYPE;
     }
 
     private int index;
 
-    /**
-     * ContentState may be New, NeedApproved or null. stepValue may be -1 or +1.
-     *
-     * @param sourceResult
-     * @param targetResult
-     */
     public TransMemoryShortcutCopyEvent(int index) {
         this.index = index;
     }

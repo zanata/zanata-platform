@@ -7,8 +7,8 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class RequestSelectTableRowEvent extends
         GwtEvent<RequestSelectTableRowEventHandler> {
-    public static Type<RequestSelectTableRowEventHandler> TYPE =
-            new Type<RequestSelectTableRowEventHandler>();
+    public static final Type<RequestSelectTableRowEventHandler> TYPE =
+            new Type<>();
 
     private TransUnitId selectedId;
     private DocumentInfo docInfo;

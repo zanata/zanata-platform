@@ -15,7 +15,7 @@ public class ExitWorkspaceEvent extends GwtEvent<ExitWorkspaceEventHandler>
     /**
      * Handler type.
      */
-    private static Type<ExitWorkspaceEventHandler> TYPE;
+    private static final Type<ExitWorkspaceEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -23,9 +23,6 @@ public class ExitWorkspaceEvent extends GwtEvent<ExitWorkspaceEventHandler>
      * @return returns the handler type
      */
     public static Type<ExitWorkspaceEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<ExitWorkspaceEventHandler>();
-        }
         return TYPE;
     }
 

@@ -23,7 +23,7 @@ public class TransUnitEditEvent extends GwtEvent<TransUnitEditEventHandler>
     /**
      * Handler type.
      */
-    private static Type<TransUnitEditEventHandler> TYPE;
+    private static final Type<TransUnitEditEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -31,9 +31,6 @@ public class TransUnitEditEvent extends GwtEvent<TransUnitEditEventHandler>
      * @return returns the handler type
      */
     public static Type<TransUnitEditEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<TransUnitEditEventHandler>();
-        }
         return TYPE;
     }
 
