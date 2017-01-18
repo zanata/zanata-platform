@@ -184,22 +184,22 @@
     border-radius: 0.25em;
 }
 
-.transUnit-details {
+.TransUnit-details {
     white-space:normal;
     word-break: break-all;
     line-height:1em;
 }
 
-.transUnit-details .u-listInline {
+.TransUnit-details .u-listInline {
     display:inline-flex;
     width:100%;
 }
 
-li.project, li.version, li.document {
+li.TransUnit-label-suggestions {
     margin-bottom: 0.375rem;
 }
 
-span.project-name, span.version-name, span.doc-name, span.transmem-slug  {
+span.TransUnit-details-inner {
     padding-left:0.375em;
     font-weight:bold;
 }

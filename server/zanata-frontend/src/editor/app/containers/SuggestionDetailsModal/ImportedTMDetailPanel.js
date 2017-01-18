@@ -43,7 +43,8 @@ class ImportedTMDetailPanel extends Component {
             <li>
               <Row>
                 <Icon name="import" size="1" />
-                <span className="transmem-slug">{transMemorySlug}</span>
+                <span className="TransUnit-details-inner">{transMemorySlug}
+                </span>
               </Row>
             </li>
             <Label bsStyle="primary">Imported</Label>
