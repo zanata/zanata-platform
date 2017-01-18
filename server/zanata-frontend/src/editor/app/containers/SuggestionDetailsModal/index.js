@@ -47,7 +47,7 @@ class SuggestionDetailsModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <PlainSuggestionContents suggestion={this.props.suggestion}
-            matchType={activeMatchType} />
+            matchType={activeMatchType} displayHeader />
           <PanelGroup>
             {detailPanels}
           </PanelGroup>

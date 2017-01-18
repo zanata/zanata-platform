@@ -18,16 +18,19 @@ class PlainSuggestionContents extends Component {
 
   render () {
     const { sourceContents, targetContents } = this.props.suggestion
+    const displayHeader = this.props.displayHeader
     const className = cx('TransUnit TransUnit--suggestion u-bgHigh u-sMB-1',
       this.matchTypeClass(this.props.matchType))
     return (
       <div className={className}>
         <div className="TransUnit-status" />
+        {displayHeader && <span>Source</span>}
         <div className="TransUnit-panel TransUnit-source">
           <SuggestionContents
             plural={sourceContents.length > 1}
             contents={sourceContents} />
         </div>
+        {displayHeader && <span>Translation</span>}
         <div className="TransUnit-panel TransUnit-translation u-sPV-1-2">
           <SuggestionContents
             plural={sourceContents.length > 1}
@@ -44,7 +47,8 @@ PlainSuggestionContents.propTypes = {
   suggestion: PropTypes.shape({
     sourceContents: PropTypes.arrayOf(PropTypes.string).isRequired,
     targetContents: PropTypes.arrayOf(PropTypes.string).isRequired
-  }).isRequired
+  }).isRequired,
+  displayHeader: PropTypes.bool
 }
 
 export default PlainSuggestionContents
