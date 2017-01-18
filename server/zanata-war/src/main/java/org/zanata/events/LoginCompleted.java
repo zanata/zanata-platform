@@ -20,7 +20,6 @@
  */
 package org.zanata.events;
 
-import lombok.Value;
 import org.zanata.security.AuthenticationType;
 
 /**
@@ -28,8 +27,41 @@ import org.zanata.security.AuthenticationType;
  * It is a complement to the events in Seam's Identity class.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Value
 public class LoginCompleted {
     AuthenticationType authType;
+
+    @java.beans.ConstructorProperties({ "authType" })
+    public LoginCompleted(AuthenticationType authType) {
+        this.authType = authType;
+    }
+
+    public AuthenticationType getAuthType() {
+        return this.authType;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof LoginCompleted)) return false;
+        final LoginCompleted other = (LoginCompleted) o;
+        final Object this$authType = this.getAuthType();
+        final Object other$authType = other.getAuthType();
+        if (this$authType == null ? other$authType != null :
+                !this$authType.equals(other$authType)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $authType = this.getAuthType();
+        result = result * PRIME +
+                ($authType == null ? 43 : $authType.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "org.zanata.events.LoginCompleted(authType=" +
+                this.getAuthType() + ")";
+    }
 //    String username;
 }

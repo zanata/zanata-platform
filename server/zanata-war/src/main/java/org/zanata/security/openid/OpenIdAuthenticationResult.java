@@ -22,9 +22,6 @@ package org.zanata.security.openid;
 
 import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Contains results of an open Id authentication. It may also include user info
  * returned by the open id provider like email, user name, etc.
@@ -33,30 +30,60 @@ import lombok.Setter;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class OpenIdAuthenticationResult implements Serializable {
-    @Getter
-    @Setter
     /**
      * Represents an externally authenticated username (ie a username for the external system).
      */
     private String authenticatedId;
 
-    @Getter
-    @Setter
     private String email;
 
-    @Getter
-    @Setter
     private String fullName;
 
-    @Getter
-    @Setter
     private String username;
 
-    @Getter
-    @Setter
     private String returnToUrl;
 
     public boolean isAuthenticated() {
         return authenticatedId != null;
+    }
+
+    public String getAuthenticatedId() {
+        return this.authenticatedId;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public String getFullName() {
+        return this.fullName;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getReturnToUrl() {
+        return this.returnToUrl;
+    }
+
+    public void setAuthenticatedId(String authenticatedId) {
+        this.authenticatedId = authenticatedId;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setReturnToUrl(String returnToUrl) {
+        this.returnToUrl = returnToUrl;
     }
 }

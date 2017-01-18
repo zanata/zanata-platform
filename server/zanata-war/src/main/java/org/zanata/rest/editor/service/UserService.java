@@ -1,29 +1,17 @@
 package org.zanata.rest.editor.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-
-import javax.inject.Named;
-
-import com.google.common.collect.Lists;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import com.google.common.base.Strings;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
-import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.rest.dto.Account;
-import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.editor.dto.Permission;
 import org.zanata.rest.editor.service.resource.UserResource;
@@ -34,11 +22,14 @@ import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.GravatarService;
 
-import com.google.common.base.Strings;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.zanata.service.impl.LocaleServiceImpl;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -47,8 +38,6 @@ import org.zanata.service.impl.LocaleServiceImpl;
 @Named("editor.userService")
 @Path(UserResource.SERVICE_PATH)
 @Transactional(readOnly = true)
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserService implements UserResource {
 
     @Inject
@@ -72,6 +61,25 @@ public class UserService implements UserResource {
 
     @Inject
     private ApplicationConfiguration applicationConfiguration;
+
+    @java.beans.ConstructorProperties({ "authenticatedAccount",
+            "gravatarServiceImpl", "accountDAO", "personDAO", "projectDAO",
+            "identity", "applicationConfiguration" })
+    protected UserService(HAccount authenticatedAccount,
+            GravatarService gravatarServiceImpl, AccountDAO accountDAO,
+            PersonDAO personDAO, ProjectDAO projectDAO, ZanataIdentity identity,
+            ApplicationConfiguration applicationConfiguration) {
+        this.authenticatedAccount = authenticatedAccount;
+        this.gravatarServiceImpl = gravatarServiceImpl;
+        this.accountDAO = accountDAO;
+        this.personDAO = personDAO;
+        this.projectDAO = projectDAO;
+        this.identity = identity;
+        this.applicationConfiguration = applicationConfiguration;
+    }
+
+    public UserService() {
+    }
 
     @Override
     @CheckLoggedIn

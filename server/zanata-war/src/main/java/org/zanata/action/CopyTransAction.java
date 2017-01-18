@@ -20,16 +20,7 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import javax.annotation.Nonnull;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Model;
-import javax.faces.application.FacesMessage;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import com.google.common.base.Optional;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.dao.ProjectIterationDAO;
@@ -42,7 +33,15 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransOptionFactory;
 import org.zanata.ui.CopyAction;
 import org.zanata.util.DateUtil;
-import com.google.common.base.Optional;
+
+import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Model;
+import javax.faces.application.FacesMessage;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  * Copy Trans page action bean.

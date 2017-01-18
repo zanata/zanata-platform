@@ -1,13 +1,12 @@
 package org.zanata.hibernate.search;
 
-import java.util.List;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
+import org.slf4j.Logger;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 /**
  * Index a list of strings in multiple fields, appending the string index to the
@@ -23,8 +22,10 @@ import lombok.extern.slf4j.Slf4j;
  * @author David Mason, damason@redhat.com
  *
  */
-@Slf4j
 public class StringListBridge implements FieldBridge {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(StringListBridge.class);
 
     @Override
     public void set(String name, Object value, Document luceneDocument,

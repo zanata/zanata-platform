@@ -2,9 +2,6 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Stores options for the lucene indexing
  *
@@ -14,16 +11,10 @@ public class ReindexClassOptions implements Serializable {
     private static final long serialVersionUID = 1L;
     private Class<?> clazz;
 
-    @Getter
-    @Setter
     private boolean purge = false;
 
-    @Getter
-    @Setter
     private boolean reindex = false;
 
-    @Getter
-    @Setter
     private boolean optimize = false;
 
     public ReindexClassOptions(Class<?> indexableClass) {
@@ -50,4 +41,27 @@ public class ReindexClassOptions implements Serializable {
         return isPurge() && isReindex() && isOptimize();
     }
 
+    public boolean isPurge() {
+        return this.purge;
+    }
+
+    public boolean isReindex() {
+        return this.reindex;
+    }
+
+    public boolean isOptimize() {
+        return this.optimize;
+    }
+
+    public void setPurge(boolean purge) {
+        this.purge = purge;
+    }
+
+    public void setReindex(boolean reindex) {
+        this.reindex = reindex;
+    }
+
+    public void setOptimize(boolean optimize) {
+        this.optimize = optimize;
+    }
 }

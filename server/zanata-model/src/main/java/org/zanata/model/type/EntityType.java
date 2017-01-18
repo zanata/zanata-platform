@@ -20,8 +20,6 @@
  */
 package org.zanata.model.type;
 
-import lombok.Getter;
-
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
@@ -45,10 +43,8 @@ public enum EntityType {
     HDocument(HDocument.class, "DOC"),
     TMX(TransMemoryUnit.class, "TMX");
 
-    @Getter
     private final Class<?> entityClass;
 
-    @Getter
     private final String abbr;
 
     EntityType(Class<?> entityClass, String abbr) {
@@ -71,5 +67,13 @@ public enum EntityType {
             default:
                 throw new IllegalArgumentException(String.valueOf(abbr));
         }
+    }
+
+    public Class<?> getEntityClass() {
+        return this.entityClass;
+    }
+
+    public String getAbbr() {
+        return this.abbr;
     }
 }

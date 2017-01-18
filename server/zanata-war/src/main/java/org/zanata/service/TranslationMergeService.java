@@ -1,10 +1,9 @@
 package org.zanata.service;
 
-import java.util.Set;
-
-import org.zanata.common.ContentState;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TextFlowTarget;
+
+import java.util.Set;
 
 public interface TranslationMergeService {
 

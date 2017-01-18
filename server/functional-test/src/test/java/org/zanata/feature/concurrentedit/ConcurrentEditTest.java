@@ -20,10 +20,10 @@
  */
 package org.zanata.feature.concurrentedit;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -36,16 +36,20 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.util.ZanataRestCaller.*;
+import static org.zanata.util.ZanataRestCaller.buildSourceResource;
+import static org.zanata.util.ZanataRestCaller.buildTextFlow;
+import static org.zanata.util.ZanataRestCaller.buildTextFlowTarget;
+import static org.zanata.util.ZanataRestCaller.buildTranslationResource;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@Slf4j
 public class ConcurrentEditTest extends ZanataTestCase {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ConcurrentEditTest.class);
     private ZanataRestCaller restCaller;
 
     @Before

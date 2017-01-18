@@ -20,9 +20,14 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import com.ibm.icu.util.ULocale;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.zanata.common.LocaleId;
+import org.zanata.model.type.LocaleIdType;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Cacheable;
@@ -33,53 +38,30 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.zanata.common.LocaleId;
-import org.zanata.model.type.LocaleIdType;
-
-import com.ibm.icu.util.ULocale;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Cacheable
 @TypeDef(name = "localeId", typeClass = LocaleIdType.class)
-@Setter
-@NoArgsConstructor
-@ToString(of = { "localeId" }, doNotUseGetters = true)
-@EqualsAndHashCode(callSuper = false, of = { "localeId" },
-        doNotUseGetters = true)
 public class HLocale extends ModelEntityBase implements Serializable,
         HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
     private @Nonnull
     LocaleId localeId;
 
-    @Getter
     private boolean active;
 
-    @Getter
     private boolean enabledByDefault;
     private Set<HProject> supportedProjects;
     private Set<HProjectIteration> supportedIterations;
     private Set<HLocaleMember> members;
 
-    @Getter
     private String pluralForms;
 
-    @Getter
     private String displayName;
 
-    @Getter
     private String nativeName;
 
     public HLocale(@Nonnull LocaleId localeId) {
@@ -91,6 +73,9 @@ public class HLocale extends ModelEntityBase implements Serializable,
         this.localeId = localeId;
         this.enabledByDefault = enabledByDefault;
         this.active = active;
+    }
+
+    public HLocale() {
     }
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
@@ -166,5 +151,91 @@ public class HLocale extends ModelEntityBase implements Serializable,
     public String userFriendlyToString() {
         return String.format("Locale(id=%s, name=%s)", getLocaleId(),
                 retrieveDisplayName());
+    }
+
+    public void setLocaleId(@Nonnull LocaleId localeId) {
+        this.localeId = localeId;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public void setEnabledByDefault(boolean enabledByDefault) {
+        this.enabledByDefault = enabledByDefault;
+    }
+
+    public void setSupportedProjects(Set<HProject> supportedProjects) {
+        this.supportedProjects = supportedProjects;
+    }
+
+    public void setSupportedIterations(
+            Set<HProjectIteration> supportedIterations) {
+        this.supportedIterations = supportedIterations;
+    }
+
+    public void setMembers(Set<HLocaleMember> members) {
+        this.members = members;
+    }
+
+    public void setPluralForms(String pluralForms) {
+        this.pluralForms = pluralForms;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public void setNativeName(String nativeName) {
+        this.nativeName = nativeName;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof HLocale)) return false;
+        final HLocale other = (HLocale) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$localeId = this.localeId;
+        final Object other$localeId = other.localeId;
+        if (this$localeId == null ? other$localeId != null :
+                !this$localeId.equals(other$localeId)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $localeId = this.localeId;
+        result = result * PRIME +
+                ($localeId == null ? 43 : $localeId.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof HLocale;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HLocale(localeId=" + this.localeId + ")";
+    }
+
+    public boolean isActive() {
+        return this.active;
+    }
+
+    public boolean isEnabledByDefault() {
+        return this.enabledByDefault;
+    }
+
+    public String getPluralForms() {
+        return this.pluralForms;
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
+    }
+
+    public String getNativeName() {
+        return this.nativeName;
     }
 }

@@ -20,6 +20,14 @@
  */
 package org.zanata.util;
 
+import com.google.common.base.Throwables;
+import com.google.common.util.concurrent.Uninterruptibles;
+import org.junit.rules.ExternalResource;
+import org.slf4j.Logger;
+import org.subethamail.wiser.Wiser;
+import org.subethamail.wiser.WiserMessage;
+
+import javax.mail.internet.MimeMultipart;
 import java.net.BindException;
 import java.net.InetAddress;
 import java.util.List;
@@ -27,25 +35,14 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import javax.mail.internet.MimeMultipart;
-
-import org.junit.rules.ExternalResource;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
-import org.subethamail.wiser.Wiser;
-import org.subethamail.wiser.WiserMessage;
-import com.google.common.base.Throwables;
-import com.google.common.util.concurrent.Uninterruptibles;
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class HasEmailRule extends ExternalResource {
     private static final Object wiserLock = new Object();
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(HasEmailRule.class);
     private volatile static Wiser wiser;
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")

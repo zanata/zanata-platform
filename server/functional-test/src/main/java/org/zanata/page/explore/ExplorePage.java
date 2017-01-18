@@ -21,17 +21,15 @@
 
 package org.zanata.page.explore;
 
-import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.page.account.ProfilePage;
 import org.zanata.page.projects.ProjectVersionsPage;
-import org.zanata.util.WebElementUtil;
 
 import java.util.List;
 
@@ -40,7 +38,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class ExplorePage extends BasePage {
     private static final By searchInput = By.id("explore_search");
     private static final By projectResult = By.id("explore_Project_result");
@@ -49,6 +46,8 @@ public class ExplorePage extends BasePage {
 
     private static final By groupResult = By.id("explore_Group_result");
     private static final By languageTeamResult = By.id("explore_LanguageTeam_result");
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ExplorePage.class);
 
     public ExplorePage(WebDriver driver) {
         super(driver);

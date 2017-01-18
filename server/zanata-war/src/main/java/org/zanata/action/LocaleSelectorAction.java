@@ -20,12 +20,13 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.StringTokenizer;
+import com.google.common.base.Function;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import org.zanata.events.LocaleSelectedEvent;
+import org.zanata.servlet.HttpRequestAndSessionHolder;
+import org.zanata.util.Contexts;
+import org.zanata.util.Synchronized;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
@@ -37,15 +38,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-
-import org.zanata.events.LocaleSelectedEvent;
-import org.zanata.servlet.HttpRequestAndSessionHolder;
-import org.zanata.util.Contexts;
-
-import com.google.common.base.Function;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import org.zanata.util.Synchronized;
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.StringTokenizer;
 
 /**
  * @author Patrick Huang <a

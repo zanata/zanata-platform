@@ -20,17 +20,15 @@
  */
 package org.zanata.security.permission;
 
+import com.google.common.collect.Lists;
+import org.zanata.util.BeanHolder;
+import org.zanata.util.ServiceLocator;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.List;
-
-import com.google.common.collect.Lists;
-import lombok.Getter;
-import org.zanata.util.BeanHolder;
-import org.zanata.util.ServiceLocator;
 
 /**
  * Represents a function that grants a permission.
@@ -42,10 +40,8 @@ public class PermissionGranter {
 
     private final Method granterMethod;
 
-    @Getter
     private Collection<String> evaluatedActions;
 
-    @Getter
     private List<Class<?>> acceptedParameterTypes;
 
     private int actionParameterIndex = -1;
@@ -176,5 +172,13 @@ public class PermissionGranter {
     @Override
     public String toString() {
         return "PermissionGranter("+granterMethod.getDeclaringClass().getSimpleName()+"."+granterMethod.getName()+")";
+    }
+
+    public Collection<String> getEvaluatedActions() {
+        return this.evaluatedActions;
+    }
+
+    public List<Class<?>> getAcceptedParameterTypes() {
+        return this.acceptedParameterTypes;
     }
 }

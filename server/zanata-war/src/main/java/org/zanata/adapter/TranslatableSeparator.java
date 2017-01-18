@@ -20,8 +20,6 @@
  */
 package org.zanata.adapter;
 
-import lombok.Value;
-
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -35,7 +33,6 @@ import java.util.regex.Pattern;
  */
 public class TranslatableSeparator {
 
-    @Value
     public static class SplitString {
         /** leading (non-translatable) portion */
         public String pre;
@@ -43,6 +40,66 @@ public class TranslatableSeparator {
         public String str;
         /** trailing (non-translatable) portion */
         public String suf;
+
+        @java.beans.ConstructorProperties({ "pre", "str", "suf" })
+        public SplitString(String pre, String str, String suf) {
+            this.pre = pre;
+            this.str = str;
+            this.suf = suf;
+        }
+
+        public String getPre() {
+            return this.pre;
+        }
+
+        public String getStr() {
+            return this.str;
+        }
+
+        public String getSuf() {
+            return this.suf;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof SplitString)) return false;
+            final SplitString other =
+                    (SplitString) o;
+            final Object this$pre = this.getPre();
+            final Object other$pre = other.getPre();
+            if (this$pre == null ? other$pre != null :
+                    !this$pre.equals(other$pre))
+                return false;
+            final Object this$str = this.getStr();
+            final Object other$str = other.getStr();
+            if (this$str == null ? other$str != null :
+                    !this$str.equals(other$str))
+                return false;
+            final Object this$suf = this.getSuf();
+            final Object other$suf = other.getSuf();
+            if (this$suf == null ? other$suf != null :
+                    !this$suf.equals(other$suf))
+                return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $pre = this.getPre();
+            result = result * PRIME + ($pre == null ? 43 : $pre.hashCode());
+            final Object $str = this.getStr();
+            result = result * PRIME + ($str == null ? 43 : $str.hashCode());
+            final Object $suf = this.getSuf();
+            result = result * PRIME + ($suf == null ? 43 : $suf.hashCode());
+            return result;
+        }
+
+        public String toString() {
+            return "org.zanata.adapter.TranslatableSeparator.SplitString(pre=" +
+                    this.getPre() + ", str=" + this.getStr() + ", suf=" +
+                    this.getSuf() + ")";
+        }
     }
 
     /**

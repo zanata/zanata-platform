@@ -20,17 +20,21 @@
  */
 package org.zanata.rest.editor.dto.suggestion;
 
-import lombok.Getter;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.ContentState;
-import org.zanata.model.*;
+import org.zanata.model.HDocument;
+import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
+import org.zanata.model.HSimpleComment;
+import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
 
 import java.util.Date;
 
 /**
  * Detailed information about a suggestion from a project on this server.
  */
-@Getter
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TextFlowSuggestionDetail implements SuggestionDetail {
 
@@ -88,4 +92,55 @@ public class TextFlowSuggestionDetail implements SuggestionDetail {
                 lastModifiedPerson.getAccount().getUsername() : null;
     }
 
+    public SuggestionType getType() {
+        return this.type;
+    }
+
+    public Long getTextFlowId() {
+        return this.textFlowId;
+    }
+
+    public String getSourceComment() {
+        return this.sourceComment;
+    }
+
+    public String getTargetComment() {
+        return this.targetComment;
+    }
+
+    public ContentState getContentState() {
+        return this.contentState;
+    }
+
+    public String getProjectId() {
+        return this.projectId;
+    }
+
+    public String getProjectName() {
+        return this.projectName;
+    }
+
+    public String getVersion() {
+        return this.version;
+    }
+
+    public String getDocumentName() {
+        return this.documentName;
+    }
+
+    public String getDocumentPath() {
+        return this.documentPath;
+    }
+
+    public String getResId() {
+        return this.resId;
+    }
+
+    public Date getLastModifiedDate() {
+        return this.lastModifiedDate;
+    }
+
+    public String getLastModifiedBy() {
+        return this.lastModifiedBy;
+    }
 }

@@ -20,23 +20,20 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.base.Function;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
@@ -47,19 +44,21 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
 
-import com.google.common.base.Function;
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
 
 @Named("webtrans.gwt.GetTransUnitListHandler")
 @RequestScoped
 @ActionHandlerFor(GetTransUnitList.class)
-@Slf4j
 public class GetTransUnitListHandler extends
         AbstractActionHandler<GetTransUnitList, GetTransUnitListResult> {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GetTransUnitListHandler.class);
     @Inject
     private TransUnitTransformer transUnitTransformer;
 

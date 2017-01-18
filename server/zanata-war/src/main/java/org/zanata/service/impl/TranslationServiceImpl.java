@@ -20,29 +20,17 @@
  */
 package org.zanata.service.impl;
 
-import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
-
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.Future;
-
-import javax.annotation.Nonnull;
-import javax.enterprise.context.RequestScoped;
-import javax.persistence.EntityManager;
-
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.HibernateException;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.hibernate.HibernateException;
+import org.slf4j.Logger;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
@@ -82,27 +70,36 @@ import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationMergeService;
 import org.zanata.service.TranslationService;
 import org.zanata.service.ValidationService;
-import javax.enterprise.event.Event;
 import org.zanata.util.ShortString;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.Future;
 
 import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetStateChange;
+import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 
 @Named("translationServiceImpl")
 @RequestScoped
-@Slf4j
 public class TranslationServiceImpl implements TranslationService {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationServiceImpl.class);
     @Inject
     private EntityManager entityManager;
 

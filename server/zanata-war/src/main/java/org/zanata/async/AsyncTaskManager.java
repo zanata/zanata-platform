@@ -20,10 +20,16 @@
  */
 package org.zanata.async;
 
-import java.security.Principal;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import com.google.common.util.concurrent.ListenableFuture;
+import org.apache.deltaspike.cdise.api.ContextControl;
+import org.slf4j.Logger;
+import org.zanata.config.AsyncConfig;
+import org.zanata.dao.AccountDAO;
+import org.zanata.model.HAccount;
+import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.AuthenticatedLiteral;
+import org.zanata.util.ServiceLocator;
 
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
@@ -33,20 +39,10 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.security.auth.Subject;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.deltaspike.cdise.api.ContextControl;
-import org.zanata.config.AsyncConfig;
-import org.zanata.dao.AccountDAO;
-import org.zanata.model.HAccount;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
-import org.zanata.security.annotations.AuthenticatedLiteral;
-import org.zanata.util.ServiceLocator;
-
-import com.google.common.util.concurrent.ListenableFuture;
+import java.security.Principal;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * @author Carlos Munoz <a
@@ -54,10 +50,11 @@ import com.google.common.util.concurrent.ListenableFuture;
  */
 @Named("asyncTaskManager")
 @javax.enterprise.context.ApplicationScoped
-@Slf4j
 // TODO consider switching from Guava's ListenableFuture to Java 8's CompletableFuture
 public class AsyncTaskManager {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(AsyncTaskManager.class);
     // TODO use ManagedExecutorService on Java EE 7, so that we can eg inject UserTransaction
     private ExecutorService scheduler;
 

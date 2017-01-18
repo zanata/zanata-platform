@@ -1,7 +1,25 @@
 package org.zanata.rest.service.raw;
 
+import com.jayway.awaitility.Duration;
+import org.dbunit.operation.DatabaseOperation;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.ClientResponse;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.zanata.RestTest;
+import org.zanata.provider.DBUnitProvider;
+import org.zanata.provider.DBUnitProvider.DataSetOperation;
+import org.zanata.rest.ResourceRequest;
+import org.zanata.rest.dto.ProcessStatus;
+import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.ResourceTestObjectFactory;
+import org.zanata.rest.service.ResourceTestUtil;
+import org.zanata.rest.service.TranslationsResourceTestObjectFactory;
+
+import javax.ws.rs.core.MediaType;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.jayway.awaitility.Awaitility.waitAtMost;
@@ -13,33 +31,9 @@ import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
 
-import javax.ws.rs.core.MediaType;
-
-import org.assertj.core.api.Assertions;
-import org.dbunit.operation.DatabaseOperation;
-import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
-import org.junit.Test;
-import org.zanata.RestTest;
-import org.zanata.provider.DBUnitProvider;
-import org.zanata.provider.DBUnitProvider.DataSetOperation;
-import org.zanata.rest.ResourceRequest;
-import org.zanata.rest.StringSet;
-import org.zanata.rest.dto.ProcessStatus;
-import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.ResourceTestObjectFactory;
-import org.zanata.rest.service.ResourceTestUtil;
-import org.zanata.rest.service.TranslationsResourceTestObjectFactory;
-import com.jayway.awaitility.Awaitility;
-import com.jayway.awaitility.Duration;
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * @Auther pahuang
  */
-@Slf4j
 public class AsyncResourceRestITCase extends RestTest {
     private static final String DOCUMENTS_DATA_DBUNIT_XML =
             "org/zanata/test/model/DocumentsData.dbunit.xml";
@@ -49,6 +43,8 @@ public class AsyncResourceRestITCase extends RestTest {
             "org/zanata/test/model/ProjectsData.dbunit.xml";
     private static final String ACCOUNT_DATA_DBUNIT_XML =
             "org/zanata/test/model/AccountData.dbunit.xml";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(AsyncResourceRestITCase.class);
 
     private ResourceTestObjectFactory resourceTestFactory =
             new ResourceTestObjectFactory();

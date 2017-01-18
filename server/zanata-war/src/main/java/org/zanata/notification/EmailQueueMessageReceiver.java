@@ -20,8 +20,12 @@
  */
 package org.zanata.notification;
 
-import java.io.Serializable;
-import java.util.Map;
+import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.events.LanguageTeamPermissionChangedEvent;
+import org.zanata.util.IServiceLocator;
 
 import javax.annotation.Nullable;
 import javax.ejb.ActivationConfigProperty;
@@ -30,14 +34,8 @@ import javax.inject.Inject;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
-
-import com.google.common.collect.ImmutableMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zanata.events.LanguageTeamPermissionChangedEvent;
-
-import com.google.common.base.Throwables;
-import org.zanata.util.IServiceLocator;
+import java.io.Serializable;
+import java.util.Map;
 
 import static com.google.common.base.Strings.nullToEmpty;
 import static org.zanata.notification.NotificationManager.MessagePropertiesKey;

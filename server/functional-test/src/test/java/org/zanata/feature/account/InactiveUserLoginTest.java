@@ -20,10 +20,10 @@
  */
 package org.zanata.feature.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
 import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -43,10 +43,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 @Category(DetailedTest.class)
 public class InactiveUserLoginTest extends ZanataTestCase {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(InactiveUserLoginTest.class);
     @Rule
     public final HasEmailRule hasEmailRule = new HasEmailRule();
 

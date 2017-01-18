@@ -1,6 +1,8 @@
 package org.zanata.model;
 
-import java.io.Serializable;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -8,21 +10,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
-@NoArgsConstructor
 @Access(AccessType.FIELD)
-@Getter
 public class Glossary implements Serializable {
     public Glossary(String qualifiedName) {
         this.qualifiedName = qualifiedName;
@@ -40,4 +34,15 @@ public class Glossary implements Serializable {
     @NotNull
     @Field(analyze = Analyze.NO)
     private String qualifiedName;
+
+    public Glossary() {
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public String getQualifiedName() {
+        return this.qualifiedName;
+    }
 }

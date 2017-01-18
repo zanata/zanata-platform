@@ -1,28 +1,26 @@
 package org.zanata.service.impl;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import com.google.common.annotations.VisibleForTesting;
+import org.slf4j.Logger;
 import org.zanata.async.Async;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocStatsEvent;
-import org.zanata.model.type.WebhookType;
 import org.zanata.model.HDocument;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.WebHook;
+import org.zanata.model.type.WebhookType;
 
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
-
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manager that handles post update of translation. Important:
@@ -35,10 +33,11 @@ import javax.enterprise.event.TransactionPhase;
  */
 @Named("translationUpdatedManager")
 @RequestScoped
-@Slf4j
 // not @Transactional (no DB modifications... yet)
 public class TranslationUpdatedManager {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationUpdatedManager.class);
     @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
 

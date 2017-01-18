@@ -1,11 +1,28 @@
 package org.zanata.rest.service;
 
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.util.List;
+import com.google.common.annotations.Beta;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
+import org.jboss.resteasy.util.GenericType;
+import org.slf4j.Logger;
+import org.zanata.common.Namespaces;
+import org.zanata.dao.ApplicationConfigurationDAO;
+import org.zanata.events.ConfigurationChanged;
+import org.zanata.model.HApplicationConfiguration;
+import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.Configuration;
+import org.zanata.rest.dto.Link;
+import org.zanata.security.annotations.CheckRole;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -18,31 +35,9 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.ws.Service;
-
-import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
-import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
-import org.jboss.resteasy.util.GenericType;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
-import org.zanata.common.Namespaces;
-import org.zanata.dao.ApplicationConfigurationDAO;
-import org.zanata.events.ConfigurationChanged;
-import org.zanata.model.HApplicationConfiguration;
-import org.zanata.rest.MediaTypes;
-import org.zanata.rest.dto.Configuration;
-import org.zanata.rest.dto.Link;
-import com.google.common.annotations.Beta;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import javax.enterprise.event.Event;
-import org.zanata.util.ServiceLocator;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.util.List;
 
 /**
  * This API is experimental only and subject to change or even removal.
@@ -57,10 +52,11 @@ import org.zanata.util.ServiceLocator;
 @Consumes({"application/xml", "application/json"})
 @Transactional
 @CheckRole("admin")
-@Slf4j
 @Beta
 public class ServerConfigurationService {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ServerConfigurationService.class);
     private static List<String> availableKeys;
 
     /** Type of media requested. */
@@ -199,11 +195,15 @@ public class ServerConfigurationService {
      * Converts HApplicationConfiguration to dto Configuration. It also contains
      * a link to the configuration itself.
      */
-    @RequiredArgsConstructor
     private class ToConfigurationFunction implements
             Function<HApplicationConfiguration, Configuration> {
 
         private final MediaType accept;
+
+        @java.beans.ConstructorProperties({ "accept" })
+        public ToConfigurationFunction(MediaType accept) {
+            this.accept = accept;
+        }
 
         @Override
         public Configuration apply(HApplicationConfiguration input) {

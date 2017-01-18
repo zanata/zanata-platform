@@ -20,21 +20,19 @@
  */
 package org.zanata.security;
 
-import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.interceptor.InvocationContext;
-
+import com.google.common.collect.Lists;
 import org.apache.deltaspike.security.api.authorization.AbstractAccessDecisionVoter;
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext;
 import org.apache.deltaspike.security.api.authorization.SecurityViolation;
 import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.PermissionTarget;
 
-import com.google.common.collect.Lists;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.interceptor.InvocationContext;
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Carlos Munoz <a

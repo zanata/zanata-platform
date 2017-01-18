@@ -20,7 +20,7 @@
  */
 package org.zanata.workflow;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.zanata.page.account.EditProfilePage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.googleaccount.GoogleAccountPage;
@@ -30,8 +30,10 @@ import org.zanata.page.utility.HomePage;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class RegisterWorkFlow extends AbstractWebWorkFlow {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RegisterWorkFlow.class);
 
     public SignInPage registerInternal(String name, String username,
     String password, String email) {

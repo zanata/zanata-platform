@@ -1,17 +1,9 @@
 package org.zanata.action;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.validator.constraints.NotEmpty;
-
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Model;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.i18n.Messages;
@@ -22,17 +14,21 @@ import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.faces.FacesMessages;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Model;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.Date;
 
 @Named("passwordResetRequest")
-@NoArgsConstructor
 @RequestScoped
 @Model
 @Transactional
-@Slf4j
 public class PasswordResetRequestAction implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(PasswordResetRequestAction.class);
 
     @Inject
     private FacesMessages facesMessages;
@@ -52,16 +48,15 @@ public class PasswordResetRequestAction implements Serializable {
     @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
 
-    @Setter
-    @Getter
     private String activationKey;
 
-    @Setter
-    @Getter
     @NotEmpty
     private String usernameOrEmail;
 
     private HAccount account;
+
+    public PasswordResetRequestAction() {
+    }
 
 
     @Transactional
@@ -147,5 +142,21 @@ public class PasswordResetRequestAction implements Serializable {
      */
     private boolean isEmailAddress(String value) {
         return StringUtils.contains(value, "@");
+    }
+
+    public String getActivationKey() {
+        return this.activationKey;
+    }
+
+    public String getUsernameOrEmail() {
+        return this.usernameOrEmail;
+    }
+
+    public void setActivationKey(String activationKey) {
+        this.activationKey = activationKey;
+    }
+
+    public void setUsernameOrEmail(String usernameOrEmail) {
+        this.usernameOrEmail = usernameOrEmail;
     }
 }

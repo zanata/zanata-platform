@@ -23,7 +23,6 @@ package org.zanata.model.type;
 
 import org.hibernate.type.descriptor.WrapperOptions;
 import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
-import org.zanata.common.ContentType;
 
 public class TranslationSourceTypeTypeDescriptor extends
         AbstractTypeDescriptor<TranslationSourceType> {

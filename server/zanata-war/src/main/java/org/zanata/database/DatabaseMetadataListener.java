@@ -20,15 +20,15 @@
  */
 package org.zanata.database;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.annotation.Resource;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.sql.DataSource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 
 /**
  * Log database and database driver information at context start time.

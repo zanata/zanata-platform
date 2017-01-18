@@ -20,6 +20,15 @@
  */
 package org.zanata.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.servlet.HttpRequestAndSessionHolder;
+
+import javax.faces.application.NavigationHandler;
+import javax.faces.component.UIViewRoot;
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -27,15 +36,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Map;
-import javax.faces.application.NavigationHandler;
-import javax.faces.component.UIViewRoot;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zanata.servlet.HttpRequestAndSessionHolder;
 
 /**
  * @author Patrick Huang <a

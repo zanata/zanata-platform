@@ -20,14 +20,15 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 
-@Slf4j
 public class AdministrationPage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(AdministrationPage.class);
     private final By CONFIGURE_SERVER_LINK = By
             .id("Admin_Server_configuration_home");
 

@@ -21,30 +21,26 @@
 
 package org.zanata.rest.service;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Iterator;
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.PeekingIterator;
+import nu.xom.Attribute;
+import nu.xom.DocType;
+import nu.xom.Element;
+import nu.xom.Text;
+import org.slf4j.Logger;
+import org.zanata.util.CloseableIterator;
+import org.zanata.util.NullCloseable;
+import org.zanata.xml.StreamSerializer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
-
-import lombok.extern.slf4j.Slf4j;
-
-import nu.xom.Attribute;
-import nu.xom.DocType;
-import nu.xom.Element;
-import nu.xom.Text;
-
-import org.zanata.util.CloseableIterator;
-import org.zanata.util.NullCloseable;
-import org.zanata.xml.StreamSerializer;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.PeekingIterator;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Iterator;
 
 /**
  * Exports a series of translation units (T) to an OutputStream in TMX format.
@@ -54,8 +50,9 @@ import com.google.common.collect.PeekingIterator;
  * @param T
  */
 @ParametersAreNonnullByDefault
-@Slf4j
 public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TMXStreamingOutput.class);
     private final @Nonnull
     Iterator<T> tuIter;
     private final TMXExportStrategy<T> exportStrategy;

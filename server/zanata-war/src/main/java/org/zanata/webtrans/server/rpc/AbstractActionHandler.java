@@ -3,7 +3,6 @@ package org.zanata.webtrans.server.rpc;
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
-
 import org.zanata.webtrans.server.ActionHandlerFor;
 
 /**

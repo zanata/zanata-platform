@@ -21,14 +21,14 @@
 
 package org.zanata.database;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Map;
-
 import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.hibernate.service.spi.Configurable;
 import org.hibernate.service.spi.Stoppable;
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Map;
 
 /**
  * Decorator for DatasourceConnectionProviderImpl which adds support for JBDC

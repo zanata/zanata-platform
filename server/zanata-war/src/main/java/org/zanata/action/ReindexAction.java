@@ -1,36 +1,33 @@
 package org.zanata.action;
 
+import com.google.common.base.Optional;
+import org.joda.time.Period;
+import org.joda.time.format.PeriodFormatter;
+import org.joda.time.format.PeriodFormatterBuilder;
+import org.slf4j.Logger;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.security.annotations.CheckRole;
+import org.zanata.service.SearchIndexManager;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Model;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 
-import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.inject.Model;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
-import org.joda.time.Period;
-import org.joda.time.format.PeriodFormatter;
-import org.joda.time.format.PeriodFormatterBuilder;
-import org.zanata.async.AsyncTaskHandle;
-import org.zanata.service.SearchIndexManager;
-
-import com.google.common.base.Optional;
-
 
 @Named("reindexAction")
-@Slf4j
 @Dependent
 @Model
 @CheckRole("admin")
 public class ReindexAction implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ReindexAction.class);
 
     private final DecimalFormat PERCENT_FORMAT = new DecimalFormat("###.##");
 

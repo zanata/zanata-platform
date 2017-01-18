@@ -20,19 +20,11 @@
  */
 package org.zanata.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import com.google.common.base.Optional;
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.slf4j.Logger;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.CopyVersionTaskHandle;
@@ -62,17 +54,21 @@ import org.zanata.transaction.TransactionUtil;
 import org.zanata.util.JPACopier;
 import org.zanata.util.TranslationUtil;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("copyVersionServiceImpl")
 @RequestScoped
-@Slf4j
 // Not @Transactional, because we use runInTransaction
 public class CopyVersionServiceImpl implements CopyVersionService {
 
@@ -84,6 +80,8 @@ public class CopyVersionServiceImpl implements CopyVersionService {
 
     // TextFlowTarget batch size
     protected final static int TFT_BATCH_SIZE = 20;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CopyVersionServiceImpl.class);
 
     @Inject
     private ProjectIterationDAO projectIterationDAO;

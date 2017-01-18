@@ -20,8 +20,17 @@
  */
 package org.zanata.rest;
 
-import java.io.IOException;
-import java.util.Optional;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
+import org.slf4j.Logger;
+import org.zanata.dao.AccountDAO;
+import org.zanata.limits.RateLimitingProcessor;
+import org.zanata.model.HAccount;
+import org.zanata.rest.oauth.OAuthUtil;
+import org.zanata.util.HttpUtil;
+import org.zanata.util.RunnableEx;
+
 import javax.inject.Inject;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -32,18 +41,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.common.base.Throwables;
-import org.zanata.dao.AccountDAO;
-import org.zanata.limits.RateLimitingProcessor;
-import org.zanata.model.HAccount;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
-
-import org.zanata.rest.oauth.OAuthUtil;
-import org.zanata.util.HttpUtil;
-import org.zanata.util.RunnableEx;
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * This class intercepts JAX-RS requests to limit API requests by session, by
@@ -57,9 +56,10 @@ import org.zanata.util.RunnableEx;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 @WebFilter(filterName = "RestLimitingFilter")
 public class RestLimitingFilter implements Filter {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RestLimitingFilter.class);
     private final RateLimitingProcessor processor;
     private final AccountDAO accountDAO;
     private final HAccount authenticatedUser;

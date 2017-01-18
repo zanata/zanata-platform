@@ -20,21 +20,8 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Model;
-import javax.security.auth.login.LoginException;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.dao.PersonDAO;
 import org.zanata.exception.KeyNotFoundException;
 import org.zanata.model.HAccount;
@@ -46,15 +33,25 @@ import org.zanata.service.impl.EmailChangeService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Model;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.security.auth.login.LoginException;
+import java.io.Serializable;
+import java.util.Date;
+
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("validateEmail")
-@Slf4j
 @RequestScoped
 @Model
 @Transactional
 public class ValidateEmailAction implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ValidateEmailAction.class);
 
     private static int LINK_ACTIVE_DAYS = 1;
 
@@ -73,8 +70,6 @@ public class ValidateEmailAction implements Serializable {
     @Inject
     private UrlUtil urlUtil;
 
-    @Getter
-    @Setter
     private String activationKey;
 
     @PostConstruct
@@ -128,5 +123,13 @@ public class ValidateEmailAction implements Serializable {
             return true;
         }
         return false;
+    }
+
+    public String getActivationKey() {
+        return this.activationKey;
+    }
+
+    public void setActivationKey(String activationKey) {
+        this.activationKey = activationKey;
     }
 }

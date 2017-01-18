@@ -20,7 +20,7 @@
  */
 package org.zanata.test;
 
-import java.io.IOException;
+import org.slf4j.Logger;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -32,8 +32,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
 
 /**
  * This utility filter provides a second chance for some sort of partially
@@ -44,9 +43,11 @@ import lombok.extern.slf4j.Slf4j;
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 @WebFilter(filterName = "BadResponseFilter", urlPatterns = "/*")
 public class BadResponseFilter implements Filter {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(BadResponseFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {

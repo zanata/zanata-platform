@@ -20,8 +20,9 @@
  */
 package org.zanata.model.tm;
 
-import java.util.Map;
-import java.util.Set;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import org.zanata.model.SlugEntityBase;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Access;
@@ -35,17 +36,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.OneToMany;
-
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
-import lombok.ToString;
-
-import org.zanata.model.SlugEntityBase;
-
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A translation Memory representation.
@@ -54,9 +46,6 @@ import com.google.common.collect.Sets;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@EqualsAndHashCode(callSuper = true, of = { "description" })
-@ToString(exclude = "translationUnits")
-@Data
 @Access(AccessType.FIELD)
 public class TransMemory extends SlugEntityBase implements HasTMMetadata {
     private static final long serialVersionUID = 1L;
@@ -68,13 +57,15 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata {
     @Column(name = "source_language", nullable = true)
     private String sourceLanguage;
 
+    public TransMemory() {
+    }
+
     public static TransMemory tm(String slug) {
         TransMemory tm = new TransMemory();
         tm.setSlug(slug);
         return tm;
     }
 
-    @Setter(AccessLevel.PROTECTED)
     @OneToMany(mappedBy = "translationMemory", orphanRemoval = true)
     private Set<TransMemoryUnit> translationUnits = Sets.newHashSet();
 
@@ -98,5 +89,71 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata {
     @Override
     public void setMetadata(@Nonnull TMMetadataType tmType, String metadata) {
         this.metadata.put(tmType, metadata);
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public String getSourceLanguage() {
+        return this.sourceLanguage;
+    }
+
+    public Set<TransMemoryUnit> getTranslationUnits() {
+        return this.translationUnits;
+    }
+
+    public Map<TMMetadataType, String> getMetadata() {
+        return this.metadata;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setSourceLanguage(String sourceLanguage) {
+        this.sourceLanguage = sourceLanguage;
+    }
+
+    public void setMetadata(Map<TMMetadataType, String> metadata) {
+        this.metadata = metadata;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof TransMemory)) return false;
+        final TransMemory other = (TransMemory) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (!super.equals(o)) return false;
+        final Object this$description = this.getDescription();
+        final Object other$description = other.getDescription();
+        if (this$description == null ? other$description != null :
+                !this$description.equals(other$description)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $description = this.getDescription();
+        result = result * PRIME +
+                ($description == null ? 43 : $description.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof TransMemory;
+    }
+
+    public String toString() {
+        return "org.zanata.model.tm.TransMemory(description=" +
+                this.getDescription() + ", sourceLanguage=" +
+                this.getSourceLanguage() + ", metadata=" + this.getMetadata() +
+                ")";
+    }
+
+    protected void setTranslationUnits(Set<TransMemoryUnit> translationUnits) {
+        this.translationUnits = translationUnits;
     }
 }

@@ -20,12 +20,11 @@
  */
 package org.zanata.model.validator;
 
-import java.io.Serializable;
+import org.zanata.rest.service.RestConstants;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
-import org.zanata.rest.service.RestConstants;
+import java.io.Serializable;
 
 public class SlugValidator implements ConstraintValidator<Slug, String>,
         Serializable {

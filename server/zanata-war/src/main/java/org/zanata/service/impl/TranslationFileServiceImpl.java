@@ -22,16 +22,10 @@ package org.zanata.service.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.MapMaker;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.DTDAdapter;
 import org.zanata.adapter.FileFormatAdapter;
@@ -63,6 +57,9 @@ import org.zanata.service.TranslationFileService;
 import org.zanata.util.FileUtil;
 
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -96,9 +93,10 @@ import static org.zanata.common.DocumentType.XML_DOCUMENT_TYPE_DEFINITION;
  */
 @Named("translationFileServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class TranslationFileServiceImpl implements TranslationFileService {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationFileServiceImpl.class);
     private static Map<DocumentType, Class<? extends FileFormatAdapter>> DOCTYPEMAP =
             new MapMaker().makeMap();
     private static DocumentType[] ODF_TYPES = { OPEN_DOCUMENT_TEXT,

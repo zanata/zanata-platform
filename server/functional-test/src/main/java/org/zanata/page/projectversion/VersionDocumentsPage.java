@@ -21,10 +21,10 @@
 package org.zanata.page.projectversion;
 
 import com.google.common.base.Function;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,8 +35,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class VersionDocumentsPage extends VersionBasePage {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionDocumentsPage.class);
 
     public VersionDocumentsPage(WebDriver driver) {
         super(driver);

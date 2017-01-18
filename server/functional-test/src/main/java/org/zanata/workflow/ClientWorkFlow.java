@@ -20,33 +20,32 @@
  */
 package org.zanata.workflow;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.SimpleTimeLimiter;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.zanata.util.Constants;
+import org.zanata.util.PropertiesHolder;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.io.IOUtils;
-import org.zanata.util.Constants;
-import org.zanata.util.PropertiesHolder;
-import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.SimpleTimeLimiter;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class ClientWorkFlow {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ClientWorkFlow.class);
     private final int timeoutDuration;
 
     /**

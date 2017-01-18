@@ -20,6 +20,13 @@
  */
 package org.zanata.log4j;
 
+import it.openutils.log4j.AlternateSMTPAppender;
+import org.apache.log4j.helpers.LogLog;
+import org.apache.log4j.spi.ErrorCode;
+import org.apache.log4j.spi.LoggingEvent;
+import org.apache.log4j.spi.TriggeringEventEvaluator;
+import org.zanata.util.ServiceLocator;
+
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -27,13 +34,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.naming.NamingException;
-
-import org.apache.log4j.helpers.LogLog;
-import org.apache.log4j.spi.ErrorCode;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.TriggeringEventEvaluator;
-import org.zanata.util.ServiceLocator;
-import it.openutils.log4j.AlternateSMTPAppender;
 
 /**
  * Extension of the {@link AlternateSMTPAppender} class that allows Zanata to

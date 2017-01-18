@@ -20,10 +20,12 @@
  */
 package org.zanata.security;
 
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.events.NotLoggedInEvent;
+import org.zanata.servlet.annotations.ContextPath;
+import org.zanata.util.Synchronized;
+import org.zanata.util.UrlUtil;
 
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Observes;
@@ -31,13 +33,10 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zanata.events.NotLoggedInEvent;
-import org.zanata.servlet.annotations.ContextPath;
-import org.zanata.util.Synchronized;
-import org.zanata.util.UrlUtil;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 /**
  * This bean is used store a url from the query string for use with redirects.

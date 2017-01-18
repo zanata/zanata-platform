@@ -1,9 +1,5 @@
 package org.zanata.database;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
-
 import org.assertj.core.api.Fail;
 import org.hibernate.JDBCException;
 import org.hibernate.Query;
@@ -13,14 +9,17 @@ import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.zanata.ZanataJpaTest;
 
-import lombok.Cleanup;
-import lombok.extern.slf4j.Slf4j;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-@Slf4j
 public class WrappedConnectionProviderTest extends ZanataJpaTest {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(WrappedConnectionProviderTest.class);
     private Session session;
 
     @Before
@@ -30,9 +29,7 @@ public class WrappedConnectionProviderTest extends ZanataJpaTest {
 
     @Test
     public void testWrapperWithNestedExecute() throws Exception {
-        @Cleanup
-        ScrollableResults scroll1 = streamQuery("from HTextFlow");
-        try {
+        try (ScrollableResults scroll1 = streamQuery("from HTextFlow")) {
             log.warn("This test is about to trigger a StreamingResultSetSQLException");
             session.doWork(new Work() {
                 @Override
@@ -49,13 +46,11 @@ public class WrappedConnectionProviderTest extends ZanataJpaTest {
 
     @Test
     public void testWrapperWithNestedStreaming() throws Exception {
-        @Cleanup
-        ScrollableResults scroll1 = streamQuery("from HTextFlow");
-        try {
+        try (ScrollableResults scroll1 = streamQuery("from HTextFlow")) {
             log.warn("This test is about to trigger a StreamingResultSetSQLException");
-            @Cleanup
-            ScrollableResults scroll2 = streamQuery("from HTextFlowTarget");
-            concurrentResultSetNotDetected();
+            try (ScrollableResults scroll2 = streamQuery("from HTextFlowTarget")) {
+                concurrentResultSetNotDetected();
+            }
         } catch (JDBCException e) {
             checkExceptionType(e);
         }
@@ -63,13 +58,11 @@ public class WrappedConnectionProviderTest extends ZanataJpaTest {
 
     @Test
     public void testWrapperWithNestedResults() throws Exception {
-        @Cleanup
-        ScrollableResults scroll1 = streamQuery("from HTextFlow");
-        try {
+        try (ScrollableResults scroll1 = streamQuery("from HTextFlow")) {
             log.warn("This test is about to trigger a StreamingResultSetSQLException");
-            @Cleanup
-            ScrollableResults scroll2 = scrollQuery("from HTextFlowTarget");
-            concurrentResultSetNotDetected();
+            try (ScrollableResults scroll2 = scrollQuery("from HTextFlowTarget")) {
+                concurrentResultSetNotDetected();
+            }
         } catch (JDBCException e) {
             checkExceptionType(e);
         }

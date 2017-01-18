@@ -20,36 +20,30 @@
  */
 package org.zanata.action;
 
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
+import com.google.common.collect.Lists;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckRole;
+import org.slf4j.Logger;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.TransMemoryDAO;
 import org.zanata.exception.EntityMissingException;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.rest.service.TranslationMemoryResourceService;
-
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.ui.faces.FacesMessages;
-import com.google.common.collect.Lists;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 /**
  * Controller class for the Translation Memory UI.
@@ -62,9 +56,10 @@ import com.google.common.collect.Lists;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class TranslationMemoryAction implements Serializable {
     private static final long serialVersionUID = -6791743907133760028L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationMemoryAction.class);
     @Inject
     private FacesMessages facesMessages;
 
@@ -82,7 +77,6 @@ public class TranslationMemoryAction implements Serializable {
 
     private ClearTransMemoryProcessKey lastTaskTMKey;
 
-    @Getter
     private SortingType tmSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
                     SortingType.SortOption.CREATED_DATE));
@@ -207,16 +201,49 @@ public class TranslationMemoryAction implements Serializable {
         return "cancel";
     }
 
+    public SortingType getTmSortingList() {
+        return this.tmSortingList;
+    }
+
     /**
      * Represents a key to index a translation memory clear process.
      *
      * NB: Eventually this class might need to live outside if there are other
      * services that need to control this process.
      */
-    @AllArgsConstructor
-    @EqualsAndHashCode
     private class ClearTransMemoryProcessKey implements Serializable {
         private String slug;
+
+        @java.beans.ConstructorProperties({ "slug" })
+        public ClearTransMemoryProcessKey(String slug) {
+            this.slug = slug;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof ClearTransMemoryProcessKey))
+                return false;
+            final ClearTransMemoryProcessKey other =
+                    (ClearTransMemoryProcessKey) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$slug = this.slug;
+            final Object other$slug = other.slug;
+            if (this$slug == null ? other$slug != null :
+                    !this$slug.equals(other$slug)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $slug = this.slug;
+            result = result * PRIME + ($slug == null ? 43 : $slug.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof ClearTransMemoryProcessKey;
+        }
     }
 
     private class TMComparator implements Comparator<TransMemory> {

@@ -20,7 +20,10 @@
  */
 package org.zanata.transaction;
 
-import java.util.concurrent.Callable;
+import org.slf4j.Logger;
+import org.zanata.util.IServiceLocator;
+import org.zanata.util.RunnableEx;
+import org.zanata.util.ServiceLocator;
 
 import javax.ejb.ApplicationException;
 import javax.enterprise.context.ApplicationScoped;
@@ -33,11 +36,7 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
-
-import lombok.extern.slf4j.Slf4j;
-import org.zanata.util.IServiceLocator;
-import org.zanata.util.RunnableEx;
-import org.zanata.util.ServiceLocator;
+import java.util.concurrent.Callable;
 
 import static javax.transaction.Status.STATUS_ACTIVE;
 import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
@@ -52,11 +51,13 @@ import static javax.transaction.Status.STATUS_ROLLEDBACK;
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 @ApplicationScoped
 //@Stateless
 //@TransactionManagement(TransactionManagementType.BEAN)
 public class TransactionUtilImpl implements TransactionUtil {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TransactionUtilImpl.class);
 
     public static TransactionUtilImpl get() {
         return ServiceLocator.instance().getInstance(TransactionUtilImpl.class);

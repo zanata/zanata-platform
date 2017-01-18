@@ -20,9 +20,21 @@
  */
 package org.zanata.util;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Throwables;
+import org.apache.commons.io.FileUtils;
+import org.fedorahosted.openprops.Properties;
+import org.slf4j.Logger;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
@@ -31,20 +43,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
-
-import com.google.common.base.Preconditions;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
-import org.fedorahosted.openprops.Properties;
-import com.google.common.base.Throwables;
-import lombok.Setter;
 
 /**
  * Create and manipulate basic text files for testing.
@@ -52,7 +50,6 @@ import lombok.Setter;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class TestFileGenerator {
     // Length is maximum filename length - 4 (.xxx) - 19 (for tmp file
     // randomness)
@@ -61,6 +58,8 @@ public class TestFileGenerator {
             "YgjWJT8Yhs5qibcEZDNAZwLmDNHaRJhQr2Y1z3VslMFGGSP25eqzU1lDjejCsd26" +
             "wRhT1UOkbhRRlm0ybGk8lTQgHEqT9sno1Veuw8A0StLGDfHAmCDFcUzAz9HMeuMU" +
             "n9nFW";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TestFileGenerator.class);
 
 
     public TestFileGenerator() {
@@ -220,7 +219,6 @@ public class TestFileGenerator {
 
     @XmlRootElement(namespace = ZanataXml.NS,
             name = "config")
-    @Setter
     private static class ZanataXml {
         static final String NS = "http://zanata.org/namespace/config/";
         @XmlElement(namespace = ZanataXml.NS)
@@ -237,6 +235,26 @@ public class TestFileGenerator {
                 @XmlElement(name = "locale", namespace = ZanataXml.NS)
         )
         private List<String> locales;
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public void setProject(String project) {
+            this.project = project;
+        }
+
+        public void setProjectVersion(String projectVersion) {
+            this.projectVersion = projectVersion;
+        }
+
+        public void setProjectType(String projectType) {
+            this.projectType = projectType;
+        }
+
+        public void setLocales(List<String> locales) {
+            this.locales = locales;
+        }
     }
 
     public File openTestFile(String filename) {

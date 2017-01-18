@@ -22,7 +22,6 @@ package org.zanata.email;
 
 import com.google.common.base.Optional;
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -35,7 +34,6 @@ import static org.zanata.email.Addresses.getReplyTo;
 /**
 * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
 */
-@RequiredArgsConstructor
 public class RequestToJoinVersionGroupEmailStrategy
         extends EmailStrategy {
     private final String fromLoginName;
@@ -45,6 +43,23 @@ public class RequestToJoinVersionGroupEmailStrategy
     private final String groupSlug;
     private final Collection<ProjectIterationId> projectIterationIds;
     private final String htmlMessage;
+
+    @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
+            "replyEmail", "groupName", "groupSlug", "projectIterationIds",
+            "htmlMessage" })
+    public RequestToJoinVersionGroupEmailStrategy(String fromLoginName,
+            String fromName, String replyEmail, String groupName,
+            String groupSlug,
+            Collection<ProjectIterationId> projectIterationIds,
+            String htmlMessage) {
+        this.fromLoginName = fromLoginName;
+        this.fromName = fromName;
+        this.replyEmail = replyEmail;
+        this.groupName = groupName;
+        this.groupSlug = groupSlug;
+        this.projectIterationIds = projectIterationIds;
+        this.htmlMessage = htmlMessage;
+    }
 
     @Override
     public String getBodyResourceName() {

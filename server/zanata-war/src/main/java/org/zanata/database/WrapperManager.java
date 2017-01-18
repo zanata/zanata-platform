@@ -21,11 +21,11 @@
 
 package org.zanata.database;
 
+import org.slf4j.Logger;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class wraps JDBC Connections/Statements/ResultSets to detect attempts to
@@ -38,12 +38,13 @@ import lombok.extern.slf4j.Slf4j;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Slf4j
 public class WrapperManager {
     public static final String PROPERTY_USE_WRAPPER =
             "zanata.connection.use.wrapper";
     private static final String USE_WRAPPER =
             System.getProperty(PROPERTY_USE_WRAPPER);
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(WrapperManager.class);
 
     private boolean checkedFirstConnection = false;
     private boolean wrappingEnabled = false;

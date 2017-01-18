@@ -1,45 +1,11 @@
 package org.zanata.rest.service;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.persistence.EntityManager;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.base.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.richfaces.exception.FileUploadException;
+import org.slf4j.Logger;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -75,7 +41,38 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.StringUtil;
 
-import com.google.common.base.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isEmpty;
@@ -83,7 +80,6 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 @Named("resourceUtils")
 @RequestScoped
-@Slf4j
 // TODO move plural logic out of ResourceUtils into a dedicated class
 public class ResourceUtils {
     /**
@@ -121,6 +117,8 @@ public class ResourceUtils {
     private static final String DEFAULT_PLURAL_FORM = "nplurals=1; plural=0";
 
     public static final int MAX_TARGET_CONTENTS = 6;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ResourceUtils.class);
 
     private static Properties pluralForms;
 

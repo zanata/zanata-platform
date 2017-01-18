@@ -20,22 +20,29 @@
  */
 package org.zanata.page;
 
-import java.util.List;
-import java.util.Set;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.openqa.selenium.*;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Cookie;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
+import org.slf4j.Logger;
 import org.zanata.util.ShortString;
 import org.zanata.util.WebElementUtil;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,8 +50,9 @@ import static org.assertj.core.api.Assertions.assertThat;
  * The base class for the page driver. Contains functionality not generally of
  * a user visible nature.
  */
-@Slf4j
 public class AbstractPage {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(AbstractPage.class);
     private final WebDriver driver;
 
     public AbstractPage(final WebDriver driver) {

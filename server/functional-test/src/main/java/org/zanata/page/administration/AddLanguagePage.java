@@ -21,22 +21,19 @@
 package org.zanata.page.administration;
 
 import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.page.languages.LanguagesPage;
-import org.zanata.util.Checkbox;
-import org.zanata.util.WebElementUtil;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-@Slf4j
 public class AddLanguagePage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(AddLanguagePage.class);
     private By saveButton = By.id("btn-new-language-save");
     private By cancelButton = By.id("btn-new-language-cancel");
     private By localeId = By.className("react-autosuggest__input");

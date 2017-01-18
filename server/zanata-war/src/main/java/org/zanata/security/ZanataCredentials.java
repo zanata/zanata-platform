@@ -20,20 +20,19 @@
  */
 package org.zanata.security;
 
-import java.io.IOException;
-import java.io.Serializable;
+import org.slf4j.Logger;
+import org.zanata.security.openid.OpenIdProviderType;
+import org.zanata.util.Synchronized;
+
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Named;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
-
-import javax.inject.Named;
-import org.zanata.security.openid.OpenIdProviderType;
-
-import lombok.extern.slf4j.Slf4j;
-import org.zanata.util.Synchronized;
+import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Overrides the default Seam credentials. Adds app-specific security concepts
@@ -44,10 +43,11 @@ import org.zanata.util.Synchronized;
  */
 @Named("credentials")
 @SessionScoped
-@Slf4j
 @Synchronized
 public class ZanataCredentials implements Serializable {
     private static final long serialVersionUID = 5520824011655916917L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataCredentials.class);
     private String username;
     private String password;
     private boolean initialized;

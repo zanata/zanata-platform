@@ -20,10 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectIterationDAO;
@@ -32,6 +28,9 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.LocaleServiceImpl;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;

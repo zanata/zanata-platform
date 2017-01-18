@@ -20,7 +20,11 @@
  */
 package org.zanata.model;
 
-import java.util.Set;
+import com.google.common.collect.Sets;
+import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.zanata.common.EntityStatus;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -30,23 +34,12 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.zanata.common.EntityStatus;
-
-import com.google.common.collect.Sets;
+import java.util.Set;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
-@Setter
-@Getter
 @Access(AccessType.FIELD)
 public class HIterationGroup extends SlugEntityBase implements HasEntityStatus,
         HasUserFriendlyToString {
@@ -101,5 +94,53 @@ public class HIterationGroup extends SlugEntityBase implements HasEntityStatus,
     public String userFriendlyToString() {
         return String.format("Version group(slug=%s, name=%s, status=%s",
                 getSlug(), getName(), getStatus());
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public Set<HPerson> getMaintainers() {
+        return this.maintainers;
+    }
+
+    public Set<HProjectIteration> getProjectIterations() {
+        return this.projectIterations;
+    }
+
+    public Set<HLocale> getActiveLocales() {
+        return this.activeLocales;
+    }
+
+    public EntityStatus getStatus() {
+        return this.status;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setMaintainers(Set<HPerson> maintainers) {
+        this.maintainers = maintainers;
+    }
+
+    public void setProjectIterations(Set<HProjectIteration> projectIterations) {
+        this.projectIterations = projectIterations;
+    }
+
+    public void setActiveLocales(Set<HLocale> activeLocales) {
+        this.activeLocales = activeLocales;
+    }
+
+    public void setStatus(EntityStatus status) {
+        this.status = status;
     }
 }

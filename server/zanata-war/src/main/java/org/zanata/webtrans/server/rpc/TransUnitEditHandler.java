@@ -23,10 +23,6 @@ package org.zanata.webtrans.server.rpc;
 
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -34,6 +30,10 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.TransUnitEdit;
 import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Named("webtrans.gwt.TransUnitEditHandler")
 @RequestScoped

@@ -21,9 +21,9 @@
 
 package org.zanata.model.tm;
 
-import javax.annotation.Nonnull;
-
 import org.zanata.model.HasEntityDates;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author Sean Flanigan <a

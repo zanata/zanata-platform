@@ -20,9 +20,9 @@
  */
 package org.zanata.transaction;
 
-import java.util.concurrent.Callable;
-
 import org.zanata.util.RunnableEx;
+
+import java.util.concurrent.Callable;
 
 /**
  * An interface to facilitate CDIUnit tests that needs to inject a mock

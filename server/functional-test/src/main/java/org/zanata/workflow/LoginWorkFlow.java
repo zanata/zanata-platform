@@ -21,22 +21,21 @@
 package org.zanata.workflow;
 
 import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
+import org.slf4j.Logger;
 import org.zanata.page.AbstractPage;
 import org.zanata.page.BasePage;
 import org.zanata.page.account.InactiveAccountPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.dashboard.DashboardBasePage;
 
-import java.util.List;
-
-@Slf4j
 public class LoginWorkFlow extends AbstractWebWorkFlow {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(LoginWorkFlow.class);
+
     public LoginWorkFlow() {
     }
 

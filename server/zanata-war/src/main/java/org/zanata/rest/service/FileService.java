@@ -20,36 +20,13 @@
  */
 package org.zanata.rest.service;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nonnull;
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Path;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.StreamingOutput;
-
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.io.ByteStreams;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.util.GenericType;
-
-import lombok.extern.slf4j.Slf4j;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.adapter.FileFormatAdapter;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.common.ContentState;
@@ -74,19 +51,40 @@ import org.zanata.service.FileSystemService;
 import org.zanata.service.FileSystemService.DownloadDescriptorProperties;
 import org.zanata.service.TranslationFileService;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.io.ByteStreams;
+import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.Path;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RequestScoped
 @Named("fileService")
 @Path(FileResource.SERVICE_PATH)
-@Slf4j
 @Transactional
 public class FileService implements FileResource {
     private static final String FILE_TYPE_OFFLINE_PO = "offlinepo";
     private static final String FILE_TYPE_OFFLINE_PO_TEMPLATE = "offlinepot";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(FileService.class);
 
     @Inject
     private DocumentDAO documentDAO;

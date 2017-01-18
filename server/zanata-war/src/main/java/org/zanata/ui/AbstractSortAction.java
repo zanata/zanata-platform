@@ -21,16 +21,13 @@
 
 package org.zanata.ui;
 
-import java.util.Date;
-
+import com.google.common.collect.Lists;
 import org.zanata.action.SortingType;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
-import com.google.common.collect.Lists;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import java.util.Date;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -46,7 +43,6 @@ public abstract class AbstractSortAction {
 
     abstract protected String getMessage(String key, Object... args);
 
-    @Getter
     private final SortingType languageSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
                     SortingType.SortOption.HOURS,
@@ -131,13 +127,41 @@ public abstract class AbstractSortAction {
         return displayUnit;
     }
 
-    @Getter
-    @AllArgsConstructor
+    public SortingType getLanguageSortingList() {
+        return this.languageSortingList;
+    }
+
     public final class DisplayUnit {
         private String cssClass;
         private String figure;
         private String unit;
         private String title;
+
+        @java.beans.ConstructorProperties({ "cssClass", "figure", "unit",
+                "title" })
+        public DisplayUnit(String cssClass, String figure, String unit,
+                String title) {
+            this.cssClass = cssClass;
+            this.figure = figure;
+            this.unit = unit;
+            this.title = title;
+        }
+
+        public String getCssClass() {
+            return this.cssClass;
+        }
+
+        public String getFigure() {
+            return this.figure;
+        }
+
+        public String getUnit() {
+            return this.unit;
+        }
+
+        public String getTitle() {
+            return this.title;
+        }
     }
 
     public int compareWordStatistic(WordStatistic stats1, WordStatistic stats2,

@@ -20,31 +20,26 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import javax.enterprise.inject.Model;
-import javax.faces.application.FacesMessage;
-
+import com.google.common.base.Strings;
 import org.apache.commons.lang.time.DateUtils;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.AccountActivationKeyDAO;
-import org.zanata.exception.KeyNotFoundException;
 import org.zanata.exception.ActivationLinkExpiredException;
+import org.zanata.exception.KeyNotFoundException;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
 
-import com.google.common.base.Strings;
-import lombok.Getter;
-import lombok.Setter;
+import javax.enterprise.inject.Model;
+import javax.faces.application.FacesMessage;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.Date;
 
 @Named("activate")
 @GroupedConversationScoped
@@ -71,8 +66,6 @@ public class ActivateAction implements Serializable {
     @Inject
     private FacesMessages facesMessages;
 
-    @Getter
-    @Setter
     private String activationKey;
 
     private HAccountActivationKey key;
@@ -131,5 +124,13 @@ public class ActivateAction implements Serializable {
 
     public String getResetPasswordKey() {
         return resetPasswordKey;
+    }
+
+    public String getActivationKey() {
+        return this.activationKey;
+    }
+
+    public void setActivationKey(String activationKey) {
+        this.activationKey = activationKey;
     }
 }

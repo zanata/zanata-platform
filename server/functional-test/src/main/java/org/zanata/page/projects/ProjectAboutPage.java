@@ -21,16 +21,17 @@
 
 package org.zanata.page.projects;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectAboutPage extends ProjectBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectAboutPage.class);
     private By aboutText = By.id("home-content-rendered");
 
     public ProjectAboutPage(WebDriver driver) {

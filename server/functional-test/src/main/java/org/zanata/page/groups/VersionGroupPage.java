@@ -20,29 +20,31 @@
  */
 package org.zanata.page.groups;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.openqa.selenium.*;
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class VersionGroupPage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionGroupPage.class);
     private By versionsInGroupTable = By.id("projects-project_list");
     private By projectForm = By.id("projects-project_form");
     private By projectSearchField = By

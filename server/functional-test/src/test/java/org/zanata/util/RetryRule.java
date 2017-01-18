@@ -5,10 +5,10 @@
 
 package org.zanata.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
 
 /**
  * @author Damian Jansen <a
@@ -27,9 +27,10 @@ import org.junit.runners.model.Statement;
  * href="http://stackoverflow.com/a/8301639">this submission</a> to Stack
  * Overflow.
  */
-@Slf4j
 public class RetryRule implements TestRule {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RetryRule.class);
     private int retries;
     private int currentExecution;
 

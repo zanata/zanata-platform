@@ -24,20 +24,15 @@ package org.zanata.webtrans.shared.search;
 //so that only one search method is needed on the interface.
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import org.joda.time.DateTime;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
-
-import lombok.Getter;
-
-import com.google.common.base.Objects;
-import com.google.common.base.Preconditions;
 
 /**
  * Specifies a set of constraints to be applied by a filter.
  *
  * @author David Mason, damason@redhat.com
  */
-@Getter
 public class FilterConstraints {
     private String searchString;
     private boolean isCaseSensitive;
@@ -96,6 +91,54 @@ public class FilterConstraints {
                 .add("msgContext", msgContext)
                 .toString();
         // @formatter:on
+    }
+
+    public String getSearchString() {
+        return this.searchString;
+    }
+
+    public boolean isCaseSensitive() {
+        return this.isCaseSensitive;
+    }
+
+    public boolean isSearchInSource() {
+        return this.searchInSource;
+    }
+
+    public boolean isSearchInTarget() {
+        return this.searchInTarget;
+    }
+
+    public ContentStateGroup getIncludedStates() {
+        return this.includedStates;
+    }
+
+    public String getResId() {
+        return this.resId;
+    }
+
+    public DateTime getChangedBefore() {
+        return this.changedBefore;
+    }
+
+    public DateTime getChangedAfter() {
+        return this.changedAfter;
+    }
+
+    public String getLastModifiedByUser() {
+        return this.lastModifiedByUser;
+    }
+
+    public String getSourceComment() {
+        return this.sourceComment;
+    }
+
+    public String getTransComment() {
+        return this.transComment;
+    }
+
+    public String getMsgContext() {
+        return this.msgContext;
     }
 
     public static class Builder {

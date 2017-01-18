@@ -21,10 +21,6 @@
 package org.zanata.rest.editor.service;
 
 import com.google.common.base.Joiner;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
@@ -35,6 +31,9 @@ import org.zanata.service.TranslationMemoryService;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 
 import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
@@ -42,7 +41,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.zanata.webtrans.shared.rpc.HasSearchType.*;
+import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 /**
  * @see org.zanata.rest.editor.service.resource.SuggestionsResource

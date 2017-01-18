@@ -23,10 +23,9 @@ package org.zanata.security.permission;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import java.io.Serializable;
-
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  * This permission resolver will use the

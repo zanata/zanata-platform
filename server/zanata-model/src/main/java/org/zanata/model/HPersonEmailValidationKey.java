@@ -20,8 +20,9 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.Date;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.zanata.model.validator.EmailDomain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -34,20 +35,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.zanata.model.validator.EmailDomain;
+import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @EntityListeners({HPersonEmailValidationKey.EntityListener.class})
-@Setter
-@ToString
-@NoArgsConstructor
 public class HPersonEmailValidationKey implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -66,6 +58,9 @@ public class HPersonEmailValidationKey implements Serializable {
         this.person = person;
         this.keyHash = keyHash;
         this.email = email;
+    }
+
+    public HPersonEmailValidationKey() {
     }
 
     @Id
@@ -96,6 +91,33 @@ public class HPersonEmailValidationKey implements Serializable {
     @EmailDomain
     public String getEmail() {
         return email;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setKeyHash(String keyHash) {
+        this.keyHash = keyHash;
+    }
+
+    public void setPerson(HPerson person) {
+        this.person = person;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HPersonEmailValidationKey(id=" + this.getId() +
+                ", keyHash=" + this.getKeyHash() + ", person=" +
+                this.getPerson() + ", creationDate=" + this.getCreationDate() +
+                ", email=" + this.getEmail() + ")";
     }
 
     public static class EntityListener {

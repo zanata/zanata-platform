@@ -20,8 +20,6 @@
  */
 package org.zanata.rest.search.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.EntityStatus;
@@ -33,16 +31,37 @@ import org.zanata.common.EntityStatus;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ProjectSearchResult extends SearchResult {
 
-    @Getter @Setter
     private String title;
 
-    @Getter @Setter
     private long contributorCount;
 
-    @Getter @Setter
     private EntityStatus status;
 
     public ProjectSearchResult() {
         this.setType(SearchResultType.Project);
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public long getContributorCount() {
+        return this.contributorCount;
+    }
+
+    public EntityStatus getStatus() {
+        return this.status;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setContributorCount(long contributorCount) {
+        this.contributorCount = contributorCount;
+    }
+
+    public void setStatus(EntityStatus status) {
+        this.status = status;
     }
 }

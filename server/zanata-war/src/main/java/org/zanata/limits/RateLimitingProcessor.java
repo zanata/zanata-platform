@@ -1,14 +1,10 @@
 package org.zanata.limits;
 
-import java.util.concurrent.TimeUnit;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
+import org.slf4j.Logger;
 import org.zanata.util.RunnableEx;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class is used by RestLimitingSynchronousDispatcher to dispatch API calls
@@ -17,11 +13,11 @@ import javax.servlet.http.HttpServletResponse;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class RateLimitingProcessor {
     // http://tools.ietf.org/html/rfc6585
     public static final int TOO_MANY_REQUEST = 429;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RateLimitingProcessor.class);
     private RateLimitManager rateLimitManager;
 
     // for seam to use
@@ -31,6 +27,11 @@ public class RateLimitingProcessor {
 
     private final LeakyBucket logLimiter = new LeakyBucket(1, 5,
             TimeUnit.MINUTES);
+
+    @java.beans.ConstructorProperties({ "rateLimitManager" })
+    protected RateLimitingProcessor(RateLimitManager rateLimitManager) {
+        this.rateLimitManager = rateLimitManager;
+    }
 
     public void processForApiKey(String apiKey, HttpServletResponse response,
             RunnableEx taskToRun) throws Exception {

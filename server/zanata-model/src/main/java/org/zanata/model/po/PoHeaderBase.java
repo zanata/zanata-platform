@@ -20,16 +20,13 @@
  */
 package org.zanata.model.po;
 
+import org.zanata.model.HSimpleComment;
+import org.zanata.model.ModelEntityBase;
+
 import javax.persistence.CascadeType;
 import javax.persistence.JoinColumn;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToOne;
-
-import lombok.Setter;
-import lombok.ToString;
-
-import org.zanata.model.HSimpleComment;
-import org.zanata.model.ModelEntityBase;
 
 /**
  *
@@ -38,8 +35,6 @@ import org.zanata.model.ModelEntityBase;
  * @see org.zanata.rest.dto.extensions.gettext.PoTargetHeader
  */
 @MappedSuperclass
-@Setter
-@ToString
 public abstract class PoHeaderBase extends ModelEntityBase {
 
     private static final long serialVersionUID = 4675225923343857779L;
@@ -59,5 +54,18 @@ public abstract class PoHeaderBase extends ModelEntityBase {
     @javax.persistence.Lob
     public String getEntries() {
         return entries;
+    }
+
+    public void setComment(HSimpleComment comment) {
+        this.comment = comment;
+    }
+
+    public void setEntries(String entries) {
+        this.entries = entries;
+    }
+
+    public String toString() {
+        return "org.zanata.model.po.PoHeaderBase(comment=" + this.getComment() +
+                ", entries=" + this.getEntries() + ")";
     }
 }

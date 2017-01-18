@@ -20,8 +20,10 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 
 import java.util.ArrayList;
@@ -31,7 +33,6 @@ import java.util.List;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class TranslationMemoryPage extends BasePage {
 
     public static final String ID_UNAVAILABLE = "This Id is not available";
@@ -39,6 +40,8 @@ public class TranslationMemoryPage extends BasePage {
             "There was an error uploading the file";
     public static final String NO_MEMORIES =
             "No Translation Memories have been created.";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationMemoryPage.class);
 
     private By listItemCount = By.className("badge");
     private By listItemDescription = By.className("list__item__meta");

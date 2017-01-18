@@ -20,16 +20,12 @@
  */
 package org.zanata.async;
 
+import com.google.common.base.Optional;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
-import com.google.common.base.Optional;
 
 /**
  * Asynchronous handle to provide communication between an asynchronous task and
@@ -40,25 +36,16 @@ import com.google.common.base.Optional;
  */
 public class AsyncTaskHandle<V> {
 
-    @Setter(AccessLevel.PACKAGE)
     private Future<V> futureResult;
 
-    @Getter
-    @Setter
     public int maxProgress = 100;
 
-    @Getter
-    @Setter
     public int minProgress = 0;
 
-    @Getter
-    @Setter
     public int currentProgress = 0;
 
-    @Getter
     private long startTime = -1;
 
-    @Getter
     private long finishTime = -1;
 
     public int increaseProgress(int increaseBy) {
@@ -158,5 +145,41 @@ public class AsyncTaskHandle<V> {
         } else {
             return 0;
         }
+    }
+
+    public int getMaxProgress() {
+        return this.maxProgress;
+    }
+
+    public int getMinProgress() {
+        return this.minProgress;
+    }
+
+    public int getCurrentProgress() {
+        return this.currentProgress;
+    }
+
+    public long getStartTime() {
+        return this.startTime;
+    }
+
+    public long getFinishTime() {
+        return this.finishTime;
+    }
+
+    void setFutureResult(Future<V> futureResult) {
+        this.futureResult = futureResult;
+    }
+
+    public void setMaxProgress(int maxProgress) {
+        this.maxProgress = maxProgress;
+    }
+
+    public void setMinProgress(int minProgress) {
+        this.minProgress = minProgress;
+    }
+
+    public void setCurrentProgress(int currentProgress) {
+        this.currentProgress = currentProgress;
     }
 }

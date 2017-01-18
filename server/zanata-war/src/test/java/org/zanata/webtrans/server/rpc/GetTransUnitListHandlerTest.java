@@ -1,17 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.cache.CacheLoader;
-import lombok.extern.slf4j.Slf4j;
-
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
@@ -24,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.slf4j.Logger;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.common.LocaleId;
@@ -57,12 +47,19 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({
         TranslationStateCacheImpl.class,
@@ -70,6 +67,8 @@ import javax.persistence.EntityManager;
         ValidationServiceImpl.class
 })
 public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(GetTransUnitListHandlerTest.class);
     @Inject @Any
     private GetTransUnitListHandler handler;
     @Produces @Mock

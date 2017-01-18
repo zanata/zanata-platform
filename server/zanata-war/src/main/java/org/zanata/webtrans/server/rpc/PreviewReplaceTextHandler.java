@@ -20,12 +20,8 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
@@ -33,8 +29,11 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.PreviewReplaceText;
 import org.zanata.webtrans.shared.rpc.PreviewReplaceTextResult;
 
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Show the result of a {@link org.zanata.webtrans.shared.rpc.ReplaceText}

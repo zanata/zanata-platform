@@ -21,15 +21,8 @@
 
 package org.zanata.webtrans.server.rpc;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -37,6 +30,12 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Named("webtrans.gwt.PublishWorkspaceChatHandler")
 @RequestScoped

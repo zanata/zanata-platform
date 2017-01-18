@@ -20,31 +20,30 @@
  */
 package org.zanata.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.ResultTransformer;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-
+import org.slf4j.Logger;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.search.FilterConstraintToQuery;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
+import org.zanata.webtrans.shared.search.FilterConstraints;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @RequestScoped
-@Slf4j
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TextFlowDAO.class);
 
     // TODO replace all getSession() code to use entityManager
 

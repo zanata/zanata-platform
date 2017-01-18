@@ -20,6 +20,19 @@
  */
 package org.zanata.util;
 
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.NoAlertPresentException;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.Point;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
+import org.slf4j.Logger;
+
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -29,25 +42,14 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Optional;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.io.FileUtils;
-import org.openqa.selenium.*;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.security.Credentials;
-import org.openqa.selenium.support.events.AbstractWebDriverEventListener;
-
-import javax.imageio.ImageIO;
-
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class TestEventForScreenshotListener extends AbstractWebDriverEventListener {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(TestEventForScreenshotListener.class);
     private final WebDriver driver;
     private String testId = "";
     private boolean handlingException;

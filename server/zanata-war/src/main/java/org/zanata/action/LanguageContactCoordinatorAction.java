@@ -21,34 +21,25 @@
 
 package org.zanata.action;
 
-import java.io.Serializable;
-
-import javax.enterprise.inject.Model;
-import javax.faces.application.FacesMessage;
-
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.Authenticated;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.email.ContactLanguageCoordinatorEmailStrategy;
 import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
 import org.zanata.ui.faces.FacesMessages;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -58,9 +49,10 @@ import lombok.extern.slf4j.Slf4j;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class LanguageContactCoordinatorAction implements Serializable {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(LanguageContactCoordinatorAction.class);
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
@@ -77,12 +69,8 @@ public class LanguageContactCoordinatorAction implements Serializable {
     @Inject
     private Messages msgs;
 
-    @Getter
-    @Setter
     private String message;
 
-    @Getter
-    @Setter
     private String localeId;
 
     private HLocale locale;
@@ -133,5 +121,21 @@ public class LanguageContactCoordinatorAction implements Serializable {
             locale = localeServiceImpl.getByLocaleId(new LocaleId(localeId));
         }
         return locale;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public String getLocaleId() {
+        return this.localeId;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setLocaleId(String localeId) {
+        this.localeId = localeId;
     }
 }

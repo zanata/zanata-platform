@@ -20,9 +20,6 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.sql.Blob;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,23 +28,21 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.io.Serializable;
+import java.sql.Blob;
 
 @Entity
-@NoArgsConstructor
 // is this necessary?
 public class HDocumentUploadPart implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Setter
     private long id;
-    @Setter
     private HDocumentUpload upload;
-    @Setter
     private Blob content;
+
+    public HDocumentUploadPart() {
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -75,4 +70,15 @@ public class HDocumentUploadPart implements Serializable {
                 + upload.getId() + "]";
     }
 
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setUpload(HDocumentUpload upload) {
+        this.upload = upload;
+    }
+
+    public void setContent(Blob content) {
+        this.content = content;
+    }
 }

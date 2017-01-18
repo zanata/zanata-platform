@@ -23,8 +23,6 @@
 package org.zanata.ui;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.common.ActivityType;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
@@ -39,9 +37,9 @@ import org.zanata.service.ActivityService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.ShortString;
 import org.zanata.util.UrlUtil;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import static org.zanata.common.ActivityType.REVIEWED_TRANSLATION;
 import static org.zanata.common.ActivityType.UPDATE_TRANSLATION;
@@ -58,8 +56,6 @@ import static org.zanata.common.ActivityType.UPLOAD_TRANSLATION_DOCUMENT;
 @Named("activityEntry")
 @javax.enterprise.context.Dependent
 
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ActivityEntry {
     @Inject
     private ActivityService activityServiceImpl;
@@ -72,6 +68,20 @@ public class ActivityEntry {
 
     @Inject
     private Messages msgs;
+
+    @java.beans.ConstructorProperties({ "activityServiceImpl", "urlUtil",
+            "documentDAO", "msgs" })
+    protected ActivityEntry(ActivityService activityServiceImpl,
+            UrlUtil urlUtil,
+            DocumentDAO documentDAO, Messages msgs) {
+        this.activityServiceImpl = activityServiceImpl;
+        this.urlUtil = urlUtil;
+        this.documentDAO = documentDAO;
+        this.msgs = msgs;
+    }
+
+    public ActivityEntry() {
+    }
 
     public String getActivityTypeIconClass(Activity activity) {
         return activity.getActivityType() == UPDATE_TRANSLATION ? "i--translate" :

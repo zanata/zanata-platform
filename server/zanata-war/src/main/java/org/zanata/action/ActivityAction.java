@@ -20,20 +20,20 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.Activity;
 import org.zanata.model.HAccount;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.ActivityService;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

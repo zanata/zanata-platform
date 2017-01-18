@@ -20,28 +20,26 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.collect.Lists;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.projects.ProjectBasePage;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.google.common.collect.Lists;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectWebHooksTab extends ProjectBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectWebHooksTab.class);
     private By webHooksForm = By.id("settings-webhooks-form");
     private By newWebHooksForm = By.id("newWebhook");
     private By deleteBtn = By.name("deleteWebhookBtn");
@@ -133,11 +131,23 @@ public class ProjectWebHooksTab extends ProjectBasePage {
         return listWrapper.get(0).findElements(By.className("list-item"));
     }
 
-    @Getter
-    @AllArgsConstructor
     public class WebhookItem {
         private String url;
         private List<String> types;
+
+        @java.beans.ConstructorProperties({ "url", "types" })
+        public WebhookItem(String url, List<String> types) {
+            this.url = url;
+            this.types = types;
+        }
+
+        public String getUrl() {
+            return this.url;
+        }
+
+        public List<String> getTypes() {
+            return this.types;
+        }
     }
 
     private WebElement getSaveWebhookButton(By parentId) {

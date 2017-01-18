@@ -21,30 +21,30 @@
 
 package org.zanata.service.impl;
 
-import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.slf4j.Logger;
 import org.zanata.events.WebhookEventType;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.HmacUtil;
+
+import javax.annotation.Nonnull;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.MediaType;
+import java.util.Optional;
 
 /**
  * Do http post for webhook event
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class WebHooksPublisher {
 
     public static final String WEBHOOK_HEADER = "X-Zanata-Webhook";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(WebHooksPublisher.class);
 
     public static void publish(@Nonnull String callbackURL,
         @Nonnull WebhookEventType event, Optional<String> secretKey) {

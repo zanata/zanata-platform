@@ -20,14 +20,23 @@
  */
 package org.zanata.model;
 
-import static org.zanata.security.EntityAction.DELETE;
-import static org.zanata.security.EntityAction.INSERT;
-import static org.zanata.security.EntityAction.UPDATE;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.Where;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Indexed;
+import org.zanata.annotation.EntityRestrict;
+import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
+import org.zanata.hibernate.search.GroupSearchBridge;
+import org.zanata.model.type.EntityStatusType;
+import org.zanata.model.type.EntityType;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -48,31 +57,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.Where;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Indexed;
-import org.zanata.annotation.EntityRestrict;
-import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
-import org.zanata.common.ProjectType;
-import org.zanata.hibernate.search.GroupSearchBridge;
-import org.zanata.model.type.EntityStatusType;
-import org.zanata.model.type.EntityType;
-
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
+import static org.zanata.security.EntityAction.DELETE;
+import static org.zanata.security.EntityAction.INSERT;
+import static org.zanata.security.EntityAction.UPDATE;
 
 @Entity
 @Cacheable
@@ -80,11 +72,6 @@ import com.google.common.collect.Sets;
 @EntityRestrict({ INSERT, UPDATE, DELETE })
 @Indexed
 @Access(AccessType.FIELD)
-@Setter
-@Getter
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true, of = {})
-@ToString(callSuper = true, of = { "project" })
 public class HProjectIteration extends SlugEntityBase implements
         Iterable<DocumentWithId>, HasEntityStatus, IsEntityWithType,
         HasUserFriendlyToString {
@@ -155,6 +142,9 @@ public class HProjectIteration extends SlugEntityBase implements
     @Column(nullable = true)
     private Boolean requireTranslationReview = false;
 
+    public HProjectIteration() {
+    }
+
     @Override
     public Iterator<DocumentWithId> iterator() {
         return ImmutableList.<DocumentWithId> copyOf(getDocuments().values())
@@ -178,5 +168,223 @@ public class HProjectIteration extends SlugEntityBase implements
     public String userFriendlyToString() {
         return String.format("Project version(slug=%s, status=%s)", getSlug(),
                 getStatus());
+    }
+
+    public HProject getProject() {
+        return this.project;
+    }
+
+    public HProjectIteration getParent() {
+        return this.parent;
+    }
+
+    public List<HProjectIteration> getChildren() {
+        return this.children;
+    }
+
+    public Map<String, HDocument> getDocuments() {
+        return this.documents;
+    }
+
+    public Map<String, HDocument> getAllDocuments() {
+        return this.allDocuments;
+    }
+
+    public boolean isOverrideLocales() {
+        return this.overrideLocales;
+    }
+
+    public Set<HLocale> getCustomizedLocales() {
+        return this.customizedLocales;
+    }
+
+    public Map<LocaleId, String> getLocaleAliases() {
+        return this.localeAliases;
+    }
+
+    public Set<HIterationGroup> getGroups() {
+        return this.groups;
+    }
+
+    public Map<String, String> getCustomizedValidations() {
+        return this.customizedValidations;
+    }
+
+    public ProjectType getProjectType() {
+        return this.projectType;
+    }
+
+    public EntityStatus getStatus() {
+        return this.status;
+    }
+
+    public void setProject(HProject project) {
+        this.project = project;
+    }
+
+    public void setParent(HProjectIteration parent) {
+        this.parent = parent;
+    }
+
+    public void setChildren(List<HProjectIteration> children) {
+        this.children = children;
+    }
+
+    public void setDocuments(Map<String, HDocument> documents) {
+        this.documents = documents;
+    }
+
+    public void setAllDocuments(Map<String, HDocument> allDocuments) {
+        this.allDocuments = allDocuments;
+    }
+
+    public void setOverrideLocales(boolean overrideLocales) {
+        this.overrideLocales = overrideLocales;
+    }
+
+    public void setCustomizedLocales(Set<HLocale> customizedLocales) {
+        this.customizedLocales = customizedLocales;
+    }
+
+    public void setLocaleAliases(Map<LocaleId, String> localeAliases) {
+        this.localeAliases = localeAliases;
+    }
+
+    public void setGroups(Set<HIterationGroup> groups) {
+        this.groups = groups;
+    }
+
+    public void setCustomizedValidations(
+            Map<String, String> customizedValidations) {
+        this.customizedValidations = customizedValidations;
+    }
+
+    public void setProjectType(ProjectType projectType) {
+        this.projectType = projectType;
+    }
+
+    public void setStatus(EntityStatus status) {
+        this.status = status;
+    }
+
+    public void setRequireTranslationReview(Boolean requireTranslationReview) {
+        this.requireTranslationReview = requireTranslationReview;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof HProjectIteration)) return false;
+        final HProjectIteration other = (HProjectIteration) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (!super.equals(o)) return false;
+        final Object this$project = this.getProject();
+        final Object other$project = other.getProject();
+        if (this$project == null ? other$project != null :
+                !this$project.equals(other$project)) return false;
+        final Object this$parent = this.getParent();
+        final Object other$parent = other.getParent();
+        if (this$parent == null ? other$parent != null :
+                !this$parent.equals(other$parent)) return false;
+        final Object this$children = this.getChildren();
+        final Object other$children = other.getChildren();
+        if (this$children == null ? other$children != null :
+                !this$children.equals(other$children)) return false;
+        final Object this$documents = this.getDocuments();
+        final Object other$documents = other.getDocuments();
+        if (this$documents == null ? other$documents != null :
+                !this$documents.equals(other$documents)) return false;
+        final Object this$allDocuments = this.getAllDocuments();
+        final Object other$allDocuments = other.getAllDocuments();
+        if (this$allDocuments == null ? other$allDocuments != null :
+                !this$allDocuments.equals(other$allDocuments)) return false;
+        if (this.isOverrideLocales() != other.isOverrideLocales()) return false;
+        final Object this$customizedLocales = this.getCustomizedLocales();
+        final Object other$customizedLocales = other.getCustomizedLocales();
+        if (this$customizedLocales == null ? other$customizedLocales != null :
+                !this$customizedLocales.equals(other$customizedLocales))
+            return false;
+        final Object this$localeAliases = this.getLocaleAliases();
+        final Object other$localeAliases = other.getLocaleAliases();
+        if (this$localeAliases == null ? other$localeAliases != null :
+                !this$localeAliases.equals(other$localeAliases)) return false;
+        final Object this$groups = this.getGroups();
+        final Object other$groups = other.getGroups();
+        if (this$groups == null ? other$groups != null :
+                !this$groups.equals(other$groups)) return false;
+        final Object this$customizedValidations =
+                this.getCustomizedValidations();
+        final Object other$customizedValidations =
+                other.getCustomizedValidations();
+        if (this$customizedValidations == null ?
+                other$customizedValidations != null :
+                !this$customizedValidations.equals(other$customizedValidations))
+            return false;
+        final Object this$projectType = this.getProjectType();
+        final Object other$projectType = other.getProjectType();
+        if (this$projectType == null ? other$projectType != null :
+                !this$projectType.equals(other$projectType)) return false;
+        final Object this$status = this.getStatus();
+        final Object other$status = other.getStatus();
+        if (this$status == null ? other$status != null :
+                !this$status.equals(other$status)) return false;
+        final Object this$requireTranslationReview =
+                this.getRequireTranslationReview();
+        final Object other$requireTranslationReview =
+                other.getRequireTranslationReview();
+        if (this$requireTranslationReview == null ?
+                other$requireTranslationReview != null :
+                !this$requireTranslationReview
+                        .equals(other$requireTranslationReview)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $project = this.getProject();
+        result = result * PRIME + ($project == null ? 43 : $project.hashCode());
+        final Object $parent = this.getParent();
+        result = result * PRIME + ($parent == null ? 43 : $parent.hashCode());
+        final Object $children = this.getChildren();
+        result = result * PRIME +
+                ($children == null ? 43 : $children.hashCode());
+        final Object $documents = this.getDocuments();
+        result = result * PRIME +
+                ($documents == null ? 43 : $documents.hashCode());
+        final Object $allDocuments = this.getAllDocuments();
+        result = result * PRIME +
+                ($allDocuments == null ? 43 : $allDocuments.hashCode());
+        result = result * PRIME + (this.isOverrideLocales() ? 79 : 97);
+        final Object $customizedLocales = this.getCustomizedLocales();
+        result = result * PRIME + ($customizedLocales == null ? 43 :
+                $customizedLocales.hashCode());
+        final Object $localeAliases = this.getLocaleAliases();
+        result = result * PRIME +
+                ($localeAliases == null ? 43 : $localeAliases.hashCode());
+        final Object $groups = this.getGroups();
+        result = result * PRIME + ($groups == null ? 43 : $groups.hashCode());
+        final Object $customizedValidations = this.getCustomizedValidations();
+        result = result * PRIME + ($customizedValidations == null ? 43 :
+                $customizedValidations.hashCode());
+        final Object $projectType = this.getProjectType();
+        result = result * PRIME +
+                ($projectType == null ? 43 : $projectType.hashCode());
+        final Object $status = this.getStatus();
+        result = result * PRIME + ($status == null ? 43 : $status.hashCode());
+        final Object $requireTranslationReview =
+                this.getRequireTranslationReview();
+        result = result * PRIME + ($requireTranslationReview == null ? 43 :
+                $requireTranslationReview.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof HProjectIteration;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HProjectIteration(super=" + super.toString() +
+                ", project=" + this.getProject() + ")";
     }
 }

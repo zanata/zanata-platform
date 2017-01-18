@@ -21,9 +21,6 @@
 package org.zanata.security.openid;
 
 import com.google.common.collect.Sets;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import org.openid4java.message.AuthSuccess;
 import org.openid4java.message.MessageExtension;
 import org.openid4java.message.Parameter;
@@ -43,12 +40,8 @@ import java.util.HashSet;
 @Alternative
 public class GenericOpenIdProvider implements OpenIdProvider {
 
-    @Setter(AccessLevel.PROTECTED)
-    @Getter(AccessLevel.PROTECTED)
     private boolean sregEnabled = true;
 
-    @Setter(AccessLevel.PROTECTED)
-    @Getter(AccessLevel.PROTECTED)
     private boolean aexEnabled = true;
 
     @Override
@@ -162,5 +155,21 @@ public class GenericOpenIdProvider implements OpenIdProvider {
             fullName = getSregParameter(authSuccess, "fullname");
         }
         return fullName;
+    }
+
+    protected boolean isSregEnabled() {
+        return this.sregEnabled;
+    }
+
+    protected boolean isAexEnabled() {
+        return this.aexEnabled;
+    }
+
+    protected void setSregEnabled(boolean sregEnabled) {
+        this.sregEnabled = sregEnabled;
+    }
+
+    protected void setAexEnabled(boolean aexEnabled) {
+        this.aexEnabled = aexEnabled;
     }
 }

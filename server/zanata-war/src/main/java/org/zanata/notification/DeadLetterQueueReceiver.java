@@ -20,14 +20,13 @@
  */
 package org.zanata.notification;
 
+import org.slf4j.Logger;
+
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
+import javax.inject.Named;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Named;
 
 /**
  * Consumer of Dead Letter Queue (all unsuccessful message will be dropped into
@@ -50,8 +49,10 @@ import javax.inject.Named;
                 propertyValue = "1")
 })
 @Named("deadLetterQueueReceiver")
-@Slf4j
 public class DeadLetterQueueReceiver implements MessageListener {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DeadLetterQueueReceiver.class);
 
     @Override
     public void onMessage(Message message) {

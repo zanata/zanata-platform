@@ -20,16 +20,14 @@
  */
 package org.zanata.util;
 
-import java.util.List;
-import javax.annotation.Nullable;
-
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import lombok.Setter;
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Utility to easily build SQL or HQL queries.
@@ -147,7 +145,6 @@ public final class QueryBuilder {
     private static class LogicalExpression implements WhereExpression {
         private static final String EMPTY_EXPRESSION = "";
 
-        @Setter
         private List<String> operands;
 
         private LogicalOperator operator;
@@ -185,6 +182,9 @@ public final class QueryBuilder {
             return expStr.toString();
         }
 
+        public void setOperands(List<String> operands) {
+            this.operands = operands;
+        }
     }
 
     private static enum StringNotEmptyPredicate implements Predicate<String> {

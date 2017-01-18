@@ -22,11 +22,11 @@ package org.zanata.page.dashboard.dashboardsettings;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.dashboard.DashboardBasePage;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,9 +34,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class DashboardClientTab extends DashboardBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardClientTab.class);
     private By generateApiKeyButton = By.id("generateKeyButton");
     private By apiKeyLabel = By.id("client_settings_apiKey");
     private By configurationTextArea = By.id("client_settings_config");

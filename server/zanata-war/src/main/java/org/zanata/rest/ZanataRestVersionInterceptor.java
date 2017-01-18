@@ -1,5 +1,11 @@
 package org.zanata.rest;
 
+import org.jboss.resteasy.annotations.interception.HeaderDecoratorPrecedence;
+import org.zanata.rest.service.RestUtils;
+import org.zanata.service.impl.VersionManager;
+import org.zanata.util.ServiceLocator;
+import org.zanata.util.VersionUtility;
+
 import javax.ws.rs.ConstrainedTo;
 import javax.ws.rs.RuntimeType;
 import javax.ws.rs.WebApplicationException;
@@ -9,14 +15,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
-
-import org.jboss.resteasy.annotations.interception.HeaderDecoratorPrecedence;
-import org.jboss.resteasy.annotations.interception.ServerInterceptor;
-import org.zanata.rest.service.RestUtils;
-import org.zanata.service.impl.VersionManager;
-import org.zanata.util.ServiceLocator;
-import org.zanata.util.VersionUtility;
-
 import java.io.IOException;
 
 @ConstrainedTo(RuntimeType.SERVER)

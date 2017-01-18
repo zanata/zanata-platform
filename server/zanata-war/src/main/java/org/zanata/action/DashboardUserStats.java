@@ -24,18 +24,9 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class DashboardUserStats implements Serializable {
 
     private int wordsTranslated;
@@ -45,4 +36,69 @@ public class DashboardUserStats implements Serializable {
     private int wordsReviewed;
     private int messagesReviewed;
     private int documentsReviewed;
+
+    @java.beans.ConstructorProperties({ "wordsTranslated", "messagesTranslated",
+            "documentsTranslated", "wordsReviewed", "messagesReviewed",
+            "documentsReviewed" })
+    public DashboardUserStats(int wordsTranslated, int messagesTranslated,
+            int documentsTranslated, int wordsReviewed, int messagesReviewed,
+            int documentsReviewed) {
+        this.wordsTranslated = wordsTranslated;
+        this.messagesTranslated = messagesTranslated;
+        this.documentsTranslated = documentsTranslated;
+        this.wordsReviewed = wordsReviewed;
+        this.messagesReviewed = messagesReviewed;
+        this.documentsReviewed = documentsReviewed;
+    }
+
+    public DashboardUserStats() {
+    }
+
+    public int getWordsTranslated() {
+        return this.wordsTranslated;
+    }
+
+    public int getMessagesTranslated() {
+        return this.messagesTranslated;
+    }
+
+    public int getDocumentsTranslated() {
+        return this.documentsTranslated;
+    }
+
+    public int getWordsReviewed() {
+        return this.wordsReviewed;
+    }
+
+    public int getMessagesReviewed() {
+        return this.messagesReviewed;
+    }
+
+    public int getDocumentsReviewed() {
+        return this.documentsReviewed;
+    }
+
+    public void setWordsTranslated(int wordsTranslated) {
+        this.wordsTranslated = wordsTranslated;
+    }
+
+    public void setMessagesTranslated(int messagesTranslated) {
+        this.messagesTranslated = messagesTranslated;
+    }
+
+    public void setDocumentsTranslated(int documentsTranslated) {
+        this.documentsTranslated = documentsTranslated;
+    }
+
+    public void setWordsReviewed(int wordsReviewed) {
+        this.wordsReviewed = wordsReviewed;
+    }
+
+    public void setMessagesReviewed(int messagesReviewed) {
+        this.messagesReviewed = messagesReviewed;
+    }
+
+    public void setDocumentsReviewed(int documentsReviewed) {
+        this.documentsReviewed = documentsReviewed;
+    }
 }

@@ -12,7 +12,7 @@ import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.registry.user.UserManager;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.zanata.async.Async;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
@@ -54,10 +54,11 @@ import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 
 @javax.enterprise.context.ApplicationScoped
 @Named("translationWorkspaceManager")
-@Slf4j
 public class TranslationWorkspaceManagerImpl implements
         TranslationWorkspaceManager {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslationWorkspaceManagerImpl.class);
     @Inject
     private GravatarService gravatarServiceImpl;
 

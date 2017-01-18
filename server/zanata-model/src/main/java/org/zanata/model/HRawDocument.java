@@ -20,26 +20,16 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.zanata.common.DocumentType;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import org.hibernate.validator.constraints.NotEmpty;
-import org.zanata.common.DocumentType;
-
-import com.google.common.base.Objects;
+import java.io.Serializable;
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
 // is this necessary?
 public class HRawDocument extends ModelEntityBase implements Serializable {
 
@@ -56,6 +46,9 @@ public class HRawDocument extends ModelEntityBase implements Serializable {
     private String uploadedBy;
 
     private String adapterParameters;
+
+    public HRawDocument() {
+    }
 
     @OneToOne(mappedBy = "rawDocument")
     public HDocument getDocument() {
@@ -86,6 +79,34 @@ public class HRawDocument extends ModelEntityBase implements Serializable {
                 + Integer.toHexString(hashCode()) + "[id=" + getId()
                 + ",versionNum=" + getVersionNum() + ",contentHash=" + contentHash
                 + "]";
+    }
+
+    public String getFileId() {
+        return this.fileId;
+    }
+
+    public String getAdapterParameters() {
+        return this.adapterParameters;
+    }
+
+    public void setContentHash(String contentHash) {
+        this.contentHash = contentHash;
+    }
+
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
+    }
+
+    public void setType(DocumentType type) {
+        this.type = type;
+    }
+
+    public void setUploadedBy(String uploadedBy) {
+        this.uploadedBy = uploadedBy;
+    }
+
+    public void setAdapterParameters(String adapterParameters) {
+        this.adapterParameters = adapterParameters;
     }
     // TODO override equals to use contentHash, type, parameters, etc.
 }

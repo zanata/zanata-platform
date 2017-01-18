@@ -1,23 +1,17 @@
 package org.zanata.webtrans.server;
 
-import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
-
-import java.util.concurrent.TimeUnit;
-
-import javax.enterprise.event.Observes;
-
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.base.Optional;
+import com.google.common.base.Predicates;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.hibernate.persister.entity.EntityPersister;
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -27,8 +21,6 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import javax.enterprise.event.Event;
-
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.util.IServiceLocator;
 import org.zanata.webtrans.server.rpc.TransUnitTransformer;
@@ -41,14 +33,14 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Predicates;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+import java.util.concurrent.TimeUnit;
+
+import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 /**
  * Entity event listener for HTextFlowTarget.
  *
@@ -58,7 +50,6 @@ import javax.servlet.http.HttpSession;
 @Named("translationUpdateListener")
 @javax.enterprise.context.ApplicationScoped
 
-@Slf4j
 public class TranslationUpdateListener implements PostUpdateEventListener,
         PostInsertEventListener {
 
@@ -68,6 +59,8 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
             CacheBuilder.newBuilder().softValues()
                     .expireAfterAccess(1, TimeUnit.SECONDS).maximumSize(1000)
                     .build();
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationUpdateListener.class);
 
     @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
@@ -208,16 +201,59 @@ public class TranslationUpdateListener implements PostUpdateEventListener,
 
     }
 
-    @RequiredArgsConstructor
-    @EqualsAndHashCode
     private static class CacheKey {
         private final TransUnitId transUnitId;
         private final LocaleId localeId;
+
+        @java.beans.ConstructorProperties({ "transUnitId", "localeId" })
+        public CacheKey(TransUnitId transUnitId, LocaleId localeId) {
+            this.transUnitId = transUnitId;
+            this.localeId = localeId;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof CacheKey)) return false;
+            final CacheKey other =
+                    (CacheKey) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$transUnitId = this.transUnitId;
+            final Object other$transUnitId = other.transUnitId;
+            if (this$transUnitId == null ? other$transUnitId != null :
+                    !this$transUnitId.equals(other$transUnitId)) return false;
+            final Object this$localeId = this.localeId;
+            final Object other$localeId = other.localeId;
+            if (this$localeId == null ? other$localeId != null :
+                    !this$localeId.equals(other$localeId)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $transUnitId = this.transUnitId;
+            result = result * PRIME +
+                    ($transUnitId == null ? 43 : $transUnitId.hashCode());
+            final Object $localeId = this.localeId;
+            result = result * PRIME +
+                    ($localeId == null ? 43 : $localeId.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof CacheKey;
+        }
     }
 
-    @RequiredArgsConstructor
     private static class CacheValue {
         private final EditorClientId editorClientId;
         private final TransUnitUpdated.UpdateType updateType;
+
+        @java.beans.ConstructorProperties({ "editorClientId", "updateType" })
+        public CacheValue(EditorClientId editorClientId,
+                TransUnitUpdated.UpdateType updateType) {
+            this.editorClientId = editorClientId;
+            this.updateType = updateType;
+        }
     }
 }

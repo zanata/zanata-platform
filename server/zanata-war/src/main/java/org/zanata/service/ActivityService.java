@@ -20,16 +20,15 @@
  */
 package org.zanata.service;
 
-import java.util.Date;
-import java.util.List;
-
-import org.zanata.action.DashboardAction;
 import org.zanata.action.DashboardUserStats;
 import org.zanata.common.ActivityType;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.Activity;
 import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

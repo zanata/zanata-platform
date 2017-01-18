@@ -20,11 +20,11 @@
  */
 package org.zanata.workflow;
 
+import com.google.common.base.Preconditions;
 import org.openqa.selenium.support.PageFactory;
 import org.zanata.page.AbstractPage;
 import org.zanata.page.WebDriverFactory;
 import org.zanata.page.webtrans.EditorPage;
-import com.google.common.base.Preconditions;
 
 /**
  * @author Patrick Huang <a

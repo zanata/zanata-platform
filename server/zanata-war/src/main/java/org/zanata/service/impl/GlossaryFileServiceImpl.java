@@ -21,25 +21,11 @@
 package org.zanata.service.impl;
 
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-
-import javax.annotation.Nullable;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,22 +39,27 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
-import org.zanata.model.WebHook;
-import org.zanata.model.type.WebhookType;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.GlossaryTerm;
-import org.zanata.rest.dto.QualifiedName;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GlossaryFileService;
 import org.zanata.service.LocaleService;
 import org.zanata.util.GlossaryUtil;
 
-import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -197,12 +188,32 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
         return Optional.empty();
     }
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
     public class GlossaryProcessed {
         private List<HGlossaryEntry> glossaryEntries;
         private List<String> warnings;
+
+        @java.beans.ConstructorProperties({ "glossaryEntries", "warnings" })
+        public GlossaryProcessed(List<HGlossaryEntry> glossaryEntries,
+                List<String> warnings) {
+            this.glossaryEntries = glossaryEntries;
+            this.warnings = warnings;
+        }
+
+        public List<HGlossaryEntry> getGlossaryEntries() {
+            return this.glossaryEntries;
+        }
+
+        public List<String> getWarnings() {
+            return this.warnings;
+        }
+
+        public void setGlossaryEntries(List<HGlossaryEntry> glossaryEntries) {
+            this.glossaryEntries = glossaryEntries;
+        }
+
+        public void setWarnings(List<String> warnings) {
+            this.warnings = warnings;
+        }
     }
 
     private Map<LocaleId, List<GlossaryEntry>> parseCsvFile(LocaleId sourceLang,

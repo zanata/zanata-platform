@@ -22,7 +22,6 @@ package org.zanata.email;
 
 import com.google.common.base.Optional;
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
 
@@ -33,13 +32,23 @@ import static org.zanata.email.Addresses.getReplyTo;
 /**
 * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
 */
-@RequiredArgsConstructor
 public class ContactAdminEmailStrategy extends EmailStrategy {
     private final String fromLoginName;
     private final String fromName;
     private final String replyEmail;
     private final String userSubject;
     private final String htmlMessage;
+
+    @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
+            "replyEmail", "userSubject", "htmlMessage" })
+    public ContactAdminEmailStrategy(String fromLoginName, String fromName,
+            String replyEmail, String userSubject, String htmlMessage) {
+        this.fromLoginName = fromLoginName;
+        this.fromName = fromName;
+        this.replyEmail = replyEmail;
+        this.userSubject = userSubject;
+        this.htmlMessage = htmlMessage;
+    }
 
     @Override
     public String getBodyResourceName() {

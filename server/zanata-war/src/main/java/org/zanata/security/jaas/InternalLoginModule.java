@@ -1,11 +1,13 @@
 package org.zanata.security.jaas;
 
-import java.io.IOException;
-import java.security.acl.Group;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.seam.security.IdentityManager;
+import org.zanata.security.SimpleGroup;
+import org.zanata.security.SimplePrincipal;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.util.ServiceLocator;
+
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -15,16 +17,14 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
+import java.io.IOException;
+import java.security.acl.Group;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zanata.security.SimpleGroup;
-import org.zanata.security.SimplePrincipal;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.seam.security.IdentityManager;
-import org.zanata.util.ServiceLocator;
-
-import static org.zanata.security.ZanataIdentity.*;
+import static org.zanata.security.ZanataIdentity.ROLES_GROUP;
 
 /**
  * Login module for internal authentication.

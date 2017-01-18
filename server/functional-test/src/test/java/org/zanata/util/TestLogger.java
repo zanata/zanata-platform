@@ -20,11 +20,10 @@
  */
 package org.zanata.util;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
+import org.slf4j.Logger;
 
 import static com.google.common.base.Throwables.getRootCause;
 
@@ -32,8 +31,10 @@ import static com.google.common.base.Throwables.getRootCause;
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 public class TestLogger extends RunListener {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TestLogger.class);
+
     @Override
     public void testStarted(Description description) throws Exception {
         log.info("Test starting: {}", description);

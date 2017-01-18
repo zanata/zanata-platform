@@ -21,13 +21,6 @@
 
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.persistence.Transient;
-
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
 import org.apache.lucene.analysis.ngram.NGramTokenizerFactory;
 import org.apache.lucene.analysis.standard.StandardFilterFactory;
@@ -45,6 +38,12 @@ import org.zanata.hibernate.search.Analyzers;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.StringListBridge;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
+
+import javax.persistence.Transient;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Sean Flanigan <a

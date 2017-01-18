@@ -30,10 +30,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
  * Represents an authorized third party app that is allowed to access Zanata on
  * behave of the associated account.
@@ -41,9 +37,7 @@ import lombok.Setter;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Entity
-@NoArgsConstructor
 @Access(AccessType.FIELD)
-@Getter
 @NamedQueries(
         {
                 @NamedQuery(
@@ -59,11 +53,29 @@ public class AllowedApp extends ModelEntityBase {
     private HAccount account;
     @NotNull
     private String clientId;
-    @Setter
     private String refreshToken;
 
     public AllowedApp(HAccount account, String clientId) {
         this.account = account;
         this.clientId = clientId;
+    }
+
+    public AllowedApp() {
+    }
+
+    public HAccount getAccount() {
+        return this.account;
+    }
+
+    public String getClientId() {
+        return this.clientId;
+    }
+
+    public String getRefreshToken() {
+        return this.refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

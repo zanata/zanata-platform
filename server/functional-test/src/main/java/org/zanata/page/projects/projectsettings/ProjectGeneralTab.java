@@ -20,10 +20,10 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.projects.ProjectBasePage;
 
 import java.util.HashMap;
@@ -35,9 +35,10 @@ import java.util.Map;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectGeneralTab extends ProjectBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectGeneralTab.class);
     private By projectIdField = By.id("settings-general-form:slug:input:slug");
     private By projectNameField = By.id("settings-general-form:name:input:name");
     private By descriptionField = By.id("settings-general-form:description:input:description");

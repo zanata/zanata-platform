@@ -22,9 +22,9 @@ package org.zanata.util;
 
 import com.google.common.io.Resources;
 import jdk.nashorn.api.scripting.JSObject;
-import lombok.extern.slf4j.Slf4j;
-import javax.inject.Named;
+import org.slf4j.Logger;
 
+import javax.inject.Named;
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -43,7 +43,6 @@ import static com.google.common.base.Throwables.propagate;
 
 @Named("commonMarkRenderer")
 @javax.enterprise.context.ApplicationScoped
-@Slf4j
 public class CommonMarkRenderer {
 
     private static final String VER = Dependencies.getVersion(
@@ -73,6 +72,8 @@ public class CommonMarkRenderer {
                     throw propagate(e);
                 }
             });
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CommonMarkRenderer.class);
 
     static {
         log.info("Using commonmark.js version {}", VER);

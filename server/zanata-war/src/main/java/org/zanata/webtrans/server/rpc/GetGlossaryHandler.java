@@ -20,20 +20,14 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryparser.classic.ParseException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.lucene.search.BooleanQuery;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.model.HGlossaryTerm;
@@ -48,17 +42,18 @@ import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 @Named("webtrans.gwt.GetGlossaryHandler")
 @RequestScoped
 @ActionHandlerFor(GetGlossary.class)
-@Slf4j
 public class GetGlossaryHandler extends
         AbstractActionHandler<GetGlossary, GetGlossaryResult> {
 
@@ -67,6 +62,8 @@ public class GetGlossaryHandler extends
 
     private static final Comparator<GlossaryResultItem> COMPARATOR =
             new GlossaryResultItemComparator();
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GetGlossaryHandler.class);
 
     @Inject
     private GlossaryDAO glossaryDAO;

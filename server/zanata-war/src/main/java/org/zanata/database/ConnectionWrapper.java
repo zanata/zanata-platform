@@ -21,21 +21,17 @@
 
 package org.zanata.database;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Sets;
+import org.slf4j.Logger;
+
+import javax.annotation.Nullable;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Set;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Sets;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.annotation.Nullable;
 
 import static java.lang.reflect.Proxy.getInvocationHandler;
 import static java.lang.reflect.Proxy.isProxyClass;
@@ -45,8 +41,6 @@ import static java.lang.reflect.Proxy.isProxyClass;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@Slf4j
 class ConnectionWrapper implements InvocationHandler {
     // For reference, this is what the mysql exception looks like:
     // Streaming result set com.mysql.jdbc.RowDataDynamic@1950740 is
@@ -56,6 +50,8 @@ class ConnectionWrapper implements InvocationHandler {
     // sets before attempting more queries.
     public static final String CONCURRENT_RESULTSET =
             "Streaming ResultSet is still open on this Connection";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ConnectionWrapper.class);
     private final Connection originalConnection;
     private final Set<Throwable> resultSetsOpened = Sets.newHashSet();
     private @Nullable Throwable streamingResultSetOpened;
@@ -63,6 +59,11 @@ class ConnectionWrapper implements InvocationHandler {
     private boolean autoCommit = true;
     @VisibleForTesting
     boolean transactionActive = false;
+
+    @java.beans.ConstructorProperties({ "originalConnection" })
+    private ConnectionWrapper(Connection originalConnection) {
+        this.originalConnection = originalConnection;
+    }
 
     public static Connection wrap(Connection conn) {
         // avoid double-wrapping:

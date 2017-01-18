@@ -20,11 +20,11 @@
  */
 package org.zanata.feature.dashboard;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
@@ -43,9 +43,10 @@ import static org.zanata.util.ZanataRestCaller.buildSourceResource;
 import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 
 @Category(DetailedTest.class)
-@Slf4j
 public class DashboardTest extends ZanataTestCase {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardTest.class);
     @Rule
     public final HasEmailRule emailRule = new HasEmailRule();
 

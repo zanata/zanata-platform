@@ -21,15 +21,8 @@
 
 package org.zanata.adapter;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URI;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.base.Optional;
+import org.slf4j.Logger;
 import org.zanata.adapter.xliff.XliffCommon;
 import org.zanata.adapter.xliff.XliffReader;
 import org.zanata.adapter.xliff.XliffWriter;
@@ -37,9 +30,13 @@ import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
-
-import com.google.common.base.Optional;
 import org.zanata.util.FileUtil;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URI;
 
 /**
  * Adapter to read and write {@link org.zanata.common.DocumentType#XLIFF} file
@@ -49,8 +46,10 @@ import org.zanata.util.FileUtil;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class XliffAdapter implements FileFormatAdapter {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(XliffAdapter.class);
 
     @Override
     public Resource parseDocumentFile(URI fileUri, LocaleId sourceLocale,

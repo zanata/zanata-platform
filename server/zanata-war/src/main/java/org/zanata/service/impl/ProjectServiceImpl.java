@@ -23,12 +23,9 @@ package org.zanata.service.impl;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.WebHookDAO;
 import org.zanata.model.HLocale;
@@ -61,9 +58,10 @@ import static org.zanata.model.ProjectRole.TranslationMaintainer;
  */
 @Named("projectServiceImpl")
 @RequestScoped
-@Slf4j
 public class ProjectServiceImpl implements ProjectService {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectServiceImpl.class);
     @Inject
     private ProjectDAO projectDAO;
 
@@ -183,12 +181,29 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    @Getter
-    @AllArgsConstructor
     public class UpdatedRole {
         private String username;
         private ProjectRole role;
         private boolean added;
+
+        @java.beans.ConstructorProperties({ "username", "role", "added" })
+        public UpdatedRole(String username, ProjectRole role, boolean added) {
+            this.username = username;
+            this.role = role;
+            this.added = added;
+        }
+
+        public String getUsername() {
+            return this.username;
+        }
+
+        public ProjectRole getRole() {
+            return this.role;
+        }
+
+        public boolean isAdded() {
+            return this.added;
+        }
     }
 
     /**

@@ -1,27 +1,9 @@
 package org.zanata.rest.service;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.enterprise.context.RequestScoped;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
-import lombok.extern.slf4j.Slf4j;
-
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.jboss.resteasy.spi.NoLogWebApplicationException;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.CheckRole;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountRoleDAO;
@@ -31,15 +13,32 @@ import org.zanata.model.HAccountRole;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.rest.dto.Account;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.CheckRole;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+import java.util.HashSet;
+import java.util.Set;
 
 @RequestScoped
 @Named("accountService")
 @Path(AccountResource.SERVICE_PATH)
-@Slf4j
 @Transactional
 
 @CheckRole("admin")
 public class AccountService implements AccountResource {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(AccountService.class);
     /** User name that identifies an account. */
     @PathParam("username")
     String username;

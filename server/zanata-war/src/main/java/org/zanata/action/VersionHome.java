@@ -21,40 +21,25 @@
  */
 package org.zanata.action;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-import static javax.faces.application.FacesMessage.SEVERITY_INFO;
-
-import java.util.ArrayList;
-
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-
-import javax.annotation.Nullable;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.dao.LocaleDAO;
 import org.zanata.exception.ProjectNotFoundException;
 import org.zanata.exception.VersionNotFoundException;
 import org.zanata.i18n.Messages;
@@ -77,10 +62,17 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
+import javax.annotation.Nullable;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityNotFoundException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -88,21 +80,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
+import static javax.faces.application.FacesMessage.SEVERITY_INFO;
+
 @Named("versionHome")
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class VersionHome extends SlugHome<HProjectIteration> implements
     HasLanguageSettings, Serializable {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionHome.class);
 
     /**
      * This field is set from form input which can differ from original slug
      */
-    @Setter
-    @Getter
     @Nullable
     private String inputSlugValue;
 
@@ -154,20 +148,12 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
     private Map<ValidationId, ValidationAction> availableValidations = Maps
             .newHashMap();
 
-    @Getter
-    @Setter
     private boolean isNewInstance = false;
 
-    @Setter
-    @Getter
     private String selectedProjectType;
 
-    @Getter
-    @Setter
     private boolean copyFromVersion = true;
 
-    @Getter
-    @Setter
     private String copyFromVersionSlug;
 
     private final Function<HProjectIteration, VersionItem> VERSION_ITEM_FN =
@@ -261,12 +247,112 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         return Collections.emptyList();
     }
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
+    @Nullable
+    public String getInputSlugValue() {
+        return this.inputSlugValue;
+    }
+
+    public boolean isNewInstance() {
+        return this.isNewInstance;
+    }
+
+    public String getSelectedProjectType() {
+        return this.selectedProjectType;
+    }
+
+    public boolean isCopyFromVersion() {
+        return this.copyFromVersion;
+    }
+
+    public String getCopyFromVersionSlug() {
+        return this.copyFromVersionSlug;
+    }
+
+    public Map<LocaleId, String> getEnteredLocaleAliases() {
+        return this.enteredLocaleAliases;
+    }
+
+    public String getEnabledLocalesFilter() {
+        return this.enabledLocalesFilter;
+    }
+
+    public String getDisabledLocalesFilter() {
+        return this.disabledLocalesFilter;
+    }
+
+    public Map<LocaleId, Boolean> getSelectedDisabledLocales() {
+        return this.selectedDisabledLocales;
+    }
+
+    public void setInputSlugValue(
+            @Nullable String inputSlugValue) {
+        this.inputSlugValue = inputSlugValue;
+    }
+
+    public void setNewInstance(boolean isNewInstance) {
+        this.isNewInstance = isNewInstance;
+    }
+
+    public void setSelectedProjectType(String selectedProjectType) {
+        this.selectedProjectType = selectedProjectType;
+    }
+
+    public void setCopyFromVersion(boolean copyFromVersion) {
+        this.copyFromVersion = copyFromVersion;
+    }
+
+    public void setCopyFromVersionSlug(String copyFromVersionSlug) {
+        this.copyFromVersionSlug = copyFromVersionSlug;
+    }
+
+    public void setEnteredLocaleAliases(
+            Map<LocaleId, String> enteredLocaleAliases) {
+        this.enteredLocaleAliases = enteredLocaleAliases;
+    }
+
+    public void setEnabledLocalesFilter(String enabledLocalesFilter) {
+        this.enabledLocalesFilter = enabledLocalesFilter;
+    }
+
+    public void setDisabledLocalesFilter(String disabledLocalesFilter) {
+        this.disabledLocalesFilter = disabledLocalesFilter;
+    }
+
+    public void setSelectedEnabledLocales(
+            Map<LocaleId, Boolean> selectedEnabledLocales) {
+        this.selectedEnabledLocales = selectedEnabledLocales;
+    }
+
+    public void setSelectedDisabledLocales(
+            Map<LocaleId, Boolean> selectedDisabledLocales) {
+        this.selectedDisabledLocales = selectedDisabledLocales;
+    }
+
     public class VersionItem implements Serializable {
         private boolean selected;
         private HProjectIteration version;
+
+        @java.beans.ConstructorProperties({ "selected", "version" })
+        public VersionItem(boolean selected, HProjectIteration version) {
+            this.selected = selected;
+            this.version = version;
+        }
+
+        public boolean isSelected() {
+            return this.selected;
+        }
+
+        public HProjectIteration getVersion() {
+            return this.version;
+        }
+
+        public void setSelected(boolean selected) {
+            this.selected = selected;
+        }
+
+        public void setVersion(HProjectIteration version) {
+            this.version = version;
+        }
     }
 
     @Override
@@ -816,8 +902,6 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
      * map in every form submission, and so that a value entered in the field
      * for a row is not automatically updated when a different row is submitted.
      */
-    @Getter
-    @Setter
     private Map<LocaleId, String> enteredLocaleAliases = Maps.newHashMap();
 
 
@@ -880,12 +964,8 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         refreshDisabledLocales();
     }
 
-    @Getter
-    @Setter
     private String enabledLocalesFilter = "";
 
-    @Getter
-    @Setter
     private String disabledLocalesFilter;
 
     public List<HLocale> getEnabledLocales() {
@@ -899,8 +979,6 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         return Lists.newArrayList();
     }
 
-    @Getter
-    @Setter
     private Map<LocaleId, Boolean> selectedEnabledLocales = Maps.newHashMap();
 
     // Not sure if this is necessary, seems to work ok on selected disabled
@@ -1013,8 +1091,6 @@ public class VersionHome extends SlugHome<HProjectIteration> implements
         return Lists.newArrayList(filtered);
     }
 
-    @Getter
-    @Setter
     private Map<LocaleId, Boolean> selectedDisabledLocales = Maps.newHashMap();
 
     @Transactional

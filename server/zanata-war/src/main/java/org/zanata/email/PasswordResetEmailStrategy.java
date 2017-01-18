@@ -21,7 +21,6 @@
 package org.zanata.email;
 
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 
 import javax.mail.internet.InternetAddress;
@@ -29,10 +28,14 @@ import javax.mail.internet.InternetAddress;
 /**
 * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
 */
-@RequiredArgsConstructor
 public class PasswordResetEmailStrategy extends
         EmailStrategy {
     private final String key;
+
+    @java.beans.ConstructorProperties({ "key" })
+    public PasswordResetEmailStrategy(String key) {
+        this.key = key;
+    }
 
     @Override
     public String getSubject(Messages msgs) {

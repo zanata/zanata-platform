@@ -20,19 +20,17 @@
  */
 package org.zanata.page.projects;
 
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.WebElementUtil;
 
-import com.google.common.base.Predicate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,9 +38,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectVersionsPage extends ProjectBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectVersionsPage.class);
     private By versionTabMoreAction = By.id("versions-more-actions");
     private By createNewVersion = By.id("new-version-link");
     private By versionCount = By.id("versionSearch:versionSearch-page-info");

@@ -20,11 +20,11 @@
  */
 package org.zanata.page;
 
-import java.util.List;
-
+import com.google.common.base.Preconditions;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.administration.AdministrationPage;
@@ -32,10 +32,9 @@ import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.explore.ExplorePage;
 import org.zanata.page.languages.LanguagesPage;
 import org.zanata.page.utility.HomePage;
-import com.google.common.base.Preconditions;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.workflow.BasicWorkFlow;
+
+import java.util.List;
 
 /**
  * A Base Page is an extension of the Core Page, providing the navigation bar
@@ -44,7 +43,6 @@ import org.zanata.workflow.BasicWorkFlow;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class BasePage extends CorePage {
 
     private static final By NAV = By.id("nav");
@@ -57,6 +55,8 @@ public class BasePage extends CorePage {
     private static final By BY_DASHBOARD_LINK = By.id("nav_dashboard");
     private static final By BY_ADMINISTRATION_LINK = By.id("nav_admin");
     private static final By registrationLink = By.id("nav_sign_up");
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(BasePage.class);
 
     public BasePage(final WebDriver driver) {
         super(driver);

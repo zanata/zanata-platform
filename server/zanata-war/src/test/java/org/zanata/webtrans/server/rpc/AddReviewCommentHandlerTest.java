@@ -21,15 +21,16 @@
 
 package org.zanata.webtrans.server.rpc;
 
-import org.jglue.cdiunit.InRequestScope;
-import org.zanata.ZanataTest;
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.hamcrest.Matchers;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
@@ -52,13 +53,11 @@ import org.zanata.webtrans.shared.rpc.AddReviewComment;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
 
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.when;
 

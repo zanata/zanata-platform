@@ -21,11 +21,10 @@
 
 package org.zanata.service.impl;
 
-import java.util.concurrent.locks.Lock;
+import com.google.common.util.concurrent.Striped;
 
 import javax.inject.Named;
-
-import com.google.common.util.concurrent.Striped;
+import java.util.concurrent.locks.Lock;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>

@@ -21,15 +21,14 @@
 
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Sean Flanigan <a

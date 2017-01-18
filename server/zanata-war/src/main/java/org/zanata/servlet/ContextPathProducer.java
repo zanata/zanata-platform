@@ -20,15 +20,13 @@
  */
 package org.zanata.servlet;
 
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
+import org.zanata.servlet.annotations.ContextPath;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.servlet.ServletContext;
-
-import org.apache.deltaspike.core.api.lifecycle.Initialized;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zanata.servlet.annotations.ContextPath;
 
 /**
  * @author Patrick Huang

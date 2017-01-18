@@ -1,12 +1,12 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.slf4j.Logger;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
@@ -17,21 +17,20 @@ import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetLocaleList;
 import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 public class GetLocaleListHandlerTest extends ZanataTest {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GetLocaleListHandlerTest.class);
     @Inject @Any
     private GetLocaleListHandler handler;
 

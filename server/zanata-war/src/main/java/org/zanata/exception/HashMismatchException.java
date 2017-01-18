@@ -20,8 +20,6 @@
  */
 package org.zanata.exception;
 
-import lombok.Getter;
-
 /**
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
@@ -30,9 +28,7 @@ import lombok.Getter;
 public class HashMismatchException extends ZanataException {
     private static final long serialVersionUID = 1L;
 
-    @Getter
     private String expectedHash;
-    @Getter
     private String generatedHash;
 
     public HashMismatchException(String message, String expectedHash,
@@ -42,4 +38,11 @@ public class HashMismatchException extends ZanataException {
         this.generatedHash = generatedHash;
     }
 
+    public String getExpectedHash() {
+        return this.expectedHash;
+    }
+
+    public String getGeneratedHash() {
+        return this.generatedHash;
+    }
 }

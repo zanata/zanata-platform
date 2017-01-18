@@ -20,9 +20,9 @@
  */
 package org.zanata.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.rules.ExternalResource;
+import org.slf4j.Logger;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -38,9 +38,10 @@ import static java.lang.Integer.parseInt;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class CleanDocumentStorageRule extends ExternalResource {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CleanDocumentStorageRule.class);
     private static String storagePath;
 
     public static void resetFileData() {

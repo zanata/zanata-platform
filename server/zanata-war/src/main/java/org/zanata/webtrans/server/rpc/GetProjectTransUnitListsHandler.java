@@ -20,17 +20,17 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.base.Strings;
+import com.google.common.collect.Iterables;
+import com.ibm.icu.lang.UCharacter;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
+import org.slf4j.Logger;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
@@ -38,15 +38,14 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Strings;
-import com.google.common.collect.Iterables;
-import com.ibm.icu.lang.UCharacter;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @see GetProjectTransUnitLists
@@ -55,10 +54,11 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @Named("webtrans.gwt.GetProjectTransUnitListsHandler")
 @RequestScoped
 @ActionHandlerFor(GetProjectTransUnitLists.class)
-@Slf4j
 public class GetProjectTransUnitListsHandler
         extends
         AbstractActionHandler<GetProjectTransUnitLists, GetProjectTransUnitListsResult> {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(GetProjectTransUnitListsHandler.class);
     @Inject
     private LocaleService localeServiceImpl;
 

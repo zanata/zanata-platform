@@ -1,10 +1,8 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import com.google.common.collect.Lists;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.zanata.model.HLocale;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -14,10 +12,11 @@ import org.zanata.webtrans.shared.model.Locale;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetLocaleList;
 import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
-import com.google.common.collect.Lists;
 
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
 
 @Named("webtrans.gwt.GetLocaleListHandler")
 @RequestScoped

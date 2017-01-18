@@ -1,13 +1,13 @@
 package org.zanata.rest.service;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-
-import javax.inject.Named;
 import org.zanata.rest.dto.VersionInfo;
 import org.zanata.util.VersionUtility;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
 
 @RequestScoped
 @Named("versionService")

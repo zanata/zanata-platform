@@ -20,13 +20,12 @@
  */
 package org.zanata.model.validator;
 
+import javax.validation.Constraint;
+import javax.validation.Payload;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import javax.validation.Constraint;
-import javax.validation.Payload;
 
 /**
  * Implements unique validation on JPA entities when it's not possible to do so

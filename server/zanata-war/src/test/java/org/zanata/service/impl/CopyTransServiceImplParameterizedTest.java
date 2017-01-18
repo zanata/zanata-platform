@@ -21,10 +21,6 @@
 package org.zanata.service.impl;
 
 import com.google.common.cache.CacheLoader;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -425,10 +421,6 @@ public class CopyTransServiceImplParameterizedTest {
         return allExecutions;
     }
 
-    @Getter
-    @Setter
-    @EqualsAndHashCode
-    @ToString
     private static class CopyTransExecution implements Cloneable {
         private HCopyTransOptions.ConditionRuleAction contextMismatchAction;
         private HCopyTransOptions.ConditionRuleAction projectMismatchAction;
@@ -478,6 +470,241 @@ public class CopyTransServiceImplParameterizedTest {
         public CopyTransExecution withContents(String... contents) {
             this.expectedContents = contents;
             return this;
+        }
+
+        public HCopyTransOptions.ConditionRuleAction getContextMismatchAction() {
+            return this.contextMismatchAction;
+        }
+
+        public HCopyTransOptions.ConditionRuleAction getProjectMismatchAction() {
+            return this.projectMismatchAction;
+        }
+
+        public HCopyTransOptions.ConditionRuleAction getDocumentMismatchAction() {
+            return this.documentMismatchAction;
+        }
+
+        public Boolean getContextMatches() {
+            return this.contextMatches;
+        }
+
+        public Boolean getProjectMatches() {
+            return this.projectMatches;
+        }
+
+        public Boolean getDocumentMatches() {
+            return this.documentMatches;
+        }
+
+        public Boolean getRequireTranslationReview() {
+            return this.requireTranslationReview;
+        }
+
+        public ContentState getExpectedTranslationState() {
+            return this.expectedTranslationState;
+        }
+
+        public boolean isExpectUntranslated() {
+            return this.expectUntranslated;
+        }
+
+        public String[] getExpectedContents() {
+            return this.expectedContents;
+        }
+
+        public ContentState getMatchState() {
+            return this.matchState;
+        }
+
+        public void setContextMismatchAction(
+                HCopyTransOptions.ConditionRuleAction contextMismatchAction) {
+            this.contextMismatchAction = contextMismatchAction;
+        }
+
+        public void setProjectMismatchAction(
+                HCopyTransOptions.ConditionRuleAction projectMismatchAction) {
+            this.projectMismatchAction = projectMismatchAction;
+        }
+
+        public void setDocumentMismatchAction(
+                HCopyTransOptions.ConditionRuleAction documentMismatchAction) {
+            this.documentMismatchAction = documentMismatchAction;
+        }
+
+        public void setContextMatches(Boolean contextMatches) {
+            this.contextMatches = contextMatches;
+        }
+
+        public void setProjectMatches(Boolean projectMatches) {
+            this.projectMatches = projectMatches;
+        }
+
+        public void setDocumentMatches(Boolean documentMatches) {
+            this.documentMatches = documentMatches;
+        }
+
+        public void setRequireTranslationReview(
+                Boolean requireTranslationReview) {
+            this.requireTranslationReview = requireTranslationReview;
+        }
+
+        public void setExpectedTranslationState(
+                ContentState expectedTranslationState) {
+            this.expectedTranslationState = expectedTranslationState;
+        }
+
+        public void setExpectUntranslated(boolean expectUntranslated) {
+            this.expectUntranslated = expectUntranslated;
+        }
+
+        public void setExpectedContents(String[] expectedContents) {
+            this.expectedContents = expectedContents;
+        }
+
+        public void setMatchState(ContentState matchState) {
+            this.matchState = matchState;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof CopyTransExecution))
+                return false;
+            final CopyTransExecution other =
+                    (CopyTransExecution) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$contextMismatchAction =
+                    this.getContextMismatchAction();
+            final Object other$contextMismatchAction =
+                    other.getContextMismatchAction();
+            if (this$contextMismatchAction == null ?
+                    other$contextMismatchAction != null :
+                    !this$contextMismatchAction
+                            .equals(other$contextMismatchAction))
+                return false;
+            final Object this$projectMismatchAction =
+                    this.getProjectMismatchAction();
+            final Object other$projectMismatchAction =
+                    other.getProjectMismatchAction();
+            if (this$projectMismatchAction == null ?
+                    other$projectMismatchAction != null :
+                    !this$projectMismatchAction
+                            .equals(other$projectMismatchAction))
+                return false;
+            final Object this$documentMismatchAction =
+                    this.getDocumentMismatchAction();
+            final Object other$documentMismatchAction =
+                    other.getDocumentMismatchAction();
+            if (this$documentMismatchAction == null ?
+                    other$documentMismatchAction != null :
+                    !this$documentMismatchAction
+                            .equals(other$documentMismatchAction)) return false;
+            final Object this$contextMatches = this.getContextMatches();
+            final Object other$contextMatches = other.getContextMatches();
+            if (this$contextMatches == null ? other$contextMatches != null :
+                    !this$contextMatches.equals(other$contextMatches))
+                return false;
+            final Object this$projectMatches = this.getProjectMatches();
+            final Object other$projectMatches = other.getProjectMatches();
+            if (this$projectMatches == null ? other$projectMatches != null :
+                    !this$projectMatches.equals(other$projectMatches))
+                return false;
+            final Object this$documentMatches = this.getDocumentMatches();
+            final Object other$documentMatches = other.getDocumentMatches();
+            if (this$documentMatches == null ? other$documentMatches != null :
+                    !this$documentMatches.equals(other$documentMatches))
+                return false;
+            final Object this$requireTranslationReview =
+                    this.getRequireTranslationReview();
+            final Object other$requireTranslationReview =
+                    other.getRequireTranslationReview();
+            if (this$requireTranslationReview == null ?
+                    other$requireTranslationReview != null :
+                    !this$requireTranslationReview
+                            .equals(other$requireTranslationReview))
+                return false;
+            final Object this$expectedTranslationState =
+                    this.getExpectedTranslationState();
+            final Object other$expectedTranslationState =
+                    other.getExpectedTranslationState();
+            if (this$expectedTranslationState == null ?
+                    other$expectedTranslationState != null :
+                    !this$expectedTranslationState
+                            .equals(other$expectedTranslationState))
+                return false;
+            if (this.isExpectUntranslated() != other.isExpectUntranslated())
+                return false;
+            if (!Arrays.deepEquals(this.getExpectedContents(),
+                    other.getExpectedContents())) return false;
+            final Object this$matchState = this.getMatchState();
+            final Object other$matchState = other.getMatchState();
+            if (this$matchState == null ? other$matchState != null :
+                    !this$matchState.equals(other$matchState)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $contextMismatchAction =
+                    this.getContextMismatchAction();
+            result = result * PRIME + ($contextMismatchAction == null ? 43 :
+                    $contextMismatchAction.hashCode());
+            final Object $projectMismatchAction =
+                    this.getProjectMismatchAction();
+            result = result * PRIME + ($projectMismatchAction == null ? 43 :
+                    $projectMismatchAction.hashCode());
+            final Object $documentMismatchAction =
+                    this.getDocumentMismatchAction();
+            result = result * PRIME + ($documentMismatchAction == null ? 43 :
+                    $documentMismatchAction.hashCode());
+            final Object $contextMatches = this.getContextMatches();
+            result = result * PRIME +
+                    ($contextMatches == null ? 43 : $contextMatches.hashCode());
+            final Object $projectMatches = this.getProjectMatches();
+            result = result * PRIME +
+                    ($projectMatches == null ? 43 : $projectMatches.hashCode());
+            final Object $documentMatches = this.getDocumentMatches();
+            result = result * PRIME +
+                    ($documentMatches == null ? 43 :
+                            $documentMatches.hashCode());
+            final Object $requireTranslationReview =
+                    this.getRequireTranslationReview();
+            result = result * PRIME + ($requireTranslationReview == null ? 43 :
+                    $requireTranslationReview.hashCode());
+            final Object $expectedTranslationState =
+                    this.getExpectedTranslationState();
+            result = result * PRIME + ($expectedTranslationState == null ? 43 :
+                    $expectedTranslationState.hashCode());
+            result = result * PRIME + (this.isExpectUntranslated() ? 79 : 97);
+            result = result * PRIME +
+                    Arrays.deepHashCode(this.getExpectedContents());
+            final Object $matchState = this.getMatchState();
+            result = result * PRIME +
+                    ($matchState == null ? 43 : $matchState.hashCode());
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof CopyTransExecution;
+        }
+
+        public String toString() {
+            return "org.zanata.service.impl.CopyTransServiceImplParameterizedTest.CopyTransExecution(contextMismatchAction=" +
+                    this.getContextMismatchAction() +
+                    ", projectMismatchAction=" +
+                    this.getProjectMismatchAction() +
+                    ", documentMismatchAction=" +
+                    this.getDocumentMismatchAction() + ", contextMatches=" +
+                    this.getContextMatches() + ", projectMatches=" +
+                    this.getProjectMatches() + ", documentMatches=" +
+                    this.getDocumentMatches() + ", requireTranslationReview=" +
+                    this.getRequireTranslationReview() +
+                    ", expectedTranslationState=" +
+                    this.getExpectedTranslationState() +
+                    ", expectUntranslated=" +
+                    this.isExpectUntranslated() + ", expectedContents=" +
+                    Arrays.deepToString(this.getExpectedContents()) +
+                    ", matchState=" + this.getMatchState() + ")";
         }
     }
 }

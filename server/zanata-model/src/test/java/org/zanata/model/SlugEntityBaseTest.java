@@ -20,8 +20,6 @@
  */
 package org.zanata.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -39,21 +37,43 @@ public class SlugEntityBaseTest {
 
     // all ModelEntityBase descendants must override equals and hashcode to check
     // their types.
-    @EqualsAndHashCode(callSuper = true)
-    @NoArgsConstructor
     static class SlugClass extends SlugEntityBase {
         public SlugClass(String slug) {
             super(slug);
+        }
+
+        public SlugClass() {
         }
 
         @Override
         protected String deletedSlugSuffix() {
             return DELETED_SUFFIX;
         }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof SlugClass)) return false;
+            final SlugClass other =
+                    (SlugClass) o;
+            if (!other.canEqual((Object) this)) return false;
+            if (!super.equals(o)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            result = result * PRIME + super.hashCode();
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof SlugClass;
+        }
     }
 
     @Test
-    public void lombokToStringAndEqualsTest() {
+    public void toStringAndEqualsTest() {
         SlugEntityBase entity = new SlugClass();
 
         entity.setSlug("abc");

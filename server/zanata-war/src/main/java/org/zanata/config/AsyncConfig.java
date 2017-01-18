@@ -20,8 +20,6 @@
  */
 package org.zanata.config;
 
-import com.google.common.annotations.VisibleForTesting;
-import lombok.NoArgsConstructor;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -35,7 +33,6 @@ import javax.inject.Named;
 @Named("asyncConfig")
 @javax.enterprise.context.Dependent
 
-@NoArgsConstructor
 public class AsyncConfig {
 
     public static final String THREAD_POOL_SIZE = "async.threadpool.size";
@@ -45,6 +42,9 @@ public class AsyncConfig {
 
     public AsyncConfig(SystemPropertyConfigStore systemPropertyConfigStore) {
         this.systemPropertyConfigStore = systemPropertyConfigStore;
+    }
+
+    public AsyncConfig() {
     }
 
     public int getThreadPoolSize() {

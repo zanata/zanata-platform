@@ -23,25 +23,25 @@
 
 package org.zanata.webtrans.server.rpc;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-
-import org.zanata.events.TextFlowTargetUpdatedEvent;
-import org.zanata.model.*;
-import org.zanata.service.*;
-import org.zanata.util.IServiceLocator;
-import org.zanata.webtrans.shared.model.*;
-import org.zanata.webtrans.shared.rpc.*;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-
-import lombok.RequiredArgsConstructor;
+import org.zanata.events.TextFlowTargetUpdatedEvent;
+import org.zanata.model.HTextFlow;
+import org.zanata.model.HTextFlowTarget;
+import org.zanata.service.TranslationService;
+import org.zanata.util.IServiceLocator;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.TransUnit;
+import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -112,9 +112,14 @@ public class TransUnitUpdateHelper {
                 translationResult.getErrorMessage());
     }
 
-    @RequiredArgsConstructor
     private static class CacheKey {
         private final Long textFlowTargetId;
         private final Integer versionNum;
+
+        @java.beans.ConstructorProperties({ "textFlowTargetId", "versionNum" })
+        public CacheKey(Long textFlowTargetId, Integer versionNum) {
+            this.textFlowTargetId = textFlowTargetId;
+            this.versionNum = versionNum;
+        }
     }
 }

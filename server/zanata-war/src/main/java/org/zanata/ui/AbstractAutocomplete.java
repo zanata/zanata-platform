@@ -22,12 +22,10 @@
 
 package org.zanata.ui;
 
-import java.io.Serializable;
-import java.util.List;
 import org.zanata.seam.scope.ConversationScopeMessages;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -36,12 +34,8 @@ public abstract class AbstractAutocomplete<T> implements Serializable {
     protected ConversationScopeMessages conversationScopeMessages =
             ConversationScopeMessages.instance();
 
-    @Setter
-    @Getter
     private String query; // String of the input box
 
-    @Setter
-    @Getter
     private String selectedItem; // Selected item from the suggestion
 
     /**
@@ -57,5 +51,21 @@ public abstract class AbstractAutocomplete<T> implements Serializable {
     public void reset() {
         selectedItem = "";
         query = "";
+    }
+
+    public String getQuery() {
+        return this.query;
+    }
+
+    public String getSelectedItem() {
+        return this.selectedItem;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
+
+    public void setSelectedItem(String selectedItem) {
+        this.selectedItem = selectedItem;
     }
 }

@@ -20,18 +20,13 @@
  */
 package org.zanata.model;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.zanata.model.type.ConditionRuleActionType;
+
+import javax.persistence.Cacheable;
+import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 /**
  * Persistent representation of Copy Trans options.
@@ -43,11 +38,43 @@ import org.zanata.model.type.ConditionRuleActionType;
 @TypeDef(name = "conditionRuleAction",
         typeClass = ConditionRuleActionType.class)
 @Cacheable
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class HCopyTransOptions extends ModelEntityBase {
+    @java.beans.ConstructorProperties({ "contextMismatchAction",
+            "docIdMismatchAction", "projectMismatchAction" })
+    public HCopyTransOptions(
+            ConditionRuleAction contextMismatchAction,
+            ConditionRuleAction docIdMismatchAction,
+            ConditionRuleAction projectMismatchAction) {
+        this.contextMismatchAction = contextMismatchAction;
+        this.docIdMismatchAction = docIdMismatchAction;
+        this.projectMismatchAction = projectMismatchAction;
+    }
+
+    public HCopyTransOptions() {
+    }
+
+    public void setContextMismatchAction(
+            ConditionRuleAction contextMismatchAction) {
+        this.contextMismatchAction = contextMismatchAction;
+    }
+
+    public void setDocIdMismatchAction(
+            ConditionRuleAction docIdMismatchAction) {
+        this.docIdMismatchAction = docIdMismatchAction;
+    }
+
+    public void setProjectMismatchAction(
+            ConditionRuleAction projectMismatchAction) {
+        this.projectMismatchAction = projectMismatchAction;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HCopyTransOptions(contextMismatchAction=" +
+                this.getContextMismatchAction() + ", docIdMismatchAction=" +
+                this.getDocIdMismatchAction() + ", projectMismatchAction=" +
+                this.getProjectMismatchAction() + ")";
+    }
+
     /**
      * Indicates the different actions that can be taken when evaluating
      * conditions for a Text Flow during Copy Trans.

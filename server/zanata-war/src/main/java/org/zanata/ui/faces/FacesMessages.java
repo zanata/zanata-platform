@@ -20,9 +20,17 @@
  */
 package org.zanata.ui.faces;
 
-import static javax.faces.application.FacesMessage.SEVERITY_INFO;
-import static javax.faces.application.FacesMessage.Severity;
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
+import org.slf4j.Logger;
+import org.zanata.i18n.Messages;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,18 +41,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-import javax.faces.application.FacesMessage;
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import lombok.extern.slf4j.Slf4j;
-import org.apache.deltaspike.core.spi.scope.window.WindowContext;
-import org.zanata.i18n.Messages;
+import static javax.faces.application.FacesMessage.SEVERITY_INFO;
+import static javax.faces.application.FacesMessage.Severity;
 
 /**
  * Utility to allow for easy handling of JSF messages. Serves as a replacement
@@ -55,9 +53,10 @@ import org.zanata.i18n.Messages;
  */
 @org.apache.deltaspike.core.api.scope.WindowScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 @Named("jsfMessages")
-@Slf4j
 public class FacesMessages implements Serializable {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(FacesMessages.class);
     private final List<FacesMessage> globalMessages = new ArrayList<>();
     private final Map<String, List<FacesMessage>> keyedMessages =
             new HashMap<>();

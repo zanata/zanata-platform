@@ -21,18 +21,19 @@
 package org.zanata.page.account;
 
 import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProfilePage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProfilePage.class);
     private By displayNameBy = By.id("profile-displayname");
     private By userNameBy = By.id("profile-username");
     private By languagesBy = By.id("profile-languages");

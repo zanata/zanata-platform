@@ -20,34 +20,31 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.hibernate.transform.ResultTransformer;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Named("getTransUnitsNavigationService")
 @RequestScoped
-@Slf4j
 public class GetTransUnitsNavigationService {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(GetTransUnitsNavigationService.class);
     @Inject
     private TextFlowDAO textFlowDAO;
 

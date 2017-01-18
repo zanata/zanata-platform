@@ -24,7 +24,6 @@ package org.zanata.webtrans.client.service;
 import com.google.common.collect.ImmutableList;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.presenter.client.EventBus;
 import org.hamcrest.Matchers;
 import org.hibernate.transform.ResultTransformer;
@@ -39,6 +38,7 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
@@ -47,7 +47,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
@@ -70,6 +69,7 @@ import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
@@ -85,10 +85,14 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 // This test uses mockito to simulate an RPC call environment
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 public class NavigationServiceIntegrationTest {
     private static final WorkspaceId WORKSPACE_ID = TestFixture.workspaceId();
@@ -106,6 +110,8 @@ public class NavigationServiceIntegrationTest {
     // @formatter:on
     private static final DocumentInfo DOCUMENT = TestFixture
             .documentInfo(1, "");
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(NavigationServiceIntegrationTest.class);
 
     @Inject
     private ContextController contextController;

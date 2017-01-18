@@ -20,14 +20,14 @@
  */
 package org.zanata.model.validator;
 
-import java.io.Serializable;
-import java.util.Set;
+import com.google.common.base.Strings;
+
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
-import com.google.common.base.Strings;
+import java.io.Serializable;
+import java.util.Set;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

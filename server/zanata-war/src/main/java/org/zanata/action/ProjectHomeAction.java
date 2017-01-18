@@ -21,29 +21,21 @@
 
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.annotation.Nullable;
-import javax.enterprise.inject.Model;
-import javax.faces.application.FacesMessage;
-
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Ordering;
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.collect.Sets;
 import org.apache.commons.lang.StringUtils;
-
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -78,19 +70,22 @@ import org.zanata.util.ComparatorUtil;
 import org.zanata.util.DateUtil;
 import org.zanata.util.GlossaryUtil;
 import org.zanata.util.StatisticsUtil;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 
-import lombok.Getter;
-import lombok.Setter;
+import javax.annotation.Nullable;
+import javax.enterprise.inject.Model;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.zanata.model.ProjectRole.Maintainer;
 import static org.zanata.model.ProjectRole.TranslationMaintainer;
@@ -102,7 +97,6 @@ import static org.zanata.model.ProjectRole.TranslationMaintainer;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class ProjectHomeAction extends AbstractSortAction implements
         Serializable {
 
@@ -110,6 +104,8 @@ public class ProjectHomeAction extends AbstractSortAction implements
             LOCALE_ROLE_ORDERING = Ordering.explicit(LocaleRole.Translator,
             LocaleRole.Reviewer, LocaleRole.Coordinator, LocaleRole.Glossarist);
     private static final long serialVersionUID = -5163376385991003306L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectHomeAction.class);
     @Inject
     private ActivityService activityServiceImpl;
 
@@ -135,8 +131,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
     @Inject
     private Messages msgs;
 
-    @Setter
-    @Getter
     private String slug;
 
     @Inject
@@ -154,7 +148,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
     @Inject
     private GlossaryDAO glossaryDAO;
 
-    @Getter
     private SortingType VersionSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
                     SortingType.SortOption.HOURS,
@@ -162,10 +155,8 @@ public class ProjectHomeAction extends AbstractSortAction implements
                     SortingType.SortOption.WORDS,
                     SortingType.SortOption.LAST_ACTIVITY));
 
-    @Getter
     private boolean pageRendered = false;
 
-    @Getter
     private AbstractListFilter<HProjectIteration> versionFilter =
             new InMemoryListFilter<HProjectIteration>() {
                 @Override
@@ -181,12 +172,10 @@ public class ProjectHomeAction extends AbstractSortAction implements
                 }
             };
 
-    @Getter
     private final SortingType PeopleSortingList = new SortingType(
         Lists.newArrayList(SortingType.SortOption.NAME,
             SortingType.SortOption.ROLE), SortingType.SortOption.NAME);
 
-    @Getter
     private final PeopleFilterComparator peopleFilterComparator =
         new PeopleFilterComparator(getPeopleSortingList());
 
@@ -201,7 +190,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
     private final VersionComparator versionComparator = new VersionComparator(
             getVersionSortingList());
 
-    @Getter(lazy = true)
     private final List<Activity> projectLastActivity =
             fetchProjectLastActivity();
 
@@ -301,6 +289,38 @@ public class ProjectHomeAction extends AbstractSortAction implements
     public void sortVersionList() {
         Collections.sort(projectVersions, versionComparator);
         versionFilter.reset();
+    }
+
+    public String getSlug() {
+        return this.slug;
+    }
+
+    public SortingType getVersionSortingList() {
+        return this.VersionSortingList;
+    }
+
+    public boolean isPageRendered() {
+        return this.pageRendered;
+    }
+
+    public AbstractListFilter<HProjectIteration> getVersionFilter() {
+        return this.versionFilter;
+    }
+
+    public SortingType getPeopleSortingList() {
+        return this.PeopleSortingList;
+    }
+
+    public PeopleFilterComparator getPeopleFilterComparator() {
+        return this.peopleFilterComparator;
+    }
+
+    public List<Activity> getProjectLastActivity() {
+        return this.projectLastActivity;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
     }
 
     private class VersionComparator implements Comparator<HProjectIteration> {
@@ -776,8 +796,6 @@ public class ProjectHomeAction extends AbstractSortAction implements
 
         private SortingType sortingType;
 
-        @Getter
-        @Setter
         private boolean showMembersInGroup;
 
         private List<HPerson> allMembers;
@@ -921,20 +939,30 @@ public class ProjectHomeAction extends AbstractSortAction implements
             return languageRoles != null &&
                     !Sets.filter(languageRoles.keySet(), projectLocalePredicate).isEmpty();
         }
+
+        public boolean isShowMembersInGroup() {
+            return this.showMembersInGroup;
+        }
+
+        public void setShowMembersInGroup(boolean showMembersInGroup) {
+            this.showMembersInGroup = showMembersInGroup;
+        }
     }
 
     private final class ProjectRolePredicate implements Predicate<ProjectRole> {
-        @Setter
         private String filter;
 
         @Override
         public boolean apply(ProjectRole projectRole) {
             return StringUtils.containsIgnoreCase(projectRole.name(), filter);
         }
+
+        public void setFilter(String filter) {
+            this.filter = filter;
+        }
     };
 
     private final class ProjectLocalePredicate implements Predicate<HLocale> {
-        @Setter
         private String filter;
 
         @Override
@@ -944,6 +972,10 @@ public class ProjectHomeAction extends AbstractSortAction implements
                 filter)
                 || StringUtils.containsIgnoreCase(locale
                 .getLocaleId().toString(), filter);
+        }
+
+        public void setFilter(String filter) {
+            this.filter = filter;
         }
     };
 

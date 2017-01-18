@@ -20,25 +20,14 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.Nullable;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Model;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ViewScoped;
-import javax.faces.event.ValueChangeEvent;
-
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.i18n.Messages;
@@ -59,11 +48,20 @@ import org.zanata.ui.autocomplete.LocaleAutocomplete;
 import org.zanata.ui.autocomplete.MaintainerAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
 
-import lombok.Getter;
+import javax.annotation.Nullable;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Model;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
+import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -78,7 +76,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
     @Inject
     @Any
-    @Getter
     private VersionGroupSlug versionGroupSlug;
 
     @Inject
@@ -100,19 +97,15 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     @Inject
     private ZanataIdentity identity;
 
-    @Getter
     @Inject
     private GroupMaintainerAutocomplete maintainerAutocomplete;
 
-    @Getter
     @Inject
     private VersionAutocomplete versionAutocomplete;
 
-    @Getter
     @Inject
     private GroupLocaleAutocomplete localeAutocomplete;
 
-    @Getter
     private AbstractListFilter<HPerson> maintainerFilter =
             new InMemoryListFilter<HPerson>() {
                 @Override
@@ -303,6 +296,26 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         // when id is invalid and conversation will not
         // start
         clearSlugs();
+    }
+
+    public VersionGroupSlug getVersionGroupSlug() {
+        return this.versionGroupSlug;
+    }
+
+    public GroupMaintainerAutocomplete getMaintainerAutocomplete() {
+        return this.maintainerAutocomplete;
+    }
+
+    public VersionAutocomplete getVersionAutocomplete() {
+        return this.versionAutocomplete;
+    }
+
+    public GroupLocaleAutocomplete getLocaleAutocomplete() {
+        return this.localeAutocomplete;
+    }
+
+    public AbstractListFilter<HPerson> getMaintainerFilter() {
+        return this.maintainerFilter;
     }
 
     @ViewScoped

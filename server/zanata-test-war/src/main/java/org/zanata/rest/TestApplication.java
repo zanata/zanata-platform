@@ -21,11 +21,10 @@
 
 package org.zanata.rest;
 
-import java.util.Set;
+import com.google.common.collect.ImmutableSet;
 
 import javax.ws.rs.ApplicationPath;
-
-import com.google.common.collect.ImmutableSet;
+import java.util.Set;
 
 /**
  * @author Patrick Huang <a

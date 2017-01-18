@@ -21,43 +21,30 @@
 
 package org.zanata.adapter;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Optional;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.xml.sax.InputSource;
+import org.zanata.adapter.po.PoReader2;
+import org.zanata.adapter.po.PoWriter2;
+import org.zanata.common.LocaleId;
+import org.zanata.dao.DocumentDAO;
+import org.zanata.exception.FileFormatAdapterException;
+import org.zanata.file.GlobalDocumentId;
+import org.zanata.model.HDocument;
+import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.service.ResourceUtils;
+import org.zanata.util.ServiceLocator;
+
+import javax.inject.Inject;
 import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.CharSet;
-import org.apache.commons.lang.StringUtils;
-import org.xml.sax.InputSource;
-import org.zanata.adapter.po.PoReader2;
-import org.zanata.adapter.po.PoWriter2;
-import org.zanata.common.LocaleId;
-import org.zanata.common.io.FileDetails;
-import org.zanata.dao.DocumentDAO;
-import org.zanata.exception.FileFormatAdapterException;
-import org.zanata.file.GlobalDocumentId;
-import org.zanata.model.HDocument;
-import org.zanata.rest.StringSet;
-import org.zanata.rest.dto.resource.Resource;
-import org.zanata.rest.dto.resource.TextFlowTarget;
-import org.zanata.rest.dto.resource.TranslationsResource;
-import org.zanata.rest.service.ResourceUtils;
-import org.zanata.util.FileUtil;
-import org.zanata.util.ServiceLocator;
-
-import com.google.common.base.Charsets;
-import com.google.common.base.Optional;
-import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
 
 /**
  * Adapter to read and write {@link org.zanata.common.DocumentType#GETTEXT}
@@ -67,9 +54,10 @@ import javax.inject.Inject;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class GettextAdapter implements FileFormatAdapter {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GettextAdapter.class);
     @Inject
     private DocumentDAO documentDAO;
 

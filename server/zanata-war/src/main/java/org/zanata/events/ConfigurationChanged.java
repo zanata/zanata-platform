@@ -20,12 +20,43 @@
  */
 package org.zanata.events;
 
-import lombok.Value;
-
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Value
 public class ConfigurationChanged {
     String configKey;
+
+    @java.beans.ConstructorProperties({ "configKey" })
+    public ConfigurationChanged(String configKey) {
+        this.configKey = configKey;
+    }
+
+    public String getConfigKey() {
+        return this.configKey;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof ConfigurationChanged)) return false;
+        final ConfigurationChanged other = (ConfigurationChanged) o;
+        final Object this$configKey = this.getConfigKey();
+        final Object other$configKey = other.getConfigKey();
+        if (this$configKey == null ? other$configKey != null :
+                !this$configKey.equals(other$configKey)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $configKey = this.getConfigKey();
+        result = result * PRIME +
+                ($configKey == null ? 43 : $configKey.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "org.zanata.events.ConfigurationChanged(configKey=" +
+                this.getConfigKey() + ")";
+    }
 }

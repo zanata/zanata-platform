@@ -20,9 +20,9 @@
  */
 package org.zanata.page.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
@@ -30,9 +30,10 @@ import org.zanata.page.utility.HomePage;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class EditProfilePage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(EditProfilePage.class);
     private By nameField = By.id("profile-form:nameField:name");
     private By usernameField = By.id("profile-form:usernameField:username");
     private By emailField = By.id("profile-form:emailField:email");

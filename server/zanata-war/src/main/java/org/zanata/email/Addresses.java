@@ -20,27 +20,25 @@
  */
 package org.zanata.email;
 
-import static com.google.common.base.Charsets.UTF_8;
+import org.zanata.model.HLocaleMember;
+import org.zanata.model.HPerson;
 
+import javax.mail.internet.InternetAddress;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.mail.internet.InternetAddress;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
-import org.zanata.model.HLocaleMember;
-import org.zanata.model.HPerson;
+import static com.google.common.base.Charsets.UTF_8;
 
 /**
  * Helper methods for working with JavaMail addresses.
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Addresses {
     private static final String UTF8 = UTF_8.name();
+
+    private Addresses() {
+    }
 
     public static InternetAddress getAddress(String email, String name) {
         try {

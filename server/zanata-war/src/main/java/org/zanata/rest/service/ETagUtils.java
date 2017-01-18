@@ -1,16 +1,7 @@
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.OBSOLETE;
-
-import java.util.List;
-import java.util.Set;
-
-import javax.ws.rs.core.EntityTag;
-
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -19,6 +10,14 @@ import org.zanata.model.po.HPoHeader;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.util.HashUtil;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.core.EntityTag;
+import java.util.List;
+import java.util.Set;
+
+import static org.zanata.common.EntityStatus.OBSOLETE;
 
 @Named("eTagUtils")
 @javax.enterprise.context.Dependent

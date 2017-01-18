@@ -21,23 +21,18 @@
 
 package org.zanata.model;
 
-import java.util.Iterator;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
-import lombok.Data;
-
+import com.google.common.collect.ImmutableList;
 import org.zanata.common.LocaleId;
 
-import com.google.common.collect.ImmutableList;
+import javax.annotation.Nonnull;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Data
 public class SimpleNamedDocument implements DocumentWithId {
     private final LocaleId sourceLocaleId;
     private final String qualifiedDocId;
@@ -62,4 +57,62 @@ public class SimpleNamedDocument implements DocumentWithId {
         return sourceContentsList.iterator();
     }
 
+    public LocaleId getSourceLocaleId() {
+        return this.sourceLocaleId;
+    }
+
+    public String getQualifiedDocId() {
+        return this.qualifiedDocId;
+    }
+
+    public List<ITextFlow> getSourceContentsList() {
+        return this.sourceContentsList;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof SimpleNamedDocument)) return false;
+        final SimpleNamedDocument other = (SimpleNamedDocument) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$sourceLocaleId = this.getSourceLocaleId();
+        final Object other$sourceLocaleId = other.getSourceLocaleId();
+        if (this$sourceLocaleId == null ? other$sourceLocaleId != null :
+                !this$sourceLocaleId.equals(other$sourceLocaleId)) return false;
+        final Object this$qualifiedDocId = this.getQualifiedDocId();
+        final Object other$qualifiedDocId = other.getQualifiedDocId();
+        if (this$qualifiedDocId == null ? other$qualifiedDocId != null :
+                !this$qualifiedDocId.equals(other$qualifiedDocId)) return false;
+        final Object this$sourceContentsList = this.getSourceContentsList();
+        final Object other$sourceContentsList = other.getSourceContentsList();
+        if (this$sourceContentsList == null ? other$sourceContentsList != null :
+                !this$sourceContentsList.equals(other$sourceContentsList))
+            return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $sourceLocaleId = this.getSourceLocaleId();
+        result = result * PRIME +
+                ($sourceLocaleId == null ? 43 : $sourceLocaleId.hashCode());
+        final Object $qualifiedDocId = this.getQualifiedDocId();
+        result = result * PRIME +
+                ($qualifiedDocId == null ? 43 : $qualifiedDocId.hashCode());
+        final Object $sourceContentsList = this.getSourceContentsList();
+        result = result * PRIME + ($sourceContentsList == null ? 43 :
+                $sourceContentsList.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof SimpleNamedDocument;
+    }
+
+    public String toString() {
+        return "org.zanata.model.SimpleNamedDocument(sourceLocaleId=" +
+                this.getSourceLocaleId() + ", qualifiedDocId=" +
+                this.getQualifiedDocId() + ", sourceContentsList=" +
+                this.getSourceContentsList() + ")";
+    }
 }

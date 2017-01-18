@@ -20,20 +20,10 @@
  */
 package org.zanata.service.impl;
 
-import java.util.Map;
-import java.util.concurrent.Future;
-
-import javax.enterprise.context.RequestScoped;
-import javax.persistence.EntityManagerFactory;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
@@ -48,16 +38,24 @@ import org.zanata.search.SimpleClassIndexingStrategy;
 import org.zanata.service.IndexingService;
 import org.zanata.util.Zanata;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManagerFactory;
+import java.util.Map;
+import java.util.concurrent.Future;
+
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("indexingServiceImpl")
 @RequestScoped
-@Slf4j
 // Not @Transactional, because we manage EntityManager directly
 public class IndexingServiceImpl implements IndexingService {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(IndexingServiceImpl.class);
     @Inject @Zanata
     private EntityManagerFactory entityManagerFactory;
 

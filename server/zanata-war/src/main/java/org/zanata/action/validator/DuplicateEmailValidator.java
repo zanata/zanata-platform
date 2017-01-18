@@ -20,11 +20,12 @@
  */
 package org.zanata.action.validator;
 
-import java.io.Serializable;
+import org.zanata.dao.PersonDAO;
+
 import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import org.zanata.dao.PersonDAO;
+import java.io.Serializable;
 
 public class DuplicateEmailValidator implements
         ConstraintValidator<NotDuplicateEmail, String>, Serializable {

@@ -20,17 +20,17 @@
  */
 package org.zanata.rest;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Type;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.ext.Provider;
-
 import org.codehaus.jackson.jaxrs.Annotations;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.jboss.resteasy.annotations.providers.NoJackson;
 import org.jboss.resteasy.util.FindAnnotation;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.ext.Provider;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 
 /**
  * ResteasyJacksonProvider will use JAXB annotation as well as Jackson. This is

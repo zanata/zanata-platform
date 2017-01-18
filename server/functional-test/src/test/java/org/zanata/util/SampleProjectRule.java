@@ -22,9 +22,13 @@
 package org.zanata.util;
 
 import org.junit.rules.ExternalResource;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
-import static org.zanata.util.SampleDataResourceClient.*;
+import static org.zanata.util.SampleDataResourceClient.deleteExceptEssentialData;
+import static org.zanata.util.SampleDataResourceClient.makeSampleLanguages;
+import static org.zanata.util.SampleDataResourceClient.makeSampleProject;
+import static org.zanata.util.SampleDataResourceClient.makeSampleUsers;
+import static org.zanata.util.SampleDataResourceClient.userJoinsLanguageTeam;
 
 /**
  * To ensure test isolation, this rule should be used as
@@ -32,8 +36,10 @@ import static org.zanata.util.SampleDataResourceClient.*;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class SampleProjectRule extends ExternalResource {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(SampleProjectRule.class);
 
     @Override
     public void before() throws Throwable {

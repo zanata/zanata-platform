@@ -20,8 +20,8 @@
  */
 package org.zanata.workflow;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.slf4j.Logger;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.explore.ExplorePage;
 import org.zanata.page.projects.CreateProjectPage;
@@ -36,8 +36,10 @@ import java.util.HashMap;
  * This class represents the work-flows involved when interacting with
  * projects, such as creating projects and versions and altering settings.
  */
-@Slf4j
 public class ProjectWorkFlow extends AbstractWebWorkFlow {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectWorkFlow.class);
 
     /**
      * Creates a new project using minimal input, all other items are default.

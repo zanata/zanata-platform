@@ -20,20 +20,19 @@
  */
 package org.zanata.model.validator;
 
-import java.io.Serializable;
-import java.util.List;
-
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.metadata.ClassMetadata;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Unique validator implementation. NB: <b>Requires CDI and Hibernate</b>.

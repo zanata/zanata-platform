@@ -24,8 +24,7 @@ import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.search.FullTextSession;
-
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 /**
  * Indexing strategy that fetches all instances in a given class and indexes
@@ -35,9 +34,10 @@ import lombok.extern.slf4j.Slf4j;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class SimpleClassIndexingStrategy<T> extends AbstractIndexingStrategy<T> {
     public static final int MAX_QUERY_ROWS = 5000;
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(SimpleClassIndexingStrategy.class);
 
     public SimpleClassIndexingStrategy(Class<T> entityType) {
         super(entityType);

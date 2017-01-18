@@ -20,19 +20,20 @@
  */
 package org.zanata.page.projectversion;
 
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.page.projectversion.versionsettings.VersionGeneralTab;
 import org.zanata.page.projectversion.versionsettings.VersionLanguagesTab;
 import org.zanata.page.projectversion.versionsettings.VersionTranslationTab;
 
-@Slf4j
 public class VersionBasePage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionBasePage.class);
     private By settingsGeneralTab = By.id("settings-general_tab");
     private By settingsLanguagesTab = By.id("settings-languages_tab");
     private By settingsDocumentsTab = By.id("settings-documents_tab");

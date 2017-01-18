@@ -1,9 +1,6 @@
 package org.zanata.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
+import com.google.common.base.Preconditions;
 import org.zanata.common.ContentState;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -11,7 +8,10 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.service.TranslationMergeService;
 import org.zanata.transformer.TargetTransformer;
-import com.google.common.base.Preconditions;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This strategy is used when HTextFlowTarget does not exist yet, regardless

@@ -21,8 +21,10 @@
 
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.Set;
+import com.google.common.collect.Sets;
+import org.zanata.model.type.WebhookType;
+import org.zanata.model.validator.Url;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -39,22 +41,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
-
-import org.zanata.model.type.WebhookType;
-import org.zanata.model.validator.Url;
-import com.google.common.collect.Sets;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.io.Serializable;
+import java.util.Set;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
-@Getter
-@Setter(AccessLevel.PRIVATE)
-@NoArgsConstructor
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"url", "projectId"}))
 public class WebHook implements Serializable {
 
@@ -87,6 +80,9 @@ public class WebHook implements Serializable {
         this.name = name;
         this.types = types;
         this.secret = secret;
+    }
+
+    public WebHook() {
     }
 
     @Id
@@ -136,5 +132,41 @@ public class WebHook implements Serializable {
                 this.types.remove(type);
             }
         }
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    public String getSecret() {
+        return this.secret;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    private void setId(Long id) {
+        this.id = id;
+    }
+
+    private void setProject(HProject project) {
+        this.project = project;
+    }
+
+    private void setUrl(String url) {
+        this.url = url;
+    }
+
+    private void setTypes(Set<WebhookType> types) {
+        this.types = types;
+    }
+
+    private void setSecret(String secret) {
+        this.secret = secret;
+    }
+
+    private void setName(String name) {
+        this.name = name;
     }
 }

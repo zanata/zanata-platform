@@ -20,19 +20,17 @@
  */
 package org.zanata.service.impl;
 
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.ReindexStatus;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.service.SearchIndexManager;
 import org.zanata.service.SearchService;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 
 /**
  * Default implementation of a service to manage all Search related activities.

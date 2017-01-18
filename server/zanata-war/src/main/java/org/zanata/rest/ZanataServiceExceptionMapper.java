@@ -20,7 +20,7 @@
  */
 package org.zanata.rest;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.zanata.exception.ZanataServiceException;
 
 import javax.ws.rs.core.Response;
@@ -32,9 +32,11 @@ import javax.ws.rs.ext.Provider;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Provider
-@Slf4j
 public class ZanataServiceExceptionMapper implements
         ExceptionMapper<ZanataServiceException> {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(ZanataServiceExceptionMapper.class);
+
     @Override
     public Response toResponse(ZanataServiceException exception) {
         int code = exception.getHttpStatus();

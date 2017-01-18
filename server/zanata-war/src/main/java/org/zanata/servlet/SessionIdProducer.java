@@ -20,24 +20,24 @@
  */
 package org.zanata.servlet;
 
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
+import org.slf4j.Logger;
+import org.zanata.servlet.annotations.SessionId;
+
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpSession;
-
-import lombok.extern.slf4j.Slf4j;
-import org.apache.deltaspike.core.api.lifecycle.Initialized;
-import org.zanata.servlet.annotations.SessionId;
-
 import java.io.Serializable;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @RequestScoped
-@Slf4j
 public class SessionIdProducer implements Serializable {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(SessionIdProducer.class);
     private String sessionId;
 
     void onCreate(@Observes @Initialized HttpSession session) {

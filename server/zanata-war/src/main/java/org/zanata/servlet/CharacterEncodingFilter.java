@@ -1,6 +1,8 @@
 package org.zanata.servlet;
 
-import java.io.IOException;
+import com.google.common.base.Charsets;
+import org.apache.commons.lang.StringUtils;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -8,10 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
-
-import org.apache.commons.lang.StringUtils;
-
-import com.google.common.base.Charsets;
+import java.io.IOException;
 
 /**
  * Set http request encoding to utf-8 if there is no encoding in the request

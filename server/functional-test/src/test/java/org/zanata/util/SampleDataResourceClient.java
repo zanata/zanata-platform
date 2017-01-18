@@ -20,12 +20,12 @@
  */
 package org.zanata.util;
 
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+
 import javax.annotation.Nullable;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
-
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 
 /**
  * @author Patrick Huang <a

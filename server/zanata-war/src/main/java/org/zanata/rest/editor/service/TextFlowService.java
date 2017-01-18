@@ -20,16 +20,7 @@
  */
 package org.zanata.rest.editor.service;
 
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.Response;
-
 import org.apache.commons.lang.StringUtils;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
@@ -38,9 +29,14 @@ import org.zanata.rest.editor.dto.EditorTextFlow;
 import org.zanata.rest.editor.dto.TransUnit;
 import org.zanata.rest.editor.dto.TransUnits;
 import org.zanata.rest.editor.service.resource.TextFlowResource;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -49,14 +45,22 @@ import lombok.NoArgsConstructor;
 @Named("editor.textFlowService")
 @Path(TextFlowResource.SERVICE_PATH)
 @Transactional(readOnly = true)
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TextFlowService implements TextFlowResource {
     @Inject
     private TextFlowDAO textFlowDAO;
 
     @Inject
     private TransUnitUtils transUnitUtils;
+
+    @java.beans.ConstructorProperties({ "textFlowDAO", "transUnitUtils" })
+    protected TextFlowService(TextFlowDAO textFlowDAO,
+            TransUnitUtils transUnitUtils) {
+        this.textFlowDAO = textFlowDAO;
+        this.transUnitUtils = transUnitUtils;
+    }
+
+    public TextFlowService() {
+    }
 
     @Override
     public Response get(@QueryParam("ids") String ids) {

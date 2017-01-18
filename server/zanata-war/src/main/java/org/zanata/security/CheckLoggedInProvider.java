@@ -20,10 +20,10 @@
  */
 package org.zanata.security;
 
-import javax.enterprise.context.ApplicationScoped;
-
 import org.apache.deltaspike.security.api.authorization.Secures;
 import org.zanata.security.annotations.CheckLoggedIn;
+
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  * See org.apache.deltaspike.security.impl.extension.Authorizer

@@ -21,24 +21,15 @@
 
 package org.zanata.action;
 
-import static org.zanata.webhook.events.ProjectMaintainerChangedEvent.ChangeType;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.exception.AuthorizationException;
@@ -62,10 +53,16 @@ import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ServiceLocator;
 
+import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.zanata.webhook.events.ProjectMaintainerChangedEvent.ChangeType;
 
 /*
  * Backing bean for project permissions dialog.
@@ -76,10 +73,11 @@ import java.util.List;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
     implements Serializable {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectPermissionDialog.class);
     @Inject
     private FacesMessages facesMessages;
 
@@ -104,10 +102,8 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
     @Inject
     private ProjectService projectServiceImpl;
 
-    @Getter
     private PersonProjectMemberships data;
 
-    @Getter
     private HProject project;
 
     public void setData(HProject project, HPerson person) {
@@ -338,4 +334,11 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
         }
     }
 
+    public PersonProjectMemberships getData() {
+        return this.data;
+    }
+
+    public HProject getProject() {
+        return this.project;
+    }
 }

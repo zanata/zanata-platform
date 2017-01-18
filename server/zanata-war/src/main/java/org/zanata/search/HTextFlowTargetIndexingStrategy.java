@@ -26,12 +26,12 @@ import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.search.FullTextSession;
+import org.slf4j.Logger;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.dao.HTextFlowTargetStreamingDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Indexing strategy specific to HTextFlowTargets. This indexing strategy
@@ -41,9 +41,11 @@ import lombok.extern.slf4j.Slf4j;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class HTextFlowTargetIndexingStrategy extends
         AbstractIndexingStrategy<HTextFlowTarget> {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(HTextFlowTargetIndexingStrategy.class);
+
     public HTextFlowTargetIndexingStrategy() {
         super(HTextFlowTarget.class);
     }

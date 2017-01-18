@@ -20,6 +20,15 @@
  */
 package org.zanata.rest.helper;
 
+import org.slf4j.Logger;
+import org.zanata.arquillian.RemoteAfter;
+import org.zanata.arquillian.RemoteBefore;
+import org.zanata.security.annotations.NoSecurityCheck;
+
+import javax.inject.Named;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -29,17 +38,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-
-import lombok.extern.slf4j.Slf4j;
-import javax.inject.Named;
-import javax.ws.rs.QueryParam;
-
-import org.zanata.arquillian.RemoteAfter;
-import org.zanata.arquillian.RemoteBefore;
-import org.zanata.security.annotations.NoSecurityCheck;
-
 /**
  * Default implementation for the Remote Signaler interface.
  *
@@ -48,9 +46,11 @@ import org.zanata.security.annotations.NoSecurityCheck;
  */
 @Path("/test/remote/signal")
 @Named("remoteTestSignalerImpl")
-@Slf4j
 @NoSecurityCheck
 public class RemoteTestSignalerImpl {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RemoteTestSignalerImpl.class);
+
     @POST
     @Path("/before")
     public void signalBeforeTest(@QueryParam("c") String testClass, @QueryParam("m") String testMethod) throws Exception {

@@ -1,8 +1,5 @@
 package org.zanata.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -25,8 +22,6 @@ import java.util.Date;
  */
 @MappedSuperclass
 @Access(AccessType.FIELD)
-@Getter
-@Setter
 public class TimeEntityBase implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,6 +37,37 @@ public class TimeEntityBase implements Serializable {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
-    @Setter
     private Date validTo;
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public String getEntityId() {
+        return this.entityId;
+    }
+
+    public Date getValidFrom() {
+        return this.validFrom;
+    }
+
+    public Date getValidTo() {
+        return this.validTo;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setEntityId(String entityId) {
+        this.entityId = entityId;
+    }
+
+    public void setValidFrom(Date validFrom) {
+        this.validFrom = validFrom;
+    }
+
+    public void setValidTo(Date validTo) {
+        this.validTo = validTo;
+    }
 }

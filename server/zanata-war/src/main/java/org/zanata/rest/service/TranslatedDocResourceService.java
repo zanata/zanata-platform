@@ -20,29 +20,9 @@
  */
 package org.zanata.rest.service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-import javax.inject.Named;
+import com.google.common.base.Optional;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
@@ -61,7 +41,23 @@ import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 
-import com.google.common.base.Optional;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+import java.util.List;
+import java.util.Set;
 
 /**
  * This service allows clients to push and pull both source documents and
@@ -70,9 +66,10 @@ import com.google.common.base.Optional;
 @RequestScoped
 @Named("translatedDocResourceService")
 @Path(TranslatedDocResource.SERVICE_PATH)
-@Slf4j
 @Transactional
 public class TranslatedDocResourceService implements TranslatedDocResource {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslatedDocResourceService.class);
 
     // security actions
     // private static final String ACTION_IMPORT_TEMPLATE = "import-template";

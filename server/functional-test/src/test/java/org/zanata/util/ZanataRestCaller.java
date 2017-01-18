@@ -20,15 +20,13 @@
  */
 package org.zanata.util;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Collections;
-import java.util.EnumSet;
-
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.jayway.awaitility.Awaitility;
+import com.jayway.awaitility.Duration;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.client.AsyncProcessClient;
@@ -46,25 +44,22 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 
-import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import com.jayway.awaitility.Awaitility;
-import com.jayway.awaitility.Duration;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.EnumSet;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class ZanataRestCaller {
 
-    @Getter
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataRestCaller.class);
     private final RestClientFactory restClientFactory;
     public static final EnumSet<ProcessStatus.ProcessStatusCode> DONE_STATUS =
             EnumSet.of(ProcessStatus.ProcessStatusCode.Failed,
@@ -289,5 +284,8 @@ public class ZanataRestCaller {
         postTest("rest/test/remote/signal/after", testClass, methodName);
     }
 
+    public RestClientFactory getRestClientFactory() {
+        return this.restClientFactory;
+    }
 }
 

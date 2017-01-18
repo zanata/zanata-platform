@@ -21,25 +21,22 @@
 
 package org.zanata.rest.service;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.base.Stopwatch;
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.slf4j.Logger;
+import org.zanata.exception.VirusDetectedException;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-import org.zanata.exception.VirusDetectedException;
-
-import com.google.common.base.Stopwatch;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * <code>VirusScanner</code> scans files using ClamAV's <code>clamdscan</code>
@@ -63,7 +60,6 @@ import com.google.common.base.Stopwatch;
  */
 @Named("virusScanner")
 @RequestScoped
-@Slf4j
 public class VirusScanner {
     private static final boolean DISABLED;
     private static final boolean SCANNER_SET;
@@ -78,6 +74,8 @@ public class VirusScanner {
             // accesses the file, not clamd):
             "--stream"
     };
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(VirusScanner.class);
 
     static {
         // If the system property is empty or null, we try to use

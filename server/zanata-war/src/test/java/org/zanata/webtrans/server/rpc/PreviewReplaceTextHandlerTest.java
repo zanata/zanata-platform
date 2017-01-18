@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
@@ -16,13 +17,11 @@ import org.zanata.webtrans.shared.rpc.PreviewReplaceText;
 import org.zanata.webtrans.shared.rpc.PreviewReplaceTextResult;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
 
-import net.customware.gwt.dispatch.shared.ActionException;
-
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 
 /**

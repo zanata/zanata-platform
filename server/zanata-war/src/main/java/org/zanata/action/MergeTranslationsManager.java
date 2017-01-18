@@ -1,20 +1,15 @@
 package org.zanata.action;
 
-import java.io.Serializable;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.MergeTranslationsService;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.io.Serializable;
 
 /**
  * Manages tasks to copy translations from one existing version to another.
@@ -23,9 +18,10 @@ import org.zanata.service.MergeTranslationsService;
  */
 
 @Dependent
-@Slf4j
 public class MergeTranslationsManager implements Serializable {
     private static final long serialVersionUID = -8717740654253262530L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(MergeTranslationsManager.class);
     @Inject
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
@@ -97,18 +93,57 @@ public class MergeTranslationsManager implements Serializable {
      * Key used for copy version task
      *
      */
-    @EqualsAndHashCode
-    @Getter
-    @AllArgsConstructor
     public static final class Key implements Serializable {
         // target project identifier
         private final String projectSlug;
         // target version identifier
         private final String versionSlug;
 
+        @java.beans.ConstructorProperties({ "projectSlug", "versionSlug" })
+        public Key(String projectSlug, String versionSlug) {
+            this.projectSlug = projectSlug;
+            this.versionSlug = versionSlug;
+        }
+
         public static Key getKey(String projectSlug,
                 String versionSlug) {
             return new Key(projectSlug, versionSlug);
+        }
+
+        public String getProjectSlug() {
+            return this.projectSlug;
+        }
+
+        public String getVersionSlug() {
+            return this.versionSlug;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof Key)) return false;
+            final Key other =
+                    (Key) o;
+            final Object this$projectSlug = this.getProjectSlug();
+            final Object other$projectSlug = other.getProjectSlug();
+            if (this$projectSlug == null ? other$projectSlug != null :
+                    !this$projectSlug.equals(other$projectSlug)) return false;
+            final Object this$versionSlug = this.getVersionSlug();
+            final Object other$versionSlug = other.getVersionSlug();
+            if (this$versionSlug == null ? other$versionSlug != null :
+                    !this$versionSlug.equals(other$versionSlug)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $projectSlug = this.getProjectSlug();
+            result = result * PRIME +
+                    ($projectSlug == null ? 43 : $projectSlug.hashCode());
+            final Object $versionSlug = this.getVersionSlug();
+            result = result * PRIME +
+                    ($versionSlug == null ? 43 : $versionSlug.hashCode());
+            return result;
         }
     }
 }

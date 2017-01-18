@@ -20,31 +20,29 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.zanata.model.HLocale;
+import org.zanata.service.ConfigurationService;
+import org.zanata.servlet.annotations.HttpParam;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Model;
 import javax.faces.context.FacesContext;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.servlet.annotations.HttpParam;
-import org.zanata.model.HLocale;
-import org.zanata.service.ConfigurationService;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
 
 @Named("configurationAction")
 @RequestScoped
 @Model
 @Transactional
-@Slf4j
 public class ConfigurationAction implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ConfigurationAction.class);
     @Inject @HttpParam("iterationSlug")
     private String iterationSlug;
     @Inject @HttpParam("projectSlug")

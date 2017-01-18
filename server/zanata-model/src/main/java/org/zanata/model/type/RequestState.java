@@ -21,9 +21,6 @@
 
 package org.zanata.model.type;
 
-import lombok.Getter;
-import org.hibernate.MappingException;
-
 /**
  * Request state with single char
  *
@@ -37,7 +34,6 @@ public enum RequestState {
     REJECTED('R'),
     CANCELLED('C');
 
-    @Getter
     private char initial;
 
     RequestState(char initial) {
@@ -64,5 +60,9 @@ public enum RequestState {
                 throw new IllegalArgumentException(
                     "No request state has an initial matching " + initial);
         }
+    }
+
+    public char getInitial() {
+        return this.initial;
     }
 }

@@ -20,20 +20,19 @@
  */
 package org.zanata.rest.service;
 
+import org.zanata.dao.ProjectDAO;
+import org.zanata.model.HDocument;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
+import org.zanata.rest.RestUtil;
+
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.model.HDocument;
-import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.validator.SlugValidator;
-import org.zanata.rest.RestUtil;
 
 /**
  * Service that provides static services to build, parse and interpret Zanata

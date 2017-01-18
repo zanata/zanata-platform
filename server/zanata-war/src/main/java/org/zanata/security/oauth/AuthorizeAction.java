@@ -21,14 +21,8 @@
 
 package org.zanata.security.oauth;
 
-import java.io.IOException;
-import java.util.Optional;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.common.base.Strings;
+import com.google.common.base.Throwables;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
@@ -45,10 +39,14 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.util.FacesNavigationUtil;
-import com.google.common.base.Strings;
-import com.google.common.base.Throwables;
-import lombok.Getter;
-import lombok.Setter;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Optional;
 
 /**
  * JSF backed bean for OAuth authorization page.
@@ -62,11 +60,7 @@ public class AuthorizeAction {
     private static final Logger log =
             LoggerFactory.getLogger(AuthorizeAction.class);
 
-    @Getter
-    @Setter
     private String redirectUri;
-    @Getter
-    @Setter
     private String clientId;
 
     @Inject
@@ -165,5 +159,21 @@ public class AuthorizeAction {
         } catch (OAuthSystemException | IOException e) {
             throw Throwables.propagate(e);
         }
+    }
+
+    public String getRedirectUri() {
+        return this.redirectUri;
+    }
+
+    public String getClientId() {
+        return this.clientId;
+    }
+
+    public void setRedirectUri(String redirectUri) {
+        this.redirectUri = redirectUri;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 }

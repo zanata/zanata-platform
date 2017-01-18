@@ -21,12 +21,12 @@
 
 package org.zanata.servlet;
 
+import org.zanata.servlet.annotations.HttpParam;
+
 import javax.enterprise.inject.Produces;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletRequest;
-
-import org.zanata.servlet.annotations.HttpParam;
 
 /**
  * Producer for @HttpParam. Implementation taken from an example in the Weld manual.

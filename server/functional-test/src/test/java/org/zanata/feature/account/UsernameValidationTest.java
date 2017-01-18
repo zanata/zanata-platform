@@ -20,9 +20,9 @@
  */
 package org.zanata.feature.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
@@ -35,9 +35,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 @Category(DetailedTest.class)
 public class UsernameValidationTest extends ZanataTestCase {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(UsernameValidationTest.class);
 
     @Feature(summary = "The user must enter acceptable username characters" +
             "to register",

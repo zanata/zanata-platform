@@ -25,20 +25,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@Setter
-@ToString
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 public class HAccountOption extends ModelEntityBase {
     private static final long serialVersionUID = 1L;
 
@@ -51,6 +42,9 @@ public class HAccountOption extends ModelEntityBase {
     public HAccountOption(String name, String value) {
         this.name = name;
         this.value = value;
+    }
+
+    public HAccountOption() {
     }
 
     public String getName() {
@@ -75,5 +69,61 @@ public class HAccountOption extends ModelEntityBase {
     @Transient
     public Integer getValueAsInt() {
         return Integer.parseInt(getValue());
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public void setAccount(HAccount account) {
+        this.account = account;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof HAccountOption)) return false;
+        final HAccountOption other = (HAccountOption) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (!super.equals(o)) return false;
+        final Object this$name = this.getName();
+        final Object other$name = other.getName();
+        if (this$name == null ? other$name != null :
+                !this$name.equals(other$name)) return false;
+        final Object this$value = this.getValue();
+        final Object other$value = other.getValue();
+        if (this$value == null ? other$value != null :
+                !this$value.equals(other$value)) return false;
+        final Object this$account = this.getAccount();
+        final Object other$account = other.getAccount();
+        if (this$account == null ? other$account != null :
+                !this$account.equals(other$account)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $name = this.getName();
+        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
+        final Object $value = this.getValue();
+        result = result * PRIME + ($value == null ? 43 : $value.hashCode());
+        final Object $account = this.getAccount();
+        result = result * PRIME + ($account == null ? 43 : $account.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof HAccountOption;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HAccountOption(name=" + this.getName() +
+                ", value=" + this.getValue() + ", account=" +
+                this.getAccount() + ")";
     }
 }

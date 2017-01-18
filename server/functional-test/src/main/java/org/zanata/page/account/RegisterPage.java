@@ -20,11 +20,10 @@
  */
 package org.zanata.page.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.CorePage;
-import org.zanata.page.utility.HomePage;
 
 import java.util.Map;
 
@@ -32,7 +31,6 @@ import java.util.Map;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class RegisterPage extends CorePage {
 
     public static final String USERNAME_VALIDATION_ERROR =
@@ -48,6 +46,8 @@ public class RegisterPage extends CorePage {
 
     public static final String USERNAME_LENGTH_ERROR =
             "size must be between 3 and 20";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RegisterPage.class);
 
     private By nameField = By.id("loginForm:name:input:name");
     private By emailField = By.id("loginForm:email:input:email");

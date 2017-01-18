@@ -20,23 +20,10 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import com.google.common.collect.Maps;
+import com.ibm.icu.util.ULocale;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.PersonDAO;
@@ -55,10 +42,20 @@ import org.zanata.service.LocaleService;
 import org.zanata.servlet.annotations.AllJavaLocales;
 import org.zanata.util.ComparatorUtil;
 
-import com.google.common.collect.Maps;
-import com.ibm.icu.util.ULocale;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * This implementation provides all the business logic related to Locale.
@@ -66,9 +63,10 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Named("localeServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class LocaleServiceImpl implements LocaleService {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(LocaleServiceImpl.class);
     private LocaleDAO localeDAO;
 
     private ProjectDAO projectDAO;

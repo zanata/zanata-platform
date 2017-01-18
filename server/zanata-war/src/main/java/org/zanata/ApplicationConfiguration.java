@@ -20,6 +20,43 @@
  */
 package org.zanata;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import org.apache.deltaspike.core.api.common.DeltaSpike;
+import org.apache.log4j.Level;
+import org.slf4j.Logger;
+import org.zanata.config.AllowAnonymousAccess;
+import org.zanata.config.AllowPublicRegistration;
+import org.zanata.config.DatabaseBackedConfig;
+import org.zanata.config.JaasConfig;
+import org.zanata.config.OAuthTokenExpiryInSeconds;
+import org.zanata.config.SupportOAuth;
+import org.zanata.config.SystemPropertyConfigStore;
+import org.zanata.events.LogoutEvent;
+import org.zanata.events.PostAuthenticateEvent;
+import org.zanata.i18n.Messages;
+import org.zanata.log4j.ZanataHTMLLayout;
+import org.zanata.log4j.ZanataSMTPAppender;
+import org.zanata.model.validator.AcceptedEmailDomainsForNewAccount;
+import org.zanata.security.AuthenticationType;
+import org.zanata.security.OpenIdLoginModule;
+import org.zanata.servlet.HttpRequestAndSessionHolder;
+import org.zanata.servlet.annotations.ServerPath;
+import org.zanata.util.DefaultLocale;
+import org.zanata.util.Synchronized;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,70 +65,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.inject.Produces;
-
-import com.google.common.base.Optional;
-import lombok.extern.slf4j.Slf4j;
-import lombok.Getter;
-import lombok.Setter;
-
-import org.apache.deltaspike.core.api.common.DeltaSpike;
-import org.apache.log4j.Level;
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
-import javax.servlet.http.HttpSession;
-
-import org.zanata.config.AllowAnonymousAccess;
-import org.zanata.config.AllowPublicRegistration;
-import org.zanata.config.OAuthTokenExpiryInSeconds;
-import org.zanata.config.SupportOAuth;
-import org.zanata.config.SystemPropertyConfigStore;
-import org.zanata.model.validator.AcceptedEmailDomainsForNewAccount;
-import org.zanata.servlet.HttpRequestAndSessionHolder;
-import org.zanata.servlet.annotations.ServerPath;
-import org.zanata.util.DefaultLocale;
-import org.zanata.util.Synchronized;
-import org.zanata.config.DatabaseBackedConfig;
-import org.zanata.config.JaasConfig;
-import org.zanata.events.LogoutEvent;
-import org.zanata.events.PostAuthenticateEvent;
-import org.zanata.i18n.Messages;
-import org.zanata.log4j.ZanataHTMLLayout;
-import org.zanata.log4j.ZanataSMTPAppender;
-import org.zanata.security.AuthenticationType;
-
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import org.zanata.security.OpenIdLoginModule;
-
 import static java.lang.Math.max;
 
 @Named("applicationConfiguration")
 @ApplicationScoped
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
-@Slf4j
 public class ApplicationConfiguration implements Serializable {
     private static final long serialVersionUID = -4970657841198107092L;
 
     private static final String EMAIL_APPENDER_NAME =
             "zanata.log.appender.email";
 
-    @Getter
     private static final int defaultMaxFilesPerUpload = 100;
 
-    @Getter
     private static final int defaultAnonymousSessionTimeoutMinutes = 30;
     public static final String ACCESS_TOKEN_EXPIRES_IN_SECONDS =
             "accessTokenExpiresInSeconds";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ApplicationConfiguration.class);
 
     @Inject
     private DatabaseBackedConfig databaseBackedConfig;
@@ -106,22 +97,14 @@ public class ApplicationConfiguration implements Serializable {
     private static final ZanataSMTPAppender smtpAppenderInstance =
             new ZanataSMTPAppender();
 
-    @Getter
     private int authenticatedSessionTimeoutMinutes;
 
-    @Getter
-    @Setter
     private String version;
 
-    @Getter
-    @Setter
     private String buildTimestamp;
 
-    @Getter
-    @Setter
     private String scmDescribe;
 
-    @Getter
     private boolean copyTransEnabled = true;
 
     @Inject
@@ -143,7 +126,6 @@ public class ApplicationConfiguration implements Serializable {
      *   {@code <property name="zanata.enforce.matchingusernames" value="true" />}
      * </pre>
      */
-    @Getter
     private boolean enforceMatchingUsernames;
 
     private Map<AuthenticationType, String> loginModuleNames = Maps
@@ -153,6 +135,14 @@ public class ApplicationConfiguration implements Serializable {
 
     private Optional<String> openIdProvider; // Cache the OpenId provider
     private long tokenExpiresInSeconds;
+
+    public static int getDefaultMaxFilesPerUpload() {
+        return ApplicationConfiguration.defaultMaxFilesPerUpload;
+    }
+
+    public static int getDefaultAnonymousSessionTimeoutMinutes() {
+        return ApplicationConfiguration.defaultAnonymousSessionTimeoutMinutes;
+    }
 
     @PostConstruct
     public void load() {
@@ -472,5 +462,41 @@ public class ApplicationConfiguration implements Serializable {
     @AllowPublicRegistration
     protected boolean isPublicRegistrationAllowed(@AllowAnonymousAccess boolean allowAnonymous) {
         return allowAnonymous;
+    }
+
+    public int getAuthenticatedSessionTimeoutMinutes() {
+        return this.authenticatedSessionTimeoutMinutes;
+    }
+
+    public String getVersion() {
+        return this.version;
+    }
+
+    public String getBuildTimestamp() {
+        return this.buildTimestamp;
+    }
+
+    public String getScmDescribe() {
+        return this.scmDescribe;
+    }
+
+    public boolean isCopyTransEnabled() {
+        return this.copyTransEnabled;
+    }
+
+    public boolean isEnforceMatchingUsernames() {
+        return this.enforceMatchingUsernames;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public void setBuildTimestamp(String buildTimestamp) {
+        this.buildTimestamp = buildTimestamp;
+    }
+
+    public void setScmDescribe(String scmDescribe) {
+        this.scmDescribe = scmDescribe;
     }
 }

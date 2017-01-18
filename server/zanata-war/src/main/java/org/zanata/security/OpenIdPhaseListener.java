@@ -20,19 +20,19 @@
  */
 package org.zanata.security;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.util.FacesNavigationUtil;
+import org.zanata.util.ServiceLocator;
+
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.PhaseEvent;
 import javax.faces.event.PhaseId;
 import javax.faces.event.PhaseListener;
 import javax.servlet.http.HttpServletResponse;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zanata.util.FacesNavigationUtil;
-import org.zanata.util.ServiceLocator;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 // TODO Use DeltaSpike's {@link org.apache.deltaspike.jsf.api.listener.phase.JsfPhaseListener}
 public class OpenIdPhaseListener implements PhaseListener {

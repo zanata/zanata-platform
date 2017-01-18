@@ -20,20 +20,21 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class ServerConfigurationPage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ServerConfigurationPage.class);
     private By urlField = By.id("serverConfigForm:url:input:url");
     public static final By registerUrlField = By.id("serverConfigForm:register:input:registerUrl");
     private By emailDomainField = By.id("serverConfigForm:emailDomainField:emailDomain");

@@ -20,7 +20,11 @@
  */
 package org.zanata.util;
 
-import net.htmlparser.jericho.*;
+import net.htmlparser.jericho.Config;
+import net.htmlparser.jericho.LoggerProvider;
+import net.htmlparser.jericho.Renderer;
+import net.htmlparser.jericho.Segment;
+import net.htmlparser.jericho.Source;
 import org.owasp.html.HtmlPolicyBuilder;
 import org.owasp.html.PolicyFactory;
 

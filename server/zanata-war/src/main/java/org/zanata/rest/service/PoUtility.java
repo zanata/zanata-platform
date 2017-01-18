@@ -20,6 +20,9 @@
  */
 package org.zanata.rest.service;
 
+import org.fedorahosted.openprops.Properties;
+import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -27,9 +30,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
-
-import org.fedorahosted.openprops.Properties;
-import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 
 public class PoUtility {
 

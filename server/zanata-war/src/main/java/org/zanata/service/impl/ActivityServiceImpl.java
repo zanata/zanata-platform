@@ -20,22 +20,8 @@
  */
 package org.zanata.service.impl;
 
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.locks.Lock;
-
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
-import javax.persistence.EntityManager;
-
 import com.google.common.base.Throwables;
 import org.apache.commons.lang.time.DateUtils;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.zanata.action.DashboardUserStats;
 import org.zanata.async.Async;
 import org.zanata.common.ActivityType;
@@ -54,6 +40,18 @@ import org.zanata.model.IsEntityWithType;
 import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
 import org.zanata.transaction.TransactionUtil;
+
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

@@ -20,28 +20,28 @@
  */
 package org.zanata.page.projectversion.versionsettings;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.projectversion.VersionBasePage;
 import org.zanata.page.utility.NamedPredicate;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class VersionDocumentsTab extends VersionBasePage {
 
     public static final String UNSUPPORTED_FILETYPE =
             " is not a supported file type.";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionDocumentsTab.class);
 
     private By uploadButton = By.id("file-upload-component-toggle-button");
     private By startUploadButton = By.id("file-upload-component-start-upload");

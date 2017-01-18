@@ -21,36 +21,27 @@
 
 package org.zanata.action;
 
-import java.io.Serializable;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.Authenticated;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.slf4j.Logger;
 import org.zanata.email.ContactAdminAnonymousEmailStrategy;
 import org.zanata.email.ContactAdminEmailStrategy;
 import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.EmailService;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.HttpUtil;
 
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 /**
  * Handles send email to admin - Contact admin(Registered and non-registered users)
@@ -61,9 +52,10 @@ import javax.validation.constraints.Size;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class ContactAdminAction implements Serializable {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ContactAdminAction.class);
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
@@ -77,13 +69,9 @@ public class ContactAdminAction implements Serializable {
     @Inject
     private FacesMessages facesMessages;
 
-    @Getter
-    @Setter
     @Size(max = 300)
     private String message;
 
-    @Getter
-    @Setter
     private String subject;
 
     /**
@@ -140,5 +128,21 @@ public class ContactAdminAction implements Serializable {
                 (HttpServletRequest) FacesContext.getCurrentInstance()
                         .getExternalContext().getRequest();
         return HttpUtil.getClientIp(request);
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public String getSubject() {
+        return this.subject;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
     }
 }

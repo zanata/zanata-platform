@@ -26,9 +26,6 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import lombok.Setter;
-import lombok.ToString;
-
 /**
  * Represents a dynamic assignment of a role for HAccounts.
  *
@@ -37,8 +34,6 @@ import lombok.ToString;
  */
 @Entity
 @Cacheable
-@Setter
-@ToString(callSuper = true)
 public class HRoleAssignmentRule extends ModelEntityBase {
 
     private String policyName;
@@ -60,5 +55,24 @@ public class HRoleAssignmentRule extends ModelEntityBase {
     @JoinColumn(name = "role_to_assign_id", nullable = false)
     public HAccountRole getRoleToAssign() {
         return roleToAssign;
+    }
+
+    public void setPolicyName(String policyName) {
+        this.policyName = policyName;
+    }
+
+    public void setIdentityRegExp(String identityRegExp) {
+        this.identityRegExp = identityRegExp;
+    }
+
+    public void setRoleToAssign(HAccountRole roleToAssign) {
+        this.roleToAssign = roleToAssign;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HRoleAssignmentRule(super=" +
+                super.toString() + ", policyName=" + this.getPolicyName() +
+                ", identityRegExp=" + this.getIdentityRegExp() +
+                ", roleToAssign=" + this.getRoleToAssign() + ")";
     }
 }

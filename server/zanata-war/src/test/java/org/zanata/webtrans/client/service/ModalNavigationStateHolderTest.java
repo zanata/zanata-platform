@@ -1,18 +1,10 @@
 package org.zanata.webtrans.client.service;
 
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.Lists;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
@@ -20,12 +12,19 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.NavOption;
 
-import com.google.common.collect.Lists;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import lombok.extern.slf4j.Slf4j;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
-@Slf4j
 public class ModalNavigationStateHolderTest {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(ModalNavigationStateHolderTest.class);
     private ModalNavigationStateHolder navigationStateHolder;
 
     // @formatter:off

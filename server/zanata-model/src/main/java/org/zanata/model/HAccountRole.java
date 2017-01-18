@@ -20,8 +20,9 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.Set;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.zanata.model.type.RoleTypeType;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,15 +32,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-
-import lombok.Setter;
-
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.zanata.model.type.RoleTypeType;
+import java.io.Serializable;
+import java.util.Set;
 
 @Entity
-@Setter
 @TypeDef(name = "roleType", typeClass = RoleTypeType.class)
 public class HAccountRole implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 9177366120789064801L;
@@ -84,6 +80,26 @@ public class HAccountRole implements Serializable, HasUserFriendlyToString {
     @Override
     public String userFriendlyToString() {
         return getName();
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setConditional(boolean conditional) {
+        this.conditional = conditional;
+    }
+
+    public void setRoleType(RoleType roleType) {
+        this.roleType = roleType;
+    }
+
+    public void setGroups(Set<HAccountRole> groups) {
+        this.groups = groups;
     }
 
     public enum RoleType {

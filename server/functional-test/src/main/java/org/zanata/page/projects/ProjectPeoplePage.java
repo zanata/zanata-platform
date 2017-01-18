@@ -21,10 +21,10 @@
 
 package org.zanata.page.projects;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,9 +32,10 @@ import java.util.List;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectPeoplePage extends ProjectBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectPeoplePage.class);
     private By peopleList = By.id("people");
     public ProjectPeoplePage(WebDriver driver) {
         super(driver);

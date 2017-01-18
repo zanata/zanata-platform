@@ -2,8 +2,7 @@ package org.zanata.search;
 
 import org.hibernate.ScrollableResults;
 import org.hibernate.search.FullTextSession;
-
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.zanata.async.AsyncTaskHandle;
 
 /**
@@ -12,9 +11,10 @@ import org.zanata.async.AsyncTaskHandle;
  * @param <T>
  *            The type of object that this indexing strategy handles.
  */
-@Slf4j
 public abstract class AbstractIndexingStrategy<T> {
     protected static final int sessionClearBatchSize = 1000;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(AbstractIndexingStrategy.class);
     private ScrollableResults scrollableResults;
     private final Class<T> entityType;
 

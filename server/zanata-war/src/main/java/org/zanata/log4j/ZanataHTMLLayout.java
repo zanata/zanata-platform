@@ -20,23 +20,14 @@
  */
 package org.zanata.log4j;
 
-import com.google.common.collect.Ordering;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.log4j.HTMLLayout;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
-import org.slf4j.MDC;
+import org.slf4j.Logger;
 import org.zanata.servlet.MDCInsertingServletFilter;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.TimeZone;
 
 import static org.apache.log4j.helpers.Transform.escapeTags;
@@ -47,8 +38,10 @@ import static org.apache.log4j.helpers.Transform.escapeTags;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class ZanataHTMLLayout extends HTMLLayout {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataHTMLLayout.class);
+
     @Override
     public String format(LoggingEvent event) {
         StringBuilder builder = new StringBuilder();

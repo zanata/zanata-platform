@@ -21,28 +21,28 @@
 
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
+
 @Named("webtrans.gwt.TransMemoryMergeHandler")
 @RequestScoped
 @ActionHandlerFor(TransMemoryMerge.class)
-@Slf4j
 public class TransMemoryMergeHandler extends
         AbstractActionHandler<TransMemoryMerge, UpdateTransUnitResult> {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TransMemoryMergeHandler.class);
     @Inject
     private TransMemoryMergeService transMemoryMergeServiceImpl;
     @Inject

@@ -20,22 +20,23 @@
  */
 package org.zanata.page.administration;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
-import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 
-@Slf4j
 public class ManageUserAccountPage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ManageUserAccountPage.class);
     public static String PASSWORD_ERROR = "Passwords do not match";
 
     private By passwordField = By.id("userdetailForm:password:input:password");

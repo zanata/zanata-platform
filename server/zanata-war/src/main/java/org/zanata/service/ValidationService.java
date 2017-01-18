@@ -3,16 +3,16 @@
  */
 package org.zanata.service;
 
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
 /**
  *

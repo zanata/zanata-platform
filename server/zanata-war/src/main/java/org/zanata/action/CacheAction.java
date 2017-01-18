@@ -23,14 +23,15 @@ package org.zanata.action;
 
 import com.google.common.base.Throwables;
 import com.google.common.html.HtmlEscapers;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.infinispan.Cache;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.stats.Stats;
+import org.slf4j.Logger;
 import org.zanata.i18n.Messages;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.util.Zanata;
+
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,9 +48,10 @@ import java.util.Map;
 @CheckRole("admin")
 @Named("cacheAction")
 @ViewScoped
-@Slf4j
 public class CacheAction implements Serializable {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CacheAction.class);
     @Inject
     @Zanata
     private EmbeddedCacheManager cacheManager;

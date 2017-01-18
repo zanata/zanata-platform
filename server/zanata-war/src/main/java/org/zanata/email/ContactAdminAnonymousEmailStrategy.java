@@ -20,21 +20,26 @@
  */
 package org.zanata.email;
 
-import javax.mail.internet.InternetAddress;
-
-import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
-
-import org.zanata.i18n.Messages;
-
 import com.google.common.base.Optional;
+import javaslang.collection.Map;
+import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
 
-@RequiredArgsConstructor
+import javax.mail.internet.InternetAddress;
+
 public class ContactAdminAnonymousEmailStrategy extends EmailStrategy {
     private final String ipAddress;
     private final String userSubject;
     private final String htmlMessage;
+
+    @java.beans.ConstructorProperties({ "ipAddress", "userSubject",
+            "htmlMessage" })
+    public ContactAdminAnonymousEmailStrategy(String ipAddress,
+            String userSubject, String htmlMessage) {
+        this.ipAddress = ipAddress;
+        this.userSubject = userSubject;
+        this.htmlMessage = htmlMessage;
+    }
 
     @Override
     public String getBodyResourceName() {

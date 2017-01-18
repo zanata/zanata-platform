@@ -20,24 +20,11 @@
  */
 package org.zanata.file;
 
-import static org.zanata.file.DocumentUploadUtil.getInputStream;
-import static org.zanata.file.DocumentUploadUtil.isSinglePart;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
-import javax.annotation.Nonnull;
-import javax.enterprise.context.Dependent;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.io.FilenameUtils;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -65,16 +52,27 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Strings;
+import javax.annotation.Nonnull;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+
+import static org.zanata.file.DocumentUploadUtil.getInputStream;
+import static org.zanata.file.DocumentUploadUtil.isSinglePart;
 
 //TODO damason: add thorough unit testing
-@Slf4j
 @Dependent
 @Named("sourceDocumentUploader")
 public class SourceDocumentUpload {
 
     private static final HLocale NULL_LOCALE = null;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(SourceDocumentUpload.class);
 
     @Inject
     private DocumentUploadUtil util;

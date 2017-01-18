@@ -21,8 +21,6 @@
 
 package org.zanata.model.type;
 
-import lombok.Getter;
-
 /**
  * Request type with single char
  *
@@ -35,7 +33,6 @@ public enum RequestType {
     PROJECT("P"),
     PROJECT_LOCALE("PL");
 
-    @Getter
     private final String abbr;
 
     RequestType(String abbr) {
@@ -53,5 +50,9 @@ public enum RequestType {
             default:
                 throw new IllegalArgumentException(abbr);
         }
+    }
+
+    public String getAbbr() {
+        return this.abbr;
     }
 }

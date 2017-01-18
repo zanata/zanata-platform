@@ -1,7 +1,5 @@
 package org.zanata.dao;
 
-import java.util.List;
-
 import com.google.common.collect.Lists;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -9,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.GlossarySortField;
 import org.zanata.common.LocaleId;
@@ -17,14 +16,16 @@ import org.zanata.model.HGlossaryTerm;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.util.GlossaryUtil;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@Slf4j
 public class GlossaryDAOTest extends ZanataDbunitJpaTest {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GlossaryDAOTest.class);
     private GlossaryDAO dao;
 
     @Override

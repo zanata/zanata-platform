@@ -20,25 +20,14 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
-
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.dao.ProjectMemberDAO;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.ProjectMemberDAO;
 import org.zanata.dao.VersionGroupDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
@@ -55,11 +44,17 @@ import org.zanata.ui.InMemoryListFilter;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.ComparatorUtil;
 import org.zanata.util.StatisticsUtil;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
-import lombok.Getter;
-import lombok.Setter;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -95,20 +90,14 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     @Inject
     private LocaleDAO localeDAO;
 
-    @Getter
-    @Setter
     private String slug;
 
-    @Getter
     private boolean pageRendered = false;
 
-    @Getter
     private HLocale selectedLocale;
 
-    @Getter
     private HProjectIteration selectedVersion;
 
-    @Getter
     private WordStatistic overallStatistic;
 
     private List<HLocale> activeLocales;
@@ -123,7 +112,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     private final Map<Long, WordStatistic> projectStats = Maps.newHashMap();
 
-    @Getter
     private SortingType projectSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
                     SortingType.SortOption.HOURS,
@@ -136,7 +124,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     private final VersionComparator versionComparator = new VersionComparator(
             getProjectSortingList());
 
-    @Getter
     private final AbstractListFilter<HLocale> projectTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
                 @Override
@@ -153,7 +140,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                 }
             };
 
-    @Getter
     private final AbstractListFilter<HLocale> languageTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
                 @Override
@@ -169,7 +155,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                                     elem.retrieveDisplayName(), filter);
                 }
             };
-    @Getter
     private final AbstractListFilter<HProjectIteration> languageTabVersionFilter =
             new InMemoryListFilter<HProjectIteration>() {
                 @Override
@@ -186,7 +171,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                 }
             };
 
-    @Getter
     private final AbstractListFilter<HProjectIteration> projectTabVersionFilter =
             new InMemoryListFilter<HProjectIteration>() {
                 @Override
@@ -210,10 +194,53 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         this.pageRendered = pageRendered;
     }
 
+    public String getSlug() {
+        return this.slug;
+    }
+
+    public boolean isPageRendered() {
+        return this.pageRendered;
+    }
+
+    public HLocale getSelectedLocale() {
+        return this.selectedLocale;
+    }
+
+    public HProjectIteration getSelectedVersion() {
+        return this.selectedVersion;
+    }
+
+    public WordStatistic getOverallStatistic() {
+        return this.overallStatistic;
+    }
+
+    public SortingType getProjectSortingList() {
+        return this.projectSortingList;
+    }
+
+    public AbstractListFilter<HLocale> getProjectTabLanguageFilter() {
+        return this.projectTabLanguageFilter;
+    }
+
+    public AbstractListFilter<HLocale> getLanguageTabLanguageFilter() {
+        return this.languageTabLanguageFilter;
+    }
+
+    public AbstractListFilter<HProjectIteration> getLanguageTabVersionFilter() {
+        return this.languageTabVersionFilter;
+    }
+
+    public AbstractListFilter<HProjectIteration> getProjectTabVersionFilter() {
+        return this.projectTabVersionFilter;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
     private class LanguageComparator implements Comparator<HLocale> {
         private SortingType sortingType;
 
-        @Setter
         private Long selectedVersionId;
 
         public LanguageComparator(SortingType sortingType) {
@@ -265,12 +292,15 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
             }
             return 0;
         }
+
+        public void setSelectedVersionId(Long selectedVersionId) {
+            this.selectedVersionId = selectedVersionId;
+        }
     }
 
     private class VersionComparator implements Comparator<HProjectIteration> {
         private SortingType sortingType;
 
-        @Setter
         private LocaleId selectedLocaleId;
 
         public VersionComparator(SortingType sortingType) {
@@ -321,6 +351,10 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                         o1.getProject().getName(), o2.getProject().getName());
             }
             return 0;
+        }
+
+        public void setSelectedLocaleId(LocaleId selectedLocaleId) {
+            this.selectedLocaleId = selectedLocaleId;
         }
     }
 

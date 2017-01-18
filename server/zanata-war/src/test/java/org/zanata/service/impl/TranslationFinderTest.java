@@ -1,6 +1,5 @@
 package org.zanata.service.impl;
 
-import lombok.Data;
 import org.assertj.core.api.Condition;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -392,7 +391,6 @@ public class TranslationFinderTest {
         }
     }
 
-    @Data
     private static class Execution {
         // including this field causes Lombok @ToString to include getMatch()
         @SuppressWarnings("unused")
@@ -410,6 +408,20 @@ public class TranslationFinderTest {
         final boolean matchingProject;
         /** Whether there should be a translation with matching doc id */
         final boolean matchingDocument;
+
+        @java.beans.ConstructorProperties({ "checkContext", "checkProject",
+                "checkDocument", "matchingContext", "matchingProject",
+                "matchingDocument" })
+        public Execution(boolean checkContext, boolean checkProject,
+                boolean checkDocument, boolean matchingContext,
+                boolean matchingProject, boolean matchingDocument) {
+            this.checkContext = checkContext;
+            this.checkProject = checkProject;
+            this.checkDocument = checkDocument;
+            this.matchingContext = matchingContext;
+            this.matchingProject = matchingProject;
+            this.matchingDocument = matchingDocument;
+        }
 
         /** Include expectMatch() in toString() */
         String getMatch() {
@@ -446,6 +458,86 @@ public class TranslationFinderTest {
         /** document of textflow to search for */
         String getDocument() {
             return matchingDocument ? "/same/document0" : "/different/document";
+        }
+
+        public boolean isCheckContext() {
+            return this.checkContext;
+        }
+
+        public boolean isCheckProject() {
+            return this.checkProject;
+        }
+
+        public boolean isCheckDocument() {
+            return this.checkDocument;
+        }
+
+        public boolean isMatchingContext() {
+            return this.matchingContext;
+        }
+
+        public boolean isMatchingProject() {
+            return this.matchingProject;
+        }
+
+        public boolean isMatchingDocument() {
+            return this.matchingDocument;
+        }
+
+        public void setMatch(String match) {
+            this.match = match;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof Execution)) return false;
+            final Execution other =
+                    (Execution) o;
+            if (!other.canEqual((Object) this)) return false;
+            final Object this$match = this.getMatch();
+            final Object other$match = other.getMatch();
+            if (this$match == null ? other$match != null :
+                    !this$match.equals(other$match)) return false;
+            if (this.isCheckContext() != other.isCheckContext()) return false;
+            if (this.isCheckProject() != other.isCheckProject()) return false;
+            if (this.isCheckDocument() != other.isCheckDocument()) return false;
+            if (this.isMatchingContext() != other.isMatchingContext())
+                return false;
+            if (this.isMatchingProject() != other.isMatchingProject())
+                return false;
+            if (this.isMatchingDocument() != other.isMatchingDocument())
+                return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $match = this.getMatch();
+            result = result * PRIME + ($match == null ? 43 : $match.hashCode());
+            result = result * PRIME + (this.isCheckContext() ? 79 : 97);
+            result = result * PRIME + (this.isCheckProject() ? 79 : 97);
+            result = result * PRIME + (this.isCheckDocument() ? 79 : 97);
+            result = result * PRIME + (this.isMatchingContext() ? 79 : 97);
+            result = result * PRIME + (this.isMatchingProject() ? 79 : 97);
+            result = result * PRIME + (this.isMatchingDocument() ? 79 : 97);
+            return result;
+        }
+
+        protected boolean canEqual(Object other) {
+            return other instanceof Execution;
+        }
+
+        public String toString() {
+            return "org.zanata.service.impl.TranslationFinderTest.Execution(match=" +
+                    this.getMatch() + ", checkContext=" +
+                    this.isCheckContext() +
+                    ", checkProject=" + this.isCheckProject() +
+                    ", checkDocument=" +
+                    this.isCheckDocument() + ", matchingContext=" +
+                    this.isMatchingContext() + ", matchingProject=" +
+                    this.isMatchingProject() + ", matchingDocument=" +
+                    this.isMatchingDocument() + ")";
         }
     }
 }

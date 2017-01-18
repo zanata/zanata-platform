@@ -23,7 +23,7 @@ package org.zanata.adapter;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.zanata.adapter.properties.PropReader;
 import org.zanata.adapter.properties.PropWriter;
 import org.zanata.common.ContentState;
@@ -50,12 +50,13 @@ import java.net.URL;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class GenericPropertiesAdapter implements FileFormatAdapter {
 
     public static final String ISO_8859_1 = Charsets.ISO_8859_1.name();
 
     public static final String UTF_8 = Charsets.UTF_8.name();
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GenericPropertiesAdapter.class);
 
     private final PropWriter.CHARSET charset;
 

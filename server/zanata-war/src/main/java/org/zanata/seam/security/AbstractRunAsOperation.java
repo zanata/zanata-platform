@@ -20,14 +20,14 @@
  */
 package org.zanata.seam.security;
 
-import java.security.Principal;
-import java.security.acl.Group;
-import javax.security.auth.Subject;
-
 import org.zanata.security.Identity;
 import org.zanata.security.SimpleGroup;
 import org.zanata.security.SimplePrincipal;
 import org.zanata.security.ZanataIdentity;
+
+import javax.security.auth.Subject;
+import java.security.Principal;
+import java.security.acl.Group;
 
 /**
  * @author Patrick Huang <a

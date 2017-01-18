@@ -29,16 +29,18 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class StatementWrapper implements InvocationHandler {
+    @java.beans.ConstructorProperties({ "statement", "connectionProxy" })
+    private StatementWrapper(Statement statement, Connection connectionProxy) {
+        this.statement = statement;
+        this.connectionProxy = connectionProxy;
+    }
+
     public static Statement
             wrap(Statement statement, Connection connectionProxy) {
         if (Proxy.isProxyClass(statement.getClass())

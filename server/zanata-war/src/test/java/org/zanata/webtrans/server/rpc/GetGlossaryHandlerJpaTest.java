@@ -1,7 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
@@ -12,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.slf4j.Logger;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -29,16 +29,13 @@ import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.util.List;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -47,10 +44,11 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
     private static final LocaleId TARGET_LOCALE_ID = new LocaleId("zh");
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GetGlossaryHandlerJpaTest.class);
     @Inject @Any
     private GetGlossaryHandler handler;
     @Produces @Mock

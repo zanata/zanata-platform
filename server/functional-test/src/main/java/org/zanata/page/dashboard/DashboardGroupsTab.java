@@ -21,9 +21,9 @@
 
 package org.zanata.page.dashboard;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
@@ -34,9 +34,10 @@ import java.util.List;
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class DashboardGroupsTab extends BasePage {
     public static final int GROUP_NAME_COLUMN = 0;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardGroupsTab.class);
 
     private By groupTable = By.id("groupForm:groupTable");
     private By createGroupButton = By.id("create-group-link");

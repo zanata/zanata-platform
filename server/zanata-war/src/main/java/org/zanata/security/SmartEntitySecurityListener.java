@@ -1,15 +1,14 @@
 package org.zanata.security;
 
-import java.util.Arrays;
-import java.util.List;
+import org.zanata.annotation.EntityRestrict;
+import org.zanata.util.Contexts;
 
 import javax.persistence.PostLoad;
 import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
-
-import org.zanata.annotation.EntityRestrict;
-import org.zanata.util.Contexts;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Disable permission checking when security is disabled, which solves the

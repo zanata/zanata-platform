@@ -20,16 +20,15 @@
  */
 package org.zanata.util;
 
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.HttpMethod;
-import javax.ws.rs.core.MultivaluedMap;
-
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.spi.HttpRequest;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.core.MultivaluedMap;
+import java.util.List;
 
 /**
  * Utility class for HTTP related methods.

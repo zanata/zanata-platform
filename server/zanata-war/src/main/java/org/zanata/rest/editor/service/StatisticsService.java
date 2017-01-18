@@ -20,33 +20,28 @@
  */
 package org.zanata.rest.editor.service;
 
-import java.lang.reflect.Type;
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-
+import com.google.common.collect.Lists;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.util.GenericType;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
-import org.zanata.rest.service.URIHelper;
 import org.zanata.rest.editor.service.resource.StatisticResource;
+import org.zanata.rest.service.URIHelper;
 import org.zanata.util.StatisticsUtil;
 
-import com.google.common.collect.Lists;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+import java.lang.reflect.Type;
+import java.util.List;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -54,12 +49,18 @@ import lombok.NoArgsConstructor;
 @RequestScoped
 @Named("editor.statisticService")
 @Path(StatisticResource.SERVICE_PATH)
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Transactional(readOnly = true)
 public class StatisticsService implements StatisticResource {
     @Inject
     private DocumentDAO documentDAO;
+
+    @java.beans.ConstructorProperties({ "documentDAO" })
+    protected StatisticsService(DocumentDAO documentDAO) {
+        this.documentDAO = documentDAO;
+    }
+
+    public StatisticsService() {
+    }
 
     @Override
     public Response getDocumentStatistics(

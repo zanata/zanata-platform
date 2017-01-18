@@ -21,23 +21,21 @@
 package org.zanata.action;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.zanata.model.HAccount;
+import org.zanata.rest.dto.DTOUtil;
+import org.zanata.rest.dto.User;
+import org.zanata.rest.editor.dto.Permission;
+import org.zanata.rest.editor.service.UserService;
+import org.zanata.seam.framework.EntityHome;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.zanata.rest.dto.DTOUtil;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.rest.dto.User;
-import org.zanata.rest.editor.dto.Permission;
-import org.zanata.rest.editor.service.UserService;
-import org.zanata.model.HAccount;
-import org.zanata.seam.framework.EntityHome;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
-
 import java.io.Serializable;
 
 /**
@@ -47,7 +45,6 @@ import java.io.Serializable;
 @RequestScoped
 @Model
 @Transactional
-@Slf4j
 public class AuthenticatedAccountHome extends EntityHome<HAccount>
         implements Serializable {
 
@@ -55,6 +52,8 @@ public class AuthenticatedAccountHome extends EntityHome<HAccount>
     *
     */
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(AuthenticatedAccountHome.class);
 
     @Inject
     @Authenticated

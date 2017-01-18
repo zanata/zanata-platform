@@ -1,14 +1,17 @@
 package org.zanata.rest.service;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import com.github.huangp.entityunit.entity.EntityMakerBuilder;
+import com.github.huangp.entityunit.maker.FixedValueMaker;
+import com.google.common.collect.Sets;
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import org.hibernate.Session;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.zanata.PerformanceProfiling;
 import org.zanata.SlowTest;
 import org.zanata.ZanataJpaTest;
@@ -25,21 +28,18 @@ import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
-import com.github.huangp.entityunit.entity.EntityMakerBuilder;
-import com.github.huangp.entityunit.maker.FixedValueMaker;
-import com.google.common.collect.Sets;
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.test.CdiUnitRunner;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.util.HashSet;
+import java.util.Set;
 
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 public class ResourceUtilsJpaTest extends ZanataJpaTest {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ResourceUtilsJpaTest.class);
     @Inject
     private ResourceUtils resourceUtils;
 

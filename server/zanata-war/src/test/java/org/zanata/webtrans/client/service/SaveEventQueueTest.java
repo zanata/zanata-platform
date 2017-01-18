@@ -1,24 +1,25 @@
 package org.zanata.webtrans.client.service;
 
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.shared.model.TransUnitId;
-import com.google.common.collect.Lists;
 
-import lombok.extern.slf4j.Slf4j;
-import static org.hamcrest.MatcherAssert.*;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class SaveEventQueueTest {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(SaveEventQueueTest.class);
     private SaveEventQueue queue;
 
     @Before

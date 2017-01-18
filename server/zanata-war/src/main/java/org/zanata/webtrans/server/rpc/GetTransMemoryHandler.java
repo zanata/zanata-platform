@@ -20,15 +20,9 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.webtrans.server.ActionHandlerFor;
@@ -37,13 +31,19 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
+
 @Named("webtrans.gwt.GetTransMemoryHandler")
 @RequestScoped
 @ActionHandlerFor(GetTranslationMemory.class)
-@Slf4j
 public class GetTransMemoryHandler extends
         AbstractActionHandler<GetTranslationMemory, GetTranslationMemoryResult> {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GetTransMemoryHandler.class);
     @Inject
     private ZanataIdentity identity;
 

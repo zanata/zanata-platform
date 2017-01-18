@@ -20,18 +20,20 @@
  */
 package org.zanata.page.googleaccount;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.AbstractPage;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class GoogleManagePermissionsPage extends AbstractPage {
+
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(GoogleManagePermissionsPage.class);
 
     public GoogleManagePermissionsPage(WebDriver driver) {
         super(driver);

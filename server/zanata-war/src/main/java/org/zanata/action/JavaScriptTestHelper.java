@@ -20,7 +20,7 @@
  */
 package org.zanata.action;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
@@ -31,7 +31,6 @@ import javax.inject.Named;
 
 @Named("javaScriptTestHelper")
 @Dependent
-@Slf4j
 public class JavaScriptTestHelper {
     private final static String propName = "zanata.javaScriptTestHelper";
 
@@ -42,6 +41,8 @@ public class JavaScriptTestHelper {
             "  console.error('error stack: ' + e.error.stack.toString());\n" +
             "});\n" +
             "</script>\n";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(JavaScriptTestHelper.class);
 
     public String getHeadScript() {
         if (Boolean.getBoolean(propName)) {

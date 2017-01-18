@@ -20,8 +20,6 @@
  */
 package org.zanata.async.handle;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.zanata.async.AsyncTaskHandle;
 
 /**
@@ -29,22 +27,43 @@ import org.zanata.async.AsyncTaskHandle;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class CopyTransTaskHandle extends AsyncTaskHandle<Void> {
-    @Getter
-    @Setter
     private String cancelledBy;
 
-    @Getter
-    @Setter
     private long cancelledTime;
 
-    @Getter
-    @Setter
     private String triggeredBy;
 
-    @Getter
     private boolean prepared;
 
     public void setPrepared() {
         this.prepared = true;
+    }
+
+    public String getCancelledBy() {
+        return this.cancelledBy;
+    }
+
+    public long getCancelledTime() {
+        return this.cancelledTime;
+    }
+
+    public String getTriggeredBy() {
+        return this.triggeredBy;
+    }
+
+    public boolean isPrepared() {
+        return this.prepared;
+    }
+
+    public void setCancelledBy(String cancelledBy) {
+        this.cancelledBy = cancelledBy;
+    }
+
+    public void setCancelledTime(long cancelledTime) {
+        this.cancelledTime = cancelledTime;
+    }
+
+    public void setTriggeredBy(String triggeredBy) {
+        this.triggeredBy = triggeredBy;
     }
 }

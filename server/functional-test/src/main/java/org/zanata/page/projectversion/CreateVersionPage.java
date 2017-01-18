@@ -21,21 +21,22 @@
 package org.zanata.page.projectversion;
 
 import com.google.common.base.Function;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 public class CreateVersionPage extends BasePage {
 
     public final static String VALIDATION_ERROR =
             "must start and end with letter or number, and contain only " +
                     "letters, numbers, periods, underscores and hyphens.";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CreateVersionPage.class);
 
     public By projectVersionID = By.id("create-version-form:slug:input:slug");
     private By projectTypeSelection = By.id("create-version-form:project-type");

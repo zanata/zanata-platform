@@ -20,20 +20,22 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.*;
-
-import net.customware.gwt.dispatch.server.*;
-import net.customware.gwt.dispatch.shared.*;
-
-import org.zanata.service.*;
-import org.zanata.webtrans.server.*;
-import org.zanata.webtrans.shared.model.*;
-import org.zanata.webtrans.shared.model.ValidationAction.*;
-import org.zanata.webtrans.shared.rpc.*;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
+import org.zanata.service.ValidationService;
+import org.zanata.webtrans.server.ActionHandlerFor;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.ValidationAction;
+import org.zanata.webtrans.shared.model.ValidationAction.State;
+import org.zanata.webtrans.shared.model.ValidationId;
+import org.zanata.webtrans.shared.rpc.GetValidationRulesAction;
+import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.Collection;
+import java.util.HashMap;
 
 /**
  *

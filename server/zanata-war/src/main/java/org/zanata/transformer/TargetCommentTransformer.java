@@ -1,9 +1,9 @@
 package org.zanata.transformer;
 
+import com.google.common.base.Objects;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HasSimpleComment;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
-import com.google.common.base.Objects;
 
 /**
  * @author Patrick Huang <a

@@ -20,22 +20,13 @@
  */
 package org.zanata.service.impl;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Future;
-
-import javax.annotation.Nonnull;
-
+import com.google.common.base.Optional;
+import com.google.common.base.Stopwatch;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
@@ -60,9 +51,15 @@ import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
 import org.zanata.util.TranslationUtil;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Maps;
+import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Future;
 
 import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetStateChange;
 import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
@@ -76,10 +73,11 @@ import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
  */
 @Named("mergeTranslationsServiceImpl")
 @RequestScoped
-@Slf4j
 // Not @Transactional, because we use runInTransaction
 public class MergeTranslationsServiceImpl implements MergeTranslationsService {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(MergeTranslationsServiceImpl.class);
     @Inject
     private ProjectIterationDAO projectIterationDAO;
 

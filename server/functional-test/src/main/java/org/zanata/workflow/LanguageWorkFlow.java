@@ -20,15 +20,16 @@
  */
 package org.zanata.workflow;
 
-import java.util.List;
-
+import org.slf4j.Logger;
 import org.zanata.page.languages.LanguagePage;
 import org.zanata.page.languages.LanguagesPage;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
-@Slf4j
 public class LanguageWorkFlow extends AbstractWebWorkFlow {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(LanguageWorkFlow.class);
 
     public LanguagePage addLanguageAndJoin(String localeId) {
 

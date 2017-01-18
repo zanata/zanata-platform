@@ -1,13 +1,11 @@
 package org.zanata.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.collect.Lists;
 import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
-import javax.inject.Inject;
-
 import org.hibernate.persister.entity.EntityPersister;
+import org.slf4j.Logger;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.events.ProjectIterationUpdate;
@@ -16,9 +14,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.SlugEntityBase;
 import org.zanata.service.IndexingService;
-import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
-import com.google.common.collect.Lists;
 
 /**
  * This class is a hibernate event listener which listens on post commit events
@@ -34,9 +30,10 @@ import com.google.common.collect.Lists;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class SlugEntityUpdatedListener implements PostUpdateEventListener {
     private static final long serialVersionUID = -1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(SlugEntityUpdatedListener.class);
 
     private static Integer slugFieldIndexInProject;
     private static Integer slugFieldIndexInIteration;

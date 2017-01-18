@@ -20,19 +20,11 @@
  */
 package org.zanata.service.impl;
 
-import java.util.List;
-import java.util.concurrent.Future;
-
-import javax.annotation.Nonnull;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
+import com.google.common.base.Stopwatch;
 import com.google.common.base.Throwables;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
+import org.slf4j.Logger;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.CopyTransTaskHandle;
@@ -49,17 +41,19 @@ import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationStateCache;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Stopwatch;
+import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.concurrent.Future;
 
 @RequestScoped
-@Slf4j
-@AllArgsConstructor
-@NoArgsConstructor
 // Not @Transactional, because we use CopyTransWorkFactory.runCopyTransInNewTx
 public class CopyTransServiceImpl implements CopyTransService {
 
     private static final int COPY_TRANS_BATCH_SIZE = 20;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CopyTransServiceImpl.class);
 
     @Inject
     private LocaleService localeServiceImpl;
@@ -75,6 +69,27 @@ public class CopyTransServiceImpl implements CopyTransService {
     private TranslationStateCache translationStateCacheImpl;
     @Inject
     private TextFlowDAO textFlowDAO;
+
+    @java.beans.ConstructorProperties({ "localeServiceImpl", "projectDAO",
+            "documentDAO", "copyTransWorkFactory", "textFlowTargetDAO",
+            "translationStateCacheImpl", "textFlowDAO" })
+    public CopyTransServiceImpl(LocaleService localeServiceImpl,
+            ProjectDAO projectDAO, DocumentDAO documentDAO,
+            CopyTransWorkFactory copyTransWorkFactory,
+            TextFlowTargetDAO textFlowTargetDAO,
+            TranslationStateCache translationStateCacheImpl,
+            TextFlowDAO textFlowDAO) {
+        this.localeServiceImpl = localeServiceImpl;
+        this.projectDAO = projectDAO;
+        this.documentDAO = documentDAO;
+        this.copyTransWorkFactory = copyTransWorkFactory;
+        this.textFlowTargetDAO = textFlowTargetDAO;
+        this.translationStateCacheImpl = translationStateCacheImpl;
+        this.textFlowDAO = textFlowDAO;
+    }
+
+    public CopyTransServiceImpl() {
+    }
 
     /**
      * Copies previous matching translations for the given locale into a

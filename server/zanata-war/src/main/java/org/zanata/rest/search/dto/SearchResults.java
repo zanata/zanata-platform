@@ -21,8 +21,6 @@
 
 package org.zanata.rest.search.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -35,14 +33,30 @@ import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-@AllArgsConstructor
 public class SearchResults implements Serializable {
-    @Getter
     public int totalCount;
 
-    @Getter
     public List<SearchResult> results;
 
-    @Getter
     private SearchResult.SearchResultType type;
+
+    @java.beans.ConstructorProperties({ "totalCount", "results", "type" })
+    public SearchResults(int totalCount, List<SearchResult> results,
+            SearchResult.SearchResultType type) {
+        this.totalCount = totalCount;
+        this.results = results;
+        this.type = type;
+    }
+
+    public int getTotalCount() {
+        return this.totalCount;
+    }
+
+    public List<SearchResult> getResults() {
+        return this.results;
+    }
+
+    public SearchResult.SearchResultType getType() {
+        return this.type;
+    }
 }

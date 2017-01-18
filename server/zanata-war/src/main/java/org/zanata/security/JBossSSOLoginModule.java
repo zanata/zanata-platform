@@ -20,8 +20,15 @@
  */
 package org.zanata.security;
 
-import java.io.IOException;
-import java.util.Map;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.slf4j.Logger;
+import org.zanata.util.HashUtil;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
@@ -32,17 +39,8 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.zanata.util.HashUtil;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Login Module that works for JBoss SSO. The current implementation uses the
@@ -52,9 +50,10 @@ import org.zanata.util.HashUtil;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class JBossSSOLoginModule implements LoginModule {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(JBossSSOLoginModule.class);
     private CallbackHandler callbackHandler;
     private Subject subject;
     private Map<String, ?> options;

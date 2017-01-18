@@ -20,11 +20,11 @@
  */
 package org.zanata.action;
 
-import java.util.List;
-import java.util.Map;
-
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Describes all operations necessary to manipulate language list settings.

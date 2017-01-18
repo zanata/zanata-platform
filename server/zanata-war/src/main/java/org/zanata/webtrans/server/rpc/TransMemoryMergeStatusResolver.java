@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.server.rpc;
 
+import com.google.common.base.Objects;
 import org.zanata.common.ContentState;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
@@ -28,7 +29,6 @@ import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
-import com.google.common.base.Objects;
 
 /**
  * This is a stateful class and needs to create new instance each time to

@@ -20,17 +20,9 @@
  */
 package org.zanata.service.impl;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import com.google.common.collect.Lists;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.VersionGroupJoinAction;
 import org.zanata.common.LocaleId;
@@ -52,9 +44,13 @@ import org.zanata.seam.security.IdentityManager;
 import org.zanata.service.EmailService;
 
 import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.mail.internet.InternetAddress;
-
-import com.google.common.collect.Lists;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.zanata.email.Addresses.getAddresses;
 import static org.zanata.email.Addresses.getLocaleMemberAddresses;
@@ -65,10 +61,11 @@ import static org.zanata.email.Addresses.getLocaleMemberAddresses;
 
 @Named("emailServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class EmailServiceImpl implements EmailService {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(EmailServiceImpl.class);
     @Inject
     private EmailBuilder emailBuilder;
 

@@ -20,15 +20,7 @@
  */
 package org.zanata.rest.editor.service;
 
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-
 import org.apache.commons.lang.StringUtils;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
@@ -38,6 +30,13 @@ import org.zanata.rest.editor.dto.TransUnit;
 import org.zanata.rest.editor.dto.TransUnits;
 import org.zanata.rest.editor.service.resource.TransUnitResource;
 import org.zanata.service.LocaleService;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

@@ -20,19 +20,12 @@
  */
 package org.zanata.util;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
@@ -40,13 +33,18 @@ import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.FluentWait;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.slf4j.Logger;
 import org.zanata.page.WebDriverFactory;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
-@Slf4j
 public class WebElementUtil {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(WebElementUtil.class);
+
     private WebElementUtil() {
     }
 

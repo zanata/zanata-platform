@@ -20,6 +20,10 @@
  */
 package org.zanata.service.impl;
 
+import org.zanata.service.FileSystemService;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -27,10 +31,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Properties;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
-import org.zanata.service.FileSystemService;
 
 /**
  * Default implementation of the File System Service, offering various file

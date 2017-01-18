@@ -20,34 +20,22 @@
  */
 package org.zanata.model;
 
-import java.util.Date;
+import com.google.common.annotations.VisibleForTesting;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.search.annotations.Field;
+import org.slf4j.Logger;
+import org.zanata.model.validator.Slug;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
-
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.search.annotations.Field;
-import org.zanata.model.validator.Slug;
-import com.google.common.annotations.VisibleForTesting;
+import java.util.Date;
 
 @MappedSuperclass
-@ToString(callSuper = true)
 @Access(AccessType.FIELD)
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Slf4j
 public abstract class SlugEntityBase extends ModelEntityBase {
 
     /**
@@ -57,6 +45,8 @@ public abstract class SlugEntityBase extends ModelEntityBase {
     private static final String DELETED_SLUG_SUFFIX = "_.-";
 
     private static final long serialVersionUID = -1911540675412928681L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(SlugEntityBase.class);
 
     @NaturalId(mutable = true)
     @Size(min = 1, max = 40)
@@ -64,6 +54,14 @@ public abstract class SlugEntityBase extends ModelEntityBase {
     @NotNull
     @Field
     private String slug;
+
+    @java.beans.ConstructorProperties({ "slug" })
+    public SlugEntityBase(String slug) {
+        this.slug = slug;
+    }
+
+    public SlugEntityBase() {
+    }
 
     /**
      * If the slug entity is set to obsolete (soft delete), we need to recycle
@@ -96,5 +94,18 @@ public abstract class SlugEntityBase extends ModelEntityBase {
     protected String deletedSlugSuffix() {
         int timeSuffix = new Date().hashCode();
         return DELETED_SLUG_SUFFIX + timeSuffix;
+    }
+
+    public String getSlug() {
+        return this.slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public String toString() {
+        return "org.zanata.model.SlugEntityBase(super=" + super.toString() +
+                ", slug=" + this.getSlug() + ")";
     }
 }

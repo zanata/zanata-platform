@@ -20,10 +20,10 @@
  */
 package org.zanata.page.dashboard;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.projects.CreateProjectPage;
 
 import java.util.List;
@@ -31,9 +31,10 @@ import java.util.List;
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class DashboardProjectsTab extends DashboardBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardProjectsTab.class);
     private By maintainedProjectsList = By.id("maintainedProjects");
     private By createProjectLink = By.id("create-project-link");
 

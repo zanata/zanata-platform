@@ -20,12 +20,12 @@
  */
 package org.zanata.service;
 
-import java.util.List;
-
 import org.zanata.model.HTextFlow;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.search.FilterConstraints;
+
+import java.util.List;
 
 /**
  * Provides methods to retrieve filtered lists of text flows

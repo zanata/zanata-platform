@@ -20,8 +20,9 @@
  */
 package org.zanata.ui;
 
-import javax.inject.Named;
 import org.zanata.util.StatisticsUtil;
+
+import javax.inject.Named;
 
 /**
  * Handles formatting of statistic bar for remaining hours and percentage

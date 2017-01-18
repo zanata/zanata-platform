@@ -1,29 +1,11 @@
 package org.zanata.util;
 
-import static org.zanata.model.HAccountRole.RoleType.MANUAL;
-import static org.zanata.model.HApplicationConfiguration.KEY_ALLOW_ANONYMOUS_USER;
-
-import java.util.List;
-
-import javax.annotation.Nonnull;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Observes;
-
 import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-
-import org.apache.deltaspike.cdise.api.ContextControl;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
-import javax.inject.Named;
-import javax.servlet.ServletContext;
-
-import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.AccountDAO;
@@ -35,6 +17,17 @@ import org.zanata.model.HAccountRole;
 import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.HLocale;
 
+import javax.annotation.Nonnull;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.ServletContext;
+import java.util.List;
+
+import static org.zanata.model.HAccountRole.RoleType.MANUAL;
+import static org.zanata.model.HApplicationConfiguration.KEY_ALLOW_ANONYMOUS_USER;
+
 /**
  * Ensures that roles 'user', 'admin' and 'translator' exist, and that there is
  * at least one admin user.
@@ -43,10 +36,11 @@ import org.zanata.model.HLocale;
  */
 @Named("essentialDataCreator")
 @ApplicationScoped
-@Slf4j
 @Exclude(ifProjectStage = ProjectStage.UnitTest.class)
 public class EssentialDataCreator {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(EssentialDataCreator.class);
     @Inject
     private ApplicationConfiguration applicationConfiguration;
 

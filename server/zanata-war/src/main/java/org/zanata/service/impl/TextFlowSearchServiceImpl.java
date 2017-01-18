@@ -20,18 +20,11 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.search.FullTextSession;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -41,15 +34,19 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.search.FilterConstraintToQuery;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author David Mason, <a
@@ -57,10 +54,11 @@ import com.google.common.collect.Lists;
  */
 @Named("textFlowSearchServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class TextFlowSearchServiceImpl implements TextFlowSearchService {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TextFlowSearchServiceImpl.class);
     @Inject
     private LocaleService localeServiceImpl;
 

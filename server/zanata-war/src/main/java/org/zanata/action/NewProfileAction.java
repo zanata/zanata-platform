@@ -20,20 +20,11 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.regex.Pattern;
-
-import lombok.extern.slf4j.Slf4j;
-import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.exception.AuthorizationException;
+import org.slf4j.Logger;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.i18n.Messages;
 import org.zanata.security.AuthenticationType;
@@ -43,6 +34,14 @@ import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
 
+import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.regex.Pattern;
+
 /**
  * This action handles new user profile creation.
  *
@@ -51,9 +50,10 @@ import org.zanata.util.UrlUtil;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class NewProfileAction extends AbstractProfileAction implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(NewProfileAction.class);
 
     @Inject
     private ZanataOpenId zanataOpenId;

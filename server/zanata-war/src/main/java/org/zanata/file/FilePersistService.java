@@ -20,10 +20,10 @@
  */
 package org.zanata.file;
 
+import org.zanata.model.HRawDocument;
+
 import java.io.File;
 import java.io.InputStream;
-
-import org.zanata.model.HRawDocument;
 
 public interface FilePersistService {
     // TODO damason: add persistRawDocumentContentFromStream(HRawDocument,

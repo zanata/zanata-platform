@@ -20,35 +20,16 @@
  */
 package org.zanata.rest.service;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.enterprise.context.RequestScoped;
-import javax.persistence.EntityManager;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.base.Optional;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.transform.ResultTransformer;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -77,8 +58,23 @@ import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.util.DateUtil;
 import org.zanata.util.StatisticsUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;
-import com.google.common.base.Optional;
-import com.google.common.collect.Maps;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang.StringUtils.abbreviate;
 
@@ -93,9 +89,10 @@ import static org.apache.commons.lang.StringUtils.abbreviate;
 @Named("statisticsServiceImpl")
 @Path(StatisticsResource.SERVICE_PATH)
 @RequestScoped
-@Slf4j
 @Transactional(readOnly = true)
 public class StatisticsServiceImpl implements StatisticsResource {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(StatisticsServiceImpl.class);
     @Inject
     private ProjectIterationDAO projectIterationDAO;
 
@@ -531,12 +528,18 @@ public class StatisticsServiceImpl implements StatisticsResource {
         return translationMatrixList;
     }
 
-    @RequiredArgsConstructor
     public static class UserMatrixResultTransformer implements
             ResultTransformer {
         private static final long serialVersionUID = 1L;
         private final EntityManager entityManager;
         private final DateTimeFormatter dateFormatter;
+
+        @java.beans.ConstructorProperties({ "entityManager", "dateFormatter" })
+        public UserMatrixResultTransformer(EntityManager entityManager,
+                DateTimeFormatter dateFormatter) {
+            this.entityManager = entityManager;
+            this.dateFormatter = dateFormatter;
+        }
 
         @Override
         public Object transformTuple(Object[] tuple, String[] aliases) {
@@ -570,13 +573,43 @@ public class StatisticsServiceImpl implements StatisticsResource {
         }
     }
 
-    @Getter
-    @RequiredArgsConstructor
     public static class UserTranslationMatrix {
         private final Date savedDate;
         private final HProjectIteration projectIteration;
         private final HLocale locale;
         private final ContentState savedState;
         private final long wordCount;
+
+        @java.beans.ConstructorProperties({ "savedDate", "projectIteration",
+                "locale", "savedState", "wordCount" })
+        public UserTranslationMatrix(Date savedDate,
+                HProjectIteration projectIteration, HLocale locale,
+                ContentState savedState, long wordCount) {
+            this.savedDate = savedDate;
+            this.projectIteration = projectIteration;
+            this.locale = locale;
+            this.savedState = savedState;
+            this.wordCount = wordCount;
+        }
+
+        public Date getSavedDate() {
+            return this.savedDate;
+        }
+
+        public HProjectIteration getProjectIteration() {
+            return this.projectIteration;
+        }
+
+        public HLocale getLocale() {
+            return this.locale;
+        }
+
+        public ContentState getSavedState() {
+            return this.savedState;
+        }
+
+        public long getWordCount() {
+            return this.wordCount;
+        }
     }
 }

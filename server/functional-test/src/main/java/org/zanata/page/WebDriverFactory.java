@@ -60,7 +60,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.util.PropertiesHolder;
 import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
 
@@ -73,7 +72,6 @@ import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
 
-@Slf4j
 public enum WebDriverFactory {
     INSTANCE;
 
@@ -84,6 +82,8 @@ public enum WebDriverFactory {
                     return new SimpleDateFormat("HH:mm:ss.SSS");
                 }
             };
+    private static final Logger log =
+            LoggerFactory.getLogger(WebDriverFactory.class);
     // can reuse, share globally
     private static ObjectMapper mapper = new ObjectMapper();
     private static final boolean useProxy = true;

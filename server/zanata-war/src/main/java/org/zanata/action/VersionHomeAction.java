@@ -21,35 +21,16 @@
  */
 package org.zanata.action;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.enterprise.inject.Model;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ViewScoped;
-import javax.validation.ConstraintViolationException;
-
+import com.google.common.base.Optional;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.richfaces.event.FileUploadEvent;
 import org.richfaces.model.UploadedFile;
-import org.zanata.dao.WebHookDAO;
-import org.zanata.events.DocumentLocaleKey;
-import org.zanata.exception.AuthorizationException;
+import org.slf4j.Logger;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
@@ -59,6 +40,9 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.WebHookDAO;
+import org.zanata.events.DocumentLocaleKey;
+import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.VirusDetectedException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.file.FilePersistService;
@@ -102,24 +86,35 @@ import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.util.TokenUtil;
 
-import com.google.common.base.Optional;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import javax.enterprise.inject.Model;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.validation.ConstraintViolationException;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Named("versionHomeAction")
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class VersionHomeAction extends AbstractSortAction implements
         Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionHomeAction.class);
 
     @Inject
     private CopyVersionManager copyVersionManager;
@@ -166,22 +161,16 @@ public class VersionHomeAction extends AbstractSortAction implements
     @Inject
     private TranslationService translationServiceImpl;
 
-    @Getter
     private String versionSlug;
 
-    @Getter
     private String projectSlug;
 
-    @Getter
     private boolean pageRendered = false;
 
-    @Getter
     private WordStatistic overallStatistic;
 
-    @Getter
     private HLocale selectedLocale;
 
-    @Getter
     private HDocument selectedDocument;
 
     @Inject
@@ -212,15 +201,12 @@ public class VersionHomeAction extends AbstractSortAction implements
 
     private HProjectIteration version;
 
-    @Getter
     private SourceFileUploadHelper sourceFileUpload =
             new SourceFileUploadHelper();
 
-    @Getter
     private TranslationFileUploadHelper translationFileUpload =
             new TranslationFileUploadHelper();
 
-    @Getter
     private SortingType documentSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
                     SortingType.SortOption.HOURS,
@@ -229,7 +215,6 @@ public class VersionHomeAction extends AbstractSortAction implements
                     SortingType.SortOption.LAST_SOURCE_UPDATE,
                     SortingType.SortOption.LAST_TRANSLATED));
 
-    @Getter
     private SortingType sourceDocumentSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
                     SortingType.SortOption.HOURS,
@@ -237,7 +222,6 @@ public class VersionHomeAction extends AbstractSortAction implements
                     SortingType.SortOption.WORDS,
                     SortingType.SortOption.LAST_SOURCE_UPDATE));
 
-    @Getter
     private SortingType settingsDocumentSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
                     SortingType.SortOption.LAST_SOURCE_UPDATE));
@@ -254,23 +238,18 @@ public class VersionHomeAction extends AbstractSortAction implements
     private final DocumentComparator settingsDocumentComparator =
             new DocumentComparator(getSettingsDocumentSortingList());
 
-    @Getter
     private final SourceDocumentFilter documentsTabDocumentFilter =
             new SourceDocumentFilter();
 
-    @Getter
     private final DocumentFilter settingsTabDocumentFilter =
             new DocumentFilter();
 
-    @Getter
     private final DocumentFilter languageTabDocumentFilter =
             new DocumentFilter();
 
-    @Getter
     @Inject
     private CopyVersionHandler copyVersionHandler;
 
-    @Getter
     private final AbstractListFilter<HIterationGroup> groupFilter =
             new InMemoryListFilter<HIterationGroup>() {
                 @Override
@@ -287,7 +266,6 @@ public class VersionHomeAction extends AbstractSortAction implements
                 }
             };
 
-    @Getter
     private final AbstractListFilter<HLocale> languageTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
                 @Override
@@ -304,7 +282,6 @@ public class VersionHomeAction extends AbstractSortAction implements
                 }
             };
 
-    @Getter
     private final AbstractListFilter<HLocale> documentsTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
                 @Override
@@ -362,14 +339,83 @@ public class VersionHomeAction extends AbstractSortAction implements
         }
     }
 
+    public String getVersionSlug() {
+        return this.versionSlug;
+    }
+
+    public String getProjectSlug() {
+        return this.projectSlug;
+    }
+
+    public boolean isPageRendered() {
+        return this.pageRendered;
+    }
+
+    public WordStatistic getOverallStatistic() {
+        return this.overallStatistic;
+    }
+
+    public HLocale getSelectedLocale() {
+        return this.selectedLocale;
+    }
+
+    public HDocument getSelectedDocument() {
+        return this.selectedDocument;
+    }
+
+    public SourceFileUploadHelper getSourceFileUpload() {
+        return this.sourceFileUpload;
+    }
+
+    public TranslationFileUploadHelper getTranslationFileUpload() {
+        return this.translationFileUpload;
+    }
+
+    public SortingType getDocumentSortingList() {
+        return this.documentSortingList;
+    }
+
+    public SortingType getSourceDocumentSortingList() {
+        return this.sourceDocumentSortingList;
+    }
+
+    public SortingType getSettingsDocumentSortingList() {
+        return this.settingsDocumentSortingList;
+    }
+
+    public SourceDocumentFilter getDocumentsTabDocumentFilter() {
+        return this.documentsTabDocumentFilter;
+    }
+
+    public DocumentFilter getSettingsTabDocumentFilter() {
+        return this.settingsTabDocumentFilter;
+    }
+
+    public DocumentFilter getLanguageTabDocumentFilter() {
+        return this.languageTabDocumentFilter;
+    }
+
+    public CopyVersionHandler getCopyVersionHandler() {
+        return this.copyVersionHandler;
+    }
+
+    public AbstractListFilter<HIterationGroup> getGroupFilter() {
+        return this.groupFilter;
+    }
+
+    public AbstractListFilter<HLocale> getLanguageTabLanguageFilter() {
+        return this.languageTabLanguageFilter;
+    }
+
+    public AbstractListFilter<HLocale> getDocumentsTabLanguageFilter() {
+        return this.documentsTabLanguageFilter;
+    }
+
     // TODO Serializable only because it's a dependent bean
-    @NoArgsConstructor
     public static class CopyVersionHandler extends CopyAction implements Serializable {
 
-        @Setter
         private String projectSlug;
 
-        @Setter
         private String versionSlug;
 
         @Inject
@@ -380,6 +426,9 @@ public class VersionHomeAction extends AbstractSortAction implements
 
         @Inject
         private FacesMessages facesMessages;
+
+        public CopyVersionHandler() {
+        }
 
         @Override
         public boolean isInProgress() {
@@ -418,6 +467,14 @@ public class VersionHomeAction extends AbstractSortAction implements
         protected CopyVersionTaskHandle getHandle() {
             return copyVersionManager.getCopyVersionProcessHandle(projectSlug,
                     versionSlug);
+        }
+
+        public void setProjectSlug(String projectSlug) {
+            this.projectSlug = projectSlug;
+        }
+
+        public void setVersionSlug(String versionSlug) {
+            this.versionSlug = versionSlug;
         }
     }
 
@@ -1155,7 +1212,6 @@ public class VersionHomeAction extends AbstractSortAction implements
     private class DocumentComparator implements Comparator<HDocument> {
         private SortingType sortingType;
 
-        @Setter
         private LocaleId selectedLocaleId;
 
         public DocumentComparator(SortingType sortingType) {
@@ -1214,12 +1270,15 @@ public class VersionHomeAction extends AbstractSortAction implements
             }
             return 0;
         }
+
+        public void setSelectedLocaleId(LocaleId selectedLocaleId) {
+            this.selectedLocaleId = selectedLocaleId;
+        }
     }
 
     private class LanguageComparator implements Comparator<HLocale> {
         private SortingType sortingType;
 
-        @Setter
         private Long selectedDocumentId;
 
         public LanguageComparator(SortingType sortingType) {
@@ -1260,13 +1319,15 @@ public class VersionHomeAction extends AbstractSortAction implements
                         o2.retrieveDisplayName());
             }
         }
+
+        public void setSelectedDocumentId(Long selectedDocumentId) {
+            this.selectedDocumentId = selectedDocumentId;
+        }
     }
 
     /**
      * Helper class to upload documents.
      */
-    @Getter
-    @Setter
     public static class SourceFileUploadHelper implements Serializable {
         private static final long serialVersionUID = 1L;
 
@@ -1284,13 +1345,67 @@ public class VersionHomeAction extends AbstractSortAction implements
         private String adapterParams = "";
 
         private String documentType;
+
+        public InputStream getFileContents() {
+            return this.fileContents;
+        }
+
+        public String getDocId() {
+            return this.docId;
+        }
+
+        public String getFileName() {
+            return this.fileName;
+        }
+
+        public String getDocumentPath() {
+            return this.documentPath;
+        }
+
+        public String getSourceLang() {
+            return this.sourceLang;
+        }
+
+        public String getAdapterParams() {
+            return this.adapterParams;
+        }
+
+        public String getDocumentType() {
+            return this.documentType;
+        }
+
+        public void setFileContents(InputStream fileContents) {
+            this.fileContents = fileContents;
+        }
+
+        public void setDocId(String docId) {
+            this.docId = docId;
+        }
+
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
+        }
+
+        public void setDocumentPath(String documentPath) {
+            this.documentPath = documentPath;
+        }
+
+        public void setSourceLang(String sourceLang) {
+            this.sourceLang = sourceLang;
+        }
+
+        public void setAdapterParams(String adapterParams) {
+            this.adapterParams = adapterParams;
+        }
+
+        public void setDocumentType(String documentType) {
+            this.documentType = documentType;
+        }
     }
 
     /**
      * Helper class to upload translation files.
      */
-    @Getter
-    @Setter
     public static class TranslationFileUploadHelper implements Serializable {
         private static final long serialVersionUID = 1L;
 
@@ -1305,5 +1420,53 @@ public class VersionHomeAction extends AbstractSortAction implements
         private boolean assignCreditToUploader = false;
 
         private String documentType;
+
+        public String getDocId() {
+            return this.docId;
+        }
+
+        public InputStream getFileContents() {
+            return this.fileContents;
+        }
+
+        public String getFileName() {
+            return this.fileName;
+        }
+
+        public boolean isMergeTranslations() {
+            return this.mergeTranslations;
+        }
+
+        public boolean isAssignCreditToUploader() {
+            return this.assignCreditToUploader;
+        }
+
+        public String getDocumentType() {
+            return this.documentType;
+        }
+
+        public void setDocId(String docId) {
+            this.docId = docId;
+        }
+
+        public void setFileContents(InputStream fileContents) {
+            this.fileContents = fileContents;
+        }
+
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
+        }
+
+        public void setMergeTranslations(boolean mergeTranslations) {
+            this.mergeTranslations = mergeTranslations;
+        }
+
+        public void setAssignCreditToUploader(boolean assignCreditToUploader) {
+            this.assignCreditToUploader = assignCreditToUploader;
+        }
+
+        public void setDocumentType(String documentType) {
+            this.documentType = documentType;
+        }
     }
 }

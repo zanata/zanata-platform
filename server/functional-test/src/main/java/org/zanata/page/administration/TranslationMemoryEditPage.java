@@ -20,18 +20,19 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 
 /**
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class TranslationMemoryEditPage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationMemoryEditPage.class);
     private By idField = By.id("tmForm:slug:input:slug");
     private By descriptionField = By.id("tmForm:description:input:description");
     private By saveButton = By.id("tmForm:save");

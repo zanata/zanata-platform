@@ -1,12 +1,9 @@
 package org.zanata.rest.editor.dto;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.annotation.Nullable;
-
-import lombok.Getter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -15,9 +12,7 @@ public class LocaleSortField implements Serializable {
     public static final String LOCALE = "localeId";
     public static final String MEMBER = "member";
 
-    @Getter
     private final String entityField;
-    @Getter
     private final boolean ascending;
 
     /**
@@ -56,5 +51,13 @@ public class LocaleSortField implements Serializable {
                 isAscending);
         }
         return null;
+    }
+
+    public String getEntityField() {
+        return this.entityField;
+    }
+
+    public boolean isAscending() {
+        return this.ascending;
     }
 }

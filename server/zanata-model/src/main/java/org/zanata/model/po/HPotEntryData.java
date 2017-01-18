@@ -20,7 +20,8 @@
  */
 package org.zanata.model.po;
 
-import java.io.Serializable;
+import org.hibernate.annotations.BatchSize;
+import org.zanata.model.HSimpleComment;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -31,11 +32,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-
-import lombok.Setter;
-
-import org.hibernate.annotations.BatchSize;
-import org.zanata.model.HSimpleComment;
+import java.io.Serializable;
 
 /**
  *
@@ -46,7 +43,6 @@ import org.zanata.model.HSimpleComment;
 @Entity
 @Cacheable
 @BatchSize(size = 20)
-@Setter
 public class HPotEntryData implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -118,5 +114,9 @@ public class HPotEntryData implements Serializable {
     @javax.persistence.Lob
     public String getReferences() {
         return references;
+    }
+
+    public void setContext(String context) {
+        this.context = context;
     }
 }

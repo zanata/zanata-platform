@@ -1,14 +1,26 @@
 package org.zanata.email;
 
-import static com.google.common.base.Charsets.UTF_8;
-import static javax.mail.Message.RecipientType.BCC;
-import static javax.mail.Message.RecipientType.TO;
-
-import java.io.StringWriter;
-import java.net.ConnectException;
-import java.util.List;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
+import com.google.common.base.Throwables;
+import javaslang.collection.HashMap;
+import javaslang.collection.Map;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
+import org.apache.velocity.runtime.log.CommonsLogLogChute;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
+import org.slf4j.Logger;
+import org.zanata.ApplicationConfiguration;
+import org.zanata.i18n.Messages;
+import org.zanata.i18n.MessagesFactory;
+import org.zanata.servlet.annotations.ServerPath;
+import org.zanata.util.HtmlUtil;
 
 import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
@@ -17,45 +29,28 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import java.io.StringWriter;
+import java.net.ConnectException;
+import java.util.List;
 
-import com.google.common.base.Throwables;
-import javaslang.collection.HashMap;
-import javaslang.collection.Map;
-import lombok.AllArgsConstructor;
-
-import lombok.extern.slf4j.Slf4j;
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.RuntimeConstants;
-import org.apache.velocity.runtime.log.CommonsLogLogChute;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.zanata.ApplicationConfiguration;
-import org.zanata.i18n.Messages;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Optional;
-import org.zanata.i18n.MessagesFactory;
-import org.zanata.servlet.annotations.ServerPath;
-import org.zanata.util.HtmlUtil;
+import static com.google.common.base.Charsets.UTF_8;
+import static javax.mail.Message.RecipientType.BCC;
 
 /**
  * Uses an instance of EmailBuilderStrategy to build an email from a Velocity
  * template and send it via the default JavaMail Transport.
  */
-@AllArgsConstructor
 
 @Named("emailBuilder")
 @javax.enterprise.context.Dependent
-@Slf4j
 public class EmailBuilder {
     public static final String MAIL_SESSION_JNDI = "mail/Default";
     // Use this if you want emails logged on stderr
     // Warning: The full message may contain sensitive information
     private static final boolean LOG_FULL_MESSAGES = false;
     private static final VelocityEngine velocityEngine = makeVelocityEngine();
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(EmailBuilder.class);
 
     public EmailBuilder() {
     }
@@ -66,6 +61,16 @@ public class EmailBuilder {
     private Context emailContext;
     @Inject
     private MessagesFactory messagesFactory;
+
+    @java.beans.ConstructorProperties({ "mailSession", "emailContext",
+            "messagesFactory" })
+    public EmailBuilder(Session mailSession,
+            Context emailContext,
+            MessagesFactory messagesFactory) {
+        this.mailSession = mailSession;
+        this.emailContext = emailContext;
+        this.messagesFactory = messagesFactory;
+    }
 
     private static VelocityEngine makeVelocityEngine() {
         VelocityEngine ve = new VelocityEngine();

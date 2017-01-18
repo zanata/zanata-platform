@@ -20,13 +20,8 @@
  */
 package org.zanata.security;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
@@ -40,9 +35,11 @@ import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.faces.FacesMessages;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
-
-import lombok.extern.slf4j.Slf4j;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
 
 /**
  * Centralizes all attempts to authenticate locally or externally.
@@ -56,8 +53,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Named("authenticationManager")
 @RequestScoped
-@Slf4j
 public class AuthenticationManager {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(AuthenticationManager.class);
     @Inject
     private ZanataIdentity identity;
 

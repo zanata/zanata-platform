@@ -1,24 +1,14 @@
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.Date;
-
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.constraints.Email;
-import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.exception.AuthorizationException;
+import org.hibernate.validator.constraints.Email;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
+import org.zanata.exception.AuthorizationException;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
 import org.zanata.model.HPerson;
@@ -29,6 +19,14 @@ import org.zanata.security.ZanataCredentials;
 import org.zanata.security.ZanataOpenId;
 import org.zanata.service.EmailService;
 import org.zanata.ui.faces.FacesMessages;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.Date;
 
 @Named("inactiveAccountAction")
 @ViewScoped
@@ -62,8 +60,6 @@ public class InactiveAccountAction implements Serializable {
     @Inject
     private AuthenticationManager authenticationManager;
 
-    @Getter
-    @Setter
     @Email
     @NotDuplicateEmail(message = "This email address is already taken.")
     @EmailDomain
@@ -151,5 +147,13 @@ public class InactiveAccountAction implements Serializable {
             return false;
         }
         return true;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

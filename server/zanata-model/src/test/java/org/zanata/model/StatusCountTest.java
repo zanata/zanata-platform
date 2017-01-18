@@ -32,7 +32,7 @@ import static org.hamcrest.Matchers.*;
  */
 public class StatusCountTest {
     @Test
-    public void lombokWorks() {
+    public void testDataMethods() {
         StatusCount statusCount = new StatusCount(ContentState.New, 1L);
 
         StatusCount other = new StatusCount(ContentState.New, 1L);

@@ -21,20 +21,19 @@
 
 package org.zanata.rest;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
+import org.jboss.resteasy.annotations.interception.HeaderDecoratorPrecedence;
+
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.Provider;
-
-import com.google.common.collect.ImmutableList;
-import org.jboss.resteasy.annotations.interception.HeaderDecoratorPrecedence;
-
-import com.google.common.base.Joiner;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static java.util.Collections.emptyList;
 import static org.apache.commons.lang.StringUtils.isEmpty;

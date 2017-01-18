@@ -20,9 +20,9 @@
  */
 package org.zanata.file;
 
-import java.io.InputStream;
-
 import org.zanata.model.HDocumentUploadPart;
+
+import java.io.InputStream;
 
 public interface UploadPartPersistService {
 

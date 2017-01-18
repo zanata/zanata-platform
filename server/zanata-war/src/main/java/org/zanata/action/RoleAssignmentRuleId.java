@@ -21,12 +21,11 @@
 
 package org.zanata.action;
 
-import java.io.Serializable;
-
 import org.apache.deltaspike.core.api.scope.ConversationGroup;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 
 import javax.annotation.Nullable;
+import java.io.Serializable;
 
 /**
  * @author Patrick Huang

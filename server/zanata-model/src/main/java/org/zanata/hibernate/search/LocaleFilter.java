@@ -20,8 +20,6 @@
  */
 package org.zanata.hibernate.search;
 
-import java.io.IOException;
-
 import org.apache.lucene.index.LeafReader;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.PostingsEnum;
@@ -31,15 +29,17 @@ import org.apache.lucene.search.Filter;
 import org.apache.lucene.util.BitDocIdSet;
 import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.FixedBitSet;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
 
 import static org.apache.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
-@Slf4j
 public class LocaleFilter extends Filter {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(LocaleFilter.class);
     private LocaleId locale;
 
     public LocaleFilter(LocaleId locale) {

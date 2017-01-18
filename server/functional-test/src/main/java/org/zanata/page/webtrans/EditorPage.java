@@ -20,24 +20,24 @@
  */
 package org.zanata.page.webtrans;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
-import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
+
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -45,8 +45,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class EditorPage extends BasePage {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(EditorPage.class);
 
     public enum Validations {
         HTML, JAVAVARIABLES, NEWLINE, POSITIONAL, PRINTF, TABS, XML
