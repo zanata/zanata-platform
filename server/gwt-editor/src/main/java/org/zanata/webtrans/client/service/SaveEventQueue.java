@@ -3,6 +3,7 @@ package org.zanata.webtrans.client.service;
 import java.util.Collection;
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.shared.model.HasTransUnitId;
@@ -188,7 +189,7 @@ public class SaveEventQueue {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this).add("id", id)
+            return MoreObjects.toStringHelper(this).add("id", id)
                     .add("verNumber", verNumber).add("isSaving", isSaving)
                     .add("newContents", newContents).toString();
         }

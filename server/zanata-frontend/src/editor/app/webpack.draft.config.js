@@ -29,9 +29,6 @@ module.exports = _.merge({}, defaultConfig, {
   }
 })
 
-// Prevent eslint running (it is the only defined preLoader)
-module.exports.module.preLoaders = []
-
 // do not minify/uglify the output
 module.exports.plugins = _.filter(module.exports.plugins,
   (plugin) => plugin.constructor.name !== 'UglifyJsPlugin')

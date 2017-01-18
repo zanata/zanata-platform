@@ -84,8 +84,8 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/project/translate/{project}/v/{version}/{document}").to("/editor/index.xhtml"))
                 .where("document").matches(".*")
 
-                .addRule(Join.path("/").to("/home.xhtml"))
-                .addRule(Join.path("/info").to("/a/more.xhtml"))
+                .addRule(Join.path("/").to("/public/home.xhtml"))
+                .addRule(Join.path("/info").to("/public/info.xhtml"))
                 .addRule(Join.path("/account/activate/{key}").to("/account/activate.xhtml"))
                 .addRule(Join.path("/account/google_password_reset_request").to("/account/google_password_reset_request.xhtml"))
                 .addRule(Join.path("/account/password_reset/{key}").to("/account/password_reset.xhtml"))
@@ -94,6 +94,8 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/account/sign_in").to("/account/login.xhtml"))
                 .addRule(Join.path("/account/register").to("/account/register.xhtml"))
                 .addRule(Join.path("/account/sign_out").to("/account/logout.xhtml"))
+                // open id return url
+                .addRule(Join.path("/openid").to("/account/openid.xhtml"))
                 .addRule(Join.path("/account/validate_email/{key}").to("/account/email_validation.xhtml"))
                 .addRule(Join.path("/admin/").to("/admin/home.xhtml"))
                 .addRule(Join.pathNonBinding("/admin/{page}").to("/admin/{page}.xhtml")).where("page").matches(".+")
@@ -127,7 +129,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
 
 
 
-                .addRule(Join.path("/profile/create").to("/profile/create_user.xhtml"))
+                .addRule(Join.path("/account/create_user").to("/account/create_user.xhtml"))
                 .addRule(Join.path("/profile/merge_account").to("/profile/merge_account.xhtml"))
 
                 .addRule(Join.path("/project/add_iteration/{projectSlug}").to("/project/add_iteration.xhtml"))

@@ -15,7 +15,7 @@ public class RunDocValidationEvent extends
     /**
      * Handler type.
      */
-    private static Type<RunDocValidationEventHandler> TYPE;
+    private static final Type<RunDocValidationEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -23,9 +23,6 @@ public class RunDocValidationEvent extends
      * @return returns the handler type
      */
     public static Type<RunDocValidationEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<RunDocValidationEventHandler>();
-        }
         return TYPE;
     }
 

@@ -2,6 +2,7 @@ package org.zanata.seam.security;
 
 import java.io.Serializable;
 import java.security.Principal;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -88,6 +89,23 @@ public class IdentityManager implements Serializable {
         ZanataIdentity.instance().checkPermission(USER_PERMISSION_NAME,
                 PERMISSION_UPDATE);
         return identityStore.grantRole(name, role);
+    }
+
+    public void grantRoles(String username, Collection<String> roles) {
+        ZanataIdentity.instance().checkPermission(USER_PERMISSION_NAME,
+                PERMISSION_UPDATE);
+        List<String> grantedRoles = getGrantedRoles(username);
+
+        for (String role : grantedRoles) {
+            if (!roles.contains(role)) {
+                revokeRole(username, role);
+            }
+        }
+        for (String role : roles) {
+            if (!grantedRoles.contains(role)) {
+                grantRole(username, role);
+            }
+        }
     }
 
     public boolean revokeRole(String name, String role) {

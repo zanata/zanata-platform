@@ -11,8 +11,8 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class ReloadUserConfigUIEvent extends
         GwtEvent<ReloadUserConfigUIHandler> {
-    public static Type<ReloadUserConfigUIHandler> TYPE =
-            new Type<ReloadUserConfigUIHandler>();
+    public static final Type<ReloadUserConfigUIHandler> TYPE =
+            new Type<>();
 
     private final MainView view;
 

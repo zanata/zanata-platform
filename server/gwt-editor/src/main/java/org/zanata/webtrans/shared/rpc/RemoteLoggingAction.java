@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 
@@ -38,7 +39,7 @@ public class RemoteLoggingAction extends AbstractWorkspaceAction<NoOpResult> {
 
     public RemoteLoggingAction addContextInfo(String contextName,
             Object contextValue) {
-        contextInfo.add(Objects.toStringHelper("")
+        contextInfo.add(MoreObjects.toStringHelper("")
                 .add(contextName, contextValue).toString());
         return this;
     }

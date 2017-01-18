@@ -1,14 +1,12 @@
 import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
 import { isEmpty, includes } from 'lodash'
+import { Button, ButtonGroup } from 'react-bootstrap'
 
 import {
-  ButtonLink,
-  ButtonRound,
   LoaderText,
   Modal,
-  Select,
-  Row
+  Select
 } from 'zanata-ui'
 
 import {
@@ -105,22 +103,21 @@ class ImportModal extends Component {
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <Row theme={{ base: {j: 'Jc(c)'} }}>
-            <ButtonLink
-              atomic={{m: 'Mend(r1)'}}
+          <ButtonGroup className='pull-right'>
+            <Button bsStyle='link'
               disabled={isUploading}
               onClick={() => handleImportFileDisplay(false)}>
               Cancel
-            </ButtonLink>
-            <ButtonRound
-              type='primary'
+            </Button>
+            <Button bsStyle='primary'
+              type='button'
               disabled={disableUpload}
               onClick={handleImportFile}>
               <LoaderText loading={isUploading} loadingText='Importing'>
                 Import
               </LoaderText>
-            </ButtonRound>
-          </Row>
+            </Button>
+          </ButtonGroup>
         </Modal.Footer>
       </Modal>)
     /* eslint-enable react/jsx-no-bind */

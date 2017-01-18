@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.ReviewCommentEvent;
 import org.zanata.webtrans.client.ui.Editor;
@@ -310,7 +311,7 @@ public class TargetContentsView extends Composite implements
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("editors", editors).toString();
+        return MoreObjects.toStringHelper(this).add("editors", editors).toString();
     }
 
     interface Styles extends CssResource {

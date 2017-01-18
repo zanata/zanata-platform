@@ -11,16 +11,16 @@
 
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var _ = require('lodash')
+var merge = require('webpack-merge')
 var defaultConfig = require('./webpack.prod.config.js')
 
-module.exports = _.merge({}, defaultConfig, {
+module.exports = merge.smart(defaultConfig, {
   devtool: 'eval',
 
-  // FRAGILE: merging, must line up with the same index or it will break
   module: {
     loaders: [
-      {},
       {
+        test: /\.css$/,
         loader: ExtractTextPlugin.extract(
           'style',
           'css?-minimize',
@@ -28,6 +28,7 @@ module.exports = _.merge({}, defaultConfig, {
         )
       },
       {
+        test: /\.less$/,
         loader: ExtractTextPlugin.extract(
           'style',
           'css?-minimize!less',
@@ -35,12 +36,8 @@ module.exports = _.merge({}, defaultConfig, {
         )
       }
     ]
-  }
+  },
+  // do not minify/uglify the output
+  plugins: _.filter(defaultConfig.plugins,
+    (plugin) => plugin.constructor.name !== 'UglifyJsPlugin')
 })
-
-// wipe out eslint check (it is the only thing in preloaders)
-module.exports.module.preLoaders = []
-
-// do not minify/uglify the output
-module.exports.plugins = _.filter(module.exports.plugins,
-  (plugin) => plugin.constructor.name !== 'UglifyJsPlugin')

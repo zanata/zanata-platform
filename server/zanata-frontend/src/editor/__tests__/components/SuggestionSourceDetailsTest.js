@@ -3,12 +3,12 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { Icon, Row } from 'zanata-ui'
-import SuggestionSourceDetails from '../../app/components/SuggestionSourceDetails'
+import SuggestionDetailsSummary from '../../app/components/SuggestionDetailsSummary'
 
-describe('SuggestionSourceDetailsTest', () => {
-  it('SuggestionSourceDetails markup (imported)', () => {
+describe('SuggestionDetailsSummaryTest', () => {
+  it('SuggestionDetailsSummary markup (imported)', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
-      <SuggestionSourceDetails
+      <SuggestionDetailsSummary
         suggestion={{
           matchDetails: [
             {
@@ -35,9 +35,9 @@ describe('SuggestionSourceDetailsTest', () => {
     expect(actual).toEqual(expected)
   })
 
-  it('SuggestionSourceDetails markup (local project)', () => {
+  it('SuggestionDetailsSummary markup (local project)', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
-      <SuggestionSourceDetails
+      <SuggestionDetailsSummary
         suggestion={{
           matchDetails: [
             {
@@ -65,9 +65,10 @@ describe('SuggestionSourceDetailsTest', () => {
               <Icon name="version" size="n1"/> {'the-wurst-version'}
             </Row>
           </li>
-          <li title="what-a-brat/i-rote-this.txt">
+          <li className="docName" title="what-a-brat/i-rote-this.txt">
             <Row>
-              <Icon name="document" size="n1"/> {'i-rote-this.txt'}
+              <Icon name="document" size="n1"/>
+              <span className="ellipsis">{'i-rote-this.txt'}</span>
             </Row>
           </li>
         </ul>
@@ -76,7 +77,7 @@ describe('SuggestionSourceDetailsTest', () => {
     expect(actual).toEqual(expected)
   })
 
-  it('SuggestionSourceDetails markup (imported)', () => {
+  it('SuggestionDetailsSummary markup (imported)', () => {
     // different type from top match so it is obvious
     // if display is based on the wrong one
     const remainingMatch = {
@@ -89,7 +90,7 @@ describe('SuggestionSourceDetailsTest', () => {
     }
 
     const actual = ReactDOMServer.renderToStaticMarkup(
-      <SuggestionSourceDetails
+      <SuggestionDetailsSummary
         suggestion={{
           matchDetails: [
             {

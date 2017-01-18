@@ -9,7 +9,7 @@ public class CopyDataToEditorEvent extends GwtEvent<CopyDataToEditorHandler> {
     /**
      * Handler type.
      */
-    private static Type<CopyDataToEditorHandler> TYPE;
+    private static final Type<CopyDataToEditorHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -17,8 +17,7 @@ public class CopyDataToEditorEvent extends GwtEvent<CopyDataToEditorHandler> {
      * @return returns the handler type
      */
     public static Type<CopyDataToEditorHandler> getType() {
-        return TYPE != null ? TYPE : (TYPE =
-                new Type<CopyDataToEditorHandler>());
+        return TYPE;
     }
 
     private List<String> targetResult;

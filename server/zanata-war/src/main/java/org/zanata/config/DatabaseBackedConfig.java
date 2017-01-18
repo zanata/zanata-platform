@@ -126,4 +126,17 @@ public class DatabaseBackedConfig implements Serializable {
     public boolean isDisplayUserEmail() {
         return Boolean.valueOf(getConfigValue(HApplicationConfiguration.KEY_DISPLAY_USER_EMAIL));
     }
+
+    public String getPermittedEmailDomains() {
+        return getConfigValue(HApplicationConfiguration.KEY_PERMITTED_USER_EMAIL_DOMAIN);
+    }
+
+    public boolean isAnonymousUserAllowed() {
+        String dbValue = getConfigValue(
+                HApplicationConfiguration.KEY_ALLOW_ANONYMOUS_USER);
+        // If there is no value in the database, by default we allow the access for existing instance.
+        // For new instances, we will set the value in database on first boot
+        // see EssentialDataCreator
+        return dbValue == null || Boolean.valueOf(dbValue);
+    }
 }

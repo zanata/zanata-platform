@@ -64,6 +64,10 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
                 "org/zanata/test/model/TextFlowTestData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
 
+        addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
+                "org/zanata/test/model/ApplicationConfigurationData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+
         addAfterTestOperation(new DBUnitProvider.DataSetOperation(
                 "org/zanata/test/model/HistoryTestData.dbunit.xml",
                 DatabaseOperation.DELETE_ALL));

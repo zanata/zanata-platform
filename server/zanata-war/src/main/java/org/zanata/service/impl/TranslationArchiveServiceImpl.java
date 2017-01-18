@@ -51,6 +51,7 @@ import org.zanata.service.TranslationArchiveService;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -134,7 +135,7 @@ public class TranslationArchiveServiceImpl implements
                         + configurationServiceImpl.getConfigurationFileName();
         zipOutput.putNextEntry(new ZipEntry(configFilename));
         zipOutput.write(configurationServiceImpl.getConfigForOfflineTranslation(
-                projectSlug, iterationSlug, hLocale).getBytes());
+                projectSlug, iterationSlug, hLocale).getBytes(StandardCharsets.UTF_8));
         zipOutput.closeEntry();
         handle.increaseProgress(1);
 

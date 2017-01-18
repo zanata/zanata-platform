@@ -15,7 +15,7 @@ public class DocValidationResultEvent extends
     /**
      * Handler type.
      */
-    private static Type<DocValidationResultHandler> TYPE;
+    private static final Type<DocValidationResultHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -23,9 +23,6 @@ public class DocValidationResultEvent extends
      * @return returns the handler type
      */
     public static Type<DocValidationResultHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<DocValidationResultHandler>();
-        }
         return TYPE;
     }
 

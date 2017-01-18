@@ -86,6 +86,10 @@ public class AppView extends Composite implements AppDisplay,
     private static NotificationTemplate notificationTemplate = GWT
             .create(NotificationTemplate.class);
 
+    private static final String ELLIPSIS = "…";
+
+    private static final int MAX_LENGTH_DOC_NAME = 66;
+
     @UiField(provided = true)
     TransUnitCountBar translationStatsBar;
 
@@ -260,10 +264,19 @@ public class AppView extends Composite implements AppDisplay,
         this.listener = listener;
     }
 
+    public static String shorten(String s, int maxLength) {
+        if (s.length() <= maxLength) {
+            return s;
+        }
+        return s.substring(0, maxLength - ELLIPSIS.length()) + ELLIPSIS;
+    }
+
     @Override
     public void setDocumentLabel(String docPath, String docName) {
         String selectedDocId = docPath + docName;
-        selectedDocumentSpan.setText(selectedDocId);
+
+        selectedDocumentSpan
+                .setText(shorten(selectedDocId, MAX_LENGTH_DOC_NAME));
 
         newEditorLink.setHref(Application.getNewEditorLink(
                 userWorkspaceContext.getWorkspaceContext().getWorkspaceId(),

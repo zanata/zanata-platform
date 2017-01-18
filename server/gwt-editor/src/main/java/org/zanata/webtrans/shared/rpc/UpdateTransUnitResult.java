@@ -3,6 +3,7 @@ package org.zanata.webtrans.shared.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 
 import com.google.common.base.Objects;
@@ -49,7 +50,7 @@ public class UpdateTransUnitResult implements DispatchResult {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("tuUpdateInfo", tuUpdateInfo)
+        return MoreObjects.toStringHelper(this).add("tuUpdateInfo", tuUpdateInfo)
                 .toString();
     }
 

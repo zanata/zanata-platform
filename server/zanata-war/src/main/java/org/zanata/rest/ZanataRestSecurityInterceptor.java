@@ -1,84 +1,97 @@
 package org.zanata.rest;
 
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.util.Optional;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.FeatureContext;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.Provider;
 
+import javaslang.control.Either;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.oltu.oauth2.common.OAuth;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.OAuthResponse;
 import org.apache.oltu.oauth2.rs.response.OAuthRSResponse;
-import org.jboss.resteasy.annotations.interception.SecurityPrecedence;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.config.SupportOAuth;
 import org.zanata.model.HAccount;
 import org.zanata.rest.oauth.OAuthUtil;
 import org.zanata.security.SecurityFunctions;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.AuthenticatedLiteral;
+import org.zanata.security.annotations.NoSecurityCheck;
 import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
-import com.googlecode.totallylazy.Either;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * This class is responsible for checking for all REST requests:
- * a) valid authentication presents when accessing protected resources (e.g. no open to anonymous access)
- * b) no authentication when accessing resource that allows anonymous access
- * This class will not do specific access control for individual end-points.
- * Individual REST services can and should control their specific access rules
- * by using annotation or identity.checkPermission etc.
+ * This class is responsible for checking for all REST requests: a) valid
+ * authentication presents when accessing protected resources (e.g. no open to
+ * anonymous access) b) no authentication when accessing resource that allows
+ * anonymous access This class will not do specific access control for
+ * individual end-points. Individual REST services can and should control their
+ * specific access rules by using annotation or identity.checkPermission etc.
+ * <p>
+ * NOTE: This security filter is for REST call only and work on the HTTP request
+ * level. We've also registered {@code org.apache.deltaspike.security.impl.extension.SecurityInterceptor}
+ * as a CDI interceptor in beans.xml. It will handle CDI bean level security on
+ * method level.
  *
  * @see org.zanata.security.Identity
  * @see org.zanata.security.annotations.CheckRole
  * @see org.zanata.security.annotations.CheckLoggedIn
  */
-@Provider
-@PreMatching
-@SecurityPrecedence
-@Slf4j
+// TODO rename this class to Filter since it's no longer a seam JAX-RS interceptor
+@ApplicationScoped
 public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
-    @Context
+    private static final Logger log =
+            LoggerFactory.getLogger(ZanataRestSecurityInterceptor.class);
     private HttpServletRequest request;
 
-    @Inject
     private SecurityTokens securityTokens;
 
-    @Inject
     private ZanataIdentity zanataIdentity;
 
-    @Inject
-    @SupportOAuth
     private boolean isOAuthEnabled;
     private IServiceLocator serviceLocator = ServiceLocator.instance();
+
+    private Provider<Boolean> allowAnonymousAccessProvider;
 
 
     @SuppressWarnings("unused")
     public ZanataRestSecurityInterceptor() {
     }
 
-    @VisibleForTesting
-    protected ZanataRestSecurityInterceptor(HttpServletRequest request,
+    @Inject
+    protected ZanataRestSecurityInterceptor(@DeltaSpike HttpServletRequest request,
             SecurityTokens securityTokens, ZanataIdentity zanataIdentity,
-            boolean isOAuthEnabled, IServiceLocator serviceLocator) {
+            @SupportOAuth boolean isOAuthEnabled, IServiceLocator serviceLocator,
+            @AllowAnonymousAccess Provider<Boolean> allowAnonymousAccessProvider) {
         this.request = request;
         this.securityTokens = securityTokens;
         this.zanataIdentity = zanataIdentity;
         this.isOAuthEnabled = isOAuthEnabled;
         this.serviceLocator = serviceLocator;
+        this.allowAnonymousAccessProvider = allowAnonymousAccessProvider;
     }
 
     @Override
@@ -107,31 +120,37 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
                         .build());
             }
         } else if (restCredentials.hasOAuthToken()) {
-            Either<String, Response> usernameOrError =
+            Either<Response, String> usernameOrError =
                 getAuthenticatedUsernameOrError();
-            if (usernameOrError.isRight()) {
-                context.abortWith(usernameOrError.right());
+            if (usernameOrError.isLeft()) {
+                context.abortWith(usernameOrError.getLeft());
                 return;
             }
-            String username = usernameOrError.left();
+            String username = usernameOrError.get();
             zanataIdentity.getCredentials().setUsername(username);
             zanataIdentity.setRequestUsingOAuth(true);
             // login will always success since the check was done above
             // here the tryLogin() will just set up the correct system state
             zanataIdentity.tryLogin();
-        } else if (!SecurityFunctions
-                .doesRestPathAllowAnonymousAccess(context.getMethod(),
-                        context.getUriInfo().getPath())){
+        } else if (!allowAnonymousAccessProvider.get() ||
+                !HttpUtil.isReadMethod(context.getMethod())){
+            // special cases for path such as '/test/' or '/oauth/' are now
+            // handled by having annotation @NoSecurityCheck on those API
+            // methods/classes. ZanataRestSecurityBinder will ensure that this
+            // ContainerRequestFilter will not be called for those annotated
+            // services.
+
             // if we don't have any information to authenticate and the
             // requesting API does NOT allow anonymous access
             log.info("can not authenticate REST request: {}", restCredentials);
             context.abortWith(Response.status(Status.UNAUTHORIZED)
+                    .header("Content-Type", MediaType.TEXT_PLAIN)
                     .entity("User authentication required for REST request")
                     .build());
         }
     }
 
-    private Either<String, Response> getAuthenticatedUsernameOrError() {
+    private Either<Response, String> getAuthenticatedUsernameOrError() {
 
         Optional<String> usernameOpt;
         Optional<String> accessTokenOpt =
@@ -143,13 +162,12 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
             log.info(
                     "Bad OAuth request, invalid or expired tokens: access token: {}",
                     accessTokenOpt);
-            return Either.right(buildUnauthorizedResponse(
+            return Either.left(buildUnauthorizedResponse(
                     "Bad OAuth request, invalid or expired tokens: access token [" +
                             accessTokenOpt + "]"));
         }
         String username = usernameOpt.get();
-        return Either.left(username);
-
+        return Either.right(username);
     }
 
     private Response buildUnauthorizedResponse(String message) {
@@ -218,6 +236,30 @@ public class ZanataRestSecurityInterceptor implements ContainerRequestFilter {
                     .add("apiKey", apiKey)
                     .add("accessToken", accessToken)
                     .toString();
+        }
+    }
+
+    /**
+     * This will use the {@code NoSecurityCheck} annotation and only apply
+     * security request filter to endpoints that don't have that annotation.
+     *
+     * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+     */
+    @javax.ws.rs.ext.Provider
+    @PreMatching
+    public static class ZanataRestSecurityBinder implements DynamicFeature {
+        @Inject
+        private ZanataRestSecurityInterceptor securityInterceptor;
+
+        @Override
+        public void configure(ResourceInfo resourceInfo,
+                FeatureContext featureContext) {
+            Class<?> clazz = resourceInfo.getResourceClass();
+            Method method = resourceInfo.getResourceMethod();
+            if (!method.isAnnotationPresent(NoSecurityCheck.class)
+                    && !clazz.isAnnotationPresent(NoSecurityCheck.class)) {
+                featureContext.register(securityInterceptor);
+            }
         }
     }
 }

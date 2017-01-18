@@ -1,7 +1,7 @@
 import React, {PropTypes, Component} from 'react'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Modal, Icon } from 'zanata-ui'
+import { Modal, Icon } from '../../components'
 import Autosuggest from 'react-autosuggest'
 
 import {
@@ -9,7 +9,8 @@ import {
   FormControl,
   ControlLabel,
   Button,
-  Checkbox
+  Checkbox,
+  Row
 } from 'react-bootstrap'
 
 import {
@@ -83,6 +84,7 @@ class NewLanguageModal extends Component {
         localeId: query.replace('_', '-')
       }
       this.props.handleOnSave(details)
+      this.resetFields()
     }
   }
 
@@ -140,24 +142,26 @@ class NewLanguageModal extends Component {
     return (
       <Modal
         show={show}
-        onHide={() => this.handleCancel()} rootClose>
-        <Modal.Header closeButton>
+        onHide={() => this.handleCancel()}>
+        <Modal.Header>
           <Modal.Title>Add a new language</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className='bootstrap'>
             <FormGroup validationState={!validFields ? 'error' : undefined}>
               <ControlLabel>Language Code</ControlLabel>
-              <Autosuggest
-                name='new-language-code'
-                suggestions={searchResults}
-                onSuggestionSelected={this.onSuggestionSelected}
-                getSuggestionValue={this.getSuggestionValue}
-                onSuggestionsFetchRequested={loadSuggestion}
-                onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                renderSuggestion={this.renderSuggestion}
-                inputProps={inputProps}
+              <span className='form-control'>
+                <Autosuggest
+                  name='new-language-code'
+                  suggestions={searchResults}
+                  onSuggestionSelected={this.onSuggestionSelected}
+                  getSuggestionValue={this.getSuggestionValue}
+                  onSuggestionsFetchRequested={loadSuggestion}
+                  onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                  renderSuggestion={this.renderSuggestion}
+                  inputProps={inputProps}
                 />
+              </span>
             </FormGroup>
             <FormGroup validationState={!validFields ? 'error' : undefined}>
               <ControlLabel>Name</ControlLabel>
@@ -184,9 +188,7 @@ class NewLanguageModal extends Component {
                 Plural forms
                 <a href='http://docs.translatehouse.org/projects/localization-guide/en/latest/l10n/pluralforms.html?id=l10n/pluralforms' // eslint-disable-line max-len
                   target='_blank'>
-                  <Icon name='info'
-                    atomic={{m: 'Mstart(re) Va(sub)'}}
-                    title='Help' />
+                  <Icon name='info' className='s0 infoicon' title='Help' />
                 </a>
                 {showPluralFormsWarning &&
                   <div className='Fz(msn1)'
@@ -218,21 +220,24 @@ class NewLanguageModal extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <div className='bootstrap Ta(end)'>
-            <Button id='btn-new-language-cancel' className='btn-left'
-              disabled={saving}
-              onClick={() => this.handleCancel()}>
-              Close
-            </Button>
-            <Button
-              disabled={saving ||
-                (isEmpty(details.localeId) && isEmpty(query))}
-              id='btn-new-language-save'
-              bsStyle='primary'
-              onClick={() => this.validateDetails()}>
-              Save
-            </Button>
-          </div>
+          <span className='bootstrap pull-right'>
+            <Row>
+              <Button bsStyle='link'
+                id='btn-new-language-cancel' className='btn-left'
+                disabled={saving}
+                onClick={() => this.handleCancel()}>
+                Close
+              </Button>
+              <Button
+                disabled={saving ||
+                  (isEmpty(details.localeId) && isEmpty(query))}
+                id='btn-new-language-save'
+                bsStyle='primary'
+                onClick={() => this.validateDetails()}>
+                Save
+              </Button>
+            </Row>
+          </span>
         </Modal.Footer>
       </Modal>
     )

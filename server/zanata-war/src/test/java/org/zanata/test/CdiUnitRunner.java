@@ -21,8 +21,10 @@
 package org.zanata.test;
 
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jglue.cdiunit.CdiRunner;
+import org.jglue.cdiunit.ContextController;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
 
@@ -43,6 +45,15 @@ public class CdiUnitRunner extends CdiRunner {
             super.run(notifier);
         } finally {
 //            ProjectStageProducer.setProjectStage(oldStage);
+            try {
+                ContextController contextController = BeanProvider
+                        .getContextualReference(ContextController.class);
+                // ensure we close request and session scope
+                contextController.closeRequest();
+                contextController.closeSession();
+            } catch (IllegalStateException e) {
+                // ignored when there is no context
+            }
         }
     }
 }

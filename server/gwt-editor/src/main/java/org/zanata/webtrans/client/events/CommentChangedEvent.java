@@ -4,8 +4,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class CommentChangedEvent extends GwtEvent<CommentChangedEventHandler> {
-    public static Type<CommentChangedEventHandler> TYPE =
-            new Type<CommentChangedEventHandler>();
+    public static final Type<CommentChangedEventHandler> TYPE = new Type<>();
     private final TransUnitId transUnitId;
     private final int commentCount;
 

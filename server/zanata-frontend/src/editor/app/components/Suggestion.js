@@ -24,7 +24,8 @@ const Suggestion = React.createClass({
       targetContents: PropTypes.arrayOf(PropTypes.string).isRequired
     }),
     search: PropTypes.arrayOf(PropTypes.string),
-    showDiff: PropTypes.bool.isRequired
+    showDiff: PropTypes.bool.isRequired,
+    showDetail: PropTypes.func.isRequired
   },
 
   /**
@@ -57,6 +58,10 @@ const Suggestion = React.createClass({
     this.props.copySuggestion(this.props.index)
   },
 
+  showDetail () {
+    this.props.showDetail(this.props.index)
+  },
+
   render: function () {
     const matchType = this.matchType(this.props.suggestion)
     const className = 'TransUnit TransUnit--suggestion ' +
@@ -67,7 +72,8 @@ const Suggestion = React.createClass({
     }
     const props = {
       ...this.props,
-      suggestion
+      suggestion,
+      showDetail: this.showDetail
     }
     return (
       <div

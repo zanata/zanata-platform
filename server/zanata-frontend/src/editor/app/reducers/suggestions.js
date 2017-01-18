@@ -6,6 +6,7 @@ import {
   PHRASE_SUGGESTION_FINISHED_COPYING,
   PHRASE_SUGGESTIONS_UPDATED,
   SET_SUGGESTION_SEARCH_TYPE,
+  SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX,
   SUGGESTION_SEARCH_TEXT_CHANGE,
   TEXT_SUGGESTION_STARTED_COPYING,
   TEXT_SUGGESTION_FINISHED_COPYING,
@@ -15,6 +16,7 @@ import {
 const defaultState = {
   // FIXME should be 'phrase' by default
   searchType: 'phrase',
+  showDetailModalForIndex: undefined,
   showDiff: true,
   textSearch: {
     loading: false,
@@ -79,6 +81,9 @@ const suggestions = (state = defaultState, action) => {
 
     case SET_SUGGESTION_SEARCH_TYPE:
       return update({searchType: {$set: action.searchType}})
+
+    case SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX:
+      return update({showDetailModalForIndex: {$set: action.index}})
 
     case SUGGESTION_SEARCH_TEXT_CHANGE:
       return update({search: {input: {text: {$set: action.text}}}})

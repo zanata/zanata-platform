@@ -120,7 +120,9 @@ public class FacesNavigationUtil {
      */
     public static void redirect(FacesContext context, String url)
             throws IOException {
-        url = encodeScheme(context, url);
+        if (!UrlUtil.isValidUrl(url)) {
+            url = encodeScheme(context, url);
+        }
         if (log.isDebugEnabled()) {
             log.debug("redirecting to: " + url);
         }

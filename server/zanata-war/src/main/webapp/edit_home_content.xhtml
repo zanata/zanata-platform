@@ -10,6 +10,9 @@
     <div class="g--centered">
       <div class="g__item w--1 l--push-bottom-1">
         <h1>#{msgs['jsf.HomepageContent']}</h1>
+        <ui:fragment rendered="${not serverConfigurationBean.allowAnonymousUser}">
+          <h3 class="txt--danger">#{msgs['jsf.HomepageContent.warning']}</h3>
+        </ui:fragment>
 
         <h:form id="homeContentForm">
           <div class="js-commonmark">
@@ -22,7 +25,7 @@
               <h:commandButton id="update" styleClass="button button--primary l--push-right-quarter"
                 value="#{msgs['jsf.Update']}"
                 action="#{serverConfigurationBean.updateHomeContent}"/>
-              <h:button id="cancel" outcome="/home.xhtml" styleClass="button"
+              <h:button id="cancel" outcome="/public/home.xhtml" styleClass="button"
                 value="#{msgs['jsf.Cancel']}"/>
             </div>
 

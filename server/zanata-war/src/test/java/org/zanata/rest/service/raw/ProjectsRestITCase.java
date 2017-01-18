@@ -58,7 +58,7 @@ public class ProjectsRestITCase extends RestTest {
     @RunAsClient
     public void retrieveListOfProjects() throws Exception {
         new ResourceRequest(getRestEndpointUrl("/projects"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT,

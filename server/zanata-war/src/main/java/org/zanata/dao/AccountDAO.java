@@ -42,7 +42,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         super(HAccount.class, session);
     }
 
-    public HAccount getByUsername(String username) {
+    public @Nullable HAccount getByUsername(String username) {
         Criteria cr = getSession().createCriteria(HAccount.class);
         cr.add(Restrictions.eq("username", username));
         cr.setCacheRegion(REGION).setCacheable(true).setComment("AccountDAO.getByUsername");
@@ -158,7 +158,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         }
         Query query = getSession().createQuery(queryBuilder.toString());
         if (!StringUtils.isEmpty(filter)) {
-            query.setParameter("filter", "%" + filter + "%");
+            query.setParameter("filter", "%" + filter.toLowerCase() + "%");
         }
         query.setMaxResults(maxResults);
         query.setFirstResult(offset);
@@ -174,7 +174,7 @@ public class AccountDAO extends AbstractDAOImpl<HAccount, Long> {
         }
         Query query = getSession().createQuery(queryBuilder.toString());
         if (!StringUtils.isEmpty(filter)) {
-            query.setParameter("filter", "%" + filter + "%");
+            query.setParameter("filter", "%" + filter.toLowerCase() + "%");
         }
         query.setCacheable(true);
         query.setComment("accountDAO.getUserCount");

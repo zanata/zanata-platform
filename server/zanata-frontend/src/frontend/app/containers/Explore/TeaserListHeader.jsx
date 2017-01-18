@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react'
 import {
   Icon,
-  ButtonLink,
   Loader,
   Heading,
   View
 } from 'zanata-ui'
+import { Button } from 'react-bootstrap'
 
 /**
  * Header with icon and paging for the TeaserList.
@@ -53,15 +53,17 @@ const TeaserListHeader = ({
       </Heading>
       {totalPage > 1 && (
         <div className='Mstart(rh) C(pri) D(f) Ai(c)'>
-          <ButtonLink disabled={currentPage === 1}
+          <Button bsStyle='link' disabled={currentPage === 1}
             onClick={() => { updatePage(type, currentPage, totalPage, false) }}>
-            <Icon name='chevron-left' size='1' />
-          </ButtonLink>
+            <Icon theme={{ base: { va: 'Va(sub)' } }}
+              name='chevron-left' size='1' />
+          </Button>
           <span className='C(muted) Mx(re)'>{currentPage} of {totalPage}</span>
-          <ButtonLink disabled={currentPage === totalPage}
+          <Button bsStyle='link' disabled={currentPage === totalPage}
             onClick={() => { updatePage(type, currentPage, totalPage, true) }}>
-            <Icon name='chevron-right' size='1' />
-          </ButtonLink>
+            <Icon theme={{ base: { va: 'Va(sub)' } }}
+              name='chevron-right' size='1' />
+          </Button>
         </div>
       )}
       {loading && <Loader theme={{ base: { fz: 'Fz(ms1)', m: 'MStart(rh)' } }}

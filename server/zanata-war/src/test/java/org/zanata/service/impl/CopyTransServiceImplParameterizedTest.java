@@ -67,7 +67,7 @@ import org.zanata.test.DBUnitDataSetRunner;
 import org.zanata.test.ParamTestCdiExtension;
 import org.zanata.test.rule.DataSetOperation;
 import org.zanata.test.rule.JpaRule;
-import org.zanata.transaction.TransactionUtil;
+import org.zanata.transaction.TransactionUtilImpl;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.UrlUtil;
@@ -112,7 +112,7 @@ import static org.zanata.test.rule.FunctionalTestRule.reentrant;
         VersionStateCacheImpl.class,
         TranslationStateCacheImpl.class,
         ValidationServiceImpl.class,
-        TransactionUtil.class,
+        TransactionUtilImpl.class,
         UrlUtil.class
 })
 public class CopyTransServiceImplParameterizedTest {

@@ -32,7 +32,7 @@
     </script>
 
     <div class="header__logo-only">
-      <h:link outcome="/home.xhtml" id="home" tabindex="1">
+      <h:link outcome="/public/home.xhtml" id="home" tabindex="1">
         <img src="#{assets['img/logo/logo.svg']}" alt="Zanata"/>
       </h:link>
     </div>
@@ -41,9 +41,9 @@
       <div
         class="g__item #{applicationConfiguration.multiAuth ? 'l--constrain-medium l--constrain-small-m' : 'l--constrain-small'}">
         <div class="l--push-v-1">
-          <h:form styleClass="l--push-bottom-0">
-            <a4j:outputPanel ajaxRendered="true" layout="block">
-              <h:messages id="messages" globalOnly="true"
+          <h:form styleClass="l--push-bottom-0" id="messages">
+            <a4j:outputPanel ajaxRendered="true" layout="block" >
+              <h:messages globalOnly="true"
                 styleClass="list--no-bullets"
                 errorClass="message--danger app-error l--push-bottom-half"
                 infoClass="message--highlight l--push-bottom-half"
@@ -101,12 +101,12 @@
 
                   <ui:fragment
                     rendered="#{applicationConfiguration.internalAuth}">
-                    <div
-                      class="txt--align-center txt--align-center-s l--push-top-half">
+                    <h:panelGroup rendered="#{allowPublicRegistration}"
+                      styleClass="txt--align-center txt--align-center-s l--push-top-half">
                       #{msgs['jsf.login.DontHaveAnAccount.label']} <h:link
                       outcome="/account/register.xhtml"
                       value="#{msgs['jsf.SignUp']}"/>
-                    </div>
+                    </h:panelGroup>
                   </ui:fragment>
                   <ui:fragment
                     rendered="#{not applicationConfiguration.internalAuth and not empty applicationConfiguration.registerPath}">

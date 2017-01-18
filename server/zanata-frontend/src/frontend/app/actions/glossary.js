@@ -71,6 +71,10 @@ export const GLOSSARY_GET_QUALIFIED_NAME_SUCCESS =
 export const GLOSSARY_GET_QUALIFIED_NAME_FAILURE =
   'GLOSSARY_GET_QUALIFIED_NAME_FAILURE'
 
+export const PROJECT_GET_DETAILS_REQUEST = 'PROJECT_GET_DETAILS_REQUEST'
+export const PROJECT_GET_DETAILS_SUCCESS = 'PROJECT_GET_DETAILS_SUCCESS'
+export const PROJECT_GET_DETAILS_FAILURE = 'PROJECT_GET_DETAILS_FAILURE'
+
 export const glossaryUpdateLocale = createAction(GLOSSARY_UPDATE_LOCALE)
 export const glossaryUpdateFilter = createAction(GLOSSARY_UPDATE_FILTER)
 export const glossaryUpdateField = createAction(GLOSSARY_UPDATE_FIELD)
@@ -210,6 +214,27 @@ const getQualifiedName = (dispatch, projectSlug) => {
   }
 }
 
+const getProjectDetails = (projectSlug) => {
+  const endpoint = window.config.baseUrl + window.config.apiRoot +
+    '/projects/p/' + projectSlug
+
+  const apiTypes = [
+    PROJECT_GET_DETAILS_REQUEST,
+    {
+      type: PROJECT_GET_DETAILS_SUCCESS,
+      payload: (action, state, res) => {
+        return res.json().then((json) => {
+          return json
+        })
+      }
+    },
+    PROJECT_GET_DETAILS_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
+}
+
 const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
   const endpoint = window.config.baseUrl + window.config.apiRoot + '/glossary'
   let formData = new FormData()
@@ -257,7 +282,7 @@ const createGlossaryTerm = (dispatch, qualifiedName, term) => {
       type: GLOSSARY_CREATE_SUCCESS,
       payload: (action, state, res) => {
         return res.json().then((json) => {
-          dispatch(getGlossaryStats(dispatch, state.qualifiedName, true))
+          dispatch(getGlossaryStats(dispatch, qualifiedName, true))
           return json
         })
       }
@@ -291,7 +316,7 @@ const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
       payload: (action, state, res) => {
         return res.json().then((json) => {
           needRefresh &&
-            dispatch(getGlossaryStats(dispatch, state.qualifiedName, false))
+            dispatch(getGlossaryStats(dispatch, qualifiedName, false))
           return json
         })
       }
@@ -318,7 +343,8 @@ const deleteGlossaryTerm = (dispatch, id) => {
       type: GLOSSARY_DELETE_SUCCESS,
       payload: (action, state, res) => {
         return res.json().then((json) => {
-          dispatch(getGlossaryStats(dispatch, state.qualifiedName, true))
+          dispatch(getGlossaryStats(dispatch, state.glossary.qualifiedName,
+            true))
           return json
         })
       }
@@ -343,7 +369,7 @@ const deleteAllGlossaryEntry = (dispatch, qualifiedName) => {
     {
       type: GLOSSARY_DELETE_ALL_SUCCESS,
       payload: (action, state, res) => {
-        return dispatch(getGlossaryStats(dispatch, state.qualifiedName, true))
+        return dispatch(getGlossaryStats(dispatch, qualifiedName, true))
       }
     },
     GLOSSARY_DELETE_ALL_FAILURE
@@ -396,8 +422,11 @@ export const glossaryInitStateFromUrl =
 export const glossaryInitialLoad = (projectSlug) => {
   return (dispatch, getState) => {
     const query = getState().routing.location.query
-    dispatch(glossaryInitStateFromUrl({ query, projectSlug }))
-    dispatch(getQualifiedName(dispatch, projectSlug))
+    dispatch(glossaryInitStateFromUrl({ query, projectSlug })).then(
+    dispatch(getQualifiedName(dispatch, projectSlug)))
+    if (projectSlug) {
+      dispatch(getProjectDetails(projectSlug))
+    }
   }
 }
 

@@ -20,8 +20,7 @@
  */
 package org.zanata.email;
 
-import com.googlecode.totallylazy.collections.PersistentMap;
-import lombok.RequiredArgsConstructor;
+import javaslang.collection.Map;
 import org.zanata.i18n.Messages;
 
 import javax.mail.internet.InternetAddress;
@@ -29,9 +28,19 @@ import javax.mail.internet.InternetAddress;
 /**
 * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
 */
-@RequiredArgsConstructor
 public class ActivationEmailStrategy extends EmailStrategy {
     private final String key;
+    private final String resetPasswordKey;
+
+    public ActivationEmailStrategy(String key) {
+        this.key = key;
+        resetPasswordKey = null;
+    }
+
+    public ActivationEmailStrategy(String key, String resetPasswordKey) {
+        this.key = key;
+        this.resetPasswordKey = resetPasswordKey;
+    }
 
     @Override
     public String getSubject(Messages msgs) {
@@ -44,13 +53,14 @@ public class ActivationEmailStrategy extends EmailStrategy {
     }
 
     @Override
-    public PersistentMap<String, Object> makeContext(
-            PersistentMap<String, Object> genericContext,
+    public Map<String, Object> makeContext(
+            Map<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        PersistentMap<String, Object> context = super.makeContext(
+        Map<String, Object> context = super.makeContext(
                 genericContext, toAddresses);
         return context
-                .insert("activationKey", key)
-                .insert("toName", toAddresses[0].getPersonal());
+                .put("activationKey", key)
+                .put("resetPasswordKey", resetPasswordKey)
+                .put("toName", toAddresses[0].getPersonal());
     }
 }

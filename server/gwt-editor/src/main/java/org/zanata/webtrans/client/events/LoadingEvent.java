@@ -3,8 +3,8 @@ package org.zanata.webtrans.client.events;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class LoadingEvent extends GwtEvent<LoadingEventHandler> {
-    public static Type<LoadingEventHandler> TYPE =
-            new Type<LoadingEventHandler>();
+    public static final Type<LoadingEventHandler> TYPE =
+            new Type<>();
 
     public static final LoadingEvent START_EVENT = new LoadingEvent();
     public static final LoadingEvent FINISH_EVENT = new LoadingEvent();

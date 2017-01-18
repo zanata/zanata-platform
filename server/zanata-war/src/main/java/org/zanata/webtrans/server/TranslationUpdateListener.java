@@ -1,6 +1,6 @@
 package org.zanata.webtrans.server;
 
-import static org.zanata.transaction.TransactionUtil.runInTransaction;
+import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 
 import java.util.concurrent.TimeUnit;
 

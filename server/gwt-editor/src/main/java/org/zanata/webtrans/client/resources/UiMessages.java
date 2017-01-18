@@ -138,6 +138,9 @@ public interface UiMessages extends Messages {
     @DefaultMessage("If not Rejected or downgraded to Fuzzy:")
     String otherwise();
 
+    @DefaultMessage("Review required and match is Translated:")
+    String approval();
+
     @DefaultMessage("Condition")
     String condition();
 

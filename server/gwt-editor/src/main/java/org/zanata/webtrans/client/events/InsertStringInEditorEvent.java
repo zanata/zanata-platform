@@ -8,7 +8,7 @@ public class InsertStringInEditorEvent extends
     /**
      * Handler type.
      */
-    private static Type<InsertStringInEditorHandler> TYPE;
+    private static final Type<InsertStringInEditorHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -16,16 +16,11 @@ public class InsertStringInEditorEvent extends
      * @return returns the handler type
      */
     public static Type<InsertStringInEditorHandler> getType() {
-        return TYPE != null ? TYPE : (TYPE =
-                new Type<InsertStringInEditorHandler>());
+        return TYPE;
     }
 
     private String valueToReplace, suggestion;
 
-    /**
-     * @param sourceResult
-     * @param targetResult
-     */
     public InsertStringInEditorEvent(String valueToReplace, String suggestion) {
         this.valueToReplace = valueToReplace;
         this.suggestion = suggestion;

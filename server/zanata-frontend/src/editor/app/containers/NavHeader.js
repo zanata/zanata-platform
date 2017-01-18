@@ -96,7 +96,9 @@ const NavHeader = React.createClass({
                           u-textMuted u-sm-hidden">
               <Icon name="chevron-right" size="1" />
             </div>
-            <DocsDropdown {...docsDropdownProps} />
+            <span className="Editor-docsDropdown">
+              <DocsDropdown {...docsDropdownProps} />
+            </span>
             <span className="u-sMH-1-4"></span>
             <LanguagesDropdown {...langsDropdownProps} />
           </Row>

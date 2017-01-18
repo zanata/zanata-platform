@@ -70,14 +70,12 @@ import org.zanata.security.ZanataIdentity;
 import com.google.common.collect.Lists;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.test.CdiUnitRunner;
-import org.zanata.transaction.TransactionUtil;
+import org.zanata.transaction.TransactionUtilImpl;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.TranslationUtil;
 import org.zanata.util.Zanata;
-import org.zanata.webtrans.shared.model.DocumentStatus;
-import org.zanata.webtrans.shared.model.ValidationId;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -89,7 +87,7 @@ import javax.transaction.UserTransaction;
 @AdditionalClasses({
         VersionStateCacheImpl.class,
         // needed by service locator
-        TransactionUtil.class
+        TransactionUtilImpl.class
 })
 public class CopyVersionServiceImplTest extends ZanataDbunitJpaTest {
     @Inject

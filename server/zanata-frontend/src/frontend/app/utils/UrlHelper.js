@@ -20,8 +20,8 @@ export function getContextPath () {
  * @returns string of project url
  * e.g. https://translate.zanata.org/project/view/zanata-server?dswid=-805
  */
-export function getProjectUrl (projectSlug) {
-  return getContextPath() + '/project/view/' + projectSlug + getDswid()
+export function getProjectUrl (project) {
+  return getContextPath() + '/project/view/' + project.id + getDswid()
 }
 
 export default {

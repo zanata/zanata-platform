@@ -3,10 +3,17 @@
 <p>$msgs.get("jsf.email.activation.ClickLinkToActivateAccount")</p>
 
 <p>
-  <a
-    href="$serverPath/account/activate/$activationKey">
-    $msgs.get("jsf.email.activation.Link")
-  </a>
+  #if ($resetPasswordKey && !$resetPasswordKey.isEmpty())
+    <a
+      href="$serverPath/account/activate/$activationKey?resetPasswordKey=$resetPasswordKey">
+      $msgs.get("jsf.email.activation.Link")
+    </a>
+  #else
+    <a
+      href="$serverPath/account/activate/$activationKey">
+      $msgs.get("jsf.email.activation.Link")
+    </a>
+  #end
 </p>
 
 <p>
@@ -14,10 +21,17 @@
 </p>
 
 <p>
-  <a
-    href="$serverPath/account/activate/$activationKey">
-    $serverPath/account/activate/$activationKey
-  </a>
+  #if ($resetPasswordKey && !$resetPasswordKey.isEmpty())
+    <a
+      href="$serverPath/account/activate/$activationKey?resetPasswordKey=$resetPasswordKey">
+      $serverPath/account/activate/$activationKey?resetPasswordKey=$resetPasswordKey
+    </a>
+  #else
+    <a
+      href="$serverPath/account/activate/$activationKey">
+      $serverPath/account/activate/$activationKey
+    </a>
+  #end
 </p>
 
 <p>

@@ -24,6 +24,7 @@ package org.zanata.webtrans.client.service;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -178,7 +179,8 @@ public class ModalNavigationStateHolder {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this).add("idAndStateMap", idAndStateMap)
+        return MoreObjects
+                .toStringHelper(this).add("idAndStateMap", idAndStateMap)
                 .add("idIndexList", idIndexList).add("selected", selected)
                 .add("curPage", curPage).add("totalCount", totalCount)
                 .add("pageCount", pageCount).toString();

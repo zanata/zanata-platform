@@ -2,7 +2,6 @@ import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { debounce, isEmpty } from 'lodash'
 import {
-  ButtonLink,
   Icon,
   Row,
   Select,
@@ -13,6 +12,7 @@ import {
   Link
 } from 'zanata-ui'
 import Header from './Header'
+import { Button } from 'react-bootstrap'
 import {
   glossaryChangeLocale,
   glossaryFilterTextChanged,
@@ -69,7 +69,7 @@ class ViewHeader extends Component {
   render () {
     const {
       title,
-      projectSlug,
+      project,
       filterText = '',
       termCount,
       statsLoading,
@@ -97,14 +97,14 @@ class ViewHeader extends Component {
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
-    const projectUrl = projectSlug && getProjectUrl(projectSlug)
+    const projectUrl = project && getProjectUrl(project)
 
-    const projectLink = projectSlug && (
+    const projectLink = project && (
       <div className='D(ib) Mstart(rh)'>
         <Link icon='project' link={projectUrl} useHref>
           <Row>
             <Icon name='project' atomic={{m: 'Mend(re)'}} />
-            <span className='Hidden--lesm'>{projectSlug}</span>
+            <span className='Hidden--lesm'>{project.name}</span>
           </Row>
         </Link>
       </div>
@@ -117,6 +117,7 @@ class ViewHeader extends Component {
         extraElements={(
           <View theme={{base: { ai: 'Ai(c)', fld: '' }}}>
             <TextInput
+              className='textInput'
               ref={(ref) => this.searchInput = ref}
               theme={{base: { flx: 'Flx(flx1)', m: 'Mstart(rh)--md' }}}
               type='search'
@@ -124,45 +125,46 @@ class ViewHeader extends Component {
               accessibilityLabel='Search Terms'
               defaultValue={filterText}
               onChange={handleFilterFieldUpdate} />
-            <ButtonLink
+            <Button bsStyle='link'
               title='Cancel search'
               disabled={isEmpty(filterText)}
               onClick={(e) => { this.handleClearSearch() }}>
               <Icon name='cross' />
-            </ButtonLink>
+            </Button>
 
             {permission.canAddNewEntry && (
               <div className='Mstart(rh)--md Mstart(rq)'>
-                <ButtonLink type='default'
+                <Button bsStyle='link' type='button'
                   onClick={() => handleImportFileDisplay(true)}>
                   <Row>
                     <Icon name='import' atomic={{m: 'Mend(re)'}} />
                     <span className='Hidden--lesm'>Import</span>
                   </Row>
-                </ButtonLink>
+                </Button>
                 <ImportModal />
               </div>)}
 
             {permission.canDownload && !isEmptyTerms && (
               <div className='Mstart(rh)--md Mstart(rq)'>
-                <ButtonLink type='default'
+                <Button bsStyle='link' type='button'
                   onClick={() => handleExportFileDisplay(true)}>
                   <Row>
                     <Icon name='export' atomic={{m: 'Mend(re)'}} />
                     <span className='Hidden--lesm'>Export</span>
                   </Row>
-                </ButtonLink>
+                </Button>
                 <ExportModal />
               </div>)}
 
              {permission.canAddNewEntry && (
                <div className='Mstart(rh)--md Mstart(rq)'>
-                 <ButtonLink onClick={() => handleNewEntryDisplay(true)}>
+                 <Button bsStyle='link' onClick={() =>
+                   handleNewEntryDisplay(true)}>
                    <Row>
                      <Icon name='plus' atomic={{m: 'Mend(re)'}} />
                      <span className='Hidden--lesm'>New</span>
                    </Row>
-                 </ButtonLink>
+                 </Button>
                  <NewEntryModal />
                </div>)}
 
@@ -183,10 +185,10 @@ class ViewHeader extends Component {
           }}}>
           <TableRow
             theme={{ base: { bd: '' } }}
-            className='Flxg(1)'>
+            className='Flx(flx1)'>
             <TableCell size='3'
               onClick={() => handleSortColumn('src_content')}>
-              <ButtonLink type='default'>
+              <Button bsStyle='link' type='button'>
                 <Row>
                   {'src_content' in sort
                     ? (sort.src_content === true)
@@ -195,20 +197,21 @@ class ViewHeader extends Component {
                     : ''}
                   <Icon name='glossary'
                     atomic={{c: 'C(neutral)', m: 'Mend(re) MStart(rq)'}} />
-                  <span className='LineClamp(1,24px)'>
+                  <span>
                     English (United States)
                   </span>
                   <span className='C(muted) Mstart(rq)'>{termCount}</span>
                 </Row>
-              </ButtonLink>
+              </Button>
             </TableCell>
-            <TableCell tight size={'3'}
+            <TableCell
+              className='langSelect'
               theme={{base: {lineClamp: ''}}}>
               <Select
                 name='language-selection'
                 placeholder={statsLoading
                       ? 'Loading…' : 'Select a language…'}
-                className='Flx(flx1)'
+                className='Flxg(1)'
                 isLoading={statsLoading}
                 value={selectedTransLocale}
                 options={transLocales}
@@ -225,22 +228,22 @@ class ViewHeader extends Component {
                 </span>
               </Row>)}
             </TableCell>
-            <TableCell hideSmall
+            <TableCell hideSmall size='3'
               onClick={() => handleSortColumn('part_of_speech')}>
-              <ButtonLink type='default'>
+              <Button bsStyle='link' type='button'>
                 <Row>
                   {'part_of_speech' in sort
                     ? (sort.part_of_speech === true)
                     ? <Icon name='chevron-down' />
                     : <Icon name='chevron-up' />
                     : ''}
-                  <span className='LineClamp(1,24px) MStart(rq)'>
+                  <span className='MStart(rq)'>
                     Part of Speech
                   </span>
                 </Row>
-              </ButtonLink>
+              </Button>
             </TableCell>
-            <TableCell size='2' />
+            <TableCell size='3' />
           </TableRow>
         </View>
       </Header>
@@ -250,7 +253,7 @@ class ViewHeader extends Component {
 
 ViewHeader.propTypes = {
   title: PropTypes.string,
-  projectSlug: PropTypes.string,
+  project: PropTypes.object,
   results: PropTypes.object,
   termCount: PropTypes.number.isRequired,
   statsLoading: PropTypes.bool,
@@ -293,7 +296,7 @@ const mapStateToProps = (state) => {
     permission,
     sort,
     deleteAll,
-    projectSlug
+    project
   } = state.glossary
   const query = state.routing.location.query
   return {
@@ -305,7 +308,7 @@ const mapStateToProps = (state) => {
     permission,
     sort,
     deleteAll,
-    projectSlug
+    project
   }
 }
 

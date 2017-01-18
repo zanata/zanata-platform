@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.0.0-SNAPSHOT</version>
+    <version>4.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -13,6 +13,7 @@
   <name>functional-test</name>
 
   <properties>
+    <allow.deploy.skip>true</allow.deploy.skip>
     <selenium.version>2.45.0</selenium.version>
 
     <!--Cargo Settings -->
@@ -1035,7 +1036,6 @@
             <home>${appserver.home}</home>
 
             <systemProperties>
-              <ehcache.disk.store.dir>${project.build.directory}/ehcache</ehcache.disk.store.dir>
               <jboss.server.log.threshold>WARN</jboss.server.log.threshold>
               <hibernate.search.default.indexBase>${hibernate.search.default.indexBase}</hibernate.search.default.indexBase>
               <javamelody.storage-directory>${javamelody.storage-directory}</javamelody.storage-directory>
@@ -1121,21 +1121,14 @@
           </configuration>
         </plugin>
 
-        <!--We don't want cobertura here-->
+        <!-- We don't want to check coverage here -->
         <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>cobertura-maven-plugin</artifactId>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
           <configuration>
-            <instrumentation>
-              <excludes>
-                <exclude>**/*</exclude>
-              </excludes>
-            </instrumentation>
-            <check>
-              <totalBranchRate>0</totalBranchRate>
-              <totalLineRate>0</totalLineRate>
-              <haltOnFailure>false</haltOnFailure>
-            </check>
+            <excludes>
+              <exclude>**</exclude>
+            </excludes>
           </configuration>
         </plugin>
       </plugins>

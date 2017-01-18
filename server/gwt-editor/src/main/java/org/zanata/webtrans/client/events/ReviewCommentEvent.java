@@ -25,8 +25,8 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.gwt.event.shared.GwtEvent;
 
 public class ReviewCommentEvent extends GwtEvent<ReviewCommentEventHandler> {
-    public static Type<ReviewCommentEventHandler> TYPE =
-            new Type<ReviewCommentEventHandler>();
+    public static final Type<ReviewCommentEventHandler> TYPE =
+            new Type<>();
 
     private TransUnitId transUnitId;
 

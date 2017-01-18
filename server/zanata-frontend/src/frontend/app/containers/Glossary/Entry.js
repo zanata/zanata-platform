@@ -1,10 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { isEqual } from 'lodash'
-
 import {
-  ButtonLink,
-  ButtonRound,
-  EditableText,
   Icon,
   LoaderText,
   TableCell,
@@ -13,6 +9,8 @@ import {
 } from 'zanata-ui'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
+import { EditableText } from '../../components'
+import { Button } from 'react-bootstrap'
 /**
  * Component to display a GlossaryEntry
  */
@@ -80,14 +78,13 @@ class Entry extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     const updateButton = displayUpdateButton && (
-      <ButtonRound atomic={{m: 'Mend(rh)'}}
-        type='primary'
+      <Button bsSize='small' bsStyle='primary'
         disabled={isSaving}
         onClick={() => handleUpdateTerm(entry, transSelected)}>
         <LoaderText loading={isSaving} loadingText='Updating'>
           Update
         </LoaderText>
-      </ButtonRound>
+      </Button>
     )
 
     const loadingDiv = (
@@ -116,82 +113,89 @@ class Entry extends Component {
     }
 
     return (
-      <TableRow highlight
-        className='editable'
-        selected={selected}
-        onClick={() => handleSelectTerm(entry.id)}>
-        <TableCell size='3' tight>
+      <div>
+        <TableRow highlight
+          className='editable'
+          selected={selected}
+          onClick={() => handleSelectTerm(entry.id)}>
+          <TableCell size='3' tight>
+            {termsLoading
+              ? loadingDiv
+              : (<EditableText
+                title={entry.srcTerm.content}
+                editable={false}
+                editing={selected}>
+                {entry.srcTerm.content}
+              </EditableText>)
+            }
+          </TableCell>
+          <TableCell>
+            {secondColumnContent}
+          </TableCell>
+          <TableCell hideSmall>
           {termsLoading
             ? loadingDiv
             : (<EditableText
-              title={entry.srcTerm.content}
-              editable={false}
-              editing={selected}>
-              {entry.srcTerm.content}
-            </EditableText>)
-          }
-        </TableCell>
-        <TableCell size={'3'} tight={transSelected}>
-          {secondColumnContent}
-        </TableCell>
-        <TableCell hideSmall>
-          {termsLoading
-            ? loadingDiv
-            : (<EditableText
+              className='textStateClasses'
               title={entry.pos}
               editable={!transSelected && editable}
               editing={selected}
               onChange={(e) => handleTermFieldUpdate('pos', e)}
-              placeholder='Add part of speech…'
+              placeholder='Add part of speech'
               emptyReadOnlyText='No part of speech'>
               {entry.pos}
             </EditableText>)
           }
-        </TableCell>
-        <TableCell size='2'>
-          {termsLoading
-            ? loadingDiv
-            : (<Row>
-              <ButtonLink atomic={{m: 'Mend(rq)'}}
-                disabled={isDeleting}
-                onClick={() => this.setShowingEntryModal(true)}>
-                <Icon name='info' />
-              </ButtonLink>
-              <EntryModal entry={entry}
-                show={this.state.showEntryModal}
-                isSaving={isSaving}
-                selectedTransLocale={selectedTransLocale}
-                canUpdate={displayUpdateButton}
-                handleEntryModalDisplay={(display) =>
-                  this.setShowingEntryModal(display)}
-                handleResetTerm={(entryId) => handleResetTerm(entryId)}
-                handleTermFieldUpdate={(field, e) =>
-                  handleTermFieldUpdate(field, e)}
-                handleUpdateTerm={(entry) =>
-                  handleUpdateTerm(entry, false)} />
-                {updateButton}
-              <div
-                className='Op(0) row--selected_Op(1) editable:h_Op(1) Trs(eo)'>
-                {displayUpdateButton && !isSaving ? (
-                  <ButtonLink
-                    onClick={() => handleResetTerm(entry.id)}>
-                    Cancel
-                  </ButtonLink>
-                ) : ''}
-                {!transSelected && permission.canDeleteEntry && !isSaving &&
-                !displayUpdateButton && (
-                  <DeleteEntryModal entry={entry}
-                    isDeleting={isDeleting}
-                    show={this.state.showDeleteModal}
-                    handleDeleteEntryDisplay={(display) =>
-                  this.setShowingDeleteEntryModal(display)}
-                    handleDeleteEntry={handleDeleteTerm} />)
-                }
-              </div>
-            </Row>)
-          }
-        </TableCell>
-      </TableRow>
+          </TableCell>
+          <TableCell size='3'>
+            {termsLoading
+              ? loadingDiv
+              : (<Row>
+                <Button bsStyle='link' atomic={{m: 'Mend(rq)'}}
+                  disabled={isDeleting}
+                  onClick={() => this.setShowingEntryModal(true)}>
+                  <Icon name='info' />
+                </Button>
+                <EntryModal entry={entry}
+                  show={this.state.showEntryModal}
+                  isSaving={isSaving}
+                  selectedTransLocale={selectedTransLocale}
+                  canUpdate={displayUpdateButton}
+                  handleEntryModalDisplay={(display) =>
+                    this.setShowingEntryModal(display)}
+                  handleResetTerm={(entryId) => handleResetTerm(entryId)}
+                  handleTermFieldUpdate={(field, e) =>
+                    handleTermFieldUpdate(field, e)}
+                  handleUpdateTerm={(entry) =>
+                    handleUpdateTerm(entry, false)} />
+                <div className='Op(0) row--selected_Op(1)
+                  editable:h_Op(1) Trs(eo)'>
+                  <div className='Hidden--lesm'>
+                    <Row>
+                      {updateButton}
+                      {displayUpdateButton && !isSaving ? (
+                        <Button bsStyle='link' bsSize='small'
+                          onClick={() => handleResetTerm(entry.id)}>
+                          Cancel
+                        </Button>
+                      ) : ''}
+                    </Row>
+                  </div>
+                  {!transSelected && permission.canDeleteEntry && !isSaving &&
+                  !displayUpdateButton && (
+                    <DeleteEntryModal entry={entry}
+                      isDeleting={isDeleting}
+                      show={this.state.showDeleteModal}
+                      handleDeleteEntryDisplay={(display) =>
+                    this.setShowingDeleteEntryModal(display)}
+                      handleDeleteEntry={handleDeleteTerm} />)
+                  }
+                </div>
+              </Row>)
+            }
+          </TableCell>
+        </TableRow>
+      </div>
     )
     /* eslint-enable react/jsx-no-bind */
   }

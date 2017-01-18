@@ -41,16 +41,21 @@
       value="#{activityEntry.getDocumentName(cc.attrs.value)}"/>
     <ui:fragment rendered="#{docName != null and !docName.isEmpty()}">
       <li class="#{cc.attrs.hideInfo ? 'reveal__target': ''}">
-        <i aria-hidden="true" class="i i--document txt--neutral"
-          title="#{msgs['jsf.Document']}"></i>
-        <span class="is-invisible">#{msgs['jsf.Document']}</span>
         <ui:fragment rendered="#{not isVersionDeleted}">
-          <a
-            href="#{activityEntry.getDocumentUrl(cc.attrs.value)}">#{docName}</a>
+          <a class="bx--break-all bx--block"
+            href="#{activityEntry.getDocumentUrl(cc.attrs.value)}">
+            <i aria-hidden="true" class="i i--document txt--neutral l--push-right-quarter"
+              title="#{msgs['jsf.Document']}"></i>
+            <span class="is-invisible">#{msgs['jsf.Document']}</span>
+            #{docName}
+          </a>
         </ui:fragment>
-        <ui:fragment rendered="#{isVersionDeleted}">
+        <h:panelGroup layout="block" styleClass="bx--break-all" rendered="#{isVersionDeleted}">
+          <i aria-hidden="true" class="i i--document txt--neutral l--push-right-quarter"
+            title="#{msgs['jsf.Document']}"></i>
+          <span class="is-invisible">#{msgs['jsf.Document']}</span>
           <span class="txt--neutral">#{docName}</span>
-        </ui:fragment>
+        </h:panelGroup>
       </li>
     </ui:fragment>
     <ui:param name="languageName"

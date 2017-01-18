@@ -3,13 +3,12 @@ import { connect } from 'react-redux'
 import { cloneDeep, isEmpty } from 'lodash'
 
 import {
-  ButtonLink,
-  ButtonRound,
-  EditableText,
   LoaderText,
-  Modal,
-  Row
+  Modal
 } from 'zanata-ui'
+
+import { EditableText } from '../../components'
+import { ButtonGroup, Button } from 'react-bootstrap'
 
 import {
   glossaryToggleNewEntryModal,
@@ -91,6 +90,7 @@ class NewEntryModal extends Component {
           <div className='Mb(rh)'>
             <label className='Fw(b)'>Term</label>
             <EditableText
+              className='editable textStateClasses'
               editable={true}
               editing={true}
               placeholder='The new term'
@@ -102,6 +102,7 @@ class NewEntryModal extends Component {
           <div className='Mb(rh)'>
             <label className='Fw(b)'>Part of speech</label>
             <EditableText
+              className='textInput'
               editable={true}
               editing={true}
               theme={{root: {m: 'Mb(rh)'}}}
@@ -114,6 +115,7 @@ class NewEntryModal extends Component {
           <div className='Mb(rh)'>
             <label className='Fw(b)'>Description</label>
             <EditableText
+              className='textInput'
               editable={true}
               editing={true}
               placeholder='The definition of this term'
@@ -124,15 +126,14 @@ class NewEntryModal extends Component {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Row theme={{ base: {j: 'Jc(c)'} }}>
-            <ButtonLink
-              atomic={{m: 'Mend(r1)'}}
+          <ButtonGroup className='pull-right'>
+            <Button bsStyle='link'
               disabled={isSaving}
               onClick={() => this.handleCancel()}>
               Cancel
-            </ButtonLink>
-            <ButtonRound
-              type='primary'
+            </Button>
+            <Button bsStyle='primary'
+              type='button'
               disabled={!isAllowSave || isSaving}
               onClick={
                 () => {
@@ -142,8 +143,8 @@ class NewEntryModal extends Component {
               <LoaderText loading={isSaving} loadingText='Saving'>
                 Save
               </LoaderText>
-            </ButtonRound>
-          </Row>
+            </Button>
+          </ButtonGroup>
         </Modal.Footer>
       </Modal>)
     /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */

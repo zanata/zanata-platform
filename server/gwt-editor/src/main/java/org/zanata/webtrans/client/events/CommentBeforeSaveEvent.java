@@ -25,8 +25,8 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class CommentBeforeSaveEvent extends
         GwtEvent<CommentBeforeSaveEventHandler> {
-    public static Type<CommentBeforeSaveEventHandler> TYPE =
-            new Type<CommentBeforeSaveEventHandler>();
+    public static final Type<CommentBeforeSaveEventHandler> TYPE =
+            new Type<>();
 
     private final TransUnitSaveEvent saveEvent;
 

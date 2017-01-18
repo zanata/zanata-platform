@@ -1,6 +1,5 @@
 package org.zanata.service.impl;
 
-import com.google.common.base.Optional;
 import lombok.Data;
 import org.assertj.core.api.Condition;
 import org.dbunit.operation.DatabaseOperation;
@@ -47,6 +46,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Arrays.asList;

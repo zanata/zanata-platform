@@ -18,7 +18,7 @@ public class GlossaryPullOptionsImpl extends ConfigurableGlossaryOptionsImpl
 
     @Option(name = "--file-type", metaVar = "(CSV or PO)",
         usage = "File type to be downloaded.\n" +
-            "csv (default) - csv file format with comma separated\n" +
+            "csv (default) - csv file format with comma separated values\n" +
             "po - a zip file of po files on available locales")
     public void setFileType(String fileType) {
         this.fileType = fileType;

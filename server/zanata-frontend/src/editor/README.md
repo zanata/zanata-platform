@@ -21,8 +21,7 @@ faster builds and immediate feedback on code changes.
 Make sure you test changes against the current server before checking them in.
 
 ## Setup and Deployment
-
-1. Make sure [node and npm](http://nodejs.org/) are installed. Version v5.4.1
+1. Make sure [node and yarn](http://nodejs.org/) are installed. Node: v5.6.0, Yarn: v0.18.1
 2. Setup dependencies: `make setup`.
 3. Build compressed files: `make build`, files will be in /app/dist
 
@@ -65,6 +64,7 @@ Always add documentation.
 
 For CSS I am aiming to move to [these guidelines](https://github.com/suitcss/suit/blob/master/doc/README.md).
 
-## License
+## ignore-scripts
 
-Zanata is Free software, licensed under the [LGPL](http://www.gnu.org/licenses/lgpl-2.1.html).
+This module is setup to disable lifecycle scripts for yarn command by default. See help using `yarn -h`
+The configuration is in .yarnrc in this module.

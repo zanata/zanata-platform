@@ -9,7 +9,7 @@ public class ReferenceVisibleEvent extends
     /**
      * Handler type.
      */
-    private static Type<ReferenceVisibleEventHandler> TYPE;
+    private static final Type<ReferenceVisibleEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -17,9 +17,6 @@ public class ReferenceVisibleEvent extends
      * @return returns the handler type
      */
     public static Type<ReferenceVisibleEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<ReferenceVisibleEventHandler>();
-        }
         return TYPE;
     }
 

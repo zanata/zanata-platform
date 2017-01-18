@@ -28,7 +28,6 @@ import java.util.List;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-import javax.validation.constraints.Pattern;
 
 import lombok.Data;
 import lombok.Getter;
@@ -40,9 +39,13 @@ import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.Digits;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Pattern;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
+import org.zanata.action.validator.DomainList;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.validator.EmailList;
@@ -122,6 +125,12 @@ public class ServerConfigurationBean implements Serializable {
 
     @Getter
     @Setter
+    private boolean allowAnonymousUser = true;
+    private PropertyWithKey<Boolean> allowAnonymousUserProperty = new PropertyWithKey<Boolean>("allowAnonymousUser", KEY_ALLOW_ANONYMOUS_USER);
+
+    @EmailList
+    @Getter
+    @Setter
     private String logDestinationEmails;
 
     @Getter
@@ -147,20 +156,28 @@ public class ServerConfigurationBean implements Serializable {
     @Setter
     private String helpUrl;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
+    @Pattern(regexp = "\\d{0,5}",
+            message = "value must be an integer number between 0 to 99999")
     private String maxConcurrentRequestsPerApiKey;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
+    @Pattern(regexp = "\\d{0,5}",
+            message = "value must be an integer number between 0 to 99999")
     private String maxActiveRequestsPerApiKey;
 
-    @Pattern(regexp = "\\d{0,5}")
     @Getter
     @Setter
+    @Pattern(regexp = "\\d{0,5}",
+            message = "value must be an integer number between 0 to 99999")
     private String maxFilesPerUpload;
+
+    @DomainList
+    @Getter
+    @Setter
+    private String permittedUserEmailDomains;
 
     private List<PropertyWithKey<String>> commonStringProperties = Arrays.asList(
             new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
@@ -177,6 +194,8 @@ public class ServerConfigurationBean implements Serializable {
             new PropertyWithKey<String>("maxActiveRequestsPerApiKey", KEY_MAX_ACTIVE_REQ_PER_API_KEY),
             new PropertyWithKey<String>("maxFilesPerUpload", KEY_MAX_FILES_PER_UPLOAD),
             new PropertyWithKey<String>("displayUserEmail", KEY_DISPLAY_USER_EMAIL),
+            new PropertyWithKey<String>("permittedUserEmailDomains",
+                    KEY_PERMITTED_USER_EMAIL_DOMAIN),
             homeContentProperty
     );
 
@@ -186,13 +205,14 @@ public class ServerConfigurationBean implements Serializable {
 
         facesMessages.addGlobal("Home content was successfully updated.");
         homeContentChangedEventEvent.fire(new HomeContentChangedEvent());
-        return "/home.xhtml";
+        return "/public/home.xhtml";
     }
 
     @PostConstruct
     public void onCreate() {
         setPropertiesFromConfigIfNotNull(commonStringProperties);
         setBooleanPropertyFromConfigIfNotNull(enableLogEmailProperty);
+        setBooleanPropertyFromConfigIfNotNull(allowAnonymousUserProperty);
         this.fromEmailAddr = applicationConfiguration.getFromEmailAddr();
     }
 
@@ -209,10 +229,8 @@ public class ServerConfigurationBean implements Serializable {
         if (valueHolder != null) {
             try {
                 property.set(valueHolder.getValue());
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                log.error("error setting property value:" + property.getKey() + " -> " + valueHolder.getValue(), e);
             }
         }
     }
@@ -222,10 +240,8 @@ public class ServerConfigurationBean implements Serializable {
         if (valueHolder != null) {
             try {
                 property.set(Boolean.parseBoolean(valueHolder.getValue()));
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+            } catch (InvocationTargetException | IllegalAccessException e) {
+                log.error("error setting property value:" + property.getKey() + " -> " + valueHolder.getValue(), e);
             }
         }
     }
@@ -247,6 +263,16 @@ public class ServerConfigurationBean implements Serializable {
             emailLogEventsValue.setValue(Boolean.toString(enableLogEmail));
         }
         applicationConfigurationDAO.makePersistent(emailLogEventsValue);
+        HApplicationConfiguration allowAnonymousUserValue =
+                applicationConfigurationDAO.findByKey(KEY_ALLOW_ANONYMOUS_USER);
+        if (allowAnonymousUserValue == null) {
+            allowAnonymousUserValue =
+                    new HApplicationConfiguration(KEY_ALLOW_ANONYMOUS_USER,
+                            Boolean.toString(allowAnonymousUser));
+        } else {
+            allowAnonymousUserValue.setValue(Boolean.toString(allowAnonymousUser));
+        }
+        applicationConfigurationDAO.makePersistent(allowAnonymousUserValue);
 
         applicationConfigurationDAO.flush();
         facesMessages.clear();
@@ -267,12 +293,8 @@ public class ServerConfigurationBean implements Serializable {
             ServerConfigurationService.persistApplicationConfig(
                     property.getKey(), value, property.get(),
                     applicationConfigurationDAO);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
+            log.error("error persisting property value:" + property.getKey() + " -> " + value, e);
         }
     }
 

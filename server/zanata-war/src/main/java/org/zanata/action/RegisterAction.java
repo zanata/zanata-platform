@@ -25,7 +25,6 @@ import java.io.Serializable;
 import javax.enterprise.inject.Model;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +32,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.action.validator.NotDuplicateEmail;
+import org.zanata.config.AllowPublicRegistration;
 import org.zanata.dao.PersonDAO;
+import org.zanata.exception.AuthorizationException;
 import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.EmailService;
@@ -53,7 +53,7 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 @Model
 @Transactional
 @Slf4j
-public class RegisterAction implements Serializable {
+public class RegisterAction implements HasUserDetail, Serializable {
 
     private static final long serialVersionUID = -7883627570614588182L;
 
@@ -81,6 +81,10 @@ public class RegisterAction implements Serializable {
     @Inject
     private UrlUtil urlUtil;
 
+    @Inject
+    @AllowPublicRegistration
+    private boolean allowRegistration;
+
     private String username;
     private String email;
     private String password;
@@ -97,6 +101,13 @@ public class RegisterAction implements Serializable {
         return null;
     }
 
+    public void checkRegistrationAvailability() {
+        if (!allowRegistration) {
+            throw new AuthorizationException(
+                    "Public registration is disabled on this instance. Please contact admin to create your account");
+        }
+    }
+
     public HPerson getPerson() {
         if (person == null)
             person = new HPerson();
@@ -108,10 +119,7 @@ public class RegisterAction implements Serializable {
         this.username = username;
     }
 
-    @NotEmpty
-    @Size(min = 3, max = 20)
-    @Pattern(regexp = AbstractProfileAction.USERNAME_REGEX,
-            message = "{validation.username.constraints}")
+    @Override
     public String getUsername() {
         return username;
     }
@@ -120,9 +128,8 @@ public class RegisterAction implements Serializable {
         this.email = email;
     }
 
-    @NotEmpty
-    @Email
     @NotDuplicateEmail(message = "This email address is already taken.")
+    @Override
     public String getEmail() {
         return email;
     }
@@ -193,7 +200,7 @@ public class RegisterAction implements Serializable {
         facesMessages.addGlobal(message);
 
         conversation.close();
-        return "/home.xhtml";
+        return "/account/login.xhtml";
     }
 
     public boolean isValid() {

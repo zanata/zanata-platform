@@ -44,6 +44,15 @@ module.exports = {
       {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract('style', 'css!csso!postcss!rework')
+      },
+
+      /* Bundles bootstrap css into the same bundle as the other css.
+       * TODO look at running through csso and rework, same as other css
+       */
+      {
+        test: /\.less$/,
+        exclude: /node_modules/,
+        loader: ExtractTextPlugin.extract('style', 'css!postcss!less')
       }
     ]
   },

@@ -7,6 +7,7 @@
 
   <f:metadata>
     <f:viewParam name="key" value="#{activate.activationKey}"/>
+    <f:viewParam name="resetPasswordKey" value="#{activate.resetPasswordKey}"/>
     <f:event type="preRenderView" listener="#{activate.validateActivationKey}"/>
     <f:event type="preRenderView" listener="#{activate.activate}"/>
   </f:metadata>

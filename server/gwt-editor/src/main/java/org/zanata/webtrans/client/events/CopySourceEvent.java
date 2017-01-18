@@ -10,7 +10,7 @@ public class CopySourceEvent extends GwtEvent<CopySourceEventHandler> {
     /**
      * Handler type.
      */
-    private static Type<CopySourceEventHandler> TYPE;
+    private static final Type<CopySourceEventHandler> TYPE = new Type<>();
     private HasText textArea;
 
     public CopySourceEvent(HasText textArea) {
@@ -23,9 +23,6 @@ public class CopySourceEvent extends GwtEvent<CopySourceEventHandler> {
      * @return returns the handler type
      */
     public static Type<CopySourceEventHandler> getType() {
-        if (TYPE == null) {
-            TYPE = new Type<CopySourceEventHandler>();
-        }
         return TYPE;
     }
 

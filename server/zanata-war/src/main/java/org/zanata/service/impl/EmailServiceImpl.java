@@ -20,7 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import java.io.Serializable;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -128,6 +127,15 @@ public class EmailServiceImpl implements EmailService {
         emailBuilder.sendMessage(new ActivationEmailStrategy(activationKey),
                 null, to);
         return msgs.get("jsf.Account.ActivationMessage");
+    }
+
+    @Override
+    public String sendActivationAndResetPasswordEmail(String toName,
+            String toEmailAddr, String activationKey, String resetPasswordKey) {
+        InternetAddress to = Addresses.getAddress(toEmailAddr, toName);
+        emailBuilder.sendMessage(new ActivationEmailStrategy(activationKey, resetPasswordKey),
+                null, to);
+        return msgs.format("jsf.account.activationAndResetPasswordEmailSent", toName);
     }
 
     @Override

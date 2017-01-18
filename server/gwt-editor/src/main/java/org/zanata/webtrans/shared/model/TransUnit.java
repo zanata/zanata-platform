@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 
@@ -204,7 +205,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
 
     public String debugString() {
         // @formatter:off
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .add("rowIndex", rowIndex)
 //                .add("resId", resId)
@@ -275,7 +276,7 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
             Preconditions.checkState(verNum >= 0);
 
             lastModifiedBy = Strings.nullToEmpty(lastModifiedBy);
-            status = Objects.firstNonNull(status, ContentState.New);
+            status = MoreObjects.firstNonNull(status, ContentState.New);
 
             return new TransUnit(this);
         }

@@ -72,6 +72,13 @@ public class ProjectRawCompatibilityITCase extends RestTest {
         addBeforeTestOperation(new DataSetOperation(
                 "org/zanata/test/model/ProjectsData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
+        addBeforeTestOperation(new DataSetOperation(
+                "org/zanata/test/model/ApplicationConfigurationData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+
+        addAfterTestOperation(new DataSetOperation(
+                "org/zanata/test/model/ClearAllTables.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
     }
 
     @Test

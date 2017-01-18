@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 public class LanguagesPage extends BasePage {
 
     private By addLanguageButton = By.id("btn-language-add-new");
-    private By badgesLabel = By.className("badge");
+    private By defaultLabel = By.className("label-default");
 
     public LanguagesPage(WebDriver driver) {
         super(driver);
@@ -92,12 +92,6 @@ public class LanguagesPage extends BasePage {
     public boolean languageIsEnabledByDefault(String localeId) {
         log.info("Query is language enabled by default {}", localeId);
         // Search for enabledByDefaultLabel label
-        for (WebElement label: findRowByLocale(localeId).findElements(badgesLabel)) {
-            if (label.getText().trim().equalsIgnoreCase("DEFAULT")) {
-                return true;
-            }
-        }
-        return false;
+        return !findRowByLocale(localeId).findElements(defaultLabel).isEmpty();
     }
-
 }

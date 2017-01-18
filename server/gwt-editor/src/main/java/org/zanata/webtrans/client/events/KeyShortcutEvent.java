@@ -48,7 +48,7 @@ public class KeyShortcutEvent extends GwtEvent<KeyShortcutEventHandler> {
     /**
      * Handler type.
      */
-    private static Type<KeyShortcutEventHandler> TYPE;
+    private static final Type<KeyShortcutEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -56,8 +56,7 @@ public class KeyShortcutEvent extends GwtEvent<KeyShortcutEventHandler> {
      * @return returns the handler type
      */
     public static Type<KeyShortcutEventHandler> getType() {
-        return TYPE != null ? TYPE : (TYPE =
-                new Type<KeyShortcutEventHandler>());
+        return TYPE;
     }
 
     @Override

@@ -10,7 +10,7 @@ public class TransUnitSelectionEvent extends
     /**
      * Handler type.
      */
-    private static Type<TransUnitSelectionHandler> TYPE;
+    private static final Type<TransUnitSelectionHandler> TYPE = new Type<>();
     private final TransUnit selection;
 
     /**
@@ -19,8 +19,7 @@ public class TransUnitSelectionEvent extends
      * @return returns the handler type
      */
     public static Type<TransUnitSelectionHandler> getType() {
-        return TYPE != null ? TYPE : (TYPE =
-                new Type<TransUnitSelectionHandler>());
+        return TYPE;
     }
 
     public TransUnitSelectionEvent(TransUnit selection) {

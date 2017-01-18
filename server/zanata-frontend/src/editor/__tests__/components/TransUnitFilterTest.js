@@ -6,7 +6,7 @@ import TestUtils from 'react-addons-test-utils'
 import TransUnitFilter from '../../app/components/TransUnitFilter'
 import FilterToggle from '../../app/components/FilterToggle'
 import { Icon, Row } from 'zanata-ui'
-import mockGettextCatalog from '../mockAngularGettext'
+import mockGettextCatalog from '../mock/mockAngularGettext'
 
 describe('TransUnitFilterTest', () => {
   it('FilterToggle markup', () => {

@@ -46,6 +46,9 @@ import {
   GLOSSARY_GET_QUALIFIED_NAME_REQUEST,
   GLOSSARY_GET_QUALIFIED_NAME_SUCCESS,
   GLOSSARY_GET_QUALIFIED_NAME_FAILURE,
+  PROJECT_GET_DETAILS_REQUEST,
+  PROJECT_GET_DETAILS_SUCCESS,
+  PROJECT_GET_DETAILS_FAILURE,
   FILE_TYPES
 } from '../actions/glossary'
 import {
@@ -55,8 +58,11 @@ import {
 } from '../actions/common'
 import GlossaryHelper from '../utils/GlossaryHelper'
 
-const ERROR_MSG = 'We are unable to get glossary information from server.' +
+const ERROR_MSG = 'We are unable to get glossary information from server. ' +
   'Please refresh this page and try again.'
+
+const PROJECT_ERROR_MSG = 'We are unable to get project information ' +
+  'from server. Please refresh this page and try again.'
 
 const glossary = handleActions({
   [CLEAR_MESSAGE]: (state, action) => {
@@ -107,6 +113,35 @@ const glossary = handleActions({
       }
     }
   },
+  [PROJECT_GET_DETAILS_REQUEST]: (state, action) => ({
+    ...state,
+    project: undefined
+  }),
+  [PROJECT_GET_DETAILS_SUCCESS]: (state, action) => {
+    if (action.error) {
+      return {
+        ...state,
+        project: undefined,
+        notification: {
+          severity: SEVERITY.ERROR,
+          message: PROJECT_ERROR_MSG
+        }
+      }
+    } else {
+      return {
+        ...state,
+        project: action.payload
+      }
+    }
+  },
+  [PROJECT_GET_DETAILS_FAILURE]: (state, action) => ({
+    ...state,
+    project: undefined,
+    notification: {
+      severity: SEVERITY.ERROR,
+      message: PROJECT_ERROR_MSG
+    }
+  }),
   [GLOSSARY_PERMISSION_FAILURE]: (state, action) => ({
     ...state,
     permission: {

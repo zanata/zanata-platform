@@ -1,0 +1,377 @@
+#!/usr/bin/env zsh
+
+# Author: Sean Flanigan <sflaniga@redhat.com>
+
+# This script is a helper which runs Maven to build Zanata.
+# IMPORTANT: This script is only intended for devs/QA, not for automation.
+# Options are subject to change without notice.
+
+# TODO list:
+# - xvfb-run, and new option -X to turn off
+# - allocate-jboss-ports, and new option -p to turn off
+# - new option (-r? -d?) to package server and run docker/rundev.sh
+# - use -Dgwt.validateOnly for --skip-package
+# - set webdriver properties and SMTP_PORT for functional tests?
+
+set -e # exit script in case of error
+
+#############################################
+# set up basic variables
+#############################################
+
+# :a allows this script be linked in to a different zanata
+# worktree and run against it.
+# :A will follow symlinks, :a will not
+DIR=${0:A:h}
+
+ROOT=$(realpath --relative-to="$PWD" "$DIR")
+scriptname="$0"
+mvn=$ROOT/mvnw
+
+#############################################
+
+#############################################
+# utility function(s)
+#############################################
+
+# exit abnormally with an error message
+function die() {
+  echo ERROR: "$@"
+  exit 1
+}
+
+function shouldRunArqTests() {
+  return $(( !($+arqTests || $+full || $+verify || $+verifyAll) ))
+}
+function shouldRunFuncTests() {
+  return $(( !($+funcTests || $+full || $+verify || $+verifyAll) ))
+}
+
+
+#############################################
+
+
+#############################################
+# print usage help
+#############################################
+
+# NB: please keep help() and zparseopts in sync!
+help() {
+  cat <<EOF
+Usage: $scriptname <build-target> <options>
+
+Build targets (choose one):
+    --client, --server or --all (client and server)
+
+General options:
+    -h, --help      this usage help
+    -q, --quiet     (mvn -q)
+    -X, --debug     (mvn -X)
+    -o, --offline   (mvn -o)
+    -c, --clean     (mvn clean)
+    -C, --clean-partial
+                    removes various generated files from server without running a full mvn clean
+                    (takari lifecycle handles this in jar modules)
+    -P, --skip-package
+                    runs mvn test instead of mvn package
+    -i, --install   (mvn install)
+    -Q, --quick     skips all tests
+    -U, --skip-unit-tests
+                    (-DskipUnitTests)
+    -A, --analyse   checkstyle,findbugs,... (-DstaticAnalysis)
+    -O, --optimise  enables JS/GWT optimisations (-Doptimise)
+    --full          equivalent to -O --analyse --verify-all -i; all possible tests and optimisations
+    -n, --dry-run   output the mvn command line, don't run it
+    --              pass through remaining options to mvn command line
+                    eg ./build.sh --server -Q -- -Dchrome
+
+Server options:
+    --skip-install-node     skip node/npm install in frontend
+    --skip-npm-install      skip run npm install in frontend
+    -F, --skip-frontend     skip building frontend
+    -G, --skip-gwt          skip building gwt-editor
+    -a, --arquillian-tests  runs arquillian integration tests
+    -f, --functional-tests LEVEL
+                            run some or all functional tests
+        -f 1 enable basic functional tests
+        -f 9 enable all functional tests
+    --verify                equivalent to -a -f 1
+    --verify-all            equivalent to -a -f 9
+    -E, --eap               (-Dappserver=jbosseap6, requires EAP7_URL env var)
+    -W, --wildfly           (-Dappserver=wildfly8)
+    -w, --wait              quick-build, install Zanata then wait for IDE to run functional tests
+EOF
+}
+
+#############################################
+
+# we can't leave this until after zparseopts because of the -D option
+if (( # == 0 )); then
+  help
+  exit
+fi
+
+
+#############################################
+# parse CLI options into array variables
+#############################################
+
+# zparseopts primer:
+# -D : delete all recognised options from $@
+# -K : keep array variables untouched if no corresponding option
+# a=arg puts any -a params into the array arg
+# a:=arg puts -a and its value (eg -a 1) into the array arg
+# -long-arg=arg puts any --long-arg params into the array arg also
+
+# NB: please keep help() and zparseopts in sync!
+zparseopts -E -D -K -- \
+  -client=client \
+  -server=server \
+  -all=all \
+  h=help -help=help \
+  q=quiet -quiet=quiet \
+  X=debug -debug=debug \
+  o=offline -offline=offline \
+  c=clean -clean=clean \
+  C=cleanPartial -clean-partial=cleanPartial \
+  i=install -install=install \
+  P=skipPackage -skip-package=skipPackage \
+  Q=quick -quick=quick \
+  U=skipUnitTests -skip-unit-tests=skipUnitTests \
+  A=analyse -analyse=analyse \
+  O=optimise -optimise=optimise \
+  -full=full \
+  n=dryRun -dry-run=dryRun \
+  -skip-install-node=skipInstallNode \
+  -skip-npm-install=skipNpmInstall \
+  F=skipFrontend -skip-frontend=skipFrontend \
+  G=skipGwt -skip-gwt=skipGwt \
+  a=arqTests -arquillian-tests=arqTests \
+  f:=funcTests -functional-tests=funcTests \
+  -verify=verify \
+  -verify-all=verifyAll \
+  E=eap -eap=eap \
+  W=wildfly -wildfly=wildfly \
+  w=wait -wait=wait \
+# don't remove this comment: note the line continuation above (\)
+
+#############################################
+
+
+#############################################
+# start processing options
+#############################################
+
+if (( $+help )); then
+  help
+  exit
+fi
+
+#############################################
+
+
+#############################################
+# choose build targets (project list)
+#############################################
+
+unset skipProjects
+if (( $+skipGwt )); then
+  skipProjects="$skipProjects,!:gwt-editor"
+fi
+if (( $+skipFrontend )); then
+  skipProjects="$skipProjects,!:zanata-frontend"
+fi
+
+unset targetopts
+if (( $+all || (( $+client && $+server )) || $+wait )) || shouldRunFuncTests; then
+  targetopts=all
+elif (( $+client )); then
+  targetopts=client
+elif (( $+server )); then
+  targetopts=server
+fi
+
+if (( $+targetopts )); then
+  if [[ $targetopts == 'client' ]]; then
+    targets=(-pl :zanata-maven-plugin,:zanata-cli${skipProjects} -am)
+  elif [[ $targetopts == 'server' ]]; then
+    targets=(-pl :zanata-test-war${skipProjects} -am)
+  elif (( $+skipProjects )) ; then
+    targets=(-pl "${skipProjects}" -am)
+  else
+    targets=
+  fi
+else
+  help
+  die "no target options specified; choose one: --client --server --all"
+fi
+
+echo targets: $targets
+
+#############################################
+
+
+#############################################
+# choose lifecycle phases/goals
+#############################################
+if (( $+clean )); then
+  goals=(clean)
+else
+  goals=()
+fi
+
+# In the default Maven lifecycle:
+# - 'install' includes 'verify'
+# - 'verify' includes 'package'
+# - 'package' includes 'test'
+
+if (( $+full || $+install || $+wait )); then
+  goals+=(install)
+elif (( $+verify || $+verifyAll || $+arqTests || $+funcTests )); then
+  goals+=(verify)
+elif (( $+skipPackage )); then
+  goals+=(test)
+else
+  goals+=(package)
+fi
+
+echo goals: $goals
+
+#############################################
+
+
+#############################################
+# set Maven properties
+#############################################
+
+if shouldRunArqTests;  then skipArq='';  else skipArq=-DskipArqTests;   fi
+if shouldRunFuncTests; then skipFunc=''; else skipFunc=-DskipFuncTests; fi
+
+mvnopts=($skipArq $skipFunc)
+
+if (( $+funcTests )); then
+  if (( funcTests[2] == 9 )); then
+    mvnopts+=(-DallFuncTests)
+  elif (( funcTests[2] == 1 )); then
+    # do nothing, 'verify' goal is added elsewhere
+  else
+    die "-f only accepts 1 or 9 (for now)"
+  fi
+elif (( $+verifyAll || $+full )); then
+  mvnopts+=(-DallFuncTests)
+fi
+
+if (( $+quick )); then
+  mvnopts+=(-DskipTests -DskipArqTests -DskipFuncTests)
+elif (( $+wait )); then
+  mvnopts+=(-DskipTests)
+fi
+
+if (( $+quiet )); then
+  mvnopts+=(--quiet)
+fi
+if (( $+debug )); then
+  mvnopts+=(--debug)
+fi
+if (( $+offline )); then
+  mvnopts+=(--offline)
+fi
+if (( $+skipUnitTests )); then
+  mvnopts+=(-DskipUnitTests)
+fi
+if (( $+analyse || $+full )); then
+  mvnopts+=(-DstaticAnalysis)
+fi
+if (( $+optimise || $+full )); then
+  mvnopts+=(-Doptimise)
+fi
+if (( $+skipInstallNode )); then
+  mvnopts+=(-Dskip.installnodenpm)
+fi
+if (( $+skipNpmInstall )); then
+  mvnopts+=(-Dskip.npminstall)
+fi
+if (( $+eap )); then
+  mvnopts+=(-Dappserver=jbosseap6)
+else # default to wildfly
+#fi
+#if (( $+wildfly )); then
+  mvnopts+=(-Dappserver=wildfly8)
+fi
+
+echo mvnopts: $mvnopts
+
+#############################################
+
+
+#############################################
+# partial cleaning (for --clean-partial)
+#############################################
+
+unset precommandline
+if (($+cleanPartial)); then
+  precommandline="/bin/rm -rf
+    $ROOT/server/**/target/**/*.war
+    $ROOT/server/**/target/**/*.xml
+    $ROOT/server/functional-test/target/zanataindex/
+    $ROOT/server/zanata-war/target/zanatasearchindex/
+    $ROOT/server/zanata-war/target/zanata/WEB-INF/lib/"
+fi
+
+#############################################
+
+
+#############################################
+# cargo:run (for --wait)
+#############################################
+
+unset cargocommandline
+if (($+wait)); then
+  unset cargogoals
+  if (($+clean)); then
+    cargogoals=(clean)
+  fi
+  # we include `package` to trigger lifecycle bindings, eg start mysql
+  cargogoals+=(package cargo:run)
+
+  # copy mvnopts array without -DskipFuncTests
+  skipFuncOpt=(-DskipFuncTests)
+  cargoopts=${mvnopts:|skipFuncOpt}
+
+  cargocommandline="$mvn $cargogoals $cargoopts -Dmysql.port=13306 -pl :functional-test $@"
+fi
+
+#############################################
+
+
+#############################################
+# build command line and run commands
+#############################################
+
+echo "leftovers (passing to Maven): $@"
+
+commandline="$mvn $goals $targets $mvnopts $@"
+
+echo 'INFO: command lines may need escaping in your shell:'
+if (( $+dryRun )); then
+  if (( $+precommandline )); then
+    echo '[dry-run]' "$precommandline"
+  fi
+  echo '[dry-run]' "$commandline"
+  if (( $+wait )); then
+    echo '[dry-run]' "$cargocommandline"
+  fi
+else
+  if (( $+precommandline )); then
+    echo '[exec]' "$precommandline"
+    sh -c "$precommandline"
+  fi
+  echo '[exec]' "$commandline"
+  sh -c "$commandline"
+  if (( $+wait )); then
+    echo '[exec]' "$cargocommandline"
+    sh -c "$cargocommandline"
+  fi
+fi
+
+#############################################

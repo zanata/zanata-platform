@@ -35,7 +35,7 @@ public class RunValidationEvent extends GwtEvent<RunValidationEventHandler> {
     /**
      * Handler type.
      */
-    private static Type<RunValidationEventHandler> TYPE;
+    private static final Type<RunValidationEventHandler> TYPE = new Type<>();
 
     /**
      * Gets the type associated with this event.
@@ -43,8 +43,7 @@ public class RunValidationEvent extends GwtEvent<RunValidationEventHandler> {
      * @return returns the handler type
      */
     public static Type<RunValidationEventHandler> getType() {
-        return TYPE != null ? TYPE : (TYPE =
-                new Type<RunValidationEventHandler>());
+        return TYPE;
     }
 
     private String source, target;

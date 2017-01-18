@@ -408,14 +408,14 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
 
     public List<HProject> getProjectsForMaintainer(HPerson maintainer,
             String filter, int firstResult, int maxResults) {
-        final String sqlFilter = filter == null ? "" : filter;
+        final String sqlFilter = filter == null ? "" : filter.toLowerCase();
         Query q = getSession().createQuery(
                 "select m.project from HProjectMember m " +
                         "where m.person = :maintainer " +
                         "and m.role = :role " +
                         "and m.project.status <> :obsolete " +
-                        "and (m.project.name like :filter " +
-                        "or m.project.slug like :filter) " +
+                        "and (lower(m.project.name) like :filter " +
+                        "or lower(m.project.slug) like :filter) " +
                         "order by m.project.name")
                 .setParameter("maintainer", maintainer)
                 .setParameter("role", ProjectRole.Maintainer)
@@ -427,14 +427,14 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     }
 
     public int getMaintainedProjectCount(HPerson maintainer, String filter) {
-        final String sqlFilter = filter == null ? "" : filter;
+        final String sqlFilter = filter == null ? "" : filter.toLowerCase();
         Query q = getSession().createQuery(
                 "select count(m) from HProjectMember m " +
                         "where m.person = :maintainer " +
                         "and m.role = :role " +
                         "and m.project.status <> :obsolete " +
-                        "and (m.project.name like :filter " +
-                        "or m.project.slug like :filter)")
+                        "and (lower(m.project.name) like :filter " +
+                        "or lower(m.project.slug) like :filter)")
                 .setParameter("maintainer", maintainer)
                 .setParameter("role", ProjectRole.Maintainer)
                 .setParameter("obsolete", EntityStatus.OBSOLETE)

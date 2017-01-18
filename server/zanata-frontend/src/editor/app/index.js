@@ -10,6 +10,7 @@ import newContextFetchMiddleware from './middlewares/new-context-fetch'
 import searchSelectedPhraseMiddleware
   from './middlewares/selected-phrase-suggestion-search'
 import getStateInActions from './middlewares/getstate-in-actions'
+import titleUpdateMiddleware from './middlewares/title-update'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import rootReducer from './reducers'
@@ -17,6 +18,7 @@ import rootReducer from './reducers'
 import Root from './containers/Root'
 import NeedSlugMessage from './containers/NeedSlugMessage'
 
+import 'zanata-ui/dist/zanata-ui.css'
 import './index.css'
 
 /**
@@ -70,6 +72,7 @@ const loggerMiddleware = createLogger({
 const reduxRouterMiddleware = syncHistory(history)
 const createStoreWithMiddleware =
   applyMiddleware(
+    titleUpdateMiddleware,
     newContextFetchMiddleware,
     searchSelectedPhraseMiddleware,
     reduxRouterMiddleware,

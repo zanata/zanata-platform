@@ -26,10 +26,12 @@ import { mapValues } from 'lodash'
 import { Nav } from './components'
 import { Icons } from 'zanata-ui'
 import WebFont from 'webfontloader'
-import './styles/atomic.css'
-import './styles/style.less'
 import { isJsonString } from './utils/StringUtils'
 import { getContextPath } from './utils/UrlHelper'
+
+import 'zanata-ui/dist/zanata-ui.css'
+import './styles/style.less'
+
 /**
  * Root component that display only side menu bar.
  * Used jsf page that only needs side menu bar from frontend.
@@ -55,7 +57,7 @@ const links = {
   '/signup': window.config.links.registerUrl
 }
 
-const activePath = window.location.pathname
+const activePath = window.location.pathname.replace(/\/$/, '')
 
 render(
   <div className='H(a) H(100%)--sm'>

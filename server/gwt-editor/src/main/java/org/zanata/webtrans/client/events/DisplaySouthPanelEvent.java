@@ -29,8 +29,8 @@ import com.google.gwt.event.shared.GwtEvent;
  **/
 public class DisplaySouthPanelEvent extends
         GwtEvent<DisplaySouthPanelEventHandler> {
-    public static Type<DisplaySouthPanelEventHandler> TYPE =
-            new Type<DisplaySouthPanelEventHandler>();
+    public static final Type<DisplaySouthPanelEventHandler> TYPE =
+            new Type<>();
 
     private boolean display;
 

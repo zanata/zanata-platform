@@ -15,7 +15,7 @@
     "watch": "cd app && mkdir -p dist && cp index.html dist && webpack-dev-server -d --progress --config webpack.dev.config.js --inline --hot --content-base dist/",
     "build": "cd app && webpack --config webpack.prod.config.js --progress --bail --display-error-details",
     "draft": "cd app && webpack --config webpack.draft.config.js --progress --bail --display-error-details",
-    "test": "jest",
+    "test": "jest --coverage",
     "storybook": "start-storybook -p 9001 -s ./app/dist",
     "build-storybook": "build-storybook -s ./app/dist"
   },
@@ -25,7 +25,7 @@
   },
   "engines": {
     "node": "5.6.0",
-    "npm": "3.6.0"
+    "yarn": "0.18.1"
   },
   "license": "LGPL-2.1",
   "devDependencies": {
@@ -33,7 +33,7 @@
     "autoprefixer": "6.3.6",
     "babel-core": "6.9.1",
     "babel-eslint": "6.1.0",
-    "babel-jest": "13.0.0",
+    "babel-jest": "18.0.0",
     "babel-loader": "6.2.4",
     "babel-plugin-react-intl": "2.1.3",
     "babel-preset-es2015": "6.9.0",
@@ -55,14 +55,18 @@
     "fake-zanata-server": "3.0.5",
     "faucet": "0.0.1",
     "isomorphic-fetch": "2.2.1",
-    "jest-cli": "13.0.0",
+    "jest-cli": "18.0.0",
+    "less": "2.7.1",
+    "less-loader": "2.2.3",
     "lodash": "4.13.1",
     "postcss-loader": "0.8.2",
     "react": "0.14.8",
     "react-addons-test-utils": "0.14.8",
     "react-addons-update": "0.14.8",
+    "react-bootstrap": "0.30.7",
     "react-dom": "0.14.8",
     "react-intl": "2.1.2",
+    "react-overlays": "0.6.10",
     "react-redux": "4.4.5",
     "react-router": "2.4.0",
     "react-split-pane": "0.1.42",
@@ -96,13 +100,29 @@
     "suitcss-utils-size": "0.7.1",
     "suitcss-utils-text": "0.4.1",
     "text-diff": "1.0.1",
-    "zanata-ui": "3.0.3"
+    "zanata-ui": "3.0.7"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "app/**/*.{js,jsx}",
+      "!**/node_modules/**"
+    ],
+    "coverageReporters": [
+      "cobertura",
+      "html",
+      "lcov",
+      "text"
+    ],
     "moduleNameMapper": {
-      "^.+\\.(css)$": "./__tests__/mock/cssMock.js"
+      "^.+\\.(css)$": "./__tests__/mock/mockCss.js"
     },
-    "scriptPreprocessor": "./node_modules/babel-jest",
+    "transform": {
+      ".*": "./node_modules/babel-jest"
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/__tests__/mock"
+    ],
     "unmockedModulePathPatterns": [
       "/node_modules",
       "/app"

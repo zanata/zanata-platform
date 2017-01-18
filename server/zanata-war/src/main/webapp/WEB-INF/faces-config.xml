@@ -72,12 +72,12 @@
     <from-view-id>*</from-view-id>
     <navigation-case>
       <from-action>#{identity.logout}</from-action>
-      <to-view-id>/home.xhtml</to-view-id>
+      <to-view-id>/public/home.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
     <navigation-case>
       <from-outcome>home</from-outcome>
-      <to-view-id>/home.xhtml</to-view-id>
+      <to-view-id>/public/home.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
   </navigation-rule>
@@ -99,7 +99,7 @@
     </navigation-case>
     <navigation-case>
       <from-outcome>createUser</from-outcome>
-      <to-view-id>/profile/create_user.xhtml</to-view-id>
+      <to-view-id>/account/create_user.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
     <navigation-case>
@@ -119,7 +119,7 @@
     <from-view-id>/account/password_reset_request.xhtml</from-view-id>
     <navigation-case>
       <from-outcome>home</from-outcome>
-      <to-view-id>/home.xhtml</to-view-id>
+      <to-view-id>/public/home.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
   </navigation-rule>
@@ -129,13 +129,13 @@
     <navigation-case>
       <from-action>#{inactiveAccountAction.sendActivationEmail}</from-action>
       <from-outcome>success</from-outcome>
-      <to-view-id>/home.xhtml</to-view-id>
+      <to-view-id>/public/home.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
     <navigation-case>
       <from-action>#{inactiveAccountAction.changeEmail}</from-action>
       <from-outcome>home</from-outcome>
-      <to-view-id>/home.xhtml</to-view-id>
+      <to-view-id>/public/home.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
 
@@ -153,6 +153,15 @@
 
   <navigation-rule>
     <from-view-id>/admin/userdetail.xhtml</from-view-id>
+    <navigation-case>
+      <from-outcome>success</from-outcome>
+      <to-view-id>/admin/usermanager.xhtml</to-view-id>
+      <redirect/>
+    </navigation-case>
+  </navigation-rule>
+
+  <navigation-rule>
+    <from-view-id>/admin/create_user.xhtml</from-view-id>
     <navigation-case>
       <from-outcome>success</from-outcome>
       <to-view-id>/admin/usermanager.xhtml</to-view-id>
@@ -203,15 +212,15 @@
 
   <!-- User profile -->
   <navigation-rule>
-    <from-view-id>/profile/create_user.xhtml</from-view-id>
+    <from-view-id>/account/create_user.xhtml</from-view-id>
     <navigation-case>
       <from-outcome>success</from-outcome>
-      <to-view-id>/home.xhtml</to-view-id>
+      <to-view-id>/public/home.xhtml</to-view-id>
       <redirect/>
     </navigation-case>
     <navigation-case>
       <from-outcome>failure</from-outcome>
-      <to-view-id>/profile/create_user.xhtml</to-view-id>
+      <to-view-id>/account/create_user.xhtml</to-view-id>
     </navigation-case>
   </navigation-rule>
 

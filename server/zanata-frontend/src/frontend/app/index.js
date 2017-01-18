@@ -12,7 +12,8 @@ import { apiMiddleware } from 'redux-api-middleware'
 import rootReducer from './reducers'
 import Root from './containers/Root'
 import { isJsonString } from './utils/StringUtils'
-import './styles/atomic.css'
+
+import 'zanata-ui/dist/zanata-ui.css'
 import './styles/style.less'
 
 WebFont.load({

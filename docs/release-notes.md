@@ -1,5 +1,11 @@
-## 4.0
+## 4.1.0
+### Breaking changes
+New Zanata instances will now block anonymous users from accessing any resources. 
+For existing instances, anonymous users can still access read-only resources
+including web pages and REST resources. To change the behavior, admin user
+can sign in and go to server configuration page to change the value there.
 
+## 4.0.0
 ##### Infrastructure Changes
 * Recommended platform: JBoss EAP 7 (7.0.1.GA or later).
 * Alternative platform: WildFly version 10.x.
@@ -7,10 +13,10 @@
 Zanata now requires EAP 7 or WildFly 10 with no extra modules.
 
 If using EAP, you must upgrade to EAP 7 and apply the various Zanata
-changes to JBOSS_HOME/standalone/configuration/standalone.xml.
+changes to `JBOSS_HOME/standalone/configuration/standalone.xml`.
 
 If using WildFly, you must remove any previously installed JSF or Hibernate
-modules from WILDFLY_HOME/modules/{com,javax,org}.
+modules from `WILDFLY_HOME/modules/{com,javax,org}`.
 
 Also, Hibernate Search and Lucene have been upgraded - before starting
 Zanata 4.0 you will need to clear your index directory (as configured
@@ -19,14 +25,209 @@ trigger a complete re-index from the admin pages once Zanata has loaded.
 
 Zanata's jboss-web.xml has been updated: if you maintain a custom version, you should remove the "valve" section.
 
+##### Migration Guide
+From version 4.0.0, Zanata platform depends on JBossEAP 7 or Wildfly 10, thus please refer
+[JBoss EAP 7 Migration Guide](https://access.redhat.com/documentation/en/red-hat-jboss-enterprise-application-platform/7.0/single/migration-guide/)
+or [Migrate my appliction from AS7 to WildFly](https://docs.jboss.org/author/display/WFLY10/How+do+I+migrate+my+application+from+AS7+to+WildFly) to migrate your configuration.
+
+We use system properties instead of JNDI from 4.0.0,
+thus, following configuration became obsolete and deployment will abort on presence of these obsolete JNDI entries
+```xml
+<subsystem xmlns="urn:jboss:domain:naming:1.3">
+  <bindings>
+    <simple name="java:global/zanata/security/auth-policy-names/kerberos" value="zanata.kerberos"/>
+    <simple name="java:global/zanata/security/admin-users" value="admin"/>
+    <simple name="java:global/zanata/files/document-storage-directory" value="/var/lib/zanata/files"/>
+    <simple name="java:global/zanata/email/default-from-address" value="{{ zanata_noreply_address }}"/>
+    <simple name="java:global/zanata/security/auth-policy-names/internal" value="zanata.internal"/>
+    <simple name="java:global/zanata/security/auth-policy-names/jaas" value="zanata.jaas"/>
+    <simple name="java:global/zanata/security/auth-policy-names/openid" value="zanata.openid"/>
+    <simple name="java:global/zanata/smtp/port" value="${smtp.port,env.SMTP_PORT:2552}" />
+    <lookup name="java:jboss/exported/zanata/files/document-storage-directory"
+      lookup="java:global/zanata/files/document-storage-directory"/>
+  </bindings>
+  <remote-naming/>
+</subsystem>
+```
+Settings have moved to `<system-properties>` section.
+
+Zanata aborts deployment when *required* properties are absent or
+*obsolete* properties are present in `standalone.xml`.
+
+###### Required System Properties and Directory Paths
+**All** of the following properties are required in `<system-properties>` section:
+
+* `<property name="hibernate.search.default.indexBase" value="${jboss.server.data.dir}/zanata/indexes"/>`
+* `<property name="javamelody.storage-directory" value="${jboss.server.data.dir}/zanata/stats"/>`
+* `<property name="zanata.file.directory" value="${jboss.server.data.dir}/zanata/files"/>`
+
+###### Required Auth Policy
+**Exactly one** auth policy is required in `<system-properties>` section. The only exception is combining `internal` and `openid`.
+
+ * `<property name="zanata.security.authpolicy.internal" value="zanata.internal"/>`
+ * `<property name="zanata.security.authpolicy.jass" value="zanata.jaas"/>`
+ * `<property name="zanata.security.authpolicy.kerberos" value="zanata.kerberos"/>`
+ * `<property name="zanata.security.authpolicy.openid" value="zanata.openid"/>`
+
+###### Obsolete Properties
+**None** of the following properties should present, otherwise the deployment will abort.
+ * `<property name="ehcache.disk.store.dir" value=.../>`
+
+Directory of `ehcache.disk.store.dir` needs to be cleaned.
+
 ##### Changes
-* [ZNTA-1207](https://zanata.atlassian.net/browse/ZNTA-1207) - Upgrade to JBoss EAP 7
-* [ZNTA-1203](https://zanata.atlassian.net/browse/ZNTA-1203) - Remove Hibernate 4.2 module for WildFly
-* [ZNTA-1222](https://zanata.atlassian.net/browse/ZNTA-1222) - Use appserver's Infinispan
+ * [ZNTA-1557](https://zanata.atlassian.net/browse/ZNTA-1557) - Zanata should abort deployment if required system properties missing
+ * [ZNTA-1516](https://zanata.atlassian.net/browse/ZNTA-1516) - Update Zanata-cli documentation link in readthedoc release
+ * [ZNTA-1494](https://zanata.atlassian.net/browse/ZNTA-1494) - Search in admin user management bottom page is wrong
+ * [ZNTA-1480](https://zanata.atlassian.net/browse/ZNTA-1480) - Change url from /a/more to /info
+ * [ZNTA-1478](https://zanata.atlassian.net/browse/ZNTA-1478) - Change path of frontend languages page to be non-hash path
+ * [ZNTA-1463](https://zanata.atlassian.net/browse/ZNTA-1463) - Update shrinkwrap to make the deployment easier
+ * [ZNTA-1462](https://zanata.atlassian.net/browse/ZNTA-1462) - Allow developers to use docker scripts with no prior docker knowledge.
+ * [ZNTA-1459](https://zanata.atlassian.net/browse/ZNTA-1459) - Update readthedocs for Zanata-platform
+ * [ZNTA-1452](https://zanata.atlassian.net/browse/ZNTA-1452) - Add option to skip recompiling frontend
+ * [ZNTA-1449](https://zanata.atlassian.net/browse/ZNTA-1449) - Have gwt client code live in its own module
+ * [ZNTA-1447](https://zanata.atlassian.net/browse/ZNTA-1447) - Update css for cancel and plus icon
+ * [ZNTA-1445](https://zanata.atlassian.net/browse/ZNTA-1445) - Use jboss cli script for docker image generation
+ * [ZNTA-1429](https://zanata.atlassian.net/browse/ZNTA-1429) - Update admin icons
+ * [ZNTA-1413](https://zanata.atlassian.net/browse/ZNTA-1413) - Add Takari Maven extensions: Smart Builder, Lifecycle, OkHttp
+ * [ZNTA-1394](https://zanata.atlassian.net/browse/ZNTA-1394) - Add draft profile to frontend build for faster builds
+ * [ZNTA-1391](https://zanata.atlassian.net/browse/ZNTA-1391) - Merge zanata-parent,-api,-common,-client with zanata-server
+ * [ZNTA-1352](https://zanata.atlassian.net/browse/ZNTA-1352) - Upgrade to Enunciate 2.x for REST API docs
+ * [ZNTA-1337](https://zanata.atlassian.net/browse/ZNTA-1337) - Exclude node_modules in maven build in zanata-frontend
+ * [ZNTA-1333](https://zanata.atlassian.net/browse/ZNTA-1333) - React-ify the Admin Languages Bootstrap page
+ * [ZNTA-1279](https://zanata.atlassian.net/browse/ZNTA-1279) - Change frontend and editor path
+ * [ZNTA-1271](https://zanata.atlassian.net/browse/ZNTA-1271) - Migrate Zanata client JAX-RS library back to resteasy
+ * [ZNTA-1263](https://zanata.atlassian.net/browse/ZNTA-1263) - Replace icons in zanata-editor with zanata-ui
+ * [ZNTA-1255](https://zanata.atlassian.net/browse/ZNTA-1255) - Enable DEBUG logging for Weld messages with string "Catching"
+ * [ZNTA-1223](https://zanata.atlassian.net/browse/ZNTA-1223) - Move zanata-editor into frontend Maven module
+ * [ZNTA-1222](https://zanata.atlassian.net/browse/ZNTA-1222) - Use Infinispan for Hibernate second level cache
+ * [ZNTA-1220](https://zanata.atlassian.net/browse/ZNTA-1220) - Use the same dependency versions in frontend and zanata-editor
+ * [ZNTA-1207](https://zanata.atlassian.net/browse/ZNTA-1207) - Support JBoss EAP 7 for Zanata Server
+ * [ZNTA-1203](https://zanata.atlassian.net/browse/ZNTA-1203) - Remove Hibernate 4.2 module for WildFly
+ * [ZNTA-1193](https://zanata.atlassian.net/browse/ZNTA-1193) - Merge Zanata-spa into Zanata-server
+ * [ZNTA-1168](https://zanata.atlassian.net/browse/ZNTA-1168) - RFE: User should be able to select the glossary page length
+ * [ZNTA-1167](https://zanata.atlassian.net/browse/ZNTA-1167) - Include lastModifiedBy information in glossary entry
+ * [ZNTA-1166](https://zanata.atlassian.net/browse/ZNTA-1166) - Feature Request (Fedora Hub): Aditional webhooks
+ * [ZNTA-1163](https://zanata.atlassian.net/browse/ZNTA-1163) - Convert user profile page to use redux
+ * [ZNTA-1160](https://zanata.atlassian.net/browse/ZNTA-1160) - RFE: Test button for project webhooks
+ * [ZNTA-1156](https://zanata.atlassian.net/browse/ZNTA-1156) - Use embedded Infinispan, not platform module
+ * [ZNTA-1154](https://zanata.atlassian.net/browse/ZNTA-1154) - Infinispan Cache Statistics Management
+ * [ZNTA-1131](https://zanata.atlassian.net/browse/ZNTA-1131) - Rename system property zanata.originWhitelist to zanata.origin.whitelist
+ * [ZNTA-1130](https://zanata.atlassian.net/browse/ZNTA-1130) - Remove replyTo email in contact language team member email
+ * [ZNTA-1101](https://zanata.atlassian.net/browse/ZNTA-1101) - Project-level glossaries
+ * [ZNTA-1090](https://zanata.atlassian.net/browse/ZNTA-1090) - Allow REST authentication via OAuth
+ * [ZNTA-1085](https://zanata.atlassian.net/browse/ZNTA-1085) - migrate opencsv library to apache-common-csv
+ * [ZNTA-1059](https://zanata.atlassian.net/browse/ZNTA-1059) - Allow language team coordinator to contact all team members
+ * [ZNTA-1045](https://zanata.atlassian.net/browse/ZNTA-1045) - Eliminate JNDI settings for document-storage-directory
+ * [ZNTA-1042](https://zanata.atlassian.net/browse/ZNTA-1042) - Add option for cross-origin requests with credentials
+ * [ZNTA-1023](https://zanata.atlassian.net/browse/ZNTA-1023) - Client should use file types from server
+ * [ZNTA-958](https://zanata.atlassian.net/browse/ZNTA-958) - Integrate sidebar
+ * [ZNTA-942](https://zanata.atlassian.net/browse/ZNTA-942) - Zanata Sync authentication prototype
+ * [ZNTA-938](https://zanata.atlassian.net/browse/ZNTA-938) - Webhook event for translation updated
+ * [ZNTA-858](https://zanata.atlassian.net/browse/ZNTA-858) - Add new side menu bar to the server
+ * [ZNTA-841](https://zanata.atlassian.net/browse/ZNTA-841) - Remove Angular from the zanata-spa build
+ * [ZNTA-840](https://zanata.atlassian.net/browse/ZNTA-840) - Replace Angular ajax calls with an equivalent framework-agnostic library
+ * [ZNTA-839](https://zanata.atlassian.net/browse/ZNTA-839) - Replace all Angular services with async actions (redux-thunk-middleware)
+ * [ZNTA-838](https://zanata.atlassian.net/browse/ZNTA-838) - Move service state into the redux state tree
+ * [ZNTA-837](https://zanata.atlassian.net/browse/ZNTA-837) - Combine the 3 redux stores (header, content, suggestions) to a single store
+ * [ZNTA-836](https://zanata.atlassian.net/browse/ZNTA-836) - Switch to redux to handle all state and events for document content panel
+ * [ZNTA-835](https://zanata.atlassian.net/browse/ZNTA-835) - Create React component tree for all UI in document content panel
+ * [ZNTA-834](https://zanata.atlassian.net/browse/ZNTA-834) - Code review and ensure full test coverage
+ * [ZNTA-746](https://zanata.atlassian.net/browse/ZNTA-746) - Add a shortcut key for approving and rejecting translations
+ * [ZNTA-689](https://zanata.atlassian.net/browse/ZNTA-689) - Support Qt TS files
+ * [ZNTA-685](https://zanata.atlassian.net/browse/ZNTA-685) - Migrate document content (trans units) from AngularJS to ReactJS
+ * [ZNTA-667](https://zanata.atlassian.net/browse/ZNTA-667) - JSON file support
+ * [ZNTA-509](https://zanata.atlassian.net/browse/ZNTA-509) - RFE: The table search 'x' button is in a funny place, put it next to 'Cancel'?
+ * [ZNTA-52](https://zanata.atlassian.net/browse/ZNTA-52) - [RFE] Allow admin to change native name of language
 
 ##### Bug Fixes
-* [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
-* [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Redirect to home from cancel button in create user page
+ * [ZNTA-1615](https://zanata.atlassian.net/browse/ZNTA-1615) - Unable to start Zanata if email log is enabled
+ * [ZNTA-1594](https://zanata.atlassian.net/browse/ZNTA-1594) - Client nullpointer exception on delete all glossary
+ * [ZNTA-1593](https://zanata.atlassian.net/browse/ZNTA-1593) - Add new language pop-up shows previously added language details.
+ * [ZNTA-1580](https://zanata.atlassian.net/browse/ZNTA-1580) - Buttons on delete glossary pop-up are not aligned
+ * [ZNTA-1564](https://zanata.atlassian.net/browse/ZNTA-1564) - There should be a proper error message shown for client request fields.
+ * [ZNTA-1563](https://zanata.atlassian.net/browse/ZNTA-1563) - There is no email validation in server configuration->email log
+ * [ZNTA-1561](https://zanata.atlassian.net/browse/ZNTA-1561) - Join a language team is not working from User Settings -> languages.
+ * [ZNTA-1560](https://zanata.atlassian.net/browse/ZNTA-1560) - Repository url text is getting cut.
+ * [ZNTA-1559](https://zanata.atlassian.net/browse/ZNTA-1559) - Dashboard and Setting tabs from left panel both are highlighted at a time.
+ * [ZNTA-1558](https://zanata.atlassian.net/browse/ZNTA-1558) - Cancel button on po-ups of Find user to add, Contact coordinator,Contact team members, Add team member are not properly aligned
+ * [ZNTA-1556](https://zanata.atlassian.net/browse/ZNTA-1556) - Show Transunit Details option not working
+ * [ZNTA-1552](https://zanata.atlassian.net/browse/ZNTA-1552) - Obsolete JNDI setting should return Error and stop service
+ * [ZNTA-1551](https://zanata.atlassian.net/browse/ZNTA-1551) - Groups should be clickable to go back to the group list from group page.
+ * [ZNTA-1550](https://zanata.atlassian.net/browse/ZNTA-1550) - While adding projects to the group it shows project-id_Version instead of project-name_version   
+ * [ZNTA-1546](https://zanata.atlassian.net/browse/ZNTA-1546) - Projects should have to be clickable for going back to the projects list from project version page..
+ * [ZNTA-1545](https://zanata.atlassian.net/browse/ZNTA-1545) - Edit entry link for glossary from webtrans broken
+ * [ZNTA-1544](https://zanata.atlassian.net/browse/ZNTA-1544) - Glossary Select Language list not always showing correct count
+ * [ZNTA-1540](https://zanata.atlassian.net/browse/ZNTA-1540) - Created glossary entry shows "Invalid Date" on info
+ * [ZNTA-1537](https://zanata.atlassian.net/browse/ZNTA-1537) - After successfull sign-up process page should redirect to the login page.
+ * [ZNTA-1536](https://zanata.atlassian.net/browse/ZNTA-1536) - Download translation pop-up  shows mixes/scattered cancel and download buttons.
+ * [ZNTA-1530](https://zanata.atlassian.net/browse/ZNTA-1530) - Project Glossary page shows project id instead of project name.
+ * [ZNTA-1518](https://zanata.atlassian.net/browse/ZNTA-1518) - Notification message/pop-up shows in bulk or multiple times when we enable/disable multiple languages at a time.
+ * [ZNTA-1517](https://zanata.atlassian.net/browse/ZNTA-1517) - Cancel and Ok/import button is not properly alligned on import,Export and Delete TM Pop-up
+ * [ZNTA-1514](https://zanata.atlassian.net/browse/ZNTA-1514) - Export TM pop-up/dialog box is not proper.
+ * [ZNTA-1513](https://zanata.atlassian.net/browse/ZNTA-1513) - 403 forbidden on glossary selection from project.
+ * [ZNTA-1511](https://zanata.atlassian.net/browse/ZNTA-1511) - Japanese plural translations not showing up in React editor
+ * [ZNTA-1507](https://zanata.atlassian.net/browse/ZNTA-1507) - Heap dump from javamelody triggers class not found exception
+ * [ZNTA-1502](https://zanata.atlassian.net/browse/ZNTA-1502) - Dashboard and Profile menu on left manu panel are not focused when we click on it.
+ * [ZNTA-1501](https://zanata.atlassian.net/browse/ZNTA-1501) - We are not able to make page content blank once text added/updated.
+ * [ZNTA-1474](https://zanata.atlassian.net/browse/ZNTA-1474) - release-plugin does not do well with properties variable substitution
+ * [ZNTA-1473](https://zanata.atlassian.net/browse/ZNTA-1473) - mvn -Dgwt-i18n process-test-resources: GWT Module org.zanata.webtrans.ApplicationI18n not found in project sources or resources
+ * [ZNTA-1472](https://zanata.atlassian.net/browse/ZNTA-1472) - mvn site:site Exit code: 1 - javadoc: error - com.sun.tools.doclets.internal.toolkit.util.DocletAbortException
+ * [ZNTA-1464](https://zanata.atlassian.net/browse/ZNTA-1464) - No error checking on push option
+ * [ZNTA-1451](https://zanata.atlassian.net/browse/ZNTA-1451) - project type md file should reference documents md file for file type project
+ * [ZNTA-1442](https://zanata.atlassian.net/browse/ZNTA-1442) - zanata client does not handle 404 properly when the code is designed to ignore it
+ * [ZNTA-1437](https://zanata.atlassian.net/browse/ZNTA-1437) - Zanata docker image can not send emails
+ * [ZNTA-1427](https://zanata.atlassian.net/browse/ZNTA-1427) - No way to override Zanata client cache file location 
+ * [ZNTA-1406](https://zanata.atlassian.net/browse/ZNTA-1406) - Link to glossary from editor does not work
+ * [ZNTA-1363](https://zanata.atlassian.net/browse/ZNTA-1363) - Loading cachestats page triggers IndexOutOfBoundsException
+ * [ZNTA-1348](https://zanata.atlassian.net/browse/ZNTA-1348) - Bad redirect when coming from a translate action
+ * [ZNTA-1340](https://zanata.atlassian.net/browse/ZNTA-1340) - Fedora platform - issue with dswid in URL
+ * [ZNTA-1298](https://zanata.atlassian.net/browse/ZNTA-1298) - REST Api documentations is not update
+ * [ZNTA-1278](https://zanata.atlassian.net/browse/ZNTA-1278) - Javascript alert failed functional test
+ * [ZNTA-1253](https://zanata.atlassian.net/browse/ZNTA-1253) - escape lucene key words so that it can parse the string
+ * [ZNTA-1248](https://zanata.atlassian.net/browse/ZNTA-1248) - Backwards compatibility broken for fileTypes parameter
+ * [ZNTA-1230](https://zanata.atlassian.net/browse/ZNTA-1230) - Extract general components from frontend to zanata-ui
+ * [ZNTA-1213](https://zanata.atlassian.net/browse/ZNTA-1213) - Profile, Glossary page not loading
+ * [ZNTA-1199](https://zanata.atlassian.net/browse/ZNTA-1199) - Suggestion panel flicker when css transform
+ * [ZNTA-1183](https://zanata.atlassian.net/browse/ZNTA-1183) - Loading page forever for empty glossary 
+ * [ZNTA-1172](https://zanata.atlassian.net/browse/ZNTA-1172) - Admin: Failed to delete user
+ * [ZNTA-1164](https://zanata.atlassian.net/browse/ZNTA-1164) - Nothing happened when clicking the menu item when deploy as ROOT.war
+ * [ZNTA-1140](https://zanata.atlassian.net/browse/ZNTA-1140) - Editor UI not complete after sidebar update
+ * [ZNTA-1138](https://zanata.atlassian.net/browse/ZNTA-1138) - Can attempt to delete the same glossary entry twice
+ * [ZNTA-1136](https://zanata.atlassian.net/browse/ZNTA-1136) - Rapidly scrolling the Glossary page can render empty
+ * [ZNTA-1132](https://zanata.atlassian.net/browse/ZNTA-1132) - Qt-ts failed to support context
+ * [ZNTA-1129](https://zanata.atlassian.net/browse/ZNTA-1129) - Milestone webhook fires too many when uploading translations
+ * [ZNTA-1097](https://zanata.atlassian.net/browse/ZNTA-1097) - "Contact Coordinators+" option in team page to be hidden if not logged in
+ * [ZNTA-1073](https://zanata.atlassian.net/browse/ZNTA-1073) - NullPointerException when trying to access non-existing project
+ * [ZNTA-1051](https://zanata.atlassian.net/browse/ZNTA-1051) - Redirection after login doesn't pick up hash location in url 
+ * [ZNTA-906](https://zanata.atlassian.net/browse/ZNTA-906) - NullPointerException in getLocaleAliasesByIteration
+ * [ZNTA-895](https://zanata.atlassian.net/browse/ZNTA-895) - Glossary entries endpoint not working for application/xml
+ * [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Superfluous 'Cancel' button on "New User" page
+ * [ZNTA-855](https://zanata.atlassian.net/browse/ZNTA-855) - fedora.zanata.org allows FAS users to change their username
+ * [ZNTA-846](https://zanata.atlassian.net/browse/ZNTA-846) - Group "request add project version" needs field limit
+ * [ZNTA-773](https://zanata.atlassian.net/browse/ZNTA-773) - Documents list loader visible over header
+ * [ZNTA-527](https://zanata.atlassian.net/browse/ZNTA-527) - UI waits unnecessarily for stats before displaying other info
+ * [ZNTA-504](https://zanata.atlassian.net/browse/ZNTA-504) - Create Project description field validates only after user has pressed save
+ * [ZNTA-459](https://zanata.atlassian.net/browse/ZNTA-459) - Proto: New Project creation - where's the button?
+ * [ZNTA-448](https://zanata.atlassian.net/browse/ZNTA-448) - RFE: As a translator, I would like to have a direct link to the referencing entry in Translation Memory detail, so I can see the context of the translation in TM and translate more accurately
+ * [ZNTA-421](https://zanata.atlassian.net/browse/ZNTA-421) - Reverse the compare order for TM diffs, remove strikeout
+ * [ZNTA-388](https://zanata.atlassian.net/browse/ZNTA-388) - Invalid url validation on admin->server config Register url field
+ * [ZNTA-369](https://zanata.atlassian.net/browse/ZNTA-369) - RFE: Search results page should include Projects, People, Groups
+ * [ZNTA-311](https://zanata.atlassian.net/browse/ZNTA-311) - RFE: Zanata to handle English glossary translations and ordering
+ * [ZNTA-289](https://zanata.atlassian.net/browse/ZNTA-289) - RFE: Add an indicator to the sorting when it can be sorted in asc or desc order
+ * [ZNTA-236](https://zanata.atlassian.net/browse/ZNTA-236) - Cancel button on a glossary upload doesn't cancel
+ * [ZNTA-134](https://zanata.atlassian.net/browse/ZNTA-134) - Long document names are not dealt with, and stretch outside the bounds of panels
+ * [ZNTA-132](https://zanata.atlassian.net/browse/ZNTA-132) - "Rejected" text state breaks the new editor
+ * [ZNTA-58](https://zanata.atlassian.net/browse/ZNTA-58) - Show current workspace info as title of browser tab in React editor
+ * [ZNTA-47](https://zanata.atlassian.net/browse/ZNTA-47) - Have a consistent format for page titles
+ * [ZNTA-44](https://zanata.atlassian.net/browse/ZNTA-44) - Java client is missing glossary commands
+ * [ZNTA-27](https://zanata.atlassian.net/browse/ZNTA-27) - RFE: Autofocus on fields in create pages
+ * [ZNTA-18](https://zanata.atlassian.net/browse/ZNTA-18) - Glossary push doesn't work if transLang not specified
+ * [ZNTA-16](https://zanata.atlassian.net/browse/ZNTA-16) - Poor usability of history/bookmark feature
+ * [ZNTA-7](https://zanata.atlassian.net/browse/ZNTA-7) - No notification on project settings updated
+
+-----------------------
+
 ## 3.9.6
 ##### Bug Fixes
  * [ZNTA-1404](https://zanata.atlassian.net/browse/ZNTA-1404) - Incorrect email body when becoming a reviewer

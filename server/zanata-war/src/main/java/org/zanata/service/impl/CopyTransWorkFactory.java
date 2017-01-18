@@ -26,10 +26,11 @@ import static org.zanata.common.ContentState.New;
 import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
-import static org.zanata.transaction.TransactionUtil.runInTransaction;
+import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -56,7 +57,6 @@ import org.zanata.service.VersionStateCache;
 import org.zanata.util.TranslationUtil;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
-import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;

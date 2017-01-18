@@ -1,13 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import {
-  ButtonRound,
-  Icon,
-  Modal,
-  Row
-} from 'zanata-ui'
+import { Icon, Modal } from '../../components'
 import { clearMessage } from '../../actions/common'
 import { isEmpty } from 'lodash'
+import { Button, ButtonGroup, Row } from 'react-bootstrap'
 
 /**
  * Notification popup modal that overlays on the page.
@@ -18,7 +14,7 @@ class Notification extends Component {
     switch (severity) {
       case 'warn':
       case 'error':
-        return 'C(danger)'
+        return 'danger'
       default:
         return ''
     }
@@ -54,28 +50,34 @@ class Notification extends Component {
         <Modal.Header>
           <Modal.Title>
             <Row
-              theme={{ base: {W: 'W(100%)', C: severityClass, Jc: 'Jc(c)'} }}>
-              <Icon name={icon} atomic={{m: 'Mend(re)'}} size='2' />
+              bsStyle={severityClass}
+              className='notify-row'>
+              <Icon name={icon} className='s2 list-inline' />
               <span>Notification</span>
             </Row>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className={severityClass + ' My(rh)'}>
+          <div className={severityClass + ' notification-modal'}>
             {message}
           </div>
           {!isEmpty(details) &&
-            (<div className='Brds(rq) Bxsh(sh1) P(rh) Fz(msn1)'>
+            (<div className='notification-modal-content'>
               {details}
             </div>)}
         </Modal.Body>
         <Modal.Footer>
-          <Row theme={{ base: {j: 'Jc(c)'} }}>
-            <ButtonRound id='btn-notification-close'
-              type='primary' onClick={() => this.clearMessage()}>
-              Close
-            </ButtonRound>
-          </Row>
+          <span className='pull-right'>
+            <Row>
+              <ButtonGroup className='pull-right'>
+                <Button bsStyle='primary'
+                  id='btn-notification-close'
+                  type='button' onClick={() => this.clearMessage()}>
+                  Close
+                </Button>
+              </ButtonGroup>
+            </Row>
+          </span>
         </Modal.Footer>
       </Modal>
     )

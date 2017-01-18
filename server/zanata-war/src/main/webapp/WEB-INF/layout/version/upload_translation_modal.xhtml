@@ -153,14 +153,17 @@
 
       <footer class="modal__footer l--pad-h-1 l--pad-v-half bg--highest">
         <div class="txt--align-right">
-          <button id="cancel" onclick="cancelUpload();return false;"
-            class="cancel button--link l--push-right-half"
-            data-dismiss="modal">
-            #{msgs['jsf.Cancel']}
-          </button>
-
-          <h:commandButton value="#{msgs['jsf.Upload']}" onclick="onUpload()" id="upload-button" styleClass="button--primary"
-            action="#{versionHomeAction.uploadTranslationFile(versionHomeAction.selectedLocale)}"/>
+          <div class="bx--inline-block">
+            <button id="cancel" onclick="cancelUpload();return false;"
+                    class="cancel button--link l--push-right-half"
+                    data-dismiss="modal">
+              #{msgs['jsf.Cancel']}
+            </button>
+          </div>
+          <div class="bx--inline-block">
+            <h:commandButton value="#{msgs['jsf.Upload']}" onclick="onUpload()" id="upload-button" styleClass="button--primary"
+                             action="#{versionHomeAction.uploadTranslationFile(versionHomeAction.selectedLocale)}"/>
+          </div>
           <zanata:loader type="loader--small" layout="inline" jsHandle="true" id="upload-translation-loader"/>
         </div>
       </footer>

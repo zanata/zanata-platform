@@ -4,16 +4,16 @@ import Helmet from 'react-helmet'
 import { isUndefined, size, map } from 'lodash'
 import ReactList from 'react-list'
 import {
-  LoaderText,
   Page,
   ScrollView,
   View,
   Row,
-  ButtonLink,
+  LoaderText,
   Icon,
   Select
 } from 'zanata-ui'
-import { Notification } from '../../components'
+import { Notification } from '../../components/'
+import { Button } from 'react-bootstrap'
 import {
   glossaryDeleteTerm,
   glossaryResetTerm,
@@ -124,7 +124,7 @@ class Glossary extends Component {
       page,
       pageSize,
       handlePageSizeChange,
-      projectSlug
+      project
     } = this.props
 
     const intPageSize = pageSize ? parseInt(pageSize) : PAGE_SIZE_DEFAULT
@@ -135,14 +135,13 @@ class Glossary extends Component {
     const pageSizeOption = map(PAGE_SIZE_SELECTION, (size) => {
       return {label: size, value: size}
     })
-    const headerTitle = projectSlug ? 'Project Glossary' : 'Glossary'
+    const headerTitle = project ? 'Project Glossary' : 'Glossary'
     let list
 
     /* eslint-disable react/jsx-no-bind */
     if (termsLoading) {
       list = (<View theme={loadingContainerTheme}>
-        <LoaderText theme={{ base: { fz: 'Fz(ms1)' } }}
-          size='2' loading />
+        <LoaderText loading loadingText='Loading' />
       </View>)
     } else if (!termsLoading && termCount) {
       list = (<ReactList
@@ -189,30 +188,30 @@ class Glossary extends Component {
               }
               {displayPaging &&
                 <div className='D(f)'>
-                  <ButtonLink disabled={currentPage <= 1}
+                  <Button bsStyle='link' disabled={currentPage <= 1}
                     title='First page'
                     onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
                     <Icon name='previous' size='1' />
-                  </ButtonLink>
-                  <ButtonLink disabled={currentPage <= 1}
+                  </Button>
+                  <Button bsStyle='link' disabled={currentPage <= 1}
                     title='Previous page'
                     onClick={
                     () => { gotoPreviousPage(currentPage, totalPage) }}>
                     <Icon name='chevron-left' size='1' />
-                  </ButtonLink>
+                  </Button>
                   <span className='C(muted) Mx(re)'>
                     {currentPage} of {totalPage}
                   </span>
-                  <ButtonLink disabled={currentPage === totalPage}
+                  <Button bsStyle='link' disabled={currentPage === totalPage}
                     title='Next page'
                     onClick={() => { gotoNextPage(currentPage, totalPage) }}>
                     <Icon name='chevron-right' size='1' />
-                  </ButtonLink>
-                  <ButtonLink disabled={currentPage === totalPage}
+                  </Button>
+                  <Button bsStyle='link' disabled={currentPage === totalPage}
                     title='Last page'
                     onClick={() => { gotoLastPage(currentPage, totalPage) }}>
                     <Icon name='next' size='1' />
-                  </ButtonLink>
+                  </Button>
                   <span className='Mx(rq) C(muted)'
                     title='Total glossary terms'>
                     <Row>
@@ -239,7 +238,7 @@ Glossary.propTypes = {
    * Object of glossary id with term
    */
   terms: PropTypes.object,
-  projectSlug: PropTypes.string,
+  project: PropTypes.object,
   params: PropTypes.object,
   termIds: PropTypes.array,
   termCount: PropTypes.number,
@@ -286,7 +285,7 @@ const mapStateToProps = (state) => {
     saving,
     deleting,
     notification,
-    projectSlug
+    project
   } = state.glossary
   const query = state.routing.location.query
   return {
@@ -306,7 +305,7 @@ const mapStateToProps = (state) => {
     notification,
     page: query.page,
     pageSize: query.size,
-    projectSlug
+    project
   }
 }
 

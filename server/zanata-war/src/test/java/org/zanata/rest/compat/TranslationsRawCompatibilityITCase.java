@@ -32,6 +32,7 @@ import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.zanata.apicompat.rest.service.SourceDocResource;
 import org.zanata.apicompat.rest.service.TranslatedDocResource;
+import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.apicompat.common.ContentState;
 import org.zanata.apicompat.common.ContentType;
@@ -88,7 +89,7 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
     public void getJsonResource() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
@@ -274,7 +275,7 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
     public void getJsonResourceMeta() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt"),
-                "GET") {
+                "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
@@ -342,7 +343,7 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
     public void getJsonTranslations() throws Exception {
         new ResourceRequest(
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt/translations/"
-                        + LocaleId.EN_US), "GET") {
+                        + LocaleId.EN_US), "GET", getAuthorizedEnvironment()) {
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);

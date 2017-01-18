@@ -1,82 +1,52 @@
 import React, { PropTypes } from 'react'
-import { merge } from 'lodash'
+import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
 import {
-  Base,
-  Button
+  Base
 } from 'zanata-ui'
+import { Button } from 'react-bootstrap'
 
-const classes = {
-  root: {
-    bd: 'Bdw(rq) Bdc(t) Bds(s)',
-    bgc: 'Bgc(cc)',
-    bgcp: 'Bgcp(pb)',
-    ov: 'Ov(h)',
-    p: 'P(0)',
-    pos: 'Pos(r)',
-    ta: 'Ta(c)',
-    va: 'Va(t)'
-  },
-  calButton: {
-    base: {
-      d: 'D(b)',
-      bgc: 'Bgc(#fff.7)',
-      h: 'H(100%)',
-      w: 'W(100%)',
-      disabled: {
-        op: '',
-        bgc: 'Bgc(#fff.85):di'
-      }
-    },
-    active: {
-      bgc: 'Bgc(t)',
-      c: 'C(#fff)'
-    }
-  },
-  calDate: {
-    fz: 'Fz(msn1)',
-    p: 'Py(re)'
-  },
-  calInfo: {
-    bgc: 'Bgc(#fff.4)',
-    fw: 'Fw(600)',
-    p: 'Py(re)'
-  }
-}
 /**
  * Clickable date and word count component for daily statistics
  */
+const cssClass = {
+  total: 'primary',
+  approved: 'info',
+  translated: 'success',
+  needswork: 'warning'
+}
 
 const DayMatrix = ({
   dateLabel,
   date,
   wordCount,
   selectedDay,
+  selectedContentState,
   handleSelectedDayChanged,
   ...props
 }) => {
   const dateIsInFuture = date ? dateUtil.isInFuture(date) : false
-  const buttonTheme = {
-    base: merge({},
-      classes.calButton.base,
-      date === selectedDay && classes.calButton.active
-    )
-  }
+  const btnStyle = selectedContentState
+    ? cssClass[selectedContentState.toLowerCase().replace(' ', '')]
+    : cssClass['total']
+
   /* eslint-disable react/jsx-no-bind */
   return (
-    <Base tagName='td' theme={classes.root}>
+    <td>
       {date
-        ? <Button onClick={() => handleSelectedDayChanged(date)}
+        ? <Button
+          bsStyle={btnStyle}
+          onClick={() => handleSelectedDayChanged(date)}
+          className={date === selectedDay ? 'active ' : ''}
           disabled={dateIsInFuture || !date}
-          theme={buttonTheme}
           title={wordCount + ' words'}>
-          <Base atomic={classes.calDate}>{date ? dateLabel : '\u00a0'}</Base>
-          <Base atomic={classes.calInfo}>
+          <div className='calDate'>{date ? dateLabel : '\u00a0'}</div>
+          <div className='calInfo'>
             {dateIsInFuture ? '\u00a0' : wordCount}
-          </Base>
+          </div>
         </Button>
         : <Base atomic={{bgc: 'Bgc(#fff.85)', stretchedBox: 'StretchedBox'}} />}
-    </Base>
+    </td>
   )
   /* eslint-enable react/jsx-no-bind */
 }
@@ -86,6 +56,7 @@ DayMatrix.propTypes = {
   date: PropTypes.string,
   wordCount: PropTypes.number,
   selectedDay: PropTypes.string,
+  selectedContentState: PropTypes.oneOf(ContentStates),
   handleSelectedDayChanged: PropTypes.func.isRequired
 }
 

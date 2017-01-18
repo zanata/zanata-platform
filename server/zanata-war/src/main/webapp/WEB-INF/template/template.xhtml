@@ -31,6 +31,7 @@
 
     <link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
     <link rel="stylesheet" href="#{request.contextPath}/frontend.css" type="text/css"/>
+    <link rel="stylesheet" href="#{request.contextPath}/atomic.css" type="text/css"/>
     <link rel="icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
 
     <!--[if gt IE 8]><!-->
@@ -90,7 +91,9 @@
       data-user="#{authenticatedAccountHome.getUser()}"
       data-permission="#{authenticatedAccountHome.getUserPermission().getJSON()}"
       data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",
-                   "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'>
+                   "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'
+      data-allow-register="#{allowPublicRegistration}"
+    >
     </div>
     <script type="application/javascript">
       window.config = JSON.parse(JSON.stringify(document.getElementById('config').dataset))

@@ -8,12 +8,11 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ActionResult;
 import net.customware.gwt.dispatch.server.Dispatch;
@@ -25,8 +24,12 @@ import net.customware.gwt.dispatch.shared.UnsupportedActionException;
 
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.rpc.AbstractActionHandler;
 import org.zanata.webtrans.shared.auth.AuthenticationError;
 import org.zanata.webtrans.shared.auth.AuthorizationError;
@@ -36,15 +39,29 @@ import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.WrappedAction;
 
 @ApplicationScoped
-@Slf4j
-@NoArgsConstructor
 public class SeamDispatch implements Dispatch {
-    @Inject
-    @DeltaSpike
+    private static final Logger log =
+            LoggerFactory.getLogger(SeamDispatch.class);
     private HttpServletRequest request;
 
-    @Inject @Any
+    private Provider<Boolean> allowAnonymousAccessProvider;
+
+    private ZanataIdentity identity;
+
     private Instance<AbstractActionHandler<?, ?>> actionHandlers;
+
+    @Inject
+    public SeamDispatch(@DeltaSpike HttpServletRequest request,
+            @AllowAnonymousAccess Provider<Boolean> allowAnonymousAccessProvider,
+            ZanataIdentity identity, @Any Instance<AbstractActionHandler<?, ?>> actionHandlers) {
+        this.request = request;
+        this.allowAnonymousAccessProvider = allowAnonymousAccessProvider;
+        this.identity = identity;
+        this.actionHandlers = actionHandlers;
+    }
+
+    public SeamDispatch() {
+    }
 
     public void onStartup(@Observes @Initialized ServletContext context) {
         if (actionHandlers.isUnsatisfied()) {
@@ -91,6 +108,8 @@ public class SeamDispatch implements Dispatch {
 
     }
 
+
+
     @SuppressWarnings("unchecked")
     @Override
     public <A extends Action<R>, R extends Result> R execute(A action)
@@ -99,6 +118,7 @@ public class SeamDispatch implements Dispatch {
             throw new ActionException("Invalid (non-wrapped) action received: "
                     + action.getClass());
         }
+        checkLogInIfRequired();
         WrappedAction<?> a = (WrappedAction<?>) action;
         HttpSession session = request.getSession(false);
         if (session != null && !session.getId().equals(a.getCsrfToken())) {
@@ -128,6 +148,12 @@ public class SeamDispatch implements Dispatch {
             ctx.rollback();
             log.error("Error dispatching action: " + e, e);
             throw new ActionException(e);
+        }
+    }
+
+    private void checkLogInIfRequired() {
+        if (!allowAnonymousAccessProvider.get()) {
+            identity.checkLoggedIn();
         }
     }
 
@@ -165,6 +191,7 @@ public class SeamDispatch implements Dispatch {
             throw new ActionException("Invalid (non-wrapped) action received: "
                     + action.getClass());
         }
+        checkLogInIfRequired();
         WrappedAction<?> a = (WrappedAction<?>) action;
         HttpSession session = request.getSession(false);
         if (session != null && !session.getId().equals(a.getCsrfToken())) {
