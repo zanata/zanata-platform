@@ -130,11 +130,21 @@ public class HGlossaryEntry extends ModelEntityBase {
         @PreUpdate
         private void preUpdate(HGlossaryEntry entry) {
             entry.setContentHash(getHash(entry));
+            updateSrcTermLastChanged(entry);
         }
 
         @PrePersist
         private void prePersist(HGlossaryEntry entry) {
             entry.setContentHash(getHash(entry));
+            updateSrcTermLastChanged(entry);
+        }
+
+        private void updateSrcTermLastChanged(HGlossaryEntry entry) {
+            HGlossaryTerm srcTerm =
+                entry.getGlossaryTerms().get(entry.getSrcLocale());
+            if (srcTerm != null) {
+                srcTerm.setLastChanged(entry.getLastChanged());
+            }
         }
 
         private String getHash(HGlossaryEntry entry) {
