@@ -68,7 +68,9 @@ class LocalProjectDetailPanel extends Component {
               <Icon name="version" size="1" /> {version}
             </Row>
           </li>
-          <li className="document" title={fullDocName}>
+        </ul>
+        <ul className="u-listInline document u-sMB-1-4">
+          <li title={fullDocName}>
             <Row>
               <Icon name="document" size="1" />
               <span className="Fz(0.8em)">{fullDocName}</span>

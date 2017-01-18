@@ -170,18 +170,15 @@
     width:100%;
 }
 
-.transUnit-details .u-listInline li div {
-    align-items: stretch;
+li.project {
+    padding-right:2em;
 }
 
-.transUnit-details li.project {
-        width: 25%;
+li.version {
+    padding-right:1em;
 }
 
-.transUnit-details  li.version {
-        width:25%;
-}
-
-.transUnit-details li.document {
-        max-width:50%;
+ul.document {
+    width:100%;
+    padding-right: 1em;
 }
