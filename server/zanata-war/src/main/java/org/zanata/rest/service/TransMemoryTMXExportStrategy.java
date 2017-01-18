@@ -21,27 +21,24 @@
 
 package org.zanata.rest.service;
 
-import java.io.IOException;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
-import javax.xml.XMLConstants;
-
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableMap;
 import nu.xom.Attribute;
 import nu.xom.Element;
-
 import org.zanata.common.LocaleId;
 import org.zanata.model.tm.HasTMMetadata;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemory;
-import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.util.TMXConstants;
 import org.zanata.util.VersionUtility;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableMap;
+import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
+import javax.xml.XMLConstants;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * Writes one or more variations for a single TransMemoryUnit as a TMX

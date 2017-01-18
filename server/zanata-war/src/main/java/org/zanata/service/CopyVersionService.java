@@ -20,8 +20,6 @@
  */
 package org.zanata.service;
 
-import javax.annotation.Nonnull;
-
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
@@ -29,6 +27,7 @@ import org.zanata.model.HRawDocument;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 
+import javax.annotation.Nonnull;
 import java.util.concurrent.Future;
 
 public interface CopyVersionService {

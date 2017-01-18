@@ -23,8 +23,6 @@ package org.zanata.dao;
 
 import javax.annotation.Nonnull;
 
-import lombok.NoArgsConstructor;
-
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 
@@ -41,9 +39,14 @@ import org.zanata.util.Zanata;
 /**
  * This class uses Hibernate's StatelessSession to iterate over large queries
  * returning HTextFlow. Each of the public methods should have a variant which
- * accepts a locale parametor, but until HTextFlow.getTargetContents(LocaleId)
+ * accepts a locale parameter, but until HTextFlow.getTargetContents(LocaleId)
  * can be implemented efficiently, we don't need them.
  *
+ * <p>
+ * Note: unless the find* methods throw an exception, the caller is
+ * responsible for closing the Iterator, or a database connection
+ * may leak.
+ * </p>
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
@@ -51,11 +54,6 @@ import org.zanata.util.Zanata;
 @RequestScoped
 // TODO queries should only return Translated/Approved TFTs
 // TODO build related queries using querydsl
-/**
- * Note: unless the find* methods throw an exception, the caller is
- * responsible for closing the Iterator, or a database connection
- * may leak.
- */
 public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
     public TextFlowStreamingDAO() {
         this(null);

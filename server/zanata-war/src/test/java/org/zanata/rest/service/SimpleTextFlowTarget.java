@@ -21,23 +21,19 @@
 
 package org.zanata.rest.service;
 
-import java.util.Arrays;
-import java.util.List;
-
-import lombok.Data;
-
+import com.google.common.collect.ImmutableList;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.model.ITextFlowTarget;
 
-import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Data
 class SimpleTextFlowTarget implements ITextFlowTarget {
     private final ContentState state;
     private List<String> contents;
@@ -66,4 +62,59 @@ class SimpleTextFlowTarget implements ITextFlowTarget {
         setContents(Arrays.asList(contents));
     }
 
+    public ContentState getState() {
+        return this.state;
+    }
+
+    public List<String> getContents() {
+        return this.contents;
+    }
+
+    public LocaleId getLocaleId() {
+        return this.localeId;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof SimpleTextFlowTarget)) return false;
+        final SimpleTextFlowTarget other = (SimpleTextFlowTarget) o;
+        if (!other.canEqual((Object) this)) return false;
+        final Object this$state = this.getState();
+        final Object other$state = other.getState();
+        if (this$state == null ? other$state != null :
+                !this$state.equals(other$state)) return false;
+        final Object this$contents = this.getContents();
+        final Object other$contents = other.getContents();
+        if (this$contents == null ? other$contents != null :
+                !this$contents.equals(other$contents)) return false;
+        final Object this$localeId = this.getLocaleId();
+        final Object other$localeId = other.getLocaleId();
+        if (this$localeId == null ? other$localeId != null :
+                !this$localeId.equals(other$localeId)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $state = this.getState();
+        result = result * PRIME + ($state == null ? 43 : $state.hashCode());
+        final Object $contents = this.getContents();
+        result = result * PRIME +
+                ($contents == null ? 43 : $contents.hashCode());
+        final Object $localeId = this.getLocaleId();
+        result = result * PRIME +
+                ($localeId == null ? 43 : $localeId.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof SimpleTextFlowTarget;
+    }
+
+    public String toString() {
+        return "org.zanata.rest.service.SimpleTextFlowTarget(state=" +
+                this.getState() + ", contents=" + this.getContents() +
+                ", localeId=" + this.getLocaleId() + ")";
+    }
 }

@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.document;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.experimental.categories.Category;
@@ -28,6 +27,7 @@ import org.junit.experimental.theories.DataPoint;
 import org.junit.experimental.theories.Theories;
 import org.junit.experimental.theories.Theory;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
@@ -46,11 +46,12 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Damian Jansen
  *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
 public class FileTypeUploadTest extends ZanataTestCase {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(FileTypeUploadTest.class);
     @ClassRule
     public static CleanDocumentStorageRule documentStorageRule;
 

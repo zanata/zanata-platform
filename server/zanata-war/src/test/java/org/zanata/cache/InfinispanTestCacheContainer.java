@@ -20,10 +20,9 @@
  */
 package org.zanata.cache;
 
-import lombok.Delegate;
+import org.infinispan.Cache;
 import org.infinispan.configuration.global.GlobalConfiguration;
 import org.infinispan.configuration.global.GlobalConfigurationBuilder;
-import org.infinispan.lifecycle.Lifecycle;
 import org.infinispan.manager.CacheContainer;
 import org.infinispan.manager.DefaultCacheManager;
 
@@ -34,7 +33,6 @@ import org.infinispan.manager.DefaultCacheManager;
  */
 public class InfinispanTestCacheContainer implements CacheContainer {
 
-    @Delegate(types = CacheContainer.class, excludes = Lifecycle.class)
     private DefaultCacheManager delegate;
 
     public InfinispanTestCacheContainer() {
@@ -65,5 +63,13 @@ public class InfinispanTestCacheContainer implements CacheContainer {
                 .globalJmxStatistics()
                     .allowDuplicateDomains(true)
                 .build();
+    }
+
+    public <K, V> Cache<K, V> getCache(String cacheName) {
+        return this.delegate.getCache(cacheName);
+    }
+
+    public <K, V> Cache<K, V> getCache() {
+        return this.delegate.getCache();
     }
 }

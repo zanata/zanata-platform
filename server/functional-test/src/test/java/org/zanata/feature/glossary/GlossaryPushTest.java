@@ -21,10 +21,10 @@
 package org.zanata.feature.glossary;
 
 import com.google.common.base.Joiner;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
@@ -43,10 +43,11 @@ import static org.zanata.util.MavenHome.mvn;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @Category(DetailedTest.class)
 public class GlossaryPushTest extends ZanataTestCase {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GlossaryPushTest.class);
     private ClientWorkFlow clientWorkFlow;
     private File projectRootPath;
     private String userConfigPath;

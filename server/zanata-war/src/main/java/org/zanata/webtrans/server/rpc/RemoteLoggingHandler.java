@@ -1,16 +1,16 @@
 package org.zanata.webtrans.server.rpc;
 
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * @author Patrick Huang <a
@@ -19,9 +19,10 @@ import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
 @Named("webtrans.gwt.RemoteLoggingHandler")
 @RequestScoped
 @ActionHandlerFor(RemoteLoggingAction.class)
-@Slf4j
 public class RemoteLoggingHandler extends
         AbstractActionHandler<RemoteLoggingAction, NoOpResult> {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RemoteLoggingHandler.class);
     @Inject
     private ZanataIdentity identity;
 

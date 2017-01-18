@@ -20,6 +20,34 @@
  */
 package org.zanata;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.zanata.email.EmailBuilder;
+import org.zanata.events.ServerStarted;
+import org.zanata.exception.ZanataInitializationException;
+import org.zanata.rest.dto.VersionInfo;
+import org.zanata.util.VersionUtility;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.management.AttributeNotFoundException;
+import javax.management.InstanceNotFoundException;
+import javax.management.MBeanException;
+import javax.management.MBeanServer;
+import javax.management.MalformedObjectNameException;
+import javax.management.ObjectName;
+import javax.management.ReflectionException;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.LinkRef;
+import javax.naming.NameClassPair;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,38 +65,6 @@ import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.management.AttributeNotFoundException;
-import javax.management.InstanceNotFoundException;
-import javax.management.MBeanException;
-import javax.management.MBeanServer;
-import javax.management.MalformedObjectNameException;
-import javax.management.ObjectName;
-import javax.management.ReflectionException;
-import javax.naming.Context;
-import javax.naming.InitialContext;
-import javax.naming.LinkRef;
-import javax.naming.NameClassPair;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.servlet.ServletContext;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.deltaspike.core.api.lifecycle.Initialized;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.zanata.email.EmailBuilder;
-import org.zanata.events.ServerStarted;
-import org.zanata.exception.ZanataInitializationException;
-import org.zanata.rest.dto.VersionInfo;
-import javax.enterprise.event.Event;
-import org.zanata.util.VersionUtility;
-
 /**
  * This class handles various tasks at startup.  It disables warnings for a
  * couple of verbose log categories, logs some information about the system
@@ -80,12 +76,13 @@ import org.zanata.util.VersionUtility;
  */
 @Named("zanataInit")
 @ApplicationScoped
-@Slf4j
 public class ZanataInit {
     private static final DefaultArtifactVersion MIN_EAP_VERSION =
             new DefaultArtifactVersion("7.0.1.GA");
     private static final DefaultArtifactVersion MIN_WILDFLY_VERSION =
             new DefaultArtifactVersion("10.1.0.Final");
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataInit.class);
 
 
     static {

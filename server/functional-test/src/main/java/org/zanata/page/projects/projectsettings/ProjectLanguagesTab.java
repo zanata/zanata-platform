@@ -21,9 +21,9 @@
 package org.zanata.page.projects.projectsettings;
 
 import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.LanguageList;
 
@@ -35,9 +35,10 @@ import java.util.List;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectLanguagesTab extends ProjectBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectLanguagesTab.class);
     private By activeLocales = By.id("activeLocales-list");
     private By enabledLocalesFilter = By.id(
             "settings-languages-form:activeLocales-filter-input");

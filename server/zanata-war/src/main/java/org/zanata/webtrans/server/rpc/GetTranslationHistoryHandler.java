@@ -1,15 +1,12 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -29,10 +26,11 @@ import org.zanata.webtrans.shared.model.TransHistoryItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Patrick Huang <a
@@ -41,10 +39,11 @@ import com.google.common.collect.Maps;
 @Named("webtrans.gwt.GetTranslationHistoryHandler")
 @RequestScoped
 @ActionHandlerFor(GetTranslationHistoryAction.class)
-@Slf4j
 public class GetTranslationHistoryHandler
         extends
         AbstractActionHandler<GetTranslationHistoryAction, GetTranslationHistoryResult> {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(GetTranslationHistoryHandler.class);
     @Inject
     private ZanataIdentity identity;
 

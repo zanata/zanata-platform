@@ -20,26 +20,10 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
-
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.i18n.Messages;
-import org.zanata.security.annotations.Authenticated;
-import org.zanata.security.annotations.CheckLoggedIn;
+import org.slf4j.Logger;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.ProjectDAO;
@@ -47,28 +31,38 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.VersionGroupDAO;
 import org.zanata.email.EmailStrategy;
 import org.zanata.email.RequestToJoinVersionGroupEmailStrategy;
+import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.EmailService;
 import org.zanata.service.VersionGroupService;
-
 import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 
-import com.google.common.collect.Lists;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 
 @Named("versionGroupJoinAction")
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
         implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionGroupJoinAction.class);
 
     @Inject
     private VersionGroupService versionGroupServiceImpl;
@@ -86,21 +80,15 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
     @Authenticated
     private HAccount authenticatedAccount;
 
-    @Getter
-    @Setter
     private String slug;
 
-    @Getter
     private String projectSlug;
 
-    @Getter
     private List<SelectableVersion> projectVersions = Lists.newArrayList();
 
     @Inject
     private EmailService emailServiceImpl;
 
-    @Getter
-    @Setter
     private String message;
 
     @Inject
@@ -249,14 +237,44 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
         projectVersions.clear();
     }
 
+    public String getSlug() {
+        return this.slug;
+    }
+
+    public String getProjectSlug() {
+        return this.projectSlug;
+    }
+
+    public List<SelectableVersion> getProjectVersions() {
+        return this.projectVersions;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public final class SelectableVersion extends ProjectIterationId {
-        @Getter
-        @Setter
         private boolean selected;
 
         public SelectableVersion(String projectSlug, String versionSlug,
                 ProjectType projectType, boolean selected) {
             super(projectSlug, versionSlug, projectType);
+            this.selected = selected;
+        }
+
+        public boolean isSelected() {
+            return this.selected;
+        }
+
+        public void setSelected(boolean selected) {
             this.selected = selected;
         }
     }

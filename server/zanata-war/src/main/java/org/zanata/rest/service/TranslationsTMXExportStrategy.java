@@ -21,25 +21,22 @@
 
 package org.zanata.rest.service;
 
-import java.io.IOException;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import javax.xml.XMLConstants;
-
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.base.Optional;
+import com.google.common.collect.Sets;
 import nu.xom.Attribute;
 import nu.xom.Element;
-
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.model.ITextFlow;
 import org.zanata.model.ITextFlowTarget;
 import org.zanata.util.TMXConstants;
 import org.zanata.util.VersionUtility;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Sets;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import javax.xml.XMLConstants;
+import java.io.IOException;
+import java.util.Set;
 
 /**
  * Writes translations for Zanata Projects/TextFlows as TMX.
@@ -49,9 +46,11 @@ import com.google.common.collect.Sets;
  *
  */
 @ParametersAreNonnullByDefault
-@Slf4j
 public class TranslationsTMXExportStrategy implements
         TMXExportStrategy<ITextFlow> {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslationsTMXExportStrategy.class);
+
     private static class InvalidContentsException extends Exception {
         private static final long serialVersionUID = 1L;
 

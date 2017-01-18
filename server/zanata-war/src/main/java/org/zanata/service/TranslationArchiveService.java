@@ -20,11 +20,10 @@
  */
 package org.zanata.service;
 
-import java.util.concurrent.Future;
+import org.zanata.async.AsyncTaskHandle;
 
 import javax.annotation.Nonnull;
-
-import org.zanata.async.AsyncTaskHandle;
+import java.util.concurrent.Future;
 
 /**
  * This service deals with the archiving / unarchiving of bundles that may

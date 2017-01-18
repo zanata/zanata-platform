@@ -20,10 +20,19 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import com.google.common.base.Objects;
+import org.hibernate.annotations.AccessType;
+import org.hibernate.annotations.Immutable;
+import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.TypeDefs;
+import org.zanata.common.ContentState;
+import org.zanata.model.type.EntityType;
+import org.zanata.model.type.EntityTypeType;
+import org.zanata.model.type.TranslationSourceType;
+import org.zanata.model.type.TranslationSourceTypeType;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -41,23 +50,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-
-import org.hibernate.annotations.AccessType;
-import org.hibernate.annotations.Immutable;
-import org.hibernate.annotations.IndexColumn;
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
-import org.hibernate.annotations.TypeDef;
-import org.hibernate.annotations.TypeDefs;
-import org.zanata.common.ContentState;
-import org.zanata.model.type.EntityType;
-import org.zanata.model.type.EntityTypeType;
-import org.zanata.model.type.TranslationSourceType;
-
-import com.google.common.base.Objects;
-import lombok.Getter;
-import lombok.Setter;
-import org.zanata.model.type.TranslationSourceTypeType;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Immutable
@@ -123,22 +119,14 @@ public class HTextFlowTargetHistory extends HTextContainer implements
 
     private HPerson reviewer;
 
-    @Setter
     private EntityType copiedEntityType;
 
-    @Getter
-    @Setter
     private Long copiedEntityId;
 
-    @Setter
     private TranslationSourceType sourceType;
 
-    @Getter
-    @Setter
     private Boolean automatedEntry;
 
-    @Getter
-    @Setter
     private String revisionComment;
 
     public HTextFlowTargetHistory() {
@@ -279,6 +267,38 @@ public class HTextFlowTargetHistory extends HTextContainer implements
     @Type(type = "entityType")
     public EntityType getCopiedEntityType() {
         return copiedEntityType;
+    }
+
+    public Long getCopiedEntityId() {
+        return this.copiedEntityId;
+    }
+
+    public Boolean getAutomatedEntry() {
+        return this.automatedEntry;
+    }
+
+    public String getRevisionComment() {
+        return this.revisionComment;
+    }
+
+    public void setCopiedEntityType(EntityType copiedEntityType) {
+        this.copiedEntityType = copiedEntityType;
+    }
+
+    public void setCopiedEntityId(Long copiedEntityId) {
+        this.copiedEntityId = copiedEntityId;
+    }
+
+    public void setSourceType(TranslationSourceType sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    public void setAutomatedEntry(Boolean automatedEntry) {
+        this.automatedEntry = automatedEntry;
+    }
+
+    public void setRevisionComment(String revisionComment) {
+        this.revisionComment = revisionComment;
     }
 
     public static class EntityListener {

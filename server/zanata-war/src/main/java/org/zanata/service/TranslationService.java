@@ -20,10 +20,6 @@
  */
 package org.zanata.service;
 
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.Future;
-
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -33,6 +29,10 @@ import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Future;
 
 public interface TranslationService {
     /**

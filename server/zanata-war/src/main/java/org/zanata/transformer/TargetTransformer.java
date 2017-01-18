@@ -1,14 +1,14 @@
 package org.zanata.transformer;
 
-import java.util.Set;
-
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.TextFlowTargetExtension;
 import org.zanata.rest.dto.resource.ExtensionSet;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 
-import static com.google.common.base.Objects.*;
+import java.util.Set;
+
+import static com.google.common.base.Objects.equal;
 
 /**
  * @author Patrick Huang <a

@@ -20,8 +20,8 @@
  */
 package org.zanata.security;
 
-import java.io.IOException;
-import java.util.Map;
+import org.zanata.config.SystemPropertyConfigStore;
+
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -29,8 +29,8 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
-
-import org.zanata.config.SystemPropertyConfigStore;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * This is a login module that works as a central dispatcher for all other

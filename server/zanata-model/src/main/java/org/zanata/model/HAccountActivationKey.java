@@ -20,35 +20,39 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import java.io.Serializable;
+import java.util.Date;
 
 @Entity
 @EntityListeners({HAccountActivationKey.EntityListener.class})
-@Setter
-@ToString
-@NoArgsConstructor
 public class HAccountActivationKey extends AccountKeyBase implements
         Serializable {
     private static final long serialVersionUID = 1L;
 
     private Date creationDate;
 
+    public HAccountActivationKey() {
+    }
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     public Date getCreationDate() {
         return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HAccountActivationKey(creationDate=" +
+                this.getCreationDate() + ")";
     }
 
     public static class EntityListener {

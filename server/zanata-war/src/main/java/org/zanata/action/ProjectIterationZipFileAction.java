@@ -1,15 +1,6 @@
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.text.DecimalFormat;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.Getter;
-
-import javax.enterprise.inject.Model;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -18,6 +9,12 @@ import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationArchiveService;
+
+import javax.enterprise.inject.Model;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.text.DecimalFormat;
 
 @Named("projectIterationZipFileAction")
 @GroupedConversationScoped
@@ -34,7 +31,6 @@ public class ProjectIterationZipFileAction implements Serializable {
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
-    @Getter
     private AsyncTaskHandle<String> zipFilePrepHandle;
 
     @Inject
@@ -86,5 +82,9 @@ public class ProjectIterationZipFileAction implements Serializable {
             return PERCENT_FORMAT.format(completedPercent) + "%";
         }
         return "0%";
+    }
+
+    public AsyncTaskHandle<String> getZipFilePrepHandle() {
+        return this.zipFilePrepHandle;
     }
 }

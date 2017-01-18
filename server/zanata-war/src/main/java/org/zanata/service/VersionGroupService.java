@@ -20,15 +20,15 @@
  */
 package org.zanata.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
 import org.zanata.ui.model.statistic.WordStatistic;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

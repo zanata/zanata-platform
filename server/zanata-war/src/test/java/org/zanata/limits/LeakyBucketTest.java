@@ -1,5 +1,16 @@
 package org.zanata.limits;
 
+import com.google.common.base.Function;
+import com.google.common.base.Throwables;
+import com.google.common.base.Ticker;
+import com.google.common.collect.Lists;
+import org.hamcrest.Matchers;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -7,17 +18,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import com.google.common.base.Function;
-import com.google.common.base.Throwables;
-import com.google.common.base.Ticker;
-import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.mock;
@@ -27,9 +27,10 @@ import static org.mockito.Mockito.when;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class LeakyBucketTest {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(LeakyBucketTest.class);
     private LeakyBucket bucket;
     private final int refillDuration = 20;
     private final TimeUnit refillTimeUnit = TimeUnit.MILLISECONDS;

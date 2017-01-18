@@ -2,20 +2,21 @@ package org.zanata.dao;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.zanata.model.HRawDocument;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
-import org.zanata.model.HRawDocument;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("rawDocumentDAO")
 @RequestScoped
-@Slf4j
 public class RawDocumentDAO extends AbstractDAOImpl<HRawDocument, Long> {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RawDocumentDAO.class);
+
     public RawDocumentDAO() {
         super(HRawDocument.class);
     }

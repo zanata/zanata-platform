@@ -1,18 +1,12 @@
 package org.zanata.dao;
 
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsNot.not;
-
+import com.google.common.collect.Lists;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.ZanataDbunitJpaTest;
@@ -21,7 +15,11 @@ import org.zanata.model.HLocale;
 import org.zanata.rest.editor.dto.LocaleSortField;
 import org.zanata.security.ZanataIdentity;
 
-import com.google.common.collect.Lists;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsNot.not;
 
 public class LocaleDAOTest extends ZanataDbunitJpaTest {
     private static final Logger log = LoggerFactory.getLogger(LocaleDAOTest.class);

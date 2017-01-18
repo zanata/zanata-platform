@@ -258,11 +258,6 @@
       <scope>compile</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
-
     <!-- cargo needs these-->
     <dependency>
       <groupId>${jdbc.groupId}</groupId>
@@ -986,7 +981,6 @@
         <configuration>
           <usedDependencies combine.children="append">
             <usedDependency>mysql:mysql-connector-java</usedDependency>
-            <usedDependency>org.projectlombok:lombok</usedDependency>
           </usedDependencies>
         </configuration>
       </plugin>

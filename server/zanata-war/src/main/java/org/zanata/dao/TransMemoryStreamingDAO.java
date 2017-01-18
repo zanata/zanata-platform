@@ -21,8 +21,6 @@
 
 package org.zanata.dao;
 
-import lombok.NoArgsConstructor;
-
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 

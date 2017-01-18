@@ -22,7 +22,6 @@ package org.zanata.email;
 
 import com.google.common.base.Optional;
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
 
@@ -33,7 +32,6 @@ import static org.zanata.email.Addresses.getReplyTo;
 /**
 * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
 */
-@RequiredArgsConstructor
 public class RequestToJoinLanguageEmailStrategy
         extends EmailStrategy {
     private final String fromLoginName;
@@ -45,6 +43,26 @@ public class RequestToJoinLanguageEmailStrategy
     private final boolean requestAsTranslator;
     private final boolean requestAsReviewer;
     private final boolean requestAsCoordinator;
+
+    @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
+            "replyEmail", "localeId", "localeNativeName", "htmlMessage",
+            "requestAsTranslator", "requestAsReviewer",
+            "requestAsCoordinator" })
+    public RequestToJoinLanguageEmailStrategy(String fromLoginName,
+            String fromName, String replyEmail, String localeId,
+            String localeNativeName, String htmlMessage,
+            boolean requestAsTranslator, boolean requestAsReviewer,
+            boolean requestAsCoordinator) {
+        this.fromLoginName = fromLoginName;
+        this.fromName = fromName;
+        this.replyEmail = replyEmail;
+        this.localeId = localeId;
+        this.localeNativeName = localeNativeName;
+        this.htmlMessage = htmlMessage;
+        this.requestAsTranslator = requestAsTranslator;
+        this.requestAsReviewer = requestAsReviewer;
+        this.requestAsCoordinator = requestAsCoordinator;
+    }
 
     @Override
     public String getBodyResourceName() {

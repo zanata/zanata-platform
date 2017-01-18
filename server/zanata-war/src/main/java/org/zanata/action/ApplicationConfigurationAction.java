@@ -21,18 +21,15 @@
 package org.zanata.action;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.ApplicationConfiguration;
+import org.zanata.util.UrlUtil;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import javax.servlet.http.HttpServletRequest;
-
-import org.zanata.ApplicationConfiguration;
-import org.zanata.rest.editor.dto.BuildInfo;
-import org.zanata.util.UrlUtil;
 
 /**
  * This class serves as a UI proxy for the application configuration bean.

@@ -1,19 +1,12 @@
 package org.zanata.webtrans.server.rpc;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.jglue.cdiunit.InRequestScope;
-import org.junit.runner.RunWith;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountOption;
@@ -27,14 +20,20 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(SaveOptionsHandlerTest.class);
     @Inject @Any
     private SaveOptionsHandler handler;
 

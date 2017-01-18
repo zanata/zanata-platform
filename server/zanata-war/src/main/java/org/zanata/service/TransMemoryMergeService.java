@@ -20,11 +20,10 @@
  */
 package org.zanata.service;
 
-import java.util.List;
-
 import net.customware.gwt.dispatch.shared.ActionException;
-
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
+
+import java.util.List;
 
 public interface TransMemoryMergeService {
 

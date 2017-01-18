@@ -1,32 +1,9 @@
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.OBSOLETE;
-import static org.zanata.common.EntityStatus.READONLY;
-import static org.zanata.model.ProjectRole.Maintainer;
-import static org.zanata.rest.service.GlossaryService.PROJECT_QUALIFIER_PREFIX;
-
-import java.net.URI;
-
-import javax.annotation.Nonnull;
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriInfo;
-
+import com.google.common.base.Objects;
 import org.apache.commons.lang.StringUtils;
-import org.jboss.resteasy.util.HttpHeaderNames;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.jboss.resteasy.util.HttpHeaderNames;
 import org.zanata.common.ProjectType;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.ProjectDAO;
@@ -44,7 +21,28 @@ import org.zanata.service.impl.WebhookServiceImpl;
 import org.zanata.util.GlossaryUtil;
 import org.zanata.webhook.events.ProjectMaintainerChangedEvent;
 
-import com.google.common.base.Objects;
+import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.ResponseBuilder;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
+
+import static org.zanata.common.EntityStatus.OBSOLETE;
+import static org.zanata.common.EntityStatus.READONLY;
+import static org.zanata.model.ProjectRole.Maintainer;
+import static org.zanata.rest.service.GlossaryService.PROJECT_QUALIFIER_PREFIX;
 
 @RequestScoped
 @Named("projectService")

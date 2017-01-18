@@ -2,7 +2,9 @@
 
 package org.zanata.security;
 
-import java.io.IOException;
+import org.apache.deltaspike.core.api.provider.BeanProvider;
+import org.apache.log4j.MDC;
+import org.zanata.servlet.MDCInsertingServletFilter;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -13,13 +15,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.apache.log4j.MDC;
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
-import javax.inject.Named;
-import org.zanata.servlet.MDCInsertingServletFilter;
+import java.io.IOException;
 
 /**
  * This filter adds the authenticated user name to the log4j

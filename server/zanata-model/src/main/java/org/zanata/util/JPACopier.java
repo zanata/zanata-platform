@@ -1,5 +1,21 @@
 package org.zanata.util;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.common.primitives.Primitives;
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.reflect.FieldUtils;
+import org.hibernate.proxy.HibernateProxyHelper;
+import org.slf4j.Logger;
+
+import javax.annotation.Nonnull;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
@@ -8,24 +24,6 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
-import org.apache.commons.beanutils.BeanUtilsBean;
-import org.apache.commons.beanutils.PropertyUtilsBean;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.reflect.FieldUtils;
-import org.hibernate.proxy.HibernateProxyHelper;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.common.primitives.Primitives;
-import lombok.extern.slf4j.Slf4j;
 
 // @formatter:off
 /**
@@ -58,7 +56,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 // @formatter:on
-@Slf4j
 public class JPACopier {
 
     /**
@@ -67,6 +64,8 @@ public class JPACopier {
      */
     private static final List<String> COMMON_IGNORED_FIELDS = ImmutableList
             .<String> builder().add("id").add("creationDate").build();
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(JPACopier.class);
 
     /**
      * Fields to copy using {@link this#copyBean(Object, String...)} in class.

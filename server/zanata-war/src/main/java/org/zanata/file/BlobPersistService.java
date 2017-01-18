@@ -20,13 +20,13 @@
  */
 package org.zanata.file;
 
-import java.io.InputStream;
-import java.sql.Blob;
-
 import org.hibernate.Session;
+import org.zanata.model.HDocumentUploadPart;
+
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.model.HDocumentUploadPart;
+import java.io.InputStream;
+import java.sql.Blob;
 
 // TODO damason: replace with file system implementation, named something like "filePartPersistService"
 @Named("blobPersistService")

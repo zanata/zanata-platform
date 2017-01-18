@@ -22,8 +22,8 @@ package org.zanata.seam.security;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.dao.AccountDAO;
 import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.events.UserCreatedEvent;
@@ -67,12 +67,13 @@ import java.util.Set;
  */
 @Named("identityStore")
 @ApplicationScoped
-@Slf4j
 public class ZanataJpaIdentityStore implements Serializable {
     // see also org.zanata.model.HDocument.EntityListener.AUTHENTICATED_USER
     public static final String AUTHENTICATED_USER = "org.jboss.seam.security.management.authenticatedUser";
 
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataJpaIdentityStore.class);
 
     @Inject
     private Event<UserCreatedEvent> userCreatedEventEvent;

@@ -21,13 +21,8 @@
 package org.zanata.service.impl;
 
 import com.google.common.base.Optional;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
@@ -49,6 +44,9 @@ import org.zanata.service.ConfigurationService;
 import org.zanata.service.FileSystemService;
 import org.zanata.service.TranslationArchiveService;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
@@ -59,7 +57,8 @@ import java.util.concurrent.Future;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static org.zanata.common.ProjectType.*;
+import static org.zanata.common.ProjectType.Gettext;
+import static org.zanata.common.ProjectType.Podir;
 
 /**
  * @author Carlos Munoz <a
@@ -67,11 +66,12 @@ import static org.zanata.common.ProjectType.*;
  */
 @Named("translationArchiveServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class TranslationArchiveServiceImpl implements
         TranslationArchiveService {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslationArchiveServiceImpl.class);
     @Inject
     private DocumentDAO documentDAO;
 

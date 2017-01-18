@@ -1,25 +1,18 @@
 package org.zanata.events;
 
-import java.io.Serializable;
-import java.util.List;
-
-import lombok.Getter;
-import lombok.ToString;
-
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
 import org.zanata.common.LocaleId;
-import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Getter
-@ToString
 public class LanguageTeamPermissionChangedEvent implements Serializable {
     private static final long serialVersionUID = -1L;
 
@@ -125,6 +118,38 @@ public class LanguageTeamPermissionChangedEvent implements Serializable {
     private static Boolean getPermission(List<Boolean> permissionList,
             Permission permission) {
         return permissionList.get(permission.ordinal());
+    }
+
+    public LocaleId getLanguage() {
+        return this.language;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public String getChangedByName() {
+        return this.changedByName;
+    }
+
+    public List<Boolean> getOldPermission() {
+        return this.oldPermission;
+    }
+
+    public List<Boolean> getNewPermission() {
+        return this.newPermission;
+    }
+
+    public String toString() {
+        return "org.zanata.events.LanguageTeamPermissionChangedEvent(language=" +
+                this.getLanguage() + ", name=" + this.getName() + ", email=" +
+                this.getEmail() + ", changedByName=" + this.getChangedByName() +
+                ", oldPermission=" + this.getOldPermission() +
+                ", newPermission=" + this.getNewPermission() + ")";
     }
 
     private static enum Permission {

@@ -20,13 +20,8 @@
  */
 package org.zanata.notification;
 
-import java.io.Serializable;
-
-import javax.mail.internet.InternetAddress;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.zanata.ApplicationConfiguration;
+import com.google.common.collect.Lists;
+import org.slf4j.Logger;
 import org.zanata.email.Addresses;
 import org.zanata.email.EmailBuilder;
 import org.zanata.email.LanguageTeamPermissionChangeEmailStrategy;
@@ -34,11 +29,10 @@ import org.zanata.events.LanguageTeamPermissionChangedEvent;
 import org.zanata.i18n.Messages;
 import org.zanata.servlet.annotations.ServerPath;
 
-import com.google.common.collect.Lists;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.mail.internet.InternetAddress;
+import java.io.Serializable;
 
 /**
  * Handles language team permissions change JMS message. This will build and
@@ -53,11 +47,10 @@ import lombok.extern.slf4j.Slf4j;
 @Named("languageTeamPermissionChangeJmsMessagePayloadHandler")
 @javax.enterprise.context.Dependent
 
-@Slf4j
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
         EmailQueueMessageReceiver.JmsMessagePayloadHandler {
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(
+            LanguageTeamPermissionChangeJmsMessagePayloadHandler.class);
     @Inject
     private EmailBuilder emailBuilder;
 
@@ -67,6 +60,17 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
     @Inject
     @ServerPath
     private String serverPath;
+
+    @java.beans.ConstructorProperties({ "emailBuilder", "msgs", "serverPath" })
+    protected LanguageTeamPermissionChangeJmsMessagePayloadHandler(
+            EmailBuilder emailBuilder, Messages msgs, String serverPath) {
+        this.emailBuilder = emailBuilder;
+        this.msgs = msgs;
+        this.serverPath = serverPath;
+    }
+
+    public LanguageTeamPermissionChangeJmsMessagePayloadHandler() {
+    }
 
 
     @Override

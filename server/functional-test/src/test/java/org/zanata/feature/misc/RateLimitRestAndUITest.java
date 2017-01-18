@@ -23,11 +23,11 @@ package org.zanata.feature.misc;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
@@ -60,13 +60,14 @@ import static org.assertj.core.api.Assertions.assertThat;
         summary = "The system can be set to rate consecutive REST access calls",
         tcmsTestPlanIds = 5315, tcmsTestCaseIds = 0)
 @Category(DetailedTest.class)
-@Slf4j
 public class RateLimitRestAndUITest extends ZanataTestCase {
 
     private static final String TRANSLATOR = "translator";
     private static final String TRANSLATOR_API =
             PropertiesHolder.getProperty(Constants.zanataTranslatorKey
                     .value());
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RateLimitRestAndUITest.class);
     private String maxConcurrentPathParam = "c/max.concurrent.req.per.apikey";
     private String maxActivePathParam = "c/max.active.req.per.apikey";
 

@@ -1,7 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-
+import com.google.common.collect.Lists;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
@@ -18,11 +17,11 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemory;
 import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
-import com.google.common.collect.Lists;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;

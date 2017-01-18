@@ -1,12 +1,21 @@
 package org.zanata.webtrans.server;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.MapMaker;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
+import de.novanic.eventservice.client.event.domain.Domain;
+import de.novanic.eventservice.client.event.domain.DomainFactory;
+import de.novanic.eventservice.service.EventExecutorService;
+import de.novanic.eventservice.service.EventExecutorServiceFactory;
+import de.novanic.eventservice.service.UserTimeoutListener;
+import de.novanic.eventservice.service.registry.user.UserInfo;
+import de.novanic.eventservice.service.registry.user.UserManager;
+import de.novanic.eventservice.service.registry.user.UserManagerFactory;
+import org.slf4j.Logger;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
@@ -16,25 +25,14 @@ import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.MapMaker;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 
-import de.novanic.eventservice.client.event.domain.Domain;
-import de.novanic.eventservice.client.event.domain.DomainFactory;
-import de.novanic.eventservice.service.EventExecutorService;
-import de.novanic.eventservice.service.EventExecutorServiceFactory;
-import de.novanic.eventservice.service.UserTimeoutListener;
-import de.novanic.eventservice.service.registry.user.UserInfo;
-import de.novanic.eventservice.service.registry.user.UserManager;
-import de.novanic.eventservice.service.registry.user.UserManagerFactory;
-
-@Slf4j
 public class TranslationWorkspaceImpl implements TranslationWorkspace {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationWorkspaceImpl.class);
     private final WorkspaceContext workspaceContext;
     private final Domain domain;
     private final ConcurrentMap<EditorClientId, PersonSessionDetails> sessions =

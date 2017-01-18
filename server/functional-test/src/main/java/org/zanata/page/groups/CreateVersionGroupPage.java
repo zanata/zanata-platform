@@ -20,19 +20,16 @@
  */
 package org.zanata.page.groups;
 
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
-
-import com.google.common.base.Predicate;
-import org.zanata.page.dashboard.DashboardGroupsTab;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class CreateVersionGroupPage extends BasePage {
 
     public final static String LENGTH_ERROR =
@@ -41,6 +38,8 @@ public class CreateVersionGroupPage extends BasePage {
     public final static String VALIDATION_ERROR =
             "must start and end with letter or number, and contain only " +
             "letters, numbers, periods, underscores and hyphens.";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CreateVersionGroupPage.class);
 
     private By groupIdField = By.id("group-form:slug:input:slug");
     public By groupNameField = By.id("group-form:name:input:name");

@@ -1,32 +1,31 @@
 package org.zanata.rest;
 
-import java.security.Principal;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import com.google.common.base.Function;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.Uninterruptibles;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.zanata.common.LocaleId;
+import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
+import org.zanata.security.Identity;
+import org.zanata.security.annotations.NoSecurityCheck;
+import org.zanata.util.SampleProjectProfile;
+
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.security.auth.Subject;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-
-import javax.inject.Inject;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.slf4j.Logger;
-import org.zanata.security.Identity;
-import org.zanata.common.LocaleId;
-import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
-import org.zanata.security.annotations.NoSecurityCheck;
-import org.zanata.util.SampleProjectProfile;
-
-import com.google.common.base.Function;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.Uninterruptibles;
+import java.security.Principal;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
 

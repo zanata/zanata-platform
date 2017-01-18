@@ -21,11 +21,11 @@
 
 package org.zanata.database;
 
+import org.apache.commons.lang.ClassUtils;
+
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.List;
-
-import org.apache.commons.lang.ClassUtils;
 
 /**
  * @author Sean Flanigan <a

@@ -1,12 +1,11 @@
 package org.zanata.feature.manual;
 
 import com.google.common.collect.ImmutableList;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.rest.dto.resource.Resource;
@@ -19,7 +18,10 @@ import org.zanata.util.ZanataRestCaller;
 
 import java.util.List;
 
-import static org.zanata.util.ZanataRestCaller.*;
+import static org.zanata.util.ZanataRestCaller.buildSourceResource;
+import static org.zanata.util.ZanataRestCaller.buildTextFlow;
+import static org.zanata.util.ZanataRestCaller.buildTextFlowTarget;
+import static org.zanata.util.ZanataRestCaller.buildTranslationResource;
 
 /**
  * This is a manual test that will help tuning/troubleshooting copyTrans. This
@@ -29,9 +31,10 @@ import static org.zanata.util.ZanataRestCaller.*;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class CopyTransTuningTest {
     private static final String PROJECT_SLUG = "ovirt-reports-history";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CopyTransTuningTest.class);
     @Rule
     public SampleProjectRule rule = new SampleProjectRule();
     private ZanataRestCaller restCaller;
@@ -162,10 +165,20 @@ public class CopyTransTuningTest {
 
     }
 
-    @RequiredArgsConstructor(staticName = "of")
     private static class Pair {
         private final Resource source;
         private final TranslationsResource target;
+
+        @java.beans.ConstructorProperties({ "source", "target" })
+        private Pair(Resource source, TranslationsResource target) {
+            this.source = source;
+            this.target = target;
+        }
+
+        public static Pair of(Resource source,
+                TranslationsResource target) {
+            return new Pair(source, target);
+        }
     }
 
 }

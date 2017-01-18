@@ -20,9 +20,9 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import org.hibernate.annotations.IndexColumn;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.zanata.common.DocumentType;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -31,17 +31,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import org.hibernate.annotations.IndexColumn;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.zanata.common.DocumentType;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Getter
-@Setter
 public class HDocumentUpload extends ModelEntityBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -105,4 +99,27 @@ public class HDocumentUpload extends ModelEntityBase implements Serializable {
                 + "]";
     }
 
+    public void setProjectIteration(HProjectIteration projectIteration) {
+        this.projectIteration = projectIteration;
+    }
+
+    public void setDocId(String docId) {
+        this.docId = docId;
+    }
+
+    public void setType(DocumentType type) {
+        this.type = type;
+    }
+
+    public void setLocale(HLocale locale) {
+        this.locale = locale;
+    }
+
+    public void setContentHash(String contentHash) {
+        this.contentHash = contentHash;
+    }
+
+    public void setParts(List<HDocumentUploadPart> parts) {
+        this.parts = parts;
+    }
 }

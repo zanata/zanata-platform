@@ -1,10 +1,16 @@
 package org.zanata.rest.service;
 
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import com.google.common.annotations.Beta;
+import com.google.common.collect.Lists;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
+import org.jboss.resteasy.util.GenericType;
+import org.slf4j.Logger;
+import org.zanata.common.Namespaces;
+import org.zanata.rest.dto.Link;
+import org.zanata.security.annotations.CheckRole;
+import org.zanata.util.Introspectable;
+
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
@@ -17,17 +23,11 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
-import org.jboss.resteasy.util.GenericType;
-import org.zanata.common.Namespaces;
-import org.zanata.rest.dto.Link;
-import org.zanata.security.annotations.CheckRole;
-import org.zanata.util.Introspectable;
-import com.google.common.annotations.Beta;
-import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This API is experimental only and subject to change or even removal.
@@ -40,10 +40,11 @@ import lombok.extern.slf4j.Slf4j;
 @Consumes({ "application/xml" })
 @Transactional(readOnly = true)
 @CheckRole("admin")
-@Slf4j
 @Beta
 public class IntrospectableObjectMonitorService {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(IntrospectableObjectMonitorService.class);
     @Inject
     private Instance<Introspectable> introspectables;
 

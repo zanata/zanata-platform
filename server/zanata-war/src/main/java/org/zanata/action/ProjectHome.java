@@ -20,41 +20,17 @@
  */
 package org.zanata.action;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-
-import javax.annotation.Nullable;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Model;
-import javax.faces.application.FacesMessage;
-import javax.faces.bean.ViewScoped;
-import javax.faces.event.ValueChangeEvent;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -92,16 +68,33 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
+import javax.annotation.Nullable;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Model;
+import javax.faces.application.FacesMessage;
+import javax.faces.bean.ViewScoped;
+import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
 
+import static com.google.common.base.Strings.isNullOrEmpty;
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
-import static org.zanata.service.impl.WebhookServiceImpl.getTypesFromString;
 import static org.zanata.model.ProjectRole.Maintainer;
+import static org.zanata.service.impl.WebhookServiceImpl.getTypesFromString;
 
 @Named("projectHome")
-@Slf4j
 @ViewScoped
 @Model
 @Transactional
@@ -109,6 +102,8 @@ public class ProjectHome extends SlugHome<HProject> implements
     HasLanguageSettings {
 
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectHome.class);
 
 //    /**
 //     * This field is set from http parameter which will be the original slug
@@ -116,7 +111,6 @@ public class ProjectHome extends SlugHome<HProject> implements
 //    @Getter
 //    private String slug;
 
-    @Getter
     @Inject
     @Any
     private ProjectSlug projectSlug;
@@ -124,13 +118,9 @@ public class ProjectHome extends SlugHome<HProject> implements
     /**
      * This field is set from form input which can differ from original slug
      */
-    @Getter
-    @Setter
     @Nullable
     private String inputSlugValue;
 
-    @Setter
-    @Getter
     private Long projectId;
 
     @Inject
@@ -187,12 +177,8 @@ public class ProjectHome extends SlugHome<HProject> implements
 
     // This property is present to keep the filter in place when the region with
     // the filter box is refreshed.
-    @Getter
-    @Setter
     private String enabledLocalesFilter = "";
 
-    @Getter
-    @Setter
     private String disabledLocalesFilter;
 
     /**
@@ -201,12 +187,8 @@ public class ProjectHome extends SlugHome<HProject> implements
      * map in every form submission, and so that a value entered in the field
      * for a row is not automatically updated when a different row is submitted.
      */
-    @Getter
-    @Setter
     private Map<LocaleId, String> enteredLocaleAliases = Maps.newHashMap();
 
-    @Getter
-    @Setter
     private Map<LocaleId, Boolean> selectedEnabledLocales = Maps.newHashMap();
 
     // Not sure if this is necessary, seems to work ok on selected disabled
@@ -221,12 +203,8 @@ public class ProjectHome extends SlugHome<HProject> implements
         return selectedEnabledLocales;
     }
 
-    @Getter
-    @Setter
     private Map<LocaleId, Boolean> selectedDisabledLocales = Maps.newHashMap();
 
-    @Getter
-    @Setter
     private Boolean selectedCheckbox = Boolean.TRUE;
 
     private List<HLocale> disabledLocales;
@@ -269,18 +247,13 @@ public class ProjectHome extends SlugHome<HProject> implements
             .newHashMap();
 
 
-    @Getter(lazy = true)
     private final List<HProjectIteration> versions = fetchVersions();
 
-    @Getter
-    @Setter
     private String selectedProjectType;
 
-    @Getter
     @Inject
     private ProjectMaintainersAutocomplete maintainerAutocomplete;
 
-    @Getter
     private AbstractListFilter<HPerson> maintainerFilter =
             new InMemoryListFilter<HPerson>() {
                 @Override
@@ -1224,6 +1197,91 @@ public class ProjectHome extends SlugHome<HProject> implements
     private boolean checkViewObsolete() {
         return identity != null
                 && identity.hasPermission("HProject", "view-obsolete");
+    }
+
+    public ProjectSlug getProjectSlug() {
+        return this.projectSlug;
+    }
+
+    @Nullable
+    public String getInputSlugValue() {
+        return this.inputSlugValue;
+    }
+
+    public Long getProjectId() {
+        return this.projectId;
+    }
+
+    public String getEnabledLocalesFilter() {
+        return this.enabledLocalesFilter;
+    }
+
+    public String getDisabledLocalesFilter() {
+        return this.disabledLocalesFilter;
+    }
+
+    public Map<LocaleId, String> getEnteredLocaleAliases() {
+        return this.enteredLocaleAliases;
+    }
+
+    public Map<LocaleId, Boolean> getSelectedDisabledLocales() {
+        return this.selectedDisabledLocales;
+    }
+
+    public Boolean getSelectedCheckbox() {
+        return this.selectedCheckbox;
+    }
+
+    public List<HProjectIteration> getVersions() {
+        return this.versions;
+    }
+
+    public String getSelectedProjectType() {
+        return this.selectedProjectType;
+    }
+
+    public ProjectMaintainersAutocomplete getMaintainerAutocomplete() {
+        return this.maintainerAutocomplete;
+    }
+
+    public AbstractListFilter<HPerson> getMaintainerFilter() {
+        return this.maintainerFilter;
+    }
+
+    public void setInputSlugValue(
+            @Nullable String inputSlugValue) {
+        this.inputSlugValue = inputSlugValue;
+    }
+
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
+    }
+
+    public void setEnabledLocalesFilter(String enabledLocalesFilter) {
+        this.enabledLocalesFilter = enabledLocalesFilter;
+    }
+
+    public void setDisabledLocalesFilter(String disabledLocalesFilter) {
+        this.disabledLocalesFilter = disabledLocalesFilter;
+    }
+
+    public void setEnteredLocaleAliases(
+            Map<LocaleId, String> enteredLocaleAliases) {
+        this.enteredLocaleAliases = enteredLocaleAliases;
+    }
+
+    public void setSelectedEnabledLocales(
+            Map<LocaleId, Boolean> selectedEnabledLocales) {
+        this.selectedEnabledLocales = selectedEnabledLocales;
+    }
+
+    public void setSelectedDisabledLocales(
+            Map<LocaleId, Boolean> selectedDisabledLocales) {
+        this.selectedDisabledLocales = selectedDisabledLocales;
+    }
+
+    public void setSelectedCheckbox(Boolean selectedCheckbox) {
+        this.selectedCheckbox = selectedCheckbox;
     }
 
     @ViewScoped

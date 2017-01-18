@@ -1,30 +1,26 @@
 package org.zanata.action;
 
-import java.io.Serializable;
-
-import javax.enterprise.inject.Model;
-import javax.persistence.EntityManager;
-import javax.validation.constraints.Size;
-
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.validator.constraints.NotEmpty;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountResetPasswordKeyDAO;
 import org.zanata.exception.AuthorizationException;
-import org.zanata.exception.NotLoggedInException;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.exception.KeyNotFoundException;
+import org.zanata.exception.NotLoggedInException;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.ui.faces.FacesMessages;
+
+import javax.enterprise.inject.Model;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Named("passwordReset")
 @GroupedConversationScoped
@@ -55,19 +51,14 @@ public class PasswordResetAction implements Serializable {
     @Inject
     private ApplicationConfiguration applicationConfiguration;
 
-    @Getter
     private String activationKey;
 
-    @Getter
-    @Setter
     @NotEmpty
     @Size(min = 6, max = 1024)
     private String password;
 
-    @Getter
     private String passwordConfirm;
 
-    @Getter
     private HAccountResetPasswordKey key;
 
 
@@ -147,4 +138,23 @@ public class PasswordResetAction implements Serializable {
         }
     }
 
+    public String getActivationKey() {
+        return this.activationKey;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public String getPasswordConfirm() {
+        return this.passwordConfirm;
+    }
+
+    public HAccountResetPasswordKey getKey() {
+        return this.key;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

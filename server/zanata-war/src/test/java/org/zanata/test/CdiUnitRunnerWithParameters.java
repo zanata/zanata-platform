@@ -20,10 +20,6 @@
  */
 package org.zanata.test;
 
-import java.util.Arrays;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.junit.runner.Runner;
 import org.junit.runners.Parameterized.Parameter;
@@ -32,13 +28,18 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.InitializationError;
 import org.junit.runners.parameterized.ParametersRunnerFactory;
 import org.junit.runners.parameterized.TestWithParameters;
+import org.slf4j.Logger;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Parameterized Runner for CDI-Unit. Based on http://stackoverflow.com/a/27750897/14379
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 public class CdiUnitRunnerWithParameters extends CdiUnitRunner {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(CdiUnitRunnerWithParameters.class);
     private final Object[] parameters;
     private final String paramsName;
 

@@ -1,21 +1,21 @@
 package org.zanata.limits;
 
-import java.util.concurrent.Semaphore;
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.zanata.util.RunnableEx;
+
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 class RestCallLimiter {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RestCallLimiter.class);
     private volatile Semaphore maxConcurrentSemaphore;
     private volatile Semaphore maxActiveSemaphore;
     private int maxConcurrent;

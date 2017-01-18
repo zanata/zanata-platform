@@ -21,7 +21,6 @@
 package org.zanata.email;
 
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
 
@@ -30,7 +29,6 @@ import javax.mail.internet.InternetAddress;
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
-@RequiredArgsConstructor
 public class ContactLanguageTeamMembersEmailStrategy
         extends EmailStrategy {
     private final String fromLoginName;
@@ -39,6 +37,20 @@ public class ContactLanguageTeamMembersEmailStrategy
     private final String localeNativeName;
     private final String htmlMessage;
     private final String contactCoordinatorLink;
+
+    @java.beans.ConstructorProperties({ "fromLoginName", "userSubject",
+            "localeId", "localeNativeName", "htmlMessage",
+            "contactCoordinatorLink" })
+    public ContactLanguageTeamMembersEmailStrategy(String fromLoginName,
+            String userSubject, String localeId, String localeNativeName,
+            String htmlMessage, String contactCoordinatorLink) {
+        this.fromLoginName = fromLoginName;
+        this.userSubject = userSubject;
+        this.localeId = localeId;
+        this.localeNativeName = localeNativeName;
+        this.htmlMessage = htmlMessage;
+        this.contactCoordinatorLink = contactCoordinatorLink;
+    }
 
     @Override
     public String getBodyResourceName() {

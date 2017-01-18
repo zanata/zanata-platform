@@ -21,23 +21,20 @@
 
 package org.zanata.page;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.zanata.page.more.MorePage;
-import org.zanata.page.utility.HomePage;
-import org.zanata.util.WebElementUtil;
-
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.zanata.page.more.MorePage;
+import org.zanata.page.utility.HomePage;
+import org.zanata.util.WebElementUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Contains the physical elements, such as page title and home link, that must
@@ -46,9 +43,10 @@ import com.google.common.collect.Lists;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class CorePage extends AbstractPage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CorePage.class);
     private By homeLink = By.id("nav_home");
 
     private By moreLink = By.id("nav_more");

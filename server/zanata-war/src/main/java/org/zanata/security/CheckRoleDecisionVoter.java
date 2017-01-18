@@ -20,15 +20,14 @@
  */
 package org.zanata.security;
 
-import java.util.Set;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-
 import org.apache.deltaspike.security.api.authorization.AbstractAccessDecisionVoter;
 import org.apache.deltaspike.security.api.authorization.AccessDecisionVoterContext;
 import org.apache.deltaspike.security.api.authorization.SecurityViolation;
 import org.zanata.security.annotations.CheckRole;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import java.util.Set;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>

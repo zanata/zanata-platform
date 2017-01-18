@@ -20,13 +20,13 @@
  */
 package org.zanata.notification;
 
+import org.slf4j.Logger;
+
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
+import javax.inject.Named;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-
-import javax.inject.Named;
-import lombok.extern.slf4j.Slf4j;
 
 @MessageDriven(activationConfig = {
         @ActivationConfigProperty(
@@ -48,8 +48,10 @@ import lombok.extern.slf4j.Slf4j;
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("expiryQueueReceiver")
-@Slf4j
 public class ExpiryQueueReceiver implements MessageListener {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ExpiryQueueReceiver.class);
+
     @Override
     public void onMessage(Message message) {
         log.warn("JMS message expired: {}", MessageUnwrapper.unwrap(message));

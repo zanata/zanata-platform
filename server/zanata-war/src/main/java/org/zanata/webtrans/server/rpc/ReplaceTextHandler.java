@@ -20,31 +20,31 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Any;
-import javax.inject.Inject;
-import javax.inject.Named;
+import com.google.common.base.Strings;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
+import org.slf4j.Logger;
 import org.zanata.service.SecurityService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
-import com.google.common.base.Strings;
 
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Named("webtrans.gwt.ReplaceTextHandler")
 @RequestScoped
 @ActionHandlerFor(ReplaceText.class)
-@Slf4j
 public class ReplaceTextHandler extends
         AbstractActionHandler<ReplaceText, UpdateTransUnitResult> {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ReplaceTextHandler.class);
     @Inject @Any
     UpdateTransUnitHandler updateTransUnitHandler;
 

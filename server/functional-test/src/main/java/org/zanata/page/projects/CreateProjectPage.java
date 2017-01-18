@@ -20,17 +20,18 @@
  */
 package org.zanata.page.projects;
 
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 
-@Slf4j
+import java.util.List;
+
 public class CreateProjectPage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CreateProjectPage.class);
     private By idField = By.id("project-form:slug:input:slug");
     private By nameField = By.id("project-form:name:input:name");
     private By descriptionField = By.id("project-form:description:input:description");

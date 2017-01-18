@@ -1,11 +1,8 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -21,17 +18,20 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
 
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named("webtrans.gwt.GetGlossaryDetailsHandler")
 @RequestScoped
 @ActionHandlerFor(GetGlossaryDetailsAction.class)
-@Slf4j
 public class GetGlossaryDetailsHandler
         extends
         AbstractActionHandler<GetGlossaryDetailsAction, GetGlossaryDetailsResult> {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GetGlossaryDetailsHandler.class);
     @Inject
     private ZanataIdentity identity;
 

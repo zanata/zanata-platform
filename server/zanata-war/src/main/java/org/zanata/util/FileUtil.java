@@ -21,14 +21,11 @@
 
 package org.zanata.util;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
-import org.zanata.exception.FileFormatAdapterException;
+import org.slf4j.Logger;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -37,8 +34,10 @@ import java.io.OutputStream;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class FileUtil {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(FileUtil.class);
 
     /**
      * Generate documentId by concatenating path with fileName

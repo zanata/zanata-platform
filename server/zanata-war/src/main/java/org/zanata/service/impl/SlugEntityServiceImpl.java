@@ -23,13 +23,13 @@ package org.zanata.service.impl;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
+import org.zanata.model.HProjectIteration;
+import org.zanata.model.SlugEntityBase;
+import org.zanata.service.SlugEntityService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.zanata.model.HProjectIteration;
-import org.zanata.model.SlugEntityBase;
-import org.zanata.service.SlugEntityService;
 
 /**
  * Default implementation of the {@link org.zanata.service.SlugEntityService}

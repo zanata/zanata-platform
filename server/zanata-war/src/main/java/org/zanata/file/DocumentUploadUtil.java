@@ -20,27 +20,9 @@
  */
 package org.zanata.file;
 
-import static com.google.common.base.Strings.isNullOrEmpty;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.SequenceInputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
-import java.util.Vector;
-
-import javax.enterprise.context.Dependent;
-import javax.ws.rs.core.Response.Status;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.base.Optional;
 import org.hibernate.Session;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.common.DocumentType;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
@@ -57,14 +39,30 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 import org.zanata.util.PasswordUtil;
 
-import com.google.common.base.Optional;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.core.Response.Status;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.SequenceInputStream;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
+import java.util.Vector;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 // TODO damason: add thorough unit testing
-@Slf4j
 @Named("documentUploadUtil")
 @Dependent
 public class DocumentUploadUtil {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DocumentUploadUtil.class);
     @Inject
     private ZanataIdentity identity;
 

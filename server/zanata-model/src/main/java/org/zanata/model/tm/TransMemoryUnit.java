@@ -20,7 +20,11 @@
  */
 package org.zanata.model.tm;
 
-import java.util.Map;
+import com.google.common.collect.Maps;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.zanata.model.ModelEntityBase;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Access;
@@ -36,18 +40,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.zanata.model.ModelEntityBase;
-
-import com.google.common.collect.Maps;
+import java.util.Map;
 
 /**
  * A single translation memory unit belonging to a Translation Memory.
@@ -56,15 +49,13 @@ import com.google.common.collect.Maps;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@EqualsAndHashCode(callSuper = true, of = { "transUnitId", "sourceLanguage",
-        "translationMemory" })
-@ToString(exclude = "translationMemory")
-@Data
-@NoArgsConstructor
 @Access(AccessType.FIELD)
 @Indexed
 public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata {
     private static final long serialVersionUID = 1L;
+
+    public TransMemoryUnit() {
+    }
 
     public static TransMemoryUnit tu(TransMemory tm, String uniqueId,
             String transUnitId, String sourceLanguage, String sourceContent,
@@ -143,4 +134,120 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata {
         setMetadata(metadata);
     }
 
+    public String getTransUnitId() {
+        return this.transUnitId;
+    }
+
+    public String getSourceLanguage() {
+        return this.sourceLanguage;
+    }
+
+    public TransMemory getTranslationMemory() {
+        return this.translationMemory;
+    }
+
+    public String getUniqueId() {
+        return this.uniqueId;
+    }
+
+    public Integer getPosition() {
+        return this.position;
+    }
+
+    public Map<String, TransMemoryUnitVariant> getTransUnitVariants() {
+        return this.transUnitVariants;
+    }
+
+    public TMMetadataType getMetadataType() {
+        return this.metadataType;
+    }
+
+    public String getMetadata() {
+        return this.metadata;
+    }
+
+    public void setTransUnitId(String transUnitId) {
+        this.transUnitId = transUnitId;
+    }
+
+    public void setSourceLanguage(String sourceLanguage) {
+        this.sourceLanguage = sourceLanguage;
+    }
+
+    public void setTranslationMemory(TransMemory translationMemory) {
+        this.translationMemory = translationMemory;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
+
+    public void setTransUnitVariants(
+            Map<String, TransMemoryUnitVariant> transUnitVariants) {
+        this.transUnitVariants = transUnitVariants;
+    }
+
+    public void setMetadataType(TMMetadataType metadataType) {
+        this.metadataType = metadataType;
+    }
+
+    public void setMetadata(String metadata) {
+        this.metadata = metadata;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof TransMemoryUnit)) return false;
+        final TransMemoryUnit other = (TransMemoryUnit) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (!super.equals(o)) return false;
+        final Object this$transUnitId = this.getTransUnitId();
+        final Object other$transUnitId = other.getTransUnitId();
+        if (this$transUnitId == null ? other$transUnitId != null :
+                !this$transUnitId.equals(other$transUnitId)) return false;
+        final Object this$sourceLanguage = this.getSourceLanguage();
+        final Object other$sourceLanguage = other.getSourceLanguage();
+        if (this$sourceLanguage == null ? other$sourceLanguage != null :
+                !this$sourceLanguage.equals(other$sourceLanguage)) return false;
+        final Object this$translationMemory = this.getTranslationMemory();
+        final Object other$translationMemory = other.getTranslationMemory();
+        if (this$translationMemory == null ? other$translationMemory != null :
+                !this$translationMemory.equals(other$translationMemory))
+            return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $transUnitId = this.getTransUnitId();
+        result = result * PRIME +
+                ($transUnitId == null ? 43 : $transUnitId.hashCode());
+        final Object $sourceLanguage = this.getSourceLanguage();
+        result = result * PRIME +
+                ($sourceLanguage == null ? 43 : $sourceLanguage.hashCode());
+        final Object $translationMemory = this.getTranslationMemory();
+        result = result * PRIME + ($translationMemory == null ? 43 :
+                $translationMemory.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof TransMemoryUnit;
+    }
+
+    public String toString() {
+        return "org.zanata.model.tm.TransMemoryUnit(transUnitId=" +
+                this.getTransUnitId() + ", sourceLanguage=" +
+                this.getSourceLanguage() + ", uniqueId=" + this.getUniqueId() +
+                ", position=" + this.getPosition() + ", transUnitVariants=" +
+                this.getTransUnitVariants() + ", metadataType=" +
+                this.getMetadataType() + ", metadata=" + this.getMetadata() +
+                ")";
+    }
 }

@@ -20,11 +20,11 @@
  */
 package org.zanata.service;
 
-import javax.annotation.Nullable;
-
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.model.security.HCredentials;
+
+import javax.annotation.Nullable;
 
 /**
  * Business Service interface for User accounts.

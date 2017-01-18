@@ -20,8 +20,6 @@
  */
 package org.zanata.async.handle;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.zanata.async.AsyncTaskHandle;
 
 /**
@@ -31,15 +29,10 @@ import org.zanata.async.AsyncTaskHandle;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> {
-    @Getter @Setter
     private int documentCopied;
-    @Getter @Setter
     private int totalDoc;
-    @Getter @Setter
     private String cancelledBy;
-    @Getter @Setter
     private long cancelledTime;
-    @Getter @Setter
     private String triggeredBy;
 
     /**
@@ -47,5 +40,45 @@ public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> {
      */
     public void incrementDocumentProcessed() {
         documentCopied++;
+    }
+
+    public int getDocumentCopied() {
+        return this.documentCopied;
+    }
+
+    public int getTotalDoc() {
+        return this.totalDoc;
+    }
+
+    public String getCancelledBy() {
+        return this.cancelledBy;
+    }
+
+    public long getCancelledTime() {
+        return this.cancelledTime;
+    }
+
+    public String getTriggeredBy() {
+        return this.triggeredBy;
+    }
+
+    public void setDocumentCopied(int documentCopied) {
+        this.documentCopied = documentCopied;
+    }
+
+    public void setTotalDoc(int totalDoc) {
+        this.totalDoc = totalDoc;
+    }
+
+    public void setCancelledBy(String cancelledBy) {
+        this.cancelledBy = cancelledBy;
+    }
+
+    public void setCancelledTime(long cancelledTime) {
+        this.cancelledTime = cancelledTime;
+    }
+
+    public void setTriggeredBy(String triggeredBy) {
+        this.triggeredBy = triggeredBy;
     }
 }

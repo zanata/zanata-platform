@@ -20,10 +20,10 @@
  */
 package org.zanata.feature.glossary;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
@@ -40,9 +40,10 @@ import static org.zanata.util.MavenHome.mvn;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@Slf4j
 public class GlossaryAdminTest extends ZanataTestCase {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GlossaryAdminTest.class);
     private ClientWorkFlow clientWorkFlow = new ClientWorkFlow();
 
     /**

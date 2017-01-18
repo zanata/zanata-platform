@@ -21,10 +21,6 @@
 package org.zanata.model;
 
 import com.google.common.base.Function;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Type;
@@ -47,9 +43,6 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "HProject_LocaleMember")
-@Setter
-@Getter
-@NoArgsConstructor
 @IdClass(HProjectLocaleMember.HProjectLocaleMemberPK.class)
 @TypeDef(name = "localeRole", typeClass = LocaleRoleType.class)
 public class HProjectLocaleMember implements Serializable, HasUserFriendlyToString  {
@@ -111,6 +104,9 @@ public class HProjectLocaleMember implements Serializable, HasUserFriendlyToStri
     @Type(type = "localeRole")
     private LocaleRole role;
 
+    public HProjectLocaleMember() {
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -154,15 +150,44 @@ public class HProjectLocaleMember implements Serializable, HasUserFriendlyToStri
         return sb.toString();
     }
 
+    public HProject getProject() {
+        return this.project;
+    }
+
+    public HLocale getLocale() {
+        return this.locale;
+    }
+
+    public HPerson getPerson() {
+        return this.person;
+    }
+
+    public LocaleRole getRole() {
+        return this.role;
+    }
+
+    public void setProject(HProject project) {
+        this.project = project;
+    }
+
+    public void setLocale(HLocale locale) {
+        this.locale = locale;
+    }
+
+    public void setPerson(HPerson person) {
+        this.person = person;
+    }
+
+    public void setRole(LocaleRole role) {
+        this.role = role;
+    }
+
     /**
      * Used as IdClass for {@link org.zanata.model.HProjectLocaleMember}.
      *
      * This is boilerplate that specifies which fields to use as the primary key
      * for HProjectLocaleMember, and how to compare them (equals and hashCode).
      */
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class HProjectLocaleMemberPK implements Serializable {
         private static final long serialVersionUID = 1L;
 
@@ -172,6 +197,19 @@ public class HProjectLocaleMember implements Serializable, HasUserFriendlyToStri
         private HPerson person;
         private HLocale locale;
         private LocaleRole role;
+
+        @java.beans.ConstructorProperties({ "project", "person", "locale",
+                "role" })
+        public HProjectLocaleMemberPK(HProject project, HPerson person,
+                HLocale locale, LocaleRole role) {
+            this.project = project;
+            this.person = person;
+            this.locale = locale;
+            this.role = role;
+        }
+
+        public HProjectLocaleMemberPK() {
+        }
 
         @Override
         public boolean equals(Object obj) {
@@ -198,6 +236,22 @@ public class HProjectLocaleMember implements Serializable, HasUserFriendlyToStri
                     .append(getPerson().getId())
                     .append(getRole())
                     .toHashCode();
+        }
+
+        public HProject getProject() {
+            return this.project;
+        }
+
+        public HPerson getPerson() {
+            return this.person;
+        }
+
+        public HLocale getLocale() {
+            return this.locale;
+        }
+
+        public LocaleRole getRole() {
+            return this.role;
         }
     }
 }

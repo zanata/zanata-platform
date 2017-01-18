@@ -20,10 +20,10 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 
 import java.util.ArrayList;
@@ -33,9 +33,10 @@ import java.util.List;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ManageUserPage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ManageUserPage.class);
     private By userTable = By.id("usermanagerForm");
 
     public ManageUserPage(WebDriver driver) {

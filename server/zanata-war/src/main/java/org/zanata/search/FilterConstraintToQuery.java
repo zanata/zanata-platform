@@ -1,10 +1,8 @@
 package org.zanata.search;
 
-import java.util.Collection;
-import java.util.List;
-
-import javax.annotation.Nonnull;
-
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Query;
 import org.hibernate.criterion.MatchMode;
@@ -14,19 +12,27 @@ import org.zanata.util.HqlCriterion;
 import org.zanata.util.QueryBuilder;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.search.FilterConstraints;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-import lombok.AccessLevel;
-import lombok.Setter;
 
-import static org.zanata.search.FilterConstraintToQuery.Parameters.*;
+import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.List;
+
+import static org.zanata.search.FilterConstraintToQuery.Parameters.ContentStateList;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.DocumentIdList;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.LastChangedAfter;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.LastChangedBefore;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.LastModifiedBy;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.Locale;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.MsgContext;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.ResId;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.SourceComment;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.TargetComment;
 import static org.zanata.util.HqlCriterion.eq;
-import static org.zanata.util.HqlCriterion.ne;
-import static org.zanata.util.HqlCriterion.isNull;
 import static org.zanata.util.HqlCriterion.escapeWildcard;
 import static org.zanata.util.HqlCriterion.ilike;
+import static org.zanata.util.HqlCriterion.isNull;
 import static org.zanata.util.HqlCriterion.match;
+import static org.zanata.util.HqlCriterion.ne;
 import static org.zanata.util.QueryBuilder.and;
 
 /**
@@ -40,7 +46,6 @@ public class FilterConstraintToQuery {
     private DocumentId documentId;
     private Collection<Long> documentIds;
 
-    @Setter(AccessLevel.PACKAGE)
     private ContentCriterion contentCriterion = new ContentCriterion();
 
     private FilterConstraintToQuery(FilterConstraints constraints,
@@ -393,6 +398,10 @@ public class FilterConstraintToQuery {
                 HqlCriterion.match(escapedAndLowered, MatchMode.ANYWHERE));
         }
         return textFlowQuery;
+    }
+
+    void setContentCriterion(ContentCriterion contentCriterion) {
+        this.contentCriterion = contentCriterion;
     }
 
     enum Parameters {

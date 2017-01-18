@@ -23,8 +23,6 @@ package org.zanata.model.po;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 
-import lombok.ToString;
-
 /**
  *
  * @author sflaniga@redhat.com
@@ -32,7 +30,10 @@ import lombok.ToString;
  */
 @Entity
 @Cacheable
-@ToString(callSuper = true)
 public class HPoHeader extends PoHeaderBase {
     private static final long serialVersionUID = 1L;
+
+    public String toString() {
+        return "org.zanata.model.po.HPoHeader(super=" + super.toString() + ")";
+    }
 }

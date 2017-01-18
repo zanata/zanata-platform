@@ -21,10 +21,6 @@
 
 package org.zanata.model;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -37,10 +33,8 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -51,15 +45,12 @@ import java.util.Date;
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
 @Access(AccessType.FIELD)
-@Getter
-@Setter(AccessLevel.PRIVATE)
 @Entity
 @TypeDefs({
     @TypeDef(name = "requestState", typeClass = RequestStateType.class),
     @TypeDef(name = "requestType", typeClass = RequestTypeType.class)
 
 })
-@NoArgsConstructor
 public class Request extends TimeEntityBase {
 
     @Type(type = "requestState")
@@ -94,6 +85,9 @@ public class Request extends TimeEntityBase {
         setValidFrom(validFrom);
     }
 
+    public Request() {
+    }
+
     /**
      * Return new request with updated state.
      * Expire this request (set validTo)
@@ -113,5 +107,45 @@ public class Request extends TimeEntityBase {
         newRequest.comment = comment;
         newRequest.actor = actor;
         return newRequest;
+    }
+
+    public RequestState getState() {
+        return this.state;
+    }
+
+    public RequestType getRequestType() {
+        return this.requestType;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public HAccount getRequester() {
+        return this.requester;
+    }
+
+    public HAccount getActor() {
+        return this.actor;
+    }
+
+    private void setState(RequestState state) {
+        this.state = state;
+    }
+
+    private void setRequestType(RequestType requestType) {
+        this.requestType = requestType;
+    }
+
+    private void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    private void setRequester(HAccount requester) {
+        this.requester = requester;
+    }
+
+    private void setActor(HAccount actor) {
+        this.actor = actor;
     }
 }

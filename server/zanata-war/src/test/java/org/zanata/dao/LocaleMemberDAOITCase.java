@@ -1,12 +1,6 @@
 package org.zanata.dao;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
-
-import javax.persistence.EntityManager;
-
 import org.dbunit.operation.DatabaseOperation;
-import javax.inject.Inject;
 import org.junit.Test;
 import org.zanata.ArquillianTest;
 import org.zanata.model.HAccount;
@@ -14,6 +8,12 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.provider.DBUnitProvider.DataSetOperation;
 import org.zanata.security.ZanataIdentity;
+
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 
 public class LocaleMemberDAOITCase extends ArquillianTest {
 

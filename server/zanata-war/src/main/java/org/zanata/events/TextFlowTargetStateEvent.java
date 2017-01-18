@@ -21,16 +21,12 @@
 
 package org.zanata.events;
 
-import java.io.Serializable;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import org.zanata.common.ContentState;
 
 import javax.annotation.Nullable;
+import java.io.Serializable;
 
 /**
  * @author Sean Flanigan <a
@@ -38,17 +34,13 @@ import javax.annotation.Nullable;
  *
  */
 public final class TextFlowTargetStateEvent {
-    @Getter
     private final DocumentLocaleKey key;
 
-    @Getter
     private final Long projectIterationId;
 
-    @Getter
     // this may be null in the case of document uploads
     private final @Nullable Long actorId;
 
-    @Getter
     private final ImmutableList<TextFlowTargetStateChange> states;
 
     public TextFlowTargetStateEvent(DocumentLocaleKey key,
@@ -66,13 +58,99 @@ public final class TextFlowTargetStateEvent {
         this(key, projectIterationId, actorId, ImmutableList.of(state));
     }
 
-    @Getter
-    @EqualsAndHashCode
-    @AllArgsConstructor
+    public DocumentLocaleKey getKey() {
+        return this.key;
+    }
+
+    public Long getProjectIterationId() {
+        return this.projectIterationId;
+    }
+
+    @Nullable
+    public Long getActorId() {
+        return this.actorId;
+    }
+
+    public ImmutableList<TextFlowTargetStateChange> getStates() {
+        return this.states;
+    }
+
     public static final class TextFlowTargetStateChange implements Serializable {
         private final Long textFlowId;
         private final Long textFlowTargetId;
         private final ContentState newState;
         private final ContentState previousState;
+
+        @java.beans.ConstructorProperties({ "textFlowId", "textFlowTargetId",
+                "newState", "previousState" })
+        public TextFlowTargetStateChange(Long textFlowId, Long textFlowTargetId,
+                ContentState newState, ContentState previousState) {
+            this.textFlowId = textFlowId;
+            this.textFlowTargetId = textFlowTargetId;
+            this.newState = newState;
+            this.previousState = previousState;
+        }
+
+        public Long getTextFlowId() {
+            return this.textFlowId;
+        }
+
+        public Long getTextFlowTargetId() {
+            return this.textFlowTargetId;
+        }
+
+        public ContentState getNewState() {
+            return this.newState;
+        }
+
+        public ContentState getPreviousState() {
+            return this.previousState;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof TextFlowTargetStateChange))
+                return false;
+            final TextFlowTargetStateChange other =
+                    (TextFlowTargetStateChange) o;
+            final Object this$textFlowId = this.getTextFlowId();
+            final Object other$textFlowId = other.getTextFlowId();
+            if (this$textFlowId == null ? other$textFlowId != null :
+                    !this$textFlowId.equals(other$textFlowId)) return false;
+            final Object this$textFlowTargetId = this.getTextFlowTargetId();
+            final Object other$textFlowTargetId = other.getTextFlowTargetId();
+            if (this$textFlowTargetId == null ? other$textFlowTargetId != null :
+                    !this$textFlowTargetId.equals(other$textFlowTargetId))
+                return false;
+            final Object this$newState = this.getNewState();
+            final Object other$newState = other.getNewState();
+            if (this$newState == null ? other$newState != null :
+                    !this$newState.equals(other$newState)) return false;
+            final Object this$previousState = this.getPreviousState();
+            final Object other$previousState = other.getPreviousState();
+            if (this$previousState == null ? other$previousState != null :
+                    !this$previousState.equals(other$previousState))
+                return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $textFlowId = this.getTextFlowId();
+            result = result * PRIME +
+                    ($textFlowId == null ? 43 : $textFlowId.hashCode());
+            final Object $textFlowTargetId = this.getTextFlowTargetId();
+            result = result * PRIME +
+                    ($textFlowTargetId == null ? 43 :
+                            $textFlowTargetId.hashCode());
+            final Object $newState = this.getNewState();
+            result = result * PRIME +
+                    ($newState == null ? 43 : $newState.hashCode());
+            final Object $previousState = this.getPreviousState();
+            result = result * PRIME +
+                    ($previousState == null ? 43 : $previousState.hashCode());
+            return result;
+        }
     }
 }

@@ -20,17 +20,14 @@
  */
 package org.zanata.model.po;
 
+import org.hibernate.annotations.NaturalId;
+import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import lombok.Setter;
-import lombok.ToString;
-
-import org.hibernate.annotations.NaturalId;
-import org.zanata.model.HDocument;
-import org.zanata.model.HLocale;
 
 /**
  *
@@ -39,8 +36,6 @@ import org.zanata.model.HLocale;
  */
 @Entity
 @Cacheable
-@Setter
-@ToString(callSuper = true, of = "targetLanguage")
 public class HPoTargetHeader extends PoHeaderBase {
     private static final long serialVersionUID = 1L;
 
@@ -59,5 +54,18 @@ public class HPoTargetHeader extends PoHeaderBase {
     @JoinColumn(name = "document_id")
     public HDocument getDocument() {
         return document;
+    }
+
+    public void setTargetLanguage(HLocale targetLanguage) {
+        this.targetLanguage = targetLanguage;
+    }
+
+    public void setDocument(HDocument document) {
+        this.document = document;
+    }
+
+    public String toString() {
+        return "org.zanata.model.po.HPoTargetHeader(super=" + super.toString() +
+                ", targetLanguage=" + this.getTargetLanguage() + ")";
     }
 }

@@ -20,10 +20,13 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Indexed;
+import org.zanata.model.security.HCredentials;
+import org.zanata.rest.dto.Account;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -40,18 +43,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
-
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
-import lombok.ToString;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Indexed;
-import org.zanata.model.security.HCredentials;
-import org.zanata.rest.dto.Account;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @see Account
@@ -61,10 +56,6 @@ import org.zanata.rest.dto.Account;
 @Cacheable
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "username"))
 @Indexed
-@Setter
-@ToString(callSuper = true, of = "username")
-@EqualsAndHashCode(callSuper = true, of = { "enabled", "passwordHash",
-        "username", "apiKey" })
 public class HAccount extends ModelEntityBase implements Serializable,
         HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
@@ -179,5 +170,102 @@ public class HAccount extends ModelEntityBase implements Serializable,
     @Override
     public String userFriendlyToString() {
         return String.format("Account(username=%s, enabled=%s, roles=%s)", getUsername(), isEnabled(), getRoles());
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public void setPerson(HPerson person) {
+        this.person = person;
+    }
+
+    public void setRoles(Set<HAccountRole> roles) {
+        this.roles = roles;
+    }
+
+    public void setAccountActivationKey(
+            HAccountActivationKey accountActivationKey) {
+        this.accountActivationKey = accountActivationKey;
+    }
+
+    public void setAccountResetPasswordKey(
+            HAccountResetPasswordKey accountResetPasswordKey) {
+        this.accountResetPasswordKey = accountResetPasswordKey;
+    }
+
+    public void setCredentials(Set<HCredentials> credentials) {
+        this.credentials = credentials;
+    }
+
+    public void setMergedInto(HAccount mergedInto) {
+        this.mergedInto = mergedInto;
+    }
+
+    public void setEditorOptions(Map<String, HAccountOption> editorOptions) {
+        this.editorOptions = editorOptions;
+    }
+
+    public void setAllowedApps(Set<AllowedApp> allowedApps) {
+        this.allowedApps = allowedApps;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof HAccount)) return false;
+        final HAccount other = (HAccount) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (!super.equals(o)) return false;
+        final Object this$username = this.getUsername();
+        final Object other$username = other.getUsername();
+        if (this$username == null ? other$username != null :
+                !this$username.equals(other$username)) return false;
+        final Object this$passwordHash = this.getPasswordHash();
+        final Object other$passwordHash = other.getPasswordHash();
+        if (this$passwordHash == null ? other$passwordHash != null :
+                !this$passwordHash.equals(other$passwordHash)) return false;
+        if (this.isEnabled() != other.isEnabled()) return false;
+        final Object this$apiKey = this.getApiKey();
+        final Object other$apiKey = other.getApiKey();
+        if (this$apiKey == null ? other$apiKey != null :
+                !this$apiKey.equals(other$apiKey)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $username = this.getUsername();
+        result = result * PRIME +
+                ($username == null ? 43 : $username.hashCode());
+        final Object $passwordHash = this.getPasswordHash();
+        result = result * PRIME +
+                ($passwordHash == null ? 43 : $passwordHash.hashCode());
+        result = result * PRIME + (this.isEnabled() ? 79 : 97);
+        final Object $apiKey = this.getApiKey();
+        result = result * PRIME + ($apiKey == null ? 43 : $apiKey.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof HAccount;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HAccount(super=" + super.toString() +
+                ", username=" + this.getUsername() + ")";
     }
 }

@@ -20,8 +20,13 @@
  */
 package org.zanata.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.zanata.hibernate.search.LocaleIdBridge;
+import org.zanata.util.GlossaryUtil;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -30,28 +35,14 @@ import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapKey;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.validation.constraints.NotNull;
-
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
-import lombok.ToString;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.zanata.hibernate.search.LocaleIdBridge;
-import org.zanata.util.GlossaryUtil;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -62,10 +53,6 @@ import org.zanata.util.GlossaryUtil;
 @EntityListeners({ HGlossaryEntry.EntityListener.class })
 @Cacheable
 @Indexed
-@Setter
-@EqualsAndHashCode(callSuper = true, doNotUseGetters = true,
-        exclude = "glossaryTerms")
-@ToString(of = { "sourceRef", "srcLocale" })
 public class HGlossaryEntry extends ModelEntityBase {
     private static final long serialVersionUID = -4200183325180630061L;
 
@@ -123,6 +110,101 @@ public class HGlossaryEntry extends ModelEntityBase {
 
     public String getDescription() {
         return description;
+    }
+
+    public void setGlossaryTerms(Map<HLocale, HGlossaryTerm> glossaryTerms) {
+        this.glossaryTerms = glossaryTerms;
+    }
+
+    public void setSourceRef(String sourceRef) {
+        this.sourceRef = sourceRef;
+    }
+
+    public void setContentHash(String contentHash) {
+        this.contentHash = contentHash;
+    }
+
+    public void setPos(String pos) {
+        this.pos = pos;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setSrcLocale(HLocale srcLocale) {
+        this.srcLocale = srcLocale;
+    }
+
+    public void setGlossary(Glossary glossary) {
+        this.glossary = glossary;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof HGlossaryEntry)) return false;
+        final HGlossaryEntry other = (HGlossaryEntry) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (!super.equals(o)) return false;
+        final Object this$sourceRef = this.sourceRef;
+        final Object other$sourceRef = other.sourceRef;
+        if (this$sourceRef == null ? other$sourceRef != null :
+                !this$sourceRef.equals(other$sourceRef)) return false;
+        final Object this$contentHash = this.contentHash;
+        final Object other$contentHash = other.contentHash;
+        if (this$contentHash == null ? other$contentHash != null :
+                !this$contentHash.equals(other$contentHash)) return false;
+        final Object this$pos = this.pos;
+        final Object other$pos = other.pos;
+        if (this$pos == null ? other$pos != null : !this$pos.equals(other$pos))
+            return false;
+        final Object this$description = this.description;
+        final Object other$description = other.description;
+        if (this$description == null ? other$description != null :
+                !this$description.equals(other$description)) return false;
+        final Object this$srcLocale = this.srcLocale;
+        final Object other$srcLocale = other.srcLocale;
+        if (this$srcLocale == null ? other$srcLocale != null :
+                !this$srcLocale.equals(other$srcLocale)) return false;
+        final Object this$glossary = this.glossary;
+        final Object other$glossary = other.glossary;
+        if (this$glossary == null ? other$glossary != null :
+                !this$glossary.equals(other$glossary)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $sourceRef = this.sourceRef;
+        result = result * PRIME +
+                ($sourceRef == null ? 43 : $sourceRef.hashCode());
+        final Object $contentHash = this.contentHash;
+        result = result * PRIME +
+                ($contentHash == null ? 43 : $contentHash.hashCode());
+        final Object $pos = this.pos;
+        result = result * PRIME + ($pos == null ? 43 : $pos.hashCode());
+        final Object $description = this.description;
+        result = result * PRIME +
+                ($description == null ? 43 : $description.hashCode());
+        final Object $srcLocale = this.srcLocale;
+        result = result * PRIME +
+                ($srcLocale == null ? 43 : $srcLocale.hashCode());
+        final Object $glossary = this.glossary;
+        result = result * PRIME +
+                ($glossary == null ? 43 : $glossary.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof HGlossaryEntry;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HGlossaryEntry(sourceRef=" +
+                this.getSourceRef() + ", srcLocale=" + this.getSrcLocale() +
+                ")";
     }
 
     public static class EntityListener {

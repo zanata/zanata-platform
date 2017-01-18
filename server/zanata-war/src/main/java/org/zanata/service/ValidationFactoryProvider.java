@@ -22,12 +22,12 @@
 
 package org.zanata.service;
 
-import java.io.IOException;
-
 import org.zanata.exception.ValidationException;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.server.locale.Gwti18nReader;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
+
+import java.io.IOException;
 
 /**
  * Provide new instance of ValidationFactory Used on server side -

@@ -20,10 +20,9 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
+import java.io.Serializable;
 
 @Entity
 @Cacheable

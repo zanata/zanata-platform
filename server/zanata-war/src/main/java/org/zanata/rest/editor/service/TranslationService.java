@@ -20,17 +20,10 @@
  */
 package org.zanata.rest.editor.service;
 
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowDAO;
@@ -47,7 +40,12 @@ import org.zanata.service.TranslationService.TranslationResult;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
-import com.google.common.collect.Lists;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import java.util.List;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -55,9 +53,10 @@ import com.google.common.collect.Lists;
 @RequestScoped
 @Named("editor.translationService")
 @Path(TranslationResource.SERVICE_PATH)
-@Slf4j
 @Transactional
 public class TranslationService implements TranslationResource {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationService.class);
     @Inject
     private ZanataIdentity identity;
 

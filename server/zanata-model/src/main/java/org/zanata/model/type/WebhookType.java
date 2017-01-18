@@ -1,7 +1,5 @@
 package org.zanata.model.type;
 
-import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
@@ -18,10 +16,13 @@ public enum WebhookType implements Serializable {
     ManuallyTriggeredEvent("Manual event")
     ;
 
-    @Getter
     private String displayName;
 
     WebhookType(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
     }
 }

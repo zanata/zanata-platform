@@ -3,10 +3,6 @@
  */
 package org.zanata.util;
 
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.TimeUnit;
-
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Period;
@@ -16,9 +12,8 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.ocpsoft.prettytime.PrettyTime;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  *
@@ -118,12 +113,26 @@ public class DateUtil {
         return date1.compareTo(date2);
     }
 
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class DateUnitAndFigure {
         private String unit; // s(second) m(minute) or d(day)
         private int figure;
+
+        @java.beans.ConstructorProperties({ "unit", "figure" })
+        public DateUnitAndFigure(String unit, int figure) {
+            this.unit = unit;
+            this.figure = figure;
+        }
+
+        public DateUnitAndFigure() {
+        }
+
+        public String getUnit() {
+            return this.unit;
+        }
+
+        public int getFigure() {
+            return this.figure;
+        }
     }
 
     /**

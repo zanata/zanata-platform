@@ -1,11 +1,11 @@
 package org.zanata.rest;
 
+import org.zanata.exception.NotLoggedInException;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.zanata.exception.NotLoggedInException;
 
 @Provider
 public class NotLoggedInExceptionMapper implements

@@ -1,43 +1,44 @@
 package org.zanata.rest.editor.service;
 
-import java.util.List;
-
 import com.google.common.base.Optional;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.editor.dto.EditorTextFlow;
 import org.zanata.rest.editor.dto.TransUnit;
-import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.service.ResourceUtils;
 
-import com.google.common.collect.Lists;
-
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("transUnitUtils")
 @javax.enterprise.context.Dependent
-@Slf4j
 
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TransUnitUtils {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TransUnitUtils.class);
     public static int MAX_SIZE = 200;
     public static String ID_SEPARATOR = ",";
 
     @Inject
     private ResourceUtils resourceUtils;
+
+    @java.beans.ConstructorProperties({ "resourceUtils" })
+    protected TransUnitUtils(ResourceUtils resourceUtils) {
+        this.resourceUtils = resourceUtils;
+    }
+
+    public TransUnitUtils() {
+    }
 
     /**
      * Filter out non-numeric id and convert from String to Long.

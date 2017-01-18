@@ -1,9 +1,5 @@
 package org.zanata.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
@@ -21,10 +17,8 @@ import java.io.Serializable;
  *
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
-@Getter
 @Entity
 @Access(AccessType.FIELD)
-@NoArgsConstructor
 public class LanguageRequest implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +26,6 @@ public class LanguageRequest implements Serializable {
 
     @OneToOne
     @JoinColumn(name = "requestId", nullable = false)
-    @Setter
     private Request request;
 
     @ManyToOne
@@ -61,5 +54,36 @@ public class LanguageRequest implements Serializable {
         this.coordinator = coordinator;
         this.reviewer = reviewer;
         this.translator = translator;
+    }
+
+    public LanguageRequest() {
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public Request getRequest() {
+        return this.request;
+    }
+
+    public HLocale getLocale() {
+        return this.locale;
+    }
+
+    public boolean isCoordinator() {
+        return this.coordinator;
+    }
+
+    public boolean isReviewer() {
+        return this.reviewer;
+    }
+
+    public boolean isTranslator() {
+        return this.translator;
+    }
+
+    public void setRequest(Request request) {
+        this.request = request;
     }
 }

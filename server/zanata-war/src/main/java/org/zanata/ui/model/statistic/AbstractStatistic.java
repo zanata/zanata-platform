@@ -1,8 +1,8 @@
 package org.zanata.ui.model.statistic;
 
-import java.io.Serializable;
-
 import org.zanata.common.ContentState;
+
+import java.io.Serializable;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

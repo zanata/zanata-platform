@@ -20,12 +20,12 @@
  */
 package org.zanata.rest;
 
+import org.zanata.util.TMXParseException;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.zanata.util.TMXParseException;
 
 /**
  * @author Carlos Munoz <a

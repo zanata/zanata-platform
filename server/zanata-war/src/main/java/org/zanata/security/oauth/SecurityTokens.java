@@ -21,18 +21,11 @@
 
 package org.zanata.security.oauth;
 
-import java.io.Serializable;
-import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.google.common.base.Throwables;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Maps;
 import org.apache.oltu.oauth2.as.issuer.MD5Generator;
 import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
@@ -46,13 +39,18 @@ import org.zanata.model.HAccount;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.util.Introspectable;
-import com.google.common.base.Throwables;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
-import lombok.Getter;
-import lombok.Setter;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.Serializable;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Responsible for storing OAuth access tokens and authorization codes in memory.
@@ -265,11 +263,26 @@ public class SecurityTokens implements Serializable, Introspectable {
         return DTOUtil.toJSON(tokens);
     }
 
-    @Getter
-    @Setter
     protected static class Tokens {
         private Map<String, Map<String, String>> usernameToClientIdAuthCodeMap;
         private Map<String, String> accessTokenToUsername;
 
+        public Map<String, Map<String, String>> getUsernameToClientIdAuthCodeMap() {
+            return this.usernameToClientIdAuthCodeMap;
+        }
+
+        public Map<String, String> getAccessTokenToUsername() {
+            return this.accessTokenToUsername;
+        }
+
+        public void setUsernameToClientIdAuthCodeMap(
+                Map<String, Map<String, String>> usernameToClientIdAuthCodeMap) {
+            this.usernameToClientIdAuthCodeMap = usernameToClientIdAuthCodeMap;
+        }
+
+        public void setAccessTokenToUsername(
+                Map<String, String> accessTokenToUsername) {
+            this.accessTokenToUsername = accessTokenToUsername;
+        }
     }
 }

@@ -21,11 +21,11 @@
 
 package org.zanata.model;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * @author Sean Flanigan <a

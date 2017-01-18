@@ -1,13 +1,13 @@
 package org.zanata.service.impl;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.model.HAccount;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
 import org.zanata.util.HashUtil;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 @Named("gravatarServiceImpl")
 @RequestScoped

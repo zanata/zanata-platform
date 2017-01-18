@@ -20,18 +20,17 @@
  */
 package org.zanata.dao;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 
 /**
  * @author Patrick Huang <a
@@ -39,11 +38,12 @@ import org.zanata.model.HTextFlowTarget;
  */
 @Named("hTextFlowTargetStreamingDAO")
 @RequestScoped
-@Slf4j
 public class HTextFlowTargetStreamingDAO extends
         AbstractDAOImpl<HTextFlowTarget, Long> {
 
     private static final long serialVersionUID = -1L;
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(HTextFlowTargetStreamingDAO.class);
 
     public HTextFlowTargetStreamingDAO() {
         super(HTextFlowTarget.class);

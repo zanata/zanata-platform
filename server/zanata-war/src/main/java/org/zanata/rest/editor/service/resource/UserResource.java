@@ -1,5 +1,9 @@
 package org.zanata.rest.editor.service.resource;
 
+import org.zanata.rest.editor.MediaTypes;
+import org.zanata.rest.service.GlossaryService;
+import org.zanata.rest.service.RestResource;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -9,12 +13,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import org.zanata.model.HAccount;
-import org.zanata.rest.dto.User;
-import org.zanata.rest.editor.MediaTypes;
-import org.zanata.rest.service.GlossaryService;
-import org.zanata.rest.service.RestResource;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

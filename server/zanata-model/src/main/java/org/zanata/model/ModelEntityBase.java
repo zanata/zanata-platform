@@ -20,8 +20,14 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.Date;
+import com.google.common.annotations.VisibleForTesting;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.search.annotations.SortableField;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.zanata.hibernate.search.DateBridge;
 
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -36,24 +42,16 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
+import java.io.Serializable;
+import java.util.Date;
 
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.search.annotations.SortableField;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.zanata.hibernate.search.DateBridge;
-
-import com.google.common.annotations.VisibleForTesting;
-
-@Slf4j
 @EntityListeners({ ModelEntityBase.EntityListener.class })
 @MappedSuperclass
 public class ModelEntityBase implements Serializable {
 
     private static final long serialVersionUID = -6139220551322868743L;
+    private static final Logger log =
+            LoggerFactory.getLogger(ModelEntityBase.class);
 
     protected Long id;
 

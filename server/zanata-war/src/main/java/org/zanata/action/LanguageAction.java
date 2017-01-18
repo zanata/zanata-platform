@@ -20,24 +20,11 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.List;
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.faces.event.ValueChangeEvent;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-
-import lombok.AllArgsConstructor;
 import org.apache.commons.lang.StringUtils;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.Authenticated;
-import org.zanata.model.LanguageRequest;
-import org.zanata.model.LocaleRole;
-import org.zanata.security.annotations.CheckRole;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.LocaleMemberDAO;
@@ -50,20 +37,28 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+import org.zanata.model.LanguageRequest;
+import org.zanata.model.LocaleRole;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.RequestService;
-import org.zanata.ui.faces.FacesMessages;
-import javax.enterprise.event.Event;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
+import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
+import javax.enterprise.event.Event;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.faces.event.ValueChangeEvent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.List;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
@@ -71,9 +66,10 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class LanguageAction implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(LanguageAction.class);
 
     @Inject
     private LanguageTeamService languageTeamServiceImpl;
@@ -122,19 +118,14 @@ public class LanguageAction implements Serializable {
     private UrlUtil urlUtil;
 
 
-    @Getter
-    @Setter
     private String language;
 
-    @Getter
-    @Setter
     private String searchTerm;
 
     private HLocale locale;
 
     private List<SelectablePerson> searchResults;
 
-    @Getter
     private AbstractListFilter<HLocaleMember> membersFilter =
             new InMemoryListFilter<HLocaleMember>() {
                 @Override
@@ -515,8 +506,26 @@ public class LanguageAction implements Serializable {
         getSearchResults().clear();
     }
 
-    @Getter
-    @AllArgsConstructor
+    public String getLanguage() {
+        return this.language;
+    }
+
+    public String getSearchTerm() {
+        return this.searchTerm;
+    }
+
+    public AbstractListFilter<HLocaleMember> getMembersFilter() {
+        return this.membersFilter;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public void setSearchTerm(String searchTerm) {
+        this.searchTerm = searchTerm;
+    }
+
     public final class SelectablePerson {
         private HPerson person;
 
@@ -524,6 +533,19 @@ public class LanguageAction implements Serializable {
         private boolean isTranslator;
         private boolean isReviewer;
         private boolean isCoordinator;
+
+        @java.beans.ConstructorProperties({ "person", "selected",
+                "isTranslator",
+                "isReviewer", "isCoordinator" })
+        public SelectablePerson(HPerson person, boolean selected,
+                boolean isTranslator, boolean isReviewer,
+                boolean isCoordinator) {
+            this.person = person;
+            this.selected = selected;
+            this.isTranslator = isTranslator;
+            this.isReviewer = isReviewer;
+            this.isCoordinator = isCoordinator;
+        }
 
         public void setReviewer(boolean isReviewer) {
             this.isReviewer = isReviewer;
@@ -546,6 +568,26 @@ public class LanguageAction implements Serializable {
 
         private void refreshSelected() {
             this.selected = isReviewer || isTranslator || isCoordinator;
+        }
+
+        public HPerson getPerson() {
+            return this.person;
+        }
+
+        public boolean isSelected() {
+            return this.selected;
+        }
+
+        public boolean isTranslator() {
+            return this.isTranslator;
+        }
+
+        public boolean isReviewer() {
+            return this.isReviewer;
+        }
+
+        public boolean isCoordinator() {
+            return this.isCoordinator;
         }
     }
 

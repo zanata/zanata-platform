@@ -22,7 +22,6 @@
 package org.zanata.adapter;
 
 import com.google.common.base.Optional;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.okapi.common.Event;
 import net.sf.okapi.common.EventType;
 import net.sf.okapi.common.IParameters;
@@ -30,12 +29,21 @@ import net.sf.okapi.common.exceptions.OkapiIOException;
 import net.sf.okapi.common.filters.IFilter;
 import net.sf.okapi.common.filterwriter.GenericContent;
 import net.sf.okapi.common.filterwriter.IFilterWriter;
-import net.sf.okapi.common.resource.*;
+import net.sf.okapi.common.resource.RawDocument;
+import net.sf.okapi.common.resource.StartGroup;
+import net.sf.okapi.common.resource.StartSubDocument;
+import net.sf.okapi.common.resource.TextContainer;
+import net.sf.okapi.common.resource.TextUnit;
 import net.sf.okapi.filters.ts.Parameters;
 import net.sf.okapi.filters.ts.TsFilter;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.zanata.common.*;
+import org.slf4j.Logger;
+import org.zanata.common.ContentState;
+import org.zanata.common.ContentType;
+import org.zanata.common.DocumentType;
+import org.zanata.common.HasContents;
+import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
@@ -46,12 +54,11 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 import javax.annotation.Nonnull;
-
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,8 +69,10 @@ import java.util.regex.Pattern;
  * @author Damian Jansen
  *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class TSAdapter extends OkapiFilterAdapter {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TSAdapter.class);
 
     public TSAdapter() {
         super(prepareFilter(), IdSource.contentHash, true);

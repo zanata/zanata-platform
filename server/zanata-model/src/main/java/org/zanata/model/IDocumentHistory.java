@@ -20,11 +20,10 @@
  */
 package org.zanata.model;
 
-import java.util.Date;
+import org.zanata.common.ContentType;
 
 import javax.annotation.Nonnull;
-
-import org.zanata.common.ContentType;
+import java.util.Date;
 
 public interface IDocumentHistory {
 

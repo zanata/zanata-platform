@@ -20,23 +20,8 @@
  */
 package org.zanata.servlet;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.List;
-
-import javax.persistence.OptimisticLockException;
-import javax.persistence.PersistenceException;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.Response;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -49,6 +34,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
 import org.zanata.common.DocumentType;
 import org.zanata.file.GlobalDocumentId;
 import org.zanata.file.SourceDocumentUpload;
@@ -60,6 +46,19 @@ import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.util.FileUtil;
 import org.zanata.util.ServiceLocator;
 
+import javax.persistence.OptimisticLockException;
+import javax.persistence.PersistenceException;
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.List;
+
 import static com.google.common.base.Strings.emptyToNull;
 
 /**
@@ -69,9 +68,10 @@ import static com.google.common.base.Strings.emptyToNull;
  * the user is signed in and whether they already have an upload in-progress
  * in a separate tab.
  */
-@Slf4j
 public class MultiFileUploadServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(MultiFileUploadServlet.class);
 
     @Override
     public void init(ServletConfig config) {

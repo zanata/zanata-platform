@@ -1,10 +1,6 @@
 package org.zanata.action;
 
-import javax.validation.constraints.Size;
-
 import org.hibernate.validator.constraints.NotEmpty;
-import javax.inject.Inject;
-
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.model.HAccount;
@@ -12,6 +8,9 @@ import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.ui.faces.FacesMessages;
+
+import javax.inject.Inject;
+import javax.validation.constraints.Size;
 
 /**
  * @author Patrick Huang

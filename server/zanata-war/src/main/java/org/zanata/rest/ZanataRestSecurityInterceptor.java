@@ -1,24 +1,6 @@
 package org.zanata.rest;
 
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Optional;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.container.ContainerRequestContext;
-import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.container.DynamicFeature;
-import javax.ws.rs.container.PreMatching;
-import javax.ws.rs.container.ResourceInfo;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.FeatureContext;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
+import com.google.common.base.MoreObjects;
 import javaslang.control.Either;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
@@ -40,8 +22,24 @@ import org.zanata.security.oauth.SecurityTokens;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.MoreObjects;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.DynamicFeature;
+import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.FeatureContext;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  * This class is responsible for checking for all REST requests: a) valid

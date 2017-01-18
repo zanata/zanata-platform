@@ -23,8 +23,6 @@ package org.zanata.eventservice;
 
 import javax.servlet.http.HttpServletRequest;
 
-import lombok.Synchronized;
-
 import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
 
 /**
@@ -34,10 +32,13 @@ import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
  */
 public class SequentialConnectionIdGenerator implements ConnectionIdGenerator {
     private static long nextConnectionNum = 0;
+    private static final Object $LOCK = new Object[0];
 
-    @Synchronized
+
     private static long generateConnectionNum() {
-        return nextConnectionNum++;
+        synchronized ($LOCK) {
+            return nextConnectionNum++;
+        }
     }
 
     @Override

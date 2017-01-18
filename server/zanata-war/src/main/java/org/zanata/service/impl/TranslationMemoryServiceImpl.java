@@ -21,11 +21,11 @@
 
 package org.zanata.service.impl;
 
-import static com.google.common.collect.Collections2.filter;
-
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Objects;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
@@ -41,10 +41,7 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -74,12 +71,10 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.shared.rpc.LuceneQuery;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.Lists;
-
+import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -90,14 +85,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.annotation.Nonnull;
+import static com.google.common.collect.Collections2.filter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Named("translationMemoryServiceImpl")
 @RequestScoped
-@Slf4j
 public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
     private static final int SEARCH_MAX_RESULTS = SysProperties.getInt(
@@ -127,6 +121,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     private static final double MINIMUM_SIMILARITY = 1.0;
 
     private static final String LUCENE_KEY_WORDS = "(\\s*)(AND|OR|NOT)(\\s+)";
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslationMemoryServiceImpl.class);
 
     @Inject @FullText
     private FullTextEntityManager entityManager;
@@ -1146,7 +1142,6 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
          * abstracting the type of entity returned in the row.
          */
         private abstract class QueryMatch {
-            @Getter
             private float score;
 
             protected QueryMatch(float score) {
@@ -1162,6 +1157,10 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             public abstract List<String> getTargetContents();
 
             public abstract SuggestionDetail createDetails();
+
+            public float getScore() {
+                return this.score;
+            }
         }
 
         /**
@@ -1169,10 +1168,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
          */
         private class TextFlowTargetQueryMatch extends QueryMatch {
 
-            @Getter
             private final List<String> sourceContents;
 
-            @Getter
             private final List<String> targetContents;
 
             private final HTextFlowTarget target;
@@ -1188,6 +1185,14 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             public SuggestionDetail createDetails() {
                 return new TextFlowSuggestionDetail(target);
             }
+
+            public List<String> getSourceContents() {
+                return this.sourceContents;
+            }
+
+            public List<String> getTargetContents() {
+                return this.targetContents;
+            }
         }
 
         /**
@@ -1195,10 +1200,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
          */
         private class TransMemoryUnitQueryMatch extends QueryMatch {
 
-            @Getter
             private final List<String> sourceContents;
 
-            @Getter
             private final List<String> targetContents;
 
             private TransMemoryUnit tmUnit;
@@ -1217,6 +1220,14 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             @Override
             public SuggestionDetail createDetails() {
                 return new TransMemoryUnitSuggestionDetail(tmUnit);
+            }
+
+            public List<String> getSourceContents() {
+                return this.sourceContents;
+            }
+
+            public List<String> getTargetContents() {
+                return this.targetContents;
             }
         }
     }

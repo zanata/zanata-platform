@@ -1,7 +1,11 @@
 package org.zanata.dao;
 
-import java.util.List;
-
+import com.github.huangp.entityunit.entity.EntityMakerBuilder;
+import com.github.huangp.entityunit.maker.FixedValueMaker;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.collect.Iterables;
 import org.hibernate.transform.ResultTransformer;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -12,8 +16,6 @@ import org.junit.Test;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.TranslationMatrix;
-import org.zanata.rest.service.StatisticsServiceImpl;
 import org.zanata.model.HAccount;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
@@ -23,15 +25,10 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowBuilder;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
+import org.zanata.rest.dto.TranslationMatrix;
+import org.zanata.rest.service.StatisticsServiceImpl;
 
-import com.github.huangp.entityunit.entity.EntityMakerBuilder;
-import com.github.huangp.entityunit.maker.FixedValueMaker;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.collect.Iterables;
-
-import lombok.RequiredArgsConstructor;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -229,10 +226,14 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
                 "convert_tz(lastChanged, '-06:00', '10:00')");
     }
 
-    @RequiredArgsConstructor
     private static class ContentStatePredicate
             implements Predicate<TranslationMatrix> {
         private final ContentState state;
+
+        @java.beans.ConstructorProperties({ "state" })
+        public ContentStatePredicate(ContentState state) {
+            this.state = state;
+        }
 
         @Override
         public boolean apply(TranslationMatrix input) {

@@ -20,9 +20,6 @@
  */
 package org.zanata.ui;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,14 +32,11 @@ import java.util.List;
  */
 public abstract class AbstractTextSearch<E> {
 
-    @Getter
-    @Setter
     @NotNull
     private String query = "";
 
     private String searchedQuery = "";
 
-    @Getter
     private List<E> results = new ArrayList<>();
 
     public synchronized void search() {
@@ -54,4 +48,16 @@ public abstract class AbstractTextSearch<E> {
     }
 
     public abstract List<E> getSearchResults();
+
+    public String getQuery() {
+        return this.query;
+    }
+
+    public List<E> getResults() {
+        return this.results;
+    }
+
+    public void setQuery(String query) {
+        this.query = query;
+    }
 }

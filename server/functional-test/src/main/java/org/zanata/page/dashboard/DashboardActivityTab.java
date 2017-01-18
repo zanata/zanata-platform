@@ -21,19 +21,20 @@
 package org.zanata.page.dashboard;
 
 import com.google.common.base.Function;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 
 import java.util.List;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class DashboardActivityTab extends DashboardBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardActivityTab.class);
     private By activityList = By.id("activity-list");
     private By moreActivityButton = By.id("moreActivity");
 

@@ -1,9 +1,6 @@
 package org.zanata.service.impl;
 
 import com.google.common.collect.Lists;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
 import org.assertj.core.api.Condition;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -379,13 +376,30 @@ public class TranslationMemoryServiceImplTest {
                 getCondition(checks[2], values[2])), expectedSize);
     }
 
-    @Getter
-    @AllArgsConstructor
-    @ToString
     private static class TransMemoryExecution {
 
         private TransMemoryQuery query;
         private int resultSize;
+
+        @java.beans.ConstructorProperties({ "query", "resultSize" })
+        public TransMemoryExecution(TransMemoryQuery query, int resultSize) {
+            this.query = query;
+            this.resultSize = resultSize;
+        }
+
+        public TransMemoryQuery getQuery() {
+            return this.query;
+        }
+
+        public int getResultSize() {
+            return this.resultSize;
+        }
+
+        public String toString() {
+            return "org.zanata.service.impl.TranslationMemoryServiceImplTest.TransMemoryExecution(query=" +
+                    this.getQuery() + ", resultSize=" + this.getResultSize() +
+                    ")";
+        }
     }
 
     private static TransMemoryQuery.Condition getCondition(boolean isCheck,

@@ -20,10 +20,8 @@
  */
 package org.zanata.security;
 
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import org.zanata.util.ServiceLocator;
+
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -33,8 +31,10 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
-
-import org.zanata.util.ServiceLocator;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class OpenIdLoginModule implements LoginModule {
     public static final String OPEN_ID_PROVIDER_KEY = "providerURL";

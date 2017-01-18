@@ -20,21 +20,18 @@
  */
 package org.zanata.action;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.security.annotations.CheckRole;
 
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
-import org.zanata.async.AsyncTaskHandle;
-import org.zanata.async.AsyncTaskHandleManager;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
 
 /**
  * @author Carlos Munoz <a

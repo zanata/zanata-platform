@@ -21,7 +21,6 @@
 
 package org.zanata.model.type;
 
-import lombok.Getter;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.tm.TransMemoryUnit;
@@ -42,10 +41,13 @@ public enum TranslationEntityType implements Serializable {
     TTH(HTextFlowTargetHistory.class);
     //    MT(null);
 
-    @Getter
     private final Class clazz;
 
     private TranslationEntityType(Class clazz) {
         this.clazz = clazz;
+    }
+
+    public Class getClazz() {
+        return this.clazz;
     }
 }

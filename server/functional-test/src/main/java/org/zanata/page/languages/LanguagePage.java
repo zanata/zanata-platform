@@ -20,30 +20,28 @@
  */
 package org.zanata.page.languages;
 
+import com.google.common.base.Function;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.zanata.page.BasePage;
+import org.zanata.util.Checkbox;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nullable;
-
-import lombok.extern.slf4j.Slf4j;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import org.zanata.page.BasePage;
-import org.zanata.util.Checkbox;
-
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Sets;
-
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class LanguagePage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(LanguagePage.class);
     private By contactCoordinatorsButton =
         By.id("contact-coordinator");
     private By saveButton = By.id("save-button");

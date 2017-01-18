@@ -21,16 +21,16 @@
 
 package org.zanata.dao;
 
+import org.hibernate.ScrollableResults;
+import org.slf4j.Logger;
+
 import java.io.Closeable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.hibernate.ScrollableResults;
-
-@Slf4j
 class ScrollableResultsIterator implements Iterator<Object[]>, Closeable {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ScrollableResultsIterator.class);
     private boolean closed;
     private Object[] nextRow = null;
     private final ScrollableResults scrollableResults;

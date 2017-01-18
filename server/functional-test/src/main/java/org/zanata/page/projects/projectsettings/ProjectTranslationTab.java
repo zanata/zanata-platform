@@ -20,11 +20,10 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.projects.ProjectBasePage;
 
 import java.util.HashMap;
@@ -34,9 +33,10 @@ import java.util.Map;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectTranslationTab extends ProjectBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectTranslationTab.class);
     private Map validationNames = getValidationMapping();
 
     private By validationsList =

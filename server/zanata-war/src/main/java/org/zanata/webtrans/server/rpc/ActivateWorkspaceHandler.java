@@ -20,18 +20,10 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import lombok.Synchronized;
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Any;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpSession;
-
 import org.apache.deltaspike.core.api.common.DeltaSpike;
+import org.slf4j.Logger;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
@@ -62,12 +54,21 @@ import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpSession;
+
 @Named("webtrans.gwt.ActivateWorkspaceHandler")
 @RequestScoped
 @ActionHandlerFor(ActivateWorkspaceAction.class)
-@Slf4j
 public class ActivateWorkspaceHandler extends
         AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult> {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ActivateWorkspaceHandler.class);
+    private static final Object $LOCK = new Object[0];
+
     @Inject
     private ZanataIdentity identity;
 
@@ -101,9 +102,10 @@ public class ActivateWorkspaceHandler extends
 
     private static long nextEditorClientIdNum = 0;
 
-    @Synchronized
     private static long generateEditorClientNum() {
-        return nextEditorClientIdNum++;
+        synchronized ($LOCK) {
+            return nextEditorClientIdNum++;
+        }
     }
 
     @Override

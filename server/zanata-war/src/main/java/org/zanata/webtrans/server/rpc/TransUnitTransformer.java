@@ -20,10 +20,6 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.model.HLocale;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
@@ -31,18 +27,27 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.webtrans.shared.model.TransUnit;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
 
 @Named("transUnitTransformer")
 @RequestScoped
-@NoArgsConstructor
-@AllArgsConstructor
 public class TransUnitTransformer {
     private static final int NULL_TARGET_VERSION_NUM = 0;
 
     @Inject
     private ResourceUtils resourceUtils;
+
+    @java.beans.ConstructorProperties({ "resourceUtils" })
+    public TransUnitTransformer(ResourceUtils resourceUtils) {
+        this.resourceUtils = resourceUtils;
+    }
+
+    public TransUnitTransformer() {
+    }
 
     public TransUnit transform(HTextFlow hTextFlow, HLocale hLocale) {
         // TODO debt: we iterate over a collection of text flow and call this

@@ -29,17 +29,22 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class ResultSetWrapper implements InvocationHandler {
+    @java.beans.ConstructorProperties({ "resultSet", "statementProxy",
+            "connectionProxy", "streaming" })
+    private ResultSetWrapper(ResultSet resultSet, Statement statementProxy,
+            Connection connectionProxy, boolean streaming) {
+        this.resultSet = resultSet;
+        this.statementProxy = statementProxy;
+        this.connectionProxy = connectionProxy;
+        this.streaming = streaming;
+    }
+
     public static ResultSet wrap(ResultSet resultSet, Statement statementProxy,
             Connection connectionProxy, boolean streaming) {
         if (Proxy.isProxyClass(resultSet.getClass())
@@ -50,12 +55,10 @@ class ResultSetWrapper implements InvocationHandler {
                 statementProxy, connectionProxy, streaming));
     }
 
-    @Getter
     private final ResultSet resultSet;
     private final Statement statementProxy;
     private final Connection connectionProxy;
     private final boolean streaming;
-    @Getter
     private final Throwable throwable = new Throwable(
             "Unclosed ResultSet was created here");
 
@@ -89,4 +92,11 @@ class ResultSetWrapper implements InvocationHandler {
         }
     }
 
+    public ResultSet getResultSet() {
+        return this.resultSet;
+    }
+
+    public Throwable getThrowable() {
+        return this.throwable;
+    }
 }

@@ -20,24 +20,25 @@
  */
 package org.zanata.rest.service;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
 import com.google.common.io.Files;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.zanata.exception.VirusDetectedException;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author Sean Flanigan, <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 public class VirusScannerTest {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(VirusScannerTest.class);
     private VirusScanner virusScanner = new VirusScanner();
 
     @BeforeClass

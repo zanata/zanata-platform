@@ -20,14 +20,13 @@
  */
 package org.zanata.service;
 
-import java.util.List;
-
-import javax.annotation.Nullable;
-
 import org.zanata.common.LocaleId;
 import org.zanata.email.EmailStrategy;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

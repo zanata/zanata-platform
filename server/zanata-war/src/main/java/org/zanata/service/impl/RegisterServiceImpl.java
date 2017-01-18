@@ -20,15 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.persistence.EntityManager;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountActivationKeyDAO;
@@ -45,11 +36,18 @@ import org.zanata.model.HProject;
 import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.seam.security.AbstractRunAsOperation;
-import org.zanata.security.AuthenticationType;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.zanata.security.AuthenticationType;
 import org.zanata.service.RegisterService;
 import org.zanata.util.HashUtil;
 import org.zanata.webhook.events.ProjectMaintainerChangedEvent;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.zanata.model.ProjectRole.Maintainer;
 

@@ -20,35 +20,27 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.List;
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceException;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
-import javax.inject.Inject;
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
-import javax.inject.Named;
-
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountActivationKey;
-import org.zanata.model.HPerson;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.AbstractListFilter;
-
-import lombok.Getter;
 import org.zanata.ui.faces.FacesMessages;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.PersistenceException;
+import java.io.Serializable;
+import java.util.List;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
@@ -93,7 +85,6 @@ public class UserAction implements Serializable {
 
     private String originalUsername;
 
-    @Getter
     private AbstractListFilter<String> userFilter =
             new AbstractListFilter<String>() {
 
@@ -263,5 +254,9 @@ public class UserAction implements Serializable {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public AbstractListFilter<String> getUserFilter() {
+        return this.userFilter;
     }
 }

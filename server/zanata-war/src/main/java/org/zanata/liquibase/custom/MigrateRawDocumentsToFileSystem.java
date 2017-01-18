@@ -20,14 +20,8 @@
  */
 package org.zanata.liquibase.custom;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import com.google.common.base.Strings;
+import com.google.common.io.Files;
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
 import liquibase.database.jvm.JdbcConnection;
@@ -36,15 +30,18 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.SetupException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
-import lombok.extern.slf4j.Slf4j;
-
+import org.slf4j.Logger;
 import org.zanata.common.DocumentType;
-
-import com.google.common.base.Strings;
-import com.google.common.io.Files;
 import org.zanata.config.SystemPropertyConfigStore;
 
-@Slf4j
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
 
     private static final String FILE_DIR_PROP_NAME =
@@ -60,6 +57,8 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
             "update HRawDocument set fileId = ? where fileId = ?";
     private static final String DELETE_OLD_CONTENT_SQL =
             "delete from HRawDocumentContent where fileId = ?";
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(MigrateRawDocumentsToFileSystem.class);
 
     private String basePath;
 

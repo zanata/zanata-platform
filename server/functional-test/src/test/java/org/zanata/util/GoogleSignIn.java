@@ -21,7 +21,7 @@
 package org.zanata.util;
 
 import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -31,8 +31,10 @@ import java.net.URL;
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class GoogleSignIn {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GoogleSignIn.class);
+
     /**
      * Initiate a basic connection and confirm a HTTP_OK (200) response
      *

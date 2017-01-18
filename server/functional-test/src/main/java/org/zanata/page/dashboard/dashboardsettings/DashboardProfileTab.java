@@ -20,18 +20,19 @@
  */
 package org.zanata.page.dashboard.dashboardsettings;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.dashboard.DashboardBasePage;
 
 /**
  * @author Damian Jansen
  * <a href="mailto:camunoz@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class DashboardProfileTab extends DashboardBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardProfileTab.class);
     private By accountNameField = By.id("profileForm:nameField:input:accountName");
     private By updateProfileButton = By.id("updateProfileButton");
 

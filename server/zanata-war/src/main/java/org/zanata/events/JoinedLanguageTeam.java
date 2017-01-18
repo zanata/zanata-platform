@@ -20,15 +20,58 @@
  */
 package org.zanata.events;
 
-import lombok.Value;
-
 import org.zanata.common.LocaleId;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Value
 public class JoinedLanguageTeam {
     String username;
     LocaleId localeId;
+
+    @java.beans.ConstructorProperties({ "username", "localeId" })
+    public JoinedLanguageTeam(String username, LocaleId localeId) {
+        this.username = username;
+        this.localeId = localeId;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public LocaleId getLocaleId() {
+        return this.localeId;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof JoinedLanguageTeam)) return false;
+        final JoinedLanguageTeam other = (JoinedLanguageTeam) o;
+        final Object this$username = this.getUsername();
+        final Object other$username = other.getUsername();
+        if (this$username == null ? other$username != null :
+                !this$username.equals(other$username)) return false;
+        final Object this$localeId = this.getLocaleId();
+        final Object other$localeId = other.getLocaleId();
+        if (this$localeId == null ? other$localeId != null :
+                !this$localeId.equals(other$localeId)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $username = this.getUsername();
+        result = result * PRIME +
+                ($username == null ? 43 : $username.hashCode());
+        final Object $localeId = this.getLocaleId();
+        result = result * PRIME +
+                ($localeId == null ? 43 : $localeId.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "org.zanata.events.JoinedLanguageTeam(username=" +
+                this.getUsername() + ", localeId=" + this.getLocaleId() + ")";
+    }
 }

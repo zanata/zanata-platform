@@ -20,18 +20,6 @@
  */
 package org.zanata.model;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.validation.constraints.NotNull;
-
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Analyze;
@@ -45,6 +33,13 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.zanata.hibernate.search.LocaleFilterFactory;
 import org.zanata.hibernate.search.LocaleIdBridge;
 
+import javax.persistence.Cacheable;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+
 /**
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -56,11 +51,6 @@ import org.zanata.hibernate.search.LocaleIdBridge;
 @FullTextFilterDef(name = "glossaryLocaleFilter",
         impl = LocaleFilterFactory.class,
         cache = FilterCacheModeType.INSTANCE_ONLY)
-@Setter
-@NoArgsConstructor
-@EqualsAndHashCode(callSuper = true, doNotUseGetters = true,
-        exclude = "glossaryEntry")
-@ToString(doNotUseGetters = true)
 public class HGlossaryTerm extends ModelEntityBase {
     private static final long serialVersionUID = 1854278563597070432L;
 
@@ -72,6 +62,9 @@ public class HGlossaryTerm extends ModelEntityBase {
 
     public HGlossaryTerm(String content) {
         setContent(content);
+    }
+
+    public HGlossaryTerm() {
     }
 
     @NotNull
@@ -109,5 +102,77 @@ public class HGlossaryTerm extends ModelEntityBase {
     @JoinColumn(name = "last_modified_by_id", nullable = true)
     public HPerson getLastModifiedBy() {
         return lastModifiedBy;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public void setGlossaryEntry(HGlossaryEntry glossaryEntry) {
+        this.glossaryEntry = glossaryEntry;
+    }
+
+    public void setLocale(HLocale locale) {
+        this.locale = locale;
+    }
+
+    public void setLastModifiedBy(HPerson lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof HGlossaryTerm)) return false;
+        final HGlossaryTerm other = (HGlossaryTerm) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (!super.equals(o)) return false;
+        final Object this$content = this.content;
+        final Object other$content = other.content;
+        if (this$content == null ? other$content != null :
+                !this$content.equals(other$content)) return false;
+        final Object this$comment = this.comment;
+        final Object other$comment = other.comment;
+        if (this$comment == null ? other$comment != null :
+                !this$comment.equals(other$comment)) return false;
+        final Object this$locale = this.locale;
+        final Object other$locale = other.locale;
+        if (this$locale == null ? other$locale != null :
+                !this$locale.equals(other$locale)) return false;
+        final Object this$lastModifiedBy = this.lastModifiedBy;
+        final Object other$lastModifiedBy = other.lastModifiedBy;
+        if (this$lastModifiedBy == null ? other$lastModifiedBy != null :
+                !this$lastModifiedBy.equals(other$lastModifiedBy)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $content = this.content;
+        result = result * PRIME + ($content == null ? 43 : $content.hashCode());
+        final Object $comment = this.comment;
+        result = result * PRIME + ($comment == null ? 43 : $comment.hashCode());
+        final Object $locale = this.locale;
+        result = result * PRIME + ($locale == null ? 43 : $locale.hashCode());
+        final Object $lastModifiedBy = this.lastModifiedBy;
+        result = result * PRIME +
+                ($lastModifiedBy == null ? 43 : $lastModifiedBy.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof HGlossaryTerm;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HGlossaryTerm(content=" + this.content +
+                ", comment=" + this.comment + ", glossaryEntry=" +
+                this.glossaryEntry + ", locale=" + this.locale +
+                ", lastModifiedBy=" + this.lastModifiedBy + ")";
     }
 }

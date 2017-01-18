@@ -1,19 +1,13 @@
 package org.zanata.webtrans.server.rpc;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-
-import lombok.extern.slf4j.Slf4j;
 import org.dbunit.operation.DatabaseOperation;
-
 import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.slf4j.Logger;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
@@ -34,9 +28,14 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
-@Slf4j
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @RunWith(CdiUnitRunner.class)
 public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(GetTargetForLocaleHandlerTest.class);
     @Inject @Any
     private GetTargetForLocaleHandler handler;
     @Produces @Mock

@@ -2,16 +2,15 @@
 
 package org.zanata.util;
 
-import java.io.Serializable;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
-
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.zanata.exception.LockTimeoutException;
 
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+import java.io.Serializable;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Serializes calls to a component.
@@ -21,10 +20,11 @@ import javax.interceptor.InvocationContext;
  */
 @Interceptor
 @Synchronized
-@Slf4j
 public class SynchronizationInterceptor implements Serializable {
     private static final long defaultTimeout = SysProperties.getLong(
             SysProperties.LOCK_TIMEOUT, Synchronized.DEFAULT_TIMEOUT);
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(SynchronizationInterceptor.class);
 
     private final ReentrantLock lock = new ReentrantLock(true);
 

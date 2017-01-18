@@ -1,14 +1,7 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HPerson;
 import org.zanata.security.ZanataIdentity;
@@ -22,6 +15,12 @@ import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.HashMap;
+import java.util.Map;
 
 @Named("webtrans.gwt.GetTranslatorListHandler")
 @RequestScoped

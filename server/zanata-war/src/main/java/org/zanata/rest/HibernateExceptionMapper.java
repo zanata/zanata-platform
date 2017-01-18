@@ -1,18 +1,19 @@
 package org.zanata.rest;
 
+import org.hibernate.HibernateException;
+import org.slf4j.Logger;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.hibernate.HibernateException;
-
 @Provider
-@Slf4j
 public class HibernateExceptionMapper implements
         ExceptionMapper<HibernateException> {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(HibernateExceptionMapper.class);
 
     @Override
     public Response toResponse(HibernateException exception) {

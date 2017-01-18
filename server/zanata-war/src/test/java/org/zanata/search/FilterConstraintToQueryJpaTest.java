@@ -1,16 +1,16 @@
 package org.zanata.search;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.github.huangp.entityunit.entity.EntityMakerBuilder;
+import com.github.huangp.entityunit.maker.FixedValueMaker;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.hamcrest.Matchers;
 import org.hibernate.transform.ResultTransformer;
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
 import org.zanata.model.HAccount;
@@ -28,19 +28,18 @@ import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
-import com.github.huangp.entityunit.entity.EntityMakerBuilder;
-import com.github.huangp.entityunit.maker.FixedValueMaker;
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class FilterConstraintToQueryJpaTest extends ZanataJpaTest {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(FilterConstraintToQueryJpaTest.class);
     private ContentStateGroup untranslatedOnly = ContentStateGroup.builder()
             .removeAll().includeNew(true).build();
     private ContentStateGroup allContentStates = ContentStateGroup.builder()

@@ -1,14 +1,10 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-import org.zanata.service.TranslationStateCache;
 import org.zanata.rest.service.StatisticsServiceImpl;
+import org.zanata.service.TranslationStateCache;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -16,8 +12,11 @@ import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.rpc.GetDocumentStats;
 import org.zanata.webtrans.shared.rpc.GetDocumentStatsResult;
 
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.HashMap;
+import java.util.Map;
 
 @Named("webtrans.gwt.GetDocumentStatsHandler")
 @RequestScoped

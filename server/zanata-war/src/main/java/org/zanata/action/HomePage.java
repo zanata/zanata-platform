@@ -20,18 +20,17 @@
  */
 package org.zanata.action;
 
-import lombok.extern.slf4j.Slf4j;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.zanata.ApplicationConfiguration;
+import org.zanata.events.HomeContentChangedEvent;
+import org.zanata.util.CommonMarkRenderer;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.ApplicationConfiguration;
-import org.zanata.events.HomeContentChangedEvent;
-import org.zanata.util.CommonMarkRenderer;
 
 /**
  * This component caches the latest HTML version of the home page's content.
@@ -41,9 +40,10 @@ import org.zanata.util.CommonMarkRenderer;
 
 @Named("homePage")
 @ApplicationScoped
-@Slf4j
 public class HomePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(HomePage.class);
     @Inject
     private ApplicationConfiguration applicationConfiguration;
 

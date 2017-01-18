@@ -1,20 +1,11 @@
 package org.zanata.dao;
 
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.annotation.Nullable;
-
+import com.google.common.base.Optional;
 import org.hibernate.LobHelper;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.type.TimestampType;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
@@ -31,14 +22,23 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
-import com.google.common.base.Optional;
 
-import lombok.extern.slf4j.Slf4j;
+import javax.annotation.Nullable;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
+import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Named("documentDAO")
 @RequestScoped
-@Slf4j
 public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DocumentDAO.class);
+
     public DocumentDAO() {
         super(HDocument.class);
     }

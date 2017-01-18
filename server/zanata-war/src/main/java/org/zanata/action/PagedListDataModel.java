@@ -20,32 +20,23 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-
-import javax.faces.model.DataModel;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
+import org.slf4j.Logger;
 import org.zanata.exception.ZanataServiceException;
 
-@Slf4j
+import javax.faces.model.DataModel;
+import java.io.Serializable;
+
 public abstract class PagedListDataModel<E> extends DataModel implements
         Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(PagedListDataModel.class);
     private int DEFAULT_PAGESIZE = 15;
 
-    @Getter
-    @Setter
     private int pageSize = DEFAULT_PAGESIZE;
 
-    @Getter
-    @Setter
     private int rowIndex;
 
-    @Getter
-    @Setter
     private int scrollerPage = 1;
 
     private DataPage<E> page;
@@ -147,4 +138,27 @@ public abstract class PagedListDataModel<E> extends DataModel implements
         }
     }
 
+    public int getPageSize() {
+        return this.pageSize;
+    }
+
+    public int getRowIndex() {
+        return this.rowIndex;
+    }
+
+    public int getScrollerPage() {
+        return this.scrollerPage;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public void setRowIndex(int rowIndex) {
+        this.rowIndex = rowIndex;
+    }
+
+    public void setScrollerPage(int scrollerPage) {
+        this.scrollerPage = scrollerPage;
+    }
 }

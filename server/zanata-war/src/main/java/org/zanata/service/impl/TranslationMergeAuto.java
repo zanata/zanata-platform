@@ -1,14 +1,14 @@
 package org.zanata.service.impl;
 
-import java.util.List;
-import java.util.Set;
-
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowTargetHistoryDAO;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.service.TranslationMergeService;
 import org.zanata.transformer.TargetTransformer;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * This strategy is used when HTextFlowTarget already exists, and merge-type

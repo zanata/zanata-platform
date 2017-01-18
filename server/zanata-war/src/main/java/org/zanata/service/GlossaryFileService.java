@@ -20,17 +20,16 @@
  */
 package org.zanata.service;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.service.impl.GlossaryFileServiceImpl;
+
+import javax.annotation.Nullable;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  *

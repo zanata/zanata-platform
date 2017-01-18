@@ -21,11 +21,6 @@
 
 package org.zanata.exception.handler;
 
-import java.util.Set;
-import javax.enterprise.event.Event;
-import javax.faces.application.FacesMessage;
-import javax.inject.Inject;
-
 import org.apache.deltaspike.core.api.exception.control.ExceptionHandler;
 import org.apache.deltaspike.core.api.exception.control.Handles;
 import org.apache.deltaspike.core.api.exception.control.event.ExceptionEvent;
@@ -33,6 +28,11 @@ import org.apache.deltaspike.security.api.authorization.AccessDeniedException;
 import org.apache.deltaspike.security.api.authorization.SecurityViolation;
 import org.zanata.events.NotLoggedInEvent;
 import org.zanata.security.CheckRoleDecisionVoter;
+
+import javax.enterprise.event.Event;
+import javax.faces.application.FacesMessage;
+import javax.inject.Inject;
+import java.util.Set;
 
 /**
  * Handles deltaspike security interceptor exception

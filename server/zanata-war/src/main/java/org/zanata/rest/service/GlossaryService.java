@@ -1,33 +1,11 @@
 package org.zanata.rest.service;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
-
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.ws.rs.core.StreamingOutput;
-
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.slf4j.Logger;
 import org.zanata.adapter.glossary.GlossaryCSVWriter;
 import org.zanata.adapter.glossary.GlossaryPoWriter;
 import org.zanata.common.GlossarySortField;
@@ -54,13 +32,33 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.impl.GlossaryFileServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 @RequestScoped
 @Named("glossaryService")
 @Path(GlossaryResource.SERVICE_PATH)
-@Slf4j
 @Transactional
 public class GlossaryService implements GlossaryResource {
     public static final String PROJECT_QUALIFIER_PREFIX = "project/";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GlossaryService.class);
 
     @Inject
     private GlossaryDAO glossaryDAO;

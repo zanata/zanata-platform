@@ -20,9 +20,22 @@
  */
 package org.zanata.tmx;
 
-import java.io.InputStream;
+import com.google.common.base.Throwables;
+import nu.xom.Element;
+import org.hibernate.CacheMode;
+import org.hibernate.FlushMode;
+import org.hibernate.Session;
+import org.slf4j.Logger;
+import org.zanata.common.util.ElementBuilder;
+import org.zanata.model.tm.TransMemory;
+import org.zanata.transaction.TransactionUtilImpl;
+import org.zanata.util.RunnableEx;
+import org.zanata.util.TMXParseException;
+import org.zanata.xml.TmxDtdResolver;
 
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.persistence.EntityExistsException;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
@@ -34,24 +47,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import lombok.AllArgsConstructor;
-import lombok.Cleanup;
-import lombok.extern.slf4j.Slf4j;
-import nu.xom.Element;
-
-import org.hibernate.CacheMode;
-import org.hibernate.FlushMode;
-import org.hibernate.Session;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.zanata.common.util.ElementBuilder;
-import org.zanata.model.tm.TransMemory;
-import org.zanata.transaction.TransactionUtilImpl;
-import org.zanata.util.RunnableEx;
-import org.zanata.util.TMXParseException;
-import org.zanata.xml.TmxDtdResolver;
-import com.google.common.base.Throwables;
+import java.io.InputStream;
 
 /**
  * Parses TMX input.
@@ -61,10 +57,11 @@ import com.google.common.base.Throwables;
  */
 @Named("tmxParser")
 @Dependent
-@Slf4j
 public class TMXParser {
     // Batch size to commit in a new transaction for long files
     private static final int BATCH_SIZE = 100;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TMXParser.class);
 
     @Inject
     private Session session;
@@ -84,25 +81,28 @@ public class TMXParser {
             factory.setProperty(XMLInputFactory.SUPPORT_DTD, true);
             factory.setProperty(XMLInputFactory.IS_VALIDATING, true);
             factory.setXMLResolver(new TmxDtdResolver());
-            @Cleanup
             XMLStreamReader reader = factory.createXMLStreamReader(input);
+            try {
+                QName tmx = new QName("tmx");
 
-            QName tmx = new QName("tmx");
+                while (reader.hasNext()
+                        && reader.next() != XMLStreamConstants.START_ELEMENT) {
+                }
+                if (!reader.hasNext())
+                    throw new TMXParseException("No root element");
+                if (!reader.getName().equals(tmx))
+                    throw new TMXParseException(
+                            "Wrong root element: expected tmx");
 
-            while (reader.hasNext()
-                    && reader.next() != XMLStreamConstants.START_ELEMENT) {
-            }
-            if (!reader.hasNext())
-                throw new TMXParseException("No root element");
-            if (!reader.getName().equals(tmx))
-                throw new TMXParseException("Wrong root element: expected tmx");
-
-            // At this point, event = START_ELEMENT and name = tmx
-            while (reader.hasNext()) {
-                CommitBatch commitBatch =
-                        new CommitBatch(reader, 0, transMemory);
-                TransactionUtilImpl.get().runEx(commitBatch);
-                handledTUs += commitBatch.handledTUs;
+                // At this point, event = START_ELEMENT and name = tmx
+                while (reader.hasNext()) {
+                    CommitBatch commitBatch =
+                            new CommitBatch(reader, 0, transMemory);
+                    TransactionUtilImpl.get().runEx(commitBatch);
+                    handledTUs += commitBatch.handledTUs;
+                }
+            } finally {
+                reader.close();
             }
         } catch (EntityExistsException e) {
             String msg =
@@ -126,13 +126,21 @@ public class TMXParser {
 
 
 
-    @AllArgsConstructor
     private class CommitBatch implements RunnableEx {
         private XMLStreamReader reader;
         private int handledTUs;
         private TransMemory transMemory;
         private final QName header = new QName("header");
         private final QName tu = new QName("tu");
+
+        @java.beans.ConstructorProperties({ "reader", "handledTUs",
+                "transMemory" })
+        public CommitBatch(XMLStreamReader reader, int handledTUs,
+                TransMemory transMemory) {
+            this.reader = reader;
+            this.handledTUs = handledTUs;
+            this.transMemory = transMemory;
+        }
 
         @Override
         public void run() throws Exception {

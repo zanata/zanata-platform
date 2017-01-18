@@ -20,30 +20,26 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Any;
-import javax.enterprise.inject.Model;
-import javax.validation.constraints.NotNull;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.deltaspike.core.api.scope.ConversationGroup;
-import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.security.annotations.CheckRole;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.dao.AccountRoleDAO;
 import org.zanata.dao.RoleAssignmentRuleDAO;
 import org.zanata.model.HRoleAssignmentRule;
 import org.zanata.seam.framework.EntityHome;
 import org.zanata.security.AuthenticationType;
+import org.zanata.security.annotations.CheckRole;
+
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Model;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Carlos Munoz <a

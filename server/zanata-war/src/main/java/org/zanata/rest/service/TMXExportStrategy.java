@@ -21,13 +21,11 @@
 
 package org.zanata.rest.service;
 
-import java.io.IOException;
+import com.google.common.base.Optional;
+import nu.xom.Element;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import com.google.common.base.Optional;
-
-import nu.xom.Element;
+import java.io.IOException;
 
 /**
  * A strategy for exporting translation units to TMX

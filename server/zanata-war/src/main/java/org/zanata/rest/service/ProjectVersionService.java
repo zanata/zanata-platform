@@ -1,27 +1,8 @@
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.OBSOLETE;
-import static org.zanata.common.EntityStatus.READONLY;
-import static org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService.TextFlowResultTransformer;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.EntityTag;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Request;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.util.GenericType;
@@ -47,18 +28,32 @@ import org.zanata.rest.dto.TransUnitStatus;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.editor.service.UserService;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.EntityTag;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Request;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.zanata.common.EntityStatus.OBSOLETE;
+import static org.zanata.common.EntityStatus.READONLY;
+import static org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService.TextFlowResultTransformer;
 
 /**
  * Project version REST API implementation.
@@ -68,8 +63,6 @@ import lombok.NoArgsConstructor;
 @Named("projectVersionService")
 @Path(ProjectVersionResource.SERVICE_PATH)
 @Transactional
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProjectVersionService implements ProjectVersionResource {
     @Inject
     private TextFlowDAO textFlowDAO;
@@ -109,6 +102,36 @@ public class ProjectVersionService implements ProjectVersionResource {
 
     @Context
     private UriInfo uri;
+
+    @java.beans.ConstructorProperties({ "textFlowDAO", "documentDAO",
+            "projectDAO", "projectIterationDAO", "localeServiceImpl", "request",
+            "eTagUtils", "resourceUtils", "configurationServiceImpl",
+            "identity", "userService", "applicationConfiguration", "uri" })
+    protected ProjectVersionService(TextFlowDAO textFlowDAO,
+            DocumentDAO documentDAO, ProjectDAO projectDAO,
+            ProjectIterationDAO projectIterationDAO,
+            LocaleService localeServiceImpl, Request request,
+            ETagUtils eTagUtils, ResourceUtils resourceUtils,
+            ConfigurationService configurationServiceImpl,
+            ZanataIdentity identity, UserService userService,
+            ApplicationConfiguration applicationConfiguration, UriInfo uri) {
+        this.textFlowDAO = textFlowDAO;
+        this.documentDAO = documentDAO;
+        this.projectDAO = projectDAO;
+        this.projectIterationDAO = projectIterationDAO;
+        this.localeServiceImpl = localeServiceImpl;
+        this.request = request;
+        this.eTagUtils = eTagUtils;
+        this.resourceUtils = resourceUtils;
+        this.configurationServiceImpl = configurationServiceImpl;
+        this.identity = identity;
+        this.userService = userService;
+        this.applicationConfiguration = applicationConfiguration;
+        this.uri = uri;
+    }
+
+    public ProjectVersionService() {
+    }
 
     @Override
     public Response head(@PathParam("projectSlug") String projectSlug,

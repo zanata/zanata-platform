@@ -1,18 +1,7 @@
 package org.zanata.service;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.zanata.util.Synchronized;
+import org.slf4j.Logger;
 import org.zanata.ServerConstants;
 import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.AsyncTaskHandle;
@@ -24,14 +13,25 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.util.Synchronized;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 @Named("searchIndexManager")
 @ApplicationScoped
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
-@Slf4j
 // not @Transactional, because the DB work happens in other threads
 public class SearchIndexManager implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(SearchIndexManager.class);
 
     @Inject
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")

@@ -20,19 +20,20 @@
  */
 package org.zanata.util;
 
+import org.slf4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class PropertiesHolder {
     public final static Properties properties;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(PropertiesHolder.class);
 
     static {
         Properties result;

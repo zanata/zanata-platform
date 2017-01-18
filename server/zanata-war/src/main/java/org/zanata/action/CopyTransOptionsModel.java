@@ -20,24 +20,19 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.List;
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.persistence.EntityManager;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import com.google.common.collect.Lists;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.service.impl.CopyTransOptionFactory;
-import com.google.common.collect.Lists;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * Holds a {@link org.zanata.model.HCopyTransOptions} model object. This
@@ -58,13 +53,11 @@ public class CopyTransOptionsModel implements Serializable {
     @Inject
     private EntityManager entityManager;
 
-    @Setter
     private HCopyTransOptions instance;
 
     @Inject
     private Messages msgs;
 
-    @Getter(lazy = true)
     private final List<RuleAction> ruleActions = getRuleActionsList();
 
     public HCopyTransOptions getInstance() {
@@ -139,11 +132,38 @@ public class CopyTransOptionsModel implements Serializable {
         this.setInstance(entityManager.merge(this.getInstance()));
     }
 
-    @AllArgsConstructor
-    @Getter
+    public List<RuleAction> getRuleActions() {
+        return this.ruleActions;
+    }
+
+    public void setInstance(HCopyTransOptions instance) {
+        this.instance = instance;
+    }
+
     public class RuleAction {
         private HCopyTransOptions.ConditionRuleAction action;
         private String cssClass;
         private String displayText;
+
+        @java.beans.ConstructorProperties({ "action", "cssClass",
+                "displayText" })
+        public RuleAction(HCopyTransOptions.ConditionRuleAction action,
+                String cssClass, String displayText) {
+            this.action = action;
+            this.cssClass = cssClass;
+            this.displayText = displayText;
+        }
+
+        public HCopyTransOptions.ConditionRuleAction getAction() {
+            return this.action;
+        }
+
+        public String getCssClass() {
+            return this.cssClass;
+        }
+
+        public String getDisplayText() {
+            return this.displayText;
+        }
     }
 }

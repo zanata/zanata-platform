@@ -20,17 +20,16 @@
  */
 package org.zanata.security.annotations;
 
+import org.apache.deltaspike.security.api.authorization.Secured;
+import org.zanata.security.CheckRoleDecisionVoter;
+
+import javax.enterprise.inject.Stereotype;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import javax.enterprise.inject.Stereotype;
-
-import org.apache.deltaspike.security.api.authorization.Secured;
-import org.zanata.security.CheckRoleDecisionVoter;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>

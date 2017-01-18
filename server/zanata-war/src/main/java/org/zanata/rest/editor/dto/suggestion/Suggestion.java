@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.editor.dto.suggestion;
 
-import lombok.Getter;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
@@ -35,7 +34,6 @@ import java.util.List;
  *
  * This representation is designed for use with the pure JavaScript editor.
  */
-@Getter
 @JsonPropertyOrder({ "relevanceScore", "similarityPercent", "sourceContents", "targetContents", "matchDetails" })
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Suggestion implements Serializable {
@@ -55,5 +53,25 @@ public class Suggestion implements Serializable {
         this.sourceContents = sourceContents;
         this.targetContents = targetContents;
         this.matchDetails = new ArrayList<>();
+    }
+
+    public double getRelevanceScore() {
+        return this.relevanceScore;
+    }
+
+    public double getSimilarityPercent() {
+        return this.similarityPercent;
+    }
+
+    public List<String> getSourceContents() {
+        return this.sourceContents;
+    }
+
+    public List<String> getTargetContents() {
+        return this.targetContents;
+    }
+
+    public List<SuggestionDetail> getMatchDetails() {
+        return this.matchDetails;
     }
 }

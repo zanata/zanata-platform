@@ -20,18 +20,17 @@
  */
 package org.zanata.service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.editor.dto.LocaleSortField;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public interface LocaleService {
     List<HLocale> getAllLocales(int offset, int maxResults, String filter,

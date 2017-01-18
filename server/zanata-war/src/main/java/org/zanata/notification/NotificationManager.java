@@ -20,18 +20,16 @@
  */
 package org.zanata.notification;
 
+import com.google.common.base.Throwables;
+import org.slf4j.Logger;
+import org.zanata.events.LanguageTeamPermissionChangedEvent;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.zanata.events.LanguageTeamPermissionChangedEvent;
-
-import com.google.common.base.Throwables;
 
 /**
  * Centralized place to handle all events that needs to send out notifications.
@@ -40,8 +38,10 @@ import com.google.common.base.Throwables;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ApplicationScoped
-@Slf4j
 public class NotificationManager {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(NotificationManager.class);
 
     public void onLanguageTeamPermissionChanged(
             final @Observes LanguageTeamPermissionChangedEvent event,

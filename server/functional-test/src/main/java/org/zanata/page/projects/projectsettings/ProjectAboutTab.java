@@ -21,18 +21,19 @@
 
 package org.zanata.page.projects.projectsettings;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.projects.ProjectBasePage;
 
 /**
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectAboutTab extends ProjectBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectAboutTab.class);
     private By aboutTextField = By.id("settings-about-form:homeContent");
     private By saveButton = By.linkText("Save notes");
 

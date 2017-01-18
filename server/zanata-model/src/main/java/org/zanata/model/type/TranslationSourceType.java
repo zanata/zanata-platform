@@ -21,15 +21,10 @@
 
 package org.zanata.model.type;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import lombok.Getter;
+
+import java.io.Serializable;
+import java.util.Collection;
 
 /**
  * Source of action on how translation are being copied.
@@ -61,7 +56,6 @@ public enum TranslationSourceType implements Serializable {
                         TranslationSourceType.TM_MERGE);
     }
 
-    @Getter
     private final String abbr;
 
     private TranslationSourceType(String abbr) {
@@ -97,5 +91,9 @@ public enum TranslationSourceType implements Serializable {
 
     public boolean isAutomatedEntry() {
         return AUTOMATED_ENTRIES.contains(this);
+    }
+
+    public String getAbbr() {
+        return this.abbr;
     }
 }

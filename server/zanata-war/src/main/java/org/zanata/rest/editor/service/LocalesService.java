@@ -20,27 +20,11 @@
  */
 package org.zanata.rest.editor.service;
 
-import java.lang.reflect.Type;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.resteasy.util.GenericType;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.common.GlossarySortField;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.model.HLocale;
@@ -52,13 +36,22 @@ import org.zanata.rest.search.dto.LanguageTeamSearchResult;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
-
-import com.google.common.collect.Lists;
-
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.servlet.annotations.AllJavaLocales;
 
-import lombok.Setter;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+import java.lang.reflect.Type;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -265,7 +258,6 @@ public class LocalesService implements LocalesResource {
         };
 
     private class FilterLocaleDetails implements Predicate<LocaleDetails> {
-        @Setter
         private String query;
 
         @Override
@@ -277,6 +269,10 @@ public class LocalesService implements LocalesResource {
                 .containsIgnoreCase(localeDetails.getDisplayName(), query)
                 || StringUtils
                 .containsIgnoreCase(localeDetails.getLocaleId().getId(), query);
+        }
+
+        public void setQuery(String query) {
+            this.query = query;
         }
     }
 }

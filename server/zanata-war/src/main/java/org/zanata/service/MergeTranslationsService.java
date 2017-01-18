@@ -20,10 +20,10 @@
  */
 package org.zanata.service;
 
-import java.util.concurrent.Future;
-
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.model.HProjectIteration;
+
+import java.util.concurrent.Future;
 
 public interface MergeTranslationsService {
     //@formatter:off

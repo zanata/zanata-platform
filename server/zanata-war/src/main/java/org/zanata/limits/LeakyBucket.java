@@ -1,19 +1,18 @@
 package org.zanata.limits;
 
-import java.util.concurrent.TimeUnit;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Ticker;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
-@ToString
 public class LeakyBucket {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(LeakyBucket.class);
     private final long refillPeriod;
     private final long capacity;
     private final TimeTracker timeTracker;
@@ -93,7 +92,14 @@ public class LeakyBucket {
         }
     }
 
-    @ToString
+    public String toString() {
+        return "org.zanata.limits.LeakyBucket(refillPeriod=" +
+                this.refillPeriod + ", capacity=" + this.capacity +
+                ", timeTracker=" + this.timeTracker + ", availablePermits=" +
+                this.availablePermits + ", waitSleepTime=" +
+                this.waitSleepTime + ")";
+    }
+
     static class TimeTracker {
         private final Ticker ticker;
         private long lastRead;
@@ -113,6 +119,11 @@ public class LeakyBucket {
 
         long timePassed() {
             return ticker.read() - lastRead;
+        }
+
+        public String toString() {
+            return "org.zanata.limits.LeakyBucket.TimeTracker(ticker=" +
+                    this.ticker + ", lastRead=" + this.lastRead + ")";
         }
     }
 }

@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.editor.dto.suggestion;
 
-import lombok.Getter;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.model.tm.TransMemoryUnit;
 
@@ -29,7 +28,6 @@ import java.util.Date;
 /**
  * Detailed information about a suggestion from an imported translation memory.
  */
-@Getter
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TransMemoryUnitSuggestionDetail implements SuggestionDetail {
 
@@ -56,5 +54,25 @@ public class TransMemoryUnitSuggestionDetail implements SuggestionDetail {
         this.transMemorySlug = tmUnit.getTranslationMemory().getSlug();
         this.transUnitId = tmUnit.getTransUnitId();
         this.lastChanged = tmUnit.getLastChanged();
+    }
+
+    public SuggestionType getType() {
+        return this.type;
+    }
+
+    public Long getTransMemoryUnitId() {
+        return this.transMemoryUnitId;
+    }
+
+    public String getTransMemorySlug() {
+        return this.transMemorySlug;
+    }
+
+    public String getTransUnitId() {
+        return this.transUnitId;
+    }
+
+    public Date getLastChanged() {
+        return this.lastChanged;
     }
 }

@@ -1,14 +1,6 @@
 package org.zanata.dao;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-import java.util.List;
-import java.util.Map;
-
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
-
 import org.assertj.core.api.Assertions;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
@@ -16,17 +8,25 @@ import org.hibernate.Session;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 
-@Slf4j
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 public class TextFlowDAOTest extends ZanataDbunitJpaTest {
     private static final boolean PRINT_TEST_DATA = false;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TextFlowDAOTest.class);
     private TextFlowDAO dao;
 
     @Override

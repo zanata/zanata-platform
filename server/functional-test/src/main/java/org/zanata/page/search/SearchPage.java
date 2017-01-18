@@ -20,27 +20,19 @@
  */
 package org.zanata.page.search;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
-import org.zanata.page.projects.CreateProjectPage;
-import org.zanata.page.projects.ProjectVersionsPage;
-import org.zanata.util.WebElementUtil;
 
-import com.google.common.base.Function;
+import java.util.ArrayList;
+import java.util.List;
 
-@Slf4j
 public class SearchPage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(SearchPage.class);
     private By searchProjectForm = By.id("search-project_form");
 
     private By projectTabSearchPage = By.id("projects_tab");

@@ -1,16 +1,16 @@
 package org.zanata.action;
 
-import java.io.Serializable;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.UserRedirectBean;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.util.UrlUtil;
+
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  * Action bean for openid.xhtml.

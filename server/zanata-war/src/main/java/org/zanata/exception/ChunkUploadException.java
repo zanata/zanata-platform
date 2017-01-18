@@ -22,8 +22,6 @@ package org.zanata.exception;
 
 import javax.ws.rs.core.Response.Status;
 
-import lombok.Getter;
-
 /**
  * @author David Mason, <a
  *         href="mailto:damason@redhat.com">damason@redhat.com</a>
@@ -31,7 +29,6 @@ import lombok.Getter;
 public class ChunkUploadException extends ZanataException {
     private static final long serialVersionUID = 1L;
 
-    @Getter
     private Status statusCode;
 
     public ChunkUploadException(Status statusCode, String message) {
@@ -45,4 +42,7 @@ public class ChunkUploadException extends ZanataException {
         this.statusCode = statusCode;
     }
 
+    public Status getStatusCode() {
+        return this.statusCode;
+    }
 }

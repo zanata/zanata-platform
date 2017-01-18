@@ -20,49 +20,41 @@
  */
 package org.zanata.action;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.common.EntityStatus;
+import org.zanata.dao.AccountDAO;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.VersionGroupDAO;
+import org.zanata.i18n.Messages;
+import org.zanata.model.HAccount;
+import org.zanata.model.HIterationGroup;
+import org.zanata.model.HLocale;
+import org.zanata.model.HPerson;
+import org.zanata.model.HProject;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.security.annotations.CheckLoggedIn;
+import org.zanata.service.ActivityService;
+import org.zanata.service.GravatarService;
+import org.zanata.service.LanguageTeamService;
+import org.zanata.ui.AbstractListFilter;
+import org.zanata.util.ComparatorUtil;
+import org.zanata.util.DateUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
-import lombok.NonNull;
-import org.apache.commons.lang.StringUtils;
-
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.zanata.dao.VersionGroupDAO;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.model.HIterationGroup;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
-import org.zanata.security.annotations.Authenticated;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.common.EntityStatus;
-import org.zanata.dao.AccountDAO;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.i18n.Messages;
-import org.zanata.model.HAccount;
-import org.zanata.model.HLocale;
-import org.zanata.model.HPerson;
-import org.zanata.model.HProject;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.service.ActivityService;
-import org.zanata.service.GravatarService;
-import org.zanata.ui.AbstractListFilter;
-import org.zanata.util.ComparatorUtil;
-import org.zanata.service.LanguageTeamService;
-import org.zanata.util.DateUtil;
-import org.zanata.util.IServiceLocator;
-import org.zanata.util.ServiceLocator;
-
-import javax.annotation.Nullable;
-
-import lombok.Getter;
 
 @Named("dashboardAction")
 @ViewScoped
@@ -98,18 +90,14 @@ public class DashboardAction implements Serializable {
     private HAccount authenticatedAccount;
 
     @Inject
-    @Getter
     private ProjectFilter projectList;
 
     @Inject
-    @Getter
     private GroupFilter groupList;
 
-    @Getter(lazy = true)
     private final int userMaintainedProjectsCount =
             countUserMaintainedProjects();
 
-    @Getter(lazy = true)
     private final List<HProject> userMaintainedProjects =
             fetchUserMaintainedProjects();
 
@@ -134,7 +122,7 @@ public class DashboardAction implements Serializable {
                 new Function<HLocale, Object>() {
                     @Nullable
                     @Override
-                    public Object apply(@NonNull HLocale locale) {
+                    public Object apply(@Nonnull HLocale locale) {
                         return locale.retrieveDisplayName();
                     }
                 }),
@@ -232,6 +220,22 @@ public class DashboardAction implements Serializable {
 
     public boolean canCreateGroup() {
         return identity.hasPermission(new HIterationGroup(), "insert");
+    }
+
+    public ProjectFilter getProjectList() {
+        return this.projectList;
+    }
+
+    public GroupFilter getGroupList() {
+        return this.groupList;
+    }
+
+    public int getUserMaintainedProjectsCount() {
+        return this.userMaintainedProjectsCount;
+    }
+
+    public List<HProject> getUserMaintainedProjects() {
+        return this.userMaintainedProjects;
     }
 
     /**

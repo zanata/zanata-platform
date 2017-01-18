@@ -20,9 +20,11 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.base.Objects;
+import org.hibernate.annotations.AccessType;
+import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -34,14 +36,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
-
-import org.hibernate.annotations.AccessType;
-import org.hibernate.annotations.IndexColumn;
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.NotEmpty;
-
-import com.google.common.base.Objects;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @org.hibernate.annotations.Entity(mutable = false)

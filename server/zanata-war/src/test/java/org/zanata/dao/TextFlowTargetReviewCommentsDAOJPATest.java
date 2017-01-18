@@ -21,9 +21,6 @@
 
 package org.zanata.dao;
 
-import java.util.Date;
-import java.util.List;
-
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -34,6 +31,9 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
 import org.zanata.webtrans.shared.model.TransUnitId;
+
+import java.util.Date;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 

@@ -21,26 +21,27 @@
 package org.zanata.page.administration;
 
 import com.google.common.base.Predicate;
-import java.util.List;
-
 import com.google.common.base.Throwables;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.util.Checkbox;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
 
+import java.util.List;
+
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class ManageSearchPage extends BasePage {
 
     private static final int SELECT_ALL_COLUMN = 0;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ManageSearchPage.class);
 
     private By classesTable = By.id("form:actions");
     private By abortButton = By.id("form:cancel");

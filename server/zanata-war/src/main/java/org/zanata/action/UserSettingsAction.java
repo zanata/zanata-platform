@@ -20,28 +20,12 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
-import javax.persistence.EntityManager;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Size;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.CredentialsDAO;
 import org.zanata.dao.PersonDAO;
@@ -53,8 +37,8 @@ import org.zanata.model.security.HCredentials;
 import org.zanata.model.security.HOpenIdCredentials;
 import org.zanata.model.validator.EmailDomain;
 import org.zanata.seam.security.AbstractRunAsOperation;
-import org.zanata.security.AuthenticationManager;
 import org.zanata.seam.security.IdentityManager;
+import org.zanata.security.AuthenticationManager;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.openid.FedoraOpenIdProvider;
 import org.zanata.security.openid.GoogleOpenIdProvider;
@@ -68,7 +52,18 @@ import org.zanata.service.impl.EmailChangeService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
 
-import com.google.common.collect.Lists;
+import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.ExternalContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
@@ -86,9 +81,10 @@ import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class UserSettingsAction implements Serializable {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(UserSettingsAction.class);
     @Inject
     private EmailService emailServiceImpl;
     @Inject
@@ -119,30 +115,20 @@ public class UserSettingsAction implements Serializable {
     @Authenticated
     HAccount authenticatedAccount;
 
-    @Getter
-    @Setter
     @Email
     @NotEmpty
     @EmailDomain
     private String emailAddress;
 
-    @Getter
-    @Setter
     @NotEmpty
     @Size(min = 6, max = 1024)
     private String newPassword;
 
-    @Getter
-    @Setter
     @NotEmpty
     private String oldPassword;
 
-    @Getter
-    @Setter
     private String openId;
 
-    @Getter
-    @Setter
     @NotEmpty
     @Size(min = 2, max = 80)
     private String accountName;
@@ -355,6 +341,46 @@ public class UserSettingsAction implements Serializable {
         facesMessages.addGlobal(
                 msgs.format("jsf.dashboard.settings.leaveLangTeam.message",
                         localeId));
+    }
+
+    public String getEmailAddress() {
+        return this.emailAddress;
+    }
+
+    public String getNewPassword() {
+        return this.newPassword;
+    }
+
+    public String getOldPassword() {
+        return this.oldPassword;
+    }
+
+    public String getOpenId() {
+        return this.openId;
+    }
+
+    public String getAccountName() {
+        return this.accountName;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
     }
 
     /**

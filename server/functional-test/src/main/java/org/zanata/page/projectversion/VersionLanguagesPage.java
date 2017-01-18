@@ -20,26 +20,27 @@
  */
 package org.zanata.page.projectversion;
 
-import java.util.List;
-
+import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.page.webtrans.EditorPage;
-import com.google.common.base.Function;
-import com.google.common.base.Preconditions;
 
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 /**
  * This class represents the languages page for a project version.
  *
  * @author Damian Jansen
  */
-@Slf4j
 public class VersionLanguagesPage extends VersionBasePage {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionLanguagesPage.class);
 
     public VersionLanguagesPage(final WebDriver driver) {
         super(driver);

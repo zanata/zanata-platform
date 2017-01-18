@@ -1,31 +1,25 @@
 package org.zanata;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ReplacementDataSet;
-import org.dbunit.dataset.datatype.DataType;
-import org.dbunit.dataset.datatype.DataTypeException;
-import org.dbunit.dataset.datatype.DefaultDataTypeFactory;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.internal.SessionImpl;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Adapted from org.jboss.seam.mock.DBUnitSeamTest
@@ -37,9 +31,10 @@ import org.junit.runner.RunWith;
  * @see org.zanata.test.DBUnitDataSetRunner
  * @see org.zanata.test.rule.JpaRule
  */
-@Slf4j
 public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataDbunitJpaTest.class);
     protected String binaryDir;
     protected boolean replaceNull = true;
     protected List<DataSetOperation> beforeTestOperations =

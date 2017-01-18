@@ -1,20 +1,15 @@
 package org.zanata.webtrans.server;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import javax.servlet.annotation.WebServlet;
-
-import lombok.extern.slf4j.Slf4j;
+import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
-
-import org.zanata.ApplicationConfiguration;
-import org.zanata.config.AllowAnonymousAccess;
+import org.slf4j.Logger;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.shared.DispatchService;
 
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
 
 /**
  * This is the GWT RPC endpoint for all GWT RPC calls. GWT will create client
@@ -34,9 +29,10 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  */
 @WebServlet(urlPatterns = "/seam/resource/gwt")
 @RemoteServiceRelativePath("seam/resource/gwt")
-@Slf4j
 public class GwtDispatchService extends RemoteServiceServlet implements
         DispatchService {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(GwtDispatchService.class);
     @Inject
     private SeamDispatch dispatch;
 

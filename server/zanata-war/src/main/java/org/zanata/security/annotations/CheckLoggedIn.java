@@ -20,14 +20,14 @@
  */
 package org.zanata.security.annotations;
 
+import org.apache.deltaspike.security.api.authorization.SecurityBindingType;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-
-import org.apache.deltaspike.security.api.authorization.SecurityBindingType;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>

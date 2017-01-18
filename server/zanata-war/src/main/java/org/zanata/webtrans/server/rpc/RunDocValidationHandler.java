@@ -1,19 +1,18 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.service.ValidationService;
 import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.rpc.RunDocValidationAction;
 import org.zanata.webtrans.shared.rpc.RunDocValidationResult;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.HashMap;
+import java.util.Map;
 
 @Named("webtrans.gwt.RunDocValidationHandler")
 @RequestScoped

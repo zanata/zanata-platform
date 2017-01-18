@@ -3,21 +3,11 @@
  */
 package org.zanata.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.ProjectDAO;
@@ -36,8 +26,14 @@ import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
 
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -46,9 +42,10 @@ import com.google.common.collect.Lists;
  */
 @Named("validationServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class ValidationServiceImpl implements ValidationService {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ValidationServiceImpl.class);
     @Inject
     private ProjectDAO projectDAO;
 

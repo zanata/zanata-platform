@@ -1,28 +1,26 @@
 package org.zanata.limits;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ExecutionException;
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
-import javax.inject.Named;
-
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.ImmutableMap;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.async.Async;
 import org.zanata.events.ConfigurationChanged;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.util.Introspectable;
 import org.zanata.util.ServiceLocator;
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.ImmutableMap;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author Patrick Huang <a
@@ -31,16 +29,15 @@ import lombok.extern.slf4j.Slf4j;
 @Named("rateLimitManager")
 @javax.enterprise.context.ApplicationScoped
 
-@Slf4j
 public class RateLimitManager implements Introspectable {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RateLimitManager.class);
     private final Cache<RateLimiterToken, RestCallLimiter> activeCallers = CacheBuilder
             .newBuilder().maximumSize(100).build();
 
-    @Getter(AccessLevel.PROTECTED)
     @VisibleForTesting
     private int maxConcurrent;
-    @Getter(AccessLevel.PROTECTED)
     @VisibleForTesting
     private int maxActive;
 
@@ -131,6 +128,14 @@ public class RateLimitManager implements Introspectable {
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected int getMaxConcurrent() {
+        return this.maxConcurrent;
+    }
+
+    protected int getMaxActive() {
+        return this.maxActive;
     }
 
     private static class NoLimitLimiter extends RestCallLimiter {

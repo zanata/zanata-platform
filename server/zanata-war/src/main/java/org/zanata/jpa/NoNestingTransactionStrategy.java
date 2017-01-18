@@ -20,6 +20,11 @@
  */
 package org.zanata.jpa;
 
+import com.google.common.base.Throwables;
+import org.apache.deltaspike.jpa.impl.transaction.BeanManagedUserTransactionStrategy;
+import org.apache.deltaspike.jpa.impl.transaction.context.EntityManagerEntry;
+import org.slf4j.Logger;
+
 import javax.enterprise.inject.Alternative;
 import javax.interceptor.InvocationContext;
 import javax.persistence.EntityTransaction;
@@ -27,19 +32,14 @@ import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.deltaspike.jpa.impl.transaction.BeanManagedUserTransactionStrategy;
-import org.apache.deltaspike.jpa.impl.transaction.context.EntityManagerEntry;
-
-import com.google.common.base.Throwables;
-
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 @Alternative
 public class NoNestingTransactionStrategy extends BeanManagedUserTransactionStrategy {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(NoNestingTransactionStrategy.class);
+
     @Override
     protected void beforeProceed(InvocationContext invocationContext,
             EntityManagerEntry entityManagerEntry,

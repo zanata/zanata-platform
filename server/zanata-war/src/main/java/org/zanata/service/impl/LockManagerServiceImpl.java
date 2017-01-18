@@ -20,18 +20,17 @@
  */
 package org.zanata.service.impl;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Named;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.lock.Lock;
 import org.zanata.lock.LockNotAcquiredException;
 import org.zanata.model.HAccount;
 import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.service.LockManagerService;
 import org.zanata.util.ServiceLocator;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Named;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Default implementation of the {@link LockManagerService} interface. Manages

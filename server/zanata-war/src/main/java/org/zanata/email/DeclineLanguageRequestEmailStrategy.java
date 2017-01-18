@@ -1,7 +1,6 @@
 package org.zanata.email;
 
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
 
@@ -10,13 +9,24 @@ import javax.mail.internet.InternetAddress;
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
-@RequiredArgsConstructor
 public class DeclineLanguageRequestEmailStrategy extends EmailStrategy {
     private final String toName;
     private final String roles;
     private final String contactCoordinatorLink;
     private final String localeDisplayName;
     private final String htmlMessage;
+
+    @java.beans.ConstructorProperties({ "toName", "roles",
+            "contactCoordinatorLink", "localeDisplayName", "htmlMessage" })
+    public DeclineLanguageRequestEmailStrategy(String toName, String roles,
+            String contactCoordinatorLink, String localeDisplayName,
+            String htmlMessage) {
+        this.toName = toName;
+        this.roles = roles;
+        this.contactCoordinatorLink = contactCoordinatorLink;
+        this.localeDisplayName = localeDisplayName;
+        this.htmlMessage = htmlMessage;
+    }
 
     @Override
     public String getSubject(Messages msgs) {

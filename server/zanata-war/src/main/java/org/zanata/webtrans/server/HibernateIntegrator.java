@@ -1,16 +1,13 @@
 package org.zanata.webtrans.server;
 
 import org.hibernate.boot.Metadata;
-import org.hibernate.boot.spi.MetadataImplementor;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
+import org.slf4j.Logger;
 import org.zanata.service.impl.SlugEntityUpdatedListener;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Hibernate SPI. Register event listener for entity lifecycle events.
@@ -18,8 +15,10 @@ import lombok.extern.slf4j.Slf4j;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class HibernateIntegrator implements Integrator {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(HibernateIntegrator.class);
+
     @Override
     public void integrate(Metadata metadata,
             SessionFactoryImplementor sessionFactory,

@@ -21,12 +21,11 @@
 
 package org.zanata.search;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.search.FullTextSession;
+import org.slf4j.Logger;
 import org.zanata.async.AsyncTaskHandle;
 
 /**
@@ -34,9 +33,10 @@ import org.zanata.async.AsyncTaskHandle;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Slf4j
 public class ClassIndexer<T> {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ClassIndexer.class);
     private final AbstractIndexingStrategy<T> indexingStrategy;
     private AsyncTaskHandle handle;
     private Class<?> entityType;

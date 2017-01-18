@@ -20,23 +20,21 @@
  */
 package org.zanata.page;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Optional;
-
-import javax.annotation.Nullable;
-
-import lombok.Getter;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.openqa.selenium.support.events.WebDriverEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Optional;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * <p>
@@ -60,7 +58,6 @@ public class DswidParamChecker {
     private final WebDriverEventListener urlListener;
     private @Nullable String oldUrl;
 
-    @Getter
     private @Nullable String oldDswid;
     private boolean checkingDswids = true;
     private boolean insideInvoke;
@@ -143,5 +140,10 @@ public class DswidParamChecker {
 
     public void stopChecking() {
         checkingDswids = false;
+    }
+
+    @Nullable
+    public String getOldDswid() {
+        return this.oldDswid;
     }
 }

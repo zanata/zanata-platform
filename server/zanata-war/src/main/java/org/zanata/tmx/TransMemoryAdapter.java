@@ -21,21 +21,19 @@
 
 package org.zanata.tmx;
 
-import javax.enterprise.context.Dependent;
-import javax.persistence.EntityManager;
-
-import lombok.NoArgsConstructor;
 import nu.xom.Element;
 import nu.xom.Elements;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.dao.TransMemoryDAO;
-import org.zanata.model.tm.TransMemoryUnitVariant;
-import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemory;
+import org.zanata.model.tm.TransMemoryUnit;
+import org.zanata.model.tm.TransMemoryUnitVariant;
 import org.zanata.util.TMXParseException;
+
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
 
 /**
  * Translation Memory Adapter for the TMX parser. Provides callback effects
@@ -47,13 +45,15 @@ import org.zanata.util.TMXParseException;
  */
 @Named("transMemoryAdapter")
 @Dependent
-@NoArgsConstructor
 public class TransMemoryAdapter {
     @Inject
     private EntityManager entityManager;
 
     @Inject
     private TransMemoryDAO transMemoryDAO;
+
+    public TransMemoryAdapter() {
+    }
 
     /**
      * Persists the header elements when encountered while parsing. This

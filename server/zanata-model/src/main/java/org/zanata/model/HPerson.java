@@ -20,10 +20,13 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Sets;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.zanata.rest.dto.Person;
 
 import javax.annotation.Nonnull;
 import javax.persistence.Cacheable;
@@ -36,18 +39,10 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
-
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
-import lombok.ToString;
-
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.zanata.rest.dto.Person;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @see Person
@@ -55,9 +50,6 @@ import org.zanata.rest.dto.Person;
  */
 @Entity
 @Cacheable
-@Setter
-@EqualsAndHashCode(callSuper = true, of = { "id", "email", "name" })
-@ToString(callSuper = true, of = "name")
 public class HPerson extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
     private String name;
@@ -177,4 +169,70 @@ public class HPerson extends ModelEntityBase implements Serializable {
         return !getMaintainerProjects().isEmpty();
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAccount(HAccount account) {
+        this.account = account;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setMaintainerProjects(Set<HProject> maintainerProjects) {
+        this.maintainerProjects = maintainerProjects;
+    }
+
+    public void setMaintainerVersionGroups(
+            Set<HIterationGroup> maintainerVersionGroups) {
+        this.maintainerVersionGroups = maintainerVersionGroups;
+    }
+
+    public void setLanguageTeamMemberships(
+            Set<HLocaleMember> languageTeamMemberships) {
+        this.languageTeamMemberships = languageTeamMemberships;
+    }
+
+    public void setProjectMemberships(Set<HProjectMember> projectMemberships) {
+        this.projectMemberships = projectMemberships;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof HPerson)) return false;
+        final HPerson other = (HPerson) o;
+        if (!other.canEqual((Object) this)) return false;
+        if (!super.equals(o)) return false;
+        final Object this$name = this.getName();
+        final Object other$name = other.getName();
+        if (this$name == null ? other$name != null :
+                !this$name.equals(other$name)) return false;
+        final Object this$email = this.getEmail();
+        final Object other$email = other.getEmail();
+        if (this$email == null ? other$email != null :
+                !this$email.equals(other$email)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $name = this.getName();
+        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
+        final Object $email = this.getEmail();
+        result = result * PRIME + ($email == null ? 43 : $email.hashCode());
+        return result;
+    }
+
+    protected boolean canEqual(Object other) {
+        return other instanceof HPerson;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HPerson(super=" + super.toString() +
+                ", name=" + this.getName() + ")";
+    }
 }

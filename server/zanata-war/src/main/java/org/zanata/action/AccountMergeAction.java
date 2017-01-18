@@ -20,21 +20,6 @@
  */
 package org.zanata.action;
 
-import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-
-import java.io.Serializable;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.annotation.Nullable;
-import javax.enterprise.context.SessionScoped;
-import javax.annotation.PostConstruct;
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
@@ -48,6 +33,17 @@ import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.Synchronized;
 
+import javax.annotation.Nullable;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -57,6 +53,14 @@ import org.zanata.util.Synchronized;
 @Model
 @Transactional
 public class AccountMergeAction implements Serializable {
+
+    public String getOpenId() {
+        return this.openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
 
     @SessionScoped
     @Synchronized
@@ -80,8 +84,6 @@ public class AccountMergeAction implements Serializable {
     @Inject
     private RegisterService registerServiceImpl;
 
-    @Getter
-    @Setter
     private String openId = "http://";
 
     @Inject

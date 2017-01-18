@@ -20,11 +20,11 @@
  */
 package org.zanata.model;
 
-import java.util.Date;
-import java.util.List;
-
 import org.zanata.common.ContentState;
 import org.zanata.model.type.EntityType;
+
+import java.util.Date;
+import java.util.List;
 
 public interface ITextFlowTargetHistory {
 

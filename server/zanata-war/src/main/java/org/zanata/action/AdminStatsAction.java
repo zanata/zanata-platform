@@ -20,16 +20,6 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
@@ -37,6 +27,12 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  *
@@ -71,8 +67,6 @@ public class AdminStatsAction implements Serializable {
     @Inject
     private DocumentDAO documentDAO;
 
-    @Getter
-    @Setter
     private boolean documentReady;
 
     public int getTotalProjectCount() {
@@ -161,5 +155,13 @@ public class AdminStatsAction implements Serializable {
 
     public int getTotalUntranslatedTextFlowTargets() {
         return textFlowTargetDAO.getTotalNewTextFlowTargets();
+    }
+
+    public boolean isDocumentReady() {
+        return this.documentReady;
+    }
+
+    public void setDocumentReady(boolean documentReady) {
+        this.documentReady = documentReady;
     }
 }

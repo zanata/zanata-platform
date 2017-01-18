@@ -1,14 +1,12 @@
 package org.zanata.service.impl;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.naming.Context;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
+import com.github.huangp.entityunit.entity.EntityMakerBuilder;
+import com.github.huangp.entityunit.maker.FixedValueMaker;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.assertj.core.api.Assertions;
@@ -23,6 +21,7 @@ import org.junit.ClassRule;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.zanata.PerformanceProfiling;
 import org.zanata.SlowTest;
 import org.zanata.ZanataTest;
@@ -41,14 +40,15 @@ import org.zanata.service.EntityManagerFactoryRule;
 import org.zanata.service.MockInitialContextRule;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.ZanataEntities;
-import com.github.huangp.entityunit.entity.EntityMakerBuilder;
-import com.github.huangp.entityunit.maker.FixedValueMaker;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.resource.ClassLoaderResourceAccessor;
-import lombok.extern.slf4j.Slf4j;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.naming.Context;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 
 import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
 import static org.mockito.Mockito.mock;
@@ -64,7 +64,6 @@ import static org.zanata.service.EntityManagerFactoryRule.mySqlUsername;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 @AdditionalClasses({LocaleServiceImpl.class,
                     TranslationMemoryServiceImpl.class,
@@ -72,6 +71,8 @@ import static org.zanata.service.EntityManagerFactoryRule.mySqlUsername;
                     ValidationServiceImpl.class})
 public class CopyTransServiceImplPerformanceTest extends ZanataTest {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(CopyTransServiceImplPerformanceTest.class);
     @ClassRule
     public static EntityManagerFactoryRule emfRule = new EntityManagerFactoryRule(
             EntityManagerFactoryRule.TestProfile.ManualPerformanceProfiling);

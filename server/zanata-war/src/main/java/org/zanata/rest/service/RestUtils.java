@@ -1,20 +1,19 @@
 package org.zanata.rest.service;
 
-import java.util.Set;
+import org.jboss.resteasy.core.Headers;
+import org.jboss.resteasy.core.ServerResponse;
+import org.jboss.resteasy.spi.NoLogWebApplicationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import org.jboss.resteasy.core.Headers;
-import org.jboss.resteasy.core.ServerResponse;
-import org.jboss.resteasy.spi.NoLogWebApplicationException;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Set;
 
 @Dependent
 @Named("restUtils")

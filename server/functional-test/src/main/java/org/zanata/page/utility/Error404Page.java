@@ -20,15 +20,17 @@
  */
 package org.zanata.page.utility;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.CorePage;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class Error404Page extends CorePage {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(Error404Page.class);
 
     public Error404Page(WebDriver driver) {
         super(driver);

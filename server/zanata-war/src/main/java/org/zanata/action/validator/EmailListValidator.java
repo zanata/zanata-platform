@@ -20,13 +20,12 @@
  */
 package org.zanata.action.validator;
 
-import java.io.Serializable;
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
+import java.io.Serializable;
 
 // FIXME don't use org.hibernate.validator.internal.*
 public class EmailListValidator implements

@@ -21,12 +21,12 @@
 
 package org.zanata.rest;
 
+import org.apache.deltaspike.security.api.authorization.AccessDeniedException;
+import org.zanata.security.CheckRoleDecisionVoter;
+
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import org.apache.deltaspike.security.api.authorization.AccessDeniedException;
-import org.zanata.security.CheckRoleDecisionVoter;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

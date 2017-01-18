@@ -20,24 +20,22 @@
  */
 package org.zanata.util;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.logging.LogManager;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-
-import lombok.extern.slf4j.Slf4j;
 import net.jodah.concurrentunit.ConcurrentTestCase;
-
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.zanata.test.CdiUnitRunner;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+import java.util.logging.LogManager;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @AdditionalClasses({ SynchronizationInterceptor.class})
 @SupportDeltaspikeCore
@@ -55,8 +53,9 @@ public class SynchronizationTest extends ConcurrentTestCase {
 
     @ApplicationScoped
     @Synchronized
-    @Slf4j
     public static class SyncClassBean {
+        private static final Logger log = org.slf4j.LoggerFactory
+                .getLogger(SyncClassBean.class);
         volatile boolean executing;
         public void blockingMethod() {
             assertThat(executing).isFalse();

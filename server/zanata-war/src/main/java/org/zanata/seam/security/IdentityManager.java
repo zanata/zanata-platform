@@ -1,22 +1,19 @@
 package org.zanata.seam.security;
 
+import com.google.common.base.Strings;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.util.ServiceLocator;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Named;
-
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.util.Contexts;
-import org.zanata.util.ServiceLocator;
-
-import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
 
 
 /**
@@ -27,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
  */
 @javax.enterprise.context.RequestScoped
 @Named("identityManager")
-@Slf4j
 public class IdentityManager implements Serializable {
     public static final String USER_PERMISSION_NAME = "seam.user";
     public static final String ROLE_PERMISSION_NAME = "seam.role";
@@ -37,6 +33,8 @@ public class IdentityManager implements Serializable {
     public static final String PERMISSION_UPDATE = "update";
     public static final String PERMISSION_DELETE = "delete";
     private static final long serialVersionUID = 8306433833437687248L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(IdentityManager.class);
 
     private ZanataJpaIdentityStore identityStore;
 

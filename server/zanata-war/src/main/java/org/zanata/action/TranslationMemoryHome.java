@@ -20,22 +20,19 @@
  */
 package org.zanata.action;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.zanata.model.tm.TransMemory;
+import org.zanata.seam.framework.EntityHome;
+import org.zanata.security.annotations.CheckRole;
+import org.zanata.service.SlugEntityService;
+import org.zanata.ui.faces.FacesMessages;
+
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Model;
 import javax.faces.event.ValueChangeEvent;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
-import org.zanata.model.tm.TransMemory;
-import org.zanata.seam.framework.EntityHome;
-import org.zanata.service.SlugEntityService;
-import org.zanata.ui.faces.FacesMessages;
 
 /**
  * Controller class for the Translation Memory UI.
@@ -48,9 +45,10 @@ import org.zanata.ui.faces.FacesMessages;
 @Model
 @Transactional
 @CheckRole("admin")
-@Slf4j
 public class TranslationMemoryHome extends EntityHome<TransMemory> {
     private static final long serialVersionUID = -8557363011909155662L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationMemoryHome.class);
     @Inject
     private SlugEntityService slugEntityServiceImpl;
 

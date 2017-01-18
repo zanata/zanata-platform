@@ -1,16 +1,17 @@
 package org.zanata;
 
+import org.h2.tools.TriggerAdapter;
+import org.slf4j.Logger;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.h2.tools.TriggerAdapter;
-
-@Slf4j
 public class H2DocumentHistoryTrigger extends TriggerAdapter {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(H2DocumentHistoryTrigger.class);
+
     @Override
     public void fire(Connection conn, ResultSet oldRow, ResultSet newRow)
             throws SQLException {

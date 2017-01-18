@@ -21,7 +21,6 @@
 package org.zanata.file;
 
 import javax.inject.Named;
-
 import java.util.HashSet;
 import java.util.Set;
 

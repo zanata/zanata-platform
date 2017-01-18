@@ -1,11 +1,5 @@
 package org.zanata.service.impl;
 
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -20,7 +14,12 @@ import org.zanata.model.HLocaleMember.HLocaleMemberPk;
 import org.zanata.model.HPerson;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LanguageTeamService;
+
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
 
 @Named("languageTeamServiceImpl")
 @RequestScoped

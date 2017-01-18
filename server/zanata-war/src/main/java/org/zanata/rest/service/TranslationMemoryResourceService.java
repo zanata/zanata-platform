@@ -20,26 +20,8 @@
  */
 package org.zanata.rest.service;
 
-import java.io.InputStream;
-import java.util.concurrent.Future;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.StreamingOutput;
-
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
+import com.google.common.base.Optional;
+import org.slf4j.Logger;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskResult;
@@ -57,23 +39,35 @@ import org.zanata.model.ITextFlow;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.tmx.TMXParser;
 import org.zanata.util.CloseableIterator;
 
-import com.google.common.base.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.StreamingOutput;
+import java.io.InputStream;
+import java.util.concurrent.Future;
 
 @RequestScoped
 @Named("translationMemoryResource")
 @Path(TranslationMemoryResource.SERVICE_PATH)
-@Slf4j
 @ParametersAreNonnullByDefault
 // TODO this should use transactions (probably too big for one though)
 // TODO options to export obsolete docs and textflows to TMX?
 public class TranslationMemoryResourceService implements
         TranslationMemoryResource {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslationMemoryResourceService.class);
     @Inject
     private LocaleService localeServiceImpl;
     @Inject

@@ -27,8 +27,6 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -43,14 +41,11 @@ import java.util.Set;
  * boolean properties to represent all roles so they can be easily bound to
  * individual UI elements (e.g. checkboxes).
  */
-@Getter
 public class PersonProjectMemberships {
 
     private HPerson person;
 
-    @Setter
     private boolean maintainer;
-    @Setter
     private boolean translationMaintainer;
 
     private Set<LocaleRoles> localeRoles;
@@ -183,13 +178,35 @@ public class PersonProjectMemberships {
         return false;
     }
 
+    public HPerson getPerson() {
+        return this.person;
+    }
+
+    public boolean isMaintainer() {
+        return this.maintainer;
+    }
+
+    public boolean isTranslationMaintainer() {
+        return this.translationMaintainer;
+    }
+
+    public Set<LocaleRoles> getLocaleRoles() {
+        return this.localeRoles;
+    }
+
+    public void setMaintainer(boolean maintainer) {
+        this.maintainer = maintainer;
+    }
+
+    public void setTranslationMaintainer(boolean translationMaintainer) {
+        this.translationMaintainer = translationMaintainer;
+    }
+
     /**
      * Represents a locale and the membership in each locale role.
      *
      * Intended to use as a row for a single locale in a permission setting table.
      */
-    @Setter
-    @Getter
     public class LocaleRoles {
         private HLocale locale;
 
@@ -248,6 +265,42 @@ public class PersonProjectMemberships {
         @Override
         public int hashCode() {
             return locale.hashCode();
+        }
+
+        public HLocale getLocale() {
+            return this.locale;
+        }
+
+        public boolean isTranslator() {
+            return this.translator;
+        }
+
+        public boolean isReviewer() {
+            return this.reviewer;
+        }
+
+        public boolean isCoordinator() {
+            return this.coordinator;
+        }
+
+        public boolean isGlossarist() {
+            return this.glossarist;
+        }
+
+        public void setTranslator(boolean translator) {
+            this.translator = translator;
+        }
+
+        public void setReviewer(boolean reviewer) {
+            this.reviewer = reviewer;
+        }
+
+        public void setCoordinator(boolean coordinator) {
+            this.coordinator = coordinator;
+        }
+
+        public void setGlossarist(boolean glossarist) {
+            this.glossarist = glossarist;
         }
     }
 }

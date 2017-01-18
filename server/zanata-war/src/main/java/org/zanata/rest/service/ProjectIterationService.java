@@ -20,16 +20,16 @@
  */
 package org.zanata.rest.service;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.rest.dto.ProjectIteration;
+
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.rest.dto.ProjectIteration;
 
 @RequestScoped
 @Named("projectIterationService")

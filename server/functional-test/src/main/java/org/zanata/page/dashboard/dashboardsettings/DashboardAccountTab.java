@@ -20,15 +20,14 @@
  */
 package org.zanata.page.dashboard.dashboardsettings;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.dashboard.DashboardBasePage;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class DashboardAccountTab extends DashboardBasePage {
 
     public static final String INCORRECT_OLD_PASSWORD_ERROR =
@@ -41,6 +40,8 @@ public class DashboardAccountTab extends DashboardBasePage {
 
     public static final String EMAIL_TAKEN_ERROR =
             "This email address is already taken";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardAccountTab.class);
 
     private By emailForm = By.id("email-update-form");
     private By emailField = By.id("email-update-form:emailField:input:email");

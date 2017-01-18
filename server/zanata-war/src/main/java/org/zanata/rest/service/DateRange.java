@@ -1,8 +1,5 @@
 package org.zanata.rest.service;
 
-import java.util.Date;
-import java.util.TimeZone;
-
 import org.jboss.resteasy.spi.BadRequestException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -10,24 +7,24 @@ import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.zanata.exception.InvalidDateParamException;
-import org.zanata.util.DateUtil;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 /**
 * @author Patrick Huang
 *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
 */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class DateRange {
     private static final int MAX_STATS_DAYS = 365;
-    @Getter
     private final DateTime fromDate;
-    @Getter
     private final DateTime toDate;
-    @Getter
     private final DateTimeZone timeZone;
+
+    @java.beans.ConstructorProperties({ "fromDate", "toDate", "timeZone" })
+    private DateRange(DateTime fromDate, DateTime toDate,
+            DateTimeZone timeZone) {
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.timeZone = timeZone;
+    }
 
     public static DateRange from(String dateRangeParam) {
         return from(dateRangeParam, null);
@@ -70,5 +67,17 @@ public class DateRange {
             throw new InvalidDateParamException("Invalid data range: " + dateRangeParam);
         }
         return new DateRange(fromDate, toDate, zone);
+    }
+
+    public DateTime getFromDate() {
+        return this.fromDate;
+    }
+
+    public DateTime getToDate() {
+        return this.toDate;
+    }
+
+    public DateTimeZone getTimeZone() {
+        return this.timeZone;
     }
 }

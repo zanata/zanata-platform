@@ -21,12 +21,10 @@
 
 package org.zanata.webtrans.server.rpc;
 
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.apache.commons.lang.StringUtils;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.slf4j.Logger;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.model.HAccount;
@@ -48,9 +46,10 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.AddReviewComment;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * @author Patrick Huang <a
@@ -59,9 +58,10 @@ import net.customware.gwt.dispatch.shared.ActionException;
 @Named("webtrans.gwt.AddReviewCommentHandler")
 @ActionHandlerFor(AddReviewCommentAction.class)
 @RequestScoped
-@Slf4j
 public class AddReviewCommentHandler extends
         AbstractActionHandler<AddReviewCommentAction, AddReviewCommentResult> {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(AddReviewCommentHandler.class);
     @Inject
     private SecurityService securityServiceImpl;
 

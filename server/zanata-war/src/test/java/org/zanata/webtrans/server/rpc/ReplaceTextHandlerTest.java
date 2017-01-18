@@ -20,8 +20,9 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import net.customware.gwt.dispatch.server.ExecutionContext;
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -33,10 +34,9 @@ import org.zanata.service.SecurityService;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnit;
-import com.google.common.collect.Lists;
 
-import net.customware.gwt.dispatch.server.ExecutionContext;
-import net.customware.gwt.dispatch.shared.ActionException;
+import java.util.List;
+
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 

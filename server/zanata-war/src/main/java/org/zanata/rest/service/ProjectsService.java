@@ -20,14 +20,21 @@
  */
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.OBSOLETE;
-
-import java.lang.reflect.Type;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import com.google.common.base.Objects;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
+import org.jboss.resteasy.util.GenericType;
+import org.zanata.common.Namespaces;
+import org.zanata.model.HProject;
+import org.zanata.rest.MediaTypes;
+import org.zanata.rest.dto.Link;
+import org.zanata.rest.dto.Project;
 
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
@@ -37,21 +44,12 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.lang.reflect.Type;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
-import org.jboss.resteasy.util.GenericType;
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.common.Namespaces;
-import org.zanata.model.HProject;
-import org.zanata.rest.MediaTypes;
-import org.zanata.rest.dto.Link;
-import org.zanata.rest.dto.Project;
-
-import com.google.common.base.Objects;
+import static org.zanata.common.EntityStatus.OBSOLETE;
 
 @RequestScoped
 @Named("projectsService")

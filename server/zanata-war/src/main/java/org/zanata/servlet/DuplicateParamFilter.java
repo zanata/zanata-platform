@@ -39,7 +39,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import static java.util.Collections.addAll;
-import static javax.servlet.DispatcherType.*;
+import static javax.servlet.DispatcherType.ASYNC;
+import static javax.servlet.DispatcherType.ERROR;
+import static javax.servlet.DispatcherType.FORWARD;
+import static javax.servlet.DispatcherType.INCLUDE;
+import static javax.servlet.DispatcherType.REQUEST;
 
 /**
  * Removes duplicated values for each parameter name (multiple values are

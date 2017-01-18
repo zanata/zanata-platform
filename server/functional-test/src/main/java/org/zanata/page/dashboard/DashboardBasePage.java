@@ -20,9 +20,9 @@
  */
 package org.zanata.page.dashboard;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
 import org.zanata.page.dashboard.dashboardsettings.DashboardClientTab;
@@ -30,9 +30,10 @@ import org.zanata.page.dashboard.dashboardsettings.DashboardProfileTab;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 public class DashboardBasePage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardBasePage.class);
     private By activityTab = By.id("activity_tab");
     private By projectsTab = By.id("projects_tab");
     private By groupsTab = By.id("groups_tab");

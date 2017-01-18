@@ -20,28 +20,20 @@
  */
 package org.zanata.model;
 
-import java.lang.reflect.Field;
-import java.util.List;
+import com.google.common.base.Function;
+import com.google.common.base.Throwables;
+import com.google.common.collect.Lists;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
-import org.hibernate.validator.constraints.NotEmpty;
-import com.google.common.base.Function;
-import com.google.common.base.Throwables;
-import com.google.common.collect.Lists;
+import java.lang.reflect.Field;
+import java.util.List;
 
 @Entity
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 // FIXME Cacheable
 public class HApplicationConfiguration extends ModelEntityBase {
 
@@ -78,6 +70,15 @@ public class HApplicationConfiguration extends ModelEntityBase {
 
     private String key;
     private String value;
+
+    @java.beans.ConstructorProperties({ "key", "value" })
+    public HApplicationConfiguration(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    public HApplicationConfiguration() {
+    }
 
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
     @NaturalId
@@ -119,5 +120,13 @@ public class HApplicationConfiguration extends ModelEntityBase {
                     }
                 });
         return availableKeys;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

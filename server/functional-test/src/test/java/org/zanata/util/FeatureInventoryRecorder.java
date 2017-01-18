@@ -20,10 +20,8 @@
  */
 package org.zanata.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.runner.Description;
 import org.junit.runner.Result;
@@ -31,8 +29,9 @@ import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
 import org.zanata.feature.Feature;
 
-import com.google.common.base.Optional;
-import com.google.common.collect.Lists;
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Patrick Huang <a

@@ -1,23 +1,31 @@
 package org.zanata.email;
 
-import java.util.List;
-import javax.mail.internet.InternetAddress;
-
+import com.google.common.collect.Lists;
 import javaslang.collection.Map;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 import org.zanata.i18n.Messages;
-import com.google.common.collect.Lists;
-import lombok.RequiredArgsConstructor;
+
+import javax.mail.internet.InternetAddress;
+import java.util.List;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@RequiredArgsConstructor
 public class LanguageTeamPermissionChangeEmailStrategy extends EmailStrategy {
     private final LanguageTeamPermissionChangedEvent changedEvent;
     private final Messages msgs;
     private final String contactCoordinatorLink;
+
+    @java.beans.ConstructorProperties({ "changedEvent", "msgs",
+            "contactCoordinatorLink" })
+    public LanguageTeamPermissionChangeEmailStrategy(
+            LanguageTeamPermissionChangedEvent changedEvent, Messages msgs,
+            String contactCoordinatorLink) {
+        this.changedEvent = changedEvent;
+        this.msgs = msgs;
+        this.contactCoordinatorLink = contactCoordinatorLink;
+    }
 
     @Override
     public String getSubject(Messages msgs) {

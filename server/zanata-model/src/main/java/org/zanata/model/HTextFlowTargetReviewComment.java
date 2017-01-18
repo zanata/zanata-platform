@@ -21,6 +21,11 @@
 
 package org.zanata.model;
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Immutable;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Cacheable;
@@ -31,16 +36,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Immutable;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.NotEmpty;
-
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -49,12 +44,10 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Immutable
 @Cacheable
 @BatchSize(size = 20)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Access(AccessType.FIELD)
 public class HTextFlowTargetReviewComment extends ModelEntityBase {
     private static final long serialVersionUID = 1413384329431214946L;
 
-    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "commenter_id", nullable = false)
     private HPerson commenter;
@@ -63,16 +56,12 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_id")
     @IndexedEmbedded
-    @Getter
     private HTextFlowTarget textFlowTarget;
 
     @NotEmpty
     @javax.persistence.Lob
-    @Getter
     private String comment;
 
-    @Setter(AccessLevel.PROTECTED)
-    @Getter
     @NotNull
     private Integer targetVersion;
 
@@ -87,6 +76,9 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
         targetVersion = target.getVersionNum();
     }
 
+    protected HTextFlowTargetReviewComment() {
+    }
+
     @Transient
     public String getCommenterName() {
         if (commenterName == null) {
@@ -95,4 +87,23 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
         return commenterName;
     }
 
+    public HPerson getCommenter() {
+        return this.commenter;
+    }
+
+    public HTextFlowTarget getTextFlowTarget() {
+        return this.textFlowTarget;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public Integer getTargetVersion() {
+        return this.targetVersion;
+    }
+
+    protected void setTargetVersion(Integer targetVersion) {
+        this.targetVersion = targetVersion;
+    }
 }

@@ -1,9 +1,8 @@
 package org.zanata.util;
 
-import java.io.Serializable;
+import org.apache.deltaspike.cdise.api.ContextControl;
+import org.slf4j.Logger;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ContextNotActiveException;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
@@ -12,10 +11,7 @@ import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.deltaspike.cdise.api.ContextControl;
+import java.io.Serializable;
 
 /**
  *
@@ -23,9 +19,10 @@ import org.apache.deltaspike.cdise.api.ContextControl;
  */
 @Interceptor
 @WithRequestScope
-@Slf4j
 public class WithRequestScopeInterceptor implements Serializable {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(WithRequestScopeInterceptor.class);
     @Inject
     private BeanManager beanManager;
 

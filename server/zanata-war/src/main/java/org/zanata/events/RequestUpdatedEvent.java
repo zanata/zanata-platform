@@ -23,15 +23,12 @@ package org.zanata.events;
 
 import org.zanata.model.type.RequestState;
 
-import lombok.Value;
-
 /**
  * Event for post update of Request status.
  * To be integrate with notification.
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Value
 public class RequestUpdatedEvent {
     public static final String EVENT_NAME =
         "org.zanata.events.RequestUpdatedEvent";
@@ -55,4 +52,63 @@ public class RequestUpdatedEvent {
      * New state
      */
     RequestState state;
+
+    @java.beans.ConstructorProperties({ "id", "requestId", "actorId", "state" })
+    public RequestUpdatedEvent(long id, long requestId, long actorId,
+            RequestState state) {
+        this.id = id;
+        this.requestId = requestId;
+        this.actorId = actorId;
+        this.state = state;
+    }
+
+    public long getId() {
+        return this.id;
+    }
+
+    public long getRequestId() {
+        return this.requestId;
+    }
+
+    public long getActorId() {
+        return this.actorId;
+    }
+
+    public RequestState getState() {
+        return this.state;
+    }
+
+    public boolean equals(Object o) {
+        if (o == this) return true;
+        if (!(o instanceof RequestUpdatedEvent)) return false;
+        final RequestUpdatedEvent other = (RequestUpdatedEvent) o;
+        if (this.getId() != other.getId()) return false;
+        if (this.getRequestId() != other.getRequestId()) return false;
+        if (this.getActorId() != other.getActorId()) return false;
+        final Object this$state = this.getState();
+        final Object other$state = other.getState();
+        if (this$state == null ? other$state != null :
+                !this$state.equals(other$state)) return false;
+        return true;
+    }
+
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final long $id = this.getId();
+        result = result * PRIME + (int) ($id >>> 32 ^ $id);
+        final long $requestId = this.getRequestId();
+        result = result * PRIME + (int) ($requestId >>> 32 ^ $requestId);
+        final long $actorId = this.getActorId();
+        result = result * PRIME + (int) ($actorId >>> 32 ^ $actorId);
+        final Object $state = this.getState();
+        result = result * PRIME + ($state == null ? 43 : $state.hashCode());
+        return result;
+    }
+
+    public String toString() {
+        return "org.zanata.events.RequestUpdatedEvent(id=" + this.getId() +
+                ", requestId=" + this.getRequestId() + ", actorId=" +
+                this.getActorId() + ", state=" + this.getState() + ")";
+    }
 }

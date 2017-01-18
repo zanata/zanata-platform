@@ -21,9 +21,9 @@
 
 package org.zanata.webtrans.server;
 
+import com.google.common.base.Optional;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-import com.google.common.base.Optional;
 
 /**
  * @author Sean Flanigan <a

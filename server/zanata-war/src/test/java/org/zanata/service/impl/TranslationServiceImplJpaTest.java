@@ -1,15 +1,11 @@
 package org.zanata.service.impl;
 
-import java.util.List;
-import java.util.Set;
-
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.transaction.UserTransaction;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.github.huangp.entityunit.entity.EntityMaker;
+import com.github.huangp.entityunit.entity.EntityMakerBuilder;
+import com.github.huangp.entityunit.maker.FixedValueMaker;
+import com.google.common.collect.Sets;
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 import org.assertj.core.api.Assertions;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -22,6 +18,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.slf4j.Logger;
 import org.zanata.PerformanceProfiling;
 import org.zanata.ZanataJpaTest;
 import org.zanata.common.ContentState;
@@ -42,13 +39,6 @@ import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
-
-import com.github.huangp.entityunit.entity.EntityMaker;
-import com.github.huangp.entityunit.entity.EntityMakerBuilder;
-import com.github.huangp.entityunit.maker.FixedValueMaker;
-import com.google.common.collect.Sets;
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LockManagerService;
 import org.zanata.service.TranslationStateCache;
@@ -56,9 +46,15 @@ import org.zanata.test.CdiUnitRunner;
 import org.zanata.transaction.TransactionUtilImpl;
 import org.zanata.util.IServiceLocator;
 
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.transaction.UserTransaction;
+import java.util.List;
+import java.util.Set;
+
 import static org.mockito.Mockito.when;
 
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 @SupportDeltaspikeCore
 @AdditionalClasses({
@@ -68,6 +64,8 @@ import static org.mockito.Mockito.when;
 })
 public class TranslationServiceImplJpaTest extends ZanataJpaTest {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslationServiceImplJpaTest.class);
     @Inject
     TranslationServiceImpl service;
 

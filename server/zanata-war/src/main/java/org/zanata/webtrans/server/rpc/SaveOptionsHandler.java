@@ -20,15 +20,8 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import java.util.Map.Entry;
-
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountOptionDAO;
 import org.zanata.model.HAccount;
@@ -38,6 +31,11 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.model.UserOptions;
 import org.zanata.webtrans.shared.rpc.SaveOptionsAction;
 import org.zanata.webtrans.shared.rpc.SaveOptionsResult;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Map.Entry;
 
 /**
  * @author Carlos Munoz <a

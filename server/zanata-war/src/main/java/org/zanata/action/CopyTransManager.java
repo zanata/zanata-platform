@@ -20,22 +20,8 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-
-import javax.annotation.Nonnull;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.context.Dependent;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.CopyTransTaskHandle;
@@ -44,6 +30,11 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
+
+import javax.annotation.Nonnull;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import java.io.Serializable;
 
 /**
  * Manager Bean that keeps track of manual copy trans being run in the system,
@@ -54,10 +45,11 @@ import org.zanata.service.CopyTransService;
  */
 
 @Dependent
-@Slf4j
 // TODO This class should be merged with the copy trans service (?)
 public class CopyTransManager implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CopyTransManager.class);
 
     @Inject
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
@@ -162,15 +154,14 @@ public class CopyTransManager implements Serializable {
     /**
      * Internal class to index Copy Trans processes.
      */
-    @EqualsAndHashCode
-    @Getter
-    @Setter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     private static final class CopyTransProcessKey implements Serializable {
         private static final long serialVersionUID = -2054359069473618887L;
         private String projectSlug;
         private String iterationSlug;
         private String docId;
+
+        private CopyTransProcessKey() {
+        }
 
         public static CopyTransProcessKey getKey(HProjectIteration iteration) {
             CopyTransProcessKey newKey = new CopyTransProcessKey();
@@ -186,6 +177,65 @@ public class CopyTransManager implements Serializable {
                     .getSlug());
             newKey.setIterationSlug(document.getProjectIteration().getSlug());
             return newKey;
+        }
+
+        public String getProjectSlug() {
+            return this.projectSlug;
+        }
+
+        public String getIterationSlug() {
+            return this.iterationSlug;
+        }
+
+        public String getDocId() {
+            return this.docId;
+        }
+
+        public void setProjectSlug(String projectSlug) {
+            this.projectSlug = projectSlug;
+        }
+
+        public void setIterationSlug(String iterationSlug) {
+            this.iterationSlug = iterationSlug;
+        }
+
+        public void setDocId(String docId) {
+            this.docId = docId;
+        }
+
+        public boolean equals(Object o) {
+            if (o == this) return true;
+            if (!(o instanceof CopyTransProcessKey)) return false;
+            final CopyTransProcessKey other =
+                    (CopyTransProcessKey) o;
+            final Object this$projectSlug = this.getProjectSlug();
+            final Object other$projectSlug = other.getProjectSlug();
+            if (this$projectSlug == null ? other$projectSlug != null :
+                    !this$projectSlug.equals(other$projectSlug)) return false;
+            final Object this$iterationSlug = this.getIterationSlug();
+            final Object other$iterationSlug = other.getIterationSlug();
+            if (this$iterationSlug == null ? other$iterationSlug != null :
+                    !this$iterationSlug.equals(other$iterationSlug))
+                return false;
+            final Object this$docId = this.getDocId();
+            final Object other$docId = other.getDocId();
+            if (this$docId == null ? other$docId != null :
+                    !this$docId.equals(other$docId)) return false;
+            return true;
+        }
+
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $projectSlug = this.getProjectSlug();
+            result = result * PRIME +
+                    ($projectSlug == null ? 43 : $projectSlug.hashCode());
+            final Object $iterationSlug = this.getIterationSlug();
+            result = result * PRIME +
+                    ($iterationSlug == null ? 43 : $iterationSlug.hashCode());
+            final Object $docId = this.getDocId();
+            result = result * PRIME + ($docId == null ? 43 : $docId.hashCode());
+            return result;
         }
     }
 

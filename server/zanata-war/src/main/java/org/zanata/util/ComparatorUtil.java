@@ -22,9 +22,6 @@
 
 package org.zanata.util;
 
-import java.util.Comparator;
-import java.util.Date;
-
 import org.apache.commons.lang.StringUtils;
 import org.zanata.common.ProjectType;
 import org.zanata.model.HAccount;
@@ -33,6 +30,9 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+
+import java.util.Comparator;
+import java.util.Date;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

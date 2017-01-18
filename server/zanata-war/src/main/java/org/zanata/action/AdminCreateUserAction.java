@@ -20,13 +20,6 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.List;
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
@@ -39,6 +32,13 @@ import org.zanata.service.EmailService;
 import org.zanata.service.RegisterService;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.faces.FacesMessages;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.List;
 
 
 @Named("adminCreateUserAction")

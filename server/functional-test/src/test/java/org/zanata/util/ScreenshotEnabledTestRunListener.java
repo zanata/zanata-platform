@@ -20,23 +20,24 @@
  */
 package org.zanata.util;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
-
 import org.apache.commons.io.FileUtils;
 import org.junit.runner.Description;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunListener;
+import org.slf4j.Logger;
 import org.zanata.page.WebDriverFactory;
-import lombok.extern.slf4j.Slf4j;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class ScreenshotEnabledTestRunListener extends RunListener {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(ScreenshotEnabledTestRunListener.class);
     private volatile boolean testFailed;
 
     @Override

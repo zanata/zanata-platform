@@ -1,5 +1,14 @@
 package org.zanata;
 
+import com.google.common.collect.Lists;
+import org.apache.deltaspike.core.api.exclude.Exclude;
+import org.dbunit.database.DatabaseConnection;
+import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.database.QueryDataSet;
+import org.dbunit.dataset.xml.FlatDtdDataSet;
+import org.dbunit.dataset.xml.FlatXmlDataSet;
+import org.slf4j.Logger;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Connection;
@@ -8,17 +17,6 @@ import java.util.AbstractMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.dbunit.database.DatabaseConnection;
-import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.database.QueryDataSet;
-import org.dbunit.dataset.xml.FlatDtdDataSet;
-import org.dbunit.dataset.xml.FlatXmlDataSet;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * This class is used to extract data out of a real database and put it in
  * DBUnit's xml format.
@@ -26,10 +24,11 @@ import lombok.extern.slf4j.Slf4j;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @Exclude
 public class DBUnitDataExtractor {
     private static final String TEMP_DIR = System.getProperty("java.io.tmpdir");
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(DBUnitDataExtractor.class);
 
     public static void main(String[] args) throws Exception {
         DBUnitDataExtractor extractor = new DBUnitDataExtractor();

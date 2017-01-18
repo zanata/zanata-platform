@@ -1,7 +1,7 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.List;
-
+import com.google.common.collect.Lists;
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.slf4j.Logger;
 import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -19,7 +20,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TextFlowSearchService;
@@ -27,17 +27,14 @@ import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
-
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.shared.ActionException;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import java.util.List;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -49,10 +46,11 @@ import static org.zanata.model.TestFixture.makeHTextFlow;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     public static final long DOC_ID = 1L;
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(GetProjectTransUnitListsHandlerTest.class);
     @Inject @Any
     private GetProjectTransUnitListsHandler handler;
     @Produces @Mock

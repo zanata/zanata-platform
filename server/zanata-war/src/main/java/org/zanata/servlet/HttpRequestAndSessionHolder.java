@@ -20,17 +20,15 @@
  */
 package org.zanata.servlet;
 
-import java.util.Optional;
+import org.apache.deltaspike.core.api.lifecycle.Destroyed;
+import org.apache.deltaspike.core.api.lifecycle.Initialized;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.faces.context.FacesContext;
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import org.apache.deltaspike.core.api.lifecycle.Destroyed;
-import org.apache.deltaspike.core.api.lifecycle.Initialized;
+import java.util.Optional;
 
 /**
  * DeltaSpike will always inject a HttpServletRequest or HttpSession proxy

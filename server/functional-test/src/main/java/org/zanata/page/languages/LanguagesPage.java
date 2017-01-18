@@ -20,23 +20,23 @@
  */
 package org.zanata.page.languages;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.page.administration.AddLanguagePage;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class LanguagesPage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(LanguagesPage.class);
     private By addLanguageButton = By.id("btn-language-add-new");
     private By defaultLabel = By.className("label-default");
 

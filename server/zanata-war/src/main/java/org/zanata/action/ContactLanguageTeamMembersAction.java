@@ -21,11 +21,9 @@
 
 package org.zanata.action;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleMemberDAO;
@@ -46,8 +44,6 @@ import javax.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
@@ -55,9 +51,10 @@ import com.google.common.collect.Lists;
 @Named("contactLanguageTeamMembersAction")
 @javax.faces.bean.ViewScoped
 
-@Slf4j
 public class ContactLanguageTeamMembersAction implements Serializable {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(ContactLanguageTeamMembersAction.class);
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
@@ -80,16 +77,10 @@ public class ContactLanguageTeamMembersAction implements Serializable {
     @Inject
     private LocaleMemberDAO localeMemberDAO;
 
-    @Getter
-    @Setter
     private String message;
 
-    @Getter
-    @Setter
     private String subject;
 
-    @Getter
-    @Setter
     private String localeId;
 
     private HLocale locale;
@@ -151,5 +142,29 @@ public class ContactLanguageTeamMembersAction implements Serializable {
             locale = localeServiceImpl.getByLocaleId(new LocaleId(localeId));
         }
         return locale;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public String getSubject() {
+        return this.subject;
+    }
+
+    public String getLocaleId() {
+        return this.localeId;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public void setLocaleId(String localeId) {
+        this.localeId = localeId;
     }
 }

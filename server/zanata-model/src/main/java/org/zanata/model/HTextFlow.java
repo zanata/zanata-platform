@@ -20,11 +20,26 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Objects;
+import com.google.common.collect.ImmutableList;
+import org.hibernate.annotations.AccessType;
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.NaturalId;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
+import org.hibernate.validator.constraints.NotEmpty;
+import org.slf4j.Logger;
+import org.zanata.common.HasContents;
+import org.zanata.common.LocaleId;
+import org.zanata.hibernate.search.ContainingWorkspaceBridge;
+import org.zanata.model.po.HPotEntryData;
+import org.zanata.util.HashUtil;
+import org.zanata.util.OkapiUtil;
+import org.zanata.util.StringUtil;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -50,33 +65,11 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
-
-import org.hibernate.annotations.AccessType;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.NaturalId;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.FieldBridge;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.zanata.common.HasContents;
-import org.zanata.common.LocaleId;
-import org.zanata.hibernate.search.ContainingWorkspaceBridge;
-import org.zanata.model.po.HPotEntryData;
-import org.zanata.util.HashUtil;
-import org.zanata.util.OkapiUtil;
-import org.zanata.util.StringUtil;
-
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableList;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Represents a flow of source text that should be processed as a stand-alone
@@ -89,10 +82,6 @@ import com.google.common.collect.ImmutableList;
 @Entity
 @EntityListeners({ HTextFlow.EntityListener.class })
 @Cacheable
-@Setter
-@NoArgsConstructor
-@ToString(of = { "resId", "revision", "comment", "obsolete" })
-@Slf4j
 @NamedQueries({
         @NamedQuery(
                 name = HTextFlow.QUERY_GET_BY_DOC_AND_RES_ID_BATCH,
@@ -102,6 +91,8 @@ public class HTextFlow extends HTextContainer implements Serializable,
         ITextFlowHistory, HasSimpleComment, HasContents, ITextFlow {
     public static final String QUERY_GET_BY_DOC_AND_RES_ID_BATCH = "HTextFlow.getByDocumentAndResIdBatch";
     private static final long serialVersionUID = 3023080107971905435L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(HTextFlow.class);
 
     private Long id;
 
@@ -109,7 +100,6 @@ public class HTextFlow extends HTextContainer implements Serializable,
 
     private String resId;
 
-    @Setter(AccessLevel.PROTECTED)
     private Integer pos;
 
     private HDocument document;
@@ -143,17 +133,18 @@ public class HTextFlow extends HTextContainer implements Serializable,
     private String content5;
 
     // Only for internal use (persistence transient)
-    @Setter(AccessLevel.PRIVATE)
     private Integer oldRevision;
 
     // Only for internal use (persistence transient)
-    @Setter(AccessLevel.PRIVATE)
     private HTextFlowHistory initialState;
 
     public HTextFlow(HDocument document, String resId, String content) {
         setDocument(document);
         setResId(resId);
         setContents(content);
+    }
+
+    public HTextFlow() {
     }
 
     @Id
@@ -463,6 +454,76 @@ public class HTextFlow extends HTextContainer implements Serializable,
         }
         LocaleId docLocaleId = docLocale.getLocaleId();
         return docLocaleId.getId();
+    }
+
+    public void setRevision(Integer revision) {
+        this.revision = revision;
+    }
+
+    public void setResId(String resId) {
+        this.resId = resId;
+    }
+
+    public void setTargets(Map<Long, HTextFlowTarget> targets) {
+        this.targets = targets;
+    }
+
+    public void setHistory(Map<Integer, HTextFlowHistory> history) {
+        this.history = history;
+    }
+
+    public void setComment(HSimpleComment comment) {
+        this.comment = comment;
+    }
+
+    public void setPotEntryData(HPotEntryData potEntryData) {
+        this.potEntryData = potEntryData;
+    }
+
+    public void setPlural(boolean plural) {
+        this.plural = plural;
+    }
+
+    public void setContent0(String content0) {
+        this.content0 = content0;
+    }
+
+    public void setContent1(String content1) {
+        this.content1 = content1;
+    }
+
+    public void setContent2(String content2) {
+        this.content2 = content2;
+    }
+
+    public void setContent3(String content3) {
+        this.content3 = content3;
+    }
+
+    public void setContent4(String content4) {
+        this.content4 = content4;
+    }
+
+    public void setContent5(String content5) {
+        this.content5 = content5;
+    }
+
+    public String toString() {
+        return "org.zanata.model.HTextFlow(revision=" + this.getRevision() +
+                ", resId=" + this.getResId() + ", obsolete=" +
+                this.isObsolete() + ", comment=" + this.getComment() + ")";
+    }
+
+    protected void setPos(Integer pos) {
+        this.pos = pos;
+    }
+
+    private void setOldRevision(Integer oldRevision) {
+        this.oldRevision = oldRevision;
+    }
+
+    private void setInitialState(HTextFlowHistory initialState) {
+        this.initialState = initialState;
     }
 
     public static class EntityListener {

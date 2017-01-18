@@ -20,25 +20,25 @@
  */
 package org.zanata.page.projects;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.page.projects.projectsettings.ProjectAboutTab;
 import org.zanata.page.projects.projectsettings.ProjectGeneralTab;
 import org.zanata.page.projects.projectsettings.ProjectLanguagesTab;
 import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
 import org.zanata.page.projects.projectsettings.ProjectTranslationTab;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.page.projects.projectsettings.ProjectWebHooksTab;
 
-@Slf4j
+import java.util.ArrayList;
+import java.util.List;
+
 public class ProjectBasePage extends BasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectBasePage.class);
     private By versionsTab = By.id("versions_tab");
     private By peopleTab = By.id("people_tab");
     private By aboutTab = By.id("about_tab");

@@ -25,26 +25,16 @@ package org.zanata.ui;
 import java.io.Serializable;
 import java.util.List;
 
-import com.google.common.collect.Lists;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Helper class to assist with the paging of data.
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public abstract class AbstractListFilter<T> implements Serializable {
 
-    @Getter
-    @Setter
     private int pageSize = 100;
 
-    @Getter
-    @Setter
     private int pageNumber = 1;
 
-    @Getter
-    @Setter
     private String filter;
 
     private List<T> currentPageData;
@@ -112,5 +102,29 @@ public abstract class AbstractListFilter<T> implements Serializable {
 
     public void clearFilter() {
         filter = null;
+    }
+
+    public int getPageSize() {
+        return this.pageSize;
+    }
+
+    public int getPageNumber() {
+        return this.pageNumber;
+    }
+
+    public String getFilter() {
+        return this.filter;
+    }
+
+    public void setPageSize(int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public void setPageNumber(int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 }

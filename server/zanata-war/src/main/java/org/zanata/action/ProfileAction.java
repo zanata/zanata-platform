@@ -20,18 +20,18 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.extern.slf4j.Slf4j;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.zanata.model.HPerson;
+import org.zanata.service.impl.EmailChangeService;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.model.HPerson;
-import org.zanata.service.impl.EmailChangeService;
+import java.io.Serializable;
 
 /**
  * This action only handles edit profile (existing user).
@@ -43,9 +43,10 @@ import org.zanata.service.impl.EmailChangeService;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class ProfileAction extends AbstractProfileAction implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProfileAction.class);
 
     @Inject
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")

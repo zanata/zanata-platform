@@ -20,12 +20,11 @@
  */
 package org.zanata.model.validator;
 
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
 
 public class UrlValidator implements ConstraintValidator<Url, String>,
         Serializable {

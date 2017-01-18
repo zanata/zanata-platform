@@ -20,24 +20,10 @@
  */
 package org.zanata.service.impl;
 
-import static org.zanata.common.ContentState.Approved;
-import static org.zanata.common.ContentState.NeedReview;
-import static org.zanata.common.ContentState.New;
-import static org.zanata.common.ContentState.Translated;
-import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
-import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
-import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-import javax.inject.Named;
+import com.google.common.base.Supplier;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Maps;
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.events.DocStatsEvent;
@@ -57,18 +43,29 @@ import org.zanata.service.VersionStateCache;
 import org.zanata.util.TranslationUtil;
 import org.zanata.webtrans.shared.model.ValidationAction;
 
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Maps;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.zanata.common.ContentState.Approved;
+import static org.zanata.common.ContentState.NeedReview;
+import static org.zanata.common.ContentState.New;
+import static org.zanata.common.ContentState.Translated;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
+import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
+import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("copyTransWorkFactory")
 @javax.enterprise.context.Dependent
-@Slf4j
 public class CopyTransWorkFactory {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(CopyTransWorkFactory.class);
     // Inject textFlowTargetDAO (@DatabaseSearch) for Hibernate-based query
     // Inject translationMemoryServiceImpl (no qualifier) for Hibernate Search query
     @Inject
@@ -461,10 +458,23 @@ public class CopyTransWorkFactory {
      * Holds the result of a match evaluation in the form of a boolean, and the
      * corresponding action to be taken for the result.
      */
-    @AllArgsConstructor
-    @Getter
     static final class MatchRulePair {
         private final Supplier<Boolean> matchResult;
         private final HCopyTransOptions.ConditionRuleAction ruleAction;
+
+        @java.beans.ConstructorProperties({ "matchResult", "ruleAction" })
+        public MatchRulePair(Supplier<Boolean> matchResult,
+                HCopyTransOptions.ConditionRuleAction ruleAction) {
+            this.matchResult = matchResult;
+            this.ruleAction = ruleAction;
+        }
+
+        public Supplier<Boolean> getMatchResult() {
+            return this.matchResult;
+        }
+
+        public HCopyTransOptions.ConditionRuleAction getRuleAction() {
+            return this.ruleAction;
+        }
     }
 }

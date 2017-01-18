@@ -1,32 +1,32 @@
 package org.zanata.search;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.zanata.search.FilterConstraintToQuery.Parameters.*;
-
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.collect.Lists;
 import org.hamcrest.Matchers;
 import org.hibernate.Query;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.slf4j.Logger;
 import org.zanata.model.HLocale;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
-import com.google.common.collect.Lists;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.ContentStateList;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.DocumentIdList;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.Locale;
+import static org.zanata.search.FilterConstraintToQuery.Parameters.SearchString;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class FilterConstraintToQueryTest {
     public static final ContentCriterion contentCriterion = new ContentCriterion(1);
     public static final String SOURCE_CONTENT_CASE_INSENSITIVE =
@@ -36,6 +36,8 @@ public class FilterConstraintToQueryTest {
 
     public static final String QUERY_BEFORE_WHERE =
             "SELECT distinct tf FROM HTextFlow tf LEFT JOIN tf.targets tfts WITH tfts.index=:locale ";
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(FilterConstraintToQueryTest.class);
     @Mock
     private Query query;
     @Mock

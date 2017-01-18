@@ -24,10 +24,10 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.WebElementUtil;
 
@@ -39,9 +39,10 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectPermissionsTab extends ProjectBasePage {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectPermissionsTab.class);
     private By maintainersForm = By.id("settings-permissions-form");
 
     public ProjectPermissionsTab(WebDriver driver) {

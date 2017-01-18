@@ -1,21 +1,10 @@
 package org.zanata.service.impl;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.event.Event;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.common.util.Strings;
+import org.slf4j.Logger;
 import org.zanata.async.Async;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -31,25 +20,35 @@ import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.UrlUtil;
 import org.zanata.webhook.events.DocumentMilestoneEvent;
 import org.zanata.webhook.events.DocumentStatsEvent;
+import org.zanata.webhook.events.ManuallyTriggeredEvent;
 import org.zanata.webhook.events.ProjectMaintainerChangedEvent;
 import org.zanata.webhook.events.SourceDocumentChangedEvent;
 import org.zanata.webhook.events.TestEvent;
-import org.zanata.webhook.events.ManuallyTriggeredEvent;
 import org.zanata.webhook.events.VersionChangedEvent;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
+import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 @Named("webhookServiceImpl")
 @RequestScoped
 public class WebhookServiceImpl implements Serializable {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(WebhookServiceImpl.class);
     @Inject
     private Messages msgs;
 
@@ -241,7 +240,6 @@ public class WebhookServiceImpl implements Serializable {
     /**
      * Object for all available webhook list
      */
-    @Getter
     public final static class WebhookTypeItem {
         private WebhookType type;
         private String description;
@@ -249,6 +247,14 @@ public class WebhookServiceImpl implements Serializable {
         public WebhookTypeItem(WebhookType webhookType, String desc) {
             this.type = webhookType;
             this.description = desc;
+        }
+
+        public WebhookType getType() {
+            return this.type;
+        }
+
+        public String getDescription() {
+            return this.description;
         }
     }
 

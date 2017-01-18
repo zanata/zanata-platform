@@ -20,12 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.Path;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import com.google.common.base.Throwables;
 import org.zanata.action.CopyTransManager;
 import org.zanata.async.handle.CopyTransTaskHandle;
@@ -34,6 +28,11 @@ import org.zanata.model.HDocument;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.CopyTransStatus;
 import org.zanata.security.ZanataIdentity;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.Path;
 
 /**
  * @author Carlos Munoz <a

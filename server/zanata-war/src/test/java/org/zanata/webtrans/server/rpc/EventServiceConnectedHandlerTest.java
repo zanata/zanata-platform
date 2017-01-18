@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,8 +14,6 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
-
-import net.customware.gwt.dispatch.shared.ActionException;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;

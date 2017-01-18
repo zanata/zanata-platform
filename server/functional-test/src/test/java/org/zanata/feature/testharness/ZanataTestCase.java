@@ -21,7 +21,6 @@
 
 package org.zanata.feature.testharness;
 
-import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
@@ -33,13 +32,10 @@ import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestName;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
+import org.slf4j.Logger;
 import org.zanata.page.WebDriverFactory;
 import org.zanata.util.AllowAnonymousAccessRule;
 import org.zanata.util.EnsureLogoutRule;
-import org.zanata.util.SampleDataResourceClient;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 
@@ -49,11 +45,12 @@ import org.zanata.util.ZanataRestCaller;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ZanataTestCase {
 
     public final static int MAX_SHORT_TEST_DURATION = 180000;
     public final static int MAX_LONG_TEST_DURATION = 600000;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataTestCase.class);
 
     @ClassRule
     public static ExternalResource javascriptLogging = new ExternalResource() {

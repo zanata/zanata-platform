@@ -21,7 +21,6 @@
 package org.zanata.email;
 
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 
 import javax.mail.internet.InternetAddress;
@@ -29,11 +28,17 @@ import javax.mail.internet.InternetAddress;
 /**
 * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
 */
-@RequiredArgsConstructor
 public class UsernameChangedEmailStrategy extends
         EmailStrategy {
     private final String newUserName;
     private final boolean shouldResetPassword;
+
+    @java.beans.ConstructorProperties({ "newUserName", "shouldResetPassword" })
+    public UsernameChangedEmailStrategy(String newUserName,
+            boolean shouldResetPassword) {
+        this.newUserName = newUserName;
+        this.shouldResetPassword = shouldResetPassword;
+    }
 
     @Override
     public String getSubject(Messages msgs) {

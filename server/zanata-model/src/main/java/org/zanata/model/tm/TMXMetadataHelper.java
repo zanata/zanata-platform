@@ -21,31 +21,28 @@
 
 package org.zanata.model.tm;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Nonnull;
-import javax.xml.XMLConstants;
-
-import lombok.extern.slf4j.Slf4j;
-import nu.xom.Attribute;
-import nu.xom.Document;
-import nu.xom.Element;
-import nu.xom.Elements;
-
-import org.codehaus.jackson.map.ObjectMapper;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.zanata.util.TMXConstants;
-import org.zanata.util.TMXParseException;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import com.ibm.icu.util.ULocale;
+import nu.xom.Attribute;
+import nu.xom.Document;
+import nu.xom.Element;
+import nu.xom.Elements;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.zanata.util.TMXConstants;
+import org.zanata.util.TMXParseException;
+
+import javax.annotation.Nonnull;
+import javax.xml.XMLConstants;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Adapts TMX metadata to the generic translation memory objects.
@@ -54,7 +51,6 @@ import com.ibm.icu.util.ULocale;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@Slf4j
 public class TMXMetadataHelper {
     private static final String EMPTY_NAMESPACE = XMLConstants.NULL_NS_URI;
 
@@ -72,6 +68,8 @@ public class TMXMetadataHelper {
     private static final String SRC_LANG = TMXConstants.SRCLANG;
     private static final String XML_LANG = "xml:lang";
     private static final String TUID = "tuid";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(TMXMetadataHelper.class);
 
     private static List<String> getChildrenXml(Map<String, Object> metadata) {
         List<String> children =

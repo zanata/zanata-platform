@@ -20,17 +20,10 @@
  */
 package org.zanata.rest.service;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ExecutionException;
-
-import org.jboss.resteasy.spi.NotFoundException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import com.google.common.collect.Lists;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.jboss.resteasy.spi.NotFoundException;
+import org.slf4j.Logger;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.common.EntityStatus;
@@ -52,11 +45,14 @@ import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 
-import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.Path;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
 
 import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 
@@ -71,9 +67,10 @@ import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 @Named("asynchronousProcessResourceService")
 @Path(AsynchronousProcessResource.SERVICE_PATH)
 @Transactional
-@Slf4j
 public class AsynchronousProcessResourceService implements
         AsynchronousProcessResource {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(AsynchronousProcessResourceService.class);
     @Inject
     private LocaleService localeServiceImpl;
 

@@ -20,6 +20,21 @@
  */
 package org.zanata.util;
 
+import com.google.common.base.Throwables;
+import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.core.spi.scope.window.WindowContext;
+import org.apache.http.client.utils.URIBuilder;
+import org.slf4j.Logger;
+import org.zanata.common.LocaleId;
+import org.zanata.rest.service.GlossaryService;
+import org.zanata.servlet.annotations.ContextPath;
+import org.zanata.servlet.annotations.ServerPath;
+
+import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
@@ -30,25 +45,6 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-import javax.enterprise.context.RequestScoped;
-import javax.faces.context.FacesContext;
-import javax.servlet.http.HttpServletRequest;
-
-import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.commons.lang.StringUtils;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.deltaspike.core.spi.scope.window.WindowContext;
-import org.apache.http.client.utils.URIBuilder;
-import org.zanata.common.LocaleId;
-import org.zanata.rest.service.GlossaryService;
-import org.zanata.servlet.annotations.ContextPath;
-import com.google.common.base.Throwables;
-import org.zanata.servlet.annotations.ServerPath;
-
 /**
  * Get the URL for the current page in URL encoded format for use in the query
  * string
@@ -57,10 +53,11 @@ import org.zanata.servlet.annotations.ServerPath;
  */
 
 @RequestScoped
-@Slf4j
 public class UrlUtil implements Serializable {
     private static final long serialVersionUID = 1L;
     private final static String ENCODING = "UTF-8";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(UrlUtil.class);
 
     @Inject @ServerPath
     private String serverPath;

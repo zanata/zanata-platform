@@ -1,15 +1,8 @@
 package org.zanata.webtrans.server.rpc;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.exception.ZanataServiceException;
@@ -23,13 +16,20 @@ import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
+
 @Named("webtrans.gwt.GetTransMemoryDetailsHandler")
 @RequestScoped
 @ActionHandlerFor(GetTransMemoryDetailsAction.class)
-@Slf4j
 public class GetTransMemoryDetailsHandler
         extends
         AbstractActionHandler<GetTransMemoryDetailsAction, TransMemoryDetailsList> {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(GetTransMemoryDetailsHandler.class);
     @Inject
     private TextFlowDAO textFlowDAO;
 

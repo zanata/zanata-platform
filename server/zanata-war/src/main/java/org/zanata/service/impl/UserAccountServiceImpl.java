@@ -20,21 +20,10 @@
  */
 package org.zanata.service.impl;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
-import javax.annotation.Nonnull;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Query;
 import org.hibernate.Session;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.slf4j.Logger;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountResetPasswordKeyDAO;
 import org.zanata.dao.RoleAssignmentRuleDAO;
@@ -46,15 +35,23 @@ import org.zanata.model.security.HCredentials;
 import org.zanata.service.UserAccountService;
 import org.zanata.util.HashUtil;
 
+import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
+import java.util.regex.Pattern;
+
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("userAccountServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class UserAccountServiceImpl implements UserAccountService {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(UserAccountServiceImpl.class);
     @Inject
     private Session session;
 

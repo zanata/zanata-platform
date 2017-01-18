@@ -23,7 +23,7 @@ package org.zanata.servlet;
 import io.undertow.servlet.ServletExtension;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.util.ImmediateAuthenticationMechanismFactory;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
 import org.zanata.security.DummyAuthenticationMechanism;
 
 import javax.servlet.ServletContext;
@@ -36,8 +36,10 @@ import javax.servlet.SessionCookieConfig;
  *
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 public class ZanataServletExtension implements ServletExtension {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataServletExtension.class);
 
     @Override
     public void handleDeployment(DeploymentInfo deploymentInfo,

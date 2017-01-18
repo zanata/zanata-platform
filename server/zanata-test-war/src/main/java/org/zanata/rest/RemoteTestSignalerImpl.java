@@ -20,12 +20,12 @@
  */
 package org.zanata.rest;
 
+import org.slf4j.Logger;
+import org.zanata.security.annotations.NoSecurityCheck;
+
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
-
-import org.zanata.security.annotations.NoSecurityCheck;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Default implementation for the Remote Signaler interface.
@@ -36,9 +36,11 @@ import lombok.extern.slf4j.Slf4j;
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Path("/remote/signal")
-@Slf4j
 @NoSecurityCheck
 public class RemoteTestSignalerImpl {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RemoteTestSignalerImpl.class);
+
     @POST
     @Path("/before")
     public void signalBeforeTest(@QueryParam("testClass") String testClass, @QueryParam("method") String testMethod) throws Exception {

@@ -1,8 +1,8 @@
 package org.zanata.rest;
 
 import com.google.common.collect.ImmutableSet;
-import lombok.extern.slf4j.Slf4j;
 import org.atteo.classindex.ClassIndex;
+import org.slf4j.Logger;
 import org.zanata.rest.service.RestResource;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -14,15 +14,15 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static java.util.stream.Collectors.toSet;
 import static java.util.stream.Stream.concat;
 
 
 @ApplicationPath("/rest")
 @ApplicationScoped
-@Slf4j
 public class JaxRSApplication extends javax.ws.rs.core.Application {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(JaxRSApplication.class);
     private Set<Class<?>> classes = buildClassesSet();
 
     @Override

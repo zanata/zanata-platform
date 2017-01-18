@@ -20,9 +20,9 @@
  */
 package org.zanata.model;
 
-import java.io.Serializable;
-import java.util.Calendar;
-import java.util.Date;
+import org.apache.commons.lang.time.DateUtils;
+import org.zanata.common.ActivityType;
+import org.zanata.model.type.EntityType;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -38,22 +38,16 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import org.apache.commons.lang.time.DateUtils;
-import org.zanata.common.ActivityType;
-import org.zanata.model.type.EntityType;
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
 @EntityListeners({Activity.EntityListener.class})
-@NoArgsConstructor
 @Access(AccessType.FIELD)
-@Getter
 public class Activity extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -72,7 +66,6 @@ public class Activity extends ModelEntityBase implements Serializable {
     @NotNull
     private long endOffsetMillis;
 
-    @Getter
     @NotNull
     @Enumerated(EnumType.STRING)
     private EntityType contextType;
@@ -108,6 +101,9 @@ public class Activity extends ModelEntityBase implements Serializable {
         this.wordCount = wordCount;
     }
 
+    public Activity() {
+    }
+
     public void updateActivity(Date currentTime, IsEntityWithType target,
             int wordCount) {
         this.endOffsetMillis = currentTime.getTime() - approxTime.getTime();
@@ -120,6 +116,50 @@ public class Activity extends ModelEntityBase implements Serializable {
     @Transient
     public Date getEndDate() {
         return DateUtils.addMilliseconds(approxTime, (int) endOffsetMillis);
+    }
+
+    public HPerson getActor() {
+        return this.actor;
+    }
+
+    public Date getApproxTime() {
+        return this.approxTime;
+    }
+
+    public long getStartOffsetMillis() {
+        return this.startOffsetMillis;
+    }
+
+    public long getEndOffsetMillis() {
+        return this.endOffsetMillis;
+    }
+
+    public long getContextId() {
+        return this.contextId;
+    }
+
+    public EntityType getLastTargetType() {
+        return this.lastTargetType;
+    }
+
+    public long getLastTargetId() {
+        return this.lastTargetId;
+    }
+
+    public ActivityType getActivityType() {
+        return this.activityType;
+    }
+
+    public int getEventCount() {
+        return this.eventCount;
+    }
+
+    public int getWordCount() {
+        return this.wordCount;
+    }
+
+    public EntityType getContextType() {
+        return this.contextType;
     }
 
     public static class EntityListener {

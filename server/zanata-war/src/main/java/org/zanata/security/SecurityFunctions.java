@@ -20,8 +20,8 @@
  */
 package org.zanata.security;
 
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Session;
+import org.slf4j.Logger;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectLocaleMemberDAO;
 import org.zanata.dao.ProjectMemberDAO;
@@ -39,12 +39,10 @@ import org.zanata.rest.editor.service.resource.LocalesResource;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.permission.GrantsPermission;
 import org.zanata.security.permission.PermissionProvider;
-import org.zanata.util.HttpUtil;
 import org.zanata.util.ServiceLocator;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
-
 import java.util.Optional;
 
 import static org.zanata.model.ProjectRole.Maintainer;
@@ -65,9 +63,10 @@ import static org.zanata.model.ProjectRole.TranslationMaintainer;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class SecurityFunctions extends PermissionProvider {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(SecurityFunctions.class);
     @Inject
     private ZanataIdentity identity;
 

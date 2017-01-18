@@ -20,21 +20,11 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-
-import javax.enterprise.inject.Model;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.validation.constraints.Size;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.validator.constraints.NotEmpty;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.action.validator.NotDuplicateEmail;
 import org.zanata.config.AllowPublicRegistration;
 import org.zanata.dao.PersonDAO;
@@ -46,16 +36,25 @@ import org.zanata.service.RegisterService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
 
+import javax.enterprise.inject.Model;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("register")
 @GroupedConversationScoped
 @Model
 @Transactional
-@Slf4j
 public class RegisterAction implements HasUserDetail, Serializable {
 
     private static final long serialVersionUID = -7883627570614588182L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RegisterAction.class);
 
     @Inject
     private GroupedConversation conversation;

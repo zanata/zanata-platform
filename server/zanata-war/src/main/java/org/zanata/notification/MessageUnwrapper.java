@@ -1,19 +1,16 @@
 package org.zanata.notification;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.collect.ImmutableMap;
+
+import javax.jms.Message;
+import javax.jms.ObjectMessage;
+import javax.jms.TextMessage;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import javax.jms.Message;
-import javax.jms.ObjectMessage;
-import javax.jms.TextMessage;
-
-import com.google.common.base.MoreObjects;
-import com.google.common.base.Objects;
-import com.google.common.collect.ImmutableMap;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 
 /**
  * Unwraps a JMS message. Extract payload for ObjectMessage and TextMessage and
@@ -22,10 +19,15 @@ import lombok.RequiredArgsConstructor;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class MessageUnwrapper {
     private final Serializable payload;
     private final Map<String, ?> properties;
+
+    @java.beans.ConstructorProperties({ "payload", "properties" })
+    private MessageUnwrapper(Serializable payload, Map<String, ?> properties) {
+        this.payload = payload;
+        this.properties = properties;
+    }
 
     static MessageUnwrapper unwrap(final Message message) {
 

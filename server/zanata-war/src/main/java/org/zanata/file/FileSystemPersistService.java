@@ -20,19 +20,9 @@
  */
 package org.zanata.file;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.io.Files;
 import org.apache.commons.io.FilenameUtils;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.config.SystemPropertyConfigStore;
 import org.zanata.dao.DocumentDAO;
@@ -42,14 +32,22 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.rest.service.VirusScanner;
 
-import com.google.common.io.Files;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 @Named("filePersistService")
 @RequestScoped
-@Slf4j
 public class FileSystemPersistService implements FilePersistService {
 
     private static final String RAW_DOCUMENTS_SUBDIRECTORY = "documents";
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(FileSystemPersistService.class);
 
     @Inject
     private ApplicationConfiguration appConfig;

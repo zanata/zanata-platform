@@ -22,10 +22,6 @@ package org.zanata.model;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Type;
@@ -48,9 +44,6 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "HProject_Member")
-@Setter
-@Getter
-@NoArgsConstructor
 @IdClass(HProjectMember.HProjectMemberPK.class)
 @TypeDef(name = "projectRole", typeClass = ProjectRoleType.class)
 public class HProjectMember implements Serializable, HasUserFriendlyToString  {
@@ -117,6 +110,9 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString  {
     @Type(type = "projectRole")
     private ProjectRole role;
 
+    public HProjectMember() {
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -155,15 +151,36 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString  {
         return sb.toString();
     }
 
+    public HProject getProject() {
+        return this.project;
+    }
+
+    public HPerson getPerson() {
+        return this.person;
+    }
+
+    public ProjectRole getRole() {
+        return this.role;
+    }
+
+    public void setProject(HProject project) {
+        this.project = project;
+    }
+
+    public void setPerson(HPerson person) {
+        this.person = person;
+    }
+
+    public void setRole(ProjectRole role) {
+        this.role = role;
+    }
+
     /**
      * Used as IdClass for {@link HProjectMember}.
      *
      * This is boilerplate that specifies which fields to use as the primary key
      * for HProjectMember, and how to compare them (equals and hashCode).
      */
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class HProjectMemberPK implements Serializable {
         private static final long serialVersionUID = 1L;
 
@@ -172,6 +189,17 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString  {
         private HProject project;
         private HPerson person;
         private ProjectRole role;
+
+        @java.beans.ConstructorProperties({ "project", "person", "role" })
+        public HProjectMemberPK(HProject project, HPerson person,
+                ProjectRole role) {
+            this.project = project;
+            this.person = person;
+            this.role = role;
+        }
+
+        public HProjectMemberPK() {
+        }
 
         @Override
         public boolean equals(Object obj) {
@@ -196,6 +224,18 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString  {
                     .append(getPerson().getId())
                     .append(getRole())
                     .toHashCode();
+        }
+
+        public HProject getProject() {
+            return this.project;
+        }
+
+        public HPerson getPerson() {
+            return this.person;
+        }
+
+        public ProjectRole getRole() {
+            return this.role;
         }
     }
 }

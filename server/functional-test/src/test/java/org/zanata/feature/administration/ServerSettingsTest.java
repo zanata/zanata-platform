@@ -20,11 +20,11 @@
  */
 package org.zanata.feature.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.slf4j.Logger;
 import org.zanata.feature.testharness.TestPlan;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
@@ -41,10 +41,11 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 @Category(TestPlan.DetailedTest.class)
 public class ServerSettingsTest extends ZanataTestCase {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(ServerSettingsTest.class);
     @Rule
     public final HasEmailRule hasEmailRule = new HasEmailRule();
 

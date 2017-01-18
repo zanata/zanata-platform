@@ -20,22 +20,8 @@
  */
 package org.zanata.action;
 
-import java.io.IOException;
-import java.io.Serializable;
-
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
@@ -48,6 +34,14 @@ import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.YahooOpenIdProvider;
 import org.zanata.util.FacesNavigationUtil;
 
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.io.IOException;
+import java.io.Serializable;
+
 /**
  * This action takes care of logging a user into the system. It contains logic
  * to handle the different authentication mechanisms offered by the system.
@@ -59,9 +53,10 @@ import org.zanata.util.FacesNavigationUtil;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class LoginAction implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(LoginAction.class);
 
     @Inject
     private ZanataIdentity identity;
@@ -75,16 +70,10 @@ public class LoginAction implements Serializable {
     @Inject
     private ApplicationConfiguration applicationConfiguration;
 
-    @Getter
-    @Setter
     private String username;
 
-    @Getter
-    @Setter
     private String password;
 
-    @Getter
-    @Setter
     private String openId = "http://";
 
     @Inject
@@ -212,5 +201,29 @@ public class LoginAction implements Serializable {
                     .getOpenIdProviderUrl());
         }
         return "login";
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public String getOpenId() {
+        return this.openId;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
     }
 }

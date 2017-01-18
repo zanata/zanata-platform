@@ -21,15 +21,7 @@
 
 package org.zanata.rest.service;
 
-import javax.annotation.Nonnull;
-import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.WebApplicationException;
-
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-import javax.inject.Named;
+import org.slf4j.Logger;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectDAO;
@@ -42,6 +34,12 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.service.LocaleService;
 
+import javax.annotation.Nonnull;
+import javax.enterprise.context.Dependent;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.ws.rs.WebApplicationException;
+
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -49,8 +47,9 @@ import org.zanata.service.LocaleService;
  */
 @Dependent
 @Named("restSlugValidator")
-@Slf4j
 public class RestSlugValidator {
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RestSlugValidator.class);
     @Inject
     private LocaleService localeServiceImpl;
     @Inject

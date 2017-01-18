@@ -20,14 +20,6 @@
  */
 package org.zanata.service.impl;
 
-import static com.google.common.collect.Lists.newArrayList;
-import static org.apache.commons.lang.StringUtils.join;
-
-import java.util.List;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.Namespaces;
 import org.zanata.common.ProjectType;
@@ -35,6 +27,12 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import static org.apache.commons.lang.StringUtils.join;
 
 @Named("configurationServiceImpl")
 @RequestScoped

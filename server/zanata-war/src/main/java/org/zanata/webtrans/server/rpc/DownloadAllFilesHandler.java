@@ -23,10 +23,6 @@ package org.zanata.webtrans.server.rpc;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
@@ -37,6 +33,9 @@ import org.zanata.webtrans.server.ActionHandlerFor;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesAction;
 import org.zanata.webtrans.shared.rpc.DownloadAllFilesResult;
 
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 
 /**

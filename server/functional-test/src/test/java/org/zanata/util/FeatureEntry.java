@@ -20,13 +20,12 @@
  */
 package org.zanata.util;
 
-import java.util.Collections;
-import java.util.List;
-
+import com.google.common.primitives.Ints;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.zanata.feature.Feature;
 
-import com.google.common.primitives.Ints;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * This object will be converted to JSON.

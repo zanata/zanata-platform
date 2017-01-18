@@ -20,17 +20,19 @@
  */
 package org.zanata.page.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
 import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class InactiveAccountPage extends BasePage {
+
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(InactiveAccountPage.class);
 
     public InactiveAccountPage(WebDriver driver) {
         super(driver);

@@ -21,7 +21,6 @@
 package org.zanata.security.openid;
 
 import javax.enterprise.inject.Alternative;
-import java.text.MessageFormat;
 import java.util.regex.Pattern;
 
 /**

@@ -20,16 +20,11 @@
  */
 package org.zanata.service.impl;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
@@ -45,7 +40,6 @@ import org.zanata.service.SecurityService;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
-import javax.enterprise.event.Event;
 import org.zanata.util.TranslationUtil;
 import org.zanata.webtrans.server.rpc.TransMemoryMergeStatusResolver;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
@@ -54,11 +48,16 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 
-import lombok.extern.slf4j.Slf4j;
-import net.customware.gwt.dispatch.shared.ActionException;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import static org.zanata.service.SecurityService.TranslationAction.MODIFY;
 
 /**
@@ -67,10 +66,11 @@ import static org.zanata.service.SecurityService.TranslationAction.MODIFY;
  */
 @Named("transMemoryMergeServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(TransMemoryMergeServiceImpl.class);
     @Inject
     private SecurityService securityServiceImpl;
 

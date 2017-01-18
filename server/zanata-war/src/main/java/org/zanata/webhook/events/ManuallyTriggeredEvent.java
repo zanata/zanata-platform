@@ -21,11 +21,11 @@
 
 package org.zanata.webhook.events;
 
-import javax.annotation.Nullable;
-
 import org.zanata.common.LocaleId;
 import org.zanata.events.WebhookEventType;
 import org.zanata.model.type.WebhookType;
+
+import javax.annotation.Nullable;
 
 /**
  * Indicates an webhook event is triggered manually by a user. The fields will

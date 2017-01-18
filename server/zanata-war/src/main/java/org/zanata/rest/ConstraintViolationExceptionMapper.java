@@ -1,6 +1,6 @@
 package org.zanata.rest;
 
-import java.util.Set;
+import org.slf4j.Logger;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -8,13 +8,14 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.Set;
 
 @Provider
-@Slf4j
 public class ConstraintViolationExceptionMapper implements
         ExceptionMapper<ConstraintViolationException> {
+    private static final Logger log = org.slf4j.LoggerFactory
+            .getLogger(ConstraintViolationExceptionMapper.class);
+
     @Override
     public Response toResponse(ConstraintViolationException e) {
         Set<ConstraintViolation<?>> invalidValues = e.getConstraintViolations();

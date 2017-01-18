@@ -24,7 +24,6 @@ import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.model.HProject;
-import org.zanata.model.SlugEntityBase;
 
 import java.util.Map;
 import java.util.concurrent.Future;

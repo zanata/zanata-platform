@@ -1,12 +1,10 @@
 package org.zanata.util;
 
-import java.io.Serializable;
-
-import javax.inject.Provider;
-
+import com.google.common.annotations.VisibleForTesting;
 import org.apache.deltaspike.core.api.provider.DependentProvider;
 
-import com.google.common.annotations.VisibleForTesting;
+import javax.inject.Provider;
+import java.io.Serializable;
 
 /**
  * @author Patrick Huang

@@ -22,21 +22,12 @@ package org.zanata.rest.service;
 
 import com.google.common.collect.Lists;
 import org.jboss.resteasy.util.GenericType;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProject;
 import org.zanata.rest.dto.LocaleDetails;
-import org.zanata.service.LocaleService;
 import org.zanata.service.impl.LocaleServiceImpl;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;

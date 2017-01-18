@@ -1,6 +1,16 @@
 package org.zanata.rest.editor.service;
 
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.model.HProject;
+import org.zanata.rest.NoSuchEntityException;
+import org.zanata.rest.dto.Project;
+import org.zanata.rest.editor.service.resource.ProjectResource;
+import org.zanata.rest.service.ETagUtils;
+
 import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Context;
@@ -9,19 +19,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.model.HProject;
-import org.zanata.rest.NoSuchEntityException;
-import org.zanata.rest.dto.Project;
-import org.zanata.rest.service.ETagUtils;
-import org.zanata.rest.editor.service.resource.ProjectResource;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
@@ -29,8 +26,6 @@ import lombok.NoArgsConstructor;
 @Named("editor.projectService")
 @Path(ProjectResource.SERVICE_PATH)
 @Transactional
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProjectService implements ProjectResource {
 
     @Context
@@ -41,6 +36,17 @@ public class ProjectService implements ProjectResource {
 
     @Inject
     private ProjectDAO projectDAO;
+
+    @java.beans.ConstructorProperties({ "request", "eTagUtils", "projectDAO" })
+    protected ProjectService(Request request, ETagUtils eTagUtils,
+            ProjectDAO projectDAO) {
+        this.request = request;
+        this.eTagUtils = eTagUtils;
+        this.projectDAO = projectDAO;
+    }
+
+    public ProjectService() {
+    }
 
     @Override
     public Response getProject(@PathParam("projectSlug") String projectSlug) {

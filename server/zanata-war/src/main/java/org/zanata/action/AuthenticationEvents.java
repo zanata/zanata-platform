@@ -20,24 +20,22 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-
-import lombok.extern.slf4j.Slf4j;
-
-import javax.enterprise.context.Dependent;
-import javax.enterprise.event.Observes;
-import javax.faces.application.FacesMessage;
-import javax.inject.Inject;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.core.api.scope.WindowScoped;
 import org.apache.deltaspike.core.util.ContextUtils;
+import org.slf4j.Logger;
 import org.zanata.events.AlreadyLoggedInEvent;
 import org.zanata.events.LoginFailedEvent;
 import org.zanata.events.LoginSuccessfulEvent;
 import org.zanata.events.NotLoggedInEvent;
 import org.zanata.events.UserCreatedEvent;
 import org.zanata.ui.faces.FacesMessages;
+
+import javax.enterprise.context.Dependent;
+import javax.enterprise.event.Observes;
+import javax.faces.application.FacesMessage;
+import javax.inject.Inject;
+import java.io.Serializable;
 
 /**
  * Some of the event observers are migrated from org.jboss.seam.security.FacesSecurityEvents.
@@ -48,10 +46,11 @@ import org.zanata.ui.faces.FacesMessages;
  * @see org.zanata.exception.handler.NotLoggedInExceptionHandler
  */
 @Dependent
-@Slf4j
 // TODO get these event observers working again
 public class AuthenticationEvents implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(AuthenticationEvents.class);
 
     @Inject
     private FacesMessages facesMessages;

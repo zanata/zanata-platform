@@ -20,13 +20,13 @@
  */
 package org.zanata.action.validator;
 
-import java.util.List;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+import java.util.List;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>

@@ -20,11 +20,11 @@
  */
 package org.zanata.ui;
 
-import java.util.List;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
+
+import java.util.List;
 
 /**
  * Implementation of a list filter that keeps its records in memory.

@@ -22,9 +22,9 @@
 package org.zanata.service.impl;
 
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LanguageRequestDAO;
@@ -57,10 +57,11 @@ import java.util.List;
  */
 @Named("requestServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class RequestServiceImpl implements RequestService {
 
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(RequestServiceImpl.class);
     @Inject
     private RequestDAO requestDAO;
 

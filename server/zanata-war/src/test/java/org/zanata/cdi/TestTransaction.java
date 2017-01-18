@@ -20,7 +20,6 @@
  */
 package org.zanata.cdi;
 
-import lombok.Getter;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 
@@ -47,7 +46,6 @@ import javax.transaction.UserTransaction;
 public class TestTransaction implements UserTransaction,
         TransactionManager {
 
-    @Getter
     private boolean active;
 
     private EntityManager entityManager;
@@ -117,5 +115,9 @@ public class TestTransaction implements UserTransaction,
             throws InvalidTransactionException, IllegalStateException,
             SystemException {
         throw new RuntimeException();
+    }
+
+    public boolean isActive() {
+        return this.active;
     }
 }

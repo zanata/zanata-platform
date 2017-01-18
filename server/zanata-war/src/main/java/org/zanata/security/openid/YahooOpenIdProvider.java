@@ -20,15 +20,9 @@
  */
 package org.zanata.security.openid;
 
+import javax.enterprise.inject.Alternative;
 import java.text.MessageFormat;
 import java.util.regex.Pattern;
-
-import org.openid4java.message.MessageException;
-import org.openid4java.message.ParameterList;
-import org.openid4java.message.ax.FetchRequest;
-import org.openid4java.message.sreg.SRegRequest;
-
-import javax.enterprise.inject.Alternative;
 
 /**
  * Yahoo Open Id provider.

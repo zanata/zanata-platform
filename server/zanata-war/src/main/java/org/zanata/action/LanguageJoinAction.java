@@ -20,45 +20,37 @@
  */
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.List;
-
-import javax.enterprise.inject.Model;
-import javax.faces.bean.ViewScoped;
-import javax.validation.constraints.Size;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.Authenticated;
 import org.apache.commons.lang.StringUtils;
-import org.zanata.exception.RequestExistsException;
-import org.zanata.model.HPerson;
-import org.zanata.model.LanguageRequest;
-import org.zanata.model.LocaleRole;
-import org.zanata.model.type.RequestState;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.email.EmailStrategy;
 import org.zanata.email.RequestToJoinLanguageEmailStrategy;
+import org.zanata.exception.RequestExistsException;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
+import org.zanata.model.LanguageRequest;
+import org.zanata.model.type.RequestState;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.EmailService;
 import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.RequestService;
 import org.zanata.ui.faces.FacesMessages;
+
+import javax.enterprise.inject.Model;
+import javax.faces.bean.ViewScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -69,9 +61,10 @@ import org.zanata.ui.faces.FacesMessages;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class LanguageJoinAction implements Serializable {
     private static final long serialVersionUID = 1L;
+    private static final Logger log =
+            org.slf4j.LoggerFactory.getLogger(LanguageJoinAction.class);
 
     @Inject
     private LocaleMemberDAO localeMemberDAO;
@@ -88,19 +81,13 @@ public class LanguageJoinAction implements Serializable {
     @Inject
     private Messages msgs;
 
-    @Setter
-    @Getter
     private String language;
 
     private HLocale locale;
 
-    @Getter
-    @Setter
     @Size(max = 1000)
     private String message;
 
-    @Setter
-    @Getter
     private String declineMessage;
 
     @Inject
@@ -305,5 +292,29 @@ public class LanguageJoinAction implements Serializable {
     private HLocaleMember getLocaleMember() {
         return localeMemberDAO.findByPersonAndLocale(authenticatedAccount
                 .getPerson().getId(), new LocaleId(language));
+    }
+
+    public String getLanguage() {
+        return this.language;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public String getDeclineMessage() {
+        return this.declineMessage;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public void setDeclineMessage(String declineMessage) {
+        this.declineMessage = declineMessage;
     }
 }
