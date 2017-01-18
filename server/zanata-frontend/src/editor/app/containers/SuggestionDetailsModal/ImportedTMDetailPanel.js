@@ -42,7 +42,8 @@ class ImportedTMDetailPanel extends Component {
           <ul className="u-listInline u-sMB-1-4">
             <li>
               <Row>
-                <Icon name="import" size="1" /> {transMemorySlug}
+                <Icon name="import" size="1" />
+                <span className="transmem-slug">{transMemorySlug}</span>
               </Row>
             </li>
             <Label bsStyle="primary">Imported</Label>

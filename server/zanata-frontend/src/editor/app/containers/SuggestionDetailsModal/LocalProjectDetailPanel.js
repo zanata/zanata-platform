@@ -59,21 +59,22 @@ class LocalProjectDetailPanel extends Component {
         <ul className="u-sMB-1-4">
           <li className="project" title={projectId}>
             <Row>
-              <Icon name="project" size="1" />
-              {projectName}
+              <Icon name="project" size="1" />PROJECT:
+              <span className="project-name">{projectName}</span>
             </Row>
           </li>
           <li className="version">
             <Row>
-              <Icon name="version" size="1" /> {version}
+              <Icon name="version" size="1" />VERSION:
+              <span className="version-name">{version}</span>
             </Row>
           </li>
         </ul>
         <ul className="u-listInline document u-sMB-1-4">
           <li title={fullDocName}>
             <Row>
-              <Icon name="document" size="1" />
-              <span className="Fz(0.8em)">{fullDocName}</span>
+              <Icon name="document" size="1" />DOCUMENT:
+              <span className="doc-name">{fullDocName}</span>
             </Row>
           </li>
           <li>

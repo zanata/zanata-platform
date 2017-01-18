@@ -8,10 +8,12 @@
 
 .Editor-suggestionsBody .TransUnit--suggestion .TransUnit-text--tight {
     padding-top: 0 !important;
+    font-size:1em;
 }
 
 .TransUnit--suggestion .TransUnit-text--tight {
     padding-top:40px !important;
+    font-size:1.2em;
 }
 /* Based on bootstrap styles. */
 
@@ -195,4 +197,9 @@
 
 li.project, li.version, li.document {
     margin-bottom: 0.375rem;
+}
+
+span.project-name, span.version-name, span.doc-name, span.transmem-slug  {
+    padding-left:0.375em;
+    font-weight:bold;
 }
