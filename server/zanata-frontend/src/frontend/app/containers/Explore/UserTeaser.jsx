@@ -22,7 +22,7 @@ const UserTeaser = ({
           alt={details.id}
           className='avatar-round' />
         <Link link={'/profile/view/' + details.id}
-          className='bold-font'>
+          className='text-bold'>
           {details.description}
         </Link>
       </div>

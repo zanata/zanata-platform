@@ -13,7 +13,7 @@ const LanguageTeamTeaser = ({
   return (
     <div className='teamTeaserView' name={name}>
       <div className='flex-row'>
-        <Link link={link} className='bold-font'>
+        <Link link={link} className='text-bold'>
           {details.localeDetails.displayName}
         </Link>
         <span className='text-muted langTeamTeaserViewId '>
