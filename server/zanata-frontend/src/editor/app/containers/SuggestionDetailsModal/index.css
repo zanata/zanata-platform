@@ -6,7 +6,13 @@
   overflow: hidden;
 }
 
+.Editor-suggestionsBody .TransUnit--suggestion .TransUnit-text--tight {
+    padding-top: 0 !important;
+}
 
+.TransUnit--suggestion .TransUnit-text--tight {
+    padding-top:40px !important;
+}
 /* Based on bootstrap styles. */
 
 :root {
@@ -134,6 +140,10 @@
     transition-property: height, visibility;
 }
 
+.Z\(modal\) {
+    z-index: 1000 !important;
+}
+
 .label-primary {
     background-color: #337ab7;
 }
@@ -146,6 +156,19 @@
     background-color: var(--brand-info);
 }
 
+.source-heading {
+    padding-left: 1.1em;
+    top: inherit;
+    line-height: 3em;
+    font-weight: 600;
+}
+
+.target-heading {
+    padding-left: 1.9em;
+    top: inherit;
+    line-height: 3em;
+    font-weight: 600;
+}
 
 .label {
     font-size: 70%;
@@ -170,15 +193,6 @@
     width:100%;
 }
 
-li.project {
-    padding-right:2em;
-}
-
-li.version {
-    padding-right:1em;
-}
-
-ul.document {
-    width:100%;
-    padding-right: 1em;
+li.project, li.version, li.document {
+    margin-bottom: 0.375rem;
 }

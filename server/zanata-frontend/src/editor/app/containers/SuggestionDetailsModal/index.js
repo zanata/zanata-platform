@@ -40,7 +40,8 @@ class SuggestionDetailsModal extends Component {
     return (
       <Modal
         show
-        onHide={this.props.onClose}>
+        onHide={this.props.onClose}
+        className="suggestions-modal">
         <Modal.Header>
           <Modal.Title><small><span className="pull-left">
           Translation Memory Details</span></small></Modal.Title>
