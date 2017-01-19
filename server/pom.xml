@@ -2050,7 +2050,18 @@
                 <configuration>
                   <sourceDirectory>${lombok.source.dir}</sourceDirectory>
                   <outputDirectory>${delombok.dir}</outputDirectory>
-                  <verbose>true</verbose>
+                  <verbose>false</verbose>
+                  <formatPreferences>
+                    <indent>4</indent>
+                    <emptyLines>blank</emptyLines>
+                    <finalParams>generate</finalParams>
+                    <constructorProperties>generate</constructorProperties>
+                    <suppressWarnings>skip</suppressWarnings>
+                    <generated>skip</generated>
+                    <danceAroundIdeChecks>skip</danceAroundIdeChecks>
+                    <generateDelombokComment>skip</generateDelombokComment>
+                    <javaLangAsFQN>skip</javaLangAsFQN>
+                  </formatPreferences>
                 </configuration>
               </execution>
             </executions>
