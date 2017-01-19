@@ -32,9 +32,6 @@
     <mysql.user>root</mysql.user>
     <mysql.password />
 
-    <!--this will get set by maven dependency:properties goal and be used in gwt-maven-plugin-->
-    <lombok.lib>${org.projectlombok:lombok:jar}</lombok.lib>
-
     <jboss.as.standalone.version>7.5.0</jboss.as.standalone.version>
     <rpm.name>${project.build.finalName}</rpm.name>
 
@@ -126,16 +123,6 @@
 
       <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <!-- This is used to set the property lombok.lib -->
-          <execution>
-            <id>dependency-properties</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>properties</goal>
-            </goals>
-          </execution>
-        </executions>
         <configuration>
           <usedDependencies combine.children="append">
             <!-- runtime dep for liquibase logging -->
