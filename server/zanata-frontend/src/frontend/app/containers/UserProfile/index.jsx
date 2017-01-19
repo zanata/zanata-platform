@@ -9,41 +9,7 @@ import {
   selectDayChanged
 } from '../../actions/profile'
 import RecentContributions from './RecentContributions'
-import {
-  Base,
-  Flex,
-  Icon,
-  LoaderText,
-  Page,
-  ScrollView
-} from 'zanata-ui'
-
-import { Notification } from '../../components'
-
-const classes = {
-  wrapper: {
-    p: 'Py(r1)',
-    fld: 'Fld(c) Fld(r)--md'
-  },
-  details: {
-    w: 'W(100%) Miw(21rem) Maw(r16)',
-    m: 'Mb(r1)'
-  },
-  detailsAvatar: {
-    bdrs: 'Bdrs(rnd)',
-    m: 'Mstart(a)',
-    ov: 'Ov(h)',
-    w: 'Maw(1/4)'
-  },
-  detailsText: {
-    m: 'Mend(rh)',
-    flx: 'Flx(flx1)'
-  },
-  usersName: {
-    fz: 'Fz(ms3)',
-    fw: 'Fw(600)'
-  }
-}
+import { Notification, Icon, LoaderText } from '../../components'
 
 /**
  * Root component for user profile page
@@ -83,10 +49,8 @@ class UserProfile extends Component {
 
     const isLoggedIn = window.config.permission.isLoggedIn
 
-    const divClass = 'D(f) Ai(fs) Ac(fs) Fld(c) Jc(fs) Flw(nw) ' +
-      'My(r3) Mx(a) Maw(20em) W(100%)'
     return (
-      <Page>
+      <div className='page'>
         {notification &&
           (<Notification
             severity={notification.severity}
@@ -95,45 +59,47 @@ class UserProfile extends Component {
             show={!!notification} />
         )}
         <Helmet title='User Profile' />
-        <ScrollView>
+        <div className='scrollViewTheme' >
           {user.loading || loading
-            ? (<div className={divClass}>
-              <LoaderText size='8' loading atomic={{w: 'W(100%)'}} />
+            ? (<div className='user-profile'>
+              <LoaderText className='loader-text s8' loading />
             </div>)
-            : (<Flex dir='c' atomic={classes.wrapper}>
-              <Flex dir='rr' id='profile-overview' atomic={classes.details}>
-                <Base atomic={classes.detailsAvatar}>
+            : (<div className='flex-c profile-wrapper'>
+              <div className='flex-rr details' id='profile-overview'>
+                <div className='details-avatar'>
                   <img src={user.imageUrl ? user.imageUrl : ''}
                     alt={username} />
-                </Base>
-                <Flex dir='c' atomic={classes.detailsText}>
+                </div>
+                <div className='flex-c details-text'>
                   {name &&
-                    <Base atomic={classes.usersName} id='profile-displayname'>
+                    <div className='username' id='profile-displayname'>
                       {name}
-                    </Base>
+                    </div>
                   }
-                  <ul className='Fz(msn1)'>
-                    <Flex tagName='li' align='c' id='profile-username'>
+                  <ul className='large-font-list'>
+                    <span tagName='li' className='flex-center'
+                      id='profile-username'>
                       <Icon name='user'
-                        atomic={{m: 'Mend(re)'}}
+                        className='s0'
                         title='Username' />
                       {username}
                       {email &&
-                        (<span className='Mstart(rq) C(muted)'>
+                        (<span className='profile-email'>
                           {email}
                         </span>)
                       }
-                    </Flex>
+                    </span>
                     {languageTeams &&
-                    (<Flex tagName='li' align='c' id='profile-languages'>
+                    (<span className='flex-center' tagName='li'
+                      id='profile-languages'>
                       <Icon name='language'
-                        atomic={{m: 'Mend(re)'}}
+                        className='s0'
                         title='Spoken languages' />
                       {languageTeams}
-                    </Flex>)}
+                    </span>)}
                   </ul>
-                </Flex>
-              </Flex>
+                </div>
+              </div>
               {isLoggedIn &&
               (<RecentContributions
                 matrixForAllDays={matrixForAllDays}
@@ -148,10 +114,10 @@ class UserProfile extends Component {
                 handleFilterChanged={handleFilterChanged}
                 handleSelectedDayChanged={handleSelectedDayChanged} />)
               }
-            </Flex>)
+            </div>)
           }
-        </ScrollView>
-      </Page>
+        </div>
+      </div>
     )
   }
 }
