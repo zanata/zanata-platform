@@ -32,6 +32,7 @@ import java.util.List;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.ServerErrorException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.zanata.client.commands.ConsoleInteractor;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
@@ -192,6 +193,11 @@ class ProjectPrompt {
         consoleInteractor.printfln(Hint, get("project.id.constraint"));
         consoleInteractor.printfln(Question, get("project.id.prompt"));
         String projectId = consoleInteractor.expectAnyAnswer();
+        while (!validateProjectID(projectId)) {
+            consoleInteractor.printfln(Question, get("project.id.prompt"));
+            projectId = consoleInteractor.expectAnyAnswer();
+        }
+        ProjectClient projectClient = clientFactory.getProjectClient(projectId);
         consoleInteractor.printfln(Question, get("project.name.prompt"));
         String projectName = consoleInteractor.expectAnyAnswer();
         String projectTypes = Joiner.on(", ").join(PROJECT_TYPE_LIST);
@@ -199,7 +205,7 @@ class ProjectPrompt {
         String projectType =
                 consoleInteractor.expectAnswerWithRetry(
                         AnswerValidatorImpl.expect(PROJECT_TYPE_LIST));
-        ProjectClient projectClient = clientFactory.getProjectClient(projectId);
+
         Project project = new Project(projectId, projectName, projectType);
         try {
             projectClient.put(project);
@@ -211,6 +217,17 @@ class ProjectPrompt {
         opts.setProj(projectId);
         opts.setProjectType(projectType);
         projectIterationPrompt.createNewVersion();
+    }
+
+    private boolean validateProjectID(String projectId) {
+        if (StringUtils.isBlank(projectId)) {
+            consoleInteractor.printfln(get("project.id.empty"));
+            return false;
+        } else if (clientFactory.getProjectClient(projectId).get() != null) {
+            consoleInteractor.printfln(get("project.id.unavailable"));
+            return false;
+        }
+        return true;
     }
 
     private static class ProjectTypeToStringFunction
