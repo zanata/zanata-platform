@@ -15,6 +15,7 @@ import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.editor.service.resource.UserResource;
+import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.GravatarService;
@@ -57,6 +58,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
     @Produces @Mock ApplicationConfiguration applicationConfiguration;
     @Produces @Mock WindowContext windowContext;
     @Produces @Mock UrlUtil urlUtil;
+    @Produces @Mock IdentityManager identityManager;
 
     @Override
     @Produces

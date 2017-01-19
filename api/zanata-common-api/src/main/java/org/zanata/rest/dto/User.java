@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.LocaleId;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@JsonPropertyOrder({ "username", "email", "name", "imageUrl", "languageTeams"})
+@JsonPropertyOrder({ "username", "email", "name", "imageUrl", "languageTeams", "roles"})
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class User implements Serializable {
 
@@ -23,18 +23,20 @@ public class User implements Serializable {
     private String name;
     private String imageUrl;
     private List<LocaleId> languageTeams;
+    private List<String> roles;
 
     public User() {
-        this(null, null, null, null, null);
+        this(null, null, null, null, null, null);
     }
 
     public User(String username, String email, String name,
-        String imageUrl, List<LocaleId> languageTeams) {
+        String imageUrl, List<LocaleId> languageTeams, List<String> roles) {
         this.username = username;
         this.email = email;
         this.name = name;
         this.imageUrl = imageUrl;
         this.languageTeams = languageTeams;
+        this.roles = roles;
     }
 
     @NotEmpty
@@ -87,6 +89,15 @@ public class User implements Serializable {
         this.languageTeams = languageTeams;
     }
 
+    @JsonProperty("roles")
+    public List<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<String> roles) {
+        this.roles = roles;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -102,9 +113,9 @@ public class User implements Serializable {
             return false;
         if (imageUrl != null ? !imageUrl.equals(user.imageUrl) :
             user.imageUrl != null) return false;
-        return !(languageTeams != null ?
-            !languageTeams.equals(user.languageTeams) :
-            user.languageTeams != null);
+        if (languageTeams != null ? !languageTeams.equals(user.languageTeams) :
+            user.languageTeams != null) return false;
+        return roles != null ? roles.equals(user.roles) : user.roles == null;
 
     }
 
@@ -117,6 +128,7 @@ public class User implements Serializable {
         result =
             31 * result +
                 (languageTeams != null ? languageTeams.hashCode() : 0);
+        result = 31 * result + (roles != null ? roles.hashCode() : 0);
         return result;
     }
 }
