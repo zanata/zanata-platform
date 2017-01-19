@@ -6,7 +6,15 @@
   overflow: hidden;
 }
 
+.Editor-suggestionsBody .TransUnit--suggestion .TransUnit-text--tight {
+    padding-top: 0 !important;
+    font-size:1em;
+}
 
+.TransUnit--suggestion .TransUnit-text--tight {
+    padding-top:40px !important;
+    font-size:1.2em;
+}
 /* Based on bootstrap styles. */
 
 :root {
@@ -134,6 +142,10 @@
     transition-property: height, visibility;
 }
 
+.Z\(modal\) {
+    z-index: 1000 !important;
+}
+
 .label-primary {
     background-color: #337ab7;
 }
@@ -146,6 +158,19 @@
     background-color: var(--brand-info);
 }
 
+.source-heading {
+    padding-left: 1.1em;
+    top: inherit;
+    line-height: 3em;
+    font-weight: 600;
+}
+
+.target-heading {
+    padding-left: 1.9em;
+    top: inherit;
+    line-height: 3em;
+    font-weight: 600;
+}
 
 .label {
     font-size: 70%;
@@ -159,29 +184,22 @@
     border-radius: 0.25em;
 }
 
-.transUnit-details {
+.TransUnit-details {
     white-space:normal;
     word-break: break-all;
     line-height:1em;
 }
 
-.transUnit-details .u-listInline {
+.TransUnit-details .u-listInline {
     display:inline-flex;
     width:100%;
 }
 
-.transUnit-details .u-listInline li div {
-    align-items: stretch;
+li.TransUnit-label-suggestions {
+    margin-bottom: 0.375rem;
 }
 
-.transUnit-details li.project {
-        width: 25%;
-}
-
-.transUnit-details  li.version {
-        width:25%;
-}
-
-.transUnit-details li.document {
-        max-width:50%;
+span.TransUnit-details-inner {
+    padding-left:0.375em;
+    font-weight:bold;
 }
