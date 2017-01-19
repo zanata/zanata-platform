@@ -20,7 +20,6 @@
 
   <properties>
     <byteman.version>2.1.2</byteman.version>
-    <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
@@ -30,14 +29,12 @@
     <picketlink.version>2.5.5.SP1</picketlink.version>
     <!-- This is the WildFly 10 version: -->
     <infinispan.version>8.1.0.Final</infinispan.version>
-    <lombok.version>1.16.6</lombok.version>
     <weld.version>2.3.2.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
     <groovy.version>2.4.7</groovy.version>
     <icu4j.version>56.1</icu4j.version>
     <guava.version>21.0</guava.version>
     <gwt.version>2.8.0</gwt.version>
-    <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>5.3.1</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
     <rewrite.version>3.0.0.Alpha10</rewrite.version>
@@ -282,13 +279,6 @@
         <artifactId>picketlink-idm-api</artifactId>
         <version>${picketlink.version}</version>
         <scope>compile</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>${lombok.version}</version>
-        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -2005,75 +1995,6 @@
             <configuration>
               <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
             </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <!--this is used to run GWT in dev mode. Adjust your IDE to include the delombok -->
-      <id>delombok</id>
-      <properties>
-        <zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
-                <configuration>
-                  <target>
-                    <echo>include following as source in your IDE</echo>
-                    <echo>${delombok.dir}</echo>
-                    <echo>exclude following as source in your IDE</echo>
-                    <echo>${lombok.source.dir}</echo>
-                  </target>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok-maven-plugin</artifactId>
-            <version>1.16.6.1</version>
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>delombok</goal>
-                </goals>
-                <configuration>
-                  <sourceDirectory>${lombok.source.dir}</sourceDirectory>
-                  <outputDirectory>${delombok.dir}</outputDirectory>
-                  <verbose>false</verbose>
-                  <formatPreferences>
-                    <indent>4</indent>
-                    <emptyLines>blank</emptyLines>
-                    <finalParams>generate</finalParams>
-                    <constructorProperties>generate</constructorProperties>
-                    <suppressWarnings>skip</suppressWarnings>
-                    <generated>skip</generated>
-                    <danceAroundIdeChecks>skip</danceAroundIdeChecks>
-                    <generateDelombokComment>skip</generateDelombokComment>
-                    <javaLangAsFQN>skip</javaLangAsFQN>
-                  </formatPreferences>
-                </configuration>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>sun.jdk</groupId>
-                <artifactId>tools</artifactId>
-                <version>${required.jvm}</version>
-                <scope>system</scope>
-                <systemPath>${java.home}/../lib/tools.jar</systemPath>
-              </dependency>
-            </dependencies>
           </plugin>
         </plugins>
       </build>

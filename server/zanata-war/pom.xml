@@ -209,19 +209,6 @@
               <goal>run</goal>
             </goals>
           </execution>
-          <execution>
-            <id>print lombok location</id>
-            <phase>process-resources</phase>
-            <configuration>
-              <target>
-                <echo>lombok VM arguments for GWT compilation:</echo>
-                <echo>-javaagent:${lombok.lib}=ECJ</echo>
-              </target>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
         </executions>
       </plugin>
       <plugin>
@@ -1485,13 +1472,6 @@
       <groupId>org.javassist</groupId>
       <artifactId>javassist</artifactId>
       <scope>${hibernate.scope}</scope>
-    </dependency>
-
-    <!-- This must appear before arquillian dependencies -->
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
