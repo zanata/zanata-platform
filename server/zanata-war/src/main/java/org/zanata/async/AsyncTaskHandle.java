@@ -24,41 +24,22 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
 import com.google.common.base.Optional;
 
 /**
  * Asynchronous handle to provide communication between an asynchronous task and
  * interested clients.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class AsyncTaskHandle<V> {
 
-    @Setter(AccessLevel.PACKAGE)
     private Future<V> futureResult;
-
-    @Getter
-    @Setter
     public int maxProgress = 100;
-
-    @Getter
-    @Setter
     public int minProgress = 0;
-
-    @Getter
-    @Setter
     public int currentProgress = 0;
-
-    @Getter
     private long startTime = -1;
-
-    @Getter
     private long finishTime = -1;
 
     public int increaseProgress(int increaseBy) {
@@ -109,8 +90,8 @@ public class AsyncTaskHandle<V> {
             long currentTime = System.currentTimeMillis();
             long timeElapsed = currentTime - this.startTime;
             int remainingUnits = this.maxProgress - this.currentProgress;
-            return Optional.of(timeElapsed * remainingUnits
-                    / this.currentProgress);
+            return Optional
+                    .of(timeElapsed * remainingUnits / this.currentProgress);
         } else {
             return Optional.absent();
         }
@@ -158,5 +139,41 @@ public class AsyncTaskHandle<V> {
         } else {
             return 0;
         }
+    }
+
+    void setFutureResult(final Future<V> futureResult) {
+        this.futureResult = futureResult;
+    }
+
+    public int getMaxProgress() {
+        return this.maxProgress;
+    }
+
+    public void setMaxProgress(final int maxProgress) {
+        this.maxProgress = maxProgress;
+    }
+
+    public int getMinProgress() {
+        return this.minProgress;
+    }
+
+    public void setMinProgress(final int minProgress) {
+        this.minProgress = minProgress;
+    }
+
+    public int getCurrentProgress() {
+        return this.currentProgress;
+    }
+
+    public void setCurrentProgress(final int currentProgress) {
+        this.currentProgress = currentProgress;
+    }
+
+    public long getStartTime() {
+        return this.startTime;
+    }
+
+    public long getFinishTime() {
+        return this.finishTime;
     }
 }

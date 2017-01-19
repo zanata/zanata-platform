@@ -22,20 +22,13 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.List;
-
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.validation.constraints.Size;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.Authenticated;
 import org.apache.commons.lang.StringUtils;
@@ -63,67 +56,46 @@ import org.zanata.ui.faces.FacesMessages;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-
-
 @Named("languageJoinAction")
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class LanguageJoinAction implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(LanguageJoinAction.class);
 
+    private static final long serialVersionUID = 1L;
     @Inject
     private LocaleMemberDAO localeMemberDAO;
-
     @Inject
     private LocaleService localeServiceImpl;
-
     @Inject
     private EmailService emailServiceImpl;
-
     @Inject
     private FacesMessages facesMessages;
-
     @Inject
     private Messages msgs;
-
-    @Setter
-    @Getter
     private String language;
-
     private HLocale locale;
-
-    @Getter
-    @Setter
     @Size(max = 1000)
     private String message;
-
-    @Setter
-    @Getter
     private String declineMessage;
-
     @Inject
     private RequestService requestServiceImpl;
-
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     private LanguageTeamService languageTeamServiceImpl;
-
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
 
     /**
      * Return localised roles requested
-     *
      */
     public String getLocalisedRequestedRoles(LanguageRequest request) {
-        return Joiner.on(", ")
-            .skipNulls()
-            .join(request.isCoordinator() ? msgs.get("jsf.Coordinator") : null,
+        return Joiner.on(", ").skipNulls().join(
+                request.isCoordinator() ? msgs.get("jsf.Coordinator") : null,
                 request.isReviewer() ? msgs.get("jsf.Reviewer") : null,
                 request.isTranslator() ? msgs.get("jsf.Translator") : null);
     }
@@ -133,29 +105,26 @@ public class LanguageJoinAction implements Serializable {
         LanguageRequest request =
                 requestServiceImpl.getLanguageRequest(languageRequestId);
         Long personId = request.getRequest().getRequester().getPerson().getId();
-
-        boolean updateAsTranslator, updateAsReviewer, updateAsCoordinator;
-
-        HLocaleMember member = localeMemberDAO.findByPersonAndLocale(
-            personId, new LocaleId(language));
-
+        boolean updateAsTranslator;
+        boolean updateAsReviewer;
+        boolean updateAsCoordinator;
+        HLocaleMember member = localeMemberDAO.findByPersonAndLocale(personId,
+                new LocaleId(language));
         if (member == null) {
             updateAsTranslator = request.isTranslator();
             updateAsReviewer = request.isReviewer();
             updateAsCoordinator = request.isCoordinator();
         } else {
             updateAsTranslator =
-                member.isTranslator() ? true : request.isTranslator();
+                    member.isTranslator() ? true : request.isTranslator();
             updateAsReviewer =
-                member.isReviewer() ? true : request.isReviewer();
+                    member.isReviewer() ? true : request.isReviewer();
             updateAsCoordinator =
-                member.isCoordinator() ? true : request.isCoordinator();
+                    member.isCoordinator() ? true : request.isCoordinator();
         }
-
-        languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(
-            language, personId, updateAsTranslator, updateAsReviewer,
-            updateAsCoordinator);
-
+        languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(language,
+                personId, updateAsTranslator, updateAsReviewer,
+                updateAsCoordinator);
         requestServiceImpl.updateLanguageRequest(languageRequestId,
                 authenticatedAccount, RequestState.ACCEPTED, "");
         facesMessages.addGlobal(msgs.get("jsf.language.request.updated"));
@@ -164,7 +133,7 @@ public class LanguageJoinAction implements Serializable {
     public void declineRequest(Long languageRequestId) {
         identity.checkPermission(locale, "manage-language-team");
         requestServiceImpl.updateLanguageRequest(languageRequestId,
-            authenticatedAccount, RequestState.REJECTED, declineMessage);
+                authenticatedAccount, RequestState.REJECTED, declineMessage);
         facesMessages.addGlobal(msgs.get("jsf.language.request.updated"));
     }
 
@@ -172,17 +141,16 @@ public class LanguageJoinAction implements Serializable {
         message = "";
     }
 
-    public void processRequest(boolean translator, boolean reviewer, boolean coordinator) {
+    public void processRequest(boolean translator, boolean reviewer,
+            boolean coordinator) {
         try {
-            requestServiceImpl
-                    .createLanguageRequest(authenticatedAccount, getLocale(),
-                        coordinator, reviewer, translator);
+            requestServiceImpl.createLanguageRequest(authenticatedAccount,
+                    getLocale(), coordinator, reviewer, translator);
             sendRequestEmail(coordinator, reviewer, translator);
         } catch (RequestExistsException e) {
-            String message =
-                    msgs.format("jsf.language.request.exists",
-                            authenticatedAccount.getUsername(),
-                            getLocale().retrieveDisplayName());
+            String message = msgs.format("jsf.language.request.exists",
+                    authenticatedAccount.getUsername(),
+                    getLocale().retrieveDisplayName());
             facesMessages.addGlobal(message);
         } finally {
             clearMessage();
@@ -194,29 +162,22 @@ public class LanguageJoinAction implements Serializable {
         String fromName = authenticatedAccount.getPerson().getName();
         String fromLoginName = authenticatedAccount.getUsername();
         String replyEmail = authenticatedAccount.getPerson().getEmail();
-
-        EmailStrategy strategy =
-                new RequestToJoinLanguageEmailStrategy(
-                        fromLoginName, fromName, replyEmail,
-                        locale.getLocaleId().getId(),
-                        locale.retrieveNativeName(), message,
-                        requestAsTranslator,
-                        requestAsReviewer,
-                        requestAsCoordinator);
+        EmailStrategy strategy = new RequestToJoinLanguageEmailStrategy(
+                fromLoginName, fromName, replyEmail,
+                locale.getLocaleId().getId(), locale.retrieveNativeName(),
+                message, requestAsTranslator, requestAsReviewer,
+                requestAsCoordinator);
         try {
-            facesMessages.addGlobal(emailServiceImpl
-                .sendToLanguageCoordinators(locale.getLocaleId(), strategy));
+            facesMessages.addGlobal(emailServiceImpl.sendToLanguageCoordinators(
+                    locale.getLocaleId(), strategy));
         } catch (Exception e) {
             String subject = strategy.getSubject(msgs);
-
-            StringBuilder sb =
-                new StringBuilder()
-                    .append("Failed to send email with subject '")
-                    .append(strategy.getSubject(msgs))
-                    .append("' , message '").append(message)
-                    .append("'");
+            StringBuilder sb = new StringBuilder()
+                    .append("Failed to send email with subject \'")
+                    .append(strategy.getSubject(msgs)).append("\' , message \'")
+                    .append(message).append("\'");
             log.error(
-                    "Failed to send email: fromName '{}', fromLoginName '{}', replyEmail '{}', subject '{}', message '{}'. {}",
+                    "Failed to send email: fromName \'{}\', fromLoginName \'{}\', replyEmail \'{}\', subject \'{}\', message \'{}\'. {}",
                     fromName, fromLoginName, replyEmail, subject, message, e);
             facesMessages.addGlobal(sb.toString());
         }
@@ -224,52 +185,46 @@ public class LanguageJoinAction implements Serializable {
 
     public boolean isUserAlreadyRequest() {
         return requestServiceImpl.doesLanguageRequestExist(authenticatedAccount,
-            getLocale());
+                getLocale());
     }
 
     public void cancelRequest() {
         LanguageRequest languageRequest =
                 requestServiceImpl.getPendingLanguageRequests(
-                        authenticatedAccount,
-                        getLocale().getLocaleId());
-        if(languageRequest == null) {
+                        authenticatedAccount, getLocale().getLocaleId());
+        if (languageRequest == null) {
             facesMessages.addGlobal(msgs.get("jsf.language.request.processed"));
             return;
         }
-
-        String comment =
-                "Request cancelled by requester {"
-                        + authenticatedAccount.getUsername() + "}";
+        String comment = "Request cancelled by requester {"
+                + authenticatedAccount.getUsername() + "}";
         requestServiceImpl.updateLanguageRequest(languageRequest.getId(),
                 authenticatedAccount, RequestState.CANCELLED, comment);
-
         facesMessages.addGlobal(msgs.format("jsf.language.request.cancelled",
-            authenticatedAccount.getUsername()));
+                authenticatedAccount.getUsername()));
     }
 
     public String getMyLocalisedRoles() {
-        if(authenticatedAccount == null) {
+        if (authenticatedAccount == null) {
             return "";
         }
         HLocaleMember localeMember = getLocaleMember();
-        if(localeMember == null) {
+        if (localeMember == null) {
             return "";
         }
-
-        if(localeMember.isCoordinator()) {
+        if (localeMember.isCoordinator()) {
             return msgs.format("jsf.language.myRoles",
                     StringUtils.lowerCase(msgs.get("jsf.Coordinator")));
         }
-
         List<String> roles = Lists.newArrayList();
-        if(localeMember.isTranslator()) {
+        if (localeMember.isTranslator()) {
             roles.add(StringUtils.lowerCase(msgs.get("jsf.Translator")));
         }
-
-        if(localeMember.isReviewer()) {
+        if (localeMember.isReviewer()) {
             roles.add(StringUtils.lowerCase(msgs.get("jsf.Reviewer")));
         }
-        return msgs.format("jsf.language.myRoles", Joiner.on(" and ").join(roles));
+        return msgs.format("jsf.language.myRoles",
+                Joiner.on(" and ").join(roles));
     }
 
     public HLocale getLocale() {
@@ -303,7 +258,32 @@ public class LanguageJoinAction implements Serializable {
     }
 
     private HLocaleMember getLocaleMember() {
-        return localeMemberDAO.findByPersonAndLocale(authenticatedAccount
-                .getPerson().getId(), new LocaleId(language));
+        return localeMemberDAO.findByPersonAndLocale(
+                authenticatedAccount.getPerson().getId(),
+                new LocaleId(language));
+    }
+
+    public void setLanguage(final String language) {
+        this.language = language;
+    }
+
+    public String getLanguage() {
+        return this.language;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public void setMessage(final String message) {
+        this.message = message;
+    }
+
+    public void setDeclineMessage(final String declineMessage) {
+        this.declineMessage = declineMessage;
+    }
+
+    public String getDeclineMessage() {
+        return this.declineMessage;
     }
 }

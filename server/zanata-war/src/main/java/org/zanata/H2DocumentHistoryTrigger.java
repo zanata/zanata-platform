@@ -4,30 +4,23 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.h2.tools.TriggerAdapter;
 
-@Slf4j
 public class H2DocumentHistoryTrigger extends TriggerAdapter {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(H2DocumentHistoryTrigger.class);
+
     @Override
     public void fire(Connection conn, ResultSet oldRow, ResultSet newRow)
             throws SQLException {
-
         log.debug("Executing HDocumentHistory trigger");
-
         int oldRev = oldRow.getInt("revision");
         int newRev = newRow.getInt("revision");
         if (oldRev != newRev) {
-
-            log.debug(
-                    "revision incremented from {} to {}. Executing trigger..",
+            log.debug("revision incremented from {} to {}. Executing trigger..",
                     oldRev, newRev);
-
-            PreparedStatement prep =
-                    conn.prepareStatement("INSERT INTO HDocumentHistory (document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete) VALUES (?,?,?,?,?,?,?,?,?,?)");
-
+            PreparedStatement prep = conn.prepareStatement(
+                    "INSERT INTO HDocumentHistory (document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete) VALUES (?,?,?,?,?,?,?,?,?,?)");
             prep.setObject(1, oldRow.getObject("id"));
             prep.setObject(2, oldRow.getObject("revision"));
             prep.setObject(3, oldRow.getObject("contentType"));
@@ -40,9 +33,8 @@ public class H2DocumentHistoryTrigger extends TriggerAdapter {
             prep.setObject(10, oldRow.getObject("obsolete"));
             prep.execute();
         } else {
-            log.warn("HDocument updated without incrementing revision... skipping trigger");
+            log.warn(
+                    "HDocument updated without incrementing revision... skipping trigger");
         }
-
     }
-
 }

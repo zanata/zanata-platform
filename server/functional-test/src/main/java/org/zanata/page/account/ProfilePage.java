@@ -21,18 +21,18 @@
 package org.zanata.page.account;
 
 import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProfilePage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProfilePage.class);
     private By displayNameBy = By.id("profile-displayname");
     private By userNameBy = By.id("profile-username");
     private By languagesBy = By.id("profile-languages");
@@ -43,25 +43,25 @@ public class ProfilePage extends BasePage {
     }
 
     public String getDisplayName() {
-        log.info("Query user's display name");
+        log.info("Query user\'s display name");
         return readyElement(displayNameBy).getText();
     }
 
     public String getUsername() {
-        log.info("Query user's username");
+        log.info("Query user\'s username");
         return readyElement(userNameBy).getText();
     }
 
     public String getLanguages() {
-        log.info("Query user's languages list");
+        log.info("Query user\'s languages list");
         return readyElement(languagesBy).getText();
     }
 
     public boolean expectContributionsMatrixVisible() {
         log.info("Wait for contributions matrix to be visible");
         try {
-            waitForAMoment().until((Predicate<WebDriver>) webDriver ->
-                    webDriver.findElements(contributionsBy).size() > 0);
+            waitForAMoment().until((Predicate<WebDriver>) webDriver -> webDriver
+                    .findElements(contributionsBy).size() > 0);
         } catch (TimeoutException te) {
             log.info("Contributions matrix was not discovered");
             return false;

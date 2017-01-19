@@ -18,7 +18,6 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.model;
 
 import java.io.Serializable;
@@ -39,33 +38,22 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
-
 import org.zanata.model.type.WebhookType;
 import org.zanata.model.validator.Url;
 import com.google.common.collect.Sets;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
-@Getter
-@Setter(AccessLevel.PRIVATE)
-@NoArgsConstructor
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"url", "projectId"}))
+@Table(uniqueConstraints = @UniqueConstraint(
+        columnNames = { "url", "projectId" }))
 public class WebHook implements Serializable {
-
     private Long id;
-
     private HProject project;
-
     @Url
     @Size(max = 255)
     private String url;
-
     private Set<WebhookType> types = Sets.newHashSet();
 
     /**
@@ -74,14 +62,11 @@ public class WebHook implements Serializable {
     @Size(max = 255)
     @Column(nullable = true)
     private String secret;
-
     @Size(max = 20)
     private String name;
 
-
     public WebHook(HProject project, String url, String name,
-            Set<WebhookType> types,
-            String secret) {
+            Set<WebhookType> types, String secret) {
         this.project = project;
         this.url = url;
         this.name = name;
@@ -105,7 +90,7 @@ public class WebHook implements Serializable {
     @ElementCollection
     @Enumerated(EnumType.STRING)
     @JoinTable(name = "WebHook_WebHookType",
-        joinColumns = @JoinColumn(name = "webhookId"))
+            joinColumns = @JoinColumn(name = "webhookId"))
     @Column(name = "type", nullable = false)
     public Set<WebhookType> getTypes() {
         return types;
@@ -113,10 +98,15 @@ public class WebHook implements Serializable {
 
     /**
      * This will replace all properties with given ones.
-     * @param url - new url
-     * @param name - new name
-     * @param newTypes - new types
-     * @param secret - new secret key
+     *
+     * @param url
+     *            - new url
+     * @param name
+     *            - new name
+     * @param newTypes
+     *            - new types
+     * @param secret
+     *            - new secret key
      */
     @Transient
     public void update(String url, String name, Set<WebhookType> newTypes,
@@ -124,17 +114,61 @@ public class WebHook implements Serializable {
         this.url = url;
         this.name = name;
         this.secret = secret;
-
         /**
-         * Copy all newTypes into currentTypes and remove those that are not
-         * in the newTypes
+         * Copy all newTypes into currentTypes and remove those that are not in
+         * the newTypes
          */
         this.types.addAll(newTypes);
         Set<WebhookType> currentTypes = Sets.newHashSet(this.types);
-        for (WebhookType type: currentTypes) {
+        for (WebhookType type : currentTypes) {
             if (!newTypes.contains(type)) {
                 this.types.remove(type);
             }
         }
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    /**
+     * Secret key used to generate webhook header in hmac-sha1 encryption.
+     */
+    public String getSecret() {
+        return this.secret;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    private void setId(final Long id) {
+        this.id = id;
+    }
+
+    private void setProject(final HProject project) {
+        this.project = project;
+    }
+
+    private void setUrl(final String url) {
+        this.url = url;
+    }
+
+    private void setTypes(final Set<WebhookType> types) {
+        this.types = types;
+    }
+
+    /**
+     * Secret key used to generate webhook header in hmac-sha1 encryption.
+     */
+    private void setSecret(final String secret) {
+        this.secret = secret;
+    }
+
+    private void setName(final String name) {
+        this.name = name;
+    }
+
+    public WebHook() {
     }
 }

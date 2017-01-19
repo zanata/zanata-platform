@@ -21,25 +21,20 @@
 package org.zanata.config;
 
 import com.google.common.annotations.VisibleForTesting;
-import lombok.NoArgsConstructor;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 /**
- * Holds all configuration values related to the asynchronous execution of
- * tasks in the system.
+ * Holds all configuration values related to the asynchronous execution of tasks
+ * in the system.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("asyncConfig")
 @javax.enterprise.context.Dependent
-
-@NoArgsConstructor
 public class AsyncConfig {
-
     public static final String THREAD_POOL_SIZE = "async.threadpool.size";
-
     @Inject
     private SystemPropertyConfigStore systemPropertyConfigStore;
 
@@ -49,5 +44,8 @@ public class AsyncConfig {
 
     public int getThreadPoolSize() {
         return systemPropertyConfigStore.get(THREAD_POOL_SIZE, 10);
+    }
+
+    public AsyncConfig() {
     }
 }

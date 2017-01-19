@@ -18,7 +18,6 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.model.type;
 
 import java.io.Serializable;
@@ -26,10 +25,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import lombok.Getter;
 
 /**
  * Source of action on how translation are being copied.
@@ -50,18 +47,13 @@ public enum TranslationSourceType implements Serializable {
     API_UPLOAD("API"),
     WEB_UPLOAD("WEB"),
     UNKNOWN("UNK");
-
     public static final Collection<TranslationSourceType> AUTOMATED_ENTRIES;
-
     static {
-        AUTOMATED_ENTRIES =
-                ImmutableSet.of(TranslationSourceType.COPY_TRANS,
-                        TranslationSourceType.COPY_VERSION,
-                        TranslationSourceType.MERGE_VERSION,
-                        TranslationSourceType.TM_MERGE);
+        AUTOMATED_ENTRIES = ImmutableSet.of(TranslationSourceType.COPY_TRANS,
+                TranslationSourceType.COPY_VERSION,
+                TranslationSourceType.MERGE_VERSION,
+                TranslationSourceType.TM_MERGE);
     }
-
-    @Getter
     private final String abbr;
 
     private TranslationSourceType(String abbr) {
@@ -70,32 +62,47 @@ public enum TranslationSourceType implements Serializable {
 
     public static TranslationSourceType getValueOf(String abbr) {
         switch (abbr) {
-            case "CT":
-                return TranslationSourceType.COPY_TRANS;
-            case "CV":
-                return TranslationSourceType.COPY_VERSION;
-            case "MV":
-                return TranslationSourceType.MERGE_VERSION;
-            case "TM":
-                return TranslationSourceType.TM_MERGE;
-            case "GWT":
-                return TranslationSourceType.GWT_EDITOR_ENTRY;
-            case "JS":
-                return TranslationSourceType.JS_EDITOR_ENTRY;
-            case "API":
-                return TranslationSourceType.API_UPLOAD;
-            case "WEB":
-                return TranslationSourceType.WEB_UPLOAD;
-            case "MT":
-                return TranslationSourceType.MACHINE_TRANS;
-            case "UNK":
-                return TranslationSourceType.UNKNOWN;
-            default:
-                throw new IllegalArgumentException(String.valueOf(abbr));
+        case "CT":
+            return TranslationSourceType.COPY_TRANS;
+
+        case "CV":
+            return TranslationSourceType.COPY_VERSION;
+
+        case "MV":
+            return TranslationSourceType.MERGE_VERSION;
+
+        case "TM":
+            return TranslationSourceType.TM_MERGE;
+
+        case "GWT":
+            return TranslationSourceType.GWT_EDITOR_ENTRY;
+
+        case "JS":
+            return TranslationSourceType.JS_EDITOR_ENTRY;
+
+        case "API":
+            return TranslationSourceType.API_UPLOAD;
+
+        case "WEB":
+            return TranslationSourceType.WEB_UPLOAD;
+
+        case "MT":
+            return TranslationSourceType.MACHINE_TRANS;
+
+        case "UNK":
+            return TranslationSourceType.UNKNOWN;
+
+        default:
+            throw new IllegalArgumentException(String.valueOf(abbr));
+
         }
     }
 
     public boolean isAutomatedEntry() {
         return AUTOMATED_ENTRIES.contains(this);
+    }
+
+    public String getAbbr() {
+        return this.abbr;
     }
 }

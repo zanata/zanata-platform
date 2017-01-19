@@ -23,18 +23,12 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -67,9 +61,7 @@ import org.zanata.service.LanguageTeamService;
 import org.zanata.service.impl.EmailChangeService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ComparatorUtil;
-
 import com.google.common.collect.Lists;
-
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 
@@ -78,71 +70,49 @@ import static javax.faces.application.FacesMessage.SEVERITY_INFO;
  * {@link org.zanata.action.ProfileAction} class as the UI controller for user
  * settings.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @see {@link org.zanata.action.ProfileAction}
  */
 @Named("userSettingsAction")
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class UserSettingsAction implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(UserSettingsAction.class);
 
     @Inject
     private EmailService emailServiceImpl;
     @Inject
     private EmailChangeService emailChangeService;
-
     @Inject
     private PersonDAO personDAO;
-
     @Inject
     private AccountDAO accountDAO;
-
     @Inject
     private IdentityManager identityManager;
-
     @Inject
     private AuthenticationManager authenticationManager;
-
     @Inject
     private LanguageTeamService languageTeamServiceImpl;
-
     @Inject
     private FacesMessages facesMessages;
-
     @Inject
     private Messages msgs;
-
     @Inject
     @Authenticated
     HAccount authenticatedAccount;
-
-    @Getter
-    @Setter
     @Email
     @NotEmpty
     @EmailDomain
     private String emailAddress;
-
-    @Getter
-    @Setter
     @NotEmpty
     @Size(min = 6, max = 1024)
     private String newPassword;
-
-    @Getter
-    @Setter
     @NotEmpty
     private String oldPassword;
-
-    @Getter
-    @Setter
     private String openId;
-
-    @Getter
-    @Setter
     @NotEmpty
     @Size(min = 2, max = 80)
     private String accountName;
@@ -156,23 +126,19 @@ public class UserSettingsAction implements Serializable {
     }
 
     public void updateEmail() {
-        if(!isEmailAddressValid(emailAddress)) {
+        if (!isEmailAddressValid(emailAddress)) {
             facesMessages.addToControl("email",
                     "This email address is already taken");
             return;
         }
-
-        HPerson person =
-                personDAO.findById(authenticatedAccount.getPerson().getId(),
-                        true);
+        HPerson person = personDAO
+                .findById(authenticatedAccount.getPerson().getId(), true);
         if (!authenticatedAccount.getPerson().getEmail().equals(emailAddress)) {
-            String activationKey =
-                    emailChangeService.generateActivationKey(person,
-                            emailAddress);
+            String activationKey = emailChangeService
+                    .generateActivationKey(person, emailAddress);
             // TODO create a separate field for newEmail, perhaps in this class
-            String message =
-                    emailServiceImpl.sendEmailValidationEmail(this.accountName,
-                            this.emailAddress, activationKey);
+            String message = emailServiceImpl.sendEmailValidationEmail(
+                    this.accountName, this.emailAddress, activationKey);
             facesMessages.addGlobal(message);
         }
     }
@@ -184,23 +150,20 @@ public class UserSettingsAction implements Serializable {
     }
 
     public void changePassword() {
-        if (isPasswordSet()
-                && !identityManager.authenticate(
+        if (isPasswordSet() && !identityManager.authenticate(
                 authenticatedAccount.getUsername(), oldPassword)) {
             facesMessages.addToControl("oldPassword",
                     "Old password is incorrect, please check and try again.");
             return;
         }
-
         new AbstractRunAsOperation() {
+
             public void execute() {
                 identityManager.changePassword(
                         authenticatedAccount.getUsername(), newPassword);
             }
         }.addRole("admin").run();
-
-        facesMessages.addGlobal(
-                "Your password has been successfully changed.");
+        facesMessages.addGlobal("Your password has been successfully changed.");
     }
 
     public boolean isPasswordSet() {
@@ -217,8 +180,7 @@ public class UserSettingsAction implements Serializable {
     }
 
     /**
-     * Valid Types:
-     * google, yahoo, fedora, openid for everything else
+     * Valid Types: google, yahoo, fedora, openid for everything else
      */
     public String getCredentialsType(HCredentials credentials) {
         if (new GoogleOpenIdProvider().accepts(credentials.getUser())) {
@@ -233,13 +195,13 @@ public class UserSettingsAction implements Serializable {
     }
 
     public String getCredentialsTypeDisplayName(String type) {
-        if(type.equals("google"))
+        if (type.equals("google"))
             return "Google";
-        else if(type.equals("fedora"))
+        else if (type.equals("fedora"))
             return "Fedora";
-        if(type.equals("yahoo"))
+        if (type.equals("yahoo"))
             return "Yahoo";
-        if(type.equals("openid"))
+        if (type.equals("openid"))
             return "Open Id";
         else
             return "Unknown";
@@ -249,7 +211,8 @@ public class UserSettingsAction implements Serializable {
         HAccount account =
                 accountDAO.findById(authenticatedAccount.getId(), false);
         account.getCredentials().remove(toRemove);
-        //userCredentials = new ArrayList<HCredentials>(account.getCredentials()); // Reload
+        // userCredentials = new
+        // ArrayList<HCredentials>(account.getCredentials()); // Reload
         // the
         // credentials
         accountDAO.makePersistent(account);
@@ -271,15 +234,12 @@ public class UserSettingsAction implements Serializable {
     }
 
     public boolean isApiKeyGenerated() {
-        HAccount account =
-                accountDAO.findById(authenticatedAccount.getId());
-
+        HAccount account = accountDAO.findById(authenticatedAccount.getId());
         return account.getApiKey() != null;
     }
 
     public String getAccountApiKey() {
-        HAccount account =
-                accountDAO.findById(authenticatedAccount.getId());
+        HAccount account = accountDAO.findById(authenticatedAccount.getId());
         return account.getApiKey();
     }
 
@@ -294,15 +254,14 @@ public class UserSettingsAction implements Serializable {
     public String getUsernameKeyLabel() {
         return getKeyPrefix() + ".username=";
     }
-
     /*
      * Replace server name that contains '.' to '_'
      */
+
     private String getKeyPrefix() {
         ExternalContext context = javax.faces.context.FacesContext
                 .getCurrentInstance().getExternalContext();
-        HttpServletRequest request = (HttpServletRequest) context
-                .getRequest();
+        HttpServletRequest request = (HttpServletRequest) context.getRequest();
         String serverName = request.getServerName();
         if (serverName == null) {
             return "";
@@ -319,9 +278,7 @@ public class UserSettingsAction implements Serializable {
     }
 
     public void regenerateApiKey() {
-        HAccount account =
-                accountDAO.findById(authenticatedAccount.getId());
-
+        HAccount account = accountDAO.findById(authenticatedAccount.getId());
         accountDAO.createApiKey(account);
         accountDAO.makePersistent(account);
         log.info("Reset API key for {}", account.getUsername());
@@ -338,12 +295,11 @@ public class UserSettingsAction implements Serializable {
         facesMessages.addFromResourceBundle(SEVERITY_INFO,
                 "jsf.dashboard.settings.profileUpdated.message");
     }
-
     // TODO Cache this
+
     public List<HLocale> getUserLanguageTeams() {
-        List<HLocale> localeList =
-                languageTeamServiceImpl.getLanguageMemberships(
-                    authenticatedAccount.getUsername());
+        List<HLocale> localeList = languageTeamServiceImpl
+                .getLanguageMemberships(authenticatedAccount.getUsername());
         Collections.sort(localeList, ComparatorUtil.LOCALE_COMPARATOR);
         return localeList;
     }
@@ -352,26 +308,21 @@ public class UserSettingsAction implements Serializable {
     public void leaveLanguageTeam(String localeId) {
         languageTeamServiceImpl.leaveLanguageTeam(localeId,
                 authenticatedAccount.getPerson().getId());
-        facesMessages.addGlobal(
-                msgs.format("jsf.dashboard.settings.leaveLangTeam.message",
-                        localeId));
+        facesMessages.addGlobal(msgs.format(
+                "jsf.dashboard.settings.leaveLangTeam.message", localeId));
     }
 
     /**
      * Callback for credential creation.
      */
-    private static class CredentialsCreationCallback implements
-            OpenIdAuthCallback, Serializable {
-
+    private static class CredentialsCreationCallback
+            implements OpenIdAuthCallback, Serializable {
         @Inject
         private CredentialsDAO credentialsDAO;
-
         @Inject
         private FacesMessages facesMessages;
-
         @Inject
         private EntityManager em;
-
         private static final long serialVersionUID = 1L;
         private HCredentials newCredentials;
 
@@ -389,18 +340,18 @@ public class UserSettingsAction implements Serializable {
                 this.newCredentials.setUser(result.getAuthenticatedId());
                 this.newCredentials.setEmail(result.getEmail());
                 // NB: Seam component injection won't work on callbacks
-                // TODO [CDI] commented out programmatically starting conversation
-//                Conversation.instance().begin(true, false); // (To retain
+                // TODO [CDI] commented out programmatically starting
+                // conversation
+                // Conversation.instance().begin(true, false); // (To retain
                 // messages)
                 facesMessages.clear();
-
-                if (credentialsDAO.findByUser(result.getAuthenticatedId()) != null) {
+                if (credentialsDAO
+                        .findByUser(result.getAuthenticatedId()) != null) {
                     facesMessages.addGlobal(SEVERITY_ERROR,
                             "This Identity is already in use.");
                 } else {
                     em.persist(this.newCredentials);
-                    facesMessages
-                            .addGlobal(
+                    facesMessages.addGlobal(
                             "Your new identity has been added to this account.");
                 }
             }
@@ -410,8 +361,47 @@ public class UserSettingsAction implements Serializable {
         public String getRedirectToUrl() {
             return "/dashboard/settings";
             // TODO [CDI] was keeping the same conversation
-//                    + Conversation.instance().getId();
+            // + Conversation.instance().getId();
         }
     }
 
+    public String getEmailAddress() {
+        return this.emailAddress;
+    }
+
+    public void setEmailAddress(final String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public String getNewPassword() {
+        return this.newPassword;
+    }
+
+    public void setNewPassword(final String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getOldPassword() {
+        return this.oldPassword;
+    }
+
+    public void setOldPassword(final String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
+    public String getOpenId() {
+        return this.openId;
+    }
+
+    public void setOpenId(final String openId) {
+        this.openId = openId;
+    }
+
+    public String getAccountName() {
+        return this.accountName;
+    }
+
+    public void setAccountName(final String accountName) {
+        this.accountName = accountName;
+    }
 }

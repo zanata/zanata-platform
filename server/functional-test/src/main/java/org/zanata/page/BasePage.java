@@ -21,7 +21,6 @@
 package org.zanata.page;
 
 import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -33,20 +32,18 @@ import org.zanata.page.explore.ExplorePage;
 import org.zanata.page.languages.LanguagesPage;
 import org.zanata.page.utility.HomePage;
 import com.google.common.base.Preconditions;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.workflow.BasicWorkFlow;
 
 /**
  * A Base Page is an extension of the Core Page, providing the navigation bar
  * and sidebar links common to most pages outside of the editor.
  *
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class BasePage extends CorePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(BasePage.class);
     private static final By NAV = By.id("nav");
     private static final By languagesLink = By.id("nav_language");
     private static final By exploreLink = By.id("nav_search");
@@ -94,9 +91,7 @@ public class BasePage extends CorePage {
     public RegisterPage goToRegistration() {
         log.info("Click Sign Up");
         Preconditions.checkArgument(!hasLoggedIn(),
-                "User has logged in! You should sign out or delete cookie " +
-                        "first in your test.");
-
+                "User has logged in! You should sign out or delete cookie first in your test.");
         clickElement(registrationLink);
         return new RegisterPage(getDriver());
     }
@@ -122,7 +117,7 @@ public class BasePage extends CorePage {
     public HomePage logout() {
         log.info("Click Log Out");
         clickLinkAfterAnimation(BY_SIGN_OUT);
-        //Handle RHBZ1197955
+        // Handle RHBZ1197955
         if (getDriver().findElements(By.className("error-div")).size() > 0) {
             log.info("RHBZ1197955 encountered, go to homepage");
             new BasicWorkFlow().goToHome();
@@ -152,6 +147,7 @@ public class BasePage extends CorePage {
 
     /**
      * Check if the page has the home button, expecting a valid base page
+     *
      * @return boolean is valid
      */
     public boolean isPageValid() {

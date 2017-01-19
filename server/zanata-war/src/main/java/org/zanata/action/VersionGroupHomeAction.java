@@ -26,14 +26,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.lang.StringUtils;
-
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.ProjectMemberDAO;
 import org.zanata.common.LocaleId;
@@ -58,87 +55,54 @@ import org.zanata.util.StatisticsUtil;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-
 @Named("versionGroupHomeAction")
 @ViewScoped
 @Model
 @Transactional
-public class VersionGroupHomeAction extends AbstractSortAction implements
-        Serializable {
-    private static final long serialVersionUID = 1L;
+public class VersionGroupHomeAction extends AbstractSortAction
+        implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     @Inject
     private ProjectMemberDAO projectMemberDAO;
-
     @Inject
     private VersionGroupService versionGroupServiceImpl;
-
     @Inject
     private Messages msgs;
-
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
-
     @Inject
     private VersionGroupDAO versionGroupDAO;
-
     @Inject
     private ProjectIterationDAO projectIterationDAO;
-
     @Inject
     private LocaleDAO localeDAO;
-
-    @Getter
-    @Setter
     private String slug;
-
-    @Getter
     private boolean pageRendered = false;
-
-    @Getter
     private HLocale selectedLocale;
-
-    @Getter
     private HProjectIteration selectedVersion;
-
-    @Getter
     private WordStatistic overallStatistic;
-
     private List<HLocale> activeLocales;
-
     private List<HProjectIteration> projectIterations;
-
-    private Map<VersionLocaleKey, WordStatistic> statisticMap = Maps.newHashMap();
-
+    private Map<VersionLocaleKey, WordStatistic> statisticMap =
+            Maps.newHashMap();
     private Map<LocaleId, List<HProjectIteration>> missingLocaleVersionMap;
-
     private final Map<LocaleId, WordStatistic> localeStats = Maps.newHashMap();
-
     private final Map<Long, WordStatistic> projectStats = Maps.newHashMap();
-
-    @Getter
-    private SortingType projectSortingList = new SortingType(
-            Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
-                    SortingType.SortOption.HOURS,
-                    SortingType.SortOption.PERCENTAGE,
-                    SortingType.SortOption.WORDS));
-
+    private SortingType projectSortingList = new SortingType(Lists.newArrayList(
+            SortingType.SortOption.ALPHABETICAL, SortingType.SortOption.HOURS,
+            SortingType.SortOption.PERCENTAGE, SortingType.SortOption.WORDS));
     private final LanguageComparator languageComparator =
             new LanguageComparator(getLanguageSortingList());
-
-    private final VersionComparator versionComparator = new VersionComparator(
-            getProjectSortingList());
-
-    @Getter
+    private final VersionComparator versionComparator =
+            new VersionComparator(getProjectSortingList());
     private final AbstractListFilter<HLocale> projectTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
+
                 @Override
                 protected List<HLocale> fetchAll() {
                     return getActiveLocales();
@@ -146,16 +110,15 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
                 @Override
                 protected boolean include(HLocale elem, String filter) {
-                    return StringUtils.startsWithIgnoreCase(elem.getLocaleId()
-                            .getId(), filter)
+                    return StringUtils.startsWithIgnoreCase(
+                            elem.getLocaleId().getId(), filter)
                             || StringUtils.containsIgnoreCase(
                                     elem.retrieveDisplayName(), filter);
                 }
             };
-
-    @Getter
     private final AbstractListFilter<HLocale> languageTabLanguageFilter =
             new InMemoryListFilter<HLocale>() {
+
                 @Override
                 protected List<HLocale> fetchAll() {
                     return getActiveLocales();
@@ -163,15 +126,15 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
                 @Override
                 protected boolean include(HLocale elem, String filter) {
-                    return StringUtils.startsWithIgnoreCase(elem.getLocaleId()
-                            .getId(), filter)
+                    return StringUtils.startsWithIgnoreCase(
+                            elem.getLocaleId().getId(), filter)
                             || StringUtils.containsIgnoreCase(
                                     elem.retrieveDisplayName(), filter);
                 }
             };
-    @Getter
     private final AbstractListFilter<HProjectIteration> languageTabVersionFilter =
             new InMemoryListFilter<HProjectIteration>() {
+
                 @Override
                 protected List<HProjectIteration> fetchAll() {
                     return getProjectIterations();
@@ -185,10 +148,9 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                             filter);
                 }
             };
-
-    @Getter
     private final AbstractListFilter<HProjectIteration> projectTabVersionFilter =
             new InMemoryListFilter<HProjectIteration>() {
+
                 @Override
                 protected List<HProjectIteration> fetchAll() {
                     return getProjectIterations();
@@ -212,8 +174,6 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
 
     private class LanguageComparator implements Comparator<HLocale> {
         private SortingType sortingType;
-
-        @Setter
         private Long selectedVersionId;
 
         public LanguageComparator(SortingType sortingType) {
@@ -224,53 +184,53 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         public int compare(HLocale o1, HLocale o2) {
             SortingType.SortOption selectedSortOption =
                     sortingType.getSelectedSortOption();
-
             if (!selectedSortOption.isAscending()) {
                 HLocale temp = o1;
                 o1 = o2;
                 o2 = temp;
             }
-
             // Need to get statistic for comparison
-            if (!selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
+            if (!selectedSortOption
+                    .equals(SortingType.SortOption.ALPHABETICAL)) {
                 WordStatistic wordStatistic1;
                 WordStatistic wordStatistic2;
-
                 if (selectedVersionId == null) {
                     wordStatistic1 = getStatisticsForLocale(o1.getLocaleId());
                     wordStatistic2 = getStatisticsForLocale(o2.getLocaleId());
                 } else {
-                    wordStatistic1 =
-                            statisticMap.get(new VersionLocaleKey(
-                                    selectedVersionId, o1.getLocaleId()));
-                    wordStatistic2 =
-                            statisticMap.get(new VersionLocaleKey(
-                                    selectedVersionId, o2.getLocaleId()));
+                    wordStatistic1 = statisticMap.get(new VersionLocaleKey(
+                            selectedVersionId, o1.getLocaleId()));
+                    wordStatistic2 = statisticMap.get(new VersionLocaleKey(
+                            selectedVersionId, o2.getLocaleId()));
                 }
                 switch (selectedSortOption) {
                 case PERCENTAGE:
-                    return Double.compare(
-                            wordStatistic1.getPercentTranslated(),
+                    return Double.compare(wordStatistic1.getPercentTranslated(),
                             wordStatistic2.getPercentTranslated());
+
                 case HOURS:
                     return Double.compare(wordStatistic1.getRemainingHours(),
                             wordStatistic2.getRemainingHours());
+
                 case WORDS:
                     return Double.compare(wordStatistic1.getUntranslated(),
                             wordStatistic2.getUntranslated());
+
                 }
             } else {
-                return o1.retrieveDisplayName().compareTo(
-                        o2.retrieveDisplayName());
+                return o1.retrieveDisplayName()
+                        .compareTo(o2.retrieveDisplayName());
             }
             return 0;
+        }
+
+        public void setSelectedVersionId(final Long selectedVersionId) {
+            this.selectedVersionId = selectedVersionId;
         }
     }
 
     private class VersionComparator implements Comparator<HProjectIteration> {
         private SortingType sortingType;
-
-        @Setter
         private LocaleId selectedLocaleId;
 
         public VersionComparator(SortingType sortingType) {
@@ -281,40 +241,38 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
         public int compare(HProjectIteration o1, HProjectIteration o2) {
             SortingType.SortOption selectedSortOption =
                     sortingType.getSelectedSortOption();
-
             if (!selectedSortOption.isAscending()) {
                 HProjectIteration temp = o1;
                 o1 = o2;
                 o2 = temp;
             }
-
             // Need to get statistic for comparison
-            if (!selectedSortOption.equals(SortingType.SortOption.ALPHABETICAL)) {
+            if (!selectedSortOption
+                    .equals(SortingType.SortOption.ALPHABETICAL)) {
                 WordStatistic wordStatistic1;
                 WordStatistic wordStatistic2;
                 if (selectedLocaleId != null) {
-                    wordStatistic1 =
-                            statisticMap.get(new VersionLocaleKey(o1.getId(),
-                                    selectedLocaleId));
-                    wordStatistic2 =
-                            statisticMap.get(new VersionLocaleKey(o2.getId(),
-                                    selectedLocaleId));
+                    wordStatistic1 = statisticMap.get(
+                            new VersionLocaleKey(o1.getId(), selectedLocaleId));
+                    wordStatistic2 = statisticMap.get(
+                            new VersionLocaleKey(o2.getId(), selectedLocaleId));
                 } else {
                     wordStatistic1 = getStatisticForProject(o1.getId());
                     wordStatistic2 = getStatisticForProject(o2.getId());
                 }
-
                 switch (selectedSortOption) {
                 case PERCENTAGE:
-                    return Double.compare(
-                            wordStatistic1.getPercentTranslated(),
+                    return Double.compare(wordStatistic1.getPercentTranslated(),
                             wordStatistic2.getPercentTranslated());
+
                 case HOURS:
                     return Double.compare(wordStatistic1.getRemainingHours(),
                             wordStatistic2.getRemainingHours());
+
                 case WORDS:
                     return Double.compare(wordStatistic1.getUntranslated(),
                             wordStatistic2.getUntranslated());
+
                 }
             } else {
                 return ComparatorUtil.compareStringIgnoreCase(
@@ -322,11 +280,15 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
             }
             return 0;
         }
+
+        public void setSelectedLocaleId(final LocaleId selectedLocaleId) {
+            this.selectedLocaleId = selectedLocaleId;
+        }
     }
 
     public boolean isUserProjectMaintainer() {
-        return authenticatedAccount != null
-                && projectMemberDAO.isMaintainerOfAnyProject(authenticatedAccount.getPerson());
+        return authenticatedAccount != null && projectMemberDAO
+                .isMaintainerOfAnyProject(authenticatedAccount.getPerson());
     }
 
     /**
@@ -380,9 +342,9 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public DisplayUnit getStatisticFigureForProjectWithLocale(
             SortingType.SortOption sortOption, LocaleId localeId,
             Long projectIterationId) {
-        WordStatistic statistic =
-                statisticMap.getOrDefault(new VersionLocaleKey(projectIterationId,
-                        localeId), new WordStatistic());
+        WordStatistic statistic = statisticMap.getOrDefault(
+                new VersionLocaleKey(projectIterationId, localeId),
+                new WordStatistic());
         return getDisplayUnit(sortOption, statistic, null);
     }
 
@@ -407,8 +369,8 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                     statistic.add(entry.getValue());
                 }
             }
-            statistic
-                    .setRemainingHours(StatisticsUtil.getRemainingHours(statistic));
+            statistic.setRemainingHours(
+                    StatisticsUtil.getRemainingHours(statistic));
             localeStats.put(localeId, statistic);
         }
         return localeStats.get(localeId);
@@ -424,8 +386,8 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
                     statistic.add(entry.getValue());
                 }
             }
-            statistic
-                    .setRemainingHours(StatisticsUtil.getRemainingHours(statistic));
+            statistic.setRemainingHours(
+                    StatisticsUtil.getRemainingHours(statistic));
             projectStats.put(projectIterationId, statistic);
         }
         return projectStats.get(projectIterationId);
@@ -437,22 +399,21 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     }
 
     public WordStatistic getSelectedVersionStatistic(LocaleId localeId) {
-        return statisticMap.get(new VersionLocaleKey(selectedVersion.getId(),
-                localeId));
+        return statisticMap
+                .get(new VersionLocaleKey(selectedVersion.getId(), localeId));
     }
 
     public List<HPerson> getMaintainers() {
         List<HPerson> list = versionGroupDAO.getMaintainersBySlug(getSlug());
-
         Collections.sort(list, ComparatorUtil.PERSON_NAME_COMPARATOR);
         return list;
     }
 
-    private Map<LocaleId, List<HProjectIteration>> getMissingLocaleVersionMap() {
+    private Map<LocaleId, List<HProjectIteration>>
+            getMissingLocaleVersionMap() {
         if (missingLocaleVersionMap == null) {
-            missingLocaleVersionMap =
-                    versionGroupServiceImpl
-                            .getMissingLocaleVersionMap(getSlug());
+            missingLocaleVersionMap = versionGroupServiceImpl
+                    .getMissingLocaleVersionMap(getSlug());
         }
         return missingLocaleVersionMap;
     }
@@ -515,27 +476,24 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     @Override
     protected void loadStatistics() {
         statisticMap = Maps.newHashMap();
-
         for (HLocale locale : getActiveLocales()) {
-            statisticMap.putAll(versionGroupServiceImpl.getLocaleStatistic(
-                    getSlug(), locale.getLocaleId()));
+            statisticMap.putAll(versionGroupServiceImpl
+                    .getLocaleStatistic(getSlug(), locale.getLocaleId()));
         }
         overallStatistic = new WordStatistic();
         for (Map.Entry<VersionLocaleKey, WordStatistic> entry : statisticMap
                 .entrySet()) {
             overallStatistic.add(entry.getValue());
         }
-        overallStatistic.setRemainingHours(StatisticsUtil
-                .getRemainingHours(overallStatistic));
+        overallStatistic.setRemainingHours(
+                StatisticsUtil.getRemainingHours(overallStatistic));
     }
 
     public List<HProjectIteration> getProjectIterations() {
         if (projectIterations == null) {
-            projectIterations =
-                    versionGroupServiceImpl
-                            .getNonObsoleteProjectIterationsBySlug(slug);
+            projectIterations = versionGroupServiceImpl
+                    .getNonObsoleteProjectIterationsBySlug(slug);
         }
-
         Collections.sort(projectIterations, versionComparator);
         return projectIterations;
     }
@@ -568,5 +526,49 @@ public class VersionGroupHomeAction extends AbstractSortAction implements
     public void setSelectedVersionSlug(String projectSlug, String versionSlug) {
         selectedVersion =
                 projectIterationDAO.getBySlug(projectSlug, versionSlug);
+    }
+
+    public String getSlug() {
+        return this.slug;
+    }
+
+    public void setSlug(final String slug) {
+        this.slug = slug;
+    }
+
+    public boolean isPageRendered() {
+        return this.pageRendered;
+    }
+
+    public HLocale getSelectedLocale() {
+        return this.selectedLocale;
+    }
+
+    public HProjectIteration getSelectedVersion() {
+        return this.selectedVersion;
+    }
+
+    public WordStatistic getOverallStatistic() {
+        return this.overallStatistic;
+    }
+
+    public SortingType getProjectSortingList() {
+        return this.projectSortingList;
+    }
+
+    public AbstractListFilter<HLocale> getProjectTabLanguageFilter() {
+        return this.projectTabLanguageFilter;
+    }
+
+    public AbstractListFilter<HLocale> getLanguageTabLanguageFilter() {
+        return this.languageTabLanguageFilter;
+    }
+
+    public AbstractListFilter<HProjectIteration> getLanguageTabVersionFilter() {
+        return this.languageTabVersionFilter;
+    }
+
+    public AbstractListFilter<HProjectIteration> getProjectTabVersionFilter() {
+        return this.projectTabVersionFilter;
     }
 }

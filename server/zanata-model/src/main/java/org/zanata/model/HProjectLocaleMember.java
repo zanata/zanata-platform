@@ -21,16 +21,11 @@
 package org.zanata.model;
 
 import com.google.common.base.Function;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.zanata.model.type.LocaleRoleType;
-
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -47,12 +42,10 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "HProject_LocaleMember")
-@Setter
-@Getter
-@NoArgsConstructor
 @IdClass(HProjectLocaleMember.HProjectLocaleMemberPK.class)
 @TypeDef(name = "localeRole", typeClass = LocaleRoleType.class)
-public class HProjectLocaleMember implements Serializable, HasUserFriendlyToString  {
+public class HProjectLocaleMember
+        implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -62,12 +55,13 @@ public class HProjectLocaleMember implements Serializable, HasUserFriendlyToStri
      */
     public static final Function<HProjectLocaleMember, HPerson> TO_PERSON =
             new Function<HProjectLocaleMember, HPerson>() {
-        @Nullable
-        @Override
-        public HPerson apply(HProjectLocaleMember input) {
-            return input.getPerson();
-        }
-    };
+
+                @Nullable
+                @Override
+                public HPerson apply(HProjectLocaleMember input) {
+                    return input.getPerson();
+                }
+            };
 
     /**
      * Transform function to extract the project.
@@ -76,15 +70,16 @@ public class HProjectLocaleMember implements Serializable, HasUserFriendlyToStri
      */
     public static final Function<HProjectLocaleMember, HProject> TO_PROJECT =
             new Function<HProjectLocaleMember, HProject>() {
-        @Nullable
-        @Override
-        public HProject apply(HProjectLocaleMember input) {
-            return input.getProject();
-        }
-    };
 
-    public HProjectLocaleMember(HProject project, HLocale locale, HPerson person,
-                                LocaleRole role) {
+                @Nullable
+                @Override
+                public HProject apply(HProjectLocaleMember input) {
+                    return input.getProject();
+                }
+            };
+
+    public HProjectLocaleMember(HProject project, HLocale locale,
+            HPerson person, LocaleRole role) {
         setProject(project);
         setLocale(locale);
         setPerson(person);
@@ -95,17 +90,14 @@ public class HProjectLocaleMember implements Serializable, HasUserFriendlyToStri
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "projectId", nullable = false)
     private HProject project;
-
     @Id
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "localeId", nullable = false)
     private HLocale locale;
-
     @Id
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "personId", nullable = false)
     private HPerson person;
-
     @Id
     @Column(name = "role")
     @Type(type = "localeRole")
@@ -123,32 +115,23 @@ public class HProjectLocaleMember implements Serializable, HasUserFriendlyToStri
                     .append(getProject().getId(), other.getProject().getId())
                     .append(getLocale().getId(), other.getLocale().getId())
                     .append(getPerson().getId(), other.getPerson().getId())
-                    .append(getRole(), other.getRole())
-                    .isEquals();
+                    .append(getRole(), other.getRole()).isEquals();
         }
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(getProject().getId())
-                .append(getLocale().getId())
-                .append(getPerson().getId())
-                .append(getRole())
-                .toHashCode();
+        return new HashCodeBuilder().append(getProject().getId())
+                .append(getLocale().getId()).append(getPerson().getId())
+                .append(getRole()).toHashCode();
     }
 
     @Override
     public String userFriendlyToString() {
-
         StringBuilder sb = new StringBuilder("\"Project membership(project=\"")
-                .append(project.getSlug())
-                .append("\", locale=\"")
-                .append(locale.getLocaleId())
-                .append("\", person=\"")
-                .append(person.getName())
-                .append(", role=\"")
-                .append(role)
+                .append(project.getSlug()).append("\", locale=\"")
+                .append(locale.getLocaleId()).append("\", person=\"")
+                .append(person.getName()).append(", role=\"").append(role)
                 .append("\")");
         sb.append("])");
         return sb.toString();
@@ -160,12 +143,8 @@ public class HProjectLocaleMember implements Serializable, HasUserFriendlyToStri
      * This is boilerplate that specifies which fields to use as the primary key
      * for HProjectLocaleMember, and how to compare them (equals and hashCode).
      */
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class HProjectLocaleMemberPK implements Serializable {
         private static final long serialVersionUID = 1L;
-
         // These properties *must* have the same type and name as in the class
         // that uses this in @IdClass.
         private HProject project;
@@ -180,24 +159,87 @@ public class HProjectLocaleMember implements Serializable, HasUserFriendlyToStri
             } else if (!(obj instanceof HProjectLocaleMemberPK)) {
                 return false;
             } else {
-                final HProjectLocaleMemberPK other = (HProjectLocaleMemberPK) obj;
+                final HProjectLocaleMemberPK other =
+                        (HProjectLocaleMemberPK) obj;
                 return new EqualsBuilder()
-                        .append(getProject().getId(), other.getProject().getId())
+                        .append(getProject().getId(),
+                                other.getProject().getId())
                         .append(getLocale().getId(), other.getLocale().getId())
                         .append(getPerson().getId(), other.getPerson().getId())
-                        .append(getRole(), other.getRole())
-                        .isEquals();
+                        .append(getRole(), other.getRole()).isEquals();
             }
         }
 
         @Override
         public int hashCode() {
-            return new HashCodeBuilder()
-                    .append(getProject().getId())
-                    .append(getLocale().getId())
-                    .append(getPerson().getId())
-                    .append(getRole())
-                    .toHashCode();
+            return new HashCodeBuilder().append(getProject().getId())
+                    .append(getLocale().getId()).append(getPerson().getId())
+                    .append(getRole()).toHashCode();
         }
+
+        public HProject getProject() {
+            return this.project;
+        }
+
+        public HPerson getPerson() {
+            return this.person;
+        }
+
+        public HLocale getLocale() {
+            return this.locale;
+        }
+
+        public LocaleRole getRole() {
+            return this.role;
+        }
+
+        @java.beans.ConstructorProperties({ "project", "person", "locale",
+                "role" })
+        public HProjectLocaleMemberPK(final HProject project,
+                final HPerson person, final HLocale locale,
+                final LocaleRole role) {
+            this.project = project;
+            this.person = person;
+            this.locale = locale;
+            this.role = role;
+        }
+
+        public HProjectLocaleMemberPK() {
+        }
+    }
+
+    public void setProject(final HProject project) {
+        this.project = project;
+    }
+
+    public void setLocale(final HLocale locale) {
+        this.locale = locale;
+    }
+
+    public void setPerson(final HPerson person) {
+        this.person = person;
+    }
+
+    public void setRole(final LocaleRole role) {
+        this.role = role;
+    }
+
+    public HProject getProject() {
+        return this.project;
+    }
+
+    public HLocale getLocale() {
+        return this.locale;
+    }
+
+    public HPerson getPerson() {
+        return this.person;
+    }
+
+    public LocaleRole getRole() {
+        return this.role;
+    }
+
+    public HProjectLocaleMember() {
     }
 }

@@ -20,58 +20,50 @@
  */
 package org.zanata.workflow;
 
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.page.account.EditProfilePage;
 import org.zanata.page.account.SignInPage;
 import org.zanata.page.googleaccount.GoogleAccountPage;
 import org.zanata.page.utility.HomePage;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class RegisterWorkFlow extends AbstractWebWorkFlow {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(RegisterWorkFlow.class);
 
     public SignInPage registerInternal(String name, String username,
-    String password, String email) {
-    log.info("Register as {}:{}, ({}:{})", username, password, name, email);
-    return new BasicWorkFlow().goToHome()
-            .goToRegistration()
-            .enterName(name)
-            .enterUserName(username)
-            .enterPassword(password)
-            .enterEmail(email)
-            .register();
+            String password, String email) {
+        log.info("Register as {}:{}, ({}:{})", username, password, name, email);
+        return new BasicWorkFlow().goToHome().goToRegistration().enterName(name)
+                .enterUserName(username).enterPassword(password)
+                .enterEmail(email).register();
     }
 
     public HomePage registerGoogleOpenID(String name, String username,
             String password, String email) {
-        GoogleAccountPage googleAccountPage = new BasicWorkFlow()
-                .goToHome()
-                .clickSignInLink()
-                .selectGoogleOpenID();
+        GoogleAccountPage googleAccountPage = new BasicWorkFlow().goToHome()
+                .clickSignInLink().selectGoogleOpenID();
         /*
-            There is the chance that Google presents the old page. It seems
-            to be random. Just enter the email in this case.
-            Otherwise, If Google has remembered us, skip entering the email.
-            If Google has remembered someone else, change the user.
-        */
+         * There is the chance that Google presents the old page. It seems to be
+         * random. Just enter the email in this case. Otherwise, If Google has
+         * remembered us, skip entering the email. If Google has remembered
+         * someone else, change the user.
+         */
         if (googleAccountPage.isTheOldGoogleSite()) {
             googleAccountPage = googleAccountPage.enterGoogleEmail(email);
         } else if (googleAccountPage.hasRememberedAuthentication()) {
             if (!googleAccountPage.rememberedUser().equals(email)) {
-                googleAccountPage = googleAccountPage.removeSavedAuthentication();
+                googleAccountPage =
+                        googleAccountPage.removeSavedAuthentication();
             }
         } else {
             googleAccountPage = googleAccountPage.enterGoogleEmail(email);
         }
-
-        EditProfilePage editProfilePage = googleAccountPage
-                .enterGooglePassword(password)
-                .clickSignIn()
-                .acceptPermissions();
-
+        EditProfilePage editProfilePage =
+                googleAccountPage.enterGooglePassword(password).clickSignIn()
+                        .acceptPermissions();
         return editProfilePage.enterName(name).enterUserName(username)
                 .enterEmail(email).clickSave();
     }

@@ -18,7 +18,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.database;
 
 import java.lang.reflect.InvocationHandler;
@@ -29,24 +28,20 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-
 /**
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class StatementWrapper implements InvocationHandler {
-    public static Statement
-            wrap(Statement statement, Connection connectionProxy) {
-        if (Proxy.isProxyClass(statement.getClass())
-                && Proxy.getInvocationHandler(statement) instanceof StatementWrapper) {
+
+    public static Statement wrap(Statement statement,
+            Connection connectionProxy) {
+        if (Proxy.isProxyClass(statement.getClass()) && Proxy
+                .getInvocationHandler(statement) instanceof StatementWrapper) {
             return statement;
         }
-        return ProxyUtil.newProxy(statement, new StatementWrapper(statement,
-                connectionProxy));
+        return ProxyUtil.newProxy(statement,
+                new StatementWrapper(statement, connectionProxy));
     }
 
     private final Statement statement;
@@ -60,8 +55,7 @@ class StatementWrapper implements InvocationHandler {
             return connectionProxy;
         } else if (method.getName().equals("toString") && args == null) {
             return "StatementWrapper->" + statement.toString();
-        } else if (method.getName().equals("setFetchSize")
-                && args.length == 1
+        } else if (method.getName().equals("setFetchSize") && args.length == 1
                 && args[0].equals(Integer.MIN_VALUE)) {
             // don't pass it to wrapped connection since it is probably not
             // going to understand it
@@ -80,10 +74,11 @@ class StatementWrapper implements InvocationHandler {
                 ResultSetWrapper rsWrap =
                         (ResultSetWrapper) Proxy.getInvocationHandler(rsProxy);
                 if (makeStreamingResultSet) {
-                    connectionWrapper.afterStreamingResultSetOpened(rsWrap
-                            .getThrowable());
+                    connectionWrapper.afterStreamingResultSetOpened(
+                            rsWrap.getThrowable());
                 } else {
-                    connectionWrapper.afterResultSetOpened(rsWrap.getThrowable());
+                    connectionWrapper
+                            .afterResultSetOpened(rsWrap.getThrowable());
                 }
                 return rsProxy;
             } else if (method.getName().startsWith("execute")) {
@@ -101,4 +96,9 @@ class StatementWrapper implements InvocationHandler {
         connectionWrapper.afterStatementExecute();
     }
 
+    private StatementWrapper(final Statement statement,
+            final Connection connectionProxy) {
+        this.statement = statement;
+        this.connectionProxy = connectionProxy;
+    }
 }

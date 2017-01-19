@@ -22,7 +22,6 @@ package org.zanata.security;
 
 import java.io.IOException;
 import java.util.Map;
-
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -32,9 +31,6 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
@@ -46,14 +42,15 @@ import org.zanata.util.HashUtil;
 
 /**
  * Login Module that works for JBoss SSO. The current implementation uses the
- * REST endpoint for authentication.
- * The server url can be configured using the 'serverURL' option when
- * configuring the JAAS Login Module.
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * REST endpoint for authentication. The server url can be configured using the
+ * 'serverURL' option when configuring the JAAS Login Module.
+ *
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class JBossSSOLoginModule implements LoginModule {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(JBossSSOLoginModule.class);
 
     private CallbackHandler callbackHandler;
     private Subject subject;
@@ -81,26 +78,22 @@ public class JBossSSOLoginModule implements LoginModule {
             NameCallback cbName = new NameCallback("Enter username");
             PasswordCallback cbPassword =
                     new PasswordCallback("Enter password", false);
-
             // Get the username and password from the callback handler
             callbackHandler.handle(new Callback[] { cbName, cbPassword });
             username = cbName.getName();
             password = cbPassword.getPassword();
-
             // Send the request to JBoss.org's REST service
             HttpClient httpClient = new DefaultHttpClient();
             StringBuilder requestUrl =
                     new StringBuilder(jbossSSOServerUrl + "/rest/auth?");
-            String passwordHash =
-                    HashUtil.md5Hex(username
-                            + HashUtil.md5Hex(new String(password)));
+            String passwordHash = HashUtil
+                    .md5Hex(username + HashUtil.md5Hex(new String(password)));
             requestUrl.append("u=").append(username);
             requestUrl.append("&h=").append(passwordHash);
             HttpGet getAuthRequest = new HttpGet(requestUrl.toString());
-
             HttpResponse authResponse = httpClient.execute(getAuthRequest);
-            loginSuccessful =
-                    authResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
+            loginSuccessful = authResponse.getStatusLine()
+                    .getStatusCode() == HttpStatus.SC_OK;
             if (loginSuccessful) {
                 // read json
                 ObjectMapper mapper = new ObjectMapper();
@@ -108,8 +101,8 @@ public class JBossSSOLoginModule implements LoginModule {
                         mapper.readTree(authResponse.getEntity().getContent());
                 // TODO These values should be used to pre-populate the
                 // registration form when a user first registers
-                //parsedResponse.get("fullname");
-                //parsedResponse.get("email");
+                // parsedResponse.get("fullname");
+                // parsedResponse.get("email");
                 log.info("JBoss.org user " + username
                         + " successfully authenticated");
                 return true;
@@ -129,7 +122,7 @@ public class JBossSSOLoginModule implements LoginModule {
 
     @Override
     public boolean commit() throws LoginException {
-        if(!loginSuccessful) {
+        if (!loginSuccessful) {
             return false;
         }
         subject.getPrincipals().add(new SimplePrincipal(username));

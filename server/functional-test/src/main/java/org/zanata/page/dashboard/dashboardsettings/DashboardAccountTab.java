@@ -20,35 +20,34 @@
  */
 package org.zanata.page.dashboard.dashboardsettings;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.dashboard.DashboardBasePage;
 
 /**
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class DashboardAccountTab extends DashboardBasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardAccountTab.class);
     public static final String INCORRECT_OLD_PASSWORD_ERROR =
             "Old password is incorrect, please check and try again.";
-
     public static final String FIELD_EMPTY_ERROR = "may not be empty";
-
     public static final String PASSWORD_LENGTH_ERROR =
             "size must be between 6 and 1024";
-
     public static final String EMAIL_TAKEN_ERROR =
             "This email address is already taken";
-
     private By emailForm = By.id("email-update-form");
     private By emailField = By.id("email-update-form:emailField:input:email");
     // Use form and button tag to find the item, as its id is altered by jsf
     private By updateEmailButton = By.tagName("button");
-    private By oldPasswordField = By.id("passwordChangeForm:oldPasswordField:input:oldPassword");
-    private By newPasswordField = By.id("passwordChangeForm:newPasswordField:input:newPassword");
-    private By changePasswordButton = By.cssSelector("button[id^='passwordChangeForm:changePasswordButton']");
+    private By oldPasswordField =
+            By.id("passwordChangeForm:oldPasswordField:input:oldPassword");
+    private By newPasswordField =
+            By.id("passwordChangeForm:newPasswordField:input:newPassword");
+    private By changePasswordButton = By.cssSelector(
+            "button[id^=\'passwordChangeForm:changePasswordButton\']");
 
     public DashboardAccountTab(WebDriver driver) {
         super(driver);

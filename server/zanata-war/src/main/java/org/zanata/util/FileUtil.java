@@ -18,13 +18,10 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.zanata.exception.FileFormatAdapterException;
-
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,8 +34,9 @@ import java.io.OutputStream;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class FileUtil {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(FileUtil.class);
 
     /**
      * Generate documentId by concatenating path with fileName
@@ -78,8 +76,7 @@ public class FileUtil {
     public static void tryDeleteFile(@Nullable File file) {
         if (file != null) {
             if (!file.delete()) {
-                log.warn(
-                        "unable to remove file {}, marked for delete on exit",
+                log.warn("unable to remove file {}, marked for delete on exit",
                         file.getAbsolutePath());
                 file.deleteOnExit();
             }

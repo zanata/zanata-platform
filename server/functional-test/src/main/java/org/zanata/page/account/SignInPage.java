@@ -20,21 +20,18 @@
  */
 package org.zanata.page.account;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.CorePage;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.googleaccount.GoogleAccountPage;
 
-@Slf4j
 public class SignInPage extends CorePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SignInPage.class);
     public static final String LOGIN_FAILED_ERROR = "Login failed";
-    public static final String ACTIVATION_SUCCESS = "Your account was " +
-            "successfully activated. You can now sign in.";
-
+    public static final String ACTIVATION_SUCCESS =
+            "Your account was successfully activated. You can now sign in.";
     private By usernameField = By.id("loginForm:username");
     private By passwordField = By.id("loginForm:password");
     private By signInButton = By.id("loginForm:loginButton");
@@ -78,7 +75,7 @@ public class SignInPage extends CorePage {
     }
 
     public GoogleAccountPage selectGoogleOpenID() {
-        log.info("Click 'Google'");
+        log.info("Click \'Google\'");
         clickElement(googleButton);
         return new GoogleAccountPage(getDriver());
     }

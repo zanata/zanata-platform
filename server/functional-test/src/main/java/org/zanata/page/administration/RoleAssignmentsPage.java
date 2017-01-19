@@ -20,21 +20,20 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 import org.zanata.util.WebElementUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class RoleAssignmentsPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(RoleAssignmentsPage.class);
     private By moreActions = By.id("roleassign-more-actions");
     private By newRuleButton = By.linkText("New Rule");
     private By roleTable = By.className("list--stats");
@@ -58,8 +57,8 @@ public class RoleAssignmentsPage extends BasePage {
     public List<String> getRulesByPattern() {
         log.info("Query role rules");
         List<String> ret = new ArrayList<>();
-        List<String> names = WebElementUtil.elementsToText(getDriver(),
-                roleTable);
+        List<String> names =
+                WebElementUtil.elementsToText(getDriver(), roleTable);
         for (String name : names) {
             ret.add(name.substring(name.lastIndexOf(':') + 1).trim());
         }

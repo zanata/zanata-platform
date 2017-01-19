@@ -21,8 +21,6 @@
 
 package org.zanata.dao;
 
-import lombok.NoArgsConstructor;
-
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 
@@ -38,15 +36,14 @@ import org.zanata.util.Zanata;
  * This class uses Hibernate's StatelessSession to iterate over large queries
  * returning TransMemoryUnit.
  *
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("transMemoryStreamingDAO")
 @RequestScoped
 /**
- * Note: unless the find* methods throw an exception, the caller is
- * responsible for closing the Iterator, or a database connection
- * may leak.
+ * Note: unless the find* methods throw an exception, the caller is responsible
+ * for closing the Iterator, or a database connection may leak.
  */
 public class TransMemoryStreamingDAO extends StreamingDAO<TransMemoryUnit> {
 

@@ -20,26 +20,20 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 
-@Slf4j
 public class AdministrationPage extends BasePage {
-
-    private final By CONFIGURE_SERVER_LINK = By
-            .id("Admin_Server_configuration_home");
-
-    private final By MANAGE_LANGUAGE_LINK = By
-            .id("Admin_Manage_languages_home");
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(AdministrationPage.class);
+    private final By CONFIGURE_SERVER_LINK =
+            By.id("Admin_Server_configuration_home");
+    private final By MANAGE_LANGUAGE_LINK =
+            By.id("Admin_Manage_languages_home");
     private final By MANAGE_USER_LINK = By.id("Admin_Manage_users_home");
-
     private final By MANAGE_TM_LINK = By.id("Translation_Memory_home");
-
     private final By MANAGE_SEARCH_LINK = By.id("Admin_Manage_search_home");
-
     private final By MANAGE_ROLES_ASSIGN_LINK =
             By.id("Admin_Role_Assignment_Rules_home");
 

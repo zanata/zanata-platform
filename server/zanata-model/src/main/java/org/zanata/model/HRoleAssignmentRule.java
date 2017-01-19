@@ -26,25 +26,18 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import lombok.Setter;
-import lombok.ToString;
-
 /**
  * Represents a dynamic assignment of a role for HAccounts.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
 @Cacheable
-@Setter
-@ToString(callSuper = true)
 public class HRoleAssignmentRule extends ModelEntityBase {
 
     private String policyName;
-
     private String identityRegExp;
-
     private HAccountRole roleToAssign;
 
     @Column(length = 100)
@@ -60,5 +53,25 @@ public class HRoleAssignmentRule extends ModelEntityBase {
     @JoinColumn(name = "role_to_assign_id", nullable = false)
     public HAccountRole getRoleToAssign() {
         return roleToAssign;
+    }
+
+    public void setPolicyName(final String policyName) {
+        this.policyName = policyName;
+    }
+
+    public void setIdentityRegExp(final String identityRegExp) {
+        this.identityRegExp = identityRegExp;
+    }
+
+    public void setRoleToAssign(final HAccountRole roleToAssign) {
+        this.roleToAssign = roleToAssign;
+    }
+
+    @Override
+    public String toString() {
+        return "HRoleAssignmentRule(super=" + super.toString() + ", policyName="
+                + this.getPolicyName() + ", identityRegExp="
+                + this.getIdentityRegExp() + ", roleToAssign="
+                + this.getRoleToAssign() + ")";
     }
 }

@@ -23,14 +23,11 @@ package org.zanata.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.ResultTransformer;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -39,15 +36,13 @@ import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 
 @RequestScoped
-@Slf4j
 public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TextFlowDAO.class);
     private static final long serialVersionUID = 1L;
-
     // TODO replace all getSession() code to use entityManager
-
     @Inject
     LocaleDAO localeDAO;
 
@@ -69,9 +64,8 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         if (idList == null || idList.isEmpty()) {
             return new ArrayList<HTextFlow>();
         }
-        Query query =
-                getSession()
-                        .createQuery("FROM HTextFlow WHERE id in (:idList)");
+        Query query = getSession()
+                .createQuery("FROM HTextFlow WHERE id in (:idList)");
         query.setParameterList("idList", idList);
         // caching could be expensive for long idLists
         query.setCacheable(false).setComment("TextFlowDAO.getByIdList");
@@ -82,46 +76,40 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
     public List<HTextFlow> getNavigationByDocumentId(DocumentId documentId,
             HLocale hLocale, ResultTransformer resultTransformer,
             FilterConstraints filterConstraints) {
-        FilterConstraintToQuery constraintToQuery =
-                FilterConstraintToQuery.filterInSingleDocument(
-                        filterConstraints, documentId);
-
+        FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery
+                .filterInSingleDocument(filterConstraints, documentId);
         String hql = constraintToQuery.toModalNavigationQuery();
         Query query = getSession().createQuery(hql);
         return constraintToQuery.setQueryParameters(query, hLocale)
                 .setResultTransformer(resultTransformer).list();
     }
 
-    public List<Object[]> getTextFlowAndTarget(List<Long> idList, Long localeId) {
+    public List<Object[]> getTextFlowAndTarget(List<Long> idList,
+            Long localeId) {
         StringBuilder queryBuilder = new StringBuilder();
         queryBuilder.append("from HTextFlow tf ")
                 .append("left join tf.targets tft with tft.locale.id =:localeId ")
                 .append("where tf.id in (:idList)");
-
         Query q = getSession().createQuery(queryBuilder.toString());
         q.setParameterList("idList", idList);
         q.setParameter("localeId", localeId);
         q.setCacheable(true);
         q.setComment("TextFlowTargetDAO.getTextFlowTarget");
-
         return q.list();
     }
 
     public int getWordCount(Long id) {
         Query q = getSession().createQuery(
-                  "select tf.wordCount from HTextFlow tf where tf.id = :id");
-        q.setCacheable(true).
-                setComment("TextFlowDAO.getWordCount").
-                setParameter("id", id);
+                "select tf.wordCount from HTextFlow tf where tf.id = :id");
+        q.setCacheable(true).setComment("TextFlowDAO.getWordCount")
+                .setParameter("id", id);
         Long totalCount = (Long) q.uniqueResult();
         return totalCount == null ? 0 : totalCount.intValue();
     }
 
     public int getTotalWords() {
-        Query q =
-                getSession()
-                        .createQuery(
-                                "select sum(tf.wordCount) from HTextFlow tf where tf.obsolete=0");
+        Query q = getSession().createQuery(
+                "select sum(tf.wordCount) from HTextFlow tf where tf.obsolete=0");
         q.setCacheable(true).setComment("TextFlowDAO.getTotalWords");
         Long totalCount = (Long) q.uniqueResult();
         return totalCount == null ? 0 : totalCount.intValue();
@@ -135,20 +123,16 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
     }
 
     public int getTotalActiveTextFlows() {
-        Query q =
-                getSession()
-                        .createQuery(
-                                "select count(*) from HTextFlow tf where tf.obsolete=0");
+        Query q = getSession().createQuery(
+                "select count(*) from HTextFlow tf where tf.obsolete=0");
         q.setCacheable(true).setComment("TextFlowDAO.getTotalActiveTextFlows");
         Long totalCount = (Long) q.uniqueResult();
         return totalCount == null ? 0 : totalCount.intValue();
     }
 
     public int getTotalObsoleteTextFlows() {
-        Query q =
-                getSession()
-                        .createQuery(
-                                "select count(*) from HTextFlow tf where tf.obsolete=1");
+        Query q = getSession().createQuery(
+                "select count(*) from HTextFlow tf where tf.obsolete=1");
         q.setCacheable(true)
                 .setComment("TextFlowDAO.getTotalObsoleteTextFlows");
         Long totalCount = (Long) q.uniqueResult();
@@ -156,25 +140,20 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
     }
 
     public int countActiveTextFlowsInDocument(Long documentId) {
-        Query q =
-                getSession()
-                        .createQuery(
-                                "select count(*) from HTextFlow tf where tf.obsolete=0 and tf.document.id = :documentId");
+        Query q = getSession().createQuery(
+                "select count(*) from HTextFlow tf where tf.obsolete=0 and tf.document.id = :documentId");
         q.setParameter("documentId", documentId);
-        q.setCacheable(true).setComment(
-                "TextFlowDAO.countActiveTextFlowsInDocument");
+        q.setCacheable(true)
+                .setComment("TextFlowDAO.countActiveTextFlowsInDocument");
         Long totalCount = (Long) q.uniqueResult();
         return totalCount == null ? 0 : totalCount.intValue();
     }
 
     public List<HTextFlow> getTextFlowsByDocumentId(Long documentId,
             Integer offset, Integer maxResults) {
-        Query q =
-                getSession()
-                        .createQuery(
-                                "from HTextFlow tf where tf.obsolete=0 and tf.document.id = :documentId order by tf.pos");
+        Query q = getSession().createQuery(
+                "from HTextFlow tf where tf.obsolete=0 and tf.document.id = :documentId order by tf.pos");
         q.setParameter("documentId", documentId);
-
         if (offset != null) {
             q.setFirstResult(offset);
         }
@@ -207,18 +186,15 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
     public List<HTextFlow> getTextFlowByDocumentIdWithConstraints(
             DocumentId documentId, HLocale hLocale,
             FilterConstraints constraints, int firstResult, int maxResult) {
-        FilterConstraintToQuery constraintToQuery =
-                FilterConstraintToQuery.filterInSingleDocument(constraints,
-                        documentId);
+        FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery
+                .filterInSingleDocument(constraints, documentId);
         String queryString = constraintToQuery.toEntityQuery();
         log.debug("\n query {}\n", queryString);
-
         Query textFlowQuery = getSession().createQuery(queryString);
         constraintToQuery.setQueryParameters(textFlowQuery, hLocale);
         textFlowQuery.setFirstResult(firstResult).setMaxResults(maxResult);
         textFlowQuery.setCacheable(true).setComment(
                 "TextFlowDAO.getTextFlowByDocumentIdWithConstraint");
-
         @SuppressWarnings("unchecked")
         List<HTextFlow> result = textFlowQuery.list();
         log.debug("{} textFlow for locale {} filter by {}", result.size(),
@@ -229,17 +205,14 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
     public List<HTextFlow> getAllTextFlowByDocumentIdWithConstraints(
             DocumentId documentId, HLocale hLocale,
             FilterConstraints constraints) {
-        FilterConstraintToQuery constraintToQuery =
-                FilterConstraintToQuery.filterInSingleDocument(constraints,
-                        documentId);
+        FilterConstraintToQuery constraintToQuery = FilterConstraintToQuery
+                .filterInSingleDocument(constraints, documentId);
         String queryString = constraintToQuery.toEntityQuery();
         log.debug("\n query {}\n", queryString);
-
         Query textFlowQuery = getSession().createQuery(queryString);
         constraintToQuery.setQueryParameters(textFlowQuery, hLocale);
         textFlowQuery.setCacheable(true).setComment(
                 "TextFlowDAO.getAllTextFlowByDocumentIdWithConstraint");
-
         @SuppressWarnings("unchecked")
         List<HTextFlow> result = textFlowQuery.list();
         log.debug("{} textFlow for locale {} filter by {}", result.size(),
@@ -249,14 +222,11 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
 
     public long countActiveTextFlowsInProjectIteration(Long versionId) {
         String query =
-                "select count(*) from HTextFlow tf where tf.obsolete = 0 " +
-                        "and tf.document.obsolete = 0 " +
-                        "and tf.document.projectIteration.id=:versionId";
-
+                "select count(*) from HTextFlow tf where tf.obsolete = 0 and tf.document.obsolete = 0 and tf.document.projectIteration.id=:versionId";
         Query q = getSession().createQuery(query);
         q.setParameter("versionId", versionId);
-        q.setCacheable(true).setComment(
-                "TextFlowDAO.countTextFlowsInProjectIteration");
+        q.setCacheable(true)
+                .setComment("TextFlowDAO.countTextFlowsInProjectIteration");
         return (Long) q.uniqueResult();
     }
 
@@ -286,11 +256,11 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
                 .setComment("TextFlowDAO.getByDocumentAndResIds");
         @SuppressWarnings("unchecked")
         List<HTextFlow> results = query.list();
-        ImmutableMap.Builder<String, HTextFlow> builder = ImmutableMap.builder();
+        ImmutableMap.Builder<String, HTextFlow> builder =
+                ImmutableMap.builder();
         for (HTextFlow textFlow : results) {
             builder.put(textFlow.getResId(), textFlow);
         }
-
         return builder.build();
     }
 
@@ -298,9 +268,8 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
      * Return text flows that have matching document id and content, resId
      * between the given source and target version
      *
-     * Each array in the result list will contain two text flows:
-     * [0] the text flow from the source version
-     * [1] the text flow from the target version
+     * Each array in the result list will contain two text flows: [0] the text
+     * flow from the source version [1] the text flow from the target version
      *
      * @param sourceVersionId
      * @param targetVersionId
@@ -308,36 +277,31 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
      * @param maxResults
      */
     public List<HTextFlow[]> getSourceByMatchedContext(Long sourceVersionId,
-        Long targetVersionId, int offset, int maxResults) {
+            Long targetVersionId, int offset, int maxResults) {
         String queryString = generateSourceByMatchedContext(false);
-
-        Query query = getSession()
-            .createQuery(queryString)
-            .setParameter("sourceVersionId", sourceVersionId)
-            .setParameter("targetVersionId" , targetVersionId)
-            .setMaxResults(maxResults)
-            .setFirstResult(offset)
-            .setCacheable(true)
-            .setComment("TextFlowDAO.getTranslationsByMatchedContext");
-
+        Query query = getSession().createQuery(queryString)
+                .setParameter("sourceVersionId", sourceVersionId)
+                .setParameter("targetVersionId", targetVersionId)
+                .setMaxResults(maxResults).setFirstResult(offset)
+                .setCacheable(true)
+                .setComment("TextFlowDAO.getTranslationsByMatchedContext");
         List<HTextFlow[]> results = Lists.newArrayList();
-        for(Object result: query.list()) {
+        for (Object result : query.list()) {
             Object[] castResults = (Object[]) result;
             results.add(new HTextFlow[] { (HTextFlow) castResults[0],
-                (HTextFlow) castResults[1] });
+                    (HTextFlow) castResults[1] });
         }
         return results;
     }
 
     public int getSourceByMatchedContextCount(Long sourceVersionId,
-        Long targetVersionId) {
+            Long targetVersionId) {
         String queryString = generateSourceByMatchedContext(true);
-        Query query = getSession()
-            .createQuery(queryString)
-            .setParameter("sourceVersionId", sourceVersionId)
-            .setParameter("targetVersionId" , targetVersionId)
-            .setCacheable(true)
-            .setComment("TextFlowDAO.getTranslationsByMatchedContextCount");
+        Query query = getSession().createQuery(queryString)
+                .setParameter("sourceVersionId", sourceVersionId)
+                .setParameter("targetVersionId", targetVersionId)
+                .setCacheable(true)
+                .setComment("TextFlowDAO.getTranslationsByMatchedContextCount");
         Long count = (Long) query.uniqueResult();
         return count == null ? 0 : count.intValue();
     }
@@ -346,33 +310,29 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
      * Generate query string for text flows that have matching document id and
      * content between the given source and target version
      *
-     * @param getRecordCount - if true, generate select count(*) hql.
-     *
+     * @param getRecordCount
+     *            - if true, generate select count(*) hql.
      */
     private String generateSourceByMatchedContext(boolean getRecordCount) {
         StringBuilder queryBuilder = new StringBuilder();
-
-        if(getRecordCount) {
+        if (getRecordCount) {
             queryBuilder.append(
-                "select count(fromTF.id) from HTextFlow fromTF, HTextFlow toTF ");
+                    "select count(fromTF.id) from HTextFlow fromTF, HTextFlow toTF ");
         } else {
             queryBuilder.append(
-                "select fromTF, toTF from HTextFlow fromTF, HTextFlow toTF ");
+                    "select fromTF, toTF from HTextFlow fromTF, HTextFlow toTF ");
         }
         queryBuilder
-            .append("where fromTF.document.projectIteration.id = :sourceVersionId ")
-            .append("and toTF.document.projectIteration.id = :targetVersionId ")
-            .append("and fromTF.obsolete = false ")
-            .append("and fromTF.document.obsolete = false ")
-            .append("and toTF.obsolete = false ")
-            .append("and toTF.document.obsolete = false ")
-            .append("and fromTF <> toTF ")
-            .append("and fromTF.contentHash = toTF.contentHash ")
-            .append("and fromTF.resId = toTF.resId ")
-            .append("and fromTF.document.docId = toTF.document.docId");
-
+                .append("where fromTF.document.projectIteration.id = :sourceVersionId ")
+                .append("and toTF.document.projectIteration.id = :targetVersionId ")
+                .append("and fromTF.obsolete = false ")
+                .append("and fromTF.document.obsolete = false ")
+                .append("and toTF.obsolete = false ")
+                .append("and toTF.document.obsolete = false ")
+                .append("and fromTF <> toTF ")
+                .append("and fromTF.contentHash = toTF.contentHash ")
+                .append("and fromTF.resId = toTF.resId ")
+                .append("and fromTF.document.docId = toTF.document.docId");
         return queryBuilder.toString();
-
     }
-
 }

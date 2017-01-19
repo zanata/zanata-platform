@@ -6,46 +6,40 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
-
 import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
-
 
 /**
  * Based on seam's IdentityManager.
  *
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @javax.enterprise.context.RequestScoped
 @Named("identityManager")
-@Slf4j
 public class IdentityManager implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(IdentityManager.class);
+
     public static final String USER_PERMISSION_NAME = "seam.user";
     public static final String ROLE_PERMISSION_NAME = "seam.role";
-
     public static final String PERMISSION_CREATE = "create";
     public static final String PERMISSION_READ = "read";
     public static final String PERMISSION_UPDATE = "update";
     public static final String PERMISSION_DELETE = "delete";
     private static final long serialVersionUID = 8306433833437687248L;
-
     private ZanataJpaIdentityStore identityStore;
 
     @PostConstruct
     public void create() {
         if (identityStore == null) {
-            identityStore =
-                    ServiceLocator.instance().getInstance(
-                            ZanataJpaIdentityStore.class);
+            identityStore = ServiceLocator.instance()
+                    .getInstance(ZanataJpaIdentityStore.class);
         }
     }
 
@@ -95,7 +89,6 @@ public class IdentityManager implements Serializable {
         ZanataIdentity.instance().checkPermission(USER_PERMISSION_NAME,
                 PERMISSION_UPDATE);
         List<String> grantedRoles = getGrantedRoles(username);
-
         for (String role : grantedRoles) {
             if (!roles.contains(role)) {
                 revokeRole(username, role);
@@ -152,13 +145,12 @@ public class IdentityManager implements Serializable {
         ZanataIdentity.instance().checkPermission(USER_PERMISSION_NAME,
                 PERMISSION_READ);
         List<String> users = identityStore.listUsers();
-
         Collections.sort(users, new Comparator<String>() {
+
             public int compare(String value1, String value2) {
                 return value1.compareTo(value2);
             }
         });
-
         return users;
     }
 
@@ -166,25 +158,23 @@ public class IdentityManager implements Serializable {
         ZanataIdentity.instance().checkPermission(ROLE_PERMISSION_NAME,
                 PERMISSION_READ);
         List<String> roles = identityStore.listRoles();
-
         Collections.sort(roles, new Comparator<String>() {
+
             public int compare(String value1, String value2) {
                 return value1.compareTo(value2);
             }
         });
-
         return roles;
     }
 
     public List<String> listGrantableRoles() {
         List<String> roles = identityStore.listGrantableRoles();
-
         Collections.sort(roles, new Comparator<String>() {
+
             public int compare(String value1, String value2) {
                 return value1.compareTo(value2);
             }
         });
-
         return roles;
     }
 

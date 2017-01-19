@@ -22,7 +22,6 @@ package org.zanata.page.projects;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,30 +31,25 @@ import org.zanata.page.projects.projectsettings.ProjectGeneralTab;
 import org.zanata.page.projects.projectsettings.ProjectLanguagesTab;
 import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
 import org.zanata.page.projects.projectsettings.ProjectTranslationTab;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.page.projects.projectsettings.ProjectWebHooksTab;
 
-@Slf4j
 public class ProjectBasePage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectBasePage.class);
     private By versionsTab = By.id("versions_tab");
     private By peopleTab = By.id("people_tab");
     private By aboutTab = By.id("about_tab");
     private By settingsTab = By.id("settings_tab");
-
     private By versionsTabBody = By.id("versions");
     private By peopleTabBody = By.id("people");
     private By aboutTabBody = By.id("about");
     private By settingsTabBody = By.id("settings");
-
     private By settingsGeneralTab = By.id("settings-general_tab");
     private By settingsPermissionTab = By.id("settings-permissions_tab");
     private By settingsTranslationTab = By.id("settings-translation_tab");
     private By settingsLanguagesTab = By.id("settings-languages_tab");
     private By settingsAboutTab = By.id("settings-about_tab");
     private By projectInfo = By.id("project-info");
-
     private By settingsWebHooksTab = By.id("settings-webhooks_tab");
 
     public ProjectBasePage(final WebDriver driver) {
@@ -64,8 +58,8 @@ public class ProjectBasePage extends BasePage {
 
     public String getProjectName() {
         log.info("Query Project name");
-        return readyElement(projectInfo)
-                .findElement(By.tagName("h1")).getText();
+        return readyElement(projectInfo).findElement(By.tagName("h1"))
+                .getText();
     }
 
     public ProjectVersionsPage gotoVersionsTab() {
@@ -150,8 +144,8 @@ public class ProjectBasePage extends BasePage {
     public List<String> getContentAreaParagraphs() {
         log.info("Query Project info");
         List<String> paragraphTexts = new ArrayList<String>();
-        List<WebElement> paragraphs = readyElement(projectInfo)
-                        .findElements(By.tagName("p"));
+        List<WebElement> paragraphs =
+                readyElement(projectInfo).findElements(By.tagName("p"));
         for (WebElement element : paragraphs) {
             paragraphTexts.add(element.getText());
         }
@@ -162,9 +156,8 @@ public class ProjectBasePage extends BasePage {
         log.info("Query Project homepage");
         for (WebElement element : readyElement(projectInfo)
                 .findElements(By.tagName("li"))) {
-            if (element.findElement(By.className("list__title"))
-                    .getText().trim()
-                    .equals("Home Page:")) {
+            if (element.findElement(By.className("list__title")).getText()
+                    .trim().equals("Home Page:")) {
                 return element.findElement(By.tagName("a")).getText();
             }
         }
@@ -183,5 +176,4 @@ public class ProjectBasePage extends BasePage {
         }
         return "";
     }
-
 }

@@ -18,12 +18,10 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.action;
 
 import com.google.common.base.Throwables;
 import com.google.common.html.HtmlEscapers;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.beanutils.BeanUtils;
 import org.infinispan.Cache;
 import org.infinispan.manager.EmbeddedCacheManager;
@@ -42,18 +40,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author Armagan Ersoz <a href="mailto:aersoz@redhat.com">aersoz@redhat.com</a>
+ * @author Armagan Ersoz
+ *         <a href="mailto:aersoz@redhat.com">aersoz@redhat.com</a>
  */
 @CheckRole("admin")
 @Named("cacheAction")
 @ViewScoped
-@Slf4j
 public class CacheAction implements Serializable {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(CacheAction.class);
     @Inject
     @Zanata
     private EmbeddedCacheManager cacheManager;
-
     @Inject
     private Messages msgs;
 
@@ -61,32 +59,39 @@ public class CacheAction implements Serializable {
     }
 
     public List<String> getCacheList() {
-        ArrayList<String> cacheNames = new ArrayList<>(cacheManager.getCacheNames());
+        ArrayList<String> cacheNames =
+                new ArrayList<>(cacheManager.getCacheNames());
         Collections.sort(cacheNames);
         return cacheNames;
     }
 
     public Stats getStats(String cacheName) {
-        log.debug("getting stats for cache '{}'", cacheName);
+        log.debug("getting stats for cache \'{}\'", cacheName);
         try {
             Cache<Object, Object> cache = cacheManager.getCache(cacheName);
             if (cache.getCacheConfiguration().jmxStatistics().enabled()) {
                 return cache.getAdvancedCache().getStats();
             } else {
-                log.debug("Statistics are not enabled for cache '{}'", cacheName);
+                log.debug("Statistics are not enabled for cache \'{}\'",
+                        cacheName);
                 // -1 just means no stats (same as Infinispan)
                 return new UnavailableStats(-1);
             }
-            // eg getStats() throws IndexOutOfBoundsException if stats not enabled
+            // eg getStats() throws IndexOutOfBoundsException if stats not
+            // enabled
         } catch (Exception e) {
-            log.warn("Error getting Stats object - are statistics enabled for cache '{}'?", cacheName, e);
-            // -2 also means no stats, but serves as a hint that something might be wrong
+            log.warn(
+                    "Error getting Stats object - are statistics enabled for cache \'{}\'?",
+                    cacheName, e);
+            // -2 also means no stats, but serves as a hint that something might
+            // be wrong
             return new UnavailableStats(-2);
         }
     }
 
     /**
      * Return some sanitised HTML for the display name of the cache
+     *
      * @param cacheName
      * @return
      */
@@ -108,27 +113,30 @@ public class CacheAction implements Serializable {
         getStats(cacheName).reset();
     }
 
-    public void clearAllCaches(){
+    public void clearAllCaches() {
         cacheManager.getCacheNames().forEach(this::clearCache);
     }
 
     /**
-     * Return the entire set of properties for which the specified bean provides a read method.
-     * In this case, the bean is a stats object. The returning value is the set of StatsImpl
-     * (org.infinispan.stats.impl) class's properties. The returning map's keys are plain properties'
-     * names (e.g. currentNumberOfEntries) and the map's values are values from the Infinispan Stats
-     * object (converted to Strings if necessary). This returning value is used for composing the
-     * cache statistics table at the admin site.*/
-
+     * Return the entire set of properties for which the specified bean provides
+     * a read method. In this case, the bean is a stats object. The returning
+     * value is the set of StatsImpl (org.infinispan.stats.impl) class's
+     * properties. The returning map's keys are plain properties' names (e.g.
+     * currentNumberOfEntries) and the map's values are values from the
+     * Infinispan Stats object (converted to Strings if necessary). This
+     * returning value is used for composing the cache statistics table at the
+     * admin site.
+     */
     public Map<String, String> getCacheStatsProperties(String cacheName) {
-          try {
-              Map<String, String> properties =
-                  BeanUtils.describe(getStats(cacheName));
-              properties.remove("class");
-              return properties;
-          } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-              throw Throwables.propagate(e);
-          }
+        try {
+            Map<String, String> properties =
+                    BeanUtils.describe(getStats(cacheName));
+            properties.remove("class");
+            return properties;
+        } catch (IllegalAccessException | InvocationTargetException
+                | NoSuchMethodException e) {
+            throw Throwables.propagate(e);
+        }
     }
 
     public String getNameOfProperty(String key) {
@@ -140,8 +148,8 @@ public class CacheAction implements Serializable {
     }
 
     /**
-     * Dummy Stats implementation returned when Stats are disabled or
-     * otherwise unavailable.
+     * Dummy Stats implementation returned when Stats are disabled or otherwise
+     * unavailable.
      */
     private static class UnavailableStats implements Stats {
         private final int val;

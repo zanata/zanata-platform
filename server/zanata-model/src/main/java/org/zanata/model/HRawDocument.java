@@ -21,40 +21,26 @@
 package org.zanata.model;
 
 import java.io.Serializable;
-
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
-
 import com.google.common.base.Objects;
+// is this necessary?
 
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
-// is this necessary?
 public class HRawDocument extends ModelEntityBase implements Serializable {
-
     private static final long serialVersionUID = 5129552589912687504L;
-
     // TODO ensure any document deletion cascades to remove associated
     // HRawDocument
     private HDocument document;
-
     // TODO none of these should allow null
     private String contentHash;
     private String fileId;
     private DocumentType type;
     private String uploadedBy;
-
     private String adapterParameters;
 
     @OneToOne(mappedBy = "rawDocument")
@@ -84,8 +70,39 @@ public class HRawDocument extends ModelEntityBase implements Serializable {
     public String toString() {
         return getClass().getSimpleName() + "@"
                 + Integer.toHexString(hashCode()) + "[id=" + getId()
-                + ",versionNum=" + getVersionNum() + ",contentHash=" + contentHash
-                + "]";
+                + ",versionNum=" + getVersionNum() + ",contentHash="
+                + contentHash + "]";
+    }
+
+    public String getFileId() {
+        return this.fileId;
+    }
+
+    public String getAdapterParameters() {
+        return this.adapterParameters;
+    }
+
+    public void setContentHash(final String contentHash) {
+        this.contentHash = contentHash;
+    }
+
+    public void setFileId(final String fileId) {
+        this.fileId = fileId;
+    }
+
+    public void setType(final DocumentType type) {
+        this.type = type;
+    }
+
+    public void setUploadedBy(final String uploadedBy) {
+        this.uploadedBy = uploadedBy;
+    }
+
+    public void setAdapterParameters(final String adapterParameters) {
+        this.adapterParameters = adapterParameters;
+    }
+
+    public HRawDocument() {
     }
     // TODO override equals to use contentHash, type, parameters, etc.
 }

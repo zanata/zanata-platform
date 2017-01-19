@@ -20,24 +20,19 @@
  */
 package org.zanata.i18n;
 
-
-import lombok.Getter;
 import org.zanata.util.DefaultLocale;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
-
 import java.util.Locale;
 
 /**
- * Factory bean to return an instance of Messages, based on a parameter, or
- * for the server default locale.
+ * Factory bean to return an instance of Messages, based on a parameter, or for
+ * the server default locale.
  *
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-
 @Named("messagesFactory")
 @javax.enterprise.context.ApplicationScoped
 public class MessagesFactory {
@@ -45,8 +40,8 @@ public class MessagesFactory {
     /**
      * Returns an instance of Messages for the server's default locale.
      */
-    @Getter
-    private final Messages defaultLocaleMessages = getMessages(Locale.getDefault());
+    private final Messages defaultLocaleMessages =
+            getMessages(Locale.getDefault());
 
     /**
      * Returns an instance of Messages for the specified locale.
@@ -60,5 +55,12 @@ public class MessagesFactory {
     @ApplicationScoped
     public Messages getApplicationMessages() {
         return defaultLocaleMessages;
+    }
+
+    /**
+     * Returns an instance of Messages for the server's default locale.
+     */
+    public Messages getDefaultLocaleMessages() {
+        return this.defaultLocaleMessages;
     }
 }

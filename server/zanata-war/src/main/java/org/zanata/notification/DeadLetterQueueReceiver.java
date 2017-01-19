@@ -24,39 +24,30 @@ import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.jms.Message;
 import javax.jms.MessageListener;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Named;
 
 /**
  * Consumer of Dead Letter Queue (all unsuccessful message will be dropped into
  * the DLQ and handled here).
  *
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @MessageDriven(activationConfig = {
-        @ActivationConfigProperty(
-                propertyName = "destinationType",
-                propertyValue = "javax.jms.Queue"
-        ),
-        @ActivationConfigProperty(
-                propertyName = "destination",
-                propertyValue = "jms/queue/DLQ"
-        ),
-        @ActivationConfigProperty(
-                propertyName = "maxSession",
-                propertyValue = "1")
-})
+        @ActivationConfigProperty(propertyName = "destinationType",
+                propertyValue = "javax.jms.Queue"),
+        @ActivationConfigProperty(propertyName = "destination",
+                propertyValue = "jms/queue/DLQ"),
+        @ActivationConfigProperty(propertyName = "maxSession",
+                propertyValue = "1") })
 @Named("deadLetterQueueReceiver")
-@Slf4j
 public class DeadLetterQueueReceiver implements MessageListener {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(DeadLetterQueueReceiver.class);
 
     @Override
     public void onMessage(Message message) {
         // right now we just log the content of the message
         log.error("dead message: {}", MessageUnwrapper.unwrap(message));
     }
-
 }

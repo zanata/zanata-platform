@@ -22,7 +22,6 @@ package org.zanata.model.tm;
 
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -35,34 +34,21 @@ import javax.persistence.JoinTable;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.OneToMany;
-
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
-import lombok.ToString;
-
 import org.zanata.model.SlugEntityBase;
-
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
 /**
  * A translation Memory representation.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@EqualsAndHashCode(callSuper = true, of = { "description" })
-@ToString(exclude = "translationUnits")
-@Data
 @Access(AccessType.FIELD)
 public class TransMemory extends SlugEntityBase implements HasTMMetadata {
     private static final long serialVersionUID = 1L;
-
     private String description;
-
     // This is the BCP-47 language code. Null means any source language (*all*
     // in TMX)
     @Column(name = "source_language", nullable = true)
@@ -74,7 +60,6 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata {
         return tm;
     }
 
-    @Setter(AccessLevel.PROTECTED)
     @OneToMany(mappedBy = "translationMemory", orphanRemoval = true)
     private Set<TransMemoryUnit> translationUnits = Sets.newHashSet();
 
@@ -85,8 +70,8 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata {
     @ElementCollection
     @MapKeyEnumerated(EnumType.STRING)
     @MapKeyColumn(name = "metadata_type")
-    @JoinTable(name = "TransMemory_Metadata", joinColumns = { @JoinColumn(
-            name = "trans_memory_id") })
+    @JoinTable(name = "TransMemory_Metadata",
+            joinColumns = { @JoinColumn(name = "trans_memory_id") })
     @Column(name = "metadata", length = Integer.MAX_VALUE)
     private Map<TMMetadataType, String> metadata = Maps.newHashMap();
 
@@ -98,5 +83,90 @@ public class TransMemory extends SlugEntityBase implements HasTMMetadata {
     @Override
     public void setMetadata(@Nonnull TMMetadataType tmType, String metadata) {
         this.metadata.put(tmType, metadata);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof TransMemory))
+            return false;
+        final TransMemory other = (TransMemory) o;
+        if (!other.canEqual((Object) this))
+            return false;
+        if (!super.equals(o))
+            return false;
+        final Object this$description = this.getDescription();
+        final Object other$description = other.getDescription();
+        if (this$description == null ? other$description != null
+                : !this$description.equals(other$description))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof TransMemory;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $description = this.getDescription();
+        result = result * PRIME
+                + ($description == null ? 43 : $description.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "TransMemory(description=" + this.getDescription()
+                + ", sourceLanguage=" + this.getSourceLanguage() + ", metadata="
+                + this.getMetadata() + ")";
+    }
+
+    public TransMemory() {
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public String getSourceLanguage() {
+        return this.sourceLanguage;
+    }
+
+    public Set<TransMemoryUnit> getTranslationUnits() {
+        return this.translationUnits;
+    }
+
+    /**
+     * Map values are Json strings containing metadata for the particular type
+     * of translation memory
+     */
+    public Map<TMMetadataType, String> getMetadata() {
+        return this.metadata;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public void setSourceLanguage(final String sourceLanguage) {
+        this.sourceLanguage = sourceLanguage;
+    }
+
+    /**
+     * Map values are Json strings containing metadata for the particular type
+     * of translation memory
+     */
+    public void setMetadata(final Map<TMMetadataType, String> metadata) {
+        this.metadata = metadata;
+    }
+
+    protected void
+            setTranslationUnits(final Set<TransMemoryUnit> translationUnits) {
+        this.translationUnits = translationUnits;
     }
 }

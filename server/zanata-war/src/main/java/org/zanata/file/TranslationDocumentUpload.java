@@ -22,20 +22,15 @@ package org.zanata.file;
 
 import static org.zanata.file.DocumentUploadUtil.getInputStream;
 import static org.zanata.file.DocumentUploadUtil.isSinglePart;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.DocumentType;
@@ -58,15 +53,15 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationService;
-
 import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-
 //TODO damason: add thorough unit testing
-@Slf4j
+
 @Dependent
 @Named("translationDocumentUploader")
 public class TranslationDocumentUpload {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationDocumentUpload.class);
 
     @Inject
     private DocumentUploadUtil util;
@@ -83,17 +78,15 @@ public class TranslationDocumentUpload {
     @Inject
     private DocumentUploadDAO documentUploadDAO;
 
-    public Response
-            tryUploadTranslationFile(GlobalDocumentId id, String localeId,
-                    String mergeType, boolean assignCreditToUploader,
-            DocumentFileUploadForm uploadForm, TranslationSourceType translationSourceType) {
+    public Response tryUploadTranslationFile(GlobalDocumentId id,
+            String localeId, String mergeType, boolean assignCreditToUploader,
+            DocumentFileUploadForm uploadForm,
+            TranslationSourceType translationSourceType) {
         try {
             failIfTranslationUploadNotValid(id, localeId, uploadForm);
-
             HLocale locale = findHLocale(localeId);
             Optional<File> tempFile;
             int totalChunks;
-
             if (isSinglePart(uploadForm)) {
                 totalChunks = 1;
                 tempFile = Optional.<File> absent();
@@ -102,45 +95,37 @@ public class TranslationDocumentUpload {
                     HDocumentUpload upload =
                             util.saveUploadPart(id, locale, uploadForm);
                     totalChunks = upload.getParts().size();
-                    return Response
-                            .status(Status.ACCEPTED)
+                    return Response.status(Status.ACCEPTED)
                             .entity(new ChunkUploadResponse(upload.getId(),
                                     totalChunks, true,
                                     "Chunk accepted, awaiting remaining chunks."))
                             .build();
                 } else {
-                    HDocumentUpload previousParts =
-                            documentUploadDAO
-                                    .findById(uploadForm.getUploadId());
+                    HDocumentUpload previousParts = documentUploadDAO
+                            .findById(uploadForm.getUploadId());
                     totalChunks = previousParts.getParts().size();
                     totalChunks++; // add final part
-                    tempFile =
-                            Optional.of(util
-                                    .combineToTempFileAndDeleteUploadRecord(
-                                            previousParts,
-                                            uploadForm));
+                    tempFile = Optional
+                            .of(util.combineToTempFileAndDeleteUploadRecord(
+                                    previousParts, uploadForm));
                 }
             }
-
             TranslationsResource transRes;
             if (uploadForm.getFileType().equals(".po")) {
                 InputStream poStream = getInputStream(tempFile, uploadForm);
-                transRes =
-                        translationFileServiceImpl.parsePoFile(poStream,
-                                id.getProjectSlug(), id.getVersionSlug(),
-                                id.getDocId());
+                transRes = translationFileServiceImpl.parsePoFile(poStream,
+                        id.getProjectSlug(), id.getVersionSlug(),
+                        id.getDocId());
             } else {
                 if (!tempFile.isPresent()) {
-                    tempFile =
-                            Optional.of(util
-                                    .persistTempFileFromUpload(uploadForm));
+                    tempFile = Optional
+                            .of(util.persistTempFileFromUpload(uploadForm));
                 }
                 // FIXME this is misusing the 'filename' field. the method
                 // should probably take a
                 // type anyway
                 Optional<String> docType =
-                    Optional.fromNullable(uploadForm.getFileType());
-
+                        Optional.fromNullable(uploadForm.getFileType());
                 transRes =
                         translationFileServiceImpl.parseAdapterTranslationFile(
                                 tempFile.get(), id.getProjectSlug(),
@@ -150,17 +135,14 @@ public class TranslationDocumentUpload {
             if (tempFile.isPresent()) {
                 tempFile.get().delete();
             }
-
             Set<String> extensions =
                     newExtensions(uploadForm.getFileType().equals(".po"));
             // TODO useful error message for failed saving?
-            List<String> warnings =
-                    translationServiceImpl.translateAllInDoc(
-                            id.getProjectSlug(), id.getVersionSlug(),
-                            id.getDocId(), locale.getLocaleId(), transRes,
-                            extensions, mergeTypeFromString(mergeType),
-                            assignCreditToUploader, translationSourceType);
-
+            List<String> warnings = translationServiceImpl.translateAllInDoc(
+                    id.getProjectSlug(), id.getVersionSlug(), id.getDocId(),
+                    locale.getLocaleId(), transRes, extensions,
+                    mergeTypeFromString(mergeType), assignCreditToUploader,
+                    translationSourceType);
             return transUploadResponse(totalChunks, warnings);
         } catch (FileNotFoundException e) {
             log.error("failed to create input stream from temp file", e);
@@ -196,12 +178,11 @@ public class TranslationDocumentUpload {
     private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm)
             throws ChunkUploadException {
         String fileType = uploadForm.getFileType();
-        if (!fileType.equals(".po")
-                && !translationFileServiceImpl.hasAdapterFor(DocumentType
-                        .getByName(fileType))) {
+        if (!fileType.equals(".po") && !translationFileServiceImpl
+                .hasAdapterFor(DocumentType.getByName(fileType))) {
             throw new ChunkUploadException(Status.BAD_REQUEST, "The type \""
-                    + fileType + "\" specified in form parameter 'type' "
-                    + "is not valid for a translation file on this server.");
+                    + fileType
+                    + "\" specified in form parameter \'type\' is not valid for a translation file on this server.");
         }
     }
 
@@ -225,7 +206,6 @@ public class TranslationDocumentUpload {
             throw new ChunkUploadException(Status.BAD_REQUEST,
                     "Invalid value for locale", e);
         }
-
         HLocale locale = localeDAO.findByLocaleId(localeId);
         if (locale == null) {
             throw new ChunkUploadException(Status.NOT_FOUND,
@@ -237,16 +217,16 @@ public class TranslationDocumentUpload {
 
     private boolean isTranslationUploadAllowed(GlobalDocumentId id,
             HLocale locale) {
-        HProjectIteration projectIteration =
-                projectIterationDAO.getBySlug(id.getProjectSlug(),
-                        id.getVersionSlug());
+        HProjectIteration projectIteration = projectIterationDAO
+                .getBySlug(id.getProjectSlug(), id.getVersionSlug());
         // TODO should this check be "add-translation" or "modify-translation"?
         // They appear to be granted identically at the moment.
         return projectIteration.getStatus() == EntityStatus.ACTIVE
-                && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
+                && projectIteration.getProject()
+                        .getStatus() == EntityStatus.ACTIVE
                 && identity != null
                 && identity.hasPermissionWithAnyTargets("add-translation",
-                projectIteration.getProject(), locale);
+                        projectIteration.getProject(), locale);
     }
 
     private static Set<String> newExtensions(boolean gettextExtensions) {
@@ -285,5 +265,4 @@ public class TranslationDocumentUpload {
             return MergeType.AUTO;
         }
     }
-
 }

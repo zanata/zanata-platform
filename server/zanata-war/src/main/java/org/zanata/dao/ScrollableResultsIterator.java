@@ -18,19 +18,16 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.dao;
 
 import java.io.Closeable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.ScrollableResults;
 
-@Slf4j
 class ScrollableResultsIterator implements Iterator<Object[]>, Closeable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ScrollableResultsIterator.class);
     private boolean closed;
     private Object[] nextRow = null;
     private final ScrollableResults scrollableResults;
@@ -71,13 +68,10 @@ class ScrollableResultsIterator implements Iterator<Object[]>, Closeable {
         } catch (RuntimeException e) {
             // UGLY hack to work around
             // https://hibernate.atlassian.net/browse/HHH-2811
-            if (e.getMessage() != null
-                    && (e.getMessage()
-                            .contains(
-                                    "could not perform sequential read of results (forward)") || e
-                            .getMessage()
-                            .contains(
-                                    "could not doAfterTransactionCompletion sequential read of results (forward)"))) {
+            if (e.getMessage() != null && (e.getMessage().contains(
+                    "could not perform sequential read of results (forward)")
+                    || e.getMessage().contains(
+                            "could not doAfterTransactionCompletion sequential read of results (forward)"))) {
                 log.debug("assuming empty ResultSet", e);
                 close();
                 return false;
@@ -102,5 +96,4 @@ class ScrollableResultsIterator implements Iterator<Object[]>, Closeable {
     public void remove() {
         throw new UnsupportedOperationException();
     }
-
 }

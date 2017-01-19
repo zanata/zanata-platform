@@ -20,17 +20,18 @@
  */
 package org.zanata.page.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class InactiveAccountPage extends BasePage {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(InactiveAccountPage.class);
 
     public InactiveAccountPage(WebDriver driver) {
         super(driver);
@@ -43,8 +44,10 @@ public class InactiveAccountPage extends BasePage {
     }
 
     public InactiveAccountPage enterNewEmail(String email) {
-        enterText(readyElement(By.id("inactiveAccountForm:email:input:emailInput"))
-                , email);
+        enterText(
+                readyElement(
+                        By.id("inactiveAccountForm:email:input:emailInput")),
+                email);
         return new InactiveAccountPage(getDriver());
     }
 

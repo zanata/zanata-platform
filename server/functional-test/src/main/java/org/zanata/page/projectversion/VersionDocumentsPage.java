@@ -21,28 +21,27 @@
 package org.zanata.page.projectversion;
 
 import com.google.common.base.Function;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class VersionDocumentsPage extends VersionBasePage {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionDocumentsPage.class);
 
     public VersionDocumentsPage(WebDriver driver) {
         super(driver);
     }
 
-    public VersionDocumentsPage expectSourceDocsContains(final String document) {
+    public VersionDocumentsPage
+            expectSourceDocsContains(final String document) {
         log.info("Expect Project documents contains {}", document);
         waitForPageSilence();
         assertThat(getSourceDocumentNames()).contains(document);
@@ -57,13 +56,13 @@ public class VersionDocumentsPage extends VersionBasePage {
     public List<String> getSourceDocumentNames() {
         log.info("Query source documents list");
         // getText often falls into a UI change
-        return waitForAMoment().until(
-                (Function<WebDriver, List<String>>) webDriver -> {
+        return waitForAMoment()
+                .until((Function<WebDriver, List<String>>) webDriver -> {
                     List<String> fileNames = new ArrayList<>();
                     for (WebElement element : getDocumentsTabDocumentList()) {
-                        fileNames.add(element.findElement(
-                                By.className("list__title"))
-                                .getText());
+                        fileNames.add(
+                                element.findElement(By.className("list__title"))
+                                        .getText());
                     }
                     return fileNames;
                 });
@@ -72,7 +71,6 @@ public class VersionDocumentsPage extends VersionBasePage {
     private List<WebElement> getDocumentsTabDocumentList() {
         slightPause();
         return readyElement(By.id("documents-document_list"))
-                        .findElements(By.xpath("./li"));
+                .findElements(By.xpath("./li"));
     }
-
 }

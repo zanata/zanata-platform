@@ -20,20 +20,17 @@
  */
 package org.zanata.page.utility;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 import org.zanata.page.administration.EditHomeContentPage;
 
-@Slf4j
 public class HomePage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(HomePage.class);
     public static final String SIGNUP_SUCCESS_MESSAGE =
-            "You will soon receive an email " +
-            "with a link to activate your account.";
+            "You will soon receive an email with a link to activate your account.";
     public static final String EMAILCHANGED_MESSAGE = "Email updated.";
-
     private By mainBodyContent = By.id("home-content-rendered");
     private By editPageContentButton = By.linkText("Edit Page Content");
 

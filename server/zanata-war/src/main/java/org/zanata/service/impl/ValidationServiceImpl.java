@@ -8,15 +8,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang.StringUtils;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -35,35 +30,29 @@ import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationAction.State;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
-
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
 /**
- *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
  */
 @Named("validationServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class ValidationServiceImpl implements ValidationService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ValidationServiceImpl.class);
+
     @Inject
     private ProjectDAO projectDAO;
-
     @Inject
     private ProjectIterationDAO projectIterationDAO;
-
     @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
-
     @Inject
     private DocumentDAO documentDAO;
-
     @Inject
     private TranslationStateCache translationStateCacheImpl;
-
     private ValidationFactory validationFactory;
 
     private ValidationFactory getValidationFactory() {
@@ -89,13 +78,12 @@ public class ValidationServiceImpl implements ValidationService {
                 project.getCustomizedValidations();
         Collection<ValidationAction> mergedList =
                 mergeCustomisedStateToAllValidations(customizedValidations);
-
         return filterList(mergedList, includeStates);
     }
 
     @Override
-    public Collection<ValidationAction> getValidationActions(
-            String projectSlug, String versionSlug) {
+    public Collection<ValidationAction> getValidationActions(String projectSlug,
+            String versionSlug) {
         if (!StringUtils.isEmpty(projectSlug)
                 && !StringUtils.isEmpty(versionSlug)) {
             HProjectIteration version =
@@ -111,30 +99,24 @@ public class ValidationServiceImpl implements ValidationService {
             HProjectIteration projectVersion, State... includeStates) {
         Map<String, String> customizedValidations =
                 projectVersion.getCustomizedValidations();
-
-        /**
-         * Inherits validations from project if version has no defined
-         * validations
-         */
         if (customizedValidations.isEmpty()) {
             return getValidationActions(projectVersion.getProject(),
                     includeStates);
         }
-
         Collection<ValidationAction> mergedList =
                 mergeCustomisedStateToAllValidations(customizedValidations);
-
         return filterList(mergedList, includeStates);
     }
 
+    /**
+     * Inherits validations from project if version has no defined validations
+     */
     private Collection<ValidationAction> filterList(
             Collection<ValidationAction> list, State... includeStates) {
         if (includeStates == null || includeStates.length == 0) {
             return list;
         }
-
         List<State> includeStateList = Arrays.asList(includeStates);
-
         Collection<ValidationAction> filteredList = Lists.newArrayList();
         for (ValidationAction action : list) {
             if (includeStateList.contains(action.getState())) {
@@ -148,7 +130,6 @@ public class ValidationServiceImpl implements ValidationService {
             Map<String, String> customizedValidations) {
         Collection<ValidationAction> allValidations =
                 getValidationFactory().getAllValidationActions().values();
-
         for (ValidationAction valAction : allValidations) {
             String name = valAction.getId().name();
             if (customizedValidations.containsKey(name)) {
@@ -171,13 +152,10 @@ public class ValidationServiceImpl implements ValidationService {
     private List<ValidationId> getValidationIds(HProjectIteration version,
             State... includeStates) {
         List<ValidationId> validationIds = Lists.newArrayList();
-
         Collection<ValidationAction> mergedList = Lists.newArrayList();
-
         if (version != null) {
             mergedList = getValidationActions(version, includeStates);
         }
-
         for (ValidationAction action : mergedList) {
             validationIds.add(action.getId());
         }
@@ -189,9 +167,9 @@ public class ValidationServiceImpl implements ValidationService {
             List<ValidationId> validationIds, LocaleId localeId) {
         log.debug("Start runDocValidations {}", hDocId);
         Stopwatch stopwatch = Stopwatch.createStarted();
-
         HDocument hDoc = documentDAO.findById(hDocId, false);
-        boolean hasError = documentHasWarningOrError(hDoc, validationIds, localeId);
+        boolean hasError =
+                documentHasWarningOrError(hDoc, validationIds, localeId);
         log.debug("Finished runDocValidations in " + stopwatch);
         return hasError;
     }
@@ -201,14 +179,10 @@ public class ValidationServiceImpl implements ValidationService {
             LocaleId localeId) {
         log.debug("Start runDocValidationsWithServerRules {}", hDoc.getId());
         Stopwatch stopwatch = Stopwatch.createStarted();
-
-        List<ValidationId> validationIds =
-                getValidationIds(hDoc.getProjectIteration(), State.Warning,
-                        State.Error);
-
+        List<ValidationId> validationIds = getValidationIds(
+                hDoc.getProjectIteration(), State.Warning, State.Error);
         boolean hasError =
                 documentHasWarningOrError(hDoc, validationIds, localeId);
-
         log.debug("Finished runDocValidationsWithServerRules in " + stopwatch);
         return hasError;
     }
@@ -216,9 +190,8 @@ public class ValidationServiceImpl implements ValidationService {
     private boolean documentHasWarningOrError(HDocument hDoc,
             List<ValidationId> validationIds, LocaleId localeId) {
         for (HTextFlow textFlow : hDoc.getTextFlows()) {
-            boolean hasError =
-                    textFlowTargetHasWarningOrError(textFlow.getId(),
-                            validationIds, localeId);
+            boolean hasError = textFlowTargetHasWarningOrError(textFlow.getId(),
+                    validationIds, localeId);
             if (hasError) {
                 // return true if error found, else continue
                 return true;
@@ -233,29 +206,22 @@ public class ValidationServiceImpl implements ValidationService {
             LocaleId localeId, int startIndex, int maxSize) {
         log.debug("Start filter {} textFlows", textFlows.size());
         Stopwatch stopwatch = Stopwatch.createStarted();
-
         List<HTextFlow> result = new ArrayList<HTextFlow>();
-
         for (HTextFlow textFlow : textFlows) {
-            boolean hasWarningOrError =
-                    textFlowTargetHasWarningOrError(textFlow.getId(),
-                            validationIds, localeId);
+            boolean hasWarningOrError = textFlowTargetHasWarningOrError(
+                    textFlow.getId(), validationIds, localeId);
             if (hasWarningOrError) {
                 result.add(textFlow);
             }
         }
         log.debug("Finished filter textFlows in " + stopwatch);
-
         if (result.size() <= maxSize) {
             return result;
         }
-
         int toIndex = startIndex + maxSize;
-
         toIndex = toIndex > result.size() ? result.size() : toIndex;
         startIndex = startIndex > toIndex ? toIndex - maxSize : startIndex;
         startIndex = startIndex < 0 ? 0 : startIndex;
-
         return result.subList(startIndex, toIndex);
     }
 
@@ -265,10 +231,9 @@ public class ValidationServiceImpl implements ValidationService {
                 textFlowTargetDAO.getTextFlowTarget(textFlowId, localeId);
         if (target != null) {
             for (ValidationId validationId : validationIds) {
-                Boolean value =
-                        translationStateCacheImpl
-                                .textFlowTargetHasWarningOrError(
-                                        target.getId(), validationId);
+                Boolean value = translationStateCacheImpl
+                        .textFlowTargetHasWarningOrError(target.getId(),
+                                validationId);
                 if (value != null && value.booleanValue()) {
                     return value.booleanValue();
                 }
@@ -284,14 +249,11 @@ public class ValidationServiceImpl implements ValidationService {
         Collection<ValidationAction> validationActions =
                 getValidationActions(projectVersion, actionStates);
         List<String> errorList = Lists.newArrayList();
-
         String tf_content0 = sources.get(0);
         String tft_content0 = translations.get(0);
-
         for (ValidationAction action : validationActions) {
             errorList.addAll(action.validate(tf_content0, tft_content0));
         }
-
         return errorList;
     }
 }

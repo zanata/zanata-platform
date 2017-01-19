@@ -22,9 +22,7 @@ package org.zanata.util;
 
 import com.google.common.io.Resources;
 import jdk.nashorn.api.scripting.JSObject;
-import lombok.extern.slf4j.Slf4j;
 import javax.inject.Named;
-
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -34,28 +32,28 @@ import javax.script.ScriptException;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-
 import static com.google.common.base.Throwables.propagate;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-
 @Named("commonMarkRenderer")
 @javax.enterprise.context.ApplicationScoped
-@Slf4j
 public class CommonMarkRenderer {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(CommonMarkRenderer.class);
 
-    private static final String VER = Dependencies.getVersion(
-            "org.webjars.bower:commonmark:jar");
-    private static final String SCRIPT_NAME = "commonmark/" +
-            VER + "/dist/commonmark.min.js";
-    private static final String VER_SANITIZER = Dependencies.getVersion(
-            "org.webjars.bower:google-caja:jar");
-    private static final String SCRIPT_NAME_SANITIZER = "google-caja/" +
-            VER_SANITIZER + "/html-sanitizer-minified.js";
-    private static final String RESOURCE_NAME = "META-INF/resources/webjars/" +
-            SCRIPT_NAME;
+    private static final String VER =
+            Dependencies.getVersion("org.webjars.bower:commonmark:jar");
+    private static final String SCRIPT_NAME =
+            "commonmark/" + VER + "/dist/commonmark.min.js";
+    private static final String VER_SANITIZER =
+            Dependencies.getVersion("org.webjars.bower:google-caja:jar");
+    private static final String SCRIPT_NAME_SANITIZER =
+            "google-caja/" + VER_SANITIZER + "/html-sanitizer-minified.js";
+    private static final String RESOURCE_NAME =
+            "META-INF/resources/webjars/" + SCRIPT_NAME;
     // Share ScriptEngine and CompiledScript across threads, but not Bindings
     // See http://stackoverflow.com/a/30159424/14379
     private static final ScriptEngine engine =
@@ -73,7 +71,6 @@ public class CommonMarkRenderer {
                     throw propagate(e);
                 }
             });
-
     static {
         log.info("Using commonmark.js version {}", VER);
         log.info("Using Google Caja version {}", VER_SANITIZER);
@@ -83,10 +80,12 @@ public class CommonMarkRenderer {
      * Return the name of the implementation script for JSF h:outputScript.
      *
      * You can use it like this:
+     *
      * <pre>
      * {@code <h:outputScript target="body" library="webjars"
-     *     name="${commonMarkRenderer.outputScriptName}"/>}
+     * name="${commonMarkRenderer.outputScriptName}"/>}
      * </pre>
+     *
      * @return
      */
     public String getOutputScriptName() {
@@ -97,10 +96,12 @@ public class CommonMarkRenderer {
      * Return the name of the sanitizer script for JSF h:outputScript.
      *
      * You can use it like this:
+     *
      * <pre>
      * {@code <h:outputScript target="body" library="webjars"
-     *     name="${commonMarkRenderer.outputScriptNameSanitizer}"/>}
+     * name="${commonMarkRenderer.outputScriptNameSanitizer}"/>}
      * </pre>
+     *
      * @return
      */
     public String getOutputScriptNameSanitizer() {
@@ -109,6 +110,7 @@ public class CommonMarkRenderer {
 
     /**
      * Render CommonMark text to HTML and sanitise it.
+     *
      * @param commonMark
      * @return
      */
@@ -133,12 +135,8 @@ public class CommonMarkRenderer {
             // as a string and returns a rendered HTML string:
             String commonMarkScript = Resources.toString(getScriptResource(),
                     StandardCharsets.UTF_8);
-            String functionsScript = commonMarkScript +
-                    "var reader = new commonmark.Parser();" +
-                    "var writer = new commonmark.HtmlRenderer();" +
-                    "function mdRender(src) {" +
-                    "  return writer.render(reader.parse(src));" +
-                    "};";
+            String functionsScript = commonMarkScript
+                    + "var reader = new commonmark.Parser();var writer = new commonmark.HtmlRenderer();function mdRender(src) {  return writer.render(reader.parse(src));};";
             return ((Compilable) engine).compile(functionsScript);
         } catch (ScriptException | IOException e) {
             throw propagate(e);
@@ -146,7 +144,7 @@ public class CommonMarkRenderer {
     }
 
     private static URL getScriptResource() {
-        return Resources.getResource(CommonMarkRenderer.class, "/" + RESOURCE_NAME);
+        return Resources.getResource(CommonMarkRenderer.class,
+                "/" + RESOURCE_NAME);
     }
-
 }

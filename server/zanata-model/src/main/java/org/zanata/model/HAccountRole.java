@@ -22,7 +22,6 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.Set;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,24 +30,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
-
-import lombok.Setter;
-
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.zanata.model.type.RoleTypeType;
 
 @Entity
-@Setter
 @TypeDef(name = "roleType", typeClass = RoleTypeType.class)
 public class HAccountRole implements Serializable, HasUserFriendlyToString {
-    private static final long serialVersionUID = 9177366120789064801L;
 
+    private static final long serialVersionUID = 9177366120789064801L;
     private Integer id;
     private String name;
     private boolean conditional;
     private RoleType roleType = RoleType.MANUAL;
-
     private Set<HAccountRole> groups;
 
     @Id
@@ -56,21 +50,22 @@ public class HAccountRole implements Serializable, HasUserFriendlyToString {
     public Integer getId() {
         return id;
     }
-
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
+
     public String getName() {
         return name;
     }
 
     @ManyToMany(targetEntity = HAccountRole.class)
-    @JoinTable(name = "HAccountRoleGroup", joinColumns = @JoinColumn(
-            name = "roleId"), inverseJoinColumns = @JoinColumn(
-            name = "memberOf"))
+    @JoinTable(name = "HAccountRoleGroup",
+            joinColumns = @JoinColumn(name = "roleId"),
+            inverseJoinColumns = @JoinColumn(name = "memberOf"))
     public Set<HAccountRole> getGroups() {
         return groups;
     }
+    // used in JQL:
+    // org.zanata.seam.security.ZanataJpaIdentityStore.listGrantableRoles()
 
-    // used in JQL: org.zanata.seam.security.ZanataJpaIdentityStore.listGrantableRoles()
     public boolean isConditional() {
         return conditional;
     }
@@ -87,7 +82,8 @@ public class HAccountRole implements Serializable, HasUserFriendlyToString {
     }
 
     public enum RoleType {
-        AUTO, MANUAL;
+        AUTO,
+        MANUAL;
 
         public char getInitial() {
             return name().charAt(0);
@@ -97,12 +93,34 @@ public class HAccountRole implements Serializable, HasUserFriendlyToString {
             switch (initial) {
             case 'A':
                 return AUTO;
+
             case 'M':
                 return MANUAL;
+
             default:
                 throw new IllegalArgumentException(String.valueOf(initial));
+
             }
         }
     }
 
+    public void setId(final Integer id) {
+        this.id = id;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setConditional(final boolean conditional) {
+        this.conditional = conditional;
+    }
+
+    public void setRoleType(final RoleType roleType) {
+        this.roleType = roleType;
+    }
+
+    public void setGroups(final Set<HAccountRole> groups) {
+        this.groups = groups;
+    }
 }

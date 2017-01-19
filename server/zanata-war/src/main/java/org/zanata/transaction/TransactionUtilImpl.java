@@ -21,7 +21,6 @@
 package org.zanata.transaction;
 
 import java.util.concurrent.Callable;
-
 import javax.ejb.ApplicationException;
 import javax.enterprise.context.ApplicationScoped;
 import javax.faces.convert.ConverterException;
@@ -33,30 +32,28 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.RunnableEx;
 import org.zanata.util.ServiceLocator;
-
 import static javax.transaction.Status.STATUS_ACTIVE;
 import static javax.transaction.Status.STATUS_MARKED_ROLLBACK;
 import static javax.transaction.Status.STATUS_ROLLEDBACK;
+//@Stateless
+//@TransactionManagement(TransactionManagementType.BEAN)
 
 /**
  * Utility class to help with transactions. Based on Seam 2 code including
  * org.jboss.seam.util.Work and org.jboss.seam.transaction.*.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 @ApplicationScoped
-//@Stateless
-//@TransactionManagement(TransactionManagementType.BEAN)
 public class TransactionUtilImpl implements TransactionUtil {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TransactionUtilImpl.class);
 
     public static TransactionUtilImpl get() {
         return ServiceLocator.instance().getInstance(TransactionUtilImpl.class);
@@ -64,7 +61,6 @@ public class TransactionUtilImpl implements TransactionUtil {
 
     @Inject
     private EntityManager entityManager;
-
     @Inject
     private IServiceLocator serviceLocator;
 
@@ -72,7 +68,8 @@ public class TransactionUtilImpl implements TransactionUtil {
      * Runs the provided function (in the shape of a Callable) in its own
      * transaction.
      *
-     * @param function the function to call
+     * @param function
+     *            the function to call
      * @param <R>
      *            Return type expected. The provided function must return this
      *            type.
@@ -80,7 +77,8 @@ public class TransactionUtilImpl implements TransactionUtil {
      * @throws Exception
      *             Exception (if any) thrown by the given function.
      */
-    public static <R> R runInTransaction(Callable<R> function) throws Exception {
+    public static <R> R runInTransaction(Callable<R> function)
+            throws Exception {
         return get().call(function);
     }
 
@@ -91,28 +89,23 @@ public class TransactionUtilImpl implements TransactionUtil {
         boolean transactionActive = false;
         boolean newTransactionRequired = false;
         UserTransaction userTransaction = null;
-
         transaction = getUserTransaction();
-
         if (transaction.getStatus() == Status.STATUS_COMMITTED) {
-            throw new RuntimeException("Nested transactions not supported. @Async may help.");
+            throw new RuntimeException(
+                    "Nested transactions not supported. @Async may help.");
         }
-
         transactionActive = isActiveOrMarkedRollback(transaction)
                 || isRolledBack(transaction); // TODO: temp workaround,
         // what should we really do
         // in this case??
-        newTransactionRequired =
-                isNewTransactionRequired(transactionActive);
+        newTransactionRequired = isNewTransactionRequired(transactionActive);
         userTransaction = newTransactionRequired ? transaction : null;
-
         try {
             if (newTransactionRequired) {
                 log.debug("beginning transaction");
                 userTransaction.begin();
             }
             entityManager.joinTransaction();
-
             R result = function.call();
             if (newTransactionRequired) {
                 if (isMarkedRollback(transaction)) {
@@ -124,17 +117,19 @@ public class TransactionUtilImpl implements TransactionUtil {
                 }
             }
             return result;
-        } catch (IllegalStateException | NotSupportedException | SystemException e) {
+        } catch (IllegalStateException | NotSupportedException
+                | SystemException e) {
             throw e;
         } catch (Exception e) {
-            if (newTransactionRequired
-                    && userTransaction.getStatus() != Status.STATUS_NO_TRANSACTION) {
+            if (newTransactionRequired && userTransaction
+                    .getStatus() != Status.STATUS_NO_TRANSACTION) {
                 if (isRollbackRequired(e, true)) {
                     log.debug("rolling back transaction");
                     userTransaction.rollback();
                 } else {
-                    log.debug("committing transaction after ApplicationException(rollback=false):"
-                            + e.getMessage());
+                    log.debug(
+                            "committing transaction after ApplicationException(rollback=false):"
+                                    + e.getMessage());
                     userTransaction.commit();
                 }
             }
@@ -171,37 +166,35 @@ public class TransactionUtilImpl implements TransactionUtil {
             return null;
         });
     }
-
     // Adapted from org.jboss.seam.transaction.Transaction.getUserTransaction()
-    private UserTransaction getUserTransaction() throws NamingException {
-        return serviceLocator.getJndiComponent(
-                "java:jboss/UserTransaction",
-                UserTransaction.class);
 
-//        try {
-//            return serviceLocator.getJndiComponent("java:comp/UserTransaction",
-//                    UserTransaction.class);
-//        } catch (NamingException ne) {
-//            try {
-//                // Embedded JBoss has no java:comp/UserTransaction
-//                UserTransaction ut = serviceLocator.getJndiComponent(
-//                        "UserTransaction", UserTransaction.class);
-//                ut.getStatus(); // for glassfish, which can return an unusable
-//                // UT
-//                return ut;
-//            } catch (NamingException nnfe2) {
-//                // Try the other JBoss location in JBoss AS7
-//                return serviceLocator.getJndiComponent(
-//                        "java:jboss/UserTransaction",
-//                        UserTransaction.class);
-//            } catch (Exception e) {
-//                throw ne;
-//            }
-//        }
+    private UserTransaction getUserTransaction() throws NamingException {
+        return serviceLocator.getJndiComponent("java:jboss/UserTransaction",
+                UserTransaction.class);
+        // try {
+        // return serviceLocator.getJndiComponent("java:comp/UserTransaction",
+        // UserTransaction.class);
+        // } catch (NamingException ne) {
+        // try {
+        // // Embedded JBoss has no java:comp/UserTransaction
+        // UserTransaction ut = serviceLocator.getJndiComponent(
+        // "UserTransaction", UserTransaction.class);
+        // ut.getStatus(); // for glassfish, which can return an unusable
+        // // UT
+        // return ut;
+        // } catch (NamingException nnfe2) {
+        // // Try the other JBoss location in JBoss AS7
+        // return serviceLocator.getJndiComponent(
+        // "java:jboss/UserTransaction",
+        // UserTransaction.class);
+        // } catch (Exception e) {
+        // throw ne;
+        // }
+        // }
     }
 
-    private static boolean isActiveOrMarkedRollback(UserTransaction
-            transaction) throws SystemException {
+    private static boolean isActiveOrMarkedRollback(UserTransaction transaction)
+            throws SystemException {
         int status = transaction.getStatus();
         return status == STATUS_ACTIVE || status == STATUS_MARKED_ROLLBACK;
     }
@@ -222,20 +215,19 @@ public class TransactionUtilImpl implements TransactionUtil {
 
     private static boolean isRollbackRequired(Exception e, boolean isJavaBean) {
         Class<? extends Exception> clazz = e.getClass();
-        return (isSystemException(e, isJavaBean, clazz)) ||
-                (clazz.isAnnotationPresent(ApplicationException.class) && clazz
-                        .getAnnotation(ApplicationException.class).rollback());
+        return (isSystemException(e, isJavaBean, clazz)) || (clazz
+                .isAnnotationPresent(ApplicationException.class)
+                && clazz.getAnnotation(ApplicationException.class).rollback());
     }
 
     private static boolean isSystemException(Exception e, boolean isJavaBean,
             Class<? extends Exception> clazz) {
-        return isJavaBean &&
-                (e instanceof RuntimeException) &&
-                !clazz.isAnnotationPresent(ApplicationException.class) &&
-                // TODO: this is hackish, maybe just turn off RollbackInterceptor
-                // for @Converter/@Validator components
-                !(e instanceof ValidatorException) &&
-                !(e instanceof ConverterException);
+        return
+        // TODO: this is hackish, maybe just turn off RollbackInterceptor
+        // for @Converter/@Validator components
+        isJavaBean && (e instanceof RuntimeException)
+                && !clazz.isAnnotationPresent(ApplicationException.class)
+                && !(e instanceof ValidatorException)
+                && !(e instanceof ConverterException);
     }
-
 }

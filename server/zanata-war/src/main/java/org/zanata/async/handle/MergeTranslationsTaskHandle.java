@@ -20,9 +20,6 @@
  */
 package org.zanata.async.handle;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import org.zanata.async.AsyncTaskHandle;
 
 /**
@@ -31,12 +28,41 @@ import org.zanata.async.AsyncTaskHandle;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> {
-    @Getter @Setter
+
     private int totalTranslations;
-    @Getter @Setter
     private String cancelledBy;
-    @Getter @Setter
     private long cancelledTime;
-    @Getter @Setter
     private String triggeredBy;
+
+    public int getTotalTranslations() {
+        return this.totalTranslations;
+    }
+
+    public void setTotalTranslations(final int totalTranslations) {
+        this.totalTranslations = totalTranslations;
+    }
+
+    public String getCancelledBy() {
+        return this.cancelledBy;
+    }
+
+    public void setCancelledBy(final String cancelledBy) {
+        this.cancelledBy = cancelledBy;
+    }
+
+    public long getCancelledTime() {
+        return this.cancelledTime;
+    }
+
+    public void setCancelledTime(final long cancelledTime) {
+        this.cancelledTime = cancelledTime;
+    }
+
+    public String getTriggeredBy() {
+        return this.triggeredBy;
+    }
+
+    public void setTriggeredBy(final String triggeredBy) {
+        this.triggeredBy = triggeredBy;
+    }
 }

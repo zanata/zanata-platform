@@ -21,18 +21,13 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Model;
 import javax.faces.context.FacesContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.servlet.annotations.HttpParam;
 import org.zanata.model.HLocale;
@@ -42,14 +37,17 @@ import org.zanata.service.ConfigurationService;
 @RequestScoped
 @Model
 @Transactional
-@Slf4j
 public class ConfigurationAction implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Inject @HttpParam("iterationSlug")
-    private String iterationSlug;
-    @Inject @HttpParam("projectSlug")
-    private String projectSlug;
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ConfigurationAction.class);
 
+    private static final long serialVersionUID = 1L;
+    @Inject
+    @HttpParam("iterationSlug")
+    private String iterationSlug;
+    @Inject
+    @HttpParam("projectSlug")
+    private String projectSlug;
     @Inject
     private ConfigurationService configurationServiceImpl;
 
@@ -59,15 +57,13 @@ public class ConfigurationAction implements Serializable {
     }
 
     public void downloadOfflineTranslationConfig(HLocale locale) {
-        respondWithFile(configurationServiceImpl
-                .getConfigForOfflineTranslation(projectSlug, iterationSlug,
-                        locale));
+        respondWithFile(configurationServiceImpl.getConfigForOfflineTranslation(
+                projectSlug, iterationSlug, locale));
     }
 
     private void respondWithFile(String configFileContents) {
-        HttpServletResponse response =
-                (HttpServletResponse) FacesContext.getCurrentInstance()
-                        .getExternalContext().getResponse();
+        HttpServletResponse response = (HttpServletResponse) FacesContext
+                .getCurrentInstance().getExternalContext().getResponse();
         response.setContentType("application/xml");
         response.addHeader("Content-disposition", "attachment; filename=\""
                 + configurationServiceImpl.getConfigurationFileName() + "\"");

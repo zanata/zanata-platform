@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.async.Async;
@@ -20,30 +19,23 @@ import com.google.common.annotations.VisibleForTesting;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("rateLimitManager")
 @javax.enterprise.context.ApplicationScoped
-
-@Slf4j
 public class RateLimitManager implements Introspectable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(RateLimitManager.class);
 
-    private final Cache<RateLimiterToken, RestCallLimiter> activeCallers = CacheBuilder
-            .newBuilder().maximumSize(100).build();
-
-    @Getter(AccessLevel.PROTECTED)
+    private final Cache<RateLimiterToken, RestCallLimiter> activeCallers =
+            CacheBuilder.newBuilder().maximumSize(100).build();
     @VisibleForTesting
     private int maxConcurrent;
-    @Getter(AccessLevel.PROTECTED)
     @VisibleForTesting
     private int maxActive;
-
     @Inject
     private ApplicationConfiguration appConfig;
 
@@ -63,9 +55,8 @@ public class RateLimitManager implements Introspectable {
 
     @Async
     @Transactional
-    public void configurationChanged(
-            @Observes(during = TransactionPhase.AFTER_SUCCESS)
-            ConfigurationChanged payload) {
+    public void configurationChanged(@Observes(
+            during = TransactionPhase.AFTER_SUCCESS) ConfigurationChanged payload) {
         int oldConcurrent = maxConcurrent;
         int oldActive = maxActive;
         boolean changed = false;
@@ -89,8 +80,8 @@ public class RateLimitManager implements Introspectable {
             }
         }
     }
-
     // below are all monitoring stuff
+
     @Override
     public String getIntrospectableId() {
         return getClass().getCanonicalName();
@@ -102,7 +93,8 @@ public class RateLimitManager implements Introspectable {
     }
 
     private Map<String, String> peekCurrentBuckets() {
-        ConcurrentMap<RateLimiterToken, RestCallLimiter> map = activeCallers.asMap();
+        ConcurrentMap<RateLimiterToken, RestCallLimiter> map =
+                activeCallers.asMap();
         ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
         map.forEach((key, value) -> {
             builder.put(key.toString(), value.toString());
@@ -111,10 +103,10 @@ public class RateLimitManager implements Introspectable {
     }
 
     /**
-     * @param key - {@link RateLimiterToken.TYPE )
+     * @param key
+     *            - {@link RateLimiterToken.TYPE )
      */
     public RestCallLimiter getLimiter(final RateLimiterToken key) {
-
         if (getMaxConcurrent() == 0 && getMaxActive() == 0) {
             if (activeCallers.size() > 0) {
                 activeCallers.invalidateAll();
@@ -125,8 +117,7 @@ public class RateLimitManager implements Introspectable {
         try {
             return activeCallers.get(key, () -> {
                 log.debug("creating rate limiter for key: {}", key);
-                return new RestCallLimiter(getMaxConcurrent(),
-                        getMaxActive());
+                return new RestCallLimiter(getMaxConcurrent(), getMaxActive());
             });
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
@@ -139,7 +130,13 @@ public class RateLimitManager implements Introspectable {
         private NoLimitLimiter() {
             super(0, 0);
         }
-
     }
 
+    protected int getMaxConcurrent() {
+        return this.maxConcurrent;
+    }
+
+    protected int getMaxActive() {
+        return this.maxActive;
+    }
 }

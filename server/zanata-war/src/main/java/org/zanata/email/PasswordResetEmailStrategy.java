@@ -21,17 +21,14 @@
 package org.zanata.email;
 
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
-
 import javax.mail.internet.InternetAddress;
 
 /**
-* @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
-*/
-@RequiredArgsConstructor
-public class PasswordResetEmailStrategy extends
-        EmailStrategy {
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ */
+public class PasswordResetEmailStrategy extends EmailStrategy {
     private final String key;
 
     @Override
@@ -45,13 +42,16 @@ public class PasswordResetEmailStrategy extends
     }
 
     @Override
-    public Map<String, Object> makeContext(
-            Map<String, Object> genericContext,
+    public Map<String, Object> makeContext(Map<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context = super.makeContext(genericContext,
-                toAddresses);
-        return context
-                .put("activationKey", key)
-                .put("toName", toAddresses[0].getPersonal());
+        Map<String, Object> context =
+                super.makeContext(genericContext, toAddresses);
+        return context.put("activationKey", key).put("toName",
+                toAddresses[0].getPersonal());
+    }
+
+    @java.beans.ConstructorProperties({ "key" })
+    public PasswordResetEmailStrategy(final String key) {
+        this.key = key;
     }
 }

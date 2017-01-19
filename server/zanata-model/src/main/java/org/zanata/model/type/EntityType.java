@@ -20,8 +20,6 @@
  */
 package org.zanata.model.type;
 
-import lombok.Getter;
-
 import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
@@ -31,8 +29,7 @@ import org.zanata.model.tm.TransMemoryUnit;
 /**
  * Entity type with abbreviation.
  *
- * Usage:
- * {@link org.zanata.model.HTextFlowTarget.copiedEntityType}
+ * Usage: {@link org.zanata.model.HTextFlowTarget.copiedEntityType}
  * {@link org.zanata.model.HTextFlowTargetHistory.copiedEntityType}
  * {@link org.zanata.model.Activity.lastTargetType}
  *
@@ -44,11 +41,7 @@ public enum EntityType {
     HProjectIteration(HProjectIteration.class, "VER"),
     HDocument(HDocument.class, "DOC"),
     TMX(TransMemoryUnit.class, "TMX");
-
-    @Getter
     private final Class<?> entityClass;
-
-    @Getter
     private final String abbr;
 
     EntityType(Class<?> entityClass, String abbr) {
@@ -58,18 +51,32 @@ public enum EntityType {
 
     public static EntityType getValueOf(String abbr) {
         switch (abbr) {
-            case "TFT":
-                return EntityType.HTexFlowTarget;
-            case "TTH":
-                return EntityType.HTextFlowTargetHistory;
-            case "VER":
-                return EntityType.HProjectIteration;
-            case "DOC":
-                return EntityType.HDocument;
-            case "TMX":
-                return EntityType.TMX;
-            default:
-                throw new IllegalArgumentException(String.valueOf(abbr));
+        case "TFT":
+            return EntityType.HTexFlowTarget;
+
+        case "TTH":
+            return EntityType.HTextFlowTargetHistory;
+
+        case "VER":
+            return EntityType.HProjectIteration;
+
+        case "DOC":
+            return EntityType.HDocument;
+
+        case "TMX":
+            return EntityType.TMX;
+
+        default:
+            throw new IllegalArgumentException(String.valueOf(abbr));
+
         }
+    }
+
+    public Class<?> getEntityClass() {
+        return this.entityClass;
+    }
+
+    public String getAbbr() {
+        return this.abbr;
     }
 }

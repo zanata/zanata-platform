@@ -8,26 +8,23 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-
 import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.hibernate.proxy.HibernateProxyHelper;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.primitives.Primitives;
-import lombok.extern.slf4j.Slf4j;
-
 // @formatter:off
+// @formatter:on
+
 /**
  * Utility class for creating copy of Hibernate entity in
  * {@link org.zanata.model}.
@@ -35,20 +32,21 @@ import lombok.extern.slf4j.Slf4j;
  * This will copy all writable properties {@link PropertyUtilsBean#isWriteable}
  * in provided bean except for:
  *
- * Properties in {@link this#COMMON_IGNORED_FIELDS}, and
- * Properties in ignoreProperties field.
+ * Properties in {@link this#COMMON_IGNORED_FIELDS}, and Properties in
+ * ignoreProperties field.
  *
- * @see this#shouldCopy(PropertyUtilsBean, Object, String, java.util.List)
- * for condition check.
+ * @see this#shouldCopy(PropertyUtilsBean, Object, String, java.util.List) for
+ *      condition check.
  *
  *
- * Property which has {@link javax.persistence.OneToMany#mappedBy()} or
- * {@link javax.persistence.OneToOne} in field or GetterMethod {@link PropertyUtilsBean#getReadMethod}
- * will be copied using {@link this#copyBean(Object, String...)},
- * otherwise {@link BeanUtilsBean#copyProperty} will be used.
+ *      Property which has {@link javax.persistence.OneToMany#mappedBy()} or
+ *      {@link javax.persistence.OneToOne} in field or GetterMethod
+ *      {@link PropertyUtilsBean#getReadMethod} will be copied using
+ *      {@link this#copyBean(Object, String...)}, otherwise
+ *      {@link BeanUtilsBean#copyProperty} will be used.
  *
- * New collection will be created if bean type is: {@link java.util.List},
- * {@link java.util.Set} and {@link java.util.Map}
+ *      New collection will be created if bean type is: {@link java.util.List},
+ *      {@link java.util.Set} and {@link java.util.Map}
  *
  *
  * @see this#copyBean(Object, String...)
@@ -57,9 +55,9 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-// @formatter:on
-@Slf4j
 public class JPACopier {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(JPACopier.class);
 
     /**
      * Common ignored fields when copying entity, {id, creationDate,
@@ -71,8 +69,8 @@ public class JPACopier {
     /**
      * Fields to copy using {@link this#copyBean(Object, String...)} in class.
      */
-    private static Map<Class, List<String>> FIELDS_TO_COPY = Maps
-            .newConcurrentMap();
+    private static Map<Class, List<String>> FIELDS_TO_COPY =
+            Maps.newConcurrentMap();
 
     /**
      * Create a clone of all writable properties from fromBean.
@@ -92,12 +90,10 @@ public class JPACopier {
             throws IllegalAccessException, InstantiationException,
             InvocationTargetException, NoSuchMethodException {
         Preconditions.checkNotNull(fromBean);
-
         // create a copy of the bean entity
         // TODO: replace HibernateProxyHelper as its being phased out
-        Object copy = HibernateProxyHelper.getClassWithoutInitializingProxy(
-                fromBean).newInstance();
-
+        Object copy = HibernateProxyHelper
+                .getClassWithoutInitializingProxy(fromBean).newInstance();
         copy = copyBean(fromBean, copy, ignoreProperties);
         return (T) copy;
     }
@@ -120,39 +116,30 @@ public class JPACopier {
      *         {@link org.zanata.util.JPACopier#isPrimitiveOrString(Object)},
      *         otherwise return toBean
      */
-    public static <T> T copyBean(@Nonnull T fromBean,
-            @Nonnull T toBean, String... ignoreProperties)
+    public static <T> T copyBean(@Nonnull T fromBean, @Nonnull T toBean,
+            String... ignoreProperties)
             throws IllegalAccessException, InstantiationException,
             InvocationTargetException, NoSuchMethodException {
-
         Preconditions.checkNotNull(fromBean);
         Preconditions.checkNotNull(toBean);
-
         if (isPrimitiveOrString(fromBean)) {
             return fromBean;
         }
-
         BeanUtilsBean beanUtilsBean = BeanUtilsBean.getInstance();
-
         if (isCollectionType(fromBean.getClass())) {
             toBean = (T) createNewCollection(fromBean.getClass(), fromBean);
             return toBean;
         }
-
         List<String> ignoreList = Lists.newArrayList(ignoreProperties);
-
         Map<String, Object> propertiesMap =
                 beanUtilsBean.getPropertyUtils().describe(fromBean);
-
         for (Map.Entry<String, Object> entry : propertiesMap.entrySet()) {
             String property = entry.getKey();
             Object value = entry.getValue();
-
             if (!shouldCopy(beanUtilsBean.getPropertyUtils(), toBean, property,
                     ignoreList)) {
                 continue;
             }
-
             if (value != null && isJPACopyProperty(fromBean, property)) {
                 value = copyBean(value);
             }
@@ -197,7 +184,6 @@ public class JPACopier {
      *
      * @see Class#isPrimitive()
      * @param obj
-     *
      */
     private static boolean isPrimitiveOrString(Object obj) {
         return obj instanceof String
@@ -212,18 +198,12 @@ public class JPACopier {
      * Note: ArrayList, HashSet and HashMap are being used to create new
      * instance of Collection, which will potential be an issue if propertyType
      * is not one of those implementation but sharing the same interface.
-     *
      */
-    private static void
-            copyProperty(BeanUtilsBean beanUtilsBean, Object toBean,
-                    String property, Object value)
-                    throws InvocationTargetException, IllegalAccessException,
-                    NoSuchMethodException {
-
-        Class propertyType =
-                beanUtilsBean.getPropertyUtils().getPropertyDescriptor(
-                        toBean, property).getPropertyType();
-
+    private static void copyProperty(BeanUtilsBean beanUtilsBean, Object toBean,
+            String property, Object value) throws InvocationTargetException,
+            IllegalAccessException, NoSuchMethodException {
+        Class propertyType = beanUtilsBean.getPropertyUtils()
+                .getPropertyDescriptor(toBean, property).getPropertyType();
         if (isCollectionType(propertyType)) {
             value = createNewCollection(propertyType, value);
         }
@@ -280,27 +260,20 @@ public class JPACopier {
     private static List<String> getJPACopierFields(Object bean)
             throws IllegalAccessException, NoSuchMethodException,
             InvocationTargetException {
-
         PropertyUtilsBean propertyUtilsBean =
                 BeanUtilsBean.getInstance().getPropertyUtils();
-
         List<String> properties = Lists.newCopyOnWriteArrayList();
-
         // TODO: replace HibernateProxyHelper as its being phased out
         Class noProxyBean =
                 HibernateProxyHelper.getClassWithoutInitializingProxy(bean);
-
         Map<String, Object> propertiesMap = propertyUtilsBean.describe(bean);
-
         for (String property : propertiesMap.keySet()) {
             // Read annotate in Field or Getter method of property
             try {
-                PropertyDescriptor descriptor = propertyUtilsBean
-                        .getPropertyDescriptor(bean, property);
-
+                PropertyDescriptor descriptor =
+                        propertyUtilsBean.getPropertyDescriptor(bean, property);
                 String methodName =
                         propertyUtilsBean.getReadMethod(descriptor).getName();
-
                 Method getterMethod = noProxyBean.getMethod(methodName);
                 if (isUseJPACopier(getterMethod)) {
                     properties.add(property);
@@ -310,8 +283,7 @@ public class JPACopier {
                 log.debug("Read method inaccessible for {0} in class-{1}",
                         property, noProxyBean.getName());
             }
-            Field field =
-                    FieldUtils.getField(bean.getClass(), property, true);
+            Field field = FieldUtils.getField(bean.getClass(), property, true);
             if (isUseJPACopier(field)) {
                 properties.add(property);
             }
@@ -332,13 +304,11 @@ public class JPACopier {
         if (accessibleObject == null) {
             return false;
         }
-
         if (accessibleObject.isAnnotationPresent(OneToOne.class)) {
             return true;
         } else if (accessibleObject.isAnnotationPresent(OneToMany.class)
-                && StringUtils.isNotEmpty(
-                        accessibleObject.getAnnotation(OneToMany.class)
-                                .mappedBy())) {
+                && StringUtils.isNotEmpty(accessibleObject
+                        .getAnnotation(OneToMany.class).mappedBy())) {
             return true;
         }
         return false;

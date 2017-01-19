@@ -18,10 +18,8 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.model.type;
 
-import lombok.Getter;
 import org.hibernate.MappingException;
 
 /**
@@ -36,8 +34,6 @@ public enum RequestState {
     ACCEPTED('A'),
     REJECTED('R'),
     CANCELLED('C');
-
-    @Getter
     private char initial;
 
     RequestState(char initial) {
@@ -47,22 +43,31 @@ public enum RequestState {
     public static RequestState getEnum(String string) {
         if (string.length() > 1) {
             throw new IllegalArgumentException(
-                "Invalid characters found parsing string '" + string
-                    + "'");
+                    "Invalid characters found parsing string \'" + string
+                            + "\'");
         }
         char initial = string.charAt(0);
         switch (initial) {
-            case 'N':
-                return RequestState.NEW;
-            case 'A':
-                return RequestState.ACCEPTED;
-            case 'R':
-                return RequestState.REJECTED;
-            case 'C':
-                return RequestState.CANCELLED;
-            default:
-                throw new IllegalArgumentException(
+        case 'N':
+            return RequestState.NEW;
+
+        case 'A':
+            return RequestState.ACCEPTED;
+
+        case 'R':
+            return RequestState.REJECTED;
+
+        case 'C':
+            return RequestState.CANCELLED;
+
+        default:
+            throw new IllegalArgumentException(
                     "No request state has an initial matching " + initial);
+
         }
+    }
+
+    public char getInitial() {
+        return this.initial;
     }
 }

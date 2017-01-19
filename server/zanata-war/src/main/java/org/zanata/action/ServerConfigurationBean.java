@@ -24,16 +24,9 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
@@ -43,7 +36,6 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.action.validator.DomainList;
 import org.zanata.security.annotations.CheckRole;
@@ -55,7 +47,6 @@ import org.zanata.model.HApplicationConfiguration;
 import org.zanata.model.validator.Url;
 import org.zanata.rest.service.ServerConfigurationService;
 import org.zanata.ui.faces.FacesMessages;
-
 import static org.zanata.model.HApplicationConfiguration.*;
 
 @Named("serverConfigurationBean")
@@ -63,146 +54,101 @@ import static org.zanata.model.HApplicationConfiguration.*;
 @Model
 @Transactional
 @CheckRole("admin")
-@Slf4j
 public class ServerConfigurationBean implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ServerConfigurationBean.class);
 
+    private static final long serialVersionUID = 1L;
     @Inject
     private FacesMessages facesMessages;
-
     public static final String DEFAULT_HELP_URL = "http://zanata.org/help";
-
-    public static final String DEFAULT_TERM_OF_USE_URL = "http://zanata.org/terms";
-
+    public static final String DEFAULT_TERM_OF_USE_URL =
+            "http://zanata.org/terms";
     @Inject
     private ApplicationConfigurationDAO applicationConfigurationDAO;
-
     @Inject
     private ApplicationConfiguration applicationConfiguration;
-
     @Inject
     private Event<HomeContentChangedEvent> homeContentChangedEventEvent;
-
     @Url(canEndInSlash = true)
-    @Getter
-    @Setter
     private String registerUrl;
-
     @Url(canEndInSlash = false)
-    @Getter
-    @Setter
     private String serverUrl;
-
-    @Getter
-    @Setter
     private String emailDomain;
-
     @EmailList
-    @Getter
-    @Setter
     private String adminEmail;
-
     @Email
-    @Getter
-    @Setter
     private String fromEmailAddr;
-    private PropertyWithKey<String> fromEmailAddrProperty = new PropertyWithKey<String>("fromEmailAddr", KEY_EMAIL_FROM_ADDRESS);
-
-    @Getter
-    @Setter
+    private PropertyWithKey<String> fromEmailAddrProperty =
+            new PropertyWithKey<String>("fromEmailAddr",
+                    KEY_EMAIL_FROM_ADDRESS);
     private String homeContent = "";
-    private PropertyWithKey<String> homeContentProperty = new PropertyWithKey<String>("homeContent", KEY_HOME_CONTENT);
-
-    @Getter
-    @Setter
+    private PropertyWithKey<String> homeContentProperty =
+            new PropertyWithKey<String>("homeContent", KEY_HOME_CONTENT);
     private boolean enableLogEmail;
-    private PropertyWithKey<Boolean> enableLogEmailProperty = new PropertyWithKey<Boolean>("enableLogEmail", KEY_EMAIL_LOG_EVENTS);
-
-    @Getter
-    @Setter
+    private PropertyWithKey<Boolean> enableLogEmailProperty =
+            new PropertyWithKey<Boolean>("enableLogEmail",
+                    KEY_EMAIL_LOG_EVENTS);
     private boolean displayUserEmail;
-    private PropertyWithKey<Boolean> displayUserEmailProperty = new PropertyWithKey<Boolean>("displayUserEmail", KEY_DISPLAY_USER_EMAIL);
-
-    @Getter
-    @Setter
+    private PropertyWithKey<Boolean> displayUserEmailProperty =
+            new PropertyWithKey<Boolean>("displayUserEmail",
+                    KEY_DISPLAY_USER_EMAIL);
     private boolean allowAnonymousUser = true;
-    private PropertyWithKey<Boolean> allowAnonymousUserProperty = new PropertyWithKey<Boolean>("allowAnonymousUser", KEY_ALLOW_ANONYMOUS_USER);
-
+    private PropertyWithKey<Boolean> allowAnonymousUserProperty =
+            new PropertyWithKey<Boolean>("allowAnonymousUser",
+                    KEY_ALLOW_ANONYMOUS_USER);
     @EmailList
-    @Getter
-    @Setter
     private String logDestinationEmails;
-
-    @Getter
-    @Setter
     private String logEmailLevel;
-
     @Url(canEndInSlash = true)
-    @Getter
-    @Setter
     private String piwikUrl;
-
-    @Getter
-    @Setter
     private String piwikIdSite;
-
     @Url(canEndInSlash = true)
-    @Getter
-    @Setter
     private String termsOfUseUrl;
-
     @Url(canEndInSlash = true)
-    @Getter
-    @Setter
     private String helpUrl;
-
-    @Getter
-    @Setter
     @Pattern(regexp = "\\d{0,5}",
             message = "value must be an integer number between 0 to 99999")
     private String maxConcurrentRequestsPerApiKey;
-
-    @Getter
-    @Setter
     @Pattern(regexp = "\\d{0,5}",
             message = "value must be an integer number between 0 to 99999")
     private String maxActiveRequestsPerApiKey;
-
-    @Getter
-    @Setter
     @Pattern(regexp = "\\d{0,5}",
             message = "value must be an integer number between 0 to 99999")
     private String maxFilesPerUpload;
-
     @DomainList
-    @Getter
-    @Setter
     private String permittedUserEmailDomains;
-
-    private List<PropertyWithKey<String>> commonStringProperties = Arrays.asList(
-            new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
-            new PropertyWithKey<String>("serverUrl", KEY_HOST),
-            new PropertyWithKey<String>("emailDomain", KEY_DOMAIN),
-            new PropertyWithKey<String>("adminEmail", KEY_ADMIN_EMAIL),
-            new PropertyWithKey<String>("logDestinationEmails", KEY_LOG_DESTINATION_EMAIL),
-            new PropertyWithKey<String>("logEmailLevel", KEY_EMAIL_LOG_LEVEL),
-            new PropertyWithKey<String>("piwikUrl", KEY_PIWIK_URL),
-            new PropertyWithKey<String>("piwikIdSite", KEY_PIWIK_IDSITE),
-            new PropertyWithKey<String>("termsOfUseUrl", KEY_TERMS_CONDITIONS_URL),
-            new PropertyWithKey<String>("helpUrl", KEY_HELP_URL),
-            new PropertyWithKey<String>("maxConcurrentRequestsPerApiKey", KEY_MAX_CONCURRENT_REQ_PER_API_KEY),
-            new PropertyWithKey<String>("maxActiveRequestsPerApiKey", KEY_MAX_ACTIVE_REQ_PER_API_KEY),
-            new PropertyWithKey<String>("maxFilesPerUpload", KEY_MAX_FILES_PER_UPLOAD),
-            new PropertyWithKey<String>("displayUserEmail", KEY_DISPLAY_USER_EMAIL),
-            new PropertyWithKey<String>("permittedUserEmailDomains",
-                    KEY_PERMITTED_USER_EMAIL_DOMAIN),
-            homeContentProperty
-    );
+    private List<PropertyWithKey<String>> commonStringProperties = Arrays
+            .asList(new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
+                    new PropertyWithKey<String>("serverUrl", KEY_HOST),
+                    new PropertyWithKey<String>("emailDomain", KEY_DOMAIN),
+                    new PropertyWithKey<String>("adminEmail", KEY_ADMIN_EMAIL),
+                    new PropertyWithKey<String>("logDestinationEmails",
+                            KEY_LOG_DESTINATION_EMAIL),
+                    new PropertyWithKey<String>("logEmailLevel",
+                            KEY_EMAIL_LOG_LEVEL),
+                    new PropertyWithKey<String>("piwikUrl", KEY_PIWIK_URL),
+                    new PropertyWithKey<String>("piwikIdSite",
+                            KEY_PIWIK_IDSITE),
+                    new PropertyWithKey<String>("termsOfUseUrl",
+                            KEY_TERMS_CONDITIONS_URL),
+                    new PropertyWithKey<String>("helpUrl", KEY_HELP_URL),
+                    new PropertyWithKey<String>(
+                            "maxConcurrentRequestsPerApiKey",
+                            KEY_MAX_CONCURRENT_REQ_PER_API_KEY),
+                    new PropertyWithKey<String>("maxActiveRequestsPerApiKey",
+                            KEY_MAX_ACTIVE_REQ_PER_API_KEY),
+                    new PropertyWithKey<String>("maxFilesPerUpload",
+                            KEY_MAX_FILES_PER_UPLOAD),
+                    new PropertyWithKey<String>("displayUserEmail",
+                            KEY_DISPLAY_USER_EMAIL),
+                    new PropertyWithKey<String>("permittedUserEmailDomains",
+                            KEY_PERMITTED_USER_EMAIL_DOMAIN),
+                    homeContentProperty);
 
     public String updateHomeContent() {
         persistPropertyToDatabase(homeContentProperty);
         applicationConfigurationDAO.flush();
-
         facesMessages.addGlobal("Home content was successfully updated.");
         homeContentChangedEventEvent.fire(new HomeContentChangedEvent());
         return "/public/home.xhtml";
@@ -216,32 +162,37 @@ public class ServerConfigurationBean implements Serializable {
         this.fromEmailAddr = applicationConfiguration.getFromEmailAddr();
     }
 
-    private void setPropertiesFromConfigIfNotNull(List<PropertyWithKey<String>> properties) {
+    private void setPropertiesFromConfigIfNotNull(
+            List<PropertyWithKey<String>> properties) {
         for (PropertyWithKey<String> property : properties) {
             setPropertyFromConfigIfNotNull(property);
         }
     }
 
-    private void setPropertyFromConfigIfNotNull(PropertyWithKey<String> property) {
+    private void
+            setPropertyFromConfigIfNotNull(PropertyWithKey<String> property) {
         HApplicationConfiguration valueHolder =
-                applicationConfigurationDAO
-                        .findByKey(property.getKey());
+                applicationConfigurationDAO.findByKey(property.getKey());
         if (valueHolder != null) {
             try {
                 property.set(valueHolder.getValue());
             } catch (InvocationTargetException | IllegalAccessException e) {
-                log.error("error setting property value:" + property.getKey() + " -> " + valueHolder.getValue(), e);
+                log.error("error setting property value:" + property.getKey()
+                        + " -> " + valueHolder.getValue(), e);
             }
         }
     }
 
-    private void setBooleanPropertyFromConfigIfNotNull(PropertyWithKey<Boolean> property) {
-        HApplicationConfiguration valueHolder = applicationConfigurationDAO.findByKey(property.getKey());
+    private void setBooleanPropertyFromConfigIfNotNull(
+            PropertyWithKey<Boolean> property) {
+        HApplicationConfiguration valueHolder =
+                applicationConfigurationDAO.findByKey(property.getKey());
         if (valueHolder != null) {
             try {
                 property.set(Boolean.parseBoolean(valueHolder.getValue()));
             } catch (InvocationTargetException | IllegalAccessException e) {
-                log.error("error setting property value:" + property.getKey() + " -> " + valueHolder.getValue(), e);
+                log.error("error setting property value:" + property.getKey()
+                        + " -> " + valueHolder.getValue(), e);
             }
         }
     }
@@ -250,15 +201,13 @@ public class ServerConfigurationBean implements Serializable {
     public String update() {
         persistPropertiesToDatabase(commonStringProperties);
         persistPropertyToDatabase(fromEmailAddrProperty);
-
         HApplicationConfiguration emailLogEventsValue =
-                applicationConfigurationDAO
-                        .findByKey(HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
+                applicationConfigurationDAO.findByKey(
+                        HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS);
         if (emailLogEventsValue == null) {
-            emailLogEventsValue =
-                    new HApplicationConfiguration(
-                            HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS,
-                            Boolean.toString(enableLogEmail));
+            emailLogEventsValue = new HApplicationConfiguration(
+                    HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS,
+                    Boolean.toString(enableLogEmail));
         } else {
             emailLogEventsValue.setValue(Boolean.toString(enableLogEmail));
         }
@@ -270,31 +219,34 @@ public class ServerConfigurationBean implements Serializable {
                     new HApplicationConfiguration(KEY_ALLOW_ANONYMOUS_USER,
                             Boolean.toString(allowAnonymousUser));
         } else {
-            allowAnonymousUserValue.setValue(Boolean.toString(allowAnonymousUser));
+            allowAnonymousUserValue
+                    .setValue(Boolean.toString(allowAnonymousUser));
         }
         applicationConfigurationDAO.makePersistent(allowAnonymousUserValue);
-
         applicationConfigurationDAO.flush();
         facesMessages.clear();
         facesMessages.addGlobal("Configuration was successfully updated.");
         return "success";
     }
 
-    private void persistPropertiesToDatabase(List<PropertyWithKey<String>> properties) {
+    private void persistPropertiesToDatabase(
+            List<PropertyWithKey<String>> properties) {
         for (PropertyWithKey<String> property : properties) {
             persistPropertyToDatabase(property);
         }
     }
 
     private void persistPropertyToDatabase(PropertyWithKey<String> property) {
-        HApplicationConfiguration value = applicationConfigurationDAO
-                        .findByKey(property.getKey());
+        HApplicationConfiguration value =
+                applicationConfigurationDAO.findByKey(property.getKey());
         try {
             ServerConfigurationService.persistApplicationConfig(
                     property.getKey(), value, property.get(),
                     applicationConfigurationDAO);
-        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
-            log.error("error persisting property value:" + property.getKey() + " -> " + value, e);
+        } catch (IllegalAccessException | NoSuchMethodException
+                | InvocationTargetException e) {
+            log.error("error persisting property value:" + property.getKey()
+                    + " -> " + value, e);
         }
     }
 
@@ -302,16 +254,78 @@ public class ServerConfigurationBean implements Serializable {
      * Associates a field of type T with a HApplicationConfiguration key,
      * allowing abstraction around setting fields only if keys are bound.
      */
-    @Data
     private class PropertyWithKey<T> {
         private final String propertyName;
         private final String key;
 
-        public void set(T value) throws InvocationTargetException, IllegalAccessException {
-            BeanUtils.setProperty(ServerConfigurationBean.this, propertyName, value);
+        public void set(T value)
+                throws InvocationTargetException, IllegalAccessException {
+            BeanUtils.setProperty(ServerConfigurationBean.this, propertyName,
+                    value);
         }
-        public T get() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-            return (T) BeanUtils.getProperty(ServerConfigurationBean.this, propertyName);
+
+        public T get() throws IllegalAccessException, NoSuchMethodException,
+                InvocationTargetException {
+            return (T) BeanUtils.getProperty(ServerConfigurationBean.this,
+                    propertyName);
+        }
+
+        @java.beans.ConstructorProperties({ "propertyName", "key" })
+        public PropertyWithKey(final String propertyName, final String key) {
+            this.propertyName = propertyName;
+            this.key = key;
+        }
+
+        public String getPropertyName() {
+            return this.propertyName;
+        }
+
+        public String getKey() {
+            return this.key;
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (o == this)
+                return true;
+            if (!(o instanceof ServerConfigurationBean.PropertyWithKey))
+                return false;
+            final PropertyWithKey<?> other = (PropertyWithKey<?>) o;
+            if (!other.canEqual((Object) this))
+                return false;
+            final Object this$propertyName = this.getPropertyName();
+            final Object other$propertyName = other.getPropertyName();
+            if (this$propertyName == null ? other$propertyName != null
+                    : !this$propertyName.equals(other$propertyName))
+                return false;
+            final Object this$key = this.getKey();
+            final Object other$key = other.getKey();
+            if (this$key == null ? other$key != null
+                    : !this$key.equals(other$key))
+                return false;
+            return true;
+        }
+
+        protected boolean canEqual(final Object other) {
+            return other instanceof ServerConfigurationBean.PropertyWithKey;
+        }
+
+        @Override
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $propertyName = this.getPropertyName();
+            result = result * PRIME
+                    + ($propertyName == null ? 43 : $propertyName.hashCode());
+            final Object $key = this.getKey();
+            result = result * PRIME + ($key == null ? 43 : $key.hashCode());
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "ServerConfigurationBean.PropertyWithKey(propertyName="
+                    + this.getPropertyName() + ", key=" + this.getKey() + ")";
         }
     }
 
@@ -321,5 +335,160 @@ public class ServerConfigurationBean implements Serializable {
 
     public String getDefaultHelpUrl() {
         return DEFAULT_HELP_URL;
+    }
+
+    public String getRegisterUrl() {
+        return this.registerUrl;
+    }
+
+    public void setRegisterUrl(final String registerUrl) {
+        this.registerUrl = registerUrl;
+    }
+
+    public String getServerUrl() {
+        return this.serverUrl;
+    }
+
+    public void setServerUrl(final String serverUrl) {
+        this.serverUrl = serverUrl;
+    }
+
+    public String getEmailDomain() {
+        return this.emailDomain;
+    }
+
+    public void setEmailDomain(final String emailDomain) {
+        this.emailDomain = emailDomain;
+    }
+
+    public String getAdminEmail() {
+        return this.adminEmail;
+    }
+
+    public void setAdminEmail(final String adminEmail) {
+        this.adminEmail = adminEmail;
+    }
+
+    public String getFromEmailAddr() {
+        return this.fromEmailAddr;
+    }
+
+    public void setFromEmailAddr(final String fromEmailAddr) {
+        this.fromEmailAddr = fromEmailAddr;
+    }
+
+    public String getHomeContent() {
+        return this.homeContent;
+    }
+
+    public void setHomeContent(final String homeContent) {
+        this.homeContent = homeContent;
+    }
+
+    public boolean isEnableLogEmail() {
+        return this.enableLogEmail;
+    }
+
+    public void setEnableLogEmail(final boolean enableLogEmail) {
+        this.enableLogEmail = enableLogEmail;
+    }
+
+    public boolean isDisplayUserEmail() {
+        return this.displayUserEmail;
+    }
+
+    public void setDisplayUserEmail(final boolean displayUserEmail) {
+        this.displayUserEmail = displayUserEmail;
+    }
+
+    public boolean isAllowAnonymousUser() {
+        return this.allowAnonymousUser;
+    }
+
+    public void setAllowAnonymousUser(final boolean allowAnonymousUser) {
+        this.allowAnonymousUser = allowAnonymousUser;
+    }
+
+    public String getLogDestinationEmails() {
+        return this.logDestinationEmails;
+    }
+
+    public void setLogDestinationEmails(final String logDestinationEmails) {
+        this.logDestinationEmails = logDestinationEmails;
+    }
+
+    public String getLogEmailLevel() {
+        return this.logEmailLevel;
+    }
+
+    public void setLogEmailLevel(final String logEmailLevel) {
+        this.logEmailLevel = logEmailLevel;
+    }
+
+    public String getPiwikUrl() {
+        return this.piwikUrl;
+    }
+
+    public void setPiwikUrl(final String piwikUrl) {
+        this.piwikUrl = piwikUrl;
+    }
+
+    public String getPiwikIdSite() {
+        return this.piwikIdSite;
+    }
+
+    public void setPiwikIdSite(final String piwikIdSite) {
+        this.piwikIdSite = piwikIdSite;
+    }
+
+    public String getTermsOfUseUrl() {
+        return this.termsOfUseUrl;
+    }
+
+    public void setTermsOfUseUrl(final String termsOfUseUrl) {
+        this.termsOfUseUrl = termsOfUseUrl;
+    }
+
+    public String getHelpUrl() {
+        return this.helpUrl;
+    }
+
+    public void setHelpUrl(final String helpUrl) {
+        this.helpUrl = helpUrl;
+    }
+
+    public String getMaxConcurrentRequestsPerApiKey() {
+        return this.maxConcurrentRequestsPerApiKey;
+    }
+
+    public void setMaxConcurrentRequestsPerApiKey(
+            final String maxConcurrentRequestsPerApiKey) {
+        this.maxConcurrentRequestsPerApiKey = maxConcurrentRequestsPerApiKey;
+    }
+
+    public String getMaxActiveRequestsPerApiKey() {
+        return this.maxActiveRequestsPerApiKey;
+    }
+
+    public void setMaxActiveRequestsPerApiKey(
+            final String maxActiveRequestsPerApiKey) {
+        this.maxActiveRequestsPerApiKey = maxActiveRequestsPerApiKey;
+    }
+
+    public String getMaxFilesPerUpload() {
+        return this.maxFilesPerUpload;
+    }
+
+    public void setMaxFilesPerUpload(final String maxFilesPerUpload) {
+        this.maxFilesPerUpload = maxFilesPerUpload;
+    }
+
+    public String getPermittedUserEmailDomains() {
+        return this.permittedUserEmailDomains;
+    }
+
+    public void setPermittedUserEmailDomains(
+            final String permittedUserEmailDomains) {
+        this.permittedUserEmailDomains = permittedUserEmailDomains;
     }
 }

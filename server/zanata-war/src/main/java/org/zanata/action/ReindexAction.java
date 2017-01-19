@@ -5,9 +5,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
@@ -20,20 +17,18 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.service.SearchIndexManager;
-
 import com.google.common.base.Optional;
 
-
 @Named("reindexAction")
-@Slf4j
 @Dependent
 @Model
 @CheckRole("admin")
 public class ReindexAction implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ReindexAction.class);
+
     private static final long serialVersionUID = 1L;
-
     private final DecimalFormat PERCENT_FORMAT = new DecimalFormat("###.##");
-
     @Inject
     private SearchIndexManager searchIndexManager;
 
@@ -42,8 +37,9 @@ public class ReindexAction implements Serializable {
     }
 
     public boolean isAnyOptionSelected() {
-        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
-            if(opts.isOptimize() || opts.isPurge() || opts.isReindex()) {
+        for (ReindexClassOptions opts : searchIndexManager
+                .getReindexOptions()) {
+            if (opts.isOptimize() || opts.isPurge() || opts.isReindex()) {
                 return true;
             }
         }
@@ -51,8 +47,9 @@ public class ReindexAction implements Serializable {
     }
 
     public boolean isSelectAll() {
-        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
-            if(!opts.isOptimize() || !opts.isPurge() || !opts.isReindex()) {
+        for (ReindexClassOptions opts : searchIndexManager
+                .getReindexOptions()) {
+            if (!opts.isOptimize() || !opts.isPurge() || !opts.isReindex()) {
                 return false;
             }
         }
@@ -60,7 +57,8 @@ public class ReindexAction implements Serializable {
     }
 
     public void setSelectAll(boolean selectAll) {
-        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager
+                .getReindexOptions()) {
             opts.setPurge(selectAll);
             opts.setReindex(selectAll);
             opts.setOptimize(selectAll);
@@ -68,7 +66,8 @@ public class ReindexAction implements Serializable {
     }
 
     public boolean isPurgeAll() {
-        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager
+                .getReindexOptions()) {
             if (!opts.isPurge()) {
                 return false;
             }
@@ -77,13 +76,15 @@ public class ReindexAction implements Serializable {
     }
 
     public void setPurgeAll(boolean selected) {
-        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager
+                .getReindexOptions()) {
             opts.setPurge(selected);
         }
     }
 
     public boolean isReindexAll() {
-        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager
+                .getReindexOptions()) {
             if (!opts.isReindex()) {
                 return false;
             }
@@ -92,13 +93,15 @@ public class ReindexAction implements Serializable {
     }
 
     public void setReindexAll(boolean selected) {
-        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager
+                .getReindexOptions()) {
             opts.setReindex(selected);
         }
     }
 
     public boolean isOptimizeAll() {
-        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager
+                .getReindexOptions()) {
             if (!opts.isOptimize()) {
                 return false;
             }
@@ -107,7 +110,8 @@ public class ReindexAction implements Serializable {
     }
 
     public void setOptimizeAll(boolean selected) {
-        for (ReindexClassOptions opts : searchIndexManager.getReindexOptions()) {
+        for (ReindexClassOptions opts : searchIndexManager
+                .getReindexOptions()) {
             opts.setOptimize(selected);
         }
     }
@@ -126,7 +130,8 @@ public class ReindexAction implements Serializable {
     }
 
     public boolean isError() {
-        AsyncTaskHandle<Void> taskHandle = searchIndexManager.getProcessHandle();
+        AsyncTaskHandle<Void> taskHandle =
+                searchIndexManager.getProcessHandle();
         if (taskHandle == null) {
             return false;
         } else if (taskHandle.isDone()) {
@@ -163,9 +168,8 @@ public class ReindexAction implements Serializable {
         if (searchIndexManager.getProcessHandle() == null) {
             return "0";
         } else {
-            double completedPercent =
-                    (double) getReindexProgress() / (double) getReindexCount()
-                            * 100;
+            double completedPercent = (double) getReindexProgress()
+                    / (double) getReindexCount() * 100;
             return PERCENT_FORMAT.format(completedPercent);
         }
     }
@@ -192,12 +196,10 @@ public class ReindexAction implements Serializable {
                     .appendSuffix(" day", " days").appendSeparator(", ")
                     .appendHours().appendSuffix(" hour", " hours")
                     .appendSeparator(", ").appendMinutes()
-                    .appendSuffix(" min", " mins")
-                    .toFormatter();
+                    .appendSuffix(" min", " mins").toFormatter();
 
     private String formatTimePeriod(long durationInMillis) {
         Period period = new Period(durationInMillis);
-
         if (period.toStandardMinutes().getMinutes() <= 0) {
             return "less than a minute"; // TODO Localize
         } else {
@@ -206,7 +208,8 @@ public class ReindexAction implements Serializable {
     }
 
     public String getElapsedTime() {
-        AsyncTaskHandle<Void> processHandle = searchIndexManager.getProcessHandle();
+        AsyncTaskHandle<Void> processHandle =
+                searchIndexManager.getProcessHandle();
         if (processHandle == null) {
             log.error("processHandle is null when looking up elapsed time");
             return "";
@@ -217,11 +220,13 @@ public class ReindexAction implements Serializable {
     }
 
     public String getEstimatedTimeRemaining() {
-        Optional<Long> estimate = searchIndexManager.getProcessHandle().getEstimatedTimeRemaining();
+        Optional<Long> estimate = searchIndexManager.getProcessHandle()
+                .getEstimatedTimeRemaining();
         if (estimate.isPresent()) {
             return formatTimePeriod(estimate.get());
         }
-        // TODO localize (not expecting to display estimate when it is unavailable anyway).
+        // TODO localize (not expecting to display estimate when it is
+        // unavailable anyway).
         return "unknown";
     }
 }

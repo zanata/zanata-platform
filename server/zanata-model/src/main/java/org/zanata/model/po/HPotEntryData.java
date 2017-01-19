@@ -21,7 +21,6 @@
 package org.zanata.model.po;
 
 import java.io.Serializable;
-
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,14 +30,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
-
-import lombok.Setter;
-
 import org.hibernate.annotations.BatchSize;
 import org.zanata.model.HSimpleComment;
 
 /**
- *
  * @author sflaniga@redhat.com
  * @see org.zanata.rest.dto.po.PotEntryData
  * @see org.zanata.rest.dto.extensions.gettext.PotEntryHeader
@@ -46,15 +41,13 @@ import org.zanata.model.HSimpleComment;
 @Entity
 @Cacheable
 @BatchSize(size = 20)
-@Setter
 public class HPotEntryData implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     private Long id;
     private String context;
-    @Deprecated
     // use HTextFlow.comment
+    @Deprecated
     private HSimpleComment extractedComment;
     private String flags;
     private String references;
@@ -69,24 +62,21 @@ public class HPotEntryData implements Serializable {
         this.id = id;
     }
 
-
     public String getContext() {
         return context;
     }
+    // use HTextFlow.comment
 
     @Deprecated
-    // use HTextFlow.comment
-            public
-            void setExtractedComment(HSimpleComment extractedComment) {
+    public void setExtractedComment(HSimpleComment extractedComment) {
         this.extractedComment = extractedComment;
     }
+    // use HTextFlow.comment
 
     @OneToOne(optional = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "comment_id")
     @Deprecated
-    // use HTextFlow.comment
-            public
-            HSimpleComment getExtractedComment() {
+    public HSimpleComment getExtractedComment() {
         return extractedComment;
     }
 
@@ -118,5 +108,9 @@ public class HPotEntryData implements Serializable {
     @javax.persistence.Lob
     public String getReferences() {
         return references;
+    }
+
+    public void setContext(final String context) {
+        this.context = context;
     }
 }

@@ -20,7 +20,6 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -28,26 +27,34 @@ import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class ServerConfigurationPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ServerConfigurationPage.class);
     private By urlField = By.id("serverConfigForm:url:input:url");
-    public static final By registerUrlField = By.id("serverConfigForm:register:input:registerUrl");
-    private By emailDomainField = By.id("serverConfigForm:emailDomainField:emailDomain");
-    private By adminEmailField = By.id("serverConfigForm:adminEmail:input:adminEml");
-    public static final By fromEmailField = By.id("serverConfigForm:fromEmail:input:fromEml");
+    public static final By registerUrlField =
+            By.id("serverConfigForm:register:input:registerUrl");
+    private By emailDomainField =
+            By.id("serverConfigForm:emailDomainField:emailDomain");
+    private By adminEmailField =
+            By.id("serverConfigForm:adminEmail:input:adminEml");
+    public static final By fromEmailField =
+            By.id("serverConfigForm:fromEmail:input:fromEml");
     private By enableLogCheck = By.id("serverConfigForm:enableLogCheck");
     private By logLevelSelect = By.id("serverConfigForm:logEmailLvl");
-    private By emailDestinationField = By.id("serverConfigForm:logDestEmail:input:logDestEml");
+    private By emailDestinationField =
+            By.id("serverConfigForm:logDestEmail:input:logDestEml");
     private By helpUrlField = By.id("serverConfigForm:helpUrl:input:helpInput");
-    private By termsUrlField = By.id("serverConfigForm:termsOfUseUrl:input:termsOfUseUrlEml");
+    private By termsUrlField =
+            By.id("serverConfigForm:termsOfUseUrl:input:termsOfUseUrlEml");
     private By piwikUrl = By.id("serverConfigForm:piwikUrl:input:piwikUrlEml");
     private By piwikId = By.id("serverConfigForm:piwikIdSiteEml");
-    private By maxConcurrentField = By.id("serverConfigForm:maxConcurrentPerApiKey:input:maxConcurrentPerApiKeyEml");
-    private By maxActiveField = By.id("serverConfigForm:maxActiveRequestsPerApiKey:input:maxActiveRequestsPerApiKeyEml");
+    private By maxConcurrentField = By.id(
+            "serverConfigForm:maxConcurrentPerApiKey:input:maxConcurrentPerApiKeyEml");
+    private By maxActiveField = By.id(
+            "serverConfigForm:maxActiveRequestsPerApiKey:input:maxActiveRequestsPerApiKeyEml");
     private By saveButton = By.id("serverConfigForm:save");
 
     public ServerConfigurationPage(WebDriver driver) {
@@ -74,8 +81,9 @@ public class ServerConfigurationPage extends BasePage {
 
     public boolean expectFieldValue(final By by, final String expectedValue) {
         log.info("Wait for field {} value {}", by.toString(), expectedValue);
-        return waitForAMoment().withMessage("text present: " + by.toString()).until(
-                ExpectedConditions.textToBePresentInElementValue(existingElement(by), expectedValue));
+        return waitForAMoment().withMessage("text present: " + by.toString())
+                .until(ExpectedConditions.textToBePresentInElementValue(
+                        existingElement(by), expectedValue));
     }
 
     public ServerConfigurationPage inputAdminEmail(String email) {
@@ -110,15 +118,14 @@ public class ServerConfigurationPage extends BasePage {
 
     public ServerConfigurationPage selectLoggingLevel(String logLevel) {
         log.info("Select logging level {}", logLevel);
-        new Select(readyElement(logLevelSelect)).selectByVisibleText(
-                logLevel);
+        new Select(readyElement(logLevelSelect)).selectByVisibleText(logLevel);
         return new ServerConfigurationPage(getDriver());
     }
 
     public String selectedLoggingLevel() {
         log.info("Query selected logging level");
-        return new Select(readyElement(logLevelSelect))
-                .getFirstSelectedOption().getText();
+        return new Select(readyElement(logLevelSelect)).getFirstSelectedOption()
+                .getText();
     }
 
     public ServerConfigurationPage inputLogEmailTarget(String email) {
@@ -183,5 +190,4 @@ public class ServerConfigurationPage extends BasePage {
         clickElement(saveButton);
         return new AdministrationPage(getDriver());
     }
-
 }

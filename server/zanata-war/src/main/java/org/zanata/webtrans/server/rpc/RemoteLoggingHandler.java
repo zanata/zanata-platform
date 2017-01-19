@@ -1,9 +1,7 @@
 package org.zanata.webtrans.server.rpc;
 
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -13,15 +11,17 @@ import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.RemoteLoggingAction;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("webtrans.gwt.RemoteLoggingHandler")
 @RequestScoped
 @ActionHandlerFor(RemoteLoggingAction.class)
-@Slf4j
-public class RemoteLoggingHandler extends
-        AbstractActionHandler<RemoteLoggingAction, NoOpResult> {
+public class RemoteLoggingHandler
+        extends AbstractActionHandler<RemoteLoggingAction, NoOpResult> {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(RemoteLoggingHandler.class);
+
     @Inject
     private ZanataIdentity identity;
 
@@ -30,14 +30,14 @@ public class RemoteLoggingHandler extends
             ExecutionContext context) throws ActionException {
         try {
             identity.checkLoggedIn();
-            log.error("[gwt-log] from user: {} on workspace: {}", identity
-                    .getCredentials().getUsername(), action.getWorkspaceId());
+            log.error("[gwt-log] from user: {} on workspace: {}",
+                    identity.getCredentials().getUsername(),
+                    action.getWorkspaceId());
             log.error("[gwt-log] context: {} \n{}", action.getContextInfo(),
                     action.getMessage());
         } catch (Exception e) {
             log.warn("can not authenticate user.");
         }
-
         return new NoOpResult();
     }
 

@@ -23,8 +23,6 @@ package org.zanata.dao;
 
 import javax.annotation.Nonnull;
 
-import lombok.NoArgsConstructor;
-
 import org.hibernate.Query;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 
@@ -44,17 +42,16 @@ import org.zanata.util.Zanata;
  * accepts a locale parametor, but until HTextFlow.getTargetContents(LocaleId)
  * can be implemented efficiently, we don't need them.
  *
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("textFlowStreamDAO")
 @RequestScoped
 // TODO queries should only return Translated/Approved TFTs
 // TODO build related queries using querydsl
 /**
- * Note: unless the find* methods throw an exception, the caller is
- * responsible for closing the Iterator, or a database connection
- * may leak.
+ * Note: unless the find* methods throw an exception, the caller is responsible
+ * for closing the Iterator, or a database connection may leak.
  */
 public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
     public TextFlowStreamingDAO() {
@@ -77,7 +74,7 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
      * @return
      */
     public @Nonnull
-    CloseableIterator<HTextFlow> findTextFlows() {
+            CloseableIterator<HTextFlow> findTextFlows() {
         StreamingEntityIterator<HTextFlow> iter = createIterator();
         try {
             Query q =
@@ -115,7 +112,8 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
      * @return
      */
     public @Nonnull
-    CloseableIterator<HTextFlow> findTextFlowsByProject(HProject hProject) {
+            CloseableIterator<HTextFlow>
+            findTextFlowsByProject(HProject hProject) {
         StreamingEntityIterator<HTextFlow> iter = createIterator();
         try {
             Query q =
@@ -154,8 +152,8 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
      * @return
      */
     public @Nonnull
-    CloseableIterator<HTextFlow> findTextFlowsByProjectIteration(
-            HProjectIteration hProjectIteration) {
+            CloseableIterator<HTextFlow> findTextFlowsByProjectIteration(
+                    HProjectIteration hProjectIteration) {
         StreamingEntityIterator<HTextFlow> iter = createIterator();
         try {
             Query q =

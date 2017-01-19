@@ -20,23 +20,23 @@
  */
 package org.zanata.page.googleaccount;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.AbstractPage;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class GoogleAccountPage extends AbstractPage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(GoogleAccountPage.class);
     private By emailField = By.id("Email");
     private By emailLabelField = By.id("reauthEmail");
     private By passwordField = By.id("Passwd");
     private By signInButton = By.id("signIn");
-    private By signInDifferent = By.linkText("Sign in with a different account");
+    private By signInDifferent =
+            By.linkText("Sign in with a different account");
     private By profileImage = By.id("profile-img");
 
     public GoogleAccountPage(WebDriver driver) {
@@ -86,8 +86,9 @@ public class GoogleAccountPage extends AbstractPage {
     /**
      * Query if the old google site login is presented to the user.
      *
-     * The Google account profile image only shows on the new Google site, so
-     * if this element exists return false.
+     * The Google account profile image only shows on the new Google site, so if
+     * this element exists return false.
+     *
      * @return true if the profile image is not shown.
      */
     public boolean isTheOldGoogleSite() {

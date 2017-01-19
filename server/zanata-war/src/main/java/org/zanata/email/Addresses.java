@@ -21,24 +21,19 @@
 package org.zanata.email;
 
 import static com.google.common.base.Charsets.UTF_8;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.mail.internet.InternetAddress;
-
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
 
 /**
  * Helper methods for working with JavaMail addresses.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class Addresses {
     private static final String UTF8 = UTF_8.name();
 
@@ -62,17 +57,18 @@ public class Addresses {
         return toAddresses.toArray(new InternetAddress[toAddresses.size()]);
     }
 
-    public static InternetAddress[] getLocaleMemberAddresses(
-        List<HLocaleMember> members) {
+    public static InternetAddress[]
+            getLocaleMemberAddresses(List<HLocaleMember> members) {
         List<InternetAddress> toAddresses = new ArrayList<InternetAddress>();
         for (HLocaleMember member : members) {
             toAddresses.add(getAddress(member.getPerson().getEmail(),
-                member.getPerson().getName()));
+                    member.getPerson().getName()));
         }
         return toAddresses.toArray(new InternetAddress[toAddresses.size()]);
     }
 
-    public static InternetAddress[] getAddresses(List<String> emailList, String name) {
+    public static InternetAddress[] getAddresses(List<String> emailList,
+            String name) {
         List<InternetAddress> toAddresses = new ArrayList<InternetAddress>();
         for (String email : emailList) {
             toAddresses.add(getAddress(email, name));
@@ -84,4 +80,6 @@ public class Addresses {
         return new InternetAddress[] { getAddress(email, name) };
     }
 
+    private Addresses() {
+    }
 }

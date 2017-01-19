@@ -22,7 +22,6 @@ package org.zanata.rest.service;
 
 import java.io.InputStream;
 import java.util.concurrent.Future;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -30,12 +29,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.security.annotations.CheckPermission;
@@ -61,18 +56,18 @@ import org.zanata.service.LocaleService;
 import org.zanata.service.LockManagerService;
 import org.zanata.tmx.TMXParser;
 import org.zanata.util.CloseableIterator;
-
 import com.google.common.base.Optional;
+// TODO this should use transactions (probably too big for one though)
+// TODO options to export obsolete docs and textflows to TMX?
 
 @RequestScoped
 @Named("translationMemoryResource")
 @Path(TranslationMemoryResource.SERVICE_PATH)
-@Slf4j
 @ParametersAreNonnullByDefault
-// TODO this should use transactions (probably too big for one though)
-// TODO options to export obsolete docs and textflows to TMX?
-public class TranslationMemoryResourceService implements
-        TranslationMemoryResource {
+public class TranslationMemoryResourceService
+        implements TranslationMemoryResource {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslationMemoryResourceService.class);
 
     @Inject
     private LocaleService localeServiceImpl;
@@ -119,8 +114,8 @@ public class TranslationMemoryResourceService implements
         String filename = makeTMXFilename(projectSlug, null, locale);
         CloseableIterator<HTextFlow> iter =
                 textFlowStreamDAO.findTextFlowsByProject(hProject);
-        return buildTMX("getProjectTranslationMemory-" + filename, iter,
-                locale, filename);
+        return buildTMX("getProjectTranslationMemory-" + filename, iter, locale,
+                filename);
     }
 
     @Override
@@ -130,18 +125,16 @@ public class TranslationMemoryResourceService implements
         identity.checkPermission("", "download-tmx");
         log.debug("exporting TMX for project {}, iteration {}, locale {}",
                 projectSlug, iterationSlug, locale);
-        HProjectIteration hProjectIteration =
-                restSlugValidator.retrieveAndCheckIteration(projectSlug,
-                        iterationSlug, false);
+        HProjectIteration hProjectIteration = restSlugValidator
+                .retrieveAndCheckIteration(projectSlug, iterationSlug, false);
         if (locale != null) {
             restSlugValidator.validateTargetLocale(locale, projectSlug,
                     iterationSlug);
             // TODO findTextFlowsByProjectIterationAndLocale
         }
         String filename = makeTMXFilename(projectSlug, iterationSlug, locale);
-        CloseableIterator<HTextFlow> iter =
-                textFlowStreamDAO
-                        .findTextFlowsByProjectIteration(hProjectIteration);
+        CloseableIterator<HTextFlow> iter = textFlowStreamDAO
+                .findTextFlowsByProjectIteration(hProjectIteration);
         return buildTMX("getProjectIterationTranslationMemory-" + filename,
                 iter, locale, filename);
     }
@@ -173,8 +166,8 @@ public class TranslationMemoryResourceService implements
 
     private TransMemory getTM(Optional<TransMemory> tm, String slug) {
         if (!tm.isPresent()) {
-            throw new EntityMissingException("Translation memory '" + slug
-                    + "' was not found.");
+            throw new EntityMissingException(
+                    "Translation memory \'" + slug + "\' was not found.");
         }
         return tm.get();
     }
@@ -187,7 +180,7 @@ public class TranslationMemoryResourceService implements
             Optional<TransMemory> transMemory = transMemoryDAO.getBySlug(slug);
             if (transMemory.isPresent()) {
                 transMemoryDAO.makeTransient(transMemory.get());
-                return "Translation memory '" + slug + "' deleted";
+                return "Translation memory \'" + slug + "\' deleted";
             } else {
                 throw new EntityMissingException(slug);
             }
@@ -238,8 +231,8 @@ public class TranslationMemoryResourceService implements
         Lock tmLock = new Lock("tm", slug);
         String owner = lockManagerServiceImpl.attainLockOrReturnOwner(tmLock);
         if (owner != null) {
-            throw new ZanataServiceException("Translation Memory '" + slug
-                    + "' is locked by user: " + owner, 503);
+            throw new ZanataServiceException("Translation Memory \'" + slug
+                    + "\' is locked by user: " + owner, 503);
         }
         return tmLock;
     }
@@ -247,9 +240,8 @@ public class TranslationMemoryResourceService implements
     private Response buildTMX(String jobName,
             @Nonnull CloseableIterator<? extends ITextFlow> iter,
             @Nullable LocaleId locale, @Nonnull String filename) {
-        TMXStreamingOutput<HTextFlow> output =
-                new TMXStreamingOutput(jobName, iter,
-                        new TranslationsTMXExportStrategy(locale));
+        TMXStreamingOutput<HTextFlow> output = new TMXStreamingOutput(jobName,
+                iter, new TranslationsTMXExportStrategy(locale));
         return okResponse(filename, output);
     }
 
@@ -262,15 +254,14 @@ public class TranslationMemoryResourceService implements
     }
 
     private Response okResponse(String filename, StreamingOutput output) {
-        return Response
-                .ok()
+        return Response.ok()
                 .header("Content-Disposition",
                         "attachment; filename=\"" + filename + "\"")
                 .type(PREFERRED_MEDIA_TYPE).entity(output).build();
     }
 
-    private static @Nonnull
-    String makeTMXFilename(@Nullable String projectSlug,
+    @Nonnull
+    private static String makeTMXFilename(@Nullable String projectSlug,
             @Nullable String iterationSlug, @Nullable LocaleId locale) {
         String p = projectSlug != null ? projectSlug : "allProjects";
         String i = iterationSlug != null ? iterationSlug : "allVersions";
@@ -278,9 +269,8 @@ public class TranslationMemoryResourceService implements
         return "zanata-" + p + "-" + i + "-" + l + ".tmx";
     }
 
-    private static @Nonnull
-    String makeTMXFilename(@Nullable String tmSlug) {
+    @Nonnull
+    private static String makeTMXFilename(@Nullable String tmSlug) {
         return "zanata-" + tmSlug + ".tmx";
     }
-
 }
