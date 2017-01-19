@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.document;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.experimental.categories.Category;
@@ -37,19 +36,18 @@ import org.zanata.util.TestFileGenerator;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
-
 import java.io.File;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
  *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
 public class FileTypeUploadTest extends ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(FileTypeUploadTest.class);
 
     @ClassRule
     public static CleanDocumentStorageRule documentStorageRule;
@@ -60,107 +58,77 @@ public class FileTypeUploadTest extends ZanataTestCase {
         new ZanataRestCaller().createProjectAndVersion("doctype-test",
                 "doctype-upload", "File");
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
-                .isEqualTo("admin")
-                .as("Admin is logged in");
+                .isEqualTo("admin").as("Admin is logged in");
     }
 
     private static String testString = "Test text 1";
-    private static String htmlString = "<html><title>" + testString +
-            "</title>" + "<body/> </html>";
-    private static String qtTsString = "<!DOCTYPE TS []><TS><context><name>Test</name>" +
-            "<message><source>" + testString + "</source><translation>Teststring1</translation>" +
-            "</message></context></TS>";
-
+    private static String htmlString =
+            "<html><title>" + testString + "</title><body/> </html>";
+    private static String qtTsString =
+            "<!DOCTYPE TS []><TS><context><name>Test</name><message><source>"
+                    + testString
+                    + "</source><translation>Teststring1</translation></message></context></TS>";
     @DataPoint
     public static File TXT_FILE = new TestFileGenerator()
             .generateTestFileWithContent("testtxtfile", ".txt", testString);
-
     @DataPoint
-    public static File DTD_FILE = new TestFileGenerator()
-            .generateTestFileWithContent(
-                    "testdtdfile", ".dtd",
-                    "<!ENTITY firstField \"" + testString + "\">");
-
+    public static File DTD_FILE =
+            new TestFileGenerator().generateTestFileWithContent("testdtdfile",
+                    ".dtd", "<!ENTITY firstField \"" + testString + "\">");
     @DataPoint
     public static File SRT_FILE = new TestFileGenerator()
-            .generateTestFileWithContent(
-                    "testsrtfile", ".srt",
-                    "1" + sep() + "00:00:01,000 --> 00:00:02,000" +
-                    sep() + testString);
-
+            .generateTestFileWithContent("testsrtfile", ".srt", "1" + sep()
+                    + "00:00:01,000 --> 00:00:02,000" + sep() + testString);
     @DataPoint
-    public static File WEBVTT_FILE = new TestFileGenerator()
-            .generateTestFileWithContent(
-                    "testvttfile", ".vtt",
-                    "00:01.000 --> 00:01.000" +
-                    sep() + testString);
-
+    public static File WEBVTT_FILE =
+            new TestFileGenerator().generateTestFileWithContent("testvttfile",
+                    ".vtt", "00:01.000 --> 00:01.000" + sep() + testString);
     @DataPoint
-    public static File SBT_FILE = new TestFileGenerator()
-            .generateTestFileWithContent(
-                    "testsbtfile", ".sbt",
-                    "00:04:35.03,00:04:38.82" +
-                    sep() + testString);
-
+    public static File SBT_FILE =
+            new TestFileGenerator().generateTestFileWithContent("testsbtfile",
+                    ".sbt", "00:04:35.03,00:04:38.82" + sep() + testString);
     @DataPoint
-    public static File SUB_FILE = new TestFileGenerator()
-            .generateTestFileWithContent(
-                    "testsubfile", ".sub",
-                    "00:04:35.03,00:04:38.82" +
-                    sep() + testString);
-
+    public static File SUB_FILE =
+            new TestFileGenerator().generateTestFileWithContent("testsubfile",
+                    ".sub", "00:04:35.03,00:04:38.82" + sep() + testString);
     @DataPoint
     public static File HTM_FILE = new TestFileGenerator()
             .generateTestFileWithContent("testhtmfile", ".htm", htmlString);
-
     @DataPoint
     public static File HTML_FILE = new TestFileGenerator()
             .generateTestFileWithContent("testhtmlfile", ".html", htmlString);
-
     @DataPoint
     public static File QTTS_FILE = new TestFileGenerator()
             .generateTestFileWithContent("testtsfile", ".ts", qtTsString);
-
     @DataPoint
-    public static File IDML_FILE = new TestFileGenerator()
-            .openTestFile("upload-idml.idml");
-
+    public static File IDML_FILE =
+            new TestFileGenerator().openTestFile("upload-idml.idml");
     @DataPoint
-    public static File ODT_FILE = new TestFileGenerator()
-            .openTestFile("upload-odt.odt");
-
+    public static File ODT_FILE =
+            new TestFileGenerator().openTestFile("upload-odt.odt");
     @DataPoint
-    public static File ODS_FILE = new TestFileGenerator()
-            .openTestFile("upload-ods.ods");
-
+    public static File ODS_FILE =
+            new TestFileGenerator().openTestFile("upload-ods.ods");
     @DataPoint
-    public static File ODG_FILE = new TestFileGenerator()
-            .openTestFile("upload-odg.odg");
-
+    public static File ODG_FILE =
+            new TestFileGenerator().openTestFile("upload-odg.odg");
     @DataPoint
-    public static File ODP_FILE = new TestFileGenerator()
-            .openTestFile("upload-odp.odp");
+    public static File ODP_FILE =
+            new TestFileGenerator().openTestFile("upload-odp.odp");
 
     @Theory
     @Feature(bugzilla = 980670,
             summary = "The administrator can upload raw files for translation",
-            tcmsTestCaseIds = { 377743 },
-            tcmsTestPlanIds = { 5316 })
+            tcmsTestCaseIds = { 377743 }, tcmsTestPlanIds = { 5316 })
     public void uploadFileTypeDocument(File testFile) throws Exception {
         String testFileName = testFile.getName();
         log.info("[uploadFile] " + testFileName);
-
-        VersionDocumentsPage versionDocumentsPage = new ProjectWorkFlow()
-                .goToProjectByName("doctype-test")
-                .gotoVersion("doctype-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(testFile.getAbsolutePath())
-                .submitUpload()
-                .clickUploadDone()
-                .gotoDocumentTab();
-
+        VersionDocumentsPage versionDocumentsPage =
+                new ProjectWorkFlow().goToProjectByName("doctype-test")
+                        .gotoVersion("doctype-upload").gotoSettingsTab()
+                        .gotoSettingsDocumentsTab().pressUploadFileButton()
+                        .enterFilePath(testFile.getAbsolutePath())
+                        .submitUpload().clickUploadDone().gotoDocumentTab();
         assertThat(versionDocumentsPage.expectSourceDocsContains(testFileName))
                 .as("Document shows in table");
     }
@@ -168,5 +136,4 @@ public class FileTypeUploadTest extends ZanataTestCase {
     private static String sep() {
         return System.getProperty("line.separator");
     }
-
 }

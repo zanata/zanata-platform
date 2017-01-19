@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import javax.naming.Context;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-
 import org.apache.log4j.Level;
 import org.apache.log4j.LogManager;
 import org.assertj.core.api.Assertions;
@@ -48,8 +47,6 @@ import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
 import liquibase.resource.ClassLoaderResourceAccessor;
-import lombok.extern.slf4j.Slf4j;
-
 import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -61,26 +58,25 @@ import static org.zanata.service.EntityManagerFactoryRule.mySqlUsername;
  * This is a JUnit test that will setup large data and test the performance of
  * copyTrans.
  *
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @RunWith(CdiUnitRunner.class)
-@AdditionalClasses({LocaleServiceImpl.class,
-                    TranslationMemoryServiceImpl.class,
-                    VersionStateCacheImpl.class,
-                    ValidationServiceImpl.class})
+@AdditionalClasses({ LocaleServiceImpl.class,
+        TranslationMemoryServiceImpl.class, VersionStateCacheImpl.class,
+        ValidationServiceImpl.class })
 public class CopyTransServiceImplPerformanceTest extends ZanataTest {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(CopyTransServiceImplPerformanceTest.class);
 
     @ClassRule
-    public static EntityManagerFactoryRule emfRule = new EntityManagerFactoryRule(
-            EntityManagerFactoryRule.TestProfile.ManualPerformanceProfiling);
-
+    public static EntityManagerFactoryRule emfRule =
+            new EntityManagerFactoryRule(
+                    EntityManagerFactoryRule.TestProfile.ManualPerformanceProfiling);
     private static final Context jndiContext = mock(Context.class);
     @ClassRule
     public static MockInitialContextRule initialContextRule =
             new MockInitialContextRule(jndiContext);
-
     protected EntityManager em;
     private int numOfTextFlows;
     @Inject
@@ -92,7 +88,8 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
         return em;
     }
 
-    @Produces @FullText
+    @Produces
+    @FullText
     FullTextEntityManager getFullTextEntityManager() {
         return Search.getFullTextEntityManager(getEm());
     }
@@ -107,7 +104,8 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
         return (Session) em.getDelegate();
     }
 
-    @Produces @Authenticated
+    @Produces
+    @Authenticated
     HAccount getAuthenticatedAccount(AccountDAO accountDAO) {
         return accountDAO.getByUsername("demo");
     }
@@ -118,9 +116,7 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
         log.debug("Setting up EM");
         em = emfRule.getEmf().createEntityManager();
         em.getTransaction().begin();
-
         deleteAll(getEm(), ZanataEntities.entitiesForRemoval());
-
         HLocale enUS = makeLocale(LocaleId.EN_US);
         HLocale de = makeLocale(LocaleId.DE);
         makeLocale(LocaleId.FR);
@@ -128,17 +124,12 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
         // makeLocale(new LocaleId("zh"));
         // makeLocale(new LocaleId("ja"));
         // makeLocale(new LocaleId("pl"));
-
-        HDocument oldDoc =
-                getEntityMakerBuilder()
-                        .reuseEntity(enUS).build()
-                        .makeAndPersist(getEm(), HDocument.class);
-
-        HProject theProject = oldDoc.getProjectIteration().getProject();
-
-        copyTransTargetDoc = getEntityMakerBuilder().reuseEntities(theProject,
-                enUS).build()
+        HDocument oldDoc = getEntityMakerBuilder().reuseEntity(enUS).build()
                 .makeAndPersist(getEm(), HDocument.class);
+        HProject theProject = oldDoc.getProjectIteration().getProject();
+        copyTransTargetDoc =
+                getEntityMakerBuilder().reuseEntities(theProject, enUS).build()
+                        .makeAndPersist(getEm(), HDocument.class);
         // ensure two documents are from different version but same project
         // Assertions.assertThat(oldDoc.getProjectIteration().getId())
         // .isNotEqualTo(copyTransTargetDoc.getProjectIteration().getId());
@@ -147,31 +138,24 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
         // .isEqualTo(
         // copyTransTargetDoc.getProjectIteration().getProject()
         // .getId());
-
-        HTextFlowBuilder textFlowBuilderForOldDoc =
-                new HTextFlowBuilder().withDocument(oldDoc)
-                        .withTargetLocale(enUS);
-
+        HTextFlowBuilder textFlowBuilderForOldDoc = new HTextFlowBuilder()
+                .withDocument(oldDoc).withTargetLocale(enUS);
         // make many text flows all with translations in DE
         numOfTextFlows = 5000;
         for (int i = 0; i < numOfTextFlows; i++) {
             textFlowBuilderForOldDoc.withResId("res" + i)
                     .withSourceContent("source " + i)
-                    .withTargetContent("target " + i)
-                    .withTargetLocale(de)
+                    .withTargetContent("target " + i).withTargetLocale(de)
                     .withTargetState(ContentState.Translated).build();
         }
-
-        HTextFlowBuilder textFlowBuilderForNewDoc =
-                new HTextFlowBuilder().withDocument(copyTransTargetDoc)
-                        .withTargetLocale(enUS);
+        HTextFlowBuilder textFlowBuilderForNewDoc = new HTextFlowBuilder()
+                .withDocument(copyTransTargetDoc).withTargetLocale(enUS);
         for (int i = 0; i < numOfTextFlows; i++) {
             textFlowBuilderForNewDoc.withResId("res" + i)
                     .withSourceContent("source " + i).build();
         }
         getEm().flush();
         getEm().clear();
-
         // Long totalTextFlows =
         // getEm().createQuery("select count(*) from HTextFlow",
         // Long.class).getSingleResult();
@@ -181,7 +165,6 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
         // getEm().createQuery("select count(*) from HTextFlowTarget",
         // Long.class).getSingleResult();
         // Assertions.assertThat(totalTranslation).isEqualTo(numOfTextFlows);
-
         // enable logging
         LogManager.getLogger(CopyTransServiceImpl.class.getPackage().getName())
                 .setLevel(Level.DEBUG);
@@ -204,24 +187,20 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
         }
         em = null;
     }
-
     // This method will ensure database schema is up to date
-    private static void runLiquibase() throws Exception {
-        when(
-                jndiContext
-                        .lookup("java:global/zanata/files/document-storage-directory"))
-                .thenReturn("/tmp/doc");
-        Connection conn = DriverManager
-                .getConnection(mySqlUrl(), mySqlUsername(), mySqlPassword());
 
+    private static void runLiquibase() throws Exception {
+        when(jndiContext
+                .lookup("java:global/zanata/files/document-storage-directory"))
+                        .thenReturn("/tmp/doc");
+        Connection conn = DriverManager.getConnection(mySqlUrl(),
+                mySqlUsername(), mySqlPassword());
         Statement statement = conn.createStatement();
         statement.executeUpdate("drop schema zanata_unit_test");
         statement.executeUpdate("create schema zanata_unit_test");
         statement.executeUpdate("use zanata_unit_test");
-
         Database database = DatabaseFactory.getInstance()
                 .findCorrectDatabaseImplementation(new JdbcConnection(conn));
-
         Liquibase liquibase = new Liquibase("db/db.changelog.xml",
                 new ClassLoaderResourceAccessor(), database);
         liquibase.update("");
@@ -236,10 +215,8 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
     }
 
     private static EntityMakerBuilder getEntityMakerBuilder() {
-        return EntityMakerBuilder
-                .builder()
-                .addFieldOrPropertyMaker(HProject.class,
-                        "sourceViewURL",
+        return EntityMakerBuilder.builder()
+                .addFieldOrPropertyMaker(HProject.class, "sourceViewURL",
                         FixedValueMaker.EMPTY_STRING_MAKER)
                 .addConstructorParameterMaker(HDocument.class, 0,
                         FixedValueMaker.fix("doc1"))
@@ -254,18 +231,15 @@ public class CopyTransServiceImplPerformanceTest extends ZanataTest {
     @SlowTest
     @PerformanceProfiling
     public void testCopyTransForDocument() throws Exception {
-        HCopyTransOptions options =
-                new HCopyTransOptions(
-                        HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
-                        HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
-                        HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY);
-        copyTransService
-                .copyTransForDocument(copyTransTargetDoc, options, null);
-
-        Long totalTranslation =
-                getEm().createQuery("select count(*) from HTextFlowTarget",
-                        Long.class).getSingleResult();
+        HCopyTransOptions options = new HCopyTransOptions(
+                HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
+                HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
+                HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY);
+        copyTransService.copyTransForDocument(copyTransTargetDoc, options,
+                null);
+        Long totalTranslation = getEm()
+                .createQuery("select count(*) from HTextFlowTarget", Long.class)
+                .getSingleResult();
         Assertions.assertThat(totalTranslation).isEqualTo(numOfTextFlows * 2);
     }
-
 }

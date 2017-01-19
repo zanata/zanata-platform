@@ -2,7 +2,6 @@ package org.zanata.rest.service;
 
 import java.util.HashSet;
 import java.util.Set;
-
 import org.hibernate.Session;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
@@ -30,16 +29,16 @@ import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.google.common.collect.Sets;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.test.CdiUnitRunner;
-
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 public class ResourceUtilsJpaTest extends ZanataJpaTest {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ResourceUtilsJpaTest.class);
+
     @Inject
     private ResourceUtils resourceUtils;
 
@@ -72,36 +71,32 @@ public class ResourceUtilsJpaTest extends ZanataJpaTest {
         from.setLang(LocaleId.ES);
         from.setName("name");
         from.setType(ResourceType.FILE);
-
         HLocale hLocale = new HLocale(LocaleId.EN_US);
-
         HDocument to = new HDocument("fullPath", ContentType.PO, hLocale);
-
         Set<String> commentExt = new HashSet<String>();
         commentExt.add(SimpleComment.ID);
         resourceUtils.transferFromResourceMetadata(from, to, commentExt,
                 hLocale, 1);
         // TODO check the results in 'to'
     }
+    // This should be executed manually in IDE
+    // ideally change persistence.xml to use a local mysql database and monitor
+    // general log etc.
 
     @Ignore("slow test")
-    // This should be executed manually in IDE
     @Test
     @SlowTest
     @PerformanceProfiling
     @InRequestScope
-    // ideally change persistence.xml to use a local mysql database and monitor general log etc.
     public void transferFromResource() {
-        HLocale locale = EntityMakerBuilder.builder().addConstructorParameterMaker(HLocale.class, 0, FixedValueMaker.fix(LocaleId.ES)).build()
-                .makeAndPersist(getEm(), HLocale.class);
-        HProjectIteration iteration =
-                EntityMakerBuilder
-                        .builder()
-                        .addFieldOrPropertyMaker(
-                                HProject.class, "sourceViewURL",
-                                FixedValueMaker.EMPTY_STRING_MAKER).build()
-                        .makeAndPersist(getEm(),
-                                HProjectIteration.class);
+        HLocale locale = EntityMakerBuilder.builder()
+                .addConstructorParameterMaker(HLocale.class, 0,
+                        FixedValueMaker.fix(LocaleId.ES))
+                .build().makeAndPersist(getEm(), HLocale.class);
+        HProjectIteration iteration = EntityMakerBuilder.builder()
+                .addFieldOrPropertyMaker(HProject.class, "sourceViewURL",
+                        FixedValueMaker.EMPTY_STRING_MAKER)
+                .build().makeAndPersist(getEm(), HProjectIteration.class);
         Resource from = new Resource("message");
         from.setContentType(ContentType.PO);
         LocaleId localeId = locale.getLocaleId();
@@ -110,19 +105,18 @@ public class ResourceUtilsJpaTest extends ZanataJpaTest {
         for (int i = 0; i < numOfTextFlows; i++) {
             addSampleTextFlow(from, localeId, i);
         }
-
-        // this is the same from org/zanata/service/impl/DocumentServiceImpl.java:140
-        HDocument to = new HDocument(from.getName(), from.getContentType(), locale);
+        // this is the same from
+        // org/zanata/service/impl/DocumentServiceImpl.java:140
+        HDocument to =
+                new HDocument(from.getName(), from.getContentType(), locale);
         to.setProjectIteration(iteration);
         getEm().persist(to);
         getEm().flush();
-
-
-        log.info("======= start of transfer {} textflows ======", numOfTextFlows);
+        log.info("======= start of transfer {} textflows ======",
+                numOfTextFlows);
         Monitor monitor = MonitorFactory.start("transfer");
         resourceUtils.transferFromResource(from, to,
                 Sets.newHashSet("gettext", "comment"), locale, 1);
-
         log.info("{}", monitor.stop());
         log.info("======= end of transfer =======");
         em.flush();
@@ -130,6 +124,7 @@ public class ResourceUtilsJpaTest extends ZanataJpaTest {
 
     private static void addSampleTextFlow(Resource from, LocaleId localeId,
             int index) {
-        from.getTextFlows().add(new TextFlow("res" + index, localeId, "hello world " + index));
+        from.getTextFlows().add(
+                new TextFlow("res" + index, localeId, "hello world " + index));
     }
 }

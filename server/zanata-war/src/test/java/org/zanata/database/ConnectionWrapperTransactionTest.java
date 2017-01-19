@@ -2,11 +2,9 @@ package org.zanata.database;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.database.ConnectionWrapper.getConnectionWrapper;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import org.assertj.core.api.Fail;
 import org.hibernate.JDBCException;
 import org.hibernate.Query;
@@ -20,15 +18,12 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.zanata.ZanataJpaTest;
 
-import lombok.Cleanup;
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class ConnectionWrapperTransactionTest extends ZanataJpaTest {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(ConnectionWrapperTransactionTest.class);
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-
     private Session session;
 
     @Override
@@ -44,7 +39,8 @@ public class ConnectionWrapperTransactionTest extends ZanataJpaTest {
     @Test
     public void transactionNotActiveInitially() throws Exception {
         session.doWork(connection -> {
-            assertThat(getConnectionWrapper(connection).transactionActive).isFalse();
+            assertThat(getConnectionWrapper(connection).transactionActive)
+                    .isFalse();
         });
     }
 
@@ -106,5 +102,4 @@ public class ConnectionWrapperTransactionTest extends ZanataJpaTest {
             connection.close();
         });
     }
-
 }

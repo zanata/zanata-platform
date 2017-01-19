@@ -20,10 +20,8 @@
  */
 package org.zanata.util;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.junit.rules.ExternalResource;
-
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -31,22 +29,21 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
-
 import static java.lang.Integer.parseInt;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class CleanDocumentStorageRule extends ExternalResource {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(CleanDocumentStorageRule.class);
 
     private static String storagePath;
 
     public static void resetFileData() {
         String documentStoragePath = getDocumentStoragePath();
         log.debug("document storage path: {}", documentStoragePath);
-
         File path = new File(documentStoragePath);
         if (path.exists()) {
             try {
@@ -61,7 +58,8 @@ public class CleanDocumentStorageRule extends ExternalResource {
     public static String getDocumentStoragePath() {
         if (storagePath == null) {
             final Properties env = new Properties();
-//            env.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
+
+            // env.put(Context.URL_PKG_PREFIXES, "org.jboss.ejb.client.naming");
             env.put(Context.INITIAL_CONTEXT_FACTORY,
                     org.jboss.naming.remote.client.InitialContextFactory.class
                             .getName());
@@ -70,30 +68,27 @@ public class CleanDocumentStorageRule extends ExternalResource {
             String rmiPort = System.getenv("JBOSS_REMOTING_PORT");
             int rmiPortNum = rmiPort != null ? parseInt(rmiPort) : 4547;
             long realRmiPort = portOffset + rmiPortNum;
-
             String remoteUrl = "remote://localhost:" + realRmiPort;
             env.put(Context.PROVIDER_URL, remoteUrl);
             InitialContext remoteContext = null;
             try {
                 remoteContext = new InitialContext(env);
-                storagePath =
-                        (String) remoteContext
-                                .lookup("zanata/files/document-storage-directory");
+                storagePath = (String) remoteContext
+                        .lookup("zanata/files/document-storage-directory");
             } catch (NamingException e) {
                 // wildfly uses 'http-remoting:' not 'remote:'
                 String httpPort = System.getenv("JBOSS_HTTP_PORT");
                 int httpPortNum = httpPort != null ? parseInt(httpPort) : 8180;
-
                 long realHttpPort = httpPortNum + portOffset;
-                String httpRemotingUrl = "http-remoting://localhost:" + realHttpPort;
+                String httpRemotingUrl =
+                        "http-remoting://localhost:" + realHttpPort;
                 log.warn("Unable to access {}: {}; trying {}", remoteUrl,
                         e.toString(), httpRemotingUrl);
                 try {
                     env.put(Context.PROVIDER_URL, httpRemotingUrl);
                     remoteContext = new InitialContext(env);
-                    storagePath =
-                            (String) remoteContext
-                                    .lookup("zanata/files/document-storage-directory");
+                    storagePath = (String) remoteContext
+                            .lookup("zanata/files/document-storage-directory");
                 } catch (NamingException e1) {
                     // fall back option:
                     log.warn("Unable to access {}: {}", httpRemotingUrl,
@@ -103,9 +98,8 @@ public class CleanDocumentStorageRule extends ExternalResource {
                                     .getResource("setup.properties");
                     File targetDir =
                             new File(testClassRoot.getPath()).getParentFile();
-                    storagePath =
-                            new File(targetDir, "zanata-documents")
-                                    .getAbsolutePath();
+                    storagePath = new File(targetDir, "zanata-documents")
+                            .getAbsolutePath();
                 }
             }
         }
@@ -123,6 +117,4 @@ public class CleanDocumentStorageRule extends ExternalResource {
         super.after();
         resetFileData();
     }
-
-
 }

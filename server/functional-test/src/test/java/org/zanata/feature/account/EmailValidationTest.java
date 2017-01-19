@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -30,16 +29,16 @@ import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.workflow.BasicWorkFlow;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 @Category(DetailedTest.class)
 public class EmailValidationTest extends ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(EmailValidationTest.class);
 
     private RegisterPage registerPage;
 
@@ -54,27 +53,25 @@ public class EmailValidationTest extends ZanataTestCase {
         registerPage = new BasicWorkFlow().goToHome().goToRegistration();
     }
 
-    @Feature(summary = "The system will allow acceptable forms of an " +
-            "email address for registration",
+    @Feature(
+            summary = "The system will allow acceptable forms of an email address for registration",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test
     public void validEmailAcceptance() throws Exception {
-        registerPage = registerPage.enterEmail("me@mydomain.com")
+        registerPage =
                 // Shift to other field
-                .enterName("Sam I Am");
-
+                registerPage.enterEmail("me@mydomain.com")
+                        .enterName("Sam I Am");
         assertThat(registerPage.getErrors())
-                .as("Email validation errors are not shown")
-                .isEmpty();
+                .as("Email validation errors are not shown").isEmpty();
     }
 
-    @Feature(summary = "The user must enter a valid email address to " +
-            "register with Zanata",
+    @Feature(
+            summary = "The user must enter a valid email address to register with Zanata",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test
     public void invalidEmailRejection() throws Exception {
         registerPage = registerPage.enterEmail("plaintext").registerFailure();
-
         assertThat(registerPage.getErrors())
                 .contains(RegisterPage.MALFORMED_EMAIL_ERROR)
                 .as("The email formation error is displayed");

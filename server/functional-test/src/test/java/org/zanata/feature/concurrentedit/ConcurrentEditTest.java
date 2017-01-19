@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.concurrentedit;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -34,17 +33,17 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.ZanataRestCaller.*;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@Slf4j
 public class ConcurrentEditTest extends ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ConcurrentEditTest.class);
 
     private ZanataRestCaller restCaller;
 
@@ -53,8 +52,8 @@ public class ConcurrentEditTest extends ZanataTestCase {
         restCaller = new ZanataRestCaller();
     }
 
-    @Feature(summary = "The system will propagate translations done by " +
-            "upload and copyTrans to editor",
+    @Feature(
+            summary = "The system will propagate translations done by upload and copyTrans to editor",
             bugzilla = 1067253)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorReceivesRestServiceResults() {
@@ -64,40 +63,32 @@ public class ConcurrentEditTest extends ZanataTestCase {
         String projectType = "gettext";
         restCaller.createProjectAndVersion(projectSlug, iterationSlug,
                 projectType);
-
         String docId = "test.pot";
         Resource sourceResource =
-                buildSourceResource(docId,
-                        buildTextFlow("res1", "hello world"),
+                buildSourceResource(docId, buildTextFlow("res1", "hello world"),
                         buildTextFlow("res2", "greetings"));
         restCaller.postSourceDocResource(projectSlug, iterationSlug,
                 sourceResource, false);
-
         // open editor
         new LoginWorkFlow().signIn("admin", "admin");
         // webTrans
-        final EditorPage editorPage =
-                new BasicWorkFlow().goToEditor("base", "master", "pl",
-                        "test.pot");
-
+        final EditorPage editorPage = new BasicWorkFlow().goToEditor("base",
+                "master", "pl", "test.pot");
         String translation = editorPage.getMessageTargetAtRowIndex(0);
         // for some reason getText() will return one space in it
         assertThat(translation.trim()).isEmpty();
-
         // push target
-        TranslationsResource translationsResource =
-                buildTranslationResource(
-                        buildTextFlowTarget("res1", "hello world translated"));
+        TranslationsResource translationsResource = buildTranslationResource(
+                buildTextFlowTarget("res1", "hello world translated"));
         restCaller.postTargetDocResource(projectSlug, iterationSlug, docId,
                 new LocaleId("pl"), translationsResource, "auto");
-
         // REST push broadcast event to editor
         assertThat(editorPage.expectBasicTranslationAtRowIndex(0,
                 "hello world translated")).isTrue();
     }
 
-    @Feature(summary = "The system will show concurrently changed " +
-            "translations to the web editor user",
+    @Feature(
+            summary = "The system will show concurrently changed translations to the web editor user",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorReceivesCopyTransResults() throws Exception {
@@ -107,43 +98,32 @@ public class ConcurrentEditTest extends ZanataTestCase {
         String projectType = "gettext";
         restCaller.createProjectAndVersion(projectSlug, iterationSlug,
                 projectType);
-
         String docId = "test.pot";
         Resource sourceResource =
-                buildSourceResource(docId,
-                        buildTextFlow("res1", "hello world"),
+                buildSourceResource(docId, buildTextFlow("res1", "hello world"),
                         buildTextFlow("res2", "greetings"));
         restCaller.postSourceDocResource(projectSlug, iterationSlug,
                 sourceResource, false);
-
-        TranslationsResource translationsResource =
-                buildTranslationResource(
-                        buildTextFlowTarget("res1", "hello world translated"));
+        TranslationsResource translationsResource = buildTranslationResource(
+                buildTextFlowTarget("res1", "hello world translated"));
         restCaller.postTargetDocResource(projectSlug, iterationSlug, docId,
                 new LocaleId("pl"), translationsResource, "auto");
-
         // create and push source but disable copyTrans
         restCaller.createProjectAndVersion(projectSlug, "beta", projectType);
         restCaller.postSourceDocResource(projectSlug, "beta", sourceResource,
                 false);
-
         // open editor
         new LoginWorkFlow().signIn("admin", "admin");
         // webTrans
-        final EditorPage editorPage =
-                new BasicWorkFlow().goToEditor("base", "beta", "pl",
-                        "test.pot");
-
+        final EditorPage editorPage = new BasicWorkFlow().goToEditor("base",
+                "beta", "pl", "test.pot");
         String translation = editorPage.getMessageTargetAtRowIndex(0);
         // for some reason getText() will return one space in it
         assertThat(translation.trim()).isEmpty();
-
         // run copyTrans
         restCaller.runCopyTrans(projectSlug, "beta", docId);
-
         // copyTrans broadcast event to editor
         assertThat(editorPage.expectBasicTranslationAtRowIndex(0,
                 "hello world translated")).isTrue();
     }
-
 }
