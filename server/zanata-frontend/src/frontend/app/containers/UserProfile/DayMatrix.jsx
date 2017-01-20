@@ -1,9 +1,6 @@
 import React, { PropTypes } from 'react'
 import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
-import {
-  Base
-} from 'zanata-ui'
 import { Button } from 'react-bootstrap'
 
 /**
@@ -45,7 +42,7 @@ const DayMatrix = ({
             {dateIsInFuture ? '\u00a0' : wordCount}
           </div>
         </Button>
-        : <Base atomic={{bgc: 'Bgc(#fff.85)', stretchedBox: 'StretchedBox'}} />}
+        : <div className='StretchedBox'></div>}
     </td>
   )
   /* eslint-enable react/jsx-no-bind */
