@@ -59,20 +59,19 @@ class UserProfile extends Component {
             show={!!notification} />
         )}
         <Helmet title='User Profile' />
-        <div className='scrollViewTheme' >
+        <div className='wideViewTheme profile-page' >
           {user.loading || loading
             ? (<div className='user-profile'>
               <LoaderText className='loader-text s8' loading />
             </div>)
             : (<div className='flex-c profile-wrapper'>
               <div className='flex-rr details' id='profile-overview'>
-                <div className='details-avatar'>
-                  <img src={user.imageUrl ? user.imageUrl : ''}
-                    alt={username} />
-                </div>
+                <img className='details-avatar'
+                  src={user.imageUrl ? user.imageUrl : ''}
+                  alt={username} />
                 <div className='flex-c details-text'>
                   {name &&
-                    <div className='username' id='profile-displayname'>
+                    <div className='username h2' id='profile-displayname'>
                       {name}
                     </div>
                   }

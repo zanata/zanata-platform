@@ -185,6 +185,10 @@ body {
   padding-right: @padding-base-em;
 }
 
+.wideViewTheme.profile-page {
+  max-width:100%;
+}
+
 .scrollViewTheme {
   align-items: center;
   overflow: hidden;
@@ -419,21 +423,20 @@ span.svg {
   width:100%;
 }
 
-.user-profile .profile-wrapper {
+.profile-wrapper {
   padding-top: 1.5rem;
-  padding-bottom: 1.5rem;
 }
 
-.user-profile .details {
+.details {
   width:100%;
   min-width: 21rem;
   max-width: 24rem;
   margin-bottom: 1.5rem;
 }
 
-.user-profile .details-avatar {
+img.details-avatar {
   border-radius: 500px;
-  margin-left: absolute;
+  margin-left: auto;
   overflow: hidden;
   max-width: 25%;
 }
@@ -467,6 +470,19 @@ ul.large-font-list li.flex-center svg {
 
 #profile-matrix tbody tr td:not(:first-child), #profile-matrix tr th:not(:first-child) {
   text-align: center;
+}
+
+#profile-overview {
+  display:flex;
+  align-items: flex-start;
+  align-content:flex-start;
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  width:100%;
+  min-width: 21rem;
+  max-width: 24rem;
+  margin-bottom: 1.5rem;
 }
 
 .LogoLoader {
@@ -3322,6 +3338,11 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   }
 }
 
+h2#profile-displayname {
+  color:@brand-primary;
+  font-weight:600;
+}
+
 #profile-matrix h2, #profile-matrix h3 {
   color: @brand-primary;
   font-size: 1.4em;
@@ -4633,7 +4654,7 @@ button.btn-link {
     flex-shrink: 0;
   }
 
-  .user-profile .profile-wrapper {
+  .profile-wrapper {
     flex-direction:column;
   }
 
@@ -4667,7 +4688,7 @@ button.btn-link {
     min-height: 100%;
   }
 
-  .user-profile .profile-wrapper {
+  .profile-wrapper {
     flex-direction:row;
   }
 
