@@ -480,6 +480,10 @@ ul.large-font-list li.flex-center svg {
   text-align: center;
 }
 
+.matrix-table {
+  display: flex;
+}
+
 #profile-overview {
   display:flex;
   align-items: flex-start;
@@ -5100,6 +5104,19 @@ button.btn-link {
     display: block !important;
   }
 
+  .matrix-table {
+    flex-direction: row;
+  }
+
+  .matrix-inner {
+    width:100%;
+  }
+
+  .matrix-heading {
+    width:100%;
+  }
+
+
   .profile-wrapper {
     flex-direction:column;
   }
@@ -5393,10 +5410,26 @@ button.btn-link {
   }
 }
 
+
 @media (min-width: @screen-lg-min) {
   .container {
     width: @container-large-desktop;
   }
+
+  .matrix-table {
+    flex-direction: row;
+  }
+
+  .matrix-inner {
+    width:50%;
+    margin-right:0.75em;
+  }
+
+  .matrix-heading {
+    width:50%;
+    margin-right:0.75em;
+  }
+
 
   .visible-lg {
     display: block !important;
