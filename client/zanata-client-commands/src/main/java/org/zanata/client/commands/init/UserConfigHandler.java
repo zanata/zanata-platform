@@ -64,9 +64,8 @@ class UserConfigHandler {
     protected void verifyUserConfig() throws Exception {
         File userConfig = opts.getUserConfig();
         if (!userConfig.exists()) {
-            String msg = get("missing.user.config");
-            log.warn(msg);
-            throw new RuntimeException(msg);
+            log.warn(get("missing.user.config"));
+            return;
         }
         clearValueSetByConfigurableMojo();
         // read in content and get all available server urls
