@@ -478,9 +478,9 @@ span.svg {
   max-width: 750px;
 }
 
-input.daterange-textfield {
+.daterange-textfield input.textInput {
   width: 12rem;
-  font-size: 0.833rem ;
+  font-size:0.986em;
 }
 
 .calendar-daterange {
@@ -4319,7 +4319,7 @@ button.list-group-item {
   border: 1px solid rgba(0, 0, 0, .2);
   border-radius: @border-radius-small;
   outline: 0;
-  max-width:600px;
+  max-width:700px;
   margin-left:auto;
   margin-right:auto;
   -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
@@ -5188,11 +5188,6 @@ button.btn-link {
     width:100%;
   }
 
-
-  .profile-wrapper {
-    flex-direction:column;
-  }
-
   #profile-matrix h2 {
     margin-top:0;
   }
@@ -5260,10 +5255,6 @@ button.btn-link {
   h2.matrix-heading {
     min-width: 0;
     margin-left: 3rem;
-  }
-
-  .profile-wrapper {
-    flex-direction:row;
   }
 
   .show-items {
@@ -5495,6 +5486,11 @@ button.btn-link {
   .visible-md-inline-block {
     display: inline-block !important;
   }
+
+  .profile-wrapper {
+    flex-direction:column;
+  }
+
 }
 
 
@@ -5505,6 +5501,7 @@ button.btn-link {
 
   .profile-wrapper {
     padding-right:4em;
+    flex-direction: row;
   }
 
   .matrix-table {
