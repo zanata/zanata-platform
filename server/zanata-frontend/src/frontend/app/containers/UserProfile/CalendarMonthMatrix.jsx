@@ -3,9 +3,6 @@ import moment from 'moment'
 import { range } from 'lodash'
 import DayMatrix from './DayMatrix'
 import { ContentStates } from '../../constants/Options'
-import {
-  Flex
-} from 'zanata-ui'
 import utilsDate from '../../utils/DateHelper'
 import { Button } from 'react-bootstrap'
 
@@ -85,7 +82,7 @@ const CalendarMonthMatrix = ({
   /* eslint-disable react/jsx-no-bind */
   return (
     <div id='activity-table'>
-      <Flex atomic={{m: 'Mb(rh)'}}>
+      <div className='activity-table-inner'>
         <div>
           <h3 className='Fw(600) Tt(u)'>
             {header}
@@ -99,7 +96,7 @@ const CalendarMonthMatrix = ({
             Clear selection
           </Button>
         </div>)}
-      </Flex>
+      </div>
       <table className={calClass}>
         <thead>
           <tr>{weekDays}</tr>

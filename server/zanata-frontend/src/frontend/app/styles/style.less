@@ -480,10 +480,6 @@ ul.large-font-list li.flex-center svg {
   text-align: center;
 }
 
-.matrix-table {
-  display: flex;
-}
-
 #profile-overview {
   display:flex;
   align-items: flex-start;
@@ -3396,6 +3392,11 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   font-weight: 600;
 }
 
+.activity-table-inner {
+  display:flex;
+  margin-bottom: 0.75rem;
+}
+
 #activity-table td button.btn-primary {
   background-color: rgba(84, 102, 119, 0.65);
 }
@@ -5037,6 +5038,10 @@ button.btn-link {
     font-size: 1.4em;
   }
 
+  .matrix-table {
+    display:block;
+  }
+
   .langSelect {
     right: 0;
   }
@@ -5105,6 +5110,7 @@ button.btn-link {
   }
 
   .matrix-table {
+    display:flex;
     flex-direction: row;
   }
 
@@ -5173,6 +5179,11 @@ button.btn-link {
 
   .wideViewTheme.profile-page {
     margin-top:0.375em;
+  }
+
+  .matrix-heading {
+    margin-right:0.75em;
+    margin-left:0.75em;
   }
 
   .profile-wrapper {
@@ -5416,7 +5427,12 @@ button.btn-link {
     width: @container-large-desktop;
   }
 
+  .profile-wrapper {
+    padding-right:4em;
+  }
+
   .matrix-table {
+    display:flex;
     flex-direction: row;
   }
 
@@ -5427,7 +5443,6 @@ button.btn-link {
 
   .matrix-heading {
     width:50%;
-    margin-right:0.75em;
   }
 
 
