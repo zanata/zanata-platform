@@ -179,8 +179,7 @@ body {
   -webkit-overflow-scrolling: touch;
   max-width: 90%;
   width: inherit;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 1em;
   padding-left: @padding-base-em;
   padding-right: @padding-base-em;
 }
@@ -419,12 +418,12 @@ span.svg {
   width:100%;
 }
 
-.user-profile .loader-text {
-  width:100%;
+.profile-wrapper {
+  margin-top:0.375em;
 }
 
-.profile-wrapper {
-  padding-top: 1.5rem;
+.user-profile .loader-text {
+  width:100%;
 }
 
 .details {
@@ -466,6 +465,7 @@ ul.large-font-list li.flex-center svg {
 
 #profile-matrix {
   padding-left: @padding-xl;
+  padding-right: @padding-xl;
 }
 
 #profile-matrix tbody tr td:not(:first-child), #profile-matrix tr th:not(:first-child) {
@@ -3338,15 +3338,16 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   }
 }
 
-h2#profile-displayname {
+#profile-displayname {
   color:@brand-primary;
   font-weight:600;
+  margin-bottom:0.375em;
+  margin-top:0;
 }
 
 #profile-matrix h2, #profile-matrix h3 {
   color: @brand-primary;
   font-size: 1.4em;
-  margin-bottom: 0;
 }
 
 .activity-graph {
@@ -4654,10 +4655,6 @@ button.btn-link {
     flex-shrink: 0;
   }
 
-  .profile-wrapper {
-    flex-direction:column;
-  }
-
   .page {
     flex: 1;
   }
@@ -4686,10 +4683,6 @@ button.btn-link {
     flex-direction: row;
     flex-shrink: 0;
     min-height: 100%;
-  }
-
-  .profile-wrapper {
-    flex-direction:row;
   }
 
   #nav {
@@ -5099,6 +5092,14 @@ button.btn-link {
     display: block !important;
   }
 
+  .profile-wrapper {
+    flex-direction:column;
+  }
+
+  #profile-matrix h2 {
+    margin-top:0;
+  }
+
   table.visible-sm {
     display: table !important;
   }
@@ -5143,6 +5144,14 @@ button.btn-link {
 @media (min-width: @screen-md-min) {
   .langSelect {
     position: relative;
+  }
+
+  .wideViewTheme.profile-page {
+    margin-top:0.375em;
+  }
+
+  .profile-wrapper {
+    flex-direction:row;
   }
 
   .show-items {
