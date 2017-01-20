@@ -28,7 +28,7 @@ public class UserTest {
         list.add(LocaleId.FR);
 
         User expected = new User("_username", "test@example.com", "testUser",
-                "url", list);
+                "url", list, null);
 
         assertThat(user, equalTo(expected));
     }

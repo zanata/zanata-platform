@@ -19,6 +19,7 @@ import {
 } from 'zanata-ui'
 
 import { Notification } from '../../components'
+import { getLanguageUrl } from '../../utils/UrlHelper'
 
 const classes = {
   wrapper: {
@@ -76,10 +77,18 @@ class UserProfile extends Component {
     const username = user.username
     const name = user.name ? user.name : undefined
     const email = user.email ? user.email : undefined
+    const roles = !isEmpty(user.roles) ? user.roles.join(', ') : undefined
 
     // TODO: fire ajax to get locale details
     const languageTeams = !isEmpty(user.languageTeams)
-      ? map(user.languageTeams, 'displayName').join() : undefined
+      ? map(user.languageTeams, (language) => {
+        return (
+          <a href={getLanguageUrl(language.localeId)} className='D(b)'>
+            {language.displayName}
+          </a>
+        )
+      })
+      : undefined
 
     const isLoggedIn = window.config.permission.isLoggedIn
 
@@ -125,11 +134,16 @@ class UserProfile extends Component {
                       }
                     </Flex>
                     {languageTeams &&
-                    (<Flex tagName='li' align='c' id='profile-languages'>
-                      <Icon name='language'
-                        atomic={{m: 'Mend(re)'}}
-                        title='Spoken languages' />
-                      {languageTeams}
+                    (<Flex tagName='li' align='c' id='profile-languages'
+                      title='Spoken languages'>
+                      <Icon name='language' atomic={{m: 'Mend(re)'}} />
+                      <span>{languageTeams}</span>
+                    </Flex>)}
+                    {roles && isLoggedIn &&
+                    (<Flex tagName='li' align='c' id='profile-roles'
+                      title='Roles'>
+                      <Icon name='users' atomic={{m: 'Mend(re)'}} />
+                      <span>{roles}</span>
                     </Flex>)}
                   </ul>
                 </Flex>

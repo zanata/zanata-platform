@@ -24,6 +24,14 @@ export function getProjectUrl (project) {
   return getContextPath() + '/project/view/' + project.id + getDswid()
 }
 
+/**
+ * @returns string of language page url
+ *
+ */
+export function getLanguageUrl (localeId) {
+  return window.config.baseUrl + '/language/view/' + localeId
+}
+
 export default {
   getDswid,
   getContextPath,
