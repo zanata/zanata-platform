@@ -39,6 +39,7 @@ import javax.inject.Named;
 import org.zanata.dao.VersionGroupDAO;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HIterationGroup;
+import org.zanata.seam.security.IdentityManager;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
@@ -105,6 +106,9 @@ public class DashboardAction implements Serializable {
     @Getter
     private GroupFilter groupList;
 
+    @Inject
+    private IdentityManager identityManager;
+
     @Getter(lazy = true)
     private final int userMaintainedProjectsCount =
             countUserMaintainedProjects();
@@ -139,6 +143,13 @@ public class DashboardAction implements Serializable {
                     }
                 }),
             ", ");
+    }
+
+    public String getUserRoles() {
+        HAccount account = accountDAO.findById(authenticatedAccount.getId());
+        List<String> roles =
+            identityManager.getGrantedRoles(account.getUsername());
+        return StringUtils.join(roles, ", ");
     }
 
     private int countUserMaintainedProjects() {

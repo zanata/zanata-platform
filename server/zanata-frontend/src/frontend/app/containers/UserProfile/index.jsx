@@ -10,6 +10,7 @@ import {
 } from '../../actions/profile'
 import RecentContributions from './RecentContributions'
 import { Notification, Icon, LoaderText } from '../../components'
+import { getLanguageUrl } from '../../utils/UrlHelper'
 
 /**
  * Root component for user profile page
@@ -42,10 +43,18 @@ class UserProfile extends Component {
     const username = user.username
     const name = user.name ? user.name : undefined
     const email = user.email ? user.email : undefined
+    const roles = !isEmpty(user.roles) ? user.roles.join(', ') : undefined
 
     // TODO: fire ajax to get locale details
     const languageTeams = !isEmpty(user.languageTeams)
-      ? map(user.languageTeams, 'displayName').join() : undefined
+      ? map(user.languageTeams, (language) => {
+        return (
+          <a href={getLanguageUrl(language.localeId)} className='D(b)'>
+            {language.displayName}
+          </a>
+        )
+      })
+      : undefined
 
     const isLoggedIn = window.config.permission.isLoggedIn
 
@@ -96,6 +105,14 @@ class UserProfile extends Component {
                         title='Spoken languages' />
                       {languageTeams}
                     </span>)}
+                    {roles && isLoggedIn &&
+                     (<span className='flex-center' tagName='li'
+                       id='profile-roles'
+                       title='Roles'>
+                       <Icon name='users'
+                         className='s0' />
+                       <span>{roles}</span>
+                     </span>)}
                   </ul>
                 </div>
               </div>

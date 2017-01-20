@@ -11,6 +11,7 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements
     private String versionProject;
     private String versionSlug;
     private String projectType;
+    private String versionStatus;
 
     @Override
     public String getCommandName() {
@@ -42,10 +43,16 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements
     }
 
     @Override
-    @Option(name = "--project-type", metaVar = "TYPE", usage = "Project Type",
-            required = false)
+    @Option(name = "--project-type", metaVar = "TYPE", usage = "Project Type")
     public void setProjectType(String type) {
         this.projectType = type;
+    }
+
+    @Option(name = "--version-status",
+            metaVar = "STATUS",
+            usage = "Version status (active, readonly)")
+    public void setVersionStatus(String status) {
+        this.versionStatus = status;
     }
 
     @Override
@@ -61,6 +68,11 @@ public class PutVersionOptionsImpl extends ConfigurableOptionsImpl implements
     @Override
     public String getProjectType() {
         return projectType;
+    }
+
+    @Override
+    public String getVersionStatus() {
+        return versionStatus;
     }
 
 }

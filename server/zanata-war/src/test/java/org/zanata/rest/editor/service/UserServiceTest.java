@@ -1,7 +1,8 @@
 package org.zanata.rest.editor.service;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import javax.ws.rs.core.Response;
@@ -17,8 +18,11 @@ import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
 import org.zanata.rest.dto.User;
+import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
+
+import com.google.common.collect.Lists;
 
 public class UserServiceTest {
     private UserService service;
@@ -34,13 +38,18 @@ public class UserServiceTest {
     @Mock
     private ZanataIdentity identity;
     @Mock
+    private IdentityManager identityManager;
+    @Mock
     private ApplicationConfiguration applicationConfiguration;
     private HPerson person;
+
+    private String username = "a";
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
         authenticatedAccount = new HAccount();
+        authenticatedAccount.setUsername(username);
         person = new HPerson();
         person.setId(1L);
         person.setName("peter");
@@ -50,13 +59,13 @@ public class UserServiceTest {
         service =
                 new UserService(authenticatedAccount, gravatarService,
                         accountDAO, personDAO, projectDAO, identity,
-                        applicationConfiguration);
+                        applicationConfiguration, identityManager);
     }
 
     @Test
     public void getMyInfoWillReturnNotFoundIfNotAuthenticated() {
         service = new UserService(null, gravatarService, accountDAO, personDAO,
-                projectDAO, identity, applicationConfiguration);
+                projectDAO, identity, applicationConfiguration, identityManager);
         Response response = service.getMyInfo();
         assertThat(response.getStatus()).isEqualTo(404);
     }
@@ -78,14 +87,14 @@ public class UserServiceTest {
 
     @Test
     public void getUserInfoWillReturnNotFoundIfNotFound() {
-        when(accountDAO.getByUsername("a")).thenReturn(null);
-        Response response = service.getUserInfo("a");
+        when(accountDAO.getByUsername(username)).thenReturn(null);
+        Response response = service.getUserInfo(username);
         assertThat(response.getStatus()).isEqualTo(404);
     }
 
     @Test
     public void getUserInfoWillReturnInfoAboutThePerson() {
-        when(accountDAO.getByUsername("a")).thenReturn(person.getAccount());
+        when(accountDAO.getByUsername(username)).thenReturn(person.getAccount());
         when(personDAO.findById(person.getId())).thenReturn(person);
         when(gravatarService.getUserImageUrl(GravatarService.USER_IMAGE_SIZE,
             person.getEmail())).thenReturn("imageurl");
@@ -95,7 +104,7 @@ public class UserServiceTest {
 
     @Test
     public void getUserInfoWillReturnInfoAboutThePersonWithoutEmail() {
-        when(accountDAO.getByUsername("a")).thenReturn(person.getAccount());
+        when(accountDAO.getByUsername(username)).thenReturn(person.getAccount());
         when(personDAO.findById(person.getId())).thenReturn(person);
         when(gravatarService.getUserImageUrl(GravatarService.USER_IMAGE_SIZE,
             person.getEmail())).thenReturn("imageurl");
@@ -105,7 +114,10 @@ public class UserServiceTest {
 
     private void testUser(boolean includeEmail) {
         when(applicationConfiguration.isDisplayUserEmail()).thenReturn(includeEmail);
-        Response response = service.getUserInfo("a");
+        List<String> roles = Lists.newArrayList("user", "admin", "project-creator");
+        when(identityManager.getGrantedRoles(username)).thenReturn(roles);
+
+        Response response = service.getUserInfo(username);
         assertThat(response.getStatus()).isEqualTo(200);
         assertThat(response.getEntity()).isInstanceOf(User.class);
 
@@ -116,5 +128,7 @@ public class UserServiceTest {
             assertThat(user.getEmail()).isEqualTo(null);
         }
         assertThat(user.getName()).isEqualTo(person.getName());
+        assertThat(user.getUsername()).isEqualTo(username);
+        assertThat(user.getRoles()).isEqualTo(roles);
     }
 }

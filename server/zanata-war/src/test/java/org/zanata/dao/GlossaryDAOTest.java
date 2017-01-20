@@ -1,8 +1,12 @@
 package org.zanata.dao;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.google.inject.matcher.Matchers;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.junit.Assert;
@@ -15,11 +19,14 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.util.DateUtil;
 import org.zanata.util.GlossaryUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -134,5 +141,20 @@ public class GlossaryDAOTest extends ZanataDbunitJpaTest {
         List<HGlossaryEntry> result =
                 dao.getEntriesByLocale(LocaleId.EN_US, 0, 100, "", sortFields, GlossaryUtil.GLOBAL_QUALIFIED_NAME);
         assertThat(result.get(0).getPos(), is("pos 1"));
+    }
+
+    @Test
+    public void testSrcTermDateUpdatedWhenEntryModified() {
+        HGlossaryEntry entry = dao.getEntryByContentHash("hash",
+            GlossaryUtil.GLOBAL_QUALIFIED_NAME);
+        entry.setDescription("testing");
+        entry = dao.makePersistent(entry);
+        dao.flush();
+        HGlossaryTerm srcTerm = entry.getGlossaryTerms()
+            .get(entry.getSrcLocale());
+
+        String srcDate = DateUtil.formatShortDate(srcTerm.getLastChanged());
+        String entryDate = DateUtil.formatShortDate(entry.getLastChanged());
+        assertThat(srcDate, is(entryDate));
     }
 }

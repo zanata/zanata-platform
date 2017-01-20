@@ -29,6 +29,7 @@ import org.zanata.rest.editor.dto.Permission;
 import org.zanata.rest.editor.service.resource.UserResource;
 import org.zanata.rest.service.AccountService;
 import org.zanata.rest.service.GlossaryService;
+import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
@@ -72,6 +73,9 @@ public class UserService implements UserResource {
 
     @Inject
     private ApplicationConfiguration applicationConfiguration;
+
+    @Inject
+    private IdentityManager identityManager;
 
     @Override
     @CheckLoggedIn
@@ -197,8 +201,11 @@ public class UserService implements UserResource {
                 .map(hLocale -> hLocale.getLocaleId())
                 .collect(Collectors.toList());
 
+        List<String> roles =
+                identityManager.getGrantedRoles(account.getUsername());
+
         return new User(account.getUsername(), includeEmail ? email : null,
-            person.getName(), userImageUrl, userLanguageTeams);
+            person.getName(), userImageUrl, userLanguageTeams, roles);
     }
 
     /**

@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react'
-import ReactDOM from 'react-dom'
-import { Button } from 'react-bootstrap'
 import {
-  Tooltip,
+  Button,
+  Popover,
   Overlay
-} from 'zanata-ui'
+} from 'react-bootstrap'
+import ReactDOM from 'react-dom'
+import { Icon } from '../../components'
 
 class DeleteEntry extends Component {
 
@@ -25,15 +26,15 @@ class DeleteEntry extends Component {
     /* eslint-disable react/jsx-no-bind */
     return (
       <div className='D(ib)'>
-        <Overlay
-          placement='top'
-          target={() => ReactDOM.findDOMNode(this)}
-          rootClose
-          show={show}
-          onHide={() => handleDeleteEntryDisplay(false)}>
-          <Tooltip id='delete-glossary' title='Delete language'>
-            <p>
-            Are you sure you want to delete&nbsp;
+        <Button bsSize='small' className='langdel-btn'
+          onClick={() => handleDeleteEntryDisplay(true)}>
+          <Icon name='cross' className='n1 crossicon' title='cross' />
+          Delete
+        </Button>
+        <Overlay show={show} placement='top'
+          target={() => ReactDOM.findDOMNode(this)}>
+          <Popover id='popover-contained' title='Delete language'>
+            <p>Are you sure you want to delete&nbsp;
               <strong>{locale.displayName}</strong>?&nbsp;
             </p>
             <span className='button-spacing'>
@@ -49,12 +50,8 @@ class DeleteEntry extends Component {
                 Delete
               </Button>
             </span>
-          </Tooltip>
+          </Popover>
         </Overlay>
-        <Button bsSize='small'
-          onClick={() => handleDeleteEntryDisplay(true)}>
-          <i className='fa fa-times Mend(ee)'></i>Delete
-        </Button>
       </div>
     )
     /* eslint-enable react/jsx-no-bind */
@@ -62,8 +59,8 @@ class DeleteEntry extends Component {
 }
 
 DeleteEntry.propTypes = {
-  locale: React.PropTypes.object,
-  show: React.PropTypes.bool,
+  locale: PropTypes.object,
+  show: PropTypes.bool,
   handleDeleteEntryDisplay: PropTypes.func.isRequired,
   handleDeleteEntry: React.PropTypes.func.isRequired
 }

@@ -19,7 +19,7 @@ class LocalProjectDetailPanel extends Component {
     const { documentName, documentPath } = matchDetail
     const fullDocName = this.fullDocName(documentPath, documentName)
     return (
-      <div title={fullDocName} className="transUnit-details ellipsis">
+      <div title={fullDocName} className="TransUnit-details ellipsis">
         <Icon name="document"
           size="1"
           theme={{
@@ -55,23 +55,26 @@ class LocalProjectDetailPanel extends Component {
     const fullDocName = this.fullDocName(documentPath, documentName)
 
     return (
-      <div className="transUnit-details">
+      <div className="TransUnit-details">
+        <ul className="u-sMB-1-4">
+          <li className="TransUnit-label-suggestions" title={projectId}>
+            <Row>
+              <Icon name="project" size="1" />PROJECT:
+              <span className="TransUnit-details-inner">{projectName}</span>
+            </Row>
+          </li>
+          <li className="TransUnit-label-suggestions">
+            <Row>
+              <Icon name="version" size="1" />VERSION:
+              <span className="TransUnit-details-inner">{version}</span>
+            </Row>
+          </li>
+        </ul>
         <ul className="u-listInline u-sMB-1-4">
-          <li className="project" title={projectId}>
+          <li title={fullDocName} className="TransUnit-label-suggestions">
             <Row>
-              <Icon name="project" size="1" />
-              {projectName}
-            </Row>
-          </li>
-          <li className="version">
-            <Row>
-              <Icon name="version" size="1" /> {version}
-            </Row>
-          </li>
-          <li className="document" title={fullDocName}>
-            <Row>
-              <Icon name="document" size="1" />
-              <span className="Fz(0.8em)">{fullDocName}</span>
+              <Icon name="document" size="1" />DOCUMENT:
+              <span className="TransUnit-details-inner">{fullDocName}</span>
             </Row>
           </li>
           <li>
