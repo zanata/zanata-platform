@@ -49,9 +49,24 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
     @get:Type(type = "localeId")
     var localeId: LocaleId
 
-    var isActive: Boolean = false
+    // entityunit 0.3 assumes that each field has a property of the same name,
+    // so we define the "active" field to go with the "isActive" accessor
+    @JvmField
+    final var active: Boolean = false
+    var isActive: Boolean
+        get() = active
+        set(value) {
+            active = value
+        }
 
-    var isEnabledByDefault: Boolean = false
+    @JvmField
+    final var enabledByDefault: Boolean = false
+    var isEnabledByDefault: Boolean
+        get() = enabledByDefault
+        set(value) {
+            enabledByDefault = value
+        }
+
     var supportedProjects: Set<HProject>? = null
         @ManyToMany
         @JoinTable(name = "HProject_Locale", joinColumns = arrayOf(JoinColumn(name = "localeId")), inverseJoinColumns = arrayOf(JoinColumn(name = "projectId")))
