@@ -99,38 +99,18 @@ public class SampleProjectProfile {
         makeLanguage(true, new LocaleId("pl"), "nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);");
     }
 
-    public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId,
-            String displayName, String nativeName,
-            @Nullable String pluralForms) {
-        return forLocale(enabledByDefault, localeId, displayName, nativeName, pluralForms)
-                .makeAndPersist(entityManager,
-                    HLocale.class);
-    }
 
     public HLocale makeLanguage(boolean enabledByDefault, LocaleId localeId,
             @Nullable String pluralForms) {
         ULocale uLocale = new ULocale(localeId.getId());
-        return forLocale(enabledByDefault, localeId, uLocale.getDisplayName(),
-            uLocale.getDisplayName(uLocale), pluralForms).makeAndPersist(entityManager,
-                HLocale.class);
-    }
-
-    private static EntityMaker forLocale(boolean enabledByDefault,
-            LocaleId localeId, String displayName, String nativeName, String pluralForms) {
-        return EntityMakerBuilder
-                .builder()
-                .addFieldOrPropertyMaker(HLocale.class, "isActive",
-                    FixedValueMaker.ALWAYS_TRUE_MAKER)
-                .addFieldOrPropertyMaker(HLocale.class, "displayName",
-                        FixedValueMaker.fix(displayName))
-                .addFieldOrPropertyMaker(HLocale.class, "nativeName",
-                    FixedValueMaker.fix(nativeName))
-                .addFieldOrPropertyMaker(HLocale.class, "pluralForms",
-                    FixedValueMaker.fix(pluralForms))
-                .addFieldOrPropertyMaker(HLocale.class, "isEnabledByDefault",
-                        FixedValueMaker.fix(enabledByDefault))
-                .addConstructorParameterMaker(HLocale.class, 0,
-                    FixedValueMaker.fix(localeId)).build();
+        HLocale entity = new HLocale(localeId);
+        entity.setActive(true);
+        entity.setDisplayName(uLocale.getDisplayName());
+        entity.setNativeName(uLocale.getDisplayName(uLocale));
+        entity.setPluralForms(pluralForms);
+        entity.setEnabledByDefault(enabledByDefault);
+        entityManager.persist(entity);
+        return entity;
     }
 
     public void makeSampleUsers() {
