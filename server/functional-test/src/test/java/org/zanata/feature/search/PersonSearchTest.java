@@ -65,7 +65,7 @@ public class PersonSearchTest extends ZanataTestCase {
                 .isEqualTo("translator");
         String languages = profilePage.getLanguages().trim();
         assertThat(Splitter.on(",").trimResults().split(languages))
-                .contains("Hindi", "Polish", "French");
+                .containsExactlyInAnyOrder("Hindi", "Polish", "French");
 
     }
 
