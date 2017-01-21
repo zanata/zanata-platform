@@ -37,6 +37,9 @@
 
     <as7.skip.deploy.marker>${jboss.home}/standalone/deployments/zanata.war.skipdeploy</as7.skip.deploy.marker>
     <as7.dodeploy.marker>${jboss.home}/standalone/deployments/zanata.war.dodeploy</as7.dodeploy.marker>
+
+    <!-- jacoco:prepare-agent will add more to this (surefire) property. -->
+    <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
   </properties>
 
   <build>
@@ -256,9 +259,6 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <!-- We use late property evaluation (@{argLine}) so that surefire
-               will pick up the argLine set by jacoco:prepare-agent. -->
-          <argLine>@{argLine} -Dconcordion.output.dir=${concordion.output.dir}</argLine>
           <testNGArtifactName>none:none</testNGArtifactName>
           <!-- TODO ensure that stateful tests (eg using Hibernate Search)
                are isolated, or rename them to ITCase (Arquillian), and
