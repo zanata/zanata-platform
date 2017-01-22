@@ -22,16 +22,14 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import javax.enterprise.inject.Model;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.dao.LocaleMemberDAO;
+import org.zanata.model.HLocaleMember;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
-import org.zanata.security.annotations.CheckRole;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.email.ContactLanguageCoordinatorEmailStrategy;
 import org.zanata.email.EmailStrategy;
@@ -56,16 +54,28 @@ public class LanguageContactCoordinatorAction implements Serializable {
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
+
     @Inject
     private FacesMessages facesMessages;
+
     @Inject
     private EmailService emailServiceImpl;
+
     @Inject
     private LocaleService localeServiceImpl;
+
+    @Inject
+    private LocaleMemberDAO localeMemberDAO;
+
     @Inject
     private Messages msgs;
+
+    private String receiver;
+
     private String message;
+
     private String localeId;
+
     private HLocale locale;
 
     @CheckLoggedIn
@@ -73,10 +83,20 @@ public class LanguageContactCoordinatorAction implements Serializable {
         String fromName = authenticatedAccount.getPerson().getName();
         String fromLoginName = authenticatedAccount.getUsername();
         String replyEmail = authenticatedAccount.getPerson().getEmail();
+
+        String receiver = hasCoordinators()
+            ? msgs.get("jsf.email.coordinator.DearCoordinator")
+            : msgs.get("jsf.email.admin.DearAdmin");
+
         String localeNativeName = getLocale().retrieveNativeName();
-        EmailStrategy strategy = new ContactLanguageCoordinatorEmailStrategy(
-                fromLoginName, fromName, replyEmail, getSubject(),
-                getLocale().getLocaleId().getId(), localeNativeName, message);
+
+        EmailStrategy strategy =
+                new ContactLanguageCoordinatorEmailStrategy(
+                        receiver, fromLoginName, fromName, replyEmail,
+                        getSubject(),
+                        getLocale().getLocaleId().getId(),
+                        localeNativeName, message);
+
         try {
             String msg = emailServiceImpl.sendToLanguageCoordinators(
                     getLocale().getLocaleId(), strategy);
@@ -104,6 +124,21 @@ public class LanguageContactCoordinatorAction implements Serializable {
             locale = localeServiceImpl.getByLocaleId(new LocaleId(localeId));
         }
         return locale;
+    }
+
+    public String getTitle() {
+        return msgs.format("jsf.message.coordinator.inquiry.title", localeId,
+                getLocale().retrieveDisplayName());
+    }
+
+    public boolean hasCoordinators() {
+        for (HLocaleMember member : localeMemberDAO
+                .findAllByLocale(new LocaleId(localeId))) {
+            if (member.isCoordinator()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getMessage() {

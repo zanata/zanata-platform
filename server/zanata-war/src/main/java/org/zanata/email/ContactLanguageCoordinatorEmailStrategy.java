@@ -32,6 +32,7 @@ import static org.zanata.email.Addresses.getReplyTo;
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class ContactLanguageCoordinatorEmailStrategy extends EmailStrategy {
+    private final String receiver;
     private final String fromLoginName;
     private final String fromName;
     private final String replyEmail;
@@ -52,8 +53,8 @@ public class ContactLanguageCoordinatorEmailStrategy extends EmailStrategy {
 
     @Override
     public String getSubject(Messages msgs) {
-        return msgs.format("jsf.email.coordinator.SubjectPrefix", localeId,
-                fromLoginName) + " " + userSubject;
+        return msgs.format("jsf.email.coordinator.SubjectPrefix",
+                localeId, fromLoginName) + " " + userSubject;
     }
 
     @Override
@@ -62,20 +63,23 @@ public class ContactLanguageCoordinatorEmailStrategy extends EmailStrategy {
         Map<String, Object> context =
                 super.makeContext(genericContext, toAddresses);
         String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
-        return context.put("fromLoginName", fromLoginName)
+        return context.put("receiver", receiver)
+                .put("fromLoginName", fromLoginName)
                 .put("fromName", fromName).put("replyEmail", replyEmail)
                 .put("localeId", localeId)
                 .put("localeNativeName", localeNativeName)
                 .put("htmlMessage", safeHTML);
     }
 
-    @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
+    @java.beans.ConstructorProperties({ "receiver", "fromLoginName", "fromName",
             "replyEmail", "userSubject", "localeId", "localeNativeName",
             "htmlMessage" })
-    public ContactLanguageCoordinatorEmailStrategy(final String fromLoginName,
+    public ContactLanguageCoordinatorEmailStrategy(final String receiver,
+            final String fromLoginName,
             final String fromName, final String replyEmail,
             final String userSubject, final String localeId,
             final String localeNativeName, final String htmlMessage) {
+        this.receiver = receiver;
         this.fromLoginName = fromLoginName;
         this.fromName = fromName;
         this.replyEmail = replyEmail;

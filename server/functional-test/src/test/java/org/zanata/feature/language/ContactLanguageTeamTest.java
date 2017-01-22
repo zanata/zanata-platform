@@ -72,7 +72,7 @@ public class ContactLanguageTeamTest extends ZanataTestCase {
         String content = HasEmailRule.getEmailContent(wiserMessage);
 
         assertThat(content)
-                .contains("Dear Language Team Coordinator")
+                .contains("Dear Administrator")
                 .contains("There is no coordinator for")
                 .as("The email is to the language team coordinator");
         assertThat(languagesPage.getNotificationMessage())

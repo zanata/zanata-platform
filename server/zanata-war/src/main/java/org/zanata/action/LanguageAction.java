@@ -450,6 +450,15 @@ public class LanguageAction implements Serializable {
         return null;
     }
 
+    public boolean hasCoordinators() {
+        for (HLocaleMember member : getLocaleMembers()) {
+            if (member.isCoordinator()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void searchForTeamMembers() {
         clearSearchResult();
         List<HPerson> results =

@@ -2,6 +2,7 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:zanata="http://java.sun.com/jsf/composite/zanata"
   xmlns:rich="http://richfaces.org/rich"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
   xmlns:a4j="http://richfaces.org/a4j"
   class="modal" id="contactCoordinatorDialog" tabindex="-1" role="dialog"
   aria-labelledby="myModalLabel" aria-hidden="true">
@@ -32,14 +33,18 @@
       var isEmpty = getContactCoordinatorMessageField().val() === '';
       getContactCoordinatorForm().find('#contact-coordinator-send-button').prop('disabled', isEmpty);
     }
-
   </script>
 
   <div class="modal__dialog l--constrain-medium">
     <header class="modal__header">
       <h2 class="modal__title">
-        #{msgs.format('jsf.message.coordinator.inquiry.title',languageContactCoordinatorAction.localeId, languageContactCoordinatorAction.locale.retrieveDisplayName())}
-      </h2>
+        <ui:fragment rendered="#{languageContactCoordinatorAction.hasCoordinators()}">
+          #{msgs.format('jsf.message.coordinator.inquiry.title',languageContactCoordinatorAction.localeId, languageContactCoordinatorAction.locale.retrieveDisplayName())}
+        </ui:fragment>
+        <ui:fragment rendered="#{not languageContactCoordinatorAction.hasCoordinators()}">
+          #{msgs.format('jsf.message.coordinator.admin.inquiry.title',languageContactCoordinatorAction.localeId, languageContactCoordinatorAction.locale.retrieveDisplayName())}
+        </ui:fragment>
+       </h2>
       <button type="button"
         class="modal__close button--link"
         data-dismiss="modal" onclick="cancelContactCoordinator();return false;">
