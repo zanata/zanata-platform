@@ -10,13 +10,13 @@ const UserTeaser = ({
   ...props
 }) => {
   const wordsTranslated = details.wordsTranslated &&
-    (<div className='wordsTranslatedView'>
+    (<div className='words-translated-view'>
       <Icon className='translateicon-muted' />
         {details.wordsTranslated}
     </div>)
   return (
-    <div className='teaserViewTheme' name={name}>
-      <div className='userTeaserInner'>
+    <div className='teaser-view-theme' name={name}>
+      <div className='user-teaser-inner'>
         <img
           src={details.avatarUrl}
           alt={details.id}

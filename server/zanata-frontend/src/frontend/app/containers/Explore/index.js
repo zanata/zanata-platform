@@ -115,11 +115,11 @@ class Explore extends Component {
     }
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
-      <div className='page scrollViewTheme' id='explore'>
+      <div className='page scroll-view-theme' id='explore'>
         <Helmet title='Search' />
-        <div className='headerClasses'>
-          <h1 className='headingTheme hidden' level='1'>Search</h1>
-          <div className='searchViewTheme'>
+        <div className='header-classes'>
+          <h1 className='hidden' level='1'>Search</h1>
+          <div className='search-view-theme'>
             <Icon name='search' className='s1 list-inline' />
             <TextInput
               maxLength={100}
@@ -140,7 +140,7 @@ class Explore extends Component {
             </Button>
           </div>
         </div>
-        <div className='contentViewContainer'>
+        <div className='content-view-container'>
             {content}
         </div>
       </div>

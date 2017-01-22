@@ -42,11 +42,11 @@ const TeaserList = ({
   }
 
   return (
-    <div className='teaserListTheme'>
+    <div className='teaser-list-theme'>
       <TeaserListHeader title={title} type={type}
         sizePerPage={sizePerPage} page={page}
         totalCount={totalCount} updatePage={updatePage} loading={loading} />
-      <span className='listTheme' id={'explore_' + type + '_result'}>
+      <span className='list-theme' id={'explore_' + type + '_result'}>
         {!items || items.length <= 0
           ? (<p className='text-muted'>No Results</p>)
           : (items.map((item, key) => (

@@ -41,8 +41,8 @@ const ProjectTeaser = ({
     ? ''
     : 'This project is currently read only'
   return (
-    <div className='teaserViewTheme' name={name}>
-      <div className='teaserInner'>
+    <div className='teaser-view-theme' name={name}>
+      <div className='teaser-inner'>
         <div>
           <Link link={link} useHref className={className} title={tooltip}>
             {status !== statusIcons.ACTIVE &&
