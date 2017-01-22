@@ -95,6 +95,7 @@ body {
   display: flex !important;
   flex-shrink: 0;
   overflow: hidden;
+  position: fixed;
 }
 
 .nav-icon {
@@ -1263,6 +1264,16 @@ dd {
   margin-left: auto;
   padding-right: @padding-large-horizontal;
   padding-left: @padding-large-horizontal;
+}
+
+.container-sidebar {
+  margin-left:4.5em;
+  margin-right:1.5em;
+}
+
+.container-editor {
+  margin-left:6em;
+  width:100%;
 }
 
 .container-fluid {
@@ -4694,6 +4705,16 @@ button.list-group-item {
     flex-direction:row;
     flex:1;
   }
+  
+  main {
+    margin-left:0;
+  }
+
+  .container-sidebar, .container-editor {
+    margin-left:0;
+    margin-right:0;
+    width:100%;
+  }
 
   .page {
     flex: 1;
@@ -4702,6 +4723,7 @@ button.list-group-item {
   #nav {
     height: initial;
     width: 100%;
+    position:relative;
   }
 
   .nav-bar {
@@ -4723,6 +4745,20 @@ button.list-group-item {
     flex-direction: row;
     flex-shrink: 0;
     min-height: 100%;
+  }
+
+  main {
+    margin-left:4.5em;
+  }
+
+  .container-sidebar {
+    margin-left:4.5em;
+    width:90%;
+  }
+
+  .container-editor {
+    margin-left:6em;
+    width:100%;
   }
 
   #nav {

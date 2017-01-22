@@ -18,13 +18,6 @@ class SuggestionDetailsModal extends Component {
     }
   }
 
-  /**
-   * One of the detail panels is selected.
-   */
-  handleSelect (activeKey) {
-    this.setState({activeKey})
-  }
-
   render () {
     const { matchDetails } = this.props.suggestion
 
@@ -47,17 +40,16 @@ class SuggestionDetailsModal extends Component {
     return (
       <Modal
         show
-        onHide={this.props.onClose}>
+        onHide={this.props.onClose}
+        className="suggestions-modal">
         <Modal.Header>
           <Modal.Title><small><span className="pull-left">
           Translation Memory Details</span></small></Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <PlainSuggestionContents suggestion={this.props.suggestion}
-            matchType={activeMatchType} />
-          <PanelGroup accordion
-            activeKey={this.state.activeKey}
-            onSelect={::this.handleSelect}>
+            matchType={activeMatchType} displayHeader />
+          <PanelGroup>
             {detailPanels}
           </PanelGroup>
         </Modal.Body>
