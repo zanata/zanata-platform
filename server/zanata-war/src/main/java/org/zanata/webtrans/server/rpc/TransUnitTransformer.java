@@ -99,8 +99,10 @@ public class TransUnitTransformer {
 
         if (target != null) {
             builder.setStatus(target.getState());
-            if (target.getLastModifiedBy() != null) {
-                builder.setLastModifiedBy(target.getLastModifiedBy().getName());
+            if (target.getLastModifiedBy() != null
+                    && target.getLastModifiedBy().hasAccount()) {
+                builder.setLastModifiedBy(
+                        target.getLastModifiedBy().getAccount().getUsername());
             }
             builder.setLastModifiedTime(target.getLastChanged());
             builder.setRevisionComment(target.getRevisionComment());

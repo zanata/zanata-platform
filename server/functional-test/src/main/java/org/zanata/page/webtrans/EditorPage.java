@@ -477,6 +477,7 @@ public class EditorPage extends BasePage {
                 .findElements(By.className("gwt-InlineHTML"))
                 .get(0)
                 .findElement(By.className("txt--meta"))
+                .findElement(By.tagName("a"))
                 .getText();
     }
 
