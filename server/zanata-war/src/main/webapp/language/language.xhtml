@@ -259,12 +259,23 @@
                   <ul class="dropdown__content js-dropdown__content"
                     role="content" aria-labelledby="dropdownContent">
                     <li>
-                      <a href="#" class="i__item--right" id="contact-coordinator"
-                        data-toggle="modal" onclick="return false;"
-                        data-target="#contactCoordinatorDialog">
-                        #{msgs['jsf.contactLanguageTeamCoordinator']}
-                        <i class="i i--add i__item__icon"></i>
-                      </a>
+                      <ui:fragment rendered="#{languageAction.hasCoordinators()}">
+                        <a href="#" class="i__item--right" id="contact-coordinator"
+                          data-toggle="modal" onclick="return false;"
+                          data-target="#contactCoordinatorDialog">
+                          #{msgs['jsf.contactLanguageTeamCoordinator']}
+                          <i class="i i--add i__item__icon"></i>
+                        </a>
+                      </ui:fragment>
+                      <ui:fragment rendered="#{not languageAction.hasCoordinators()}">
+                        <ui:include src="/WEB-INF/layout/admin/contact_admin_modal.xhtml"/>
+                        <a href="#" class="i__item--right" id="contact-admin"
+                          data-toggle="modal" onclick="return false;"
+                          data-target="#contactAdminDialog">
+                          #{msgs['jsf.ContactAdmin']}
+                          <i class="i i--add i__item__icon"></i>
+                        </a>
+                      </ui:fragment>
                     </li>
                     <ui:fragment rendered="#{!contactLanguageTeamMembersAction.getMembers().isEmpty() and identity.hasPermission(languageAction.locale, 'manage-language-team')}">
                       <li>
