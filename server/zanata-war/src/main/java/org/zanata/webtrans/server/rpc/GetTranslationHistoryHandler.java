@@ -89,7 +89,7 @@ public class GetTranslationHistoryHandler
         TransHistoryItem latest = null;
         if (hTextFlowTarget != null) {
             String lastModifiedBy =
-                    nameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
+                    usernameOrEmptyString(hTextFlowTarget.getLastModifiedBy());
             int nPlurals =
                     resourceUtils.getNumPlurals(hTextFlow.getDocument(),
                             hLocale);
@@ -124,8 +124,9 @@ public class GetTranslationHistoryHandler
                 Lists.newArrayList(reviewComments));
     }
 
-    private static String nameOrEmptyString(HPerson lastModifiedBy) {
-        return lastModifiedBy != null ? lastModifiedBy.getName() : "";
+    private static String usernameOrEmptyString(HPerson lastModifiedBy) {
+        return lastModifiedBy != null && lastModifiedBy.hasAccount()
+                ? lastModifiedBy.getAccount().getUsername() : "";
     }
 
     protected List<ReviewComment> getReviewComments(
@@ -161,7 +162,7 @@ public class GetTranslationHistoryHandler
             return new TransHistoryItem(targetHistory.getVersionNum()
                     .toString(), targetHistory.getContents(),
                     targetHistory.getState(),
-                    nameOrEmptyString(targetHistory.getLastModifiedBy()),
+                    usernameOrEmptyString(targetHistory.getLastModifiedBy()),
                     targetHistory.getLastChanged(),
                     targetHistory.getRevisionComment());
         }
