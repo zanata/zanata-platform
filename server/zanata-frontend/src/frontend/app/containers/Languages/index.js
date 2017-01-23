@@ -53,7 +53,7 @@ class Languages extends Component {
       (totalCount % size > 0 ? 1 : 0)
 
     return (
-      <div className='page wideViewTheme'>
+      <div className='page wide-view-theme'>
         {notification &&
         (<Notification severity={notification.severity}
           message={notification.message}
@@ -97,7 +97,7 @@ class Languages extends Component {
               </FormGroup>
 
               {loading
-                ? <div className='contentViewContainer'>
+                ? <div className='content-view-container'>
                   <span className='list-inline'>
                     <LoaderText loading />
                   </span>

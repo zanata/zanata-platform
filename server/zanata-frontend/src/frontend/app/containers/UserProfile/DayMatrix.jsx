@@ -37,12 +37,12 @@ const DayMatrix = ({
           className={date === selectedDay ? 'active ' : ''}
           disabled={dateIsInFuture || !date}
           title={wordCount + ' words'}>
-          <div className='calDate'>{date ? dateLabel : '\u00a0'}</div>
-          <div className='calInfo'>
+          <div className='cal-date'>{date ? dateLabel : '\u00a0'}</div>
+          <div className='cal-info'>
             {dateIsInFuture ? '\u00a0' : wordCount}
           </div>
         </Button>
-        : <div className='StretchedBox'></div>}
+        : <div className='stretched-box'></div>}
     </td>
   )
   /* eslint-enable react/jsx-no-bind */

@@ -68,7 +68,7 @@ class UserProfile extends Component {
             show={!!notification} />
         )}
         <Helmet title='User Profile' />
-        <div className='wideViewTheme profile-page' >
+        <div className='wide-view-theme profile-page' >
           {user.loading || loading
             ? (<div className='user-profile'>
               <LoaderText className='loader-text s8' loading />
