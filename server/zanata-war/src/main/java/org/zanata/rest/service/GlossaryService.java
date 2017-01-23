@@ -327,9 +327,10 @@ public class GlossaryService implements GlossaryResource {
     }
 
     @Override
-    public Response deleteEntry(Long id) {
+    public Response deleteEntry(Long id,
+        @DefaultValue(GLOBAL_QUALIFIED_NAME) @QueryParam("qualifiedName") String qualifiedName) {
         Response response =
-                checkGlossaryPermission("", "glossary-delete");
+                checkGlossaryPermission(qualifiedName, "glossary-delete");
         if (response != null) {
             return response;
         }
