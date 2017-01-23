@@ -18,21 +18,19 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.page.projects.projectsettings;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.projects.ProjectBasePage;
 
 /**
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectAboutTab extends ProjectBasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectAboutTab.class);
     private By aboutTextField = By.id("settings-about-form:homeContent");
     private By saveButton = By.linkText("Save notes");
 

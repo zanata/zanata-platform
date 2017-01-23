@@ -20,18 +20,68 @@
  */
 package org.zanata.events;
 
-import lombok.Value;
-
 import org.zanata.common.LocaleId;
 import org.zanata.model.HProjectIteration;
+// TODO use HProjectIteration with a discriminator instead?
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Value
-// TODO use HProjectIteration with a discriminator instead?
-public class ProjectIterationUpdate {
-    HProjectIteration iteration;
+public final class ProjectIterationUpdate {
+    private final HProjectIteration iteration;
+    private final String oldSlug;
 
-    String oldSlug;
+    @java.beans.ConstructorProperties({ "iteration", "oldSlug" })
+    public ProjectIterationUpdate(final HProjectIteration iteration,
+            final String oldSlug) {
+        this.iteration = iteration;
+        this.oldSlug = oldSlug;
+    }
+
+    public HProjectIteration getIteration() {
+        return this.iteration;
+    }
+
+    public String getOldSlug() {
+        return this.oldSlug;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof ProjectIterationUpdate))
+            return false;
+        final ProjectIterationUpdate other = (ProjectIterationUpdate) o;
+        final Object this$iteration = this.getIteration();
+        final Object other$iteration = other.getIteration();
+        if (this$iteration == null ? other$iteration != null
+                : !this$iteration.equals(other$iteration))
+            return false;
+        final Object this$oldSlug = this.getOldSlug();
+        final Object other$oldSlug = other.getOldSlug();
+        if (this$oldSlug == null ? other$oldSlug != null
+                : !this$oldSlug.equals(other$oldSlug))
+            return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $iteration = this.getIteration();
+        result = result * PRIME
+                + ($iteration == null ? 43 : $iteration.hashCode());
+        final Object $oldSlug = this.getOldSlug();
+        result = result * PRIME + ($oldSlug == null ? 43 : $oldSlug.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ProjectIterationUpdate(iteration=" + this.getIteration()
+                + ", oldSlug=" + this.getOldSlug() + ")";
+    }
 }

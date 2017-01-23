@@ -20,22 +20,20 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ManageUserPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ManageUserPage.class);
     private By userTable = By.id("usermanagerForm");
 
     public ManageUserPage(WebDriver driver) {
@@ -74,8 +72,10 @@ public class ManageUserPage extends BasePage {
 
     public String getListItemUsername(WebElement listItem) {
         String listItemText = listItem.findElement(By.tagName("h3")).getText();
-        return listItemText.substring(0, listItemText
-                .lastIndexOf(getListItemRoles(listItem))).trim();
+        return listItemText
+                .substring(0,
+                        listItemText.lastIndexOf(getListItemRoles(listItem)))
+                .trim();
     }
 
     public String getListItemRoles(WebElement listItem) {

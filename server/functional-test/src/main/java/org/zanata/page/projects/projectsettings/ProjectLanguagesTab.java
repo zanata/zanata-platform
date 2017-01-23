@@ -21,29 +21,27 @@
 package org.zanata.page.projects.projectsettings;
 
 import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.LanguageList;
-
 import java.util.List;
 
 /**
  * This class represents the project language settings page.
  *
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectLanguagesTab extends ProjectBasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectLanguagesTab.class);
     private By activeLocales = By.id("activeLocales-list");
-    private By enabledLocalesFilter = By.id(
-            "settings-languages-form:activeLocales-filter-input");
+    private By enabledLocalesFilter =
+            By.id("settings-languages-form:activeLocales-filter-input");
     private By disabledLocales = By.id("availableLocales-list");
-    private By disabledLocalesFilter = By.id(
-            "settings-languages-form:availableLocales-filter-input");
+    private By disabledLocalesFilter =
+            By.id("settings-languages-form:availableLocales-filter-input");
 
     public ProjectLanguagesTab(WebDriver driver) {
         super(driver);
@@ -70,19 +68,24 @@ public class ProjectLanguagesTab extends ProjectBasePage {
     }
 
     public ProjectLanguagesTab expectEnabledLocaleListCount(final int count) {
-        waitForAMoment().until(
-                (Predicate<WebDriver>) input -> getEnabledLocaleList().size() == count);
+        waitForAMoment()
+                .until((Predicate<WebDriver>) input -> getEnabledLocaleList()
+                        .size() == count);
         return new ProjectLanguagesTab(getDriver());
     }
+
     public ProjectLanguagesTab expectAvailableLocaleListCount(final int count) {
-        waitForAMoment().until(
-                (Predicate<WebDriver>) webDriver -> getAvailableLocaleList().size() == count);
+        waitForAMoment()
+                .until((Predicate<WebDriver>) webDriver -> getAvailableLocaleList()
+                        .size() == count);
         return new ProjectLanguagesTab(getDriver());
     }
 
     /**
      * Enter text into the disabled language filter field
-     * @param languageQuery text to filter by
+     *
+     * @param languageQuery
+     *            text to filter by
      * @return new language settings tab
      */
     public ProjectLanguagesTab filterDisabledLanguages(String languageQuery) {
@@ -100,14 +103,15 @@ public class ProjectLanguagesTab extends ProjectBasePage {
     /**
      * Add a language to the languages list.
      *
-     * @param searchLocaleId language to select
+     * @param searchLocaleId
+     *            language to select
      * @return new language settings, anticipating the language has been added.
      */
     public ProjectLanguagesTab addLanguage(final String searchLocaleId) {
         log.info("Click Enable on {}", searchLocaleId);
         String message = "can not find locale - " + searchLocaleId;
-        waitForAMoment().withMessage(message).until(
-                (Predicate<WebDriver>) driver -> {
+        waitForAMoment().withMessage(message)
+                .until((Predicate<WebDriver>) driver -> {
                     return LanguageList.toggleLanguageInList(
                             getDriver().findElement(disabledLocales),
                             searchLocaleId);
@@ -115,36 +119,34 @@ public class ProjectLanguagesTab extends ProjectBasePage {
         refreshPageUntil(this, (Predicate<WebDriver>) driver -> {
             return getEnabledLocaleList().contains(searchLocaleId);
         }, "Wait for the locale list to contain " + searchLocaleId);
-
         return new ProjectLanguagesTab(getDriver());
     }
 
     /**
      * Click the removal link for a language.
      *
-     * @param searchLocaleId language to remove
+     * @param searchLocaleId
+     *            language to remove
      * @return new language settings tab
      */
     public ProjectLanguagesTab removeLocale(final String searchLocaleId) {
         log.info("Click Disable on {}", searchLocaleId);
         String message = "can not find locale - " + searchLocaleId;
-        waitForAMoment().withMessage(message).until(
-                (Predicate<WebDriver>) driver -> {
+        waitForAMoment().withMessage(message)
+                .until((Predicate<WebDriver>) driver -> {
                     return LanguageList.toggleLanguageInList(
                             getDriver().findElement(activeLocales),
                             searchLocaleId);
                 });
         refreshPageUntil(this,
-                (Predicate<WebDriver>) driver ->
-                        !getEnabledLocaleList().contains(searchLocaleId),
+                (Predicate<WebDriver>) driver -> !getEnabledLocaleList()
+                        .contains(searchLocaleId),
                 "Wait for the locale list to not contain " + searchLocaleId);
-
         return new ProjectLanguagesTab(getDriver());
     }
 
     public ProjectLanguagesTab clickLanguageActionsDropdown(String locale) {
-        LanguageList.clickActionsDropdown(readyElement(activeLocales),
-                locale);
+        LanguageList.clickActionsDropdown(readyElement(activeLocales), locale);
         return new ProjectLanguagesTab(getDriver());
     }
 
@@ -158,9 +160,9 @@ public class ProjectLanguagesTab extends ProjectBasePage {
         return new ProjectLanguagesTab(getDriver());
     }
 
-    public ProjectLanguagesTab enterAliasForLocale(String locale, String alias) {
-        LanguageList.enterAlias(readyElement(activeLocales),
-                locale, alias);
+    public ProjectLanguagesTab enterAliasForLocale(String locale,
+            String alias) {
+        LanguageList.enterAlias(readyElement(activeLocales), locale, alias);
         return new ProjectLanguagesTab(getDriver());
     }
 

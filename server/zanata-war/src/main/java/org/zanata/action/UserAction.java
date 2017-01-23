@@ -27,14 +27,12 @@ import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import javax.inject.Inject;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
-
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.PersonDAO;
@@ -46,54 +44,40 @@ import org.zanata.seam.security.IdentityManager;
 import org.zanata.service.EmailService;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.AbstractListFilter;
-
-import lombok.Getter;
 import org.zanata.ui.faces.FacesMessages;
-
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 /**
  * Extension of Seam management's UserAction class' behaviour.
  *
  * @see {@link org.jboss.seam.security.management.action.UserAction}
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("userAction")
 @ViewScoped
 @Model
 @Transactional
 public class UserAction implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     @Inject
     private IdentityManager identityManager;
-
-
     @Inject
     private FacesMessages facesMessages;
-
     @Inject
     private Messages msgs;
-
     @Inject
     private UserAccountService userAccountServiceImpl;
-
     @Inject
     private EmailService emailServiceImpl;
-
     @Inject
     private PersonDAO personDAO;
-
     @Inject
     private AccountDAO accountDAO;
-
     @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
-
     private String originalUsername;
-
-    @Getter
     private AbstractListFilter<String> userFilter =
             new AbstractListFilter<String>() {
 
@@ -124,9 +108,8 @@ public class UserAction implements Serializable {
             userFilter.reset();
         } catch (PersistenceException e) {
             if (e.getCause() instanceof ConstraintViolationException) {
-                facesMessages
-                        .addFromResourceBundle(SEVERITY_ERROR,
-                                "jsf.UserManager.delete.constraintViolation.error");
+                facesMessages.addFromResourceBundle(SEVERITY_ERROR,
+                        "jsf.UserManager.delete.constraintViolation.error");
             }
         }
     }
@@ -149,7 +132,6 @@ public class UserAction implements Serializable {
     public String save() {
         boolean usernameChanged = false;
         String newUsername = getUsername();
-
         // Allow user name changes when editing
         if (!originalUsername.equals(newUsername)) {
             if (isNewUsernameValid(newUsername)) {
@@ -158,21 +140,17 @@ public class UserAction implements Serializable {
                 usernameChanged = true;
             } else {
                 facesMessages.addToControl("username",
-                        msgs.format("jsf.UsernameNotAvailable",
-                                getUsername()));
+                        msgs.format("jsf.UsernameNotAvailable", getUsername()));
                 setUsername(originalUsername); // reset the username field
                 return "failure";
             }
         }
-
         String saveResult;
-
         saveResult = saveExistingUser();
-
         if (usernameChanged) {
             String email = getEmail(newUsername);
-            String message = emailServiceImpl.sendUsernameChangedEmail(
-                    email, newUsername);
+            String message = emailServiceImpl.sendUsernameChangedEmail(email,
+                    newUsername);
             facesMessages.addGlobal(message);
         }
         return saveResult;
@@ -182,31 +160,28 @@ public class UserAction implements Serializable {
         // Check if a new password has been entered
         if (password != null && !"".equals(password)) {
             if (!password.equals(confirm)) {
-                facesMessages.addToControl("password", "Passwords do not match");
+                facesMessages.addToControl("password",
+                        "Passwords do not match");
                 return "failure";
             } else {
                 identityManager.changePassword(username, password);
             }
         }
-
         identityManager.grantRoles(username, roles);
-
         if (enabled) {
             enableAccount(username);
         } else {
             identityManager.disableUser(username);
         }
-
         return "success";
     }
 
     private void enableAccount(String username) {
         identityManager.enableUser(username);
         identityManager.grantRole(username, "user");
-
         HAccount account = accountDAO.getByUsername(username);
         HAccountActivationKey key = account.getAccountActivationKey();
-        if(key != null) {
+        if (key != null) {
             account.setAccountActivationKey(null);
             accountDAO.makePersistent(account);
             accountActivationKeyDAO.makeTransient(key);
@@ -263,5 +238,9 @@ public class UserAction implements Serializable {
 
     public void setRoles(List<String> roles) {
         this.roles = roles;
+    }
+
+    public AbstractListFilter<String> getUserFilter() {
+        return this.userFilter;
     }
 }

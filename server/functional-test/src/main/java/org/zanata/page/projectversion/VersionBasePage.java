@@ -22,17 +22,15 @@ package org.zanata.page.projectversion;
 
 import org.openqa.selenium.*;
 import org.zanata.page.BasePage;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projectversion.versionsettings.VersionDocumentsTab;
 import org.zanata.page.projectversion.versionsettings.VersionGeneralTab;
 import org.zanata.page.projectversion.versionsettings.VersionLanguagesTab;
 import org.zanata.page.projectversion.versionsettings.VersionTranslationTab;
 
-@Slf4j
 public class VersionBasePage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionBasePage.class);
     private By settingsGeneralTab = By.id("settings-general_tab");
     private By settingsLanguagesTab = By.id("settings-languages_tab");
     private By settingsDocumentsTab = By.id("settings-documents_tab");
@@ -40,11 +38,9 @@ public class VersionBasePage extends BasePage {
     private By documentsTab = By.id("documents_tab");
     private By languageTab = By.id("languages_tab");
     private By settingsTab = By.id("settings_tab");
-
     private By documentsTabBody = By.id("documents");
     private By languageTabBody = By.id("languages");
     private By settingsTabBody = By.id("settings");
-
     private By versionInfo = By.id("version-info");
     private By versionPage = By.id("version-page");
 
@@ -54,15 +50,13 @@ public class VersionBasePage extends BasePage {
 
     public String getProjectVersionName() {
         log.info("Query Version name");
-        return readyElement(versionInfo)
-                .findElement(By.tagName("h1")).getText();
+        return readyElement(versionInfo).findElement(By.tagName("h1"))
+                .getText();
     }
 
     public ProjectVersionsPage clickProjectLink(String projectName) {
         log.info("Click Project link");
-        readyElement(versionPage)
-                .findElement(By.linkText(projectName))
-                .click();
+        readyElement(versionPage).findElement(By.linkText(projectName)).click();
         return new ProjectVersionsPage(getDriver());
     }
 
@@ -118,5 +112,4 @@ public class VersionBasePage extends BasePage {
         readyElement(By.id("settings-translation-validation-form"));
         return new VersionTranslationTab(getDriver());
     }
-
 }

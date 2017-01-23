@@ -18,26 +18,23 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.page.dashboard;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 import org.zanata.page.groups.CreateVersionGroupPage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.util.WebElementUtil;
-
 import java.util.List;
 
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class DashboardGroupsTab extends BasePage {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardGroupsTab.class);
     public static final int GROUP_NAME_COLUMN = 0;
-
     private By groupTable = By.id("groupForm:groupTable");
     private By createGroupButton = By.id("create-group-link");
 
@@ -53,14 +50,13 @@ public class DashboardGroupsTab extends BasePage {
 
     public List<String> getGroupNames() {
         return WebElementUtil.getColumnContents(getDriver(), groupTable,
-            GROUP_NAME_COLUMN);
+                GROUP_NAME_COLUMN);
     }
 
     public VersionGroupPage goToGroup(String groupName) {
         log.info("Click group {}", groupName);
-        clickElement(readyElement(groupTable).findElement(By.linkText(groupName)));
+        clickElement(
+                readyElement(groupTable).findElement(By.linkText(groupName)));
         return new VersionGroupPage(getDriver());
     }
-
-
 }

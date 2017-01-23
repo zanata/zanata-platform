@@ -20,12 +20,10 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projects.ProjectBasePage;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,24 +31,30 @@ import java.util.Map;
  * This class represents the Project General Settings tab.
  *
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectGeneralTab extends ProjectBasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectGeneralTab.class);
     private By projectIdField = By.id("settings-general-form:slug:input:slug");
-    private By projectNameField = By.id("settings-general-form:name:input:name");
-    private By descriptionField = By.id("settings-general-form:description:input:description");
+    private By projectNameField =
+            By.id("settings-general-form:name:input:name");
+    private By descriptionField =
+            By.id("settings-general-form:description:input:description");
     private By projectTypeList = By.id("project-types");
-    private By homepageField = By.id("settings-general-form:homePage:input:homePage");
+    private By homepageField =
+            By.id("settings-general-form:homePage:input:homePage");
     private By repoField = By.id("settings-general-form:repo:input:repo");
     private By deleteButton = By.id("button-archive-project");
     private By confirmDeleteButton = By.id("deleteButton");
     private By confirmDeleteInput = By.id("confirmDeleteInput");
     private By cancelDeleteButton = By.id("cancelDelete");
-    private By lockProjectButton = By.id("settings-general-form:button-lock-project");
-    private By unlockProjectButton = By.id("settings-general-form:button-unlock-project");
-    private By updateButton = By.id("settings-general-form:button-update-settings");
+    private By lockProjectButton =
+            By.id("settings-general-form:button-lock-project");
+    private By unlockProjectButton =
+            By.id("settings-general-form:button-unlock-project");
+    private By updateButton =
+            By.id("settings-general-form:button-update-settings");
 
     public ProjectGeneralTab(WebDriver driver) {
         super(driver);
@@ -68,7 +72,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
     /**
      * Enter a new slug for the project. Removes any existing text.
      *
-     * @param projectSlug new project slug
+     * @param projectSlug
+     *            new project slug
      * @return new Project General Settings page
      */
     public ProjectGeneralTab enterProjectSlug(String projectSlug) {
@@ -82,7 +87,8 @@ public class ProjectGeneralTab extends ProjectBasePage {
     /**
      * Enter a new name for the project. Removes any existing text.
      *
-     * @param projectName new project name
+     * @param projectName
+     *            new project name
      * @return new Project General Settings page
      */
     public ProjectGeneralTab enterProjectName(final String projectName) {
@@ -95,7 +101,9 @@ public class ProjectGeneralTab extends ProjectBasePage {
 
     /**
      * Enter a new description for the project. Removes any existing text.
-     * @param projectDescription new project description
+     *
+     * @param projectDescription
+     *            new project description
      * @return new Project General Settings page
      */
     public ProjectGeneralTab enterDescription(String projectDescription) {
@@ -107,10 +115,10 @@ public class ProjectGeneralTab extends ProjectBasePage {
     }
 
     /**
-     * Select a new type for the project.
-     * Searches by display name.
+     * Select a new type for the project. Searches by display name.
      *
-     * @param projectType new project type
+     * @param projectType
+     *            new project type
      * @return new Project General Settings page
      */
     public ProjectGeneralTab selectProjectType(String projectType) {
@@ -124,28 +132,28 @@ public class ProjectGeneralTab extends ProjectBasePage {
 
     /**
      * Query the currently selected project type.
+     *
      * @return String project type selected
      */
     public String getSelectedProjectType() {
         log.info("Query selected project type");
         Map<String, WebElement> projectTypes = getProjectTypes();
         for (String type : projectTypes.keySet()) {
-            if (projectTypes.get(type)
-                    .findElement(By.tagName("input"))
+            if (projectTypes.get(type).findElement(By.tagName("input"))
                     .isSelected()) {
                 return type;
             }
         }
         return "None";
     }
-
     // Return a map of project type to div container
+
     private Map<String, WebElement> getProjectTypes() {
         Map<String, WebElement> types = new HashMap<String, WebElement>();
         for (WebElement projectTypeRow : readyElement(projectTypeList)
                 .findElements(By.tagName("li"))) {
-            String label = projectTypeRow.findElement(By.tagName("label"))
-                    .getText();
+            String label =
+                    projectTypeRow.findElement(By.tagName("label")).getText();
             String meta = projectTypeRow.findElement(By.className("txt--meta"))
                     .getText();
             types.put(label.substring(0, label.indexOf(meta)).trim(),
@@ -155,8 +163,9 @@ public class ProjectGeneralTab extends ProjectBasePage {
     }
 
     /**
-     * Query for availability of the Archive This Project button.
-     * Only Administrators can use this feature.
+     * Query for availability of the Archive This Project button. Only
+     * Administrators can use this feature.
+     *
      * @return button available true/false
      */
     public boolean isDeleteButtonAvailable() {
@@ -166,6 +175,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
 
     /**
      * Press the "Delete this project" button
+     *
      * @return new Dashboard page
      */
     public ProjectGeneralTab deleteProject() {
@@ -176,10 +186,13 @@ public class ProjectGeneralTab extends ProjectBasePage {
 
     /**
      * Enter exact project name again to confirm the deletion.
-     * @param projectName project name
+     *
+     * @param projectName
+     *            project name
      * @return this page
      */
-    public ProjectGeneralTab enterProjectNameToConfirmDelete(String projectName) {
+    public ProjectGeneralTab
+            enterProjectNameToConfirmDelete(String projectName) {
         log.info("Input project name again to confirm");
         readyElement(confirmDeleteInput).clear();
         enterText(readyElement(confirmDeleteInput), projectName);
@@ -189,6 +202,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
 
     /**
      * Confirm project delete
+     *
      * @return new Dashboard page
      */
     public ProjectGeneralTab confirmDeleteProject() {
@@ -199,6 +213,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
 
     /**
      * Press the "Make this project read only" button
+     *
      * @return new Project General Settings page
      */
     public ProjectGeneralTab lockProject() {
@@ -209,6 +224,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
 
     /**
      * Press the "Make this project writable" button
+     *
      * @return new Project General Settings page
      */
     public ProjectGeneralTab unlockProject() {
@@ -219,7 +235,9 @@ public class ProjectGeneralTab extends ProjectBasePage {
 
     /**
      * Enter a new home page url for the project. Removes any existing text.
-     * @param homepage new project home page
+     *
+     * @param homepage
+     *            new project home page
      * @return new Project General Settings page
      */
     public ProjectGeneralTab enterHomePage(String homepage) {
@@ -231,7 +249,9 @@ public class ProjectGeneralTab extends ProjectBasePage {
 
     /**
      * Enter a new repository url for the project. Removes any existing text.
-     * @param repo new project description
+     *
+     * @param repo
+     *            new project description
      * @return new Project General Settings page
      */
     public ProjectGeneralTab enterRepository(String repo) {
@@ -243,6 +263,7 @@ public class ProjectGeneralTab extends ProjectBasePage {
 
     /**
      * Press the "Update general settings" button
+     *
      * @return new Project General Settings page
      */
     public ProjectGeneralTab updateProject() {

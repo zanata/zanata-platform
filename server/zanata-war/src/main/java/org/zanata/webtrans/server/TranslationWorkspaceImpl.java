@@ -4,9 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonId;
@@ -15,7 +12,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
-
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
@@ -23,7 +19,6 @@ import com.google.common.collect.MapMaker;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Multimaps;
-
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.service.EventExecutorService;
@@ -33,8 +28,9 @@ import de.novanic.eventservice.service.registry.user.UserInfo;
 import de.novanic.eventservice.service.registry.user.UserManager;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
 
-@Slf4j
 public class TranslationWorkspaceImpl implements TranslationWorkspace {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationWorkspaceImpl.class);
     private final WorkspaceContext workspaceContext;
     private final Domain domain;
     private final ConcurrentMap<EditorClientId, PersonSessionDetails> sessions =
@@ -42,7 +38,6 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
     private final Multimap<String, EditorClientId> httpSessionToEditorClientId;
     private final Map<String, EditorClientId> connectionIdToEditorClientId;
     private final EventExecutorService eventExecutorService;
-
     {
         ArrayListMultimap<String, EditorClientId> almm =
                 ArrayListMultimap.create();
@@ -52,9 +47,8 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
     }
 
     public TranslationWorkspaceImpl(WorkspaceContext workspaceContext) {
-        Preconditions
-                .checkNotNull(workspaceContext, "workspaceContext is null");
-
+        Preconditions.checkNotNull(workspaceContext,
+                "workspaceContext is null");
         this.workspaceContext = workspaceContext;
         final String workspaceId = workspaceContext.getWorkspaceId().toString();
         this.domain = DomainFactory.getDomain(workspaceId);
@@ -62,14 +56,14 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
                 EventExecutorServiceFactory.getInstance();
         this.eventExecutorService =
                 factory.getEventExecutorService(workspaceId);
-
         UserManager userManager =
                 UserManagerFactory.getInstance().getUserManager();
         // this will notify us of all user timeouts (whether part of this
         // workspace or not)
         // TODO deregister listener to avoid memory leak
-        userManager.getUserActivityScheduler().addTimeoutListener(
-                new UserTimeoutListener() {
+        userManager.getUserActivityScheduler()
+                .addTimeoutListener(new UserTimeoutListener() {
+
                     @Override
                     public void onTimeout(UserInfo userInfo) {
                         String connectionId = userInfo.getUserId();
@@ -100,9 +94,8 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
     @Override
     public void addEditorClient(String httpSessionId,
             EditorClientId editorClientId, PersonId personId) {
-        PersonSessionDetails prev =
-                sessions.putIfAbsent(editorClientId, new PersonSessionDetails(
-                        new Person(personId, "", ""), null));
+        PersonSessionDetails prev = sessions.putIfAbsent(editorClientId,
+                new PersonSessionDetails(new Person(personId, "", ""), null));
         if (prev == null) {
             log.info("Added user {} with editorClientId {} to workspace {}",
                     personId.getId(), editorClientId, workspaceContext);
@@ -119,7 +112,8 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
     }
 
     @Override
-    public Collection<EditorClientId> removeEditorClients(String httpSessionId) {
+    public Collection<EditorClientId>
+            removeEditorClients(String httpSessionId) {
         Collection<EditorClientId> editorClients =
                 httpSessionToEditorClientId.removeAll(httpSessionId);
         for (EditorClientId editorClientId : editorClients) {
@@ -137,12 +131,10 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
                     httpSessionToEditorClientId.get(httpSessionId);
             if (clientIds != null) {
                 clientIds.remove(editorClientId);
-
                 // Send GWT Event to clients to update the user list
                 ExitWorkspace event =
                         new ExitWorkspace(editorClientId, details.getPerson());
                 publish(event);
-
                 log.info(
                         "Removed user {} with editorClientId {} from workspace {}",
                         details.getPerson().getId(), editorClientId,
@@ -176,8 +168,8 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
             return false;
         }
         TranslationWorkspaceImpl other = (TranslationWorkspaceImpl) obj;
-        return other.workspaceContext.getWorkspaceId().equals(
-                workspaceContext.getWorkspaceId());
+        return other.workspaceContext.getWorkspaceId()
+                .equals(workspaceContext.getWorkspaceId());
     }
 
     @Override
@@ -204,8 +196,6 @@ public class TranslationWorkspaceImpl implements TranslationWorkspace {
         if (personSessionDetails != null) {
             return personSessionDetails.getSelectedTransUnitId();
         }
-
         return null;
     }
-
 }

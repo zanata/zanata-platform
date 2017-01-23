@@ -18,7 +18,6 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.model;
 
 import javax.persistence.Access;
@@ -30,27 +29,18 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.validation.constraints.NotNull;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
  * Represents an authorized third party app that is allowed to access Zanata on
  * behave of the associated account.
  *
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Entity
-@NoArgsConstructor
 @Access(AccessType.FIELD)
-@Getter
-@NamedQueries(
-        {
-                @NamedQuery(
-                        name = AllowedApp.QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID,
-                        query = "from AllowedApp where account = :account and clientId = :clientId")
-        }
-)
+@NamedQueries({ @NamedQuery(
+        name = AllowedApp.QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID,
+        query = "from AllowedApp where account = :account and clientId = :clientId") })
 public class AllowedApp extends ModelEntityBase {
     public static final String QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID =
             "AllowedApp.getByAccountAndClientId";
@@ -59,11 +49,29 @@ public class AllowedApp extends ModelEntityBase {
     private HAccount account;
     @NotNull
     private String clientId;
-    @Setter
     private String refreshToken;
 
     public AllowedApp(HAccount account, String clientId) {
         this.account = account;
         this.clientId = clientId;
+    }
+
+    public AllowedApp() {
+    }
+
+    public HAccount getAccount() {
+        return this.account;
+    }
+
+    public String getClientId() {
+        return this.clientId;
+    }
+
+    public String getRefreshToken() {
+        return this.refreshToken;
+    }
+
+    public void setRefreshToken(final String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

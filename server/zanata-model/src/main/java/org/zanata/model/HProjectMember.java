@@ -22,16 +22,11 @@ package org.zanata.model;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.zanata.model.type.ProjectRoleType;
-
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,12 +43,9 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "HProject_Member")
-@Setter
-@Getter
-@NoArgsConstructor
 @IdClass(HProjectMember.HProjectMemberPK.class)
 @TypeDef(name = "projectRole", typeClass = ProjectRoleType.class)
-public class HProjectMember implements Serializable, HasUserFriendlyToString  {
+public class HProjectMember implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -61,12 +53,14 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString  {
      *
      * Use with {@link com.google.common.collect.Collections2#filter}.
      */
-    public static final Predicate<HProjectMember> IS_MAINTAINER = new Predicate<HProjectMember>() {
-        @Override
-        public boolean apply(HProjectMember input) {
-            return input.getRole().equals(ProjectRole.Maintainer);
-        }
-    };
+    public static final Predicate<HProjectMember> IS_MAINTAINER =
+            new Predicate<HProjectMember>() {
+
+                @Override
+                public boolean apply(HProjectMember input) {
+                    return input.getRole().equals(ProjectRole.Maintainer);
+                }
+            };
 
     /**
      * Transform function to extract the person.
@@ -75,12 +69,13 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString  {
      */
     public static final Function<HProjectMember, HPerson> TO_PERSON =
             new Function<HProjectMember, HPerson>() {
-        @Nullable
-        @Override
-        public HPerson apply(HProjectMember input) {
-            return input.getPerson();
-        }
-    };
+
+                @Nullable
+                @Override
+                public HPerson apply(HProjectMember input) {
+                    return input.getPerson();
+                }
+            };
 
     /**
      * Transform function to extract the project.
@@ -89,12 +84,13 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString  {
      */
     public static final Function<HProjectMember, HProject> TO_PROJECT =
             new Function<HProjectMember, HProject>() {
-        @Nullable
-        @Override
-        public HProject apply(HProjectMember input) {
-            return input.getProject();
-        }
-    };
+
+                @Nullable
+                @Override
+                public HProject apply(HProjectMember input) {
+                    return input.getProject();
+                }
+            };
 
     public HProjectMember(HProject project, HPerson person, ProjectRole role) {
         setProject(project);
@@ -106,12 +102,10 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString  {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "projectId", nullable = false)
     private HProject project;
-
     @Id
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "personId", nullable = false)
     private HPerson person;
-
     @Id
     @Column(name = "role")
     @Type(type = "projectRole")
@@ -128,29 +122,22 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString  {
             return new EqualsBuilder()
                     .append(getProject().getId(), other.getProject().getId())
                     .append(getPerson().getId(), other.getPerson().getId())
-                    .append(getRole(), other.getRole())
-                    .isEquals();
+                    .append(getRole(), other.getRole()).isEquals();
         }
     }
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder()
-                .append(getProject().getId())
-                .append(getPerson().getId())
-                .append(getRole())
-                .toHashCode();
+        return new HashCodeBuilder().append(getProject().getId())
+                .append(getPerson().getId()).append(getRole()).toHashCode();
     }
 
     @Override
     public String userFriendlyToString() {
         StringBuilder sb = new StringBuilder("\"Project membership(project=\"")
-                .append(project.getSlug())
-                .append("\", person=\"")
-                .append(getPerson().getName())
-                .append(", role=\"")
-                .append(getRole())
-                .append("\")");
+                .append(project.getSlug()).append("\", person=\"")
+                .append(getPerson().getName()).append(", role=\"")
+                .append(getRole()).append("\")");
         sb.append("])");
         return sb.toString();
     }
@@ -161,12 +148,8 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString  {
      * This is boilerplate that specifies which fields to use as the primary key
      * for HProjectMember, and how to compare them (equals and hashCode).
      */
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class HProjectMemberPK implements Serializable {
         private static final long serialVersionUID = 1L;
-
         // These properties *must* have the same type and name as in the class
         // that uses this in @IdClass.
         private HProject project;
@@ -182,20 +165,67 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString  {
             } else {
                 final HProjectMemberPK other = (HProjectMemberPK) obj;
                 return new EqualsBuilder()
-                        .append(getProject().getId(), other.getProject().getId())
+                        .append(getProject().getId(),
+                                other.getProject().getId())
                         .append(getPerson().getId(), other.getPerson().getId())
-                        .append(getRole(), other.getRole())
-                        .isEquals();
+                        .append(getRole(), other.getRole()).isEquals();
             }
         }
 
         @Override
         public int hashCode() {
-            return new HashCodeBuilder()
-                    .append(getProject().getId())
-                    .append(getPerson().getId())
-                    .append(getRole())
-                    .toHashCode();
+            return new HashCodeBuilder().append(getProject().getId())
+                    .append(getPerson().getId()).append(getRole()).toHashCode();
         }
+
+        public HProject getProject() {
+            return this.project;
+        }
+
+        public HPerson getPerson() {
+            return this.person;
+        }
+
+        public ProjectRole getRole() {
+            return this.role;
+        }
+
+        @java.beans.ConstructorProperties({ "project", "person", "role" })
+        public HProjectMemberPK(final HProject project, final HPerson person,
+                final ProjectRole role) {
+            this.project = project;
+            this.person = person;
+            this.role = role;
+        }
+
+        public HProjectMemberPK() {
+        }
+    }
+
+    public void setProject(final HProject project) {
+        this.project = project;
+    }
+
+    public void setPerson(final HPerson person) {
+        this.person = person;
+    }
+
+    public void setRole(final ProjectRole role) {
+        this.role = role;
+    }
+
+    public HProject getProject() {
+        return this.project;
+    }
+
+    public HPerson getPerson() {
+        return this.person;
+    }
+
+    public ProjectRole getRole() {
+        return this.role;
+    }
+
+    public HProjectMember() {
     }
 }

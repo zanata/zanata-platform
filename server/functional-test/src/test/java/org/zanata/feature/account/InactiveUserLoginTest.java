@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -36,22 +35,22 @@ import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.RegisterWorkFlow;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 @Category(DetailedTest.class)
 public class InactiveUserLoginTest extends ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(InactiveUserLoginTest.class);
 
     @Rule
     public final HasEmailRule hasEmailRule = new HasEmailRule();
 
-    @Feature(summary = "The user needs to verify their account before they may " +
-            "log in",
+    @Feature(
+            summary = "The user needs to verify their account before they may log in",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181714)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void verifyAccount() throws Exception {
@@ -61,30 +60,25 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 usernamepassword + "@example.com");
         InactiveAccountPage inactiveAccountPage = new LoginWorkFlow()
                 .signInInactive(usernamepassword, usernamepassword);
-
         assertThat(inactiveAccountPage.getTitle())
                 .isEqualTo("Zanata: Account is not activated")
                 .as("The account is inactive");
-
         WiserMessage message = hasEmailRule.getMessages().get(0);
-
-        assertThat(EmailQuery.hasActivationLink(message))
-                .isTrue()
+        assertThat(EmailQuery.hasActivationLink(message)).isTrue()
                 .as("The email contains the activation link");
-
         String activationLink = EmailQuery.getActivationLink(message);
-        SignInPage page = new BasicWorkFlow().goToUrl(
-            activationLink, SignInPage.class);
-
-        /* This fails in functional test, for reasons unknown
-        assertThat(signInPage.getNotificationMessage())
-                .isEqualTo(homePage.ACTIVATION_SUCCESS)
-                .as("The account was activated");
+        SignInPage page =
+                new BasicWorkFlow().goToUrl(activationLink, SignInPage.class);
+        /*
+         * This fails in functional test, for reasons unknown
+         * assertThat(signInPage.getNotificationMessage())
+         * .isEqualTo(homePage.ACTIVATION_SUCCESS)
+         * .as("The account was activated");
          */
-        assertThat(new LoginWorkFlow().signIn(usernamepassword, usernamepassword)
-                .loggedInAs())
-                .isEqualTo(usernamepassword)
-                .as("The user has validated their account and logged in");
+        assertThat(new LoginWorkFlow()
+                .signIn(usernamepassword, usernamepassword)
+                .loggedInAs()).isEqualTo(usernamepassword).as(
+                        "The user has validated their account and logged in");
     }
 
     @Feature(summary = "The user can resend the account activation email",
@@ -98,32 +92,25 @@ public class InactiveUserLoginTest extends ZanataTestCase {
         HomePage homePage = new LoginWorkFlow()
                 .signInInactive(usernamepassword, usernamepassword)
                 .clickResendActivationEmail();
-
         assertThat(homePage.expectNotification(HomePage.SIGNUP_SUCCESS_MESSAGE))
                 .as("The message sent notification is displayed");
-
-        assertThat(hasEmailRule.getMessages().size())
-                .isEqualTo(2)
+        assertThat(hasEmailRule.getMessages().size()).isEqualTo(2)
                 .as("A second email was sent");
-
         WiserMessage message = hasEmailRule.getMessages().get(1);
-
-        assertThat(EmailQuery.hasActivationLink(message))
-                .isTrue()
+        assertThat(EmailQuery.hasActivationLink(message)).isTrue()
                 .as("The second email contains the activation link");
-
-        homePage = new BasicWorkFlow().goToUrl(
-                EmailQuery.getActivationLink(message), HomePage.class);
-
-        /* This fails in functional test, for reasons unknown
-        assertThat(homePage.getNotificationMessage())
-                .isEqualTo(SignInPage.ACTIVATION_SUCCESS)
-                .as("The account was activated");
+        homePage = new BasicWorkFlow()
+                .goToUrl(EmailQuery.getActivationLink(message), HomePage.class);
+        /*
+         * This fails in functional test, for reasons unknown
+         * assertThat(homePage.getNotificationMessage())
+         * .isEqualTo(SignInPage.ACTIVATION_SUCCESS)
+         * .as("The account was activated");
          */
-        assertThat(new LoginWorkFlow().signIn(usernamepassword, usernamepassword)
-                .loggedInAs())
-                .isEqualTo(usernamepassword)
-                .as("The user has validated their account and logged in");
+        assertThat(new LoginWorkFlow()
+                .signIn(usernamepassword, usernamepassword)
+                .loggedInAs()).isEqualTo(usernamepassword).as(
+                        "The user has validated their account and logged in");
     }
 
     @Feature(summary = "The user can update the account activation email",
@@ -136,43 +123,32 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 usernamepassword + "@example.com");
         InactiveAccountPage inactiveAccountPage = new LoginWorkFlow()
                 .signInInactive(usernamepassword, usernamepassword);
-
         assertThat(inactiveAccountPage.getTitle())
                 .isEqualTo("Zanata: Account is not activated")
                 .as("The account is inactive");
-
         HomePage homePage = inactiveAccountPage
-                .enterNewEmail("newtester@example.com")
-                .clickUpdateEmail();
-
+                .enterNewEmail("newtester@example.com").clickUpdateEmail();
         assertThat(homePage.expectNotification(HomePage.EMAILCHANGED_MESSAGE))
                 .as("The email changed notification is displayed");
-
-        assertThat(hasEmailRule.getMessages().size())
-                .isEqualTo(2)
+        assertThat(hasEmailRule.getMessages().size()).isEqualTo(2)
                 .as("A second email was sent");
-
         WiserMessage message = hasEmailRule.getMessages().get(1);
-
         assertThat(message.getEnvelopeReceiver())
                 .isEqualTo("newtester@example.com")
                 .as("The new email address is used");
-        assertThat(EmailQuery.hasActivationLink(message))
-                .isTrue()
+        assertThat(EmailQuery.hasActivationLink(message)).isTrue()
                 .as("The second email contains the activation link");
-
         SignInPage page = new BasicWorkFlow().goToUrl(
-            EmailQuery.getActivationLink(message), SignInPage.class);
-
-        /* This fails in functional test, for reasons unknown
-        assertThat(homePage.getNotificationMessage())
-                .isEqualTo(SignInPage.ACTIVATION_SUCCESS)
-                .as("The account was activated");
+                EmailQuery.getActivationLink(message), SignInPage.class);
+        /*
+         * This fails in functional test, for reasons unknown
+         * assertThat(homePage.getNotificationMessage())
+         * .isEqualTo(SignInPage.ACTIVATION_SUCCESS)
+         * .as("The account was activated");
          */
-        assertThat(new LoginWorkFlow().signIn(usernamepassword, usernamepassword)
-                .loggedInAs())
-                .isEqualTo(usernamepassword)
-                .as("The user has validated their account and logged in");
+        assertThat(new LoginWorkFlow()
+                .signIn(usernamepassword, usernamepassword)
+                .loggedInAs()).isEqualTo(usernamepassword).as(
+                        "The user has validated their account and logged in");
     }
-
 }

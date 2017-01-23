@@ -8,9 +8,6 @@ import java.net.URL;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -33,12 +30,13 @@ import org.junit.runner.RunWith;
  * @see org.jboss.seam.mock.DBUnitSeamTest
  * @see org.jboss.seam.mock.DBJUnitSeamTest
  *
- * For a better alternative to prepare a test database:
+ *      For a better alternative to prepare a test database:
  * @see org.zanata.test.DBUnitDataSetRunner
  * @see org.zanata.test.rule.JpaRule
  */
-@Slf4j
 public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataDbunitJpaTest.class);
 
     protected String binaryDir;
     protected boolean replaceNull = true;
@@ -46,7 +44,6 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
             new ArrayList<DataSetOperation>();
     protected List<DataSetOperation> afterTestOperations =
             new ArrayList<DataSetOperation>();
-
     private boolean prepared = false;
 
     protected String getBinaryDir() {
@@ -75,7 +72,6 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
             }
             prepared = true;
         }
-
         executeOperations(beforeTestOperations);
         clearCache();
     }
@@ -107,7 +103,6 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
     }
 
     protected static class DataSetOperation {
-
         String dataSetLocation;
         ReplacementDataSet dataSet;
         DatabaseOperation operation;
@@ -156,21 +151,17 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
                 this.operation = operation;
                 return;
             }
-
             // Load the base dataset file
-            InputStream input =
-                    Thread.currentThread().getContextClassLoader()
-                            .getResourceAsStream(dataSetLocation);
+            InputStream input = Thread.currentThread().getContextClassLoader()
+                    .getResourceAsStream(dataSetLocation);
             try {
                 FlatXmlDataSetBuilder dataSetBuilder =
                         new FlatXmlDataSetBuilder();
                 dataSetBuilder.setColumnSensing(true);
-
                 InputStream dtdInput = null;
                 if (dtdLocation != null) {
-                    dtdInput =
-                            Thread.currentThread().getContextClassLoader()
-                                    .getResourceAsStream(dtdLocation);
+                    dtdInput = Thread.currentThread().getContextClassLoader()
+                            .getResourceAsStream(dtdLocation);
                 }
                 if (dtdInput == null) {
                     this.dataSet =
@@ -198,13 +189,12 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
         public void prepare(ZanataDbunitJpaTest test) {
             if (dataSet == null)
                 return;
-
             if (test.isReplaceNull()) {
                 dataSet.addReplacementObject("[NULL]", null);
             }
             if (test.getBinaryDir() != null) {
-                dataSet.addReplacementSubstring("[BINARY_DIR]", test
-                        .getBinaryDirFullpath().toString());
+                dataSet.addReplacementSubstring("[BINARY_DIR]",
+                        test.getBinaryDirFullpath().toString());
             }
         }
 
@@ -224,6 +214,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
                     + dataSetLocation;
         }
     }
+    // TODO This is hibernate specific
 
     /**
      * Override this method if you want to provide your own DBUnit
@@ -234,7 +225,6 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
      *
      * @return a DBUnit database connection (wrapped)
      */
-    // TODO This is hibernate specific
     protected IDatabaseConnection getConnection() {
         try {
             DatabaseConnection dbConn = new DatabaseConnection(
@@ -260,7 +250,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
             con.getConnection()
                     .prepareStatement("set referential_integrity FALSE")
                     .execute(); // HSQL
-                                // DB
+            // DB
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -279,7 +269,7 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
             con.getConnection()
                     .prepareStatement("set referential_integrity TRUE")
                     .execute(); // HSQL
-                                // DB
+            // DB
         } catch (Exception ex) {
             throw new RuntimeException(ex);
         }
@@ -298,7 +288,8 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
      *            and features
      */
     protected void editConfig(DatabaseConfig config) {
-        config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, new H2DataTypeFactory());
+        config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,
+                new H2DataTypeFactory());
     }
 
     /**
@@ -346,9 +337,8 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
     }
 
     protected URL getResourceURL(String resource) {
-        URL url =
-                Thread.currentThread().getContextClassLoader()
-                        .getResource(resource);
+        URL url = Thread.currentThread().getContextClassLoader()
+                .getResource(resource);
         if (url == null) {
             throw new RuntimeException(
                     "Could not find resource with classloader: " + resource);
@@ -373,33 +363,28 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
             throw new RuntimeException(
                     "Please set binaryDir TestNG property to location of binary test files");
         }
-        File file =
-                new File(getResourceURL(getBinaryDir() + "/" + filename)
-                        .toURI());
+        File file = new File(
+                getResourceURL(getBinaryDir() + "/" + filename).toURI());
         InputStream is = new FileInputStream(file);
         try {
-
             // Get the size of the file
             long length = file.length();
-
             if (length > Integer.MAX_VALUE) {
                 // File is too large
             }
-
             // Create the byte array to hold the data
             byte[] bytes = new byte[(int) length];
-
             // Read in the bytes
             int offset = 0;
             int numRead;
-            while (offset < bytes.length
-                    && (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+            while (offset < bytes.length && (numRead =
+                    is.read(bytes, offset, bytes.length - offset)) >= 0) {
                 offset += numRead;
             }
             // Ensure all the bytes have been read in
             if (offset < bytes.length) {
-                throw new IOException("Could not completely read file "
-                        + file.getName());
+                throw new IOException(
+                        "Could not completely read file " + file.getName());
             }
             return bytes;
         } finally {
@@ -414,5 +399,4 @@ public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
      * <tt>beforeTestOperations</tt> and <tt>afterTestOperations</tt> lists.
      */
     protected abstract void prepareDBUnitOperations();
-
 }

@@ -22,15 +22,11 @@ package org.zanata.service.impl;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.MapMaker;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.DTDAdapter;
@@ -61,7 +57,6 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.service.TranslationFileService;
 import org.zanata.util.FileUtil;
-
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -71,7 +66,6 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
 import static org.zanata.common.DocumentType.GETTEXT;
 import static org.zanata.common.DocumentType.HTML;
 import static org.zanata.common.DocumentType.IDML;
@@ -91,20 +85,21 @@ import static org.zanata.common.DocumentType.XML_DOCUMENT_TYPE_DEFINITION;
 /**
  * Default implementation of the TranslationFileService interface.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("translationFileServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class TranslationFileServiceImpl implements TranslationFileService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationFileServiceImpl.class);
+
     private static Map<DocumentType, Class<? extends FileFormatAdapter>> DOCTYPEMAP =
             new MapMaker().makeMap();
-    private static DocumentType[] ODF_TYPES = { OPEN_DOCUMENT_TEXT,
-            OPEN_DOCUMENT_PRESENTATION, OPEN_DOCUMENT_SPREADSHEET,
-            OPEN_DOCUMENT_GRAPHICS };
-
+    private static DocumentType[] ODF_TYPES =
+            { OPEN_DOCUMENT_TEXT, OPEN_DOCUMENT_PRESENTATION,
+                    OPEN_DOCUMENT_SPREADSHEET, OPEN_DOCUMENT_GRAPHICS };
     static {
         for (DocumentType type : ODF_TYPES) {
             DOCTYPEMAP.put(type, OpenOfficeAdapter.class);
@@ -120,9 +115,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         DOCTYPEMAP.put(XLIFF, XliffAdapter.class);
         DOCTYPEMAP.put(GETTEXT, GettextAdapter.class);
         DOCTYPEMAP.put(TS, TSAdapter.class);
-
     }
-
     private static Set<String> SUPPORTED_EXTENSIONS =
             buildSupportedExtensionSet();
 
@@ -136,35 +129,32 @@ public class TranslationFileServiceImpl implements TranslationFileService {
 
     @Inject
     private DocumentDAO documentDAO;
-
     @Inject
     private ProjectIterationDAO projectIterationDAO;
 
     @Override
     public TranslationsResource parseTranslationFile(InputStream fileContents,
             String fileName, String localeId, String projectSlug,
-            String iterationSlug, String docId, Optional<String> documentType) throws ZanataServiceException {
-
+            String iterationSlug, String docId, Optional<String> documentType)
+            throws ZanataServiceException {
         HProjectIteration version =
-            projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-
+                projectIterationDAO.getBySlug(projectSlug, iterationSlug);
         if (version == null) {
             throw new ZanataServiceException("Project version not found: "
-                + projectSlug + " " + iterationSlug);
+                    + projectSlug + " " + iterationSlug);
         }
-
         if (version.getProjectType() == ProjectType.File) {
             File tempFile = persistToTempFile(fileContents);
-            TranslationsResource transRes =
-                parseAdapterTranslationFile(tempFile, projectSlug,
-                    iterationSlug, docId, localeId, fileName, documentType);
+            TranslationsResource transRes = parseAdapterTranslationFile(
+                    tempFile, projectSlug, iterationSlug, docId, localeId,
+                    fileName, documentType);
             removeTempFile(tempFile);
             return transRes;
         } else if (fileName.endsWith(".po")) {
             return parsePoFile(fileContents, projectSlug, iterationSlug, docId);
         } else {
-            throw new ZanataServiceException("Unsupported Translation file: "
-                + fileName);
+            throw new ZanataServiceException(
+                    "Unsupported Translation file: " + fileName);
         }
     }
 
@@ -184,19 +174,16 @@ public class TranslationFileServiceImpl implements TranslationFileService {
     public TranslationsResource parseAdapterTranslationFile(File tempFile,
             String projectSlug, String iterationSlug, String docId,
             String localeId, String fileName, Optional<String> documentType) {
-        HDocument doc =
-                documentDAO.getByProjectIterationAndDocId(projectSlug,
-                        iterationSlug, docId);
-
+        HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug,
+                iterationSlug, docId);
         TranslationsResource transRes;
         FileFormatAdapter adapter = getAdapterFor(documentType, fileName);
         try {
-            transRes = adapter.parseTranslationFile(tempFile.toURI(), doc
-                            .getSourceLocaleId(), localeId,
-                            getAdapterParams(doc));
+            transRes = adapter.parseTranslationFile(tempFile.toURI(),
+                    doc.getSourceLocaleId(), localeId, getAdapterParams(doc));
         } catch (FileFormatAdapterException e) {
-            throw new ZanataServiceException("Error parsing translation file: "
-                    + fileName, e);
+            throw new ZanataServiceException(
+                    "Error parsing translation file: " + fileName, e);
         } catch (RuntimeException e) {
             throw new ZanataServiceException(e);
         }
@@ -213,8 +200,6 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         return Optional.<String> absent();
     }
 
-
-
     @Override
     public Resource parseUpdatedPotFile(InputStream fileContents, String docId,
             String fileName, boolean offlinePo) {
@@ -226,8 +211,8 @@ public class TranslationFileServiceImpl implements TranslationFileService {
                         "Invalid POT file contents on file: " + docId, e);
             }
         } else {
-            throw new ZanataServiceException("Unsupported Document file: "
-                    + docId);
+            throw new ZanataServiceException(
+                    "Unsupported Document file: " + docId);
         }
     }
 
@@ -242,8 +227,7 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         String extension = FilenameUtils.getExtension(fileNameOrExtension);
         Set<DocumentType> documentTypes =
                 DocumentType.fromSourceExtension(extension);
-        documentTypes
-                .addAll(DocumentType.fromTranslationExtension(extension));
+        documentTypes.addAll(DocumentType.fromTranslationExtension(extension));
         return documentTypes;
     }
 
@@ -252,8 +236,8 @@ public class TranslationFileServiceImpl implements TranslationFileService {
             String documentPath, String fileName, Optional<String> params,
             Optional<String> documentType) throws ZanataServiceException {
         return parseUpdatedAdapterDocumentFile(documentFile,
-            FileUtil.convertToValidPath(documentPath) + fileName, fileName,
-            params, documentType);
+                FileUtil.convertToValidPath(documentPath) + fileName, fileName,
+                params, documentType);
     }
 
     @Override
@@ -263,8 +247,8 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         FileFormatAdapter adapter = getAdapterFor(documentType, fileName);
         Resource doc;
         try {
-            doc = adapter.parseDocumentFile(documentFile, new LocaleId(
-                            "en"), params);
+            doc = adapter.parseDocumentFile(documentFile, new LocaleId("en"),
+                    params);
         } catch (FileFormatAdapterException e) {
             throw new ZanataServiceException(
                     "Error parsing document file: " + fileName, e);
@@ -283,13 +267,12 @@ public class TranslationFileServiceImpl implements TranslationFileService {
             boolean offlinePo) {
         PoReader2 poReader = new PoReader2(offlinePo);
         // assume english as source locale
-        Resource res =
-                poReader.extractTemplate(new InputSource(fileContents),
-                        new LocaleId("en"), docId);
+        Resource res = poReader.extractTemplate(new InputSource(fileContents),
+                new LocaleId("en"), docId);
         return res;
     }
-
     // TODO replace these with values from DocumentType
+
     @Override
     public Set<String> getSupportedExtensions() {
         return SUPPORTED_EXTENSIONS;
@@ -329,25 +312,25 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         DocumentType documentType = DocumentType.getByName(extension);
         if (documentType == null) {
             throw new RuntimeException(
-                "Cannot choose an adapter because the provided string '"
-                    + fileNameOrExtension
-                    + "' does not match any known document type.");
+                    "Cannot choose an adapter because the provided string \'"
+                            + fileNameOrExtension
+                            + "\' does not match any known document type.");
         }
         FileFormatAdapter adapter = getAdapterFor(documentType);
         if (hasMultipleDocumentTypes(fileNameOrExtension)) {
-            /**
-             * TODO: throw runtime error. Need to wait for all upload file
-             * dialog implement multiple adapter check for file extension.
-             *
-             * https://bugzilla.redhat.com/show_bug.cgi?id=1217671
-             */
             log.warn(
-                    "More than 1 adapter found for this file extension: '{}'. Adapter '{}' will be used.",
+                    "More than 1 adapter found for this file extension: \'{}\'. Adapter \'{}\' will be used.",
                     extension, adapter.getClass().getName());
         }
         return adapter;
     }
 
+    /**
+     * TODO: throw runtime error. Need to wait for all upload file dialog
+     * implement multiple adapter check for file extension.
+     *
+     * https://bugzilla.redhat.com/show_bug.cgi?id=1217671
+     */
     @Override
     public FileFormatAdapter getAdapterFor(DocumentType type) {
         Class<? extends FileFormatAdapter> clazz = DOCTYPEMAP.get(type);
@@ -358,7 +341,8 @@ public class TranslationFileServiceImpl implements TranslationFileService {
             return clazz.newInstance();
         } catch (Exception e) {
             throw new RuntimeException(
-                    "Unable to construct adapter for document type: " + type, e);
+                    "Unable to construct adapter for document type: " + type,
+                    e);
         }
     }
 
@@ -367,16 +351,16 @@ public class TranslationFileServiceImpl implements TranslationFileService {
      *
      * @param documentType
      * @param fileName
-     * @return adapter for given documentType if present, otherwise return adapter
-     * with given fileName.
+     * @return adapter for given documentType if present, otherwise return
+     *         adapter with given fileName.
      */
     private FileFormatAdapter getAdapterFor(Optional<String> documentType,
-        @Nonnull String fileName) {
-        if (documentType.isPresent() && StringUtils.isNotEmpty(
-                documentType.get())) {
+            @Nonnull String fileName) {
+        if (documentType.isPresent()
+                && StringUtils.isNotEmpty(documentType.get())) {
             DocumentType docType = DocumentType.valueOf(documentType.get());
             return docType != null ? getAdapterFor(docType)
-                : getAdapterFor(fileName);
+                    : getAdapterFor(fileName);
         }
         return getAdapterFor(fileName);
     }
@@ -414,23 +398,18 @@ public class TranslationFileServiceImpl implements TranslationFileService {
     }
 
     @Override
-    public String getSourceFileExtension(String projectSlug, String iterationSlug,
-            String docPath, String docName) {
+    public String getSourceFileExtension(String projectSlug,
+            String iterationSlug, String docPath, String docName) {
         return FilenameUtils.getExtension(docName);
     }
 
     @Override
-    public String getTranslationFileExtension(String projectSlug, String iterationSlug,
-        String docPath, String docName) {
-
-        String srcExt =
-                getSourceFileExtension(projectSlug, iterationSlug, docPath,
-                    docName);
-
-        HDocument doc =
-            documentDAO.getByProjectIterationAndDocId(projectSlug,
+    public String getTranslationFileExtension(String projectSlug,
+            String iterationSlug, String docPath, String docName) {
+        String srcExt = getSourceFileExtension(projectSlug, iterationSlug,
+                docPath, docName);
+        HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug,
                 iterationSlug, docPath + docName);
-
         return doc.getRawDocument().getType().getExtensions().get(srcExt);
     }
 
@@ -447,7 +426,6 @@ public class TranslationFileServiceImpl implements TranslationFileService {
                 || projectType == ProjectType.Podir) {
             return true;
         }
-
         if (projectType == ProjectType.File) {
             HDocument doc =
                     documentDAO.getByDocIdAndIteration(projectIteration, docId);
@@ -456,12 +434,10 @@ public class TranslationFileServiceImpl implements TranslationFileService {
                 // document is stored
                 return true;
             }
-
             // additional check in case we do start storing raw documents for po
             DocumentType docType = doc.getRawDocument().getType();
             return docType == GETTEXT;
         }
         return false;
     }
-
 }

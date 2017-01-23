@@ -19,30 +19,84 @@
  *  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  *  * site: http://www.fsf.org.
  */
-
 package org.zanata.action;
 
 import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 public class DashboardUserStats implements Serializable {
-
     private int wordsTranslated;
     private int messagesTranslated;
     private int documentsTranslated;
-
     private int wordsReviewed;
     private int messagesReviewed;
     private int documentsReviewed;
+
+    public int getWordsTranslated() {
+        return this.wordsTranslated;
+    }
+
+    public int getMessagesTranslated() {
+        return this.messagesTranslated;
+    }
+
+    public int getDocumentsTranslated() {
+        return this.documentsTranslated;
+    }
+
+    public int getWordsReviewed() {
+        return this.wordsReviewed;
+    }
+
+    public int getMessagesReviewed() {
+        return this.messagesReviewed;
+    }
+
+    public int getDocumentsReviewed() {
+        return this.documentsReviewed;
+    }
+
+    public void setWordsTranslated(final int wordsTranslated) {
+        this.wordsTranslated = wordsTranslated;
+    }
+
+    public void setMessagesTranslated(final int messagesTranslated) {
+        this.messagesTranslated = messagesTranslated;
+    }
+
+    public void setDocumentsTranslated(final int documentsTranslated) {
+        this.documentsTranslated = documentsTranslated;
+    }
+
+    public void setWordsReviewed(final int wordsReviewed) {
+        this.wordsReviewed = wordsReviewed;
+    }
+
+    public void setMessagesReviewed(final int messagesReviewed) {
+        this.messagesReviewed = messagesReviewed;
+    }
+
+    public void setDocumentsReviewed(final int documentsReviewed) {
+        this.documentsReviewed = documentsReviewed;
+    }
+
+    @java.beans.ConstructorProperties({ "wordsTranslated", "messagesTranslated",
+            "documentsTranslated", "wordsReviewed", "messagesReviewed",
+            "documentsReviewed" })
+    public DashboardUserStats(final int wordsTranslated,
+            final int messagesTranslated, final int documentsTranslated,
+            final int wordsReviewed, final int messagesReviewed,
+            final int documentsReviewed) {
+        this.wordsTranslated = wordsTranslated;
+        this.messagesTranslated = messagesTranslated;
+        this.documentsTranslated = documentsTranslated;
+        this.wordsReviewed = wordsReviewed;
+        this.messagesReviewed = messagesReviewed;
+        this.documentsReviewed = documentsReviewed;
+    }
+
+    public DashboardUserStats() {
+    }
 }

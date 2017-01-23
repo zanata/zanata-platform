@@ -54,7 +54,7 @@ public class TranslationHistoryTest extends ZanataTestCase {
                 .clickShowHistoryForRow(0);
 
         assertThat(editorPage.getHistoryEntryAuthor(0))
-                .startsWith("Administrator")
+                .startsWith("admin")
                 .as("The user is displayed");
         assertThat(editorPage.getHistoryEntryContent(0))
                 .contains("historytest")

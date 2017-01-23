@@ -21,7 +21,6 @@
 package org.zanata.page.projectversion;
 
 import java.util.List;
-
 import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -31,15 +30,14 @@ import org.zanata.page.webtrans.EditorPage;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * This class represents the languages page for a project version.
  *
  * @author Damian Jansen
  */
-@Slf4j
 public class VersionLanguagesPage extends VersionBasePage {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionLanguagesPage.class);
 
     public VersionLanguagesPage(final WebDriver driver) {
         super(driver);
@@ -59,8 +57,7 @@ public class VersionLanguagesPage extends VersionBasePage {
     private List<WebElement> getLanguageTabDocumentList() {
         log.info("Query documents list");
         return readyElement(existingElement(languageDocumentList),
-                By.className("list--stats"))
-                .findElements(documentListItem);
+                By.className("list--stats")).findElements(documentListItem);
     }
 
     public VersionLanguagesPage clickLocale(final String locale) {
@@ -69,10 +66,9 @@ public class VersionLanguagesPage extends VersionBasePage {
             new BasePage(getDriver()).waitForPageSilence();
             for (WebElement localeRow : getLanguageTabLocaleList()) {
                 // Top <a>
-                WebElement link = localeRow
-                        .findElement(By.xpath(".//a"));
-                if (link.findElement(languageItemTitle)
-                        .getText().equals(locale)) {
+                WebElement link = localeRow.findElement(By.xpath(".//a"));
+                if (link.findElement(languageItemTitle).getText()
+                        .equals(locale)) {
                     // Clicking too fast can often confuse
                     // the button:
                     slightPause();
@@ -82,7 +78,6 @@ public class VersionLanguagesPage extends VersionBasePage {
             }
             return false;
         });
-
         return new VersionLanguagesPage(getDriver());
     }
 
@@ -91,11 +86,9 @@ public class VersionLanguagesPage extends VersionBasePage {
         WebElement document = waitForAMoment()
                 .until((Function<WebDriver, WebElement>) webDriver -> {
                     for (WebElement document1 : getLanguageTabDocumentList()) {
-                        if (existingElement(document1,
-                                documentListItemTitle)
+                        if (existingElement(document1, documentListItemTitle)
                                 .getText().equals(docName)) {
-                            return document1
-                                    .findElement(documentListItemTitle);
+                            return document1.findElement(documentListItemTitle);
                         }
                     }
                     return null;
@@ -106,23 +99,18 @@ public class VersionLanguagesPage extends VersionBasePage {
 
     public EditorPage translate(final String locale, final String docName) {
         log.info("Click on {} : {} to begin translation", locale, docName);
-        return gotoLanguageTab()
-                .clickLocale(locale)
-                .clickDocument(docName);
+        return gotoLanguageTab().clickLocale(locale).clickDocument(docName);
     }
 
     public String getStatisticsForLocale(final String localeId) {
         log.info("Query stats for {}", localeId);
         gotoLanguageTab();
-
         return refreshPageUntil(this,
                 (Function<WebDriver, String>) webDriver -> {
                     String figure = null;
-
                     List<WebElement> localeList = getLanguageTabLocaleList();
                     for (WebElement locale : localeList) {
-                        if (locale.findElement(languageItemTitle)
-                                .getText()
+                        if (locale.findElement(languageItemTitle).getText()
                                 .equals(localeId)) {
                             figure = locale.findElement(languageItemStats)
                                     .getText();

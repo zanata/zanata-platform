@@ -24,10 +24,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.EnumSet;
-
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -45,26 +41,23 @@ import org.zanata.rest.dto.resource.TextFlow;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
-
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
-
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class ZanataRestCaller {
-
-    @Getter
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataRestCaller.class);
     private final RestClientFactory restClientFactory;
     public static final EnumSet<ProcessStatus.ProcessStatusCode> DONE_STATUS =
             EnumSet.of(ProcessStatus.ProcessStatusCode.Failed,
@@ -78,8 +71,8 @@ public class ZanataRestCaller {
      * Rest client as user admin.
      */
     public ZanataRestCaller() {
-        this("admin", PropertiesHolder.getProperty(Constants.zanataApiKey
-                .value()));
+        this("admin",
+                PropertiesHolder.getProperty(Constants.zanataApiKey.value()));
     }
 
     /**
@@ -93,13 +86,12 @@ public class ZanataRestCaller {
     public ZanataRestCaller(String username, String apiKey) {
         this.username = username;
         this.apiKey = apiKey;
-        this.baseUrl = PropertiesHolder.getProperty(Constants.zanataInstance
-                        .value());
+        this.baseUrl =
+                PropertiesHolder.getProperty(Constants.zanataInstance.value());
         VersionInfo versionInfo = VersionUtility.getAPIVersionInfo();
         try {
-            restClientFactory =
-                    new RestClientFactory(new URI(baseUrl), username, apiKey,
-                            versionInfo, true, false);
+            restClientFactory = new RestClientFactory(new URI(baseUrl),
+                    username, apiKey, versionInfo, true, false);
         } catch (URISyntaxException e) {
             throw Throwables.propagate(e);
         }
@@ -113,22 +105,17 @@ public class ZanataRestCaller {
         project.setDefaultType(projectType);
         project.setId(projectSlug);
         project.setName(projectSlug);
-
         projectResource.put(project);
-
         ProjectIteration iteration = new ProjectIteration();
         iteration.setId(iterationSlug);
-        ProjectIterationClient projectIteration =
-                restClientFactory.getProjectIterationClient(projectSlug,
-                        iterationSlug);
-
+        ProjectIterationClient projectIteration = restClientFactory
+                .getProjectIterationClient(projectSlug, iterationSlug);
         projectIteration.put(iteration);
     }
 
     public void deleteSourceDoc(String projectSlug, String iterationSlug,
             String resourceName) {
-        restClientFactory
-                .getSourceDocResourceClient(projectSlug, iterationSlug)
+        restClientFactory.getSourceDocResourceClient(projectSlug, iterationSlug)
                 .deleteResource(resourceName);
     }
 
@@ -139,18 +126,16 @@ public class ZanataRestCaller {
     }
 
     public ContainerTranslationStatistics getStatistics(String projectSlug,
-            String iterationSlug,
-            String[] locales) {
-        return restClientFactory.getStatisticsClient()
-                .getStatistics(projectSlug, iterationSlug, false, false,
-                        locales);
+            String iterationSlug, String[] locales) {
+        return restClientFactory.getStatisticsClient().getStatistics(
+                projectSlug, iterationSlug, false, false, locales);
     }
 
     public void putSourceDocResource(String projectSlug, String iterationSlug,
             String idNoSlash, Resource resource, boolean copytrans) {
-        restClientFactory.getSourceDocResourceClient(projectSlug,
-                iterationSlug).putResource(idNoSlash, resource,
-                Collections.emptySet(), copytrans);
+        restClientFactory.getSourceDocResourceClient(projectSlug, iterationSlug)
+                .putResource(idNoSlash, resource, Collections.emptySet(),
+                        copytrans);
     }
 
     public static Resource buildSourceResource(String name,
@@ -162,7 +147,6 @@ public class ZanataRestCaller {
     }
 
     public static TextFlow buildTextFlow(String resId, String... contents) {
-
         TextFlow textFlow = new TextFlow();
         textFlow.setId(resId);
         textFlow.setLang(LocaleId.EN_US);
@@ -178,8 +162,8 @@ public class ZanataRestCaller {
                 translationsResource, mergeType, false);
     }
 
-    public static TranslationsResource buildTranslationResource(
-            TextFlowTarget... targets) {
+    public static TranslationsResource
+            buildTranslationResource(TextFlowTarget... targets) {
         TranslationsResource resource = new TranslationsResource();
         resource.setRevision(0);
         resource.getTextFlowTargets().addAll(Lists.newArrayList(targets));
@@ -197,16 +181,16 @@ public class ZanataRestCaller {
     }
 
     public void runCopyTrans(final String projectSlug,
-            final String iterationSlug,
-            final String docId) {
+            final String iterationSlug, final String docId) {
         final CopyTransClient copyTransClient =
                 restClientFactory.getCopyTransClient();
         copyTransClient.startCopyTrans(projectSlug, iterationSlug, docId);
         log.info("copyTrans started: {}-{}-{}", projectSlug, iterationSlug,
                 docId);
         Awaitility.await().pollInterval(Duration.ONE_SECOND)
-                .until(() -> !copyTransClient.getCopyTransStatus(projectSlug,
-                        iterationSlug, docId).isInProgress());
+                .until(() -> !copyTransClient
+                        .getCopyTransStatus(projectSlug, iterationSlug, docId)
+                        .isInProgress());
         log.info("copyTrans completed: {}-{}-{}", projectSlug, iterationSlug,
                 docId);
     }
@@ -218,8 +202,7 @@ public class ZanataRestCaller {
         ProcessStatus processStatus =
                 asyncProcessClient.startSourceDocCreationOrUpdate(
                         sourceResource.getName(), projectSlug, iterationSlug,
-                        sourceResource,
-                        Sets.newHashSet(), false);
+                        sourceResource, Sets.newHashSet(), false);
         processStatus = waitUntilFinished(asyncProcessClient, processStatus);
         log.info("finished async source push ({}-{}): {}", projectSlug,
                 iterationSlug, processStatus.getStatusCode());
@@ -232,44 +215,39 @@ public class ZanataRestCaller {
             final AsyncProcessClient asyncProcessClient,
             ProcessStatus processStatus) {
         final String processId = processStatus.getUrl();
-        Awaitility.await()
-                .pollInterval(Duration.ONE_SECOND)
-                .until(() -> DONE_STATUS.contains(
-                        asyncProcessClient.getProcessStatus(processId)
-                                .getStatusCode()));
-
-        if (processStatus.getStatusCode().equals(
-                ProcessStatus.ProcessStatusCode.Failed)) {
-            throw new RuntimeException(processStatus.getStatusCode().toString());
+        Awaitility.await().pollInterval(Duration.ONE_SECOND)
+                .until(() -> DONE_STATUS.contains(asyncProcessClient
+                        .getProcessStatus(processId).getStatusCode()));
+        if (processStatus.getStatusCode()
+                .equals(ProcessStatus.ProcessStatusCode.Failed)) {
+            throw new RuntimeException(
+                    processStatus.getStatusCode().toString());
         }
         return processStatus;
     }
 
     public void asyncPushTarget(String projectSlug, String iterationSlug,
-            String docId, LocaleId localeId,
-            TranslationsResource transResource,
+            String docId, LocaleId localeId, TranslationsResource transResource,
             String mergeType, boolean assignCreditToUploader) {
         AsyncProcessClient asyncProcessClient =
                 restClientFactory.getAsyncProcessClient();
         ProcessStatus processStatus =
                 asyncProcessClient.startTranslatedDocCreationOrUpdate(docId,
-                        projectSlug,
-                        iterationSlug, localeId, transResource,
-                        Collections.<String> emptySet(), mergeType, assignCreditToUploader);
+                        projectSlug, iterationSlug, localeId, transResource,
+                        Collections.<String> emptySet(), mergeType,
+                        assignCreditToUploader);
         processStatus = waitUntilFinished(asyncProcessClient, processStatus);
         log.info("finished async translation({}-{}) push: {}", projectSlug,
                 iterationSlug, processStatus.getStatusCode());
     }
 
     private Invocation.Builder createRequest(URI uri) {
-
-        Invocation.Builder builder = new ResteasyClientBuilder().build()
-                .target(uri)
-                .request()
+        Invocation.Builder builder =
                 // having null username will bypass
                 // ZanataRestSecurityInterceptor
                 // clientRequest.header("X-Auth-User", null);
-                .header("X-Auth-Token", apiKey);
+                new ResteasyClientBuilder().build().target(uri).request()
+                        .header("X-Auth-Token", apiKey);
         return builder;
     }
 
@@ -289,5 +267,7 @@ public class ZanataRestCaller {
         postTest("rest/test/remote/signal/after", testClass, methodName);
     }
 
+    public RestClientFactory getRestClientFactory() {
+        return this.restClientFactory;
+    }
 }
-

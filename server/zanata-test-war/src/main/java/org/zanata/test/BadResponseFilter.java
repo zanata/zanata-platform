@@ -21,7 +21,6 @@
 package org.zanata.test;
 
 import java.io.IOException;
-
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -33,20 +32,20 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * This utility filter provides a second chance for some sort of partially
- * useful logging when the server returns a 500 response (or higher). It logs
- * an ERROR with a stack trace whenever a 5xx response is generated, in case
- * Zanata (or a third party library) somehow returns a 5xx without otherwise
- * logging anything.
+ * useful logging when the server returns a 500 response (or higher). It logs an
+ * ERROR with a stack trace whenever a 5xx response is generated, in case Zanata
+ * (or a third party library) somehow returns a 5xx without otherwise logging
+ * anything.
+ *
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 @WebFilter(filterName = "BadResponseFilter", urlPatterns = "/*")
 public class BadResponseFilter implements Filter {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(BadResponseFilter.class);
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -104,14 +103,13 @@ public class BadResponseFilter implements Filter {
             // 3. Fix the error handler so that it always logs an exception
             // as ERROR (with stack trace) for 500 codes.
             // 4. Fix the bug which triggered the exception.
-            log.error("Server error response {} for {}", statusCode, getRequestURL(),
-                    new Throwable("stack trace"));
+            log.error("Server error response {} for {}", statusCode,
+                    getRequestURL(), new Throwable("stack trace"));
         }
 
         public String getRequestURL() {
             StringBuffer requestURL = request.getRequestURL();
             String queryString = request.getQueryString();
-
             if (queryString == null) {
                 return requestURL.toString();
             } else {
@@ -119,5 +117,4 @@ public class BadResponseFilter implements Filter {
             }
         }
     }
-
 }

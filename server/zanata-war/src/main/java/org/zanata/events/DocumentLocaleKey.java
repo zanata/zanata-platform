@@ -18,24 +18,68 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.events;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import org.zanata.common.LocaleId;
-
 import java.io.Serializable;
 
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@AllArgsConstructor
-@EqualsAndHashCode
-@Getter
 public class DocumentLocaleKey implements Serializable {
-
     private final Long documentId;
     private final LocaleId localeId;
+
+    @java.beans.ConstructorProperties({ "documentId", "localeId" })
+    public DocumentLocaleKey(final Long documentId, final LocaleId localeId) {
+        this.documentId = documentId;
+        this.localeId = localeId;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof DocumentLocaleKey))
+            return false;
+        final DocumentLocaleKey other = (DocumentLocaleKey) o;
+        if (!other.canEqual((Object) this))
+            return false;
+        final Object this$documentId = this.getDocumentId();
+        final Object other$documentId = other.getDocumentId();
+        if (this$documentId == null ? other$documentId != null
+                : !this$documentId.equals(other$documentId))
+            return false;
+        final Object this$localeId = this.getLocaleId();
+        final Object other$localeId = other.getLocaleId();
+        if (this$localeId == null ? other$localeId != null
+                : !this$localeId.equals(other$localeId))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof DocumentLocaleKey;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $documentId = this.getDocumentId();
+        result = result * PRIME
+                + ($documentId == null ? 43 : $documentId.hashCode());
+        final Object $localeId = this.getLocaleId();
+        result = result * PRIME
+                + ($localeId == null ? 43 : $localeId.hashCode());
+        return result;
+    }
+
+    public Long getDocumentId() {
+        return this.documentId;
+    }
+
+    public LocaleId getLocaleId() {
+        return this.localeId;
+    }
 }

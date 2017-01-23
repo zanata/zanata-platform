@@ -20,40 +20,33 @@
  */
 package org.zanata.page.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.CorePage;
 import org.zanata.page.utility.HomePage;
-
 import java.util.Map;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class RegisterPage extends CorePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(RegisterPage.class);
     public static final String USERNAME_VALIDATION_ERROR =
             "Between 3 and 20 lowercase letters, numbers and underscores only";
-
     public static final String USERNAME_UNAVAILABLE_ERROR =
             "This username is not available";
-
     public static final String MALFORMED_EMAIL_ERROR =
             "not a well-formed email address";
-
     public static final String REQUIRED_FIELD_ERROR = "value is required";
-
     public static final String USERNAME_LENGTH_ERROR =
             "size must be between 3 and 20";
-
     private By nameField = By.id("loginForm:name:input:name");
     private By emailField = By.id("loginForm:email:input:email");
     public By usernameField = By.id("loginForm:username:input:username");
     private By passwordField = By.id("loginForm:passwordField:input:password");
-    private By signUpButton = By.xpath("//input[@value='Sign up']");
+    private By signUpButton = By.xpath("//input[@value=\'Sign up\']");
     private By showHideToggleButton = By.className("js-form-password-toggle");
     private By loginLink = By.linkText("Log In");
     private By titleLabel = By.className("heading--sub");
@@ -106,17 +99,16 @@ public class RegisterPage extends CorePage {
         readyElement(passwordField).clear();
         return new RegisterPage(getDriver());
     }
-
     /*
      * Pass in a map of strings, to be entered into the registration fields.
      * Fields: name, email, username, password, confirmpassword
      */
+
     public RegisterPage setFields(Map<String, String> fields) {
-        return clearFields()
-            .enterName(fields.get("name"))
-            .enterEmail(fields.get("email"))
-            .enterUserName(fields.get("username"))
-            .enterPassword(fields.get("password"));
+        return clearFields().enterName(fields.get("name"))
+                .enterEmail(fields.get("email"))
+                .enterUserName(fields.get("username"))
+                .enterPassword(fields.get("password"));
     }
 
     public String getPageTitle() {
@@ -155,8 +147,7 @@ public class RegisterPage extends CorePage {
     public String getTermsUrl() {
         log.info("Query terms of use URL");
         return readyElement(existingElement(By.id("loginForm")),
-                By.className("txt--meta"))
-                .findElement(By.tagName("a"))
-                .getAttribute("href");
+                By.className("txt--meta")).findElement(By.tagName("a"))
+                        .getAttribute("href");
     }
 }

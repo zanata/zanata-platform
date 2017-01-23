@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.zanata.async.Async;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.DocumentDAO;
@@ -17,12 +16,10 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.WebHook;
-
 import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
+// not @Transactional (no DB modifications... yet)
 
 /**
  * Manager that handles post update of translation. Important:
@@ -35,23 +32,20 @@ import javax.enterprise.event.TransactionPhase;
  */
 @Named("translationUpdatedManager")
 @RequestScoped
-@Slf4j
-// not @Transactional (no DB modifications... yet)
 public class TranslationUpdatedManager {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationUpdatedManager.class);
 
     @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
-
     @Inject
     private DocumentDAO documentDAO;
-
     @Inject
     private WebhookServiceImpl webhookServiceImpl;
 
     @Async
-    public void docStatsUpdated(
-        @Observes(during = TransactionPhase.AFTER_SUCCESS)
-        DocStatsEvent event) {
+    public void docStatsUpdated(@Observes(
+            during = TransactionPhase.AFTER_SUCCESS) DocStatsEvent event) {
         processWebHookEvent(event);
     }
 
@@ -60,34 +54,30 @@ public class TranslationUpdatedManager {
         HTextFlowTarget target =
                 textFlowTargetDAO.findById(event.getLastModifiedTargetId());
         HPerson person = target.getLastModifiedBy();
-        if(person == null) {
+        if (person == null) {
             return;
         }
-        HDocument document = documentDAO.findById(event.getKey().getDocumentId());
+        HDocument document =
+                documentDAO.findById(event.getKey().getDocumentId());
         HProject project = document.getProjectIteration().getProject();
         if (project.getWebHooks().isEmpty()) {
             return;
         }
-
-        List<WebHook> docStatsWebHooks =
-            project.getWebHooks().stream().filter(
-                webHook -> webHook.getTypes()
-                    .contains(WebhookType.DocumentStatsEvent))
+        List<WebHook> docStatsWebHooks = project.getWebHooks().stream()
+                .filter(webHook -> webHook.getTypes()
+                        .contains(WebhookType.DocumentStatsEvent))
                 .collect(Collectors.toList());
-
         if (docStatsWebHooks.isEmpty()) {
             return;
         }
-
         String docId = document.getDocId();
         String versionSlug = document.getProjectIteration().getSlug();
         String projectSlug = project.getSlug();
         LocaleId localeId = event.getKey().getLocaleId();
-
         webhookServiceImpl.processDocumentStats(
-                person.getAccount().getUsername(),
-                projectSlug, versionSlug, docId, localeId,
-                event.getWordDeltasByState(), docStatsWebHooks);
+                person.getAccount().getUsername(), projectSlug, versionSlug,
+                docId, localeId, event.getWordDeltasByState(),
+                docStatsWebHooks);
     }
 
     @VisibleForTesting

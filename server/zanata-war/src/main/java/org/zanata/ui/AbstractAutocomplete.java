@@ -19,43 +19,50 @@
  *  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  *  * site: http://www.fsf.org.
  */
-
 package org.zanata.ui;
 
 import java.io.Serializable;
 import java.util.List;
 import org.zanata.seam.scope.ConversationScopeMessages;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public abstract class AbstractAutocomplete<T> implements Serializable {
+
     protected ConversationScopeMessages conversationScopeMessages =
             ConversationScopeMessages.instance();
-
-    @Setter
-    @Getter
     private String query; // String of the input box
-
-    @Setter
-    @Getter
     private String selectedItem; // Selected item from the suggestion
 
     /**
      * Return results on search
      */
-    abstract public List<T> suggest();
+    public abstract List<T> suggest();
 
     /**
      * Action when an item is selected
      */
-    abstract public void onSelectItemAction();
+    public abstract void onSelectItemAction();
 
     public void reset() {
         selectedItem = "";
         query = "";
+    }
+
+    public void setQuery(final String query) {
+        this.query = query;
+    }
+
+    public String getQuery() {
+        return this.query;
+    }
+
+    public void setSelectedItem(final String selectedItem) {
+        this.selectedItem = selectedItem;
+    }
+
+    public String getSelectedItem() {
+        return this.selectedItem;
     }
 }

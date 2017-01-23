@@ -22,19 +22,12 @@ package org.zanata.action;
 
 import java.io.IOException;
 import java.io.Serializable;
-
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.AuthenticationManager;
@@ -52,44 +45,31 @@ import org.zanata.util.FacesNavigationUtil;
  * This action takes care of logging a user into the system. It contains logic
  * to handle the different authentication mechanisms offered by the system.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("loginAction")
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class LoginAction implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(LoginAction.class);
 
+    private static final long serialVersionUID = 1L;
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     private ZanataCredentials credentials;
-
     @Inject
     private AuthenticationManager authenticationManager;
-
     @Inject
     private ApplicationConfiguration applicationConfiguration;
-
-    @Getter
-    @Setter
     private String username;
-
-    @Getter
-    @Setter
     private String password;
-
-    @Getter
-    @Setter
     private String openId = "http://";
-
     @Inject
     private UserRedirectBean userRedirect;
-
     @Inject
     private AuthenticationType authenticationType;
 
@@ -97,40 +77,47 @@ public class LoginAction implements Serializable {
         credentials.setUsername(username);
         credentials.setPassword(password);
         credentials.setAuthType(authenticationType);
-
         String loginResult;
-
         switch (credentials.getAuthType()) {
         case INTERNAL:
             loginResult = authenticationManager.internalLogin();
             break;
+
         case JAAS:
             loginResult = authenticationManager.jaasLogin();
             break;
+
         case KERBEROS:
             // Ticket based kerberos auth happens when hittin klogin
             // (see pages.xml)
             loginResult = authenticationManager.formBasedKerberosLogin();
             break;
+
         default:
             throw new RuntimeException(
                     "login() only supports internal, jaas, or kerberos authentication");
-        }
 
+        }
         if ("loggedIn".equals(loginResult)) {
-            if (authenticationManager.isAuthenticated() && authenticationManager.isNewUser()) {
+            if (authenticationManager.isAuthenticated()
+                    && authenticationManager.isNewUser()) {
                 return "createUser";
             }
-            if (authenticationManager.isAuthenticated() && !authenticationManager.isNewUser() && userRedirect.shouldRedirectToDashboard()) {
+            if (authenticationManager.isAuthenticated()
+                    && !authenticationManager.isNewUser()
+                    && userRedirect.shouldRedirectToDashboard()) {
                 return "dashboard";
             }
-            if (authenticationManager.isAuthenticated() && !authenticationManager.isNewUser() && userRedirect.isRedirect()) {
-                // TODO [CDI] seam will create a conversation when you return view id directly or redirect to external url
+            if (authenticationManager.isAuthenticated()
+                    && !authenticationManager.isNewUser()
+                    && userRedirect.isRedirect()) {
+                // TODO [CDI] seam will create a conversation when you return
+                // view id directly or redirect to external url
                 return continueToPreviousUrl();
             }
         } else if ("inactive".equals(loginResult)) {
             // TODO [CDI] commented out programmatically ending conversation
-//            Conversation.instance().end();
+            // Conversation.instance().end();
             return "inactive";
         }
         return loginResult;
@@ -155,11 +142,9 @@ public class LoginAction implements Serializable {
     public String openIdLogin(String authProvider) {
         OpenIdProviderType providerType =
                 OpenIdProviderType.valueOf(authProvider);
-
         if (providerType == OpenIdProviderType.Generic) {
             credentials.setUsername(openId);
         }
-
         credentials.setAuthType(AuthenticationType.OPENID);
         credentials.setOpenIdProviderType(providerType);
         return authenticationManager.openIdLogin();
@@ -208,9 +193,33 @@ public class LoginAction implements Serializable {
         if (applicationConfiguration.isOpenIdAuth()
                 && applicationConfiguration.isSingleOpenIdProvider()) {
             // go directly to the provider's login page
-            return genericOpenIdLogin(applicationConfiguration
-                    .getOpenIdProviderUrl());
+            return genericOpenIdLogin(
+                    applicationConfiguration.getOpenIdProviderUrl());
         }
         return "login";
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(final String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(final String password) {
+        this.password = password;
+    }
+
+    public String getOpenId() {
+        return this.openId;
+    }
+
+    public void setOpenId(final String openId) {
+        this.openId = openId;
     }
 }

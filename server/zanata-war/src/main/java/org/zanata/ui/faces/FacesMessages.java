@@ -22,7 +22,6 @@ package org.zanata.ui.faces;
 
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 import static javax.faces.application.FacesMessage.Severity;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,39 +31,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.application.FacesMessage;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
-
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import lombok.extern.slf4j.Slf4j;
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.zanata.i18n.Messages;
+/* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
 
 /**
  * Utility to allow for easy handling of JSF messages. Serves as a replacement
  * for the old Seam 2 org.jboss.seam.faces.FacesMessages class.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@org.apache.deltaspike.core.api.scope.WindowScoped /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
+@org.apache.deltaspike.core.api.scope.WindowScoped
 @Named("jsfMessages")
-@Slf4j
 public class FacesMessages implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(FacesMessages.class);
 
     private final List<FacesMessage> globalMessages = new ArrayList<>();
     private final Map<String, List<FacesMessage>> keyedMessages =
             new HashMap<>();
-
     @Inject
     private WindowContext windowContext;
-
     @Inject
     private Messages msgs;
 
@@ -84,15 +79,13 @@ public class FacesMessages implements Serializable {
     public void beforeRenderResponse() {
         log.debug("{}: beforeRenderResponse", this);
         for (FacesMessage message : globalMessages) {
-            FacesContext.getCurrentInstance().addMessage(null,
-                    message);
+            FacesContext.getCurrentInstance().addMessage(null, message);
         }
         for (Map.Entry<String, List<FacesMessage>> entry : keyedMessages
                 .entrySet()) {
             for (FacesMessage message : entry.getValue()) {
                 String clientId = getClientId(entry.getKey());
-                FacesContext.getCurrentInstance().addMessage(clientId,
-                    message);
+                FacesContext.getCurrentInstance().addMessage(clientId, message);
             }
         }
         clear();
@@ -103,13 +96,11 @@ public class FacesMessages implements Serializable {
      */
     private String getClientId(String id) {
         FacesContext facesContext = FacesContext.getCurrentInstance();
-
         // we search from backwards, so for a component tree A->B->C, we search
         // id from C then B then A for a match of id. If we found
         // C.getId().equals(id), we will use C.getClientId()
         Stack<UIComponent> uiComponentStack = new Stack<>();
         addComponentToStack(uiComponentStack, facesContext.getViewRoot());
-
         while (!uiComponentStack.empty()) {
             UIComponent pop = uiComponentStack.pop();
             if (pop.getId() != null && id.equals(pop.getId())) {
@@ -123,7 +114,6 @@ public class FacesMessages implements Serializable {
             UIComponent component) {
         uiComponentStack.push(component);
         Iterator<UIComponent> iter = component.getFacetsAndChildren();
-
         Queue<UIComponent> children = new LinkedList<>();
         while (iter.hasNext()) {
             UIComponent next = iter.next();
@@ -134,7 +124,6 @@ public class FacesMessages implements Serializable {
             addComponentToStack(uiComponentStack, child);
         }
     }
-
 
     /**
      * Add a status message, looking up the message in the resource bundle using
@@ -149,18 +138,15 @@ public class FacesMessages implements Serializable {
      */
     void addToControl(String id, Severity severity, String key,
             String messageTemplate, final Object... params) {
-        log.debug("{}: addToControl(id={}, template={})", this, id, messageTemplate);
-
+        log.debug("{}: addToControl(id={}, template={})", this, id,
+                messageTemplate);
         // NB This needs to change when migrating out of Seam
-        String interpolatedMessage =
-                String.format(messageTemplate, params);
-
-        log.info("message to user (wid: {}): {})", windowContext.getCurrentWindowId(), interpolatedMessage);
-
+        String interpolatedMessage = String.format(messageTemplate, params);
+        log.info("message to user (wid: {}): {})",
+                windowContext.getCurrentWindowId(), interpolatedMessage);
         FacesMessage jsfMssg =
                 new FacesMessage(severity, interpolatedMessage, null);
-
-        if(id == null) {
+        if (id == null) {
             // Global message
             globalMessages.add(jsfMssg);
         } else {
@@ -173,7 +159,6 @@ public class FacesMessages implements Serializable {
                 keyedMessages.put(id, list);
             }
         }
-
     }
 
     public void addToControl(String id, String messageTemplate,
@@ -209,15 +194,20 @@ public class FacesMessages implements Serializable {
     }
 
     public void addGlobal(FacesMessage msg) {
-        log.info("FacesMessage to user (wid: {}): {})", windowContext.getCurrentWindowId(), msg.getSummary());
+        log.info("FacesMessage to user (wid: {}): {})",
+                windowContext.getCurrentWindowId(), msg.getSummary());
         globalMessages.add(msg);
     }
 
     /**
      * Adds a global message from the configured resource bundle.
-     * @param severity Message severity.
-     * @param key Resource bundle message key.
-     * @param params The parameters to be interpolated into the message.
+     *
+     * @param severity
+     *            Message severity.
+     * @param key
+     *            Resource bundle message key.
+     * @param params
+     *            The parameters to be interpolated into the message.
      */
     public void addFromResourceBundle(Severity severity, String key,
             final Object... params) {
@@ -243,9 +233,9 @@ public class FacesMessages implements Serializable {
 
     /**
      * Returns a list of global messages in the current Faces context. Global
-     * messages are those not associated with a specific component id.
-     * (This method is useful when retrieving global messages from a jsf page,
-     * as null is not well handled in EL)
+     * messages are those not associated with a specific component id. (This
+     * method is useful when retrieving global messages from a jsf page, as null
+     * is not well handled in EL)
      */
     public List<FacesMessage> getGlobalMessagesList() {
         return FacesContext.getCurrentInstance().getMessageList(null);

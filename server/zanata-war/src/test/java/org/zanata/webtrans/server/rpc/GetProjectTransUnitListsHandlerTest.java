@@ -1,7 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
-
 import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
@@ -27,16 +26,11 @@ import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
-
 import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.shared.ActionException;
-
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -46,22 +40,29 @@ import static org.mockito.Mockito.when;
 import static org.zanata.model.TestFixture.makeHTextFlow;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(GetProjectTransUnitListsHandlerTest.class);
+
     public static final long DOC_ID = 1L;
-    @Inject @Any
+    @Inject
+    @Any
     private GetProjectTransUnitListsHandler handler;
-    @Produces @Mock
+    @Produces
+    @Mock
     private ZanataIdentity identity;
-    @Produces @Mock
+    @Produces
+    @Mock
     private LocaleService localeService;
-    @Produces @Mock
+    @Produces
+    @Mock
     private ResourceUtils resourceUtils;
-    @Produces @Mock
+    @Produces
+    @Mock
     private TextFlowSearchService textFlowSearchServiceImpl;
     private List<HTextFlow> textFlows;
     private HLocale hLocale;
@@ -74,12 +75,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     public void setUpData() {
         hLocale = TestFixture.setId(3L, new HLocale(LocaleId.DE));
         // @formatter:off
-        textFlows = Lists.newArrayList(
-            textFlow(1L, "File is removed", ""),
-            textFlow(2L, "file", "open file"),
-            textFlow(3L, " file ", null),
-            textFlow(4L, " File", "FILE   ")
-        );
+        textFlows = Lists.newArrayList(textFlow(1L, "File is removed", ""), textFlow(2L, "file", "open file"), textFlow(3L, " file ", null), textFlow(4L, " File", "FILE   "));
         // @formatter:on
         workspaceId = TestFixture.workspaceId(localeId);
     }
@@ -87,12 +83,12 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     @Before
     @SuppressWarnings("unchecked")
     public void beforeMethod() {
-        when(
-                localeService.validateLocaleByProjectIteration(localeId,
-                        workspaceId.getProjectIterationId().getProjectSlug(),
-                        workspaceId.getProjectIterationId().getIterationSlug()))
-                .thenReturn(hLocale);
-        when(resourceUtils.getNumPlurals(any(HDocument.class), any(HLocale.class))).thenReturn(1);
+        when(localeService.validateLocaleByProjectIteration(localeId,
+                workspaceId.getProjectIterationId().getProjectSlug(),
+                workspaceId.getProjectIterationId().getIterationSlug()))
+                        .thenReturn(hLocale);
+        when(resourceUtils.getNumPlurals(any(HDocument.class),
+                any(HLocale.class))).thenReturn(1);
     }
 
     private HTextFlow textFlow(long id, String sourceContent,
@@ -105,8 +101,8 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
             hTextFlow.getTargets().get(hLocale.getId())
                     .setContent0(targetContent);
         }
-        log.debug("text flow - id: {}, source : [{}], target: [{}]",
-                id, sourceContent, targetContent);
+        log.debug("text flow - id: {}, source : [{}], target: [{}]", id,
+                sourceContent, targetContent);
         return hTextFlow;
     }
 
@@ -116,12 +112,10 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         GetProjectTransUnitLists action =
                 new GetProjectTransUnitLists("a", true, true, false);
         action.setWorkspaceId(workspaceId);
-        when(
-                localeService.validateLocaleByProjectIteration(localeId,
-                        workspaceId.getProjectIterationId().getProjectSlug(),
-                        workspaceId.getProjectIterationId().getIterationSlug()))
-                .thenThrow(new ZanataServiceException("bad"));
-
+        when(localeService.validateLocaleByProjectIteration(localeId,
+                workspaceId.getProjectIterationId().getProjectSlug(),
+                workspaceId.getProjectIterationId().getIterationSlug()))
+                        .thenThrow(new ZanataServiceException("bad"));
         GetProjectTransUnitListsResult result = handler.execute(action, null);
     }
 
@@ -131,9 +125,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         GetProjectTransUnitLists action =
                 new GetProjectTransUnitLists("", true, true, false);
         action.setWorkspaceId(workspaceId);
-
         GetProjectTransUnitListsResult result = handler.execute(action, null);
-
         verify(identity).checkLoggedIn();
         assertThat(result.getDocumentIds(), Matchers.<Long> emptyIterable());
         verifyZeroInteractions(textFlowSearchServiceImpl);
@@ -145,15 +137,11 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         GetProjectTransUnitLists action =
                 new GetProjectTransUnitLists("file", true, true, true);
         action.setWorkspaceId(workspaceId);
-        when(
-                textFlowSearchServiceImpl.findTextFlows(
-                        eq(action.getWorkspaceId()),
-                        eq(action.getDocumentPaths()),
-                        constraintCaptor.capture())).thenReturn(textFlows);
-
+        when(textFlowSearchServiceImpl.findTextFlows(
+                eq(action.getWorkspaceId()), eq(action.getDocumentPaths()),
+                constraintCaptor.capture())).thenReturn(textFlows);
         // When: search in target only and case sensitive
         GetProjectTransUnitListsResult result = handler.execute(action, null);
-
         verify(identity).checkLoggedIn();
         FilterConstraints constraints = constraintCaptor.getValue();
         assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));
@@ -170,15 +158,11 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         GetProjectTransUnitLists action =
                 new GetProjectTransUnitLists(" file", true, true, true);
         action.setWorkspaceId(workspaceId);
-        when(
-                textFlowSearchServiceImpl.findTextFlows(
-                        eq(action.getWorkspaceId()),
-                        eq(action.getDocumentPaths()),
-                        constraintCaptor.capture())).thenReturn(textFlows);
-
+        when(textFlowSearchServiceImpl.findTextFlows(
+                eq(action.getWorkspaceId()), eq(action.getDocumentPaths()),
+                constraintCaptor.capture())).thenReturn(textFlows);
         // When: search in source and target and case sensitive
         GetProjectTransUnitListsResult result = handler.execute(action, null);
-
         verify(identity).checkLoggedIn();
         FilterConstraints constraints = constraintCaptor.getValue();
         assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));
@@ -195,15 +179,11 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         GetProjectTransUnitLists action =
                 new GetProjectTransUnitLists("file ", true, false, false);
         action.setWorkspaceId(workspaceId);
-        when(
-                textFlowSearchServiceImpl.findTextFlows(
-                        eq(action.getWorkspaceId()),
-                        eq(action.getDocumentPaths()),
-                        constraintCaptor.capture())).thenReturn(textFlows);
-
+        when(textFlowSearchServiceImpl.findTextFlows(
+                eq(action.getWorkspaceId()), eq(action.getDocumentPaths()),
+                constraintCaptor.capture())).thenReturn(textFlows);
         // When: search in source only and case insensitive
         GetProjectTransUnitListsResult result = handler.execute(action, null);
-
         verify(identity).checkLoggedIn();
         FilterConstraints constraints = constraintCaptor.getValue();
         assertThat(constraints.isSearchInSource(), Matchers.equalTo(true));

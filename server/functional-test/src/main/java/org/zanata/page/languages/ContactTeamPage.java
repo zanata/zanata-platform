@@ -20,18 +20,19 @@
  */
 package org.zanata.page.languages;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ContactTeamPage extends BasePage {
-
-    private By messageField = By.id("contactCoordinatorForm:messageField:input:contact-coordinator-message");
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ContactTeamPage.class);
+    private By messageField = By.id(
+            "contactCoordinatorForm:messageField:input:contact-coordinator-message");
     private By sendButton = By.id("contact-coordinator-send-button");
 
     public ContactTeamPage(WebDriver driver) {

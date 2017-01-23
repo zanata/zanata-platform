@@ -21,19 +21,18 @@
 package org.zanata.page.projects;
 
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 
-@Slf4j
 public class CreateProjectPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(CreateProjectPage.class);
     private By idField = By.id("project-form:slug:input:slug");
     private By nameField = By.id("project-form:name:input:name");
-    private By descriptionField = By.id("project-form:description:input:description");
+    private By descriptionField =
+            By.id("project-form:description:input:description");
     private By projectTypeList = By.id("project-types");
     private By createButton = By.id("project-form:create-new");
 
@@ -61,9 +60,8 @@ public class CreateProjectPage extends BasePage {
 
     public CreateProjectPage selectProjectType(String projectType) {
         log.info("Click project type {}", projectType);
-        List<WebElement> projectTypes = readyElement(projectTypeList)
-                .findElements(By.tagName("li"));
-
+        List<WebElement> projectTypes =
+                readyElement(projectTypeList).findElements(By.tagName("li"));
         for (WebElement projectTypeLi : projectTypes) {
             if (projectTypeLi.findElement(By.xpath(".//div/label")).getText()
                     .equals(projectType)) {

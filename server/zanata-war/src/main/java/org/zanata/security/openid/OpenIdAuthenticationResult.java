@@ -22,41 +22,74 @@ package org.zanata.security.openid;
 
 import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Contains results of an open Id authentication. It may also include user info
  * returned by the open id provider like email, user name, etc.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class OpenIdAuthenticationResult implements Serializable {
-    @Getter
-    @Setter
+
     /**
-     * Represents an externally authenticated username (ie a username for the external system).
+     * Represents an externally authenticated username (ie a username for the
+     * external system).
      */
     private String authenticatedId;
-
-    @Getter
-    @Setter
     private String email;
-
-    @Getter
-    @Setter
     private String fullName;
-
-    @Getter
-    @Setter
     private String username;
-
-    @Getter
-    @Setter
     private String returnToUrl;
 
     public boolean isAuthenticated() {
         return authenticatedId != null;
+    }
+
+    /**
+     * Represents an externally authenticated username (ie a username for the
+     * external system).
+     */
+    public String getAuthenticatedId() {
+        return this.authenticatedId;
+    }
+
+    /**
+     * Represents an externally authenticated username (ie a username for the
+     * external system).
+     */
+    public void setAuthenticatedId(final String authenticatedId) {
+        this.authenticatedId = authenticatedId;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+
+    public String getFullName() {
+        return this.fullName;
+    }
+
+    public void setFullName(final String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(final String username) {
+        this.username = username;
+    }
+
+    public String getReturnToUrl() {
+        return this.returnToUrl;
+    }
+
+    public void setReturnToUrl(final String returnToUrl) {
+        this.returnToUrl = returnToUrl;
     }
 }

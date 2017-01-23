@@ -21,9 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.extern.slf4j.Slf4j;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
@@ -34,29 +32,30 @@ import org.zanata.model.HPerson;
 import org.zanata.service.impl.EmailChangeService;
 
 /**
- * This action only handles edit profile (existing user).
- * For new users,
- * @see org.zanata.action.NewProfileAction
+ * This action only handles edit profile (existing user). For new users,
  *
+ * @see org.zanata.action.NewProfileAction
  */
 @Named("profileAction")
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
-public class ProfileAction extends AbstractProfileAction implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class ProfileAction extends AbstractProfileAction
+        implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProfileAction.class);
 
+    private static final long serialVersionUID = 1L;
     @Inject
-    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
+    @SuppressFBWarnings(value = "SE_BAD_FIELD",
+            justification = "CDI proxies are Serializable")
     EmailChangeService emailChangeService;
 
     @PostConstruct
     public void onCreate() {
         username = identity.getCredentials().getUsername();
-        HPerson person =
-                personDAO.findById(
-                        authenticatedAccount.getPerson().getId(), false);
+        HPerson person = personDAO
+                .findById(authenticatedAccount.getPerson().getId(), false);
         name = person.getName();
         email = person.getEmail();
         authenticatedAccount.getPerson().setName(this.name);

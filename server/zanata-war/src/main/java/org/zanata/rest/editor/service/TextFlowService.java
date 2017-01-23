@@ -21,12 +21,10 @@
 package org.zanata.rest.editor.service;
 
 import java.util.List;
-
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -38,9 +36,6 @@ import org.zanata.rest.editor.dto.EditorTextFlow;
 import org.zanata.rest.editor.dto.TransUnit;
 import org.zanata.rest.editor.dto.TransUnits;
 import org.zanata.rest.editor.service.resource.TextFlowResource;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -49,12 +44,9 @@ import lombok.NoArgsConstructor;
 @Named("editor.textFlowService")
 @Path(TextFlowResource.SERVICE_PATH)
 @Transactional(readOnly = true)
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 public class TextFlowService implements TextFlowResource {
     @Inject
     private TextFlowDAO textFlowDAO;
-
     @Inject
     private TransUnitUtils transUnitUtils;
 
@@ -68,9 +60,7 @@ public class TextFlowService implements TextFlowResource {
         if (idList.size() > TransUnitUtils.MAX_SIZE) {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
-
         List<HTextFlow> hTextFlows = textFlowDAO.findByIdList(idList);
-
         for (HTextFlow htf : hTextFlows) {
             LocaleId localeId = htf.getDocument().getLocale().getLocaleId();
             EditorTextFlow tf = new EditorTextFlow(htf.getResId(), localeId);
@@ -78,5 +68,15 @@ public class TextFlowService implements TextFlowResource {
             transUnits.put(htf.getId().toString(), new TransUnit(tf));
         }
         return Response.ok(transUnits).build();
+    }
+
+    public TextFlowService() {
+    }
+
+    @java.beans.ConstructorProperties({ "textFlowDAO", "transUnitUtils" })
+    protected TextFlowService(final TextFlowDAO textFlowDAO,
+            final TransUnitUtils transUnitUtils) {
+        this.textFlowDAO = textFlowDAO;
+        this.transUnitUtils = transUnitUtils;
     }
 }

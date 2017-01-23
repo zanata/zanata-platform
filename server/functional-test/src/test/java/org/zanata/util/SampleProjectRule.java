@@ -18,22 +18,21 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.util;
 
 import org.junit.rules.ExternalResource;
-import lombok.extern.slf4j.Slf4j;
-
 import static org.zanata.util.SampleDataResourceClient.*;
 
 /**
  * To ensure test isolation, this rule should be used as
+ *
  * @org.junit.Rule, never as @org.junit.ClassRule.
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class SampleProjectRule extends ExternalResource {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SampleProjectRule.class);
 
     @Override
     public void before() throws Throwable {
@@ -45,5 +44,4 @@ public class SampleProjectRule extends ExternalResource {
         userJoinsLanguageTeam("glossarist", locales);
         makeSampleProject();
     }
-
 }

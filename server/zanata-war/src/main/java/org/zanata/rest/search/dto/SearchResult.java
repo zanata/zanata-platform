@@ -20,12 +20,9 @@
  */
 package org.zanata.rest.search.dto;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public abstract class SearchResult {
 
@@ -34,14 +31,34 @@ public abstract class SearchResult {
         LanguageTeam,
         Person,
         Group;
+
     }
 
-    @Getter @Setter
     private String id;
-
-    @Getter @Setter
     private String description;
-
-    @Getter @Setter(AccessLevel.PROTECTED)
     private SearchResultType type;
+
+    public String getId() {
+        return this.id;
+    }
+
+    public void setId(final String id) {
+        this.id = id;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setDescription(final String description) {
+        this.description = description;
+    }
+
+    public SearchResultType getType() {
+        return this.type;
+    }
+
+    protected void setType(final SearchResultType type) {
+        this.type = type;
+    }
 }

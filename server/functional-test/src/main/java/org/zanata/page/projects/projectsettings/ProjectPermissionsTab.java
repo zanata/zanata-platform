@@ -24,57 +24,52 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.WebElementUtil;
-
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectPermissionsTab extends ProjectBasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectPermissionsTab.class);
     private By maintainersForm = By.id("settings-permissions-form");
 
     public ProjectPermissionsTab(WebDriver driver) {
         super(driver);
     }
 
-    public ProjectPermissionsTab enterSearchMaintainer(
-            String maintainerQuery) {
+    public ProjectPermissionsTab enterSearchMaintainer(String maintainerQuery) {
         log.info("Enter user search {}", maintainerQuery);
-        WebElementUtil.searchAutocomplete(getDriver(),
-                "maintainerAutocomplete", maintainerQuery);
+        WebElementUtil.searchAutocomplete(getDriver(), "maintainerAutocomplete",
+                maintainerQuery);
         return new ProjectPermissionsTab(getDriver());
     }
 
-    public ProjectPermissionsTab selectSearchMaintainer(final String maintainer) {
+    public ProjectPermissionsTab
+            selectSearchMaintainer(final String maintainer) {
         log.info("Select user {}", maintainer);
-        waitForAMoment()
-                .until((Predicate<WebDriver>) driver -> {
-                    List<WebElement> searchResults =
-                            WebElementUtil.getSearchAutocompleteResults(
-                                    driver,
-                                    "settings-permissions-form",
-                                    "maintainerAutocomplete");
-                    boolean clickedUser = false;
-                    for (WebElement searchResult : searchResults) {
-                        if (searchResult.getText().contains(maintainer)) {
-                            searchResult.click();
-                            clickedUser = true;
-                            break;
-                        }
-                    }
-                    return clickedUser;
-                });
+        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+            List<WebElement> searchResults =
+                    WebElementUtil.getSearchAutocompleteResults(driver,
+                            "settings-permissions-form",
+                            "maintainerAutocomplete");
+            boolean clickedUser = false;
+            for (WebElement searchResult : searchResults) {
+                if (searchResult.getText().contains(maintainer)) {
+                    searchResult.click();
+                    clickedUser = true;
+                    break;
+                }
+            }
+            return clickedUser;
+        });
         return new ProjectPermissionsTab(getDriver());
     }
 
@@ -91,14 +86,13 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     }
 
     private String getUsername(WebElement maintainersLi) {
-        return maintainersLi
-                .findElement(By.className("txt--meta")).getText()
+        return maintainersLi.findElement(By.className("txt--meta")).getText()
                 .replace("@", "");
     }
 
     private WebElement getMaintainerElementFromList(final String maintainer) {
-        return waitForAMoment().until(
-                (Function<WebDriver, WebElement>) webDriver -> {
+        return waitForAMoment()
+                .until((Function<WebDriver, WebElement>) webDriver -> {
                     for (WebElement maintainersLi : getSettingsMaintainersElement()) {
                         String displayedUsername = getUsername(maintainersLi);
                         if (displayedUsername.equals(maintainer)) {
@@ -109,16 +103,16 @@ public class ProjectPermissionsTab extends ProjectBasePage {
                 });
     }
 
-    public ProjectPermissionsTab expectMaintainersContains(
-            final String username) {
+    public ProjectPermissionsTab
+            expectMaintainersContains(final String username) {
         log.info("Wait for maintainers contains {}", username);
         waitForPageSilence();
         assertThat(getSettingsMaintainersList()).contains(username);
         return new ProjectPermissionsTab(getDriver());
     }
 
-    public ProjectPermissionsTab expectMaintainersNotContains(
-            final String username) {
+    public ProjectPermissionsTab
+            expectMaintainersNotContains(final String username) {
         log.info("Wait for maintainers does not contain {}", username);
         waitForPageSilence();
         assertThat(getSettingsMaintainersList()).doesNotContain(username);
@@ -134,9 +128,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     public List<String> getSettingsMaintainersList() {
         log.info("Query maintainers list");
         List<WebElement> items = getSettingsMaintainersElement();
-        List<String> rows =
-                Lists.transform(items, this::getUsername);
-
+        List<String> rows = Lists.transform(items, this::getUsername);
         return ImmutableList.copyOf(rows);
     }
 }

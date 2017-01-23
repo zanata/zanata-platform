@@ -32,15 +32,12 @@ import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import com.google.common.base.Throwables;
 import org.zanata.dao.AccountDAO;
 import org.zanata.limits.RateLimitingProcessor;
 import org.zanata.model.HAccount;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
-
 import org.zanata.rest.oauth.OAuthUtil;
 import org.zanata.util.HttpUtil;
 import org.zanata.util.RunnableEx;
@@ -52,22 +49,22 @@ import org.zanata.util.RunnableEx;
  * limited by IP address. Excessive requests up to the hard limit will be
  * queued. Any requests over the hard limit will be rejected.
  *
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 @WebFilter(filterName = "RestLimitingFilter")
 public class RestLimitingFilter implements Filter {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(RestLimitingFilter.class);
     private final RateLimitingProcessor processor;
     private final AccountDAO accountDAO;
     private final HAccount authenticatedUser;
 
     @Inject
-    public RestLimitingFilter(
-        RateLimitingProcessor processor,
-        AccountDAO accountDAO, HAccount authenticatedUser) {
+    public RestLimitingFilter(RateLimitingProcessor processor,
+            AccountDAO accountDAO, HAccount authenticatedUser) {
         this.processor = processor;
         this.accountDAO = accountDAO;
         this.authenticatedUser = authenticatedUser;
@@ -89,53 +86,41 @@ public class RestLimitingFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse resp,
             FilterChain chain) throws IOException, ServletException {
-
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
-
         /**
-         * This is only non-null if request came from same browser which
-         * user used to logged into Zanata.
+         * This is only non-null if request came from same browser which user
+         * used to logged into Zanata.
          */
         HAccount authenticatedUser = getAuthenticatedUser();
-
-        /**
-         * If apiKey is empty, request is either coming from anonymous user or
-         * using OAuth.
-         */
         String apiKey = request.getHeader(HttpUtil.API_KEY_HEADER_NAME);
         // other possible OAuth tokens
         Optional<String> authCodeOpt = OAuthUtil.getAuthCode(request);
         Optional<String> accessTokenOpt =
                 OAuthUtil.getAccessTokenFromHeader(request);
         Optional<String> refreshTokenOpt = OAuthUtil.getRefreshToken(request);
-
-        boolean hasAuthenticationCredentials =
-                !Strings.isNullOrEmpty(apiKey) || authCodeOpt.isPresent() ||
-                        accessTokenOpt.isPresent() || refreshTokenOpt.isPresent();
-
+        boolean hasAuthenticationCredentials = !Strings.isNullOrEmpty(apiKey)
+                || authCodeOpt.isPresent() || accessTokenOpt.isPresent()
+                || refreshTokenOpt.isPresent();
         RunnableEx invokeChain = () -> chain.doFilter(req, resp);
-
         try {
             // authenticatedUser can be from browser or client request
             if (authenticatedUser != null) {
                 // this request may come from logged-in browser
+                /**
+                 * If apiKey is empty, request is either coming from anonymous
+                 * user or using OAuth.
+                 */
                 processor.processForUser(authenticatedUser.getUsername(),
                         response, invokeChain);
             } else if (!hasAuthenticationCredentials) {
-                /**
-                 * Process anonymous request for rate limiting
-                 * Note: clientIP might be a proxy server IP address, due to
-                 * different implementation of each proxy server. This will put
-                 * all the requests from same proxy server into a single queue.
-                 */
                 String clientIP = HttpUtil.getClientIp(request);
-                processor.processForAnonymousIP(clientIP, response, invokeChain);
+                processor.processForAnonymousIP(clientIP, response,
+                        invokeChain);
             } else {
                 // this request may come from REST using api key or OAuth
                 String token = authCodeOpt.orElse(
-                        accessTokenOpt.orElse(
-                                refreshTokenOpt.orElse(apiKey)));
+                        accessTokenOpt.orElse(refreshTokenOpt.orElse(apiKey)));
                 if (Strings.isNullOrEmpty(apiKey)) {
                     processor.processForToken(token, response, invokeChain);
                 } else {
@@ -147,9 +132,14 @@ public class RestLimitingFilter implements Filter {
         }
     }
 
+    /**
+     * Process anonymous request for rate limiting Note: clientIP might be a
+     * proxy server IP address, due to different implementation of each proxy
+     * server. This will put all the requests from same proxy server into a
+     * single queue.
+     */
     @VisibleForTesting
     protected HAccount getAuthenticatedUser() {
         return authenticatedUser;
     }
-
 }

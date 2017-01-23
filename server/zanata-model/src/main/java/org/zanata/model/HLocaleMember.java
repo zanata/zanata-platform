@@ -21,7 +21,6 @@
 package org.zanata.model;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
@@ -31,31 +30,20 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * @author camunoz@redhat.com
- *
  */
 @Entity
 @Table(name = "HLocale_Member")
-@Setter
-@NoArgsConstructor
 public class HLocaleMember implements Serializable, HasUserFriendlyToString {
     private static final long serialVersionUID = 1L;
-
     private HLocaleMemberPk id = new HLocaleMemberPk();
-
     private boolean isCoordinator;
     private boolean isReviewer;
     private boolean isTranslator;
-
     private transient String userFriendlyToString;
 
     public HLocaleMember(HPerson person, HLocale supportedLanguage,
@@ -65,11 +53,9 @@ public class HLocaleMember implements Serializable, HasUserFriendlyToString {
         setTranslator(isTranslator);
         setReviewer(isReviewer);
         setCoordinator(isCoordinator);
-        userFriendlyToString =
-                String.format(
-                        "Locale membership(person=%s, isTranslator=%s, isReviewer=%s, isCoordinator=%s)",
-                        person.getName(), isTranslator, isReviewer,
-                        isCoordinator);
+        userFriendlyToString = String.format(
+                "Locale membership(person=%s, isTranslator=%s, isReviewer=%s, isCoordinator=%s)",
+                person.getName(), isTranslator, isReviewer, isCoordinator);
     }
 
     @EmbeddedId
@@ -112,12 +98,8 @@ public class HLocaleMember implements Serializable, HasUserFriendlyToString {
     }
 
     @Embeddable
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class HLocaleMemberPk implements Serializable {
         private static final long serialVersionUID = 1L;
-
         private HPerson person;
         private HLocale supportedLanguage;
 
@@ -144,7 +126,7 @@ public class HLocaleMember implements Serializable, HasUserFriendlyToString {
                 return new EqualsBuilder()
                         .append(this.person.getId(), other.getPerson().getId())
                         .append(this.supportedLanguage.getId(),
-                            other.getSupportedLanguage().getId())
+                                other.getSupportedLanguage().getId())
                         .isEquals();
             }
         }
@@ -154,5 +136,42 @@ public class HLocaleMember implements Serializable, HasUserFriendlyToString {
             return new HashCodeBuilder().append(this.person.getId())
                     .append(this.supportedLanguage.getId()).toHashCode();
         }
+
+        public void setPerson(final HPerson person) {
+            this.person = person;
+        }
+
+        public void setSupportedLanguage(final HLocale supportedLanguage) {
+            this.supportedLanguage = supportedLanguage;
+        }
+
+        @java.beans.ConstructorProperties({ "person", "supportedLanguage" })
+        public HLocaleMemberPk(final HPerson person,
+                final HLocale supportedLanguage) {
+            this.person = person;
+            this.supportedLanguage = supportedLanguage;
+        }
+
+        public HLocaleMemberPk() {
+        }
+    }
+
+    public void setCoordinator(final boolean isCoordinator) {
+        this.isCoordinator = isCoordinator;
+    }
+
+    public void setReviewer(final boolean isReviewer) {
+        this.isReviewer = isReviewer;
+    }
+
+    public void setTranslator(final boolean isTranslator) {
+        this.isTranslator = isTranslator;
+    }
+
+    public void setUserFriendlyToString(final String userFriendlyToString) {
+        this.userFriendlyToString = userFriendlyToString;
+    }
+
+    public HLocaleMember() {
     }
 }

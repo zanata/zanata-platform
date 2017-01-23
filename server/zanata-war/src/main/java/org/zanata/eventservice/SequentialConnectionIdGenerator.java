@@ -18,26 +18,24 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.eventservice;
 
 import javax.servlet.http.HttpServletRequest;
-
-import lombok.Synchronized;
-
 import de.novanic.eventservice.service.connection.id.ConnectionIdGenerator;
 
 /**
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class SequentialConnectionIdGenerator implements ConnectionIdGenerator {
+    private static final Object $LOCK = new Object[0];
+
     private static long nextConnectionNum = 0;
 
-    @Synchronized
     private static long generateConnectionNum() {
-        return nextConnectionNum++;
+        synchronized (SequentialConnectionIdGenerator.$LOCK) {
+            return nextConnectionNum++;
+        }
     }
 
     @Override
@@ -50,5 +48,4 @@ public class SequentialConnectionIdGenerator implements ConnectionIdGenerator {
     public String getConnectionId(HttpServletRequest aRequest) {
         return aRequest.getParameter("id");
     }
-
 }

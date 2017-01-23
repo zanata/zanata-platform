@@ -21,13 +21,10 @@
 package org.zanata.action;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Model;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.zanata.rest.dto.DTOUtil;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.rest.dto.User;
@@ -37,7 +34,6 @@ import org.zanata.model.HAccount;
 import org.zanata.seam.framework.EntityHome;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
-
 import java.io.Serializable;
 
 /**
@@ -47,24 +43,22 @@ import java.io.Serializable;
 @RequestScoped
 @Model
 @Transactional
-@Slf4j
 public class AuthenticatedAccountHome extends EntityHome<HAccount>
         implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(AuthenticatedAccountHome.class);
 
     /**
-    *
-    */
+     */
     private static final long serialVersionUID = 1L;
-
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
-
     @Inject
     private ZanataIdentity identity;
-
     @Inject
-    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
+    @SuppressFBWarnings(value = "SE_BAD_FIELD",
+            justification = "CDI proxies are Serializable")
     private UserService userService;
 
     @Override
@@ -77,9 +71,8 @@ public class AuthenticatedAccountHome extends EntityHome<HAccount>
 
     /**
      * Produce json string of {@link org.zanata.rest.dto.User} for js module
-     * (frontend). This allows js module to have basic information for any
-     * API request.
-     * TODO: make caller to use UserService directly
+     * (frontend). This allows js module to have basic information for any API
+     * request. TODO: make caller to use UserService directly
      */
     public String getUser() {
         User user = userService.getUserInfo(authenticatedAccount, true);
@@ -91,14 +84,14 @@ public class AuthenticatedAccountHome extends EntityHome<HAccount>
     }
 
     public String getUsername() {
-        if(authenticatedAccount != null) {
+        if (authenticatedAccount != null) {
             return authenticatedAccount.getUsername();
         }
         return null;
     }
 
     public boolean isLoggedIn() {
-        return identity.isLoggedIn() && authenticatedAccount != null &&
-            authenticatedAccount.isEnabled();
+        return identity.isLoggedIn() && authenticatedAccount != null
+                && authenticatedAccount.isEnabled();
     }
 }

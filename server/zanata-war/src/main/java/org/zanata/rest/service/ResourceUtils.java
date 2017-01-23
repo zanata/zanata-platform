@@ -22,7 +22,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
@@ -31,9 +30,6 @@ import javax.persistence.EntityManager;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
@@ -74,18 +70,18 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.StringUtil;
-
 import com.google.common.base.Optional;
-
 import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
+// TODO move plural logic out of ResourceUtils into a dedicated class
 
 @Named("resourceUtils")
 @RequestScoped
-@Slf4j
-// TODO move plural logic out of ResourceUtils into a dedicated class
 public class ResourceUtils {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ResourceUtils.class);
+
     /**
      * Newline character used for multi-line comments
      */
@@ -108,29 +104,23 @@ public class ResourceUtils {
     private static final String LANGUAGE_HDR = HeaderFields.KEY_Language;
     private static final String CONTENT_TYPE_HDR = HeaderFields.KEY_ContentType;
     private static final String PLURAL_FORMS_HDR = "Plural-Forms";
-
     // TODO we should need only one regex, with a capture group for nplurals
     private static final Pattern PLURAL_FORM_PATTERN =
-        Pattern.compile("nplurals=[0-9]+;\\s?plural=*");
-    private static final Pattern NPLURALS_TAG_PATTERN = Pattern
-            .compile("nplurals=");
-    private static final Pattern NPLURALS_PATTERN = Pattern
-            .compile("nplurals=[0-9]+");
+            Pattern.compile("nplurals=[0-9]+;\\s?plural=*");
+    private static final Pattern NPLURALS_TAG_PATTERN =
+            Pattern.compile("nplurals=");
+    private static final Pattern NPLURALS_PATTERN =
+            Pattern.compile("nplurals=[0-9]+");
     private static final String PLURALS_FILE = "pluralforms.properties";
     private static final int DEFAULT_NPLURALS = 1;
     private static final String DEFAULT_PLURAL_FORM = "nplurals=1; plural=0";
-
     public static final int MAX_TARGET_CONTENTS = 6;
-
     private static Properties pluralForms;
-
     public static final String COPIED_BY_ZANATA_NAME = "Copied by Zanata";
     public static final String COPIED_BY_ZANATA_NAME_EMAIL =
             "copied-by-zanata@zanata.org";
-
     @Inject
     private EntityManager entityManager;
-
     @Inject
     private LocaleDAO localeDAO;
 
@@ -169,12 +159,11 @@ public class ResourceUtils {
         int count = 0;
         for (TextFlow tf : from) {
             if (!incomingIds.add(tf.getId())) {
-                Response response =
-                        Response.status(Status.BAD_REQUEST)
-                                .entity("encountered TextFlow with duplicate ID "
-                                        + tf.getId()).build();
-                log.warn("encountered TextFlow with duplicate ID "
-                        + tf.getId());
+                Response response = Response.status(Status.BAD_REQUEST).entity(
+                        "encountered TextFlow with duplicate ID " + tf.getId())
+                        .build();
+                log.warn(
+                        "encountered TextFlow with duplicate ID " + tf.getId());
                 throw new WebApplicationException(response);
             }
             HTextFlow textFlow;
@@ -184,12 +173,14 @@ public class ResourceUtils {
                 textFlow.setObsolete(false);
                 to.getTextFlows().add(textFlow);
                 // avoid changing revision when resurrecting an unchanged TF
-                if (transferFromTextFlow(tf, textFlow, enabledExtensions)) {// content
-                                                                            // has
-                                                                            // changed
+                if (transferFromTextFlow(tf, textFlow, enabledExtensions)) {
+                    // content
+                    // has
+                    // changed
                     textFlow.setRevision(nextDocRev);
                     changed = true;
-                    for (HTextFlowTarget targ : textFlow.getTargets().values()) {
+                    for (HTextFlowTarget targ : textFlow.getTargets()
+                            .values()) {
                         // if (targ.getState() != ContentState.New)
                         if (targ.getState().isTranslated()) {
                             targ.setState(ContentState.NeedReview);
@@ -211,7 +202,6 @@ public class ResourceUtils {
                 log.debug("TextFlow with id {} is new", tf.getId());
             }
             count++;
-
             if (count % 100 == 0) {
                 entityManager.flush();
             }
@@ -220,17 +210,14 @@ public class ResourceUtils {
             // If you clear, last copyTran REST call will trigger exception on
             // the server (hDocument.getTextFlows() will contain null entries -
             // corrupted collection.
-            // see https://github.com/zanata/zanata-server/pull/571#issuecomment-55547577)
-
+            // see
+            // https://github.com/zanata/zanata-server/pull/571#issuecomment-55547577)
             /*
-            if (count % 500 == 0) {
-            // this in some cases seem to slow down overall performance
-                entityManager.clear();
-                to = entityManager.find(HDocument.class, to.getId());
-            }
-            */
+             * if (count % 500 == 0) { // this in some cases seem to slow down
+             * overall performance entityManager.clear(); to =
+             * entityManager.find(HDocument.class, to.getId()); }
+             */
         }
-
         // set remaining textflows to obsolete.
         for (String id : previousIds) {
             HTextFlow textFlow = to.getAllTextFlows().get(id);
@@ -258,12 +245,10 @@ public class ResourceUtils {
     public boolean transferFromResource(Resource from, HDocument to,
             Set<String> enabledExtensions, HLocale locale, int nextDocRev) {
         boolean changed = false;
-        changed |=
-                transferFromResourceMetadata(from, to, enabledExtensions,
-                        locale, nextDocRev);
-        changed |=
-                transferFromTextFlows(from.getTextFlows(), to,
-                        enabledExtensions, nextDocRev);
+        changed |= transferFromResourceMetadata(from, to, enabledExtensions,
+                locale, nextDocRev);
+        changed |= transferFromTextFlows(from.getTextFlows(), to,
+                enabledExtensions, nextDocRev);
         return changed;
     }
 
@@ -280,29 +265,25 @@ public class ResourceUtils {
             HDocument to, Set<String> enabledExtensions, HLocale locale,
             int nextDocRev) {
         boolean changed = false;
-
         // name
         if (!equals(from.getName(), to.getDocId())) {
             to.setFullPath(from.getName());
             changed = true;
         }
-
         // locale
         if (!equals(from.getLang(), to.getLocale().getLocaleId())) {
             log.debug("locale:" + from.getLang());
             to.setLocale(locale);
             changed = true;
         }
-
         // contentType
         if (!equals(from.getContentType(), to.getContentType())) {
             to.setContentType(from.getContentType());
             changed = true;
         }
         // handle extensions
-        changed |=
-                transferFromResourceExtensions(from.getExtensions(true), to,
-                        enabledExtensions);
+        changed |= transferFromResourceExtensions(from.getExtensions(true), to,
+                enabledExtensions);
         if (changed)
             to.setRevision(nextDocRev);
         return changed;
@@ -322,7 +303,6 @@ public class ResourceUtils {
             ExtensionSet<AbstractResourceMetaExtension> from, HDocument to,
             Set<String> enabledExtensions) {
         boolean changed = false;
-
         if (enabledExtensions.contains(PoHeader.ID)) {
             PoHeader poHeaderExt = from.findByType(PoHeader.class);
             if (poHeaderExt != null) {
@@ -332,14 +312,11 @@ public class ResourceUtils {
                     poHeader = new HPoHeader();
                 }
                 changed |= transferFromPoHeader(poHeaderExt, poHeader);
-
                 if (to.getPoHeader() == null && changed) {
                     to.setPoHeader(poHeader);
                 }
-
             }
         }
-
         return changed;
     }
 
@@ -357,7 +334,8 @@ public class ResourceUtils {
      */
     public boolean transferFromTranslationsResourceExtensions(
             ExtensionSet<TranslationsResourceExtension> from, HDocument doc,
-            Set<String> enabledExtensions, HLocale locale, MergeType mergeType) {
+            Set<String> enabledExtensions, HLocale locale,
+            MergeType mergeType) {
         boolean changed = false;
         if (enabledExtensions.contains(PoTargetHeader.ID)) {
             PoTargetHeader fromTargetHeader =
@@ -365,14 +343,12 @@ public class ResourceUtils {
             if (fromTargetHeader != null) {
                 log.debug("found PO header for locale: {}", locale);
                 try {
-                    changed =
-                            tryGetOrCreateTargetHeader(doc, locale, mergeType,
-                                    changed, fromTargetHeader);
+                    changed = tryGetOrCreateTargetHeader(doc, locale, mergeType,
+                            changed, fromTargetHeader);
                 } catch (org.hibernate.exception.ConstraintViolationException e) {
                     entityManager.refresh(doc);
-                    changed =
-                            tryGetOrCreateTargetHeader(doc, locale, mergeType,
-                                    changed, fromTargetHeader);
+                    changed = tryGetOrCreateTargetHeader(doc, locale, mergeType,
+                            changed, fromTargetHeader);
                 }
             } else {
                 changed |= doc.getPoTargetHeaders().remove(locale) != null;
@@ -392,21 +368,19 @@ public class ResourceUtils {
             toTargetHeader.setDocument(doc);
             transferFromPoTargetHeader(fromTargetHeader, toTargetHeader,
                     MergeType.IMPORT); // return
-                                       // value
-                                       // not
-                                       // needed
+            // value
+            // not
+            // needed
             entityManager.persist(toTargetHeader);
             entityManager.flush();
         } else {
-            changed |=
-                    transferFromPoTargetHeader(fromTargetHeader,
-                            toTargetHeader, mergeType);
+            changed |= transferFromPoTargetHeader(fromTargetHeader,
+                    toTargetHeader, mergeType);
         }
         return changed;
     }
 
-    private boolean transferFromTextFlowExtensions(
-            TextFlow from, HTextFlow to,
+    private boolean transferFromTextFlowExtensions(TextFlow from, HTextFlow to,
             Set<String> enabledExtensions) {
         boolean changed = false;
         ExtensionSet<TextFlowExtension> extensions = from.getExtensions(true);
@@ -415,23 +389,20 @@ public class ResourceUtils {
                     extensions.findByType(PotEntryHeader.class);
             if (entryHeader != null) {
                 HPotEntryData hEntryHeader = to.getPotEntryData();
-
                 if (hEntryHeader == null) {
                     changed = true;
                     hEntryHeader = new HPotEntryData();
                     to.setPotEntryData(hEntryHeader);
                     log.debug("set potentryheader");
                 }
-                changed |=
-                        transferFromPotEntryHeader(entryHeader, hEntryHeader,
-                                from);
+                changed |= transferFromPotEntryHeader(entryHeader, hEntryHeader,
+                        from);
             }
         }
         if (enabledExtensions.contains(SimpleComment.ID)) {
             SimpleComment comment = extensions.findByType(SimpleComment.class);
             if (comment != null) {
                 HSimpleComment hComment = to.getComment();
-
                 if (hComment == null) {
                     hComment = new HSimpleComment();
                 }
@@ -443,9 +414,7 @@ public class ResourceUtils {
                 }
             }
         }
-
         return changed;
-
     }
 
     /**
@@ -458,20 +427,16 @@ public class ResourceUtils {
     private boolean transferFromPotEntryHeader(PotEntryHeader from,
             HPotEntryData to, TextFlow textFlow) {
         boolean changed = false;
-
         if (!equals(from.getContext(), to.getContext())) {
             changed = true;
             to.setContext(from.getContext());
         }
-
         List<String> flagList = from.getFlags();
         // rhbz1012502 - should not store fuzzy tag in source document
         if (flagList.contains("fuzzy")) {
             throw new FileUploadException(String.format(
-                    "Please remove fuzzy flags from document. "
-                            + "First fuzzy flag was found on "
-                            + "text flow %s with content %s", textFlow.getId(),
-                    textFlow.getContents()));
+                    "Please remove fuzzy flags from document. First fuzzy flag was found on text flow %s with content %s",
+                    textFlow.getId(), textFlow.getContents()));
         }
         String flags = StringUtil.concat(flagList, ',');
         if (flagList.isEmpty()) {
@@ -481,7 +446,6 @@ public class ResourceUtils {
             changed = true;
             to.setFlags(flags);
         }
-
         List<String> refList = from.getReferences();
         String refs = StringUtil.concat(from.getReferences(), ',');
         if (refList.isEmpty()) {
@@ -491,12 +455,10 @@ public class ResourceUtils {
             changed = true;
             to.setReferences(refs);
         }
-
         return changed;
     }
 
     /**
-     *
      * @param from
      * @param to
      * @param mergeType
@@ -507,7 +469,6 @@ public class ResourceUtils {
     private boolean transferFromPoTargetHeader(PoTargetHeader from,
             HPoTargetHeader to, MergeType mergeType) {
         boolean changed = pushPoTargetComment(from, to, mergeType);
-
         // TODO we should probably block PoHeader/POT-specific entries
         // ie POT-Creation-Date, Project-Id-Version, Report-Msgid-Bugs-To
         String entries = PoUtility.listToHeader(from.getEntries());
@@ -515,12 +476,10 @@ public class ResourceUtils {
             to.setEntries(entries);
             changed = true;
         }
-
         return changed;
     }
 
     /**
-     *
      * @param fromHeader
      * @param toHeader
      * @param mergeType
@@ -550,14 +509,14 @@ public class ResourceUtils {
                 }
                 break;
 
-            default: // AUTO or anything else will merge comments
+            default:
+                // AUTO or anything else will merge comments
                 // to merge, we just append new lines, skip old lines
                 List<String> toLines = Collections.emptyList();
                 if (toComment != null) {
                     sb.append(toComment);
                     toLines = splitLines(toComment, null);
                 }
-
                 for (String line : fromLines) {
                     if (!toLines.contains(line)) {
                         if (sb.length() != 0)
@@ -567,6 +526,7 @@ public class ResourceUtils {
                     }
                 }
                 break;
+
             }
             if (changed) {
                 hComment.setComment(sb.toString());
@@ -604,7 +564,6 @@ public class ResourceUtils {
 
     private boolean transferFromPoHeader(PoHeader from, HPoHeader to) {
         boolean changed = false;
-
         HSimpleComment comment = to.getComment();
         if (comment == null) {
             comment = new HSimpleComment();
@@ -614,15 +573,12 @@ public class ResourceUtils {
             comment.setComment(from.getComment());
             to.setComment(comment);
         }
-
         String entries = PoUtility.listToHeader(from.getEntries());
         if (!equals(entries, to.getEntries())) {
             to.setEntries(entries);
             changed = true;
         }
-
         return changed;
-
     }
 
     public static <T> boolean equals(T a, T b) {
@@ -632,7 +588,6 @@ public class ResourceUtils {
         if (a == null || b == null) {
             return false;
         }
-
         return a.equals(b);
     }
 
@@ -647,12 +602,8 @@ public class ResourceUtils {
             to.setPlural(from.isPlural());
             changed = true;
         }
-
         // TODO from.getLang()
-
-        transferFromTextFlowExtensions(from, to,
-                enabledExtensions);
-
+        transferFromTextFlowExtensions(from, to, enabledExtensions);
         return changed;
     }
 
@@ -668,7 +619,6 @@ public class ResourceUtils {
     }
 
     /**
-     *
      * @param from
      * @param to
      * @param hTargets
@@ -709,47 +659,38 @@ public class ResourceUtils {
         final Map<String, HeaderEntry> containedHeaders =
                 new LinkedHashMap<String, HeaderEntry>(headerEntries.size());
         HTextFlowTarget lastChangedTarget = getLastChangedTarget(hTargets);
-
         // Collect the existing header entries
         for (HeaderEntry entry : headerEntries) {
             containedHeaders.put(entry.getKey(), entry);
         }
-
         // Add / Replace headers
         Date revisionDate =
                 this.getRevisionDate(headerEntries, lastChangedTarget);
         HeaderEntry headerEntry = containedHeaders.get(PO_REVISION_DATE_HDR);
         if (headerEntry == null) {
-            headerEntry =
-                    new HeaderEntry(PO_REVISION_DATE_HDR,
-                            this.toPoHeaderString(revisionDate));
+            headerEntry = new HeaderEntry(PO_REVISION_DATE_HDR,
+                    this.toPoHeaderString(revisionDate));
             headerEntries.add(headerEntry);
         } else {
             headerEntry.setValue(this.toPoHeaderString(revisionDate));
         }
-
         headerEntry = containedHeaders.get(LAST_TRANSLATOR_HDR);
         if (headerEntry == null) {
-            headerEntry =
-                    new HeaderEntry(LAST_TRANSLATOR_HDR,
-                            this.getLastTranslator(lastChangedTarget,
-                                    headerEntries));
+            headerEntry = new HeaderEntry(LAST_TRANSLATOR_HDR,
+                    this.getLastTranslator(lastChangedTarget, headerEntries));
             headerEntries.add(headerEntry);
         } else {
-            headerEntry.setValue(this.getLastTranslator(lastChangedTarget,
-                    headerEntries));
+            headerEntry.setValue(
+                    this.getLastTranslator(lastChangedTarget, headerEntries));
         }
-
         headerEntry = containedHeaders.get(LANGUAGE_TEAM_HDR);
         if (headerEntry == null) {
-            headerEntry =
-                    new HeaderEntry(LANGUAGE_TEAM_HDR,
-                            this.getLanguageTeam(locale));
+            headerEntry = new HeaderEntry(LANGUAGE_TEAM_HDR,
+                    this.getLanguageTeam(locale));
             headerEntries.add(headerEntry);
         } else {
             // Keep the original value if provided
         }
-
         headerEntry = containedHeaders.get(LANGUAGE_HDR);
         if (headerEntry == null) {
             headerEntry =
@@ -758,7 +699,6 @@ public class ResourceUtils {
         } else {
             headerEntry.setValue(this.getLanguage(locale));
         }
-
         headerEntry = containedHeaders.get(X_GENERATOR_HDR);
         if (headerEntry == null) {
             headerEntry =
@@ -767,7 +707,6 @@ public class ResourceUtils {
         } else {
             headerEntry.setValue(this.getSystemVersion());
         }
-
         headerEntry = containedHeaders.get(CONTENT_TYPE_HDR);
         if (headerEntry == null) {
             headerEntry =
@@ -776,12 +715,10 @@ public class ResourceUtils {
         } else {
             headerEntry.setValue(PO_DEFAULT_CONTENT_TYPE);
         }
-
         headerEntry = containedHeaders.get(PLURAL_FORMS_HDR);
         if (headerEntry == null || isBlank(headerEntry.getValue())) {
-            headerEntry =
-                    new HeaderEntry(PLURAL_FORMS_HDR,
-                            this.getPluralForms(locale));
+            headerEntry = new HeaderEntry(PLURAL_FORMS_HDR,
+                    this.getPluralForms(locale));
             headerEntries.add(headerEntry);
         } else {
             // Keep the original if provided
@@ -798,7 +735,6 @@ public class ResourceUtils {
      */
     private Date getHeaderRevisionDate(final List<HeaderEntry> headerEntries) {
         Date poFileRevisionDate = null;
-
         for (HeaderEntry entry : headerEntries) {
             if (entry.getKey().equalsIgnoreCase(PO_REVISION_DATE_HDR)) {
                 SimpleDateFormat dateFormat =
@@ -808,11 +744,9 @@ public class ResourceUtils {
                 } catch (ParseException e) {
                     // found the header but date could not be parsed
                 }
-
                 break;
             }
         }
-
         return poFileRevisionDate;
     }
 
@@ -823,7 +757,6 @@ public class ResourceUtils {
                 return entry.getValue();
             }
         }
-
         return "";
     }
 
@@ -836,15 +769,13 @@ public class ResourceUtils {
             final HTextFlowTarget lastTranslated) {
         Date poFileRevisionDate = this.getHeaderRevisionDate(headerEntries);
         Date translationsRevisionDate = null;
-
         if (lastTranslated != null) {
             translationsRevisionDate = lastTranslated.getLastChanged();
         }
-
         if (translationsRevisionDate != null) {
             if (poFileRevisionDate != null) {
-                return translationsRevisionDate.after(poFileRevisionDate) ? translationsRevisionDate
-                        : poFileRevisionDate;
+                return translationsRevisionDate.after(poFileRevisionDate)
+                        ? translationsRevisionDate : poFileRevisionDate;
             } else {
                 return translationsRevisionDate;
             }
@@ -854,14 +785,14 @@ public class ResourceUtils {
     }
 
     /**
-     * @param translations - List of HTextFlowTarget
+     * @param translations
+     *            - List of HTextFlowTarget
      * @return last changed/updated HTextFlowTarget from the list
      */
-    private HTextFlowTarget getLastChangedTarget(
-        final List<HTextFlowTarget> translations) {
+    private HTextFlowTarget
+            getLastChangedTarget(final List<HTextFlowTarget> translations) {
         Date lastUpdate = new Date(Long.MIN_VALUE);
         HTextFlowTarget lastChanged = null;
-
         for (HTextFlowTarget tft : translations) {
             if (tft.getLastChanged().after(lastUpdate)) {
                 lastChanged = tft;
@@ -885,22 +816,20 @@ public class ResourceUtils {
             final List<HeaderEntry> headerEntries) {
         Date headerRevisionDate = this.getHeaderRevisionDate(headerEntries);
         String lastTranslator = this.getHeaderLastTranslator(headerEntries);
-
         if (lastTranslated != null) {
             HPerson lastTranslatedBy = lastTranslated.getTranslator();
             Date lastModifiedDate = lastTranslated.getLastChanged();
-
             if (lastTranslatedBy != null) {
                 if (lastModifiedDate == null
                         || lastModifiedDate.after(headerRevisionDate)) {
                     /**
-                     * Use translator details from last translated target if
-                     * the lastModifiedDate is null or if lastModifiedDate is
-                     * after date in header entries
+                     * Use translator details from last translated target if the
+                     * lastModifiedDate is null or if lastModifiedDate is after
+                     * date in header entries
                      */
                     lastTranslator =
-                        generateLastTranslator(lastTranslatedBy.getName(),
-                            lastTranslatedBy.getEmail());
+                            generateLastTranslator(lastTranslatedBy.getName(),
+                                    lastTranslatedBy.getEmail());
                 }
             } else {
                 /**
@@ -916,8 +845,10 @@ public class ResourceUtils {
     }
 
     /**
-     * @param name - name of person
-     * @param email - email of person
+     * @param name
+     *            - name of person
+     * @param email
+     *            - email of person
      * @return {name} <{email}>
      */
     private String generateLastTranslator(String name, String email) {
@@ -962,11 +893,10 @@ public class ResourceUtils {
      */
     private String getSystemVersion() {
         try {
-            return ZANATA_GENERATOR_PREFIX
-                    + " "
+            return ZANATA_GENERATOR_PREFIX + " "
                     + (ServiceLocator.instance()
                             .getInstance(ApplicationConfiguration.class))
-                            .getVersion();
+                                    .getVersion();
         } catch (Exception e) {
             return ZANATA_GENERATOR_PREFIX + " UNKNOWN";
         }
@@ -994,43 +924,36 @@ public class ResourceUtils {
     /**
      * Returns the appropriate plural from for a given locale Id.
      *
-     * From HLocale.plurals if available,
-     * else from pluralforms.properties
+     * From HLocale.plurals if available, else from pluralforms.properties
      *
      * @return A default value if useDefault is True. Otherwise, null.
      */
-    public String getPluralForms(LocaleId localeId, boolean checkDB, boolean useDefault) {
-        if(checkDB) {
+    public String getPluralForms(LocaleId localeId, boolean checkDB,
+            boolean useDefault) {
+        if (checkDB) {
             String dbPluralForms = getPluralFormsFromDB(localeId);
             if (isNotEmpty(dbPluralForms)) {
                 return dbPluralForms;
             }
         }
-
         final char[] alternateSeparators = { '.', '@' };
-
         String javaLocale = localeId.toJavaName().toLowerCase();
-
         // Replace all alternate separators for the "_" (Java) separator.
         for (char sep : alternateSeparators) {
             javaLocale = javaLocale.replace(sep, '_');
         }
-
         if (pluralForms.containsKey(javaLocale)) {
             return pluralForms.getProperty(javaLocale);
         }
-
         // Try out every combination. e.g: for xxx_yyy_zzz, try xxx_yyyy_zzz,
         // then
         // xxx_yyy, then xxx
         while (javaLocale.indexOf('_') > 0) {
             javaLocale = javaLocale.substring(0, javaLocale.lastIndexOf('_'));
-
             if (pluralForms.containsKey(javaLocale)) {
                 return pluralForms.getProperty(javaLocale);
             }
         }
-
         if (useDefault) {
             return DEFAULT_PLURAL_FORM;
         } else {
@@ -1045,15 +968,14 @@ public class ResourceUtils {
     }
 
     /**
-     * return plural count info from
-     * 1) PO Header entry if available, else
-     * 2) HLocale.plurals if available, else
-     * 3) pluralforms.properties, else
-     * 4) assume no plural forms (nplurals=1)
+     * return plural count info from 1) PO Header entry if available, else 2)
+     * HLocale.plurals if available, else 3) pluralforms.properties, else 4)
+     * assume no plural forms (nplurals=1)
      *
-     * @param poHeaders - HPoTargetHeader.entries
-     * @param localeId - locale identifier
-     *
+     * @param poHeaders
+     *            - HPoTargetHeader.entries
+     * @param localeId
+     *            - locale identifier
      */
     int getNumPlurals(@Nullable String poHeaders, LocaleId localeId) {
         if (!isEmpty(poHeaders)) {
@@ -1067,23 +989,27 @@ public class ResourceUtils {
                     } catch (NumberFormatException | PluralParseException e) {
                         log.debug("Unable to parse plurals", e);
                         // TODO return a warning to the user when uploading
-                        log.warn("Error parsing plural forms header; using defaults for locale {}; headers: {}",
+                        log.warn(
+                                "Error parsing plural forms header; using defaults for locale {}; headers: {}",
                                 localeId, poHeaders);
                     }
                 } else {
                     // TODO return a warning to the user when uploading
-                    log.warn("Empty plural forms header; using defaults for locale {}; headers: {}",
+                    log.warn(
+                            "Empty plural forms header; using defaults for locale {}; headers: {}",
                             localeId, poHeaders);
                 }
             } else {
                 // otherwise (no header) use the locale default
-                log.debug("No plural forms header; using defaults for locale {}; headers: {}",
+                log.debug(
+                        "No plural forms header; using defaults for locale {}; headers: {}",
                         localeId, poHeaders);
             }
         }
         String localePluralForms = getPluralFormsForLocale(localeId);
         if (localePluralForms == null) {
-            log.warn("Assuming no plurals for locale {}; no plural info found in database or in {}; headers: {}",
+            log.warn(
+                    "Assuming no plurals for locale {}; no plural info found in database or in {}; headers: {}",
                     localeId, PLURALS_FILE, poHeaders);
             return DEFAULT_NPLURALS;
         }
@@ -1103,11 +1029,15 @@ public class ResourceUtils {
     /**
      * Returns HLocale.plurals if available, else value in
      * pluralforms.properties
-     * @param localeId id of the locale
+     *
+     * @param localeId
+     *            id of the locale
      * @return the plural forms string
-     * @throws RuntimeException if no plural forms are found
+     * @throws RuntimeException
+     *             if no plural forms are found
      */
-    private @Nullable String getPluralFormsForLocale(LocaleId localeId) {
+    @Nullable
+    private String getPluralFormsForLocale(LocaleId localeId) {
         String pluralForms;
         pluralForms = getPluralFormsFromDB(localeId);
         if (isEmpty(pluralForms)) {
@@ -1119,9 +1049,10 @@ public class ResourceUtils {
     /**
      * @return plural forms from HLocale, null if not found
      */
-    @Nullable String getPluralFormsFromDB(LocaleId localeId) {
+    @Nullable
+    String getPluralFormsFromDB(LocaleId localeId) {
         HLocale hLocale = localeDAO.findByLocaleId(localeId);
-        if(hLocale != null && isNotEmpty(hLocale.getPluralForms())) {
+        if (hLocale != null && isNotEmpty(hLocale.getPluralForms())) {
             return hLocale.getPluralForms();
         }
         return null;
@@ -1132,14 +1063,16 @@ public class ResourceUtils {
      *
      * @param localeId
      */
-    @Nullable String getPluralFormsFromFile(@Nonnull LocaleId localeId) {
+    @Nullable
+    String getPluralFormsFromFile(@Nonnull LocaleId localeId) {
         return getPluralForms(localeId, false, false);
     }
 
     /**
      * Process pluralforms string and return plural count.
      *
-     * @param pluralForms string to parse
+     * @param pluralForms
+     *            string to parse
      */
     int extractNPlurals(@Nonnull String pluralForms)
             throws NumberFormatException, PluralParseException {
@@ -1153,26 +1086,27 @@ public class ResourceUtils {
                 return Integer.parseInt(nPluralsString);
             }
         }
-        throw new PluralParseException("can't find valid nplurals in plural forms string: " + pluralForms);
+        throw new PluralParseException(
+                "can\'t find valid nplurals in plural forms string: "
+                        + pluralForms);
     }
 
     /**
      * Return if pluralForms is valid (positive value)
      *
-     * @param pluralForms string to check
+     * @param pluralForms
+     *            string to check
      */
     public boolean isValidPluralForms(@Nonnull String pluralForms) {
-
-        if(!PLURAL_FORM_PATTERN.matcher(pluralForms).find()) {
+        if (!PLURAL_FORM_PATTERN.matcher(pluralForms).find()) {
             return false;
         }
-
         Matcher nPluralsMatcher = NPLURALS_PATTERN.matcher(pluralForms);
         String nPluralsString = "";
         while (nPluralsMatcher.find()) {
             nPluralsString = nPluralsMatcher.group();
             Matcher nPluralsValueMatcher =
-                NPLURALS_TAG_PATTERN.matcher(nPluralsString);
+                    NPLURALS_TAG_PATTERN.matcher(nPluralsString);
             nPluralsString = nPluralsValueMatcher.replaceAll("");
             break;
         }
@@ -1182,13 +1116,12 @@ public class ResourceUtils {
                 return count >= 1 && count <= MAX_TARGET_CONTENTS;
             }
         } catch (NumberFormatException e) {
-            //invalid string for integer
+            // invalid string for integer
         }
         return false;
     }
 
     /**
-     *
      * @param fromHeader
      * @param toHeader
      * @see #pushPoTargetComment
@@ -1223,7 +1156,6 @@ public class ResourceUtils {
             sb.append(' ');
             sb.append(ZANATA_TAG);
         }
-
         toHeader.setComment(sb.toString());
     }
 
@@ -1235,7 +1167,6 @@ public class ResourceUtils {
         }
         to.setRevision(from.getRevision());
         to.setPlural(from.isPlural());
-
         // TODO HTextFlow should have a lang
         // to.setLang(from.get)
     }
@@ -1264,7 +1195,6 @@ public class ResourceUtils {
     }
 
     /**
-     *
      * @param from
      * @param to
      * @param enabledExtensions
@@ -1306,9 +1236,7 @@ public class ResourceUtils {
             transferToPotEntryHeader(from.getPotEntryData(), header);
             log.debug("set header:{}", from.getPotEntryData());
             to.add(header);
-
         }
-
         if (enabledExtensions.contains(SimpleComment.ID)
                 && from.getComment() != null) {
             SimpleComment comment =
@@ -1316,24 +1244,23 @@ public class ResourceUtils {
             log.debug("set comment:{}", from.getComment().getComment());
             to.add(comment);
         }
-
     }
 
     /**
-     * @see #transferFromPotEntryHeader(org.zanata.rest.dto.extensions.gettext.PotEntryHeader, org.zanata.model.po.HPotEntryData, org.zanata.rest.dto.resource.TextFlow)
+     * @see #transferFromPotEntryHeader(org.zanata.rest.dto.extensions.gettext.PotEntryHeader,
+     *      org.zanata.model.po.HPotEntryData,
+     *      org.zanata.rest.dto.resource.TextFlow)
      * @param from
      * @param to
      */
-    private void
-            transferToPotEntryHeader(HPotEntryData from, PotEntryHeader to) {
+    private void transferToPotEntryHeader(HPotEntryData from,
+            PotEntryHeader to) {
         to.setContext(from.getContext());
-
         List<String> flags = new ArrayList<String>(0);
         if (from.getFlags() != null) {
             flags = StringUtil.split(from.getFlags(), ",");
         }
         to.getFlags().addAll(flags);
-
         List<String> refs = new ArrayList<String>(0);
         if (from.getReferences() != null) {
             refs = StringUtil.split(from.getReferences(), ",");
@@ -1342,7 +1269,6 @@ public class ResourceUtils {
     }
 
     /**
-     *
      * @param from
      * @param to
      * @param enabledExtensions
@@ -1379,9 +1305,6 @@ public class ResourceUtils {
     }
 
     /**
-     *
-     *
-     *
      * @param from
      * @param to
      * @param apiVersion
@@ -1403,8 +1326,8 @@ public class ResourceUtils {
         to.setTextFlowRevision(from.getTextFlowRevision());
         HPerson translator = from.getTranslator();
         if (translator != null) {
-            to.setTranslator(new Person(translator.getEmail(), translator
-                    .getName()));
+            to.setTranslator(
+                    new Person(translator.getEmail(), translator.getName()));
         }
     }
 
@@ -1414,10 +1337,13 @@ public class ResourceUtils {
             switch (state) {
             case Translated:
                 return ContentState.Approved;
+
             case Rejected:
                 return ContentState.NeedReview;
+
             default:
                 return state;
+
             }
         }
         // TODO for other apiVersion, we will need to handle differently
@@ -1428,29 +1354,23 @@ public class ResourceUtils {
         Set<String> extensions = new HashSet<String>();
         extensions.add("gettext");
         extensions.add("comment");
-
         Resource entity = new Resource(document.getDocId());
         this.transferToResource(document, entity);
         // handle extensions
         this.transferToResourceExtensions(document, entity.getExtensions(true),
                 extensions);
-
         for (HTextFlow htf : document.getTextFlows()) {
-            TextFlow tf =
-                    new TextFlow(htf.getResId(), document.getLocale()
-                            .getLocaleId());
+            TextFlow tf = new TextFlow(htf.getResId(),
+                    document.getLocale().getLocaleId());
             this.transferToTextFlowExtensions(htf, tf.getExtensions(true),
                     extensions);
             this.transferToTextFlow(htf, tf);
             entity.getTextFlows().add(tf);
         }
-
         return entity;
     }
 
     /**
-     *
-     *
      * @param transRes
      * @param document
      * @param locale
@@ -1461,15 +1381,12 @@ public class ResourceUtils {
      * @return true only if some data was found (text flow targets, or some
      *         metadata extensions)
      */
-    public boolean transferToTranslationsResource(
-            TranslationsResource transRes, HDocument document, HLocale locale,
-            Set<String> enabledExtensions, List<HTextFlowTarget> hTargets,
-            Optional<String> apiVersion) {
-        boolean found =
-                this.transferToTranslationsResourceExtensions(document,
-                        transRes.getExtensions(true), enabledExtensions,
-                        locale, hTargets);
-
+    public boolean transferToTranslationsResource(TranslationsResource transRes,
+            HDocument document, HLocale locale, Set<String> enabledExtensions,
+            List<HTextFlowTarget> hTargets, Optional<String> apiVersion) {
+        boolean found = this.transferToTranslationsResourceExtensions(document,
+                transRes.getExtensions(true), enabledExtensions, locale,
+                hTargets);
         for (HTextFlowTarget hTarget : hTargets) {
             found = true;
             TextFlowTarget target = new TextFlowTarget();
@@ -1491,7 +1408,6 @@ public class ResourceUtils {
      */
     public static void validateExtensions(Set<String> requestedExt) {
         Set<String> validExtensions = ExtensionType.asStringSet();
-
         if (!CollectionUtils.isSubCollection(requestedExt, validExtensions)) {
             @SuppressWarnings("unchecked")
             Collection<String> invalidExtensions =

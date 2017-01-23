@@ -23,7 +23,6 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -38,10 +37,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.zanata.common.ActivityType;
 import org.zanata.model.type.EntityType;
@@ -50,51 +45,37 @@ import org.zanata.model.type.EntityType;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
-@EntityListeners({Activity.EntityListener.class})
-@NoArgsConstructor
+@EntityListeners({ Activity.EntityListener.class })
 @Access(AccessType.FIELD)
-@Getter
 public class Activity extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
-
     @NotNull
     @JoinColumn(name = "actor_id", nullable = false)
     @ManyToOne
     private HPerson actor;
-
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date approxTime;
-
     @NotNull
     private long startOffsetMillis;
-
     @NotNull
     private long endOffsetMillis;
-
-    @Getter
     @NotNull
     @Enumerated(EnumType.STRING)
     private EntityType contextType;
-
     @NotNull
     @Column(name = "context_id")
     private long contextId;
-
     @Enumerated(EnumType.STRING)
     private EntityType lastTargetType;
-
     @NotNull
     @Column(name = "last_target_id")
     private long lastTargetId;
-
     @Enumerated(EnumType.STRING)
     private ActivityType activityType;
-
     // Event count starts with 1 because there is a single event when new
     // activity created
     private int eventCount = 1;
-
     private int wordCount;
 
     public Activity(HPerson actor, IsEntityWithType context,
@@ -123,12 +104,61 @@ public class Activity extends ModelEntityBase implements Serializable {
     }
 
     public static class EntityListener {
+
         @PrePersist
         private void onPrePersist(Activity activity) {
-            activity.approxTime = DateUtils.truncate(activity.getCreationDate(), Calendar.HOUR);
-            activity.startOffsetMillis = activity.getCreationDate().getTime() - activity.approxTime.getTime();
+            activity.approxTime = DateUtils.truncate(activity.getCreationDate(),
+                    Calendar.HOUR);
+            activity.startOffsetMillis = activity.getCreationDate().getTime()
+                    - activity.approxTime.getTime();
             activity.endOffsetMillis = activity.startOffsetMillis;
         }
+    }
 
+    public Activity() {
+    }
+
+    public HPerson getActor() {
+        return this.actor;
+    }
+
+    public Date getApproxTime() {
+        return this.approxTime;
+    }
+
+    public long getStartOffsetMillis() {
+        return this.startOffsetMillis;
+    }
+
+    public long getEndOffsetMillis() {
+        return this.endOffsetMillis;
+    }
+
+    public long getContextId() {
+        return this.contextId;
+    }
+
+    public EntityType getLastTargetType() {
+        return this.lastTargetType;
+    }
+
+    public long getLastTargetId() {
+        return this.lastTargetId;
+    }
+
+    public ActivityType getActivityType() {
+        return this.activityType;
+    }
+
+    public int getEventCount() {
+        return this.eventCount;
+    }
+
+    public int getWordCount() {
+        return this.wordCount;
+    }
+
+    public EntityType getContextType() {
+        return this.contextType;
     }
 }

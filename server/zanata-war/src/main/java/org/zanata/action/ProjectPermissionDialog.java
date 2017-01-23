@@ -18,26 +18,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.action;
 
 import static org.zanata.webhook.events.ProjectMaintainerChangedEvent.ChangeType;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
@@ -61,59 +55,47 @@ import org.zanata.service.impl.WebhookServiceImpl;
 import org.zanata.ui.AbstractAutocomplete;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.ServiceLocator;
-
 import javax.faces.application.FacesMessage;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 /*
  * Backing bean for project permissions dialog.
  *
  * Template is person-permissions-modal.xhtml
  */
+
 @Named("projectPermissionDialog")
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
-    implements Serializable {
+        implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectPermissionDialog.class);
 
     @Inject
     private FacesMessages facesMessages;
-
     @Inject
     private Messages msgs;
-
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     private LocaleService localeServiceImpl;
-
     @Inject
     private WebhookServiceImpl webhookServiceImpl;
-
     @Inject
     private PersonDAO personDAO;
-
     @Inject
     private ProjectDAO projectDAO;
-
     @Inject
     private ProjectService projectServiceImpl;
-
-    @Getter
     private PersonProjectMemberships data;
-
-    @Getter
     private HProject project;
 
     public void setData(HProject project, HPerson person) {
         this.project = project;
         setPerson(person);
-
         // reset autocomplete data
         this.reset();
     }
@@ -121,7 +103,8 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
     /**
      * Prepare the permission dialog to update permissions for the given person.
      *
-     * @param person to show in permission dialog
+     * @param person
+     *            to show in permission dialog
      */
     private void setPerson(HPerson person) {
         final List<ProjectRole> projectRoles = new ArrayList<>();
@@ -130,22 +113,18 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
                 projectRoles.add(membership.getRole());
             }
         }
-
         final ListMultimap<HLocale, LocaleRole> localeRoles =
-            ArrayListMultimap.create();
+                ArrayListMultimap.create();
         for (HProjectLocaleMember membership : getProject()
-            .getLocaleMembers()) {
+                .getLocaleMembers()) {
             if (membership.getPerson().equals(person)) {
                 localeRoles.put(membership.getLocale(), membership.getRole());
             }
         }
-
-        data =
-            new PersonProjectMemberships(person, projectRoles, localeRoles);
-        LocaleService localeServiceImpl = ServiceLocator.instance().getInstance(
-            LocaleServiceImpl.class);
-        List<HLocale> locales =
-            localeServiceImpl
+        data = new PersonProjectMemberships(person, projectRoles, localeRoles);
+        LocaleService localeServiceImpl =
+                ServiceLocator.instance().getInstance(LocaleServiceImpl.class);
+        List<HLocale> locales = localeServiceImpl
                 .getSupportedLanguageByProject(getProject().getSlug());
         data.ensureLocalesPresent(locales);
     }
@@ -164,17 +143,17 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
         if (data == null || data.getPerson() == null) {
             return false;
         }
-
         project = projectDAO.findById(getProject().getId());
         return project.getMaintainers().size() <= 1
-            && project.getMaintainers().contains(data.getPerson());
+                && project.getMaintainers().contains(data.getPerson());
     }
 
     /**
      * Indicate whether any of the permissions are selected in the person
      * permission dialog.
      *
-     * @return false if no permissions are selected in the dialog, otherwise true
+     * @return false if no permissions are selected in the dialog, otherwise
+     *         true
      */
     public boolean anySelected() {
         return data != null && data.hasAnyPermissions();
@@ -184,15 +163,17 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
      * Update role membership for a project-specific role based on the current
      * checkbox value.
      *
-     * @param role    the role to assign or remove for the current person
-     * @param checked the current checkbox value
+     * @param role
+     *            the role to assign or remove for the current person
+     * @param checked
+     *            the current checkbox value
      */
     public void bindProjectRole(String role, boolean checked) {
-        if (StringUtils
-            .equalsIgnoreCase(role, ProjectRole.TranslationMaintainer.name())) {
+        if (StringUtils.equalsIgnoreCase(role,
+                ProjectRole.TranslationMaintainer.name())) {
             data.setTranslationMaintainer(checked);
-        } else if (StringUtils
-            .equalsIgnoreCase(role, ProjectRole.Maintainer.name())) {
+        } else if (StringUtils.equalsIgnoreCase(role,
+                ProjectRole.Maintainer.name())) {
             data.setMaintainer(checked);
         }
     }
@@ -201,49 +182,52 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
      * Update role membership for a locale-specific role based on the current
      * checkbox value.
      *
-     * @param localeRole represents both the locale and the role
-     *                   format: {localeId}:{role}. e.g en-US:Reviewer
-     * @param checked    the current checkbox value
+     * @param localeRole
+     *            represents both the locale and the role format:
+     *            {localeId}:{role}. e.g en-US:Reviewer
+     * @param checked
+     *            the current checkbox value
      */
     public void bindTranslationRole(String localeRole, boolean checked) {
         String[] localeRoleList = StringUtils.split(localeRole, ':');
         final HLocale hLocale =
-            localeServiceImpl.getByLocaleId(localeRoleList[0]);
+                localeServiceImpl.getByLocaleId(localeRoleList[0]);
         String role = localeRoleList[1];
-
-        final Optional<PersonProjectMemberships.LocaleRoles>
-            matchingLocaleRoles = Iterables
-            .tryFind(data.getLocaleRoles(), localeEqualsPredicate(hLocale));
-
+        final Optional<PersonProjectMemberships.LocaleRoles> matchingLocaleRoles =
+                Iterables.tryFind(data.getLocaleRoles(),
+                        localeEqualsPredicate(hLocale));
         if (matchingLocaleRoles.isPresent()) {
             PersonProjectMemberships.LocaleRoles localeRoles =
-                matchingLocaleRoles.get();
-            if (StringUtils
-                .equalsIgnoreCase(role, LocaleRole.Translator.name())) {
+                    matchingLocaleRoles.get();
+            if (StringUtils.equalsIgnoreCase(role,
+                    LocaleRole.Translator.name())) {
                 localeRoles.setTranslator(checked);
-            } else if (StringUtils
-                .equalsIgnoreCase(role, LocaleRole.Reviewer.name())) {
+            } else if (StringUtils.equalsIgnoreCase(role,
+                    LocaleRole.Reviewer.name())) {
                 localeRoles.setReviewer(checked);
-            } else if (StringUtils
-                .equalsIgnoreCase(role, LocaleRole.Coordinator.name())) {
+            } else if (StringUtils.equalsIgnoreCase(role,
+                    LocaleRole.Coordinator.name())) {
                 localeRoles.setCoordinator(checked);
-            } else if (StringUtils.equalsIgnoreCase(role, LocaleRole.Glossarist.name())) {
+            } else if (StringUtils.equalsIgnoreCase(role,
+                    LocaleRole.Glossarist.name())) {
                 localeRoles.setGlossarist(checked);
             }
         } else {
             // No LocaleRoles for the given locale, so create a new one.
             List<LocaleRole> roleList =
-                Lists.newArrayList(LocaleRole.valueOf(role));
+                    Lists.newArrayList(LocaleRole.valueOf(role));
             data.addLocaleRoles(hLocale, roleList);
         }
     }
 
     /**
-     * Get a predicate that checks if a LocaleRoles.getLocale() is the given locale.
+     * Get a predicate that checks if a LocaleRoles.getLocale() is the given
+     * locale.
      */
-    private Predicate<PersonProjectMemberships.LocaleRoles> localeEqualsPredicate(
-        final HLocale hLocale) {
+    private Predicate<PersonProjectMemberships.LocaleRoles>
+            localeEqualsPredicate(final HLocale hLocale) {
         return new Predicate<PersonProjectMemberships.LocaleRoles>() {
+
             @Override
             public boolean apply(PersonProjectMemberships.LocaleRoles input) {
                 return input.getLocale().equals(hLocale);
@@ -252,7 +236,8 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
     }
 
     /**
-     * Save the permissions selections from permissionDialogData to the database.
+     * Save the permissions selections from permissionDialogData to the
+     * database.
      */
     @Transactional
     public void saveSelections() {
@@ -260,44 +245,38 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
             log.error("Tried to save permissionDialogData but it is null");
             return;
         }
-
         project = projectDAO.findById(getProject().getId());
-
-        // Hibernate will have problems working with detached HPerson and HLocale
+        // Hibernate will have problems working with detached HPerson and
+        // HLocale
         // so they are all attached before any persistence is attempted.
         HPerson person = personDAO.findById(data.getPerson().getId());
         data.setPerson(person);
         for (PersonProjectMemberships.LocaleRoles roles : data
-            .getLocaleRoles()) {
+                .getLocaleRoles()) {
             roles.setLocale(localeServiceImpl
-                .getByLocaleId(roles.getLocale().getLocaleId()));
+                    .getByLocaleId(roles.getLocale().getLocaleId()));
         }
-
         final boolean canManageMembers =
-            identity.hasPermission(project, "manage-members");
+                identity.hasPermission(project, "manage-members");
         final boolean canManageTransMembers =
-            identity.hasPermission(project, "manage-translation-members");
+                identity.hasPermission(project, "manage-translation-members");
         final boolean canChangeAnyMembers =
-            canManageMembers || canManageTransMembers;
-
+                canManageMembers || canManageTransMembers;
         List<ProjectServiceImpl.UpdatedRole> updatedRoles = null;
         if (canManageMembers) {
-
             // generate a warning if trying to remove last maintainer
             // business rule in project will prevent actual removal
-            if (!data.isMaintainer()
-                && project.getMaintainers().size() <= 1
-                && project.getMaintainers().contains(data.getPerson())) {
+            if (!data.isMaintainer() && project.getMaintainers().size() <= 1
+                    && project.getMaintainers().contains(data.getPerson())) {
                 facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
-                    msgs.get("jsf.project.NeedAtLeastOneMaintainer"));
+                        msgs.get("jsf.project.NeedAtLeastOneMaintainer"));
             }
             updatedRoles =
-                projectServiceImpl.updateProjectPermissions(project, data);
+                    projectServiceImpl.updateProjectPermissions(project, data);
         }
         if (canManageTransMembers) {
             projectServiceImpl.updateLocalePermissions(project, data);
         }
-
         if (canChangeAnyMembers) {
             projectDAO.makePersistent(project);
             if (!updatedRoles.isEmpty()) {
@@ -305,17 +284,14 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
                 for (ProjectServiceImpl.UpdatedRole updatedRole : updatedRoles) {
                     ChangeType changeType = updatedRole.isAdded()
                             ? ChangeType.ADD : ChangeType.REMOVE;
-
-                    webhookServiceImpl
-                            .processWebhookMaintainerChanged(project.getSlug(),
-                                    updatedRole.getUsername(),
-                                    updatedRole.getRole(),
-                                    webHooks, changeType);
+                    webhookServiceImpl.processWebhookMaintainerChanged(
+                            project.getSlug(), updatedRole.getUsername(),
+                            updatedRole.getRole(), webHooks, changeType);
                 }
             }
         } else {
             throw new AuthorizationException(
-                "You are not authorized to manage permissions for this project.");
+                    "You are not authorized to manage permissions for this project.");
         }
     }
 
@@ -332,10 +308,16 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
     public void onSelectItemAction() {
         String selected = getSelectedItem();
         HPerson selectedPerson = getPersonDAO().findByUsername(selected);
-
         if (selectedPerson != null) {
             setPerson(selectedPerson);
         }
     }
 
+    public PersonProjectMemberships getData() {
+        return this.data;
+    }
+
+    public HProject getProject() {
+        return this.project;
+    }
 }

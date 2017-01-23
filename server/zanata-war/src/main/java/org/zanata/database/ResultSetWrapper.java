@@ -18,7 +18,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.database;
 
 import java.lang.reflect.InvocationHandler;
@@ -29,35 +28,28 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
 /**
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 class ResultSetWrapper implements InvocationHandler {
+
     public static ResultSet wrap(ResultSet resultSet, Statement statementProxy,
             Connection connectionProxy, boolean streaming) {
-        if (Proxy.isProxyClass(resultSet.getClass())
-                && Proxy.getInvocationHandler(resultSet) instanceof ResultSetWrapper) {
+        if (Proxy.isProxyClass(resultSet.getClass()) && Proxy
+                .getInvocationHandler(resultSet) instanceof ResultSetWrapper) {
             return resultSet;
         }
         return ProxyUtil.newProxy(resultSet, new ResultSetWrapper(resultSet,
                 statementProxy, connectionProxy, streaming));
     }
 
-    @Getter
     private final ResultSet resultSet;
     private final Statement statementProxy;
     private final Connection connectionProxy;
     private final boolean streaming;
-    @Getter
-    private final Throwable throwable = new Throwable(
-            "Unclosed ResultSet was created here");
+    private final Throwable throwable =
+            new Throwable("Unclosed ResultSet was created here");
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args)
@@ -80,8 +72,7 @@ class ResultSetWrapper implements InvocationHandler {
 
     private void afterClose() {
         ConnectionWrapper connectionWrapper =
-                (ConnectionWrapper) Proxy
-                        .getInvocationHandler(connectionProxy);
+                (ConnectionWrapper) Proxy.getInvocationHandler(connectionProxy);
         if (streaming) {
             connectionWrapper.afterStreamingResultSetClosed();
         } else {
@@ -89,4 +80,20 @@ class ResultSetWrapper implements InvocationHandler {
         }
     }
 
+    private ResultSetWrapper(final ResultSet resultSet,
+            final Statement statementProxy, final Connection connectionProxy,
+            final boolean streaming) {
+        this.resultSet = resultSet;
+        this.statementProxy = statementProxy;
+        this.connectionProxy = connectionProxy;
+        this.streaming = streaming;
+    }
+
+    public ResultSet getResultSet() {
+        return this.resultSet;
+    }
+
+    public Throwable getThrowable() {
+        return this.throwable;
+    }
 }

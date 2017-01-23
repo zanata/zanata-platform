@@ -22,12 +22,8 @@ package org.zanata.service.impl;
 
 import java.util.Map;
 import java.util.concurrent.Future;
-
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManagerFactory;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
@@ -47,20 +43,21 @@ import org.zanata.search.HTextFlowTargetIndexingStrategy;
 import org.zanata.search.SimpleClassIndexingStrategy;
 import org.zanata.service.IndexingService;
 import org.zanata.util.Zanata;
+// Not @Transactional, because we manage EntityManager directly
 
 /**
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("indexingServiceImpl")
 @RequestScoped
-@Slf4j
-// Not @Transactional, because we manage EntityManager directly
 public class IndexingServiceImpl implements IndexingService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(IndexingServiceImpl.class);
 
-    @Inject @Zanata
+    @Inject
+    @Zanata
     private EntityManagerFactory entityManagerFactory;
-
     @Inject
     private HTextFlowTargetStreamingDAO hTextFlowTargetStreamingDAO;
 
@@ -68,18 +65,17 @@ public class IndexingServiceImpl implements IndexingService {
     @Async
     public Future<Void> startIndexing(
             Map<Class<?>, ReindexClassOptions> indexingOptions,
-            AsyncTaskHandle<Void> handle)
-            throws Exception {
+            AsyncTaskHandle<Void> handle) throws Exception {
         FullTextSession session = openFullTextSession();
         try {
-            handle.setMaxProgress(getTotalOperations(session, indexingOptions,
-                    handle));
+            handle.setMaxProgress(
+                    getTotalOperations(session, indexingOptions, handle));
             // TODO this is necessary because isInProgress checks number of
             // operations, which may be 0
             // look at updating isInProgress not to care about count
             if (handle.getMaxProgress() == 0) {
-                log.info("Reindexing aborted because there are no actions "
-                        + "to perform (may be indexing an empty table)");
+                log.info(
+                        "Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
                 return AsyncTaskResult.taskResult();
             }
             for (Class<?> clazz : indexingOptions.keySet()) {
@@ -103,25 +99,17 @@ public class IndexingServiceImpl implements IndexingService {
                     handle.increaseProgress(1);
                 }
             }
-
             if (handle.isCancelled()) {
                 log.info("index operation canceled by user");
             } else {
-                if (handle.getCurrentProgress() != handle
-                        .getMaxProgress()) {
+                if (handle.getCurrentProgress() != handle.getMaxProgress()) {
                     // @formatter: off
                     log.warn(
-                            "Did not reindex the expected number of "
-                                    + "objects. Counted {} but indexed {}. "
-                                    + "The index may be out-of-sync. "
-                                    + "This may be caused by lack of "
-                                    + "sufficient memory, or by database "
-                                    + "activity during reindexing.",
-                            handle.getMaxProgress(), handle
-                                    .getCurrentProgress());
+                            "Did not reindex the expected number of objects. Counted {} but indexed {}. The index may be out-of-sync. This may be caused by lack of sufficient memory, or by database activity during reindexing.",
+                            handle.getMaxProgress(),
+                            handle.getCurrentProgress());
                     // @formatter: on
                 }
-
                 log.info("Re-indexing finished");
             }
         } finally {
@@ -148,12 +136,10 @@ public class IndexingServiceImpl implements IndexingService {
             if (opts.isPurge()) {
                 totalOperations++;
             }
-
             if (opts.isReindex()) {
                 totalOperations +=
                         getIndexer(clazz, handle).getEntityCount(session);
             }
-
             if (opts.isOptimize()) {
                 totalOperations++;
             }
@@ -177,41 +163,30 @@ public class IndexingServiceImpl implements IndexingService {
     @Override
     @Async
     public Future<Void> reindexHTextFlowTargetsForProject(HProject hProject,
-            AsyncTaskHandle<Void> handle)
-            throws Exception {
+            AsyncTaskHandle<Void> handle) throws Exception {
         FullTextSession session = openFullTextSession();
         try {
-
-            Long entityCount = getHTextFlowTargetCountForProject(hProject,
-                    session);
+            Long entityCount =
+                    getHTextFlowTargetCountForProject(hProject, session);
             handle.setMaxProgress(entityCount.intValue());
             // TODO this is necessary because isInProgress checks number of
             // operations, which may be 0
             // look at updating isInProgress not to care about count
             if (handle.getMaxProgress() == 0) {
-                log.info("Reindexing aborted because there are no actions "
-                        + "to perform (may be indexing an empty table)");
+                log.info(
+                        "Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
                 return AsyncTaskResult.taskResult();
             }
-
             HTextFlowTargetIndexingStrategy indexingStrategy =
                     new HTextFlowTargetIndexingStrategy();
             indexingStrategy.reindexForProject(hProject, session, handle);
-
             if (handle.getCurrentProgress() != handle.getMaxProgress()) {
                 // @formatter: off
                 log.warn(
-                        "Did not reindex the expected number of "
-                                + "objects. Counted {} but indexed {}. "
-                                + "The index may be out-of-sync. "
-                                + "This may be caused by lack of "
-                                + "sufficient memory, or by database "
-                                + "activity during reindexing.",
-                        handle.getMaxProgress(), handle
-                                .getCurrentProgress());
+                        "Did not reindex the expected number of objects. Counted {} but indexed {}. The index may be out-of-sync. This may be caused by lack of sufficient memory, or by database activity during reindexing.",
+                        handle.getMaxProgress(), handle.getCurrentProgress());
                 // @formatter: on
             }
-
             log.info(
                     "Re-indexing HTextFlowTarget for slug change: [{}] finished",
                     hProject);
@@ -224,10 +199,8 @@ public class IndexingServiceImpl implements IndexingService {
     private static Long getHTextFlowTargetCountForProject(HProject hProject,
             FullTextSession session) {
         return (Long) session
-                    .createQuery(
-                            "select count(*) from HTextFlowTarget tft where tft.textFlow.document.projectIteration.project = :project")
-                    .setParameter("project", hProject)
-                    .uniqueResult();
+                .createQuery(
+                        "select count(*) from HTextFlowTarget tft where tft.textFlow.document.projectIteration.project = :project")
+                .setParameter("project", hProject).uniqueResult();
     }
-
 }

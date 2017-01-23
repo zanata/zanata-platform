@@ -22,7 +22,6 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -35,25 +34,17 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.hibernate.annotations.BatchSize;
 
 /**
  * @see org.zanata.rest.dto.extensions.comment.SimpleComment
- *
  */
 @Entity
 @EntityListeners({ HSimpleComment.EntityListener.class })
 @Cacheable
 @BatchSize(size = 20)
-@Setter
-@NoArgsConstructor
 public class HSimpleComment implements Serializable {
     private static final long serialVersionUID = 5684831285769022524L;
-
     private Long id;
     private String comment;
     protected Date lastChanged;
@@ -88,7 +79,6 @@ public class HSimpleComment implements Serializable {
     public String toString() {
         return "HSimpleComment(" + toString(this) + ")";
     }
-
     // TODO extract lastChanged from ModelEntityBase and use with @Embedded
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -102,6 +92,7 @@ public class HSimpleComment implements Serializable {
     }
 
     public static class EntityListener {
+
         @SuppressWarnings("unused")
         @PrePersist
         private void onPersist(HSimpleComment hsc) {
@@ -117,4 +108,10 @@ public class HSimpleComment implements Serializable {
         }
     }
 
+    public void setComment(final String comment) {
+        this.comment = comment;
+    }
+
+    public HSimpleComment() {
+    }
 }

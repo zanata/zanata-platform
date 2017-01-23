@@ -2,8 +2,6 @@ package org.zanata.search;
 
 import org.hibernate.ScrollableResults;
 import org.hibernate.search.FullTextSession;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.async.AsyncTaskHandle;
 
 /**
@@ -12,8 +10,9 @@ import org.zanata.async.AsyncTaskHandle;
  * @param <T>
  *            The type of object that this indexing strategy handles.
  */
-@Slf4j
 public abstract class AbstractIndexingStrategy<T> {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(AbstractIndexingStrategy.class);
     protected static final int sessionClearBatchSize = 1000;
     private ScrollableResults scrollableResults;
     private final Class<T> entityType;
@@ -40,7 +39,6 @@ public abstract class AbstractIndexingStrategy<T> {
                 rowNum++;
                 T entity = (T) scrollableResults.get(0);
                 session.index(entity);
-
                 if (handle != null) {
                     handle.increaseProgress(1);
                 }
@@ -73,7 +71,8 @@ public abstract class AbstractIndexingStrategy<T> {
      * @param offset
      * @return
      */
-    protected abstract ScrollableResults queryResults(int offset, FullTextSession session);
+    protected abstract ScrollableResults queryResults(int offset,
+            FullTextSession session);
 
     Class<T> getEntityType() {
         return entityType;
@@ -86,5 +85,4 @@ public abstract class AbstractIndexingStrategy<T> {
     void setScrollableResults(ScrollableResults scrollableResults) {
         this.scrollableResults = scrollableResults;
     }
-
 }

@@ -18,30 +18,23 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.limits;
-
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 
 /**
  * Token used for rate limiter queue.
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@EqualsAndHashCode
-@ToString
 public class RateLimiterToken {
-
-    @Getter
     private final String value;
-
-    @Getter
     private final TYPE type;
 
     public static enum TYPE {
-        USERNAME, API_KEY, IP_ADDRESS, TOKEN;
+        USERNAME,
+        API_KEY,
+        IP_ADDRESS,
+        TOKEN;
+
     }
 
     public RateLimiterToken(TYPE type, String value) {
@@ -65,7 +58,9 @@ public class RateLimiterToken {
 
     /**
      * Generate key from either api key, OAuth authorizationCode or accessToken
-     * @param token the actual token value
+     *
+     * @param token
+     *            the actual token value
      */
     public static RateLimiterToken fromToken(String token) {
         return new RateLimiterToken(TYPE.TOKEN, token);
@@ -76,5 +71,56 @@ public class RateLimiterToken {
      */
     public static RateLimiterToken fromIPAddress(String ipAddress) {
         return new RateLimiterToken(TYPE.IP_ADDRESS, ipAddress);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof RateLimiterToken))
+            return false;
+        final RateLimiterToken other = (RateLimiterToken) o;
+        if (!other.canEqual((Object) this))
+            return false;
+        final Object this$value = this.getValue();
+        final Object other$value = other.getValue();
+        if (this$value == null ? other$value != null
+                : !this$value.equals(other$value))
+            return false;
+        final Object this$type = this.getType();
+        final Object other$type = other.getType();
+        if (this$type == null ? other$type != null
+                : !this$type.equals(other$type))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof RateLimiterToken;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $value = this.getValue();
+        result = result * PRIME + ($value == null ? 43 : $value.hashCode());
+        final Object $type = this.getType();
+        result = result * PRIME + ($type == null ? 43 : $type.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "RateLimiterToken(value=" + this.getValue() + ", type="
+                + this.getType() + ")";
+    }
+
+    public String getValue() {
+        return this.value;
+    }
+
+    public TYPE getType() {
+        return this.type;
     }
 }

@@ -20,29 +20,25 @@
  */
 package org.zanata.page.dashboard;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 import org.zanata.page.dashboard.dashboardsettings.DashboardAccountTab;
 import org.zanata.page.dashboard.dashboardsettings.DashboardClientTab;
 import org.zanata.page.dashboard.dashboardsettings.DashboardProfileTab;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 public class DashboardBasePage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardBasePage.class);
     private By activityTab = By.id("activity_tab");
     private By projectsTab = By.id("projects_tab");
     private By groupsTab = By.id("groups_tab");
     private By settingsTab = By.id("settings_tab");
-
     private By activityTabBody = By.id("activity");
     private By projectsTabBody = By.id("projects");
     private By groupsTabBody = By.id("groups");
     private By settingsTabBody = By.id("settings");
-
     private By settingsAccountTab = By.id("account_tab");
     private By settingsProfileTab = By.id("profile_tab");
     private By settingsClientTab = By.id("client_tab");
@@ -50,12 +46,9 @@ public class DashboardBasePage extends BasePage {
     private By thisWeeksActivityTab = By.id("activity-week_tab");
     private By thisMonthsActivityTab = By.id("activity-month_tab");
     private By profileOverview = By.id("profile-overview");
-
-    public final static String EMAIL_SENT =
-            "You will soon receive an email with a link to activate your " +
-            "email account change.";
-
-    public final static String PASSWORD_UPDATE_SUCCESS =
+    public static final String EMAIL_SENT =
+            "You will soon receive an email with a link to activate your email account change.";
+    public static final String PASSWORD_UPDATE_SUCCESS =
             "Your password has been successfully changed.";
 
     public DashboardBasePage(final WebDriver driver) {
@@ -64,8 +57,8 @@ public class DashboardBasePage extends BasePage {
 
     public String getUserFullName() {
         log.info("Query user full name");
-        return readyElement(profileOverview)
-                .findElement(By.tagName("h1")).getText();
+        return readyElement(profileOverview).findElement(By.tagName("h1"))
+                .getText();
     }
 
     public DashboardActivityTab gotoActivityTab() {
@@ -77,8 +70,7 @@ public class DashboardBasePage extends BasePage {
 
     public boolean activityTabIsSelected() {
         log.info("Query is Activity tab displayed");
-        return getDriver()
-                .findElements(By.cssSelector("#activity.is-active"))
+        return getDriver().findElements(By.cssSelector("#activity.is-active"))
                 .size() > 0;
     }
 
@@ -95,7 +87,6 @@ public class DashboardBasePage extends BasePage {
         clickWhenTabEnabled(readyElement(groupsTab));
         return new DashboardGroupsTab(getDriver());
     }
-
 
     public DashboardBasePage goToSettingsTab() {
         log.info("Click Settings tab");
@@ -127,5 +118,4 @@ public class DashboardBasePage extends BasePage {
         waitForPageSilence();
         assertThat(getUserFullName()).isNotEqualTo(current);
     }
-
 }

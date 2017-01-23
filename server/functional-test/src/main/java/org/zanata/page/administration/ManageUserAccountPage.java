@@ -22,28 +22,24 @@ package org.zanata.page.administration;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-
-@Slf4j
 public class ManageUserAccountPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ManageUserAccountPage.class);
     public static String PASSWORD_ERROR = "Passwords do not match";
-
     private By passwordField = By.id("userdetailForm:password:input:password");
-    private By passwordConfirmField = By.id("userdetailForm:passwordConfirm:input:confirm");
+    private By passwordConfirmField =
+            By.id("userdetailForm:passwordConfirm:input:confirm");
     private By enabledField = By.id("userdetailForm:enabled");
     private By saveButton = By.id("userdetailForm:userdetailSave");
     private By cancelButton = By.id("userdetailForm:userdetailCancel");
-
     private Map<String, String> roleMap;
 
     public ManageUserAccountPage(WebDriver driver) {
@@ -83,8 +79,9 @@ public class ManageUserAccountPage extends BasePage {
 
     public boolean isRoleChecked(String role) {
         log.info("Query is role {} checked", role);
-        return readyElement(By.id("userdetailForm:rolesField:roles:"
-                .concat(roleMap.get(role)))).isSelected();
+        return readyElement(By.id(
+                "userdetailForm:rolesField:roles:".concat(roleMap.get(role))))
+                        .isSelected();
     }
 
     public ManageUserPage saveUser() {
@@ -104,5 +101,4 @@ public class ManageUserAccountPage extends BasePage {
         clickElement(cancelButton);
         return new ManageUserPage(getDriver());
     }
-
 }

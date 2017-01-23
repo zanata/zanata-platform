@@ -28,10 +28,6 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.zanata.model.HAccount;
 import org.zanata.model.ModelEntityBase;
 import org.zanata.model.validator.Unique;
@@ -39,23 +35,17 @@ import org.zanata.model.validator.Unique;
 /**
  * A set of credentials for a given user against an authentication mechanism.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "type",
         discriminatorType = DiscriminatorType.STRING)
-@NoArgsConstructor
 @Unique(properties = { "user" })
 public abstract class HCredentials extends ModelEntityBase {
-    @Setter
     private HAccount account;
-
-    @Setter
     private String user;
-
-    @Setter
     private String email;
 
     @ManyToOne(optional = false)
@@ -71,5 +61,20 @@ public abstract class HCredentials extends ModelEntityBase {
 
     public String getEmail() {
         return email;
+    }
+
+    public HCredentials() {
+    }
+
+    public void setAccount(final HAccount account) {
+        this.account = account;
+    }
+
+    public void setUser(final String user) {
+        this.user = user;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
     }
 }

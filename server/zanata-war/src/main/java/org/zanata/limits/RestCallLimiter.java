@@ -2,20 +2,19 @@ package org.zanata.limits;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.RunnableEx;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 class RestCallLimiter {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(RestCallLimiter.class);
     private volatile Semaphore maxConcurrentSemaphore;
     private volatile Semaphore maxActiveSemaphore;
     private int maxConcurrent;
@@ -68,7 +67,7 @@ class RestCallLimiter {
                 log.debug("acquired [concurrent] permit");
                 if (!acquireActivePermit(taskAfterAcquire)) {
                     throw new RuntimeException(
-                            "Couldn't get an [active] permit before timeout");
+                            "Couldn\'t get an [active] permit before timeout");
                 }
             } finally {
                 concSem.release();
@@ -165,8 +164,7 @@ class RestCallLimiter {
 
     @Override
     public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", super.toString())
+        return MoreObjects.toStringHelper(this).add("id", super.toString())
                 .add("maxConcurrent(available)",
                         maxConcurrentSemaphore.availablePermits())
                 .add("maxActive(available)",

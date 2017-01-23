@@ -27,7 +27,6 @@ import java.sql.Blob;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import liquibase.change.custom.CustomTaskChange;
 import liquibase.database.Database;
 import liquibase.database.jvm.JdbcConnection;
@@ -36,39 +35,31 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.SetupException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
-import lombok.extern.slf4j.Slf4j;
-
 import org.zanata.common.DocumentType;
-
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import org.zanata.config.SystemPropertyConfigStore;
 
-@Slf4j
 public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(MigrateRawDocumentsToFileSystem.class);
 
     private static final String FILE_DIR_PROP_NAME =
             SystemPropertyConfigStore.KEY_DOCUMENT_FILE_STORE;
     private static final String RAW_DOCUMENTS_SUBDIRECTORY = "documents";
-
     private static final String CONTENTS_SQL =
             "select fileId, content from HRawDocumentContent";
-    private static final String ID_TYPE_SQL = "select d.documentId, rd.type"
-            + " from HRawDocument rd, HDocument_RawDocument d"
-            + " where d.rawDocumentId = rd.id and rd.fileId = ?";
+    private static final String ID_TYPE_SQL =
+            "select d.documentId, rd.type from HRawDocument rd, HDocument_RawDocument d where d.rawDocumentId = rd.id and rd.fileId = ?";
     private static final String UPDATE_LOCATION_SQL =
             "update HRawDocument set fileId = ? where fileId = ?";
     private static final String DELETE_OLD_CONTENT_SQL =
             "delete from HRawDocumentContent where fileId = ?";
-
     private String basePath;
-
     private File docsDirectory;
-
     private int docsCount;
     private int successCount;
     private int problemsCount;
-
     private PreparedStatement contentsStatement;
     private PreparedStatement idAndTypeStatement;
     private PreparedStatement updateLocationStatement;
@@ -77,12 +68,8 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     @Override
     public String getConfirmationMessage() {
         return "Raw documents migrated from database to file system under path "
-                + docsDirectory.getAbsolutePath()
-                + ". Total documents: "
-                + docsCount
-                + ", success: "
-                + successCount
-                + ", problems: "
+                + docsDirectory.getAbsolutePath() + ". Total documents: "
+                + docsCount + ", success: " + successCount + ", problems: "
                 + problemsCount;
     }
 
@@ -93,10 +80,9 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
         basePath = System.getProperty(FILE_DIR_PROP_NAME);
         if (Strings.isNullOrEmpty(basePath)) {
             throw new SetupException(
-                    "No information for document storage directory. "
-                            + "System property \""
-                            + FILE_DIR_PROP_NAME + "\" needs to be provided. "
-                            + "Cannot migrate documents to file system.");
+                    "No information for document storage directory. System property \""
+                            + FILE_DIR_PROP_NAME
+                            + "\" needs to be provided. Cannot migrate documents to file system.");
         }
     }
 
@@ -172,8 +158,8 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
             deleteOldContent(oldFileId);
         } else {
             throw new RuntimeException(
-                    "Raw document content with no matching raw document, "
-                            + "HRawDocumentContent.fileId = " + oldFileId);
+                    "Raw document content with no matching raw document, HRawDocumentContent.fileId = "
+                            + oldFileId);
         }
     }
 
@@ -185,9 +171,8 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     }
 
     private static String fileNameFromIdAndType(Long docId, String type) {
-        String extension =
-                DocumentType.valueOf(type).getSourceExtensions().iterator()
-                        .next();
+        String extension = DocumentType.valueOf(type).getSourceExtensions()
+                .iterator().next();
         return docId.toString() + "." + extension;
     }
 
@@ -231,5 +216,4 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
                             + deletedRows);
         }
     }
-
 }

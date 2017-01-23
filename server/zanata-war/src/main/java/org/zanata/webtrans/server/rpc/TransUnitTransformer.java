@@ -31,16 +31,11 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.webtrans.shared.model.TransUnit;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 @Named("transUnitTransformer")
 @RequestScoped
-@NoArgsConstructor
-@AllArgsConstructor
 public class TransUnitTransformer {
     private static final int NULL_TARGET_VERSION_NUM = 0;
-
     @Inject
     private ResourceUtils resourceUtils;
 
@@ -52,55 +47,45 @@ public class TransUnitTransformer {
         // caller
         // code to always eager load targets.
         HTextFlowTarget target = hTextFlow.getTargets().get(hLocale.getId());
-
         return transform(hTextFlow, target, hLocale);
     }
 
     public TransUnit transform(HTextFlow hTextFlow, HTextFlowTarget target,
             HLocale hLocale) {
         HPotEntryData potEntryData = hTextFlow.getPotEntryData();
-        String msgContext = null, refs = null, flags = null;
+        String msgContext = null;
+        String refs = null;
+        String flags = null;
         if (potEntryData != null) {
             msgContext = potEntryData.getContext();
             refs = potEntryData.getReferences();
             flags = potEntryData.getFlags();
         }
-
         int nPlurals =
                 resourceUtils.getNumPlurals(hTextFlow.getDocument(), hLocale);
         ArrayList<String> sourceContents =
                 GwtRpcUtil.getSourceContents(hTextFlow);
-        ArrayList<String> targetContents =
-                GwtRpcUtil.getTargetContentsWithPadding(hTextFlow, target,
-                        nPlurals);
-
-        TransUnit.Builder builder =
-                TransUnit.Builder
-                        .newTransUnitBuilder()
-                        .setId(hTextFlow.getId())
-                        .setResId(hTextFlow.getResId())
-                        .setLocaleId(hLocale.getLocaleId())
-                        .setPlural(hTextFlow.isPlural())
-                        .setSources(sourceContents)
-                    .setSourceComment(
-                        commentToString(hTextFlow.getComment()))
-                    .setTargets(targetContents)
-                    .setTargetComment(
-                        target == null ? null : commentToString(target
-                            .getComment()))
-                    .setMsgContext(msgContext)
-                    .setSourceRefs(refs)
-                    .setSourceFlags(flags)
-                    .setRowIndex(hTextFlow.getPos())
-                    .setVerNum(
-                        target == null ? NULL_TARGET_VERSION_NUM
-                            : target.getVersionNum())
-                    .setCommentsCount(getCommentCount(target));
-
+        ArrayList<String> targetContents = GwtRpcUtil
+                .getTargetContentsWithPadding(hTextFlow, target, nPlurals);
+        TransUnit.Builder builder = TransUnit.Builder.newTransUnitBuilder()
+                .setId(hTextFlow.getId()).setResId(hTextFlow.getResId())
+                .setLocaleId(hLocale.getLocaleId())
+                .setPlural(hTextFlow.isPlural()).setSources(sourceContents)
+                .setSourceComment(commentToString(hTextFlow.getComment()))
+                .setTargets(targetContents)
+                .setTargetComment(target == null ? null
+                        : commentToString(target.getComment()))
+                .setMsgContext(msgContext).setSourceRefs(refs)
+                .setSourceFlags(flags).setRowIndex(hTextFlow.getPos())
+                .setVerNum(target == null ? NULL_TARGET_VERSION_NUM
+                        : target.getVersionNum())
+                .setCommentsCount(getCommentCount(target));
         if (target != null) {
             builder.setStatus(target.getState());
-            if (target.getLastModifiedBy() != null) {
-                builder.setLastModifiedBy(target.getLastModifiedBy().getName());
+            if (target.getLastModifiedBy() != null
+                    && target.getLastModifiedBy().hasAccount()) {
+                builder.setLastModifiedBy(
+                        target.getLastModifiedBy().getAccount().getUsername());
             }
             builder.setLastModifiedTime(target.getLastChanged());
             builder.setRevisionComment(target.getRevisionComment());
@@ -121,4 +106,11 @@ public class TransUnitTransformer {
         return comment == null ? null : comment.getComment();
     }
 
+    public TransUnitTransformer() {
+    }
+
+    @java.beans.ConstructorProperties({ "resourceUtils" })
+    public TransUnitTransformer(final ResourceUtils resourceUtils) {
+        this.resourceUtils = resourceUtils;
+    }
 }

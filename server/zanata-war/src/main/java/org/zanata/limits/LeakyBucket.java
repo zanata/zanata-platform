@@ -1,19 +1,16 @@
 package org.zanata.limits;
 
 import java.util.concurrent.TimeUnit;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Ticker;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
-@ToString
 public class LeakyBucket {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(LeakyBucket.class);
     private final long refillPeriod;
     private final long capacity;
     private final TimeTracker timeTracker;
@@ -21,9 +18,9 @@ public class LeakyBucket {
     private final long waitSleepTime;
 
     /**
-     * Simple form leaky bucket. Start off with full permits.
-     * Each #tryAcquire() will deduct 1 permit. Permits is refilled on demand
-     * after set time period.
+     * Simple form leaky bucket. Start off with full permits. Each #tryAcquire()
+     * will deduct 1 permit. Permits is refilled on demand after set time
+     * period.
      *
      * @param capacity
      *            capacity
@@ -88,12 +85,12 @@ public class LeakyBucket {
         long permitsShouldAdd = timePassed / refillPeriod;
         log.debug("permits should add: {}", permitsShouldAdd);
         if (timePassed >= refillPeriod) {
-            availablePermits = Math.min(capacity, availablePermits + permitsShouldAdd);
+            availablePermits =
+                    Math.min(capacity, availablePermits + permitsShouldAdd);
             log.debug("refilled and now with {} permits", availablePermits);
         }
     }
 
-    @ToString
     static class TimeTracker {
         private final Ticker ticker;
         private long lastRead;
@@ -114,5 +111,19 @@ public class LeakyBucket {
         long timePassed() {
             return ticker.read() - lastRead;
         }
+
+        @Override
+        public String toString() {
+            return "LeakyBucket.TimeTracker(ticker=" + this.ticker
+                    + ", lastRead=" + this.lastRead + ")";
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "LeakyBucket(refillPeriod=" + this.refillPeriod + ", capacity="
+                + this.capacity + ", timeTracker=" + this.timeTracker
+                + ", availablePermits=" + this.availablePermits
+                + ", waitSleepTime=" + this.waitSleepTime + ")";
     }
 }

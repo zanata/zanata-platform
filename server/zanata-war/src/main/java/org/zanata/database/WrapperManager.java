@@ -18,14 +18,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.database;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * This class wraps JDBC Connections/Statements/ResultSets to detect attempts to
@@ -34,17 +31,17 @@ import lombok.extern.slf4j.Slf4j;
  * SQLException. This enables us to catch these problems without having to test
  * against mysql in our unit tests.
  *
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 public class WrapperManager {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(WrapperManager.class);
+
     public static final String PROPERTY_USE_WRAPPER =
             "zanata.connection.use.wrapper";
     private static final String USE_WRAPPER =
             System.getProperty(PROPERTY_USE_WRAPPER);
-
     private boolean checkedFirstConnection = false;
     private boolean wrappingEnabled = false;
 
@@ -57,8 +54,7 @@ public class WrapperManager {
         }
         if (wrappingEnabled) {
             Connection wrapped = ConnectionWrapper.wrap(conn);
-            log.debug("Connection {} is wrapped by {}",
-                    conn, wrapped);
+            log.debug("Connection {} is wrapped by {}", conn, wrapped);
             return wrapped;
         } else {
             return conn;
@@ -67,6 +63,7 @@ public class WrapperManager {
 
     /**
      * Log warnings or errors if the database or driver is not supported.
+     *
      * @param metaData
      * @throws SQLException
      */
@@ -76,8 +73,8 @@ public class WrapperManager {
         String dbVer = metaData.getDatabaseProductVersion();
         int dbMaj = metaData.getDatabaseMajorVersion();
         int dbMin = metaData.getDatabaseMinorVersion();
-        log.info("Database product: {} version: {} ({}.{})",
-                dbName, dbVer, dbMaj, dbMin);
+        log.info("Database product: {} version: {} ({}.{})", dbName, dbVer,
+                dbMaj, dbMin);
         String lcName = dbName.toLowerCase();
         if (lcName.contains("mysql")) {
             log.info("Using MySQL database");
@@ -96,21 +93,23 @@ public class WrapperManager {
         String drvVer = metaData.getDriverVersion();
         int drvMaj = metaData.getDriverMajorVersion();
         int drvMin = metaData.getDriverMinorVersion();
-        log.info("JDBC driver: {} version: {} ({}.{})",
-                drvName, drvVer, drvMaj, drvMin);
+        log.info("JDBC driver: {} version: {} ({}.{})", drvName, drvVer, drvMaj,
+                drvMin);
     }
 
     private static boolean shouldWrap(DatabaseMetaData metaData)
             throws SQLException {
         if (USE_WRAPPER != null) {
             if ("false".equals(USE_WRAPPER)) {
-                log.info("Not wrapping JDBC connection (disabled by system " +
-                        "property {})", PROPERTY_USE_WRAPPER);
+                log.info(
+                        "Not wrapping JDBC connection (disabled by system property {})",
+                        PROPERTY_USE_WRAPPER);
                 return false;
             }
             if ("true".equals(USE_WRAPPER)) {
-                log.info("Wrapping JDBC connection (forced by system " +
-                        "property {})", PROPERTY_USE_WRAPPER);
+                log.info(
+                        "Wrapping JDBC connection (forced by system property {})",
+                        PROPERTY_USE_WRAPPER);
                 return true;
             }
             if (!("auto".equals(USE_WRAPPER))) {
@@ -119,15 +118,15 @@ public class WrapperManager {
             }
         }
         String driverName = metaData.getDriverName();
-        if (driverName.equals("MySQL Connector Java") ||
-                driverName.equals("MySQL-AB JDBC Driver") ||
-                driverName.equals("mariadb-jdbc")) {
+        if (driverName.equals("MySQL Connector Java")
+                || driverName.equals("MySQL-AB JDBC Driver")
+                || driverName.equals("mariadb-jdbc")) {
             // these drivers are known to use streaming result sets
             // when fetchSize == Integer.MIN_VALUE
             log.info("No need to wrap JDBC connection: driver: {}", driverName);
             return false;
-        } else if (driverName.toLowerCase().contains("mysql") ||
-                driverName.toLowerCase().contains("mariadb")) {
+        } else if (driverName.toLowerCase().contains("mysql")
+                || driverName.toLowerCase().contains("mariadb")) {
             // NB: if a future mysql/mariadb driver does away with the
             // fetchSize trick for streaming, please add a special case and
             // return true, or remove the Zanata code which calls
@@ -136,10 +135,10 @@ public class WrapperManager {
             log.warn("Streaming results may not work");
             return false;
         } else {
-            log.info("Wrapping JDBC connection: found non-mysql/mariadb " +
-                    "driver: {}", driverName);
+            log.info(
+                    "Wrapping JDBC connection: found non-mysql/mariadb driver: {}",
+                    driverName);
             return true;
         }
     }
-
 }

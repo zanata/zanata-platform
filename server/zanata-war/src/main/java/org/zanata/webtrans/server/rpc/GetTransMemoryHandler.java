@@ -21,11 +21,8 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -40,13 +37,13 @@ import org.zanata.webtrans.shared.rpc.GetTranslationMemoryResult;
 @Named("webtrans.gwt.GetTransMemoryHandler")
 @RequestScoped
 @ActionHandlerFor(GetTranslationMemory.class)
-@Slf4j
 public class GetTransMemoryHandler extends
         AbstractActionHandler<GetTranslationMemory, GetTranslationMemoryResult> {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(GetTransMemoryHandler.class);
 
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     private TranslationMemoryService translationMemoryServiceImpl;
 
@@ -54,16 +51,14 @@ public class GetTransMemoryHandler extends
     public GetTranslationMemoryResult execute(GetTranslationMemory action,
             ExecutionContext context) throws ActionException {
         identity.checkLoggedIn();
-
         TransMemoryQuery transMemoryQuery = action.getQuery();
         log.debug("Fetching matches for {}", transMemoryQuery);
-
-        // TODO if the client is requesting a TM for a textflow, it should just pass the text flow id not the text. And also some other context info like docId, version. project etc
-        List<TransMemoryResultItem> results =
-                translationMemoryServiceImpl.searchTransMemory(
-                        action.getLocaleId(), action.getSourceLocaleId(),
-                        transMemoryQuery);
-
+        // TODO if the client is requesting a TM for a textflow, it should just
+        // pass the text flow id not the text. And also some other context info
+        // like docId, version. project etc
+        List<TransMemoryResultItem> results = translationMemoryServiceImpl
+                .searchTransMemory(action.getLocaleId(),
+                        action.getSourceLocaleId(), transMemoryQuery);
         log.debug("Returning {} TM matches for {}", results.size(),
                 transMemoryQuery);
         return new GetTranslationMemoryResult(action, results);

@@ -1,14 +1,10 @@
 // derived from org.jboss.seam.core.SynchronizationInterceptor in Seam 2.3.1
-
 package org.zanata.util;
 
 import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.exception.LockTimeoutException;
-
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -21,11 +17,12 @@ import javax.interceptor.InvocationContext;
  */
 @Interceptor
 @Synchronized
-@Slf4j
 public class SynchronizationInterceptor implements Serializable {
-    private static final long defaultTimeout = SysProperties.getLong(
-            SysProperties.LOCK_TIMEOUT, Synchronized.DEFAULT_TIMEOUT);
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SynchronizationInterceptor.class);
 
+    private static final long defaultTimeout = SysProperties
+            .getLong(SysProperties.LOCK_TIMEOUT, Synchronized.DEFAULT_TIMEOUT);
     private final ReentrantLock lock = new ReentrantLock(true);
 
     @AroundInvoke
@@ -44,11 +41,10 @@ public class SynchronizationInterceptor implements Serializable {
             }
         } else {
             throw new LockTimeoutException(
-                    "could not acquire lock on @Synchronized component with class " +
-                            invocation.getTarget().getClass().getName() +
-                            " before executing method " +
-                            invocation.getMethod());
+                    "could not acquire lock on @Synchronized component with class "
+                            + invocation.getTarget().getClass().getName()
+                            + " before executing method "
+                            + invocation.getMethod());
         }
     }
-
 }

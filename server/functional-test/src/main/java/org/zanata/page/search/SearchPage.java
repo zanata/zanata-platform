@@ -21,13 +21,9 @@
 package org.zanata.page.search;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -35,17 +31,14 @@ import org.zanata.page.BasePage;
 import org.zanata.page.projects.CreateProjectPage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.util.WebElementUtil;
-
 import com.google.common.base.Function;
 
-@Slf4j
 public class SearchPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SearchPage.class);
     private By searchProjectForm = By.id("search-project_form");
-
     private By projectTabSearchPage = By.id("projects_tab");
     private By userTabSearchPage = By.id("users_tab");
-
 
     public SearchPage(final WebDriver driver) {
         super(driver);
@@ -55,16 +48,13 @@ public class SearchPage extends BasePage {
         log.info("Query Projects list");
         waitForPageSilence();
         gotoProjectTabInSearchPage();
-
         log.info("Query project name");
-
         List<String> names = new ArrayList<>();
         for (WebElement row : readyElement(searchProjectForm)
-            .findElements(By.xpath("//h3[@class='list__title']"))) {
+                .findElements(By.xpath("//h3[@class=\'list__title\']"))) {
             names.add(row.getText());
         }
         return names;
-
     }
 
     public void gotoProjectTabInSearchPage() {

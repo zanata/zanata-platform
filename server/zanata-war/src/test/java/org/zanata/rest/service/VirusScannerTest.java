@@ -23,9 +23,7 @@ package org.zanata.rest.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
 import com.google.common.io.Files;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.BeforeClass;
@@ -33,22 +31,25 @@ import org.junit.Test;
 import org.zanata.exception.VirusDetectedException;
 
 /**
- * @author Sean Flanigan, <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan,
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 public class VirusScannerTest {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(VirusScannerTest.class);
+
     private VirusScanner virusScanner = new VirusScanner();
 
     @BeforeClass
     public static void checkScannerDisabled() {
-        Assume.assumeFalse("virusScanner is DISABLED", VirusScanner.isDisabled());
+        Assume.assumeFalse("virusScanner is DISABLED",
+                VirusScanner.isDisabled());
     }
 
     @Test
     public void virusScanSafeFile() throws IOException {
         String data =
-                "This is a simple test file, which doesn't contain a virus.\n";
+                "This is a simple test file, which doesn\'t contain a virus.\n";
         File file = File.createTempFile("data", ".tmp");
         try {
             Files.write(data, file, StandardCharsets.UTF_8);
@@ -77,8 +78,8 @@ public class VirusScannerTest {
         // See http://www.eicar.org/86-0-Intended-use.html
         // We use ROT13 so that virus scanners won't think this source file
         // is "infected" with EICAR.
-        String eicar =
-                rot13("K5B!C%@NC[4\\CMK54(C^)7PP)7}$RVPNE-FGNAQNEQ-NAGVIVEHF-GRFG-SVYR!$U+U*\n");
+        String eicar = rot13(
+                "K5B!C%@NC[4\\CMK54(C^)7PP)7}$RVPNE-FGNAQNEQ-NAGVIVEHF-GRFG-SVYR!$U+U*\n");
         return eicar;
     }
 
@@ -86,7 +87,9 @@ public class VirusScannerTest {
         if (VirusScanner.isScannerSet()) {
             Assert.fail(msg);
         } else {
-            Assume.assumeTrue("virusScanner option is not set and clamdscan not found", false);
+            Assume.assumeTrue(
+                    "virusScanner option is not set and clamdscan not found",
+                    false);
         }
     }
 

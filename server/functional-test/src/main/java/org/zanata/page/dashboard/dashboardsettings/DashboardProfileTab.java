@@ -20,19 +20,19 @@
  */
 package org.zanata.page.dashboard.dashboardsettings;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.dashboard.DashboardBasePage;
 
 /**
  * @author Damian Jansen
- * <a href="mailto:camunoz@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:camunoz@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class DashboardProfileTab extends DashboardBasePage {
-
-    private By accountNameField = By.id("profileForm:nameField:input:accountName");
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardProfileTab.class);
+    private By accountNameField =
+            By.id("profileForm:nameField:input:accountName");
     private By updateProfileButton = By.id("updateProfileButton");
 
     public DashboardProfileTab(WebDriver driver) {
@@ -42,8 +42,7 @@ public class DashboardProfileTab extends DashboardBasePage {
     public String getUsername() {
         log.info("Query user name");
         return readyElement(By.id("profileForm"))
-                .findElement(By.className("l--push-bottom-0"))
-                .getText();
+                .findElement(By.className("l--push-bottom-0")).getText();
     }
 
     public DashboardProfileTab enterName(String name) {

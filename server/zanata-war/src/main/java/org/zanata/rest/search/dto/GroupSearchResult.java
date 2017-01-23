@@ -20,8 +20,6 @@
  */
 package org.zanata.rest.search.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -33,14 +31,26 @@ import org.zanata.common.EntityStatus;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class GroupSearchResult extends SearchResult {
-
-    @Getter @Setter
     private String title;
-
-    @Getter @Setter
     private EntityStatus status;
 
     public GroupSearchResult() {
         this.setType(SearchResultType.Group);
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+    public EntityStatus getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(final EntityStatus status) {
+        this.status = status;
     }
 }

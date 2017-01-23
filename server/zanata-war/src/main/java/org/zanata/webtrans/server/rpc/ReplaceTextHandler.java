@@ -23,7 +23,6 @@ package org.zanata.webtrans.server.rpc;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
@@ -34,20 +33,20 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 import com.google.common.base.Strings;
-
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 @Named("webtrans.gwt.ReplaceTextHandler")
 @RequestScoped
 @ActionHandlerFor(ReplaceText.class)
-@Slf4j
-public class ReplaceTextHandler extends
-        AbstractActionHandler<ReplaceText, UpdateTransUnitResult> {
-    @Inject @Any
-    UpdateTransUnitHandler updateTransUnitHandler;
+public class ReplaceTextHandler
+        extends AbstractActionHandler<ReplaceText, UpdateTransUnitResult> {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ReplaceTextHandler.class);
 
+    @Inject
+    @Any
+    UpdateTransUnitHandler updateTransUnitHandler;
     @Inject
     SecurityService securityServiceImpl;
 
@@ -55,10 +54,8 @@ public class ReplaceTextHandler extends
     public UpdateTransUnitResult execute(ReplaceText action,
             ExecutionContext context) throws ActionException {
         securityServiceImpl.checkWorkspaceAction(action.getWorkspaceId(),
-            SecurityService.TranslationAction.MODIFY);
-
+                SecurityService.TranslationAction.MODIFY);
         replaceTextInUpdateRequests(action);
-
         return updateTransUnitHandler.execute(action, context);
     }
 
@@ -79,12 +76,9 @@ public class ReplaceTextHandler extends
                 || Strings.isNullOrEmpty(replaceText)) {
             throw new ActionException("search or replace text is empty");
         }
-
-        int flags =
-                action.isCaseSensitive() ? Pattern.UNICODE_CASE
-                        : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
+        int flags = action.isCaseSensitive() ? Pattern.UNICODE_CASE
+                : Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE;
         Pattern pattern = Pattern.compile(Pattern.quote(searchText), flags);
-
         for (TransUnitUpdateRequest request : action.getUpdateRequests()) {
             List<String> contents = request.getNewContents();
             log.debug("transUnit {} before replace [{}]",
@@ -92,9 +86,8 @@ public class ReplaceTextHandler extends
             for (int i = 0; i < contents.size(); i++) {
                 String content = contents.get(i);
                 Matcher matcher = pattern.matcher(content);
-                String newContent =
-                        matcher.replaceAll(Matcher
-                                .quoteReplacement(replaceText));
+                String newContent = matcher
+                        .replaceAll(Matcher.quoteReplacement(replaceText));
                 contents.set(i, newContent);
             }
             log.debug("transUnit {} after replace [{}]",

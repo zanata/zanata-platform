@@ -26,28 +26,20 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.List;
-
 import com.google.common.collect.Lists;
-import lombok.Getter;
 import org.zanata.util.BeanHolder;
 import org.zanata.util.ServiceLocator;
 
 /**
  * Represents a function that grants a permission.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class PermissionGranter {
-
     private final Method granterMethod;
-
-    @Getter
     private Collection<String> evaluatedActions;
-
-    @Getter
     private List<Class<?>> acceptedParameterTypes;
-
     private int actionParameterIndex = -1;
 
     public PermissionGranter(Method granterMethod) {
@@ -59,8 +51,8 @@ public class PermissionGranter {
      * Validates that the permission granter satisfies all preconditions.
      */
     public void validate() {
-        if (granterMethod.getReturnType() != Boolean.class &&
-                granterMethod.getReturnType() != boolean.class) {
+        if (granterMethod.getReturnType() != Boolean.class
+                && granterMethod.getReturnType() != boolean.class) {
             throw new RuntimeException("Permission method "
                     + granterMethod.getName() + " must return a Boolean type");
         }
@@ -72,7 +64,6 @@ public class PermissionGranter {
         evaluatedActions = Lists.newArrayList(grantAnn.actions());
         acceptedParameterTypes =
                 Lists.newArrayList(granterMethod.getParameterTypes());
-
         Annotation[][] granterParamAnns =
                 granterMethod.getParameterAnnotations();
         for (int i = 0; i < acceptedParameterTypes.size(); i++) {
@@ -101,14 +92,14 @@ public class PermissionGranter {
      * @return True if the granter should be invoked for the given set of
      *         targets.
      */
-    public boolean shouldInvokeGranter(Object ... targets) {
+    public boolean shouldInvokeGranter(Object... targets) {
         // Only invoke the granter if all its parameters can be provided
         int paramIdx = 0;
         for (Class<?> paramType : acceptedParameterTypes) {
             boolean foundParameter = false;
             if (paramIdx == actionParameterIndex && paramType == String.class) {
                 foundParameter = true; // Action parameter can always be
-                                       // injected
+                // injected
             } else {
                 for (Object t : targets) {
                     if (t != null && paramType.isAssignableFrom(t.getClass())) {
@@ -138,7 +129,7 @@ public class PermissionGranter {
      * @return True, if the permission to perform the action on the targets has
      *         been granted. False otherwise.
      */
-    public boolean invoke(String action, Object ... targets) {
+    public boolean invoke(String action, Object... targets) {
         Class componentClass = granterMethod.getDeclaringClass();
         Object[] granterParams = new Object[acceptedParameterTypes.size()];
         int paramIdx = 0;
@@ -152,10 +143,10 @@ public class PermissionGranter {
             }
             paramIdx++;
         }
-
         try (BeanHolder componentHolder =
                 ServiceLocator.instance().getDependent(componentClass)) {
-            return (Boolean) granterMethod.invoke(componentHolder.get(), granterParams);
+            return (Boolean) granterMethod.invoke(componentHolder.get(),
+                    granterParams);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         } catch (InvocationTargetException e) {
@@ -175,6 +166,16 @@ public class PermissionGranter {
 
     @Override
     public String toString() {
-        return "PermissionGranter("+granterMethod.getDeclaringClass().getSimpleName()+"."+granterMethod.getName()+")";
+        return "PermissionGranter("
+                + granterMethod.getDeclaringClass().getSimpleName() + "."
+                + granterMethod.getName() + ")";
+    }
+
+    public Collection<String> getEvaluatedActions() {
+        return this.evaluatedActions;
+    }
+
+    public List<Class<?>> getAcceptedParameterTypes() {
+        return this.acceptedParameterTypes;
     }
 }

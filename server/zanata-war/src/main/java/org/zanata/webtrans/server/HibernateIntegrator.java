@@ -10,26 +10,24 @@ import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
 import org.zanata.service.impl.SlugEntityUpdatedListener;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Hibernate SPI. Register event listener for entity lifecycle events.
  *
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class HibernateIntegrator implements Integrator {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(HibernateIntegrator.class);
+
     @Override
     public void integrate(Metadata metadata,
             SessionFactoryImplementor sessionFactory,
             SessionFactoryServiceRegistry serviceRegistry) {
         final EventListenerRegistry eventListenerRegistry =
                 serviceRegistry.getService(EventListenerRegistry.class);
-
         // at the time of executing this code, weld is not started yet
-        TranslationUpdateListenerLazyLoader
-                updateListenerLazyLoader =
+        TranslationUpdateListenerLazyLoader updateListenerLazyLoader =
                 new TranslationUpdateListenerLazyLoader();
         log.info("register event listener: {}", updateListenerLazyLoader);
         // We have to use POST_UPDATE not POST_UPDATE_COMMIT. Because we
@@ -39,12 +37,10 @@ public class HibernateIntegrator implements Integrator {
                 updateListenerLazyLoader);
         eventListenerRegistry.appendListeners(EventType.POST_INSERT,
                 updateListenerLazyLoader);
-
         SlugEntityUpdatedListener slugEntityUpdatedListener =
                 new SlugEntityUpdatedListener();
         eventListenerRegistry.appendListeners(EventType.POST_COMMIT_UPDATE,
                 slugEntityUpdatedListener);
-
     }
 
     @Override

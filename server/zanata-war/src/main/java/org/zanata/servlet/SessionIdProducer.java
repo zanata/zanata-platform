@@ -24,19 +24,18 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.servlet.http.HttpSession;
-
-import lombok.extern.slf4j.Slf4j;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.zanata.servlet.annotations.SessionId;
-
 import java.io.Serializable;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @RequestScoped
-@Slf4j
 public class SessionIdProducer implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SessionIdProducer.class);
 
     private String sessionId;
 

@@ -18,10 +18,8 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.feature.testharness;
 
-import lombok.extern.slf4j.Slf4j;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.joda.time.format.PeriodFormatter;
@@ -47,51 +45,46 @@ import org.zanata.util.ZanataRestCaller;
  * Global application of rules to Zanata functional tests
  *
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataTestCase.class);
 
-    public final static int MAX_SHORT_TEST_DURATION = 180000;
-    public final static int MAX_LONG_TEST_DURATION = 600000;
-
+    public static final int MAX_SHORT_TEST_DURATION = 180000;
+    public static final int MAX_LONG_TEST_DURATION = 600000;
     @ClassRule
     public static ExternalResource javascriptLogging = new ExternalResource() {
+
         @Override
         protected void before() throws Throwable {
             WebDriverFactory.INSTANCE.registerLogListener();
         }
+
         @Override
         protected void after() {
             WebDriverFactory.INSTANCE.unregisterLogListener();
             // uncomment this if you need a fresh browser between test runs
-//            WebDriverFactory.INSTANCE.killWebDriver();
+            // WebDriverFactory.INSTANCE.killWebDriver();
         }
     };
-
     @Rule
     public final TestName testName = new TestName();
-
     @Rule
     public RuleChain theOneRule = RuleChain
             .outerRule(new AllowAnonymousAccessRule())
-            .around(new EnsureLogoutRule())
-            .around(new SampleProjectRule());
-
+            .around(new EnsureLogoutRule()).around(new SampleProjectRule());
     /*
-     * rhbz1096552 - disable test timeout for now
-     * see https://bugzilla.redhat.com/show_bug.cgi?id=1096552
-     * @Rule
-     * public Timeout timeout = new Timeout(MAX_TEST_DURATION);
+     * rhbz1096552 - disable test timeout for now see
+     * https://bugzilla.redhat.com/show_bug.cgi?id=1096552
+     *
+     * @Rule public Timeout timeout = new Timeout(MAX_TEST_DURATION);
      */
-
     public DateTime testFunctionStart;
-
     private ZanataRestCaller zanataRestCaller = new ZanataRestCaller();
 
     private String getTestDescription() {
-        return this.getClass().getCanonicalName()
-                .concat(".")
+        return this.getClass().getCanonicalName().concat(".")
                 .concat(testName.getMethodName());
     }
 
@@ -100,27 +93,23 @@ public class ZanataTestCase {
         log.info("Test starting: {}", getTestDescription());
         testFunctionStart = new DateTime();
         WebDriverFactory.INSTANCE.testEntry();
-        zanataRestCaller.signalBeforeTest(getClass().getName(), testName.getMethodName());
+        zanataRestCaller.signalBeforeTest(getClass().getName(),
+                testName.getMethodName());
     }
 
     @After
     public final void testExit() {
         WebDriverFactory.INSTANCE.logLogs();
-        zanataRestCaller.signalAfterTest(getClass().getName(), testName.getMethodName());
+        zanataRestCaller.signalAfterTest(getClass().getName(),
+                testName.getMethodName());
         Duration duration = new Duration(testFunctionStart, new DateTime());
         PeriodFormatter periodFormatter = new PeriodFormatterBuilder()
-                .appendLiteral("Test finished: "
-                        .concat(getTestDescription()).concat(": in "))
-                .printZeroAlways()
-                .appendMinutes()
-                .appendSuffix(" minutes, ")
-                .appendSeconds()
-                .appendSuffix(" seconds, ")
-                .appendMillis()
-                .appendSuffix("ms")
-                .toFormatter();
+                .appendLiteral("Test finished: ".concat(getTestDescription())
+                        .concat(": in "))
+                .printZeroAlways().appendMinutes().appendSuffix(" minutes, ")
+                .appendSeconds().appendSuffix(" seconds, ").appendMillis()
+                .appendSuffix("ms").toFormatter();
         log.info(periodFormatter.print(duration.toPeriod()));
         WebDriverFactory.INSTANCE.testExit();
     }
-
 }

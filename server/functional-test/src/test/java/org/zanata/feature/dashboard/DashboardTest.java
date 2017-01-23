@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.dashboard;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -37,18 +36,17 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.util.HasEmailRule;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.ZanataRestCaller.buildSourceResource;
 import static org.zanata.util.ZanataRestCaller.buildTextFlow;
 
 @Category(DetailedTest.class)
-@Slf4j
 public class DashboardTest extends ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardTest.class);
 
     @Rule
     public final HasEmailRule emailRule = new HasEmailRule();
-
     private DashboardBasePage dashboard;
 
     @Before
@@ -73,12 +71,12 @@ public class DashboardTest extends ZanataTestCase {
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Category(BasicAcceptanceTest.class)
     public void dashboardBasicTests() throws Exception {
-        assertThat(dashboardPresentAfterLogin())
-                .as("Dashboard is present").isTrue();
+        assertThat(dashboardPresentAfterLogin()).as("Dashboard is present")
+                .isTrue();
         assertThat(activityListExpands())
                 .as("Activity list is present and expandable").isTrue();
-        assertThat(projectListIsNotEmpty())
-                .as("Project List is not empty").isTrue();
+        assertThat(projectListIsNotEmpty()).as("Project List is not empty")
+                .isTrue();
     }
 
     private boolean dashboardPresentAfterLogin() throws Exception {
@@ -101,8 +99,7 @@ public class DashboardTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void accountEmailModification() throws Exception {
-        dashboard.goToSettingsTab()
-                .gotoSettingsAccountTab()
+        dashboard.goToSettingsTab().gotoSettingsAccountTab()
                 .typeNewAccountEmailAddress("new@fakeemail.com")
                 .clickUpdateEmailButton();
         assertThat(dashboard.expectNotification(DashboardBasePage.EMAIL_SENT));
@@ -112,22 +109,20 @@ public class DashboardTest extends ZanataTestCase {
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86823)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void passwordChange() throws Exception {
-        dashboard.goToSettingsTab()
-                .gotoSettingsAccountTab()
-                .typeOldPassword("admin")
-                .typeNewPassword("admin2")
+        dashboard.goToSettingsTab().gotoSettingsAccountTab()
+                .typeOldPassword("admin").typeNewPassword("admin2")
                 .clickUpdatePasswordButton();
-        assertThat(dashboard.expectNotification(
-                DashboardBasePage.PASSWORD_UPDATE_SUCCESS));
+        assertThat(dashboard
+                .expectNotification(DashboardBasePage.PASSWORD_UPDATE_SUCCESS));
     }
 
-    @Feature(summary = "The user can begin creating a project from the Dashboard",
+    @Feature(
+            summary = "The user can begin creating a project from the Dashboard",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createProject() throws Exception {
         CreateProjectPage createProjectPage =
-            dashboard.gotoProjectsTab().clickOnCreateProjectLink();
-        assertThat(createProjectPage.getTitle())
-                .contains("New Project");
+                dashboard.gotoProjectsTab().clickOnCreateProjectLink();
+        assertThat(createProjectPage.getTitle()).contains("New Project");
     }
 }

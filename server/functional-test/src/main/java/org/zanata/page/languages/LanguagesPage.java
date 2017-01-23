@@ -20,8 +20,6 @@
  */
 package org.zanata.page.languages;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,19 +30,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class LanguagesPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(LanguagesPage.class);
     private By addLanguageButton = By.id("btn-language-add-new");
     private By defaultLabel = By.className("label-default");
 
     public LanguagesPage(WebDriver driver) {
         super(driver);
     }
-
     // return list of tr
+
     private WebElement findRowByLocale(final String localeId) {
         for (WebElement row : getRows()) {
             if (getShortLocale(row).equals(localeId)) {
@@ -62,13 +61,13 @@ public class LanguagesPage extends BasePage {
     private List<WebElement> getRows() {
         return readyElement(existingElement(By.id("languages-form")),
                 By.id("languages-table"))
-                .findElements(By.name("language-entry"));
+                        .findElements(By.name("language-entry"));
     }
 
     public List<String> getLanguageLocales() {
         log.info("Query list of languages");
         return getRows().stream().map(this::getShortLocale)
-            .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     public AddLanguagePage clickAddNewLanguage() {
@@ -79,14 +78,13 @@ public class LanguagesPage extends BasePage {
 
     public LanguagePage gotoLanguagePage(String localeId) {
         log.info("Click language {}", localeId);
-        WebElement element = findRowByLocale(localeId).findElement(
-            By.id("language-name-" + localeId));
+        WebElement element = findRowByLocale(localeId)
+                .findElement(By.id("language-name-" + localeId));
         if (element != null) {
             element.click();
             return new LanguagePage(getDriver());
         }
         throw new RuntimeException("Did not find locale " + localeId);
-
     }
 
     public boolean languageIsEnabledByDefault(String localeId) {

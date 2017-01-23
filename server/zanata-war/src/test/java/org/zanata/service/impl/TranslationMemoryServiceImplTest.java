@@ -1,9 +1,6 @@
 package org.zanata.service.impl;
 
 import com.google.common.collect.Lists;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
 import org.assertj.core.api.Condition;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -44,7 +41,6 @@ import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
-
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -52,49 +48,45 @@ import javax.persistence.EntityManagerFactory;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.test.rule.FunctionalTestRule.reentrant;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  * @see {@link TranslationFinderTest}
  */
 @RunWith(Enclosed.class)
 public class TranslationMemoryServiceImplTest {
 
     @RunWith(CdiUnitRunner.class)
-    @AdditionalClasses({
-            IndexingServiceImpl.class
-    })
+    @AdditionalClasses({ IndexingServiceImpl.class })
     public static class TranslationMemoryServiceNonParameterizedTest {
 
         @ClassRule
         @Rule
         public static JpaRule jpaRule = new JpaRule();
-
         private HLocale sourceLocale;
         private HLocale targetLocale;
-
         @Inject
         TranslationMemoryServiceImpl service;
-
         @Inject
         TextFlowDAO textFlowDAO;
-
         @Inject
         LocaleDAO localeDAO;
-
-        @Produces @Mock
+        @Produces
+        @Mock
         private UrlUtil urlUtil;
 
-        @Produces @Zanata
+        @Produces
+        @Zanata
         EntityManagerFactory getEntityManagerFactory() {
             return jpaRule.getEntityManagerFactory();
         }
 
-        @Produces @FullText
+        @Produces
+        @FullText
         FullTextEntityManager getFullTextEntityManager() {
             return Search.getFullTextEntityManager(jpaRule.getEntityManager());
         }
@@ -122,9 +114,7 @@ public class TranslationMemoryServiceImplTest {
                                     DatabaseOperation.CLEAN_INSERT),
                             new DataSetOperation(
                                     "org/zanata/test/model/TranslationMemoryData.dbunit.xml",
-                                    DatabaseOperation.CLEAN_INSERT)
-                    );
-
+                                    DatabaseOperation.CLEAN_INSERT));
             sourceLocale = localeDAO.findByLocaleId(LocaleId.EN_US);
             targetLocale = localeDAO.findByLocaleId(LocaleId.DE);
         }
@@ -140,15 +130,13 @@ public class TranslationMemoryServiceImplTest {
             hTextFlow.getTargets().put(sourceLocale.getId(),
                     addHTextFlowTarget(sourceLocale, hTextFlow, "admin"));
             setProjectAndIterationSlug(hTextFlow, "project", "master");
-
             TransMemoryDetails detail =
                     service.getTransMemoryDetail(sourceLocale, hTextFlow);
-
             assertThat(detail.getMsgContext()).isEqualTo("msgContext");
             assertThat(detail.getProjectName()).isEqualTo("project");
             assertThat(detail.getIterationName()).isEqualTo("master");
-            assertThat(detail.getDocId()).isEqualTo(
-                    hTextFlow.getDocument().getDocId());
+            assertThat(detail.getDocId())
+                    .isEqualTo(hTextFlow.getDocument().getDocId());
             assertThat(detail.getLastModifiedBy()).isEqualTo("admin");
         }
 
@@ -156,16 +144,12 @@ public class TranslationMemoryServiceImplTest {
         @InRequestScope
         public void basicNonPluralTMSearchTest() {
             final String searchString = "file";
-            TransMemoryQuery tmQuery =
-                    new TransMemoryQuery(searchString,
-                            HasSearchType.SearchType.FUZZY);
-
+            TransMemoryQuery tmQuery = new TransMemoryQuery(searchString,
+                    HasSearchType.SearchType.FUZZY);
             List<TransMemoryResultItem> results =
                     service.searchTransMemory(targetLocale.getLocaleId(),
                             sourceLocale.getLocaleId(), tmQuery);
-
             assertThat(results).hasSize(3);
-
             checkSourceContainQuery(results, searchString);
         }
 
@@ -174,17 +158,13 @@ public class TranslationMemoryServiceImplTest {
         public void basicPluralTMSearchTest() {
             String query1 = "One file removed_";
             String query2 = "%d";
-
             TransMemoryQuery tmQuery =
                     new TransMemoryQuery(Lists.newArrayList(query1, query2),
                             HasSearchType.SearchType.FUZZY_PLURAL);
-
             List<TransMemoryResultItem> results =
                     service.searchTransMemory(targetLocale.getLocaleId(),
                             sourceLocale.getLocaleId(), tmQuery);
-
             assertThat(results).hasSize(3);
-
             checkSourceContainQuery(results, query1);
             checkSourceContainQuery(results, query2);
         }
@@ -196,7 +176,6 @@ public class TranslationMemoryServiceImplTest {
             // best matches has 83.33% similarity
             HTextFlow textFlow = textFlowDAO.findById(105L, false);
             assert textFlow != null;
-
             executeFindBestTMMatch(textFlow, 70, true);
             executeFindBestTMMatch(textFlow, 80, true);
             executeFindBestTMMatch(textFlow, 90, false);
@@ -209,7 +188,6 @@ public class TranslationMemoryServiceImplTest {
             // best matches has 100% similarity
             HTextFlow textFlow = textFlowDAO.findById(101L, false);
             assert textFlow != null;
-
             executeFindBestTMMatch(textFlow, 80, true);
             executeFindBestTMMatch(textFlow, 90, true);
             executeFindBestTMMatch(textFlow, 100, true);
@@ -219,61 +197,55 @@ public class TranslationMemoryServiceImplTest {
                 boolean hasMatch) {
             Optional<TransMemoryResultItem> match =
                     service.searchBestMatchTransMemory(textFlow,
-                            targetLocale.getLocaleId(), sourceLocale.getLocaleId(),
-                            false, false, false, threshold);
+                            targetLocale.getLocaleId(),
+                            sourceLocale.getLocaleId(), false, false, false,
+                            threshold);
             assertThat(match.isPresent()).isEqualTo(hasMatch);
         }
-
         // to check if any of the sourceContents contain searchString
-        private void checkSourceContainQuery(List<TransMemoryResultItem> results,
+
+        private void checkSourceContainQuery(
+                List<TransMemoryResultItem> results,
                 final String searchString) {
-            assertThat(results)
-                    .extracting("sourceContents")
-                    .has(new Condition<>(
-                            contentsList -> {
-                                for (Object contents : contentsList) {
-                                    for (String content : (List<String>) contents) {
-                                        if (content.contains(searchString)) {
-                                            return true;
-                                        }
-                                    }
+            assertThat(results).extracting("sourceContents")
+                    .has(new Condition<>(contentsList -> {
+                        for (Object contents : contentsList) {
+                            for (String content : (List<String>) contents) {
+                                if (content.contains(searchString)) {
+                                    return true;
                                 }
-                                return false;
-                            }, "contains \""+searchString+"\""));
+                            }
+                        }
+                        return false;
+                    }, "contains \"" + searchString + "\""));
         }
     }
 
     @RunWith(Parameterized.class)
     @Parameterized.UseParametersRunnerFactory(CdiUnitRunnerWithParameters.Factory.class)
-    @AdditionalClasses({
-            IndexingServiceImpl.class,
-            ParamTestCdiExtension.class
-    })
+    @AdditionalClasses({ IndexingServiceImpl.class,
+            ParamTestCdiExtension.class })
     public static class TranslationMemoryServiceImplParameterizedTest {
 
         @ClassRule
         @Rule
         public static JpaRule jpaRule = reentrant(new JpaRule());
-
         @Parameterized.Parameter(0)
         TransMemoryExecution exec;
-
         private HLocale sourceLocale;
         private HLocale targetLocale;
-
         @Inject
         TranslationMemoryServiceImpl service;
-
         @Inject
         TextFlowDAO textFlowDAO;
-
         @Inject
         LocaleDAO localeDAO;
-
-        @Produces @Mock
+        @Produces
+        @Mock
         private UrlUtil urlUtil;
 
-        @Produces @Zanata
+        @Produces
+        @Zanata
         EntityManagerFactory getEntityManagerFactory() {
             return jpaRule.getEntityManagerFactory();
         }
@@ -288,7 +260,8 @@ public class TranslationMemoryServiceImplTest {
             return jpaRule.getSession();
         }
 
-        @Produces @FullText
+        @Produces
+        @FullText
         FullTextEntityManager getFullTextEntityManager() {
             return Search.getFullTextEntityManager(jpaRule.getEntityManager());
         }
@@ -306,9 +279,7 @@ public class TranslationMemoryServiceImplTest {
                                     DatabaseOperation.CLEAN_INSERT),
                             new DataSetOperation(
                                     "org/zanata/test/model/TranslationMemoryData.dbunit.xml",
-                                    DatabaseOperation.CLEAN_INSERT)
-                    );
-
+                                    DatabaseOperation.CLEAN_INSERT));
             sourceLocale = localeDAO.findByLocaleId(LocaleId.EN_US);
             targetLocale = localeDAO.findByLocaleId(LocaleId.DE);
         }
@@ -319,7 +290,6 @@ public class TranslationMemoryServiceImplTest {
             List<TransMemoryResultItem> results =
                     service.searchTransMemory(targetLocale.getLocaleId(),
                             sourceLocale.getLocaleId(), exec.getQuery());
-
             assertThat(results).hasSize(exec.getResultSize());
         }
 
@@ -330,62 +300,78 @@ public class TranslationMemoryServiceImplTest {
             String validProjectSlug = "same-project";
             String validDocId = "/same/document0";
             String validResId = "bbb5da9ad2bd9d24df29caead537b840";
-
             List<TransMemoryExecution> executions = Lists.newArrayList();
-
-            executions.add(createExecution(validQuery, new Boolean[] { true, true,
-                            true },
-                    new String[] { validProjectSlug, validDocId, validResId }, 1));
-
-            executions.add(createExecution(validQuery, new Boolean[] { true, true,
-                    false }, new String[] { validProjectSlug, validDocId,
-                    validResId }, 2));
-
-            executions.add(createExecution(validQuery, new Boolean[] { false,
-                    false, false }, new String[] { validProjectSlug, validDocId,
-                    validResId }, 3));
-
-            executions.add(createExecution(validQuery, new Boolean[] { true, false,
-                    false }, new String[] { validProjectSlug, validDocId,
-                    validResId }, 3));
-
-            executions.add(createExecution(validQuery, new Boolean[] { true, false,
-                            true },
-                    new String[] { validProjectSlug, validDocId, validResId }, 1));
-
-            executions.add(createExecution(validQuery, new Boolean[] { false, true,
-                            true },
-                    new String[] { validProjectSlug, validDocId, validResId }, 1));
-
-            executions.add(createExecution(validQuery, new Boolean[] { false,
-                    false, true }, new String[] { validProjectSlug, validDocId,
-                    validResId }, 1));
-
-            executions.add(createExecution(validQuery, new Boolean[] { false, true,
-                    false }, new String[] { validProjectSlug, validDocId,
-                    validResId }, 2));
-
+            executions.add(createExecution(validQuery,
+                    new Boolean[] { true, true, true },
+                    new String[] { validProjectSlug, validDocId, validResId },
+                    1));
+            executions.add(createExecution(validQuery,
+                    new Boolean[] { true, true, false },
+                    new String[] { validProjectSlug, validDocId, validResId },
+                    2));
+            executions.add(createExecution(validQuery,
+                    new Boolean[] { false, false, false },
+                    new String[] { validProjectSlug, validDocId, validResId },
+                    3));
+            executions.add(createExecution(validQuery,
+                    new Boolean[] { true, false, false },
+                    new String[] { validProjectSlug, validDocId, validResId },
+                    3));
+            executions.add(createExecution(validQuery,
+                    new Boolean[] { true, false, true },
+                    new String[] { validProjectSlug, validDocId, validResId },
+                    1));
+            executions.add(createExecution(validQuery,
+                    new Boolean[] { false, true, true },
+                    new String[] { validProjectSlug, validDocId, validResId },
+                    1));
+            executions.add(createExecution(validQuery,
+                    new Boolean[] { false, false, true },
+                    new String[] { validProjectSlug, validDocId, validResId },
+                    1));
+            executions.add(createExecution(validQuery,
+                    new Boolean[] { false, true, false },
+                    new String[] { validProjectSlug, validDocId, validResId },
+                    2));
             return executions;
         }
-
     }
 
     private static TransMemoryExecution createExecution(String query,
             Boolean[] checks, String[] values, int expectedSize) {
-
-        return new TransMemoryExecution(new TransMemoryQuery(query,
-                HasSearchType.SearchType.FUZZY, getCondition(checks[0],
-                        values[0]), getCondition(checks[1], values[1]),
-                getCondition(checks[2], values[2])), expectedSize);
+        return new TransMemoryExecution(
+                new TransMemoryQuery(query, HasSearchType.SearchType.FUZZY,
+                        getCondition(checks[0], values[0]),
+                        getCondition(checks[1], values[1]),
+                        getCondition(checks[2], values[2])),
+                expectedSize);
     }
 
-    @Getter
-    @AllArgsConstructor
-    @ToString
     private static class TransMemoryExecution {
-
         private TransMemoryQuery query;
         private int resultSize;
+
+        public TransMemoryQuery getQuery() {
+            return this.query;
+        }
+
+        public int getResultSize() {
+            return this.resultSize;
+        }
+
+        @java.beans.ConstructorProperties({ "query", "resultSize" })
+        public TransMemoryExecution(final TransMemoryQuery query,
+                final int resultSize) {
+            this.query = query;
+            this.resultSize = resultSize;
+        }
+
+        @Override
+        public String toString() {
+            return "TranslationMemoryServiceImplTest.TransMemoryExecution(query="
+                    + this.getQuery() + ", resultSize=" + this.getResultSize()
+                    + ")";
+        }
     }
 
     private static TransMemoryQuery.Condition getCondition(boolean isCheck,
@@ -415,5 +401,4 @@ public class TranslationMemoryServiceImplTest {
         projectIteration.setProject(project);
         hTextFlow.getDocument().setProjectIteration(projectIteration);
     }
-
 }

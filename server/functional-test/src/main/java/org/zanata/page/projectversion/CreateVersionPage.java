@@ -21,29 +21,27 @@
 package org.zanata.page.projectversion;
 
 import com.google.common.base.Function;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Slf4j
 public class CreateVersionPage extends BasePage {
-
-    public final static String VALIDATION_ERROR =
-            "must start and end with letter or number, and contain only " +
-                    "letters, numbers, periods, underscores and hyphens.";
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(CreateVersionPage.class);
+    public static final String VALIDATION_ERROR =
+            "must start and end with letter or number, and contain only letters, numbers, periods, underscores and hyphens.";
     public By projectVersionID = By.id("create-version-form:slug:input:slug");
     private By projectTypeSelection = By.id("create-version-form:project-type");
     private By saveButton = By.id("create-version-form:button-create");
-    private By copyFromPreviousVersionChk = By.id("create-version-form:copy-from-version");
-
-    private By projectTypesList = By.id("create-version-form:project-type-list");
-    private By previousVersionsList = By.id("create-version-form:project-version");
+    private By copyFromPreviousVersionChk =
+            By.id("create-version-form:copy-from-version");
+    private By projectTypesList =
+            By.id("create-version-form:project-type-list");
+    private By previousVersionsList =
+            By.id("create-version-form:project-version");
 
     public CreateVersionPage(final WebDriver driver) {
         super(driver);
@@ -62,17 +60,14 @@ public class CreateVersionPage extends BasePage {
     }
 
     private boolean isCopyFromVersionAvailable() {
-        return getDriver()
-                .findElements(copyFromPreviousVersionChk)
-                .size() > 0;
+        return getDriver().findElements(copyFromPreviousVersionChk).size() > 0;
     }
 
     private void clickCopyFromCheckbox() {
-        ((JavascriptExecutor) getDriver())
-                .executeScript("arguments[0].click();",
+        ((JavascriptExecutor) getDriver()).executeScript(
+                "arguments[0].click();",
                 readyElement(copyFromPreviousVersionChk)
                         .findElement(By.tagName("span")));
-
     }
 
     public CreateVersionPage enableCopyFromVersion() {
@@ -151,5 +146,4 @@ public class CreateVersionPage extends BasePage {
         assertThat(getErrors()).hasSize(numberOfErrors);
         return new CreateVersionPage(getDriver());
     }
-
 }

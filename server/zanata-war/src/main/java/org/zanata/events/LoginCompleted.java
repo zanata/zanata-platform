@@ -20,16 +20,55 @@
  */
 package org.zanata.events;
 
-import lombok.Value;
 import org.zanata.security.AuthenticationType;
 
 /**
- * Event used to signal a successful login using the authentication manager.
- * It is a complement to the events in Seam's Identity class.
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * Event used to signal a successful login using the authentication manager. It
+ * is a complement to the events in Seam's Identity class.
+ *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Value
-public class LoginCompleted {
-    AuthenticationType authType;
-//    String username;
+public final class LoginCompleted {
+    private final AuthenticationType authType;
+
+    @java.beans.ConstructorProperties({ "authType" })
+    public LoginCompleted(final AuthenticationType authType) {
+        this.authType = authType;
+    }
+
+    public AuthenticationType getAuthType() {
+        return this.authType;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof LoginCompleted))
+            return false;
+        final LoginCompleted other = (LoginCompleted) o;
+        final Object this$authType = this.getAuthType();
+        final Object other$authType = other.getAuthType();
+        if (this$authType == null ? other$authType != null
+                : !this$authType.equals(other$authType))
+            return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $authType = this.getAuthType();
+        result = result * PRIME
+                + ($authType == null ? 43 : $authType.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "LoginCompleted(authType=" + this.getAuthType() + ")";
+    }
+    // String username;
 }

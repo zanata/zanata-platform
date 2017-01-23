@@ -26,9 +26,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
 import javax.mail.internet.MimeMultipart;
-
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -37,16 +35,17 @@ import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 import com.google.common.base.Throwables;
 import com.google.common.util.concurrent.Uninterruptibles;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class HasEmailRule extends ExternalResource {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(HasEmailRule.class);
+
     private static final Object wiserLock = new Object();
-    private volatile static Wiser wiser;
+    private static volatile Wiser wiser;
 
     @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Override
@@ -57,17 +56,19 @@ public class HasEmailRule extends ExternalResource {
                 String port = PropertiesHolder.getProperty("smtp.port");
                 int portNum = Integer.parseInt(port);
                 Wiser w = new Wiser(portNum);
-                w.getServer().setBindAddress(InetAddress.getByName("127.0.0.1"));
+                w.getServer()
+                        .setBindAddress(InetAddress.getByName("127.0.0.1"));
                 try {
                     w.start();
                 } catch (RuntimeException e) {
                     if (Throwables.getRootCause(e) instanceof BindException) {
                         String processInfo =
                                 ProcessPortInfo.getPortProcessInfo(portNum);
-                        log.error("The following process is already listening " +
-                                "to port {}:\n{}", portNum, processInfo);
-                        throw new RuntimeException("Error binding port " +
-                                portNum + ". See log for more info.", e);
+                        log.error(
+                                "The following process is already listening to port {}:\n{}",
+                                portNum, processInfo);
+                        throw new RuntimeException("Error binding port "
+                                + portNum + ". See log for more info.", e);
                     }
                 }
                 HasEmailRule.wiser = w;
@@ -110,17 +111,16 @@ public class HasEmailRule extends ExternalResource {
             final long timeoutDuration, final TimeUnit timeoutUnit) {
         log.info("waiting for email count to be {}", expectedEmailNum);
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-
         // poll every half second
         final int sleepFor = 500;
         final TimeUnit sleepUnit = TimeUnit.MILLISECONDS;
         final long sleepTime = sleepUnit.convert(sleepFor, sleepUnit);
-        final long timeoutTime = sleepUnit.convert(timeoutDuration, timeoutUnit);
+        final long timeoutTime =
+                sleepUnit.convert(timeoutDuration, timeoutUnit);
         Runnable runnable = () -> {
             long slept = 0;
             while (wiser.getMessages().size() < expectedEmailNum
                     && slept < timeoutTime) {
-
                 log.info("Number of arrived emails: {}",
                         wiser.getMessages().size());
                 Uninterruptibles.sleepUninterruptibly(sleepFor, sleepUnit);

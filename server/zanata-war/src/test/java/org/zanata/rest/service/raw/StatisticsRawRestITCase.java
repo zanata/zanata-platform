@@ -22,11 +22,9 @@ package org.zanata.rest.service.raw;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-
 import java.util.Arrays;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
-
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.ClientRequest;
@@ -37,20 +35,20 @@ import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
-
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class StatisticsRawRestITCase extends RestTest {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(StatisticsRawRestITCase.class);
+
     @Override
     protected void prepareDBUnitOperations() {
         addBeforeTestOperation(new DataSetOperation(
@@ -71,7 +69,6 @@ public class StatisticsRawRestITCase extends RestTest {
         addBeforeTestOperation(new DBUnitProvider.DataSetOperation(
                 "org/zanata/test/model/ApplicationConfigurationData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
-
         addAfterTestOperation(new DataSetOperation(
                 "org/zanata/test/model/ClearAllTables.dbunit.xml",
                 DatabaseOperation.DELETE_ALL));
@@ -80,9 +77,16 @@ public class StatisticsRawRestITCase extends RestTest {
     @Test
     @RunAsClient
     public void getIterationStatisticsXml() throws Exception {
+        // Ok
+        // No
+        // detailed
+        // stats
+        // No word level stats
+        // make sure counts are sane
         new ResourceRequest(
                 getRestEndpointUrl("/stats/proj/sample-project/iter/1.0"),
                 "GET") {
+
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
@@ -90,41 +94,38 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                assertThat(response.getStatus(), is(200));
                 assertJaxbUnmarshal(response,
                         ContainerTranslationStatistics.class);
-
-                ContainerTranslationStatistics stats =
-                        jaxbUnmarshal(response,
-                                ContainerTranslationStatistics.class);
+                ContainerTranslationStatistics stats = jaxbUnmarshal(response,
+                        ContainerTranslationStatistics.class);
                 assertThat(stats.getId(), is("1.0"));
                 assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getDetailedStats(), nullValue()); // No
-                                                                   // detailed
-                                                                   // stats
+                assertThat(stats.getDetailedStats(), nullValue());
                 assertThat(stats.getStats().size(), greaterThan(0));
-
-                // No word level stats
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(transStat.getUnit(),
                             is(TranslationStatistics.StatUnit.MESSAGE));
-                    // make sure counts are sane
                     assertThat(
                             transStat.getUntranslated() + transStat.getDraft()
                                     + transStat.getTranslatedAndApproved(),
                             equalTo(transStat.getTotal()));
                 }
             }
-
         }.run();
     }
 
     @Test
     @RunAsClient
     public void getIterationStatisticsXmlWithDetails() throws Exception {
+        // Ok
+        // make sure counts are sane
+        // Results returned only for specified locales
+        // make sure counts are sane
         new ResourceRequest(
                 getRestEndpointUrl("/stats/proj/sample-project/iter/1.0"),
                 "GET") {
+
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
@@ -136,47 +137,48 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                assertThat(response.getStatus(), is(200));
                 assertJaxbUnmarshal(response,
                         ContainerTranslationStatistics.class);
-
-                ContainerTranslationStatistics stats =
-                        jaxbUnmarshal(response,
-                                ContainerTranslationStatistics.class);
+                ContainerTranslationStatistics stats = jaxbUnmarshal(response,
+                        ContainerTranslationStatistics.class);
                 assertThat(stats.getId(), is("1.0"));
                 assertThat(stats.getRefs().size(), greaterThan(0));
                 assertThat(stats.getDetailedStats().size(), greaterThan(0));
                 assertThat(stats.getStats().size(), greaterThan(0));
-
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    // make sure counts are sane
-                    assertThat(transStat.getDraft() + transStat.getApproved()
-                            + transStat.getUntranslated(),
+                    assertThat(
+                            transStat.getDraft() + transStat.getApproved()
+                                    + transStat.getUntranslated(),
                             equalTo(transStat.getTotal()));
                 }
-
-                // Results returned only for specified locales
                 String[] expectedLocales = new String[] { "en-US", "as", "es" };
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(Arrays.asList(expectedLocales),
                             hasItem(transStat.getLocale()));
-                    // make sure counts are sane
                     assertThat(
                             transStat.getUntranslated() + transStat.getDraft()
                                     + transStat.getTranslatedAndApproved(),
                             equalTo(transStat.getTotal()));
                 }
             }
-
         }.run();
     }
 
     @Test
     @RunAsClient
     public void getDocumentStatisticsXml() throws Exception {
+        // Ok
+        // No
+        // detailed
+        // stats
+        // No word level stats
+        // make sure counts are sane
         new ResourceRequest(
-                getRestEndpointUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"),
+                getRestEndpointUrl(
+                        "/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"),
                 "GET") {
+
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
@@ -184,41 +186,41 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                assertThat(response.getStatus(), is(200));
                 assertJaxbUnmarshal(response,
                         ContainerTranslationStatistics.class);
-
-                ContainerTranslationStatistics stats =
-                        jaxbUnmarshal(response,
-                                ContainerTranslationStatistics.class);
+                ContainerTranslationStatistics stats = jaxbUnmarshal(response,
+                        ContainerTranslationStatistics.class);
                 assertThat(stats.getId(), is("my/path/document.txt"));
                 assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getDetailedStats(), nullValue()); // No
-                                                                   // detailed
-                                                                   // stats
+                assertThat(stats.getDetailedStats(), nullValue());
                 assertThat(stats.getStats().size(), greaterThan(0));
-
-                // No word level stats
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(transStat.getUnit(),
                             is(TranslationStatistics.StatUnit.MESSAGE));
-                    // make sure counts are sane
                     assertThat(
                             transStat.getUntranslated() + transStat.getDraft()
                                     + transStat.getTranslatedAndApproved(),
                             equalTo(transStat.getTotal()));
                 }
             }
-
         }.run();
     }
 
     @Test
     @RunAsClient
     public void getDocumentStatisticsXmlWithDetails() throws Exception {
+        // Ok
+        // assertThat(stats.getDetailedStats().size(), greaterThan(0));
+        // // No detailed stats (maybe later)
+        // make sure counts are sane
+        // Results returned only for specified locales
+        // make sure counts are sane
         new ResourceRequest(
-                getRestEndpointUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"),
+                getRestEndpointUrl(
+                        "/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"),
                 "GET") {
+
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML);
@@ -230,48 +232,46 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                assertThat(response.getStatus(), is(200));
                 assertJaxbUnmarshal(response,
                         ContainerTranslationStatistics.class);
-
-                ContainerTranslationStatistics stats =
-                        jaxbUnmarshal(response,
-                                ContainerTranslationStatistics.class);
+                ContainerTranslationStatistics stats = jaxbUnmarshal(response,
+                        ContainerTranslationStatistics.class);
                 assertThat(stats.getId(), is("my/path/document.txt"));
                 assertThat(stats.getRefs().size(), greaterThan(0));
-                // assertThat(stats.getDetailedStats().size(), greaterThan(0));
-                // // No detailed stats (maybe later)
                 assertThat(stats.getStats().size(), greaterThan(0));
-
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    // make sure counts are sane
                     assertThat(
                             transStat.getUntranslated() + transStat.getDraft()
                                     + transStat.getTranslatedAndApproved(),
                             equalTo(transStat.getTotal()));
                 }
-
-                // Results returned only for specified locales
                 String[] expectedLocales = new String[] { "en-US", "as", "es" };
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(Arrays.asList(expectedLocales),
                             hasItem(transStat.getLocale()));
-                    // make sure counts are sane
-                    assertThat(transStat.getDraft() + transStat.getApproved()
-                            + transStat.getUntranslated(),
+                    assertThat(
+                            transStat.getDraft() + transStat.getApproved()
+                                    + transStat.getUntranslated(),
                             equalTo(transStat.getTotal()));
                 }
             }
-
         }.run();
     }
 
     @Test
     @RunAsClient
     public void getIterationStatisticsJson() throws Exception {
+        // Ok
+        // No
+        // detailed
+        // stats
+        // No word level stats
+        // make sure counts are sane
         new ResourceRequest(
                 getRestEndpointUrl("/stats/proj/sample-project/iter/1.0"),
                 "GET") {
+
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
@@ -279,41 +279,38 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                assertThat(response.getStatus(), is(200));
                 assertJsonUnmarshal(response,
                         ContainerTranslationStatistics.class);
-
-                ContainerTranslationStatistics stats =
-                        jsonUnmarshal(response,
-                                ContainerTranslationStatistics.class);
+                ContainerTranslationStatistics stats = jsonUnmarshal(response,
+                        ContainerTranslationStatistics.class);
                 assertThat(stats.getId(), is("1.0"));
                 assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getDetailedStats(), nullValue()); // No
-                                                                   // detailed
-                                                                   // stats
+                assertThat(stats.getDetailedStats(), nullValue());
                 assertThat(stats.getStats().size(), greaterThan(0));
-
-                // No word level stats
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(transStat.getUnit(),
                             is(TranslationStatistics.StatUnit.MESSAGE));
-                    // make sure counts are sane
                     assertThat(
                             transStat.getUntranslated() + transStat.getDraft()
                                     + transStat.getTranslatedAndApproved(),
                             equalTo(transStat.getTotal()));
                 }
             }
-
         }.run();
     }
 
     @Test
     @RunAsClient
     public void getIterationStatisticsJsonWithDetails() throws Exception {
+        // Ok
+        // make sure counts are sane
+        // Results returned only for specified locales
+        // make sure counts are sane
         new ResourceRequest(
                 getRestEndpointUrl("/stats/proj/sample-project/iter/1.0"),
                 "GET") {
+
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
@@ -325,31 +322,25 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                assertThat(response.getStatus(), is(200));
                 assertJsonUnmarshal(response,
                         ContainerTranslationStatistics.class);
-
-                ContainerTranslationStatistics stats =
-                        jsonUnmarshal(response,
-                                ContainerTranslationStatistics.class);
+                ContainerTranslationStatistics stats = jsonUnmarshal(response,
+                        ContainerTranslationStatistics.class);
                 assertThat(stats.getId(), is("1.0"));
                 assertThat(stats.getRefs().size(), greaterThan(0));
                 assertThat(stats.getDetailedStats().size(), greaterThan(0));
                 assertThat(stats.getStats().size(), greaterThan(0));
-
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    // make sure counts are sane
-                    assertThat(transStat.getDraft() + transStat.getApproved()
-                            + transStat.getUntranslated(),
+                    assertThat(
+                            transStat.getDraft() + transStat.getApproved()
+                                    + transStat.getUntranslated(),
                             equalTo(transStat.getTotal()));
                 }
-
-                // Results returned only for specified locales
                 String[] expectedLocales = new String[] { "en-US", "as", "es" };
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(Arrays.asList(expectedLocales),
                             hasItem(transStat.getLocale()));
-                    // make sure counts are sane
                     assertThat(
                             transStat.getDraft() + transStat.getApproved()
                                     + transStat.getUntranslated()
@@ -357,16 +348,23 @@ public class StatisticsRawRestITCase extends RestTest {
                             equalTo(transStat.getTotal()));
                 }
             }
-
         }.run();
     }
 
     @Test
     @RunAsClient
     public void getDocumentStatisticsJson() throws Exception {
+        // Ok
+        // No
+        // detailed
+        // stats
+        // No word level stats
+        // make sure counts are sane
         new ResourceRequest(
-                getRestEndpointUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"),
+                getRestEndpointUrl(
+                        "/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"),
                 "GET") {
+
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
@@ -374,25 +372,18 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                assertThat(response.getStatus(), is(200));
                 assertJsonUnmarshal(response,
                         ContainerTranslationStatistics.class);
-
-                ContainerTranslationStatistics stats =
-                        jsonUnmarshal(response,
-                                ContainerTranslationStatistics.class);
+                ContainerTranslationStatistics stats = jsonUnmarshal(response,
+                        ContainerTranslationStatistics.class);
                 assertThat(stats.getId(), is("my/path/document.txt"));
                 assertThat(stats.getRefs().size(), greaterThan(0));
-                assertThat(stats.getDetailedStats(), nullValue()); // No
-                                                                   // detailed
-                                                                   // stats
+                assertThat(stats.getDetailedStats(), nullValue());
                 assertThat(stats.getStats().size(), greaterThan(0));
-
-                // No word level stats
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(transStat.getUnit(),
                             is(TranslationStatistics.StatUnit.MESSAGE));
-                    // make sure counts are sane
                     assertThat(
                             transStat.getDraft() + transStat.getApproved()
                                     + transStat.getUntranslated()
@@ -400,16 +391,23 @@ public class StatisticsRawRestITCase extends RestTest {
                             equalTo(transStat.getTotal()));
                 }
             }
-
         }.run();
     }
 
     @Test
     @RunAsClient
     public void getDocumentStatisticsJsonWithDetails() throws Exception {
+        // Ok
+        // assertThat(stats.getDetailedStats().size(), greaterThan(0));
+        // // No detailed stats (maybe later)
+        // make sure counts are sane
+        // Results returned only for specified locales
+        // make sure counts are sane
         new ResourceRequest(
-                getRestEndpointUrl("/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"),
+                getRestEndpointUrl(
+                        "/stats/proj/sample-project/iter/1.0/doc/my/path/document.txt"),
                 "GET") {
+
             @Override
             protected void prepareRequest(ClientRequest request) {
                 request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
@@ -422,34 +420,25 @@ public class StatisticsRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                assertThat(response.getStatus(), is(200));
                 assertJsonUnmarshal(response,
                         ContainerTranslationStatistics.class);
-
-                ContainerTranslationStatistics stats =
-                        jsonUnmarshal(response,
-                                ContainerTranslationStatistics.class);
+                ContainerTranslationStatistics stats = jsonUnmarshal(response,
+                        ContainerTranslationStatistics.class);
                 assertThat(stats.getId(), is("my/path/document.txt"));
                 assertThat(stats.getRefs().size(), greaterThan(0));
-                // assertThat(stats.getDetailedStats().size(), greaterThan(0));
-                // // No detailed stats (maybe later)
                 assertThat(stats.getStats().size(), greaterThan(0));
-
                 for (TranslationStatistics transStat : stats.getStats()) {
-                    // make sure counts are sane
                     assertThat(
                             transStat.getDraft() + transStat.getApproved()
                                     + transStat.getUntranslated()
                                     + transStat.getTranslatedOnly(),
                             equalTo(transStat.getTotal()));
                 }
-
-                // Results returned only for specified locales
                 String[] expectedLocales = new String[] { "en-US", "as", "es" };
                 for (TranslationStatistics transStat : stats.getStats()) {
                     assertThat(Arrays.asList(expectedLocales),
                             hasItem(transStat.getLocale()));
-                    // make sure counts are sane
                     assertThat(
                             transStat.getDraft() + transStat.getApproved()
                                     + transStat.getUntranslated()
@@ -457,7 +446,6 @@ public class StatisticsRawRestITCase extends RestTest {
                             equalTo(transStat.getTotal()));
                 }
             }
-
         }.run();
     }
 }

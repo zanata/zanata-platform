@@ -20,14 +20,11 @@
  */
 package org.zanata.action;
 
-import lombok.extern.slf4j.Slf4j;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.events.HomeContentChangedEvent;
@@ -36,24 +33,25 @@ import org.zanata.util.CommonMarkRenderer;
 /**
  * This component caches the latest HTML version of the home page's content.
  *
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-
 @Named("homePage")
 @ApplicationScoped
-@Slf4j
 public class HomePage {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(HomePage.class);
 
     @Inject
     private ApplicationConfiguration applicationConfiguration;
-
     @Inject
     private CommonMarkRenderer renderer;
-
     private String html;
 
     /**
-     * Returns the rendered, sanitised HTML for the home page content set by admin.
+     * Returns the rendered, sanitised HTML for the home page content set by
+     * admin.
+     *
      * @return
      */
     @Transactional(readOnly = true)
@@ -70,10 +68,11 @@ public class HomePage {
     }
 
     /**
-     * Event handler to clear the cached HTML based on the latest CommonMark home content.
+     * Event handler to clear the cached HTML based on the latest CommonMark
+     * home content.
      */
-    public void clearHtml(@Observes(during = TransactionPhase.AFTER_SUCCESS) HomeContentChangedEvent event) {
+    public void clearHtml(@Observes(
+            during = TransactionPhase.AFTER_SUCCESS) HomeContentChangedEvent event) {
         html = null;
     }
-
 }

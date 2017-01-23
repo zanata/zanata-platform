@@ -22,10 +22,8 @@ package org.zanata.page.projectversion.versionsettings;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -34,18 +32,18 @@ import org.zanata.page.projectversion.VersionBasePage;
 import org.zanata.page.utility.NamedPredicate;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class VersionDocumentsTab extends VersionBasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionDocumentsTab.class);
     public static final String UNSUPPORTED_FILETYPE =
             " is not a supported file type.";
-
     private By uploadButton = By.id("file-upload-component-toggle-button");
     private By startUploadButton = By.id("file-upload-component-start-upload");
-    private By cancelUploadButton = By.id("file-upload-component-cancel-upload");
+    private By cancelUploadButton =
+            By.id("file-upload-component-cancel-upload");
     private By fileUploadInput = By.id("file-upload-component-file-input");
     private By fileUploadDone = By.id("file-upload-component-done-upload");
     private By filesListPanel = By.className("js-files-panel");
@@ -75,6 +73,7 @@ public class VersionDocumentsTab extends VersionBasePage {
         log.info("Click Cancel");
         clickElement(cancelUploadButton);
         waitForAMoment().until(new Predicate<WebDriver>() {
+
             @Override
             public boolean apply(WebDriver input) {
                 return !getDriver().findElement(By.id("file-upload-component"))
@@ -89,12 +88,9 @@ public class VersionDocumentsTab extends VersionBasePage {
     public VersionDocumentsTab enterFilePath(String filePath) {
         log.info("Enter file path {}", filePath);
         // Make the hidden input element slightly not hidden
-        getExecutor()
-                .executeScript("arguments[0].style.visibility = 'visible'; " +
-                        "arguments[0].style.height = '1px'; " +
-                        "arguments[0].style.width = '1px'; " +
-                        "arguments[0].style.opacity = 1",
-                        existingElement(fileUploadInput));
+        getExecutor().executeScript(
+                "arguments[0].style.visibility = \'visible\'; arguments[0].style.height = \'1px\'; arguments[0].style.width = \'1px\'; arguments[0].style.opacity = 1",
+                existingElement(fileUploadInput));
         // Don't clear, inject text, don't check
         enterText(readyElement(fileUploadInput), filePath, false, true, false);
         return new VersionDocumentsTab(getDriver());
@@ -116,13 +112,14 @@ public class VersionDocumentsTab extends VersionBasePage {
         log.info("Query source documents contain {}", document);
         for (String documentLabel : waitForAMoment()
                 .until(new Function<WebDriver, List<String>>() {
+
                     @Override
                     public List<String> apply(WebDriver input) {
-                        List<WebElement> elements = existingElement(
-                                By.id("settings-document_form"))
-                                .findElement(By.tagName("ul"))
-                                .findElements(By.xpath(".//li/label[@class='" +
-                                        "form__checkbox__label']"));
+                        List<WebElement> elements =
+                                existingElement(By.id("settings-document_form"))
+                                        .findElement(By.tagName("ul"))
+                                        .findElements(By.xpath(
+                                                ".//li/label[@class=\'form__checkbox__label\']"));
                         List<String> namesList = new ArrayList<String>();
                         for (WebElement element : elements) {
                             namesList.add(element.getText());
@@ -141,8 +138,8 @@ public class VersionDocumentsTab extends VersionBasePage {
         log.info("Query upload list");
         List<String> filenames = new ArrayList<String>();
         for (WebElement element : getUploadListElements()) {
-            filenames.add(element.findElement(By.className("list__title"))
-                    .getText());
+            filenames.add(
+                    element.findElement(By.className("list__title")).getText());
         }
         return filenames;
     }
@@ -150,11 +147,10 @@ public class VersionDocumentsTab extends VersionBasePage {
     public VersionDocumentsTab clickRemoveOn(String filename) {
         log.info("Click remove on {}", filename);
         for (WebElement element : getUploadListElements()) {
-            if (element.findElement(By.className("list__title"))
-                    .getText().equals(filename)) {
+            if (element.findElement(By.className("list__title")).getText()
+                    .equals(filename)) {
                 element.findElement(By.className("list__item__actions"))
-                        .findElement(By.className("cancel"))
-                        .click();
+                        .findElement(By.className("cancel")).click();
             }
         }
         return new VersionDocumentsTab(getDriver());
@@ -162,6 +158,7 @@ public class VersionDocumentsTab extends VersionBasePage {
 
     public void expectSomeUploadItems() {
         waitForAMoment().until(new NamedPredicate("expectUploadItem") {
+
             @Override
             public boolean apply(WebDriver input) {
                 return !getUploadListElements().isEmpty();
@@ -172,8 +169,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     private List<WebElement> getUploadListElements() {
         @SuppressWarnings("unchecked")
         List<WebElement> liElements = (List<WebElement>) getExecutor()
-                .executeScript(
-                        "return $('div.js-files-panel ul li')");
+                .executeScript("return $(\'div.js-files-panel ul li\')");
         return liElements;
     }
 

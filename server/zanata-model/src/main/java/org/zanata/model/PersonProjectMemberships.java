@@ -27,9 +27,6 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,40 +40,34 @@ import java.util.Set;
  * boolean properties to represent all roles so they can be easily bound to
  * individual UI elements (e.g. checkboxes).
  */
-@Getter
 public class PersonProjectMemberships {
-
     private HPerson person;
-
-    @Setter
     private boolean maintainer;
-    @Setter
     private boolean translationMaintainer;
-
     private Set<LocaleRoles> localeRoles;
 
-    public PersonProjectMemberships(HPerson person, Collection<ProjectRole> projectRoles,
-                                    ListMultimap<HLocale, LocaleRole> localeRoleMappings) {
+    public PersonProjectMemberships(HPerson person,
+            Collection<ProjectRole> projectRoles,
+            ListMultimap<HLocale, LocaleRole> localeRoleMappings) {
         this.person = person;
-
-        maintainer = projectRoles != null &&
-                projectRoles.contains(ProjectRole.Maintainer);
-        translationMaintainer = projectRoles != null &&
-                projectRoles.contains(ProjectRole.TranslationMaintainer);
-
+        maintainer = projectRoles != null
+                && projectRoles.contains(ProjectRole.Maintainer);
+        translationMaintainer = projectRoles != null
+                && projectRoles.contains(ProjectRole.TranslationMaintainer);
         localeRoles = Sets.newHashSet();
         if (localeRoleMappings != null) {
-            for (Map.Entry<HLocale, Collection<LocaleRole>> entry : localeRoleMappings.asMap().entrySet()) {
-                localeRoles.add(new LocaleRoles(entry.getKey(), entry.getValue()));
+            for (Map.Entry<HLocale, Collection<LocaleRole>> entry : localeRoleMappings
+                    .asMap().entrySet()) {
+                localeRoles
+                        .add(new LocaleRoles(entry.getKey(), entry.getValue()));
             }
         }
     }
 
     public ImmutableList<LocaleRoles> getSortedLocaleRoles() {
-        return ImmutableList.copyOf(ImmutableSortedSet
-                .orderedBy(LOCALE_NAME_ORDERING)
-                .addAll(getLocaleRoles())
-                .build());
+        return ImmutableList
+                .copyOf(ImmutableSortedSet.orderedBy(LOCALE_NAME_ORDERING)
+                        .addAll(getLocaleRoles()).build());
     }
 
     /**
@@ -90,15 +81,16 @@ public class PersonProjectMemberships {
      * Ensure there is a representation for all of the given locales.
      *
      * This should be used to create LocaleRoles objects for locales that the
-     * person does not have any membership in. Locales that are already represented
-     * do not cause any change.
+     * person does not have any membership in. Locales that are already
+     * represented do not cause any change.
      *
-     * @param locales all the locales that should be present, may include
-     *                locales that the person is already a member of.
+     * @param locales
+     *            all the locales that should be present, may include locales
+     *            that the person is already a member of.
      */
     public void ensureLocalesPresent(Collection<HLocale> locales) {
-        Collection<HLocale> presentLocales = Collections2.transform(localeRoles, TO_LOCALE);
-
+        Collection<HLocale> presentLocales =
+                Collections2.transform(localeRoles, TO_LOCALE);
         for (HLocale locale : locales) {
             if (!presentLocales.contains(locale)) {
                 localeRoles.add(new LocaleRoles(locale, Collections.EMPTY_SET));
@@ -107,25 +99,25 @@ public class PersonProjectMemberships {
     }
 
     /**
-     * Transform to extract the name of the locale from a LocaleRoles (for sorting)
+     * Transform to extract the name of the locale from a LocaleRoles (for
+     * sorting)
      *
      * Use with {@link com.google.common.collect.Collections2#transform}
      */
     public static final Function<LocaleRoles, String> TO_LOCALE_NAME =
             new Function<LocaleRoles, String>() {
+
                 @Nullable
                 @Override
                 public String apply(LocaleRoles input) {
                     // To lowercase to prevent non-caps values appearing after
                     // all caps values (e.g. a appearing after Z)
-                    return input.getLocale().retrieveDisplayName().toLowerCase();
+                    return input.getLocale().retrieveDisplayName()
+                            .toLowerCase();
                 }
             };
-
     private static final Ordering<LocaleRoles> LOCALE_NAME_ORDERING =
             Ordering.natural().onResultOf(TO_LOCALE_NAME);
-
-
 
     /**
      * Transform to extract the locale from a LocaleRoles.
@@ -134,6 +126,7 @@ public class PersonProjectMemberships {
      */
     public static final Function<LocaleRoles, HLocale> TO_LOCALE =
             new Function<LocaleRoles, HLocale>() {
+
                 @Nullable
                 @Override
                 public HLocale apply(LocaleRoles input) {
@@ -147,31 +140,32 @@ public class PersonProjectMemberships {
      * Hibernate can fail in persistence if the person object is 'detached' so
      * this allows replacement with an equivalent 'attached' version.
      *
-     * The person must be equal to the existing person according to .equals()
-     * or an exception will be thrown.
+     * The person must be equal to the existing person according to .equals() or
+     * an exception will be thrown.
      *
-     * @param person to set, must be equal to the current person
+     * @param person
+     *            to set, must be equal to the current person
      */
     public void setPerson(HPerson person) {
         if (person.equals(getPerson())) {
             this.person = person;
         } else {
             throw new IllegalArgumentException(
-                    "Cannot set a different person. "
-                  + "This is only for replacing a detached HPerson with an"
-                  + "equivalent attached HPerson (according to .equals)");
+                    "Cannot set a different person. This is only for replacing a detached HPerson with anequivalent attached HPerson (according to .equals)");
         }
     }
 
     /**
-     * @return false if there are no selected membership permissions, otherwise true
+     * @return false if there are no selected membership permissions, otherwise
+     *         true
      */
     public boolean hasAnyPermissions() {
         return maintainer || translationMaintainer || hasAnyLocalePermissions();
     }
 
     /**
-     * @return false if there are no selected roles for any locale, otherwise true
+     * @return false if there are no selected roles for any locale, otherwise
+     *         true
      */
     private boolean hasAnyLocalePermissions() {
         for (LocaleRoles roles : localeRoles) {
@@ -186,19 +180,14 @@ public class PersonProjectMemberships {
     /**
      * Represents a locale and the membership in each locale role.
      *
-     * Intended to use as a row for a single locale in a permission setting table.
+     * Intended to use as a row for a single locale in a permission setting
+     * table.
      */
-    @Setter
-    @Getter
     public class LocaleRoles {
         private HLocale locale;
-
         private boolean translator;
-
         private boolean reviewer;
-
         private boolean coordinator;
-
         private boolean glossarist;
 
         public LocaleRoles(HLocale locale, Collection<LocaleRole> roles) {
@@ -212,24 +201,24 @@ public class PersonProjectMemberships {
         /**
          * Set the locale to an equal locale object.
          *
-         * This is to work around Hibernate, which fails when trying to
-         * persist something with a 'detached' HLocale in it.
+         * This is to work around Hibernate, which fails when trying to persist
+         * something with a 'detached' HLocale in it.
          *
          * This is to allow replacement of a 'detached' HLocale entity with an
          * 'attached' HLocale entity. It is only intended to set an attached
          * version of the same locale, and will throw an exception if a
          * different locale is set.
          *
-         * @param locale to set, must be equal to the current locale.
+         * @param locale
+         *            to set, must be equal to the current locale.
          */
+
         public void setLocale(HLocale locale) {
             if (locale.equals(getLocale())) {
                 this.locale = locale;
             } else {
                 throw new IllegalArgumentException(
-                        "Cannot set to a different locale. "
-                      + "This is only for replacing a detached HLocale with an "
-                      + "equivalent attached HLocale (according to .equals)");
+                        "Cannot set to a different locale. This is only for replacing a detached HLocale with an equivalent attached HLocale (according to .equals)");
             }
         }
 
@@ -249,5 +238,65 @@ public class PersonProjectMemberships {
         public int hashCode() {
             return locale.hashCode();
         }
+
+        public void setTranslator(final boolean translator) {
+            this.translator = translator;
+        }
+
+        public void setReviewer(final boolean reviewer) {
+            this.reviewer = reviewer;
+        }
+
+        public void setCoordinator(final boolean coordinator) {
+            this.coordinator = coordinator;
+        }
+
+        public void setGlossarist(final boolean glossarist) {
+            this.glossarist = glossarist;
+        }
+
+        public HLocale getLocale() {
+            return this.locale;
+        }
+
+        public boolean isTranslator() {
+            return this.translator;
+        }
+
+        public boolean isReviewer() {
+            return this.reviewer;
+        }
+
+        public boolean isCoordinator() {
+            return this.coordinator;
+        }
+
+        public boolean isGlossarist() {
+            return this.glossarist;
+        }
+    }
+
+    public HPerson getPerson() {
+        return this.person;
+    }
+
+    public boolean isMaintainer() {
+        return this.maintainer;
+    }
+
+    public boolean isTranslationMaintainer() {
+        return this.translationMaintainer;
+    }
+
+    public Set<LocaleRoles> getLocaleRoles() {
+        return this.localeRoles;
+    }
+
+    public void setMaintainer(final boolean maintainer) {
+        this.maintainer = maintainer;
+    }
+
+    public void setTranslationMaintainer(final boolean translationMaintainer) {
+        this.translationMaintainer = translationMaintainer;
     }
 }

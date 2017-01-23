@@ -20,25 +20,22 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projects.ProjectBasePage;
-
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectTranslationTab extends ProjectBasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectTranslationTab.class);
     private Map validationNames = getValidationMapping();
-
     private By validationsList =
             By.id("settings-translation-form:validation-list");
 
@@ -48,23 +45,20 @@ public class ProjectTranslationTab extends ProjectBasePage {
 
     public boolean isValidationLevel(String optionName, String level) {
         log.info("Query is {} validation level {}", optionName, level);
-        final String optionElementID = validationNames
-                .get(optionName).toString().concat(level);
-        WebElement option = existingElement(
-                existingElement(validationsList),
+        final String optionElementID =
+                validationNames.get(optionName).toString().concat(level);
+        WebElement option = existingElement(existingElement(validationsList),
                 By.id(optionElementID));
         return option.getAttribute("checked").equals("true");
     }
 
     public ProjectTranslationTab setValidationLevel(String optionName,
-                                                    String level) {
+            String level) {
         log.info("Click {} validation level {}", optionName, level);
-        final String optionElementID = validationNames
-                .get(optionName).toString().concat(level);
-        WebElement option =  existingElement(
-                existingElement(validationsList),
+        final String optionElementID =
+                validationNames.get(optionName).toString().concat(level);
+        WebElement option = existingElement(existingElement(validationsList),
                 By.id(optionElementID));
-
         getExecutor().executeScript("arguments[0].click();", option);
         slightPause();
         return new ProjectTranslationTab(getDriver());
@@ -81,5 +75,4 @@ public class ProjectTranslationTab extends ProjectBasePage {
         map.put("XML entity reference", "XML_ENTITY-");
         return map;
     }
-
 }

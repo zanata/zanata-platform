@@ -22,14 +22,11 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
-
 import org.apache.commons.lang.time.DateUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -41,10 +38,7 @@ import org.zanata.seam.security.AbstractRunAsOperation;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
-
 import com.google.common.base.Strings;
-import lombok.Getter;
-import lombok.Setter;
 
 @Named("activate")
 @GroupedConversationScoped
@@ -53,47 +47,34 @@ import lombok.Setter;
 public class ActivateAction implements Serializable {
 
     private static final long serialVersionUID = -8079131168179421345L;
-
     private static final int LINK_ACTIVE_DAYS = 1;
-
     @Inject
     private GroupedConversation conversation;
-
     @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
-
     @Inject
     private IdentityManager identityManager;
-
     @Inject
     private UrlUtil urlUtil;
-
     @Inject
     private FacesMessages facesMessages;
-
-    @Getter
-    @Setter
     private String activationKey;
-
     private HAccountActivationKey key;
     private String resetPasswordKey;
+    // @Begin(join = true)
 
-    //    @Begin(join = true)
     public void validateActivationKey() {
         if (getActivationKey() == null) {
             throw new KeyNotFoundException("null activation key");
         }
-
         key = accountActivationKeyDAO.findById(getActivationKey(), false);
-
         if (key == null) {
-            throw new KeyNotFoundException("activation key: "
-                    + getActivationKey());
+            throw new KeyNotFoundException(
+                    "activation key: " + getActivationKey());
         }
-
         if (isExpired(key.getCreationDate(), LINK_ACTIVE_DAYS)) {
-            throw new ActivationLinkExpiredException("Activation link expired:"
-                    + getActivationKey());
+            throw new ActivationLinkExpiredException(
+                    "Activation link expired:" + getActivationKey());
         }
     }
 
@@ -105,6 +86,7 @@ public class ActivateAction implements Serializable {
     @Transactional
     public void activate() {
         new AbstractRunAsOperation() {
+
             public void execute() {
                 identityManager.enableUser(key.getAccount().getUsername());
                 identityManager.grantRole(key.getAccount().getUsername(),
@@ -112,16 +94,14 @@ public class ActivateAction implements Serializable {
             }
         }.addRole("admin").run();
         accountActivationKeyDAO.makeTransient(key);
-
         if (Strings.isNullOrEmpty(resetPasswordKey)) {
             facesMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                     "Your account was successfully activated. You can now sign in.");
-
             urlUtil.redirectToInternal(urlUtil.signInPage());
         } else {
-            urlUtil.redirectToInternal(urlUtil.resetPasswordPage(resetPasswordKey));
+            urlUtil.redirectToInternal(
+                    urlUtil.resetPasswordPage(resetPasswordKey));
         }
-
         conversation.close();
     }
 
@@ -131,5 +111,13 @@ public class ActivateAction implements Serializable {
 
     public String getResetPasswordKey() {
         return resetPasswordKey;
+    }
+
+    public String getActivationKey() {
+        return this.activationKey;
+    }
+
+    public void setActivationKey(final String activationKey) {
+        this.activationKey = activationKey;
     }
 }

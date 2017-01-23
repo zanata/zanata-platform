@@ -23,7 +23,6 @@ package org.zanata.rest.service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -37,9 +36,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -60,7 +56,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
-
 import com.google.common.base.Optional;
 
 /**
@@ -70,69 +65,61 @@ import com.google.common.base.Optional;
 @RequestScoped
 @Named("translatedDocResourceService")
 @Path(TranslatedDocResource.SERVICE_PATH)
-@Slf4j
 @Transactional
 public class TranslatedDocResourceService implements TranslatedDocResource {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslatedDocResourceService.class);
 
     // security actions
     // private static final String ACTION_IMPORT_TEMPLATE = "import-template";
     // private static final String ACTION_IMPORT_TRANSLATION =
     // "import-translation";
-
-    /** Project Identifier. */
+    /**
+     * Project Identifier.
+     */
     @PathParam("projectSlug")
     private String projectSlug;
 
-    /** Project Iteration identifier. */
+    /**
+     * Project Iteration identifier.
+     */
     @PathParam("iterationSlug")
     private String iterationSlug;
 
-    /** (This parameter is optional and is currently not used) */
+    /**
+     * (This parameter is optional and is currently not used)
+     */
     @HeaderParam("Content-Type")
     @Context
     private MediaType requestContentType;
-
     @Context
     private HttpHeaders headers;
-
     @Context
     private Request request;
-
     @Context
     private UriInfo uri;
-
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     private ApplicationConfiguration applicationConfiguration;
-
     @Inject
     private ProjectIterationDAO projectIterationDAO;
-
     @Inject
     private ProjectDAO projectDAO;
-
     @Inject
     private DocumentDAO documentDAO;
-
     @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
-
     @Inject
     private ResourceUtils resourceUtils;
-
     @Inject
     private ETagUtils eTagUtils;
-
     @Inject
     private CopyTransService copyTransServiceImpl;
     @Inject
     private RestSlugValidator restSlugValidator;
-
     @Inject
     private TranslationService translationServiceImpl;
-
     @Inject
     private LocaleService localeServiceImpl;
 
@@ -141,19 +128,14 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
             Set<String> extensions, boolean skeletons, String eTag) {
         log.debug("start to get translation");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-        HProjectIteration hProjectIteration =
-                restSlugValidator.retrieveAndCheckIteration(projectSlug,
-                        iterationSlug, false);
-        HLocale hLocale =
-                restSlugValidator.validateTargetLocale(locale, projectSlug,
-                        iterationSlug);
-
+        HProjectIteration hProjectIteration = restSlugValidator
+                .retrieveAndCheckIteration(projectSlug, iterationSlug, false);
+        HLocale hLocale = restSlugValidator.validateTargetLocale(locale,
+                projectSlug, iterationSlug);
         ResourceUtils.validateExtensions(extensions);
-
         // Check Etag header
-        EntityTag generatedEtag =
-                eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
-                        id, hLocale);
+        EntityTag generatedEtag = eTagUtils.generateETagForTranslatedDocument(
+                hProjectIteration, id, hLocale);
         List<String> requestedEtagHeaders =
                 headers.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
         if (requestedEtagHeaders != null && !requestedEtagHeaders.isEmpty()) {
@@ -161,57 +143,45 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                 return Response.notModified(generatedEtag).build();
             }
         }
-
         ResponseBuilder response = request.evaluatePreconditions(generatedEtag);
         if (response != null) {
             return response.build();
         }
-
         HDocument document =
                 documentDAO.getByDocIdAndIteration(hProjectIteration, id);
         if (document == null || document.isObsolete()) {
             return Response.status(Status.NOT_FOUND).build();
         }
-
         TranslationsResource translationResource = new TranslationsResource();
         // TODO avoid queries for better cacheability
         List<HTextFlowTarget> hTargets =
                 textFlowTargetDAO.findTranslations(document, hLocale);
-        boolean foundData =
-                resourceUtils.transferToTranslationsResource(
-                        translationResource, document, hLocale, extensions,
-                        hTargets, Optional.<String> absent());
-
+        boolean foundData = resourceUtils.transferToTranslationsResource(
+                translationResource, document, hLocale, extensions, hTargets,
+                Optional.<String> absent());
         if (!foundData && !skeletons) {
             return Response.status(Status.NOT_FOUND).build();
         }
-
         // TODO lastChanged
         return Response.ok().entity(translationResource).tag(generatedEtag)
                 .build();
     }
 
     @Override
-    public
-            Response deleteTranslations(String idNoSlash, LocaleId locale) {
-        identity.checkPermission(getSecuredIteration().getProject(), "modify-translation");
+    public Response deleteTranslations(String idNoSlash, LocaleId locale) {
+        identity.checkPermission(getSecuredIteration().getProject(),
+                "modify-translation");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-        HProjectIteration hProjectIteration =
-                restSlugValidator.retrieveAndCheckIteration(projectSlug,
-                        iterationSlug, true);
-        HLocale hLocale =
-                restSlugValidator.validateTargetLocale(locale, projectSlug,
-                        iterationSlug);
-
-        EntityTag etag =
-                eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
-                        id, hLocale);
-
+        HProjectIteration hProjectIteration = restSlugValidator
+                .retrieveAndCheckIteration(projectSlug, iterationSlug, true);
+        HLocale hLocale = restSlugValidator.validateTargetLocale(locale,
+                projectSlug, iterationSlug);
+        EntityTag etag = eTagUtils.generateETagForTranslatedDocument(
+                hProjectIteration, id, hLocale);
         ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
             return response.build();
         }
-
         HDocument document =
                 documentDAO.getByDocIdAndIteration(hProjectIteration, id);
         if (document == null || document.isObsolete()) {
@@ -219,17 +189,13 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         }
         List<HTextFlowTarget> targets =
                 textFlowTargetDAO.findAllTranslations(document, locale);
-
         for (HTextFlowTarget target : targets) {
             target.clear();
         }
-
         // we also need to delete the extensions here
         document.getPoTargetHeaders().remove(hLocale);
         textFlowTargetDAO.flush();
-
         return Response.ok().build();
-
     }
 
     @Override
@@ -238,9 +204,9 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
             String merge) {
         // check security (cannot be on @Restrict as it refers to method
         // parameters)
-        identity.checkPermission("modify-translation", this.localeServiceImpl
-                .getByLocaleId(locale), this.getSecuredIteration().getProject());
-
+        identity.checkPermission("modify-translation",
+                this.localeServiceImpl.getByLocaleId(locale),
+                this.getSecuredIteration().getProject());
         log.debug("start put translations");
         MergeType mergeType;
         try {
@@ -250,37 +216,26 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                     .entity("bad merge type " + merge).build();
         }
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
-
         HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-        HLocale hLocale =
-                restSlugValidator.validateTargetLocale(locale, projectSlug,
-                        iterationSlug);
-
-        EntityTag etag =
-                eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
-                        id, hLocale);
-
+        HLocale hLocale = restSlugValidator.validateTargetLocale(locale,
+                projectSlug, iterationSlug);
+        EntityTag etag = eTagUtils.generateETagForTranslatedDocument(
+                hProjectIteration, id, hLocale);
         ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
             return response.build();
         }
-
-        //assignCreditToUploader is not supported from here
+        // assignCreditToUploader is not supported from here
         boolean assignCreditToUploader = false;
-
         // Translate
-        List<String> warnings =
-                this.translationServiceImpl.translateAllInDoc(projectSlug,
-                        iterationSlug, id, locale, messageBody, extensions,
-                        mergeType, assignCreditToUploader,
-                        TranslationSourceType.API_UPLOAD);
-
+        List<String> warnings = this.translationServiceImpl.translateAllInDoc(
+                projectSlug, iterationSlug, id, locale, messageBody, extensions,
+                mergeType, assignCreditToUploader,
+                TranslationSourceType.API_UPLOAD);
         // Regenerate etag in case it has changed
-        etag =
-                eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
-                        id, hLocale);
-
+        etag = eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
+                id, hLocale);
         log.debug("successful put translation");
         // TODO lastChanged
         StringBuilder sb = new StringBuilder();
@@ -289,11 +244,10 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         }
         return Response.ok(sb.toString()).tag(etag).build();
     }
-
     // public for Seam's benefit (and the @Restrict in deleteTranslations)
+
     public HProjectIteration getSecuredIteration() {
         return restSlugValidator.retrieveAndCheckIteration(projectSlug,
                 iterationSlug, false);
     }
-
 }

@@ -20,31 +20,27 @@
  */
 package org.zanata.page.groups;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
-
 import com.google.common.base.Predicate;
 import org.zanata.page.dashboard.DashboardGroupsTab;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class CreateVersionGroupPage extends BasePage {
-
-    public final static String LENGTH_ERROR =
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(CreateVersionGroupPage.class);
+    public static final String LENGTH_ERROR =
             "value must be shorter than or equal to 100 characters";
-
-    public final static String VALIDATION_ERROR =
-            "must start and end with letter or number, and contain only " +
-            "letters, numbers, periods, underscores and hyphens.";
-
+    public static final String VALIDATION_ERROR =
+            "must start and end with letter or number, and contain only letters, numbers, periods, underscores and hyphens.";
     private By groupIdField = By.id("group-form:slug:input:slug");
     public By groupNameField = By.id("group-form:name:input:name");
-    private By groupDescriptionField = By.id("group-form:description:input:description");
+    private By groupDescriptionField =
+            By.id("group-form:description:input:description");
     private By saveButton = By.id("group-form:group-create-new");
     private By createNewButton = By.id("group-form:group-create-new");
 
@@ -92,8 +88,8 @@ public class CreateVersionGroupPage extends BasePage {
         readyElement(groupNameField).clear();
         readyElement(groupDescriptionField).clear();
         waitForAMoment().until(
-                (Predicate<WebDriver>) webDriver -> getGroupIdValue().equals("") &&
-                        readyElement(groupNameField).getAttribute("value")
+                (Predicate<WebDriver>) webDriver -> getGroupIdValue().equals("")
+                        && readyElement(groupNameField).getAttribute("value")
                                 .equals(""));
         return new CreateVersionGroupPage(getDriver());
     }
