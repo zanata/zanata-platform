@@ -21,15 +21,12 @@
 package org.zanata.dao
 
 import org.apache.commons.lang.StringUtils
-import org.hibernate.Query
 import org.hibernate.Session
 import org.hibernate.criterion.Restrictions
-import org.zanata.common.GlossarySortField
 import org.zanata.common.LocaleId
 import org.zanata.model.HLocale
 import org.zanata.rest.editor.dto.LocaleSortField
 import javax.enterprise.context.RequestScoped
-import javax.inject.Named
 
 import com.google.common.base.Joiner
 import com.google.common.collect.Lists
@@ -69,7 +66,7 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
     }
 
     fun find(offset: Int, maxResults: Int, filter: String?,
-             sortFields: List<LocaleSortField>?, onlyActive: Boolean): List<HLocale> {
+            sortFields: List<LocaleSortField>?, onlyActive: Boolean): List<HLocale> {
         val query = session
                 .createQuery(buildResultSearchQuery(filter, sortFields, onlyActive))
         if (StringUtils.isNotBlank(filter)) {
@@ -97,7 +94,7 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
     }
 
     private fun buildCountSearchQuery(filter: String?,
-                                      sortFields: List<LocaleSortField>?, onlyActive: Boolean): String {
+            sortFields: List<LocaleSortField>?, onlyActive: Boolean): String {
         val queryBuilder = StringBuilder()
         queryBuilder.append("select count(*) from HLocale")
         queryBuilder.append(buildSearchQuery(filter, sortFields, onlyActive))
@@ -105,7 +102,7 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
     }
 
     private fun buildResultSearchQuery(filter: String?,
-                                       sortFields: List<LocaleSortField>?, onlyActive: Boolean): String {
+            sortFields: List<LocaleSortField>?, onlyActive: Boolean): String {
         val queryBuilder = StringBuilder()
         queryBuilder.append("from HLocale")
         queryBuilder.append(buildSearchQuery(filter, sortFields, onlyActive))
@@ -113,7 +110,7 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
     }
 
     private fun buildSearchQuery(filter: String?,
-                                 sortFields: List<LocaleSortField>?, onlyActive: Boolean): String {
+            sortFields: List<LocaleSortField>?, onlyActive: Boolean): String {
         val queryBuilder = StringBuilder()
         val hasCondition = StringUtils.isNotBlank(filter) || onlyActive
         if (hasCondition) {

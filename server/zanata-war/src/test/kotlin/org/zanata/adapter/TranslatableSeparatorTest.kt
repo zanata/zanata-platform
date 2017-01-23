@@ -70,7 +70,6 @@ class TranslatableSeparatorTest {
         assertThat(stripped).isEqualTo(SplitString("\n              ", "Loading…", "\n          "))
     }
 
-
     @Test
     fun trailingWhitespaceStripped() {
         val stripped = TranslatableSeparator.separate("Some text  ")

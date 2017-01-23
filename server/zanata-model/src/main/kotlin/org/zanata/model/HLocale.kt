@@ -91,7 +91,7 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
     }
 
     constructor(localeId: LocaleId, enabledByDefault: Boolean,
-                active: Boolean) {
+            active: Boolean) {
         this.localeId = localeId
         this.isEnabledByDefault = enabledByDefault
         this.isActive = active

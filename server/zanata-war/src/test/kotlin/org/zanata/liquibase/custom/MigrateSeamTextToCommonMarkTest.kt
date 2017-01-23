@@ -65,7 +65,7 @@ class MigrateSeamTextToCommonMarkTest {
     private val cmRenderer = CommonMarkRenderer()
     private val jsoupSettings = OutputSettings().prettyPrint(true).indentAmount(2)
 
-    private val nodeCleaner = NodeTraversor(object: NodeVisitor {
+    private val nodeCleaner = NodeTraversor(object : NodeVisitor {
         override fun head(node: Node, depth: Int) {
         }
 
@@ -243,7 +243,7 @@ cool</a>, or even include an image: <img src="/logo.jpg"/>
 </table>
 """
         val expectedCM =
-"""<!-- The following text was converted from Seam Text to CommonMark by Zanata.  Some formatting changes may have occurred. -->
+                """<!-- The following text was converted from Seam Text to CommonMark by Zanata.  Some formatting changes may have occurred. -->
 
 
 
@@ -397,7 +397,7 @@ cool</a>, or even include an image: <img src="/logo.jpg"/>
 
 """
         val expectedCM =
-"""<!-- The following text was converted from Seam Text to CommonMark by Zanata.  Some formatting changes may have occurred. -->
+                """<!-- The following text was converted from Seam Text to CommonMark by Zanata.  Some formatting changes may have occurred. -->
 
 
 

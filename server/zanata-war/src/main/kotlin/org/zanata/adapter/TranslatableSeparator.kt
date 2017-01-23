@@ -21,7 +21,6 @@
 package org.zanata.adapter
 
 import java.util.function.Function
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 /**

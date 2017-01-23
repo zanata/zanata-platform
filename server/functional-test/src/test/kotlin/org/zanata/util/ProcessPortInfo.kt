@@ -48,14 +48,14 @@ object ProcessPortInfo {
                 pids.add(matcher.group(1).toInt())
             }
         }
-        return pids;
+        return pids
     }
 
     fun String.forEachLine(action: (String) -> Unit) =
             StringReader(this).forEachLine(action)
 
     fun String.execute(): Process =
-        Runtime.getRuntime().exec(this)
+            Runtime.getRuntime().exec(this)
 
     val Process.text: String
         get() {

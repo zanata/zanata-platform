@@ -12,7 +12,9 @@ import org.junit.runner.RunWith
 import org.mockito.Answers.RETURNS_DEEP_STUBS
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.same
 import org.mockito.Mockito
+import org.mockito.stubbing.Answer
 import org.zanata.ZanataTest
 import org.zanata.dao.AccountDAO
 import org.zanata.limits.RateLimitingProcessor
@@ -21,8 +23,11 @@ import org.zanata.test.CdiUnitRunner
 import org.zanata.util.HttpUtil
 import org.zanata.util.RunnableEx
 
-import org.mockito.Mockito.*
-import org.mockito.stubbing.Answer
+import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.doReturn
+import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
 
 /**
  * @author Patrick Huang [pahuang@redhat.com](mailto:pahuang@redhat.com)
