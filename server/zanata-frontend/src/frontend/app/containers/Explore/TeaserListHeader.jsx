@@ -24,7 +24,7 @@ const TeaserListHeader = ({
   const totalPage = Math.floor(totalCount / sizePerPage) +
     (totalCount % sizePerPage > 0 ? 1 : 0)
   const headerIcon = type
-    ? <Icon name={icons[type]} className='header-icons s2' /> : null
+    ? <Icon name={icons[type]} className='header-icons s1' /> : null
   const currentPage = page ? parseInt(page) : 1
 
   /* eslint-disable react/jsx-no-bind */
