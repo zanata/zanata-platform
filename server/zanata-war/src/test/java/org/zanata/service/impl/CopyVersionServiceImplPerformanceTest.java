@@ -42,6 +42,7 @@ import org.jglue.cdiunit.InRequestScope;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -100,19 +101,19 @@ public class CopyVersionServiceImplPerformanceTest extends ZanataTest {
 
 
     private static final EntityManagerFactoryRule.TestProfile testProfile =
-            EntityManagerFactoryRule.TestProfile.NormalBuild;
+            EntityManagerFactoryRule.TestProfile.ManualPerformanceProfiling;
 
     @ClassRule
     public static EntityManagerFactoryRule emfRule =
             new EntityManagerFactoryRule(
-                    testProfile);
+                    testProfile, "update");
 
     @ClassRule
     public static MockInitialContextRule initialContextRule =
             new MockInitialContextRule();
 
     protected EntityManager em;
-    private int numOfTextFlows;
+    private int numOfTextFlows = 5000;
     private HProjectIteration copyVersionSource;
 
     @Inject
@@ -210,7 +211,6 @@ public class CopyVersionServiceImplPerformanceTest extends ZanataTest {
                         .withTargetLocale(enUS);
 
         // make many text flows all with translations in DE
-        numOfTextFlows = 50;
         for (int i = 0; i < numOfTextFlows; i++) {
             textFlowBuilderForOldDoc.withResId("res" + i)
                     .withSourceContent("source " + i)
@@ -266,7 +266,7 @@ public class CopyVersionServiceImplPerformanceTest extends ZanataTest {
      * using larger {@link CopyVersionServiceImplPerformanceTest#numOfTextFlows}.
      *
      */
-    //    @Ignore("slow test")
+        @Ignore("slow test")
     @Test
     @InRequestScope
     @SlowTest

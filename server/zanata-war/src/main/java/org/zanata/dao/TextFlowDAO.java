@@ -185,6 +185,20 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
         return q.list();
     }
 
+    public List<HTextFlow> getTextFlowsAndTargetsByDocumentId(Long documentId, int offset, int maxResults) {
+        // TODO pahuang make this a named query
+        Query q =
+                getSession()
+                        .createQuery(
+                                "select tf from HTextFlow tf left join tf.targets tft left join tft.reviewComments where tf.obsolete=0 and tf.document.id = :documentId order by tf.pos");
+        q.setParameter("documentId", documentId)
+                .setFirstResult(offset)
+                .setMaxResults(maxResults)
+                .setCacheable(true)
+                .setComment("TextFlowDAO.getTextFlowsAndTargetsByDocumentId");
+        return q.list();
+    }
+
     /**
      * for a given locale, we can filter it by content state or search in source
      * and target.
