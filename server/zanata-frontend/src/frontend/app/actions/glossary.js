@@ -269,7 +269,8 @@ const createGlossaryTerm = (dispatch, qualifiedName, term) => {
   let headers = getJsonHeaders()
   headers['Content-Type'] = 'application/json'
   const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/glossary/entries?locale=' + term.srcTerm.locale
+    '/glossary/entries?locale=' + term.srcTerm.locale +
+    '&qualifiedName=' + qualifiedName
   const entryDTO = GlossaryHelper.convertToDTO(term, qualifiedName)
   const apiTypes = [
     {
@@ -301,7 +302,8 @@ const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
   headers['Content-Type'] = 'application/json'
 
   const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/glossary/entries?locale=' + localeId
+    '/glossary/entries?locale=' + localeId +
+    '&qualifiedName=' + qualifiedName
   const entryDTO = GlossaryHelper.convertToDTO(term, qualifiedName)
 
   const apiTypes = [
@@ -329,9 +331,9 @@ const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
   }
 }
 
-const deleteGlossaryTerm = (dispatch, id) => {
+const deleteGlossaryTerm = (dispatch, id, qualifiedName) => {
   const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/glossary/entries/' + id
+    '/glossary/entries/' + id + '?qualifiedName=' + qualifiedName
   const apiTypes = [
     {
       type: GLOSSARY_DELETE_REQUEST,
@@ -454,7 +456,8 @@ export const glossaryFilterTextChanged = (newFilter) => {
 
 export const glossaryDeleteTerm = (id) => {
   return (dispatch, getState) => {
-    dispatch(deleteGlossaryTerm(dispatch, id))
+    dispatch(deleteGlossaryTerm(dispatch, id,
+      getState().glossary.qualifiedName))
   }
 }
 
