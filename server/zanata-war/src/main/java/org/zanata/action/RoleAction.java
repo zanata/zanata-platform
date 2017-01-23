@@ -7,8 +7,6 @@ import java.util.List;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -90,10 +88,6 @@ public class RoleAction implements Serializable {
             }
         }
 
-        return "success";
-    }
-
-    public String cancel() {
         return "success";
     }
 

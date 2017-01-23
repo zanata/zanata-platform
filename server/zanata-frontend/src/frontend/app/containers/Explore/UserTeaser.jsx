@@ -1,17 +1,6 @@
 import React, { PropTypes } from 'react'
-import {
-  Link,
-  View,
-  Icon
-} from 'zanata-ui'
+import { Link, Icon } from '../../components'
 
-const viewTheme = {
-  base: {
-    ai: 'Ai(c)',
-    fld: '',
-    m: 'Mb(rh)'
-  }
-}
 /**
  * Entry of User search results
  */
@@ -21,30 +10,24 @@ const UserTeaser = ({
   ...props
 }) => {
   const wordsTranslated = details.wordsTranslated &&
-    (<View theme={{ base: { ai: 'Ai(c)', fld: '', m: 'Mstart(a)' } }}>
-      <Icon name='translate'
-        theme={{
-          base: {
-            c: 'C(muted)',
-            m: 'Mend(rq) Mstart(rh)'
-          }
-        }} />
+    (<div className='words-translated-view'>
+      <Icon className='translateicon-muted' />
         {details.wordsTranslated}
-    </View>)
+    </div>)
   return (
-    <View theme={viewTheme} name={name}>
-      <View theme={{ base: {ai: 'Ai(c)', fld: 'Fld(r)'} }}>
+    <div className='teaser-view-theme' name={name}>
+      <div className='user-teaser-inner'>
         <img
           src={details.avatarUrl}
           alt={details.id}
-          className='Bdrs(rnd) Mend(rq) W(r1h) H(r1h)' />
+          className='avatar-round' />
         <Link link={'/profile/view/' + details.id}
-          theme={{ base: { fw: 'Fw(600)' } }}>
+          className='text-bold'>
           {details.description}
         </Link>
-      </View>
+      </div>
       {wordsTranslated}
-    </View>
+    </div>
   )
 }
 

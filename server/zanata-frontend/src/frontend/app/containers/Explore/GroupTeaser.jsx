@@ -1,17 +1,5 @@
 import React, { PropTypes } from 'react'
-import {
-  Link,
-  View,
-  Icon
-} from 'zanata-ui'
-
-const viewTheme = {
-  base: {
-    ai: 'Ai(c)',
-    fld: '',
-    m: 'Mb(rh)'
-  }
-}
+import { Link, Icon } from '../../components'
 
 const statusIcons = {
   ACTIVE: '',
@@ -28,61 +16,41 @@ const GroupTeaser = ({
 }) => {
   const status = statusIcons[details.status]
   const description = details.description
-    ? (<div className={'C(muted)'}>
+    ? (<div className='text-muted'>
       {details.description}
     </div>)
-    : (<div className={'C(muted) Fs(i)'}>
-        No description available
+    : (<div className='text-muted'>
+      <em>No description available</em>
     </div>)
   const metaData = details.owner ? (
-    <View
-      theme={{
-        base: {
-          ai: 'Ai(c)',
-          fld: '',
-          fz: 'Fz(msn1)',
-          m: 'Mstart(a)--md'
-        }
-      }}>
-      <Icon
-        name='user'
-        size='n1'
-        theme={{ base: { c: 'C(muted)', m: 'Mend(rq)' } }} />
+    <div className='meta-info'>
+      <Icon name='user' className='n1 usericon-muted' />
       <Link to={details.owner}>{details.owner}</Link>
-      <Icon
-        name='users'
-        size='n1'
-        theme={{
-          base: {
-            c: 'C(muted)',
-            m: 'Mend(rq) Mstart(rh)'
-          }
-        }}
-      />
-    </View>
+      <Icon name='users' className='usersicon-muted n1' />
+    </div>
   ) : undefined
   const link = window.config.baseUrl + '/version-group/view/' + details.id
-  const theme = status !== statusIcons.ACTIVE
-                  ? { base: { fw: 'Fw(600)', c: 'C(muted)' } }
-                  : { base: { fw: 'Fw(600)' } }
+  const className = status !== statusIcons.ACTIVE
+                  ? 'Fw(600) C(muted)'
+                  : 'Fw(600)'
   return (
-    <View theme={viewTheme} name={name}>
+    <div className='teaser-view-theme' name={name}>
       {/* <View className='Mend(rh)'>
         TODO: Statistics Donut here
       </View> */}
-      <View theme={{ base: { fld: 'Fld(c) Fld(r)--md', flx: 'Flx(flx1)' } }}>
-        <View>
-          <Link link={link} useHref theme={theme}>
+      <div className='teaser-inner'>
+        <div>
+          <Link link={link} useHref className={className}>
             {status !== statusIcons.ACTIVE &&
-            (<Icon name={statusIcons[details.status]} size='1'
-              theme={{ base: { m: 'Mend(rq)' } }} />)}
+            (<Icon name={statusIcons[details.status]} className='s1 statusicons'
+            />)}
             {details.title}
           </Link>
           {description}
-        </View>
+        </div>
         {metaData}
-      </View>
-    </View>
+      </div>
+    </div>
   )
 }
 

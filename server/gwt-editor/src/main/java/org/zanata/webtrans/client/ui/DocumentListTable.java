@@ -211,10 +211,10 @@ public class DocumentListTable extends FlexTable {
             this.setWidget(i + 1, REMAINING_COLUMN,
                     getRemainingWidget(node.getDocInfo()));
 
-            this.setWidget(i + 1, LAST_UPLOAD_COLUMN, new InlineLabel(
-                    getAuditInfo(node.getDocInfo().getLastModified())));
-            this.setWidget(i + 1, LAST_TRANSLATED_COLUMN, new InlineLabel(
-                    getAuditInfo(node.getDocInfo().getLastTranslated())));
+            this.setWidget(i + 1, LAST_UPLOAD_COLUMN,
+                    getAuditInfo(node.getDocInfo().getLastModified()));
+            this.setWidget(i + 1, LAST_TRANSLATED_COLUMN,
+                    getAuditInfo(node.getDocInfo().getLastTranslated()));
 
             this.setWidget(i + 1, ACTION_COLUMN,
                     getActionWidget(node.getDocInfo()));
@@ -415,19 +415,24 @@ public class DocumentListTable extends FlexTable {
         return panel;
     }
 
-    private String getAuditInfo(AuditInfo lastTranslatedInfo) {
-        StringBuilder sb = new StringBuilder();
-
+    private Widget getAuditInfo(AuditInfo lastTranslatedInfo) {
+        FlowPanel panel = new FlowPanel();
         if (lastTranslatedInfo != null) {
             if (lastTranslatedInfo.getDate() != null) {
-                sb.append(DateUtil.formatShortDate(lastTranslatedInfo.getDate()));
+                panel.add(new InlineLabel(DateUtil
+                        .formatShortDate(lastTranslatedInfo.getDate())));
             }
-            if (!Strings.isNullOrEmpty(lastTranslatedInfo.getUsername())) {
-                sb.append(" by ");
-                sb.append(lastTranslatedInfo.getUsername());
+            String username = lastTranslatedInfo.getUsername();
+            if (!Strings.isNullOrEmpty(username)) {
+                Anchor anchor = new Anchor(" by " + username);
+                anchor.setTitle(username);
+                anchor.setHref(Application.getUserProfileURL(username));
+                anchor.setTarget("_blank");
+
+                panel.add(anchor);
             }
         }
-        return sb.toString();
+        return panel;
     }
 
     public void updateRowHasError(int row, DocValidationStatus status) {
@@ -437,8 +442,8 @@ public class DocumentListTable extends FlexTable {
     }
 
     public void updateLastTranslatedInfo(int row, AuditInfo lastTranslated) {
-        HasText label = (HasText) this.getWidget(row, LAST_TRANSLATED_COLUMN);
-        label.setText(getAuditInfo(lastTranslated));
+        this.setWidget(row, LAST_TRANSLATED_COLUMN,
+                getAuditInfo(lastTranslated));
     }
 
     public void updateStats(int row, ContainerTranslationStatistics stats,

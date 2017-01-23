@@ -491,8 +491,11 @@ public class EditorPage extends BasePage {
     public String getHistoryEntryAuthor(int entry) {
         log.info("Query author, action on history entry {}", entry);
         return getTranslationHistoryList().get(entry)
-                .findElements(By.className("gwt-InlineHTML")).get(0)
-                .findElement(By.className("txt--meta")).getText();
+                .findElements(By.className("gwt-InlineHTML"))
+                .get(0)
+                .findElement(By.className("txt--meta"))
+                .findElement(By.tagName("a"))
+                .getText();
     }
 
     public String getHistoryEntryContent(int entry) {

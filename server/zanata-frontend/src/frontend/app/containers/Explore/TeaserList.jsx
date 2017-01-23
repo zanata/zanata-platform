@@ -1,5 +1,4 @@
 import React, { PropTypes } from 'react'
-import { View } from 'zanata-ui'
 import TeaserListHeader from './TeaserListHeader'
 import ProjectTeaser from './ProjectTeaser'
 import GroupTeaser from './GroupTeaser'
@@ -23,16 +22,6 @@ const TeaserList = ({
   ...props
 }) => {
   let TeaserComponent
-  const teaserListTheme = {
-    base: {
-      m: 'Mb(r1h)'
-    }
-  }
-  const listTheme = {
-    base: {
-      m: 'Mt(r1)'
-    }
-  }
   switch (type) {
     case 'Project':
       TeaserComponent = ProjectTeaser
@@ -53,19 +42,19 @@ const TeaserList = ({
   }
 
   return (
-    <View theme={teaserListTheme}>
+    <div className='teaser-list-theme'>
       <TeaserListHeader title={title} type={type}
         sizePerPage={sizePerPage} page={page}
         totalCount={totalCount} updatePage={updatePage} loading={loading} />
-      <View theme={listTheme} id={'explore_' + type + '_result'}>
+      <span className='list-theme' id={'explore_' + type + '_result'}>
         {!items || items.length <= 0
-          ? (<p className={'C(muted)'}>No Results</p>)
+          ? (<p className='text-muted'>No Results</p>)
           : (items.map((item, key) => (
             <TeaserComponent details={item} key={key} name='entry' />
         )))
         }
-      </View>
-    </View>
+      </span>
+    </div>
   )
 }
 

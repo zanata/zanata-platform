@@ -5,7 +5,6 @@ import java.util.List;
 import net.customware.gwt.presenter.client.EventBus;
 
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.Project;
 import org.zanata.util.CoverageIgnore;
 import org.zanata.webtrans.client.EventProcessor.StartCallback;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -22,7 +21,6 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
-import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceAction;
 import org.zanata.webtrans.shared.rpc.ActivateWorkspaceResult;
@@ -301,6 +299,10 @@ public class Application implements EntryPoint {
                 + workspaceId.getProjectIterationId().getProjectSlug() + "/"
                 + workspaceId.getProjectIterationId().getIterationSlug() + "/"
                 + workspaceId.getLocaleId().getId() + "/" + downloadExtension;
+    }
+
+    public static String getUserProfileURL(String username) {
+        return getModuleParentBaseUrl() + "profile/view/" + username;
     }
 
     public static String getAllFilesDownloadURL(String downloadId) {
