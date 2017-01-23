@@ -22,12 +22,12 @@
 package org.zanata.webtrans.client.ui;
 
 import org.zanata.common.ContentState;
+import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.util.ContentStateToStyleUtil;
 import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
-import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.base.Strings;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.dom.client.SpanElement;
@@ -77,17 +77,25 @@ public class TransHistoryItemLine extends Composite {
             ContentStateRenderer stateRenderer) {
         this.item = item;
         this.listener = listener;
-        // before rhbz1149968 modified by person can be empty if translation is
-        // pushed from client
-        SafeHtml anonymous = template.anonymousUser(messages.anonymousUser());
-        SafeHtml person =
-                item.getModifiedBy().isEmpty() ?
-                        anonymous : new SafeHtmlBuilder()
-                        .appendHtmlConstant(item.getModifiedBy()).toSafeHtml();
-        heading =
-                new InlineHTML(template.heading(person,
-                        ContentStateToStyleUtil.stateToStyle(item.getStatus()),
-                        stateRenderer.render(item.getStatus())));
+
+        if (item.getModifiedBy().isEmpty()) {
+            // before rhbz1149968 modified by person can be empty if translation is
+            // pushed from client
+            SafeHtml anonymous = template.anonymousUser(messages.anonymousUser());
+            heading =
+                new InlineHTML(template.anonymousHeading(anonymous,
+                    ContentStateToStyleUtil.stateToStyle(item.getStatus()),
+                    stateRenderer.render(item.getStatus())));
+        } else {
+            SafeHtml username = new SafeHtmlBuilder()
+                    .appendHtmlConstant(item.getModifiedBy()).toSafeHtml();
+            String url = Application.getUserProfileURL(item.getModifiedBy());
+            heading =
+                new InlineHTML(template.heading(url, username,
+                    ContentStateToStyleUtil.stateToStyle(item.getStatus()),
+                    stateRenderer.render(item.getStatus())));
+        }
+
         targetContents =
                 new InlineHTML(template.targetContent(TextContentsDisplay
                         .asSyntaxHighlight(item.getContents()).toSafeHtml()));
@@ -140,9 +148,13 @@ public class TransHistoryItemLine extends Composite {
         @Template("<div class='l--pad-v-half'>{0}</div>")
         SafeHtml targetContent(SafeHtml message);
 
-        @Template("<div class='txt--meta'>{0} created a <strong class='{1}'>{2}</strong> revision</div>")
-                SafeHtml heading(SafeHtml person, String contentStateStyle,
+        @Template("<div class='txt--meta'><a href='{0}' target='_blank'>{1}</a> created a <strong class='{2}'>{3}</strong> revision</div>")
+                SafeHtml heading(String url, SafeHtml username, String contentStateStyle,
                         String contentState);
+
+        @Template("<div class='txt--meta'>{0} created a <strong class='{1}'>{2}</strong> revision</div>")
+        SafeHtml anonymousHeading(SafeHtml person, String contentStateStyle,
+            String contentState);
 
         @Template("<span class='txt--important'>Revision {0} </span><span class=\"label\">{1}</span>")
                 SafeHtml
