@@ -155,8 +155,8 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
     }
 
     override fun hashCode(): Int {
-        val PRIME = 59
-        var result = PRIME + localeId.hashCode()
+        val prime = 59
+        val result = prime + localeId.hashCode()
         return result
     }
 
