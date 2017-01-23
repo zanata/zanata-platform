@@ -1726,6 +1726,20 @@
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </pluginRepository>
+    <pluginRepository>
+      <id>arturbosch-code-analysis</id>
+      <name>arturbosch-code-analysis (for detekt)</name>
+      <url>https://dl.bintray.com/arturbosch/code-analysis/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </pluginRepository>
   </pluginRepositories>
 
 
@@ -1994,7 +2008,82 @@
               </target>
             </configuration>
           </execution>
+          <execution>
+            <!-- This can be run separately with mvn antrun:run@detekt -->
+            <id>detekt</id>
+            <!-- Disabled until config-resource option is available.
+                 https://gitlab.com/arturbosch/detekt/merge_requests/2 -->
+            <!--<phase>verify</phase>-->
+            <configuration>
+              <target name="detekt">
+                <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
+                  classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
+                  <arg value="--config-resource"/>
+                  <arg value="zanata-build-tools/detekt.yml"/>
+                  <arg value="--project"/>
+                  <arg value="${basedir}/src"/>
+                  <arg value="--filters"/>
+                  <arg value=".*test.*"/>
+                </java>
+              </target>
+            </configuration>
+            <goals><goal>run</goal></goals>
+          </execution>
+<!-- Disabled due to https://github.com/shyiko/ktlint/issues/22
+          <execution>
+            This can be run separately with https://github.com/shyiko/ktlint/issues/22
+            <id>ktlint</id>
+            <phase>verify</phase>
+            <configuration>
+              <target name="ktlint">
+                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true"
+                  classname="com.github.shyiko.ktlint.Main" classpathref="maven.plugin.classpath">
+                  <arg value="src/**/*.kt"/>
+                </java>
+              </target>
+            </configuration>
+            <goals><goal>run</goal></goals>
+          </execution>
+          <execution>
+            <id>ktlint-format</id>
+            <configuration>
+              <target name="ktlint">
+                <java taskname="ktlint" dir="${basedir}" fork="true" failonerror="true"
+                  classname="com.github.shyiko.ktlint.Main" classpathref="maven.plugin.classpath">
+                  <arg value="-F"/>
+                  <arg value="src/**/*.kt"/>
+                </java>
+              </target>
+            </configuration>
+            <goals><goal>run</goal></goals>
+          </execution>
+-->
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>build-tools</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>io.gitlab.arturbosch.detekt</groupId>
+            <artifactId>detekt-cli</artifactId>
+            <version>1.0.0.M6</version>
+          </dependency>
+          <dependency>
+            <groupId>io.gitlab.arturbosch.detekt</groupId>
+            <artifactId>detekt-formatting</artifactId>
+            <version>1.0.0.M6</version>
+          </dependency>
+<!--
+          <dependency>
+            <groupId>com.github.shyiko</groupId>
+            <artifactId>ktlint</artifactId>
+            <version>0.3.0</version>
+          </dependency>
+-->
+          <!-- additional 3rd party ruleset(s) can be specified here -->
+        </dependencies>
       </plugin>
     </plugins>
 
