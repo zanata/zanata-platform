@@ -39,6 +39,12 @@ import javax.validation.constraints.NotNull
 import java.io.Serializable
 import java.util.HashSet
 
+/**
+ * Database entity which represents a locale, which can be used as a source
+ * or target locale for translations, the plural forms for the language,
+ * and human-readable names for the locale. Based on RFC 3066 locale IDs as
+ * used in ICU4J's ULocale.
+ */
 @Entity
 @Cacheable
 @TypeDef(name = "localeId", typeClass = LocaleIdType::class)
@@ -91,11 +97,19 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
         this.isActive = active
     }
 
+    /**
+     * Gets the name of the locale according to that locale, either from the
+     * database record if specified, otherwise from ICU4J.
+     */
     fun retrieveNativeName(): String? {
         if (nativeName.isNullOrEmpty()) return retrieveDefaultNativeName()
         return nativeName
     }
 
+    /**
+     * Gets the name of the locale according to the server's default locale,
+     * either from the database record if specified, otherwise from ICU4J.
+     */
     // TODO these 'retrieve' methods are unconventional, replace them with
     //      getters so devs don't waste time trying to use 'get' methods that
     //      don't work properly.
@@ -105,14 +119,24 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
         return displayName!!
     }
 
+    /**
+     * Gets the default name of the locale according to that locale, from ICU4J.
+     */
     fun retrieveDefaultNativeName(): String {
         return asULocale().getDisplayName(asULocale())
     }
 
+    /**
+     * Gets the name of the locale according to the server's default locale,
+     * from ICU4J.
+     */
     fun retrieveDefaultDisplayName(): String {
         return asULocale().displayName
     }
 
+    /**
+     * Gets the ICU4J ULocale for this locale.
+     */
     fun asULocale(): ULocale {
         return ULocale(this.localeId.id)
     }
