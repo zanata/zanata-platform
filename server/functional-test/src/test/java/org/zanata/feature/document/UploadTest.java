@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.document;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
@@ -34,24 +33,22 @@ import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
-
 import java.io.File;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.FunctionalTestHelper.assumeTrue;
 
 /**
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@Slf4j
 public class UploadTest extends ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(UploadTest.class);
 
     @Rule
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
-
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
     private String documentStorageDirectory;
 
@@ -62,11 +59,8 @@ public class UploadTest extends ZanataTestCase {
         new ZanataRestCaller().createProjectAndVersion("uploadtest",
                 "txt-upload", "file");
         documentStorageDirectory = CleanDocumentStorageRule
-                .getDocumentStoragePath()
-                .concat(File.separator)
-                .concat("documents")
-                .concat(File.separator);
-
+                .getDocumentStoragePath().concat(File.separator)
+                .concat("documents").concat(File.separator);
         if (new File(documentStorageDirectory).exists()) {
             log.warn("Document storage directory exists (cleanup incomplete)");
         }
@@ -76,122 +70,88 @@ public class UploadTest extends ZanataTestCase {
     @Category(BasicAcceptanceTest.class)
     @Ignore("Error in system path")
     public void uploadedDocumentIsInFilesystem() {
-        File originalFile =
-                testFileGenerator.generateTestFileWithContent(
-                        "uploadedDocumentIsInFilesystem", ".txt",
-                        "This is a test file");
+        File originalFile = testFileGenerator.generateTestFileWithContent(
+                "uploadedDocumentIsInFilesystem", ".txt",
+                "This is a test file");
         String testFileName = originalFile.getName();
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("uploadtest")
-                .gotoVersion("txt-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(originalFile.getAbsolutePath())
-                .submitUpload()
-                .clickUploadDone();
-
-        File newlyCreatedFile = new File(documentStorageDirectory,
-                testFileGenerator
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("uploadtest")
+                        .gotoVersion("txt-upload").gotoSettingsTab()
+                        .gotoSettingsDocumentsTab().pressUploadFileButton()
+                        .enterFilePath(originalFile.getAbsolutePath())
+                        .submitUpload().clickUploadDone();
+        File newlyCreatedFile =
+                new File(documentStorageDirectory, testFileGenerator
                         .getFirstFileNameInDirectory(documentStorageDirectory));
-
         assertThat(testFileGenerator.getTestFileContent(newlyCreatedFile))
                 .isEqualTo("This is a test file")
                 .as("The contents of the file were also uploaded");
         VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .gotoDocumentTab()
-                .expectSourceDocsContains(testFileName);
-
+                .gotoDocumentTab().expectSourceDocsContains(testFileName);
         assertThat(versionDocumentsPage.sourceDocumentsContains(testFileName))
-                .isTrue()
-                .as("Document shows in table");
+                .isTrue().as("Document shows in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void cancelFileUpload() {
-        File cancelUploadFile =
-                testFileGenerator.generateTestFileWithContent(
-                        "cancelFileUpload", ".txt", "Cancel File Upload Test");
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("uploadtest")
-                .gotoVersion("txt-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(cancelUploadFile.getAbsolutePath())
-                .cancelUpload();
-
-        assertThat(versionDocumentsTab.sourceDocumentsContains("cancelFileUpload.txt"))
-            .isFalse()
-            .as("Document does not show in table");
+        File cancelUploadFile = testFileGenerator.generateTestFileWithContent(
+                "cancelFileUpload", ".txt", "Cancel File Upload Test");
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("uploadtest")
+                        .gotoVersion("txt-upload").gotoSettingsTab()
+                        .gotoSettingsDocumentsTab().pressUploadFileButton()
+                        .enterFilePath(cancelUploadFile.getAbsolutePath())
+                        .cancelUpload();
+        assertThat(versionDocumentsTab
+                .sourceDocumentsContains("cancelFileUpload.txt")).isFalse()
+                        .as("Document does not show in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emptyFilenameUpload() {
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("uploadtest")
-                .gotoVersion("txt-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton();
-
-        assertThat(versionDocumentsTab.canSubmitDocument())
-                .isFalse()
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("uploadtest")
+                        .gotoVersion("txt-upload").gotoSettingsTab()
+                        .gotoSettingsDocumentsTab().pressUploadFileButton();
+        assertThat(versionDocumentsTab.canSubmitDocument()).isFalse()
                 .as("The upload button is not available");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("RHBZ-990836")
     public void handleReallyBigFile() {
-        File bigFile =
-                testFileGenerator.generateTestFileWithContent(
-                        "bigFile", ".txt", "Big file content");
+        File bigFile = testFileGenerator.generateTestFileWithContent("bigFile",
+                ".txt", "Big file content");
         long fileSizeInMB = (1024 * 1024) * 500;
         testFileGenerator.forceFileSize(bigFile, fileSizeInMB);
-
         assumeTrue("Data file " + bigFile.getName() + " is big",
                 bigFile.length() == fileSizeInMB);
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("uploadtest")
-                .gotoVersion("txt-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(bigFile.getAbsolutePath())
-                .submitUpload()
-                .clickUploadDone();
-
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("uploadtest")
+                        .gotoVersion("txt-upload").gotoSettingsTab()
+                        .gotoSettingsDocumentsTab().pressUploadFileButton()
+                        .enterFilePath(bigFile.getAbsolutePath()).submitUpload()
+                        .clickUploadDone();
         versionDocumentsTab.assertNoCriticalErrors();
         // TODO: Verify graceful handling of scenario
     }
-
     // RHBZ993445
+
     @Ignore("Fails on Chrome")
     public void failOnInvalidFileUpload() {
-        File noFile =
-                testFileGenerator.generateTestFileWithContent("thereIsNoSpoon",
-                        ".txt", "This file will be deleted");
+        File noFile = testFileGenerator.generateTestFileWithContent(
+                "thereIsNoSpoon", ".txt", "This file will be deleted");
         String successfullyUploaded =
                 "Document " + noFile.getName() + " uploaded.";
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("uploadtest")
-                .gotoVersion("txt-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(noFile.getAbsolutePath());
-
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("uploadtest")
+                        .gotoVersion("txt-upload").gotoSettingsTab()
+                        .gotoSettingsDocumentsTab().pressUploadFileButton()
+                        .enterFilePath(noFile.getAbsolutePath());
         assertThat(noFile.delete() && !noFile.exists())
                 .as("Data file " + noFile.getName() + " does not exist");
-
-        versionDocumentsTab = versionDocumentsTab
-                .submitUpload()
-                .clickUploadDone();
-
+        versionDocumentsTab =
+                versionDocumentsTab.submitUpload().clickUploadDone();
         versionDocumentsTab.assertNoCriticalErrors();
     }
 
@@ -200,23 +160,17 @@ public class UploadTest extends ZanataTestCase {
         File longFile = testFileGenerator.generateTestFileWithContent(
                 testFileGenerator.longFileName(), ".txt",
                 "This filename is long");
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("uploadtest")
-                .gotoVersion("txt-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(longFile.getAbsolutePath())
-                .submitUpload()
-                .clickUploadDone();
-
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("uploadtest")
+                        .gotoVersion("txt-upload").gotoSettingsTab()
+                        .gotoSettingsDocumentsTab().pressUploadFileButton()
+                        .enterFilePath(longFile.getAbsolutePath())
+                        .submitUpload().clickUploadDone();
         VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .gotoDocumentTab()
-                .expectSourceDocsContains(longFile.getName());
-
-        assertThat(versionDocumentsPage.sourceDocumentsContains(longFile.getName()))
-                .isTrue()
-                .as("Document shows in table");
+                .gotoDocumentTab().expectSourceDocsContains(longFile.getName());
+        assertThat(versionDocumentsPage
+                .sourceDocumentsContains(longFile.getName())).isTrue()
+                        .as("Document shows in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -224,46 +178,33 @@ public class UploadTest extends ZanataTestCase {
         File emptyFile = testFileGenerator
                 .generateTestFileWithContent("emptyFile", ".txt", "");
         assumeTrue("File is empty", emptyFile.length() == 0);
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("uploadtest")
-                .gotoVersion("txt-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(emptyFile.getAbsolutePath())
-                .submitUpload()
-                .clickUploadDone();
-
-        assertThat(emptyFile.exists())
-                .isTrue()
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("uploadtest")
+                        .gotoVersion("txt-upload").gotoSettingsTab()
+                        .gotoSettingsDocumentsTab().pressUploadFileButton()
+                        .enterFilePath(emptyFile.getAbsolutePath())
+                        .submitUpload().clickUploadDone();
+        assertThat(emptyFile.exists()).isTrue()
                 .as("Data file emptyFile.txt still exists");
-
-        VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .gotoDocumentTab()
-                .expectSourceDocsContains(emptyFile.getName());
-
-        assertThat(versionDocumentsPage.sourceDocumentsContains(emptyFile.getName()))
-                .isTrue()
-                .as("Document shows in table");
+        VersionDocumentsPage versionDocumentsPage =
+                versionDocumentsTab.gotoDocumentTab()
+                        .expectSourceDocsContains(emptyFile.getName());
+        assertThat(versionDocumentsPage
+                .sourceDocumentsContains(emptyFile.getName())).isTrue()
+                        .as("Document shows in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void rejectUnsupportedValidFiletype() {
-        File unsupportedFile = testFileGenerator
-                .generateTestFileWithContent("testfodt", ".fodt", "<xml></xml>");
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("uploadtest")
-                .gotoVersion("txt-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(unsupportedFile.getAbsolutePath());
-
+        File unsupportedFile = testFileGenerator.generateTestFileWithContent(
+                "testfodt", ".fodt", "<xml></xml>");
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("uploadtest")
+                        .gotoVersion("txt-upload").gotoSettingsTab()
+                        .gotoSettingsDocumentsTab().pressUploadFileButton()
+                        .enterFilePath(unsupportedFile.getAbsolutePath());
         assertThat(versionDocumentsTab.getUploadError())
                 .contains(VersionDocumentsTab.UNSUPPORTED_FILETYPE)
                 .as("Unsupported file type error is shown");
     }
-
 }

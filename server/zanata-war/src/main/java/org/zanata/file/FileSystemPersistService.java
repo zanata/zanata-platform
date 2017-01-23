@@ -25,11 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.io.FilenameUtils;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -41,16 +37,15 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.rest.service.VirusScanner;
-
 import com.google.common.io.Files;
 
 @Named("filePersistService")
 @RequestScoped
-@Slf4j
 public class FileSystemPersistService implements FilePersistService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(FileSystemPersistService.class);
 
     private static final String RAW_DOCUMENTS_SUBDIRECTORY = "documents";
-
     @Inject
     private ApplicationConfiguration appConfig;
     @Inject
@@ -63,7 +58,6 @@ public class FileSystemPersistService implements FilePersistService {
             File fromFile, String extension) {
         String fileName = generateFileNameFor(rawDocument, extension);
         rawDocument.setFileId(fileName);
-
         File newFile = getFileForName(fileName);
         try {
             Files.copy(fromFile, newFile);
@@ -72,7 +66,6 @@ public class FileSystemPersistService implements FilePersistService {
             // sites
             throw new RuntimeException(e);
         }
-
         GlobalDocumentId globalId = getGlobalId(rawDocument);
         log.info("Persisted raw document {} to file {}", globalId,
                 newFile.getAbsolutePath());
@@ -98,8 +91,8 @@ public class FileSystemPersistService implements FilePersistService {
                 appConfig.getDocumentFileStorageLocation();
         if (basePathStringOrNull == null) {
             throw new RuntimeException(
-                    "Document storage location is not configured as system property:" +
-                            SystemPropertyConfigStore.KEY_DOCUMENT_FILE_STORE);
+                    "Document storage location is not configured as system property:"
+                            + SystemPropertyConfigStore.KEY_DOCUMENT_FILE_STORE);
         }
         File docsDirectory =
                 new File(basePathStringOrNull, RAW_DOCUMENTS_SUBDIRECTORY);
@@ -107,23 +100,21 @@ public class FileSystemPersistService implements FilePersistService {
         return docsDirectory;
     }
 
-    private static String generateFileNameFor(HRawDocument rawDocument, String extension) {
+    private static String generateFileNameFor(HRawDocument rawDocument,
+            String extension) {
         // Could change to use id of rawDocument, and throw if rawDocument has
         // no id yet.
         String idAsString = rawDocument.getDocument().getId().toString();
         return idAsString + "." + extension;
     }
-
     // TODO damason: put this in a more appropriate location
+
     private static GlobalDocumentId getGlobalId(HRawDocument rawDocument) {
         HDocument document = rawDocument.getDocument();
         HProjectIteration version = document.getProjectIteration();
         HProject project = version.getProject();
-
-        GlobalDocumentId id =
-                new GlobalDocumentId(project.getSlug(), version.getSlug(),
-                        document.getDocId());
-
+        GlobalDocumentId id = new GlobalDocumentId(project.getSlug(),
+                version.getSlug(), document.getDocId());
         return id;
     }
 
@@ -154,5 +145,4 @@ public class FileSystemPersistService implements FilePersistService {
     private File getFileForRawDocument(HRawDocument rawDocument) {
         return getFileForName(rawDocument.getFileId());
     }
-
 }

@@ -21,9 +21,7 @@
 package org.zanata.notification;
 
 import java.io.Serializable;
-
 import javax.mail.internet.InternetAddress;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.ApplicationConfiguration;
@@ -33,41 +31,31 @@ import org.zanata.email.LanguageTeamPermissionChangeEmailStrategy;
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
 import org.zanata.i18n.Messages;
 import org.zanata.servlet.annotations.ServerPath;
-
 import com.google.common.collect.Lists;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Handles language team permissions change JMS message. This will build and
- * send out an email to the person affected.
- * N.B. We can only have application, request or
- * stateless scope beans in here, not session.
+ * send out an email to the person affected. N.B. We can only have application,
+ * request or stateless scope beans in here, not session.
  *
  * @see EmailQueueMessageReceiver
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("languageTeamPermissionChangeJmsMessagePayloadHandler")
 @javax.enterprise.context.Dependent
-
-@Slf4j
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
-        EmailQueueMessageReceiver.JmsMessagePayloadHandler {
+public class LanguageTeamPermissionChangeJmsMessagePayloadHandler
+        implements EmailQueueMessageReceiver.JmsMessagePayloadHandler {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(
+                    LanguageTeamPermissionChangeJmsMessagePayloadHandler.class);
     @Inject
     private EmailBuilder emailBuilder;
-
     @Inject
     private Messages msgs;
-
     @Inject
     @ServerPath
     private String serverPath;
-
 
     @Override
     public void handle(Serializable data) {
@@ -79,27 +67,33 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandler implements
         LanguageTeamPermissionChangedEvent changedEvent =
                 LanguageTeamPermissionChangedEvent.class.cast(data);
         log.debug("language team permission change data:{}", changedEvent);
-
         if (!changedEvent.hasPermissionsChanged()) {
             // permission didn't really changed
             return;
         }
-
         String receivedReason =
                 msgs.format("jsf.email.languageteam.permission.ReceivedReason",
                         changedEvent.getLanguage());
         String contactTeamCoordinatorLink =
-                serverPath +
-                        "/language/view/" + changedEvent.getLanguage();
+                serverPath + "/language/view/" + changedEvent.getLanguage();
         LanguageTeamPermissionChangeEmailStrategy emailStrategy =
-                new LanguageTeamPermissionChangeEmailStrategy(
-                        changedEvent, msgs, contactTeamCoordinatorLink);
-        InternetAddress to =
-                Addresses.getAddress(changedEvent.getEmail(),
-                        changedEvent.getName());
-
+                new LanguageTeamPermissionChangeEmailStrategy(changedEvent,
+                        msgs, contactTeamCoordinatorLink);
+        InternetAddress to = Addresses.getAddress(changedEvent.getEmail(),
+                changedEvent.getName());
         emailBuilder.sendMessage(emailStrategy,
                 Lists.newArrayList(receivedReason), to);
     }
 
+    public LanguageTeamPermissionChangeJmsMessagePayloadHandler() {
+    }
+
+    @java.beans.ConstructorProperties({ "emailBuilder", "msgs", "serverPath" })
+    protected LanguageTeamPermissionChangeJmsMessagePayloadHandler(
+            final EmailBuilder emailBuilder, final Messages msgs,
+            final String serverPath) {
+        this.emailBuilder = emailBuilder;
+        this.msgs = msgs;
+        this.serverPath = serverPath;
+    }
 }

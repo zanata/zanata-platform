@@ -22,7 +22,6 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -34,31 +33,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.model.validator.EmailDomain;
 
 @Entity
-@EntityListeners({HPersonEmailValidationKey.EntityListener.class})
-@Setter
-@ToString
-@NoArgsConstructor
+@EntityListeners({ HPersonEmailValidationKey.EntityListener.class })
 public class HPersonEmailValidationKey implements Serializable {
     private static final long serialVersionUID = 1L;
-
     private Long id;
-
     private String keyHash;
-
     private HPerson person;
-
     private Date creationDate;
-
     private String email;
 
     public HPersonEmailValidationKey(HPerson person, String email,
@@ -99,11 +85,42 @@ public class HPersonEmailValidationKey implements Serializable {
     }
 
     public static class EntityListener {
+
         @SuppressWarnings("unused")
         @PrePersist
         private void onPersist(HPersonEmailValidationKey key) {
             key.creationDate = new Date();
         }
+    }
 
+    public void setId(final Long id) {
+        this.id = id;
+    }
+
+    public void setKeyHash(final String keyHash) {
+        this.keyHash = keyHash;
+    }
+
+    public void setPerson(final HPerson person) {
+        this.person = person;
+    }
+
+    public void setCreationDate(final Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String toString() {
+        return "HPersonEmailValidationKey(id=" + this.getId() + ", keyHash="
+                + this.getKeyHash() + ", person=" + this.getPerson()
+                + ", creationDate=" + this.getCreationDate() + ", email="
+                + this.getEmail() + ")";
+    }
+
+    public HPersonEmailValidationKey() {
     }
 }

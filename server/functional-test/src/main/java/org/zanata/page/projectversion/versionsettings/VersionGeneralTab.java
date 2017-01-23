@@ -23,20 +23,20 @@ package org.zanata.page.projectversion.versionsettings;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.projectversion.VersionBasePage;
-import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class VersionGeneralTab extends VersionBasePage {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionGeneralTab.class);
     private By versionIdField = By.id("settings-general_form:slug:input:slug");
     private By updateButton = By.id("settings-general_form:updateButton");
 
     public VersionGeneralTab(WebDriver driver) {
         super(driver);
     }
-
 
     public VersionGeneralTab enterVersionID(String newSlug) {
         log.info("Enter project version slug {}", newSlug);

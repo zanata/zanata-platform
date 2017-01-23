@@ -18,14 +18,10 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.page;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -33,7 +29,6 @@ import org.openqa.selenium.WebElement;
 import org.zanata.page.more.MorePage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
-
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
@@ -43,14 +38,13 @@ import com.google.common.collect.Lists;
  * Contains the physical elements, such as page title and home link, that must
  * exist on all Zanata pages.
  *
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class CorePage extends AbstractPage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(CorePage.class);
     private By homeLink = By.id("nav_home");
-
     private By moreLink = By.id("nav_more");
 
     public CorePage(WebDriver driver) {
@@ -86,6 +80,7 @@ public class CorePage extends AbstractPage {
     protected void clickAndExpectErrors(WebElement button) {
         clickElement(button);
         refreshPageUntil(this, new Predicate<WebDriver>() {
+
             @Override
             public boolean apply(WebDriver input) {
                 return getErrors().size() > 0;
@@ -95,19 +90,14 @@ public class CorePage extends AbstractPage {
 
     public List<String> getErrors() {
         log.info("Query page errors");
-        List<String> oldError =
-                WebElementUtil.elementsToText(getDriver(),
-                        By.xpath("//span[@class='errors']"));
-
+        List<String> oldError = WebElementUtil.elementsToText(getDriver(),
+                By.xpath("//span[@class=\'errors\']"));
         // app-error is a pseudo class we put in just for this
-        List<String> newError =
-                WebElementUtil.elementsToText(getDriver(),
-                        By.className("app-error"));
-
+        List<String> newError = WebElementUtil.elementsToText(getDriver(),
+                By.className("app-error"));
         List<String> allErrors = Lists.newArrayList();
         allErrors.addAll(oldError);
         allErrors.addAll(newError);
-
         return allErrors;
     }
 
@@ -120,30 +110,33 @@ public class CorePage extends AbstractPage {
      */
     public List<String> getErrors(final int expectedNumber) {
         log.info("Query page errors, expecting {}", expectedNumber);
-        refreshPageUntil(this, (Predicate<WebDriver>) webDriver ->
-                getErrors().size() == expectedNumber, "errors = " + expectedNumber);
+        refreshPageUntil(this,
+                (Predicate<WebDriver>) webDriver -> getErrors()
+                        .size() == expectedNumber,
+                "errors = " + expectedNumber);
         return getErrors();
     }
 
     /**
      * Wait until an expected error is visible
      *
-     * @param expected The expected error string
+     * @param expected
+     *            The expected error string
      * @return The full list of visible errors
      */
     public List<String> expectError(final String expected) {
         String msg = "expected error: " + expected;
         logWaiting(msg);
-        waitForAMoment().withMessage(msg).until(
-                (Predicate<WebDriver>) webDriver ->
-                        getErrors().contains(expected));
+        waitForAMoment().withMessage(msg)
+                .until((Predicate<WebDriver>) webDriver -> getErrors()
+                        .contains(expected));
         return getErrors();
     }
 
     public String getNotificationMessage(By elementBy) {
         log.info("Query notification message");
-        List<WebElement> messages = existingElement(elementBy)
-                        .findElements(By.tagName("li"));
+        List<WebElement> messages =
+                existingElement(elementBy).findElements(By.tagName("li"));
         return messages.size() > 0 ? messages.get(0).getText() : "";
     }
 
@@ -154,11 +147,11 @@ public class CorePage extends AbstractPage {
     public boolean expectNotification(final String notification) {
         String msg = "notification " + notification;
         logWaiting(msg);
-        return waitForAMoment().withMessage(msg).until(
-                (Function<WebDriver, Boolean>) driver -> {
-                    List<WebElement> messages = getDriver()
-                            .findElement(By.id("messages"))
-                            .findElements(By.tagName("li"));
+        return waitForAMoment().withMessage(msg)
+                .until((Function<WebDriver, Boolean>) driver -> {
+                    List<WebElement> messages =
+                            getDriver().findElement(By.id("messages"))
+                                    .findElements(By.tagName("li"));
                     List<String> notifications = new ArrayList<String>();
                     for (WebElement message : messages) {
                         notifications.add(message.getText().trim());
@@ -172,13 +165,12 @@ public class CorePage extends AbstractPage {
     }
 
     public void assertNoCriticalErrors() {
-        List<WebElement> errors = getDriver()
-                .findElements(By.className("alert--danger"));
+        List<WebElement> errors =
+                getDriver().findElements(By.className("alert--danger"));
         if (errors.size() > 0) {
             log.info("Error page displayed");
-            throw new RuntimeException("Critical error: \n"
-                    + errors.get(0).getText());
+            throw new RuntimeException(
+                    "Critical error: \n" + errors.get(0).getText());
         }
     }
-
 }

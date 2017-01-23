@@ -18,7 +18,6 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.service.impl;
 
 import java.util.Optional;
@@ -26,14 +25,11 @@ import javax.annotation.Nonnull;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
-
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.zanata.events.WebhookEventType;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.HmacUtil;
 
 /**
@@ -41,15 +37,16 @@ import org.zanata.util.HmacUtil;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class WebHooksPublisher {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(WebHooksPublisher.class);
 
     public static final String WEBHOOK_HEADER = "X-Zanata-Webhook";
 
     public static void publish(@Nonnull String callbackURL,
-        @Nonnull WebhookEventType event, Optional<String> secretKey) {
+            @Nonnull WebhookEventType event, Optional<String> secretKey) {
         publish(callbackURL, event.getJSON(), MediaType.APPLICATION_JSON_TYPE,
-            MediaType.APPLICATION_JSON_TYPE, secretKey);
+                MediaType.APPLICATION_JSON_TYPE, secretKey);
     }
 
     protected static void publish(@Nonnull String callbackURL,
@@ -60,9 +57,8 @@ public class WebHooksPublisher {
             ResteasyWebTarget target = client.target(callbackURL);
             Invocation.Builder postBuilder =
                     target.request().accept(acceptType);
-
-            if (secretKey.isPresent() &&
-                    StringUtils.isNotBlank(secretKey.get())) {
+            if (secretKey.isPresent()
+                    && StringUtils.isNotBlank(secretKey.get())) {
                 String sha =
                         signWebhookHeader(data, secretKey.get(), callbackURL);
                 postBuilder.header(WEBHOOK_HEADER, sha);
@@ -78,12 +74,12 @@ public class WebHooksPublisher {
             String callbackURL) {
         String valueToDigest = data + callbackURL;
         try {
-            return HmacUtil
-                .hmacSha1(key, HmacUtil.hmacSha1(key, valueToDigest));
+            return HmacUtil.hmacSha1(key,
+                    HmacUtil.hmacSha1(key, valueToDigest));
         } catch (IllegalArgumentException e) {
-            log.error("Unable to generate hmac sha1 for {} {}", key, valueToDigest);
+            log.error("Unable to generate hmac sha1 for {} {}", key,
+                    valueToDigest);
             throw new IllegalArgumentException(e);
         }
     }
 }
-

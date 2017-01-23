@@ -23,9 +23,6 @@ package org.zanata.action;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Model;
 import javax.faces.event.ValueChangeEvent;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -40,20 +37,20 @@ import org.zanata.ui.faces.FacesMessages;
 /**
  * Controller class for the Translation Memory UI.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("translationMemoryHome")
 @RequestScoped
 @Model
 @Transactional
 @CheckRole("admin")
-@Slf4j
 public class TranslationMemoryHome extends EntityHome<TransMemory> {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationMemoryHome.class);
     private static final long serialVersionUID = -8557363011909155662L;
     @Inject
     private SlugEntityService slugEntityServiceImpl;
-
     @Inject
     private FacesMessages facesMessages;
 
@@ -68,8 +65,7 @@ public class TranslationMemoryHome extends EntityHome<TransMemory> {
 
     public boolean validateSlug(String slug, String componentId) {
         if (!slugEntityServiceImpl.isSlugAvailable(slug, TransMemory.class)) {
-            facesMessages.addToControl(componentId,
-                    "This Id is not available");
+            facesMessages.addToControl(componentId, "This Id is not available");
             return false;
         }
         return true;

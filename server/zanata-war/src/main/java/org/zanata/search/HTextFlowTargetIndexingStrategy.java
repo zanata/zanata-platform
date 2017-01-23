@@ -31,19 +31,20 @@ import org.zanata.dao.HTextFlowTargetStreamingDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Indexing strategy specific to HTextFlowTargets. This indexing strategy
  * eagerly loads all of HTextFlowTarget's indexable relationships and fetches
  * its results in a memory-efficient manner.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
-public class HTextFlowTargetIndexingStrategy extends
-        AbstractIndexingStrategy<HTextFlowTarget> {
+public class HTextFlowTargetIndexingStrategy
+        extends AbstractIndexingStrategy<HTextFlowTarget> {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(HTextFlowTargetIndexingStrategy.class);
+
     public HTextFlowTargetIndexingStrategy() {
         super(HTextFlowTarget.class);
     }
@@ -54,17 +55,11 @@ public class HTextFlowTargetIndexingStrategy extends
     }
 
     @Override
-    protected ScrollableResults queryResults(int ignoredOffset, FullTextSession session) {
+    protected ScrollableResults queryResults(int ignoredOffset,
+            FullTextSession session) {
         // TODO move this query into something like HTextFlowTargetStreamingDAO
-        Query query =
-                session.createQuery(
-                                "from HTextFlowTarget tft "
-                                        + "join fetch tft.locale "
-                                        + "join fetch tft.textFlow "
-                                        + "join fetch tft.textFlow.document "
-                                        + "join fetch tft.textFlow.document.locale "
-                                        + "join fetch tft.textFlow.document.projectIteration "
-                                        + "join fetch tft.textFlow.document.projectIteration.project");
+        Query query = session.createQuery(
+                "from HTextFlowTarget tft join fetch tft.locale join fetch tft.textFlow join fetch tft.textFlow.document join fetch tft.textFlow.document.locale join fetch tft.textFlow.document.projectIteration join fetch tft.textFlow.document.projectIteration.project");
         query.setFetchSize(Integer.MIN_VALUE);
         return query.scroll(ScrollMode.FORWARD_ONLY);
     }
@@ -75,20 +70,17 @@ public class HTextFlowTargetIndexingStrategy extends
         HTextFlowTargetStreamingDAO dao =
                 new HTextFlowTargetStreamingDAO(HTextFlowTarget.class, session);
         ScrollableResults scrollableResults =
-                dao.getTargetsWithAllFieldsEagerlyFetchedForProject(
-                        project);
+                dao.getTargetsWithAllFieldsEagerlyFetchedForProject(project);
         reindexScrollableResultSet(session, scrollableResults, handle);
     }
 
     private static void reindexScrollableResultSet(FullTextSession session,
             ScrollableResults scrollableResults, AsyncTaskHandle handle) {
-
         session.setFlushMode(FlushMode.MANUAL);
         session.setCacheMode(CacheMode.IGNORE);
         int rowNum = 0;
         try {
             while (scrollableResults.next()) {
-
                 rowNum++;
                 HTextFlowTarget entity =
                         (HTextFlowTarget) scrollableResults.get(0);
@@ -97,7 +89,6 @@ public class HTextFlowTargetIndexingStrategy extends
                 if (handle != null) {
                     handle.increaseProgress(1);
                 }
-
                 if (rowNum % sessionClearBatchSize == 0) {
                     log.info(
                             "periodic flush and clear for HTextFlowTarget (n={})",
@@ -120,8 +111,7 @@ public class HTextFlowTargetIndexingStrategy extends
         // it must use the same session in the DAO and to do the indexing
         HTextFlowTargetStreamingDAO dao =
                 new HTextFlowTargetStreamingDAO(HTextFlowTarget.class, session);
-        ScrollableResults
-                scrollableResults =
+        ScrollableResults scrollableResults =
                 dao.getTargetsWithAllFieldsEagerlyFetchedForProjectIteration(
                         projectIteration);
         reindexScrollableResultSet(session, scrollableResults, handle);

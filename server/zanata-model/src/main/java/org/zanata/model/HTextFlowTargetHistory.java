@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -41,7 +40,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.IndexColumn;
@@ -53,47 +51,31 @@ import org.zanata.common.ContentState;
 import org.zanata.model.type.EntityType;
 import org.zanata.model.type.EntityTypeType;
 import org.zanata.model.type.TranslationSourceType;
-
 import com.google.common.base.Objects;
-import lombok.Getter;
-import lombok.Setter;
 import org.zanata.model.type.TranslationSourceTypeType;
 
 @Entity
 @Immutable
 @NamedQueries({
-        @NamedQuery(
-                name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 1,
-                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount "
-                        + "and contents[0] = :content0"),
-        @NamedQuery(
-                name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 2,
-                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount "
-                        + "and contents[0] = :content0 and contents[1] = :content1"),
-        @NamedQuery(
-                name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 3,
-                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount "
-                        + "and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2"),
-        @NamedQuery(
-                name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 4,
-                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount "
-                        + "and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3"),
-        @NamedQuery(
-                name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 5,
-                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount "
-                        + "and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3 and contents[4] = :content4"),
-        @NamedQuery(
-                name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 6,
-                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount "
-                        + "and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3 and contents[4] = :content4 and contents[5] = :content5") })
-
+        @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 1,
+                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount and contents[0] = :content0"),
+        @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 2,
+                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount and contents[0] = :content0 and contents[1] = :content1"),
+        @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 3,
+                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2"),
+        @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 4,
+                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3"),
+        @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 5,
+                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3 and contents[4] = :content4"),
+        @NamedQuery(name = HTextFlowTargetHistory.QUERY_MATCHING_HISTORY + 6,
+                query = "select count(*) from HTextFlowTargetHistory t where t.textFlowTarget = :tft and size(t.contents) = :contentCount and contents[0] = :content0 and contents[1] = :content1 and contents[2] = :content2 and contents[3] = :content3 and contents[4] = :content4 and contents[5] = :content5") })
 @TypeDefs({
-    @TypeDef(name = "sourceType", typeClass = TranslationSourceTypeType.class),
-    @TypeDef(name = "entityType", typeClass = EntityTypeType.class)
-})
+        @TypeDef(name = "sourceType",
+                typeClass = TranslationSourceTypeType.class),
+        @TypeDef(name = "entityType", typeClass = EntityTypeType.class) })
 @EntityListeners({ HTextFlowTargetHistory.EntityListener.class })
-public class HTextFlowTargetHistory extends HTextContainer implements
-        Serializable, ITextFlowTargetHistory {
+public class HTextFlowTargetHistory extends HTextContainer
+        implements Serializable, ITextFlowTargetHistory {
     static final String QUERY_MATCHING_HISTORY =
             "HTextFlowTargetHistory.QUERY_MATCHING_HISTORY.";
 
@@ -102,43 +84,20 @@ public class HTextFlowTargetHistory extends HTextContainer implements
     }
 
     private static final long serialVersionUID = 1L;
-
     private Long id;
-
     private HTextFlowTarget textFlowTarget;
-
     private Integer versionNum;
-
     private List<String> contents;
-
     private Date lastChanged;
-
     private HPerson lastModifiedBy;
-
     private ContentState state;
-
     private Integer textFlowRevision;
-
     private HPerson translator;
-
     private HPerson reviewer;
-
-    @Setter
     private EntityType copiedEntityType;
-
-    @Getter
-    @Setter
     private Long copiedEntityId;
-
-    @Setter
     private TranslationSourceType sourceType;
-
-    @Getter
-    @Setter
     private Boolean automatedEntry;
-
-    @Getter
-    @Setter
     private String revisionComment;
 
     public HTextFlowTargetHistory() {
@@ -170,8 +129,8 @@ public class HTextFlowTargetHistory extends HTextContainer implements
     protected void setId(Long id) {
         this.id = id;
     }
-
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
+
     @NaturalId
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_id")
@@ -182,12 +141,11 @@ public class HTextFlowTargetHistory extends HTextContainer implements
     public void setTextFlowTarget(HTextFlowTarget textFlowTarget) {
         this.textFlowTarget = textFlowTarget;
     }
+    // TODO PERF @NaturalId(mutable=false) for better criteria caching
 
     @Override
-    // TODO PERF @NaturalId(mutable=false) for better criteria caching
-            @NaturalId
-            public
-            Integer getVersionNum() {
+    @NaturalId
+    public Integer getVersionNum() {
         return versionNum;
     }
 
@@ -282,6 +240,7 @@ public class HTextFlowTargetHistory extends HTextContainer implements
     }
 
     public static class EntityListener {
+
         @PreUpdate
         private void preUpdate(HTextFlowTargetHistory tfth) {
             setAutomatedEntry(tfth);
@@ -316,15 +275,50 @@ public class HTextFlowTargetHistory extends HTextContainer implements
                         this.lastModifiedBy)
                 || !Objects.equal(current.getTranslator(), this.translator)
                 || !Objects.equal(current.getReviewer(), this.reviewer)
-            || !Objects.equal(current.getState(), this.state)
+                || !Objects.equal(current.getState(), this.state)
                 || !Objects.equal(current.getTextFlowRevision(),
                         this.textFlowRevision)
                 || !Objects.equal(current.getLastChanged(), this.lastChanged)
                 || !Objects.equal(current.getTextFlow().getId(),
                         this.textFlowTarget.getId())
                 || !Objects.equal(current.getVersionNum(), this.versionNum)
-                || !Objects.equal(current.getRevisionComment(), this.revisionComment)
-                || !Objects.equal(current.getCopiedEntityId(), this.copiedEntityId)
-                || !Objects.equal(current.getCopiedEntityType(), this.copiedEntityType);
+                || !Objects.equal(current.getRevisionComment(),
+                        this.revisionComment)
+                || !Objects.equal(current.getCopiedEntityId(),
+                        this.copiedEntityId)
+                || !Objects.equal(current.getCopiedEntityType(),
+                        this.copiedEntityType);
+    }
+
+    public void setCopiedEntityType(final EntityType copiedEntityType) {
+        this.copiedEntityType = copiedEntityType;
+    }
+
+    public Long getCopiedEntityId() {
+        return this.copiedEntityId;
+    }
+
+    public void setCopiedEntityId(final Long copiedEntityId) {
+        this.copiedEntityId = copiedEntityId;
+    }
+
+    public void setSourceType(final TranslationSourceType sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    public Boolean getAutomatedEntry() {
+        return this.automatedEntry;
+    }
+
+    public void setAutomatedEntry(final Boolean automatedEntry) {
+        this.automatedEntry = automatedEntry;
+    }
+
+    public String getRevisionComment() {
+        return this.revisionComment;
+    }
+
+    public void setRevisionComment(final String revisionComment) {
+        this.revisionComment = revisionComment;
     }
 }

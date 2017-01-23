@@ -18,7 +18,6 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.security.oauth;
 
 import java.io.IOException;
@@ -28,7 +27,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
@@ -47,45 +45,34 @@ import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.util.FacesNavigationUtil;
 import com.google.common.base.Strings;
 import com.google.common.base.Throwables;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * JSF backed bean for OAuth authorization page.
  *
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RequestScoped
 @Named("authorizeAction")
 @CheckLoggedIn
 public class AuthorizeAction {
+
     private static final Logger log =
             LoggerFactory.getLogger(AuthorizeAction.class);
-
-    @Getter
-    @Setter
     private String redirectUri;
-    @Getter
-    @Setter
     private String clientId;
-
     @Inject
     @DeltaSpike
     private HttpServletRequest request;
-
     @Inject
     private SecurityTokens securityTokens;
-
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
-
     @Inject
     private AllowedAppDAO allowedAppDAO;
-
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     @SupportOAuth
     private boolean serverEnabledOAuth;
@@ -95,7 +82,6 @@ public class AuthorizeAction {
      */
     public void checkAuthorization() {
         identity.checkLoggedIn();
-
         Optional<AllowedApp> authorized = allowedAppDAO
                 .getAllowedAppForAccount(authenticatedAccount, clientId);
         if (authorized.isPresent()) {
@@ -105,19 +91,15 @@ public class AuthorizeAction {
 
     private void generateAuthCodeAndRedirect() {
         try {
-            String code = securityTokens
-                    .getAuthorizationCode(
-                            authenticatedAccount.getUsername(), clientId);
-
+            String code = securityTokens.getAuthorizationCode(
+                    authenticatedAccount.getUsername(), clientId);
             OAuthResponse resp = OAuthASResponse
                     .authorizationResponse(request,
                             HttpServletResponse.SC_FOUND)
-                    .setCode(code)
-                    .location(redirectUri)
-                    .buildQueryMessage();
-            log.info("User click Allow. Redirect back to:{}", resp.getLocationUri());
-            FacesNavigationUtil
-                    .redirectToExternal(resp.getLocationUri());
+                    .setCode(code).location(redirectUri).buildQueryMessage();
+            log.info("User click Allow. Redirect back to:{}",
+                    resp.getLocationUri());
+            FacesNavigationUtil.redirectToExternal(resp.getLocationUri());
         } catch (OAuthSystemException | IOException e) {
             throw Throwables.propagate(e);
         }
@@ -127,8 +109,8 @@ public class AuthorizeAction {
     public void authorize() {
         if (serverEnabledOAuth) {
             // TODO handle cancel/reject action
-            allowedAppDAO
-                    .persistClientId(authenticatedAccount.getUsername(), clientId);
+            allowedAppDAO.persistClientId(authenticatedAccount.getUsername(),
+                    clientId);
             generateAuthCodeAndRedirect();
         }
     }
@@ -148,22 +130,35 @@ public class AuthorizeAction {
     public boolean isValidOAuthRequest() {
         return !Strings.isNullOrEmpty(request.getParameter(getClientIdParam()))
                 && !Strings.isNullOrEmpty(
-                request.getParameter(getRedirectUriParam()));
+                        request.getParameter(getRedirectUriParam()));
     }
 
     public void cancel() {
         try {
-            OAuthResponse resp =
-                    new OAuthASResponse.OAuthResponseBuilder(
-                            HttpServletResponse.SC_FORBIDDEN)
-                            .location(redirectUri)
+            OAuthResponse resp = new OAuthASResponse.OAuthResponseBuilder(
+                    HttpServletResponse.SC_FORBIDDEN).location(redirectUri)
                             .buildBodyMessage();
             log.info("User click cancel. Redirect back to:{}",
                     resp.getLocationUri());
-            FacesNavigationUtil
-                    .redirectToExternal(resp.getLocationUri());
+            FacesNavigationUtil.redirectToExternal(resp.getLocationUri());
         } catch (OAuthSystemException | IOException e) {
             throw Throwables.propagate(e);
         }
+    }
+
+    public String getRedirectUri() {
+        return this.redirectUri;
+    }
+
+    public void setRedirectUri(final String redirectUri) {
+        this.redirectUri = redirectUri;
+    }
+
+    public String getClientId() {
+        return this.clientId;
+    }
+
+    public void setClientId(final String clientId) {
+        this.clientId = clientId;
     }
 }

@@ -18,27 +18,21 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.rest.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteStreamHandler;
 import org.apache.commons.exec.ExecuteWatchdog;
 import org.apache.commons.exec.Executor;
 import org.apache.commons.exec.PumpStreamHandler;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.exception.VirusDetectedException;
-
 import com.google.common.base.Stopwatch;
 
 /**
@@ -57,14 +51,15 @@ import com.google.common.base.Stopwatch;
  * cause an exception. (If it has not been set, an error will be logged but that
  * is all.)
  *
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("virusScanner")
 @RequestScoped
-@Slf4j
 public class VirusScanner {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(VirusScanner.class);
+
     private static final boolean DISABLED;
     private static final boolean SCANNER_SET;
     private static final String SCANNER_NAME;
@@ -76,9 +71,7 @@ public class VirusScanner {
             // This ensures that clamd can scan the file regardless of
             // permissions or security context (since clamdscan actually
             // accesses the file, not clamd):
-            "--stream"
-    };
-
+            "--stream" };
     static {
         // If the system property is empty or null, we try to use
         // clamdscan, but we don't throw an exception if we can't find it.
@@ -94,19 +87,22 @@ public class VirusScanner {
             if (scannerProperty == null || scannerProperty.isEmpty()) {
                 SCANNER_NAME = "clamdscan";
                 SCANNER_SET = false;
-                log.info("defaulting to clamdscan (system property 'virusScanner' is null or empty)");
-                log.warn("failure to run scanner will be logged but otherwise ignored");
+                log.info(
+                        "defaulting to clamdscan (system property \'virusScanner\' is null or empty)");
+                log.warn(
+                        "failure to run scanner will be logged but otherwise ignored");
             } else {
                 SCANNER_NAME = scannerProperty;
                 SCANNER_SET = true;
-                log.info("property 'virusScanner' found: failure to run scanner will be treated as an error");
+                log.info(
+                        "property \'virusScanner\' found: failure to run scanner will be treated as an error");
             }
             USING_CLAM = SCANNER_NAME.toLowerCase().contains("clamdscan");
             if (USING_CLAM) {
-                log.info("scanning with command '{}', using arguments: {}",
+                log.info("scanning with command \'{}\', using arguments: {}",
                         SCANNER_NAME, CLAMDSCAN_ARGS);
             } else {
-                log.info("scanning with command '{}'", SCANNER_NAME);
+                log.info("scanning with command \'{}\'", SCANNER_NAME);
             }
         }
     }
@@ -153,16 +149,15 @@ public class VirusScanner {
         Executor executor = buildExecutor(scannerOutput);
         try {
             int exitValue = executor.execute(cmdLine);
-            log.debug("{} to scan file: '{}'", stop, documentName);
+            log.debug("{} to scan file: \'{}\'", stop, documentName);
             handleResult(exitValue, documentName, scannerOutput);
         } catch (IOException e) {
             // perhaps the antivirus executable was not found...
             // we omit the stack exception, because it tends to be uninteresting
             // in this case
-            String msg =
-                    "error executing " + SCANNER_NAME
-                            + ", unable to scan file '" + documentName
-                            + "' for viruses: " + e.getMessage();
+            String msg = "error executing " + SCANNER_NAME
+                    + ", unable to scan file \'" + documentName
+                    + "\' for viruses: " + e.getMessage();
             if (SCANNER_SET) {
                 throw new RuntimeException(msg);
             }
@@ -170,8 +165,8 @@ public class VirusScanner {
         }
     }
 
-    private void
-            handleResult(int exitValue, String documentName, Object output) {
+    private void handleResult(int exitValue, String documentName,
+            Object output) {
         // The following return codes are taken from the clamdscan manpage.
         // If another scanner is used, we may not use the ideal
         // exception when something goes wrong, but as long as zero
@@ -181,25 +176,24 @@ public class VirusScanner {
         final int someErrorOccurred = 2;
         switch (exitValue) {
         case noVirusFound:
-            log.info("{} says file '{}' is clean: {}", SCANNER_NAME,
+            log.info("{} says file \'{}\' is clean: {}", SCANNER_NAME,
                     documentName, output);
             return;
+
         case virusFound:
-            throw new VirusDetectedException(SCANNER_NAME + " detected virus: "
-                    + output);
+            throw new VirusDetectedException(
+                    SCANNER_NAME + " detected virus: " + output);
+
         case someErrorOccurred:
+
         default:
             // This can happen if clamdscan is found, but the clamd service is
             // not running.
-            String msg =
-                    SCANNER_NAME
-                            + " returned error scanning file '"
-                            + documentName
-                            + "': "
-                            + output
-                            + (USING_CLAM ? "\nPlease ensure clamd service is running."
-                                    : "");
+            String msg = SCANNER_NAME + " returned error scanning file \'"
+                    + documentName + "\': " + output + (USING_CLAM
+                            ? "\nPlease ensure clamd service is running." : "");
             throw new RuntimeException(msg);
+
         }
     }
 
@@ -231,5 +225,4 @@ public class VirusScanner {
         executor.setExitValues(null);
         return executor;
     }
-
 }

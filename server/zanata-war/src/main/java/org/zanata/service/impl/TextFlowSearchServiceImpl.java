@@ -23,12 +23,8 @@ package org.zanata.service.impl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.search.FullTextSession;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -47,27 +43,26 @@ import org.zanata.service.TextFlowSearchService;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 /**
- * @author David Mason, <a
- *         href="mailto:damason@redhat.com">damason@redhat.com</a>
+ * @author David Mason,
+ *         <a href="mailto:damason@redhat.com">damason@redhat.com</a>
  */
 @Named("textFlowSearchServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class TextFlowSearchServiceImpl implements TextFlowSearchService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TextFlowSearchServiceImpl.class);
 
     @Inject
     private LocaleService localeServiceImpl;
-
     @Inject
     private DocumentDAO documentDAO;
-
-    @Inject @FullText
+    @Inject
+    @FullText
     private FullTextSession session;
 
     @Override
@@ -98,26 +93,22 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
         String projectSlug = workspace.getProjectIterationId().getProjectSlug();
         String iterationSlug =
                 workspace.getProjectIterationId().getIterationSlug();
-
         // TODO consider whether to allow null and empty search strings.
         // May want to fork to use a different method to retrieve all targets if
         // empty targets are required.
-
         // check that locale is valid for the workspace
         HLocale hLocale;
         try {
-            hLocale =
-                    localeServiceImpl.validateLocaleByProjectIteration(
-                            localeId, projectSlug, iterationSlug);
+            hLocale = localeServiceImpl.validateLocaleByProjectIteration(
+                    localeId, projectSlug, iterationSlug);
         } catch (ZanataServiceException e) {
             throw new ZanataServiceException("Failed to validate locale", e);
         }
-
-        if (!constraints.isSearchInSource() && !constraints.isSearchInTarget()) {
+        if (!constraints.isSearchInSource()
+                && !constraints.isSearchInTarget()) {
             // searching nowhere
             return Collections.emptyList();
         }
-
         // FIXME this looks like it assumes only 3 states and would not work
         // properly for getting
         // e.g. only approved strings while there is a search active.
@@ -127,16 +118,13 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
             // including nothing
             return Collections.emptyList();
         }
-
         return findTextFlowsWithDatabaseSearch(projectSlug, iterationSlug,
                 documentPaths, constraints, hLocale);
     }
 
     /**
-     *
      * @see org.zanata.dao.TextFlowDAO#getTextFlowByDocumentIdWithConstraints(org.zanata.webtrans.shared.model.DocumentId,
-     *      org.zanata.model.HLocale, FilterConstraints, int,
-     *      int)
+     *      org.zanata.model.HLocale, FilterConstraints, int, int)
      */
     private List<HTextFlow> findTextFlowsWithDatabaseSearch(String projectSlug,
             String iterationSlug, List<String> documentPaths,
@@ -150,25 +138,22 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
             // is sourced from url in
             // org.zanata.webtrans.client.presenter.SearchResultsPresenter.updateViewAndRun
             // so it should be ok.
-            documents =
-                    documentDAO.getByProjectIterationAndDocIdList(projectSlug,
-                            iterationSlug, documentPaths);
+            documents = documentDAO.getByProjectIterationAndDocIdList(
+                    projectSlug, iterationSlug, documentPaths);
         } else {
-            documents =
-                    documentDAO.getAllByProjectIteration(projectSlug,
-                            iterationSlug);
+            documents = documentDAO.getAllByProjectIteration(projectSlug,
+                    iterationSlug);
         }
         List<Long> documentIds =
                 Lists.transform(documents, HDocumentToId.FUNCTION);
-
-        FilterConstraintToQuery toQuery =
-                FilterConstraintToQuery.filterInMultipleDocuments(constraints,
-                        documentIds);
+        FilterConstraintToQuery toQuery = FilterConstraintToQuery
+                .filterInMultipleDocuments(constraints, documentIds);
         String hql = toQuery.toEntityQuery();
         log.debug("hql for searching: {}", hql);
         org.hibernate.Query query = session.createQuery(hql);
         toQuery.setQueryParameters(query, hLocale);
-        query.setComment("TextFlowSearchServiceImpl.findTextFlowsWithDatabaseSearch");
+        query.setComment(
+                "TextFlowSearchServiceImpl.findTextFlowsWithDatabaseSearch");
         @SuppressWarnings("unchecked")
         List<HTextFlow> result = query.list();
         if (constraints.isCaseSensitive()) {
@@ -200,7 +185,6 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
             FilterConstraints constraints, Long localeId) {
         List<HTextFlow> matchingTextFlows = new ArrayList<HTextFlow>();
         String search = constraints.getSearchString();
-
         scanning_text_flows: for (HTextFlow tf : results) {
             if (constraints.isSearchInSource()) {
                 for (String content : tf.getContents()) {
@@ -222,7 +206,6 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
                 }
             }
         }
-
         return matchingTextFlows;
     }
 
@@ -232,7 +215,6 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
         List<String> documentPaths = new ArrayList<String>(1);
         HDocument document = documentDAO.getById(doc.getId());
         documentPaths.add(document.getDocId());
-
         return this.findTextFlows(workspace, documentPaths, constraints);
     }
 

@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -34,16 +33,16 @@ import org.zanata.page.utility.HomePage;
 import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.RegisterWorkFlow;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 @Category(TestPlan.DetailedTest.class)
 public class ServerSettingsTest extends ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ServerSettingsTest.class);
 
     @Rule
     public final HasEmailRule hasEmailRule = new HasEmailRule();
@@ -51,19 +50,13 @@ public class ServerSettingsTest extends ZanataTestCase {
     @Test
     @Ignore("unstable")
     public void setServerURLTest() {
-        new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToAdministration()
+        new LoginWorkFlow().signIn("admin", "admin").goToAdministration()
                 .goToServerConfigPage()
-                .inputServerURL("http://myserver.com/zanata")
-                .save()
-                .gotoMorePage()
-                .clickContactAdmin()
-                .inputMessage("Test pattern")
+                .inputServerURL("http://myserver.com/zanata").save()
+                .gotoMorePage().clickContactAdmin().inputMessage("Test pattern")
                 .send(HomePage.class);
-        String emailContent = HasEmailRule
-                .getEmailContent(hasEmailRule.getMessages().get(0));
-
+        String emailContent =
+                HasEmailRule.getEmailContent(hasEmailRule.getMessages().get(0));
         assertThat(emailContent).contains("http://myserver.com/zanata")
                 .as("The email indicates the expected server url");
     }
@@ -71,35 +64,23 @@ public class ServerSettingsTest extends ZanataTestCase {
     @Test
     public void setRegisterURLTest() {
         String url = "http://myserver.com/register";
-        ServerConfigurationPage serverConfigurationPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToAdministration()
-                .goToServerConfigPage()
-                .inputRegisterURL(url)
-                .save()
-                .goToServerConfigPage();
-
-        assertThat(serverConfigurationPage
-                .expectFieldValue(ServerConfigurationPage.registerUrlField, url))
-                .as("The expected url was displayed");
+        ServerConfigurationPage serverConfigurationPage =
+                new LoginWorkFlow().signIn("admin", "admin")
+                        .goToAdministration().goToServerConfigPage()
+                        .inputRegisterURL(url).save().goToServerConfigPage();
+        assertThat(serverConfigurationPage.expectFieldValue(
+                ServerConfigurationPage.registerUrlField, url))
+                        .as("The expected url was displayed");
     }
 
     @Test
     public void setAdministratorEmailTest() {
-        new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToAdministration()
-                .goToServerConfigPage()
-                .inputAdminEmail("lara@example.com")
-                .save()
-                .gotoMorePage()
-                .clickContactAdmin()
-                .inputMessage("Test pattern")
-                .send(HomePage.class);
-
+        new LoginWorkFlow().signIn("admin", "admin").goToAdministration()
+                .goToServerConfigPage().inputAdminEmail("lara@example.com")
+                .save().gotoMorePage().clickContactAdmin()
+                .inputMessage("Test pattern").send(HomePage.class);
         assertThat(hasEmailRule.getMessages().get(0).getEnvelopeReceiver())
-                .contains("lara@example.com")
-                .as("The recipient admin was set");
+                .contains("lara@example.com").as("The recipient admin was set");
     }
 
     @Test
@@ -107,20 +88,14 @@ public class ServerSettingsTest extends ZanataTestCase {
     public void setAdministratorEmailFromTest() {
         String email = "lara@example.com";
         ServerConfigurationPage serverConfigurationPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToAdministration()
-                .goToServerConfigPage()
-                .inputAdminFromEmail(email)
-                .save()
+                .signIn("admin", "admin").goToAdministration()
+                .goToServerConfigPage().inputAdminFromEmail(email).save()
                 .goToServerConfigPage();
-
         assertThat(serverConfigurationPage.expectFieldValue(
                 ServerConfigurationPage.fromEmailField, email));
-
         serverConfigurationPage.goToHomePage().logout();
         new RegisterWorkFlow().registerInternal("test1", "test1", "test123",
                 "test1@test.com");
-
         assertThat(hasEmailRule.getMessages().get(0).getEnvelopeSender())
                 .contains("lara@example.com")
                 .as("The server email sender was set");
@@ -128,89 +103,59 @@ public class ServerSettingsTest extends ZanataTestCase {
 
     @Test
     public void setHelpURLTest() {
-        MorePage morePage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToAdministration()
-                .goToServerConfigPage()
-                .inputHelpURL("http://www.test.com")
-                .save()
-                .gotoMorePage();
-
-        assertThat(morePage.getHelpURL())
-                .isEqualTo("http://www.test.com/")
+        MorePage morePage = new LoginWorkFlow().signIn("admin", "admin")
+                .goToAdministration().goToServerConfigPage()
+                .inputHelpURL("http://www.test.com").save().gotoMorePage();
+        assertThat(morePage.getHelpURL()).isEqualTo("http://www.test.com/")
                 .as("The help URL was set correctly");
     }
 
     @Test
     public void unsetTermsOfUseURL() {
-        RegisterPage registerPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToAdministration()
-                .goToServerConfigPage()
-                .inputTermsOfUseURL("http://www.test.com")
-                .save()
-                .goToServerConfigPage()
-                .inputTermsOfUseURL("")
-                .save()
-                .logout()
+        RegisterPage registerPage = new LoginWorkFlow().signIn("admin", "admin")
+                .goToAdministration().goToServerConfigPage()
+                .inputTermsOfUseURL("http://www.test.com").save()
+                .goToServerConfigPage().inputTermsOfUseURL("").save().logout()
                 .goToRegistration();
-
         assertThat(registerPage.termsOfUseUrlVisible()).isFalse()
                 .as("The Terms of Use URL is not visible");
     }
 
     @Test
     public void setTermsOfUseURLTest() {
-        RegisterPage registerPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToAdministration()
-                .goToServerConfigPage()
-                .inputTermsOfUseURL("http://www.test.com")
-                .save()
-                .logout()
+        RegisterPage registerPage = new LoginWorkFlow().signIn("admin", "admin")
+                .goToAdministration().goToServerConfigPage()
+                .inputTermsOfUseURL("http://www.test.com").save().logout()
                 .goToRegistration();
-
-        assertThat(registerPage.getTermsUrl())
-                .isEqualTo("http://www.test.com/")
+        assertThat(registerPage.getTermsUrl()).isEqualTo("http://www.test.com/")
                 .as("The Terms of Use URL was set correctly");
     }
 
     @Test
     public void setEmailLoggingTest() {
         ServerConfigurationPage serverConfigurationPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToAdministration()
-                .goToServerConfigPage()
-                .clickLoggingEnabledCheckbox()
+                .signIn("admin", "admin").goToAdministration()
+                .goToServerConfigPage().clickLoggingEnabledCheckbox()
                 .selectLoggingLevel("Error")
-                .inputLogEmailTarget("lara@example.com")
-                .save()
+                .inputLogEmailTarget("lara@example.com").save()
                 .goToServerConfigPage();
-
         assertThat(serverConfigurationPage.selectedLoggingLevel())
-                .isEqualTo("Error")
-                .as("Level is correct");
+                .isEqualTo("Error").as("Level is correct");
         assertThat(serverConfigurationPage.getLogEmailTarget())
-                .isEqualTo("lara@example.com")
-                .as("Recipient is correct");
+                .isEqualTo("lara@example.com").as("Recipient is correct");
     }
 
     @Test
     public void setPiwikTest() {
-        ServerConfigurationPage serverConfigurationPage = new LoginWorkFlow()
-                .signIn("admin", "admin")
-                .goToAdministration()
-                .goToServerConfigPage()
-                .inputPiwikUrl("http://example.com/piwik")
-                .inputPiwikID("12345")
-                .save()
-                .goToServerConfigPage();
-
+        ServerConfigurationPage serverConfigurationPage =
+                new LoginWorkFlow().signIn("admin", "admin")
+                        .goToAdministration().goToServerConfigPage()
+                        .inputPiwikUrl("http://example.com/piwik")
+                        .inputPiwikID("12345").save().goToServerConfigPage();
         assertThat(serverConfigurationPage.getPiwikUrl())
                 .isEqualTo("http://example.com/piwik")
                 .as("Piwik url is correct is correct");
-        assertThat(serverConfigurationPage.getPiwikID())
-                .isEqualTo("12345")
+        assertThat(serverConfigurationPage.getPiwikID()).isEqualTo("12345")
                 .as("Piwik ID is correct");
     }
 }

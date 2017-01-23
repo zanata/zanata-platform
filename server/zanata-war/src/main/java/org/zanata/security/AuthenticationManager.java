@@ -21,9 +21,7 @@
 package org.zanata.security;
 
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -39,10 +37,7 @@ import org.zanata.security.openid.OpenIdAuthCallback;
 import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.UserAccountService;
 import org.zanata.ui.faces.FacesMessages;
-
 import javax.enterprise.event.Observes;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Centralizes all attempts to authenticate locally or externally.
@@ -51,46 +46,37 @@ import lombok.extern.slf4j.Slf4j;
  * the authenticated user against the session. The login methods will perform
  * these two steps.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("authenticationManager")
 @RequestScoped
-@Slf4j
 public class AuthenticationManager {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(AuthenticationManager.class);
+
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     private ZanataJpaIdentityStore identityStore;
-
     @Inject
     private ZanataCredentials credentials;
-
     @Inject
     private ZanataOpenId zanataOpenId;
-
     @Inject
     private FacesMessages facesMessages;
-
     @Inject
     private UserAccountService userAccountServiceImpl;
-
     @Inject
     private CredentialsDAO credentialsDAO;
-
     @Inject
     private AccountDAO accountDAO;
-
     @Inject
     private UserRedirectBean userRedirect;
-
     @Inject
     private ApplicationConfiguration applicationConfiguration;
-
     @Inject
     private Messages msgs;
-
     @Inject
     private SpNegoIdentity spNegoIdentity;
 
@@ -105,16 +91,14 @@ public class AuthenticationManager {
      *            User's password. May be null for some authentication types.
      * @return A String with the result of the operation.
      */
-    private String login(AuthenticationType authenticationType,
-            String username, String password) {
+    private String login(AuthenticationType authenticationType, String username,
+            String password) {
         credentials.setUsername(username);
         credentials.setPassword(password);
-
         String result = identity.login(authenticationType);
         if (isLoggedIn(result)) {
             this.onLoginCompleted(new LoginCompleted(authenticationType));
         }
-
         return result;
     }
 
@@ -131,7 +115,6 @@ public class AuthenticationManager {
         if (isAuthenticatedAccountWaitingForActivation()) {
             return "inactive";
         }
-
         return login(AuthenticationType.INTERNAL, credentials.getUsername(),
                 credentials.getPassword());
     }
@@ -142,10 +125,8 @@ public class AuthenticationManager {
      * @return
      */
     public String jaasLogin() {
-        String result =
-                login(AuthenticationType.JAAS, credentials.getUsername(),
-                        credentials.getPassword());
-
+        String result = login(AuthenticationType.JAAS,
+                credentials.getUsername(), credentials.getPassword());
         if (isLoggedIn(result)) {
             if (isAuthenticatedAccountWaitingForActivation()) {
                 return "inactive";
@@ -164,7 +145,8 @@ public class AuthenticationManager {
             if (!isNewUser() && !isAuthenticatedAccountWaitingForActivation()
                     && isAccountEnabledAndActivated()) {
                 spNegoIdentity.login();
-                this.onLoginCompleted(new LoginCompleted(AuthenticationType.KERBEROS));
+                this.onLoginCompleted(
+                        new LoginCompleted(AuthenticationType.KERBEROS));
             }
         }
     }
@@ -175,7 +157,7 @@ public class AuthenticationManager {
     public String formBasedKerberosLogin() {
         if (applicationConfiguration.isKerberosAuth()) {
             String loginResult = this.login(AuthenticationType.KERBEROS,
-                credentials.getUsername(), credentials.getPassword());
+                    credentials.getUsername(), credentials.getPassword());
             if (isAuthenticatedAccountWaitingForActivation()) {
                 loginResult = "inactive";
             }
@@ -219,7 +201,8 @@ public class AuthenticationManager {
      * Id provider, a callback may be provided to perform actions after the
      * authentication attempt is finished.
      *
-     * @param openId The Open Id identifier to be used.
+     * @param openId
+     *            The Open Id identifier to be used.
      * @param openIdProviderType
      *            Open Id provider to use for authentication
      * @param callback
@@ -227,7 +210,8 @@ public class AuthenticationManager {
      *            attempt.
      */
     public void openIdAuthenticate(String openId,
-            OpenIdProviderType openIdProviderType, OpenIdAuthCallback callback) {
+            OpenIdProviderType openIdProviderType,
+            OpenIdAuthCallback callback) {
         ZanataCredentials volatileCreds = new ZanataCredentials();
         volatileCreds.setUsername(openId);
         volatileCreds.setAuthType(AuthenticationType.OPENID);
@@ -251,7 +235,8 @@ public class AuthenticationManager {
      *         dashboard - Redirect the user to dashboard page.
      */
     public String getAuthenticationRedirect() {
-        if (identity.getCredentials().getAuthType() == AuthenticationType.KERBEROS) {
+        if (identity.getCredentials()
+                .getAuthType() == AuthenticationType.KERBEROS) {
             if (isAuthenticatedAccountWaitingForActivation()) {
                 return "inactive";
             } else if (identity.isPreAuthenticated() && isNewUser()) {
@@ -283,19 +268,17 @@ public class AuthenticationManager {
     public void onLoginCompleted(@Observes LoginCompleted payload) {
         AuthenticationType authType = payload.getAuthType();
         identity.setPreAuthenticated(true);
-        if (isExternalLogin() && !isNewUser() && isAccountEnabledAndActivated()) {
+        if (isExternalLogin() && !isNewUser()
+                && isAccountEnabledAndActivated()) {
             applyAuthentication();
         }
         // Get the authenticated account and credentials
         HAccount authenticatedAccount = null;
         HCredentials authenticatedCredentials = null;
-
         String username = credentials.getUsername();
-
         if (authType == AuthenticationType.OPENID) {
-            authenticatedCredentials =
-                    credentialsDAO.findByUser(zanataOpenId.getAuthResult()
-                            .getAuthenticatedId());
+            authenticatedCredentials = credentialsDAO.findByUser(
+                    zanataOpenId.getAuthResult().getAuthenticatedId());
             // on first Open Id login, there might not be any stored credentials
             if (authenticatedCredentials != null) {
                 authenticatedAccount = authenticatedCredentials.getAccount();
@@ -304,7 +287,6 @@ public class AuthenticationManager {
             authenticatedCredentials = credentialsDAO.findByUser(username);
             authenticatedAccount = accountDAO.getByUsername(username);
         }
-
         if (authenticatedAccount != null) {
             userAccountServiceImpl.runRoleAssignmentRules(authenticatedAccount,
                     authenticatedCredentials, authType.name());
@@ -317,25 +299,21 @@ public class AuthenticationManager {
     }
 
     public boolean isAccountEnabled(String username) {
-        return !StringUtils.isEmpty(username) &&
-                identityStore.isUserEnabled(username);
+        return !StringUtils.isEmpty(username)
+                && identityStore.isUserEnabled(username);
     }
 
     public boolean isAuthenticatedAccountWaitingForActivation() {
         boolean userIsAuthenticated = true;
-
         // For internal Authentication, the user must be re-authenticated
         // without
         // taking into account
         // the account's enabled flag
         if (credentials.getAuthType() == AuthenticationType.INTERNAL
                 && applicationConfiguration.isInternalAuth()) {
-            userIsAuthenticated =
-                    identityStore.checkPasswordIgnoringActivation(
-                            credentials.getUsername(),
-                            credentials.getPassword());
+            userIsAuthenticated = identityStore.checkPasswordIgnoringActivation(
+                    credentials.getUsername(), credentials.getPassword());
         }
-
         return userIsAuthenticated
                 && !isAccountEnabled(credentials.getUsername())
                 && isAccountWaitingForActivation(credentials.getUsername());
@@ -348,8 +326,8 @@ public class AuthenticationManager {
     public boolean isNewUser() {
         if (credentials.getAuthType() == AuthenticationType.OPENID
                 && applicationConfiguration.isOpenIdAuth()) {
-            return credentialsDAO.findByUser(zanataOpenId.getAuthResult()
-                    .getAuthenticatedId()) == null;
+            return credentialsDAO.findByUser(
+                    zanataOpenId.getAuthResult().getAuthenticatedId()) == null;
         }
         return isNewUser(credentials.getUsername());
     }
@@ -380,34 +358,28 @@ public class AuthenticationManager {
             if (isAccountWaitingForActivation(username)) {
                 message = msgs.get("authentication.loginFailed");
             } else {
-                message =
-                        "User "
-                                + username
-                                + " has been disabled. Please contact server admin.";
+                message = "User " + username
+                        + " has been disabled. Please contact server admin.";
             }
-
             facesMessages.clear();
             facesMessages.addGlobal(message);
-
             // identity.setPreAuthenticated(false);
             // identity.unAuthenticate();
-
             return false;
         }
     }
 
     private boolean isExternalLogin() {
-        return identity.getCredentials().getAuthType() != AuthenticationType.INTERNAL
+        return identity.getCredentials()
+                .getAuthType() != AuthenticationType.INTERNAL
                 && !identity.isApiRequest();
     }
 
     private void applyAuthentication() {
         String username = identity.getCredentials().getUsername();
-
         for (String role : getImpliedRoles(username)) {
             identity.addRole(role);
         }
         setAuthenticateUser(username);
     }
-
 }

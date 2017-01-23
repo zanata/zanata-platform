@@ -20,13 +20,10 @@
  */
 package org.zanata.dao;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.Query;
 import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.Session;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
 import org.zanata.model.HProject;
@@ -34,78 +31,53 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("hTextFlowTargetStreamingDAO")
 @RequestScoped
-@Slf4j
-public class HTextFlowTargetStreamingDAO extends
-        AbstractDAOImpl<HTextFlowTarget, Long> {
-
+public class HTextFlowTargetStreamingDAO
+        extends AbstractDAOImpl<HTextFlowTarget, Long> {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(HTextFlowTargetStreamingDAO.class);
     private static final long serialVersionUID = -1L;
 
     public HTextFlowTargetStreamingDAO() {
         super(HTextFlowTarget.class);
     }
 
-    public HTextFlowTargetStreamingDAO(
-            Class<HTextFlowTarget> clz, Session session) {
+    public HTextFlowTargetStreamingDAO(Class<HTextFlowTarget> clz,
+            Session session) {
         super(clz, session);
     }
 
     /**
-     *
      * @return scrollable result set of HTextFlowTarget which has all
      *         fields(locale, textflow, document, document locale, project
      *         iteration and project) eagerly fetched.
      */
     public ScrollableResults getAllTargetsWithAllFieldsEagerlyFetched() {
-        Query query =
-                getSession()
-                        .createQuery(
-                                "from HTextFlowTarget tft "
-                                        + "join fetch tft.locale "
-                                        + "join fetch tft.textFlow "
-                                        + "join fetch tft.textFlow.document "
-                                        +
-                                        "join fetch tft.textFlow.document.locale "
-                                        +
-                                        "join fetch tft.textFlow.document.projectIteration "
-                                        +
-                                        "join fetch tft.textFlow.document.projectIteration.project");
+        Query query = getSession().createQuery(
+                "from HTextFlowTarget tft join fetch tft.locale join fetch tft.textFlow join fetch tft.textFlow.document join fetch tft.textFlow.document.locale join fetch tft.textFlow.document.projectIteration join fetch tft.textFlow.document.projectIteration.project");
         query.setFetchSize(Integer.MIN_VALUE);
         return query.scroll(ScrollMode.FORWARD_ONLY);
     }
 
     /**
-     *
      * @return scrollable result set of HTextFlowTarget under a project, with
      *         all of its fields(locale, textflow, document, document locale,
      *         project iteration and project) eagerly fetched.
      */
-    public ScrollableResults getTargetsWithAllFieldsEagerlyFetchedForProject(
-            HProject project) {
-        Query query =
-                getSession()
-                        .createQuery(
-                                "from HTextFlowTarget tft "
-                                        + "join fetch tft.locale "
-                                        + "join fetch tft.textFlow "
-                                        + "join fetch tft.textFlow.document "
-                                        +
-                                        "join fetch tft.textFlow.document.locale "
-                                        +
-                                        "join fetch tft.textFlow.document.projectIteration "
-                                        +
-                                        "join fetch tft.textFlow.document.projectIteration.project p where p = :project");
+    public ScrollableResults
+            getTargetsWithAllFieldsEagerlyFetchedForProject(HProject project) {
+        Query query = getSession().createQuery(
+                "from HTextFlowTarget tft join fetch tft.locale join fetch tft.textFlow join fetch tft.textFlow.document join fetch tft.textFlow.document.locale join fetch tft.textFlow.document.projectIteration join fetch tft.textFlow.document.projectIteration.project p where p = :project");
         return query.setFetchSize(Integer.MIN_VALUE)
                 .setParameter("project", project)
                 .scroll(ScrollMode.FORWARD_ONLY);
     }
 
     /**
-     *
      * @return scrollable result set of HTextFlowTarget under a project
      *         iteration, with all of its fields(locale, textflow, document,
      *         document locale, project iteration and project) eagerly fetched.
@@ -113,19 +85,8 @@ public class HTextFlowTargetStreamingDAO extends
     public ScrollableResults
             getTargetsWithAllFieldsEagerlyFetchedForProjectIteration(
                     HProjectIteration iteration) {
-        Query query =
-                getSession()
-                        .createQuery(
-                                "from HTextFlowTarget tft "
-                                        + "join fetch tft.locale "
-                                        + "join fetch tft.textFlow "
-                                        + "join fetch tft.textFlow.document "
-                                        +
-                                        "join fetch tft.textFlow.document.locale "
-                                        +
-                                        "join fetch tft.textFlow.document.projectIteration iter "
-                                        +
-                                        "join fetch tft.textFlow.document.projectIteration.project where iter = :iteration");
+        Query query = getSession().createQuery(
+                "from HTextFlowTarget tft join fetch tft.locale join fetch tft.textFlow join fetch tft.textFlow.document join fetch tft.textFlow.document.locale join fetch tft.textFlow.document.projectIteration iter join fetch tft.textFlow.document.projectIteration.project where iter = :iteration");
         return query.setFetchSize(Integer.MIN_VALUE)
                 .setParameter("iteration", iteration)
                 .scroll(ScrollMode.FORWARD_ONLY);

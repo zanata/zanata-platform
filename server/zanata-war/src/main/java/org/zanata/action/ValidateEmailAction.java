@@ -22,15 +22,9 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Model;
 import javax.security.auth.login.LoginException;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -45,36 +39,28 @@ import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.impl.EmailChangeService;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.UrlUtil;
-
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
 @Named("validateEmail")
-@Slf4j
 @RequestScoped
 @Model
 @Transactional
 public class ValidateEmailAction implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ValidateEmailAction.class);
+
     private static final long serialVersionUID = 1L;
-
     private static int LINK_ACTIVE_DAYS = 1;
-
     @Inject
     private PersonDAO personDAO;
-
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     private FacesMessages facesMessages;
-
     @Inject
     EmailChangeService emailChangeService;
-
     @Inject
     private UrlUtil urlUtil;
-
-    @Getter
-    @Setter
     private String activationKey;
 
     @PostConstruct
@@ -89,32 +75,27 @@ public class ValidateEmailAction implements Serializable {
             HPersonEmailValidationKey entry =
                     emailChangeService.getActivationKey(activationKey);
             if (entry == null) {
-                throw new KeyNotFoundException("activation key: "
-                        + activationKey);
+                throw new KeyNotFoundException(
+                        "activation key: " + activationKey);
             }
-
-            if(isExpiredDate(entry.getCreationDate())) {
+            if (isExpiredDate(entry.getCreationDate())) {
                 urlUtil.redirectToInternal(urlUtil.dashboardUrl());
             }
-
             HPerson person = entry.getPerson();
             HAccount account = person.getAccount();
-            if (!account.getUsername().equals(
-                    identity.getCredentials().getUsername())) {
+            if (!account.getUsername()
+                    .equals(identity.getCredentials().getUsername())) {
                 throw new LoginException();
             }
-
             person.setEmail(entry.getEmail());
             account.setEnabled(true);
             personDAO.makePersistent(person);
             personDAO.flush();
             emailChangeService.removeEntry(entry);
-
             facesMessages.addGlobal(
-                "You have successfully changed your email account.");
-
+                    "You have successfully changed your email account.");
             log.info("update email address to {} successfully",
-                entry.getEmail());
+                    entry.getEmail());
         }
         urlUtil.redirectToInternal(urlUtil.home());
     }
@@ -122,11 +103,18 @@ public class ValidateEmailAction implements Serializable {
     private boolean isExpiredDate(Date createdDate) {
         if (emailChangeService.isExpired(createdDate, LINK_ACTIVE_DAYS)) {
             log.info("Creation date expired:" + createdDate);
-
             facesMessages.addGlobal(SEVERITY_ERROR,
                     "Link expired. Please update your email again.");
             return true;
         }
         return false;
+    }
+
+    public String getActivationKey() {
+        return this.activationKey;
+    }
+
+    public void setActivationKey(final String activationKey) {
+        this.activationKey = activationKey;
     }
 }

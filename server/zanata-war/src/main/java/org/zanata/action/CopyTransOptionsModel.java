@@ -25,19 +25,13 @@ import java.util.List;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
-
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.service.impl.CopyTransOptionFactory;
 import com.google.common.collect.Lists;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Holds a {@link org.zanata.model.HCopyTransOptions} model object. This
@@ -45,27 +39,23 @@ import lombok.Setter;
  * copy of a CopyTransOptions entity, although it may be accessed directly as
  * well.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("copyTransOptionsModel")
 @ViewScoped
 @Model
 @Transactional
 public class CopyTransOptionsModel implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     @Inject
     private EntityManager entityManager;
-
-    @Setter
     private HCopyTransOptions instance;
-
     @Inject
     private Messages msgs;
-
-    @Getter(lazy = true)
-    private final List<RuleAction> ruleActions = getRuleActionsList();
+    private final java.util.concurrent.atomic.AtomicReference<Object> ruleActions =
+            new java.util.concurrent.atomic.AtomicReference<Object>();
 
     public HCopyTransOptions getInstance() {
         if (instance == null) {
@@ -79,8 +69,8 @@ public class CopyTransOptionsModel implements Serializable {
     }
 
     private void setProjectMismatchAction(String projectMismatchAction) {
-        getInstance().setProjectMismatchAction(
-                HCopyTransOptions.ConditionRuleAction
+        getInstance()
+                .setProjectMismatchAction(HCopyTransOptions.ConditionRuleAction
                         .valueOf(projectMismatchAction));
     }
 
@@ -89,8 +79,8 @@ public class CopyTransOptionsModel implements Serializable {
     }
 
     private void setDocIdMismatchAction(String docIdMismatchAction) {
-        getInstance().setDocIdMismatchAction(
-                HCopyTransOptions.ConditionRuleAction
+        getInstance()
+                .setDocIdMismatchAction(HCopyTransOptions.ConditionRuleAction
                         .valueOf(docIdMismatchAction));
     }
 
@@ -99,8 +89,8 @@ public class CopyTransOptionsModel implements Serializable {
     }
 
     private void setContextMismatchAction(String contextMismatchAction) {
-        getInstance().setContextMismatchAction(
-                HCopyTransOptions.ConditionRuleAction
+        getInstance()
+                .setContextMismatchAction(HCopyTransOptions.ConditionRuleAction
                         .valueOf(contextMismatchAction));
     }
 
@@ -115,35 +105,68 @@ public class CopyTransOptionsModel implements Serializable {
     }
 
     private List<RuleAction> getRuleActionsList() {
-        return Lists
-                .newArrayList(
-                        new RuleAction(
-                                HCopyTransOptions.ConditionRuleAction.IGNORE,
-                                "button--success",
-                                msgs.get(
-                                        "jsf.iteration.CopyTrans.Action.continue")),
-                        new RuleAction(
-                                HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
-                                "button--unsure",
-                                msgs.get(
-                                        "jsf.iteration.CopyTrans.Action.downgradeToFuzzy")),
-                        new RuleAction(
-                                HCopyTransOptions.ConditionRuleAction.REJECT,
-                                "button--danger",
-                                msgs.get(
-                                        "jsf.iteration.CopyTrans.Action.reject"))
-                );
+        return Lists.newArrayList(
+                new RuleAction(HCopyTransOptions.ConditionRuleAction.IGNORE,
+                        "button--success",
+                        msgs.get("jsf.iteration.CopyTrans.Action.continue")),
+                new RuleAction(
+                        HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY,
+                        "button--unsure",
+                        msgs.get(
+                                "jsf.iteration.CopyTrans.Action.downgradeToFuzzy")),
+                new RuleAction(HCopyTransOptions.ConditionRuleAction.REJECT,
+                        "button--danger",
+                        msgs.get("jsf.iteration.CopyTrans.Action.reject")));
     }
 
     public void save() {
         this.setInstance(entityManager.merge(this.getInstance()));
     }
 
-    @AllArgsConstructor
-    @Getter
     public class RuleAction {
         private HCopyTransOptions.ConditionRuleAction action;
         private String cssClass;
         private String displayText;
+
+        @java.beans.ConstructorProperties({ "action", "cssClass",
+                "displayText" })
+        public RuleAction(final HCopyTransOptions.ConditionRuleAction action,
+                final String cssClass, final String displayText) {
+            this.action = action;
+            this.cssClass = cssClass;
+            this.displayText = displayText;
+        }
+
+        public HCopyTransOptions.ConditionRuleAction getAction() {
+            return this.action;
+        }
+
+        public String getCssClass() {
+            return this.cssClass;
+        }
+
+        public String getDisplayText() {
+            return this.displayText;
+        }
+    }
+
+    public void setInstance(final HCopyTransOptions instance) {
+        this.instance = instance;
+    }
+
+    public List<RuleAction> getRuleActions() {
+        Object value = this.ruleActions.get();
+        if (value == null) {
+            synchronized (this.ruleActions) {
+                value = this.ruleActions.get();
+                if (value == null) {
+                    final List<RuleAction> actualValue = getRuleActionsList();
+                    value = actualValue == null ? this.ruleActions
+                            : actualValue;
+                    this.ruleActions.set(value);
+                }
+            }
+        }
+        return (List<RuleAction>) (value == this.ruleActions ? null : value);
     }
 }

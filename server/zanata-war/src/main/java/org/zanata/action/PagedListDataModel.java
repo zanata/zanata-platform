@@ -21,37 +21,21 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-
 import javax.faces.model.DataModel;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.zanata.exception.ZanataServiceException;
 
-@Slf4j
-public abstract class PagedListDataModel<E> extends DataModel implements
-        Serializable {
+public abstract class PagedListDataModel<E> extends DataModel
+        implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(PagedListDataModel.class);
     private static final long serialVersionUID = 1L;
     private int DEFAULT_PAGESIZE = 15;
-
-    @Getter
-    @Setter
     private int pageSize = DEFAULT_PAGESIZE;
-
-    @Getter
-    @Setter
     private int rowIndex;
-
-    @Getter
-    @Setter
     private int scrollerPage = 1;
-
     private DataPage<E> page;
 
     public PagedListDataModel() {
-        super();
         this.rowIndex = -1;
         this.page = null;
     }
@@ -74,7 +58,6 @@ public abstract class PagedListDataModel<E> extends DataModel implements
         if (page != null) {
             return page;
         }
-
         int rowIndex = getRowIndex();
         int startRow;
         if (rowIndex == -1) {
@@ -82,7 +65,6 @@ public abstract class PagedListDataModel<E> extends DataModel implements
         } else {
             startRow = rowIndex;
         }
-
         log.debug("start to fetch page from :" + startRow);
         page = fetchPage(startRow, pageSize);
         return page;
@@ -90,7 +72,8 @@ public abstract class PagedListDataModel<E> extends DataModel implements
 
     public Object getRowData() {
         if (rowIndex < 0) {
-            throw new IllegalArgumentException("Invalid rowIndex (< 0): " + rowIndex);
+            throw new IllegalArgumentException(
+                    "Invalid rowIndex (< 0): " + rowIndex);
         }
         boolean alreadyFetched;
         if (page == null) {
@@ -105,11 +88,14 @@ public abstract class PagedListDataModel<E> extends DataModel implements
         // actually it's end row plus one
         int pageEndRow = pageStartRow + pageRowCount;
         if (rowIndex >= datasetSize) {
-            throw new IllegalArgumentException("Invalid rowIndex (>= dataSetSize): " + rowIndex);
+            throw new IllegalArgumentException(
+                    "Invalid rowIndex (>= dataSetSize): " + rowIndex);
         }
         if (rowIndex < pageStartRow || rowIndex >= pageEndRow) {
             if (alreadyFetched) {
-                throw new RuntimeException("Fetched page range ["+pageStartRow+","+pageEndRow+") does not include rowIndex " + rowIndex);
+                throw new RuntimeException(
+                        "Fetched page range [" + pageStartRow + "," + pageEndRow
+                                + ") does not include rowIndex " + rowIndex);
             } else {
                 page = fetchPage(rowIndex, pageSize);
                 pageStartRow = page.getStartRow();
@@ -147,4 +133,27 @@ public abstract class PagedListDataModel<E> extends DataModel implements
         }
     }
 
+    public int getPageSize() {
+        return this.pageSize;
+    }
+
+    public void setPageSize(final int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getRowIndex() {
+        return this.rowIndex;
+    }
+
+    public void setRowIndex(final int rowIndex) {
+        this.rowIndex = rowIndex;
+    }
+
+    public int getScrollerPage() {
+        return this.scrollerPage;
+    }
+
+    public void setScrollerPage(final int scrollerPage) {
+        this.scrollerPage = scrollerPage;
+    }
 }

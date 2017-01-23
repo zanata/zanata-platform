@@ -76,10 +76,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.github.huangp</groupId>
       <artifactId>entityunit</artifactId>
       <version>0.3</version>
@@ -153,7 +149,6 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.projectlombok:lombok</usedDependency>
             <usedDependency>org.zanata:zanata-war</usedDependency>
             <!-- needed by entityunit -->
             <usedDependency>org.hamcrest:hamcrest-core</usedDependency>

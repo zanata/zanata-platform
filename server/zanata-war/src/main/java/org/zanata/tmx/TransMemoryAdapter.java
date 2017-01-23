@@ -18,16 +18,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.tmx;
 
 import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
-
-import lombok.NoArgsConstructor;
 import nu.xom.Element;
 import nu.xom.Elements;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.dao.TransMemoryDAO;
@@ -41,17 +37,14 @@ import org.zanata.util.TMXParseException;
  * Translation Memory Adapter for the TMX parser. Provides callback effects
  * (functions) to be used when the parser encounters certain specific events.
  *
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("transMemoryAdapter")
 @Dependent
-@NoArgsConstructor
 public class TransMemoryAdapter {
     @Inject
     private EntityManager entityManager;
-
     @Inject
     private TransMemoryDAO transMemoryDAO;
 
@@ -77,14 +70,10 @@ public class TransMemoryAdapter {
             throws TMXParseException {
         TransMemoryUnit tu = new TransMemoryUnit();
         tu.setTranslationMemory(tm);
-
         TMXMetadataHelper.setMetadata(tu, tuElem, tm.getSourceLanguage());
         tu.setVersionNum(0);
-
         addTUVs(tu, tuElem.getChildElements("tuv"));
-
         tu.setUniqueId(determineUniqueId(tu));
-
         tu = mergeWithExistingTUIfAny(tu);
         entityManager.merge(tu);
     }
@@ -107,8 +96,7 @@ public class TransMemoryAdapter {
                 return sourceVariant.getPlainTextSegmentHash();
             } else {
                 throw new TMXParseException(
-                        "Source language cannot be determined for Translation unit with no tuid. "
-                                + "It must be defined either in the <tu> or the <header> element.");
+                        "Source language cannot be determined for Translation unit with no tuid. It must be defined either in the <tu> or the <header> element.");
             }
         }
     }
@@ -124,7 +112,6 @@ public class TransMemoryAdapter {
     private void addVariant(TransMemoryUnit tu, Element tuvElem)
             throws TMXParseException {
         String taggedSegment = tuvElem.getFirstChildElement("seg").toXML();
-
         TransMemoryUnitVariant tuv = new TransMemoryUnitVariant();
         tuv.setTaggedSegment(taggedSegment);
         TMXMetadataHelper.setMetadata(tuv, tuvElem);
@@ -132,18 +119,17 @@ public class TransMemoryAdapter {
     }
 
     private TransMemoryUnit mergeWithExistingTUIfAny(TransMemoryUnit newTU) {
-        TransMemoryUnit existingTu =
-                transMemoryDAO.findTranslationUnit(newTU.getTranslationMemory()
-                        .getSlug(), newTU.getUniqueId());
+        TransMemoryUnit existingTu = transMemoryDAO.findTranslationUnit(
+                newTU.getTranslationMemory().getSlug(), newTU.getUniqueId());
         if (existingTu != null) {
-            existingTu
-                    .setMetadata(newTU.getMetadataType(), newTU.getMetadata());
+            existingTu.setMetadata(newTU.getMetadataType(),
+                    newTU.getMetadata());
             existingTu.setPosition(newTU.getPosition());
             existingTu.setSourceLanguage(newTU.getSourceLanguage());
             existingTu.setTransUnitId(newTU.getTransUnitId());
             existingTu.getTransUnitVariants().clear();
-            existingTu.getTransUnitVariants().putAll(
-                    newTU.getTransUnitVariants());
+            existingTu.getTransUnitVariants()
+                    .putAll(newTU.getTransUnitVariants());
             // No need to set the unique id or parent Trans Memory, it should be
             // the same
             return existingTu;
@@ -151,4 +137,6 @@ public class TransMemoryAdapter {
         return newTU;
     }
 
+    public TransMemoryAdapter() {
+    }
 }

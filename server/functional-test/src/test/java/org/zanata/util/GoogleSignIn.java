@@ -21,18 +21,18 @@
 package org.zanata.util;
 
 import com.google.common.base.Strings;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class GoogleSignIn {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(GoogleSignIn.class);
+
     /**
      * Initiate a basic connection and confirm a HTTP_OK (200) response
      *
@@ -59,7 +59,7 @@ public class GoogleSignIn {
      * to be in the form:
      * <p />
      * {@literal mvn <goals>
-     *     -Dgoogleopenid.credentials=username1,password1;username2,password2;}
+     * -Dgoogleopenid.credentials=username1,password1;username2,password2;}
      *
      * @param username
      *            Username of username:password pair query
@@ -75,7 +75,6 @@ public class GoogleSignIn {
             log.info("Google OpenID credentials not set in properties");
             return empty;
         }
-
         for (String signIn : googlePass.split(";")) {
             String[] usernamePasswordPair = signIn.split(",");
             if (usernamePasswordPair.length > 0

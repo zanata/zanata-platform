@@ -3,21 +3,14 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-
 import javax.annotation.Nullable;
 import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
-
 import com.google.common.collect.Lists;
-import lombok.Getter;
-import lombok.Setter;
-
 import org.apache.commons.lang.StringUtils;
-
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.EntityStatus;
@@ -34,11 +27,10 @@ import org.zanata.util.FacesNavigationUtil;
 import org.zanata.ui.faces.FacesMessages;
 
 /**
- * Handles user interaction from merge_trans_modal.xhtml.
- * - start merge translation process.
- * - cancel merge translation process.
- * - gives progress data of merge translation.
- * - provides projects and versions for user selection.
+ * Handles user interaction from merge_trans_modal.xhtml. - start merge
+ * translation process. - cancel merge translation process. - gives progress
+ * data of merge translation. - provides projects and versions for user
+ * selection.
  *
  * see merge_trans_modal.xhtml for all actions.
  *
@@ -50,78 +42,55 @@ import org.zanata.ui.faces.FacesMessages;
 @Transactional
 public class MergeTransAction extends CopyAction implements Serializable {
 
-    @Getter
     private String targetProjectSlug;
-
-    @Getter
-    @Setter
     private String targetVersionSlug;
-
-    @Getter
     private String sourceProjectSlug;
-
-    @Getter
-    @Setter
     private String sourceVersionSlug;
-
-    @Getter
-    @Setter
     private boolean keepExistingTranslation;
-
     @Inject
     private ProjectDAO projectDAO;
-
     @Inject
     private ProjectIterationDAO projectIterationDAO;
-
     @Inject
     private MergeTranslationsManager mergeTranslationsManager;
-
     @Inject
     private CopyTransManager copyTransManager;
-
     @Inject
     private CopyVersionManager copyVersionManager;
-
     @Inject
     private Messages msgs;
-
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
-
     @Inject
     private FacesMessages jsfMessages;
-
     @Inject
     private ZanataIdentity identity;
-
     private HProjectIteration targetVersion;
-
     private HProject sourceProject;
 
     public void setTargetProjectSlug(String targetProjectSlug) {
         this.targetProjectSlug = targetProjectSlug;
-
-        /**
-         * This should only true during first instantiation to make sure
-         * sourceProject from selection are the same as targetProject on load.
-         *
-         * See pages.xml for setter of mergeTransAction.targetProjectSlug.
-         */
-        if(sourceProjectSlug == null) {
+        if (sourceProjectSlug == null) {
             setSourceProjectSlug(targetProjectSlug);
         }
     }
 
+    /**
+     * This should only true during first instantiation to make sure
+     * sourceProject from selection are the same as targetProject on load.
+     *
+     * See pages.xml for setter of mergeTransAction.targetProjectSlug.
+     */
     public void setSourceProjectSlug(String sourceProjectSlug) {
-        if(!StringUtils.equals(this.sourceProjectSlug, sourceProjectSlug)) {
+        if (!StringUtils.equals(this.sourceProjectSlug, sourceProjectSlug)) {
             this.sourceProjectSlug = sourceProjectSlug;
             refreshSourceProject();
             this.sourceVersionSlug = null;
-            if (getSourceProject() != null && !getSourceProject().getProjectIterations().isEmpty()) {
-                this.sourceVersionSlug =
-                    getSourceProject().getProjectIterations().get(0).getSlug();
+            if (getSourceProject() != null
+                    && !getSourceProject().getProjectIterations().isEmpty()) {
+                this.sourceVersionSlug = getSourceProject()
+                        .getProjectIterations().get(0).getSlug();
             }
         }
     }
@@ -133,15 +102,16 @@ public class MergeTransAction extends CopyAction implements Serializable {
     public HProjectIteration getTargetVersion() {
         if (targetVersion == null && StringUtils.isNotEmpty(targetProjectSlug)
                 && StringUtils.isNotEmpty(targetVersionSlug)) {
-            targetVersion =
-                    projectIterationDAO.getBySlug(targetProjectSlug,
-                            targetVersionSlug);
+            targetVersion = projectIterationDAO.getBySlug(targetProjectSlug,
+                    targetVersionSlug);
         }
         return targetVersion;
     }
 
-    public @Nullable HProject getSourceProject() {
-        if(sourceProject == null && StringUtils.isNotEmpty(sourceProjectSlug)) {
+    @Nullable
+    public HProject getSourceProject() {
+        if (sourceProject == null
+                && StringUtils.isNotEmpty(sourceProjectSlug)) {
             sourceProject = projectDAO.getBySlug(sourceProjectSlug);
         }
         return sourceProject;
@@ -150,19 +120,18 @@ public class MergeTransAction extends CopyAction implements Serializable {
     public List<HProjectIteration> getSourceVersions() {
         List<HProjectIteration> versions =
                 getSourceProject().getProjectIterations();
-
-        if(versions.isEmpty()) {
+        if (versions.isEmpty()) {
             return Collections.emptyList();
         }
-
         List<HProjectIteration> results = Lists.newArrayList();
-        //remove obsolete version and target version if both are the same project
+        // remove obsolete version and target version if both are the same
+        // project
         for (HProjectIteration version : versions) {
             if (version.getStatus().equals(EntityStatus.OBSOLETE)) {
                 continue;
             }
-            if(StringUtils.equals(sourceProjectSlug, targetProjectSlug) &&
-                version.getSlug().equals(targetVersionSlug)) {
+            if (StringUtils.equals(sourceProjectSlug, targetProjectSlug)
+                    && version.getSlug().equals(targetVersionSlug)) {
                 continue;
             }
             results.add(version);
@@ -176,13 +145,11 @@ public class MergeTransAction extends CopyAction implements Serializable {
      * available project.
      */
     public List<HProject> getProjects() {
-        boolean canMergeFromAllProjects =
-                identity.hasPermission(getTargetVersion()
-                    .getProject(), "merge-trans");
+        boolean canMergeFromAllProjects = identity
+                .hasPermission(getTargetVersion().getProject(), "merge-trans");
         if (canMergeFromAllProjects) {
-            return projectDAO
-                    .getOffsetList(0, Integer.MAX_VALUE, false,
-                        true, true);
+            return projectDAO.getOffsetList(0, Integer.MAX_VALUE, false, true,
+                    true);
         }
         return Lists.newArrayList();
     }
@@ -201,34 +168,33 @@ public class MergeTransAction extends CopyAction implements Serializable {
                     msgs.get("jsf.iteration.mergeTrans.hasCopyActionRunning"));
             return;
         }
-        mergeTranslationsManager.start(sourceProjectSlug,
-                sourceVersionSlug, targetProjectSlug, targetVersionSlug,
-                !keepExistingTranslation);
+        mergeTranslationsManager.start(sourceProjectSlug, sourceVersionSlug,
+                targetProjectSlug, targetVersionSlug, !keepExistingTranslation);
         FacesNavigationUtil.handlePageNavigation(null, "merge-translation");
     }
-
     // Check if copy-trans, copy version or merge-trans is running for the
     // target version
+
     public boolean isCopyActionsRunning() {
-        return mergeTranslationsManager.isRunning(
-            targetProjectSlug, targetVersionSlug)
+        return mergeTranslationsManager.isRunning(targetProjectSlug,
+                targetVersionSlug)
                 || copyVersionManager.isCopyVersionRunning(targetProjectSlug,
-                        targetVersionSlug) ||
-                copyTransManager.isCopyTransRunning(getTargetVersion());
+                        targetVersionSlug)
+                || copyTransManager.isCopyTransRunning(getTargetVersion());
     }
 
     @Override
     public boolean isInProgress() {
-        return mergeTranslationsManager.isRunning(
-            targetProjectSlug, targetVersionSlug);
+        return mergeTranslationsManager.isRunning(targetProjectSlug,
+                targetVersionSlug);
     }
 
     @Override
     public String getProgressMessage() {
         MergeTranslationsTaskHandle handle = getHandle();
-        if(handle != null) {
+        if (handle != null) {
             return msgs.format("jsf.iteration.mergeTrans.progress.message",
-                handle.getCurrentProgress(), handle.getTotalTranslations());
+                    handle.getCurrentProgress(), handle.getTotalTranslations());
         }
         return "";
     }
@@ -237,23 +203,54 @@ public class MergeTransAction extends CopyAction implements Serializable {
     public void onComplete() {
         jsfMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.iteration.mergeTrans.completed.message",
-                        sourceProjectSlug, sourceVersionSlug,
-                        targetProjectSlug, targetVersionSlug));
+                        sourceProjectSlug, sourceVersionSlug, targetProjectSlug,
+                        targetVersionSlug));
     }
 
     public void cancel() {
-        mergeTranslationsManager.cancel(targetProjectSlug,
-            targetVersionSlug);
-        jsfMessages.addGlobal(
-                FacesMessage.SEVERITY_INFO,
+        mergeTranslationsManager.cancel(targetProjectSlug, targetVersionSlug);
+        jsfMessages.addGlobal(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.iteration.mergeTrans.cancel.message",
-                        sourceProjectSlug, sourceVersionSlug,
-                        targetProjectSlug, targetVersionSlug));
+                        sourceProjectSlug, sourceVersionSlug, targetProjectSlug,
+                        targetVersionSlug));
     }
 
     @Override
     protected MergeTranslationsTaskHandle getHandle() {
-        return mergeTranslationsManager.getProcessHandle(
-            targetProjectSlug, targetVersionSlug);
+        return mergeTranslationsManager.getProcessHandle(targetProjectSlug,
+                targetVersionSlug);
+    }
+
+    public String getTargetProjectSlug() {
+        return this.targetProjectSlug;
+    }
+
+    public String getTargetVersionSlug() {
+        return this.targetVersionSlug;
+    }
+
+    public void setTargetVersionSlug(final String targetVersionSlug) {
+        this.targetVersionSlug = targetVersionSlug;
+    }
+
+    public String getSourceProjectSlug() {
+        return this.sourceProjectSlug;
+    }
+
+    public String getSourceVersionSlug() {
+        return this.sourceVersionSlug;
+    }
+
+    public void setSourceVersionSlug(final String sourceVersionSlug) {
+        this.sourceVersionSlug = sourceVersionSlug;
+    }
+
+    public boolean isKeepExistingTranslation() {
+        return this.keepExistingTranslation;
+    }
+
+    public void
+            setKeepExistingTranslation(final boolean keepExistingTranslation) {
+        this.keepExistingTranslation = keepExistingTranslation;
     }
 }

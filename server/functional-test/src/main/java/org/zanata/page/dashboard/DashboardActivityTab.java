@@ -21,19 +21,18 @@
 package org.zanata.page.dashboard;
 
 import com.google.common.base.Function;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-
 import java.util.List;
 
 /**
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
 public class DashboardActivityTab extends DashboardBasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(DashboardActivityTab.class);
     private By activityList = By.id("activity-list");
     private By moreActivityButton = By.id("moreActivity");
 
@@ -48,15 +47,16 @@ public class DashboardActivityTab extends DashboardBasePage {
 
     /**
      * Click on the activity list's "More Activity element".
+     *
      * @return true, if the list has increased, false otherwise.
      */
     public boolean clickMoreActivity() {
         log.info("Click More Activity button");
         final int activityListOrigSize = getMyActivityList().size();
         clickElement(moreActivityButton);
-        return waitForAMoment().until(
-                (Function<WebDriver, Boolean>) webDriver ->
-                        getMyActivityList().size() > activityListOrigSize);
+        return waitForAMoment()
+                .until((Function<WebDriver, Boolean>) webDriver -> getMyActivityList()
+                        .size() > activityListOrigSize);
     }
 
     public boolean isMoreActivity() {

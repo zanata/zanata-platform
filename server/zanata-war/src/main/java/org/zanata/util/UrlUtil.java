@@ -29,18 +29,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-
 import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
-
 import com.google.common.annotations.VisibleForTesting;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.zanata.common.LocaleId;
@@ -55,27 +50,24 @@ import org.zanata.servlet.annotations.ServerPath;
  *
  * @author David Mason, damason@redhat.com
  */
-
 @RequestScoped
-@Slf4j
 public class UrlUtil implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(UrlUtil.class);
+
     private static final long serialVersionUID = 1L;
-    private final static String ENCODING = "UTF-8";
-
-    @Inject @ServerPath
+    private static final String ENCODING = "UTF-8";
+    @Inject
+    @ServerPath
     private String serverPath;
-
     @Inject
     @ContextPath
     private String contextPath;
-
     @Inject
     private WindowContext windowContext;
-
     @Inject
     @Named("dswidQuery")
     private String dswidQuery;
-
     @Inject
     @Named("dswidParam")
     private String dswidParam;
@@ -91,24 +83,21 @@ public class UrlUtil implements Serializable {
      * @return local part of url from original request
      */
     public String getLocalUrl(HttpServletRequest request) {
-        String url, queryString;
+        String url;
+        String queryString;
         if (request.getAttribute("javax.servlet.forward.request_uri") != null) {
-            url =
-                    (String) request
-                            .getAttribute("javax.servlet.forward.context_path");
-            url +=
-                    (String) request
-                            .getAttribute("javax.servlet.forward.servlet_path");
-            queryString =
-                    (String) request
-                            .getAttribute("javax.servlet.forward.query_string");
+            url = (String) request
+                    .getAttribute("javax.servlet.forward.context_path");
+            url += (String) request
+                    .getAttribute("javax.servlet.forward.servlet_path");
+            queryString = (String) request
+                    .getAttribute("javax.servlet.forward.query_string");
         } else {
             url = request.getRequestURI();
             queryString = request.getQueryString();
             log.warn("encountered non-rewritten url {} with query string {}",
                     url, queryString);
         }
-
         if (queryString != null && queryString.length() > 0) {
             url += "?" + queryString;
         }
@@ -138,7 +127,8 @@ public class UrlUtil implements Serializable {
      * Get source files url with dswid parameter
      */
     public String sourceFilesViewUrl(String projectSlug, String versionSlug) {
-        return versionUrl(projectSlug, versionSlug, false) + "/documents" + dswidQuery;
+        return versionUrl(projectSlug, versionSlug, false) + "/documents"
+                + dswidQuery;
     }
 
     /**
@@ -166,25 +156,28 @@ public class UrlUtil implements Serializable {
     /**
      * Get version url with or without dswid parameter
      */
-    private String versionUrl(String projectSlug, String versionSlug, boolean addDswid) {
+    private String versionUrl(String projectSlug, String versionSlug,
+            boolean addDswid) {
         return contextPath + "/iteration/view/" + projectSlug + "/"
                 + versionSlug + (addDswid ? dswidQuery : "");
     }
 
     /**
-     * Get editor url for document with dswid parameter, without or without full server path
+     * Get editor url for document with dswid parameter, without or without full
+     * server path
      */
     public String editorDocumentListUrl(String projectSlug, String versionSlug,
-            LocaleId targetLocaleId, LocaleId sourceLocaleId, boolean fullPath) {
+            LocaleId targetLocaleId, LocaleId sourceLocaleId,
+            boolean fullPath) {
         String prefix = fullPath ? serverPath : contextPath;
-
         return prefix + "/webtrans/translate?project=" + projectSlug
                 + "&iteration=" + versionSlug + "&localeId=" + targetLocaleId
                 + "&locale=" + sourceLocaleId + dswidParam;
     }
 
     /**
-     * Get editor url for document with dswid parameter but without full server path
+     * Get editor url for document with dswid parameter but without full server
+     * path
      */
     public String editorDocumentUrl(String projectSlug, String versionSlug,
             LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId) {
@@ -196,7 +189,7 @@ public class UrlUtil implements Serializable {
      * Get editor url for document, with dswid parameter and full server path
      */
     public String fullEditorDocumentUrl(String projectSlug, String versionSlug,
-        LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId) {
+            LocaleId targetLocaleId, LocaleId sourceLocaleId, String docId) {
         return editorDocumentListUrl(projectSlug, versionSlug, targetLocaleId,
                 sourceLocaleId, true) + "#view:doc;doc:" + docId;
     }
@@ -253,12 +246,14 @@ public class UrlUtil implements Serializable {
     }
 
     /**
-     * Redirect to a Zanata url, adding dswid parameter if missing. Do not use for external URLs!
+     * Redirect to a Zanata url, adding dswid parameter if missing. Do not use
+     * for external URLs!
      */
     public void redirectToInternal(String url) {
         try {
             String urlWithWindowId = addWindowId(url);
-            FacesContext.getCurrentInstance().getExternalContext().redirect(urlWithWindowId);
+            FacesContext.getCurrentInstance().getExternalContext()
+                    .redirect(urlWithWindowId);
         } catch (IOException e) {
             throw Throwables.propagate(e);
         }
@@ -272,7 +267,8 @@ public class UrlUtil implements Serializable {
             if (windowId == null) {
                 urlWithWindowId = url;
             } else {
-                URI uri = new URIBuilder(url).setParameter("dswid", windowId).build();
+                URI uri = new URIBuilder(url).setParameter("dswid", windowId)
+                        .build();
                 urlWithWindowId = uri.toString();
             }
             return urlWithWindowId;
@@ -317,7 +313,8 @@ public class UrlUtil implements Serializable {
     }
 
     public String resetPasswordPage(String resetPasswordKey) {
-        return contextPath + "/account/password_reset/" + resetPasswordKey + dswidQuery;
+        return contextPath + "/account/password_reset/" + resetPasswordKey
+                + dswidQuery;
     }
 
     /**

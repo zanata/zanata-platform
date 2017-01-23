@@ -22,19 +22,14 @@ package org.zanata.file;
 
 import static org.zanata.file.DocumentUploadUtil.getInputStream;
 import static org.zanata.file.DocumentUploadUtil.isSinglePart;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import com.google.common.collect.Sets;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.io.FilenameUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -64,18 +59,17 @@ import org.zanata.rest.service.VirusScanner;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
-
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
-
 //TODO damason: add thorough unit testing
-@Slf4j
+
 @Dependent
 @Named("sourceDocumentUploader")
 public class SourceDocumentUpload {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SourceDocumentUpload.class);
 
     private static final HLocale NULL_LOCALE = null;
-
     @Inject
     private DocumentUploadUtil util;
     @Inject
@@ -103,7 +97,6 @@ public class SourceDocumentUpload {
             return Response.status(e.getStatusCode())
                     .entity(new ChunkUploadResponse(e.getMessage())).build();
         }
-
         return tryValidatedUploadSourceFile(id, uploadForm);
     }
 
@@ -116,7 +109,6 @@ public class SourceDocumentUpload {
             return Response.status(e.getStatusCode())
                     .entity(new ChunkUploadResponse(e.getMessage())).build();
         }
-
         return tryValidatedUploadSourceFile(id, uploadForm);
     }
 
@@ -125,19 +117,16 @@ public class SourceDocumentUpload {
         try {
             Optional<File> tempFile;
             int totalChunks;
-
             if (!uploadForm.getLast()) {
                 HDocumentUpload upload =
                         util.saveUploadPart(id, NULL_LOCALE, uploadForm);
                 totalChunks = upload.getParts().size();
-                return Response
-                        .status(Status.ACCEPTED)
+                return Response.status(Status.ACCEPTED)
                         .entity(new ChunkUploadResponse(upload.getId(),
                                 totalChunks, true,
                                 "Chunk accepted, awaiting remaining chunks."))
                         .build();
             }
-
             if (isSinglePart(uploadForm)) {
                 totalChunks = 1;
                 tempFile = Optional.<File> absent();
@@ -147,34 +136,29 @@ public class SourceDocumentUpload {
                 totalChunks = previousParts.getParts().size();
                 totalChunks++; // add final part
                 tempFile =
-                        Optional.of(util
-                                .combineToTempFileAndDeleteUploadRecord(
-                                        previousParts,
-                                        uploadForm));
+                        Optional.of(util.combineToTempFileAndDeleteUploadRecord(
+                                previousParts, uploadForm));
             }
-
-            HProjectIteration version =
-                projectIterationDAO.getBySlug(id.getProjectSlug(), id.getVersionSlug());
-
+            HProjectIteration version = projectIterationDAO
+                    .getBySlug(id.getProjectSlug(), id.getVersionSlug());
             if (version == null) {
                 throw new ZanataServiceException("Project version not found: "
-                    + id.getProjectSlug() + " " + id.getVersionSlug());
+                        + id.getProjectSlug() + " " + id.getVersionSlug());
             }
-
             if (version.getProjectType() == ProjectType.File) {
                 if (!tempFile.isPresent()) {
-                    tempFile = Optional.of(util
-                            .persistTempFileFromUpload(uploadForm));
+                    tempFile = Optional
+                            .of(util.persistTempFileFromUpload(uploadForm));
                 }
                 processAdapterFile(tempFile.get(), id, uploadForm);
-            } else if (DocumentType.getByName(uploadForm.getFileType()) == DocumentType.GETTEXT) {
+            } else if (DocumentType.getByName(
+                    uploadForm.getFileType()) == DocumentType.GETTEXT) {
                 InputStream potStream = getInputStream(tempFile, uploadForm);
                 parsePotFile(potStream, id);
             } else {
-                throw new ZanataServiceException("Unsupported source file: "
-                    + id.getDocId());
+                throw new ZanataServiceException(
+                        "Unsupported source file: " + id.getDocId());
             }
-
             if (tempFile.isPresent()) {
                 tempFile.get().delete();
             }
@@ -208,14 +192,13 @@ public class SourceDocumentUpload {
     }
 
     private boolean isDocumentUploadAllowed(GlobalDocumentId id) {
-        HProjectIteration projectIteration =
-                projectIterationDAO.getBySlug(id.getProjectSlug(),
-                        id.getVersionSlug());
+        HProjectIteration projectIteration = projectIterationDAO
+                .getBySlug(id.getProjectSlug(), id.getVersionSlug());
         return projectIteration.getStatus() == EntityStatus.ACTIVE
-                && projectIteration.getProject().getStatus() == EntityStatus.ACTIVE
-                && identity != null
-                && identity.hasPermissionWithAnyTargets("import-template",
-                projectIteration);
+                && projectIteration.getProject()
+                        .getStatus() == EntityStatus.ACTIVE
+                && identity != null && identity.hasPermissionWithAnyTargets(
+                        "import-template", projectIteration);
     }
 
     private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm)
@@ -224,8 +207,7 @@ public class SourceDocumentUpload {
         if (!isSourceDocumentType(type)) {
             throw new ChunkUploadException(Status.BAD_REQUEST, "The type \""
                     + uploadForm.getFileType()
-                    + "\" specified in form parameter 'type' "
-                    + "is not valid for a source file on this server.");
+                    + "\" specified in form parameter \'type\' is not valid for a source file on this server.");
         }
     }
 
@@ -248,25 +230,23 @@ public class SourceDocumentUpload {
         uploadResponse.setAcceptedChunks(acceptedChunks);
         uploadResponse.setExpectingMore(false);
         if (isNewDocument) {
-            uploadResponse
-                    .setSuccessMessage("Upload of new source document successful.");
-            response =
-                    Response.status(Status.CREATED).entity(uploadResponse)
-                            .build();
+            uploadResponse.setSuccessMessage(
+                    "Upload of new source document successful.");
+            response = Response.status(Status.CREATED).entity(uploadResponse)
+                    .build();
         } else {
-            uploadResponse
-                    .setSuccessMessage("Upload of new version of source document successful.");
+            uploadResponse.setSuccessMessage(
+                    "Upload of new version of source document successful.");
             response =
                     Response.status(Status.OK).entity(uploadResponse).build();
         }
         return response;
     }
 
-    private void processAdapterFile(@Nonnull File tempFile,
-            GlobalDocumentId id, DocumentFileUploadForm uploadForm) {
-        String name =
-                id.getProjectSlug() + ":" + id.getVersionSlug() + ":"
-                        + id.getDocId();
+    private void processAdapterFile(@Nonnull File tempFile, GlobalDocumentId id,
+            DocumentFileUploadForm uploadForm) {
+        String name = id.getProjectSlug() + ":" + id.getVersionSlug() + ":"
+                + id.getDocId();
         try {
             virusScanner.scan(tempFile, name);
         } catch (VirusDetectedException e) {
@@ -274,31 +254,27 @@ public class SourceDocumentUpload {
             throw new ChunkUploadException(Status.BAD_REQUEST,
                     "Uploaded file did not pass virus scan");
         }
-
         HDocument document;
         Optional<String> params;
-        params =
-                Optional.fromNullable(Strings.emptyToNull(uploadForm
-                        .getAdapterParams()));
+        params = Optional.fromNullable(
+                Strings.emptyToNull(uploadForm.getAdapterParams()));
         if (!params.isPresent()) {
-            params =
-                    documentDAO.getAdapterParams(id.getProjectSlug(),
-                            id.getVersionSlug(), id.getDocId());
+            params = documentDAO.getAdapterParams(id.getProjectSlug(),
+                    id.getVersionSlug(), id.getDocId());
         }
         try {
             Optional<String> docType =
-                Optional.fromNullable(uploadForm.getFileType());
-
+                    Optional.fromNullable(uploadForm.getFileType());
             Resource doc =
                     translationFileServiceImpl.parseUpdatedAdapterDocumentFile(
                             tempFile.toURI(), id.getDocId(),
                             uploadForm.getFileType(), params, docType);
             doc.setLang(LocaleId.EN_US);
             // TODO Copy Trans values
-            document =
-                    documentServiceImpl.saveDocument(id.getProjectSlug(),
-                            id.getVersionSlug(), doc,
-                            Sets.newHashSet(PotEntryHeader.ID, SimpleComment.ID), false);
+            document = documentServiceImpl.saveDocument(id.getProjectSlug(),
+                    id.getVersionSlug(), doc,
+                    Sets.newHashSet(PotEntryHeader.ID, SimpleComment.ID),
+                    false);
         } catch (SecurityException e) {
             throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
                     e.getMessage(), e);
@@ -306,14 +282,11 @@ public class SourceDocumentUpload {
             throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
                     e.getMessage(), e);
         }
-
         String contentHash = uploadForm.getHash();
         DocumentType documentType =
                 DocumentType.getByName(uploadForm.getFileType());
-
         persistRawDocument(document, tempFile, contentHash, documentType,
                 params);
-
         translationFileServiceImpl.removeTempFile(tempFile);
     }
 
@@ -336,32 +309,27 @@ public class SourceDocumentUpload {
 
     /**
      * This method should only process gettext project type
+     *
      * @param potStream
      * @param id
      */
     private void parsePotFile(InputStream potStream, GlobalDocumentId id) {
-        //remove .pot extension from docId as per zanata-cli
+        // remove .pot extension from docId as per zanata-cli
         String docIdWithoutExtension =
-            FilenameUtils.removeExtension(id.getDocId());
-
+                FilenameUtils.removeExtension(id.getDocId());
         Resource doc = translationFileServiceImpl.parseUpdatedPotFile(potStream,
-                docIdWithoutExtension, ".pot",
-                useOfflinePo(id));
+                docIdWithoutExtension, ".pot", useOfflinePo(id));
         doc.setLang(LocaleId.EN_US);
         // TODO Copy Trans values
-
         StringSet extensions = new StringSet(ExtensionType.GetText.toString());
         extensions.add(SimpleComment.ID);
-
         documentServiceImpl.saveDocument(id.getProjectSlug(),
                 id.getVersionSlug(), doc, extensions, false);
     }
 
     private boolean useOfflinePo(GlobalDocumentId id) {
         return !util.isNewDocument(id)
-                && !translationFileServiceImpl
-                        .isPoDocument(id.getProjectSlug(), id.getVersionSlug(),
-                                id.getDocId());
+                && !translationFileServiceImpl.isPoDocument(id.getProjectSlug(),
+                        id.getVersionSlug(), id.getDocId());
     }
-
 }

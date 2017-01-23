@@ -21,17 +21,14 @@
 package org.zanata.email;
 
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
-
 import javax.mail.internet.InternetAddress;
 
 /**
-* @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
-*/
-@RequiredArgsConstructor
-public class UsernameChangedEmailStrategy extends
-        EmailStrategy {
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ */
+public class UsernameChangedEmailStrategy extends EmailStrategy {
     private final String newUserName;
     private final boolean shouldResetPassword;
 
@@ -46,14 +43,19 @@ public class UsernameChangedEmailStrategy extends
     }
 
     @Override
-    public Map<String, Object> makeContext(
-            Map<String, Object> genericContext,
+    public Map<String, Object> makeContext(Map<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context = super.makeContext(genericContext,
-                toAddresses);
-        return context
-                .put("toName", toAddresses[0].getPersonal())
+        Map<String, Object> context =
+                super.makeContext(genericContext, toAddresses);
+        return context.put("toName", toAddresses[0].getPersonal())
                 .put("newUsername", newUserName)
                 .put("shouldResetPassword", shouldResetPassword);
+    }
+
+    @java.beans.ConstructorProperties({ "newUserName", "shouldResetPassword" })
+    public UsernameChangedEmailStrategy(final String newUserName,
+            final boolean shouldResetPassword) {
+        this.newUserName = newUserName;
+        this.shouldResetPassword = shouldResetPassword;
     }
 }

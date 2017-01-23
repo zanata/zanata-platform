@@ -21,12 +21,7 @@
 package org.zanata.action;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-
 import java.io.Serializable;
-
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.annotation.Nullable;
 import javax.enterprise.context.SessionScoped;
 import javax.annotation.PostConstruct;
@@ -34,7 +29,6 @@ import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
@@ -49,8 +43,8 @@ import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.Synchronized;
 
 /**
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("accountMergeAction")
 @ViewScoped
@@ -61,35 +55,29 @@ public class AccountMergeAction implements Serializable {
     @SessionScoped
     @Synchronized
     static class ObsoleteHolder implements Serializable {
+
         private static final long serialVersionUID = 1L;
-        @Nullable HAccount account;
+        @Nullable
+        HAccount account;
     }
 
     private static final long serialVersionUID = 1L;
-
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
-
     @Inject
     private FacesMessages facesMessages;
-
     @Inject
     private AuthenticationManager authenticationManager;
-
     @Inject
     private RegisterService registerServiceImpl;
-
-    @Getter
-    @Setter
     private String openId = "http://";
-
     @Inject
     private ObsoleteHolder obsolete;
-
     private boolean accountsValid;
 
-    public @Nullable HAccount getObsoleteAccount() {
+    @Nullable
+    public HAccount getObsoleteAccount() {
         return obsolete.account;
     }
 
@@ -116,7 +104,6 @@ public class AccountMergeAction implements Serializable {
             } catch (IllegalArgumentException e) {
                 providerType = OpenIdProviderType.Generic;
             }
-
             if (providerType == OpenIdProviderType.Generic) {
                 authenticationManager.openIdAuthenticate(openId, providerType,
                         new AccountMergeAuthCallback());
@@ -133,7 +120,6 @@ public class AccountMergeAction implements Serializable {
 
     public void validateAccounts() {
         boolean valid = true;
-
         // The account to merge in has been authenticated
         HAccount obsoleteAccount = getObsoleteAccount();
         if (obsoleteAccount != null) {
@@ -141,20 +127,19 @@ public class AccountMergeAction implements Serializable {
                 facesMessages.addGlobal(SEVERITY_ERROR,
                         "Could not find an account for that user.");
                 valid = false;
-            } else if (authenticatedAccount.getId().equals(
-                    obsoleteAccount.getId())) {
+            } else if (authenticatedAccount.getId()
+                    .equals(obsoleteAccount.getId())) {
                 facesMessages.addGlobal(SEVERITY_ERROR,
                         "You are attempting to merge the same account.");
                 valid = false;
             }
         }
-
         this.accountsValid = valid;
     }
 
     public void mergeAccounts() {
-        registerServiceImpl
-                .mergeAccounts(authenticatedAccount, getObsoleteAccount());
+        registerServiceImpl.mergeAccounts(authenticatedAccount,
+                getObsoleteAccount());
         setObsoleteAccount(null); // reset the obsolete account
         facesMessages.addGlobal("Your accounts have been merged.");
     }
@@ -165,22 +150,20 @@ public class AccountMergeAction implements Serializable {
         return "cancel";
     }
 
-    private static class AccountMergeAuthCallback implements
-            OpenIdAuthCallback, Serializable {
-        private static final long serialVersionUID = 1L;
+    private static class AccountMergeAuthCallback
+            implements OpenIdAuthCallback, Serializable {
 
+        private static final long serialVersionUID = 1L;
         @Inject
         private AccountDAO accountDAO;
-
         @Inject
         private ObsoleteHolder obsoleteHolder;
 
         @Override
         public void afterOpenIdAuth(OpenIdAuthenticationResult result) {
             if (result.isAuthenticated()) {
-                HAccount account =
-                        accountDAO.getByCredentialsId(result
-                                .getAuthenticatedId());
+                HAccount account = accountDAO
+                        .getByCredentialsId(result.getAuthenticatedId());
                 if (account == null) {
                     account = new HAccount(); // In case an account is not found
                 }
@@ -192,5 +175,13 @@ public class AccountMergeAction implements Serializable {
         public String getRedirectToUrl() {
             return "/profile/merge_account.xhtml";
         }
+    }
+
+    public String getOpenId() {
+        return this.openId;
+    }
+
+    public void setOpenId(final String openId) {
+        this.openId = openId;
     }
 }

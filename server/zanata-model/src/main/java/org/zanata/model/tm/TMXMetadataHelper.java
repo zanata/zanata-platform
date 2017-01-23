@@ -18,29 +18,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.model.tm;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Nonnull;
 import javax.xml.XMLConstants;
-
-import lombok.extern.slf4j.Slf4j;
 import nu.xom.Attribute;
 import nu.xom.Document;
 import nu.xom.Element;
 import nu.xom.Elements;
-
 import org.codehaus.jackson.map.ObjectMapper;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.zanata.util.TMXConstants;
 import org.zanata.util.TMXParseException;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import com.google.common.collect.ImmutableMap;
@@ -50,21 +44,19 @@ import com.ibm.icu.util.ULocale;
 /**
  * Adapts TMX metadata to the generic translation memory objects.
  *
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 public class TMXMetadataHelper {
-    private static final String EMPTY_NAMESPACE = XMLConstants.NULL_NS_URI;
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TMXMetadataHelper.class);
 
+    private static final String EMPTY_NAMESPACE = XMLConstants.NULL_NS_URI;
     private static final String TMX_ELEMENT_CHILDREN =
             "__TMX_ELEMENT_CHILDREN__";
-
-    private static final DateTimeFormatter ISO8601Z = DateTimeFormat
-            .forPattern("yyyyMMdd'T'HHmmss'Z").withZoneUTC();
+    private static final DateTimeFormatter ISO8601Z =
+            DateTimeFormat.forPattern("yyyyMMdd\'T\'HHmmss\'Z").withZoneUTC();
     private static final ObjectMapper jsonMapper = new ObjectMapper();
-
     // TMX attributes which we store as fields (*not* in the generic metadata
     // map):
     private static final String CREATION_DATE = "creationdate";
@@ -91,7 +83,6 @@ public class TMXMetadataHelper {
             }
             Map<String, Object> metadata =
                     jsonMapper.readValue(metadataString, Map.class);
-
             List<String> children = getChildrenXml(metadata);
             Builder<Element> result = ImmutableList.builder();
             for (String childXml : children) {
@@ -112,8 +103,9 @@ public class TMXMetadataHelper {
      * @param tu
      * @return
      */
-    public static @Nonnull
-    ImmutableMap<String, String> getAttributes(TransMemory fromTm) {
+    @Nonnull
+    public static ImmutableMap<String, String>
+            getAttributes(TransMemory fromTm) {
         ImmutableMap.Builder<String, String> m = ImmutableMap.builder();
         m.putAll(getSharedMetadata(fromTm));
         String srclang = fromTm.getSourceLanguage();
@@ -129,8 +121,9 @@ public class TMXMetadataHelper {
      * @param fromTu
      * @return
      */
-    public static @Nonnull
-    ImmutableMap<String, String> getAttributes(TransMemoryUnit fromTu) {
+    @Nonnull
+    public static ImmutableMap<String, String>
+            getAttributes(TransMemoryUnit fromTu) {
         ImmutableMap.Builder<String, String> m = ImmutableMap.builder();
         m.putAll(getSharedMetadata(fromTu));
         String tuid = fromTu.getTransUnitId();
@@ -150,8 +143,9 @@ public class TMXMetadataHelper {
      * @param tu
      * @return
      */
-    public static @Nonnull
-    ImmutableMap<String, String> getAttributes(TransMemoryUnitVariant fromTuv) {
+    @Nonnull
+    public static ImmutableMap<String, String>
+            getAttributes(TransMemoryUnitVariant fromTuv) {
         ImmutableMap.Builder<String, String> m = ImmutableMap.builder();
         m.putAll(getSharedMetadata(fromTuv));
         String lang = fromTuv.getLanguage();
@@ -160,8 +154,9 @@ public class TMXMetadataHelper {
         return m.build();
     }
 
-    private static @Nonnull
-    ImmutableMap<String, String> getSharedMetadata(HasTMMetadata fromEntity) {
+    @Nonnull
+    private static ImmutableMap<String, String>
+            getSharedMetadata(HasTMMetadata fromEntity) {
         ImmutableMap.Builder<String, String> m = ImmutableMap.builder();
         m.putAll(getGenericMetadata(fromEntity));
         Date creationDate = fromEntity.getCreationDate();
@@ -176,8 +171,9 @@ public class TMXMetadataHelper {
     }
 
     @SuppressWarnings("null")
-    private static @Nonnull
-    Map<String, String> getGenericMetadata(HasTMMetadata fromEntity) {
+    @Nonnull
+    private static Map<String, String>
+            getGenericMetadata(HasTMMetadata fromEntity) {
         String metadataString = fromEntity.getMetadata(TMMetadataType.TMX14);
         if (metadataString == null) {
             return ImmutableMap.of();
@@ -252,8 +248,8 @@ public class TMXMetadataHelper {
         if (lang != null) {
             toTuv.setLanguage(getValidLang(lang));
         } else {
-            throw new TMXParseException("missing xml:lang in tuv: "
-                    + fromTuvElem.toXML());
+            throw new TMXParseException(
+                    "missing xml:lang in tuv: " + fromTuvElem.toXML());
         }
         setSharedMetadata(toTuv, metadata);
     }
@@ -293,14 +289,14 @@ public class TMXMetadataHelper {
     }
 
     @SuppressWarnings("null")
-    public static @Nonnull
-    Date toDate(String dateString) {
+    @Nonnull
+    public static Date toDate(String dateString) {
         return ISO8601Z.parseDateTime(dateString).toDate();
     }
 
     @SuppressWarnings("null")
-    public static @Nonnull
-    String toString(Date date) {
+    @Nonnull
+    public static String toString(Date date) {
         return ISO8601Z.print(date.getTime());
     }
 
@@ -349,7 +345,8 @@ public class TMXMetadataHelper {
             Builder<String> childrenXml) {
         String uri = child.getNamespaceURI();
         String name = child.getLocalName();
-        if (inTmxNamespace(uri) && (name.equals("prop") || name.equals("note"))) {
+        if (inTmxNamespace(uri)
+                && (name.equals("prop") || name.equals("note"))) {
             Element copy = (Element) child.copy();
             copy.setNamespacePrefix("");
             copy.setNamespaceURI("");

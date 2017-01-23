@@ -20,24 +20,18 @@
  *  * site: http://www.fsf.org.
  *
  */
-
 package org.zanata.webtrans.server.rpc;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-
 import org.zanata.events.TextFlowTargetUpdatedEvent;
 import org.zanata.model.*;
 import org.zanata.service.*;
 import org.zanata.util.IServiceLocator;
 import org.zanata.webtrans.shared.model.*;
 import org.zanata.webtrans.shared.rpc.*;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-
-import lombok.RequiredArgsConstructor;
-
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
@@ -48,22 +42,22 @@ import javax.inject.Named;
  */
 @Named("webtrans.gwt.TransUnitUpdateHelper")
 @javax.enterprise.context.ApplicationScoped
-
 public class TransUnitUpdateHelper {
 
     @Inject
     private IServiceLocator serviceLocator;
-
     private static Cache<CacheKey, TransUnitUpdateInfo> cache = CacheBuilder
             .newBuilder().expireAfterAccess(1, TimeUnit.MILLISECONDS)
             .softValues().maximumSize(100).build();
 
-    public void onTargetUpdatedSuccessful(@Observes(during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetUpdatedEvent event) {
+    public void onTargetUpdatedSuccessful(@Observes(
+            during = TransactionPhase.AFTER_SUCCESS) TextFlowTargetUpdatedEvent event) {
         TransUnitUpdated transUnitUpdated = event.getTransUnitUpdated();
         event.getWorkspace().publish(transUnitUpdated);
         TransUnit transUnit = transUnitUpdated.getUpdateInfo().getTransUnit();
         cache.put(
-                new CacheKey(event.getTextFlowTargetId(), transUnit.getVerNum()),
+                new CacheKey(event.getTextFlowTargetId(),
+                        transUnit.getVerNum()),
                 transUnitUpdated.getUpdateInfo());
     }
 
@@ -72,14 +66,12 @@ public class TransUnitUpdateHelper {
         TransUnitTransformer transUnitTransformer =
                 serviceLocator.getInstance(TransUnitTransformer.class);
         UpdateTransUnitResult result = new UpdateTransUnitResult();
-
         for (TranslationService.TranslationResult translationResult : translationResults) {
             translationResult.getTranslatedTextFlowTarget().getId();
             HTextFlowTarget newTarget =
                     translationResult.getTranslatedTextFlowTarget();
-            TransUnitUpdateInfo transUnitUpdateInfo =
-                    cache.getIfPresent(new CacheKey(newTarget.getId(),
-                            newTarget.getVersionNum()));
+            TransUnitUpdateInfo transUnitUpdateInfo = cache.getIfPresent(
+                    new CacheKey(newTarget.getId(), newTarget.getVersionNum()));
             if (transUnitUpdateInfo != null) {
                 // All these information is gathered in
                 // TranslationUpdateListener.
@@ -87,14 +79,12 @@ public class TransUnitUpdateHelper {
             } else {
                 HTextFlow hTextFlow = newTarget.getTextFlow();
                 int wordCount = hTextFlow.getWordCount().intValue();
-                TransUnit tu =
-                        transUnitTransformer.transform(hTextFlow,
-                                newTarget.getLocale());
-                TransUnitUpdateInfo updateInfo =
-                        build(translationResult, new DocumentId(hTextFlow
-                                .getDocument().getId(), hTextFlow.getDocument()
-                                .getDocId()), tu, wordCount);
-
+                TransUnit tu = transUnitTransformer.transform(hTextFlow,
+                        newTarget.getLocale());
+                TransUnitUpdateInfo updateInfo = build(translationResult,
+                        new DocumentId(hTextFlow.getDocument().getId(),
+                                hTextFlow.getDocument().getDocId()),
+                        tu, wordCount);
                 result.addUpdateResult(updateInfo);
             }
         }
@@ -112,9 +102,14 @@ public class TransUnitUpdateHelper {
                 translationResult.getErrorMessage());
     }
 
-    @RequiredArgsConstructor
     private static class CacheKey {
         private final Long textFlowTargetId;
         private final Integer versionNum;
+
+        @java.beans.ConstructorProperties({ "textFlowTargetId", "versionNum" })
+        public CacheKey(final Long textFlowTargetId, final Integer versionNum) {
+            this.textFlowTargetId = textFlowTargetId;
+            this.versionNum = versionNum;
+        }
     }
 }

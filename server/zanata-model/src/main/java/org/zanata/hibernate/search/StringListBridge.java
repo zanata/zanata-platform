@@ -1,13 +1,10 @@
 package org.zanata.hibernate.search;
 
 import java.util.List;
-
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Index a list of strings in multiple fields, appending the string index to the
@@ -21,10 +18,10 @@ import lombok.extern.slf4j.Slf4j;
  * </ul>
  *
  * @author David Mason, damason@redhat.com
- *
  */
-@Slf4j
 public class StringListBridge implements FieldBridge {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(StringListBridge.class);
 
     @Override
     public void set(String name, Object value, Document luceneDocument,
@@ -43,11 +40,9 @@ public class StringListBridge implements FieldBridge {
 
     private void addStringField(String fieldName, String fieldValue,
             Document luceneDocument, LuceneOptions luceneOptions) {
-        Field field =
-                new Field(fieldName, fieldValue, luceneOptions.getStore(),
-                        luceneOptions.getIndex(), luceneOptions.getTermVector());
+        Field field = new Field(fieldName, fieldValue, luceneOptions.getStore(),
+                luceneOptions.getIndex(), luceneOptions.getTermVector());
         field.setBoost(luceneOptions.getBoost());
         luceneDocument.add(field);
     }
-
 }

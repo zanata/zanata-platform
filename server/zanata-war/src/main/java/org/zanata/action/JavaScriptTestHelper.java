@@ -20,28 +20,22 @@
  */
 package org.zanata.action;
 
-import lombok.extern.slf4j.Slf4j;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Named;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-
 @Named("javaScriptTestHelper")
 @Dependent
-@Slf4j
 public class JavaScriptTestHelper {
-    private final static String propName = "zanata.javaScriptTestHelper";
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(JavaScriptTestHelper.class);
 
-    private static final String HEAD_SCRIPT = "<script type=\"application/javascript\">\n" +
-            "window.addEventListener('error', function (e) {\n" +
-            "  // For some reason, this form (with a comma) won't let WebDriver see the stack trace:\n" +
-            "  // console.error('error stack:', e.error.stack.toString());\n" +
-            "  console.error('error stack: ' + e.error.stack.toString());\n" +
-            "});\n" +
-            "</script>\n";
+    private static final String propName = "zanata.javaScriptTestHelper";
+    private static final String HEAD_SCRIPT =
+            "<script type=\"application/javascript\">\nwindow.addEventListener(\'error\', function (e) {\n  // For some reason, this form (with a comma) won\'t let WebDriver see the stack trace:\n  // console.error(\'error stack:\', e.error.stack.toString());\n  console.error(\'error stack: \' + e.error.stack.toString());\n});\n</script>\n";
 
     public String getHeadScript() {
         if (Boolean.getBoolean(propName)) {

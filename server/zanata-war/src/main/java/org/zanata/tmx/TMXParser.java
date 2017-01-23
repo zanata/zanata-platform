@@ -21,7 +21,6 @@
 package org.zanata.tmx;
 
 import java.io.InputStream;
-
 import javax.enterprise.context.Dependent;
 import javax.persistence.EntityExistsException;
 import javax.transaction.HeuristicMixedException;
@@ -34,12 +33,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
-
-import lombok.AllArgsConstructor;
-import lombok.Cleanup;
-import lombok.extern.slf4j.Slf4j;
 import nu.xom.Element;
-
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
 import org.hibernate.Session;
@@ -56,16 +50,17 @@ import com.google.common.base.Throwables;
 /**
  * Parses TMX input.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("tmxParser")
 @Dependent
-@Slf4j
 public class TMXParser {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TMXParser.class);
+
     // Batch size to commit in a new transaction for long files
     private static final int BATCH_SIZE = 100;
-
     @Inject
     private Session session;
     @Inject
@@ -84,30 +79,32 @@ public class TMXParser {
             factory.setProperty(XMLInputFactory.SUPPORT_DTD, true);
             factory.setProperty(XMLInputFactory.IS_VALIDATING, true);
             factory.setXMLResolver(new TmxDtdResolver());
-            @Cleanup
             XMLStreamReader reader = factory.createXMLStreamReader(input);
-
-            QName tmx = new QName("tmx");
-
-            while (reader.hasNext()
-                    && reader.next() != XMLStreamConstants.START_ELEMENT) {
-            }
-            if (!reader.hasNext())
-                throw new TMXParseException("No root element");
-            if (!reader.getName().equals(tmx))
-                throw new TMXParseException("Wrong root element: expected tmx");
-
-            // At this point, event = START_ELEMENT and name = tmx
-            while (reader.hasNext()) {
-                CommitBatch commitBatch =
-                        new CommitBatch(reader, 0, transMemory);
-                TransactionUtilImpl.get().runEx(commitBatch);
-                handledTUs += commitBatch.handledTUs;
+            try {
+                QName tmx = new QName("tmx");
+                while (reader.hasNext()
+                        && reader.next() != XMLStreamConstants.START_ELEMENT) {
+                }
+                if (!reader.hasNext())
+                    throw new TMXParseException("No root element");
+                if (!reader.getName().equals(tmx))
+                    throw new TMXParseException(
+                            "Wrong root element: expected tmx");
+                // At this point, event = START_ELEMENT and name = tmx
+                while (reader.hasNext()) {
+                    CommitBatch commitBatch =
+                            new CommitBatch(reader, 0, transMemory);
+                    TransactionUtilImpl.get().runEx(commitBatch);
+                    handledTUs += commitBatch.handledTUs;
+                }
+            } finally {
+                if (reader != null) {
+                    reader.close();
+                }
             }
         } catch (EntityExistsException e) {
             String msg =
-                    "Possible duplicate TU (duplicate tuid or duplicate"
-                            + "src content without tuid)";
+                    "Possible duplicate TU (duplicate tuid or duplicatesrc content without tuid)";
             throw new TMXParseException(msg, e);
         } catch (Exception e) {
             Throwable rootCause = Throwables.getRootCause(e);
@@ -124,9 +121,6 @@ public class TMXParser {
         }
     }
 
-
-
-    @AllArgsConstructor
     private class CommitBatch implements RunnableEx {
         private XMLStreamReader reader;
         private int handledTUs;
@@ -142,8 +136,8 @@ public class TMXParser {
                     QName elemName = reader.getName();
                     if (elemName.equals(tu)) {
                         Element tuElem = ElementBuilder.buildElement(reader);
-                        transMemoryAdapter
-                                .processTransUnit(transMemory, tuElem);
+                        transMemoryAdapter.processTransUnit(transMemory,
+                                tuElem);
                         handledTUs++;
                     } else if (elemName.equals(header)) {
                         Element headerElem =
@@ -154,6 +148,14 @@ public class TMXParser {
                 }
             }
         }
-    }
 
+        @java.beans.ConstructorProperties({ "reader", "handledTUs",
+                "transMemory" })
+        public CommitBatch(final XMLStreamReader reader, final int handledTUs,
+                final TransMemory transMemory) {
+            this.reader = reader;
+            this.handledTUs = handledTUs;
+            this.transMemory = transMemory;
+        }
+    }
 }

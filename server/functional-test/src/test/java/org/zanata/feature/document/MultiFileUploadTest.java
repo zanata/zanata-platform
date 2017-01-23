@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.document;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
@@ -34,23 +33,21 @@ import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
-
 import java.io.File;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@Slf4j
 public class MultiFileUploadTest extends ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(MultiFileUploadTest.class);
 
     @Rule
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
-
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
     private String documentStorageDirectory;
 
@@ -61,11 +58,8 @@ public class MultiFileUploadTest extends ZanataTestCase {
         new ZanataRestCaller().createProjectAndVersion("multi-upload",
                 "multi-upload", "file");
         documentStorageDirectory = CleanDocumentStorageRule
-                .getDocumentStoragePath()
-                .concat(File.separator)
-                .concat("documents")
-                .concat(File.separator);
-
+                .getDocumentStoragePath().concat(File.separator)
+                .concat("documents").concat(File.separator);
         if (new File(documentStorageDirectory).exists()) {
             log.warn("Document storage directory exists (cleanup incomplete)");
         }
@@ -76,35 +70,24 @@ public class MultiFileUploadTest extends ZanataTestCase {
     @Ignore("Error in system path")
     public void uploadedDocumentsAreInFilesystem() {
         File firstFile = testFileGenerator.generateTestFileWithContent(
-                "multiuploadInFilesystem", ".txt",
-                "This is a test file");
+                "multiuploadInFilesystem", ".txt", "This is a test file");
         File secondFile = testFileGenerator.generateTestFileWithContent(
                 "multiuploadInFilesystem2", ".txt",
                 "This is another test file");
         String testFileName = firstFile.getName();
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("multi-upload")
-                .gotoVersion("multi-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(firstFile.getAbsolutePath())
-                .enterFilePath(secondFile.getAbsolutePath())
-                .submitUpload()
-                .clickUploadDone();
-
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("multi-upload")
+                        .gotoVersion("multi-upload").gotoSettingsTab()
+                        .gotoSettingsDocumentsTab().pressUploadFileButton()
+                        .enterFilePath(firstFile.getAbsolutePath())
+                        .enterFilePath(secondFile.getAbsolutePath())
+                        .submitUpload().clickUploadDone();
         assertThat(new File(documentStorageDirectory).list().length)
-                .isEqualTo(2)
-                .as("There are two uploaded source files");
-
+                .isEqualTo(2).as("There are two uploaded source files");
         VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .gotoDocumentTab()
-                .expectSourceDocsContains(testFileName);
-
+                .gotoDocumentTab().expectSourceDocsContains(testFileName);
         assertThat(versionDocumentsPage.getSourceDocumentNames())
-                .contains(firstFile.getName())
-                .contains(secondFile.getName())
+                .contains(firstFile.getName()).contains(secondFile.getName())
                 .as("The documents were uploaded");
     }
 
@@ -112,41 +95,29 @@ public class MultiFileUploadTest extends ZanataTestCase {
     public void removeFileFromUploadList() {
         File keptUploadFile = testFileGenerator.generateTestFileWithContent(
                 "removeFileFromUploadList", ".txt", "Remove File Upload Test");
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("multi-upload")
-                .gotoVersion("multi-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(keptUploadFile.getAbsolutePath())
-                .enterFilePath("/tmp/fakefile.txt");
-
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("multi-upload")
+                        .gotoVersion("multi-upload").gotoSettingsTab()
+                        .gotoSettingsDocumentsTab().pressUploadFileButton()
+                        .enterFilePath(keptUploadFile.getAbsolutePath())
+                        .enterFilePath("/tmp/fakefile.txt");
         versionDocumentsTab.waitForPageSilence();
         // TODO try to eliminate this:
         versionDocumentsTab.expectSomeUploadItems();
         assertThat(versionDocumentsTab.getUploadList())
-                .contains(keptUploadFile.getName())
-                .contains("fakefile.txt")
+                .contains(keptUploadFile.getName()).contains("fakefile.txt")
                 .as("The intended files are listed");
-
         versionDocumentsTab = versionDocumentsTab.clickRemoveOn("fakefile.txt");
-
         versionDocumentsTab.waitForPageSilence();
         assertThat(versionDocumentsTab.getUploadList())
                 .contains(keptUploadFile.getName())
                 .doesNotContain("fakefile.txt")
                 .as("The fakefile has been removed");
-
         VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .submitUpload()
-                .clickUploadDone()
-                .gotoDocumentTab();
-
+                .submitUpload().clickUploadDone().gotoDocumentTab();
         assertThat(versionDocumentsPage.getSourceDocumentNames())
                 .contains(keptUploadFile.getName())
                 .doesNotContain("fakefile.txt")
                 .as("Only the intended file was uploaded");
     }
-
 }

@@ -21,7 +21,6 @@
 package org.zanata.feature.glossary;
 
 import com.google.common.base.Joiner;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -29,24 +28,24 @@ import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.workflow.ClientWorkFlow;
-
 import java.io.File;
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.MavenHome.mvn;
 
 /**
  * @see <a href="https://tcms.engineering.redhat.com/case/169230/">TCMS case</a>
  *
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@Slf4j
 public class InvalidGlossaryPushTest extends ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(InvalidGlossaryPushTest.class);
 
-    private String pushCommand = mvn() + " -e --batch-mode zanata:glossary-push -Dglossary.lang=fr -Dzanata.file=compendium_fr_invalid.po -Dzanata.userConfig=";
+    private String pushCommand = mvn()
+            + " -e --batch-mode zanata:glossary-push -Dglossary.lang=fr -Dzanata.file=compendium_fr_invalid.po -Dzanata.userConfig=";
     private ClientWorkFlow clientWorkFlow;
     private String userConfigPath;
     private File projectRootPath;
@@ -65,16 +64,14 @@ public class InvalidGlossaryPushTest extends ZanataTestCase {
         String output = resultByLines(result);
         log.info("output:\n{}", output);
         assertThat(output).containsIgnoringCase("unexpected token");
-
         assertThat(clientWorkFlow.isPushSuccessful(result))
-                .as("glossary push should fail")
-                .isFalse();
+                .as("glossary push should fail").isFalse();
     }
 
     public List<String> push(String command, String configPath)
             throws Exception {
-        return clientWorkFlow.callWithTimeout(projectRootPath, command
-                + configPath);
+        return clientWorkFlow.callWithTimeout(projectRootPath,
+                command + configPath);
     }
 
     public String resultByLines(List<String> output) {

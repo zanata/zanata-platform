@@ -20,7 +20,6 @@
  */
 package org.zanata.workflow;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.explore.ExplorePage;
@@ -29,15 +28,15 @@ import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projects.projectsettings.ProjectPermissionsTab;
 import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
-
 import java.util.HashMap;
 
 /**
- * This class represents the work-flows involved when interacting with
- * projects, such as creating projects and versions and altering settings.
+ * This class represents the work-flows involved when interacting with projects,
+ * such as creating projects and versions and altering settings.
  */
-@Slf4j
 public class ProjectWorkFlow extends AbstractWebWorkFlow {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectWorkFlow.class);
 
     /**
      * Creates a new project using minimal input, all other items are default.
@@ -52,21 +51,19 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
     public ProjectVersionsPage createNewSimpleProject(String projectId,
             String projectName) {
         ExplorePage explorePage = goToHome().gotoExplore();
-
         explorePage = explorePage.enterSearch(projectName);
-        if (!explorePage.getProjectSearchResults().isEmpty() &&
-            explorePage.getProjectSearchResults().contains(projectName)) {
+        if (!explorePage.getProjectSearchResults().isEmpty() && explorePage
+                .getProjectSearchResults().contains(projectName)) {
             log.warn("{} already exists. This test environment is not clean.",
-                projectId);
+                    projectId);
             // since we can't create same project multiple times,
             // if we run this test more than once manually, we don't want it to
             // fail
             return explorePage.clickProjectEntry(projectName);
         }
         return goToHome().goToMyDashboard().gotoProjectsTab()
-            .clickOnCreateProjectLink()
-            .enterProjectId(projectId).enterProjectName(projectName)
-            .pressCreateProject();
+                .clickOnCreateProjectLink().enterProjectId(projectId)
+                .enterProjectName(projectName).pressCreateProject();
     }
 
     /**
@@ -78,15 +75,15 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
      * @return a new Project page for the created project
      * @see {@link #projectDefaults()}
      */
-    public ProjectVersionsPage createNewProject(HashMap<String, String> settings) {
+    public ProjectVersionsPage
+            createNewProject(HashMap<String, String> settings) {
         DashboardBasePage dashboard = goToHome().goToMyDashboard();
-        CreateProjectPage createProjectPage = dashboard
-                .gotoProjectsTab()
-                .clickOnCreateProjectLink()
-                .enterProjectName(settings.get("Name"))
-                .enterProjectId(settings.get("Project ID"))
-                .enterDescription(settings.get("Description"))
-                .selectProjectType(settings.get("Project Type"));
+        CreateProjectPage createProjectPage =
+                dashboard.gotoProjectsTab().clickOnCreateProjectLink()
+                        .enterProjectName(settings.get("Name"))
+                        .enterProjectId(settings.get("Project ID"))
+                        .enterDescription(settings.get("Description"))
+                        .selectProjectType(settings.get("Project Type"));
         // Unusual timing issue:
         createProjectPage.slightPause();
         return createProjectPage.pressCreateProject();
@@ -118,9 +115,12 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
     /**
      * Create a new project version.
      *
-     * @param projectName name of the project
-     * @param versionID ID of the version
-     * @param versionType type of the version
+     * @param projectName
+     *            name of the project
+     * @param versionID
+     *            ID of the version
+     * @param versionType
+     *            type of the version
      * @return new Version page, on the default Languages tab
      */
     public VersionLanguagesPage createNewProjectVersion(String projectName,
@@ -128,18 +128,17 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
         ProjectVersionsPage projectVersionsPage =
                 goToProjectByName(projectName);
         if (projectVersionsPage.getVersions().contains(versionID)) {
-            log.warn("{} has already been created. " +
-                    "Presumably you are running this test manually and more" +
-                    " than once.", versionID);
+            log.warn(
+                    "{} has already been created. Presumably you are running this test manually and more than once.",
+                    versionID);
             return projectVersionsPage.gotoVersion(versionID);
         }
-        CreateVersionPage createVersionPage = projectVersionsPage
-                .clickCreateVersionLink();
+        CreateVersionPage createVersionPage =
+                projectVersionsPage.clickCreateVersionLink();
         // First version has no copy options
         if (driver.findElements(By.id("create-version-form:copy-from-version"))
                 .size() > 0) {
-            createVersionPage = createVersionPage
-                    .disableCopyFromVersion()
+            createVersionPage = createVersionPage.disableCopyFromVersion()
                     .selectProjectType(versionType);
         }
         return createVersionPage.inputVersionId(versionID).saveVersion();
@@ -151,27 +150,23 @@ public class ProjectWorkFlow extends AbstractWebWorkFlow {
     }
 
     public ProjectPermissionsTab addMaintainer(String projectName,
-        final String username) {
+            final String username) {
         ProjectPermissionsTab projectPermissionsTab =
-            goToProjectByName(projectName)
-                .gotoSettingsTab()
-                .gotoSettingsPermissionsTab()
-                .enterSearchMaintainer(username)
-                .selectSearchMaintainer(username);
+                goToProjectByName(projectName).gotoSettingsTab()
+                        .gotoSettingsPermissionsTab()
+                        .enterSearchMaintainer(username)
+                        .selectSearchMaintainer(username);
         projectPermissionsTab.expectMaintainersContains(username);
         return new ProjectPermissionsTab(driver);
     }
 
     public ProjectPermissionsTab removeMaintainer(String projectName,
-        final String username) {
+            final String username) {
         ProjectPermissionsTab projectPermissionsTab =
-            goToProjectByName(projectName)
-                .gotoSettingsTab()
-                .gotoSettingsPermissionsTab();
-
+                goToProjectByName(projectName).gotoSettingsTab()
+                        .gotoSettingsPermissionsTab();
         projectPermissionsTab.clickRemoveOn(username)
-            .expectMaintainersNotContains(username);
-
+                .expectMaintainersNotContains(username);
         return new ProjectPermissionsTab(driver);
     }
 }

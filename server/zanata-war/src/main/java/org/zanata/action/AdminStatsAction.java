@@ -21,15 +21,10 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.PersonDAO;
@@ -39,40 +34,29 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 
 /**
- *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
- **/
+ */
 @Named("adminStatsAction")
 @ViewScoped
 @Model
 @Transactional
 public class AdminStatsAction implements Serializable {
-    /**
-    *
-    */
-    private static final long serialVersionUID = 1L;
 
+    /**
+     */
+    private static final long serialVersionUID = 1L;
     @Inject
     private ProjectDAO projectDAO;
-
     @Inject
     private ProjectIterationDAO projectIterationDAO;
-
     @Inject
     private PersonDAO personDAO;
-
     @Inject
     private TextFlowDAO textFlowDAO;
-
     @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
-
     @Inject
     private DocumentDAO documentDAO;
-
-    @Getter
-    @Setter
     private boolean documentReady;
 
     public int getTotalProjectCount() {
@@ -161,5 +145,13 @@ public class AdminStatsAction implements Serializable {
 
     public int getTotalUntranslatedTextFlowTargets() {
         return textFlowTargetDAO.getTotalNewTextFlowTargets();
+    }
+
+    public boolean isDocumentReady() {
+        return this.documentReady;
+    }
+
+    public void setDocumentReady(final boolean documentReady) {
+        this.documentReady = documentReady;
     }
 }

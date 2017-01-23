@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.List;
-
 import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceException;
 import javax.servlet.ServletConfig;
@@ -33,10 +32,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -59,18 +56,19 @@ import org.zanata.rest.dto.ChunkUploadResponse;
 import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.util.FileUtil;
 import org.zanata.util.ServiceLocator;
-
 import static com.google.common.base.Strings.emptyToNull;
 
 /**
  * Endpoint for upload dialogs using multi-file upload forms.
  *
  * Use GET on the endpoint to check that upload is acceptable, including whether
- * the user is signed in and whether they already have an upload in-progress
- * in a separate tab.
+ * the user is signed in and whether they already have an upload in-progress in
+ * a separate tab.
  */
-@Slf4j
 public class MultiFileUploadServlet extends HttpServlet {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(MultiFileUploadServlet.class);
+
     private static final long serialVersionUID = 1L;
 
     @Override
@@ -80,23 +78,29 @@ public class MultiFileUploadServlet extends HttpServlet {
     /**
      * Use GET to check the endpoint before doing a POST.
      *
-     * This allows the browser to check that the upload is allowed before attempting an upload.
+     * This allows the browser to check that the upload is allowed before
+     * attempting an upload.
      */
     @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest request,
+            final HttpServletResponse response)
+            throws ServletException, IOException {
         respondWithUploadAvailability(response);
     }
 
     /**
-     * Indicate in response any errors that would prevent upload to this endpoint.
+     * Indicate in response any errors that would prevent upload to this
+     * endpoint.
      *
-     * @param response to respond with error or success JSON
+     * @param response
+     *            to respond with error or success JSON
      */
-    private void respondWithUploadAvailability(HttpServletResponse response) throws IOException {
+    private void respondWithUploadAvailability(HttpServletResponse response)
+            throws IOException {
         Optional<String> reason = getCannotUploadReason();
-        String responseBody = reason.isPresent()
-                ? "{ \"error\": \"" + reason.get() + "\" }"
-                : "{ \"success\": \"ok to upload\" }";
+        String responseBody =
+                reason.isPresent() ? "{ \"error\": \"" + reason.get() + "\" }"
+                        : "{ \"success\": \"ok to upload\" }";
         response.setContentType("application/json");
         PrintWriter writer = response.getWriter();
         writer.write(responseBody);
@@ -110,10 +114,9 @@ public class MultiFileUploadServlet extends HttpServlet {
     private Optional<String> getCannotUploadReason() {
         Optional<Long> accountId = getAccountId();
         boolean loggedIn = accountId.isPresent();
-
         if (loggedIn) {
-            UserFileUploadTracker tracker = ServiceLocator.instance().getInstance(
-                    UserFileUploadTracker.class);
+            UserFileUploadTracker tracker = ServiceLocator.instance()
+                    .getInstance(UserFileUploadTracker.class);
             boolean alreadyUploading = tracker.isUserUploading(accountId.get());
             if (alreadyUploading) {
                 return Optional.of("already uploading");
@@ -123,12 +126,12 @@ public class MultiFileUploadServlet extends HttpServlet {
         }
         return Optional.absent();
     }
-
     // FIXME consolidate to one Optional
+
     private Optional<Long> getAccountId() {
         java.util.Optional<HAccount> optionalAuthenticatedAccount =
-                ServiceLocator.instance().getOptionalInstance(
-                        HAccount.class, new AuthenticatedLiteral());
+                ServiceLocator.instance().getOptionalInstance(HAccount.class,
+                        new AuthenticatedLiteral());
         if (optionalAuthenticatedAccount.isPresent()) {
             return Optional.of(optionalAuthenticatedAccount.get().getId());
         }
@@ -137,8 +140,8 @@ public class MultiFileUploadServlet extends HttpServlet {
 
     @Override
     protected void doPost(final HttpServletRequest request,
-                          final HttpServletResponse response) throws ServletException,
-            IOException {
+            final HttpServletResponse response)
+            throws ServletException, IOException {
         processPost(request, response);
     }
 
@@ -148,8 +151,8 @@ public class MultiFileUploadServlet extends HttpServlet {
      * Initiates processing if the request is multipart, otherwise respond with
      * an error.
      */
-    private void processPost(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
+    private void processPost(HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
         if (ServletFileUpload.isMultipartContent(request)) {
             registerForUploadAndProcessMultipartPost(request, response);
         } else {
@@ -163,21 +166,23 @@ public class MultiFileUploadServlet extends HttpServlet {
      * Ensure that upload is allowed at this time, then initiate processing of
      * the upload request.
      *
-     * This method is responsible for making sure that a user only has one active
-     * upload at a time.
+     * This method is responsible for making sure that a user only has one
+     * active upload at a time.
      */
-    private void registerForUploadAndProcessMultipartPost(HttpServletRequest request,
-                                                          HttpServletResponse response) throws IOException {
-        // TODO at this point the server will expect a response per-file. The simplistic error responses may not be handled well
-
+    private void registerForUploadAndProcessMultipartPost(
+            HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        // TODO at this point the server will expect a response per-file. The
+        // simplistic error responses may not be handled well
         Optional<Long> accountId = getAccountId();
-
         if (accountId.isPresent()) {
-            UserFileUploadTracker tracker = ServiceLocator.instance().getInstance(
-                    UserFileUploadTracker.class);
-            boolean registeredForUpload = tracker.tryToRegisterUserForFileUpload(accountId.get());
+            UserFileUploadTracker tracker = ServiceLocator.instance()
+                    .getInstance(UserFileUploadTracker.class);
+            boolean registeredForUpload =
+                    tracker.tryToRegisterUserForFileUpload(accountId.get());
             if (!registeredForUpload) {
-                log.error("User with id {} is already uploading something.", accountId.get());
+                log.error("User with id {} is already uploading something.",
+                        accountId.get());
                 respondWithError(response, "already uploading");
             } else {
                 try {
@@ -192,7 +197,8 @@ public class MultiFileUploadServlet extends HttpServlet {
         }
     }
 
-    private void respondWithError(HttpServletResponse response, String error) throws IOException {
+    private void respondWithError(HttpServletResponse response, String error)
+            throws IOException {
         JSONObject responseObject = new JSONObject();
         try {
             responseObject.put("error", "upload failed: " + error);
@@ -206,9 +212,9 @@ public class MultiFileUploadServlet extends HttpServlet {
     }
 
     private void processMultipartPost(HttpServletRequest request,
-                                     HttpServletResponse response) throws IOException {
-
-        FileUploadRequestHandler uploadRequestHandler = new FileUploadRequestHandler(request);
+            HttpServletResponse response) throws IOException {
+        FileUploadRequestHandler uploadRequestHandler =
+                new FileUploadRequestHandler(request);
         JSONArray filesJson;
         try {
             filesJson = uploadRequestHandler.process();
@@ -219,7 +225,8 @@ public class MultiFileUploadServlet extends HttpServlet {
         respondWithFiles(response, filesJson);
     }
 
-    private void respondWithFiles(HttpServletResponse response, JSONArray filesJson) throws IOException {
+    private void respondWithFiles(HttpServletResponse response,
+            JSONArray filesJson) throws IOException {
         JSONObject responseObject = new JSONObject();
         try {
             responseObject.put("files", filesJson);
@@ -236,14 +243,12 @@ public class MultiFileUploadServlet extends HttpServlet {
 
     private class FileUploadRequestHandler {
         private final HttpServletRequest request;
-
         private String projectSlug;
         private String versionSlug;
         private final List<String> fileTypes;
         private String path = "";
         private String lang = "en-US";
         private String fileParams = "";
-
         private SourceDocumentUpload sourceUploader;
 
         public FileUploadRequestHandler(HttpServletRequest request) {
@@ -251,7 +256,8 @@ public class MultiFileUploadServlet extends HttpServlet {
             projectSlug = request.getParameter("p");
             versionSlug = request.getParameter("v");
             /**
-             * TODO: add types parameter in all caller of /files/upload (multifile upload)
+             * TODO: add types parameter in all caller of /files/upload
+             * (multifile upload)
              * https://bugzilla.redhat.com/show_bug.cgi?id=1217671
              */
             String fileTypesQuery = request.getParameter("types");
@@ -260,13 +266,13 @@ public class MultiFileUploadServlet extends HttpServlet {
             } else {
                 fileTypes = Collections.emptyList();
             }
-            sourceUploader = ServiceLocator.instance().getInstance(SourceDocumentUpload.class);
+            sourceUploader = ServiceLocator.instance()
+                    .getInstance(SourceDocumentUpload.class);
         }
 
         public JSONArray process() throws FileUploadException {
             List<FileItem> items = getRequestItems();
             JSONArray filesJson = processFilesFromItems(items);
-
             return filesJson;
         }
 
@@ -282,7 +288,6 @@ public class MultiFileUploadServlet extends HttpServlet {
         private JSONArray processFilesFromItems(List<FileItem> items) {
             // parameters are required before processing files
             recordParametersFromItems(items);
-
             JSONArray filesJson = new JSONArray();
             for (FileItem item : items) {
                 if (!item.isFormField()) {
@@ -296,8 +301,10 @@ public class MultiFileUploadServlet extends HttpServlet {
         /**
          * Must be called before processing any file items.
          *
-         * @param items all items from multipart request.
+         * @param items
+         *            all items from multipart request.
          */
+
         private void recordParametersFromItems(List<FileItem> items) {
             // Make sure params are available before processing files
             for (FileItem item : items) {
@@ -320,50 +327,58 @@ public class MultiFileUploadServlet extends HttpServlet {
          *
          * @return JSON summary of outcome of the attempt.
          */
+
         private JSONObject processFileItem(FileItem item) {
             String docId = FileUtil.generateDocId(path, item.getName());
-            GlobalDocumentId id = new GlobalDocumentId(projectSlug, versionSlug, docId);
-
+            GlobalDocumentId id =
+                    new GlobalDocumentId(projectSlug, versionSlug, docId);
             Optional<String> errorMessage;
             Optional<String> successMessage = Optional.absent();
-
-            Optional<String> concurrentUploadError = Optional.of("failed: someone else is already uploading this file");
-
+            Optional<String> concurrentUploadError = Optional
+                    .of("failed: someone else is already uploading this file");
             try {
                 DocumentFileUploadForm form = createUploadFormForItem(item);
-                Response response = sourceUploader.tryUploadSourceFileWithoutHash(id, form);
-                ChunkUploadResponse responseEntity = (ChunkUploadResponse) response.getEntity();
-                errorMessage = optionalStringEmptyIsAbsent(responseEntity.getErrorMessage());
-                successMessage = optionalStringEmptyIsAbsent(responseEntity.getSuccessMessage());
+                Response response =
+                        sourceUploader.tryUploadSourceFileWithoutHash(id, form);
+                ChunkUploadResponse responseEntity =
+                        (ChunkUploadResponse) response.getEntity();
+                errorMessage = optionalStringEmptyIsAbsent(
+                        responseEntity.getErrorMessage());
+                successMessage = optionalStringEmptyIsAbsent(
+                        responseEntity.getSuccessMessage());
             } catch (IOException e) {
                 errorMessage = Optional.of("could not access file data");
             } catch (OptimisticLockException e) {
                 errorMessage = concurrentUploadError;
             } catch (StaleStateException e) {
-                // this happens in the same circumstances as OptimisticLockException
-                // but is thrown because we are using hibernate directly rather than
+                // this happens in the same circumstances as
+                // OptimisticLockException
+                // but is thrown because we are using hibernate directly rather
+                // than
                 // through JPA.
                 errorMessage = concurrentUploadError;
             } catch (ConstraintViolationException e) {
                 errorMessage = concurrentUploadError;
             } catch (PersistenceException e) {
-                errorMessage = Optional.of("Timed out: failed because the file took too long to process");
+                errorMessage = Optional.of(
+                        "Timed out: failed because the file took too long to process");
             }
-
             return createJSONInfo(item, docId, errorMessage, successMessage);
         }
 
         /**
          * Create JSON summary of outcome of an attempt to process an item.
          */
-        private JSONObject createJSONInfo(FileItem item, String docId, Optional<String> error, Optional<String> success) {
-            JSONObject jsono = new JSONObject();
 
+        private JSONObject createJSONInfo(FileItem item, String docId,
+                Optional<String> error, Optional<String> success) {
+            JSONObject jsono = new JSONObject();
             try {
                 jsono.put("name", docId);
                 jsono.put("size", item.getSize());
                 if (error.isPresent()) {
-                    if (error.get().equals("Valid combination of username and api-key for this server were not included in the request.")) {
+                    if (error.get().equals(
+                            "Valid combination of username and api-key for this server were not included in the request.")) {
                         error = Optional.of("not logged in");
                     }
                     jsono.put("error", error.get());
@@ -372,7 +387,7 @@ public class MultiFileUploadServlet extends HttpServlet {
                         jsono.put("message", success.get());
                     }
                     // TODO could provide REST URL for this file
-//                            jsono.put("url", "upload?getfile=" + item.getName());
+                    // jsono.put("url", "upload?getfile=" + item.getName());
                 }
             } catch (JSONException e) {
                 log.error("Error while generating JSON", e);
@@ -383,15 +398,17 @@ public class MultiFileUploadServlet extends HttpServlet {
         /**
          * Create the upload form required by sourceUploader for file upload.
          *
-         * @throws IOException if the input stream cannot be opened for the file data.
+         * @throws IOException
+         *             if the input stream cannot be opened for the file data.
          */
-        private DocumentFileUploadForm createUploadFormForItem(FileItem item) throws IOException {
+
+        private DocumentFileUploadForm createUploadFormForItem(FileItem item)
+                throws IOException {
             DocumentFileUploadForm form = new DocumentFileUploadForm();
             form.setAdapterParams(fileParams);
             form.setFirst(true);
             form.setLast(true);
             form.setSize(item.getSize());
-
             form.setFileType(getFileTypeForItem(item.getName()));
             form.setFileStream(item.getInputStream());
             return form;
@@ -400,19 +417,17 @@ public class MultiFileUploadServlet extends HttpServlet {
         private String getFileTypeForItem(String filename) {
             String extension = FilenameUtils.getExtension(filename);
             /**
-             * TODO: Implement docType selection for multifile upload.
-             * At the moment, get the first docType from returned list.
+             * TODO: Implement docType selection for multifile upload. At the
+             * moment, get the first docType from returned list.
              */
-            DocumentType fileType =
-                    DocumentType.fromSourceExtension(extension).iterator()
-                            .next();
+            DocumentType fileType = DocumentType.fromSourceExtension(extension)
+                    .iterator().next();
             if (!fileTypes.isEmpty()) {
                 for (String parsedFileType : fileTypes) {
-                    DocumentType docType = DocumentType.getByName(
-                            parsedFileType);
-                    if (docType != null
-                            && docType.getSourceExtensions()
-                                    .contains(extension)) {
+                    DocumentType docType =
+                            DocumentType.getByName(parsedFileType);
+                    if (docType != null && docType.getSourceExtensions()
+                            .contains(extension)) {
                         fileType = docType;
                         break;
                     }
@@ -421,13 +436,13 @@ public class MultiFileUploadServlet extends HttpServlet {
             return fileType == null ? extension : fileType.name();
         }
 
-
         /**
          * @return absent if the given String is null or empty, otherwise an
          *         Option containing the given String.
          */
+
         private Optional<String> optionalStringEmptyIsAbsent(String value) {
-            return(Optional.fromNullable(emptyToNull(value)));
+            return (Optional.fromNullable(emptyToNull(value)));
         }
     }
 }

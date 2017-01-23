@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.annotation.Nonnull;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -36,14 +35,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
-
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
-import lombok.ToString;
-
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -51,26 +45,17 @@ import org.zanata.rest.dto.Person;
 
 /**
  * @see Person
- *
  */
 @Entity
 @Cacheable
-@Setter
-@EqualsAndHashCode(callSuper = true, of = { "id", "email", "name" })
-@ToString(callSuper = true, of = "name")
 public class HPerson extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
     private String name;
     private HAccount account;
-
     private String email;
-
     private Set<HProject> maintainerProjects;
-
     private Set<HIterationGroup> maintainerVersionGroups;
-
     private Set<HLocaleMember> languageTeamMemberships;
-
     private Set<HProjectMember> projectMemberships;
 
     public HPerson() {
@@ -102,10 +87,10 @@ public class HPerson extends ModelEntityBase implements Serializable {
 
     @Transient
     public Set<HProject> getMaintainerProjects() {
-        Set<HProjectMember> maintainerMemberships =
-                Sets.filter(getProjectMemberships(), HProjectMember.IS_MAINTAINER);
-        Collection<HProject> projects =
-                Collections2.transform(maintainerMemberships, HProjectMember.TO_PROJECT);
+        Set<HProjectMember> maintainerMemberships = Sets
+                .filter(getProjectMemberships(), HProjectMember.IS_MAINTAINER);
+        Collection<HProject> projects = Collections2
+                .transform(maintainerMemberships, HProjectMember.TO_PROJECT);
         return ImmutableSet.copyOf(projects);
     }
 
@@ -177,4 +162,80 @@ public class HPerson extends ModelEntityBase implements Serializable {
         return !getMaintainerProjects().isEmpty();
     }
 
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setAccount(final HAccount account) {
+        this.account = account;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
+    }
+
+    public void setMaintainerProjects(final Set<HProject> maintainerProjects) {
+        this.maintainerProjects = maintainerProjects;
+    }
+
+    public void setMaintainerVersionGroups(
+            final Set<HIterationGroup> maintainerVersionGroups) {
+        this.maintainerVersionGroups = maintainerVersionGroups;
+    }
+
+    public void setLanguageTeamMemberships(
+            final Set<HLocaleMember> languageTeamMemberships) {
+        this.languageTeamMemberships = languageTeamMemberships;
+    }
+
+    public void setProjectMemberships(
+            final Set<HProjectMember> projectMemberships) {
+        this.projectMemberships = projectMemberships;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof HPerson))
+            return false;
+        final HPerson other = (HPerson) o;
+        if (!other.canEqual((Object) this))
+            return false;
+        if (!super.equals(o))
+            return false;
+        final Object this$name = this.getName();
+        final Object other$name = other.getName();
+        if (this$name == null ? other$name != null
+                : !this$name.equals(other$name))
+            return false;
+        final Object this$email = this.getEmail();
+        final Object other$email = other.getEmail();
+        if (this$email == null ? other$email != null
+                : !this$email.equals(other$email))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof HPerson;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $name = this.getName();
+        result = result * PRIME + ($name == null ? 43 : $name.hashCode());
+        final Object $email = this.getEmail();
+        result = result * PRIME + ($email == null ? 43 : $email.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "HPerson(super=" + super.toString() + ", name=" + this.getName()
+                + ")";
+    }
 }

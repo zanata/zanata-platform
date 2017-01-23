@@ -21,10 +21,6 @@
 package org.zanata.service.impl;
 
 import com.google.common.cache.CacheLoader;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -74,7 +70,6 @@ import org.zanata.util.UrlUtil;
 import org.zanata.util.Zanata;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationId;
-
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -85,7 +80,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 import static org.zanata.common.ContentState.Approved;
@@ -99,28 +93,23 @@ import static org.zanata.test.rule.FunctionalTestRule.reentrant;
 /**
  * This is a parameterized version of the CopyTransServiceImplTest class. It is
  * split to allow for non-parameterized tests.
+ *
  * @See {@link CopyTransServiceImplTest}
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @RunWith(Parameterized.class)
 @SupportDeltaspikeCore
 @Parameterized.UseParametersRunnerFactory(CdiUnitRunnerWithParameters.Factory.class)
-@AdditionalClasses({
-        ParamTestCdiExtension.class,
-        LocaleServiceImpl.class,
-        TranslationMemoryServiceImpl.class,
-        VersionStateCacheImpl.class,
-        TranslationStateCacheImpl.class,
-        ValidationServiceImpl.class,
-        TransactionUtilImpl.class,
-        UrlUtil.class
-})
+@AdditionalClasses({ ParamTestCdiExtension.class, LocaleServiceImpl.class,
+        TranslationMemoryServiceImpl.class, VersionStateCacheImpl.class,
+        TranslationStateCacheImpl.class, ValidationServiceImpl.class,
+        TransactionUtilImpl.class, UrlUtil.class })
 public class CopyTransServiceImplParameterizedTest {
 
     @ClassRule
     @Rule
     public static JpaRule jpaRule = reentrant(new JpaRule());
-
     @Inject
     ProjectIterationDAO iterationDAO;
     @Inject
@@ -129,29 +118,30 @@ public class CopyTransServiceImplParameterizedTest {
     ProjectDAO projectDAO;
     @Inject
     DocumentDAO documentDAO;
-    @Inject CopyTransServiceImpl copyTransService;
-
+    @Inject
+    CopyTransServiceImpl copyTransService;
     @Produces
     @Mock
     IServiceLocator serviceLocator;
-    @Produces @Mock @FullText
+    @Produces
+    @Mock
+    @FullText
     FullTextEntityManager fullTextEntityManager;
-
-    @Produces @Mock
+    @Produces
+    @Mock
     private UrlUtil urlUtil;
-
-    @Produces @Mock
+    @Produces
+    @Mock
     private CacheLoader<DocumentLocaleKey, WordStatistic> documentStatisticLoader;
-
-    @Produces @Mock
+    @Produces
+    @Mock
     private CacheLoader<DocumentLocaleKey, DocumentStatus> docStatusLoader;
-
-    @Produces @Mock
+    @Produces
+    @Mock
     private CacheLoader<Long, Map<ValidationId, Boolean>> targetValidationLoader;
-
-    @Produces @Mock
+    @Produces
+    @Mock
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
-
     @Parameterized.Parameter(0)
     CopyTransExecution copyTransExecution;
 
@@ -170,7 +160,8 @@ public class CopyTransServiceImplParameterizedTest {
         return jpaRule.getSession();
     }
 
-    @Produces @Zanata
+    @Produces
+    @Zanata
     protected CacheContainer getCacheContainer() {
         return new InfinispanTestCacheContainer();
     }
@@ -197,53 +188,49 @@ public class CopyTransServiceImplParameterizedTest {
                         DatabaseOperation.CLEAN_INSERT),
                 new DataSetOperation(
                         "org/zanata/test/model/CopyTransTestData.dbunit.xml",
-                        DatabaseOperation.CLEAN_INSERT)
-        );
+                        DatabaseOperation.CLEAN_INSERT));
     }
 
     @Before
     public void beforeMethod() throws Exception {
         when(serviceLocator.getJndiComponent("java:jboss/UserTransaction",
                 UserTransaction.class))
-                .thenReturn(new TestTransaction(getEm()));
+                        .thenReturn(new TestTransaction(getEm()));
     }
 
     @Parameterized.Parameters(name = "{index}: Copy Trans Execution: {0}")
     public static Iterable<Object[]> copyTransExecution() {
         Set<CopyTransExecution> expandedExecutions = generateExecutions();
-        return expandedExecutions.stream().map(cte -> new Object[]{ cte })
-                .collect(
-                        Collectors.toList());
+        return expandedExecutions.stream().map(cte -> new Object[] { cte })
+                .collect(Collectors.toList());
     }
+    // @Ignore
+    // @Test
+    // public void individualTest() throws Exception {
+    // this.testCopyTrans(new CopyTransExecution(REJECT, IGNORE,
+    // DOWNGRADE_TO_FUZZY, false, true, false, false, Approved)
+    // .expectTransState(NeedReview));
+    // }
+    // @DataProvider
+    // public static Object[][] copyTransParams() {
+    // Set<CopyTransExecution> expandedExecutions = generateExecutions();
+    //
+    // Object[][] val = new Object[expandedExecutions.size()][1];
+    // int i = 0;
+    // for (CopyTransExecution exe : expandedExecutions) {
+    // val[i++][0] = exe;
+    // }
+    //
+    // return val;
+    // }
+    // @UseDataProvider("copyTransParams")
+    // (about 2 seconds)
 
     /**
      * Use this test to individually test copy trans scenarios.
      */
-//    @Ignore
-//    @Test
-//    public void individualTest() throws Exception {
-//        this.testCopyTrans(new CopyTransExecution(REJECT, IGNORE,
-//                DOWNGRADE_TO_FUZZY, false, true, false, false, Approved)
-//                .expectTransState(NeedReview));
-//    }
-
-//    @DataProvider
-//    public static Object[][] copyTransParams() {
-//        Set<CopyTransExecution> expandedExecutions = generateExecutions();
-//
-//        Object[][] val = new Object[expandedExecutions.size()][1];
-//        int i = 0;
-//        for (CopyTransExecution exe : expandedExecutions) {
-//            val[i++][0] = exe;
-//        }
-//
-//        return val;
-//    }
-
     @Test
-//    @UseDataProvider("copyTransParams")
     @InRequestScope
-    // (about 2 seconds)
     @SlowTest
     public void testCopyTrans() throws Exception {
         // Get the project iteration
@@ -252,16 +239,13 @@ public class CopyTransServiceImplParameterizedTest {
             projectIteration =
                     iterationDAO.getBySlug("same-project", "different-version");
         } else {
-            projectIteration =
-                    iterationDAO.getBySlug("different-project",
-                            "different-version");
+            projectIteration = iterationDAO.getBySlug("different-project",
+                    "different-version");
         }
         assert projectIteration != null;
-
         // Set require translation review
-        projectIteration
-                .setRequireTranslationReview(copyTransExecution.requireTranslationReview);
-
+        projectIteration.setRequireTranslationReview(
+                copyTransExecution.requireTranslationReview);
         // Change all targets to have the copyTransExecution's match state
         for (HDocument doc : projectIteration.getDocuments().values()) {
             for (HTextFlow tf : doc.getAllTextFlows().values()) {
@@ -270,7 +254,6 @@ public class CopyTransServiceImplParameterizedTest {
                 }
             }
         }
-
         // Create the document
         HDocument doc = new HDocument();
         doc.setContentType(ContentType.TextPlain);
@@ -282,7 +265,6 @@ public class CopyTransServiceImplParameterizedTest {
             doc.setFullPath("/different/document");
         }
         projectIteration.getDocuments().put(doc.getDocId(), doc);
-
         // Create the text Flow
         HTextFlow textFlow = new HTextFlow();
         textFlow.setContents("Source Content"); // Source content matches
@@ -295,31 +277,25 @@ public class CopyTransServiceImplParameterizedTest {
             textFlow.setResId("different-context");
         }
         doc.getTextFlows().add(textFlow);
-
         projectIteration = iterationDAO.makePersistent(projectIteration);
         getEm().flush(); // So the rest of the test sees the results
-
-        HCopyTransOptions options =
-                new HCopyTransOptions(copyTransExecution.getContextMismatchAction(),
-                        copyTransExecution.getDocumentMismatchAction(),
-                        copyTransExecution.getProjectMismatchAction());
+        HCopyTransOptions options = new HCopyTransOptions(
+                copyTransExecution.getContextMismatchAction(),
+                copyTransExecution.getDocumentMismatchAction(),
+                copyTransExecution.getProjectMismatchAction());
         copyTransService.copyTransForIteration(projectIteration, options,
                 new CopyTransTaskHandle());
         getEm().flush();
-
         // Validate copyTransExecution
-        HTextFlow targetTextFlow =
-                (HTextFlow) getEm()
-                        .createQuery(
-                                "from HTextFlow tf where tf.document.projectIteration = :projectIteration "
-                                        + "and tf.document.docId = :docId and tf.resId = :resId")
-                        .setParameter("projectIteration", projectIteration)
-                        .setParameter("docId", doc.getDocId())
-                        .setParameter("resId", textFlow.getResId())
-                        .getSingleResult();
+        HTextFlow targetTextFlow = (HTextFlow) getEm()
+                .createQuery(
+                        "from HTextFlow tf where tf.document.projectIteration = :projectIteration and tf.document.docId = :docId and tf.resId = :resId")
+                .setParameter("projectIteration", projectIteration)
+                .setParameter("docId", doc.getDocId())
+                .setParameter("resId", textFlow.getResId()).getSingleResult();
         // Id: 3L for Locale de
         HTextFlowTarget target = targetTextFlow.getTargets().get(3L);
-        if(target != null) {
+        if (target != null) {
             assertThat(target.getSourceType())
                     .isEqualTo(TranslationSourceType.COPY_TRANS);
         }
@@ -334,46 +310,44 @@ public class CopyTransServiceImplParameterizedTest {
                 throw new AssertionError("Expected state "
                         + copyTransExecution.getExpectedTranslationState()
                         + ", but got untranslated.");
-            } else if (copyTransExecution.getExpectedTranslationState() != target
-                    .getState()) {
+            } else if (copyTransExecution
+                    .getExpectedTranslationState() != target.getState()) {
                 throw new AssertionError("Expected state "
                         + copyTransExecution.getExpectedTranslationState()
                         + ", but got " + target.getState());
             }
         }
-
         // Contents
         if (copyTransExecution.getExpectedContents() != null) {
             if (target == null) {
                 throw new AssertionError("Expected contents "
-                        + Arrays.toString(copyTransExecution.getExpectedContents())
+                        + Arrays.toString(
+                                copyTransExecution.getExpectedContents())
                         + ", but got untranslated.");
-            } else if (!Arrays.equals(copyTransExecution.getExpectedContents(), target
-                    .getContents().toArray())) {
+            } else if (!Arrays.equals(copyTransExecution.getExpectedContents(),
+                    target.getContents().toArray())) {
                 throw new AssertionError("Expected contents "
-                        + Arrays.toString(copyTransExecution.getExpectedContents())
+                        + Arrays.toString(
+                                copyTransExecution.getExpectedContents())
                         + ", but got "
                         + Arrays.toString(target.getContents().toArray()));
             }
         }
     }
 
-    private static ContentState getExpectedContentState(CopyTransExecution execution) {
+    private static ContentState
+            getExpectedContentState(CopyTransExecution execution) {
         ContentState expectedContentState =
                 execution.getRequireTranslationReview() ? Approved : Translated;
-
-        expectedContentState =
-                getExpectedContentState(execution.getContextMatches(),
-                        execution.getContextMismatchAction(),
-                        expectedContentState);
-        expectedContentState =
-                getExpectedContentState(execution.getProjectMatches(),
-                        execution.getProjectMismatchAction(),
-                        expectedContentState);
-        expectedContentState =
-                getExpectedContentState(execution.getDocumentMatches(),
-                        execution.getDocumentMismatchAction(),
-                        expectedContentState);
+        expectedContentState = getExpectedContentState(
+                execution.getContextMatches(),
+                execution.getContextMismatchAction(), expectedContentState);
+        expectedContentState = getExpectedContentState(
+                execution.getProjectMatches(),
+                execution.getProjectMismatchAction(), expectedContentState);
+        expectedContentState = getExpectedContentState(
+                execution.getDocumentMatches(),
+                execution.getDocumentMismatchAction(), expectedContentState);
         return expectedContentState;
     }
 
@@ -396,39 +370,31 @@ public class CopyTransServiceImplParameterizedTest {
                 new HashSet<CopyTransExecution>();
         // NB combinations which affect the query parameters
         // (context match/mismatch, etc) are tested in TranslationFinderTest
-        Set<Object[]> paramsSet =
-                cartesianProduct(Arrays.asList(REJECT), Arrays.asList(REJECT),
-                        Arrays.asList(REJECT), Arrays.asList(true),
-                        Arrays.asList(true), Arrays.asList(true),
-                        Arrays.asList(true, false),
-                        Arrays.asList(Translated, Approved));
-
+        Set<Object[]> paramsSet = cartesianProduct(Arrays.asList(REJECT),
+                Arrays.asList(REJECT), Arrays.asList(REJECT),
+                Arrays.asList(true), Arrays.asList(true), Arrays.asList(true),
+                Arrays.asList(true, false),
+                Arrays.asList(Translated, Approved));
         for (Object[] params : paramsSet) {
-            CopyTransExecution exec =
-                    new CopyTransExecution((HCopyTransOptions.ConditionRuleAction) params[0],
-                            (HCopyTransOptions.ConditionRuleAction) params[1],
-                            (HCopyTransOptions.ConditionRuleAction) params[2],
-                            (Boolean) params[3], (Boolean) params[4],
-                            (Boolean) params[5], (Boolean) params[6],
-                            (ContentState) params[7]);
-
-            ContentState expectedContentState =
-                    getExpectedContentState(exec);
+            CopyTransExecution exec = new CopyTransExecution(
+                    (HCopyTransOptions.ConditionRuleAction) params[0],
+                    (HCopyTransOptions.ConditionRuleAction) params[1],
+                    (HCopyTransOptions.ConditionRuleAction) params[2],
+                    (Boolean) params[3], (Boolean) params[4],
+                    (Boolean) params[5], (Boolean) params[6],
+                    (ContentState) params[7]);
+            ContentState expectedContentState = getExpectedContentState(exec);
             if (expectedContentState == New) {
                 exec.expectUntranslated();
             } else {
-                exec.expectTransState(expectedContentState).withContents(
-                        "target-content-de");
+                exec.expectTransState(expectedContentState)
+                        .withContents("target-content-de");
             }
             allExecutions.add(exec);
         }
         return allExecutions;
     }
 
-    @Getter
-    @Setter
-    @EqualsAndHashCode
-    @ToString
     private static class CopyTransExecution implements Cloneable {
         private HCopyTransOptions.ConditionRuleAction contextMismatchAction;
         private HCopyTransOptions.ConditionRuleAction projectMismatchAction;
@@ -442,7 +408,8 @@ public class CopyTransServiceImplParameterizedTest {
         private String[] expectedContents;
         public ContentState matchState;
 
-        private CopyTransExecution(HCopyTransOptions.ConditionRuleAction contextMismatchAction,
+        private CopyTransExecution(
+                HCopyTransOptions.ConditionRuleAction contextMismatchAction,
                 HCopyTransOptions.ConditionRuleAction projectMismatchAction,
                 HCopyTransOptions.ConditionRuleAction documentMismatchAction,
                 Boolean contextMatches, Boolean projectMatches,
@@ -478,6 +445,250 @@ public class CopyTransServiceImplParameterizedTest {
         public CopyTransExecution withContents(String... contents) {
             this.expectedContents = contents;
             return this;
+        }
+
+        public HCopyTransOptions.ConditionRuleAction
+                getContextMismatchAction() {
+            return this.contextMismatchAction;
+        }
+
+        public HCopyTransOptions.ConditionRuleAction
+                getProjectMismatchAction() {
+            return this.projectMismatchAction;
+        }
+
+        public HCopyTransOptions.ConditionRuleAction
+                getDocumentMismatchAction() {
+            return this.documentMismatchAction;
+        }
+
+        public Boolean getContextMatches() {
+            return this.contextMatches;
+        }
+
+        public Boolean getProjectMatches() {
+            return this.projectMatches;
+        }
+
+        public Boolean getDocumentMatches() {
+            return this.documentMatches;
+        }
+
+        public Boolean getRequireTranslationReview() {
+            return this.requireTranslationReview;
+        }
+
+        public ContentState getExpectedTranslationState() {
+            return this.expectedTranslationState;
+        }
+
+        public boolean isExpectUntranslated() {
+            return this.expectUntranslated;
+        }
+
+        public String[] getExpectedContents() {
+            return this.expectedContents;
+        }
+
+        public ContentState getMatchState() {
+            return this.matchState;
+        }
+
+        public void setContextMismatchAction(
+                final HCopyTransOptions.ConditionRuleAction contextMismatchAction) {
+            this.contextMismatchAction = contextMismatchAction;
+        }
+
+        public void setProjectMismatchAction(
+                final HCopyTransOptions.ConditionRuleAction projectMismatchAction) {
+            this.projectMismatchAction = projectMismatchAction;
+        }
+
+        public void setDocumentMismatchAction(
+                final HCopyTransOptions.ConditionRuleAction documentMismatchAction) {
+            this.documentMismatchAction = documentMismatchAction;
+        }
+
+        public void setContextMatches(final Boolean contextMatches) {
+            this.contextMatches = contextMatches;
+        }
+
+        public void setProjectMatches(final Boolean projectMatches) {
+            this.projectMatches = projectMatches;
+        }
+
+        public void setDocumentMatches(final Boolean documentMatches) {
+            this.documentMatches = documentMatches;
+        }
+
+        public void setRequireTranslationReview(
+                final Boolean requireTranslationReview) {
+            this.requireTranslationReview = requireTranslationReview;
+        }
+
+        public void setExpectedTranslationState(
+                final ContentState expectedTranslationState) {
+            this.expectedTranslationState = expectedTranslationState;
+        }
+
+        public void setExpectUntranslated(final boolean expectUntranslated) {
+            this.expectUntranslated = expectUntranslated;
+        }
+
+        public void setExpectedContents(final String[] expectedContents) {
+            this.expectedContents = expectedContents;
+        }
+
+        public void setMatchState(final ContentState matchState) {
+            this.matchState = matchState;
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (o == this)
+                return true;
+            if (!(o instanceof CopyTransServiceImplParameterizedTest.CopyTransExecution))
+                return false;
+            final CopyTransExecution other = (CopyTransExecution) o;
+            if (!other.canEqual((Object) this))
+                return false;
+            final Object this$contextMismatchAction =
+                    this.getContextMismatchAction();
+            final Object other$contextMismatchAction =
+                    other.getContextMismatchAction();
+            if (this$contextMismatchAction == null
+                    ? other$contextMismatchAction != null
+                    : !this$contextMismatchAction
+                            .equals(other$contextMismatchAction))
+                return false;
+            final Object this$projectMismatchAction =
+                    this.getProjectMismatchAction();
+            final Object other$projectMismatchAction =
+                    other.getProjectMismatchAction();
+            if (this$projectMismatchAction == null
+                    ? other$projectMismatchAction != null
+                    : !this$projectMismatchAction
+                            .equals(other$projectMismatchAction))
+                return false;
+            final Object this$documentMismatchAction =
+                    this.getDocumentMismatchAction();
+            final Object other$documentMismatchAction =
+                    other.getDocumentMismatchAction();
+            if (this$documentMismatchAction == null
+                    ? other$documentMismatchAction != null
+                    : !this$documentMismatchAction
+                            .equals(other$documentMismatchAction))
+                return false;
+            final Object this$contextMatches = this.getContextMatches();
+            final Object other$contextMatches = other.getContextMatches();
+            if (this$contextMatches == null ? other$contextMatches != null
+                    : !this$contextMatches.equals(other$contextMatches))
+                return false;
+            final Object this$projectMatches = this.getProjectMatches();
+            final Object other$projectMatches = other.getProjectMatches();
+            if (this$projectMatches == null ? other$projectMatches != null
+                    : !this$projectMatches.equals(other$projectMatches))
+                return false;
+            final Object this$documentMatches = this.getDocumentMatches();
+            final Object other$documentMatches = other.getDocumentMatches();
+            if (this$documentMatches == null ? other$documentMatches != null
+                    : !this$documentMatches.equals(other$documentMatches))
+                return false;
+            final Object this$requireTranslationReview =
+                    this.getRequireTranslationReview();
+            final Object other$requireTranslationReview =
+                    other.getRequireTranslationReview();
+            if (this$requireTranslationReview == null
+                    ? other$requireTranslationReview != null
+                    : !this$requireTranslationReview
+                            .equals(other$requireTranslationReview))
+                return false;
+            final Object this$expectedTranslationState =
+                    this.getExpectedTranslationState();
+            final Object other$expectedTranslationState =
+                    other.getExpectedTranslationState();
+            if (this$expectedTranslationState == null
+                    ? other$expectedTranslationState != null
+                    : !this$expectedTranslationState
+                            .equals(other$expectedTranslationState))
+                return false;
+            if (this.isExpectUntranslated() != other.isExpectUntranslated())
+                return false;
+            if (!java.util.Arrays.deepEquals(this.getExpectedContents(),
+                    other.getExpectedContents()))
+                return false;
+            final Object this$matchState = this.getMatchState();
+            final Object other$matchState = other.getMatchState();
+            if (this$matchState == null ? other$matchState != null
+                    : !this$matchState.equals(other$matchState))
+                return false;
+            return true;
+        }
+
+        protected boolean canEqual(final Object other) {
+            return other instanceof CopyTransServiceImplParameterizedTest.CopyTransExecution;
+        }
+
+        @Override
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $contextMismatchAction =
+                    this.getContextMismatchAction();
+            result = result * PRIME + ($contextMismatchAction == null ? 43
+                    : $contextMismatchAction.hashCode());
+            final Object $projectMismatchAction =
+                    this.getProjectMismatchAction();
+            result = result * PRIME + ($projectMismatchAction == null ? 43
+                    : $projectMismatchAction.hashCode());
+            final Object $documentMismatchAction =
+                    this.getDocumentMismatchAction();
+            result = result * PRIME + ($documentMismatchAction == null ? 43
+                    : $documentMismatchAction.hashCode());
+            final Object $contextMatches = this.getContextMatches();
+            result = result * PRIME + ($contextMatches == null ? 43
+                    : $contextMatches.hashCode());
+            final Object $projectMatches = this.getProjectMatches();
+            result = result * PRIME + ($projectMatches == null ? 43
+                    : $projectMatches.hashCode());
+            final Object $documentMatches = this.getDocumentMatches();
+            result = result * PRIME + ($documentMatches == null ? 43
+                    : $documentMatches.hashCode());
+            final Object $requireTranslationReview =
+                    this.getRequireTranslationReview();
+            result = result * PRIME + ($requireTranslationReview == null ? 43
+                    : $requireTranslationReview.hashCode());
+            final Object $expectedTranslationState =
+                    this.getExpectedTranslationState();
+            result = result * PRIME + ($expectedTranslationState == null ? 43
+                    : $expectedTranslationState.hashCode());
+            result = result * PRIME + (this.isExpectUntranslated() ? 79 : 97);
+            result = result * PRIME
+                    + java.util.Arrays.deepHashCode(this.getExpectedContents());
+            final Object $matchState = this.getMatchState();
+            result = result * PRIME
+                    + ($matchState == null ? 43 : $matchState.hashCode());
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "CopyTransServiceImplParameterizedTest.CopyTransExecution(contextMismatchAction="
+                    + this.getContextMismatchAction()
+                    + ", projectMismatchAction="
+                    + this.getProjectMismatchAction()
+                    + ", documentMismatchAction="
+                    + this.getDocumentMismatchAction() + ", contextMatches="
+                    + this.getContextMatches() + ", projectMatches="
+                    + this.getProjectMatches() + ", documentMatches="
+                    + this.getDocumentMatches() + ", requireTranslationReview="
+                    + this.getRequireTranslationReview()
+                    + ", expectedTranslationState="
+                    + this.getExpectedTranslationState()
+                    + ", expectUntranslated=" + this.isExpectUntranslated()
+                    + ", expectedContents="
+                    + java.util.Arrays.deepToString(this.getExpectedContents())
+                    + ", matchState=" + this.getMatchState() + ")";
         }
     }
 }

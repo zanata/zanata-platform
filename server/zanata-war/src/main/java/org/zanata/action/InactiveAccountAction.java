@@ -2,9 +2,6 @@ package org.zanata.action;
 
 import java.io.Serializable;
 import java.util.Date;
-
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
@@ -35,58 +32,47 @@ import org.zanata.ui.faces.FacesMessages;
 @Model
 @Transactional
 public class InactiveAccountAction implements Serializable {
+
     @Inject
     private AccountDAO accountDAO;
-
     @Inject
     private PersonDAO personDAO;
-
     @Inject
     private EmailService emailServiceImpl;
-
     @Inject
     private ZanataCredentials credentials;
-
     @Inject
     private ZanataOpenId zanataOpenId;
-
     @Inject
     private FacesMessages facesMessages;
-
     @Inject
     private CredentialsDAO credentialsDAO;
-
     @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
-
     @Inject
     private AuthenticationManager authenticationManager;
-
-    @Getter
-    @Setter
     @Email
     @NotDuplicateEmail(message = "This email address is already taken.")
     @EmailDomain
     private String email;
-
     private HAccount account;
-
     private static final long serialVersionUID = 1L;
-
 
     @PostConstruct
     public void onCreate() {
-        if (!authenticationManager.isAuthenticatedAccountWaitingForActivation()) {
-            throw new AuthorizationException("Account is not waiting for activation");
+        if (!authenticationManager
+                .isAuthenticatedAccountWaitingForActivation()) {
+            throw new AuthorizationException(
+                    "Account is not waiting for activation");
         }
     }
 
     private HAccount getAccount() {
-        if(account == null) {
+        if (account == null) {
             if (credentials.getAuthType() == AuthenticationType.OPENID) {
-                // NB: Maybe we can get the authenticated openid from somewhere else
-                account =
-                    credentialsDAO.findByUser(
+                // NB: Maybe we can get the authenticated openid from somewhere
+                // else
+                account = credentialsDAO.findByUser(
                         zanataOpenId.getAuthResult().getAuthenticatedId())
                         .getAccount();
             } else {
@@ -101,15 +87,12 @@ public class InactiveAccountAction implements Serializable {
         HAccount account = getAccount();
         if (account != null) {
             HAccountActivationKey key = accountActivationKeyDAO
-                .findByAccountIdAndKeyHash(account.getId(),
-                    account.getAccountActivationKey().getKeyHash());
+                    .findByAccountIdAndKeyHash(account.getId(),
+                            account.getAccountActivationKey().getKeyHash());
             key.setCreationDate(new Date());
-
             accountActivationKeyDAO.makePersistent(key);
             accountActivationKeyDAO.flush();
-
-            String message =
-                emailServiceImpl.sendActivationEmail(
+            String message = emailServiceImpl.sendActivationEmail(
                     account.getPerson().getName(),
                     account.getPerson().getEmail(),
                     account.getAccountActivationKey().getKeyHash());
@@ -126,10 +109,8 @@ public class InactiveAccountAction implements Serializable {
             person.setEmail(email);
             personDAO.makePersistent(person);
             personDAO.flush();
-
             getAccount().getPerson().setEmail(email);
             facesMessages.addGlobal("Email updated.");
-
             sendActivationEmail();
             return "home";
         }
@@ -139,17 +120,23 @@ public class InactiveAccountAction implements Serializable {
     private boolean validateEmail(String email) {
         if (StringUtils.isEmpty(email)) {
             facesMessages.addToControl("email",
-                "#{msgs['javax.faces.component.UIInput.REQUIRED']}");
+                    "#{msgs[\'javax.faces.component.UIInput.REQUIRED\']}");
             return false;
         }
-
         HPerson person = personDAO.findByEmail(email);
-
         if (person != null && !person.getAccount().equals(getAccount())) {
             facesMessages.addToControl("email",
-                "This email address is already taken");
+                    "This email address is already taken");
             return false;
         }
         return true;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public void setEmail(final String email) {
+        this.email = email;
     }
 }

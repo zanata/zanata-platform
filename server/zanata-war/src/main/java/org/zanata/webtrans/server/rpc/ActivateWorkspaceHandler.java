@@ -20,17 +20,13 @@
  */
 package org.zanata.webtrans.server.rpc;
 
-import lombok.Synchronized;
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
-
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectDAO;
@@ -65,45 +61,42 @@ import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 @Named("webtrans.gwt.ActivateWorkspaceHandler")
 @RequestScoped
 @ActionHandlerFor(ActivateWorkspaceAction.class)
-@Slf4j
 public class ActivateWorkspaceHandler extends
         AbstractActionHandler<ActivateWorkspaceAction, ActivateWorkspaceResult> {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ActivateWorkspaceHandler.class);
+    private static final Object $LOCK = new Object[0];
+
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
-
     @Inject
     private GravatarService gravatarServiceImpl;
-
     @Inject
     private ProjectDAO projectDAO;
-
     @Inject
     private ProjectIterationDAO projectIterationDAO;
-
     @Inject
     private LocaleService localeServiceImpl;
-
-    @Inject @Any
+    @Inject
+    @Any
     private LoadOptionsHandler loadOptionsHandler;
-
-    @Inject @Any
+    @Inject
+    @Any
     private GetValidationRulesHandler getValidationRulesHandler;
-
-    @Inject @Authenticated
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
-
     @Inject
     @DeltaSpike
     private HttpSession session;
-
     private static long nextEditorClientIdNum = 0;
 
-    @Synchronized
     private static long generateEditorClientNum() {
-        return nextEditorClientIdNum++;
+        synchronized (ActivateWorkspaceHandler.$LOCK) {
+            return nextEditorClientIdNum++;
+        }
     }
 
     @Override
@@ -111,57 +104,45 @@ public class ActivateWorkspaceHandler extends
             ExecutionContext context) throws ActionException {
         identity.checkLoggedIn();
         Person person = retrievePerson();
-
         WorkspaceId workspaceId = action.getWorkspaceId();
         TranslationWorkspace workspace =
                 translationWorkspaceManager.getOrRegisterWorkspace(workspaceId);
         String httpSessionId = getHttpSessionId();
         EditorClientId editorClientId =
                 new EditorClientId(httpSessionId, generateEditorClientNum());
-        workspace
-                .addEditorClient(httpSessionId, editorClientId, person.getId());
+        workspace.addEditorClient(httpSessionId, editorClientId,
+                person.getId());
         // Send EnterWorkspace event to clients
         EnterWorkspace event = new EnterWorkspace(editorClientId, person);
         workspace.publish(event);
-
         HLocale locale =
                 localeServiceImpl.getByLocaleId(workspaceId.getLocaleId());
-        HProject project =
-                projectDAO.getBySlug(workspaceId.getProjectIterationId()
-                        .getProjectSlug());
-        HProjectIteration projectIteration =
-                projectIterationDAO.getBySlug(workspaceId
-                        .getProjectIterationId().getProjectSlug(), workspaceId
-                        .getProjectIterationId().getIterationSlug());
-
-        boolean isProjectActive =
-                isProjectIterationActive(project.getStatus(),
-                        projectIteration.getStatus());
-        boolean isProjectObsolete = isProjectIterationObsolete(project.getStatus(), projectIteration.getStatus());
+        HProject project = projectDAO.getBySlug(
+                workspaceId.getProjectIterationId().getProjectSlug());
+        HProjectIteration projectIteration = projectIterationDAO.getBySlug(
+                workspaceId.getProjectIterationId().getProjectSlug(),
+                workspaceId.getProjectIterationId().getIterationSlug());
+        boolean isProjectActive = isProjectIterationActive(project.getStatus(),
+                projectIteration.getStatus());
+        boolean isProjectObsolete = isProjectIterationObsolete(
+                project.getStatus(), projectIteration.getStatus());
         boolean hasWriteAccess = hasWritePermission(project, locale);
         boolean hasGlossaryUpdateAccess = hasGlossaryUpdatePermission();
         boolean hasReviewAccess = hasReviewerPermission(locale, project);
-
-        WorkspaceRestrictions workspaceRestrictions =
-                new WorkspaceRestrictions(isProjectActive, isProjectObsolete, hasWriteAccess,
-                        hasGlossaryUpdateAccess, hasReviewAccess);
+        WorkspaceRestrictions workspaceRestrictions = new WorkspaceRestrictions(
+                isProjectActive, isProjectObsolete, hasWriteAccess,
+                hasGlossaryUpdateAccess, hasReviewAccess);
         log.debug("workspace restrictions: {}", workspaceRestrictions);
-
-        LoadOptionsResult loadOptsRes =
-                loadOptionsHandler
-                        .execute(new LoadOptionsAction(null), context);
-
+        LoadOptionsResult loadOptsRes = loadOptionsHandler
+                .execute(new LoadOptionsAction(null), context);
         GetValidationRulesResult validationRulesResult =
-                getValidationRulesHandler.execute(new GetValidationRulesAction(
-                        workspaceId), context);
-
+                getValidationRulesHandler.execute(
+                        new GetValidationRulesAction(workspaceId), context);
         Identity identity = new Identity(editorClientId, person);
-        workspace.getWorkspaceContext().getWorkspaceId()
-                .getProjectIterationId()
+        workspace.getWorkspaceContext().getWorkspaceId().getProjectIterationId()
                 .setProjectType(projectIteration.getProjectType());
-        UserWorkspaceContext userWorkspaceContext =
-                new UserWorkspaceContext(workspace.getWorkspaceContext(),
-                        workspaceRestrictions);
+        UserWorkspaceContext userWorkspaceContext = new UserWorkspaceContext(
+                workspace.getWorkspaceContext(), workspaceRestrictions);
         return new ActivateWorkspaceResult(userWorkspaceContext, identity,
                 loadOptsRes.getConfiguration(),
                 validationRulesResult.getValidationRules());
@@ -188,21 +169,21 @@ public class ActivateWorkspaceHandler extends
 
     private boolean isProjectIterationActive(EntityStatus projectStatus,
             EntityStatus iterStatus) {
-        return (projectStatus.equals(EntityStatus.ACTIVE) && iterStatus
-                .equals(EntityStatus.ACTIVE));
+        return (projectStatus.equals(EntityStatus.ACTIVE)
+                && iterStatus.equals(EntityStatus.ACTIVE));
     }
 
     private boolean isProjectIterationObsolete(EntityStatus projectStatus,
-                                               EntityStatus iterStatus) {
-        return (projectStatus.equals(EntityStatus.OBSOLETE) || iterStatus
-                .equals(EntityStatus.OBSOLETE));
+            EntityStatus iterStatus) {
+        return (projectStatus.equals(EntityStatus.OBSOLETE)
+                || iterStatus.equals(EntityStatus.OBSOLETE));
     }
 
     protected Person retrievePerson() {
         return new Person(new PersonId(authenticatedAccount.getUsername()),
                 authenticatedAccount.getPerson().getName(),
-                gravatarServiceImpl.getUserImageUrl(16, authenticatedAccount
-                        .getPerson().getEmail()));
+                gravatarServiceImpl.getUserImageUrl(16,
+                        authenticatedAccount.getPerson().getEmail()));
     }
 
     @Override
@@ -210,5 +191,4 @@ public class ActivateWorkspaceHandler extends
             ActivateWorkspaceResult result, ExecutionContext context)
             throws ActionException {
     }
-
 }

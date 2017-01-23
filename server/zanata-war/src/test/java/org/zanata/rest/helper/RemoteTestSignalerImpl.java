@@ -28,14 +28,10 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-
-import lombok.extern.slf4j.Slf4j;
 import javax.inject.Named;
 import javax.ws.rs.QueryParam;
-
 import org.zanata.arquillian.RemoteAfter;
 import org.zanata.arquillian.RemoteBefore;
 import org.zanata.security.annotations.NoSecurityCheck;
@@ -43,31 +39,32 @@ import org.zanata.security.annotations.NoSecurityCheck;
 /**
  * Default implementation for the Remote Signaler interface.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Path("/test/remote/signal")
 @Named("remoteTestSignalerImpl")
-@Slf4j
 @NoSecurityCheck
 public class RemoteTestSignalerImpl {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(RemoteTestSignalerImpl.class);
+
     @POST
     @Path("/before")
-    public void signalBeforeTest(@QueryParam("c") String testClass, @QueryParam("m") String testMethod) throws Exception {
+    public void signalBeforeTest(@QueryParam("c") String testClass,
+            @QueryParam("m") String testMethod) throws Exception {
         log.info("Starting test {}:{}", testClass, testMethod);
         Class<?> testCls = Class.forName(testClass);
         Object testInstance = testCls.newInstance();
-
         invokeAnnotatedMethods(testInstance, RemoteBefore.class);
     }
 
-
     @POST
     @Path("/after")
-    public void signalAfterTest(@QueryParam("c") String testClass, @QueryParam("m") String testMethod) throws Exception {
+    public void signalAfterTest(@QueryParam("c") String testClass,
+            @QueryParam("m") String testMethod) throws Exception {
         Class<?> testCls = Class.forName(testClass);
         Object testInstance = testCls.newInstance();
-
         invokeAnnotatedMethods(testInstance, RemoteAfter.class);
         log.info("Finished test {}:{}", testClass, testMethod);
     }
@@ -78,19 +75,17 @@ public class RemoteTestSignalerImpl {
         List<Method> beforeMethods = new ArrayList<Method>();
         Class<?> objClass = o.getClass();
         while (objClass != null) {
-            beforeMethods.addAll(getMethodsWithAnnotation(
-                    objClass, annotation));
+            beforeMethods
+                    .addAll(getMethodsWithAnnotation(objClass, annotation));
             objClass = objClass.getSuperclass();
         }
-
         for (Method m : beforeMethods) {
             m.invoke(o);
         }
     }
 
     private Collection<? extends Method> getMethodsWithAnnotation(
-            Class<?> source,
-            Class<? extends Annotation> annotationClass) {
+            Class<?> source, Class<? extends Annotation> annotationClass) {
         return AccessController
                 .doPrivileged((PrivilegedAction<List<Method>>) () -> {
                     List<Method> foundMethods = new ArrayList<>();
@@ -105,5 +100,4 @@ public class RemoteTestSignalerImpl {
                     return foundMethods;
                 });
     }
-
 }

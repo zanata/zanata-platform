@@ -20,28 +20,25 @@
  */
 package org.zanata.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class SlugEntityBaseTest {
 
     private static final String DELETED_SUFFIX = "_.-1234567890";
-
-    // all ModelEntityBase descendants must override equals and hashcode to check
+    // all ModelEntityBase descendants must override equals and hashcode to
+    // check
     // their types.
-    @EqualsAndHashCode(callSuper = true)
-    @NoArgsConstructor
+
     static class SlugClass extends SlugEntityBase {
+
         public SlugClass(String slug) {
             super(slug);
         }
@@ -50,27 +47,51 @@ public class SlugEntityBaseTest {
         protected String deletedSlugSuffix() {
             return DELETED_SUFFIX;
         }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (o == this)
+                return true;
+            if (!(o instanceof SlugEntityBaseTest.SlugClass))
+                return false;
+            final SlugClass other = (SlugClass) o;
+            if (!other.canEqual((Object) this))
+                return false;
+            if (!super.equals(o))
+                return false;
+            return true;
+        }
+
+        protected boolean canEqual(final Object other) {
+            return other instanceof SlugEntityBaseTest.SlugClass;
+        }
+
+        @Override
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            result = result * PRIME + super.hashCode();
+            return result;
+        }
+
+        public SlugClass() {
+        }
     }
 
     @Test
     public void lombokToStringAndEqualsTest() {
         SlugEntityBase entity = new SlugClass();
-
         entity.setSlug("abc");
         entity.setId(1L);
         entity.setVersionNum(2);
         assertThat(entity.toString(),
                 containsString("[id=1,versionNum=2], slug=abc)"));
-
         SlugEntityBase other = new SlugClass("abc");
         assertThat(entity.equals(other), equalTo(false));
-
         other.setId(entity.getId());
         other.setVersionNum(entity.getVersionNum());
         assertThat(entity, equalTo(other));
-
         assertThat(entity.hashCode(), equalTo(other.hashCode()));
-
     }
 
     @Test
@@ -83,7 +104,8 @@ public class SlugEntityBaseTest {
     @Test
     public void canChangeToDeletedSlugWithSuffixInPlaceIfOldSlugIsTooLong() {
         // 36 characters long
-        SlugEntityBase slugEntityBase = new SlugClass("abcdefghijklmnopqrstuvwxyz1234567890");
+        SlugEntityBase slugEntityBase =
+                new SlugClass("abcdefghijklmnopqrstuvwxyz1234567890");
         String newSlug = slugEntityBase.changeToDeletedSlug();
         Assertions.assertThat(newSlug)
                 .isEqualTo("abcdefghijklmnopqrstuvwxyz1" + DELETED_SUFFIX)

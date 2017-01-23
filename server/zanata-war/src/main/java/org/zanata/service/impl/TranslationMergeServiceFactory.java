@@ -10,22 +10,18 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationMergeService;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
-
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("translationMergeServiceFactory")
 @RequestScoped
-@Slf4j
 public class TranslationMergeServiceFactory {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslationMergeServiceFactory.class);
+
     @Inject
     private TextFlowTargetHistoryDAO textFlowTargetHistoryDAO;
-
     private TranslationMergeAuto translationMergeAuto;
 
     public TranslationMergeService getMergeService(MergeContext mergeContext) {
@@ -38,8 +34,8 @@ public class TranslationMergeServiceFactory {
         } else if (mergeContext.mergeType == MergeType.IMPORT) {
             return TranslationMergeImport.INSTANCE;
         }
-        throw new UnsupportedOperationException("merge unsupported: "
-                + mergeContext);
+        throw new UnsupportedOperationException(
+                "merge unsupported: " + mergeContext);
     }
 
     private TranslationMergeService ensureMergeAuto() {
@@ -50,14 +46,52 @@ public class TranslationMergeServiceFactory {
         return translationMergeAuto;
     }
 
-    @Getter
-    @AllArgsConstructor
-    @ToString
     public static class MergeContext {
         private final MergeType mergeType;
         private final HTextFlow hTextFlow;
         private final HLocale hLocale;
         private final HTextFlowTarget currentHTarget;
         private final int nPlurals;
+
+        public MergeType getMergeType() {
+            return this.mergeType;
+        }
+
+        public HTextFlow getHTextFlow() {
+            return this.hTextFlow;
+        }
+
+        public HLocale getHLocale() {
+            return this.hLocale;
+        }
+
+        public HTextFlowTarget getCurrentHTarget() {
+            return this.currentHTarget;
+        }
+
+        public int getNPlurals() {
+            return this.nPlurals;
+        }
+
+        @java.beans.ConstructorProperties({ "mergeType", "hTextFlow", "hLocale",
+                "currentHTarget", "nPlurals" })
+        public MergeContext(final MergeType mergeType,
+                final HTextFlow hTextFlow, final HLocale hLocale,
+                final HTextFlowTarget currentHTarget, final int nPlurals) {
+            this.mergeType = mergeType;
+            this.hTextFlow = hTextFlow;
+            this.hLocale = hLocale;
+            this.currentHTarget = currentHTarget;
+            this.nPlurals = nPlurals;
+        }
+
+        @Override
+        public String toString() {
+            return "TranslationMergeServiceFactory.MergeContext(mergeType="
+                    + this.getMergeType() + ", hTextFlow=" + this.getHTextFlow()
+                    + ", hLocale=" + this.getHLocale() + ", currentHTarget="
+                    + this.getCurrentHTarget() + ", nPlurals="
+                    + this.getNPlurals() + ")";
+        }
     }
 }

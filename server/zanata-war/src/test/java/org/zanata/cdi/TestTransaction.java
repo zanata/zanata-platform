@@ -20,10 +20,8 @@
  */
 package org.zanata.cdi;
 
-import lombok.Getter;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
-
 import javax.persistence.EntityManager;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
@@ -40,16 +38,12 @@ import javax.transaction.UserTransaction;
  * Test transaction to use in CDI tests. This will simulate a real transaction
  * when accesing an entity manager.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Exclude(ifProjectStage = ProjectStage.IntegrationTest.class)
-public class TestTransaction implements UserTransaction,
-        TransactionManager {
-
-    @Getter
+public class TestTransaction implements UserTransaction, TransactionManager {
     private boolean active;
-
     private EntityManager entityManager;
 
     public TestTransaction(EntityManager entityManager) {
@@ -78,13 +72,14 @@ public class TestTransaction implements UserTransaction,
     }
 
     @Override
-    public void rollback() throws IllegalStateException, SecurityException,
-            SystemException {
+    public void rollback()
+            throws IllegalStateException, SecurityException, SystemException {
         active = false;
     }
 
     @Override
-    public void setRollbackOnly() throws IllegalStateException, SystemException {
+    public void setRollbackOnly()
+            throws IllegalStateException, SystemException {
         throw new RuntimeException();
     }
 
@@ -113,9 +108,12 @@ public class TestTransaction implements UserTransaction,
     }
 
     @Override
-    public void resume(Transaction tobj)
-            throws InvalidTransactionException, IllegalStateException,
-            SystemException {
+    public void resume(Transaction tobj) throws InvalidTransactionException,
+            IllegalStateException, SystemException {
         throw new RuntimeException();
+    }
+
+    public boolean isActive() {
+        return this.active;
     }
 }

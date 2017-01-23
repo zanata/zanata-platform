@@ -26,20 +26,20 @@ import javax.persistence.EntityTransaction;
 import javax.transaction.Status;
 import javax.transaction.SystemException;
 import javax.transaction.UserTransaction;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.deltaspike.jpa.impl.transaction.BeanManagedUserTransactionStrategy;
 import org.apache.deltaspike.jpa.impl.transaction.context.EntityManagerEntry;
-
 import com.google.common.base.Throwables;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 @Alternative
-public class NoNestingTransactionStrategy extends BeanManagedUserTransactionStrategy {
+public class NoNestingTransactionStrategy
+        extends BeanManagedUserTransactionStrategy {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(NoNestingTransactionStrategy.class);
+
     @Override
     protected void beforeProceed(InvocationContext invocationContext,
             EntityManagerEntry entityManagerEntry,
@@ -51,11 +51,13 @@ public class NoNestingTransactionStrategy extends BeanManagedUserTransactionStra
                         "Nested transactions not supported. @Async may help.");
                 // If this happens in an event observer, Weld doesn't log the
                 // exception type or stack trace, just
-                // "WELD-000401 Failure while notifying an observer of event ..."
+                // "WELD-000401 Failure while notifying an observer of event
+                // ..."
                 log.warn("Attempted nested transaction", e);
                 throw e;
             }
-            super.beforeProceed(invocationContext, entityManagerEntry, transaction);
+            super.beforeProceed(invocationContext, entityManagerEntry,
+                    transaction);
         } catch (SystemException e) {
             Throwables.propagate(e);
         }

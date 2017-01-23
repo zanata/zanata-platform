@@ -1,20 +1,15 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-
 import javax.enterprise.inject.Model;
 import javax.persistence.EntityManager;
 import javax.validation.constraints.Size;
-
-import lombok.Getter;
-import lombok.Setter;
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.validator.constraints.NotEmpty;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.zanata.dao.AccountResetPasswordKeyDAO;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.exception.NotLoggedInException;
@@ -33,43 +28,26 @@ import org.zanata.ui.faces.FacesMessages;
 public class PasswordResetAction implements Serializable {
 
     private static final long serialVersionUID = -3966625589007754411L;
-
     @Inject
     private GroupedConversation conversation;
-
     @Inject
     private EntityManager entityManager;
-
     @Inject
     private IdentityManager identityManager;
-
     @Inject
     private FacesMessages facesMessages;
-
     @Inject
     private Messages msgs;
-
     @Inject
     private AccountResetPasswordKeyDAO accountResetPasswordKeyDAO;
-
     @Inject
     private ApplicationConfiguration applicationConfiguration;
-
-    @Getter
     private String activationKey;
-
-    @Getter
-    @Setter
     @NotEmpty
     @Size(min = 6, max = 1024)
     private String password;
-
-    @Getter
     private String passwordConfirm;
-
-    @Getter
     private HAccountResetPasswordKey key;
-
 
     public void setPasswordConfirm(String passwordConfirm) {
         this.passwordConfirm = passwordConfirm;
@@ -88,10 +66,10 @@ public class PasswordResetAction implements Serializable {
     public void setActivationKey(String activationKey) {
         this.activationKey = activationKey;
         key = entityManager.find(HAccountResetPasswordKey.class,
-                        getActivationKey());
+                getActivationKey());
     }
-
     // @Begin(join = true)
+
     public void validateActivationKey() {
         if (!applicationConfiguration.isInternalAuth()) {
             throw new AuthorizationException(
@@ -113,38 +91,53 @@ public class PasswordResetAction implements Serializable {
     public String changePassword() {
         // need to get username from DAO due to lazy loading of account in key
         String username =
-            accountResetPasswordKeyDAO.getUsername(key.getKeyHash());
+                accountResetPasswordKeyDAO.getUsername(key.getKeyHash());
         if (!validatePasswordsMatch())
             return null;
-
-        key = entityManager
-            .find(HAccountResetPasswordKey.class, getActivationKey());
+        key = entityManager.find(HAccountResetPasswordKey.class,
+                getActivationKey());
         entityManager.remove(key);
         entityManager.flush();
-
         new AbstractRunAsOperation() {
+
             public void execute() {
                 try {
-                    passwordChanged =
-                        identityManager.changePassword(username, getPassword());
+                    passwordChanged = identityManager.changePassword(username,
+                            getPassword());
                 } catch (AuthorizationException | NotLoggedInException e) {
                     passwordChanged = false;
                     facesMessages.addGlobal(
-                        "Error changing password: " + e.getMessage());
+                            "Error changing password: " + e.getMessage());
                 }
             }
         }.addRole("admin").run();
-
         conversation.close();
         if (passwordChanged) {
-            facesMessages
-                    .addGlobal(msgs.get("jsf.password.change.success"));
+            facesMessages.addGlobal(msgs.get("jsf.password.change.success"));
             return "/account/login.xhtml";
         } else {
-            facesMessages
-                    .addGlobal(msgs.get("jsf.password.change.failed"));
+            facesMessages.addGlobal(msgs.get("jsf.password.change.failed"));
             return null;
         }
     }
 
+    public String getActivationKey() {
+        return this.activationKey;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(final String password) {
+        this.password = password;
+    }
+
+    public String getPasswordConfirm() {
+        return this.passwordConfirm;
+    }
+
+    public HAccountResetPasswordKey getKey() {
+        return this.key;
+    }
 }

@@ -20,17 +20,65 @@
  */
 package org.zanata.events;
 
-import lombok.Value;
-
 import org.zanata.model.HProject;
+// TODO use HProjectIteration with a discriminator instead?
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Value
-// TODO use HProjectIteration with a discriminator instead?
-public class ProjectUpdate {
-    HProject project;
+public final class ProjectUpdate {
+    private final HProject project;
+    private final String oldSlug;
 
-    String oldSlug;
+    @java.beans.ConstructorProperties({ "project", "oldSlug" })
+    public ProjectUpdate(final HProject project, final String oldSlug) {
+        this.project = project;
+        this.oldSlug = oldSlug;
+    }
+
+    public HProject getProject() {
+        return this.project;
+    }
+
+    public String getOldSlug() {
+        return this.oldSlug;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof ProjectUpdate))
+            return false;
+        final ProjectUpdate other = (ProjectUpdate) o;
+        final Object this$project = this.getProject();
+        final Object other$project = other.getProject();
+        if (this$project == null ? other$project != null
+                : !this$project.equals(other$project))
+            return false;
+        final Object this$oldSlug = this.getOldSlug();
+        final Object other$oldSlug = other.getOldSlug();
+        if (this$oldSlug == null ? other$oldSlug != null
+                : !this$oldSlug.equals(other$oldSlug))
+            return false;
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $project = this.getProject();
+        result = result * PRIME + ($project == null ? 43 : $project.hashCode());
+        final Object $oldSlug = this.getOldSlug();
+        result = result * PRIME + ($oldSlug == null ? 43 : $oldSlug.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ProjectUpdate(project=" + this.getProject() + ", oldSlug="
+                + this.getOldSlug() + ")";
+    }
 }

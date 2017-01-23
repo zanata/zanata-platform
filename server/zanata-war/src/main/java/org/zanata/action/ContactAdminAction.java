@@ -18,17 +18,14 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.action;
 
 import java.io.Serializable;
-
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
@@ -41,19 +38,15 @@ import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.service.EmailService;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.ui.faces.FacesMessages;
 import org.zanata.util.HttpUtil;
-
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
 
 /**
- * Handles send email to admin - Contact admin(Registered and non-registered users)
+ * Handles send email to admin - Contact admin(Registered and non-registered
+ * users)
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
@@ -61,29 +54,21 @@ import javax.validation.constraints.Size;
 @ViewScoped
 @Model
 @Transactional
-@Slf4j
 public class ContactAdminAction implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ContactAdminAction.class);
 
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
-
     @Inject
     private EmailService emailServiceImpl;
-
     @Inject
     private Messages msgs;
-
     @Inject
     private FacesMessages facesMessages;
-
-    @Getter
-    @Setter
     @Size(max = 300)
     private String message;
-
-    @Getter
-    @Setter
     private String subject;
 
     /**
@@ -97,10 +82,9 @@ public class ContactAdminAction implements Serializable {
         subject = msgs.get("jsf.message.admin.inquiry.subject");
         try {
             EmailStrategy strategy = new ContactAdminEmailStrategy(
-                fromLoginName, fromName, replyEmail, subject, message);
-
-            facesMessages.addGlobal(emailServiceImpl.sendToAdmins(strategy,
-                null));
+                    fromLoginName, fromName, replyEmail, subject, message);
+            facesMessages
+                    .addGlobal(emailServiceImpl.sendToAdmins(strategy, null));
         } catch (Exception e) {
             sendEmailFailedNotification(e, fromLoginName);
         }
@@ -110,15 +94,13 @@ public class ContactAdminAction implements Serializable {
      * Send email to admin by anonymous user.
      */
     public void sendAnonymous() {
-        String ipAddress = getClientIp(); //client ip address
+        String ipAddress = getClientIp(); // client ip address
         subject = msgs.get("jsf.message.admin.inquiry.subject");
-
         try {
             EmailStrategy strategy = new ContactAdminAnonymousEmailStrategy(
-                ipAddress, subject, message);
-
-            facesMessages.addGlobal(emailServiceImpl.sendToAdmins(strategy,
-                null));
+                    ipAddress, subject, message);
+            facesMessages
+                    .addGlobal(emailServiceImpl.sendToAdmins(strategy, null));
         } catch (Exception e) {
             sendEmailFailedNotification(e, ipAddress);
         }
@@ -126,19 +108,32 @@ public class ContactAdminAction implements Serializable {
 
     private void sendEmailFailedNotification(Exception e, String fromName) {
         StringBuilder sb = new StringBuilder()
-            .append("Failed to send email with subject '")
-            .append(subject)
-            .append("' , message '").append(message)
-            .append("', from '").append(fromName)
-            .append("'");
+                .append("Failed to send email with subject \'").append(subject)
+                .append("\' , message \'").append(message).append("\', from \'")
+                .append(fromName).append("\'");
         log.error("{}. {}", sb.toString(), e);
         facesMessages.addGlobal(sb.toString());
     }
 
     private String getClientIp() {
-        HttpServletRequest request =
-                (HttpServletRequest) FacesContext.getCurrentInstance()
-                        .getExternalContext().getRequest();
+        HttpServletRequest request = (HttpServletRequest) FacesContext
+                .getCurrentInstance().getExternalContext().getRequest();
         return HttpUtil.getClientIp(request);
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public void setMessage(final String message) {
+        this.message = message;
+    }
+
+    public String getSubject() {
+        return this.subject;
+    }
+
+    public void setSubject(final String subject) {
+        this.subject = subject;
     }
 }

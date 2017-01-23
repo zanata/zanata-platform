@@ -24,28 +24,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.Nullable;
-
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.util.Checkbox;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Sets;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class LanguagePage extends BasePage {
-
-    private By contactCoordinatorsButton =
-        By.id("contact-coordinator");
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(LanguagePage.class);
+    private By contactCoordinatorsButton = By.id("contact-coordinator");
     private By saveButton = By.id("save-button");
     private By moreActions = By.id("more-action");
     private By enableByDefault = By.id("enable-by-default");
@@ -57,11 +53,9 @@ public class LanguagePage extends BasePage {
     private By addUserSearchButton = By.id("searchForm:searchBtn");
     private By personTable = By.id("resultForm:searchResults");
     private By addSelectedButton = By.id("addSelectedBtn");
-
     public static final int IS_TRANSLATOR_COLUMN = 0;
     public static final int IS_REVIEWER_COLUMN = 1;
     public static final int IS_COORDINATOR_COLUMN = 2;
-
 
     public LanguagePage(WebDriver driver) {
         super(driver);
@@ -114,7 +108,8 @@ public class LanguagePage extends BasePage {
         WebElement form = existingElement(By.id("members-form"));
         for (WebElement listEntry : form
                 .findElements(By.className("list__item--actionable"))) {
-            names.add(listEntry.findElement(By.className("list__item__info")).getText().trim());
+            names.add(listEntry.findElement(By.className("list__item__info"))
+                    .getText().trim());
         }
         log.info("Found {}", names);
         return names;
@@ -130,6 +125,7 @@ public class LanguagePage extends BasePage {
         clickElement(joinLanguageTeamButton);
         // we need to wait for this join to finish before returning the page
         waitForAMoment().until(new Function<WebDriver, Boolean>() {
+
             @Override
             public Boolean apply(WebDriver driver) {
                 return driver.findElements(joinLanguageTeamButton).isEmpty();
@@ -143,12 +139,12 @@ public class LanguagePage extends BasePage {
         clickElement(addTeamMemberButton);
         return new LanguagePage(getDriver());
     }
-
     /*
      * Convenience function for adding a language team member
      */
-    public LanguagePage searchPersonAndAddToTeam(
-        final String personName, TeamPermission... permissions) {
+
+    public LanguagePage searchPersonAndAddToTeam(final String personName,
+            TeamPermission... permissions) {
         // Convenience!
         enterUsername(personName);
         clickSearch();
@@ -171,22 +167,21 @@ public class LanguagePage extends BasePage {
         return new LanguagePage(getDriver());
     }
 
-    private LanguagePage clickAddUserRoles(final String username, TeamPermission... permissions) {
+    private LanguagePage clickAddUserRoles(final String username,
+            TeamPermission... permissions) {
         log.info("Click user permissions");
         // if permissions is empty, default add as translator
         Set<TeamPermission> permissionToAdd = Sets.newHashSet(permissions);
         permissionToAdd.add(TeamPermission.Translator);
-
         for (final TeamPermission permission : permissionToAdd) {
             log.info("Set checked as {}", permission.name());
             waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
                 WebElement inputDiv = getSearchedForUser(username)
-                    .findElement(By.className("list--horizontal"))
-                    .findElements(By.tagName("li"))
-                    .get(permission.columnIndex)
-                    .findElement(By.className("form__checkbox"));
-                WebElement input =
-                        inputDiv.findElement(By.tagName("input"));
+                        .findElement(By.className("list--horizontal"))
+                        .findElements(By.tagName("li"))
+                        .get(permission.columnIndex)
+                        .findElement(By.className("form__checkbox"));
+                WebElement input = inputDiv.findElement(By.tagName("input"));
                 Checkbox checkbox = Checkbox.of(input);
                 if (!checkbox.checked()) {
                     inputDiv.click();
@@ -206,16 +201,14 @@ public class LanguagePage extends BasePage {
         return new LanguagePage(getDriver());
     }
 
-
     private WebElement getSearchedForUser(final String username) {
-        return waitForAMoment().until(
-                (Function<WebDriver, WebElement>) webDriver -> {
+        return waitForAMoment()
+                .until((Function<WebDriver, WebElement>) webDriver -> {
                     WebElement list = readyElement(personTable)
-                        .findElement(By.className("list--slat"));
-                    List<WebElement> rows = list
-                        .findElements(By.className("txt--meta"));
-                    rows.addAll(list
-                        .findElements(By.className("txt--mini")));
+                            .findElement(By.className("list--slat"));
+                    List<WebElement> rows =
+                            list.findElements(By.className("txt--meta"));
+                    rows.addAll(list.findElements(By.className("txt--mini")));
                     for (WebElement row : rows) {
                         if (getListItemUsername(row).equals(username)) {
                             return row;
@@ -226,10 +219,10 @@ public class LanguagePage extends BasePage {
     }
 
     private String getListItemUsername(WebElement listItem) {
-        String fullname = listItem.findElements(
-            By.className("g__item"))
-            .get(0).getText();
-        return fullname.substring(fullname.indexOf('[') + 1, fullname.indexOf(']'));
+        String fullname =
+                listItem.findElements(By.className("g__item")).get(0).getText();
+        return fullname.substring(fullname.indexOf('[') + 1,
+                fullname.indexOf(']'));
     }
 
     public LanguagePage clickAddSelectedButton() {
@@ -238,17 +231,14 @@ public class LanguagePage extends BasePage {
         return new LanguagePage(getDriver());
     }
 
-
     public static enum TeamPermission {
-        Translator(IS_TRANSLATOR_COLUMN), Reviewer(IS_REVIEWER_COLUMN), Coordinator(IS_COORDINATOR_COLUMN);
+        Translator(IS_TRANSLATOR_COLUMN),
+        Reviewer(IS_REVIEWER_COLUMN),
+        Coordinator(IS_COORDINATOR_COLUMN);
         private final int columnIndex;
 
         TeamPermission(int columnIndex) {
             this.columnIndex = columnIndex;
         }
-
     }
-
-
-
 }

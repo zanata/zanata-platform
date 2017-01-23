@@ -21,7 +21,6 @@
 package org.zanata.model;
 
 import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -30,10 +29,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import lombok.Getter;
-import lombok.Setter;
-
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -45,22 +40,17 @@ import org.zanata.model.type.ContentTypeType;
 @Entity
 @TypeDef(name = "contentType", typeClass = ContentTypeType.class)
 @Immutable
-@Setter
 public class HDocumentHistory implements IDocumentHistory {
 
     private String docId;
-    @Getter
     private String name;
-    @Getter
     private String path;
     private ContentType contentType;
     private Integer revision;
     private HLocale locale;
     private HPerson lastModifiedBy;
     protected Long id;
-    @Getter
     protected Date lastChanged;
-    @Getter
     private boolean obsolete;
     private HDocument document;
 
@@ -73,16 +63,16 @@ public class HDocumentHistory implements IDocumentHistory {
     protected void setId(Long id) {
         this.id = id;
     }
-
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
+
     @NaturalId
     @ManyToOne
     @JoinColumn(name = "document_id")
     public HDocument getDocument() {
         return document;
     }
-
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
+
     @NaturalId
     public Integer getRevision() {
         return revision;
@@ -113,4 +103,59 @@ public class HDocumentHistory implements IDocumentHistory {
         return contentType;
     }
 
+    public void setDocId(final String docId) {
+        this.docId = docId;
+    }
+
+    public void setName(final String name) {
+        this.name = name;
+    }
+
+    public void setPath(final String path) {
+        this.path = path;
+    }
+
+    public void setContentType(final ContentType contentType) {
+        this.contentType = contentType;
+    }
+
+    public void setRevision(final Integer revision) {
+        this.revision = revision;
+    }
+
+    public void setLocale(final HLocale locale) {
+        this.locale = locale;
+    }
+
+    public void setLastModifiedBy(final HPerson lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
+    }
+
+    public void setLastChanged(final Date lastChanged) {
+        this.lastChanged = lastChanged;
+    }
+
+    public void setObsolete(final boolean obsolete) {
+        this.obsolete = obsolete;
+    }
+
+    public void setDocument(final HDocument document) {
+        this.document = document;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getPath() {
+        return this.path;
+    }
+
+    public Date getLastChanged() {
+        return this.lastChanged;
+    }
+
+    public boolean isObsolete() {
+        return this.obsolete;
+    }
 }

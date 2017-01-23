@@ -19,7 +19,6 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.ws.Service;
-
 import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
@@ -39,38 +38,38 @@ import org.zanata.rest.dto.Link;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
 
 /**
  * This API is experimental only and subject to change or even removal.
  *
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RequestScoped
 @Named("serverConfigurationResource")
 @Path("/configurations")
-@Produces({"application/xml", "application/json"})
-@Consumes({"application/xml", "application/json"})
+@Produces({ "application/xml", "application/json" })
+@Consumes({ "application/xml", "application/json" })
 @Transactional
 @CheckRole("admin")
-@Slf4j
 @Beta
 public class ServerConfigurationService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ServerConfigurationService.class);
 
     private static List<String> availableKeys;
 
-    /** Type of media requested. */
+    /**
+     * Type of media requested.
+     */
     @HeaderParam("Accept")
     @DefaultValue(MediaType.APPLICATION_JSON)
     @Context
     private MediaType accept;
     @Inject
     private ApplicationConfigurationDAO applicationConfigurationDAO;
-
     @Inject
     private Event<ConfigurationChanged> configurationChangedEvent;
 
@@ -91,11 +90,11 @@ public class ServerConfigurationService {
         List<Configuration> allConfig =
                 Lists.transform(all, new ToConfigurationFunction(accept));
         Type genericType = new GenericType<List<Configuration>>() {
+
         }.getGenericType();
         Object entity =
                 new GenericEntity<List<Configuration>>(allConfig, genericType);
         return Response.ok().entity(entity).build();
-
     }
 
     /**
@@ -104,7 +103,8 @@ public class ServerConfigurationService {
      * @return The following response status codes will be returned from this
      *         operation:<br>
      *         OK(200) - Response containing value for the config key.<br>
-     *         NOT_FOUND(404) - If server does not have given configuration set.<br>
+     *         NOT_FOUND(404) - If server does not have given configuration
+     *         set.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
      */
@@ -185,10 +185,9 @@ public class ServerConfigurationService {
             appConfig = new HApplicationConfiguration(key, newValue);
             applicationConfigurationDAO.makePersistent(appConfig);
         }
-
         // TODO make method non-static, use configurationChangedEvent.fire()
-        BeanManagerProvider.getInstance().getBeanManager().fireEvent(
-                new ConfigurationChanged(key));
+        BeanManagerProvider.getInstance().getBeanManager()
+                .fireEvent(new ConfigurationChanged(key));
     }
 
     private boolean isConfigKeyValid(String configKey) {
@@ -199,10 +198,8 @@ public class ServerConfigurationService {
      * Converts HApplicationConfiguration to dto Configuration. It also contains
      * a link to the configuration itself.
      */
-    @RequiredArgsConstructor
-    private class ToConfigurationFunction implements
-            Function<HApplicationConfiguration, Configuration> {
-
+    private class ToConfigurationFunction
+            implements Function<HApplicationConfiguration, Configuration> {
         private final MediaType accept;
 
         @Override
@@ -215,6 +212,11 @@ public class ServerConfigurationService {
                             MediaTypes.createFormatSpecificType(
                                     MediaType.APPLICATION_XML, accept)));
             return config;
+        }
+
+        @java.beans.ConstructorProperties({ "accept" })
+        public ToConfigurationFunction(final MediaType accept) {
+            this.accept = accept;
         }
     }
 }

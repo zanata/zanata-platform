@@ -11,20 +11,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import org.hibernate.annotations.NaturalId;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @Entity
 @Table(name = "HProject_Glossary")
-@NoArgsConstructor
 public class HProjectGlossary implements Serializable {
     private HProjectGlossaryPk id = new HProjectGlossaryPk();
 
@@ -53,19 +46,42 @@ public class HProjectGlossary implements Serializable {
     }
 
     @Embeddable
-    @Setter
-    @Getter
     @Access(AccessType.FIELD)
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class HProjectGlossaryPk implements Serializable {
-
         @ManyToOne(fetch = FetchType.EAGER, optional = false)
         @JoinColumn(name = "glossaryId", nullable = false)
         private Glossary glossary;
-
         @ManyToOne(fetch = FetchType.EAGER, optional = false)
         @JoinColumn(name = "projectId", nullable = false)
         private HProject project;
+
+        public void setGlossary(final Glossary glossary) {
+            this.glossary = glossary;
+        }
+
+        public void setProject(final HProject project) {
+            this.project = project;
+        }
+
+        public Glossary getGlossary() {
+            return this.glossary;
+        }
+
+        public HProject getProject() {
+            return this.project;
+        }
+
+        @java.beans.ConstructorProperties({ "glossary", "project" })
+        public HProjectGlossaryPk(final Glossary glossary,
+                final HProject project) {
+            this.glossary = glossary;
+            this.project = project;
+        }
+
+        public HProjectGlossaryPk() {
+        }
+    }
+
+    public HProjectGlossary() {
     }
 }

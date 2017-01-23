@@ -1,6 +1,5 @@
 package org.zanata.service.impl;
 
-import lombok.Data;
 import org.assertj.core.api.Condition;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -37,7 +36,6 @@ import org.zanata.test.rule.DataSetOperation;
 import org.zanata.test.rule.JpaRule;
 import org.zanata.util.UrlUtil;
 import org.zanata.util.Zanata;
-
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManagerFactory;
@@ -48,7 +46,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -57,9 +54,10 @@ import static org.zanata.test.rule.FunctionalTestRule.reentrant;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @RunWith(Enclosed.class)
 public class TranslationFinderTest {
@@ -79,45 +77,38 @@ public class TranslationFinderTest {
 
     @RunWith(Parameterized.class)
     @Parameterized.UseParametersRunnerFactory(CdiUnitRunnerWithParameters.Factory.class)
-    @AdditionalClasses({
-            IndexingServiceImpl.class,
-            ParamTestCdiExtension.class
-    })
+    @AdditionalClasses({ IndexingServiceImpl.class,
+            ParamTestCdiExtension.class })
     public static class TranslationFinderParameterizedTest {
 
         private HLocale sourceLocale;
-
         @ClassRule
         @Rule
         public static JpaRule jpaRule = reentrant(new JpaRule());
-
         @Inject
         ProjectIterationDAO projectIterationDAO;
-
         @Inject
         LocaleDAO localeDAO;
-
         @Inject
         SearchIndexManager searchIndexManager;
-
         @Inject
         TextFlowTargetDAO textFlowTargetDAO;
-
         @Inject
         TranslationMemoryServiceImpl translationMemoryService;
-
-        @Produces @Mock
+        @Produces
+        @Mock
         private UrlUtil urlUtil;
-
         @Parameterized.Parameter(0)
         Execution execution;
 
-        @Produces @FullText
+        @Produces
+        @FullText
         FullTextEntityManager getFullTextEntityManager() {
             return Search.getFullTextEntityManager(jpaRule.getEntityManager());
         }
 
-        @Produces @Zanata
+        @Produces
+        @Zanata
         EntityManagerFactory getEntityManagerFactory() {
             return jpaRule.getEntityManagerFactory();
         }
@@ -126,17 +117,16 @@ public class TranslationFinderTest {
         Session getSession() {
             return jpaRule.getSession();
         }
-
-        @Parameterized.Parameters(name = "{index}: execution: [{0}]")
         // First
         // currently 64 combinations per translation finder
+
+        @Parameterized.Parameters(name = "{index}: execution: [{0}]")
         public static Execution[] copyTransCombinations() {
-            return generateAllExecutions().toArray(new Execution[]{});
+            return generateAllExecutions().toArray(new Execution[] {});
         }
 
         private static Set<Execution> generateAllExecutions() {
-            Set<Execution> allExecutions =
-                    new HashSet<Execution>();
+            Set<Execution> allExecutions = new HashSet<Execution>();
             List<Boolean> booleans = asList(true, false);
             // NB 2 ^ 6 = 64 combinations
             Iterable[] colls = { booleans, booleans, booleans, booleans,
@@ -147,15 +137,14 @@ public class TranslationFinderTest {
                 // correct for the cartesian product generator.
                 Class[] paramTypes = new Class[colls.length];
                 Arrays.fill(paramTypes, Boolean.TYPE);
-                Constructor ctor =
-                        Execution.class.getConstructor(paramTypes);
+                Constructor ctor = Execution.class.getConstructor(paramTypes);
                 Set<Object[]> paramsSet = cartesianProduct(colls);
                 for (Object[] params : paramsSet) {
-                    Execution exec =
-                            (Execution) ctor.newInstance(params);
+                    Execution exec = (Execution) ctor.newInstance(params);
                     allExecutions.add(exec);
                 }
-            } catch (NoSuchMethodException | InstantiationException | InvocationTargetException | IllegalAccessException e) {
+            } catch (NoSuchMethodException | InstantiationException
+                    | InvocationTargetException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
             return allExecutions;
@@ -174,44 +163,40 @@ public class TranslationFinderTest {
                                     DatabaseOperation.CLEAN_INSERT),
                             new DataSetOperation(
                                     "org/zanata/test/model/TranslationMemoryData.dbunit.xml",
-                                    DatabaseOperation.CLEAN_INSERT)
-                    );
-
+                                    DatabaseOperation.CLEAN_INSERT));
             recreateSearchIndexes(searchIndexManager);
             sourceLocale = localeDAO.findByLocaleId(LocaleId.EN_US);
         }
+        // @Ignore
+        // @Test
+        // @InRequestScope
 
         /**
          * Use this test to individually test scenarios.
          */
-        //@Ignore
-        //@Test
-        //@InRequestScope
         public void individualTest() {
-            testExecution(
-                    TranslationMemoryServiceImpl.class,
+            testExecution(TranslationMemoryServiceImpl.class,
                     new Execution(false, true, true, true, true, true));
         }
+        // currently 64 combinations
+        // TODO reduce the combinations, or reduce the cost per execution
 
         @Test
         @InRequestScope
-        // currently 64 combinations
-        // TODO reduce the combinations, or reduce the cost per execution
         public void testTextFlowTargetDAO() {
             testExecution(TextFlowTargetDAO.class, execution);
         }
-
+        // currently 64 combinations
+        // TODO reduce the combinations, or reduce the cost per execution
 
         @Test
         @InRequestScope
-        // currently 64 combinations
-        // TODO reduce the combinations, or reduce the cost per execution
         public void testTranslationMemoryServiceImpl() {
             testExecution(TranslationMemoryServiceImpl.class, execution);
         }
 
-
-        private void testExecution(Class<? extends TranslationFinder> impl, Execution execution) {
+        private void testExecution(Class<? extends TranslationFinder> impl,
+                Execution execution) {
             TranslationFinder service;
             if (TranslationMemoryServiceImpl.class.equals(impl)) {
                 service = translationMemoryService;
@@ -221,102 +206,89 @@ public class TranslationFinderTest {
                 throw new RuntimeException(
                         "Unkown TranslationFinder type: " + impl.getName());
             }
-
             // Get the project iteration
-            HProjectIteration queryProjIter =
-                    projectIterationDAO.getBySlug(execution.getProject(),
-                            execution.getVersion());
-
+            HProjectIteration queryProjIter = projectIterationDAO
+                    .getBySlug(execution.getProject(), execution.getVersion());
             assert queryProjIter != null;
-
             // Create the document
             HDocument queryDoc = new HDocument();
             queryDoc.setContentType(ContentType.TextPlain);
             queryDoc.setLocale(sourceLocale);
             queryDoc.setProjectIteration(queryProjIter);
             queryDoc.setFullPath(execution.getDocument());
-
             // Create the text Flow
             HTextFlow queryTextFlow = new HTextFlow();
             // TODO test that the query textflow is excluded from results
             // (when the query textflow has been persisted and indexed)
             queryTextFlow.setId(-999L);
-            queryTextFlow.setContents(execution.getContent()); // Source content matches
+            queryTextFlow.setContents(execution.getContent()); // Source content
+                                                               // matches
             queryTextFlow.setPlural(false);
             queryTextFlow.setObsolete(false);
             queryTextFlow.setDocument(queryDoc);
             queryTextFlow.setResId(execution.getContext());
-
-            // For all the executions whose queries are expected to find a match,
+            // For all the executions whose queries are expected to find a
+            // match,
             // the target which is expected to match is HTextFlowTarget 100
             // (which belongs to HTextFlow 100, HDocument 100,
             // HProjectIteration 100, HProject 100)
-
-            Optional<HTextFlowTarget> matchingTarget =
-                    service.searchBestMatchTransMemory(
-                            queryTextFlow, LocaleId.DE, LocaleId.EN_US,
-                            execution.isCheckContext(), execution.isCheckDocument(),
+            Optional<HTextFlowTarget> matchingTarget = service
+                    .searchBestMatchTransMemory(queryTextFlow, LocaleId.DE,
+                            LocaleId.EN_US, execution.isCheckContext(),
+                            execution.isCheckDocument(),
                             execution.isCheckProject());
-
-            assertThat(matchingTarget.isPresent()).as("match present").isEqualTo(
-                    execution.expectMatch());
-
+            assertThat(matchingTarget.isPresent()).as("match present")
+                    .isEqualTo(execution.expectMatch());
             if (matchingTarget.isPresent()) {
                 HTextFlowTarget target = matchingTarget.get();
                 HTextFlow tf = target.getTextFlow();
                 assertThat(target.getLocaleId()).isEqualTo(LocaleId.DE);
-                assertThat(tf.getContents()).containsExactly(execution.getContent());
-
+                assertThat(tf.getContents())
+                        .containsExactly(execution.getContent());
                 if (execution.isCheckContext()) {
                     assertThat(tf.getResId()).isEqualTo(execution.getContext());
                 }
-
                 if (execution.isCheckDocument()) {
-                    assertThat(tf.getDocument().getDocId()).isEqualTo(execution.getDocument());
+                    assertThat(tf.getDocument().getDocId())
+                            .isEqualTo(execution.getDocument());
                 }
-
                 if (execution.isCheckProject()) {
-                    assertThat(tf.getDocument().getProjectIteration().getProject().getSlug()).isEqualTo(
-                            execution.getProject());
+                    assertThat(tf.getDocument().getProjectIteration()
+                            .getProject().getSlug())
+                                    .isEqualTo(execution.getProject());
                 }
             }
-
-
         }
-
     }
 
     @RunWith(CdiUnitRunner.class)
-    @AdditionalClasses({
-            IndexingServiceImpl.class
-    })
+    @AdditionalClasses({ IndexingServiceImpl.class })
     public static class TranslationFinderNonParameterizedTest {
 
         @ClassRule
         @Rule
         public static JpaRule jpaRule = reentrant(new JpaRule());
-
         @Inject
         TextFlowTargetDAO textFlowTargetDAO;
-
         @Inject
         TranslationMemoryServiceImpl translationMemoryService;
-
         @Inject
         ProjectIterationDAO projectIterationDAO;
-
         @Inject
         SearchIndexManager searchIndexManager;
 
-        @Produces @FullText
+        @Produces
+        @FullText
         FullTextEntityManager getFullTextEntityManager() {
             return Search.getFullTextEntityManager(jpaRule.getEntityManager());
         }
 
-        @Produces @Mock
+        @Produces
+        @Mock
         private UrlUtil urlUtil;
 
-        @Produces @Zanata
+        @Produces
+        @Zanata
         EntityManagerFactory getEntityManagerFactory() {
             return jpaRule.getEntityManagerFactory();
         }
@@ -339,9 +311,7 @@ public class TranslationFinderTest {
                                     DatabaseOperation.CLEAN_INSERT),
                             new DataSetOperation(
                                     "org/zanata/test/model/TranslationMemoryData.dbunit.xml",
-                                    DatabaseOperation.CLEAN_INSERT)
-                    );
-
+                                    DatabaseOperation.CLEAN_INSERT));
             recreateSearchIndexes(searchIndexManager);
         }
 
@@ -353,51 +323,45 @@ public class TranslationFinderTest {
 
         @Test
         @InRequestScope
-        public void testTranslationMemoryServiceImplMostRecent() throws Exception {
+        public void testTranslationMemoryServiceImplMostRecent()
+                throws Exception {
             testMostRecentMatch(translationMemoryService);
         }
 
         /**
-         * Makes sure that given two equal results, it will reuse the most recent
-         * translation.
+         * Makes sure that given two equal results, it will reuse the most
+         * recent translation.
          */
         private void testMostRecentMatch(TranslationFinder service) {
-            HProjectIteration version =
-                    projectIterationDAO.getBySlug("same-project", "same-version");
+            HProjectIteration version = projectIterationDAO
+                    .getBySlug("same-project", "same-version");
             assert version != null;
-
             HDocument hDoc = version.getDocuments().get("/same/document0");
-
             HTextFlow textFlow = hDoc.getTextFlows().get(0);
             Optional<HTextFlowTarget> match =
-                    service.searchBestMatchTransMemory(textFlow,
-                            LocaleId.DE,
-                            hDoc.getSourceLocaleId(), true, true,
-                            true);
+                    service.searchBestMatchTransMemory(textFlow, LocaleId.DE,
+                            hDoc.getSourceLocaleId(), true, true, true);
             assertTrue(match.isPresent());
             checkTargetContents(match.get(), "most recent content");
         }
 
         private void checkTargetContents(HTextFlowTarget target,
                 final String searchString) {
-            assertThat(target.getContents()).has(new Condition<>(
-                    contents -> {
-                        for (String content : contents) {
-                            if (content.contains(searchString)) {
-                                return true;
-                            }
-                        }
-                        return false;
-                    }, "contains \""+searchString+"\""));
+            assertThat(target.getContents()).has(new Condition<>(contents -> {
+                for (String content : contents) {
+                    if (content.contains(searchString)) {
+                        return true;
+                    }
+                }
+                return false;
+            }, "contains \"" + searchString + "\""));
         }
     }
 
-    @Data
     private static class Execution {
         // including this field causes Lombok @ToString to include getMatch()
         @SuppressWarnings("unused")
         private String match;
-
         /** Whether the query should check for matching context */
         final boolean checkContext;
         /** Whether the query should check for matching project */
@@ -412,40 +376,148 @@ public class TranslationFinderTest {
         final boolean matchingDocument;
 
         /** Include expectMatch() in toString() */
+
         String getMatch() {
             return String.valueOf(expectMatch()).toUpperCase();
         }
 
         /** Whether the query is expected to find a matching translation */
+
         boolean expectMatch() {
-            return (matchingContext || !checkContext) &&
-                    (matchingProject || !checkProject) &&
-                    (matchingDocument || !checkDocument);
+            return (matchingContext || !checkContext)
+                    && (matchingProject || !checkProject)
+                    && (matchingDocument || !checkDocument);
         }
 
         /** source content of textflow to search for */
+
         String getContent() {
             return "Source Content";
         }
 
         /** context of textflow to search for */
+
         String getContext() {
             return matchingContext ? "same-context" : "different-context";
         }
 
         /** project of textflow to search for */
+
         String getProject() {
             return matchingProject ? "same-project" : "different-project";
         }
 
         /** project version of textflow to search for */
+
         String getVersion() {
             return matchingProject ? "same-version" : "different-version";
         }
 
         /** document of textflow to search for */
+
         String getDocument() {
             return matchingDocument ? "/same/document0" : "/different/document";
+        }
+
+        @java.beans.ConstructorProperties({ "checkContext", "checkProject",
+                "checkDocument", "matchingContext", "matchingProject",
+                "matchingDocument" })
+        public Execution(final boolean checkContext, final boolean checkProject,
+                final boolean checkDocument, final boolean matchingContext,
+                final boolean matchingProject, final boolean matchingDocument) {
+            this.checkContext = checkContext;
+            this.checkProject = checkProject;
+            this.checkDocument = checkDocument;
+            this.matchingContext = matchingContext;
+            this.matchingProject = matchingProject;
+            this.matchingDocument = matchingDocument;
+        }
+
+        public boolean isCheckContext() {
+            return this.checkContext;
+        }
+
+        public boolean isCheckProject() {
+            return this.checkProject;
+        }
+
+        public boolean isCheckDocument() {
+            return this.checkDocument;
+        }
+
+        public boolean isMatchingContext() {
+            return this.matchingContext;
+        }
+
+        public boolean isMatchingProject() {
+            return this.matchingProject;
+        }
+
+        public boolean isMatchingDocument() {
+            return this.matchingDocument;
+        }
+
+        public void setMatch(final String match) {
+            this.match = match;
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (o == this)
+                return true;
+            if (!(o instanceof TranslationFinderTest.Execution))
+                return false;
+            final Execution other = (Execution) o;
+            if (!other.canEqual((Object) this))
+                return false;
+            final Object this$match = this.getMatch();
+            final Object other$match = other.getMatch();
+            if (this$match == null ? other$match != null
+                    : !this$match.equals(other$match))
+                return false;
+            if (this.isCheckContext() != other.isCheckContext())
+                return false;
+            if (this.isCheckProject() != other.isCheckProject())
+                return false;
+            if (this.isCheckDocument() != other.isCheckDocument())
+                return false;
+            if (this.isMatchingContext() != other.isMatchingContext())
+                return false;
+            if (this.isMatchingProject() != other.isMatchingProject())
+                return false;
+            if (this.isMatchingDocument() != other.isMatchingDocument())
+                return false;
+            return true;
+        }
+
+        protected boolean canEqual(final Object other) {
+            return other instanceof TranslationFinderTest.Execution;
+        }
+
+        @Override
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $match = this.getMatch();
+            result = result * PRIME + ($match == null ? 43 : $match.hashCode());
+            result = result * PRIME + (this.isCheckContext() ? 79 : 97);
+            result = result * PRIME + (this.isCheckProject() ? 79 : 97);
+            result = result * PRIME + (this.isCheckDocument() ? 79 : 97);
+            result = result * PRIME + (this.isMatchingContext() ? 79 : 97);
+            result = result * PRIME + (this.isMatchingProject() ? 79 : 97);
+            result = result * PRIME + (this.isMatchingDocument() ? 79 : 97);
+            return result;
+        }
+
+        @Override
+        public String toString() {
+            return "TranslationFinderTest.Execution(match=" + this.getMatch()
+                    + ", checkContext=" + this.isCheckContext()
+                    + ", checkProject=" + this.isCheckProject()
+                    + ", checkDocument=" + this.isCheckDocument()
+                    + ", matchingContext=" + this.isMatchingContext()
+                    + ", matchingProject=" + this.isMatchingProject()
+                    + ", matchingDocument=" + this.isMatchingDocument() + ")";
         }
     }
 }

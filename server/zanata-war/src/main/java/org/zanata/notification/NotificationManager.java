@@ -26,30 +26,26 @@ import javax.jms.JMSException;
 import javax.jms.ObjectMessage;
 import javax.jms.QueueSender;
 import javax.jms.QueueSession;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.zanata.events.LanguageTeamPermissionChangedEvent;
-
 import com.google.common.base.Throwables;
 
 /**
  * Centralized place to handle all events that needs to send out notifications.
  *
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @ApplicationScoped
-@Slf4j
 public class NotificationManager {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(NotificationManager.class);
 
     public void onLanguageTeamPermissionChanged(
-            final @Observes LanguageTeamPermissionChangedEvent event,
-            final @InVMJMS QueueSession queueSession,
-            final @EmailQueueSender QueueSender mailQueueSender) {
+            @Observes final LanguageTeamPermissionChangedEvent event,
+            @InVMJMS final QueueSession queueSession,
+            @EmailQueueSender final QueueSender mailQueueSender) {
         try {
-            ObjectMessage message =
-                    queueSession.createObjectMessage(event);
+            ObjectMessage message = queueSession.createObjectMessage(event);
             message.setObjectProperty(MessagePropertiesKey.objectType.name(),
                     event.getClass().getCanonicalName());
             mailQueueSender.send(message);
@@ -57,7 +53,6 @@ public class NotificationManager {
             throw Throwables.propagate(e);
         }
     }
-
     /*
      * we use this as property key in the JMS message to denote what type of
      * message/event this is and the queue consumer can base on this value to
@@ -65,7 +60,9 @@ public class NotificationManager {
      *
      * @see org.zanata.notification.EmailQueueMessageReceiver
      */
+
     enum MessagePropertiesKey {
-        objectType
+        objectType;
+
     }
 }

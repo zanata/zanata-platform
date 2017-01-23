@@ -1,15 +1,10 @@
 package org.zanata.webtrans.shared.model;
 
 import java.util.List;
-
 import org.zanata.common.ContentState;
-
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import lombok.ToString;
-
-@ToString
 public class ContentStateGroup implements IsSerializable {
     private boolean hasNew;
     private boolean hasFuzzy;
@@ -64,7 +59,8 @@ public class ContentStateGroup implements IsSerializable {
     }
 
     public boolean hasNoStates() {
-        return !(hasNew || hasFuzzy || hasTranslated || hasApproved || hasRejected);
+        return !(hasNew || hasFuzzy || hasTranslated || hasApproved
+                || hasRejected);
     }
 
     public List<ContentState> asList() {
@@ -154,5 +150,13 @@ public class ContentStateGroup implements IsSerializable {
             hasRejected = on;
             return this;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "ContentStateGroup(hasNew=" + this.hasNew + ", hasFuzzy="
+                + this.hasFuzzy + ", hasTranslated=" + this.hasTranslated
+                + ", hasApproved=" + this.hasApproved + ", hasRejected="
+                + this.hasRejected + ")";
     }
 }

@@ -1,13 +1,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import org.zanata.async.AsyncTaskHandleManager;
@@ -20,18 +14,18 @@ import org.zanata.service.CopyVersionService;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-
 @Dependent
-@Slf4j
 public class CopyVersionManager implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(CopyVersionManager.class);
+
     private static final long serialVersionUID = 3414395834255069870L;
     @Inject
-    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
+    @SuppressFBWarnings(value = "SE_BAD_FIELD",
+            justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
-
     @Inject
     private CopyVersionService copyVersionServiceImpl;
-
     @Inject
     private ZanataIdentity identity;
 
@@ -69,18 +63,18 @@ public class CopyVersionManager implements Serializable {
             handle.cancel(true);
             handle.setCancelledTime(System.currentTimeMillis());
             handle.setCancelledBy(identity.getCredentials().getUsername());
-
             log.info("Copy version cancelled- {}:{}", projectSlug, versionSlug);
         }
     }
 
-    public CopyVersionTaskHandle getCopyVersionProcessHandle(
-            String projectSlug, String versionSlug) {
-        return (CopyVersionTaskHandle) asyncTaskHandleManager
-                .getHandleByKey(CopyVersionKey.getKey(projectSlug, versionSlug));
+    public CopyVersionTaskHandle getCopyVersionProcessHandle(String projectSlug,
+            String versionSlug) {
+        return (CopyVersionTaskHandle) asyncTaskHandleManager.getHandleByKey(
+                CopyVersionKey.getKey(projectSlug, versionSlug));
     }
 
-    public boolean isCopyVersionRunning(String projectSlug, String versionSlug) {
+    public boolean isCopyVersionRunning(String projectSlug,
+            String versionSlug) {
         CopyVersionTaskHandle handle =
                 getCopyVersionProcessHandle(projectSlug, versionSlug);
         return handle != null && !handle.isDone();
@@ -94,9 +88,6 @@ public class CopyVersionManager implements Serializable {
      * @param versionSlug
      *            - target version identifier
      */
-    @EqualsAndHashCode
-    @Getter
-    @AllArgsConstructor
     public static final class CopyVersionKey implements Serializable {
         // target project identifier
         private final String projectSlug;
@@ -106,6 +97,54 @@ public class CopyVersionManager implements Serializable {
         public static CopyVersionKey getKey(String projectSlug,
                 String versionSlug) {
             return new CopyVersionKey(projectSlug, versionSlug);
+        }
+
+        @Override
+        public boolean equals(final Object o) {
+            if (o == this)
+                return true;
+            if (!(o instanceof CopyVersionManager.CopyVersionKey))
+                return false;
+            final CopyVersionKey other = (CopyVersionKey) o;
+            final Object this$projectSlug = this.getProjectSlug();
+            final Object other$projectSlug = other.getProjectSlug();
+            if (this$projectSlug == null ? other$projectSlug != null
+                    : !this$projectSlug.equals(other$projectSlug))
+                return false;
+            final Object this$versionSlug = this.getVersionSlug();
+            final Object other$versionSlug = other.getVersionSlug();
+            if (this$versionSlug == null ? other$versionSlug != null
+                    : !this$versionSlug.equals(other$versionSlug))
+                return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $projectSlug = this.getProjectSlug();
+            result = result * PRIME
+                    + ($projectSlug == null ? 43 : $projectSlug.hashCode());
+            final Object $versionSlug = this.getVersionSlug();
+            result = result * PRIME
+                    + ($versionSlug == null ? 43 : $versionSlug.hashCode());
+            return result;
+        }
+
+        public String getProjectSlug() {
+            return this.projectSlug;
+        }
+
+        public String getVersionSlug() {
+            return this.versionSlug;
+        }
+
+        @java.beans.ConstructorProperties({ "projectSlug", "versionSlug" })
+        public CopyVersionKey(final String projectSlug,
+                final String versionSlug) {
+            this.projectSlug = projectSlug;
+            this.versionSlug = versionSlug;
         }
     }
 }

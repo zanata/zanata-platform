@@ -21,9 +21,6 @@
 package org.zanata.page.projects;
 
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -31,18 +28,16 @@ import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.WebElementUtil;
-
 import com.google.common.base.Predicate;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectVersionsPage extends ProjectBasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectVersionsPage.class);
     private By versionTabMoreAction = By.id("versions-more-actions");
     private By createNewVersion = By.id("new-version-link");
     private By versionCount = By.id("versionSearch:versionSearch-page-info");
@@ -57,7 +52,6 @@ public class ProjectVersionsPage extends ProjectBasePage {
     public CreateVersionPage clickCreateVersionLink() {
         log.info("Click Create Version");
         gotoVersionsTab();
-
         clickLinkAfterAnimation(versionTabMoreAction);
         clickLinkAfterAnimation(createNewVersion);
         return new CreateVersionPage(getDriver());
@@ -67,10 +61,10 @@ public class ProjectVersionsPage extends ProjectBasePage {
         log.info("Click Version {}", versionId);
         waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
             getDriver().findElement(By.id("versions_tab")).click();
-            List<WebElement> versionLinks = getDriver()
-                    .findElement(By.id("versions_form"))
-                    .findElement(By.className("list--stats"))
-                    .findElements(By.tagName("li"));
+            List<WebElement> versionLinks =
+                    getDriver().findElement(By.id("versions_form"))
+                            .findElement(By.className("list--stats"))
+                            .findElements(By.tagName("li"));
             boolean clicked = false;
             for (WebElement links : versionLinks) {
                 // The Translate Options menu can get picked up here
@@ -81,7 +75,8 @@ public class ProjectVersionsPage extends ProjectBasePage {
                         break;
                     }
                 }
-                if (clicked) break;
+                if (clicked)
+                    break;
             }
             return clicked;
         });
@@ -91,7 +86,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
     public List<String> getVersions() {
         log.info("Query Versions list");
         return WebElementUtil.elementsToText(getDriver(),
-                By.xpath("//h3[@class='list__title']"));
+                By.xpath("//h3[@class=\'list__title\']"));
     }
 
     public int getNumberOfDisplayedVersions() {
@@ -103,8 +98,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
         log.info("Wait for number of displayed versions to be {}", expected);
         waitForPageSilence();
         waitForAMoment().withMessage("Waiting for versions").until(
-                (Predicate<WebDriver>) webDriver ->
-                        getNumberOfDisplayedVersions() == expected);
+                (Predicate<WebDriver>) webDriver -> getNumberOfDisplayedVersions() == expected);
         assertThat(getNumberOfDisplayedVersions()).isEqualTo(expected);
         assertThat(getVersions()).hasSize(expected);
         return new ProjectVersionsPage(getDriver());
@@ -119,8 +113,8 @@ public class ProjectVersionsPage extends ProjectBasePage {
     public ProjectVersionsPage clearVersionSearch() {
         log.info("Clear version search field");
         int maxKeys = 500;
-        while (!readyElement(versionSearchInput)
-                .getAttribute("value").isEmpty() && maxKeys > 0) {
+        while (!readyElement(versionSearchInput).getAttribute("value").isEmpty()
+                && maxKeys > 0) {
             readyElement(versionSearchInput).sendKeys(Keys.BACK_SPACE);
             maxKeys = maxKeys - 1;
         }

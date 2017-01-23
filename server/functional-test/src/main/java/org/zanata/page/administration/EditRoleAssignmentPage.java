@@ -20,20 +20,22 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.zanata.page.BasePage;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class EditRoleAssignmentPage extends BasePage {
-
-    private By policySelect = By.id("role-rule-form:policyName:input:policyName");
-    private By patternField = By.id("role-rule-form:identityPattern:input:identityPattern");
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(EditRoleAssignmentPage.class);
+    private By policySelect =
+            By.id("role-rule-form:policyName:input:policyName");
+    private By patternField =
+            By.id("role-rule-form:identityPattern:input:identityPattern");
     private By roleSelect = By.id("role-rule-form:role:input:roles");
     private By saveButton = By.id("role-rule-form:save");
     private By cancelButton = By.id("role-rule-form:cancel");

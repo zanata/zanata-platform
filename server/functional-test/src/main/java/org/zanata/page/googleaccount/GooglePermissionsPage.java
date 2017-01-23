@@ -20,21 +20,19 @@
  */
 package org.zanata.page.googleaccount;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.AbstractPage;
 import org.zanata.page.account.EditProfilePage;
-
 import com.google.common.base.Function;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class GooglePermissionsPage extends AbstractPage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(GooglePermissionsPage.class);
     private By approveAccessButton = By.id("submit_approve_access");
 
     public GooglePermissionsPage(WebDriver driver) {
@@ -44,8 +42,7 @@ public class GooglePermissionsPage extends AbstractPage {
     public EditProfilePage acceptPermissions() {
         log.info("Click Approve");
         waitForAMoment().until((Function<WebDriver, Boolean>) driver -> {
-            return getDriver().findElement(approveAccessButton)
-                    .isEnabled();
+            return getDriver().findElement(approveAccessButton).isEnabled();
         });
         clickElement(approveAccessButton);
         return new EditProfilePage(getDriver());

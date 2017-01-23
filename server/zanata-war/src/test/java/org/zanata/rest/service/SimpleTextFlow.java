@@ -18,34 +18,26 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.rest.service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
 import javax.annotation.Nonnull;
-
 import org.zanata.common.LocaleId;
 import org.zanata.model.ITextFlow;
 import org.zanata.model.ITextFlowTarget;
-
 import com.google.common.collect.ImmutableList;
 
-import lombok.Data;
-
 /**
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Data
 class SimpleTextFlow implements ITextFlow {
     private final String qualifiedId;
     private final Map<LocaleId, ITextFlowTarget> targets;
-    private final @Nonnull
-    LocaleId locale;
+    @Nonnull
+    private final LocaleId locale;
     private List<String> contents;
 
     public SimpleTextFlow(String qualifiedId,
@@ -67,8 +59,8 @@ class SimpleTextFlow implements ITextFlow {
             @Nonnull String... contents) {
         this(qualifiedId, targets, locale, ImmutableList.copyOf(contents));
     }
-
     // Lombok won't generate this because of the other setContents method
+
     @Override
     public void setContents(List<String> contents) {
         this.contents = contents;
@@ -87,5 +79,82 @@ class SimpleTextFlow implements ITextFlow {
     @Override
     public Iterable<ITextFlowTarget> getAllTargetContents() {
         return ImmutableList.copyOf(getTargets().values());
+    }
+
+    public String getQualifiedId() {
+        return this.qualifiedId;
+    }
+
+    public Map<LocaleId, ITextFlowTarget> getTargets() {
+        return this.targets;
+    }
+
+    @Nonnull
+    public LocaleId getLocale() {
+        return this.locale;
+    }
+
+    public List<String> getContents() {
+        return this.contents;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof SimpleTextFlow))
+            return false;
+        final SimpleTextFlow other = (SimpleTextFlow) o;
+        if (!other.canEqual((Object) this))
+            return false;
+        final Object this$qualifiedId = this.getQualifiedId();
+        final Object other$qualifiedId = other.getQualifiedId();
+        if (this$qualifiedId == null ? other$qualifiedId != null
+                : !this$qualifiedId.equals(other$qualifiedId))
+            return false;
+        final Object this$targets = this.getTargets();
+        final Object other$targets = other.getTargets();
+        if (this$targets == null ? other$targets != null
+                : !this$targets.equals(other$targets))
+            return false;
+        final Object this$locale = this.getLocale();
+        final Object other$locale = other.getLocale();
+        if (this$locale == null ? other$locale != null
+                : !this$locale.equals(other$locale))
+            return false;
+        final Object this$contents = this.getContents();
+        final Object other$contents = other.getContents();
+        if (this$contents == null ? other$contents != null
+                : !this$contents.equals(other$contents))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof SimpleTextFlow;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        final Object $qualifiedId = this.getQualifiedId();
+        result = result * PRIME
+                + ($qualifiedId == null ? 43 : $qualifiedId.hashCode());
+        final Object $targets = this.getTargets();
+        result = result * PRIME + ($targets == null ? 43 : $targets.hashCode());
+        final Object $locale = this.getLocale();
+        result = result * PRIME + ($locale == null ? 43 : $locale.hashCode());
+        final Object $contents = this.getContents();
+        result = result * PRIME
+                + ($contents == null ? 43 : $contents.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "SimpleTextFlow(qualifiedId=" + this.getQualifiedId()
+                + ", targets=" + this.getTargets() + ", locale="
+                + this.getLocale() + ", contents=" + this.getContents() + ")";
     }
 }

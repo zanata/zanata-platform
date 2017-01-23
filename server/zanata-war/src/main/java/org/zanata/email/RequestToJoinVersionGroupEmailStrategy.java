@@ -22,22 +22,18 @@ package org.zanata.email;
 
 import com.google.common.base.Optional;
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
-
 import javax.mail.internet.InternetAddress;
 import java.util.Collection;
-
 import static org.zanata.email.Addresses.getReplyTo;
 
 /**
-* @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
-*/
-@RequiredArgsConstructor
-public class RequestToJoinVersionGroupEmailStrategy
-        extends EmailStrategy {
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ */
+public class RequestToJoinVersionGroupEmailStrategy extends EmailStrategy {
     private final String fromLoginName;
     private final String fromName;
     private final String replyEmail;
@@ -62,19 +58,32 @@ public class RequestToJoinVersionGroupEmailStrategy
     }
 
     @Override
-    public Map<String, Object> makeContext(
-            Map<String, Object> genericContext,
+    public Map<String, Object> makeContext(Map<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context = super.makeContext(
-                genericContext, toAddresses);
+        Map<String, Object> context =
+                super.makeContext(genericContext, toAddresses);
         String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
-        return context
-                .put("fromLoginName", fromLoginName)
-                .put("fromName", fromName)
-                .put("replyEmail", replyEmail)
-                .put("groupName", groupName)
-                .put("versionGroupSlug", groupSlug)
+        return context.put("fromLoginName", fromLoginName)
+                .put("fromName", fromName).put("replyEmail", replyEmail)
+                .put("groupName", groupName).put("versionGroupSlug", groupSlug)
                 .put("projectIterationIds", projectIterationIds)
                 .put("htmlMessage", safeHTML);
+    }
+
+    @java.beans.ConstructorProperties({ "fromLoginName", "fromName",
+            "replyEmail", "groupName", "groupSlug", "projectIterationIds",
+            "htmlMessage" })
+    public RequestToJoinVersionGroupEmailStrategy(final String fromLoginName,
+            final String fromName, final String replyEmail,
+            final String groupName, final String groupSlug,
+            final Collection<ProjectIterationId> projectIterationIds,
+            final String htmlMessage) {
+        this.fromLoginName = fromLoginName;
+        this.fromName = fromName;
+        this.replyEmail = replyEmail;
+        this.groupName = groupName;
+        this.groupSlug = groupSlug;
+        this.projectIterationIds = projectIterationIds;
+        this.htmlMessage = htmlMessage;
     }
 }

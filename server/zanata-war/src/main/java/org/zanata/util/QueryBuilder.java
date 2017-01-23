@@ -22,23 +22,19 @@ package org.zanata.util;
 
 import java.util.List;
 import javax.annotation.Nullable;
-
 import com.google.common.base.Joiner;
 import com.google.common.base.Predicate;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
-import lombok.Setter;
-
 /**
  * Utility to easily build SQL or HQL queries.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public final class QueryBuilder {
-
     private String select;
     private String from;
     private String where;
@@ -56,15 +52,15 @@ public final class QueryBuilder {
         builder.select = select;
         return builder;
     }
-
     // TODO this and with only works in HQL.
+
     public static QueryBuilder exists() {
         QueryBuilder builder = new QueryBuilder();
         builder.isExistsSubQuery = true;
         return builder;
     }
-
     // TODO this and with only works in HQL.
+
     public static QueryBuilder notExists() {
         QueryBuilder builder = new QueryBuilder();
         builder.isNotExistsSubQuery = true;
@@ -137,19 +133,16 @@ public final class QueryBuilder {
         this.orderBy = orderBy;
         return this;
     }
-
     // ============== Internal implementation classes
 
     private static interface WhereExpression {
+
         String toWhereClause();
     }
 
     private static class LogicalExpression implements WhereExpression {
         private static final String EMPTY_EXPRESSION = "";
-
-        @Setter
         private List<String> operands;
-
         private LogicalOperator operator;
 
         private LogicalExpression(LogicalOperator operator) {
@@ -172,9 +165,8 @@ public final class QueryBuilder {
 
         @Override
         public String toWhereClause() {
-            Iterable<String> notEmptyOperands =
-                    Iterables.filter(operands,
-                            StringNotEmptyPredicate.PREDICATE);
+            Iterable<String> notEmptyOperands = Iterables.filter(operands,
+                    StringNotEmptyPredicate.PREDICATE);
             if (Iterables.isEmpty(notEmptyOperands)) {
                 return EMPTY_EXPRESSION;
             }
@@ -185,10 +177,14 @@ public final class QueryBuilder {
             return expStr.toString();
         }
 
+        public void setOperands(final List<String> operands) {
+            this.operands = operands;
+        }
     }
 
     private static enum StringNotEmptyPredicate implements Predicate<String> {
         PREDICATE;
+
         @Override
         public boolean apply(@Nullable String input) {
             return !Strings.isNullOrEmpty(input);
@@ -209,6 +205,9 @@ public final class QueryBuilder {
     }
 
     private enum LogicalOperator {
-        OR, AND, NOT,
+        OR,
+        AND,
+        NOT;
+
     }
 }

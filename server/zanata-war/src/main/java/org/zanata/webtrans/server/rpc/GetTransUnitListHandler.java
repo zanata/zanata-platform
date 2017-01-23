@@ -21,11 +21,8 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,7 +45,6 @@ import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 import org.zanata.webtrans.shared.util.FindByTransUnitIdPredicate;
-
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Iterables;
@@ -57,27 +53,23 @@ import com.google.common.collect.Lists;
 @Named("webtrans.gwt.GetTransUnitListHandler")
 @RequestScoped
 @ActionHandlerFor(GetTransUnitList.class)
-@Slf4j
 public class GetTransUnitListHandler extends
         AbstractActionHandler<GetTransUnitList, GetTransUnitListResult> {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(GetTransUnitListHandler.class);
+
     @Inject
     private TransUnitTransformer transUnitTransformer;
-
     @Inject
     private TextFlowDAO textFlowDAO;
-
     @Inject
     private LocaleService localeServiceImpl;
-
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     private ValidationService validationServiceImpl;
-
     @Inject
     private GetTransUnitsNavigationService getTransUnitsNavigationService;
-
     private DateTimeFormatter dateFormatter =
             DateTimeFormat.forPattern("yyyy-MM-dd");
 
@@ -86,30 +78,24 @@ public class GetTransUnitListHandler extends
             ExecutionContext context) throws ActionException {
         identity.checkLoggedIn();
         HLocale hLocale = validateAndGetLocale(action);
-
         log.info("action: {}", action);
         int targetOffset = action.getOffset();
         int targetPageIndex = targetOffset / action.getCount();
         GetTransUnitsNavigationResult navigationResult = null;
         EditorFilter editorFilter = action.getEditorFilter();
-        FilterConstraints constraints =
-                FilterConstraints
-                        .builder()
-                        .filterBy(editorFilter.getTextInContent())
-                        .lastModifiedBy(editorFilter.getLastModifiedByUser())
-                        .targetChangedBefore(
-                                parseDateIfPresent(editorFilter
-                                        .getLastModifiedBefore()))
-                        .targetChangedAfter(
-                                parseDateIfPresent(editorFilter
-                                        .getLastModifiedAfter()))
-                        .resourceIdIs(editorFilter.getResId())
-                        .msgContext(editorFilter.getMsgContext())
-                        .sourceCommentContains(editorFilter.getSourceComment())
-                        .targetCommentContains(editorFilter.getTransComment())
-                        .caseSensitive(false).checkInSource(true)
-                        .checkInTarget(true)
-                        .includeStates(action.getFilterStates()).build();
+        FilterConstraints constraints = FilterConstraints.builder()
+                .filterBy(editorFilter.getTextInContent())
+                .lastModifiedBy(editorFilter.getLastModifiedByUser())
+                .targetChangedBefore(parseDateIfPresent(
+                        editorFilter.getLastModifiedBefore()))
+                .targetChangedAfter(
+                        parseDateIfPresent(editorFilter.getLastModifiedAfter()))
+                .resourceIdIs(editorFilter.getResId())
+                .msgContext(editorFilter.getMsgContext())
+                .sourceCommentContains(editorFilter.getSourceComment())
+                .targetCommentContains(editorFilter.getTransComment())
+                .caseSensitive(false).checkInSource(true).checkInTarget(true)
+                .includeStates(action.getFilterStates()).build();
         if (action.isNeedReloadIndex()) {
             GetTransUnitsNavigation getTransUnitsNavigation =
                     new GetTransUnitsNavigation(action.getDocumentId(),
@@ -117,41 +103,33 @@ public class GetTransUnitListHandler extends
                             constraints);
             log.debug("get trans unit navigation action: {}",
                     getTransUnitsNavigation);
-            navigationResult =
-                    getTransUnitsNavigationService.getNavigationIndexes(
-                            getTransUnitsNavigation, hLocale);
-
+            navigationResult = getTransUnitsNavigationService
+                    .getNavigationIndexes(getTransUnitsNavigation, hLocale);
             int totalPageIndex =
                     getTotalPageIndex(navigationResult.getIdIndexList().size(),
                             action.getCount());
-
             if (targetPageIndex > totalPageIndex) {
                 targetPageIndex = totalPageIndex;
                 targetOffset = action.getCount() * targetPageIndex;
             }
-
             if (action.getTargetTransUnitId() != null) {
-                int targetIndexInDoc =
-                        navigationResult.getIdIndexList().indexOf(
-                                action.getTargetTransUnitId());
+                int targetIndexInDoc = navigationResult.getIdIndexList()
+                        .indexOf(action.getTargetTransUnitId());
                 targetPageIndex = targetIndexInDoc / action.getCount();
                 targetOffset = action.getCount() * targetPageIndex;
             }
         }
-
         List<HTextFlow> textFlows =
                 getTextFlows(action, hLocale, targetOffset, constraints);
-
-        GetTransUnitListResult result =
-                transformToTransUnits(action, hLocale, textFlows, targetOffset,
-                        targetPageIndex);
+        GetTransUnitListResult result = transformToTransUnits(action, hLocale,
+                textFlows, targetOffset, targetPageIndex);
         result.setNavigationIndex(navigationResult);
         return result;
     }
 
     private DateTime parseDateIfPresent(String dateInString) {
-        return Strings.isNullOrEmpty(dateInString) ? null :
-                dateFormatter.parseDateTime(dateInString);
+        return Strings.isNullOrEmpty(dateInString) ? null
+                : dateFormatter.parseDateTime(dateInString);
     }
 
     private int getTotalPageIndex(int indexListSize, int countPerPage) {
@@ -168,17 +146,15 @@ public class GetTransUnitListHandler extends
             if (!hasValidationFilter(action)) {
                 // TODO debt: this should use a left join to fetch target (and
                 // possibly comments)
-                textFlows =
-                        textFlowDAO.getTextFlowsByDocumentId(action
-                                .getDocumentId().getId(), offset,
-                                action.getCount());
+                textFlows = textFlowDAO.getTextFlowsByDocumentId(
+                        action.getDocumentId().getId(), offset,
+                        action.getCount());
             } else {
                 // TODO debt: this is not scalable. But we may not have other
                 // choice
                 // for validation filter. Maybe use scrollable result will help?
-                textFlows =
-                        textFlowDAO.getTextFlowsByDocumentId(action
-                                .getDocumentId().getId(), null, null);
+                textFlows = textFlowDAO.getTextFlowsByDocumentId(
+                        action.getDocumentId().getId(), null, null);
                 textFlows =
                         validationServiceImpl.filterHasWarningOrErrorTextFlow(
                                 textFlows, action.getValidationIds(),
@@ -190,10 +166,9 @@ public class GetTransUnitListHandler extends
             log.debug("Fetch TransUnits filtered by status and/or search: {}",
                     constraints);
             if (!hasValidationFilter(action)) {
-                textFlows =
-                        textFlowDAO.getTextFlowByDocumentIdWithConstraints(
-                                action.getDocumentId(), hLocale, constraints,
-                                offset, action.getCount());
+                textFlows = textFlowDAO.getTextFlowByDocumentIdWithConstraints(
+                        action.getDocumentId(), hLocale, constraints, offset,
+                        action.getCount());
             } else {
                 // has validation filter
                 textFlows =
@@ -222,28 +197,27 @@ public class GetTransUnitListHandler extends
     private HLocale validateAndGetLocale(GetTransUnitList action)
             throws ActionException {
         try {
-            return localeServiceImpl.validateLocaleByProjectIteration(action
-                    .getWorkspaceId().getLocaleId(), action.getWorkspaceId()
-                    .getProjectIterationId().getProjectSlug(), action
-                    .getWorkspaceId().getProjectIterationId()
-                    .getIterationSlug());
+            return localeServiceImpl.validateLocaleByProjectIteration(
+                    action.getWorkspaceId().getLocaleId(),
+                    action.getWorkspaceId().getProjectIterationId()
+                            .getProjectSlug(),
+                    action.getWorkspaceId().getProjectIterationId()
+                            .getIterationSlug());
         } catch (ZanataServiceException e) {
             throw new ActionException(e);
         }
     }
 
     private GetTransUnitListResult transformToTransUnits(
-            GetTransUnitList action, HLocale hLocale,
-            List<HTextFlow> textFlows, int targetOffset, int targetPage) {
+            GetTransUnitList action, HLocale hLocale, List<HTextFlow> textFlows,
+            int targetOffset, int targetPage) {
         List<TransUnit> units =
                 Lists.transform(textFlows, new HTextFlowToTransUnitFunction(
                         hLocale, transUnitTransformer));
-
         int gotoRow = 0;
         if (action.getTargetTransUnitId() != null) {
-            int row =
-                    Iterables.indexOf(units, new FindByTransUnitIdPredicate(
-                            action.getTargetTransUnitId()));
+            int row = Iterables.indexOf(units, new FindByTransUnitIdPredicate(
+                    action.getTargetTransUnitId()));
             if (row != -1) {
                 gotoRow = row;
             }
@@ -255,13 +229,12 @@ public class GetTransUnitListHandler extends
     }
 
     @Override
-    public void rollback(GetTransUnitList action,
-            GetTransUnitListResult result, ExecutionContext context)
-            throws ActionException {
+    public void rollback(GetTransUnitList action, GetTransUnitListResult result,
+            ExecutionContext context) throws ActionException {
     }
 
-    private static class HTextFlowToTransUnitFunction implements
-            Function<HTextFlow, TransUnit> {
+    private static class HTextFlowToTransUnitFunction
+            implements Function<HTextFlow, TransUnit> {
         private final HLocale hLocale;
         private final TransUnitTransformer transformer;
 

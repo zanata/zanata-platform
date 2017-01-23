@@ -18,13 +18,8 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.model;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -32,7 +27,6 @@ import org.zanata.model.type.RequestState;
 import org.zanata.model.type.RequestStateType;
 import org.zanata.model.type.RequestType;
 import org.zanata.model.type.RequestTypeType;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -51,43 +45,32 @@ import java.util.Date;
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
 @Access(AccessType.FIELD)
-@Getter
-@Setter(AccessLevel.PRIVATE)
 @Entity
-@TypeDefs({
-    @TypeDef(name = "requestState", typeClass = RequestStateType.class),
-    @TypeDef(name = "requestType", typeClass = RequestTypeType.class)
-
-})
-@NoArgsConstructor
+@TypeDefs({ @TypeDef(name = "requestState", typeClass = RequestStateType.class),
+        @TypeDef(name = "requestType", typeClass = RequestTypeType.class) })
 public class Request extends TimeEntityBase {
-
     @Type(type = "requestState")
     @Column(nullable = true)
     private RequestState state = RequestState.NEW;
-
     @Type(type = "requestType")
     @Column(nullable = false)
     @NotNull
     private RequestType requestType;
-
     @Column(nullable = true)
     @Size(max = 255)
     private String comment;
-
-    //requesting account.
+    // requesting account.
     @ManyToOne
     @JoinColumn(name = "requesterId", nullable = false)
     @NotNull
     private HAccount requester;
-
-    //account who actioned on the request.
+    // account who actioned on the request.
     @ManyToOne
     @JoinColumn(name = "actorId", nullable = true)
     private HAccount actor;
 
-    public Request(RequestType requestType, HAccount requester,
-        String entityId, Date validFrom) {
+    public Request(RequestType requestType, HAccount requester, String entityId,
+            Date validFrom) {
         this.requestType = requestType;
         this.requester = requester;
         setEntityId(entityId);
@@ -95,23 +78,65 @@ public class Request extends TimeEntityBase {
     }
 
     /**
-     * Return new request with updated state.
-     * Expire this request (set validTo)
+     * Return new request with updated state. Expire this request (set validTo)
      *
      * @param actor
      * @param state
      * @param comment
-     * @param date - set to validTo of this request, and validFrom of new request
+     * @param date
+     *            - set to validTo of this request, and validFrom of new request
      */
     public Request update(HAccount actor, RequestState state, String comment,
             Date date) {
         setValidTo(date);
-
-        Request newRequest =
-                new Request(this.requestType, this.requester, getEntityId(), date);
+        Request newRequest = new Request(this.requestType, this.requester,
+                getEntityId(), date);
         newRequest.state = state;
         newRequest.comment = comment;
         newRequest.actor = actor;
         return newRequest;
+    }
+
+    public RequestState getState() {
+        return this.state;
+    }
+
+    public RequestType getRequestType() {
+        return this.requestType;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    public HAccount getRequester() {
+        return this.requester;
+    }
+
+    public HAccount getActor() {
+        return this.actor;
+    }
+
+    private void setState(final RequestState state) {
+        this.state = state;
+    }
+
+    private void setRequestType(final RequestType requestType) {
+        this.requestType = requestType;
+    }
+
+    private void setComment(final String comment) {
+        this.comment = comment;
+    }
+
+    private void setRequester(final HAccount requester) {
+        this.requester = requester;
+    }
+
+    private void setActor(final HAccount actor) {
+        this.actor = actor;
+    }
+
+    public Request() {
     }
 }

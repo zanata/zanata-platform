@@ -29,13 +29,11 @@ import java.util.Set;
 import java.util.TreeMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -54,31 +52,23 @@ import org.zanata.rest.editor.dto.LocaleSortField;
 import org.zanata.service.LocaleService;
 import org.zanata.servlet.annotations.AllJavaLocales;
 import org.zanata.util.ComparatorUtil;
-
 import com.google.common.collect.Maps;
 import com.ibm.icu.util.ULocale;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * This implementation provides all the business logic related to Locale.
- *
  */
 @Named("localeServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class LocaleServiceImpl implements LocaleService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(LocaleServiceImpl.class);
     private LocaleDAO localeDAO;
-
     private ProjectDAO projectDAO;
-
     private ProjectIterationDAO projectIterationDAO;
-
     private PersonDAO personDAO;
-
     private VersionGroupDAO versionGroupDAO;
-
     private TextFlowTargetDAO textFlowTargetDAO;
 
     public LocaleServiceImpl() {
@@ -86,7 +76,8 @@ public class LocaleServiceImpl implements LocaleService {
 
     public LocaleServiceImpl(LocaleDAO localeDAO, ProjectDAO projectDAO,
             ProjectIterationDAO projectIterationDAO, PersonDAO personDAO,
-            TextFlowTargetDAO textFlowTargetDAO, VersionGroupDAO versionGroupDAO) {
+            TextFlowTargetDAO textFlowTargetDAO,
+            VersionGroupDAO versionGroupDAO) {
         setLocaleDAO(localeDAO);
         setProjectDAO(projectDAO);
         setProjectIterationDAO(projectIterationDAO);
@@ -95,7 +86,8 @@ public class LocaleServiceImpl implements LocaleService {
         setVersionGroupDAO(versionGroupDAO);
     }
 
-    public static Map<LocaleId, String> getLocaleAliasesByIteration(HProjectIteration iteration) {
+    public static Map<LocaleId, String>
+            getLocaleAliasesByIteration(HProjectIteration iteration) {
         Map<LocaleId, String> localeAliases;
         if (iteration.isOverrideLocales()) {
             localeAliases = iteration.getLocaleAliases();
@@ -121,7 +113,8 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     @Inject
-    public void setProjectIterationDAO(ProjectIterationDAO projectIterationDAO) {
+    public void
+            setProjectIterationDAO(ProjectIterationDAO projectIterationDAO) {
         this.projectIterationDAO = projectIterationDAO;
     }
 
@@ -141,13 +134,13 @@ public class LocaleServiceImpl implements LocaleService {
 
     @Override
     public List<HLocale> getAllLocales(int offset, int maxResults,
-        String filter, List<LocaleSortField> sortFields) {
-       return localeDAO.find(offset, maxResults, filter, sortFields, false);
+            String filter, List<LocaleSortField> sortFields) {
+        return localeDAO.find(offset, maxResults, filter, sortFields, false);
     }
 
     @Override
     public List<HLocale> getSupportedLocales(int offset, int maxResults,
-        String filter, List<LocaleSortField> sortFields) {
+            String filter, List<LocaleSortField> sortFields) {
         return localeDAO.find(offset, maxResults, filter, sortFields, true);
     }
 
@@ -243,42 +236,45 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     @Override
-    public @Nonnull
-    HLocale validateLocaleByProject(@Nonnull LocaleId locale,
+    @Nonnull
+    public HLocale validateLocaleByProject(@Nonnull LocaleId locale,
             @Nonnull String project) throws ZanataServiceException {
         List<HLocale> allList = getSupportedLanguageByProject(project);
         HLocale hLocale = localeDAO.findByLocaleId(locale);
         if (hLocale == null || !hLocale.isActive()) {
-            throw new ZanataServiceException("Locale " + locale.getId()
-                    + " is not enabled on this server. Please contact admin.",
+            throw new ZanataServiceException(
+                    "Locale " + locale.getId()
+                            + " is not enabled on this server. Please contact admin.",
                     403);
         }
         if (!allList.contains(hLocale)) {
-            throw new ZanataServiceException("Locale " + locale.getId()
-                    + " is not allowed for project " + project
-                    + ". Please contact project maintainer.", 403);
+            throw new ZanataServiceException(
+                    "Locale " + locale.getId() + " is not allowed for project "
+                            + project + ". Please contact project maintainer.",
+                    403);
         }
         return hLocale;
     }
 
     @Override
-    public @Nonnull
-    HLocale validateLocaleByProjectIteration(@Nonnull LocaleId locale,
+    @Nonnull
+    public HLocale validateLocaleByProjectIteration(@Nonnull LocaleId locale,
             @Nonnull String project, @Nonnull String iterationSlug)
             throws ZanataServiceException {
         List<HLocale> allList =
                 getSupportedLanguageByProjectIteration(project, iterationSlug);
         HLocale hLocale = localeDAO.findByLocaleId(locale);
         if (hLocale == null || !hLocale.isActive()) {
-            throw new ZanataServiceException("Locale " + locale.getId()
-                    + " is not enabled on this server. Please contact admin.",
+            throw new ZanataServiceException(
+                    "Locale " + locale.getId()
+                            + " is not enabled on this server. Please contact admin.",
                     403);
         }
         if (!allList.contains(hLocale)) {
             throw new ZanataServiceException("Locale " + locale.getId()
-                    + " is not allowed for project " + project
-                    + " and version " + iterationSlug
-                    + ". Please contact project maintainer.", 403);
+                    + " is not allowed for project " + project + " and version "
+                    + iterationSlug + ". Please contact project maintainer.",
+                    403);
         }
         return hLocale;
     }
@@ -288,8 +284,9 @@ public class LocaleServiceImpl implements LocaleService {
             throws ZanataServiceException {
         HLocale hLocale = getByLocaleId(locale);
         if (hLocale == null || !hLocale.isActive()) {
-            throw new ZanataServiceException("Locale " + locale.getId()
-                    + " is not enabled on this server. Please contact admin.",
+            throw new ZanataServiceException(
+                    "Locale " + locale.getId()
+                            + " is not enabled on this server. Please contact admin.",
                     403);
         }
         return hLocale;
@@ -323,10 +320,9 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     @Override
-    public List<HLocale> getSupportedLanguageByProject(
-            @Nonnull String projectSlug) {
+    public List<HLocale>
+            getSupportedLanguageByProject(@Nonnull String projectSlug) {
         HProject proj = projectDAO.getBySlug(projectSlug);
-
         if (proj != null && proj.isOverrideLocales()) {
             return new ArrayList<HLocale>(proj.getCustomizedLocales());
         }
@@ -338,7 +334,6 @@ public class LocaleServiceImpl implements LocaleService {
             @Nonnull String iterationSlug, String username) {
         List<HLocale> allList =
                 getSupportedLanguageByProjectIteration(project, iterationSlug);
-
         List<HLocale> member =
                 personDAO.getLanguageMembershipByUsername(username);
         member.retainAll(allList);
@@ -346,8 +341,8 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     private String getDescript(HLocale op) {
-        return op.retrieveDisplayName() + " [" + op.getLocaleId().getId()
-                + "] " + op.retrieveNativeName();
+        return op.retrieveDisplayName() + " [" + op.getLocaleId().getId() + "] "
+                + op.retrieveNativeName();
     }
 
     @Override
@@ -365,7 +360,8 @@ public class LocaleServiceImpl implements LocaleService {
     public Map<String, String>
             getIterationGlobalLocaleItems(String projectSlug) {
         HProject project = projectDAO.getBySlug(projectSlug);
-        return project.isOverrideLocales() ? getCustomizedLocalesItems(projectSlug)
+        return project.isOverrideLocales()
+                ? getCustomizedLocalesItems(projectSlug)
                 : getGlobalLocaleItems();
     }
 
@@ -387,7 +383,6 @@ public class LocaleServiceImpl implements LocaleService {
     public Map<String, String> getDefaultCustomizedLocalesItems() {
         Map<String, String> defaultItems = new TreeMap<String, String>();
         List<HLocale> allLocales = getSupportedLocales();
-
         for (HLocale locale : allLocales) {
             if (locale.isEnabledByDefault()) {
                 String desc = getDescript(locale);
@@ -438,9 +433,9 @@ public class LocaleServiceImpl implements LocaleService {
 
     public static LocaleDetails convertToDTO(HLocale hLocale, String alias) {
         return new LocaleDetails(hLocale.getLocaleId(),
-            hLocale.retrieveDisplayName(), alias, hLocale.retrieveNativeName(),
-            hLocale.isActive(), hLocale.isEnabledByDefault(),
-            hLocale.getPluralForms());
+                hLocale.retrieveDisplayName(), alias,
+                hLocale.retrieveNativeName(), hLocale.isActive(),
+                hLocale.isEnabledByDefault(), hLocale.getPluralForms());
     }
 
     public static LocaleDetails convertToDTO(HLocale hLocale) {

@@ -2,11 +2,8 @@ package org.zanata.webtrans.server.rpc;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,19 +23,17 @@ import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
 @Named("webtrans.gwt.GetTransMemoryDetailsHandler")
 @RequestScoped
 @ActionHandlerFor(GetTransMemoryDetailsAction.class)
-@Slf4j
-public class GetTransMemoryDetailsHandler
-        extends
+public class GetTransMemoryDetailsHandler extends
         AbstractActionHandler<GetTransMemoryDetailsAction, TransMemoryDetailsList> {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(GetTransMemoryDetailsHandler.class);
+
     @Inject
     private TextFlowDAO textFlowDAO;
-
     @Inject
     private LocaleService localeServiceImpl;
-
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     private TranslationMemoryService translationMemoryServiceImpl;
 
@@ -49,30 +44,25 @@ public class GetTransMemoryDetailsHandler
         LocaleId locale = action.getWorkspaceId().getLocaleId();
         HLocale hLocale;
         try {
-            hLocale =
-                    localeServiceImpl
-                            .validateLocaleByProjectIteration(locale, action
-                                    .getWorkspaceId().getProjectIterationId()
-                                    .getProjectSlug(), action.getWorkspaceId()
-                                    .getProjectIterationId().getIterationSlug());
+            hLocale = localeServiceImpl.validateLocaleByProjectIteration(locale,
+                    action.getWorkspaceId().getProjectIterationId()
+                            .getProjectSlug(),
+                    action.getWorkspaceId().getProjectIterationId()
+                            .getIterationSlug());
         } catch (ZanataServiceException e) {
             throw new ActionException(e);
         }
-
         ArrayList<Long> textFlowIds = action.getTransUnitIdList();
         log.info("Fetching TM details for TFs {} in locale {}", textFlowIds,
                 locale);
         List<HTextFlow> textFlows = textFlowDAO.findByIdList(textFlowIds);
         ArrayList<TransMemoryDetails> items =
                 new ArrayList<TransMemoryDetails>(textFlows.size());
-
         for (HTextFlow tf : textFlows) {
-            TransMemoryDetails memoryDetails =
-                    translationMemoryServiceImpl.getTransMemoryDetail(hLocale,
-                            tf);
+            TransMemoryDetails memoryDetails = translationMemoryServiceImpl
+                    .getTransMemoryDetail(hLocale, tf);
             items.add(memoryDetails);
         }
-
         log.info("Returning {} TM details", items.size());
         return new TransMemoryDetailsList(items);
     }

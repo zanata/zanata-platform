@@ -23,7 +23,6 @@ package org.zanata.model.tm;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import javax.annotation.Nonnull;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -33,14 +32,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 import org.hibernate.search.annotations.AnalyzerDiscriminator;
 import org.hibernate.search.annotations.ClassBridge;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
@@ -52,42 +43,30 @@ import org.zanata.util.OkapiUtil;
 /**
  * A translation unit variant. This is the equivalent of a translated string.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
-@EqualsAndHashCode(callSuper = true, exclude = { "content" })
-@ToString(exclude = { "contentHash", "plainTextSegmentHash" })
-@NoArgsConstructor
-@Data
 @Access(AccessType.FIELD)
 @ClassBridge(impl = TransUnitVariantClassBridge.class)
 @AnalyzerDiscriminator(impl = TextContainerAnalyzerDiscriminator.class)
-public class TransMemoryUnitVariant extends ModelEntityBase implements
-        HasTMMetadata {
+public class TransMemoryUnitVariant extends ModelEntityBase
+        implements HasTMMetadata {
     private static final long serialVersionUID = 1L;
-
     // This is the BCP-47 language code
     @Column(nullable = false)
     private String language;
-
     @Column(name = "tagged_segment", nullable = false,
             length = Integer.MAX_VALUE)
     private String taggedSegment;
-
-    @Setter(AccessLevel.NONE)
     @Column(name = "plain_text_segment", nullable = false,
             length = Integer.MAX_VALUE)
     private String plainTextSegment;
-
-    @Setter(AccessLevel.PROTECTED)
     @Column(name = "plain_text_segment_hash", nullable = false)
     private String plainTextSegmentHash;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "metadata_type", nullable = true)
     private TMMetadataType metadataType;
-
     @Column(nullable = true)
     @Basic(fetch = FetchType.LAZY)
     private String metadata;
@@ -131,17 +110,144 @@ public class TransMemoryUnitVariant extends ModelEntityBase implements
 
     @Override
     public void setMetadata(@Nonnull TMMetadataType tmType, String metadata) {
-        assert this.metadataType == null || this.metadataType == tmType : "Only one type of metadata is supported for this entity";
+        assert this.metadataType == null
+                || this.metadataType == tmType : "Only one type of metadata is supported for this entity";
         setMetadataType(tmType);
         setMetadata(metadata);
     }
 
-    public static Map<String, TransMemoryUnitVariant> newMap(
-            TransMemoryUnitVariant... tuvs) {
+    public static Map<String, TransMemoryUnitVariant>
+            newMap(TransMemoryUnitVariant... tuvs) {
         Map<String, TransMemoryUnitVariant> map = new HashMap<>();
-        Arrays.stream(tuvs)
-                .forEach(tuv -> map.put(tuv.getLanguage(), tuv));
+        Arrays.stream(tuvs).forEach(tuv -> map.put(tuv.getLanguage(), tuv));
         return map;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof TransMemoryUnitVariant))
+            return false;
+        final TransMemoryUnitVariant other = (TransMemoryUnitVariant) o;
+        if (!other.canEqual((Object) this))
+            return false;
+        if (!super.equals(o))
+            return false;
+        final Object this$language = this.getLanguage();
+        final Object other$language = other.getLanguage();
+        if (this$language == null ? other$language != null
+                : !this$language.equals(other$language))
+            return false;
+        final Object this$taggedSegment = this.getTaggedSegment();
+        final Object other$taggedSegment = other.getTaggedSegment();
+        if (this$taggedSegment == null ? other$taggedSegment != null
+                : !this$taggedSegment.equals(other$taggedSegment))
+            return false;
+        final Object this$plainTextSegment = this.getPlainTextSegment();
+        final Object other$plainTextSegment = other.getPlainTextSegment();
+        if (this$plainTextSegment == null ? other$plainTextSegment != null
+                : !this$plainTextSegment.equals(other$plainTextSegment))
+            return false;
+        final Object this$plainTextSegmentHash = this.getPlainTextSegmentHash();
+        final Object other$plainTextSegmentHash =
+                other.getPlainTextSegmentHash();
+        if (this$plainTextSegmentHash == null
+                ? other$plainTextSegmentHash != null
+                : !this$plainTextSegmentHash.equals(other$plainTextSegmentHash))
+            return false;
+        final Object this$metadataType = this.getMetadataType();
+        final Object other$metadataType = other.getMetadataType();
+        if (this$metadataType == null ? other$metadataType != null
+                : !this$metadataType.equals(other$metadataType))
+            return false;
+        final Object this$metadata = this.getMetadata();
+        final Object other$metadata = other.getMetadata();
+        if (this$metadata == null ? other$metadata != null
+                : !this$metadata.equals(other$metadata))
+            return false;
+        return true;
+    }
+
+    protected boolean canEqual(final Object other) {
+        return other instanceof TransMemoryUnitVariant;
+    }
+
+    @Override
+    public int hashCode() {
+        final int PRIME = 59;
+        int result = 1;
+        result = result * PRIME + super.hashCode();
+        final Object $language = this.getLanguage();
+        result = result * PRIME
+                + ($language == null ? 43 : $language.hashCode());
+        final Object $taggedSegment = this.getTaggedSegment();
+        result = result * PRIME
+                + ($taggedSegment == null ? 43 : $taggedSegment.hashCode());
+        final Object $plainTextSegment = this.getPlainTextSegment();
+        result = result * PRIME + ($plainTextSegment == null ? 43
+                : $plainTextSegment.hashCode());
+        final Object $plainTextSegmentHash = this.getPlainTextSegmentHash();
+        result = result * PRIME + ($plainTextSegmentHash == null ? 43
+                : $plainTextSegmentHash.hashCode());
+        final Object $metadataType = this.getMetadataType();
+        result = result * PRIME
+                + ($metadataType == null ? 43 : $metadataType.hashCode());
+        final Object $metadata = this.getMetadata();
+        result = result * PRIME
+                + ($metadata == null ? 43 : $metadata.hashCode());
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "TransMemoryUnitVariant(language=" + this.getLanguage()
+                + ", taggedSegment=" + this.getTaggedSegment()
+                + ", plainTextSegment=" + this.getPlainTextSegment()
+                + ", metadataType=" + this.getMetadataType() + ", metadata="
+                + this.getMetadata() + ")";
+    }
+
+    public TransMemoryUnitVariant() {
+    }
+
+    public String getLanguage() {
+        return this.language;
+    }
+
+    public String getTaggedSegment() {
+        return this.taggedSegment;
+    }
+
+    public String getPlainTextSegment() {
+        return this.plainTextSegment;
+    }
+
+    public String getPlainTextSegmentHash() {
+        return this.plainTextSegmentHash;
+    }
+
+    public TMMetadataType getMetadataType() {
+        return this.metadataType;
+    }
+
+    public String getMetadata() {
+        return this.metadata;
+    }
+
+    public void setLanguage(final String language) {
+        this.language = language;
+    }
+
+    public void setMetadataType(final TMMetadataType metadataType) {
+        this.metadataType = metadataType;
+    }
+
+    public void setMetadata(final String metadata) {
+        this.metadata = metadata;
+    }
+
+    protected void setPlainTextSegmentHash(final String plainTextSegmentHash) {
+        this.plainTextSegmentHash = plainTextSegmentHash;
+    }
 }

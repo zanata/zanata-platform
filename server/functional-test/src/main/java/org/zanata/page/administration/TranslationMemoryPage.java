@@ -20,26 +20,23 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.*;
 import org.zanata.page.BasePage;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class TranslationMemoryPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TranslationMemoryPage.class);
     public static final String ID_UNAVAILABLE = "This Id is not available";
     public static final String UPLOAD_ERROR =
             "There was an error uploading the file";
     public static final String NO_MEMORIES =
             "No Translation Memories have been created.";
-
     private By listItemCount = By.className("badge");
     private By listItemDescription = By.className("list__item__meta");
     private By dropDownMenu = By.id("moreActions");
@@ -84,7 +81,8 @@ public class TranslationMemoryPage extends BasePage {
     public TranslationMemoryPage enterImportFileName(String importFileName) {
         log.info("Enter import TM filename {}", importFileName);
         // Don't clear, inject text, check value
-        enterText(readyElement(filenameInput), importFileName, false, true, false);
+        enterText(readyElement(filenameInput), importFileName, false, true,
+                false);
         slightPause();
         return new TranslationMemoryPage(getDriver());
     }
@@ -93,7 +91,7 @@ public class TranslationMemoryPage extends BasePage {
         log.info("Click and accept Upload button");
         clickElement(uploadButton);
         clickElement(
-            readyElement(uploadNotification).findElement(okConfirmation));
+                readyElement(uploadNotification).findElement(okConfirmation));
         return new TranslationMemoryPage(getDriver());
     }
 
@@ -106,15 +104,15 @@ public class TranslationMemoryPage extends BasePage {
         log.info("Click and accept Clear {}", tmName);
         clickElement(readyElement(findRowByTMName(tmName), listClearButton));
         clickElement(
-            readyElement(clearConfirmation).findElement(okConfirmation));
+                readyElement(clearConfirmation).findElement(okConfirmation));
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage clickClearTMAndCancel(String tmName) {
         log.info("Click and Cancel Clear {}", tmName);
         clickElement(readyElement(findRowByTMName(tmName), listClearButton));
-        clickElement(
-            readyElement(clearConfirmation).findElement(cancelConfirmation));
+        clickElement(readyElement(clearConfirmation)
+                .findElement(cancelConfirmation));
         return new TranslationMemoryPage(getDriver());
     }
 
@@ -130,15 +128,15 @@ public class TranslationMemoryPage extends BasePage {
     public TranslationMemoryPage clickDeleteTmAndCancel(String tmName) {
         log.info("Click and cancel Delete {}", tmName);
         clickElement(readyElement(findRowByTMName(tmName), listDeleteButton));
-        clickElement(
-            readyElement(deleteConfirmation).findElement(cancelConfirmation));
+        clickElement(readyElement(deleteConfirmation)
+                .findElement(cancelConfirmation));
         return new TranslationMemoryPage(getDriver());
     }
 
     public TranslationMemoryPage dismissError() {
         log.info("Dismiss error dialog");
         clickElement(
-            readyElement(uploadNotification).findElement(okConfirmation));
+                readyElement(uploadNotification).findElement(okConfirmation));
         return new TranslationMemoryPage(getDriver());
     }
 
@@ -164,16 +162,15 @@ public class TranslationMemoryPage extends BasePage {
 
     public boolean canDelete(String tmName) {
         log.info("Query can delete {}", tmName);
-        String disabled = readyElement(
-                findRowByTMName(tmName), listDeleteButton)
-                .getAttribute("disabled");
-
+        String disabled =
+                readyElement(findRowByTMName(tmName), listDeleteButton)
+                        .getAttribute("disabled");
         return null == disabled || disabled.equals("false");
     }
-
     /*
      * Check to see if the TM list is empty
      */
+
     private boolean noTmsCreated() {
         for (WebElement element : readyElement(tmList)
                 .findElements(By.tagName("p"))) {
@@ -186,6 +183,7 @@ public class TranslationMemoryPage extends BasePage {
     /*
      * Get a row from the TM table that corresponds with tmName
      */
+
     private WebElement findRowByTMName(final String tmName) {
         for (WebElement listElement : getTMList()) {
             if (getListEntryName(listElement).equals(tmName)) {
@@ -200,14 +198,16 @@ public class TranslationMemoryPage extends BasePage {
             log.info("TM list is empty");
             return new ArrayList<>();
         }
-        return readyElement(readyElement(tmList),
-                By.className("list--stats"))
+        return readyElement(readyElement(tmList), By.className("list--stats"))
                 .findElements(By.className("list__item--actionable"));
     }
 
     private String getListEntryName(WebElement listElement) {
-        String title = listElement.findElement(By.tagName("h3")).getText().trim();
-        return title.substring(0, title.lastIndexOf(getListEntryCount(listElement))).trim();
+        String title =
+                listElement.findElement(By.tagName("h3")).getText().trim();
+        return title
+                .substring(0, title.lastIndexOf(getListEntryCount(listElement)))
+                .trim();
     }
 
     private String getListEntryDescription(WebElement listElement) {

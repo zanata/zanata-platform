@@ -20,9 +20,6 @@
  */
 package org.zanata.ui;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,28 +27,35 @@ import java.util.List;
 /**
  * Base component to implement search capabilities in the UI.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public abstract class AbstractTextSearch<E> {
 
-    @Getter
-    @Setter
     @NotNull
     private String query = "";
-
     private String searchedQuery = "";
-
-    @Getter
     private List<E> results = new ArrayList<>();
 
     public synchronized void search() {
         // only search if it's necessary
-        if(!query.equals(searchedQuery)) {
+        if (!query.equals(searchedQuery)) {
             results = getSearchResults();
             searchedQuery = query;
         }
     }
 
     public abstract List<E> getSearchResults();
+
+    public String getQuery() {
+        return this.query;
+    }
+
+    public void setQuery(final String query) {
+        this.query = query;
+    }
+
+    public List<E> getResults() {
+        return this.results;
+    }
 }
