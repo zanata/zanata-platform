@@ -222,6 +222,8 @@ public interface GlossaryResource extends RestResource {
      * Delete glossary which given id.
      *
      * @param id id for source glossary term
+     * @param qualifiedName
+     *      Qualified name of glossary, default to {@link #GLOBAL_QUALIFIED_NAME}
      * @return The following response status codes will be returned from this
      *         operation:<br>
      *         OK(200) - If the glossary entry were successfully deleted.
@@ -234,7 +236,8 @@ public interface GlossaryResource extends RestResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/entries/{id}")
     @TypeHint(GlossaryEntry.class)
-    public Response deleteEntry(@PathParam("id") Long id);
+    public Response deleteEntry(@PathParam("id") Long id,
+        @DefaultValue(GLOBAL_QUALIFIED_NAME) @QueryParam("qualifiedName") String qualifiedName);
 
     /**
      * Delete all glossary terms.
