@@ -47,7 +47,7 @@ public interface PutUserOptions extends ConfigurableOptions {
     public String getUserRoles();
 
     @Option(name = "--user-enabled",
-            usage = "Enable or disable the user (true, false, auto). Defaults to true for a new user")
+            usage = "Enable or disable the user (true, false, auto). Auto defaults to true for a new user, or respects an existing user's current setting.")
     public void setUserEnabled(String enabled);
 
     public String isUserEnabled();

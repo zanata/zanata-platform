@@ -57,9 +57,9 @@ public class PutUserCommand extends ConfigurableCommand<PutUserOptions> {
             log.info("Creating new account {}", userUsername);
             account = new Account();
             if (userEmail == null || userName == null) {
-                throw new RuntimeException("New user's name and email must be specified");
+                throw new RuntimeException(get("email.name.required"));
             } else if (StringUtils.isBlank(passwordHash)) {
-                log.warn("No passwordHash set, user will need to use the Forgot Password feature");
+                log.warn(get("no.passwordhash.set"));
             }
             account.setUsername(userUsername);
 
