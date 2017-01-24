@@ -22,6 +22,7 @@ package org.zanata.servlet;
 
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.UserRedirectBean;
+import org.zanata.util.UrlUtil;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -46,6 +47,9 @@ public class KLoginServlet extends HttpServlet {
 
     @Inject
     private AuthenticationManager authenticationManager;
+
+    @Inject
+    private UrlUtil urlUtil;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -72,23 +76,23 @@ public class KLoginServlet extends HttpServlet {
                 authenticationManager.getAuthenticationRedirect();
         switch (authRedirectResult) {
             case "login":
-                resp.sendRedirect("/account/login");
+                resp.sendRedirect(urlUtil.signInPage());
                 break;
 
             case "edit":
-                resp.sendRedirect("/profile/create_user");
+                resp.sendRedirect(urlUtil.createUserPage());
                 break;
 
             case "inactive":
-                resp.sendRedirect("/account/inactive_account");
+                resp.sendRedirect(urlUtil.inactiveAccountPage());
                 break;
 
             case "dashboard":
-                resp.sendRedirect("/dashboard");
+                resp.sendRedirect(urlUtil.dashboardUrl());
                 break;
 
             case "home":
-                resp.sendRedirect("/");
+                resp.sendRedirect(urlUtil.home());
                 break;
 
             case "redirect":
