@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import com.google.common.base.Optional;
@@ -38,7 +37,6 @@ import org.apache.log4j.Level;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
 import javax.servlet.http.HttpSession;
 import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.config.AllowPublicRegistration;
@@ -122,11 +120,16 @@ public class ApplicationConfiguration implements Serializable {
     private Optional<String> openIdProvider; // Cache the OpenId provider
     private long tokenExpiresInSeconds;
 
+    private String logEventDestinationEmailAdd;
+    private boolean shouldLogEvent;
+    private String fromEmailAddr;
+    private String serverPath;
+    private String emailLogLevel;
+
     @PostConstruct
     public void load() {
         log.info("Reloading configuration");
         this.loadLoginModuleNames();
-        this.applyLoggingConfiguration();
         this.loadJaasConfig();
         authenticatedSessionTimeoutMinutes = sysPropConfigStore
                 .get("authenticatedSessionTimeoutMinutes", 180);
@@ -134,6 +137,17 @@ public class ApplicationConfiguration implements Serializable {
                 sysPropConfigStore.get("zanata.enforce.matchingusernames"));
         tokenExpiresInSeconds = sysPropConfigStore
                 .getLong(ACCESS_TOKEN_EXPIRES_IN_SECONDS, 3600);
+
+        String strVal = databaseBackedConfig.getShouldLogEvents();
+        shouldLogEvent = strVal != null && Boolean.parseBoolean(strVal);
+
+        if (shouldLogEvent) {
+            serverPath = getServerPath();
+            fromEmailAddr = getFromEmailAddr();
+            logEventDestinationEmailAdd =
+                databaseBackedConfig.getLogEventsDestinationEmailAddress();
+            emailLogLevel = databaseBackedConfig.getEmailLogLevel();
+        }
     }
 
     /**
@@ -151,21 +165,21 @@ public class ApplicationConfiguration implements Serializable {
         // TODO is this still working with jboss logging?
         final org.apache.log4j.Logger rootLogger =
                 org.apache.log4j.Logger.getRootLogger();
-        if (isEmailLogAppenderEnabled()) {
+        if (shouldLogEvent) {
             // NB: This appender uses JBoss's email configuration (no need for
             // host or port)
             smtpAppenderInstance.setName(EMAIL_APPENDER_NAME);
-            smtpAppenderInstance.setFrom(getFromEmailAddr());
-            smtpAppenderInstance.setTo(
-                    databaseBackedConfig.getLogEventsDestinationEmailAddress());
+            smtpAppenderInstance.setFrom(fromEmailAddr);
+            smtpAppenderInstance.setTo(logEventDestinationEmailAdd);
             // TODO use hostname, not URL
             smtpAppenderInstance.setSubject(
-                    "%p log message from Zanata at " + this.getServerPath());
-            smtpAppenderInstance.setLayout(new ZanataHTMLLayout());
+                    "%p log message from Zanata at " + serverPath);
+            String buildInfo = getVersion() + ", " + getBuildTimestamp() + "["
+                + getScmDescribe() + "]";
+            smtpAppenderInstance.setLayout(new ZanataHTMLLayout(buildInfo));
             // smtpAppenderInstance.setLayout(new
             // PatternLayout("%-5p [%c] %m%n"));
-            smtpAppenderInstance
-                    .setThreshold(Level.toLevel(getEmailLogLevel()));
+            smtpAppenderInstance.setThreshold(Level.toLevel(emailLogLevel));
             smtpAppenderInstance.setTimeout(60); // will aggregate identical
             // messages within 60 sec
             // periods
@@ -312,11 +326,6 @@ public class ApplicationConfiguration implements Serializable {
         return adminUsers;
     }
 
-    public boolean isEmailLogAppenderEnabled() {
-        String strVal = databaseBackedConfig.getShouldLogEvents();
-        return strVal != null && Boolean.parseBoolean(strVal);
-    }
-
     public List<String> getLogDestinationEmails() {
         String s = databaseBackedConfig.getLogEventsDestinationEmailAddress();
         if (s == null || s.trim().length() == 0) {
@@ -324,10 +333,6 @@ public class ApplicationConfiguration implements Serializable {
         }
         String[] ss = s.trim().split("\\s*,\\s*");
         return new ArrayList<String>(Arrays.asList(ss));
-    }
-
-    public String getEmailLogLevel() {
-        return databaseBackedConfig.getEmailLogLevel();
     }
 
     public String getPiwikUrl() {

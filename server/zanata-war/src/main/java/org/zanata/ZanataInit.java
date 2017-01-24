@@ -123,6 +123,7 @@ public class ZanataInit {
                 .setBuildTimestamp(zanataVersion.getBuildTimeStamp());
         this.applicationConfiguration
                 .setScmDescribe(zanataVersion.getScmDescribe());
+        this.applicationConfiguration.applyLoggingConfiguration();
         logBanner(zanataVersion);
         boolean authlogged = false;
         if (applicationConfiguration.isInternalAuth()) {
