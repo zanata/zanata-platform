@@ -4,10 +4,6 @@ import CalendarMonthMatrix from './CalendarMonthMatrix'
 import CalendarPeriodHeading from './CalendarPeriodHeading'
 import CategoryMatrixTable from './CategoryMatrixTable'
 import {
-  Base,
-  Flex
-} from 'zanata-ui'
-import {
   ContentStates
 } from '../../constants/Options'
 /**
@@ -38,13 +34,13 @@ const FilterableMatrixTable = ({
         categoryTitle='projectName'
         categoryName='Projects' />
     ])
-    : <Base atomic={{c: 'C(muted)'}}>No contributions</Base>
+    : <div className='text-muted'>No contributions</div>
   return (
     <div>
       <ContentStateFilter selectedContentState={selectedContentState}
         handleFilterChanged={handleFilterChanged} />
-      <Flex atomic={{fld: 'Fld(c) Fld(r)--lg'}}>
-        <div className='W(100%) W(1/2)--lg Mend(rh)--lg'>
+      <div className='matrix-table'>
+        <div className='matrix-inner'>
           <CalendarMonthMatrix
             matrixData={wordCountForEachDay}
             selectedDay={selectedDay}
@@ -52,13 +48,13 @@ const FilterableMatrixTable = ({
             dateRange={dateRange}
             handleSelectedDayChanged={handleSelectedDayChanged} />
         </div>
-        <div className='W(100%) W(1/2)--lg Mstart(rh)--lg'>
+        <div className='matrix-heading'>
           <CalendarPeriodHeading
             dateRange={dateRange}
             selectedDay={selectedDay} />
           {categoryTables}
         </div>
-      </Flex>
+      </div>
     </div>
   )
 }

@@ -1,9 +1,6 @@
 import React, { PropTypes } from 'react'
 import { ContentStates } from '../../constants/Options'
 import dateUtil from '../../utils/DateHelper'
-import {
-  Base
-} from 'zanata-ui'
 import { Button } from 'react-bootstrap'
 
 /**
@@ -40,12 +37,12 @@ const DayMatrix = ({
           className={date === selectedDay ? 'active ' : ''}
           disabled={dateIsInFuture || !date}
           title={wordCount + ' words'}>
-          <div className='calDate'>{date ? dateLabel : '\u00a0'}</div>
-          <div className='calInfo'>
+          <div className='cal-date'>{date ? dateLabel : '\u00a0'}</div>
+          <div className='cal-info'>
             {dateIsInFuture ? '\u00a0' : wordCount}
           </div>
         </Button>
-        : <Base atomic={{bgc: 'Bgc(#fff.85)', stretchedBox: 'StretchedBox'}} />}
+        : <div className='stretched-box'></div>}
     </td>
   )
   /* eslint-enable react/jsx-no-bind */
