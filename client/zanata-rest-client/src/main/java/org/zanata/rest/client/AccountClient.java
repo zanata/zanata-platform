@@ -30,6 +30,7 @@ import javax.ws.rs.core.Response;
 
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
+import javax.annotation.Nullable;
 
 /**
  * @author Patrick Huang <a
@@ -44,15 +45,15 @@ public class AccountClient {
         this.baseUri = factory.getBaseUri();
     }
 
-    public Account get(String username) {
+    public @Nullable Account get(String username) {
         try {
             return webResource(username)
                     .get(Account.class);
-        } catch (ResponseProcessingException nfe) {
-            if (nfe.getResponse().getStatusInfo().equals(Response.Status.NOT_FOUND)) {
+        } catch (ResponseProcessingException e) {
+            if (e.getResponse().getStatusInfo().equals(Response.Status.NOT_FOUND)) {
                 return null;
             } else {
-                throw nfe;
+                throw e;
             }
         }
     }

@@ -95,7 +95,7 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
 
     @Override
     @Option(name = "--user-enabled",
-            usage = "Whether the account should be enabled or disabled (true/false)")
+            usage = "Enable or disable the user (true, false, auto). Defaults to auto: new users will be enabled, existing users will stay enabled/disabled (ie no change)")
     public void setUserEnabled(String enabled) {
         String[] options = { "auto", "true", "false" };
         if (!Arrays.asList(options).contains(enabled.toLowerCase())) {
