@@ -3,6 +3,7 @@ package org.zanata.client.commands;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.Account;
 import com.google.common.base.Splitter;
 
@@ -21,9 +22,20 @@ import static org.zanata.client.commands.Messages.get;
 public class PutUserCommand extends ConfigurableCommand<PutUserOptions> {
     private static final Logger log = LoggerFactory
             .getLogger(PutUserCommand.class);
+    private ConsoleInteractor console;
 
     public PutUserCommand(PutUserOptions opts) {
         super(opts);
+    }
+
+    public PutUserCommand(PutUserOptions opts, RestClientFactory clientFactory) {
+        super(opts, clientFactory);
+    }
+
+    public PutUserCommand(PutUserOptions opts, RestClientFactory clientFactory,
+                          ConsoleInteractor consoleInteractor) {
+        super(opts, clientFactory);
+        console = consoleInteractor;
     }
 
     public void run() throws Exception {
@@ -73,6 +85,7 @@ public class PutUserCommand extends ConfigurableCommand<PutUserOptions> {
         }
 
         if (getOpts().isInteractiveMode()) {
+            if (console == null) console = new ConsoleInteractorImpl(getOpts());
             log.info("User: {}", account.getUsername());
             log.info("Name: {}", account.getName());
             log.info("Email: {}", account.getEmail());
@@ -82,7 +95,6 @@ public class PutUserCommand extends ConfigurableCommand<PutUserOptions> {
             log.info("Languages: {}", account.getTribes());
             log.info("Enabled: {}", account.isEnabled());
 
-            ConsoleInteractor console = new ConsoleInteractorImpl(getOpts());
             console.printf(Question, get("continue.yes.no"));
             console.expectYes();
         }

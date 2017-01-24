@@ -1,10 +1,12 @@
 package org.zanata.client.commands;
 
+import org.apache.commons.lang3.StringUtils;
 import org.kohsuke.args4j.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
+import static org.zanata.client.commands.Messages.get;
 
 /**
  * @author Sean Flanigan <sflaniga@redhat.com>
@@ -31,7 +33,7 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
 
     @Override
     public String getCommandDescription() {
-        return "Creates or updates a user. Unspecified options will not be updated.";
+        return get("command.description.put-user");
     }
 
     @Override
@@ -71,7 +73,7 @@ public class PutUserOptionsImpl extends ConfigurableOptionsImpl implements
     @Option(name = "--user-key",
             usage = "User's api key (empty for none)")
     public void setUserKey(String userKey) {
-        if (userKey == null || userKey.length() == 0)
+        if (StringUtils.isBlank(userKey))
             this.userKey = null;
         else
             this.userKey = userKey;
