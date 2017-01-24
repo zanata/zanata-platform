@@ -312,8 +312,6 @@ input.textInput {
   font-size: 1.1em;
   font-style: inherit;
   outline: none;
-  padding-top: 0.75rem;
-  padding-bottom: 0.75rem;
   padding-left: 0.375rem;
   padding-right: 0.375rem;
 }
@@ -524,7 +522,6 @@ img.details-avatar {
   border-radius: 500px;
   margin-left: auto;
   overflow: hidden;
-  max-width: 25%;
 }
 
 .user-profile .details-text {
@@ -560,15 +557,12 @@ ul.large-font-list li.flex-center svg {
 }
 
 #profile-overview {
-  display:flex;
   align-items: flex-start;
   align-content:flex-start;
   flex-direction: row-reverse;
   justify-content: flex-start;
   flex-wrap: nowrap;
   width:100%;
-  min-width: 21rem;
-  max-width: 24rem;
   margin-bottom: 1.5rem;
 }
 
@@ -4736,17 +4730,17 @@ button.list-group-item {
   button.close {
     font-weight: 700;
     line-height: 1;
-    top: 0;
-    right: @margin-btn-icon-right;
+    top: 1em;
+    right: 1em;
     position: absolute;
     border: 0;
     color: #f00;
     z-index: 1;
-    padding: @padding-btn-close;
     outline: 0;
   }
 
-  button.close:focus, button.close:hover, button.close:active:focus {
+  button.close:focus, button.close:hover, button.close:active:focus,
+  button.close:active {
     cursor: pointer;
     text-decoration: none;
     opacity: 0.5;
