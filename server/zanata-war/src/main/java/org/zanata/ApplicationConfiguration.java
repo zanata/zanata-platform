@@ -161,7 +161,9 @@ public class ApplicationConfiguration implements Serializable {
             // TODO use hostname, not URL
             smtpAppenderInstance.setSubject(
                     "%p log message from Zanata at " + this.getServerPath());
-            smtpAppenderInstance.setLayout(new ZanataHTMLLayout());
+            String buildInfo = getVersion() + ", " + getBuildTimestamp() + "["
+                + getScmDescribe() + "]";
+            smtpAppenderInstance.setLayout(new ZanataHTMLLayout(buildInfo));
             // smtpAppenderInstance.setLayout(new
             // PatternLayout("%-5p [%c] %m%n"));
             smtpAppenderInstance
