@@ -2347,7 +2347,7 @@ span.langcode {
 }
 
 // Glossary delete button
-button.btn-link.delete-link {
+button.btn-link.delete-link, button.btn-link.delete-link .loader-text {
   color:@brand-danger;
 }
 
@@ -2451,6 +2451,10 @@ button.btn-link.delete-link {
 .btn-danger {
   border-color: #cf3031;
   background-color: @brand-danger;
+}
+
+.btn-danger .loader-text {
+  color:#fff;
 }
 
 .btn-warning:active, .btn-warning:hover {
@@ -2707,6 +2711,10 @@ tbody.collapse {
   border-top: 4px solid;
   border-right: 4px solid transparent;
   border-left: 4px solid transparent;
+}
+
+.block-inline {
+  display:inline-block;
 }
 
 .toolbar {
@@ -3009,6 +3017,14 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 .show-items span {
   margin-top: @padding-small-vertical;
   margin-left: @padding-small-horizontal;
+}
+
+.deleteicon {
+  vertical-align: sub;
+}
+
+#delete-entries .tooltip-inner {
+  max-width: 14em;
 }
 
 .usericon {
@@ -3669,7 +3685,7 @@ ul.nav-pills > li.active > a {
 }
 
 .button-spacing button:first-of-type {
-  margin-right: @padding-small-horizontal;
+  margin-right: 0.4em;
 }
 
 a.label:focus, a.label:hover {
@@ -4425,12 +4441,13 @@ button.list-group-item {
   }
 
   .tooltip-inner {
-    max-width: 14.286em;
+    max-width: 15em;
     padding: @padding-base-vertical;
-    color: #fff;
+    color: @brand-primary;
     text-align: center;
-    background-color: @brand-primary;
+    background-color: #fff;
     border-radius: @border-radius-base;
+    border: solid 2px @brand-primary;
   }
 
   .tooltip {
@@ -5100,6 +5117,11 @@ button.list-group-item {
 @media (max-width: @screen-sm-max) {
   .search-view-theme span svg {
     font-size: 1.4em;
+  }
+
+  .hidden-lesm {
+    display:none;
+    visibility:hidden;
   }
 
   .langSelect {

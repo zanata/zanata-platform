@@ -1,13 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
-import {
-  LoaderText,
-  Icon,
-  Tooltip,
-  Overlay,
-  Row
-} from 'zanata-ui'
-import { Button } from 'react-bootstrap'
+import { LoaderText, Icon } from '../../components'
+import { Button, Tooltip, Overlay } from 'react-bootstrap'
 
 /**
  * Confirmation modal dialog for delete all glossary entries
@@ -19,11 +13,11 @@ class DeleteAllEntriesModal extends Component {
       isDeleting,
       handleDeleteAllEntriesDisplay,
       handleDeleteAllEntries
-      } = this.props
+    } = this.props
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='D(ib)'>
+      <div className='block-inline'>
         <Overlay
           placement='bottom'
           target={() => ReactDOM.findDOMNode(this)}
@@ -54,10 +48,10 @@ class DeleteAllEntriesModal extends Component {
         <Button bsStyle='link' type='button'
           onClick={() => handleDeleteAllEntriesDisplay(true)}
           disabled={isDeleting}>
-          <Row>
-            <Icon name='trash' />
-            <span className='Hidden--lesm'>Delete</span>
-          </Row>
+          <span>
+            <Icon name='trash' className='deleteicon s1' />
+            <span className='hidden-lesm'>Delete</span>
+          </span>
         </Button>
       </div>
     )
