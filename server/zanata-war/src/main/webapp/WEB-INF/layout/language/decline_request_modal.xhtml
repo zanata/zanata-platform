@@ -6,24 +6,38 @@
   aria-labelledby="myModalLabel" aria-hidden="true">
 
   <script>
-    jQuery(document).ready(function () {
-      getDeclineRequestMessageField().bind('input propertychange', function() {
-        checkDeclineRequestMessage();
-      });
-    });
-
     function getDeclineRequestMessageField() {
       return jQuery('#' + jqSelector('#{rich:clientId('decline-request-message')}'));
+    }
+
+    function getDeclineRequestMessageCountField() {
+      return jQuery('#decline-request-char-count');
     }
 
     function cancelDecline() {
       getDeclineRequestMessageField().val('');
       jQuery('#decline-request-button').removeClass('is-active');
+      jQuery('#decline-request-button').prop('disabled', true);
     }
 
     function checkDeclineRequestMessage() {
-      var isEmpty = getDeclineRequestMessageField().val() === '';
-      jQuery('#decline-request-button').prop('disabled', isEmpty);
+      var MAX = 255;
+      var textArea = getDeclineRequestMessageField();
+      var textAreaCount = getDeclineRequestMessageCountField();
+      var currentLength = textArea.val().length;
+
+      var isEmpty = textArea.val() === '' || currentLength === 0;
+      var isMax = currentLength > MAX;
+      jQuery('#decline-request-button').prop('disabled', isEmpty || isMax);
+
+      textAreaCount.text('Characters left: ' +  (MAX - currentLength));
+      if (currentLength > MAX) {
+        textAreaCount.addClass("txt--danger");
+        textAreaCount.parent('div').addClass("form__item--error")
+      } else {
+        textAreaCount.removeClass("txt--danger");
+        textAreaCount.parent('div').removeClass("form__item--error")
+      }
     }
   </script>
 
@@ -52,9 +66,10 @@
         <zanata:decorate id="message" componentId="messageField">
           <span>#{msgs['jsf.language.request.decline.message']}</span>
           <h:inputTextarea id="decline-request-message" value="#{languageJoinAction.declineMessage}"
-            styleClass="l--push-bottom-0">
+            styleClass="l--push-bottom-0" onkeyup="checkDeclineRequestMessage()">
             <a4j:ajax event="blur" render="messageField" execute="@this"/>
           </h:inputTextarea>
+          <label id="decline-request-char-count" class="txt--meta"></label>
         </zanata:decorate>
         <input type="hidden" id="requestId"/>
       </div>

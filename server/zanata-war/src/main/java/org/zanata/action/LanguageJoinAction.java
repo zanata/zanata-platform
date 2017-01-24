@@ -79,6 +79,7 @@ public class LanguageJoinAction implements Serializable {
     private HLocale locale;
     @Size(max = 1000)
     private String message;
+    @Size(max = 255)
     private String declineMessage;
     @Inject
     private RequestService requestServiceImpl;

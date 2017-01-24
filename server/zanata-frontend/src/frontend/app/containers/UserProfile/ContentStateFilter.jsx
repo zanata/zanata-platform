@@ -3,9 +3,6 @@ import {
   ContentStates,
   ContentStateStyles
 } from '../../constants/Options'
-import {
-  Base
-} from 'zanata-ui'
 import { Button } from 'react-bootstrap'
 
 /**
@@ -32,9 +29,9 @@ const ContentStateFilter = ({
     /* eslint-enable react/jsx-no-bind */
   })
   return (
-    <Base>
+    <div>
       {optionItems}
-    </Base>
+    </div>
   )
 }
 
