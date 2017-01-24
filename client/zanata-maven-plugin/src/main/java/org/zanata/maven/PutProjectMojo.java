@@ -22,13 +22,13 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions>
     /**
      * Project name
      */
-    @Parameter(property = "zanata.projectName", required = true)
+    @Parameter(property = "zanata.projectName")
     private String projectName;
 
     /**
      * Project description
      */
-    @Parameter(property = "zanata.projectDesc", required = true)
+    @Parameter(property = "zanata.projectDesc")
     private String projectDesc;
 
     /**
@@ -52,8 +52,14 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions>
      *
      * See https://github.com/zanata/zanata/wiki/Project-Types
      */
-    @Parameter(property = "zanata.defaultProjectType", required = true)
+    @Parameter(property = "zanata.defaultProjectType")
     private String defaultProjectType;
+
+    /**
+     * Project status (active, readonly)
+     */
+    @Parameter(property = "zanata.projectStatus")
+    private String projectStatus;
 
     public PutProjectMojo() throws Exception {
         super();
@@ -85,6 +91,14 @@ public class PutProjectMojo extends ConfigurableMojo<PutProjectOptions>
 
     public void setProjectDesc(String projectDesc) {
         this.projectDesc = projectDesc;
+    }
+
+    public void setProjectStatus(String projectStatus) {
+        this.projectStatus = projectStatus;
+    }
+
+    public String getProjectStatus() {
+        return this.projectStatus;
     }
 
     @Override
