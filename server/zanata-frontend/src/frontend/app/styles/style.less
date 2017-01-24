@@ -3182,6 +3182,10 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   vertical-align:text-top;
 }
 
+.Select-clear {
+  vertical-align:middle;
+}
+
 .usericon {
   fill: #03A6D7;
   margin-right: @margin-btn-icon-right;
@@ -4497,12 +4501,12 @@ button.list-group-item {
 
 .modal-content {
   position: relative;
-  background-color: #fff;
+  background-color: hsla(0,0%,100%,.95);
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
   border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, .2);
-  border-radius: @border-radius-small;
+  border-radius: @border-radius-modal;
   outline: 0;
   max-width:700px;
   margin-left:auto;
@@ -5296,8 +5300,14 @@ button.list-group-item {
   }
 
   .hidden-lesm {
-    display: none;
-    visibility: hidden;
+      position: absolute !important;
+      *clip: rect(1px 1px 1px 1px);
+      clip: rect(1px,1px,1px,1px);
+      padding: 0 !important;
+      border: 0 !important;
+      height: 1px !important;
+      width: 1px !important;
+      overflow: hidden;
   }
 
   .matrix-table {

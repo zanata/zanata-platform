@@ -204,7 +204,8 @@ class ViewHeader extends Component {
                 </Row>
               </Button>
             </TableCell>
-            <TableCell hideSmall size='2'
+            <TableCell size='1' />
+            <TableCell hideSmall size='1'
               onClick={() => handleSortColumn('part_of_speech')}>
               <Button bsStyle='link' type='button'>
                 <Row>
@@ -243,7 +244,6 @@ class ViewHeader extends Component {
                 </span>
               </Row>)}
             </TableCell>
-            <TableCell size='1' />
           </TableRow>
         </View>
       </Header>

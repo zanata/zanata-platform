@@ -1,13 +1,8 @@
 import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
-
-import {
-  LoaderText,
-  Modal,
-  Select
-} from 'zanata-ui'
-
-import { Button, ButtonGroup } from 'react-bootstrap'
+import { LoaderText, Modal } from '../../components'
+import { Button, ButtonGroup,
+  FormGroup, FormControl, ControlLabel } from 'react-bootstrap'
 
 import {
   glossaryUpdateExportType,
@@ -50,14 +45,17 @@ class ExportModal extends Component {
           <Modal.Title>Export Glossary</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Select
-            disabled={isExporting}
-            name='glossary-export-type-selection'
-            className='Maw(r16) Mb(r1)'
-            placeholder='Select a file type…'
-            value={type}
-            options={types}
-            onChange={handleExportType} />
+          <FormGroup controlId='formControlsSelect'>
+            <ControlLabel>Select</ControlLabel>
+            <FormControl componentClass='select'
+              onChange={handleExportType}
+              placeholder='Select a file type...'
+              disabled={isExporting}
+              name='glossary-export-type-selection'>
+              <option>{type}</option>
+              <option>{types}</option>
+            </FormControl>
+          </FormGroup>
           <p>
             {message}
             <br />

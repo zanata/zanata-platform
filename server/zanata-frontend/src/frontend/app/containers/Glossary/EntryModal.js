@@ -1,11 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { isEmpty } from 'lodash'
-import {
-  Icon,
-  LoaderText,
-  Modal
-} from 'zanata-ui'
-import { EditableText } from '../../components'
+import { EditableText, Icon, LoaderText, Modal } from '../../components'
 import { Button, ButtonGroup } from 'react-bootstrap'
 
 /**
@@ -131,7 +126,7 @@ class EntryModal extends Component {
 
           {transSelected ? (
             <div className='Mb(rh)'>
-              <label className='Fw(b)'>Comment</label>
+              <label className='Fw(b)'>Comment</label><br />
               <EditableText
                 maxLength={255}
                 editable={enableComment}
