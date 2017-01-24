@@ -1981,6 +1981,7 @@
               </allowedRepositories>
               <allowedPluginRepositories combine.children="append">
                 <allowedPluginRepository>apache.snapshots.https</allowedPluginRepository>
+                <allowedPluginRepository>arturbosch-code-analysis</allowedPluginRepository>
                 <allowedPluginRepository>jboss-public-repository-group</allowedPluginRepository>
               </allowedPluginRepositories>
             </requireNoRepositories>
