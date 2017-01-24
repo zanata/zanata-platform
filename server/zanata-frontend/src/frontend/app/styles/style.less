@@ -309,7 +309,7 @@ input.textInput {
   color: inherit;
   font-family: inherit;
   font-weight: inherit;
-  font-size: 1.1em;
+  font-size: 1em;
   font-style: inherit;
   outline: none;
   padding-left: 0.375rem;
@@ -2604,7 +2604,7 @@ button.btn-link.delete-link, button.btn-link.delete-link .loader-text {
   background-color: @brand-danger;
 }
 
-.btn-danger .loader-text {
+.btn-danger .loader-text, .btn-primary .loader-text {
   color:#fff;
 }
 
@@ -3176,6 +3176,10 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 
 #delete-entries .tooltip-inner {
   max-width: 14em;
+}
+
+.delete-all-glossary {
+  vertical-align:text-top;
 }
 
 .usericon {
@@ -4548,7 +4552,7 @@ button.list-group-item {
 .modal-body {
   position: relative;
   padding: @padding-modal-body;
-  color: #333;
+  color: @brand-primary;
 }
 
 .modal-body .scrollable {

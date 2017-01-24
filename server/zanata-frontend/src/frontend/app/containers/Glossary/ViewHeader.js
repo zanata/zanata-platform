@@ -204,13 +204,28 @@ class ViewHeader extends Component {
                 </Row>
               </Button>
             </TableCell>
+            <TableCell hideSmall size='2'
+              onClick={() => handleSortColumn('part_of_speech')}>
+              <Button bsStyle='link' type='button'>
+                <Row>
+                  {'part_of_speech' in sort
+                    ? (sort.part_of_speech === true)
+                    ? <Icon name='chevron-down' />
+                    : <Icon name='chevron-up' />
+                    : ''}
+                  <span className='MStart(rq)'>
+                    Part of Speech
+                  </span>
+                </Row>
+              </Button>
+            </TableCell>
             <TableCell
-              className='langSelect'
+              className='langSelect' size='3'
               theme={{base: {lineClamp: ''}}}>
               <Select
                 name='language-selection'
                 placeholder={statsLoading
-                      ? 'Loading…' : 'Select a language…'}
+                  ? 'Loading…' : 'Select a language…'}
                 className='Flxg(1)'
                 isLoading={statsLoading}
                 value={selectedTransLocale}
@@ -228,22 +243,7 @@ class ViewHeader extends Component {
                 </span>
               </Row>)}
             </TableCell>
-            <TableCell hideSmall size='3'
-              onClick={() => handleSortColumn('part_of_speech')}>
-              <Button bsStyle='link' type='button'>
-                <Row>
-                  {'part_of_speech' in sort
-                    ? (sort.part_of_speech === true)
-                    ? <Icon name='chevron-down' />
-                    : <Icon name='chevron-up' />
-                    : ''}
-                  <span className='MStart(rq)'>
-                    Part of Speech
-                  </span>
-                </Row>
-              </Button>
-            </TableCell>
-            <TableCell size='3' />
+            <TableCell size='1' />
           </TableRow>
         </View>
       </Header>

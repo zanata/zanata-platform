@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { cloneDeep, isEmpty } from 'lodash'
 import { EditableText, LoaderText, Modal } from '../../components'
 import { ButtonGroup, Button } from 'react-bootstrap'
-
 import {
   glossaryToggleNewEntryModal,
   glossaryCreateNewEntry

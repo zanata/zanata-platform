@@ -48,7 +48,7 @@ class DeleteAllEntriesModal extends Component {
         <Button bsStyle='link' type='button'
           onClick={() => handleDeleteAllEntriesDisplay(true)}
           disabled={isDeleting}>
-          <span>
+          <span className='delete-all-glossary'>
             <Icon name='trash' className='deleteicon s1' />
             <span className='hidden-lesm'>Delete</span>
           </span>
