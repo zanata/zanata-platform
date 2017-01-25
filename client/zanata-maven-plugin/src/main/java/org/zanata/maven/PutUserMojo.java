@@ -16,13 +16,13 @@ public class PutUserMojo extends ConfigurableMojo<PutUserOptions> implements
     /**
      * Full name of the user
      */
-    @Parameter(property = "zanata.userName", required = true)
+    @Parameter(property = "zanata.userName")
     private String userName;
 
     /**
      * Email address of the user
      */
-    @Parameter(property = "zanata.userEmail", required = true)
+    @Parameter(property = "zanata.userEmail")
     private String userEmail;
 
     /**
@@ -34,32 +34,32 @@ public class PutUserMojo extends ConfigurableMojo<PutUserOptions> implements
     /**
      * User password hash
      */
-    @Parameter(property = "zanata.userPasswordHash", required = true)
+    @Parameter(property = "zanata.userPasswordHash")
     private String userPasswordHash;
 
     /**
      * User's api key (empty for none)
      */
-    @Parameter(property = "zanata.userKey", required = true)
+    @Parameter(property = "zanata.userKey")
     private String userKey;
 
     /**
      * Security roles for the user
      */
-    @Parameter(property = "zanata.userRoles", required = true)
+    @Parameter(property = "zanata.userRoles")
     private String userRoles;
 
     /**
      * Language teams for the user
      */
-    @Parameter(property = "zanata.userLangs", required = true)
+    @Parameter(property = "zanata.userLangs")
     private String userLangs;
 
     /**
-     * Whether the account should be disabled
+     * Whether the account should be enabled
      */
-    @Parameter(property = "zanata.userDisabled", required = true)
-    private boolean userDisabled;
+    @Parameter(property = "zanata.userEnabled")
+    private String userEnabled;
 
     public PutUserMojo() throws Exception {
         super();
@@ -125,12 +125,12 @@ public class PutUserMojo extends ConfigurableMojo<PutUserOptions> implements
         this.userLangs = userLangs;
     }
 
-    public boolean isUserDisabled() {
-        return userDisabled;
+    public String isUserEnabled() {
+        return userEnabled;
     }
 
-    public void setUserDisabled(boolean userDisabled) {
-        this.userDisabled = userDisabled;
+    public void setUserEnabled(String userEnabled) {
+        this.userEnabled = userEnabled.toLowerCase();
     }
 
     @Override
