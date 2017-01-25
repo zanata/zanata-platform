@@ -4,15 +4,11 @@ import { debounce, isEmpty } from 'lodash'
 import {
   Icon,
   Row,
-  Select,
-  TableCell,
-  TableRow,
   TextInput,
-  View,
   Link
-} from 'zanata-ui'
+} from '../../components'
 import Header from './Header'
-import { Button } from 'react-bootstrap'
+import { Button, Row, Table } from 'react-bootstrap'
 import {
   glossaryChangeLocale,
   glossaryFilterTextChanged,
@@ -112,10 +108,10 @@ class ViewHeader extends Component {
 
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
-      <Header title={title} icon={icon}
+      <div className='header-glossary' title={title} icon={icon}
         extraHeadingElements={projectLink}
         extraElements={(
-          <View theme={{base: { ai: 'Ai(c)', fld: '' }}}>
+          <div theme={{base: { ai: 'Ai(c)', fld: '' }}}>
             <TextInput
               className='textInput'
               ref={(ref) => this.searchInput = ref}
@@ -176,9 +172,9 @@ class ViewHeader extends Component {
                     handleDeleteAllEntriesDisplay(display)}
                    handleDeleteAllEntries={handleDeleteAllEntries} />
                </div>)}
-          </View>
+          </div>
         )}>
-        <View theme={{
+        <div theme={{
           base: {
             w: 'W(100%)',
             m: 'Mt(rq) Mt(rh)--sm'
@@ -245,8 +241,8 @@ class ViewHeader extends Component {
               </Row>)}
             </TableCell>
           </TableRow>
-        </View>
-      </Header>
+        </div>
+      </div>
     )
   }
 }
