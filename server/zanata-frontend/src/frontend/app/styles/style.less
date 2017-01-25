@@ -1049,6 +1049,50 @@ table td {
   font-size: 1.071em;
 }
 
+
+.container-sidebar td {
+  flex-direction:'';
+  align-items:center;
+  height: 3rem;
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.container-sidebar td.tight {
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+.container-sidebar td.td-3 {
+  width:37.5%;
+}
+
+.container-sidebar td.td-2, .container-sidebar td.td-1  {
+  width: 16.6667%;
+}
+
+.container-sidebar tr {
+  border-bottom: solid 1px;
+  border-color: rgb(237, 242, 248);
+  height: 3rem;
+}
+
+.container-sidebar tr.highlight {
+  transition: all .3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.container-sidebar tr.highlight:hover {
+  background-color: rgb(237, 242, 248);
+}
+
+.container-sidebar tr.selected {
+  background-color: rgb(237, 242, 248);
+}
+
 .tablepadding {
   padding-right: 0;
   padding-left: 0;
@@ -4615,7 +4659,6 @@ button.list-group-item {
   display: none !important;
 }
 
-
 .tooltip-inner {
   max-width: 15em;
   padding: @padding-base-vertical;
@@ -5336,6 +5379,10 @@ button.btn-link {
   .search-view-theme span svg {
     font-size: 1.4em;
   }
+  
+  .container-sidebar td.hidesmall {
+    display:none;
+  }
 
   .hidden-lesm {
     position: absolute !important;
@@ -5421,6 +5468,14 @@ button.btn-link {
 @media (min-width: @screen-sm-min) and (max-width: @screen-md-max) {
   .visible-sm {
     display: block !important;
+  }
+
+  .container-sidebar td.td-3 {
+    width:33.33%;
+  }
+
+  .container-sidebar td.td-2 {
+    width: 25%;
   }
 
   .matrix-table {
@@ -5744,6 +5799,10 @@ button.btn-link {
 @media (min-width: @screen-lg-min) {
   .container {
     width: @container-large-desktop;
+  }
+
+  .container-sidebar td.td-2 {
+    width: 16.6667%;
   }
 
   .profile-wrapper {
