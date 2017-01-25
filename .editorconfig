@@ -1,0 +1,54 @@
+# EditorConfig: http://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# default settings for most files, including .java, .groovy, .kt
+[*]
+charset=utf-8
+end_of_line=lf
+insert_final_newline=true
+indent_style=space
+indent_size=4
+trim_trailing_whitespace=true
+
+[{Makefile,*.mk}]
+indent_style = tab
+trim_trailing_whitespace = false
+
+[{.babelrc,.stylelintrc,.eslintrc,*.json,*.jsb3,*.jsb2,*.bowerrc}]
+indent_style=space
+indent_size=2
+
+[{*.bat,*.cmd}]
+end_of_line = crlf
+
+[{*.css,*.less,*.sass,*.scss}]
+indent_style=space
+indent_size=2
+
+[{*.ddl,*.sql}]
+indent_style=space
+indent_size=2
+
+[{*.js,*.jsx}]
+indent_style=space
+indent_size=2
+
+[{jshint.json,*.jshintrc}]
+indent_style=space
+indent_size=2
+
+[{*.md}]
+# two spaces at EOL means <br>
+trim_trailing_whitespace=false
+
+[{*.xml,*.xhtml}]
+indent_style=space
+indent_size=2
+
+[{*.yml,*.yaml}]
+indent_style=space
+indent_size=2
+# Can be significant if strings aren't quoted (although they should be quoted):
+trim_trailing_whitespace=false
