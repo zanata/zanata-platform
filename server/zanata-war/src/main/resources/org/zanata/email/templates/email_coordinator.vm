@@ -1,4 +1,4 @@
-<p>$msgs.get("jsf.email.coordinator.DearCoordinator")</p>
+<p>$receiver</p>
 <p>$msgs.format("jsf.email.coordinator.UserMessageIntro",
     $fromName, $fromLoginName, $localeId, $localeNativeName)</p>
 <hr/>

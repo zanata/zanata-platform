@@ -262,7 +262,12 @@
                       <a href="#" class="i__item--right" id="contact-coordinator"
                         data-toggle="modal" onclick="return false;"
                         data-target="#contactCoordinatorDialog">
-                        #{msgs['jsf.contactLanguageTeamCoordinator']}
+                        <ui:fragment rendered="#{languageAction.hasCoordinators()}">
+                          #{msgs['jsf.contactLanguageTeamCoordinator']}
+                        </ui:fragment>
+                        <ui:fragment rendered="#{not languageAction.hasCoordinators()}">
+                          #{msgs['jsf.ContactAdmin']}
+                        </ui:fragment>
                         <i class="i i--add i__item__icon"></i>
                       </a>
                     </li>

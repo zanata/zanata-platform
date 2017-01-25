@@ -99,6 +99,7 @@ public class EmailStrategyTest {
     // context values needed for some templates:
     String key = "123456";
     String passowrdResetKey = "abcdefg";
+    String receiver = "Dear receiver";
     String fromLoginName = "LOGIN_NAME[测试]";
     String replyEmail = "REPLY_EMAIL[测试]";
     String userSubject = "USER_SUBJECT[测试]";
@@ -252,7 +253,7 @@ public class EmailStrategyTest {
     @Test
     public void contactLanguageCoordinator() throws Exception {
         EmailStrategy strategy =
-                new ContactLanguageCoordinatorEmailStrategy(
+                new ContactLanguageCoordinatorEmailStrategy(receiver,
                         fromLoginName, fromName, replyEmail, userSubject,
                         localeId, localeNativeName, htmlMessage);
 
@@ -267,6 +268,7 @@ public class EmailStrategyTest {
         String html = extractHtmlPart(message);
         checkGenericTemplate(html);
 
+        assertThat(html).contains(receiver);
         assertThat(html).contains(msgs.format(
                 "jsf.email.coordinator.UserMessageIntro",
                 fromName, fromLoginName, localeId, localeNativeName));
