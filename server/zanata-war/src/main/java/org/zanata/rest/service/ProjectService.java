@@ -1,5 +1,6 @@
 package org.zanata.rest.service;
 
+import static org.zanata.common.EntityStatus.ACTIVE;
 import static org.zanata.common.EntityStatus.OBSOLETE;
 import static org.zanata.common.EntityStatus.READONLY;
 import static org.zanata.model.ProjectRole.Maintainer;
@@ -137,11 +138,6 @@ public class ProjectService implements ProjectResource {
             return Response.status(Status.FORBIDDEN)
                     .entity("Project '" + projectSlug + "' is obsolete.")
                     .build();
-        } else if (Objects.equal(hProject.getStatus(), READONLY)) {
-            // Project is ReadOnly
-            return Response.status(Status.FORBIDDEN)
-                    .entity("Project '" + projectSlug + "' is read-only.")
-                    .build();
         } else {
             // must be an update operation
             // pre-emptive entity permission check
@@ -153,6 +149,14 @@ public class ProjectService implements ProjectResource {
             }
 
             response = Response.ok();
+        }
+
+        if (Objects.equal(hProject.getStatus(), READONLY)
+                && !Objects.equal(project.getStatus(), ACTIVE)) {
+            // User attempting to update a ReadOnly project
+            return Response.status(Status.FORBIDDEN)
+                    .entity("Project '" + projectSlug + "' is read-only.")
+                    .build();
         }
 
         // null project type accepted for compatibility with old clients
@@ -237,8 +241,9 @@ public class ProjectService implements ProjectResource {
                 to.setDefaultProjectType(projectType);
             }
         }
-        // TODO Currently all Projects are created as Current
-        // to.setStatus(from.getStatus());
+        if (from.getStatus() != null) {
+            to.setStatus(from.getStatus());
+        }
 
         // keep source URLs unless they are specifically overwritten
         if (from.getSourceViewURL() != null) {
