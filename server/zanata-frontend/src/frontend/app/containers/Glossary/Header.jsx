@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react'
 import { merge } from 'lodash'
-import {
-  Icon, View, Heading, Link, flattenThemeClasses, Row
-} from 'zanata-ui'
+import { flattenThemeClasses } from 'zanata-ui'
+import { Icon, Link } from '../../components'
+import { Row } from 'react-bootstrap'
 
 const wrapperTheme = {
   base: {
@@ -60,29 +60,29 @@ const Header = ({
   ...props
 }) => {
   return (
-    <View theme={merge({}, wrapperTheme, theme)}>
+    <div theme={merge({}, wrapperTheme, theme)}>
       <div className={flattenThemeClasses(baseClasses)}>
-        <View theme={innerViewTheme}>
+        <div theme={innerViewTheme}>
           <Link link='/' theme={logoLinkTheme}>
             <Icon name='zanata' size='3' />
           </Link>
-          <Heading level='1' theme={headingTheme}>
+          <h1 theme={headingTheme}>
             <Row>
               {icon}{title || 'Title'}
               {extraHeadingElements}
             </Row>
-          </Heading>
-          <View theme={headerActionsTheme}>
+          </h1>
+          <div theme={headerActionsTheme}>
             {extraElements}
-          </View>
-        </View>
+          </div>
+        </div>
         {children && (
-          <View theme={innerViewTheme}>
+          <div theme={innerViewTheme}>
             {children}
-          </View>
+          </div>
         )}
       </div>
-    </View>
+    </div>
   )
 }
 

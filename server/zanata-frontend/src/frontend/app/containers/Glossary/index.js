@@ -3,17 +3,8 @@ import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isUndefined, size, map } from 'lodash'
 import ReactList from 'react-list'
-import {
-  Page,
-  ScrollView,
-  View,
-  Row,
-  LoaderText,
-  Icon,
-  Select
-} from 'zanata-ui'
-import { Notification } from '../../components/'
-import { Button } from 'react-bootstrap'
+import { Icon, LoaderText, Select, Notification } from '../../components/'
+import { Button, Row } from 'react-bootstrap'
 import {
   glossaryDeleteTerm,
   glossaryResetTerm,
@@ -140,9 +131,9 @@ class Glossary extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     if (termsLoading) {
-      list = (<View theme={loadingContainerTheme}>
+      list = (<div theme={loadingContainerTheme}>
         <LoaderText loading loadingText='Loading' />
-      </View>)
+      </div>)
     } else if (!termsLoading && termCount) {
       list = (<ReactList
         useTranslate3d
@@ -151,16 +142,16 @@ class Glossary extends Component {
         type='uniform'
         ref={(c) => { this.list = c }} />)
     } else {
-      list = (<View theme={loadingContainerTheme}>
+      list = (<div theme={loadingContainerTheme}>
         <span className='Mb(rq) C(muted)'>
           <Icon name='glossary' size='6' />
         </span>
         <p className='C(muted)'>No content</p>
-      </View>)
+      </div>)
     }
 
     return (
-      <Page>
+      <div>
         {notification &&
           (<Notification severity={notification.severity}
             message={notification.message}
@@ -169,9 +160,9 @@ class Glossary extends Component {
           )
         }
         <Helmet title={headerTitle} />
-        <ScrollView>
+        <div className='wide-view-theme-glossary'>
           <ViewHeader title={headerTitle} />
-          <View theme={{ base: {p: 'Pt(r6)--sm Pt(r4)', fld: 'Fld(rr)'} }}>
+          <div theme={{ base: {p: 'Pt(r6)--sm Pt(r4)', fld: 'Fld(rr)'} }}>
             <Row>
               {termCount > 0 &&
                 <Row>
@@ -191,13 +182,13 @@ class Glossary extends Component {
                   <Button bsStyle='link' disabled={currentPage <= 1}
                     title='First page'
                     onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
-                    <Icon name='previous' size='1' />
+                    <Icon name='previous' className='s1' />
                   </Button>
                   <Button bsStyle='link' disabled={currentPage <= 1}
                     title='Previous page'
                     onClick={
                     () => { gotoPreviousPage(currentPage, totalPage) }}>
-                    <Icon name='chevron-left' size='1' />
+                    <Icon name='chevron-left' className='s1' />
                   </Button>
                   <span className='C(muted) Mx(re)'>
                     {currentPage} of {totalPage}
@@ -205,29 +196,29 @@ class Glossary extends Component {
                   <Button bsStyle='link' disabled={currentPage === totalPage}
                     title='Next page'
                     onClick={() => { gotoNextPage(currentPage, totalPage) }}>
-                    <Icon name='chevron-right' size='1' />
+                    <Icon name='chevron-right' className='s1' />
                   </Button>
                   <Button bsStyle='link' disabled={currentPage === totalPage}
                     title='Last page'
                     onClick={() => { gotoLastPage(currentPage, totalPage) }}>
-                    <Icon name='next' size='1' />
+                    <Icon name='next' className='s1' />
                   </Button>
                   <span className='Mx(rq) C(muted)'
                     title='Total glossary terms'>
                     <Row>
-                      <Icon name='glossary' size='1' /> {termCount}
+                      <Icon name='glossary' className='s1' /> {termCount}
                     </Row>
                   </span>
                 </div>
                 }
             </Row>
-          </View>
+          </div>
 
-          <View theme={{ base: {p: 'Pb(r2)'} }}>
+          <div theme={{ base: {p: 'Pb(r2)'} }}>
             {list}
-          </View>
-        </ScrollView>
-      </Page>
+          </div>
+        </div>
+      </div>
     )
     /* eslint-enable react/jsx-no-bind */
   }

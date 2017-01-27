@@ -121,10 +121,10 @@ class Entry extends Component {
               </EditableText>)
             }
           </td>
-          <td className='td-2'>
+          <td>
             {secondColumnContent}
           </td>
-          <td className='hidesmall td-3'>
+          <td className='hidesmall td-3 tight'>
           {termsLoading
             ? loadingDiv
             : (<EditableText
