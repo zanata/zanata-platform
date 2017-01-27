@@ -7,7 +7,7 @@ import {
   LoaderText,
   Modal,
   Select
-} from 'zanata-ui'
+} from '../../components'
 
 import {
   glossaryImportFile,

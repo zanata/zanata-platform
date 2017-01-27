@@ -3,7 +3,7 @@ import { isEqual } from 'lodash'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
 import { EditableText, Icon, LoaderText } from '../../components'
-import { Button, Table, Row } from 'react-bootstrap'
+import { Button, Row, Table } from 'react-bootstrap'
 /**
  * Component to display a GlossaryEntry
  */
@@ -106,7 +106,7 @@ class Entry extends Component {
     }
 
     return (
-      <Table>
+      <Table className='glossary-entry'>
         <tr className='highlight editable'
           selected={selected}
           onClick={() => handleSelectTerm(entry.id)}>
@@ -121,10 +121,10 @@ class Entry extends Component {
               </EditableText>)
             }
           </td>
-          <td>
+          <td className='td-2'>
             {secondColumnContent}
           </td>
-          <td className='hidesmall'>
+          <td className='hidesmall td-3'>
           {termsLoading
             ? loadingDiv
             : (<EditableText
@@ -139,10 +139,10 @@ class Entry extends Component {
             </EditableText>)
           }
           </td>
-          <td className='td-3'>
+          <td className='td-3 tight'>
             {termsLoading
               ? loadingDiv
-              : (<Row>
+              : (<Row className='entry-row'>
                 <Button bsStyle='link' atomic={{m: 'Mend(rq)'}}
                   disabled={isDeleting}
                   onClick={() => this.setShowingEntryModal(true)}>
@@ -163,7 +163,7 @@ class Entry extends Component {
                 <div className='Op(0) row--selected_Op(1)
                   editable:h_Op(1) Trs(eo)'>
                   <div className='hidden-lesm'>
-                    <Row>
+                    <Row className='entry-row'>
                       {updateButton}
                       {displayUpdateButton && !isSaving ? (
                         <Button bsStyle='link' bsSize='small'

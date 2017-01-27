@@ -1,14 +1,14 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { debounce, isEmpty } from 'lodash'
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
+import {debounce, isEmpty} from 'lodash'
 import {
   Icon,
-  Row,
   TextInput,
-  Link
+  Link,
+  Select
 } from '../../components'
 import Header from './Header'
-import { Button, Row, Table } from 'react-bootstrap'
+import {Button, Row} from 'react-bootstrap'
 import {
   glossaryChangeLocale,
   glossaryFilterTextChanged,
@@ -23,7 +23,7 @@ import ImportModal from './ImportModal'
 import ExportModal from './ExportModal'
 import NewEntryModal from './NewEntryModal'
 import DeleteAllEntriesModal from './DeleteAllEntriesModal'
-import { getProjectUrl } from '../../utils/UrlHelper'
+import {getProjectUrl} from '../../utils/UrlHelper'
 
 /**
  * Header for glossary page
@@ -62,6 +62,7 @@ class ViewHeader extends Component {
     }
     this.props.handleSearchCancelClick()
   }
+
   render () {
     const {
       title,
@@ -86,10 +87,11 @@ class ViewHeader extends Component {
     const isEmptyTerms = termCount <= 0
     const currentLocaleCount = this.currentLocaleCount()
     const isReadOnly = !(permission.canAddNewEntry ||
-      permission.canUpdateEntry || permission.canDeleteEntry)
+    permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly && (
       <span title='read-only'>
-        <Icon name='locked' atomic={{m: 'Mend(re)', c: 'C(warning)'}} />
+        <Icon name='locked' className='s1'
+          atomic={{m: 'Mend(re)', c: 'C(warning)'}} />
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
@@ -99,23 +101,23 @@ class ViewHeader extends Component {
       <div className='D(ib) Mstart(rh)'>
         <Link icon='project' link={projectUrl} useHref>
           <Row>
-            <Icon name='project' atomic={{m: 'Mend(re)'}} />
-            <span className='Hidden--lesm'>{project.name}</span>
+            <Icon name='project' className='s1' atomic={{m: 'Mend(re)'}} />
+            <span className='hidden-lesm'>{project.name}</span>
           </Row>
         </Link>
       </div>
-    )
+      )
 
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
-      <div className='header-glossary' title={title} icon={icon}
+      <Header className='header-glossary' title={title} icon={icon}
         extraHeadingElements={projectLink}
         extraElements={(
-          <div theme={{base: { ai: 'Ai(c)', fld: '' }}}>
+          <div className='flex-row' theme={{base: {ai: 'Ai(c)'}}}>
             <TextInput
               className='textInput'
               ref={(ref) => this.searchInput = ref}
-              theme={{base: { flx: 'Flx(flx1)', m: 'Mstart(rh)--md' }}}
+              theme={{base: {flx: 'Flx(flx1)', m: 'Mstart(rh)--md'}}}
               type='search'
               placeholder='Search Terms…'
               accessibilityLabel='Search Terms'
@@ -124,125 +126,133 @@ class ViewHeader extends Component {
             <Button bsStyle='link'
               title='Cancel search'
               disabled={isEmpty(filterText)}
-              onClick={(e) => { this.handleClearSearch() }}>
-              <Icon name='cross' />
+              onClick={(e) => {
+                this.handleClearSearch()
+              }}>
+              <Icon name='cross' className='s1' />
             </Button>
 
-            {permission.canAddNewEntry && (
-              <div className='Mstart(rh)--md Mstart(rq)'>
-                <Button bsStyle='link' type='button'
-                  onClick={() => handleImportFileDisplay(true)}>
-                  <Row>
-                    <Icon name='import' atomic={{m: 'Mend(re)'}} />
-                    <span className='Hidden--lesm'>Import</span>
-                  </Row>
-                </Button>
-                <ImportModal />
-              </div>)}
+                  {permission.canAddNewEntry && (
+                    <div className='Mstart(rh)--md Mstart(rq)'>
+                      <Button bsStyle='link' type='button'
+                        onClick={() => handleImportFileDisplay(true)}>
+                        <Row>
+                          <Icon name='import' className='s1'
+                            atomic={{m: 'Mend(re)'}} />
+                          <span className='hidden-lesm'>Import</span>
+                        </Row>
+                      </Button>
+                      <ImportModal />
+                    </div>)}
 
-            {permission.canDownload && !isEmptyTerms && (
-              <div className='Mstart(rh)--md Mstart(rq)'>
-                <Button bsStyle='link' type='button'
-                  onClick={() => handleExportFileDisplay(true)}>
-                  <Row>
-                    <Icon name='export' atomic={{m: 'Mend(re)'}} />
-                    <span className='Hidden--lesm'>Export</span>
-                  </Row>
-                </Button>
-                <ExportModal />
-              </div>)}
+                  {permission.canDownload && !isEmptyTerms && (
+                    <div className='Mstart(rh)--md Mstart(rq)'>
+                      <Button bsStyle='link' type='button'
+                        onClick={() => handleExportFileDisplay(true)}>
+                        <Row>
+                          <Icon name='export' className='s1'
+                            atomic={{m: 'Mend(re)'}} />
+                          <span className='hidden-lesm'>Export</span>
+                        </Row>
+                      </Button>
+                      <ExportModal />
+                    </div>)}
 
-             {permission.canAddNewEntry && (
-               <div className='Mstart(rh)--md Mstart(rq)'>
-                 <Button bsStyle='link' onClick={() =>
-                   handleNewEntryDisplay(true)}>
-                   <Row>
-                     <Icon name='plus' atomic={{m: 'Mend(re)'}} />
-                     <span className='Hidden--lesm'>New</span>
-                   </Row>
-                 </Button>
-                 <NewEntryModal />
-               </div>)}
+                  {permission.canAddNewEntry && (
+                    <div className='Mstart(rh)--md Mstart(rq)'>
+                      <Button bsStyle='link' onClick={() =>
+                        handleNewEntryDisplay(true)}>
+                        <Row>
+                          <Icon name='plus' className='s1'
+                            atomic={{m: 'Mend(re)'}} />
+                          <span className='hidden-lesm'>New</span>
+                        </Row>
+                      </Button>
+                      <NewEntryModal />
+                    </div>)}
 
-             {showDeleteAll && (
-               <div className='Mstart(rh)--md Mstart(rq)'>
-                 <DeleteAllEntriesModal show={deleteAll.show}
-                   isDeleting={deleteAll.isDeleting}
-                   handleDeleteAllEntriesDisplay={(display) =>
-                    handleDeleteAllEntriesDisplay(display)}
-                   handleDeleteAllEntries={handleDeleteAllEntries} />
-               </div>)}
+                  {showDeleteAll && (
+                    <div className='Mstart(rh)--md Mstart(rq)'>
+                      <DeleteAllEntriesModal show={deleteAll.show}
+                        isDeleting={deleteAll.isDeleting}
+                        handleDeleteAllEntriesDisplay={(display) =>
+                           handleDeleteAllEntriesDisplay(display)}
+                        handleDeleteAllEntries={handleDeleteAllEntries} />
+                    </div>)}
           </div>
         )}>
         <div theme={{
           base: {
             w: 'W(100%)',
             m: 'Mt(rq) Mt(rh)--sm'
-          }}}>
-          <TableRow
-            theme={{ base: { bd: '' } }}
-            className='Flx(flx1)'>
-            <TableCell size='3'
-              onClick={() => handleSortColumn('src_content')}>
-              <Button bsStyle='link' type='button'>
-                <Row>
-                  {'src_content' in sort
-                    ? (sort.src_content === true)
-                    ? <Icon name='chevron-down' />
-                    : <Icon name='chevron-up' />
-                    : ''}
-                  <Icon name='glossary'
-                    atomic={{c: 'C(neutral)', m: 'Mend(re) MStart(rq)'}} />
-                  <span>
+          }
+        }}>
+          <table>
+            <tr
+              theme={{base: {bd: ''}}}
+              className='Flx(flx1)'>
+              <td className='td-3'
+                onClick={() => handleSortColumn('src_content')}>
+                <Button bsStyle='link' type='button'>
+                  <Row>
+                    {'src_content' in sort
+                      ? (sort.src_content === true)
+                        ? <Icon name='chevron-down' className='s1' />
+                        : <Icon name='chevron-up' className='s1' />
+                      : ''}
+                    <Icon name='glossary' className='s1'
+                      atomic={{c: 'C(neutral)', m: 'Mend(re) MStart(rq)'}} />
+                    <span>
                     English (United States)
-                  </span>
-                  <span className='C(muted) Mstart(rq)'>{termCount}</span>
-                </Row>
-              </Button>
-            </TableCell>
-            <TableCell size='1' />
-            <TableCell hideSmall size='1'
-              onClick={() => handleSortColumn('part_of_speech')}>
-              <Button bsStyle='link' type='button'>
-                <Row>
-                  {'part_of_speech' in sort
-                    ? (sort.part_of_speech === true)
-                    ? <Icon name='chevron-down' />
-                    : <Icon name='chevron-up' />
-                    : ''}
-                  <span className='MStart(rq)'>
+                    </span>
+                    <span className='C(muted) Mstart(rq)'>{termCount}</span>
+                  </Row>
+                </Button>
+              </td>
+              <td className='td-1' />
+              <td className='hidesmall td-1'
+                onClick={() => handleSortColumn('part_of_speech')}>
+                <Button bsStyle='link' type='button'>
+                  <Row>
+                    {'part_of_speech' in sort
+                      ? (sort.part_of_speech === true)
+                        ? <Icon name='chevron-down' className='s1' />
+                        : <Icon name='chevron-up' className='s1' />
+                      : ''}
+                    <span className='MStart(rq)'>
                     Part of Speech
-                  </span>
-                </Row>
-              </Button>
-            </TableCell>
-            <TableCell
-              className='langSelect' size='3'
-              theme={{base: {lineClamp: ''}}}>
-              <Select
-                name='language-selection'
-                placeholder={statsLoading
-                  ? 'Loading…' : 'Select a language…'}
-                className='Flxg(1)'
-                isLoading={statsLoading}
-                value={selectedTransLocale}
-                options={transLocales}
-                pageSize={20}
-                optionRenderer={this.localeOptionsRenderer}
-                onChange={handleTranslationLocaleChange}
-              />
-              {selectedTransLocale &&
-              (<Row>
-                <Icon name='translate'
-                  atomic={{c: 'C(neutral)', m: 'Mstart(rq) Mend(re)'}} />
-                <span className='C(muted)'>
+                    </span>
+                  </Row>
+                </Button>
+              </td>
+              <td
+                className='langSelect td-3'
+                theme={{base: {lineClamp: ''}}}>
+                <Select
+                  name='language-selection'
+                  placeholder={statsLoading
+                    ? 'Loading…' : 'Select a language…'}
+                  className='Flxg(1)'
+                  isLoading={statsLoading}
+                  value={selectedTransLocale}
+                  options={transLocales}
+                  pageSize={20}
+                  optionRenderer={this.localeOptionsRenderer}
+                  onChange={handleTranslationLocaleChange}
+                />
+                {selectedTransLocale &&
+                (<Row>
+                  <Icon name='translate'
+                    atomic={{c: 'C(neutral)', m: 'Mstart(rq) Mend(re)'}} />
+                  <span className='C(muted)'>
                   {currentLocaleCount}
-                </span>
-              </Row>)}
-            </TableCell>
-          </TableRow>
+                  </span>
+                </Row>)}
+              </td>
+            </tr>
+          </table>
         </div>
-      </div>
+      </Header>
     )
   }
 }

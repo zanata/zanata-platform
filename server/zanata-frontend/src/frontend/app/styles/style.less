@@ -3244,6 +3244,19 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   vertical-align: text-top;
 }
 
+table.glossary-entry {
+  width:100%;
+  margin-bottom:0;
+}
+
+.row {
+  display:block;
+}
+
+.entry-row {
+  display:flex !important;
+}
+
 .Select-clear {
   vertical-align: middle;
 }
@@ -4168,6 +4181,7 @@ button.list-group-item {
 }
 
 .flex-row {
+  display:flex;
   flex-direction: row;
 }
 
@@ -4958,6 +4972,7 @@ button.btn-link {
   .modal-sm {
     width: 300px;
   }
+
 }
 
 @media (min-width: 992px) {
@@ -5040,6 +5055,7 @@ button.btn-link {
     margin-left: 6em;
     width: 100%;
   }
+
 
   #nav {
     min-height: 100%;
@@ -5384,17 +5400,6 @@ button.btn-link {
     display:none;
   }
 
-  .hidden-lesm {
-    position: absolute !important;
-    *clip: rect(1px 1px 1px 1px);
-    clip: rect(1px, 1px, 1px, 1px);
-    padding: 0 !important;
-    border: 0 !important;
-    height: 1px !important;
-    width: 1px !important;
-    overflow: hidden;
-  }
-
   .matrix-table {
     display: block;
   }
@@ -5468,6 +5473,16 @@ button.btn-link {
 @media (min-width: @screen-sm-min) and (max-width: @screen-md-max) {
   .visible-sm {
     display: block !important;
+  }
+
+  .hidden-lesm {
+    position: absolute !important;
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0 !important;
+    border: 0 !important;
+    height: 1px !important;
+    width: 1px !important;
+    overflow: hidden;
   }
 
   .container-sidebar td.td-3 {

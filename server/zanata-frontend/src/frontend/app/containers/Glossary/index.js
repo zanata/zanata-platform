@@ -175,7 +175,7 @@ class Glossary extends Component {
             <Row>
               {termCount > 0 &&
                 <Row>
-                  <span className='Hidden--lesm Pend(rq)'>Show</span>
+                  <span className='hidden-lesm Pend(rq)'>Show</span>
                   <Select options={pageSizeOption}
                     placeholder='Terms per page'
                     value={intPageSize}
