@@ -17,7 +17,7 @@ class DeleteAllEntriesModal extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className='block-inline'>
+      <div className='block'>
         <Overlay
           placement='bottom'
           target={() => ReactDOM.findDOMNode(this)}

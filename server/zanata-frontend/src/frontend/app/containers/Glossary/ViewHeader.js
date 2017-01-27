@@ -133,7 +133,7 @@ class ViewHeader extends Component {
             </Button>
 
                   {permission.canAddNewEntry && (
-                    <div className='Mstart(rh)--md Mstart(rq)'>
+                    <div className='gloss-import Mstart(rh)--md Mstart(rq)'>
                       <Button bsStyle='link' type='button'
                         onClick={() => handleImportFileDisplay(true)}>
                         <Row>
@@ -146,7 +146,7 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {permission.canDownload && !isEmptyTerms && (
-                    <div className='Mstart(rh)--md Mstart(rq)'>
+                    <div className='gloss-export Mstart(rh)--md Mstart(rq)'>
                       <Button bsStyle='link' type='button'
                         onClick={() => handleExportFileDisplay(true)}>
                         <Row>
@@ -159,7 +159,7 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {permission.canAddNewEntry && (
-                    <div className='Mstart(rh)--md Mstart(rq)'>
+                    <div className='gloss-new Mstart(rh)--md Mstart(rq)'>
                       <Button bsStyle='link' onClick={() =>
                         handleNewEntryDisplay(true)}>
                         <Row>
@@ -172,7 +172,7 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {showDeleteAll && (
-                    <div className='Mstart(rh)--md Mstart(rq)'>
+                    <div className='gloss-delall Mstart(rh)--md Mstart(rq)'>
                       <DeleteAllEntriesModal show={deleteAll.show}
                         isDeleting={deleteAll.isDeleting}
                         handleDeleteAllEntriesDisplay={(display) =>

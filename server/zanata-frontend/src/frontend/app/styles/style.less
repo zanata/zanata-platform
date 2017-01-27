@@ -3240,13 +3240,14 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
   max-width: 14em;
 }
 
-.delete-all-glossary {
-  vertical-align: text-top;
-}
-
 table.glossary-entry {
   width:100%;
   margin-bottom:0;
+}
+
+.gloss-import span.s1, .gloss-export span.s1, .gloss-delall span.s1,
+.gloss-new span.s1 {
+  vertical-align:sub;
 }
 
 .row {
@@ -4207,6 +4208,10 @@ button.list-group-item {
   overflow: hidden;
   height: 0;
   padding: 0;
+}
+
+.block {
+  display:block;
 }
 
 .toolbar .page-count {
@@ -5395,6 +5400,16 @@ button.btn-link {
   .search-view-theme span svg {
     font-size: 1.4em;
   }
+
+  .hidden-lesm {
+    position: absolute !important;
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0 !important;
+    border: 0 !important;
+    height: 1px !important;
+    width: 1px !important;
+    overflow: hidden;
+  }
   
   .container-sidebar td.hidesmall {
     display:none;
@@ -5473,16 +5488,6 @@ button.btn-link {
 @media (min-width: @screen-sm-min) and (max-width: @screen-md-max) {
   .visible-sm {
     display: block !important;
-  }
-
-  .hidden-lesm {
-    position: absolute !important;
-    clip: rect(1px, 1px, 1px, 1px);
-    padding: 0 !important;
-    border: 0 !important;
-    height: 1px !important;
-    width: 1px !important;
-    overflow: hidden;
   }
 
   .container-sidebar td.td-3 {
