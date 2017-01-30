@@ -138,7 +138,7 @@ class Glossary extends Component {
         <span className='loading-muted'>
           <Icon name='glossary' />
         </span>
-        <p className='gloss-text-muted'>No content</p>
+        <p className='glossary-text-muted'>No content</p>
       </div>)
     }
 
@@ -163,7 +163,7 @@ class Glossary extends Component {
                     placeholder='Terms per page'
                     value={intPageSize}
                     name='glossary-page'
-                    className='gloss-select'
+                    className='glossary-select'
                     searchable={false}
                     clearable={false}
                     onChange={handlePageSizeChange} />
