@@ -37,6 +37,7 @@ import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
@@ -62,7 +63,10 @@ import org.zanata.events.ServerStarted;
 import org.zanata.exception.ZanataInitializationException;
 import org.zanata.rest.dto.VersionInfo;
 import javax.enterprise.event.Event;
+
+import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.VersionUtility;
+import org.zanata.util.WithRequestScope;
 
 /**
  * This class handles various tasks at startup. It disables warnings for a
@@ -99,6 +103,7 @@ public class ZanataInit {
     @Inject
     private Event<ServerStarted> startupEvent;
 
+    @WithRequestScope
     public void onCreate(@Observes @Initialized ServletContext context)
             throws Exception {
         initZanata(context);
@@ -123,6 +128,7 @@ public class ZanataInit {
                 .setBuildTimestamp(zanataVersion.getBuildTimeStamp());
         this.applicationConfiguration
                 .setScmDescribe(zanataVersion.getScmDescribe());
+        this.applicationConfiguration.applyLoggingConfiguration();
         logBanner(zanataVersion);
         boolean authlogged = false;
         if (applicationConfiguration.isInternalAuth()) {

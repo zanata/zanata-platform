@@ -20,21 +20,12 @@
  */
 package org.zanata.log4j;
 
-import com.google.common.collect.Ordering;
 import org.apache.log4j.HTMLLayout;
 import org.apache.log4j.Layout;
 import org.apache.log4j.spi.LoggingEvent;
-import org.slf4j.MDC;
 import org.zanata.servlet.MDCInsertingServletFilter;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.TimeZone;
 import static org.apache.log4j.helpers.Transform.escapeTags;
 
@@ -48,12 +39,19 @@ public class ZanataHTMLLayout extends HTMLLayout {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ZanataHTMLLayout.class);
 
+    private final String build;
+
+    public ZanataHTMLLayout(String build) {
+        this.build = build;
+    }
+
     @Override
     public String format(LoggingEvent event) {
         StringBuilder builder = new StringBuilder();
         String timestamp = String.format("%tFT%<tTZ",
                 Calendar.getInstance(TimeZone.getTimeZone("Z")));
         addValue(builder, "Time", timestamp);
+        addValue(builder, "Build", build);
         // We could ask jboss-logmanager's LoggingEvent for the ExtLogRecord,
         // and then call getMDCCopy().keySet() to get a complete list of
         // available MDC keys, but this would tie us to jboss-logmanager.

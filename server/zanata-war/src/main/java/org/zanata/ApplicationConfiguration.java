@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import com.google.common.base.Optional;
@@ -38,7 +37,6 @@ import org.apache.log4j.Level;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.inject.Provider;
 import javax.servlet.http.HttpSession;
 import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.config.AllowPublicRegistration;
@@ -126,7 +124,6 @@ public class ApplicationConfiguration implements Serializable {
     public void load() {
         log.info("Reloading configuration");
         this.loadLoginModuleNames();
-        this.applyLoggingConfiguration();
         this.loadJaasConfig();
         authenticatedSessionTimeoutMinutes = sysPropConfigStore
                 .get("authenticatedSessionTimeoutMinutes", 180);
@@ -161,7 +158,9 @@ public class ApplicationConfiguration implements Serializable {
             // TODO use hostname, not URL
             smtpAppenderInstance.setSubject(
                     "%p log message from Zanata at " + this.getServerPath());
-            smtpAppenderInstance.setLayout(new ZanataHTMLLayout());
+            String buildInfo = getVersion() + ", " + getBuildTimestamp() + "["
+                + getScmDescribe() + "]";
+            smtpAppenderInstance.setLayout(new ZanataHTMLLayout(buildInfo));
             // smtpAppenderInstance.setLayout(new
             // PatternLayout("%-5p [%c] %m%n"));
             smtpAppenderInstance
