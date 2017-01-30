@@ -181,12 +181,7 @@ class ViewHeader extends Component {
                     </div>)}
           </div>
         )}>
-        <div theme={{
-          base: {
-            w: 'W(100%)',
-            m: 'Mt(rq) Mt(rh)--sm'
-          }
-        }}>
+        <div className='gloss-table'>
           <table>
             <tr
               theme={{base: {bd: ''}}}

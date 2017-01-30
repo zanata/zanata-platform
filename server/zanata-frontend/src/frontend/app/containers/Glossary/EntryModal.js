@@ -63,13 +63,11 @@ class EntryModal extends Component {
             Glossary Term
             {transSelected
               ? (<span>
-                <Icon name='language'
-                  atomic={{m: 'Mstart(rq) Mend(re)', c: 'C(neutral)'}} />
+                <Icon name='language' className='languageicon-neutral s1' />
                 <span className='C(muted)'>{selectedTransLocale}</span>
               </span>)
               : (<span>
-                <Icon name='translate'
-                  atomic={{m: 'Mstart(rq) Mend(re)', c: 'C(neutral)'}} />
+                <Icon name='translate' className='translateicon-neutral s1' />
                 <span className='C(muted)'>{entry.termsCount}</span>
               </span>)
             }

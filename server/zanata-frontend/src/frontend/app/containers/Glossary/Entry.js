@@ -146,7 +146,7 @@ class Entry extends Component {
                 <Button bsStyle='link' atomic={{m: 'Mend(rq)'}}
                   disabled={isDeleting}
                   onClick={() => this.setShowingEntryModal(true)}>
-                  <Icon name='info' className='s1' />
+                  <Icon name='info' className='s1 infoicon-nomargin' />
                 </Button>
                 <EntryModal entry={entry}
                   show={this.state.showEntryModal}

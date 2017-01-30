@@ -231,11 +231,13 @@ h2.matrix-heading {
 
 .glossary-header .row {
   display:inline-flex;
-  padding:0.375em;
+  padding-top:0.375em;
+  padding-bottom:0.375em;
+  padding-right:1em;
 }
 
 .glossaryhead-wrapper {
-  right:1em;
+  right:0;
   padding-left: 0.75rem;
   padding-right: 0.75rem;
   position:fixed;
@@ -248,6 +250,19 @@ h2.matrix-heading {
   border-bottom-color: rgb(237, 242, 248);
   background-color: #fff;
   padding-top: 0.375rem;
+}
+
+.gloss-table {
+  width:100%;
+  margin-top:@margin-rq;
+}
+
+.gloss-table .table {
+  width:100%;
+}
+
+.gloss-table button {
+  padding-left:0;
 }
 
 .inner-view-theme {
@@ -1354,7 +1369,12 @@ p {
 
 .loading-muted {
  color:@brand-muted;
-  margin-bottom: @margin-rq;
+ margin-bottom: @margin-rq;
+}
+
+.gloss-text-muted {
+  color:@brand-muted;
+  margin-left:7em;
 }
 
 .text-dark {
@@ -2267,6 +2287,10 @@ span.caret {
 
 .infoicon {
   margin-left: @margin-re;
+  vertical-align: sub;
+}
+
+.infoicon-nomargin {
   vertical-align: sub;
 }
 
@@ -3342,6 +3366,8 @@ span.hidden-lesm.glossary-row {
 
 .glossary-list {
   padding-bottom: 3rem;
+  margin-right: 1.5em;
+  margin-left: 1.5em;
 }
 
 .Select-clear {
@@ -3372,6 +3398,12 @@ span.hidden-lesm.glossary-row {
   margin-right: @margin-rh;
   margin-left: @margin-rq;
   vertical-align: sub;
+}
+
+.translateicon-neutral, .languageicon-neutral {
+    color: rgb(189, 212, 220);
+    margin-left: @margin-rq;
+    margin-right:@margin-re;
 }
 
 img.avatar-round {
@@ -5084,9 +5116,10 @@ button.btn-link {
   }
 
   .glossaryhead-wrapper {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    left: 4.5rem;
+    left: 0;
+  }
+  .gloss-table {
+    margin-top:@margin-rh;
   }
 
   .glossaryhead-base {
@@ -5114,7 +5147,7 @@ button.btn-link {
   }
 
   .glossary-header {
-    padding-top: 9rem;
+    padding-top: 8rem;
   }
 
   .glossaryhead-wrapper {
@@ -5172,7 +5205,7 @@ button.btn-link {
   }
 
   .glossary-header {
-    padding-top: 6rem;
+    padding-top: 6.8rem;
   }
 
   .glossaryhead-base {
@@ -5183,6 +5216,7 @@ button.btn-link {
   .wide-view-theme-glossary {
     margin-left: 2.5em;
     margin-right: 1em;
+    margin-bottom:2.5em;
   }
 
   main {
@@ -5191,7 +5225,7 @@ button.btn-link {
 
   .container-sidebar {
     margin-left: 4.5em;
-    width: 90%;
+    min-width: 90%;
   }
 
   .container-editor {
@@ -5618,16 +5652,6 @@ button.btn-link {
     display: block !important;
   }
 
-  .glossaryhead-actions-theme .hidden-lesm {
-    position: absolute !important;
-    clip: rect(1px, 1px, 1px, 1px);
-    padding: 0 !important;
-    border: 0 !important;
-    height: 1px !important;
-    width: 1px !important;
-    overflow: hidden;
-  }
-
   .container-sidebar td.td-3 {
     width:33.33%;
   }
@@ -5937,6 +5961,18 @@ button.btn-link {
 
   .col-md-offset-0 {
     margin-left: 0;
+  }
+}
+
+@media (max-width: @screen-md-max) {
+  .glossaryhead-actions-theme .hidden-lesm {
+    position: absolute !important;
+    clip: rect(1px, 1px, 1px, 1px);
+    padding: 0 !important;
+    border: 0 !important;
+    height: 1px !important;
+    width: 1px !important;
+    overflow: hidden;
   }
 }
 

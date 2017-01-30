@@ -136,9 +136,9 @@ class Glossary extends Component {
     } else {
       list = (<div className='loading-container-theme'>
         <span className='loading-muted'>
-          <Icon name='glossary' size='6' />
+          <Icon name='glossary' />
         </span>
-        <p className='text-muted'>No content</p>
+        <p className='gloss-text-muted'>No content</p>
       </div>)
     }
 
