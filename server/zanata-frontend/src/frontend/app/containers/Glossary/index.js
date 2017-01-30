@@ -23,14 +23,6 @@ import {
 import ViewHeader from './ViewHeader'
 import Entry from './Entry'
 
-const loadingContainerTheme = {
-  base: {
-    ai: 'Ai(c)',
-    flxg: 'Flxg(1)',
-    jc: 'Jc(c)',
-    w: 'W(100%)'
-  }
-}
 /**
  * Root component for Glossary page
  */
@@ -131,7 +123,7 @@ class Glossary extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     if (termsLoading) {
-      list = (<div theme={loadingContainerTheme}>
+      list = (<div className='loading-container-theme'>
         <LoaderText loading loadingText='Loading' />
       </div>)
     } else if (!termsLoading && termCount) {
@@ -142,11 +134,11 @@ class Glossary extends Component {
         type='uniform'
         ref={(c) => { this.list = c }} />)
     } else {
-      list = (<div theme={loadingContainerTheme}>
-        <span className='Mb(rq) C(muted)'>
+      list = (<div className='loading-container-theme'>
+        <span className='loading-muted'>
           <Icon name='glossary' size='6' />
         </span>
-        <p className='C(muted)'>No content</p>
+        <p className='text-muted'>No content</p>
       </div>)
     }
 
@@ -162,23 +154,23 @@ class Glossary extends Component {
         <Helmet title={headerTitle} />
         <div className='wide-view-theme-glossary'>
           <ViewHeader title={headerTitle} />
-          <div theme={{ base: {p: 'Pt(r6)--sm Pt(r4)', fld: 'Fld(rr)'} }}>
-            <Row>
+          <div className='glossary-header'>
+            <Row className='pull-right'>
               {termCount > 0 &&
                 <Row>
-                  <span className='hidden-lesm Pend(rq)'>Show</span>
+                  <span className='hidden-lesm glossary-row'>Show</span>
                   <Select options={pageSizeOption}
                     placeholder='Terms per page'
                     value={intPageSize}
                     name='glossary-page'
-                    className='Mend(re) W(ms8)'
+                    className='gloss-select'
                     searchable={false}
                     clearable={false}
                     onChange={handlePageSizeChange} />
                 </Row>
               }
               {displayPaging &&
-                <div className='D(f)'>
+                <div className='glossary-paging'>
                   <Button bsStyle='link' disabled={currentPage <= 1}
                     title='First page'
                     onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
@@ -190,7 +182,7 @@ class Glossary extends Component {
                     () => { gotoPreviousPage(currentPage, totalPage) }}>
                     <Icon name='chevron-left' className='s1' />
                   </Button>
-                  <span className='C(muted) Mx(re)'>
+                  <span className='text-muted'>
                     {currentPage} of {totalPage}
                   </span>
                   <Button bsStyle='link' disabled={currentPage === totalPage}
@@ -203,7 +195,7 @@ class Glossary extends Component {
                     onClick={() => { gotoLastPage(currentPage, totalPage) }}>
                     <Icon name='next' className='s1' />
                   </Button>
-                  <span className='Mx(rq) C(muted)'
+                  <span className='text-muted-total'
                     title='Total glossary terms'>
                     <Row>
                       <Icon name='glossary' className='s1' /> {termCount}
@@ -214,7 +206,7 @@ class Glossary extends Component {
             </Row>
           </div>
 
-          <div theme={{ base: {p: 'Pb(r2)'} }}>
+          <div className='glossary-list'>
             {list}
           </div>
         </div>
