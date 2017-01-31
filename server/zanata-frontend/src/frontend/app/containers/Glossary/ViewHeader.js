@@ -204,22 +204,6 @@ class ViewHeader extends Component {
                   </Row>
                 </Button>
               </td>
-              <td className='td-1' />
-              <td className='hidesmall td-1'
-                onClick={() => handleSortColumn('part_of_speech')}>
-                <Button bsStyle='link' type='button'>
-                  <Row>
-                    {'part_of_speech' in sort
-                      ? (sort.part_of_speech === true)
-                        ? <Icon name='chevron-down' className='s1' />
-                        : <Icon name='chevron-up' className='s1' />
-                      : ''}
-                    <span className='MStart(rq)'>
-                    Part of Speech
-                    </span>
-                  </Row>
-                </Button>
-              </td>
               <td
                 className='langSelect td-3'
                 theme={{base: {lineClamp: ''}}}>
@@ -247,6 +231,22 @@ class ViewHeader extends Component {
                 </span>
                 )}
               </td>
+              <td className='hidesmall td-1'
+                onClick={() => handleSortColumn('part_of_speech')}>
+                <Button bsStyle='link' type='button'>
+                  <Row>
+                    {'part_of_speech' in sort
+                      ? (sort.part_of_speech === true)
+                        ? <Icon name='chevron-down' className='s1' />
+                        : <Icon name='chevron-up' className='s1' />
+                      : ''}
+                    <span className='MStart(rq)'>
+                    Part of Speech
+                    </span>
+                  </Row>
+                </Button>
+              </td>
+              <td className='td-1' />
             </tr>
           </table>
         </div>
