@@ -89,6 +89,76 @@ body {
   overflow: hidden;
 }
 
+.popover {
+  position: absolute;
+  margin-top: -10px;
+  z-index: 1060;
+  display: none;
+  max-width: 250px;
+  padding: @padding-badge-horizontal;
+  font-family: Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-break: auto;
+  line-height: 1.42857143;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  white-space: normal;
+  word-break: normal;
+  word-spacing: normal;
+  word-wrap: normal;
+  font-size: 14px;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0,0,0,.2);
+  border-radius: 6px;
+  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+h3.popover-title {
+  font-size:1em;
+  text-transform: uppercase;
+}
+
+.popover-content p {
+  margin-bottom: .714em;
+}
+
+.popover.top>.arrow {
+  left:50%;
+  margin-left: -11px;
+  border-bottom-width: 0;
+  border-top-color: #999;
+  border-top-color: rgba(0,0,0,.25);
+  bottom: -11px;
+}
+.popover>.arrow {
+  border-width: 11px;
+}
+.popover>.arrow, .popover>.arrow:after {
+  position: absolute;
+  display: block;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+
+.popover.top>.arrow:after {
+  content: " ";
+  bottom: 1px;
+  margin-left: -10px;
+  border-bottom-width: 0;
+  border-top-color: #fff;
+}
+.popover>.arrow:after {
+  border-width: 10px;
+  content: "";
+}
+
 .nav-bar {
   background-color: @brand-secondary;
   box-shadow: inset 0 1px 4px 0 rgba(0, 0, 0, 0.185);
@@ -309,7 +379,7 @@ input.textInput {
   color: inherit;
   font-family: inherit;
   font-weight: inherit;
-  font-size: 1.1em;
+  font-size: 1em;
   font-style: inherit;
   outline: none;
   padding-left: 0.375rem;
@@ -2498,7 +2568,7 @@ span.langcode {
 }
 
 // Glossary delete button
-button.btn-link.delete-link {
+button.btn-link.delete-link, button.btn-link.delete-link .loader-text {
   color:@brand-danger;
 }
 
@@ -2602,6 +2672,10 @@ button.btn-link.delete-link {
 .btn-danger {
   border-color: #cf3031;
   background-color: @brand-danger;
+}
+
+.btn-danger .loader-text, .btn-primary .loader-text {
+  color:#fff;
 }
 
 .btn-warning:active, .btn-warning:hover {
@@ -2761,7 +2835,7 @@ li.progress-bar__expander.list__item--actionable {
 li.progress-bar__expander.panels__panel__item a .list__item,
 li.progress-bar__expander a .list__item,
 li.progress-bar__expander.panels__panel__item a .list__item__content {
- padding:0.75em 0.75em 0.75em !important;
+  padding:0.75em 0.75em 0.75em !important;
 }
 
 input[type=button].btn-block, input[type=reset].btn-block, input[type=submit].btn-block {
@@ -2860,6 +2934,10 @@ tbody.collapse {
   border-left: 4px solid transparent;
 }
 
+.block-inline {
+  display:inline-block;
+}
+
 .toolbar {
   padding-top: @margin-hr;
 }
@@ -2899,6 +2977,10 @@ tbody.collapse {
 
 .btn-toolbar .btn, .btn-toolbar .btn-group, .btn-toolbar .input-group {
   float: left;
+}
+
+.btn-toolbar #popover-positioned-top .btn {
+  float:none;
 }
 
 .btn-toolbar > .btn, .btn-toolbar > .btn-group, .btn-toolbar > .input-group {
@@ -3160,6 +3242,22 @@ select[multiple].input-group-sm > .form-control, select[multiple].input-group-sm
 .show-items span {
   margin-top: @padding-small-vertical;
   margin-left: @padding-small-horizontal;
+}
+
+.deleteicon {
+  vertical-align: sub;
+}
+
+#delete-entries .tooltip-inner {
+  max-width: 14em;
+}
+
+.delete-all-glossary {
+  vertical-align:text-top;
+}
+
+.Select-clear {
+  vertical-align:middle;
 }
 
 .usericon {
@@ -3837,7 +3935,7 @@ ul.nav-pills > li.active > a {
 }
 
 .button-spacing button:first-of-type {
-  margin-right: @padding-small-horizontal;
+  margin-right: 0.4em;
 }
 
 a.label:focus, a.label:hover {
@@ -4482,7 +4580,7 @@ button.list-group-item {
   background-clip: padding-box;
   border: 1px solid #999;
   border: 1px solid rgba(0, 0, 0, .2);
-  border-radius: @border-radius-small;
+  border-radius: @border-radius-modal;
   outline: 0;
   max-width:700px;
   margin-left:auto;
@@ -4532,7 +4630,7 @@ button.list-group-item {
 .modal-body {
   position: relative;
   padding: @padding-modal-body;
-  color: #333;
+  color: @brand-primary;
 }
 
 .modal-body .scrollable {
@@ -4596,12 +4694,13 @@ button.list-group-item {
   }
 
   .tooltip-inner {
-    max-width: 14.286em;
+    max-width: 15em;
     padding: @padding-base-vertical;
-    color: #fff;
+    color: @brand-primary;
     text-align: center;
-    background-color: @brand-primary;
+    background-color: #fff;
     border-radius: @border-radius-base;
+    border: solid 2px @brand-primary;
   }
 
   .tooltip {
@@ -4770,6 +4869,20 @@ button.list-group-item {
 
   .glyphicon-modal-window:before {
     content: "\e237";
+  }
+
+  .toolbar {
+    padding-top: @margin-hr;
+  }
+
+  .toolbar .sort-items {
+    padding-bottom: @padding-small-horizontal;
+    padding-right: 0;
+  }
+
+  .toolbar .show-items {
+    padding-bottom: @padding-small-horizontal;
+    padding-right: 0;
   }
 
   .toolbar .page-count {
@@ -5272,6 +5385,17 @@ button.list-group-item {
 @media (max-width: @screen-sm-max) {
   .search-view-theme span svg {
     font-size: 1.4em;
+  }
+
+  .hidden-lesm {
+    position: absolute !important;
+    *clip: rect(1px 1px 1px 1px);
+    clip: rect(1px,1px,1px,1px);
+    padding: 0 !important;
+    border: 0 !important;
+    height: 1px !important;
+    width: 1px !important;
+    overflow: hidden;
   }
 
   .matrix-table {
@@ -6118,6 +6242,7 @@ button.list-group-item {
     orphans: 3;
     widows: 3;
   }
+
 
   h2, h3 {
     page-break-after: avoid;
