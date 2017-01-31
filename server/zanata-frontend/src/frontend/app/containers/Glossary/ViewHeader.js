@@ -236,13 +236,16 @@ class ViewHeader extends Component {
                   onChange={handleTranslationLocaleChange}
                 />
                 {selectedTransLocale &&
-                (<Row>
-                  <Icon name='translate'
-                    atomic={{c: 'C(neutral)', m: 'Mstart(rq) Mend(re)'}} />
-                  <span className='C(muted)'>
-                  {currentLocaleCount}
-                  </span>
-                </Row>)}
+                (<span className='hidden-lesm'>
+                  <Row>
+                    <Icon name='translate' className='s1 translateicon-neutral'
+                      atomic={{c: 'C(neutral)', m: 'Mstart(rq) Mend(re)'}} />
+                    <span className='C(muted)'>
+                    {currentLocaleCount}
+                    </span>
+                  </Row>
+                </span>
+                )}
               </td>
             </tr>
           </table>

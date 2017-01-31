@@ -110,7 +110,7 @@ class Entry extends Component {
         <tr className='highlight editable'
           selected={selected}
           onClick={() => handleSelectTerm(entry.id)}>
-          <td className='td-3 tight'>
+          <td className='td-2 tight'>
             {termsLoading
               ? loadingDiv
               : (<EditableText
@@ -121,10 +121,10 @@ class Entry extends Component {
               </EditableText>)
             }
           </td>
-          <td>
+          <td className='td-3 tight'>
             {secondColumnContent}
           </td>
-          <td className='hidesmall td-3 tight'>
+          <td className='hidesmall td-2 tight'>
           {termsLoading
             ? loadingDiv
             : (<EditableText

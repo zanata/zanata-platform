@@ -289,6 +289,7 @@ h2.matrix-heading {
   align-items:center;
   flex-direction: '';
   margin-left:auto;
+  width: 70%;
 }
 
 .scroll-view-theme {
@@ -1144,9 +1145,14 @@ table td {
   width:37.5%;
 }
 
-.container-sidebar td.td-2, .container-sidebar td.td-1  {
+.container-sidebar td.td-1  {
   width: 16.6667%;
 }
+
+.container-sidebar td.td-2 {
+  width:25%;
+}
+
 
 .container-sidebar tr {
   border-bottom: solid 1px;
@@ -3354,6 +3360,20 @@ span.hidden-lesm.glossary-row {
   width: 4.5rem;
 }
 
+td.langSelect .Select {
+
+}
+
+td.langSelect .row {
+  position: absolute;
+  top: 0.8em;
+  right: 5em;
+}
+
+td.langSelect .row span {
+  vertical-align:text-bottom;
+}
+
 .entry-row, .glossary-paging {
   display:flex !important;
 }
@@ -5209,7 +5229,7 @@ button.btn-link {
   }
 
   .glossary-header {
-    padding-top: 6.8rem;
+    padding-top: 8rem;
   }
 
   .glossaryhead-base {
@@ -5229,7 +5249,7 @@ button.btn-link {
 
   .container-sidebar {
     margin-left: 4.5em;
-    min-width: 90%;
+    width: 100%;
   }
 
   .container-editor {

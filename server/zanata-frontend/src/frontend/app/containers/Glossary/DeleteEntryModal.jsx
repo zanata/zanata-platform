@@ -39,11 +39,11 @@ class DeleteEntryModal extends Component {
           <Tooltip id='delete-glossary' title='Delete term and translations'>
             {info}
             <span className='button-spacing'>
-              <Button bsStyle='default'
+              <Button bsStyle='default' className='btn-sm'
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
               </Button>
-              <Button bsStyle='danger' type='button'
+              <Button bsStyle='danger' type='button' className='btn-sm'
                 disabled={isDeleting}
                 onClick={() => {
                   handleDeleteEntry(entry.id)

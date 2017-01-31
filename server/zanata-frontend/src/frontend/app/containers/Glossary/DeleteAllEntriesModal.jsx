@@ -30,11 +30,11 @@ class DeleteAllEntriesModal extends Component {
               <strong>all entries</strong>&nbsp;?
             </p>
             <span className='button-spacing'>
-              <Button bsStyle='default'
+              <Button bsStyle='default' className='btn-sm'
                 onClick={() => handleDeleteAllEntriesDisplay(false)}>
                 Cancel
               </Button>
-              <Button bsStyle='danger' type='button'
+              <Button bsStyle='danger' className='btn-sm' type='button'
                 disabled={isDeleting}
                 onClick={() => handleDeleteAllEntries()}>
                 <LoaderText loading={isDeleting} size='n1'
