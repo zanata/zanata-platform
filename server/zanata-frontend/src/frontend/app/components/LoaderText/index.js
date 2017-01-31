@@ -35,7 +35,7 @@ LoaderText.propTypes = {
 }
 
 LoaderText.defaultProps = {
-  loading: true,
+  loading: false,
   loadingText: 'Loading'
 }
 
