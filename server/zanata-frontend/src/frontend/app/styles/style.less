@@ -345,7 +345,7 @@ h2.matrix-heading {
 .textStateClasses.textInput {
   align-items: center;
   background-color: #fff;
-  height: 2.25rem;
+  height: auto;
   width: 100%;
 }
 
@@ -1153,6 +1153,11 @@ table td {
   width:25%;
 }
 
+.container-sidebar td.td-4 {
+  width:50%;
+  overflow: hidden;
+  word-wrap: normal;
+}
 
 .container-sidebar tr {
   border-bottom: solid 1px;
@@ -3365,10 +3370,6 @@ span.hidden-lesm.glossary-row {
   width: 4.5rem;
 }
 
-td.langSelect .Select {
-
-}
-
 td.langSelect .row {
   position: absolute;
   top: 0.8em;
@@ -3397,6 +3398,7 @@ td.langSelect .row span {
   margin-right: 1em;
   margin-left: 1em;
   margin-top: 4em;
+  font-size: 0.92rem;
 }
 
 .Select-clear {
@@ -5681,7 +5683,7 @@ button.btn-link {
     display: block !important;
   }
 
-  .container-sidebar td.td-3 {
+  .container-sidebar td.td-3, .container-sidebar td.td-4  {
     width:33.33%;
   }
 

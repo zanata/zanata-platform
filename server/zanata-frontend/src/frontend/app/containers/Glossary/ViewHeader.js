@@ -236,7 +236,7 @@ class ViewHeader extends Component {
                   onChange={handleTranslationLocaleChange}
                 />
                 {selectedTransLocale &&
-                (<span className='hidden-lesm'>
+                (<span className='hidden-xs'>
                   <Row>
                     <Icon name='translate' className='s1 translateicon-neutral'
                       atomic={{c: 'C(neutral)', m: 'Mstart(rq) Mend(re)'}} />
