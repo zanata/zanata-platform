@@ -1,12 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
-
-import {
-  LoaderText,
-  Modal,
-  Select
-} from 'zanata-ui'
-
+import { LoaderText, Modal, Select } from '../../components'
 import { Button, ButtonGroup } from 'react-bootstrap'
 
 import {

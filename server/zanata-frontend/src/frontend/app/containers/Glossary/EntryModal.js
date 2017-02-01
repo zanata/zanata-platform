@@ -1,11 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { isEmpty } from 'lodash'
-import {
-  Icon,
-  LoaderText,
-  Modal
-} from 'zanata-ui'
-import { EditableText } from '../../components'
+import { EditableText, Icon, LoaderText, Modal } from '../../components'
 import { Button, ButtonGroup } from 'react-bootstrap'
 
 /**
@@ -68,13 +63,11 @@ class EntryModal extends Component {
             Glossary Term
             {transSelected
               ? (<span>
-                <Icon name='language'
-                  atomic={{m: 'Mstart(rq) Mend(re)', c: 'C(neutral)'}} />
+                <Icon name='language' className='languageicon-neutral s1' />
                 <span className='C(muted)'>{selectedTransLocale}</span>
               </span>)
               : (<span>
-                <Icon name='translate'
-                  atomic={{m: 'Mstart(rq) Mend(re)', c: 'C(neutral)'}} />
+                <Icon name='translate' className='translateicon-neutral s1' />
                 <span className='C(muted)'>{entry.termsCount}</span>
               </span>)
             }
@@ -131,7 +124,7 @@ class EntryModal extends Component {
 
           {transSelected ? (
             <div className='Mb(rh)'>
-              <label className='Fw(b)'>Comment</label>
+              <label className='Fw(b)'>Comment</label><br />
               <EditableText
                 maxLength={255}
                 editable={enableComment}

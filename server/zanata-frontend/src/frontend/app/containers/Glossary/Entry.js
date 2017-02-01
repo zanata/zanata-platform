@@ -1,16 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { isEqual } from 'lodash'
-import {
-  Icon,
-  LoaderText,
-  TableCell,
-  TableRow,
-  Row
-} from 'zanata-ui'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
-import { EditableText } from '../../components'
-import { Button } from 'react-bootstrap'
+import { EditableText, Icon, LoaderText } from '../../components'
+import { Button, Row, Table } from 'react-bootstrap'
 /**
  * Component to display a GlossaryEntry
  */
@@ -61,11 +54,11 @@ class Entry extends Component {
 
     if (!entry) {
       return (
-        <TableRow>
-          <TableCell>
+        <tr>
+          <td>
             <div className='LineClamp(1,24px) Px(rq)'>Loading…</div>
-          </TableCell>
-        </TableRow>
+          </td>
+        </tr>
       )
     }
 
@@ -113,12 +106,11 @@ class Entry extends Component {
     }
 
     return (
-      <div>
-        <TableRow highlight
-          className='editable'
+      <Table className='glossary-entry'>
+        <tr className='highlight editable'
           selected={selected}
           onClick={() => handleSelectTerm(entry.id)}>
-          <TableCell size='3' tight>
+          <td className='td-4 tight'>
             {termsLoading
               ? loadingDiv
               : (<EditableText
@@ -128,11 +120,11 @@ class Entry extends Component {
                 {entry.srcTerm.content}
               </EditableText>)
             }
-          </TableCell>
-          <TableCell>
+          </td>
+          <td className='td-3'>
             {secondColumnContent}
-          </TableCell>
-          <TableCell hideSmall>
+          </td>
+          <td className='hidesmall td-2'>
           {termsLoading
             ? loadingDiv
             : (<EditableText
@@ -146,15 +138,15 @@ class Entry extends Component {
               {entry.pos}
             </EditableText>)
           }
-          </TableCell>
-          <TableCell size='3'>
+          </td>
+          <td className='td-2'>
             {termsLoading
               ? loadingDiv
-              : (<Row>
+              : (<Row className='entry-row'>
                 <Button bsStyle='link' atomic={{m: 'Mend(rq)'}}
                   disabled={isDeleting}
                   onClick={() => this.setShowingEntryModal(true)}>
-                  <Icon name='info' />
+                  <Icon name='info' className='s1 infoicon-nomargin' />
                 </Button>
                 <EntryModal entry={entry}
                   show={this.state.showEntryModal}
@@ -170,8 +162,8 @@ class Entry extends Component {
                     handleUpdateTerm(entry, false)} />
                 <div className='Op(0) row--selected_Op(1)
                   editable:h_Op(1) Trs(eo)'>
-                  <div className='Hidden--lesm'>
-                    <Row>
+                  <div className='hidden-lesm'>
+                    <Row className='entry-row'>
                       {updateButton}
                       {displayUpdateButton && !isSaving ? (
                         <Button bsStyle='link' bsSize='small'
@@ -193,9 +185,9 @@ class Entry extends Component {
                 </div>
               </Row>)
             }
-          </TableCell>
-        </TableRow>
-      </div>
+          </td>
+        </tr>
+      </Table>
     )
     /* eslint-enable react/jsx-no-bind */
   }

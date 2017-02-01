@@ -1,15 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { cloneDeep, isEmpty } from 'lodash'
-
-import {
-  LoaderText,
-  Modal
-} from 'zanata-ui'
-
-import { EditableText } from '../../components'
+import { EditableText, LoaderText, Modal } from '../../components'
 import { ButtonGroup, Button } from 'react-bootstrap'
-
 import {
   glossaryToggleNewEntryModal,
   glossaryCreateNewEntry
