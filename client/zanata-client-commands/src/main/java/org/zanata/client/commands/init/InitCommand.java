@@ -96,8 +96,12 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
 
     @Override
     protected void run() throws Exception {
-        // Search for zanata.ini
-        userConfigHandler.verifyUserConfig();
+
+        if (getOpts().getUsername() == null) {
+            // Search for zanata.ini
+            log.info("Username not specified, trying config file");
+            userConfigHandler.verifyUserConfig();
+        }
 
         setClientFactory(OptionsUtil.createClientFactory(getOpts()));
 
