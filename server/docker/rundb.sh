@@ -14,7 +14,7 @@ source ${DIR}/common
 VOLUME_DIR=$HOME/docker-volumes/zanata-mariadb
 
 mkdir -p $VOLUME_DIR
-chcon -Rt svirt_sandbox_file_t $VOLUME_DIR
+sudo chcon -Rt svirt_sandbox_file_t $VOLUME_DIR
 
 while getopts ":n:h" opt; do
   case ${opt} in
