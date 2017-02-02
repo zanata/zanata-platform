@@ -14,6 +14,11 @@
   font-size:16px;
 }
 
+.template {
+  background-color:#fff;
+  font-size:16px !important;
+}
+
 body.bodystyle {
   margin:0;
   color:@brand-primary;
@@ -22,7 +27,7 @@ body.bodystyle {
 body.templatestyle {
   background-color:inherit;
   font-size:inherit;
-  overflow: hidden; !important;
+  overflow: hidden !important;
 }
 
 .template-wrapper {
@@ -36,7 +41,7 @@ body.templatestyle {
 .template-container {
   align-items:flex-start;
   display: flex;
-  flex-direction:column;
+  flex-direction:row;
   flex-shrink:0;
   height:100%;
   min-height:100vh;
@@ -75,6 +80,10 @@ html {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.react-list {
+  height:auto;
 }
 
 .react-autosuggest__container {
@@ -5313,11 +5322,12 @@ button.btn-link {
   }
 
   #root {
-    order:0;
+    order:1;
+    width:100%;
   }
 
   .template-container {
-    flex-direction:row;
+    flex-direction:column;
   }
 
   .glossaryhead-wrapper {
