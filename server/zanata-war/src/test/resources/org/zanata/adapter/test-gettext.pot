@@ -1,0 +1,12 @@
+msgid ""
+msgstr ""
+
+msgid "Line One"
+msgstr ""
+
+msgid "Line Two"
+msgstr ""
+
+msgid "Line Three"
+msgstr ""
+

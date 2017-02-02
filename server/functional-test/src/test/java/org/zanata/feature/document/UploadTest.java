@@ -80,6 +80,7 @@ public class UploadTest extends ZanataTestCase {
                         .gotoSettingsDocumentsTab().pressUploadFileButton()
                         .enterFilePath(originalFile.getAbsolutePath())
                         .submitUpload().clickUploadDone();
+        // TODO this is testing the implementation - what if we store files in a DB?
         File newlyCreatedFile =
                 new File(documentStorageDirectory, testFileGenerator
                         .getFirstFileNameInDirectory(documentStorageDirectory));

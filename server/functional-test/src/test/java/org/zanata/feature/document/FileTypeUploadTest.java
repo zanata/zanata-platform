@@ -45,6 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @RunWith(Theories.class)
 @Category(DetailedTest.class)
+// TODO test these cases as unit tests. See JsonAdapterTest for example.
 public class FileTypeUploadTest extends ZanataTestCase {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(FileTypeUploadTest.class);
@@ -62,12 +63,7 @@ public class FileTypeUploadTest extends ZanataTestCase {
     }
 
     private static String testString = "Test text 1";
-    private static String htmlString =
-            "<html><title>" + testString + "</title><body/> </html>";
-    private static String qtTsString =
-            "<!DOCTYPE TS []><TS><context><name>Test</name><message><source>"
-                    + testString
-                    + "</source><translation>Teststring1</translation></message></context></TS>";
+
     @DataPoint
     public static File TXT_FILE = new TestFileGenerator()
             .generateTestFileWithContent("testtxtfile", ".txt", testString);
@@ -91,30 +87,6 @@ public class FileTypeUploadTest extends ZanataTestCase {
     public static File SUB_FILE =
             new TestFileGenerator().generateTestFileWithContent("testsubfile",
                     ".sub", "00:04:35.03,00:04:38.82" + sep() + testString);
-    @DataPoint
-    public static File HTM_FILE = new TestFileGenerator()
-            .generateTestFileWithContent("testhtmfile", ".htm", htmlString);
-    @DataPoint
-    public static File HTML_FILE = new TestFileGenerator()
-            .generateTestFileWithContent("testhtmlfile", ".html", htmlString);
-    @DataPoint
-    public static File QTTS_FILE = new TestFileGenerator()
-            .generateTestFileWithContent("testtsfile", ".ts", qtTsString);
-    @DataPoint
-    public static File IDML_FILE =
-            new TestFileGenerator().openTestFile("upload-idml.idml");
-    @DataPoint
-    public static File ODT_FILE =
-            new TestFileGenerator().openTestFile("upload-odt.odt");
-    @DataPoint
-    public static File ODS_FILE =
-            new TestFileGenerator().openTestFile("upload-ods.ods");
-    @DataPoint
-    public static File ODG_FILE =
-            new TestFileGenerator().openTestFile("upload-odg.odg");
-    @DataPoint
-    public static File ODP_FILE =
-            new TestFileGenerator().openTestFile("upload-odp.odp");
 
     @Theory
     @Feature(bugzilla = 980670,

@@ -47,6 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Damian Jansen
  * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
+// TODO test these cases as unit tests. See JsonAdapterTest for example.
 @Category(DetailedTest.class)
 public class SubtitleDocumentTypeTest extends ZanataTestCase {
 
