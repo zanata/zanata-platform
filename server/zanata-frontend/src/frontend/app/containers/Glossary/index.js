@@ -125,7 +125,7 @@ class Glossary extends Component {
     if (termsLoading) {
       list = (<div className='loading-container-theme'>
         <LoaderText loading loadingText='Loading' />
-      </div>)
+      </div>)]
     } else if (!termsLoading && termCount) {
       list = (<ReactList
         useTranslate3d
