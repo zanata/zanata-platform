@@ -54,7 +54,7 @@ class ImportModal extends Component {
         }
         langSelection = (<Select
           name='glossary-import-language-selection'
-          className='Maw(r16) Mb(r1)'
+          className='modal-select'
           placeholder='Select a translation language…'
           value={transLocale}
           options={transLocales}
@@ -66,7 +66,7 @@ class ImportModal extends Component {
     }
 
     if (file && !this.isSupportedFile(fileExtension)) {
-      messageSection = (<div className='C(danger) My(rq)'>
+      messageSection = (<div className='text-unsupported'>
         File '{file.name}' is not supported.
       </div>)
     }
@@ -88,17 +88,17 @@ class ImportModal extends Component {
             ref='file'
             multiple={false}
             disabled={isUploading}
-            className='Mb(r1)' />
+            className='modal-input' />
           {messageSection}
           {isUploading
-            ? transLocale && (<span className='Fz(ms2)'>
+            ? transLocale && (<span className='modal-locale'>
                 {transLocale.label}</span>)
             : langSelection
           }
           <p>
             CSV and PO files are supported. <strong>The source language should
             be in {locale}</strong>. For more details on how to prepare glossary
-            files, see our <a href={uploadGlossaryUrl} className='C(pri)'
+            files, see our <a href={uploadGlossaryUrl} className='text-info'
               target='_blank'>glossary import documentation</a>.
           </p>
         </Modal.Body>

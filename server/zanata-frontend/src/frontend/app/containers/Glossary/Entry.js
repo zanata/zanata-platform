@@ -47,7 +47,6 @@ class Entry extends Component {
       selected,
       termsLoading
     } = this.props
-
     const transContent = entry && entry.transTerm
       ? entry.transTerm.content : ''
     const transSelected = !!selectedTransLocale
@@ -56,7 +55,7 @@ class Entry extends Component {
       return (
         <tr>
           <td>
-            <div className='LineClamp(1,24px) Px(rq)'>Loading…</div>
+            <div className='lineclamp'>Loading…</div>
           </td>
         </tr>
       )
@@ -81,7 +80,7 @@ class Entry extends Component {
     )
 
     const loadingDiv = (
-      <div className='LineClamp(1,24px) Px(rq)'>Loading…</div>
+      <div className='lineclamp'>Loading…</div>
     )
 
     let secondColumnContent
@@ -100,14 +99,16 @@ class Entry extends Component {
         </EditableText>
     } else {
       secondColumnContent =
-        <div className='LineClamp(1,24px) Px(rq)'>
+        <div className='lineclamp'>
           {entry.termsCount}
         </div>
     }
 
+    const cssClass = 'highlight editable' + (selected ? ' selected' : '')
+
     return (
       <Table className='glossary-entry'>
-        <tr className='highlight editable'
+        <tr className={cssClass}
           selected={selected}
           onClick={() => handleSelectTerm(entry.id)}>
           <td className='td-4 tight'>
@@ -143,7 +144,7 @@ class Entry extends Component {
             {termsLoading
               ? loadingDiv
               : (<Row className='entry-row'>
-                <Button bsStyle='link' atomic={{m: 'Mend(rq)'}}
+                <Button bsStyle='link btn-link-end'
                   disabled={isDeleting}
                   onClick={() => this.setShowingEntryModal(true)}>
                   <Icon name='info' className='s1 infoicon-nomargin' />
@@ -160,8 +161,8 @@ class Entry extends Component {
                     handleTermFieldUpdate(field, e)}
                   handleUpdateTerm={(entry) =>
                     handleUpdateTerm(entry, false)} />
-                <div className='Op(0) row--selected_Op(1)
-                  editable:h_Op(1) Trs(eo)'>
+                <div className='trans-row row--selected
+                  editable-op1'>
                   <div className='hidden-lesm'>
                     <Row className='entry-row'>
                       {updateButton}
