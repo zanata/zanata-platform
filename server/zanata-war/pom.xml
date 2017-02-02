@@ -311,7 +311,94 @@
           <skip>${allow.deploy.skip}</skip>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.pitest</groupId>
+        <artifactId>pitest-maven</artifactId>
+        <version>1.1.11</version>
+        <configuration>
+          <targetClasses>
+            <param>org.zanata.*</param>
+          </targetClasses>
+          <targetTests>
+<!--
+            <param>org.zanata.action.*</param>
+            <param>org.zanata.adapter.*</param>
+            <param>org.zanata.config.*</param>
+-->
+            <!--AsyncTaskITCase fails for ConfigurationException: jbossHome '${jboss.home}' must exist
+            <param>org.zanata.async.*</param> -->
+            <!--<param>org.zanata.async.AsyncTaskITCase</param>-->
+<!--
+            <param>org.zanata.async.AsyncTaskHandleTest</param>
+            <param>org.zanata.cache.*</param>
+-->
+            <!-- GlossaryDAOTest fails -->
+            <param>org.zanata.dao.*</param>
+            <!--<param>org.zanata.dao.GlossaryDAOTest</param>
+    11:55:55 AM PIT >> FINE : MINION : FAIL Description [testClass=org.zanata.dao.GlossaryDAOTest, name=org.zanata.dao.GlossaryDAOTest] -> java.lang.AssertionError:
+    Expected: is "02/02/17 11:55"
+         but: was "01/09/09 20:31" -->
 
+<!--
+            <param>org.zanata.dao.DocumentDAOTest</param>
+            <param>org.zanata.dao.LocaleDAOTest</param>
+            <param>org.zanata.dao.ProjectDAOTest</param>
+            <param>org.zanata.dao.TextFlowDAOTest</param>
+            <param>org.zanata.dao.TextFlowStreamingDAOTest</param>
+            <param>org.zanata.dao.TextFlowTargetDAOTest</param>
+            <param>org.zanata.dao.TextFlowTargetHistoryDAOTest</param>
+            <param>org.zanata.dao.TextFlowTargetReviewCommentsDAOJPATest</param>
+            <param>org.zanata.dao.TransMemoryStreamingDAOTest</param>
+            <param>org.zanata.dao.HTextFlowTargetStreamingDAO</param>
+
+            <param>org.zanata.database.*</param>
+-->
+            <!-- EmailBuilderITCase is Arquillian (jboss.home not set) -->
+            <!-- <param>org.zanata.email.*</param> -->
+<!--
+            <param>org.zanata.email.EmailStrategyTest</param>
+            <param>org.zanata.events.*</param>
+            <param>org.zanata.eventservice.*</param>
+            <param>org.zanata.exception.*</param>
+            <param>org.zanata.file.*</param>
+            <param>org.zanata.i18n.*</param>
+            <param>org.zanata.job.*</param>
+            <param>org.zanata.jpa.*</param>
+            <param>org.zanata.limits.*</param>
+            <param>org.zanata.liquibase.*</param>
+            <param>org.zanata.lock.*</param>
+            <param>org.zanata.log4j.*</param>
+            <param>org.zanata.notification.*</param>
+
+            <param>org.zanata.rest.RestLimitingFilterTest</param>
+            <param>org.zanata.rest.ZanataRestSecurityInterceptorTest</param>
+            <param>org.zanata.rest.client.*</param>
+            <param>org.zanata.rest.compat.*</param>
+            <param>org.zanata.rest.dto.*</param>
+-->
+            <!--<param>org.zanata.seam.*</param>
+            <param>org.zanata.search.*</param>-->
+          <!--<param>org.zanata.security.*</param>-->
+            <!--<param>org.zanata.service.*</param>
+            <param>org.zanata.servlet.*</param>
+            <param>org.zanata.tmx.*</param>
+            <param>org.zanata.transaction.*</param>
+            <param>org.zanata.transformer.*</param>
+            <param>org.zanata.ui.*</param>
+            <param>org.zanata.util.*</param>
+            <param>org.zanata.webhook.*</param>-->
+            <!--<param>org.zanata.webtrans.*</param>-->
+            <param>org.zanata.xml.*</param>
+          </targetTests>
+          <excludedGroups>
+            <param>PitIgnore</param>
+          </excludedGroups>
+          <outputFormats>
+            <param>XML</param>
+            <param>HTML</param>
+          </outputFormats>
+        </configuration>
+      </plugin>
     </plugins>
 
     <pluginManagement>

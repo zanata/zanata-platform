@@ -61,6 +61,8 @@
         </targetClasses>
         <targetTests>
           <param>org.zanata.client.commands.*</param>
+          <param>org.zanata.rest.client.*</param>
+          <param>org.zanata.maven.*</param>
         </targetTests>
         <outputFormats>
           <param>XML</param>

@@ -1,12 +1,14 @@
 package org.zanata.client.commands;
 
+import org.apache.log4j.Appender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.spi.LoggingEvent;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 
 import org.zanata.rest.client.*;
 import org.zanata.rest.dto.Account;
@@ -16,6 +18,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
+import static org.zanata.client.commands.Messages.get;
 
 public class PutUserCommandTest {
 
@@ -37,9 +41,17 @@ public class PutUserCommandTest {
     @Mock
     private PutUserCommand command;
 
+    @Mock
+	private Appender mockAppender;
+
+	@Captor
+	private ArgumentCaptor<LoggingEvent> captorLoggingEvent;
+
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
+        Logger root = Logger.getRootLogger();
+        root.addAppender(mockAppender);
 
         opts = new PutUserOptionsImpl();
         opts.setBatchMode(false);
@@ -71,7 +83,9 @@ public class PutUserCommandTest {
                 MockConsoleInteractor.predefineAnswers("y");
         command = new PutUserCommand(opts, restClientFactory, consoleInteractor);
         command.run();
-
+        verify(mockAppender, times(15))
+                .doAppend(captorLoggingEvent.capture());
+        assertTrue(wasLogged(get("no.passwordhash.set"), Level.WARN));
         Mockito.verify(restClientFactory, times(2)).getAccountClient();
         Mockito.verify(accountClient).put(username, expected);
     }
@@ -106,6 +120,20 @@ public class PutUserCommandTest {
         Mockito.verify(accountClient).put(username, existing);
     }
 
+/*    @Test
+    public void testSetNewUserDisabled() {
+        Account user = getGenericAccount();
+        opts.setUserEmail(user.getEmail());
+        opts.setUserName(user.getName());
+        opts.setUserUsername(user.getUsername());
+
+        opts.setUserEnabled("false");
+        user.setEnabled(false);
+
+        Mockito.verify(restClientFactory, times(2)).getAccountClient();
+        Mockito.verify(accountClient).put(username, user);
+    }*/
+
     @Test
     public void newUserNameAndEmailRequired() throws Exception {
         opts.setUserName(null);
@@ -136,5 +164,15 @@ public class PutUserCommandTest {
         existing.setRoles(new HashSet<>(Arrays.asList("user")));
         existing.setTribes(new HashSet<>(Arrays.asList("en-AU")));
         return existing;
+    }
+
+    private boolean wasLogged(String expected, Level level) {
+        for (LoggingEvent loggingEvent :  captorLoggingEvent.getAllValues()) {
+            if (loggingEvent.getMessage().equals(expected) &&
+                    loggingEvent.getLevel().equals(level)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
