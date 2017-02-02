@@ -132,7 +132,7 @@ class Glossary extends Component {
         itemRenderer={::this.renderItem}
         length={size(terms)}
         type='uniform'
-        clasName='react-list'
+        className='react-list'
         ref={(c) => { this.list = c }} />)
     } else {
       list = (<div className='loading-container-theme'>
