@@ -42,14 +42,14 @@ class ViewHeader extends Component {
 
   localeOptionsRenderer (op) {
     return (
-      <span className='D(f) Ai(c) Jc(sb)'>
-        <span className='Flx(flx1) LineClamp(1)' title={op.label}>
+      <span className='locale-options'>
+        <span className='locale-options-label' title={op.label}>
           {op.label}
         </span>
-        <span className='Flx(n) Pstart(re) Ta(end) Maw(r4) LineClamp(1)'>
+        <span className='locale-options-value'>
           {op.value}
         </span>
-        <span className='Flx(n) C(muted) Pstart(re) Ta(end) LineClamp(1) W(r2)'>
+        <span className='locale-options-count'>
           {op.count}
         </span>
       </span>
@@ -90,18 +90,17 @@ class ViewHeader extends Component {
     permission.canUpdateEntry || permission.canDeleteEntry)
     const icon = isReadOnly && (
       <span title='read-only'>
-        <Icon name='locked' className='s1'
-          atomic={{m: 'Mend(re)', c: 'C(warning)'}} />
+        <Icon name='locked' className='s1 lockedicon' />
       </span>)
     const showDeleteAll = permission.canDeleteEntry && !isEmptyTerms
 
     const projectUrl = project && getProjectUrl(project)
 
     const projectLink = project && (
-      <div className='D(ib) Mstart(rh)'>
+      <div className='project-link'>
         <Link icon='project' link={projectUrl} useHref>
           <Row>
-            <Icon name='project' className='s1' atomic={{m: 'Mend(re)'}} />
+            <Icon name='project' className='s1 projecticon' />
             <span className='hidden-lesm'>{project.name}</span>
           </Row>
         </Link>
@@ -113,11 +112,10 @@ class ViewHeader extends Component {
       <Header className='header-glossary' title={title} icon={icon}
         extraHeadingElements={projectLink}
         extraElements={(
-          <div className='flex-row' theme={{base: {ai: 'Ai(c)'}}}>
+          <div className='flex-row-center'>
             <TextInput
-              className='textInput'
+              className='textInput glossarySearch'
               ref={(ref) => this.searchInput = ref}
-              theme={{base: {flx: 'Flx(flx1)', m: 'Mstart(rh)--md'}}}
               type='search'
               placeholder='Search Terms…'
               accessibilityLabel='Search Terms'
@@ -133,12 +131,11 @@ class ViewHeader extends Component {
             </Button>
 
                   {permission.canAddNewEntry && (
-                    <div className='glossary-import Mstart(rh)--md Mstart(rq)'>
+                    <div className='glossary-button'>
                       <Button bsStyle='link' type='button'
                         onClick={() => handleImportFileDisplay(true)}>
                         <Row>
-                          <Icon name='import' className='s1'
-                            atomic={{m: 'Mend(re)'}} />
+                          <Icon name='import' className='import-icon s1' />
                           <span className='hidden-lesm'>Import</span>
                         </Row>
                       </Button>
@@ -146,12 +143,11 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {permission.canDownload && !isEmptyTerms && (
-                    <div className='glossary-export Mstart(rh)--md Mstart(rq)'>
+                    <div className='glossary-button'>
                       <Button bsStyle='link' type='button'
                         onClick={() => handleExportFileDisplay(true)}>
                         <Row>
-                          <Icon name='export' className='s1'
-                            atomic={{m: 'Mend(re)'}} />
+                          <Icon name='export' className='export-icon s1' />
                           <span className='hidden-lesm'>Export</span>
                         </Row>
                       </Button>
@@ -159,12 +155,11 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {permission.canAddNewEntry && (
-                    <div className='glossary-new Mstart(rh)--md Mstart(rq)'>
+                    <div className='glossary-button'>
                       <Button bsStyle='link' onClick={() =>
                         handleNewEntryDisplay(true)}>
                         <Row>
-                          <Icon name='plus' className='s1'
-                            atomic={{m: 'Mend(re)'}} />
+                          <Icon name='plus' className='plus-icon s1' />
                           <span className='hidden-lesm'>New</span>
                         </Row>
                       </Button>
@@ -172,7 +167,7 @@ class ViewHeader extends Component {
                     </div>)}
 
                   {showDeleteAll && (
-                    <div className='glossary-delall Mstart(rh)--md Mstart(rq)'>
+                    <div className='glossary-button'>
                       <DeleteAllEntriesModal show={deleteAll.show}
                         isDeleting={deleteAll.isDeleting}
                         handleDeleteAllEntriesDisplay={(display) =>
@@ -183,9 +178,7 @@ class ViewHeader extends Component {
         )}>
         <div className='glossary-table'>
           <table>
-            <tr
-              theme={{base: {bd: ''}}}
-              className='Flx(flx1)'>
+            <tr className='tr-flex1'>
               <td className='td-3'
                 onClick={() => handleSortColumn('src_content')}>
                 <Button bsStyle='link' type='button'>
@@ -195,23 +188,21 @@ class ViewHeader extends Component {
                         ? <Icon name='chevron-down' className='s1' />
                         : <Icon name='chevron-up' className='s1' />
                       : ''}
-                    <Icon name='glossary' className='s1'
-                      atomic={{c: 'C(neutral)', m: 'Mend(re) MStart(rq)'}} />
+                    <Icon name='glossary' className='s1 glossaryicon-neutral' />
                     <span>
                     English (United States)
                     </span>
-                    <span className='C(muted) Mstart(rq)'>{termCount}</span>
+                    <span className='term-count'>{termCount}</span>
                   </Row>
                 </Button>
               </td>
               <td
-                className='langSelect td-3'
-                theme={{base: {lineClamp: ''}}}>
+                className='langSelect td-3'>
                 <Select
                   name='language-selection'
                   placeholder={statsLoading
                     ? 'Loading…' : 'Select a language…'}
-                  className='Flxg(1)'
+                  className='input-flex'
                   isLoading={statsLoading}
                   value={selectedTransLocale}
                   options={transLocales}
@@ -222,9 +213,9 @@ class ViewHeader extends Component {
                 {selectedTransLocale &&
                 (<span className='hidden-xs'>
                   <Row>
-                    <Icon name='translate' className='s1 translateicon-neutral'
-                      atomic={{c: 'C(neutral)', m: 'Mstart(rq) Mend(re)'}} />
-                    <span className='C(muted)'>
+                    <Icon name='translate' className='s1
+                      translateicon-neutral' />
+                    <span className='text-neutral'>
                     {currentLocaleCount}
                     </span>
                   </Row>
@@ -240,7 +231,7 @@ class ViewHeader extends Component {
                         ? <Icon name='chevron-down' className='s1' />
                         : <Icon name='chevron-up' className='s1' />
                       : ''}
-                    <span className='MStart(rq)'>
+                    <span className='partofspeech'>
                     Part of Speech
                     </span>
                   </Row>

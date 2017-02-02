@@ -28,7 +28,7 @@ const CalendarMonthMatrix = ({
     return <table><tbody><tr><td>Loading</td></tr></tbody></table>
   }
 
-  const calClass = 'activity-graph Mb(r1) Tbl(f) W(100%) ' + classes.calendar
+  const calClass = 'activity-graph' + classes.calendar
       .types[selectedContentState.toLowerCase().replace(' ', '')]
 
   let days = []
@@ -84,7 +84,7 @@ const CalendarMonthMatrix = ({
     <div id='activity-table'>
       <div className='activity-table-inner'>
         <div>
-          <h3 className='Fw(600) Tt(u)'>
+          <h3 className='text-bold-uppercase'>
             {header}
           </h3>
         </div>
