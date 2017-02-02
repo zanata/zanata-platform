@@ -115,7 +115,6 @@ import org.zanata.feature.versionGroup.VersionGroupUrlTest;
          * Source document upload and management
          */
         FileTypeUploadTest.class,
-        HTMLDocumentTypeTest.class,
         MultiFileUploadTest.class,
         SubtitleDocumentTypeTest.class,
         UploadTest.class,
@@ -125,13 +124,8 @@ import org.zanata.feature.versionGroup.VersionGroupUrlTest;
          * Translation editor general features
          */
         EditorFilterMessagesTest.class,
-        TranslateHTMLTest.class,
-        TranslateIdmlTest.class,
-        TranslateOdsTest.class,
-        TranslateOpenOfficeTest.class,
         TranslateTextTest.class,
         TranslationHistoryTest.class,
-        TranslateJSONTest.class,
 
         /*
          * Glossary
