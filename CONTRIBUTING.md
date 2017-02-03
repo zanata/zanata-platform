@@ -14,7 +14,7 @@ Pull requests welcome!
 
 ### <a name="Setup">Setup</a>
 The
-[Developer Setup Guide](https://github.com/zanata/zanata-server/wiki/Developer-Guide)
+[Developer Setup Guide](https://github.com/zanata/zanata-platform/wiki/Developer-Guide)
 shows the dependencies and how to setup Java, Maven, MySQL, JBoss, and IDE.
 
 ### Branches
