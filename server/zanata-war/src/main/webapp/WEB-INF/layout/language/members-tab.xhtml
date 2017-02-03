@@ -24,6 +24,7 @@
 
     <div class="panel__sub-header js-reveal">
       <zanata:list-filter status="membersTab-membersLoader"
+        oncomplete="zanata.form.appendCheckboxes('#members-form')"
         listId="members-form"
         render="members-form, membersSearchBottom-pager, membersSearchBottom-page-info"
         id="membersSearch" iconClass="i--users"
@@ -141,6 +142,7 @@
     </h:form>
 
     <zanata:list-filter listId="members-form"
+      oncomplete="zanata.form.appendCheckboxes('#members-form')"
       render="members-form, membersSearch-pager, membersSearch-page-info"
       id="membersSearchBottom" iconClass="i--users" bottomPanel="true"
       placeholder="#{msgs['jsf.language.members.search.placeholder']}"
