@@ -1,3 +1,0 @@
-# Middleware
-
-Redux Middleware

@@ -38,11 +38,6 @@ The following Maven properties can be overridden on the command line with ```-Dk
 
 By default it will try to install npm modules from npm registry (default cache TTL is 10 seconds).
 
-## Documentation
-
-For extensive details on each part of the front-end see the
-[documentation](./docs).
-
 
 ## ignore-scripts
 

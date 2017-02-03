@@ -484,6 +484,18 @@ input.textInput::placeholder {
   fill: currentColor;
 }
 
+#profile-username, #profile-languages, #profile-roles {
+line-height:1.333;
+}
+
+#profile-languages {
+  display:block;
+}
+
+#profile-languages svg {
+  vertical-align: middle;
+}
+
 span.icons {
   position: absolute;
   height: 100%;
@@ -3845,6 +3857,10 @@ h2.recent-contrib {
 
 .activity-graph h3 {
   color: @brand-primary;
+}
+
+table.activity-graph td {
+  padding:0;
 }
 
 .activity-graph .stretched-box {
