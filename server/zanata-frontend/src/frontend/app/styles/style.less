@@ -167,7 +167,7 @@ body {
   font-weight: 400;
   letter-spacing: normal;
   line-break: auto;
-  line-height: 1.42857143;
+  line-height: @line-height-base;
   text-align: center;
   text-decoration: none;
   text-shadow: none;
@@ -190,7 +190,7 @@ h3.popover-title {
 }
 
 .popover-content p {
-  margin-bottom: @margin-heading;
+  margin-bottom: @spacing-heading;
 }
 
 .popover.top > .arrow {
@@ -279,7 +279,7 @@ h3.popover-title {
 }
 
 .nav-link.search {
-  margin-top: 0.75rem;
+  margin-top: @margin-rq;
 }
 
 .nav-logo {
@@ -343,7 +343,7 @@ h2.matrix-heading {
   font-size: 1.1rem;
   font-style: inherit;
   outline: 0;
-  padding-left: @margin-hr;
+  padding-left: @spacing-hr;
   padding-right: @margin-rh;
   margin-left: @margin-rh;
 }
@@ -421,7 +421,7 @@ h2.matrix-heading {
 
 .glossaryhead-title {
   font-size: 1.2rem;
-  margin-top: @margin-heading;
+  margin-top: @spacing-heading;
 }
 
 .glossaryhead-actions-theme {
@@ -780,7 +780,7 @@ span.profile-email {
 }
 
 ul.large-font-list li.flex-center svg {
-  margin-right: 0.1875rem;
+  margin-right: @margin-re;
 }
 
 #profile-matrix {
@@ -1031,7 +1031,7 @@ pre {
   font-size: 0.929rem;
   line-height: @line-height-base;
   display: block;
-  margin: 0 0 @margin-heading;
+  margin: 0 0 @spacing-heading;
   padding: @margin-horizontal;
   word-wrap: break-word;
   word-break: break-all;
@@ -1074,7 +1074,7 @@ dfn {
 }
 
 sub, sup {
-  font-size: 0.75rem;
+  font-size: @margin-rq;
   line-height: 0;
   position: relative;
   vertical-align: baseline;
@@ -1106,8 +1106,8 @@ hr {
   -moz-box-sizing: content-box;
   box-sizing: content-box;
   height: 0;
-  margin-top: @margin-hr;
-  margin-bottom: @margin-hr;
+  margin-top: @spacing-hr;
+  margin-bottom: @spacing-hr;
   border: 0;
   border-top: 1px solid #eee;
 }
@@ -1201,7 +1201,7 @@ legend {
   line-height: inherit;
   display: block;
   width: 100%;
-  margin-bottom: @margin-hr;
+  margin-bottom: @spacing-hr;
   padding: 0;
   color: #333;
   border: 0;
@@ -1212,7 +1212,7 @@ label {
   font-weight: 700;
   display: inline-block;
   max-width: 100%;
-  margin-bottom: @margin-hr;
+  margin-bottom: @spacing-hr;
 }
 
 label.control-label span.s0 {
@@ -1259,7 +1259,7 @@ output {
 
 fieldset {
   margin: 0 2px;
-  padding: 0.35em 0.625em 0.75rem;
+  padding: 0.35em 0.625em @margin-rq;
   border: 1px solid silver;
 }
 
@@ -1293,17 +1293,14 @@ table td {
   flex-direction: '';
   align-items: center;
   height: 3rem;
-  padding-top: 0.375rem;
-  padding-bottom: 0.375rem;
-  padding-left: 0.75rem;
-  padding-right: 0.75rem;
+  padding-top: @margin-rh;
+  padding-bottom: @margin-rh;
+  padding-left: @margin-rq;
+  padding-right: @margin-rq;
 }
 
 .container-sidebar td.tight {
-  padding-top: 0.15rem;
-  padding-bottom: 0.15rem;
-  padding-left: 0.15rem;
-  padding-right: 0.15rem;
+  padding: @margin-tight;
 }
 
 .container-sidebar td.td-3 {
@@ -1345,11 +1342,11 @@ table td {
 
 .modal-select {
   max-width: 24rem;
-  margin-bottom:1.5rem;
+  margin-bottom:@margin-base-and-a-half;
 }
 
 .modal-input {
-  margin-bottom:1.5rem;
+  margin-bottom:@margin-base-and-a-half;
 }
 
 .modal-locale {
@@ -1505,8 +1502,8 @@ h1:not(:first-of-type) {
 }
 
 .h1, .h2, .h3, h1, h2, h3 {
-  margin-top: @margin-heading;
-  margin-bottom: @margin-heading;
+  margin-top: @spacing-heading;
+  margin-bottom: @spacing-heading;
   color: @color-light;
 }
 
@@ -1547,7 +1544,7 @@ h1:not(:first-of-type) {
 }
 
 .h6, h6 {
-  font-size: 0.75rem;
+  font-size: @margin-rq;
 }
 
 .AutoTags h1:after, form i, table i {
@@ -1555,7 +1552,7 @@ h1:not(:first-of-type) {
 }
 
 p {
-  margin: 0 0 1.5rem;
+  margin: 0 0 @margin-base-and-a-half;
   font-size: 1rem;
 }
 
@@ -1563,7 +1560,7 @@ p {
   font-size: 1.143rem;
   font-weight: 300;
   line-height: 1.4;
-  margin-bottom: @margin-hr;
+  margin-bottom: @spacing-hr;
 }
 
 .text-left {
@@ -1648,11 +1645,11 @@ td span.txt--understated {
 }
 
 .text-primary {
-  color: #4995cf;
+  color: @color-light;
 }
 
 .text-warning {
-  color: #ffa800;
+  color: @brand-warning;
 }
 
 .text-danger {
@@ -1733,7 +1730,7 @@ a.text-primary:focus, a.text-primary:hover {
 
 .bg-primary {
   color: #fff;
-  background-color: #337ab7;
+  background-color: @color-dark;
 }
 
 a.bg-primary:focus, a.bg-primary:hover {
@@ -1742,7 +1739,7 @@ a.bg-primary:focus, a.bg-primary:hover {
 
 ol, ul {
   margin-top: 0;
-  margin-bottom: @margin-heading;
+  margin-bottom: @spacing-heading;
 }
 
 ol ol, ol ul, ul ol, ul ul {
@@ -1777,7 +1774,7 @@ h2.modal-title .list-inline {
 
 dl {
   margin-top: 0;
-  margin-bottom: @margin-hr;
+  margin-bottom: @spacing-hr;
 }
 
 dd, dt {
@@ -1801,7 +1798,7 @@ dd {
 
 .container-sidebar {
   margin-left: 4.5rem;
-  margin-right: 1.5rem;
+  margin-right: @margin-base-and-a-half;
 }
 
 .container-editor {
@@ -2050,7 +2047,7 @@ th {
 .table {
   width: 100%;
   max-width: 100%;
-  margin-bottom: @margin-hr;
+  margin-bottom: @spacing-hr;
 }
 
 .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th, .table > thead > tr > td, .table > thead > tr > th {
@@ -2209,7 +2206,7 @@ input[type=search] {
 }
 
 .form-group .bg-info, p.bg-info {
-  margin-bottom: @margin-heading;
+  margin-bottom: @spacing-heading;
   padding: @margin-horizontal;
   color: #20718a;
 }
@@ -2227,8 +2224,8 @@ span.infotxt {
   font-size: 0.9rem;
   font-weight: 400;
   margin-right: @margin-xxl;
-  margin-left: @margin-heading;
-  color: #629bac;
+  margin-left: @spacing-heading;
+  color: @brand-info;
 }
 
 span.infotxt {
@@ -2526,7 +2523,7 @@ span.dis.badge {
 }
 
 span.caret {
-  margin-right: @margin-heading;
+  margin-right: @spacing-heading;
   color: #546675;
 }
 
@@ -2588,8 +2585,8 @@ span.langcode {
 }
 
 .button-group .btn {
-  margin-right: @margin-heading;
-  margin-bottom: @margin-heading;
+  margin-right: @spacing-heading;
+  margin-bottom: @spacing-heading;
 }
 
 .dropdown {
@@ -2612,8 +2609,8 @@ span.langcode {
   margin: 2px 0 0;
   list-style: none;
   font-size: 14px;
-  background-color: #ffffff;
-  border: 1px solid #cccccc;
+  background-color: #fff;
+  border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.15);
   border-radius: @border-radius-base;
   -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
@@ -2638,22 +2635,22 @@ span.langcode {
   padding: @border-radius-large @margin-xxl;
   clear: both;
   font-weight: normal;
-  line-height: 1.42857143;
+  line-height: @line-height-base;
   color: #333333;
   white-space: nowrap;
 }
 
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
   text-decoration: none;
-  color: #ffffff;
-  background-color: #bbbbbb;
+  color: #fff;
+  background-color: #bbb;
 }
 
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
-  color: #ffffff;
+  color: #fff;
   text-decoration: none;
   outline: 0;
-  background-color: #bbbbbb;
+  background-color: #bbb;
 }
 
 .dropdown-menu > .disabled > a, .dropdown-menu > .disabled > a:hover, .dropdown-menu > .disabled > a:focus {
@@ -3021,7 +3018,7 @@ button.btn-link.delete-link, button.btn-link.delete-link .loader-text {
 
 .btn-warning {
   border-color: #cf8800;
-  background-color: #ffa800;
+  background-color: @brand-warning;
 }
 
 button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown-toggle > span.caret, button.btn.btn-primary.dropdown-toggle > span.caret, button.btn.btn-success.dropdown-toggle > span.caret, button.btn.btn-warning.dropdown-toggle > span.caret {
@@ -3164,7 +3161,7 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
 ul.list--stats li.progress-bar__expander,
 li.progress-bar__expander.panels__panel__item,
 li.progress-bar__expander.list__item--actionable {
-  padding-bottom: 0.375em !important;
+  padding-bottom: @margin-rq !important;
 }
 
 li.progress-bar__expander.panels__panel__item a .list__item,
@@ -3214,8 +3211,8 @@ tbody.collapse {
 }
 
 .notification-modal {
-  margin-top: 0.75rem;
-  margin-bottom: 0.75rem;
+  margin-top: @margin-rq;
+  margin-bottom: @margin-rq;
   text-align: center;
 }
 
@@ -3236,9 +3233,9 @@ tbody.collapse {
 }
 
 .notification-modal-content {
-  border-radius: 0.375rem;
+  border-radius: @margin-rh;
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.185);
-  padding: 0.75rem;
+  padding: @margin-rq;
   font-size: 1.2rem;
 }
 
@@ -3278,7 +3275,7 @@ tbody.collapse {
 }
 
 .toolbar {
-  padding-top: @margin-hr;
+  padding-top: @spacing-hr;
 }
 
 .toolbar .sort-items {
@@ -3613,7 +3610,7 @@ table.glossary-entry {
 }
 
 span.hidden-lesm.glossary-row {
-  margin-top: 0.375rem;
+  margin-top: @margin-rh;
 }
 
 .glossary-select {
@@ -3621,13 +3618,13 @@ span.hidden-lesm.glossary-row {
   width: 4.5rem;
 }
 
-td.langSelect .row {
+td.lang-select .row {
   position: absolute;
   top: 0.8rem;
   right: 5rem;
 }
 
-td.langSelect .row span {
+td.lang-select .row span {
   vertical-align: text-bottom;
 }
 
@@ -3646,8 +3643,8 @@ td.langSelect .row span {
 }
 
 .glossary-list {
-  margin-right: 1rem;
-  margin-left: 1rem;
+  margin-right: @margin-base;
+  margin-left: @margin-base;
   margin-top: 4rem;
   font-size: 0.92rem;
 }
@@ -4000,7 +3997,7 @@ img.avatar-round {
 #profile-displayname {
   color: @color-dark;
   font-weight: 600;
-  margin-bottom: 0.375rem;
+  margin-bottom: @margin-rh;
   margin-top: 0;
 }
 
@@ -4017,7 +4014,7 @@ h2.recent-contrib {
 
 .activity-graph {
   background-clip: padding-box;
-  border-width: 0.375rem;
+  border-width: @margin-rh;
   border-color: transparent;
   border-style: solid;
   overflow: hidden;
@@ -4025,7 +4022,7 @@ h2.recent-contrib {
   position: relative;
   text-align: center;
   vertical-align: top;
-  margin-bottom:1.5rem;
+  margin-bottom:@margin-base-and-a-half;
   table-layout: fixed;
   width:100%
 }
@@ -4040,21 +4037,21 @@ h2.recent-contrib {
 
 .activity-graph .cal-date {
   font-size: 0.833rem !important;
-  padding-top: 0.1875rem;
-  padding-bottom: 0.1875rem;
+  padding-top: @margin-re;
+  padding-bottom: @margin-re;
   background-color: rgba(255, 255, 255, 0.15);
 }
 
 .activity-graph .cal-info {
   background-color: rgba(255, 255, 255, 0.30);
-  padding-top: 0.1875rem;
-  padding-bottom: 0.1875rem;
+  padding-top: @margin-re;
+  padding-bottom: @margin-re;
   font-weight: 600;
 }
 
 .activity-table-inner {
   display: flex;
-  margin-bottom: 0.75rem;
+  margin-bottom: @margin-rq;
 }
 
 #activity-table td button.btn-primary {
@@ -4075,7 +4072,7 @@ h2.recent-contrib {
 
 button.success.btn.btn-default, button.plain.btn.btn-default, button.primary.btn.btn-default, button.unsure.btn.btn-default {
   border-radius: @border-radius-pager;
-  margin-right: 1rem;
+  margin-right: @margin-base;
   border: solid 1px @gray;
 }
 
@@ -4301,7 +4298,7 @@ ul.nav-pills > li.active > a {
 }
 
 .pager {
-  margin: @margin-hr 0;
+  margin: @spacing-hr 0;
   padding-left: 0;
   list-style: none;
   text-align: center;
@@ -4354,7 +4351,7 @@ ul.nav-pills > li.active > a {
 }
 
 .button-spacing button:first-of-type {
-  margin-right: 0.4rem;
+  margin-right: @margin-small-rem;
 }
 
 a.label:focus, a.label:hover {
@@ -4403,7 +4400,7 @@ a.label:focus, a.label:hover {
   vertical-align: middle;
   white-space: nowrap;
   color: #fff;
-  border-radius: @margin-heading;
+  border-radius: @spacing-heading;
   background-color: @color-dark;
 }
 
@@ -4456,7 +4453,7 @@ h2 span.badge {
 }
 
 .list-group {
-  margin-bottom: @margin-hr;
+  margin-bottom: @spacing-hr;
   padding-left: 0;
 }
 
@@ -4534,7 +4531,7 @@ button.list-group-item {
 }
 
 .list-group-item-text {
-  line-height: 1.3;
+  line-height: @line-height-large;
   margin-bottom: 0;
 }
 
@@ -4543,7 +4540,7 @@ button.list-group-item {
 }
 
 .teaser-list-theme .list-theme {
-  margin-top: 1.5rem;
+  margin-top: @margin-base-and-a-half;
 }
 
 .teaser-view-theme {
@@ -4557,7 +4554,7 @@ button.list-group-item {
   align-items: center;
   display: inline-flex;
   vertical-align: sub;
-  padding-bottom:1rem;
+  padding-bottom:@margin-base;
 
 }
 
@@ -4595,7 +4592,7 @@ button.list-group-item {
   -webkit-box-orient: vertical;
   overflow:hidden;
   max-height: 24px;
-  padding-left: 0.375rem;
+  padding-left: @margin-rh;
 }
 
 a.lineclamp {
@@ -4622,7 +4619,7 @@ a.lineclamp:after {
 .team-teaser-view {
   align-items: center;
   flex-direction: '';
-  margin-bottom: 0.75rem;
+  margin-bottom: @margin-rq;
 }
 
 .words-translated-view {
@@ -4662,7 +4659,7 @@ a.lineclamp:after {
 .text-suggestion {
   color: @color-muted;
   font-size: 0.833rem;
-  margin-left: 0.375rem;
+  margin-left: @margin-rh;
 }
 
 .text-light {
@@ -4678,7 +4675,7 @@ a.lineclamp:after {
   margin-left: auto;
   flex-direction: '';
   float: right;
-  padding-right: 2rem;
+  padding-right: @margin-large;
 }
 
 .embed-responsive {
@@ -4699,7 +4696,7 @@ a.lineclamp:after {
 }
 
 .panel {
-  margin-bottom: @margin-hr;
+  margin-bottom: @spacing-hr;
   border: 1px solid transparent;
   border-radius: @border-radius-base;
   -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
@@ -4878,7 +4875,7 @@ a.lineclamp:after {
 }
 
 .panel-group {
-  margin-bottom: @margin-hr;
+  margin-bottom: @spacing-hr;
 }
 
 .panel-group .panel {
@@ -4949,7 +4946,7 @@ a.lineclamp:after {
 }
 
 .panel-warning {
-  border: solid 1px #ffa800;
+  border: solid 1px @brand-warning;
 }
 
 .panel-danger {
@@ -5108,7 +5105,7 @@ a.lineclamp:after {
 
 .modal-title {
   margin: 0;
-  line-height: 1.42857143;
+  line-height: @line-height-base;
   font-size: 1.725rem;
   text-align: center;
 }
@@ -5294,8 +5291,8 @@ a.lineclamp:after {
 
 .content {
   font-size: 1rem;
-  padding-top: @margin-hr;
-  padding-bottom: @margin-hr;
+  padding-top: @spacing-hr;
+  padding-bottom: @spacing-hr;
   background-color: #fff;
   width: 100%;
 }
@@ -5345,10 +5342,8 @@ button.close:focus, button.close:hover, button.close:active:focus {
   content: "\e237";
 }
 
-
-
 .toolbar {
-  padding-top: @margin-hr;
+  padding-top: @spacing-hr;
 }
 
 .toolbar .sort-items {
@@ -5373,7 +5368,7 @@ button.close:focus, button.close:hover, button.close:active:focus {
 }
 
 .toolbar {
-  padding-top: @margin-hr;
+  padding-top: @spacing-hr;
 }
 
 .toolbar .sort-items {
@@ -5478,7 +5473,7 @@ button.btn-link {
   background-color: @color-dark;
 }
 
-@media (max-width: @screen-xs-max) {
+@media (max-width: 29.375rem) {
   .view {
     flex-direction: column;
     display: inline-flex;
@@ -5506,8 +5501,8 @@ button.btn-link {
 
   .glossaryhead-base {
     padding-top: 1.5rem;
-    margin-left: 0.375rem;
-    margin-right: 0.375rem;
+    margin-left: @margin-rh;
+    margin-right: @margin-rh;
   }
 
   .logo-link-theme {
@@ -5573,11 +5568,11 @@ button.btn-link {
   .nav-link {
     display: none;
     flex-grow: 1;
-    padding: 0.375rem;
+    padding: @margin-rh;
   }
 }
 
-@media (min-width: @screen-xs-min) {
+@media (min-width: 29.375rem) {
   .view {
     display: flex;
     align-items: flex-start;
@@ -5629,8 +5624,8 @@ button.btn-link {
   .nav-link {
     display: flex;
     flex-grow: 0;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
+    padding-top: @margin-rq;
+    padding-bottom: @margin-rq;
   }
 
 }
@@ -5988,16 +5983,16 @@ button.btn-link {
   }
 
   .matrix-heading {
-    padding-bottom: 1rem;
+    padding-bottom: @margin-base;
   }
 
-  .langSelect {
+  .lang-select {
     right: 0;
   }
 
   .header-classes {
     margin-left: 0;
-    margin-bottom: @margin-hr;
+    margin-bottom: @spacing-hr;
   }
 
   .search-view-theme .text-input {
@@ -6132,7 +6127,7 @@ button.btn-link {
 }
 
 @media (min-width: @screen-md-min) {
-  .langSelect {
+  .lang-select {
     position: relative;
   }
 
@@ -6150,7 +6145,7 @@ button.btn-link {
   }
 
   .wide-view-theme.profile-page {
-    margin-top: 0.375rem;
+    margin-top: @margin-rh;
   }
 
   .wide-view-theme-glossary {
@@ -6159,8 +6154,8 @@ button.btn-link {
   }
 
   .matrix-heading {
-    margin-right: 0.75rem;
-    margin-left: 0.75rem;
+    margin-right: @margin-rq;
+    margin-left: @margin-rq;
   }
 
   h2.matrix-heading {
@@ -6440,7 +6435,7 @@ button.btn-link {
 
   .matrix-inner {
     width: 50%;
-    margin-right: 0.75rem;
+    margin-right: @margin-rq;
   }
 
   .visible-lg {
@@ -6696,7 +6691,7 @@ button.btn-link {
 
 @media (min-width: @screen-md-min) and (max-width: @screen-md-max) {
   .header-classes {
-    margin-left: @margin-hr;
+    margin-left: @spacing-hr;
   }
 }
 
@@ -6862,7 +6857,7 @@ button.btn-link {
   }
 
   table img.avatar {
-    margin-right: @margin-heading;
+    margin-right: @spacing-heading;
   }
 
   h2, h3, p {
