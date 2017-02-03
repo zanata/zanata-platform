@@ -101,7 +101,7 @@ class UserProfile extends Component {
                     (<span tagName='li'
                       id='profile-languages'>
                       <Icon name='language'
-                        className='s0 langicon pull-left'
+                        className='s0 pull-left'
                         title='Spoken languages' />
                       {languageTeams}
                     </span>)}
