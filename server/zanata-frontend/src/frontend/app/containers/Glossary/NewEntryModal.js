@@ -83,7 +83,7 @@ class NewEntryModal extends Component {
           <div className='modal-section'>
             <label className='text-bold'>Term</label>
             <EditableText
-              className='editable textStateClasses'
+              className='editable text-state-classes'
               editable={true}
               editing={true}
               placeholder='The new term'
@@ -95,7 +95,7 @@ class NewEntryModal extends Component {
           <div className='modal-section'>
             <label className='text-bold'>Part of speech</label>
             <EditableText
-              className='textInput modal-section'
+              className='text-input modal-section'
               editable={true}
               editing={true}
               placeholder='Noun, Verb, etc'
@@ -107,7 +107,7 @@ class NewEntryModal extends Component {
           <div className='modal-section'>
             <label className='text-bold'>Description</label>
             <EditableText
-              className='textInput'
+              className='text-input'
               editable={true}
               editing={true}
               placeholder='The definition of this term'
