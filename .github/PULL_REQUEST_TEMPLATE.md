@@ -43,7 +43,7 @@ Use the checkboxes or not, whatever works best for you.
    - [ ] Developer/sysadmin docs updated if appropriate
  - If there are new dependencies
    - [ ] Does each new dependency pass all the
-         [Considerations for new dependencies](https://github.com/zanata/zanata-server/wiki/Development-Guidelines#new-technologies-and-dependencies)?
+         [Considerations for new dependencies](https://github.com/zanata/zanata-platform/wiki/Development-Guidelines#new-technologies-and-dependencies)?
 
 
 ----
