@@ -53,12 +53,6 @@ data-source add --name=zanataDatasource \
 ## Allow stdout handler to include DEBUG/TRACE logging
 /subsystem=logging/console-handler=CONSOLE:write-attribute(name=level,value=TRACE)
 
-## JDBC connection allocation/release will be logged to server.log
-/subsystem=logging/logger=org.hibernate.engine.jdbc.internal.LogicalConnectionImpl:add
-/subsystem=logging/logger=org.hibernate.engine.jdbc.internal.LogicalConnectionImpl:write-attribute(name=level,value=DEBUG)
-## More info about JDBC connections will be logged to server.log
-/subsystem=logging/logger=org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl:add
-/subsystem=logging/logger=org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl:write-attribute(name=level,value=DEBUG)
 ## Disable some startup warnings triggered by third-party jars
 /subsystem=logging/logger=org.jboss.as.server.deployment:add
 /subsystem=logging/logger=org.jboss.as.server.deployment:write-attribute(name=level,value=INFO)
