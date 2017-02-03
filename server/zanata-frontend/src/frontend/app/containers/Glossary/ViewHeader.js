@@ -197,7 +197,7 @@ class ViewHeader extends Component {
                 </Button>
               </td>
               <td
-                className='langSelect td-3'>
+                className='lang-select td-3'>
                 <Select
                   name='language-selection'
                   placeholder={statsLoading
