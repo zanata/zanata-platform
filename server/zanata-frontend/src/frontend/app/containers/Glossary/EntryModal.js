@@ -87,7 +87,7 @@ class EntryModal extends Component {
             <EditableText
               editable={!transSelected}
               editing={true}
-              className='textStateClasses'
+              className='text-state-classes'
               maxLength={255}
               placeholder='Add part of speech…'
               emptyReadOnlyText='No part of speech'

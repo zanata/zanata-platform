@@ -129,7 +129,7 @@ class Entry extends Component {
           {termsLoading
             ? loadingDiv
             : (<EditableText
-              className='textStateClasses'
+              className='text-state-classes'
               title={entry.pos}
               editable={!transSelected && editable}
               editing={selected}
