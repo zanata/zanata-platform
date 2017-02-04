@@ -74,7 +74,7 @@ body.templatestyle {
 
 .root-main {
   width: 100%;
-  height:100%;
+  height:auto;
   display: flex;
   flex-grow: 1;
   overflow: auto;;
@@ -89,13 +89,8 @@ body.templatestyle {
   flex-direction: column;
   flex: 1;
   overflow: hidden;
-  height: 100%;
+  height: auto;
   min-height: max-content;
-}
-
-.new-zanata .g--centered {
-  text-align: center;
-  width: 100%;
 }
 
 .container {
@@ -5541,6 +5536,17 @@ i.i--left.i--lock, i.i--left.i--trash {
 
 #version-page.g {
   width:100%;
+}
+
+
+.new-zanata .g--centered {
+  text-align: center;
+  width: 100%;
+}
+
+.tabs__content {
+  padding-bottom:@spacing-base-and-a-half;
+
 }
 
 // @screen-xs variable depreciated
