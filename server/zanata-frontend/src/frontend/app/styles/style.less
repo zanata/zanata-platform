@@ -81,6 +81,7 @@ body.templatestyle {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   padding-top: 0 !important;
+  margin-bottom:@spacing-base-and-a-half;
 }
 
 .root-main-content {
@@ -361,13 +362,15 @@ body.templatestyle {
 .glossaryhead-title {
   font-size: 1.2rem;
   margin-top: @spacing-heading;
+  margin-right: @spacing-rh;
 }
 
 .glossaryhead-actions-theme {
-  align-items: center;
+  flex-grow: 1;
+}
 
-  margin-left: auto;
-  width: 70%;
+.glossaryhead-actions-theme .text-input {
+  min-width: 4em;
 }
 
 .scroll-view-theme {
@@ -2997,7 +3000,7 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
 ul.list--stats li.progress-bar__expander,
 li.progress-bar__expander.panels__panel__item,
 li.progress-bar__expander.list__item--actionable {
-  padding-bottom: @spacing-rq !important;
+  padding-bottom: @spacing-rh !important;
 }
 
 li.progress-bar__expander.panels__panel__item a .list__item,
@@ -5067,6 +5070,14 @@ a.lineclamp:after {
   overflow-x: hidden;
 }
 
+.modal-body label {
+  margin-bottom:0;
+}
+
+.modal-body .checkbox {
+  margin:0;
+}
+
 .modal-footer {
   padding: @spacing-base;
   text-align: right;
@@ -5578,7 +5589,7 @@ i.i--left.i--lock, i.i--left.i--trash {
   }
 
   .glossaryhead-base {
-    padding-top: 1.5rem;
+    padding-top: 0;
     margin-left: @spacing-rh;
     margin-right: @spacing-rh;
   }
@@ -5589,6 +5600,7 @@ i.i--left.i--lock, i.i--left.i--trash {
 
   .glossaryhead-title {
     font-size: 1.44rem;
+    margin-right:0;
   }
 
   .hidden-lesm {
@@ -5668,6 +5680,10 @@ i.i--left.i--lock, i.i--left.i--trash {
   .glossaryhead-base {
     margin-left: 1.5rem;
     margin-right: 1rem;
+  }
+
+  .glossaryhead-title {
+    margin-right:@spacing-base;
   }
 
   .wide-view-theme-glossary {
@@ -6070,10 +6086,11 @@ i.i--left.i--lock, i.i--left.i--trash {
     right: 0;
   }
 
-  .glossaryhead-actions-theme .glossary-button button {
+  .glossaryhead-actions-theme button {
     padding-left: 0;
     padding-right: 0;
   }
+
 
   .header-classes {
     margin-left: 0;
@@ -6220,6 +6237,10 @@ i.i--left.i--lock, i.i--left.i--trash {
 
   .modal-lg {
     width: 900px;
+  }
+
+  .glossaryhead-title {
+    margin-right:3em;
   }
 
   .glossary-button {
@@ -6505,6 +6526,10 @@ i.i--left.i--lock, i.i--left.i--trash {
 @media (min-width: @screen-lg-min) {
   .container {
     width: @container-large-desktop;
+  }
+
+  .glossaryhead-title {
+    margin-right:9em;
   }
 
   .container-sidebar td.td-2 {
