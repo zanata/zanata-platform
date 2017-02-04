@@ -5487,6 +5487,7 @@ button.close:focus, button.close:hover, button.close:active:focus {
 
 .new-zanata .g {
   align-self:center;
+  padding-bottom:@spacing-base;
 }
 
 .more-content {
@@ -5526,11 +5527,14 @@ table.search-table {
   max-width:36.05em;
 }
 
-.panel__header i.i--add {
+.panel__header i.i--add:not(.i--large) {
   color:#fff;
 }
+.button--small i.i--settings {
+  vertical-align: baseline;
+}
 
-i.i--left.i--lock, .i--left,i--trash, .button--small i.i--settings {
+i.i--left.i--lock, i.i--left.i--trash {
   color:#fff;
   vertical-align: baseline;
 }
@@ -5539,7 +5543,7 @@ i.i--left.i--lock, .i--left,i--trash, .button--small i.i--settings {
   width:100%;
 }
 
-// @screen-xs depreciated
+// @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
   .view {
     flex-direction: column;
@@ -5642,7 +5646,6 @@ i.i--left.i--lock, .i--left,i--trash, .button--small i.i--settings {
   }
 }
 
-// @screen-xs depreciated
 @media (min-width: 29.376rem) {
   .view {
     display: flex;
