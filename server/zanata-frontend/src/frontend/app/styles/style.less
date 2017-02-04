@@ -69,10 +69,20 @@ body.templatestyle {
   flex-shrink: 0;
   height: 100%;
   min-height: 100vh;
+  width:100%;
+}
+
+.bg--pop-highest {
+  border:none;
+}
+
+.bg--pop-highest thead, .bg--pop-highest tbody {
+  border:1px solid rgba(32,113,138,.15);
 }
 
 .root-main {
   width: 100%;
+  height:100%;
   display: flex;
   flex-grow: 1;
   overflow: auto;;
@@ -89,6 +99,11 @@ body.templatestyle {
   overflow: hidden;
   height: 100%;
   min-height: max-content;
+}
+
+.new-zanata .g--centered {
+  text-align: center;
+  width: 100%;
 }
 
 .container {
@@ -5488,6 +5503,7 @@ button.close:focus, button.close:hover, button.close:active:focus {
 
   .template-container {
     flex-direction: column;
+    width:100%;
   }
 
   .glossaryhead-wrapper {
