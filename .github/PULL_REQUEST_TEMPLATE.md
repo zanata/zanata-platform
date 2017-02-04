@@ -1,4 +1,4 @@
-JIRA issue URL: *[paste URL here]*
+JIRA issue URL: *paste URL here*
 
 *[Add a short description of what is changed here.]*
 
@@ -6,7 +6,7 @@ JIRA issue URL: *[paste URL here]*
 ## Reviewer tasks
 
 The following is based on the
-[Zanata Development Guidelines](https://github.com/zanata/zanata-server/wiki/Development-Guidelines).
+[Zanata Development Guidelines](https://github.com/zanata/zanata-platform/wiki/Development-Guidelines).
 As a reviewer, you should check the guidelines regularly for updates, and just
 to refresh your memory.
 
@@ -43,7 +43,7 @@ Use the checkboxes or not, whatever works best for you.
    - [ ] Developer/sysadmin docs updated if appropriate
  - If there are new dependencies
    - [ ] Does each new dependency pass all the
-         [Considerations for new dependencies](https://github.com/zanata/zanata-server/wiki/Development-Guidelines#new-technologies-and-dependencies)?
+         [Considerations for new dependencies](https://github.com/zanata/zanata-platform/wiki/Development-Guidelines#new-technologies-and-dependencies)?
 
 
 ----

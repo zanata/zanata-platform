@@ -8,14 +8,6 @@ import ReactDOM from 'react-dom'
 import { Icon } from '../../components'
 
 class DeleteEntry extends Component {
-
-  handleDeleteEntry (localeId) {
-    this.props.handleDeleteEntry(localeId)
-    setTimeout(() => {
-      this.props.handleDeleteEntryDisplay(false)
-    }, 200)
-  }
-
   render () {
     const {
       locale,
