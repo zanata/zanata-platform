@@ -114,7 +114,7 @@ class ViewHeader extends Component {
         extraElements={(
           <div className='flex-row-center'>
             <TextInput
-              className='text-input glossarySearch'
+              className='text-input glossary-search'
               ref={(ref) => this.searchInput = ref}
               type='search'
               placeholder='Search Terms…'
