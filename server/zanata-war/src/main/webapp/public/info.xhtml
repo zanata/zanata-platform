@@ -11,39 +11,34 @@
   </ui:define>
 
   <ui:define name="center_content">
-    <div class="Ai(c) D(f) Fld(c) Flxg(1) Ov(a) Ovx(h) Ovs(touch)">
-      <div class="Ai(st) D(f) Fld(c) Flxs(0) Flxg(1) Px(rh) Px(r1)--sm Pos(r) W(100%)">
-        <div class="D(f) Ai(fs) Ac(fs) Fld(c) Jc(fs) Flw(nw) Fz(ms1)--md My(r2) Mx(a) Maw(20em) W(100%)">
-          <ul class="W(100%) list--no-bullets l--pad-h-quarter">
-            <li class="Py(rq) Bdb(bd1) Bdc(light)">
+    <div class="more-content">
+          <ul class="list--no-bullets l--pad-h-quarter">
+            <li class="more-list-item">
               <a href="#{applicationConfigurationAction.helpUrl}" id="more_help"
-                class="C(pri) Td(n) Trs(aeo) Brightness(.75):h Brightness(.75):f Brightness(.5):a" target="_blank">
+                target="_blank">
                 #{msgs['jsf.Help']}</a>
             </li>
             <li class="Py(rq) Bdb(bd1) Bdc(light)">
               <a href="#{applicationConfigurationAction.termOfUseUrl}"
-                class="C(pri) Td(n) Trs(aeo) Brightness(.75):h Brightness(.75):f Brightness(.5):a"
                 target="_blank">#{msgs['jsf.TermsOfUse']}</a>
             </li>
             <li class="Py(rq) Bdb(bd1) Bdc(light)">
               <a href="http://zanata.org/about"
-                class="C(pri) Td(n) Trs(aeo) Brightness(.75):h Brightness(.75):f Brightness(.5):a"
                 target="_blank">#{msgs['jsf.About']}</a>
             </li>
             <li class="Py(rq) Bdb(bd1) Bdc(light)">
               <a href="http://zanata.org/issues"
-                class="C(pri) Td(n) Trs(aeo) Brightness(.75):h Brightness(.75):f Brightness(.5):a"
                 target="_blank">#{msgs['jsf.ReportAProblem']}</a>
             </li>
             <ui:fragment rendered="#{identity.loggedIn}">
               <ui:include src="/WEB-INF/layout/admin/contact_admin_modal.xhtml"/>
-              <li class="Py(rq)">
-                <a href="#" data-toggle="modal" data-target="#contactAdminDialog" id="more_contact_admin"
-                  class="C(pri) Td(n) Trs(aeo) Brightness(.75):h Brightness(.75):f Brightness(.5):a">
+              <li class="more-contact">
+                <a href="#" data-toggle="modal"
+                   data-target="#contactAdminDialog" id="more_contact_admin">
                   #{msgs['jsf.ContactAdmin']}</a>
               </li>
             </ui:fragment>
-            <li class="Pt(r1)">
+            <li class="more-language">
               <h:form id="localeSelector_form" styleClass="l--push-bottom-0">
                 <h:selectOneMenu id="Select"
                   value="#{localeSelectorAction.localeString}"
@@ -54,7 +49,7 @@
                 </h:selectOneMenu>
               </h:form>
             </li>
-            <li class="Pt(r1) Fz(msn1)! C(muted)">
+            <li class="more-info">
               <h:outputText escape="false"
                 value="#{msgs.format('jsf.RunningVersionInfo',
                   msgs['jsf.Zanata'], applicationConfiguration.version,
@@ -66,7 +61,5 @@
             </li>
           </ul>
         </div>
-      </div>
-    </div>
   </ui:define>
 </ui:composition>
