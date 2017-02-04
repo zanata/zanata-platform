@@ -14,11 +14,11 @@
 
 @color-light: #03A6D7;
 @color-dark: #546677;
-@brand-success: #62c876;
-@brand-info: #029ACF;
-@brand-warning: #ffa800;
-@brand-danger: #ff3b3d;
-@brand-unsure: #E9DD00;
+@color-success: #62c876;
+@color-info: #029ACF;
+@color-warning: #ffa800;
+@color-danger: #ff3b3d;
+@color-unsure: #E9DD00;
 @color-muted: #A2B3BE;
 @color-neutral: #BDD4DC;
 
@@ -33,13 +33,13 @@
 //** Default progress bar color
 @progress-bar-bg: @color-light;
 //** Success progress bar color
-@progress-bar-success-bg: @brand-success;
+@progress-bar-success-bg: @color-success;
 //** Warning progress bar color
-@progress-bar-unsure-bg: @brand-unsure;
+@progress-bar-unsure-bg: @color-unsure;
 //** Danger progress bar color
-@progress-bar-warning-bg: @brand-warning;
+@progress-bar-warning-bg: @color-warning;
 //** Info progress bar color
-@progress-bar-info-bg: @brand-info;
+@progress-bar-info-bg: @color-info;
 
 @well-bg: @gray-lighter;
 @well-border: darken(@well-bg, 7%);
@@ -104,36 +104,34 @@
 
 @spacing-hr: 1.429rem;
 @spacing-heading: 0.714rem;
-@margin-btn-block-top: 0.385rem;
-@margin-btn-toolbar-left: 0.357rem;
-@margin-modal-dialog: 1.875rem;
-@margin-tooltip: 0.18rem;
-@margin-search-input: 1.4rem;
-@margin-left-dd: 12.875rem;
-@margin-rh: 0.375rem;
-@margin-rq: 0.75rem;
-@margin-re: 0.1875rem;
-@margin-large-vertical: 0.8rem;
-@margin-small-rem: 0.4rem;
-@margin-dropdown-divider: 0.9rem;
-@margin-xxl: 2.897rem;
-@margin-large: 2rem;
-@margin-base: 1rem;
-@margin-small: 0.5rem;
-@margin-half-horizontal: 0.31rem;
-@margin-horizontal: 0.62rem;
-@margin-vertical: 0.93rem;
-@margin-search-box: 0.25rem;
-@margin-base-and-a-half: 1.5rem;
-@margin-code-small: 0.143rem;
-@margin-code-large: 0.286rem;
-@margin-label-small: 0.1rem;
-@margin-label-large: 0.2rem;
-@margin-badge: 0.38rem;
-@margin-button: 1.125rem;
-@margin-xl: 1.25rem;
-@margin-xs-vertical: 1px;
-@margin-tight: 0.15rem;
+@spacing-btn-block: 0.385rem;
+@spacing-btn-toolbar: 0.357rem;
+@spacing-dialog: 1.875rem;
+@spacing-tooltip: 0.18rem;
+@spacing-search-input: 1.4rem;
+@spacing-rh: 0.375rem;
+@spacing-rq: 0.75rem;
+@spacing-re: 0.1875rem;
+@spacing-divider: 0.9rem;
+@spacing-small-horizontal: 0.31rem;
+@spacing-large-horizontal: 0.62rem;
+@spacing-small-vertical: 1px;
+@spacing-vertical: 0.93rem;
+@spacing-large-vertical: 0.8rem;
+@spacing-search-box: 0.25rem;
+@spacing-code-small: 0.143rem;
+@spacing-code-large: 0.286rem;
+@spacing-label-small: 0.1rem;
+@spacing-label-large: 0.2rem;
+@spacing-badge: 0.38rem;
+@spacing-button: 1.125rem;
+@spacing-xxl: 2.897rem;
+@spacing-xlarge: 2rem;
+@spacing-large: 1.25rem;
+@spacing-base-and-a-half: 1.5rem;
+@spacing-base: 1rem;
+@spacing-half-base: 0.5rem;
+@spacing-tight: 0.15rem;
 
 @line-height-large: 1.33;
 @line-height-small: 1.5;
@@ -194,19 +192,19 @@
 @btn-primary-border: @btn-primary-bg;
 
 @btn-success-color: @btn-default-color;
-@btn-success-bg: @brand-success;
+@btn-success-bg: @color-success;
 @btn-success-border: @btn-success-bg;
 
 @btn-info-color: @btn-default-color;
-@btn-info-bg: @brand-info;
+@btn-info-bg: @color-info;
 @btn-info-border: @btn-info-bg;
 
 @btn-warning-color: @btn-default-color;
-@btn-warning-bg: @brand-warning;
+@btn-warning-bg: @color-warning;
 @btn-warning-border: @btn-warning-bg;
 
 @btn-danger-color: @btn-default-color;
-@btn-danger-bg: @brand-danger;
+@btn-danger-bg: @color-danger;
 @btn-danger-border: @btn-danger-bg;
 
 @btn-link-disabled-color: @gray-light;
@@ -233,11 +231,11 @@
 @input-color-placeholder: @gray-light;
 
 //** Default `.form-control` height
-@input-height-base: (@line-height-computed + (@margin-small * 2) + 2);
+@input-height-base: (@line-height-computed + (@spacing-half-base * 2) + 2);
 //** Large `.form-control` height
-@input-height-large: (ceil(@font-size-large * @line-height-large) + (@margin-large-vertical * 2) + 2);
+@input-height-large: (ceil(@font-size-large * @line-height-large) + (@spacing-large-vertical * 2) + 2);
 //** Small `.form-control` height
-@input-height-small: (floor(@font-size-small * @line-height-small) + (@margin-half-horizontal * 2) + 2);
+@input-height-small: (floor(@font-size-small * @line-height-small) + (@spacing-small-horizontal * 2) + 2);
 
 @legend-color: @text-color;
 @legend-border-color: #e5e5e5;
@@ -570,13 +568,13 @@
 //** Primary label background color
 @label-primary-bg: @color-dark;
 //** Success label background color
-@label-success-bg: @brand-success;
+@label-success-bg: @color-success;
 //** Info label background color
-@label-info-bg: @brand-info;
+@label-info-bg: @color-info;
 //** Warning label background color
-@label-warning-bg: @brand-warning;
+@label-warning-bg: @color-warning;
 //** Danger label background color
-@label-danger-bg: @brand-danger;
+@label-danger-bg: @color-danger;
 
 //** Default label text color
 @label-color: #fff;
@@ -651,13 +649,13 @@
 //** Default progress bar color
 @progress-bar-bg: @color-light;
 //** Success progress bar color
-@progress-bar-success-bg: @brand-success;
+@progress-bar-success-bg: @color-success;
 //** Warning progress bar color
-@progress-bar-warning-bg: @brand-warning;
+@progress-bar-warning-bg: @color-warning;
 //** Danger progress bar color
-@progress-bar-danger-bg: @brand-danger;
+@progress-bar-danger-bg: @color-danger;
 //** Info progress bar color
-@progress-bar-info-bg: @brand-info;
+@progress-bar-info-bg: @color-info;
 
 //== List group
 //
@@ -704,20 +702,20 @@
 @panel-primary-heading-bg: @color-light;
 
 @panel-success-text: #fff;
-@panel-success-border: @brand-success;
-@panel-success-heading-bg: @brand-success;
+@panel-success-border: @color-success;
+@panel-success-heading-bg: @color-success;
 
 @panel-info-text: #fff;
-@panel-info-border: @brand-info;
-@panel-info-heading-bg: @brand-info;
+@panel-info-border: @color-info;
+@panel-info-heading-bg: @color-info;
 
 @panel-warning-text: #fff;
-@panel-warning-border: @brand-warning;
-@panel-warning-heading-bg: @brand-warning;
+@panel-warning-border: @color-warning;
+@panel-warning-heading-bg: @color-warning;
 
 @panel-danger-text: #fff;
-@panel-danger-border: @brand-danger;
-@panel-danger-heading-bg: @brand-danger;
+@panel-danger-border: @color-danger;
+@panel-danger-heading-bg: @color-danger;
 
 //== Thumbnails
 //
