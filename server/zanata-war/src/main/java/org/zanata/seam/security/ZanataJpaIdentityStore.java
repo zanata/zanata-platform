@@ -23,6 +23,7 @@ package org.zanata.seam.security;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.ServerConstants;
 import org.zanata.dao.AccountDAO;
 import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.events.UserCreatedEvent;
@@ -39,6 +40,8 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.util.PasswordUtil;
 import org.zanata.util.ServiceLocator;
+import org.zanata.util.Synchronized;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -65,6 +68,7 @@ import java.util.Set;
  */
 @Named("identityStore")
 @ApplicationScoped
+@Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 public class ZanataJpaIdentityStore implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ZanataJpaIdentityStore.class);
