@@ -94,10 +94,8 @@ public class SecurityTokens implements Serializable, Introspectable {
     /**
      * remove authorization code once session expires
      */
-    public void onLogout(@Observes LogoutEvent event,
-            @Authenticated HAccount authenticatedAccount) {
-        authorizationCodesByUsername
-                .invalidate(authenticatedAccount.getUsername());
+    public void onLogout(@Observes LogoutEvent event) {
+        authorizationCodesByUsername.invalidate(event.getUsername());
     }
 
     String getAuthorizationCode(String username, String clientId)
