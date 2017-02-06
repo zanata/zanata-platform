@@ -56,7 +56,7 @@ try {
           def testReports = '**/target/surefire-reports/TEST-*.xml'
           def warFiles = '**/target/*.war'
           sh "shopt -s globstar && rm -f $testReports $warFiles"
-          sh """./run-clean.sh ./mvnw clean package \
+          sh """./run-clean.sh ./mvnw -e clean package \
                      --batch-mode \
                      --settings .travis-settings.xml \
                      --update-snapshots \
@@ -232,7 +232,7 @@ void integrationTests(def appserver) {
   xvfb {
     withPorts {
       // Run the maven build
-      sh """./run-clean.sh ./mvnw verify \
+      sh """./run-clean.sh ./mvnw -e verify \
                    --batch-mode \
                    --settings .travis-settings.xml \
                    -DstaticAnalysis=false \
