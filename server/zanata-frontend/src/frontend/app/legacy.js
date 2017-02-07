@@ -23,13 +23,11 @@ import 'babel-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
 import { mapValues } from 'lodash'
-import { Nav } from './components'
-import { Icons } from 'zanata-ui'
+import { Nav, Icons } from './components'
 import WebFont from 'webfontloader'
 import { isJsonString } from './utils/StringUtils'
 import { getContextPath } from './utils/UrlHelper'
 
-import 'zanata-ui/dist/zanata-ui.css'
 import './styles/style.less'
 
 /**
