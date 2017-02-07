@@ -50,7 +50,8 @@ public class GettextAdapterTest {
         String filePath = "src/test/resources/org/zanata/adapter/";
         testFile = new File(filePath.concat(filename));
         assert testFile.exists();
-        Resource resource = adapter.parseDocumentFile(testFile.toURI(),LocaleId.EN,Optional.absent());
+        Resource resource = adapter.parseDocumentFile(testFile.toURI(),
+                LocaleId.EN, Optional.absent());
         return resource;
     }
 
