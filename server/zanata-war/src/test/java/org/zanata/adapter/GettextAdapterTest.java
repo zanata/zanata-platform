@@ -35,7 +35,24 @@ import com.google.common.collect.ImmutableList;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class GettextAdapterTest extends BaseAdapter{
+public class GettextAdapterTest {
+
+    private static GettextAdapter adapter;
+    private static File testFile;
+
+    @Before
+    public void setup() {
+        adapter = new GettextAdapter();
+        System.out.println("test before");
+    }
+
+    public static Resource parseTestFile(String filename) {
+        String filePath = "src/test/resources/org/zanata/adapter/";
+        testFile = new File(filePath.concat(filename));
+        assert testFile.exists();
+        Resource resource = adapter.parseDocumentFile(testFile.toURI(),LocaleId.EN,Optional.absent());
+        return resource;
+    }
 
     @Test
     public void parsePOT() {
