@@ -21,6 +21,7 @@ module.exports = merge.smart(defaultConfig, {
     loaders: [
       {
         test: /\.css$/,
+        exclude: /node_modules/,
         loader: ExtractTextPlugin.extract(
           'style',
           'css?-minimize',
@@ -29,6 +30,7 @@ module.exports = merge.smart(defaultConfig, {
       },
       {
         test: /\.less$/,
+        exclude: /node_modules/,
         loader: ExtractTextPlugin.extract(
           'style',
           'css?-minimize!less',
