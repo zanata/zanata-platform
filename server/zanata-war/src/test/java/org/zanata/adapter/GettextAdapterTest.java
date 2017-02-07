@@ -35,30 +35,47 @@ import com.google.common.collect.ImmutableList;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-// TODO test writeTranslatedFile
-public class GettextAdapterTest {
-
-    private GettextAdapter adapter;
-    private File testFile;
-
-    @Before
-    public void setup() {
-        adapter = new GettextAdapter();
-        // this document has three text flows: Line One, Line Two, Line Three
-        testFile = new File("src/test/resources/org/zanata/adapter/test-gettext.pot");
-        assert testFile.exists();
-    }
+public class GettextAdapterTest extends BaseAdapter{
 
     @Test
     public void parsePOT() {
-        Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-//        System.out.println(DTOUtil.toXML(resource));
+        Resource resource = parseTestFile("test-gettext.pot");
         assertThat(resource.getTextFlows()).hasSize(3);
         assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
                 ImmutableList.of("Line One"));
-        // TODO test IDs
     }
+
+    @Test
+    public void testGettextWithComment() {
+        String testComments = "#  translator-comments\n" +
+                "#. comments-given-by-programmer\n" +
+                "#: reference\n" +
+                "#, flag";
+        Resource resource = parseTestFile("test-gettext-comments.pot");
+        assertThat(resource.getTextFlows()).hasSize(3);
+        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
+                ImmutableList.of(testComments));
+    }
+
+    @Test
+    public void testGettextPlurals(){
+        String testPlural = "Plural-Forms: nplurals=2; plural=n == 1 ? 0 : 1;\n";
+        Resource resource = parseTestFile("test-gettext-plurals.po");
+        assertThat(resource.getTextFlows()).hasSize(2);
+        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
+                ImmutableList.of(testPlural));
+        assertThat(resource.getTextFlows().get(1).getContents()).isEqualTo(
+                ImmutableList.of(testPlural));
+    }
+
+    @Test
+    public void testGettextFuzzy(){
+        String testFuzzy = "#, fuzzy";
+        Resource resource = parseTestFile("test-gettext-fuzzy.po");
+        assertThat(resource.getTextFlows()).hasSize(2);
+        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
+                ImmutableList.of(testFuzzy));
+    }
+
 
 }

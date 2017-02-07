@@ -1,3 +1,7 @@
+#  translator-comments
+#. comments-given-by-programmer
+#: reference
+#, flag
 msgid ""
 msgstr ""
 

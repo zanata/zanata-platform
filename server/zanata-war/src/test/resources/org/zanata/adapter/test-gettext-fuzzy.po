@@ -1,0 +1,9 @@
+#, fuzzy
+msgid "test fuzzy"
+msgstr "test fuzzy"
+
+msgid "Line Two"
+msgstr "test not fuzzy"
+
+
+
