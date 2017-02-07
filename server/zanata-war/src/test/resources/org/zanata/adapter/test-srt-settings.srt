@@ -1,0 +1,2 @@
+00:00:20,000 --> 00:00:22,000  X1:40 X2:600 Y1:20 Y2:50
+Data to the right of the timestamps are cue settings
