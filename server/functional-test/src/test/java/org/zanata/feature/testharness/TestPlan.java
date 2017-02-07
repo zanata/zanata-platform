@@ -116,7 +116,6 @@ import org.zanata.feature.versionGroup.VersionGroupUrlTest;
          */
         FileTypeUploadTest.class,
         MultiFileUploadTest.class,
-        SubtitleDocumentTypeTest.class,
         UploadTest.class,
 
         /*
