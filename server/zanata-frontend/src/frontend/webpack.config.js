@@ -33,16 +33,11 @@ module.exports = {
         test: /\.jsx?$/,
         exclude: /node_modules/,
         include: path.join(__dirname, 'app'),
-        loader: 'atomic-loader?configPath=' + __dirname +
-          '/atomicCssConfig.js' +
-          '!babel?presets[]=react,presets[]=es2015,presets[]=stage-0'
+        loader: 'babel?presets[]=react,presets[]=es2015,presets[]=stage-0'
       },
       {
         test: /\.css$/,
-        include: [
-          path.join(__dirname, 'app/styles'),
-          path.join(__dirname, 'node_modules/zanata-ui/dist'),
-        ],
+        exclude: /node_modules/,
         loader: ExtractTextPlugin.extract(
           'style',
           'css',
@@ -52,13 +47,12 @@ module.exports = {
       {
         test: /\.less$/,
         exclude: /node_modules/,
-        include: path.join(__dirname, 'app/styles'),
         loader: ExtractTextPlugin.extract(
           'style',
           'css!less',
           'autoprefixer?browsers=last 2 versions'
         )
-      },
+      }
     ]
   },
   plugins: [
