@@ -3457,10 +3457,87 @@ span.hidden-lesm.glossary-row {
   margin-top: @spacing-rh;
 }
 
-.glossary-select {
+#glossary-select {
   margin-right: @spacing-re;
   width: 4.5rem;
 }
+
+.Select-control {
+  background-color: #fff;
+  border-color: #cedfe5 #bdd4dc #9cbeca;
+  border-radius: .375em;
+  border: .125em solid #bdd4dc;
+  color: #54667a;
+  cursor: default;
+  display: table;
+  border-spacing: 0;
+  border-collapse: separate;
+  height: 2.25em;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.Select-control {
+  background-color: #fff;
+  border-color: #cedfe5 #bdd4dc #9cbeca;
+  border-radius: .375em;
+  border: .125em solid #bdd4dc;
+  color: #54667a;
+  cursor: default;
+  display: table;
+  border-spacing: 0;
+  border-collapse: separate;
+  height: 2.25em;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.Select--single>.Select-control .Select-value, .Select-placeholder {
+  bottom: 0;
+  color: #bdd4dc;
+  left: 0;
+  line-height: 2em;
+  padding-left: .75em;
+  padding-right: .75em;
+  position: absolute;
+  right: 0;
+  top: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.Select-input {
+  height: 2em;
+  padding-left: .75em;
+  padding-right: .75em;
+  vertical-align: middle;
+}
+
+.Select-arrow-zone {
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 1.5625em;
+  padding-right: .3125em;
+}
+.Select-arrow {
+  border-color: #bdd4dc transparent transparent;
+  border-style: solid;
+  border-width: .3125em .3125em .15625em;
+  display: inline-block;
+  height: 0;
+  width: 0;
+}
+
 
 td.lang-select .row {
   position: absolute;
