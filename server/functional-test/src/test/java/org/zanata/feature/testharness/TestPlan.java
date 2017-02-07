@@ -114,7 +114,6 @@ import org.zanata.feature.versionGroup.VersionGroupUrlTest;
          * Document
          * Source document upload and management
          */
-        FileTypeUploadTest.class,
         MultiFileUploadTest.class,
         UploadTest.class,
 
