@@ -24,6 +24,9 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.runners.Enclosed;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.resource.Resource;
@@ -33,126 +36,163 @@ import java.io.File;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author djansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a> on 6/02/17.
+ * @author djansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  * @// TODO: 6/02/17 test ids
  */
+@RunWith(Enclosed.class)
 public class SubtitleAdapterTest {
 
-    private SubtitleAdapter adapter;
-    private final String[] fileTypes = new String[]{"srt", "vtt", "sbt", "sub"};
+    public static abstract class SubtitleAdapterSuper {
+        private static SubtitleAdapter adapter;
 
-    @Before
-    public void setup() {
-        adapter = new SubtitleAdapter();
+        @Before
+        public void setup() {
+            adapter = new SubtitleAdapter();
+        }
+
+        static Resource parseTestFile(String filename) {
+            String resPath = "src/test/resources/org/zanata/adapter/";
+            File testFile = new File(resPath.concat(filename));
+            assert testFile.exists();
+            Resource resource =
+                    adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
+                            Optional.absent());
+            System.out.println(DTOUtil.toXML(resource));
+            return resource;
+        }
     }
 
-    private Resource setupTestFile(String filename) {
-        String resPath = "src/test/resources/org/zanata/adapter/";
-        File testFile = new File(resPath.concat(filename));
-        assert testFile.exists();
-        Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-        //System.out.println(DTOUtil.toXML(resource));
-        return resource;
+    public static class SubtitleAdapterSingle extends SubtitleAdapterSuper {
+
+        @Test
+        public void parseBasicSRT() {
+            Resource resource = parseTestFile("test-srt.srt");
+            assertThat(resource.getTextFlows()).hasSize(3);
+            assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
+                    ImmutableList.of("Line One"));
+        }
+
+        /*
+         * Entries that are of identical content must be individual textflows
+         */
+        @Test
+        public void testSimilarEntriesAreIndividual() {
+            String testText = "Exactly the same text";
+            Resource resource = parseTestFile("test-srt-duplicated.srt");
+            assertThat(resource.getTextFlows()).hasSize(2);
+            assertThat(resource.getTextFlows().get(0).getId()).isNotEqualTo(
+                    resource.getTextFlows().get(1).getId());
+            assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
+                    ImmutableList.of(testText));
+            assertThat(resource.getTextFlows().get(1).getContents()).isEqualTo(
+                    ImmutableList.of(testText));
+        }
+
+        /*
+         * WebVtt entries may start with a label or number, which can be safely ignored
+         */
+        @Test
+        public void testLabelledVtt() {
+            String testText = "Test subtitle 1";
+            Resource resource = parseTestFile("test-vtt-labelled.vtt");
+            assertThat(resource.getTextFlows()).hasSize(2);
+            assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
+                    ImmutableList.of(testText));
+        }
+
+        /*
+         * Entries can contain extra information in the ID
+         */
+        @Test
+        public void testSubtitleWithSettings() {
+            String testString = "Data to the right of the timestamps are cue settings";
+            String vttId = "00:01:03.000 --> 00:01:06.500 position:90% align:right size:35%";
+            String srtId = "00:00:20,000 --> 00:00:22,000  X1:40 X2:600 Y1:20 Y2:50";
+
+            Resource resource = parseTestFile("test-vtt-settings.vtt");
+            assertThat(resource.getTextFlows()).hasSize(1);
+            assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(vttId);
+            assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
+                    ImmutableList.of(testString));
+
+            resource = parseTestFile("test-srt-settings.srt");
+            assertThat(resource.getTextFlows()).hasSize(1);
+            assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(srtId);
+            assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
+                    ImmutableList.of(testString));
+        }
+
+        /*
+         * WebVtt may contain timestamps in the text
+         */
+        @Test
+        public void testVttInlineTimestamp() {
+            Resource resource = parseTestFile("test-vtt-inlinetimestamp.vtt");
+            assertThat(resource.getTextFlows()).hasSize(1);
+            assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
+                    ImmutableList.of("Inline:<x1/>Visible five seconds after start"));
+        }
     }
 
-    @Test
-    public void parseBasicSRT() {
-        Resource resource = setupTestFile("test-srt.srt");
-        assertThat(resource.getTextFlows()).hasSize(3);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("Line One"));
-    }
+    @RunWith(Parameterized.class)
+    public static class MultilineSubtitle extends SubtitleAdapterSuper {
 
-    /*
-     * Entries that are of identical content must be individual textflows
-     */
-    @Test
-    public void testSimilarEntriesAreIndividual() {
-        String testText = "Exactly the same text";
-        Resource resource = setupTestFile("test-srt-duplicated.srt");
-        assertThat(resource.getTextFlows()).hasSize(2);
-        assertThat(resource.getTextFlows().get(0).getId()).isNotEqualTo(
-                resource.getTextFlows().get(1).getId());
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of(testText));
-        assertThat(resource.getTextFlows().get(1).getContents()).isEqualTo(
-                ImmutableList.of(testText));
-    }
+        @Parameterized.Parameters
+        public static Object[] data() {
+            return new Object[]{
+                    "test-srt-multiline.srt",
+                    "test-vtt-multiline.vtt",
+                    "test-sbt-multiline.sbt",
+                    "test-sub-multiline.sub"};
+        }
 
-    /*
-     * WebVtt entries may start with a label or number, which can be safely ignored
-     */
-    @Test
-    public void testLabelledVtt() {
-        String testText = "Test subtitle 1";
-        Resource resource = setupTestFile("test-vtt-labelled.vtt");
-        assertThat(resource.getTextFlows()).hasSize(2);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of(testText));
-    }
+        private String fileName;
 
-    /*
-     * Entries may contain multiple lines, and be preserved as such
-     */
-    @Test
-    public void testMultilineSubtitleFile() {
-        String testText = "Test subtitle 1\nTest subtitle 1 line 2";
-        String targetFile = "test-$-multiline.$";
-        for (String fileType : fileTypes) {
-            Resource resource = setupTestFile(targetFile.replaceAll("\\$", fileType));
+        public MultilineSubtitle(String file) {
+            fileName = file;
+        }
+
+        /*
+         * Entries may contain multiple lines, and be preserved as such
+         */
+        @Test
+        public void testMultilineSubtitleFile() {
+            String testText = "Test subtitle 1\nTest subtitle 1 line 2";
+            Resource resource = parseTestFile(fileName);
             assertThat(resource.getTextFlows()).hasSize(2);
             assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
                     ImmutableList.of(testText));
         }
     }
 
-    /*
-     * Entries may contain formatting - underline, bold, etc
-     */
-    @Test
-    public void testFormattedSubtitleFile() {
-        String testText = "<x1/>Some text<x2/> {u}and more{/u}";
-        String targetFile = "test-$-formatted.$";
-        for (String fileType : fileTypes) {
-            Resource resource = setupTestFile(targetFile.replaceAll("\\$", fileType));
+    @RunWith(Parameterized.class)
+    public static class FormattedSubtitle extends SubtitleAdapterSuper {
+
+        @Parameterized.Parameters
+        public static Object[] data() {
+            return new Object[]{
+                    "test-srt-formatted.srt",
+                    "test-vtt-formatted.vtt",
+                    "test-sbt-formatted.sbt",
+                    "test-sub-formatted.sub" };
+        }
+
+        private String fileName;
+
+        public FormattedSubtitle(String filename) {
+            fileName = filename;
+        }
+
+        /*
+         * Entries may contain formatting - underline, bold, etc
+         */
+        @Test
+        public void testFormattedSubtitleFile() {
+            String testText = "<x1/>Some text<x2/> {u}and more{/u}";
+            Resource resource = parseTestFile(fileName);
             assertThat(resource.getTextFlows()).hasSize(1);
             assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
                     ImmutableList.of(testText));
         }
-    }
-
-    /*
-     * Entries can contain extra information in the ID
-     */
-    @Test
-    public void testSubtitleWithSettings() {
-        String testString = "Data to the right of the timestamps are cue settings";
-        String vttId = "00:01:03.000 --> 00:01:06.500 position:90% align:right size:35%";
-        String srtId = "00:00:20,000 --> 00:00:22,000  X1:40 X2:600 Y1:20 Y2:50";
-
-        Resource resource = setupTestFile("test-vtt-settings.vtt");
-        assertThat(resource.getTextFlows()).hasSize(1);
-        assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(vttId);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of(testString));
-
-        resource = setupTestFile("test-srt-settings.srt");
-        assertThat(resource.getTextFlows()).hasSize(1);
-        assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(srtId);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of(testString));
-    }
-
-    /*
-     * WebVtt may contain timestamps in the text
-     */
-    @Test
-    public void testVttInlineTimestamp() {
-        Resource resource = setupTestFile("test-vtt-inlinetimestamp.vtt");
-        assertThat(resource.getTextFlows()).hasSize(1);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("Inline:<x1/>Visible five seconds after start"));
     }
 }
