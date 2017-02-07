@@ -3462,21 +3462,55 @@ span.hidden-lesm.glossary-row {
   width: 4.5rem;
 }
 
-.Select-control {
+.is-searchable.is-open>.Select-control {
+  cursor: text;
+}
+
+.is-open>.Select-control {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background: #fff;
+  border-color: #9cbeca #bdd4dc #cedfe5;
+}
+
+.Select, .Select div, .Select input, .Select span {
+  box-sizing: border-box;
+}
+
+.Select-menu-outer {
+  border-bottom-right-radius: .375em;
+  border-bottom-left-radius: .375em;
   background-color: #fff;
-  border-color: #cedfe5 #bdd4dc #9cbeca;
-  border-radius: .375em;
-  border: .125em solid #bdd4dc;
-  color: #54667a;
-  cursor: default;
-  display: table;
-  border-spacing: 0;
-  border-collapse: separate;
-  height: 2.25em;
-  outline: none;
-  overflow: hidden;
-  position: relative;
+  border: 1px solid #bdd4dc;
+  border-top-color: #deeaee;
+  box-shadow: 0 1px 0 rgba(0,0,0,.06);
+  box-sizing: border-box;
+  margin-top: -1px;
+  max-height: 200px;
+  position: absolute;
+  top: 100%;
   width: 100%;
+  z-index: 1000;
+  -webkit-overflow-scrolling: touch;
+}
+
+.Select-menu {
+  max-height: 198px;
+  overflow-y: auto;
+}
+
+.Select-option.is-focused {
+  background-color: #1ba7d9;
+  color: #edf2f8;
+}
+
+.Select-option {
+  box-sizing: border-box;
+  background-color: #fff;
+  color: #8799ad;
+  cursor: pointer;
+  display: block;
+  padding: .375em .75em;
 }
 
 .Select-control {
@@ -3495,6 +3529,7 @@ span.hidden-lesm.glossary-row {
   position: relative;
   width: 100%;
 }
+
 
 .Select--single>.Select-control .Select-value, .Select-placeholder {
   bottom: 0;
@@ -3512,12 +3547,19 @@ span.hidden-lesm.glossary-row {
   white-space: nowrap;
 }
 
-
 .Select-input {
   height: 2em;
   padding-left: .75em;
   padding-right: .75em;
   vertical-align: middle;
+}
+
+.Select-input #react-select-2 input {
+  border:none;
+}
+
+.Select-input #react-select-2 input:focus {
+  outline:0;
 }
 
 .Select-arrow-zone {
@@ -3529,6 +3571,7 @@ span.hidden-lesm.glossary-row {
   width: 1.5625em;
   padding-right: .3125em;
 }
+
 .Select-arrow {
   border-color: #bdd4dc transparent transparent;
   border-style: solid;
@@ -3537,7 +3580,6 @@ span.hidden-lesm.glossary-row {
   height: 0;
   width: 0;
 }
-
 
 td.lang-select .row {
   position: absolute;
