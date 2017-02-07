@@ -1,14 +1,17 @@
 #!/usr/bin/env groovy
+@Library('github.com/zanata/zanata-pipeline-library@master')
+
+def dummyForLibrary = ""
 
 try {
-  ensureJobDescription()
+  pullRequests.ensureJobDescription()
 
   timestamps {
     node {
       ansicolor {
         stage('Checkout') {
-          printNodeInfo()
-          notifyStarted()
+          info.printNode()
+          notify.started()
 
           // TODO use reference repo instead of shallow clone
           // see https://issues.jenkins-ci.org/browse/JENKINS-33273?focusedCommentId=268631&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-268631
@@ -32,7 +35,7 @@ try {
         }
 
         stage('Install build tools') {
-          printNodeInfo()
+          info.printNode()
           // TODO yum install the following
           // Xvfb libaio xorg-x11-server-Xvfb wget unzip git-core
           // https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
@@ -51,8 +54,8 @@ try {
 
 
         stage('Build') {
-          printNodeInfo()
-          printEnvInfo()
+          info.printNode()
+          info.printEnv()
           def testReports = '**/target/surefire-reports/TEST-*.xml'
           def warFiles = '**/target/*.war'
           sh "shopt -s globstar && rm -f $testReports $warFiles"
@@ -67,10 +70,10 @@ try {
                      -DskipArqTests \
           """
           setJUnitPrefix("UNIT", testReports)
-          junit testReports
+          junit testResults: testReports, testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
 
           // notify if compile+unit test successful
-          notifyTestResults("UNIT")
+          notify.testResults("UNIT")
 
           archive warFiles
         }
@@ -87,8 +90,9 @@ try {
       tasks['Integration tests: WILDFLY'] = {
         node {
           ansicolor {
-            printNodeInfo()
-            printEnvInfo()
+            info.printNode()
+            info.printEnv()
+            debugChromeDriver()
             unstash 'workspace'
             integrationTests('wildfly8')
           }
@@ -97,8 +101,9 @@ try {
       tasks['Integration tests: JBOSSEAP'] = {
         node {
           ansicolor {
-            printNodeInfo()
-            printEnvInfo()
+            info.printNode()
+            info.printEnv()
+            debugChromeDriver()
             unstash 'workspace'
             integrationTests('jbosseap6')
           }
@@ -112,78 +117,14 @@ try {
     // http://stackoverflow.com/a/39535424/14379
     // IRC: https://issues.jenkins-ci.org/browse/JENKINS-33922
     // possible alternatives: Slack, HipChat, RocketChat, Telegram?
-    notifySuccessful()
+    notify.successful()
   }
 } catch (e) {
-  notifyFailed()
+  notify.failed()
   throw e
 }
 
-@NonCPS
-void ensureJobDescription() {
-  if (env.CHANGE_ID) {
-    try {
-      def job = manager.build.project
-      // we only want to do this once, to avoid hammering the github api
-      if (!job.description || !job.description.contains(env.CHANGE_URL)) {
-        def sourceBranchLabel = getSourceBranchLabel()
-        def abbrTitle = truncateAtWord(env.CHANGE_TITLE, 50)
-        def prDesc = """<a title=\"${env.CHANGE_TITLE}\" href=\"${env.CHANGE_URL}\">PR #${env.CHANGE_ID} by ${env.CHANGE_AUTHOR}</a>:
-                       |$abbrTitle
-                       |merging ${sourceBranchLabel} to ${env.CHANGE_TARGET}""".stripMargin()
-        // ideally we would show eg sourceRepo/featureBranch ⭆ master
-        // but there is no env var with that info
-
-        println "description: " + prDesc
-        //currentBuild.description = prDesc
-        job.description = prDesc
-        job.save()
-        null // avoid returning non-Serializable Job
-      }
-    } catch (e) {
-      // NB we don't want to fail the build just because of a problem in this method
-      println e
-      e.printStackTrace() // not sure how to log this to the build log
-    }
-  }
-}
-
-@NonCPS
-String getSourceBranchLabel() {
-  println "checking github api for pull request details"
-  // TODO use github credentials to avoid rate limiting
-  def prUrl = new URL("https://api.github.com/repos/zanata/zanata-platform/pulls/${env.CHANGE_ID}")
-  def sourceBranchLabel = new groovy.json.JsonSlurper().parseText(prUrl.text).head.label
-  return sourceBranchLabel
-}
-
-// Based on http://stackoverflow.com/a/37688740/14379
-@NonCPS
-static String truncateAtWord(String content, int maxLength) {
-  def ellipsis = "…"
-  // Is content > than the maxLength?
-  if (content.size() > maxLength) {
-    def bi = java.text.BreakIterator.getWordInstance()
-    bi.setText(content);
-    def cutoff = bi.preceding(maxLength - ellipsis.length())
-    // if too short when cutting by words, ignore words
-    if (cutoff < maxLength / 2) {
-      cutoff = maxLength - ellipsis.length()
-    }
-    // Truncate
-    return content.substring(0, cutoff) + ellipsis
-  } else {
-    return content
-  }
-}
-
-// these wrappers don't seem to be built in yet
-void ansicolor(Closure wrapped) {
-  // NB this wrapper requires a node
-  wrap([$class: 'AnsiColorBuildWrapper', 'colorMapName': 'XTerm', 'defaultFg': 1, 'defaultBg': 2]) {
-    wrapped.call()
-  }
-}
+// TODO factor these out into zanata-pipeline-library too
 
 void xvfb(Closure wrapped) {
   wrap([$class: 'Xvfb']) {
@@ -191,39 +132,9 @@ void xvfb(Closure wrapped) {
   }
 }
 
-void printNodeInfo() {
-  println "running on node ${env.NODE_NAME}"
-}
-
-void printEnvInfo() {
-  sh "env|sort"
+void debugChromeDriver() {
   sh returnStatus: true, script: 'which chromedriver google-chrome'
   sh returnStatus: true, script: 'ls -l /opt/chromedriver /opt/google/chrome/google-chrome'
-}
-
-void notifyStarted() {
-  hipchatSend color: "GRAY", notify: true, message: "STARTED: Job " + jobLink()
-}
-
-void notifyTestResults(def testType) {
-  // if tests have failed currentBuild.result will be 'UNSTABLE'
-  if (currentBuild.result != null) {
-    hipchatSend color: "YELLOW", notify: true, message: "TESTS FAILED ($testType): Job " + jobLink()
-  } else {
-    hipchatSend color: "GREEN", notify: true, message: "TESTS PASSED ($testType): Job " + jobLink()
-  }
-}
-
-void notifySuccessful() {
-  hipchatSend color: "GRAY", notify: true, message: "SUCCESSFUL: Job " + jobLink()
-}
-
-void notifyFailed() {
-  hipchatSend color: "RED", notify: true, message: "FAILED: Job " + jobLink()
-}
-
-String jobLink() {
-  "<a href=\"${env.BUILD_URL}\">${env.JOB_NAME} #${env.BUILD_NUMBER}</a>"
 }
 
 void integrationTests(def appserver) {
@@ -257,7 +168,7 @@ void integrationTests(def appserver) {
   setJUnitPrefix(appserver.toUpperCase(), testReports)
   junit testReports
   archiveTestFilesIfUnstable()
-  notifyTestResults(appserver.toUpperCase())
+  notify.testResults(appserver.toUpperCase())
 }
 
 void withPorts(Closure wrapped) {
