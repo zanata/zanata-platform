@@ -33,7 +33,7 @@ const TeaserListHeader = ({
       {headerIcon}
       <h2 className='text-dark text-uppercase'>
         {title}
-        <span className='record-count' title='Total records'>
+        <span className='muted-left' title='Total records'>
           {totalCount}
         </span>
       </h2>

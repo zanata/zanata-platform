@@ -191,7 +191,7 @@ class NewLanguageModal extends Component {
                   <Icon name='info' className='s0 infoicon' title='Help' />
                 </a>
                 {showPluralFormsWarning &&
-                  <div className='plurals'
+                  <div className='small-text'
                     id='new-language-pluralforms-warning'>
                     No plural information available. Assuming no plurals.
                   </div>
