@@ -159,7 +159,6 @@ class Glossary extends Component {
             <Row className='pull-right'>
               {termCount > 0 &&
                 <Row>
-                  <span className='hidden-lesm glossary-row'>Show</span>
                   <Select options={pageSizeOption}
                     placeholder='Terms per page'
                     value={intPageSize}
