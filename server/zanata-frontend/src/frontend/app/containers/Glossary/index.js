@@ -156,7 +156,7 @@ class Glossary extends Component {
         <div className='wide-view-theme-glossary'>
           <ViewHeader title={headerTitle} />
           <div className='glossary-header'>
-            <Row className='pull-right'>
+            <Row>
               {termCount > 0 &&
                 <Row>
                   <span className='hidden-lesm glossary-row'>Show</span>
@@ -183,7 +183,7 @@ class Glossary extends Component {
                     () => { gotoPreviousPage(currentPage, totalPage) }}>
                     <Icon name='chevron-left' className='s1' />
                   </Button>
-                  <span className='text-muted'>
+                  <span className='text-neutral'>
                     {currentPage} of {totalPage}
                   </span>
                   <Button bsStyle='link' disabled={currentPage === totalPage}
@@ -196,7 +196,7 @@ class Glossary extends Component {
                     onClick={() => { gotoLastPage(currentPage, totalPage) }}>
                     <Icon name='next' className='s1' />
                   </Button>
-                  <span className='text-muted-total'
+                  <span className='text-neutral-total'
                     title='Total glossary terms'>
                     <Row>
                       <Icon name='glossary' className='s1' /> {termCount}

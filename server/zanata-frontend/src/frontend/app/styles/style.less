@@ -278,6 +278,10 @@ body.templatestyle {
   min-height: 6rem;
 }
 
+.full-width {
+  width:100%;
+}
+
 .search-view-theme {
   align-items: center;
   color: rgb(84, 102, 122);
@@ -3471,6 +3475,7 @@ span.hidden-lesm.glossary-row {
 
 .glossary-select {
   position:absolute;
+  margin-right:7em;
 }
 
 .is-searchable.is-open>.Select-control {
@@ -3814,6 +3819,10 @@ td.lang-select .row span svg {
   align-items: center;
 }
 
+.glossary-paging {
+  margin-top:5em;
+}
+
 .entry-row, .glossary-paging {
   display: flex !important;
 }
@@ -3823,8 +3832,12 @@ td.lang-select .row span svg {
   margin-left: @spacing-re;
 }
 
-.glossary-paging .text-muted-total {
-  color: @text-muted;
+.text-neutral {
+  color:@color-neutral;
+}
+
+.glossary-paging .text-neutral-total {
+  color: @color-neutral;
   margin-left: @spacing-rq;
 }
 
