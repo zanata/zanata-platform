@@ -98,10 +98,10 @@ class UserProfile extends Component {
                       }
                     </span>
                     {languageTeams &&
-                    (<span className='flex-center' tagName='li'
+                    (<span tagName='li'
                       id='profile-languages'>
                       <Icon name='language'
-                        className='s0'
+                        className='s0 langicon pull-left'
                         title='Spoken languages' />
                       {languageTeams}
                     </span>)}

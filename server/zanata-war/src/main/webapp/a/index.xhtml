@@ -33,7 +33,9 @@
       data-user="#{authenticatedAccountHome.getUser()}"
       data-permission="#{authenticatedAccountHome.getUserPermission().getJSON()}"
       data-links='{"loginUrl": "#{applicationConfigurationAction.getLoginUrl(request)}",
-                     "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'>
+                     "registerUrl": "#{applicationConfigurationAction.registerUrl}"}'
+      data-allow-register="#{allowPublicRegistration}"
+    >
     </div>
     <script type="application/javascript">
       window.config = JSON.parse(JSON.stringify(document.getElementById('config').dataset))
