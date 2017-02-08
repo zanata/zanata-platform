@@ -265,7 +265,8 @@ export const handleUpdateSort = (sort) => {
 export const handleUpdateSearch = (search) => {
   return (dispatch, getState) => {
     replaceRouteQuery(getState().routing.location, {
-      search: search
+      search: search,
+      page: 1
     })
     dispatch(getLocalesList(getState()))
   }
