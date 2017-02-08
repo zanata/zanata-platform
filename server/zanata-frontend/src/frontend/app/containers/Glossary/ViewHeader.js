@@ -192,7 +192,7 @@ class ViewHeader extends Component {
                     <span>
                     English (United States)
                     </span>
-                    <span className='term-count'>{termCount}</span>
+                    <span className='muted-left'>{termCount}</span>
                   </Row>
                 </Button>
               </td>
@@ -231,7 +231,7 @@ class ViewHeader extends Component {
                         ? <Icon name='chevron-down' className='s1' />
                         : <Icon name='chevron-up' className='s1' />
                       : ''}
-                    <span className='partofspeech'>
+                    <span className='left-rq'>
                     Part of Speech
                     </span>
                   </Row>
