@@ -446,7 +446,8 @@ export const glossaryFilterTextChanged = (newFilter) => {
   return (dispatch, getState) => {
     if (!getState().glossary.termsLoading) {
       replaceRouteQuery(getState().routing.location, {
-        filter: newFilter
+        filter: newFilter,
+        page: 1
       })
       dispatch(glossaryUpdateFilter(newFilter))
       dispatch(getGlossaryTerms(getState()))
