@@ -1226,7 +1226,6 @@ table td {
   padding-left: @spacing-re;
   text-align: right;
   max-width: 6rem;
-  overflow: hidden;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
@@ -3462,6 +3461,14 @@ span.hidden-lesm.glossary-row {
   width: 4.5rem;
 }
 
+.glossary-select {
+  position:absolute;
+}
+
+.Select {
+  position:relative;
+}
+
 .is-searchable.is-open>.Select-control {
   cursor: text;
 }
@@ -3494,10 +3501,16 @@ span.hidden-lesm.glossary-row {
   -webkit-overflow-scrolling: touch;
 }
 
+.glossary-header .Select-menu-outer {
+  top:0 !important;
+  position:relative;
+}
+
 .Select-menu {
   max-height: 198px;
   overflow-y: auto;
 }
+
 
 .Select-option.is-focused {
   background-color: #1ba7d9;
@@ -3554,12 +3567,20 @@ span.hidden-lesm.glossary-row {
   vertical-align: middle;
 }
 
-.Select-input #react-select-2 input {
+.Select-input input {
   border:none;
 }
 
-.Select-input #react-select-2 input:focus {
+td#lang-select .Select-input input {
+  margin-top:0.25em;
+}
+
+.Select-input input:focus {
   outline:0;
+}
+
+.glossary-header .row .Select-control {
+  width:4em;
 }
 
 .Select-arrow-zone {
@@ -3572,6 +3593,16 @@ span.hidden-lesm.glossary-row {
   padding-right: .3125em;
 }
 
+.Select-arrow-zone:focus {
+  outline:0;
+
+}
+
+.Select-option:last-child {
+  border-bottom-right-radius: .375em;
+  border-bottom-left-radius: .375em;
+}
+
 .Select-arrow {
   border-color: #bdd4dc transparent transparent;
   border-style: solid;
@@ -3581,6 +3612,19 @@ span.hidden-lesm.glossary-row {
   width: 0;
 }
 
+.Select-clear-zone {
+  -webkit-animation: Select-animation-fadeIn .2s;
+  animation: Select-animation-fadeIn .2s;
+  color: #a2b3be;
+  cursor: pointer;
+  display: table-cell;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+  width: 1.6em;
+}
+
+
 td.lang-select .row {
   position: absolute;
   top: 0.8rem;
@@ -3588,7 +3632,11 @@ td.lang-select .row {
 }
 
 td.lang-select .row span {
-  vertical-align: text-bottom;
+  vertical-align: text-top;
+}
+
+td.lang-select .row span svg {
+  vertical-align:inherit;
 }
 
 .glossary-list .entry-row {
@@ -3616,12 +3664,13 @@ td.lang-select .row span {
   font-size: 0.92rem;
 }
 
-.Select-clear {
+td#lang-select .Select-clear {
   vertical-align: middle;
-}
-
-.Select-clear {
-  vertical-align: middle;
+  position: absolute;
+  right: 2em;
+  top: 0.25em;
+  color: @color-neutral;
+  font-size:1.2em;
 }
 
 .usericon {
