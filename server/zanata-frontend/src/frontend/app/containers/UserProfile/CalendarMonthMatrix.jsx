@@ -10,9 +10,9 @@ const classes = {
   calendar: {
     types: {
       total: '',
-      approved: 'primary',
-      translated: 'success',
-      needswork: 'unsure'
+      approved: ' primary',
+      translated: ' success',
+      needswork: ' unsure'
     }
   }
 }
