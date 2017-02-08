@@ -171,7 +171,7 @@ class Glossary extends Component {
                 </Row>
               }
               {displayPaging &&
-                <div className='glossary-paging'>
+                <div className='pull-right glossary-paging'>
                   <Button bsStyle='link' disabled={currentPage <= 1}
                     title='First page'
                     onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
@@ -183,7 +183,7 @@ class Glossary extends Component {
                     () => { gotoPreviousPage(currentPage, totalPage) }}>
                     <Icon name='chevron-left' className='s1' />
                   </Button>
-                  <span className='text-neutral'>
+                  <span className='text-neutral-top'>
                     {currentPage} of {totalPage}
                   </span>
                   <Button bsStyle='link' disabled={currentPage === totalPage}

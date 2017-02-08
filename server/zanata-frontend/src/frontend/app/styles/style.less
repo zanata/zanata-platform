@@ -315,6 +315,7 @@ body.templatestyle {
 
 .glossary-header {
   flex-direction: row-reverse;
+  height:16em;
 }
 
 .glossary-header .row {
@@ -322,8 +323,13 @@ body.templatestyle {
   padding-top: @spacing-rq;
   padding-bottom: @spacing-rh;
   padding-right: @spacing-half-base;
-  margin-right:2em;
   position:relative;
+  width:100%;
+}
+
+.glossary-header .row .row {
+  width:5em;
+  padding-left:@spacing-rq;
 }
 
 .glossaryhead-wrapper {
@@ -3465,7 +3471,7 @@ table.glossary-entry {
 }
 
 span.hidden-lesm.glossary-row {
-  margin-top: @spacing-rh;
+  margin-top: 0.1em;
 }
 
 #glossary-select {
@@ -3820,7 +3826,8 @@ td.lang-select .row span svg {
 }
 
 .glossary-paging {
-  margin-top:5em;
+  margin-top:0.6em;
+  margin-left:auto;
 }
 
 .entry-row, .glossary-paging {
@@ -3832,19 +3839,24 @@ td.lang-select .row span svg {
   margin-left: @spacing-re;
 }
 
-.text-neutral {
+.text-neutral-top {
   color:@color-neutral;
+  margin-top:0.3em;
 }
 
 .glossary-paging .text-neutral-total {
   color: @color-neutral;
   margin-left: @spacing-rq;
+  margin-top: -0.3em;
+}
+
+.glossary-paging .text-neutral-total .row {
+  vertical-align:middle;
 }
 
 .glossary-list {
   margin-right: @spacing-base;
   margin-left: @spacing-base;
-  margin-top: 4rem;
   font-size: 0.92rem;
 }
 
@@ -6695,6 +6707,10 @@ i.i--left.i--lock, i.i--left.i--trash {x
 @media (min-width: @screen-md-min) {
   .lang-select {
     position: relative;
+  }
+
+  .glossary-header {
+    height:14em;
   }
 
   .modal-lg {
