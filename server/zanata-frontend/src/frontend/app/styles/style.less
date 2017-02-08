@@ -3510,11 +3510,169 @@ span.hidden-lesm.glossary-row {
   position:relative;
 }
 
+.input-group-addon:first-child {
+  border-right: 0;
+}
+
+.input-group .form-control:last-child, .input-group-addon:last-child, .input-group-btn:first-child > .btn-group:not(:first-child) > .btn, .input-group-btn:first-child > .btn:not(:first-child), .input-group-btn:last-child > .btn, .input-group-btn:last-child > .btn-group > .btn, .input-group-btn:last-child > .dropdown-toggle {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.input-group-addon:last-child {
+  border-left: 0;
+}
+
+.input-group-btn {
+  font-size: 0;
+  position: relative;
+  white-space: nowrap;
+}
+
+.input-group-btn > .btn {
+  position: relative;
+}
+
+.input-group-btn > .btn + .btn {
+  margin-left: -1px;
+}
+
+.input-group-btn > .btn:active, .input-group-btn > .btn:focus, .input-group-btn > .btn:hover {
+  z-index: 2;
+}
+
+.input-group-btn:first-child > .btn, .input-group-btn:first-child > .btn-group {
+  margin-right: -1px;
+}
+
+.input-group-btn:last-child > .btn, .input-group-btn:last-child > .btn-group {
+  z-index: 2;
+  margin-left: -1px;
+}
+
+//
+// Breadcrumbs
+// --------------------------------------------------
+.breadcrumb {
+  padding: @breadcrumb-padding-vertical @breadcrumb-padding-horizontal;
+  margin-bottom: @line-height-computed;
+  list-style: none;
+  background-color: @breadcrumb-bg;
+  border-radius: @border-radius-base;
+  > li {
+    display: inline-block;
+    + li:before {
+      content: "@{breadcrumb-separator}\00a0"; // Unicode space added since inline-block means non-collapsing white-space
+      padding: 0 @caret-width-large;
+      color: @breadcrumb-color;
+    }
+  }
+  > .active {
+    color: @breadcrumb-active-color;
+  }
+}
+
+.pagination, .search-box, .show-items {
+  padding: 0;
+  height: 2rem;
+}
+
+.show-items {
+  display: inline-flex;
+}
+
+.show-items .form-control {
+  margin-left: @spacing-label-large;
+}
+
+.show-items span {
+  margin-top: @spacing-small-horizontal;
+  margin-left: @spacing-large-horizontal;
+}
+
+.deleteicon {
+  vertical-align: sub;
+}
+
+#delete-entries .tooltip-inner {
+  max-width: 14rem;
+}
+
+table.glossary-entry {
+  width: 100%;
+  margin-bottom: 0;
+}
+
+.glossary-button {
+  margin-left: @spacing-rq;
+}
+
+.glossary-button span.s1 {
+  vertical-align: sub;
+}
+
+.row {
+  display: block;
+}
+
+.glossary-row {
+  padding-right: @spacing-rq;
+}
+
+span.hidden-lesm.glossary-row {
+  margin-top: @spacing-rh;
+}
+
+#glossary-select {
+  margin-right: @spacing-re;
+  width: 4.5rem;
+}
+
+.glossary-select {
+  position:absolute;
+}
+
+.is-searchable.is-open>.Select-control {
+  cursor: text;
+}
+
+.is-open>.Select-control {
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+  background: #fff;
+  border-color: #9cbeca #bdd4dc #cedfe5;
+}
+
+.Select, .Select div, .Select input, .Select span {
+  box-sizing: border-box;
+}
+
+.Select-menu-outer {
+  border-bottom-right-radius: .375em;
+  border-bottom-left-radius: .375em;
+  background-color: #fff;
+  border: 1px solid #bdd4dc;
+  border-top-color: #deeaee;
+  box-shadow: 0 1px 0 rgba(0,0,0,.06);
+  box-sizing: border-box;
+  margin-top: -1px;
+  max-height: 200px;
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  z-index: 1000;
+  -webkit-overflow-scrolling: touch;
+}
+
+.glossary-header .Select-menu-outer {
+  top:0 !important;
+  position:relative;
+}
+
 .Select-menu {
   max-height: 198px;
   overflow-y: auto;
 }
-
 
 .Select-option.is-focused {
   background-color: #1ba7d9;
@@ -5741,6 +5899,60 @@ li.more-contact {
   padding-top:@spacing-rh;
   padding-bottom:@spacing-rh;
 }
+
+li.more-info {
+  padding-top:@spacing-base-and-a-half;
+  font-size: 0.833rem !important;
+  color:@color-muted;
+}
+
+li.more-language {
+  padding-top:@spacing-base-and-a-half;
+}
+
+.new-zanata .bg--pop-highest thead, .bg--pop-highest tbody {
+  border:1px solid rgba(32,113,138,.15);
+}
+
+.new-zanata .l-wrapper {
+  align-items:center;
+}
+
+table.search-table {
+  max-width:36.05em;
+}
+
+.panel__header i.i--add:not(.i--large) {
+  color:#fff;
+}
+.button--small i.i--settings {
+  vertical-align: baseline;
+}
+
+i.i--left.i--lock, i.i--left.i--trash {x
+  color:#fff;
+  vertical-align: baseline;
+}
+
+#version-page.g {
+  width:100%;
+}
+
+#file-upload-component-toggle-button i.i--add,
+#add-team-member-button i.i--add {
+  color:@color-dark;
+}
+
+.new-zanata .g--centered {
+  text-align: center;
+  width: 100%;
+}
+
+.tabs__content {
+  padding-bottom:@spacing-base-and-a-half;
+
+}
+
 
 li.more-info {
   padding-top:@spacing-base-and-a-half;
