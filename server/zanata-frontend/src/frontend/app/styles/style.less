@@ -1217,7 +1217,7 @@ table td {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
-  max-height: 1rem;
+  max-height: 2rem;
 
 }
 
@@ -3465,10 +3465,6 @@ span.hidden-lesm.glossary-row {
   position:absolute;
 }
 
-.Select {
-  position:relative;
-}
-
 .is-searchable.is-open>.Select-control {
   cursor: text;
 }
@@ -3524,6 +3520,7 @@ span.hidden-lesm.glossary-row {
   cursor: pointer;
   display: block;
   padding: .375em .75em;
+  line-height:1em;
 }
 
 .Select-control {
@@ -3571,11 +3568,19 @@ span.hidden-lesm.glossary-row {
   border:none;
 }
 
-td#lang-select .Select-input input {
+td.lang-select .Select {
+  position:relative;
+}
+
+td.lang-select .Select-input input {
   margin-top:0.25em;
 }
 
 .Select-input input:focus {
+  outline:0;
+}
+
+.Select-input:focus {
   outline:0;
 }
 
@@ -3664,10 +3669,8 @@ td.lang-select .row span svg {
   font-size: 0.92rem;
 }
 
-td#lang-select .Select-clear {
+td.lang-select .Select-clear {
   vertical-align: middle;
-  position: absolute;
-  right: 2em;
   top: 0.25em;
   color: @color-neutral;
   font-size:1.2em;
