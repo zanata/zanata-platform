@@ -196,6 +196,22 @@ Trigger when a source document is added or removed from project version
 {"project":"zanata","version":"new-version"","changeType":"ADD","type":"SourceDocumentChangedEvent"}
 ```
 
+#### Manual event
+Trigger by user manually.
+
+To trigger such event, first project maintainer will need to add and enable the webhook.
+Then translator can select the language he/she has access to from the version page, then from the top right dropdown menu, you should be able to fire the event to registered webhook endpoint.
+```json
+{
+  "project": "zanata",
+  "version": "master",
+  "username": "triggerer",
+  "zanataServer": "translate.zanata.org",
+  "locale": "zh",
+  "type": "Manual event"
+}
+```
+
 If a secret key is provided for that payload URL, Zanata will sign the webhook request with HTTP header `X-Zanata-Webhook`. 
 The header is a double hash of `HMAC-SHA1` in base64 digest. The double hash is generated from the full request body and the payload URL as provided.
 
