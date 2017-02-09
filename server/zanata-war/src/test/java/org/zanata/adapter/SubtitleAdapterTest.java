@@ -28,7 +28,6 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.resource.Resource;
 
 import java.io.File;
@@ -42,27 +41,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Enclosed.class)
 public class SubtitleAdapterTest {
 
-    public static abstract class SubtitleAdapterSuper {
-        private static SubtitleAdapter adapter;
+    static abstract class AbstractSubtitleAdapterTest {
+        private SubtitleAdapter adapter;
 
         @Before
         public void setup() {
             adapter = new SubtitleAdapter();
         }
 
-        static Resource parseTestFile(String filename) {
+        Resource parseTestFile(String filename) {
             String resPath = "src/test/resources/org/zanata/adapter/";
             File testFile = new File(resPath.concat(filename));
             assert testFile.exists();
-            Resource resource =
-                    adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                            Optional.absent());
-            System.out.println(DTOUtil.toXML(resource));
-            return resource;
+            return adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
+                    Optional.absent());
         }
     }
 
-    public static class SubtitleAdapterSingle extends SubtitleAdapterSuper {
+    public static class SubtitleAdapterSingle extends AbstractSubtitleAdapterTest {
 
         @Test
         public void parseBasicSRT() {
@@ -135,7 +131,7 @@ public class SubtitleAdapterTest {
     }
 
     @RunWith(Parameterized.class)
-    public static class MultilineSubtitle extends SubtitleAdapterSuper {
+    public static class MultilineSubtitle extends AbstractSubtitleAdapterTest {
 
         @Parameterized.Parameters
         public static Object[] data() {
@@ -166,7 +162,7 @@ public class SubtitleAdapterTest {
     }
 
     @RunWith(Parameterized.class)
-    public static class FormattedSubtitle extends SubtitleAdapterSuper {
+    public static class FormattedSubtitle extends AbstractSubtitleAdapterTest {
 
         @Parameterized.Parameters
         public static Object[] data() {

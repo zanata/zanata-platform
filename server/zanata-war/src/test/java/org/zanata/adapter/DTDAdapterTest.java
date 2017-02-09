@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
-import org.zanata.rest.dto.DTOUtil;
 import org.zanata.rest.dto.resource.Resource;
 
 import java.io.File;
@@ -48,10 +47,8 @@ public class DTDAdapterTest {
     public void parseBasicDTDFile() {
         File testFile = new File("src/test/resources/org/zanata/adapter/basicdtd.dtd");
         assert testFile.exists();
-        Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-        System.out.println(DTOUtil.toXML(resource));
+        Resource resource = adapter.parseDocumentFile(testFile.toURI(),
+                LocaleId.EN, Optional.absent());
         assertThat(resource.getTextFlows()).hasSize(1);
         assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
                 ImmutableList.of("Test text 1"));
