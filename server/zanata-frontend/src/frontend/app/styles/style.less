@@ -71,6 +71,7 @@ body.templatestyle {
   height: 100%;
   min-height: 100vh;
   width:100%;
+  position:fixed;
 }
 
 .root-main {
@@ -6054,8 +6055,19 @@ i.i--left.i--lock, i.i--left.i--trash {x
 
   .glossaryhead-wrapper {
     left: 0;
+    top: 0;
+    background-color: #fff;
   }
 
+  .wide-view-theme {
+    margin-left:0;
+  }
+
+  .root-main {
+    margin-left:@spacing-rq;
+    margin-right:@spacing-rq;
+  }
+  
   .glossary-table {
     margin-top: @spacing-rh;
   }
@@ -6125,7 +6137,10 @@ i.i--left.i--lock, i.i--left.i--trash {x
   #nav {
     height: initial;
     width: 100%;
-    position: relative;
+    position: fixed;
+    overflow:hidden;
+    bottom:0;
+    z-index:1000;
   }
 
   .nav-bar {
@@ -6189,6 +6204,8 @@ i.i--left.i--lock, i.i--left.i--trash {x
   #nav {
     min-height: 100%;
     top: 0;
+    height:100%;
+    overflow: scroll;
   }
 
   .nav-bar {
