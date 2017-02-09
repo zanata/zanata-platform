@@ -5,9 +5,12 @@ if [ $# -lt 1 ];then
 fi
 Cmd=$1
 shift
-$Cmd ${@-}
-if pgrep -P $$ -f $Cmd ${@-} ;then
-    ## Only kill children if they exist, otherwise pkill return non zero
-    pkill -P $$
-fi
 
+# execute the command
+$Cmd ${@-}
+
+# remove stray processes
+if pkill -P $$; then
+    ## pkill returns zero if processes killed
+    echo "killed stray process" > /dev/stderr
+fi
