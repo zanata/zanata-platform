@@ -70,7 +70,8 @@ public class TSAdapter extends OkapiFilterAdapter {
         return new TsFilter();
     }
 
-    private final String COMMENT_REXEG = "<comment>(.+)</comment>";
+    // ExtraComment takes precedence
+    private final String COMMENT_REGEX = "<extracomment>(.+)</extracomment>|<comment>(.+)</comment>";
 
     @Override
     protected void updateParamsWithDefaults(IParameters params) {
@@ -147,12 +148,17 @@ public class TSAdapter extends OkapiFilterAdapter {
             potEntryHeader.setContext(context);
             textFlow.getExtensions(true).add(potEntryHeader);
         }
-        Pattern commentPattern = Pattern.compile(COMMENT_REXEG);
+        Pattern commentPattern = Pattern.compile(COMMENT_REGEX);
         Matcher matcher =
                 commentPattern.matcher(textUnit.getSkeleton().toString());
-        if (matcher.find() && StringUtils.isNotBlank(matcher.group(1))) {
-            textFlow.getExtensions(true)
-                    .add(new SimpleComment(matcher.group(1)));
+        if (matcher.find()) {
+            if (StringUtils.isNotBlank(matcher.group(1))) {
+                textFlow.getExtensions(true)
+                        .add(new SimpleComment(matcher.group(1)));
+            } else if (StringUtils.isNotBlank(matcher.group(2))) {
+                textFlow.getExtensions(true)
+                        .add(new SimpleComment(matcher.group(2)));
+            }
         }
         return textFlow;
     }
@@ -164,7 +170,8 @@ public class TSAdapter extends OkapiFilterAdapter {
         DocumentType documentType = document.getRawDocument().getType();
         String transExt = documentType.getExtensions().get(srcExt);
         if (StringUtils.isEmpty(transExt)) {
-            return document.getName() + "_" + locale + "." + transExt;
+            log.warn("Adding missing TS extension to generated filename");
+            return document.getName() + "_" + locale + ".ts";
         }
         return FilenameUtils.removeExtension(document.getName()) + "_" + locale
                 + "." + transExt;
@@ -289,6 +296,7 @@ public class TSAdapter extends OkapiFilterAdapter {
     }
 
     private String stripPath(String name) {
+        System.out.println(name);
         if (name.contains("/") && !name.endsWith("/")) {
             return name.substring(name.lastIndexOf('/') + 1);
         } else {
