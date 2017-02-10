@@ -53,9 +53,8 @@ public class GettextAdapterTest {
         String filePath = "src/test/resources/org/zanata/adapter/";
         testFile = new File(filePath.concat(filename));
         assert testFile.exists();
-        Resource resource = adapter.parseDocumentFile(testFile.toURI(),
+        return adapter.parseDocumentFile(testFile.toURI(),
                 LocaleId.EN, Optional.absent());
-        return resource;
     }
 
     @Test
@@ -80,14 +79,14 @@ public class GettextAdapterTest {
     }
 
     @Test
-    public void testGettextPlurals(){
+    public void testGettextPlurals() {
         Resource resource = parseTestFile("test-gettext-plurals.po");
         assertThat(resource.getTextFlows()).hasSize(1);
         assertThat(resource.getTextFlows().get(0).getContents()).containsExactly("%n file", "%n files");
     }
 
     @Test
-    public void testGettextFuzzyFlag(){
+    public void testGettextFuzzyFlag() {
         Resource resource = parseTestFile("test-gettext-flags.pot");
         assertThat(resource.getTextFlows()).hasSize(2);
 
@@ -98,7 +97,7 @@ public class GettextAdapterTest {
 
 
     @Test
-    public void testGettextReference(){
+    public void testGettextReference() {
         Resource resource = parseTestFile("test-gettext-reference.pot");
         assertThat(resource.getTextFlows()).hasSize(2);
 
