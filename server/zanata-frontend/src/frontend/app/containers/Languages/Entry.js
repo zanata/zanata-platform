@@ -64,7 +64,7 @@ class Entry extends Component {
           </span>
         </td>
         <td>
-          <span>
+          <span className='text-muted'>
             <Icon name='user' title='user' className='s1 usericon' />
             {locale.memberCount}
           </span>

@@ -12,7 +12,7 @@
   <!--[if IE 7]>         <html class="no-js new-zanata lt-ie9 lt-ie8"> <![endif]-->
   <!--[if IE 8]>         <html class="no-js new-zanata lt-ie9"> <![endif]-->
   <!--[if gt IE 8]><!-->
-  <html class="no-js new-zanata Bgc(#fff) Fz(16px)!">
+  <html class="no-js new-zanata template">
   <!--<![endif]-->
   <h:head>
     <ui:remove>
@@ -31,7 +31,6 @@
 
     <link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
     <link rel="stylesheet" href="#{request.contextPath}/frontend.css" type="text/css"/>
-    <link rel="stylesheet" href="#{request.contextPath}/atomic.css" type="text/css"/>
     <link rel="icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
 
     <!--[if gt IE 8]><!-->
@@ -69,7 +68,7 @@
     </script>
   </h:head>
 
-  <h:body styleClass="Bgc(i)! Fz(i) Ov(h)!">
+  <h:body class="templatestyle">
     <ds:windowId/>
 
     <a4j:outputPanel layout="block" ajaxRendered="true" id="messages">
@@ -98,11 +97,11 @@
     <script type="application/javascript">
       window.config = JSON.parse(JSON.stringify(document.getElementById('config').dataset))
     </script>
-    <div class='Ai(st) D(f) Fld(c) Flxs(0)'>
-      <div class="Ai(st) D(f) Fld(c) Fld(r)--sm Flxs(0) H(100%) Mih(100vh)">
-        <div id="root" class="Or(1) Or(0)--sm" />
-        <main role="main" class="W(100%) D(f) Flxg(1) Ov(a) Ovx(h) Ovs(touch) Pt(0)!">
-          <div class="l__wrapper Ai(st) D(f) Fld(c) Flx(flx1) Ov(h) H(100%) Mih(maxc) l--pad-top-half">
+    <div class="template-wrapper">
+      <div class="template-container">
+        <div id="root" />
+        <main role="main" class="root-main">
+          <div class="l__wrapper root-main-content l--pad-top-half">
             <ui:insert name="center_content"/>
           </div>
         </main>

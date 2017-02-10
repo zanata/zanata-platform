@@ -35,8 +35,8 @@ const ProjectTeaser = ({
   )
   const link = window.config.baseUrl + '/project/view/' + details.id
   const className = status !== statusIcons.ACTIVE
-    ? 'Fw(600) C(muted)'
-    : 'Fw(600)'
+    ? 'text-muted-bold'
+    : 'text-bold'
   const tooltip = status === statusIcons.ACTIVE
     ? ''
     : 'This project is currently read only'
