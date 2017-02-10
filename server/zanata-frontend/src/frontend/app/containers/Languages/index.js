@@ -24,13 +24,41 @@ import {
 } from '../../actions/languages'
 
 class Languages extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      searchText: props.searchText
+    }
+    this.resetSearchText = ::this.resetSearchText
+
+    this.debounceHandleUpdateSearch = debounce(
+        this.debounceHandleUpdateSearch, 200)
+  }
+
   componentDidMount () {
     this.props.handleInitLoad()
   }
 
+  debounceHandleUpdateSearch () {
+    this.props.handleOnUpdateSearch(this.state.searchText)
+  }
+
+  resetSearchText (localeId) {
+    this.setState({
+      searchText: ''
+    })
+    this.props.handleDelete(localeId)
+  }
+
+  onUpdateSearch (event) {
+    this.setState({
+      searchText: event.target.value || ''
+    })
+    this.debounceHandleUpdateSearch()
+  }
+
   render () {
     const {
-      searchText,
       size,
       sort,
       page,
@@ -41,17 +69,18 @@ class Languages extends Component {
       loading,
       deleting,
       notification,
-      handleDelete,
       handleOnUpdatePageSize,
       handleOnUpdateSort,
-      handleOnUpdateSearch,
       handlePageChanged,
       handleOnDisplayNewLanguage
     } = this.props
 
+    const resetSearchText = this.resetSearchText
+
     const totalPage = Math.floor(totalCount / size) +
       (totalCount % size > 0 ? 1 : 0)
 
+    /* eslint-disable react/jsx-no-bind */
     return (
       <div className='page wide-view-theme'>
         {notification &&
@@ -71,10 +100,10 @@ class Languages extends Component {
             </h2>
             {permission.canAddLocale &&
               <div>
-                <Button small bsStyle='primary'
+                <Button bsStyle='primary btn-sm'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
-                  <Icon name='plus' className='s0 plusicon'
+                  <Icon name='plus' className='n1 plusicon'
                     title='plus' />
                   Add new language
                 </Button>
@@ -86,8 +115,8 @@ class Languages extends Component {
                 col-lg-7'>
                 <InputGroup>
                   <FormControl type='text'
-                    defaultValue={searchText}
-                    onChange={handleOnUpdateSearch} />
+                    value={this.state.searchText}
+                    onChange={::this.onUpdateSearch} />
                   <InputGroup.Addon>
                     <Icon name='search'
                       className='s1'
@@ -154,7 +183,7 @@ class Languages extends Component {
                       return <Entry key={i} locale={value}
                         userLanguageTeams={user.languageTeams}
                         permission={permission}
-                        handleDelete={handleDelete}
+                        handleDelete={resetSearchText}
                         isDeleting={deleting} />
                     })}
                   </tbody>
@@ -164,6 +193,7 @@ class Languages extends Component {
         </div>
       </div>
     )
+    /* eslint-enable react/jsx-no-bind */
   }
 }
 
@@ -225,9 +255,6 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => {
-  const updateSearch = debounce((val) =>
-    dispatch(handleUpdateSearch(val)), 200)
-
   return {
     handleInitLoad: () => {
       dispatch(initialLoad())
@@ -241,8 +268,8 @@ const mapDispatchToProps = (dispatch) => {
     handleOnUpdateSort: (event) => {
       dispatch(handleUpdateSort(event.target.value || ''))
     },
-    handleOnUpdateSearch: (event) => {
-      updateSearch(event.target.value || '')
+    handleOnUpdateSearch: (val) => {
+      dispatch(handleUpdateSearch(val))
     },
     handlePageChanged: (page) => {
       dispatch(handlePageUpdate(page))

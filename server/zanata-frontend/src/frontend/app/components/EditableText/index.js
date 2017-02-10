@@ -42,7 +42,7 @@ class EditableText extends Component {
     } = this.props
 
     if (editable && editing) {
-      const cssClass = 'textInput textStateClasses ' +
+      const cssClass = 'text-input text-state-classes ' +
         (editable ? 'editable' : 'text') + (children ? '' : ' text-muted')
       return (
         <TextInput className={cssClass}
@@ -57,7 +57,7 @@ class EditableText extends Component {
     const emptyText = editable ? placeholder : emptyReadOnlyText
     const text = children || emptyText
     return (
-      <Row className='textInput textStateClasses text'
+      <Row className='text-input text-state-classes text'
         onClick={::this.handleClick} title={title}>
         {text}
       </Row>

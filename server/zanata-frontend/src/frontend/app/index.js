@@ -13,7 +13,6 @@ import rootReducer from './reducers'
 import Root from './containers/Root'
 import { isJsonString } from './utils/StringUtils'
 
-import 'zanata-ui/dist/zanata-ui.css'
 import './styles/style.less'
 
 WebFont.load({

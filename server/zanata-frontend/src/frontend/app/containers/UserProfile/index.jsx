@@ -49,7 +49,7 @@ class UserProfile extends Component {
     const languageTeams = !isEmpty(user.languageTeams)
       ? map(user.languageTeams, (language) => {
         return (
-          <a href={getLanguageUrl(language.localeId)} className='D(b)'>
+          <a href={getLanguageUrl(language.localeId)}>
             {language.displayName}
           </a>
         )

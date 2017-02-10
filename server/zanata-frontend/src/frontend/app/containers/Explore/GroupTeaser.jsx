@@ -31,8 +31,8 @@ const GroupTeaser = ({
   ) : undefined
   const link = window.config.baseUrl + '/version-group/view/' + details.id
   const className = status !== statusIcons.ACTIVE
-                  ? 'Fw(600) C(muted)'
-                  : 'Fw(600)'
+                  ? 'text-muted-bold'
+                  : 'text-bold'
   return (
     <div className='teaser-view-theme' name={name}>
       {/* <View className='Mend(rh)'>

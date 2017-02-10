@@ -126,7 +126,7 @@ class Explore extends Component {
               ref={(ref) => this.searchInput = ref}
               id='explore_search'
               type='search'
-              className='textInput'
+              className='text-input'
               placeholder='Search Zanata…'
               accessibilityLabel='Search Zanata'
               defaultValue={searchText}
