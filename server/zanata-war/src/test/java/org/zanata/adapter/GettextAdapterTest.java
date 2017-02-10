@@ -74,7 +74,7 @@ public class GettextAdapterTest {
         Resource resource = parseTestFile("test-gettext-comments.po");
         assertThat(resource.getTextFlows()).hasSize(3);
 
-        PoHeader poHeader = (PoHeader)resource.getExtensions().iterator().next();
+        PoHeader poHeader = (PoHeader) resource.getExtensions().iterator().next();
         assertThat(poHeader.getComment()).isEqualTo(testComment1);
 
     }
@@ -91,7 +91,7 @@ public class GettextAdapterTest {
         Resource resource = parseTestFile("test-gettext-flags.pot");
         assertThat(resource.getTextFlows()).hasSize(2);
 
-        PotEntryHeader potEntryHeader = (PotEntryHeader)resource.getTextFlows().get(0).getExtensions().iterator().next();
+        PotEntryHeader potEntryHeader = (PotEntryHeader) resource.getTextFlows().get(0).getExtensions().iterator().next();
         assertThat(potEntryHeader.getFlags().get(0)).isEqualTo("fuzzy");
 
     }
@@ -102,7 +102,7 @@ public class GettextAdapterTest {
         Resource resource = parseTestFile("test-gettext-reference.pot");
         assertThat(resource.getTextFlows()).hasSize(2);
 
-        PotEntryHeader potEntryHeader = (PotEntryHeader)resource.getTextFlows().get(0).getExtensions().iterator().next();
+        PotEntryHeader potEntryHeader = (PotEntryHeader) resource.getTextFlows().get(0).getExtensions().iterator().next();
         assertThat(potEntryHeader.getReferences().get(0)).isEqualTo("reference");
     }
 
