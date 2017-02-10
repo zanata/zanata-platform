@@ -129,15 +129,6 @@ public class TSAdapterTest {
     }
 
     @Test
-    public void testSourceLocaleCannotBeNull() {
-        File testFile = new File(filePath.concat("basicts.ts"));
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage("Source locale cannot be null");
-        adapter.parseDocumentFile(testFile.toURI(),
-                null, Optional.absent());
-    }
-
-    @Test
     public void testGeneratedFilename() throws Exception {
         HDocument document = new HDocument("/test/basicts.ts",
                 "basicts.ts", "test/", ContentType.PO,

@@ -82,12 +82,8 @@ public class TSAdapter extends OkapiFilterAdapter {
 
     @Override
     public Resource parseDocumentFile(URI documentContent,
-            LocaleId sourceLocale, Optional<String> filterParams)
+            @Nonnull LocaleId sourceLocale, Optional<String> filterParams)
             throws FileFormatAdapterException, IllegalArgumentException {
-        // null documentContent is handled by RawDocument constructor
-        if (sourceLocale == null) {
-            throw new IllegalArgumentException("Source locale cannot be null");
-        }
         IFilter filter = getFilter();
         Resource document = new Resource();
         document.setLang(sourceLocale);
