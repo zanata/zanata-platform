@@ -35,7 +35,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 /**
- * @author Sean spathare <a href="mailto:spathare@redhat.com">spathare@redhat.com</a>
+ * @author spathare <a href="mailto:spathare@redhat.com">spathare@redhat.com</a>
  *  @// TODO: 8/02/17 test ids
  */
 
@@ -64,8 +64,8 @@ public class GettextAdapterTest {
         assertThat(resource.getTextFlows()).hasSize(3);
 
         assertThat(resource.getTextFlows().get(0).getContents()).containsExactly("Line One");
-        assertThat(resource.getTextFlows().get(0).getContents()).containsExactly("Line Two");
-        assertThat(resource.getTextFlows().get(0).getContents()).containsExactly("Line Three");
+        assertThat(resource.getTextFlows().get(1).getContents()).containsExactly("Line Two");
+        assertThat(resource.getTextFlows().get(2).getContents()).containsExactly("Line Three");
     }
 
     @Test
@@ -104,7 +104,6 @@ public class GettextAdapterTest {
 
         PotEntryHeader potEntryHeader = (PotEntryHeader)resource.getTextFlows().get(0).getExtensions().iterator().next();
         assertThat(potEntryHeader.getReferences().get(0)).isEqualTo("reference");
-
     }
 
 
