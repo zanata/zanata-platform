@@ -284,8 +284,4 @@ public class TSAdapterTest {
         return null;
     }
 
-    private URI getRawDocument(String fileName) throws Exception {
-        String filePath = "src/test/resources/org/zanata/adapter/";
-        return new URI(filePath.concat(fileName));
-    }
 }

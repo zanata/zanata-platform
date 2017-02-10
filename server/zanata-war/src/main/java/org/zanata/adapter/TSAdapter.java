@@ -112,11 +112,6 @@ public class TSAdapter extends OkapiFilterAdapter {
                     context = getContext(event);
                 } else if (isEndContext(event)) {
                     context = "";
-                } else if (event
-                        .getEventType() == EventType.START_SUBDOCUMENT) {
-                    StartSubDocument startSubDoc =
-                            (StartSubDocument) event.getResource();
-                    subDocName = stripPath(startSubDoc.getName());
                 } else if (event.getEventType() == EventType.TEXT_UNIT) {
                     TextUnit tu = (TextUnit) event.getResource();
                     if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
@@ -201,12 +196,6 @@ public class TSAdapter extends OkapiFilterAdapter {
                     context = getContext(event);
                 } else if (isEndContext(event)) {
                     context = "";
-                } else if (event
-                        .getEventType() == EventType.START_SUBDOCUMENT) {
-                    StartSubDocument startSubDoc =
-                            (StartSubDocument) event.getResource();
-                    subDocName = stripPath(startSubDoc.getName());
-                    writer.handleEvent(event);
                 } else if (event.getEventType() == EventType.TEXT_UNIT) {
                     TextUnit tu = (TextUnit) event.getResource();
                     if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
@@ -295,15 +284,6 @@ public class TSAdapter extends OkapiFilterAdapter {
         return tf;
     }
 
-    private String stripPath(String name) {
-        System.out.println(name);
-        if (name.contains("/") && !name.endsWith("/")) {
-            return name.substring(name.lastIndexOf('/') + 1);
-        } else {
-            return name;
-        }
-    }
-
     @Override
     protected TranslationsResource parseTranslationFile(RawDocument rawDoc,
             Optional<String> params) {
@@ -324,11 +304,6 @@ public class TSAdapter extends OkapiFilterAdapter {
                     context = getContext(event);
                 } else if (isEndContext(event)) {
                     context = "";
-                } else if (event
-                        .getEventType() == EventType.START_SUBDOCUMENT) {
-                    StartSubDocument startSubDoc =
-                            (StartSubDocument) event.getResource();
-                    subDocName = stripPath(startSubDoc.getName());
                 } else if (event.getEventType() == EventType.TEXT_UNIT) {
                     TextUnit tu = (TextUnit) event.getResource();
                     if (!tu.getSource().isEmpty() && tu.isTranslatable()) {
