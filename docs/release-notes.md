@@ -6,10 +6,13 @@ including web pages and REST resources. To change the behavior, admin user
 can sign in and go to server configuration page to change the value there.
 
 ##### Changes
+ * [ZNTA-1721](https://zanata.atlassian.net/browse/ZNTA-1721) - Remove zanata-ui and atomic css from build scripts in frontend
+ * [ZNTA-1652](https://zanata.atlassian.net/browse/ZNTA-1652) - Remove all Zanata-UI dependencies from Glossary container
  * [ZNTA-1646](https://zanata.atlassian.net/browse/ZNTA-1646) - Enable eslint check in Draft mode
  * [ZNTA-1628](https://zanata.atlassian.net/browse/ZNTA-1628) - Update "explode" profile for Zanata-server
  * [ZNTA-1626](https://zanata.atlassian.net/browse/ZNTA-1626) - Admin page to create new user
  * [ZNTA-1618](https://zanata.atlassian.net/browse/ZNTA-1618) - User experience for private instance signup 
+ * [ZNTA-1606](https://zanata.atlassian.net/browse/ZNTA-1606) - Migrate all atomic into bootstrap css
  * [ZNTA-1605](https://zanata.atlassian.net/browse/ZNTA-1605) - Remove all container zanata ui dependencies
  * [ZNTA-1604](https://zanata.atlassian.net/browse/ZNTA-1604) - Remove all component zanata ui dependencies
  * [ZNTA-1586](https://zanata.atlassian.net/browse/ZNTA-1586) - Switch from Cobertura to Jacoco for test coverage
@@ -26,6 +29,11 @@ can sign in and go to server configuration page to change the value there.
  * [ZNTA-100](https://zanata.atlassian.net/browse/ZNTA-100) - RFE: Changing group settings does not show a success notification
 
 ##### Bug Fixes
+ * [ZNTA-1717](https://zanata.atlassian.net/browse/ZNTA-1717) - Filter error while glossary term search on glossary page
+ * [ZNTA-1712](https://zanata.atlassian.net/browse/ZNTA-1712) - Sign up menu hides when anonymous user click on explore.
+ * [ZNTA-1707](https://zanata.atlassian.net/browse/ZNTA-1707) - Language team checkboxes not redrawn on filter
+ * [ZNTA-1704](https://zanata.atlassian.net/browse/ZNTA-1704) - Language list/names are not separated on profile page.
+ * [ZNTA-1703](https://zanata.atlassian.net/browse/ZNTA-1703) - "Error destroying an instance" triggered by logout
  * [ZNTA-1681](https://zanata.atlassian.net/browse/ZNTA-1681) - Language delete button not working
  * [ZNTA-1680](https://zanata.atlassian.net/browse/ZNTA-1680) - Bootstrap modal layout on mobile needs styling fixes
  * [ZNTA-1671](https://zanata.atlassian.net/browse/ZNTA-1671) - client init fails on missing zanata.ini despite given auth
@@ -53,6 +61,7 @@ can sign in and go to server configuration page to change the value there.
  * [ZNTA-1541](https://zanata.atlassian.net/browse/ZNTA-1541) - Glossary entry Update/Cancel buttons not displayed correctly in narrow window
  * [ZNTA-1500](https://zanata.atlassian.net/browse/ZNTA-1500) - Unable to cancel manage role -> create role panel.
  * [ZNTA-1479](https://zanata.atlassian.net/browse/ZNTA-1479) - Uncaught validation exception when rejecting user language team request
+ * [ZNTA-1381](https://zanata.atlassian.net/browse/ZNTA-1381) - Unable to "Download All for Offline Translation" as zip (File project)
  * [ZNTA-1210](https://zanata.atlassian.net/browse/ZNTA-1210) - Change of contact details on Language Team with no members
  * [ZNTA-579](https://zanata.atlassian.net/browse/ZNTA-579) - Project creation "restrict access" feature too ambiguous.
  * [ZNTA-468](https://zanata.atlassian.net/browse/ZNTA-468) - Missing information about CopyTrans state "Approved" when copy from "Approved"
