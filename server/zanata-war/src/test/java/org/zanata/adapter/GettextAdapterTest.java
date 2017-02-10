@@ -27,15 +27,18 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
+import org.zanata.rest.dto.extensions.gettext.PoHeader;
+import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean spathare <a href="mailto:spathare@redhat.com">spathare@redhat.com</a>
+ *  @// TODO: 8/02/17 test ids
  */
-// TODO test writeTranslatedFile
+
 public class GettextAdapterTest {
 
     private GettextAdapter adapter;
@@ -44,21 +47,65 @@ public class GettextAdapterTest {
     @Before
     public void setup() {
         adapter = new GettextAdapter();
-        // this document has three text flows: Line One, Line Two, Line Three
-        testFile = new File("src/test/resources/org/zanata/adapter/test-gettext.pot");
+    }
+
+    private Resource parseTestFile(String filename) {
+        String filePath = "src/test/resources/org/zanata/adapter/";
+        testFile = new File(filePath.concat(filename));
         assert testFile.exists();
+        Resource resource = adapter.parseDocumentFile(testFile.toURI(),
+                LocaleId.EN, Optional.absent());
+        return resource;
     }
 
     @Test
     public void parsePOT() {
-        Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-//        System.out.println(DTOUtil.toXML(resource));
+        Resource resource = parseTestFile("test-gettext.pot");
         assertThat(resource.getTextFlows()).hasSize(3);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("Line One"));
-        // TODO test IDs
+
+        assertThat(resource.getTextFlows().get(0).getContents()).containsExactly("Line One");
+        assertThat(resource.getTextFlows().get(0).getContents()).containsExactly("Line Two");
+        assertThat(resource.getTextFlows().get(0).getContents()).containsExactly("Line Three");
     }
+
+    @Test
+    public void testGettextWithComment() {
+        String testComment1 = " translator-comments";
+        Resource resource = parseTestFile("test-gettext-comments.po");
+        assertThat(resource.getTextFlows()).hasSize(3);
+
+        PoHeader poHeader = (PoHeader)resource.getExtensions().iterator().next();
+        assertThat(poHeader.getComment()).isEqualTo(testComment1);
+
+    }
+
+    @Test
+    public void testGettextPlurals(){
+        Resource resource = parseTestFile("test-gettext-plurals.po");
+        assertThat(resource.getTextFlows()).hasSize(1);
+        assertThat(resource.getTextFlows().get(0).getContents()).containsExactly("%n file", "%n files");
+    }
+
+    @Test
+    public void testGettextFuzzyFlag(){
+        Resource resource = parseTestFile("test-gettext-flags.pot");
+        assertThat(resource.getTextFlows()).hasSize(2);
+
+        PotEntryHeader potEntryHeader = (PotEntryHeader)resource.getTextFlows().get(0).getExtensions().iterator().next();
+        assertThat(potEntryHeader.getFlags().get(0)).isEqualTo("fuzzy");
+
+    }
+
+
+    @Test
+    public void testGettextReference(){
+        Resource resource = parseTestFile("test-gettext-reference.pot");
+        assertThat(resource.getTextFlows()).hasSize(2);
+
+        PotEntryHeader potEntryHeader = (PotEntryHeader)resource.getTextFlows().get(0).getExtensions().iterator().next();
+        assertThat(potEntryHeader.getReferences().get(0)).isEqualTo("reference");
+
+    }
+
 
 }
