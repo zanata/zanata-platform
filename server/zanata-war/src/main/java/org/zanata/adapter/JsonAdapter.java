@@ -21,8 +21,10 @@
 package org.zanata.adapter;
 
 import net.sf.okapi.common.IParameters;
+import net.sf.okapi.common.resource.TextUnit;
 import net.sf.okapi.filters.json.JSONFilter;
 import net.sf.okapi.filters.json.Parameters;
+import org.zanata.util.HashUtil;
 
 /**
  * Adapter to handle JavaScript Object Notation (JSON) documents.
@@ -45,5 +47,10 @@ public class JsonAdapter extends OkapiFilterAdapter {
     protected void updateParamsWithDefaults(IParameters params) {
         Parameters p = (Parameters) params;
         p.fromString("extractIsolatedStrings.b=true");
+    }
+
+    @Override
+    protected String getIdFor(TextUnit tu, String content, String subDocName) {
+        return HashUtil.generateHash(tu.getName().concat(content));
     }
 }
