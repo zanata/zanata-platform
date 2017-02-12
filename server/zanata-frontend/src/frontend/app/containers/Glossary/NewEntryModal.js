@@ -79,11 +79,11 @@ class NewEntryModal extends Component {
         <Modal.Header>
           <Modal.Title>New Term</Modal.Title>
         </Modal.Header>
-        <Modal.Body atomic={{t: 'Ta(start)'}}>
-          <div className='Mb(rh)'>
-            <label className='Fw(b)'>Term</label>
+        <Modal.Body className='text-left'>
+          <div className='modal-section'>
+            <label className='text-bold'>Term</label>
             <EditableText
-              className='editable textStateClasses'
+              className='editable text-state-classes'
               editable={true}
               editing={true}
               placeholder='The new term'
@@ -92,23 +92,22 @@ class NewEntryModal extends Component {
               {this.state.entry.srcTerm.content}
             </EditableText>
           </div>
-          <div className='Mb(rh)'>
-            <label className='Fw(b)'>Part of speech</label>
+          <div className='modal-section'>
+            <label className='text-bold'>Part of speech</label>
             <EditableText
-              className='textInput'
+              className='text-input modal-section'
               editable={true}
               editing={true}
-              theme={{root: {m: 'Mb(rh)'}}}
               placeholder='Noun, Verb, etc'
               maxLength={255}
               onChange={::this.handlePosChanged}>
               {this.state.entry.pos}
             </EditableText>
           </div>
-          <div className='Mb(rh)'>
-            <label className='Fw(b)'>Description</label>
+          <div className='modal-section'>
+            <label className='text-bold'>Description</label>
             <EditableText
-              className='textInput'
+              className='text-input'
               editable={true}
               editing={true}
               placeholder='The definition of this term'

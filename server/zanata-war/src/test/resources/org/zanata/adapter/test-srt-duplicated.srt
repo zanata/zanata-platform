@@ -1,0 +1,5 @@
+00:00:01,000 --> 00:00:02,000
+Exactly the same text
+
+00:00:03,000 --> 00:00:04,000
+Exactly the same text

@@ -22,7 +22,6 @@ package org.zanata.feature.document;
 
 import org.junit.*;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
@@ -50,7 +49,6 @@ public class UploadTest extends ZanataTestCase {
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
-    private String documentStorageDirectory;
 
     @Before
     public void before() {
@@ -58,38 +56,12 @@ public class UploadTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
         new ZanataRestCaller().createProjectAndVersion("uploadtest",
                 "txt-upload", "file");
-        documentStorageDirectory = CleanDocumentStorageRule
+        String documentStorageDirectory = CleanDocumentStorageRule
                 .getDocumentStoragePath().concat(File.separator)
                 .concat("documents").concat(File.separator);
         if (new File(documentStorageDirectory).exists()) {
             log.warn("Document storage directory exists (cleanup incomplete)");
         }
-    }
-
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
-    @Ignore("Error in system path")
-    public void uploadedDocumentIsInFilesystem() {
-        File originalFile = testFileGenerator.generateTestFileWithContent(
-                "uploadedDocumentIsInFilesystem", ".txt",
-                "This is a test file");
-        String testFileName = originalFile.getName();
-        VersionDocumentsTab versionDocumentsTab =
-                new ProjectWorkFlow().goToProjectByName("uploadtest")
-                        .gotoVersion("txt-upload").gotoSettingsTab()
-                        .gotoSettingsDocumentsTab().pressUploadFileButton()
-                        .enterFilePath(originalFile.getAbsolutePath())
-                        .submitUpload().clickUploadDone();
-        File newlyCreatedFile =
-                new File(documentStorageDirectory, testFileGenerator
-                        .getFirstFileNameInDirectory(documentStorageDirectory));
-        assertThat(testFileGenerator.getTestFileContent(newlyCreatedFile))
-                .isEqualTo("This is a test file")
-                .as("The contents of the file were also uploaded");
-        VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .gotoDocumentTab().expectSourceDocsContains(testFileName);
-        assertThat(versionDocumentsPage.sourceDocumentsContains(testFileName))
-                .isTrue().as("Document shows in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -115,44 +87,6 @@ public class UploadTest extends ZanataTestCase {
                         .gotoSettingsDocumentsTab().pressUploadFileButton();
         assertThat(versionDocumentsTab.canSubmitDocument()).isFalse()
                 .as("The upload button is not available");
-    }
-
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("RHBZ-990836")
-    public void handleReallyBigFile() {
-        File bigFile = testFileGenerator.generateTestFileWithContent("bigFile",
-                ".txt", "Big file content");
-        long fileSizeInMB = (1024 * 1024) * 500;
-        testFileGenerator.forceFileSize(bigFile, fileSizeInMB);
-        assumeTrue("Data file " + bigFile.getName() + " is big",
-                bigFile.length() == fileSizeInMB);
-        VersionDocumentsTab versionDocumentsTab =
-                new ProjectWorkFlow().goToProjectByName("uploadtest")
-                        .gotoVersion("txt-upload").gotoSettingsTab()
-                        .gotoSettingsDocumentsTab().pressUploadFileButton()
-                        .enterFilePath(bigFile.getAbsolutePath()).submitUpload()
-                        .clickUploadDone();
-        versionDocumentsTab.assertNoCriticalErrors();
-        // TODO: Verify graceful handling of scenario
-    }
-    // RHBZ993445
-
-    @Ignore("Fails on Chrome")
-    public void failOnInvalidFileUpload() {
-        File noFile = testFileGenerator.generateTestFileWithContent(
-                "thereIsNoSpoon", ".txt", "This file will be deleted");
-        String successfullyUploaded =
-                "Document " + noFile.getName() + " uploaded.";
-        VersionDocumentsTab versionDocumentsTab =
-                new ProjectWorkFlow().goToProjectByName("uploadtest")
-                        .gotoVersion("txt-upload").gotoSettingsTab()
-                        .gotoSettingsDocumentsTab().pressUploadFileButton()
-                        .enterFilePath(noFile.getAbsolutePath());
-        assertThat(noFile.delete() && !noFile.exists())
-                .as("Data file " + noFile.getName() + " does not exist");
-        versionDocumentsTab =
-                versionDocumentsTab.submitUpload().clickUploadDone();
-        versionDocumentsTab.assertNoCriticalErrors();
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)

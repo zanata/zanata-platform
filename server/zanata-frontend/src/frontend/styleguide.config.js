@@ -11,7 +11,6 @@ module.exports = {
   ],
   template: './styleguide.html',
   updateWebpackConfig: function (webpackConfig, env) {
-    webpackConfig.entry.push(path.join(__dirname, 'app/styles/atomic.css'))
     webpackConfig.entry.push(path.join(__dirname, 'app/styles/style.less'))
     webpackConfig.entry.push(path.join(__dirname, 'app/styles/variables.less'))
     webpackConfig.entry.push(path.join(__dirname, 'app/styles/styleguide.css'))

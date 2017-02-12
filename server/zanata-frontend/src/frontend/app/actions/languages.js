@@ -274,9 +274,6 @@ export const handleUpdateSearch = (search) => {
 
 export const handleDelete = (localeId) => {
   return (dispatch, getState) => {
-    replaceRouteQuery(getState().routing.location, {
-      search: ''
-    })
     dispatch(deleteLanguage(dispatch, localeId))
   }
 }

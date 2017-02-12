@@ -132,6 +132,7 @@ class Glossary extends Component {
         itemRenderer={::this.renderItem}
         length={size(terms)}
         type='uniform'
+        className='react-list'
         ref={(c) => { this.list = c }} />)
     } else {
       list = (<div className='loading-container-theme'>
@@ -155,7 +156,7 @@ class Glossary extends Component {
         <div className='wide-view-theme-glossary'>
           <ViewHeader title={headerTitle} />
           <div className='glossary-header'>
-            <Row className='pull-right'>
+            <Row>
               {termCount > 0 &&
                 <Row>
                   <span className='hidden-lesm glossary-row'>Show</span>
@@ -170,7 +171,7 @@ class Glossary extends Component {
                 </Row>
               }
               {displayPaging &&
-                <div className='glossary-paging'>
+                <div className='pull-right glossary-paging'>
                   <Button bsStyle='link' disabled={currentPage <= 1}
                     title='First page'
                     onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
@@ -182,7 +183,7 @@ class Glossary extends Component {
                     () => { gotoPreviousPage(currentPage, totalPage) }}>
                     <Icon name='chevron-left' className='s1' />
                   </Button>
-                  <span className='text-muted'>
+                  <span className='text-neutral-top'>
                     {currentPage} of {totalPage}
                   </span>
                   <Button bsStyle='link' disabled={currentPage === totalPage}
@@ -195,7 +196,7 @@ class Glossary extends Component {
                     onClick={() => { gotoLastPage(currentPage, totalPage) }}>
                     <Icon name='next' className='s1' />
                   </Button>
-                  <span className='text-muted-total'
+                  <span className='text-neutral-total'
                     title='Total glossary terms'>
                     <Row>
                       <Icon name='glossary' className='s1' /> {termCount}
