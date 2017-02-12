@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-
+// import { Accordion } from 'react-bootstrap'
 /**
- * Root component for Explore page
+ * Root component for Sidebar
  */
 class Sidebar extends Component {
   /* eslint-disable react/jsx-no-bind, no-return-assign */
