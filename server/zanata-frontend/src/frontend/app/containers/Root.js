@@ -24,9 +24,9 @@ export default class Root extends Component {
               component={Glossary} />
             <Route path='glossary' component={Glossary} />
             <Route path='languages' component={Languages} />
+            <Route path='projsidebar' component={ProjSidebar} />
             <Route path='profile/view/:username' component={UserProfile} />
             <Redirect from='profile' to={`profile/view/${username}`} />
-            <Route path='sidebar' component={ProjSidebar} />
           </Route>
         </Router>
       </Provider>
