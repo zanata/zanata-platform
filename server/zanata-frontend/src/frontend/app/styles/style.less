@@ -5793,12 +5793,37 @@ button.btn-link {
   }
 
   /*----- Section Titles -----*/
-  .accordion-section-title {
+  a.accordion-section-title {
     width:100%;
     display:inline-block;
     transition:all linear 0.15s;
+    color:#54667a;
+    padding-top: 20px;
+    padding-bottom:10px;
+    font-size: 2.25em;
+    line-height: 1.08333em;
+    letter-spacing: -0.05em;
+  }
 
-    /* Type */
+  .accordion-section-title span {
+    vertical-align: text-top
+  }
+
+  .accordion-section-title svg.hide-desktop {
+    fill: rgb(84, 102, 122);
+    height: 30px;
+    width: 30px;
+    right: 10px;
+    position: absolute;
+    transform: rotate(0deg);
+    transform-origin: 50% 50% 0px;
+  }
+
+  .accordion-section-title svg.projicon {
+    fill:#54667a;
+    height: 30px;
+    width: 30px;
+    margin-bottom: 2px;
   }
 
   .accordion-section-title.active, .accordion-section-title:hover {
