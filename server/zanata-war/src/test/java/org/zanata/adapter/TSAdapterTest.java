@@ -250,27 +250,19 @@ public class TSAdapterTest {
     }
 
     private String getContext(TextFlow textFlow) {
-        Iterator<TextFlowExtension> iterator = textFlow.getExtensions().iterator();
-        while (iterator.hasNext()) {
-            try {
-                PotEntryHeader potEntryHeader = (PotEntryHeader) iterator.next();
-                return potEntryHeader.getContext();
-            } catch(ClassCastException cce) {
-                // Not a PotEntryHeader
-            }
+        PotEntryHeader potEntryHeader = textFlow.getExtensions(true)
+                .findByType(PotEntryHeader.class);
+        if (potEntryHeader != null) {
+            return potEntryHeader.getContext();
         }
         return null;
     }
 
     private String getComment(TextFlow textFlow) {
-        Iterator<TextFlowExtension> iterator = textFlow.getExtensions().iterator();
-        while (iterator.hasNext()) {
-            try {
-                SimpleComment simpleComment = (SimpleComment) iterator.next();
-                return simpleComment.getValue();
-            } catch(ClassCastException cce) {
-                // Not a SimpleComment
-            }
+        SimpleComment simpleComment = textFlow.getExtensions(true)
+                .findByType(SimpleComment.class);
+        if (simpleComment != null) {
+            return simpleComment.getValue();
         }
         return null;
     }
