@@ -1,10 +1,10 @@
-#!/bin/bash -xe
+#!/bin/bash -xeu
 
 # determine directory containing this script
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
   DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-  SOURCE="$(readlink "$SOURCE")"
+  SOURCE="$(realpath "$SOURCE")"
   [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
@@ -18,7 +18,7 @@ ZANATA_WAR=$(echo $PWD/zanata-war/target/zanata-*.war)
 # volume mapping for JBoss deployment folder (put exploded war or war file here to deploy)
 ZANATA_DEPLOYMENTS_DIR=$HOME/docker-volumes/zanata-deployments
 # make zanata deployment directory accessible to docker containers (SELinux)
-mkdir -p ${ZANATA_DEPLOYMENTS_DIR} && chcon -Rt svirt_sandbox_file_t ${ZANATA_DEPLOYMENTS_DIR}
+mkdir -p ${ZANATA_DEPLOYMENTS_DIR}
 
 if [ -f "$ZANATA_WAR" ]
 then
@@ -102,7 +102,7 @@ ensure_docker_network
 # volume mapping for zanata server files
 ZANATA_DIR=$HOME/docker-volumes/zanata
 # create the data directory and set permissions (SELinux)
-mkdir -p $ZANATA_DIR && chcon -Rt svirt_sandbox_file_t "$ZANATA_DIR"
+mkdir -p $ZANATA_DIR
 
 # build the docker dev image
 docker build -t zanata/server-dev docker/
@@ -121,6 +121,6 @@ docker run \
     -e MAIL_HOST="${MAIL_HOST}" ${MAIL_CREDENTIAL_ENV} \
     --rm --name zanata --net=${DOCKER_NETWORK} \
     -p ${HTTP_PORT}:8080 -p ${DEBUG_PORT}:8787 -p ${MGMT_PORT}:9990 -it \
-    -v ${ZANATA_DEPLOYMENTS_DIR}:${JBOSS_DEPLOYMENT_VOLUME} \
-    -v $ZANATA_DIR:/opt/jboss/zanata \
+    -v ${ZANATA_DEPLOYMENTS_DIR}:${JBOSS_DEPLOYMENT_VOLUME}:Z \
+    -v $ZANATA_DIR:/opt/jboss/zanata:Z \
     zanata/server-dev
