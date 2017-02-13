@@ -22,17 +22,23 @@ package org.zanata.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
+import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author spathare <a href="mailto:spathare@redhat.com">spathare@redhat.com</a>
@@ -43,6 +49,7 @@ public class GettextAdapterTest {
 
     private GettextAdapter adapter;
     private File testFile;
+    private String filePath = "src/test/resources/org/zanata/adapter/";
 
     @Before
     public void setup() {
@@ -50,7 +57,6 @@ public class GettextAdapterTest {
     }
 
     private Resource parseTestFile(String filename) {
-        String filePath = "src/test/resources/org/zanata/adapter/";
         testFile = new File(filePath.concat(filename));
         assert testFile.exists();
         return adapter.parseDocumentFile(testFile.toURI(),
@@ -105,5 +111,48 @@ public class GettextAdapterTest {
         assertThat(potEntryHeader.getReferences().get(0)).isEqualTo("reference");
     }
 
+    @Test
+    public void testTranslatedGettext() {
+
+        TranslationsResource transResource = new TranslationsResource();
+        addTranslation(transResource, "0293301ed6a54b7e4503e74bba17bf11", "Carpeta padre", ContentState.Approved);
+        addTranslation(transResource, "47a0be8d1015d526a1fbaa56c3102135", "Asunto:", ContentState.Translated);
+        addTranslation(transResource, "49ab28040dfa07f53544970c6d147e1e", "Conectar", ContentState.NeedReview);
+
+        Resource resource = parseTestFile("test-gettext-translated.po");
+        File originalFile = new File(filePath.concat("test-gettext-translated.po"));
+        OutputStream outputStream = new ByteArrayOutputStream();
+
+        adapter.writeTranslatedFile(outputStream,originalFile.toURI(),resource,transResource,"es",Optional.absent());
+
+        assertThat(outputStream.toString()).isEqualTo(
+                "#, fuzzy\n" +
+                        "msgid \"\"\n" +
+                        "msgstr \"\"\n" +
+                        "\"Content-Type: text/plain; charset=UTF-8\\n\"\n" +
+                        "\"Content-Transfer-Encoding: 8bit\\n\"\n" +
+                        "\"MIME-Version: 1.0\\n\"\n\n" +
+                        "msgctxt \"0293301ed6a54b7e4503e74bba17bf11\"\n" +
+                        "msgid \"Parent Folder\"\n" +
+                        "msgstr \"Carpeta padre\"\n\n" +
+                        "msgctxt \"47a0be8d1015d526a1fbaa56c3102135\"\n" +
+                        "msgid \"Subject:\"\n" +
+                        "msgstr \"Asunto:\"\n\n" +
+                        "#, fuzzy\n" +
+                        "msgctxt \"49ab28040dfa07f53544970c6d147e1e\"\n" +
+                        "msgid \"Connect\"\n" +
+                        "msgstr \"Conectar\"\n\n");
+
+    }
+
+    private TranslationsResource addTranslation(TranslationsResource resource,
+                                        String id, String content, ContentState state) {
+        TextFlowTarget textFlowTarget = new TextFlowTarget();
+        textFlowTarget.setResId(id);
+        textFlowTarget.setContents(content);
+        textFlowTarget.setState(state);
+        resource.getTextFlowTargets().add(textFlowTarget);
+        return resource;
+    }
 
 }

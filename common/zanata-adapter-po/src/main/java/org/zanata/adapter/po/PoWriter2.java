@@ -403,7 +403,7 @@ public class PoWriter2 {
     private void
             copyCommentsToMessage(TextFlowTarget tfTarget, Message message) {
         SimpleComment poComment =
-                tfTarget.getExtensions().findByType(SimpleComment.class);
+                tfTarget.getExtensions(true).findByType(SimpleComment.class);
         if (poComment != null) {
             String[] comments = poComment.getValue().split("\n");
             if (comments.length == 1 && comments[0].isEmpty()) {
