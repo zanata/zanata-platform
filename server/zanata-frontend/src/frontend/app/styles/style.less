@@ -411,6 +411,7 @@ body.templatestyle {
   padding-right: @spacing-base;
 }
 
+
 .sidebar {
   align-items: stretch;
   display: flex;
@@ -438,9 +439,9 @@ body.templatestyle {
   flex-direction: column;
   flex-shrink:0;
   flex-grow: 1;
-  //Px(r1)--sm
-  padding-top:@margin-rh;
-  padding-bottom:@margin-rh;
+  /* Px(r1)--sm */
+  padding-top:@spacing-rh;
+  padding-bottom:@spacing-rh;
   position:relative;
   width:100%;
 }
@@ -450,11 +451,6 @@ body.templatestyle {
   display: flex;
   flex-direction: column;
   flex-shrink:0;
-}
-
-.scroll-view-theme h2 {
-  padding-left: @padding-left-small-em;
-  margin-top: 0;
 }
 
 input.text-input {
@@ -6911,6 +6907,7 @@ i.i--left.i--lock, i.i--left.i--trash {x
 
   .sidebar ul li.active {
     margin-left:-30px;
+  }
 
   .modal-lg {
     width: 900px;
