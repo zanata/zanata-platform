@@ -23,43 +23,56 @@ package org.zanata.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
-
+import java.io.OutputStream;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
-import org.zanata.common.LocaleId;
+import org.zanata.common.ContentState;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-// TODO test writeTranslatedFile
-public class PropertiesUTF8AdapterTest {
-
-    private PropertiesUTF8Adapter adapter;
-    private File testFile;
+public class PropertiesUTF8AdapterTest extends PropertiesAbstractTest {
 
     @Before
     public void setup() {
         adapter = new PropertiesUTF8Adapter();
-        // this document has three text flows: Line One, Line Two, Line Three
-        testFile = new File("src/test/resources/org/zanata/adapter/test-properties-utf8.properties");
-        assert testFile.exists();
     }
 
     @Test
     public void parseUTF8Properties() {
-        Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-//        System.out.println(DTOUtil.toXML(resource));
+        Resource resource = parseTestFile("test-properties-utf8.properties");
         assertThat(resource.getTextFlows()).hasSize(3);
         assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
                 "line1");
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("Line One"));
+        assertThat(resource.getTextFlows().get(0).getContents())
+                .containsExactly("¥Line One");
+    }
+
+    @Test
+    public void testTranslatedPropertiesDocument() {
+        TranslationsResource tResource = new TranslationsResource();
+        addTranslation(tResource, "line1", "¥Foun’dé metalkcta", ContentState.Approved);
+        addTranslation(tResource, "line2", "¥Tba’dé metalkcta", ContentState.Translated);
+        addTranslation(tResource, "line3", "¥Kba’dé metalkcta", ContentState.NeedReview);
+
+        Resource resource = parseTestFile("test-properties-utf8.properties");
+        File originalFile = new File(resourcePath.concat("test-properties-utf8.properties"));
+        OutputStream outputStream = new ByteArrayOutputStream();
+
+        adapter.writeTranslatedFile(outputStream,
+                originalFile.toURI(),
+                resource,
+                tResource,
+                "ru",
+                Optional.absent());
+
+        assertThat(outputStream.toString()).isEqualTo(
+                "line1=¥Foun’dé metalkcta\nline2=¥Tba’dé metalkcta\nline3=\n");
     }
 
 }

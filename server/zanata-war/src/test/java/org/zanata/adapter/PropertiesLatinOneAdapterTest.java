@@ -22,44 +22,104 @@ package org.zanata.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
-
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import org.junit.Before;
 import org.junit.Test;
+import org.zanata.common.ContentState;
+import org.zanata.common.ContentType;
+import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
+import org.zanata.model.HDocument;
+import org.zanata.model.HLocale;
+import org.zanata.model.HRawDocument;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
+import org.zanata.rest.dto.resource.TranslationsResource;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-// TODO test writeTranslatedFile
-public class PropertiesLatinOneAdapterTest {
-
-    private PropertiesLatinOneAdapter adapter;
-    private File testFile;
+public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
 
     @Before
     public void setup() {
         adapter = new PropertiesLatinOneAdapter();
-        // this document has three text flows: Line One, Line Two, Line Three
-        testFile = new File("src/test/resources/org/zanata/adapter/test-properties-latin1.properties");
-        assert testFile.exists();
     }
 
     @Test
     public void parseLatinOneProperties() {
-        Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-//        System.out.println(DTOUtil.toXML(resource));
+        Resource resource = parseTestFile("test-properties-latin1.properties");
         assertThat(resource.getTextFlows()).hasSize(3);
         assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
                 "line1");
         assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
                 ImmutableList.of("Line One"));
+    }
+
+    /*
+     * Properties files change path, not name
+     */
+    @Test
+    public void testGeneratedFilename() throws Exception {
+        HDocument document = new HDocument("/test/basicprop.properties",
+                "basicprop.properties", "test/", ContentType.PO,
+                new HLocale(new org.zanata.common.LocaleId("en")));
+        HRawDocument hRawDocument = new HRawDocument();
+        hRawDocument.setType(DocumentType.PROPERTIES);
+        document.setRawDocument(hRawDocument);
+
+        assertThat(adapter.generateTranslationFilename(document, "fr"))
+                .isEqualTo("basicprop.properties");
+    }
+
+    @Test
+    public void testTranslatedPropertiesDocument() {
+        TranslationsResource tResource = new TranslationsResource();
+        addTranslation(tResource, "line1", "Founde metalkcta", ContentState.Approved);
+        addTranslation(tResource, "line2", "Tbade metalkcta", ContentState.Translated);
+        addTranslation(tResource, "line3", "Kbade metalkcta", ContentState.NeedReview);
+
+        Resource resource = parseTestFile("test-properties-latin1.properties");
+        File originalFile = new File(resourcePath.concat("test-properties-latin1.properties"));
+        OutputStream outputStream = new ByteArrayOutputStream();
+
+        adapter.writeTranslatedFile(outputStream,
+                originalFile.toURI(),
+                resource,
+                tResource,
+                "ru",
+                Optional.absent());
+
+        assertThat(outputStream.toString()).isEqualTo(
+                "line1=Founde metalkcta\nline2=Tbade metalkcta\nline3=\n");
+    }
+
+    @Test
+    public void testLatin1encoding() throws Exception {
+        File latin1EncodedFile = createTempFile(StandardCharsets.ISO_8859_1);
+        Resource resource =
+                adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
+                        Optional.absent());
+        assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
+                "line1");
+        assertThat(resource.getTextFlows().get(0).getContents())
+                .containsExactly("Line One");
+    }
+
+    @Test
+    public void testUTFOnLatin1encoding() throws Exception {
+        File latin1EncodedFile = createTempFile(StandardCharsets.UTF_8);
+        Resource resource =
+                adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
+                        Optional.absent());
+        assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
+                "line1");
+        assertThat(resource.getTextFlows().get(0).getContents())
+                .containsExactly("Â¥Line One");
     }
 
 }
