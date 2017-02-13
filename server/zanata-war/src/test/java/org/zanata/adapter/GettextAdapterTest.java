@@ -123,7 +123,7 @@ public class GettextAdapterTest {
         File originalFile = new File(filePath.concat("test-gettext-translated.po"));
         OutputStream outputStream = new ByteArrayOutputStream();
 
-        adapter.writeTranslatedFile(outputStream,originalFile.toURI(),resource,transResource,"es",Optional.absent());
+        adapter.writeTranslatedFile(outputStream, originalFile.toURI(), resource, transResource, "es", Optional.absent());
 
         assertThat(outputStream.toString()).isEqualTo(
                 "#, fuzzy\n" +
