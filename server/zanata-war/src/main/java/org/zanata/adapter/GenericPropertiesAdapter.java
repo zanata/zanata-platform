@@ -30,6 +30,8 @@ import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.FileUtil;
+
+import javax.annotation.Nonnull;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -69,15 +71,10 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
     }
 
     @Override
-    public Resource parseDocumentFile(URI fileUri, LocaleId sourceLocale,
-            Optional<String> params)
+    public Resource parseDocumentFile(@Nonnull URI fileUri,
+                                      @Nonnull LocaleId sourceLocale,
+                                      Optional<String> params)
             throws FileFormatAdapterException, IllegalArgumentException {
-        if (sourceLocale == null) {
-            throw new IllegalArgumentException("Source locale cannot be null");
-        }
-        if (fileUri == null) {
-            throw new IllegalArgumentException("Document URI cannot be null");
-        }
         PropReader propReader =
                 new PropReader(charset, sourceLocale, ContentState.Approved);
         Resource doc = new Resource();
@@ -136,27 +133,4 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
         }
     }
 
-    private BufferedInputStream readStream(URI fileUri)
-            throws FileFormatAdapterException, IllegalArgumentException {
-        URL url = null;
-        try {
-            url = fileUri.toURL();
-            return new BufferedInputStream(url.openStream());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(
-                    "Could not open the URI. The URI must be absolute: "
-                            + ((url == null) ? "URL is null" : url.toString()),
-                    e);
-        } catch (MalformedURLException e) {
-            throw new FileFormatAdapterException(
-                    "Could not open the URI. The URI may be malformed: "
-                            + ((url == null) ? "URL is null" : url.toString()),
-                    e);
-        } catch (IOException e) {
-            throw new FileFormatAdapterException(
-                    "Could not open the URL. The URL is OK but the input stream could not be opened.\n"
-                            + e.getMessage(),
-                    e);
-        }
-    }
 }

@@ -20,8 +20,12 @@
  */
 package org.zanata.adapter;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.StreamingOutput;
@@ -138,5 +142,37 @@ public interface FileFormatAdapter {
         }
         return FilenameUtils.removeExtension(document
                 .getName()) + "." + transExt;
+    }
+
+    /**
+     * Read the data from the given file URI to a BufferedInputStream
+     *
+     * @param fileUri
+     * @return BufferedInputStream of file data
+     * @throws FileFormatAdapterException
+     * @throws IllegalArgumentException
+     */
+    default BufferedInputStream readStream(URI fileUri)
+            throws FileFormatAdapterException, IllegalArgumentException {
+        URL url = null;
+        try {
+            url = fileUri.toURL();
+            return new BufferedInputStream(url.openStream());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException(
+                    "Could not open the URI. The URI must be absolute: "
+                            + ((url == null) ? "URL is null" : url.toString()),
+                    e);
+        } catch (MalformedURLException e) {
+            throw new FileFormatAdapterException(
+                    "Could not open the URI. The URI may be malformed: "
+                            + ((url == null) ? "URL is null" : url.toString()),
+                    e);
+        } catch (IOException e) {
+            throw new FileFormatAdapterException(
+                    "Could not open the URL. The URL is OK but the input stream could not be opened.\n"
+                            + e.getMessage(),
+                    e);
+        }
     }
 }
