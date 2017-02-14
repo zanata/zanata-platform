@@ -105,7 +105,6 @@ body.templatestyle {
 
 .container-sidebar {
   margin-left: 4.5rem;
-  margin-right: @spacing-base-and-a-half;
 }
 
 .container-editor {
@@ -6610,6 +6609,16 @@ i.i--left.i--lock, i.i--left.i--trash {x
     font-size: 1.4rem;
   }
 
+  svg.hide-desktop {
+    fill: rgb(84, 102, 122);
+    height: 30px;
+    width: 30px;
+    right: 10px;
+    position: absolute;
+    transform: rotate(0deg);
+    transform-origin: 50% 50% 0px;
+  }
+
   /*----- Accordion -----*/
   .accordion, .accordion * {
     -webkit-box-sizing:border-box;
@@ -6648,8 +6657,8 @@ i.i--left.i--lock, i.i--left.i--trash {x
     transform-origin: 50% 50% 0px;
   }
 
-  .accordion-section-title svg.projicon {
-    fill:#54667a;
+  .projicon {
+    color:#54667a;
     height: 30px;
     width: 30px;
     margin-bottom: 2px;
@@ -6670,6 +6679,10 @@ i.i--left.i--lock, i.i--left.i--trash {x
     padding-top:10px;
   }
 
+  .accordion-section-content.open {
+    display:block !important;
+    padding-top:10px;
+  }
 
 
   .sidebar {
@@ -6907,6 +6920,11 @@ i.i--left.i--lock, i.i--left.i--trash {x
 
   .sidebar ul li.active {
     margin-left:-30px;
+  }
+
+  .sidebar {
+    float:left;
+    height:100vh;
   }
 
   .modal-lg {

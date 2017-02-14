@@ -10,7 +10,7 @@ class ProjSidebar extends Component {
   render () {
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
-      <div className='page scroll-view-theme' id='sidebartest'>
+      <div>
         <Helmet title='ProjSidebar' />
         <Sidebar />
         <div className='flextab'>

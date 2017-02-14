@@ -1,25 +1,40 @@
 import React, {Component} from 'react'
-// import { Accordion } from 'react-bootstrap'
 /**
  * Root component for Sidebar
  */
 class Sidebar extends Component {
+
+  constructor (props) {
+    super(props)
+    this.state = {
+      display: false
+    }
+  }
+
+  toggleDisplay () {
+    this.setState({display: !this.state.display})
+  }
+
   /* eslint-disable react/jsx-no-bind, no-return-assign */
   render () {
+    const displayAccordion = this.state.display ? 'accordion-section-content' +
+        ' open' : 'accordion-section-content'
     return (
-      <div className='sidebar accordion'>
+      <div accordion className='sidebar accordion'>
         <div className='sidebar-wrapper'>
           <div className='sidebar-container'>
             <div className='sidebar-content'>
-              <a className='accordion-section-title' href='#accordion-1'>
-                <svg className='projicon'>
+              <a className='accordion-section-title'
+                onClick={::this.toggleDisplay}>
+                <svg className='projicon s2'>
                   <use xlinkHref='#Icon-project'></use>
                 </svg>
                 <span>Zanata Server</span>
                 <svg className='hide-desktop'>
                   <use xlinkHref='#Icon-chevron-down'></use></svg>
               </a>
-              <div id='accordion-1' className='accordion-section-content'>
+              <div id='accordion-1' className={displayAccordion}>
+              Accordion content
               </div>
             </div>
           </div>
