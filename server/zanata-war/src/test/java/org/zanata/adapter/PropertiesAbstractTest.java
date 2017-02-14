@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-class PropertiesAbstractTest {
+abstract class PropertiesAbstractTest {
 
     String resourcePath = "src/test/resources/org/zanata/adapter/";
     GenericPropertiesAdapter adapter;
@@ -45,16 +45,11 @@ class PropertiesAbstractTest {
     }
 
     File createTempFile(Charset charset) throws Exception {
-        File testFile;
-        try {
-            testFile = File.createTempFile("test-properties-latin1", "properties");
-        } catch (IOException ioException) {
-            throw new RuntimeException("Unable to create temporary file ");
-        }
+        File testFile = File.createTempFile("test-properties-temp", "properties");
         assertThat(testFile.exists());
         Map<String, String> entries = new HashMap<>();
         if (charset == StandardCharsets.ISO_8859_1) {
-            entries.put("line1", "Line One");
+            entries.put("line1", "^Line One");
         } else if (charset == StandardCharsets.UTF_8) {
             entries.put("line1", "¥Line One");
         }

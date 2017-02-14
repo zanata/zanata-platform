@@ -72,7 +72,9 @@ public class PropertiesUTF8AdapterTest extends PropertiesAbstractTest {
                 Optional.absent());
 
         assertThat(outputStream.toString()).isEqualTo(
-                "line1=¥Foun’dé metalkcta\nline2=¥Tba’dé metalkcta\nline3=\n");
+                "line1=¥Foun’dé metalkcta\n" +
+                "line2=¥Tba’dé metalkcta\n" +
+                "line3=\n");
     }
 
 }

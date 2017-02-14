@@ -24,6 +24,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import org.zanata.adapter.properties.PropReader;
 import org.zanata.adapter.properties.PropWriter;
+import static org.zanata.adapter.AdapterUtils.readStream;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
@@ -36,9 +37,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 
 /**
  * Properties file adapter to read and write.

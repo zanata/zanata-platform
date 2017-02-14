@@ -36,7 +36,6 @@ import org.zanata.model.HRawDocument;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
@@ -56,12 +55,12 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
         assertThat(resource.getTextFlows()).hasSize(3);
         assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
                 "line1");
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("Line One"));
+        assertThat(resource.getTextFlows().get(0).getContents())
+                .containsExactly("^Line One");
     }
 
     /*
-     * Properties files change path, not name
+     * Properties files change path, not name, so name should be identical
      */
     @Test
     public void testGeneratedFilename() throws Exception {
@@ -79,9 +78,9 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
     @Test
     public void testTranslatedPropertiesDocument() {
         TranslationsResource tResource = new TranslationsResource();
-        addTranslation(tResource, "line1", "Founde metalkcta", ContentState.Approved);
-        addTranslation(tResource, "line2", "Tbade metalkcta", ContentState.Translated);
-        addTranslation(tResource, "line3", "Kbade metalkcta", ContentState.NeedReview);
+        addTranslation(tResource, "line1", "^Founde metalkcta", ContentState.Approved);
+        addTranslation(tResource, "line2", "^Tbade metalkcta", ContentState.Translated);
+        addTranslation(tResource, "line3", "^Kbade metalkcta", ContentState.NeedReview);
 
         Resource resource = parseTestFile("test-properties-latin1.properties");
         File originalFile = new File(resourcePath.concat("test-properties-latin1.properties"));
@@ -95,7 +94,9 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
                 Optional.absent());
 
         assertThat(outputStream.toString()).isEqualTo(
-                "line1=Founde metalkcta\nline2=Tbade metalkcta\nline3=\n");
+                "line1=^Founde metalkcta\n" +
+                "line2=^Tbade metalkcta\n" +
+                "line3=\n");
     }
 
     @Test
@@ -107,19 +108,6 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
         assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
                 "line1");
         assertThat(resource.getTextFlows().get(0).getContents())
-                .containsExactly("Line One");
+                .containsExactly("^Line One");
     }
-
-    @Test
-    public void testUTFOnLatin1encoding() throws Exception {
-        File latin1EncodedFile = createTempFile(StandardCharsets.UTF_8);
-        Resource resource =
-                adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-        assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
-                "line1");
-        assertThat(resource.getTextFlows().get(0).getContents())
-                .containsExactly("Â¥Line One");
-    }
-
 }
