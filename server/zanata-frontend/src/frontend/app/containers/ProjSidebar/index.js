@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import Helmet from 'react-helmet'
 import { Sidebar } from '../../components'
 
 /**
@@ -11,7 +10,6 @@ class ProjSidebar extends Component {
     /* eslint-disable react/jsx-no-bind, no-return-assign */
     return (
       <div>
-        <Helmet title='ProjSidebar' />
         <Sidebar />
         <div className='flextab'>
           <p>Blah</p>

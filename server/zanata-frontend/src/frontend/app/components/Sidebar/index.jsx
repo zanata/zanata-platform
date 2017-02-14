@@ -7,20 +7,24 @@ class Sidebar extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      display: false
+      display: false,
+      arrow: false,
+      sideshow: false
     }
   }
 
   toggleDisplay () {
     this.setState({display: !this.state.display})
+    this.setState({arrow: !this.state.arrow})
   }
-
   /* eslint-disable react/jsx-no-bind, no-return-assign */
   render () {
     const displayAccordion = this.state.display ? 'accordion-section-content' +
         ' open' : 'accordion-section-content'
+    const toggleArrow = this.state.arrow ? 'hide-desktop up' : 'hide-desktop' +
+        ' down'
     return (
-      <div accordion className='sidebar accordion'>
+      <div className='sidebar accordion'>
         <div className='sidebar-wrapper'>
           <div className='sidebar-container'>
             <div className='sidebar-content'>
@@ -30,7 +34,7 @@ class Sidebar extends Component {
                   <use xlinkHref='#Icon-project'></use>
                 </svg>
                 <span>Zanata Server</span>
-                <svg className='hide-desktop'>
+                <svg className={toggleArrow}>
                   <use xlinkHref='#Icon-chevron-down'></use></svg>
               </a>
               <div id='accordion-1' className={displayAccordion}>

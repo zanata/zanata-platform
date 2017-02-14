@@ -6621,33 +6621,37 @@ i.i--left.i--lock, i.i--left.i--trash {x
 
   /*----- Accordion -----*/
   .accordion, .accordion * {
-    -webkit-box-sizing:border-box;
-    -moz-box-sizing:border-box;
-    box-sizing:border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
   }
 
   .accordion {
-    overflow:hidden;
+    overflow: hidden;
   }
 
   /*----- Section Titles -----*/
-  a.accordion-section-title {
-    width:100%;
-    display:inline-block;
-    transition:all linear 0.15s;
-    color:#54667a;
+  .accordion-section-title {
+    width: 100%;
+    display: inline-block;
+    color: #54667a;
     padding-top: 20px;
-    padding-bottom:10px;
+    padding-bottom: 10px;
     font-size: 2.25em;
     line-height: 1.08333em;
     letter-spacing: -0.05em;
   }
 
+
   .accordion-section-title span {
     vertical-align: text-top
   }
 
-  .accordion-section-title svg.hide-desktop {
+  .hide-desktop {
+    transition: all linear 0.15s;
+  }
+
+  .hide-desktop.down {
     fill: rgb(84, 102, 122);
     height: 30px;
     width: 30px;
@@ -6657,8 +6661,13 @@ i.i--left.i--lock, i.i--left.i--trash {x
     transform-origin: 50% 50% 0px;
   }
 
+  .hide-desktop.up {
+    transform: rotate(-180deg);
+    transform-origin: 50% 50% 0px;
+  }
+
   .projicon {
-    color:#54667a;
+    color: #54667a;
     height: 30px;
     width: 30px;
     margin-bottom: 2px;
@@ -6666,18 +6675,19 @@ i.i--left.i--lock, i.i--left.i--trash {x
 
   .accordion-section-title.active, .accordion-section-title:hover {
     /* Type */
-    text-decoration:none;
+    text-decoration: none;
   }
 
   .accordion-section:last-child .accordion-section-title {
-    border-bottom:none;
+    border-bottom: none;
   }
 
   /*----- Section Content -----*/
   .accordion-section-content {
-    display:none;
-    padding-top:10px;
+    display: none;
+    padding-top: 10px;
   }
+
 
   .accordion-section-content.open {
     display:block !important;
