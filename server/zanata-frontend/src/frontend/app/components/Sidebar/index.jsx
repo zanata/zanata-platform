@@ -38,7 +38,63 @@ class Sidebar extends Component {
                   <use xlinkHref='#Icon-chevron-down'></use></svg>
               </a>
               <div id='accordion-1' className={displayAccordion}>
-              Accordion content
+                <ul>
+                  <li>
+                    <a href='people.html'>People</a>
+                  </li>
+                  <li>
+                    <a href='about.html'>About</a>
+                  </li>
+                  <li>
+                    <a href='settings.html'>Settings</a>
+                  </li>
+                </ul>
+                <div id='version'>
+                  <div>
+                    <span>VERSION</span>
+                  </div>
+                  <div>
+                    <div className='Select-control'>
+                      <div className='Select-placeholder'>
+                        <span>master</span>
+                      </div>
+                      <div className='Select-input'>
+                        <input value='' />
+                        <div>
+                        </div>
+                        <span className='Select-arrow-zone'>
+                          <span className='Select-arrow'></span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <p><a href='vsettings.html'>Version settings</a></p>
+                  <p><span>10%</span> translated</p>
+                  <div>
+                    <div></div>
+                  </div>
+                  <ul id='expList'>
+                    <li className='active'>
+                      <a href='languages.html'>Languages</a>
+                    </li>
+                    <li>
+                      <a href='docs.html'>Documents</a>
+                    </li>
+                    <li>
+                      <a href='groups.html'>Groups</a>
+                    </li>
+                    <li className='collapsed expanded'>
+                      <a href=''>Options</a>
+                      <ul>
+                        <li><a href=''>Copy translations</a></li>
+                        <li><a href=''>Merge tranlations</a></li>
+                        <li><a href=''>Copy to new version</a></li>
+                        <li><a href=''>Download config file</a></li>
+                        <li><a href=''>Export version to TMX</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
