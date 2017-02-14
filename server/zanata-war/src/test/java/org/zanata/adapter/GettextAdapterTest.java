@@ -114,34 +114,24 @@ public class GettextAdapterTest {
     @Test
     public void testTranslatedGettext() {
 
-        TranslationsResource transResource = new TranslationsResource();
-        addTranslation(transResource, "0293301ed6a54b7e4503e74bba17bf11", "Carpeta padre", ContentState.Approved);
-        addTranslation(transResource, "47a0be8d1015d526a1fbaa56c3102135", "Asunto:", ContentState.Translated);
-        addTranslation(transResource, "49ab28040dfa07f53544970c6d147e1e", "Conectar", ContentState.NeedReview);
+        Resource resource = parseTestFile("test-gettext-untranslated.pot");
 
-        Resource resource = parseTestFile("test-gettext-translated.po");
-        File originalFile = new File(filePath.concat("test-gettext-translated.po"));
+        String firstSourceId = resource.getTextFlows().get(0).getId();
+        String secondSourceId = resource.getTextFlows().get(1).getId();
+        String thirdSourceId = resource.getTextFlows().get(2).getId();
+
+        TranslationsResource transResource = new TranslationsResource();
+        addTranslation(transResource, firstSourceId, "Carpeta padre", ContentState.Approved);
+        addTranslation(transResource, secondSourceId, "Asunto:", ContentState.Translated);
+        addTranslation(transResource, thirdSourceId, "Conectar", ContentState.NeedReview);
+
+        File originalFile = new File(filePath.concat("test-gettext-untranslated.pot"));
         OutputStream outputStream = new ByteArrayOutputStream();
 
         adapter.writeTranslatedFile(outputStream, originalFile.toURI(), resource, transResource, "es", Optional.absent());
 
-        assertThat(outputStream.toString()).isEqualTo(
-                "#, fuzzy\n" +
-                        "msgid \"\"\n" +
-                        "msgstr \"\"\n" +
-                        "\"Content-Type: text/plain; charset=UTF-8\\n\"\n" +
-                        "\"Content-Transfer-Encoding: 8bit\\n\"\n" +
-                        "\"MIME-Version: 1.0\\n\"\n\n" +
-                        "msgctxt \"0293301ed6a54b7e4503e74bba17bf11\"\n" +
-                        "msgid \"Parent Folder\"\n" +
-                        "msgstr \"Carpeta padre\"\n\n" +
-                        "msgctxt \"47a0be8d1015d526a1fbaa56c3102135\"\n" +
-                        "msgid \"Subject:\"\n" +
-                        "msgstr \"Asunto:\"\n\n" +
-                        "#, fuzzy\n" +
-                        "msgctxt \"49ab28040dfa07f53544970c6d147e1e\"\n" +
-                        "msgid \"Connect\"\n" +
-                        "msgstr \"Conectar\"\n\n");
+        assertThat(outputStream.toString()).contains("msgid \"Parent Folder\"\n" +
+                "msgstr \"Carpeta padre\"");
 
     }
 
