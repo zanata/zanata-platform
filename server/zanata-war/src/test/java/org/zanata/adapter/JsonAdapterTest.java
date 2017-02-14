@@ -113,17 +113,25 @@ public class JsonAdapterTest {
 
     @Test
     public void testTranslatedJSONDocument() throws Exception {
+        Resource resource = parseTestFile("test-json-untranslated.json");
+        assertThat(resource.getTextFlows().get(1).getContents())
+                .containsExactly("First Source");
+        assertThat(resource.getTextFlows().get(2).getContents())
+                .containsExactly("Second Source");
+        String firstSourceId = resource.getTextFlows().get(1).getId();
+        String secondSourceId = resource.getTextFlows().get(2).getId();
+
         Map<String, TextFlowTarget> translations = new HashMap<>();
 
         TextFlowTarget firstTranslation = new TextFlowTarget();
         firstTranslation.setContents("Foun’dé metalkcta");
         firstTranslation.setState(ContentState.Approved);
-        translations.put("b76be7dbbd3aaf589a812e1a081d58ca", firstTranslation);
+        translations.put(firstSourceId, firstTranslation);
 
         TextFlowTarget secondTranslation = new TextFlowTarget();
         secondTranslation.setContents("Tba’dé metalkcta");
         secondTranslation.setState(ContentState.Translated);
-        translations.put("da4cf86ebff968b8bde6ce056ee2e483", secondTranslation);
+        translations.put(secondSourceId, secondTranslation);
 
         File originalFile = new File(filePath.concat("test-json-untranslated.json"));
         OutputStream outputStream = new ByteArrayOutputStream();
