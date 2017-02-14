@@ -132,6 +132,10 @@ public class GettextAdapterTest {
 
         assertThat(outputStream.toString()).contains("msgid \"Parent Folder\"\n" +
                 "msgstr \"Carpeta padre\"");
+        assertThat(outputStream.toString()).contains("msgid \"Subject:\"\n" +
+                "msgstr \"Asunto:\"");
+        assertThat(outputStream.toString()).contains("msgid \"Connect\"\n" +
+                "msgstr \"Conectar\"");
 
     }
 
