@@ -45,11 +45,12 @@ abstract class PropertiesAbstractTest {
     }
 
     File createTempFile(Charset charset) throws Exception {
-        File testFile = File.createTempFile("test-properties-temp", "properties");
+        File testFile = File.createTempFile("test-properties-temp-" + charset, ".properties");
+        System.out.println(testFile);
         assertThat(testFile.exists());
         Map<String, String> entries = new HashMap<>();
         if (charset == StandardCharsets.ISO_8859_1) {
-            entries.put("line1", "^Line One");
+            entries.put("line1", "ÀLine One");
         } else if (charset == StandardCharsets.UTF_8) {
             entries.put("line1", "¥Line One");
         }

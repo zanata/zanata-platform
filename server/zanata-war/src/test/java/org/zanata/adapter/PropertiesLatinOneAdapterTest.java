@@ -23,7 +23,10 @@ package org.zanata.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.*;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
+
+import com.google.common.base.Charsets;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.ContentState;
@@ -56,7 +59,7 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
         assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
                 "line1");
         assertThat(resource.getTextFlows().get(0).getContents())
-                .containsExactly("^Line One");
+                .containsExactly("ÀLine One");
     }
 
     /*
@@ -76,27 +79,33 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
     }
 
     @Test
-    public void testTranslatedPropertiesDocument() {
+    public void testTranslatedPropertiesDocument() throws Exception {
         TranslationsResource tResource = new TranslationsResource();
-        addTranslation(tResource, "line1", "^Founde metalkcta", ContentState.Approved);
-        addTranslation(tResource, "line2", "^Tbade metalkcta", ContentState.Translated);
-        addTranslation(tResource, "line3", "^Kbade metalkcta", ContentState.NeedReview);
+
+        addTranslation(tResource, "line1", "ÀFounde metalkcta", ContentState.Approved);
+        addTranslation(tResource, "line2", "ÀTbade metalkcta", ContentState.Translated);
+        addTranslation(tResource, "line3", "ÀKbade metalkcta", ContentState.NeedReview);
 
         Resource resource = parseTestFile("test-properties-latin1.properties");
-        File originalFile = new File(resourcePath.concat("test-properties-latin1.properties"));
-        OutputStream outputStream = new ByteArrayOutputStream();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         adapter.writeTranslatedFile(outputStream,
-                originalFile.toURI(),
+                null,
                 resource,
                 tResource,
                 "ru",
                 Optional.absent());
 
-        assertThat(outputStream.toString()).isEqualTo(
-                "line1=^Founde metalkcta\n" +
-                "line2=^Tbade metalkcta\n" +
+        // \u00C0 is the escaped unicode form of À
+        assertThat(toLatin1String(outputStream)).isEqualTo(
+                "line1=\\u00C0Founde metalkcta\n" +
+                "line2=\\u00C0Tbade metalkcta\n" +
                 "line3=\n");
+    }
+
+    private String toLatin1String(ByteArrayOutputStream outputStream)
+            throws UnsupportedEncodingException {
+        return outputStream.toString(Charsets.ISO_8859_1.name());
     }
 
     @Test
@@ -108,6 +117,6 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
         assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
                 "line1");
         assertThat(resource.getTextFlows().get(0).getContents())
-                .containsExactly("^Line One");
+                .containsExactly("ÀLine One");
     }
 }
