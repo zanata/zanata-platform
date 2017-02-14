@@ -1,0 +1,2 @@
+This file exists to force git to create the src/main/ directory, so that the
+detekt plugin doesn't complain.

@@ -1,5 +1,6 @@
 package org.zanata.util;
 
+import static org.zanata.common.LocaleId.EN_US;
 import static org.zanata.model.HAccountRole.RoleType.MANUAL;
 import static org.zanata.model.HApplicationConfiguration.KEY_ALLOW_ANONYMOUS_USER;
 import java.util.List;
@@ -118,14 +119,20 @@ public class EssentialDataCreator {
                         "No admin users found. Admin users can be enabled via system property: zanata.security.adminusers");
             }
             // Enable en-US by default
-            LocaleId localeId = new LocaleId("en-US");
-            if (localeDAO.findByLocaleId(localeId) == null) {
-                HLocale en_US = new HLocale(localeId);
-                en_US.setActive(true);
-                en_US.setEnabledByDefault(false);
-                if (localeDAO.makePersistent(en_US) == null) {
+            HLocale enUSLocale = localeDAO.findByLocaleId(EN_US);
+            if (enUSLocale == null) {
+                enUSLocale = new HLocale(EN_US);
+                enUSLocale.setActive(true);
+                enUSLocale.setEnabledByDefault(false);
+                if (localeDAO.makePersistent(enUSLocale) == null) {
                     throw new RuntimeException(
                             "Could not create \'en-US\' locale");
+                }
+                log.info("Created default locale " + enUSLocale);
+            } else {
+                if (!enUSLocale.isActive()) {
+                    log.warn("Setting default locale {} to be active", enUSLocale);
+                    enUSLocale.setActive(true);
                 }
             }
             if (isNewInstance) {
@@ -134,6 +141,7 @@ public class EssentialDataCreator {
                 applicationConfigurationDAO.makePersistent(
                         new HApplicationConfiguration(KEY_ALLOW_ANONYMOUS_USER,
                                 "false"));
+                log.info("Disabling access for anonymous users by default");
             }
             prepared = true;
         }
@@ -143,6 +151,7 @@ public class EssentialDataCreator {
             String... includesRoles) {
         if (!accountRoleDAO.roleExists(role)) {
             createRole(role, includesRoles);
+            log.info("Created default role " + role);
         }
     }
 

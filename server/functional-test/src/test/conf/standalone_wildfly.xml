@@ -115,6 +115,20 @@
       <logger category="com.arjuna">
         <level name="WARN"/>
       </logger>
+
+      <!-- Log Hibernate SQL statements to server.log -->
+      <logger category="org.hibernate.SQL">
+        <level name="DEBUG"/>
+      </logger>
+      <!-- Log Hibernate SQL parameter values to server.log -->
+      <logger category="org.hibernate.type.descriptor.sql">
+        <level name="TRACE"/>
+      </logger>
+
+      <logger category="jboss.jdbc.spy">
+        <level name="TRACE"/>
+      </logger>
+
       <logger category="org.jboss.as.config">
         <level name="DEBUG"/>
       </logger>

@@ -63,6 +63,9 @@ public class ProjectIterationClient {
     public void put(ProjectIteration projectVersion) {
         Response response = webResource().request()
                 .put(Entity.xml(projectVersion));
+        if (response.getStatusInfo().getFamily() != Response.Status.Family.SUCCESSFUL) {
+            throw new RuntimeException(response.getStatusInfo().toString());
+        }
         response.close();
     }
 

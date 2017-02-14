@@ -89,6 +89,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.ListenableFuture;
 import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetStateChange;
 
 @Named("translationServiceImpl")
@@ -487,7 +488,7 @@ public class TranslationServiceImpl implements TranslationService {
 
     @Override
     @Async
-    public Future<List<String>> translateAllInDocAsync(String projectSlug,
+    public ListenableFuture<List<String>> translateAllInDocAsync(String projectSlug,
             String iterationSlug, String docId, LocaleId locale,
             TranslationsResource translations, Set<String> extensions,
             MergeType mergeType, boolean assignCreditToUploader, boolean lock,
@@ -500,9 +501,9 @@ public class TranslationServiceImpl implements TranslationService {
                     new Lock(projectSlug, iterationSlug, docId, locale, "push");
             lockManagerServiceImpl.attain(transLock);
         }
-        List<String> messages = Lists.newArrayList();
+        List<String> warnings;
         try {
-            messages = this.translateAllInDoc(projectSlug, iterationSlug, docId,
+            warnings = this.translateAllInDoc(projectSlug, iterationSlug, docId,
                     locale, translations, extensions, mergeType,
                     assignCreditToUploader, handle, translationSourceType);
         } finally {
@@ -510,7 +511,7 @@ public class TranslationServiceImpl implements TranslationService {
                 lockManagerServiceImpl.release(transLock);
             }
         }
-        return AsyncTaskResult.taskResult(messages);
+        return AsyncTaskResult.taskResult(warnings);
     }
 
     /**

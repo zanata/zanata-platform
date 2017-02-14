@@ -37,6 +37,9 @@
 
     <as7.skip.deploy.marker>${jboss.home}/standalone/deployments/zanata.war.skipdeploy</as7.skip.deploy.marker>
     <as7.dodeploy.marker>${jboss.home}/standalone/deployments/zanata.war.dodeploy</as7.dodeploy.marker>
+
+    <!-- jacoco:prepare-agent will add more to this (surefire) property. -->
+    <argLine>-Dconcordion.output.dir=${concordion.output.dir}</argLine>
   </properties>
 
   <build>
@@ -78,19 +81,6 @@
         <artifactId>gmavenplus-plugin</artifactId>
         <executions>
           <execution>
-            <id>default</id>
-            <goals>
-              <goal>addSources</goal>
-              <goal>addTestSources</goal>
-              <goal>generateStubs</goal>
-              <goal>compile</goal>
-              <goal>testGenerateStubs</goal>
-              <goal>testCompile</goal>
-              <goal>removeStubs</goal>
-              <goal>removeTestStubs</goal>
-            </goals>
-          </execution>
-          <execution>
             <id>dependency-versions</id>
             <phase>generate-resources</phase>
             <goals>
@@ -99,7 +89,6 @@
             <configuration>
               <scripts>
                 <script>file:///${project.basedir}/src/etc/dependencyVersions.groovy</script>
-
               </scripts>
             </configuration>
           </execution>
@@ -270,9 +259,6 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <!-- We use late property evaluation (@{argLine}) so that surefire
-               will pick up the argLine set by jacoco:prepare-agent. -->
-          <argLine>@{argLine} -Dconcordion.output.dir=${concordion.output.dir}</argLine>
           <testNGArtifactName>none:none</testNGArtifactName>
           <!-- TODO ensure that stateful tests (eg using Hibernate Search)
                are isolated, or rename them to ITCase (Arquillian), and
@@ -806,6 +792,23 @@
       <groupId>net.jodah</groupId>
       <artifactId>concurrentunit</artifactId>
       <version>0.4.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>net.wuerl.kotlin</groupId>
+      <artifactId>assertj-core-kotlin</artifactId>
+      <version>0.1.3</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-test-junit</artifactId>
       <scope>test</scope>
     </dependency>
 
@@ -1895,6 +1898,11 @@
           <artifactId>mockito-all</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>io.github.microutils</groupId>
+      <artifactId>kotlin-logging</artifactId>
+      <version>1.4.1</version>
     </dependency>
 
   </dependencies>

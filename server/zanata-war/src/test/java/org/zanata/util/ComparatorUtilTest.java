@@ -38,10 +38,8 @@ public class ComparatorUtilTest {
 
     @Test
     public void HLocaleNameCompare() throws Exception {
-        HLocale hLocale1 = new HLocale();
-        hLocale1.setLocaleId(new LocaleId("alpha"));
-        HLocale hLocale2 = new HLocale();
-        hLocale2.setLocaleId(new LocaleId("bravo"));
+        HLocale hLocale1 = new HLocale(new LocaleId("alpha"));
+        HLocale hLocale2 = new HLocale(new LocaleId("bravo"));
 
         assertThat(ComparatorUtil.LOCALE_COMPARATOR
                 .compare(hLocale1, hLocale1)).isEqualTo(0);

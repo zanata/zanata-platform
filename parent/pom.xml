@@ -228,7 +228,7 @@
     <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
     <!-- This won't include frontend code. We should use eslint there. -->
     <checkstyle.includes>*.xml,*.txt,*.md,etc/**,src/main/**,src/test/**,src/etc/**,src/conf/**</checkstyle.includes>
-    <checkstyle.excludes>src/test/resources/**</checkstyle.excludes>
+    <checkstyle.excludes>src/test/resources/**,**/.gitkeep</checkstyle.excludes>
 
     <!-- NB: If we want to failOnError, we may need to
          remove GuavaBetaDetector/library-detectors. -->
@@ -236,7 +236,7 @@
     <findbugs.excludeFilterFile>zanata-build-tools/findbugs-filter.xml</findbugs.excludeFilterFile>
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
-    <slf4j.version>1.7.12</slf4j.version>
+    <slf4j.version>1.7.18</slf4j.version>
   </properties>
 
   <build>
