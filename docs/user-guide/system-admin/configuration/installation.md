@@ -1,4 +1,12 @@
-Zanata can be installed by downloading a web archive (war) file, and configuring Jboss EAP or Wildfly according to this guide or by downloading a handy installer.
+Zanata can be installed by either using 
+- docker image or
+- downloading a web archive (war) file, and configuring Jboss EAP or Wildfly according to this guide or by downloading a handy installer.
+
+# Docker installation
+
+Please see [here](https://github.com/zanata/zanata-docker-files/tree/master/zanata-server) for docker documentation.
+
+# Local installation
 
 ## What you need
 

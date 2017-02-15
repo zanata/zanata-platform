@@ -23,6 +23,8 @@ See [server configuration](/user-guide/admin/server-config) for more information
 - Edit user information such as password, roles.
 - Delete users in Zanata.
 
+See [Manage users](/user-guide/admin/manage-users) for more information.
+
 
 ### Manage Roles
 
