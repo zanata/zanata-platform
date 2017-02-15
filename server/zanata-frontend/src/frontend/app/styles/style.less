@@ -275,7 +275,9 @@ body.templatestyle {
   flex-direction: column;
   overflow: hidden;
   flex:1;
+  padding:1em;
 }
+
 .flex-chart-container {
   display: flex;
   flex-direction: column;
@@ -439,7 +441,6 @@ body.templatestyle {
   flex-shrink:0;
   flex-grow: 1;
   /* Px(r1)--sm */
-  padding-top:@spacing-rh;
   padding-bottom:@spacing-rh;
   position:relative;
   width:100%;
@@ -450,6 +451,8 @@ body.templatestyle {
   display: flex;
   flex-direction: column;
   flex-shrink:0;
+  padding-left: 1em;
+  padding-right: 1em;
 }
 
 input.text-input {
@@ -2799,6 +2802,12 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
   background-color: @color-dark;
 }
 
+.btn-primary.focus, .btn-primary:focus, .btn-primary:hover {
+  color: #fff;
+  border-color: #ccc;
+  background-color: @color-dark;
+}
+
 // Dropdown menus
 // --------------------------------------------------
 // Dropdown arrow/caret
@@ -2826,6 +2835,7 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
 // The dropdown menu (ul)
 .dropdown-menu {
   position: absolute;
+  font-size:1em;
   top: 100%;
   left: 0;
   z-index: @zindex-dropdown;
@@ -2856,7 +2866,7 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
   // Links within the dropdown menu
   > li > a {
     display: block;
-    padding: @border-radius-small @spacing-xxl;
+    padding: @border-radius-small @spacing-re;
     clear: both;
     font-weight: normal;
     line-height: @line-height-base;
@@ -3011,7 +3021,7 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
 // Outer container
 .progress {
   overflow: hidden;
-  height: @line-height-computed;
+  height: 1rem;
   margin-bottom: @line-height-computed;
   background-color: @progress-bg;
   border-radius: @border-radius-base;
@@ -5946,14 +5956,6 @@ button.close:focus, button.close:hover, button.close:active:focus {
   vertical-align: text-bottom;
 }
 
-.getinvolved .btn-primary {
-  background-color: @color-light;
-}
-
-.getinvolved .btn-primary:active, .getinvolved .btn-primary:focus, .getinvolved .btn-primary:hover {
-  background-color: @color-dark;
-}
-
 .new-zanata  .bg--pop-highest {
   border:none;
 }
@@ -6083,8 +6085,43 @@ i.i--left.i--lock, i.i--left.i--trash {x
 
 .tabs__content {
   padding-bottom:@spacing-base-and-a-half;
-
 }
+
+.accordion-section-title {
+  width: 100%;
+  display: inline-block;
+  color: #54667a;
+  padding-top: 20px;
+  padding-bottom: 10px;
+  font-size: 2.25em;
+  line-height: 1.08333em;
+  letter-spacing: -0.05em;
+}
+
+.accordion-section-title svg.projicon {
+  fill: @color-dark;
+  height: 30px;
+  width: 30px;
+  margin-bottom: 2px;
+  vertical-align:baseline;
+}
+
+.accordion-section-title span {
+  vertical-align: text-top;
+}
+
+.accordion-section-content ul {
+  line-height:2em;
+  list-style-type:none;
+  padding-left:0;
+}
+
+svg.sidebar-icon {
+  fill: @color-dark;
+  vertical-align:middle;
+  margin-right: @spacing-re;
+}
+
 
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
@@ -6637,21 +6674,6 @@ i.i--left.i--lock, i.i--left.i--trash {x
   }
 
   /*----- Section Titles -----*/
-  .accordion-section-title {
-    width: 100%;
-    display: inline-block;
-    color: #54667a;
-    padding-top: 20px;
-    padding-bottom: 10px;
-    font-size: 2.25em;
-    line-height: 1.08333em;
-    letter-spacing: -0.05em;
-  }
-
-
-  .accordion-section-title span {
-    vertical-align: text-top
-  }
 
   .hide-desktop {
     transition: all linear 0.15s;
@@ -6727,7 +6749,6 @@ i.i--left.i--lock, i.i--left.i--trash {x
     margin-right:10px !important;
     margin-left:0px !important;
     height:2em;
-
   }
 
   li.active a {
@@ -6932,10 +6953,6 @@ i.i--left.i--lock, i.i--left.i--trash {x
   svg.hide-desktop {
     display:none;
     visibility:hidden;
-  }
-
-  .sidebar ul li.active {
-    margin-left:-30px;
   }
 
   .sidebar {

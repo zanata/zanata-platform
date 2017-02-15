@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { DropdownButton, MenuItem } from 'react-bootstrap'
+import { DropdownButton, MenuItem, ProgressBar } from 'react-bootstrap'
 /**
  * Root component for Sidebar
  */
@@ -31,7 +31,7 @@ class Sidebar extends Component {
             <div className='sidebar-content'>
               <a className='accordion-section-title'
                 onClick={::this.toggleDisplay}>
-                <svg className='projicon s2'>
+                <svg className='projicon'>
                   <use xlinkHref='#Icon-project'></use>
                 </svg>
                 <span>Zanata Server</span>
@@ -41,25 +41,43 @@ class Sidebar extends Component {
               <div id='accordion-1' className={displayAccordion}>
                 <ul>
                   <li>
-                    <a href='people.html'>People</a>
+                    <a href='people.html'>
+                      <svg className='s1 sidebar-icon'>
+                        <use xlinkHref='#Icon-users'></use>
+                      </svg>
+                    People</a>
                   </li>
                   <li>
-                    <a href='about.html'>About</a>
+                    <a href='about.html'>
+                      <svg className='s1 sidebar-icon'>
+                        <use xlinkHref='#Icon-info'></use>
+                      </svg>
+                    About</a>
                   </li>
                   <li>
-                    <a href='settings.html'>Settings</a>
+                    <a href='settings.html'>
+                      <svg className='s1 sidebar-icon'>
+                        <use xlinkHref='#Icon-settings'></use>
+                      </svg>
+                    Settings</a>
                   </li>
                 </ul>
+                <hr />
                 <div id='version'>
                   <div>
                     <span>VERSION</span>
                   </div>
-                  <DropdownButton title='master'>
+                  <DropdownButton className='btn-sm' title='master'>
                     <MenuItem eventKey='1'>release</MenuItem>
                     <MenuItem eventKey='2'>test-1</MenuItem>
                   </DropdownButton>
                   <p><a href='vsettings.html'>Version settings</a></p>
                   <p><span>10%</span> translated</p>
+                  <ProgressBar>
+                    <ProgressBar bsStyle='success' now={35} key={1} />
+                    <ProgressBar bsStyle='warning' now={20} key={2} />
+                    <ProgressBar bsStyle='danger' now={10} key={3} />
+                  </ProgressBar>
                   <div>
                     <div></div>
                   </div>
@@ -73,17 +91,15 @@ class Sidebar extends Component {
                     <li>
                       <a href='groups.html'>Groups</a>
                     </li>
-                    <li className='collapsed expanded'>
-                      <a href=''>Options</a>
-                      <ul>
-                        <li><a href=''>Copy translations</a></li>
-                        <li><a href=''>Merge tranlations</a></li>
-                        <li><a href=''>Copy to new version</a></li>
-                        <li><a href=''>Download config file</a></li>
-                        <li><a href=''>Export version to TMX</a></li>
-                      </ul>
-                    </li>
                   </ul>
+                  <DropdownButton title='Options'
+                    className='btn-sm btn-primary'>
+                    <MenuItem eventKey='1'>Copy translations</MenuItem>
+                    <MenuItem eventKey='2'>Merge translations</MenuItem>
+                    <MenuItem eventKey='3'>Copy to new version</MenuItem>
+                    <MenuItem eventKey='4'>Download config file</MenuItem>
+                    <MenuItem eventKey='5'>Export version to TMX</MenuItem>
+                  </DropdownButton>
                 </div>
               </div>
             </div>
