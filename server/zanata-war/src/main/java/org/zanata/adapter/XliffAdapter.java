@@ -36,6 +36,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.base.Optional;
 import org.zanata.util.FileUtil;
 
+import javax.annotation.Nonnull;
+
 /**
  * Adapter to read and write {@link org.zanata.common.DocumentType#XLIFF} file
  *
@@ -49,18 +51,13 @@ public class XliffAdapter implements FileFormatAdapter {
             org.slf4j.LoggerFactory.getLogger(XliffAdapter.class);
 
     @Override
-    public Resource parseDocumentFile(URI fileUri, LocaleId sourceLocale,
-            Optional<String> filterParams)
+    public Resource parseDocumentFile(@Nonnull URI fileUri,
+                                      @Nonnull LocaleId sourceLocale,
+                                      Optional<String> filterParams)
             throws FileFormatAdapterException, IllegalArgumentException {
-        if (sourceLocale == null) {
-            throw new IllegalArgumentException("Source locale cannot be null");
-        }
-        if (fileUri == null) {
-            throw new IllegalArgumentException("Document URI cannot be null");
-        }
         XliffReader xliffReader = new XliffReader();
-        File tempFile = null;
-        Resource doc = null;
+        File tempFile;
+        Resource doc;
         try {
             tempFile = new File(fileUri);
             doc = xliffReader.extractTemplate(tempFile, sourceLocale,
@@ -80,7 +77,7 @@ public class XliffAdapter implements FileFormatAdapter {
             LocaleId sourceLocaleId, String localeId, Optional<String> params)
             throws FileFormatAdapterException, IllegalArgumentException {
         XliffReader xliffReader = new XliffReader();
-        TranslationsResource targetDoc = null;
+        TranslationsResource targetDoc;
         File transFile = null;
         try {
             transFile = new File(fileUri);
