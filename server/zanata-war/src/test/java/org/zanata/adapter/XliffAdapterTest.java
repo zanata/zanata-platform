@@ -23,42 +23,104 @@ package org.zanata.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
+import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 // TODO test writeTranslatedFile
-public class XliffAdapterTest {
+public class XliffAdapterTest extends AbstractAdapterTest {
 
-    private XliffAdapter adapter;
-    private File testFile;
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     @Before
     public void setup() {
         adapter = new XliffAdapter();
-        // this document has three text flows: Line One, Line Two, Line Three
-        testFile = new File("src/test/resources/org/zanata/adapter/test-xliff.xlf");
-        assert testFile.exists();
     }
 
     @Test
     public void parseXLIFF() {
-        Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-//        System.out.println(DTOUtil.toXML(resource));
+        Resource resource = parseTestFile("test-xliff.xlf");
         assertThat(resource.getTextFlows()).hasSize(3);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("Line One"));
-        // TODO test IDs
+        assertThat(resource.getTextFlows().get(0).getContents())
+                .containsExactly("Line One");
     }
 
+    @Test
+    public void parseXliffWithHtmlTags() {
+        expectedException.expect(RuntimeException.class);
+        expectedException.expectMessage("Sorry, Zanata does not " +
+                "support elements inside source: g");
+        parseTestFile("test-xliff-tagged.xlf");
+
+    }
+
+    @Test
+    public void parseTranslationsFile() throws Exception {
+        File translationFile = getTestFile("test-xliff-translated.xlf");
+        File tempFile = File.createTempFile("test-xliff-translated", ".xlf");
+        // Xliff implementation deletes the file
+        FileUtils.copyFile(translationFile, tempFile);
+        assertThat(tempFile.exists());
+        LocaleId sourceLocale = LocaleId.fromJavaName("en");
+
+        TranslationsResource translationsResource =
+                adapter.parseTranslationFile(tempFile.toURI(), sourceLocale,
+                        "fr", Optional.absent());
+        assertThat(translationsResource.getTextFlowTargets().get(0).getContents())
+                .containsExactly("Imanétaba Amna");
+        assertThat(translationsResource.getTextFlowTargets().get(1).getContents())
+                .containsExactly("Imanétaba Tba");
+        assertThat(translationsResource.getTextFlowTargets().get(2).getContents())
+                .containsExactly("Imanétaba Kba");
+    }
+
+    @Test
+    public void testTranslatedXliffDocument() throws Exception {
+        Resource resource = parseTestFile("test-xliff.xlf");
+        TranslationsResource translationsResource = new TranslationsResource();
+        addTranslation(translationsResource,
+                resource.getTextFlows().get(0).getId(),
+                "Dakta Amna",
+                ContentState.Approved);
+        addTranslation(translationsResource,
+                resource.getTextFlows().get(1).getId(),
+                "Dakta Tba",
+                ContentState.Translated);
+        addTranslation(translationsResource,
+                resource.getTextFlows().get(2).getId(),
+                "Dakta Kba",
+                ContentState.NeedReview);
+
+        File outputFile = File.createTempFile("test-xliff-translated", ".xlf");
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        adapter.writeTranslatedFile(output, null,
+                resource, translationsResource, "dv-DL", Optional.absent());
+        output.writeTo(new FileOutputStream(outputFile));
+
+        assertThat(output.toString()).contains(
+                "        <source>Line One</source>\n" +
+                "        <target>Dakta Amna</target>");
+        assertThat(output.toString()).contains(
+                "        <source>Line Two</source>\n" +
+                "        <target>Dakta Tba</target>");
+        // Assert fuzzy is not copied anywhere to output
+        assertThat(output.toString()).doesNotContain("<target>Dakta Kba</target>");
+    }
 }
