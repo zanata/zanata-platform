@@ -81,7 +81,6 @@ public class GettextAdapterTest {
 
         PoHeader poHeader = (PoHeader) resource.getExtensions().iterator().next();
         assertThat(poHeader.getComment()).isEqualTo(testComment1);
-
     }
 
     @Test
@@ -96,24 +95,23 @@ public class GettextAdapterTest {
         Resource resource = parseTestFile("test-gettext-flags.pot");
         assertThat(resource.getTextFlows()).hasSize(2);
 
-        PotEntryHeader potEntryHeader = (PotEntryHeader) resource.getTextFlows().get(0).getExtensions().iterator().next();
+        PotEntryHeader potEntryHeader = (PotEntryHeader) resource.getTextFlows()
+                .get(0).getExtensions().iterator().next();
         assertThat(potEntryHeader.getFlags().get(0)).isEqualTo("fuzzy");
-
     }
-
 
     @Test
     public void testGettextReference() {
         Resource resource = parseTestFile("test-gettext-reference.pot");
         assertThat(resource.getTextFlows()).hasSize(2);
 
-        PotEntryHeader potEntryHeader = (PotEntryHeader) resource.getTextFlows().get(0).getExtensions().iterator().next();
+        PotEntryHeader potEntryHeader = (PotEntryHeader) resource.getTextFlows()
+                .get(0).getExtensions().iterator().next();
         assertThat(potEntryHeader.getReferences().get(0)).isEqualTo("reference");
     }
 
     @Test
     public void testTranslatedGettext() {
-
         Resource resource = parseTestFile("test-gettext-untranslated.pot");
 
         String firstSourceId = resource.getTextFlows().get(0).getId();
@@ -125,18 +123,14 @@ public class GettextAdapterTest {
         addTranslation(transResource, secondSourceId, "Asunto:", ContentState.Translated);
         addTranslation(transResource, thirdSourceId, "Conectar", ContentState.NeedReview);
 
-        File originalFile = new File(filePath.concat("test-gettext-untranslated.pot"));
         OutputStream outputStream = new ByteArrayOutputStream();
-
-        adapter.writeTranslatedFile(outputStream, originalFile.toURI(), resource, transResource, "es", Optional.absent());
-
+        adapter.writeTranslatedFile(outputStream, null, resource, transResource, "es", Optional.absent());
         assertThat(outputStream.toString()).contains("msgid \"Parent Folder\"\n" +
                 "msgstr \"Carpeta padre\"");
         assertThat(outputStream.toString()).contains("msgid \"Subject:\"\n" +
                 "msgstr \"Asunto:\"");
         assertThat(outputStream.toString()).contains("msgid \"Connect\"\n" +
                 "msgstr \"Conectar\"");
-
     }
 
     private TranslationsResource addTranslation(TranslationsResource resource,
