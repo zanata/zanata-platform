@@ -9,7 +9,8 @@ If using EAP, you must upgrade to EAP 7 and apply the various Zanata
 changes to `JBOSS_HOME/standalone/configuration/standalone.xml`.
 
 If using WildFly, you must remove any previously installed JSF or Hibernate
-modules from `WILDFLY_HOME/modules/{com,javax,org}`.
+modules from `WILDFLY_HOME/modules/{com,javax,org}`. (But not from
+`WILDFLY_HOME/modules/system/layers/base`.)
 
 Also, Hibernate Search and Lucene have been upgraded - before starting
 Zanata 4.0 you will need to clear your index directory (as configured
@@ -23,8 +24,8 @@ From version 4.0.0, Zanata platform depends on JBossEAP 7 or Wildfly 10, thus pl
 [JBoss EAP 7 Migration Guide](https://access.redhat.com/documentation/en/red-hat-jboss-enterprise-application-platform/7.0/single/migration-guide/)
 or [Migrate my appliction from AS7 to WildFly](https://docs.jboss.org/author/display/WFLY10/How+do+I+migrate+my+application+from+AS7+to+WildFly) to migrate your configuration.
 
-We use system properties instead of JNDI from 4.0.0,
-thus, following configuration became obsolete and deployment will abort on presence of these obsolete JNDI entries
+Zanata has used system properties instead of JNDI since 3.9.0, but in Zanata 4.0.0,
+deployment will abort if obsolete JNDI entries like the following are present:
 ```xml
 <subsystem xmlns="urn:jboss:domain:naming:1.3">
   <bindings>
@@ -42,7 +43,8 @@ thus, following configuration became obsolete and deployment will abort on prese
   <remote-naming/>
 </subsystem>
 ```
-Settings have moved to `<system-properties>` section.
+These settings have moved to the `<system-properties>` section. Please see the
+[release notes for Zanata 3.9.0](#390) for more details of these settings.
 
 Zanata aborts deployment when *required* properties are absent or
 *obsolete* properties are present in `standalone.xml`.
@@ -282,9 +284,9 @@ Directory of `ehcache.disk.store.dir` needs to be cleaned.
 ##### Infrastructure Changes
 * System admin can set system property `zanata.enforce.matchingusernames` to enforce matching username to be used for new user registration.
 * Zanata has eliminated all JNDI-based configuration and replaced it with system properties. Please see the following sections for how certain values are now configured:
-  * (/user-guide/system-admin/configuration/installation)
-  * (/user-guide/system-admin/configuration/authentication)
-  * (/user-guide/system-admin/configuration/document-storage-directory)
+  * [Installation](/user-guide/system-admin/configuration/installation)
+  * [Configuration](/user-guide/system-admin/configuration/authentication)
+  * [Document Storage Directory](/user-guide/system-admin/configuration/document-storage-directory)
 
 ##### New feature
 * [ZNTA-746](https://zanata.atlassian.net/browse/ZNTA-746) - Add shortcut key for approve and reject translation
