@@ -37,6 +37,7 @@ import net.sf.okapi.common.resource.RawDocument;
 import net.sf.okapi.common.resource.StartSubDocument;
 import net.sf.okapi.common.resource.TextUnit;
 
+import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.TranslatableSeparator.SplitString;
@@ -53,6 +54,12 @@ import org.zanata.util.HashUtil;
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
 import com.google.common.collect.Maps;
+
+import javax.annotation.Nonnull;
+
+import org.hibernate.validator.constraints.NotEmpty;
+import javax.annotation.Nonnull;
+import static net.sf.okapi.common.LocaleId.fromString;
 
 /**
  * An adapter that uses a provided {@link IFilter} implementation to parse
@@ -153,13 +160,9 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
 
     @Override
     public Resource parseDocumentFile(URI documentContent,
-            LocaleId sourceLocale, Optional<String> filterParams)
+                                      @Nonnull LocaleId sourceLocale,
+                                      Optional<String> filterParams)
             throws FileFormatAdapterException, IllegalArgumentException {
-        // null documentContent is handled by RawDocument constructor
-        if (sourceLocale == null) {
-            throw new IllegalArgumentException("Source locale cannot be null");
-        }
-
         Resource document = new Resource();
         document.setLang(sourceLocale);
         document.setContentType(ContentType.TextPlain);
@@ -286,13 +289,10 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
 
     @Override
     public TranslationsResource parseTranslationFile(URI fileUri,
-            LocaleId sourceLocaleId, String localeId, Optional<String> filterParams)
+                                                     LocaleId sourceLocaleId,
+                                                     @Nonnull @NotEmpty String localeId,
+                                                     Optional<String> filterParams)
             throws FileFormatAdapterException, IllegalArgumentException {
-        if (localeId == null || localeId.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "locale id string cannot be null or empty");
-        }
-
         RawDocument rawDoc =
                 new RawDocument(fileUri, "UTF-8",
                         net.sf.okapi.common.LocaleId.fromString("en"));
@@ -357,8 +357,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                     translationsResource.getTextFlowTargets());
 
         try {
-            net.sf.okapi.common.LocaleId localeId =
-                net.sf.okapi.common.LocaleId.fromString(locale);
+            net.sf.okapi.common.LocaleId localeId = fromString(locale);
 
             IFilterWriter writer = filter.createFilterWriter();
             writer.setOptions(localeId, getOutputEncoding());
@@ -410,11 +409,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                     writer, params);
 
             FileUtil.writeFileToOutputStream(tempFile, output);
-        } catch (IOException e) {
-            // FIXME log
-            throw new FileFormatAdapterException(
-                    "Unable to generate translated file", e);
-        } catch (SecurityException e) {
+        } catch (IOException|SecurityException e) {
             // FIXME log
             throw new FileFormatAdapterException(
                     "Unable to generate translated file", e);
@@ -430,7 +425,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
             Optional<String> params) {
         RawDocument rawDoc =
                 new RawDocument(originalFile, "UTF-8",
-                        net.sf.okapi.common.LocaleId.fromString("en"));
+                        fromString("en"));
         if (rawDoc.getTargetLocale() == null) {
             rawDoc.setTargetLocale(localeId);
         }
@@ -492,8 +487,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
      * Return the id for a TextUnit based on id assignment rules. This method
      * can be overridden for more complex id assignment.
      *
-     * @param tu
-     *            for which to get id
+     * @param tu for which to get id
      * @return the id for the given tu
      */
     protected String getIdFor(TextUnit tu, String subDocName) {
