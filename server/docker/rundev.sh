@@ -114,6 +114,8 @@ docker build -t zanata/server-dev docker/
 
 JBOSS_DEPLOYMENT_VOLUME=/opt/jboss/wildfly/standalone/deployments/
 
+# TODO run docker-compose up, passing in user options
+
 # runs zanata/server-dev:latest docker image
 docker run \
     -e PREPEND_JAVA_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata" \
