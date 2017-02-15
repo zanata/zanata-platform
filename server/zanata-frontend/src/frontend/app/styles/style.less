@@ -6181,6 +6181,11 @@ i.i--left.i--lock, i.i--left.i--trash {x
     width: 100%;
   }
 
+  .container-sidebar {
+    position:absolute;
+    top:0;
+  }
+
   .page {
     flex: 1;
     margin-left: 0;
@@ -6712,7 +6717,7 @@ i.i--left.i--lock, i.i--left.i--trash {x
     margin-left:10px;
   }
 
-  .sidebar ul {
+  .sidebar ul:not(.dropdown-menu) {
     display:inline-flex;
 
   }

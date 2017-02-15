@@ -1,4 +1,5 @@
 import React, {Component} from 'react'
+import { DropdownButton, MenuItem } from 'react-bootstrap'
 /**
  * Root component for Sidebar
  */
@@ -53,21 +54,10 @@ class Sidebar extends Component {
                   <div>
                     <span>VERSION</span>
                   </div>
-                  <div>
-                    <div className='Select-control'>
-                      <div className='Select-placeholder'>
-                        <span>master</span>
-                      </div>
-                      <div className='Select-input'>
-                        <input value='' />
-                        <div>
-                        </div>
-                        <span className='Select-arrow-zone'>
-                          <span className='Select-arrow'></span>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <DropdownButton title='master'>
+                    <MenuItem eventKey='1'>release</MenuItem>
+                    <MenuItem eventKey='2'>test-1</MenuItem>
+                  </DropdownButton>
                   <p><a href='vsettings.html'>Version settings</a></p>
                   <p><span>10%</span> translated</p>
                   <div>
