@@ -23,44 +23,71 @@ package org.zanata.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
+import java.io.FileOutputStream;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
+import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
+import org.zanata.rest.dto.resource.TextFlowTarget;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 // TODO test writeTranslatedFile
-public class IdmlAdapterTest {
-
-    private IDMLAdapter adapter;
-    private File testFile;
+public class IdmlAdapterTest extends AbstractAdapterTest {
 
     @Before
     public void setup() {
         adapter = new IDMLAdapter();
-        // this document has three text flows: Line One, Line Two, Line Three
-        testFile = new File("src/test/resources/org/zanata/adapter/test-idml.idml");
-        assert testFile.exists();
     }
 
-//    @Feature(summary = "The user can translate an InDesign file",
-//            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test
     public void parseIDML() {
-        Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-//        System.out.println(DTOUtil.toXML(resource));
+        Resource resource = parseTestFile("test-idml.idml");
         assertThat(resource.getTextFlows()).hasSize(3);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("Line One"));
-        // TODO test IDs
+        assertThat(resource.getTextFlows().get(0).getContents()).containsExactly("Line One");
     }
+
+    @Test
+    public void testTranslatedIDMLDocument() throws Exception {
+        TranslationsResource translationsResource = new TranslationsResource();
+        File originalFile = getTestFile("test-idml.idml");
+        Resource resource = parseTestFile("test-idml.idml");
+
+        addTranslation(translationsResource,
+                resource.getTextFlows().get(0).getId(),
+                "Dakta Amna", ContentState.Approved);
+        addTranslation(translationsResource,
+                resource.getTextFlows().get(1).getId(),
+                "Dakta Tba",
+                ContentState.Translated);
+        addTranslation(translationsResource,
+                resource.getTextFlows().get(2).getId(),
+                "Dakta Kba",
+                ContentState.NeedReview);
+
+        File outputFile = File.createTempFile("test-idml-translated", ".idml");
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        adapter.writeTranslatedFile(output, originalFile.toURI(),
+                resource, translationsResource, "dv-DL", Optional.absent());
+        output.writeTo(new FileOutputStream(outputFile));
+
+        Resource translatedResource = adapter.parseDocumentFile(
+                outputFile.toURI(), new LocaleId("en"), Optional.absent());
+
+        assertThat(translatedResource.getTextFlows().get(0).getContents())
+                .containsExactly("Dakta Amna");
+        assertThat(translatedResource.getTextFlows().get(1).getContents())
+                .containsExactly("Dakta Tba");
+        assertThat(translatedResource.getTextFlows().get(2).getContents())
+                .containsExactly("Dakta Kba");
+    }
+
 
 }
