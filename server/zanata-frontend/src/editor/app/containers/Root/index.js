@@ -21,14 +21,18 @@ class Root extends Component {
     // available in ES7
     this.resizeFinished = ::this.resizeFinished
     this.onWindowResize = ::this.onWindowResize
+    this.state = {docked: false, open: false}
+  }
+
+  componentWillMount () {
+    const mql = window.matchMedia('(min-width: 800px)')
+    mql.addListener(this.mediaQueryChanged.bind(this))
+    this.setState({mql: mql, docked: mql.matches})
   }
 
   componentDidMount () {
     this.props.requestUiLocales()
     window.addEventListener('resize', this.onWindowResize)
-    var mql = window.matchMedia('(min-width: 800px)')
-    mql.addListener(this.mediaQueryChanged)
-    this.setState({mql: mql, sidebarDocked: mql.matches})
   }
 
   componentWillUnmount () {
@@ -37,11 +41,11 @@ class Root extends Component {
   }
 
   onSetSidebarOpen (open) {
-    this.setState({sidebarOpen: open})
+    this.setState({open: open})
   }
 
   mediaQueryChanged () {
-    this.setState({sidebarDocked: this.state.mql.matches})
+    this.setState({docked: this.state.mql.matches})
   }
 
   // TODO could debounce this
@@ -78,7 +82,14 @@ class Root extends Component {
       ? this.props.percentHeight * window.innerHeight
       : 0
 
-    var sidebarContent = <b>Sidebar content</b>
+    const sidebar = <b>Sidebar content</b>
+
+    const sidebarProps = {
+      sidebar: sidebar,
+      docked: this.state.docked,
+      open: this.state.open,
+      onSetOpen: this.onSetSidebarOpen
+    }
 
     // TODO adjust scrollbar width on div like Angular template editor.html
     return (
@@ -86,10 +97,7 @@ class Root extends Component {
         <KeyShortcutDispatcher className="Editor is-suggestions-active">
           <Icons />
           <EditorHeader />
-          <Sidebar sidebar={sidebarContent}
-            open={this.state.sidebarOpen}
-            docked={this.state.sidebarDocked}
-            onSetOpen={this.onSetSidebarOpen}>
+          <Sidebar {...sidebarProps}>
             <SplitPane ref="suggestionResizer"
               split="horizontal"
               defaultSize={pixelHeight}
