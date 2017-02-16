@@ -23,43 +23,147 @@ package org.zanata.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import com.google.common.base.Charsets;
+import net.sf.okapi.common.filterwriter.IFilterWriter;
+import net.sf.okapi.filters.json.JSONFilter;
+import net.sf.okapi.common.LocaleId;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.zanata.common.LocaleId;
+import org.zanata.common.ContentState;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
+import org.zanata.rest.dto.resource.TextFlowTarget;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-// TODO test writeTranslatedFile
 public class JsonAdapterTest {
 
     private JsonAdapter adapter;
-    private File testFile;
+    private String filePath = "src/test/resources/org/zanata/adapter/";
+    private LocaleId localeId = new LocaleId("en");
 
     @Before
     public void setup() {
         adapter = new JsonAdapter();
-        testFile = new File("src/test/resources/org/zanata/adapter/basicjson.json");
-        assert testFile.exists();
     }
 
-//    @Feature(summary = "The user can translate JavaScript Object Notation files",
-//            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    private Resource parseTestFile(String filename) {
+        File testFile = new File(filePath.concat(filename));
+        assert testFile.exists();
+        return adapter.parseDocumentFile(testFile.toURI(),
+                org.zanata.common.LocaleId.EN, Optional.absent());
+    }
+
     @Test
     public void parseJSON() {
-        Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-//        System.out.println(DTOUtil.toXML(resource));
+        Resource resource = parseTestFile("basicjson.json");
         assertThat(resource.getTextFlows()).hasSize(5);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("Line One"));
-        // TODO test IDs
+        assertThat(getTextFlowContentsAt(resource, 0)).containsExactly("Line One");
+    }
+
+    /*
+     * JSON parts with duplicated keys are handled separately
+     */
+    @Test
+    public void testStandaloneElementsAreIncluded() {
+        Resource resource = parseTestFile("basicjson.json");
+        assertThat(getTextFlowContentsAt(resource, 3)).containsExactly("First");
+        assertThat(getTextFlowContentsAt(resource, 4)).containsExactly("Second");
+    }
+
+    /*
+     * JSON parts with duplicated keys are separate
+     */
+    @Test
+    public void testDuplicateKeys() {
+        Resource resource = parseTestFile("test-json-duplicateids.json");
+        assertThat(getTextFlowContentsAt(resource, 1)).containsExactly("Line Two");
+        assertThat(getTextFlowContentsAt(resource, 2)).containsExactly("Line Three");
+    }
+
+    /*
+     * JSON parts with duplicated key and content can be considered one entity
+     */
+    @Test
+    public void testDuplicateKeyAndContent() {
+        Resource resource = parseTestFile("test-json-duplicateentries.json");
+        assertThat(resource.getTextFlows()).hasSize(2);
+        assertThat(getTextFlowContentsAt(resource, 0)).containsExactly("Dupe");
+        assertThat(getTextFlowContentsAt(resource, 1)).containsExactly("Same");
+    }
+
+    /*
+     * JSON parts with similar content are separate
+     */
+    @Test
+    @Ignore("ZNTA-1731")
+    public void testDuplicateContent() {
+        Resource resource = parseTestFile("test-json-duplicatecontent.json");
+        assertThat(resource.getTextFlows()).hasSize(3);
+        assertThat(getTextFlowContentsAt(resource, 1)).containsExactly("Same");
+        assertThat(getTextFlowContentsAt(resource, 2)).containsExactly("Same");
+    }
+
+    @Test
+    public void testTranslatedJSONDocument() throws Exception {
+        Resource resource = parseTestFile("test-json-untranslated.json");
+        assertThat(resource.getTextFlows().get(1).getContents())
+                .containsExactly("First Source");
+        assertThat(resource.getTextFlows().get(2).getContents())
+                .containsExactly("Second Source");
+        String firstSourceId = resource.getTextFlows().get(1).getId();
+        String secondSourceId = resource.getTextFlows().get(2).getId();
+
+        Map<String, TextFlowTarget> translations = new HashMap<>();
+
+        TextFlowTarget firstTranslation = new TextFlowTarget();
+        firstTranslation.setContents("Foun’dé metalkcta");
+        firstTranslation.setState(ContentState.Approved);
+        translations.put(firstSourceId, firstTranslation);
+
+        TextFlowTarget secondTranslation = new TextFlowTarget();
+        secondTranslation.setContents("Tba’dé metalkcta");
+        secondTranslation.setState(ContentState.Translated);
+        translations.put(secondSourceId, secondTranslation);
+
+        File originalFile = new File(filePath.concat("test-json-untranslated.json"));
+        OutputStream outputStream = new ByteArrayOutputStream();
+        IFilterWriter writer = createWriter(outputStream);
+        adapter.generateTranslatedFile(originalFile.toURI(), translations,
+                this.localeId, writer, Optional.absent());
+
+        assertThat(outputStream.toString()).isEqualTo("{\n"+
+            "  \"test\": {\n" +
+            "    \"title\": \"Test\",\n" +
+            "    \"test1\": {\n" +
+            "      \"title\": \"Foun’dé metalkcta\"\n" +
+            "    },\n" +
+            "    \"test2\": {\n" +
+            "      \"title\": \"Tba’dé metalkcta\"\n" +
+            "    }\n" +
+            "  }\n" +
+            "}\n");
+    }
+
+    private IFilterWriter createWriter(OutputStream outputStream) {
+        IFilterWriter writer = new JSONFilter().createFilterWriter();
+        writer.setOptions(this.localeId, Charsets.UTF_8.name());
+        writer.setOutput(outputStream);
+        return writer;
+    }
+
+    private List<String> getTextFlowContentsAt(Resource resource, int position) {
+        return resource.getTextFlows().get(position).getContents();
     }
 
 }
