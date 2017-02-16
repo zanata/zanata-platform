@@ -23,7 +23,6 @@ package org.zanata.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.*;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 import com.google.common.base.Charsets;
@@ -44,6 +43,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
 
@@ -53,9 +53,11 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
     }
 
     @Test
-    public void parseLatinOneProperties() {
-        Resource resource = parseTestFile("test-properties-latin1.properties");
-        assertThat(resource.getTextFlows()).hasSize(3);
+    public void parseLatinOneProperties() throws Exception {
+        File latin1EncodedFile = createTempFile(StandardCharsets.ISO_8859_1);
+        Resource resource =
+                adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
+                        Optional.absent());
         assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
                 "line1");
         assertThat(resource.getTextFlows().get(0).getContents())
@@ -86,7 +88,10 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
         addTranslation(tResource, "line2", "ÀTbade metalkcta", ContentState.Translated);
         addTranslation(tResource, "line3", "ÀKbade metalkcta", ContentState.NeedReview);
 
-        Resource resource = parseTestFile("test-properties-latin1.properties");
+        File latin1EncodedFile = createTempFile(StandardCharsets.ISO_8859_1);
+        Resource resource =
+                adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
+                        Optional.absent());
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
         adapter.writeTranslatedFile(outputStream,
@@ -106,17 +111,5 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
     private String toLatin1String(ByteArrayOutputStream outputStream)
             throws UnsupportedEncodingException {
         return outputStream.toString(Charsets.ISO_8859_1.name());
-    }
-
-    @Test
-    public void testLatin1encoding() throws Exception {
-        File latin1EncodedFile = createTempFile(StandardCharsets.ISO_8859_1);
-        Resource resource =
-                adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-        assertThat(resource.getTextFlows().get(0).getId()).isEqualTo(
-                "line1");
-        assertThat(resource.getTextFlows().get(0).getContents())
-                .containsExactly("ÀLine One");
     }
 }

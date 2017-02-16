@@ -10,11 +10,10 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,11 +47,15 @@ abstract class PropertiesAbstractTest {
         File testFile = File.createTempFile("test-properties-temp-" + charset, ".properties");
         System.out.println(testFile);
         assertThat(testFile.exists());
-        Map<String, String> entries = new HashMap<>();
+        Map<String, String> entries = new LinkedHashMap<>();
         if (charset == StandardCharsets.ISO_8859_1) {
             entries.put("line1", "ÀLine One");
+            entries.put("line2", "ÀLine Two");
+            entries.put("line3", "ÀLine Three");
         } else if (charset == StandardCharsets.UTF_8) {
             entries.put("line1", "¥Line One");
+            entries.put("line2", "¥Line Two");
+            entries.put("line3", "¥Line Three");
         }
         Properties resource = new Properties();
         for (Map.Entry<String, String> entry : entries.entrySet()) {
