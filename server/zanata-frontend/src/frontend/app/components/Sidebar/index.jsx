@@ -62,7 +62,7 @@ class Sidebar extends Component {
                     Settings</a>
                   </li>
                 </ul>
-                <DropdownButton title='Options'
+                <DropdownButton title='Options' id='options-dropdown'
                   className='btn-sm btn-primary'>
                   <MenuItem eventKey='1'>Copy translations</MenuItem>
                   <MenuItem eventKey='2'>Merge translations</MenuItem>
@@ -77,7 +77,8 @@ class Sidebar extends Component {
                         <use xlinkHref='#Icon-version'></use>
                       </svg>
                     VERSION</span>
-                    <DropdownButton className='btn-sm' title='master'>
+                    <DropdownButton id='version-dropdown' className='btn-sm'
+                      title='master'>
                       <MenuItem eventKey='1'>release</MenuItem>
                       <MenuItem eventKey='2'>test-1</MenuItem>
                     </DropdownButton>
