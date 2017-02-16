@@ -23,9 +23,7 @@ package org.zanata.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.*;
-import java.net.URI;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import com.google.common.base.Charsets;
@@ -47,7 +45,6 @@ import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.model.*;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
-import org.zanata.rest.dto.extensions.gettext.TextFlowExtension;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
@@ -59,10 +56,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 // TODO test writeTranslatedFile
-public class TSAdapterTest {
-
-    private TSAdapter adapter;
-    private String filePath = "src/test/resources/org/zanata/adapter/";
+public class TSAdapterTest extends AbstractAdapterTest {
 
     @Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -70,13 +64,6 @@ public class TSAdapterTest {
     @Before
     public void setup() {
         adapter = new TSAdapter();
-    }
-
-    private Resource parseTestFile(String filename) {
-        File testFile = new File(filePath.concat(filename));
-        assert testFile.exists();
-        return adapter.parseDocumentFile(testFile.toURI(),
-                org.zanata.common.LocaleId.EN, Optional.absent());
     }
 
     @Test
@@ -160,14 +147,13 @@ public class TSAdapterTest {
 
     @Test
     public void testUploadedTranslationsFile() throws Exception {
-        File file = new File(filePath.concat("test-ts-translated.ts"));
+        File file = getTestFile("test-ts-translated.ts");
         RawDocument rawDocument = new RawDocument(
                 FileUtils.readFileToString(file),
                 new LocaleId("en"),
                 new LocaleId("dv-LL"));
-
-        TranslationsResource translationsResource = adapter
-                .parseTranslationFile(rawDocument,
+        TranslationsResource translationsResource =
+                ((TSAdapter) adapter).parseTranslationFile(rawDocument,
                         Optional.absent());
 
         assertThat(translationsResource.getTextFlowTargets().size()).isEqualTo(2);
@@ -191,13 +177,13 @@ public class TSAdapterTest {
         secondTranslation.setState(ContentState.Translated);
         translations.put("d636f9b49152f22ed8c9452f96e131a2", secondTranslation);
 
-        File originalFile = new File(filePath.concat("test-ts-untranslated.ts"));
+        File originalFile = getTestFile("test-ts-untranslated.ts");
         LocaleId localeId = new LocaleId("en");
         OutputStream outputStream = new ByteArrayOutputStream();
         IFilterWriter writer = new TsFilter().createFilterWriter();
         writer.setOptions(localeId, Charsets.UTF_8.name());
         writer.setOutput(outputStream);
-        adapter.generateTranslatedFile(originalFile.toURI(), translations,
+        ((TSAdapter) adapter).generateTranslatedFile(originalFile.toURI(), translations,
                 localeId, writer, Optional.absent());
         assertThat(outputStream.toString()).isEqualTo(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE TS []>\n" +
@@ -221,29 +207,23 @@ public class TSAdapterTest {
 
     @Test
     public void testFailToParseTSTranslation() throws Exception {
-        File file = new File(filePath.concat("test-ts-invalid.ts"));
+        File file = getTestFile("test-ts-invalid.ts");
         RawDocument rawDocument = new RawDocument(
                 FileUtils.readFileToString(file),
                 new LocaleId("en"),
                 new LocaleId("ru"));
-
         exception.expect(FileFormatAdapterException.class);
         exception.expectMessage("Unable to parse translation file");
-        adapter.parseTranslationFile(rawDocument, Optional.absent());
+        ((TSAdapter) adapter).parseTranslationFile(rawDocument, Optional.absent());
     }
 
     @Test
     public void testFailToParseOriginalFile() throws Exception {
-        File file = new File(filePath.concat("test-ts-invalid.ts"));
-        RawDocument rawDocument = new RawDocument(
-                FileUtils.readFileToString(file),
-                new LocaleId("en"),
-                new LocaleId("ru"));
-
+        File file = getTestFile("test-ts-invalid.ts");
         exception.expect(FileFormatAdapterException.class);
         exception.expectMessage("Unable to generate translated document from original");
-        adapter.generateTranslatedFile(
-                new File(filePath.concat("test-ts-nonexistent.ts")).toURI(),
+        ((TSAdapter) adapter).generateTranslatedFile(
+                getTestFile("test-ts-nonexistent.ts").toURI(),
                 new HashMap<>(),
                 new LocaleId("en"),
                 new TsFilter().createFilterWriter(), Optional.absent());

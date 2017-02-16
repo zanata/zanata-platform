@@ -33,13 +33,12 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
-import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-// TODO test writeTranslatedFile
 public class IdmlAdapterTest extends AbstractAdapterTest {
 
     @Before
