@@ -46,22 +46,13 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class JsonAdapterTest {
+public class JsonAdapterTest extends AbstractAdapterTest {
 
-    private JsonAdapter adapter;
-    private String filePath = "src/test/resources/org/zanata/adapter/";
     private LocaleId localeId = new LocaleId("en");
 
     @Before
     public void setup() {
         adapter = new JsonAdapter();
-    }
-
-    private Resource parseTestFile(String filename) {
-        File testFile = new File(filePath.concat(filename));
-        assert testFile.exists();
-        return adapter.parseDocumentFile(testFile.toURI(),
-                org.zanata.common.LocaleId.EN, Optional.absent());
     }
 
     @Test
@@ -136,10 +127,10 @@ public class JsonAdapterTest {
         secondTranslation.setState(ContentState.Translated);
         translations.put(secondSourceId, secondTranslation);
 
-        File originalFile = new File(filePath.concat("test-json-untranslated.json"));
+        File originalFile = getTestFile("test-json-untranslated.json");
         OutputStream outputStream = new ByteArrayOutputStream();
         IFilterWriter writer = createWriter(outputStream);
-        adapter.generateTranslatedFile(originalFile.toURI(), translations,
+        ((JsonAdapter) adapter).generateTranslatedFile(originalFile.toURI(), translations,
                 this.localeId, writer, Optional.absent());
 
         assertThat(outputStream.toString()).isEqualTo("{\n"+
