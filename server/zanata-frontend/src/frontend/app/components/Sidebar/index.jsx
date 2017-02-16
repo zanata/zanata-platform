@@ -35,8 +35,7 @@ class Sidebar extends Component {
                 onClick={::this.toggleDisplay}>
                 <Icon name='project' className='projicon' />
                 <span className='projtitle'>Zanata Server</span>
-                <svg className={toggleArrow}>
-                  <use xlinkHref='#Icon-chevron-down'></use></svg>
+                <Icon name='chevron-down' className={toggleArrow} />
               </a>
               <div id='accordion-1' className={displayAccordion}>
                 <Nav bsStyle='pills' stacked activeKey={1}>
