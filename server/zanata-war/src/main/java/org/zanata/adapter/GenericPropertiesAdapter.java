@@ -22,17 +22,22 @@ package org.zanata.adapter;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.zanata.adapter.properties.PropReader;
 import org.zanata.adapter.properties.PropWriter;
 import static org.zanata.adapter.AdapterUtils.readStream;
 import org.zanata.common.ContentState;
+import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
+import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.FileUtil;
 
 import javax.annotation.Nonnull;
+import javax.ejb.Local;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -130,6 +135,23 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
         } finally {
             FileUtil.tryDeleteFile(tempFile);
         }
+    }
+
+    @Override
+    public String generateTranslationFilename(@Nonnull HDocument document,
+                                              @Nonnull String locale) {
+        String srcExt = FilenameUtils.getExtension(document.getName());
+        DocumentType documentType = document.getRawDocument().getType();
+        String transExt = documentType.getExtensions().get(srcExt);
+        LocaleId localeId = new LocaleId(locale);
+        if (StringUtils.isEmpty(transExt)) {
+            log.warn("Adding missing .properties extension to generated filename");
+            return document.getName() + "_" +
+                    localeId.toJavaName() + ".properties";
+        }
+        return FilenameUtils.removeExtension(document.getName()) + "_"
+                + localeId.toJavaName()
+                + "." + transExt;
     }
 
 }

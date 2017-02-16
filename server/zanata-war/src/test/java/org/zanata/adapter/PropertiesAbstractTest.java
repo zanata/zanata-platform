@@ -45,7 +45,6 @@ abstract class PropertiesAbstractTest {
 
     File createTempFile(Charset charset) throws Exception {
         File testFile = File.createTempFile("test-properties-temp-" + charset, ".properties");
-        System.out.println(testFile);
         assertThat(testFile.exists());
         Map<String, String> entries = new LinkedHashMap<>();
         if (charset == StandardCharsets.ISO_8859_1) {

@@ -77,7 +77,7 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
         document.setRawDocument(hRawDocument);
 
         assertThat(adapter.generateTranslationFilename(document, "fr"))
-                .isEqualTo("basicprop.properties");
+                .isEqualTo("basicprop_fr.properties");
     }
 
     @Test
