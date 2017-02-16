@@ -289,6 +289,7 @@ public class TargetContentsPresenterTest {
         when(display.getId()).thenReturn(selectedTU.getId());
         ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
         when(display.getEditors()).thenReturn(currentEditors);
+        presenter.highlightSearch("");
         presenter.setStatesForTesting(selectedTU.getId(), 0, display);
 
         // When:
@@ -296,7 +297,7 @@ public class TargetContentsPresenterTest {
 
         // Then:
         verify(display).revertEditorContents();
-        verify(display).highlightSearch(anyString());
+        verify(display, atLeastOnce()).highlightSearch(anyString());
         verify(display).focusEditor(0);
     }
 

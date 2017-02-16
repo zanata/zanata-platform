@@ -1,0 +1,13 @@
+#  translator-comments
+msgid ""
+msgstr ""
+
+#. comments-given-by-programmer2
+msgid "Line One"
+msgstr ""
+
+msgid "Line Two"
+msgstr ""
+
+msgid "Line Three"
+msgstr ""

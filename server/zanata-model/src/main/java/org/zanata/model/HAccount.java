@@ -60,6 +60,9 @@ public class HAccount extends ModelEntityBase
     private static final long serialVersionUID = 1L;
     private String username;
     private String passwordHash;
+    // If this class is converted to Kotlin as property "isEnabled", please
+    // update the property name in SampleProjectProfile.makeAccount() to
+    // avoid breaking entityunit tests.
     private boolean enabled;
     private String apiKey;
     private HPerson person;

@@ -24,6 +24,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.concurrent.CompletableFuture;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
@@ -33,6 +34,7 @@ import org.zanata.rest.client.ProjectClient;
 import org.zanata.rest.client.ProjectIterationClient;
 import org.zanata.rest.client.RestClientFactory;
 import org.zanata.rest.dto.ProcessStatus;
+import org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.VersionInfo;
@@ -51,6 +53,8 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
+import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode.Failed;
+
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -59,10 +63,10 @@ public class ZanataRestCaller {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ZanataRestCaller.class);
     private final RestClientFactory restClientFactory;
-    public static final EnumSet<ProcessStatus.ProcessStatusCode> DONE_STATUS =
-            EnumSet.of(ProcessStatus.ProcessStatusCode.Failed,
-                    ProcessStatus.ProcessStatusCode.Finished,
-                    ProcessStatus.ProcessStatusCode.NotAccepted);
+    public static final EnumSet<ProcessStatusCode> DONE_STATUS =
+            EnumSet.of(Failed,
+                    ProcessStatusCode.Finished,
+                    ProcessStatusCode.NotAccepted);
     private final String username;
     private final String apiKey;
     private final String baseUrl;
@@ -203,7 +207,7 @@ public class ZanataRestCaller {
                 asyncProcessClient.startSourceDocCreationOrUpdate(
                         sourceResource.getName(), projectSlug, iterationSlug,
                         sourceResource, Sets.newHashSet(), false);
-        processStatus = waitUntilFinished(asyncProcessClient, processStatus);
+        processStatus = waitUntilFinished(asyncProcessClient, processStatus.getUrl());
         log.info("finished async source push ({}-{}): {}", projectSlug,
                 iterationSlug, processStatus.getStatusCode());
         if (copyTrans) {
@@ -213,17 +217,30 @@ public class ZanataRestCaller {
 
     private ProcessStatus waitUntilFinished(
             final AsyncProcessClient asyncProcessClient,
-            ProcessStatus processStatus) {
-        final String processId = processStatus.getUrl();
+            final String processId) {
+        CompletableFuture<ProcessStatus> future = new CompletableFuture<>();
         Awaitility.await().pollInterval(Duration.ONE_SECOND)
-                .until(() -> DONE_STATUS.contains(asyncProcessClient
-                        .getProcessStatus(processId).getStatusCode()));
-        if (processStatus.getStatusCode()
-                .equals(ProcessStatus.ProcessStatusCode.Failed)) {
-            throw new RuntimeException(
-                    processStatus.getStatusCode().toString());
+                .until(() -> {
+                    ProcessStatus processStatus =
+                            asyncProcessClient.getProcessStatus(processId);
+                    ProcessStatusCode statusCode =
+                            processStatus.getStatusCode();
+                    future.complete(processStatus);
+                    return DONE_STATUS.contains(statusCode);
+                });
+
+        ProcessStatus status = future.getNow(null);
+        if (status == null) {
+            throw new RuntimeException("timeout waiting for process status");
         }
-        return processStatus;
+        if (status.getStatusCode() == Failed) {
+            String message =
+                    "Async process failed with message " + status.getMessages()
+                            + ". Check server log for more details of process '"
+                            + processId + "'.";
+            throw new RuntimeException(message);
+        }
+        return status;
     }
 
     public void asyncPushTarget(String projectSlug, String iterationSlug,
@@ -236,7 +253,7 @@ public class ZanataRestCaller {
                         projectSlug, iterationSlug, localeId, transResource,
                         Collections.<String> emptySet(), mergeType,
                         assignCreditToUploader);
-        processStatus = waitUntilFinished(asyncProcessClient, processStatus);
+        processStatus = waitUntilFinished(asyncProcessClient, processStatus.getUrl());
         log.info("finished async translation({}-{}) push: {}", projectSlug,
                 iterationSlug, processStatus.getStatusCode());
     }

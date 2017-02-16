@@ -27,13 +27,25 @@ import org.jglue.cdiunit.CdiRunner;
 import org.jglue.cdiunit.ContextController;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.model.InitializationError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static java.lang.reflect.Modifier.isFinal;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class CdiUnitRunner extends CdiRunner {
+    private static final Logger log = LoggerFactory.getLogger(CdiUnitRunner.class);
+
     public CdiUnitRunner(Class<?> clazz) throws InitializationError {
         super(clazz);
+        boolean isFinal = isFinal(clazz.getModifiers());
+        if (isFinal) {
+            log.warn(clazz + " is final. This may cause problems " +
+                    "with Mockito or CDI. " +
+                    "Check kotlin-allopen configuration.");
+        }
     }
 
     @Override

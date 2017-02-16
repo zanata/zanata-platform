@@ -1,0 +1,11 @@
+msgid ""
+msgstr ""
+
+msgid "Parent Folder"
+msgstr ""
+
+msgid "Subject:"
+msgstr ""
+
+msgid "Connect"
+msgstr ""

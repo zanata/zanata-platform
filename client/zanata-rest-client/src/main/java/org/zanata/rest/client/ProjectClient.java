@@ -63,6 +63,9 @@ public class ProjectClient {
 
     public void put(Project project) {
         Response response = webResource().put(Entity.xml(project));
+        if (response.getStatusInfo().getFamily() != Response.Status.Family.SUCCESSFUL) {
+            throw new RuntimeException(response.getStatusInfo().toString());
+        }
         response.close();
     }
 }

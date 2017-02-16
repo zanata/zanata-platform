@@ -1,0 +1,6 @@
+#, fuzzy
+msgid "Line one"
+msgstr ""
+
+msgid "Line Two"
+msgstr ""

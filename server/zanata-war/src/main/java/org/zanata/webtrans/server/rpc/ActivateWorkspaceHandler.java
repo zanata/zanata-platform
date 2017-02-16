@@ -58,6 +58,8 @@ import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 
+import static java.util.Collections.emptyList;
+
 @Named("webtrans.gwt.ActivateWorkspaceHandler")
 @RequestScoped
 @ActionHandlerFor(ActivateWorkspaceAction.class)
@@ -134,7 +136,7 @@ public class ActivateWorkspaceHandler extends
                 hasGlossaryUpdateAccess, hasReviewAccess);
         log.debug("workspace restrictions: {}", workspaceRestrictions);
         LoadOptionsResult loadOptsRes = loadOptionsHandler
-                .execute(new LoadOptionsAction(null), context);
+                .execute(new LoadOptionsAction(emptyList()), context);
         GetValidationRulesResult validationRulesResult =
                 getValidationRulesHandler.execute(
                         new GetValidationRulesAction(workspaceId), context);

@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import org.jboss.resteasy.spi.NotFoundException;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -50,6 +52,9 @@ import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 import com.google.common.collect.Lists;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import javax.ws.rs.Path;
 import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 
@@ -113,8 +118,10 @@ public class AsynchronousProcessResourceService
                 + "-" + idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
         Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
-        documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
-                resource, extensions, copytrans, true, handle);
+        ListenableFuture<HDocument> future = documentServiceImpl
+                .saveDocumentAsync(projectSlug, iterationSlug,
+                        resource, extensions, copytrans, true, handle);
+        logWhenUploadComplete(future, name, taskId);
         return getProcessStatus(taskId.toString()); // TODO Change to return 202
         // Accepted,
         // with a url to get the
@@ -135,12 +142,32 @@ public class AsynchronousProcessResourceService
                 + iterationSlug + "-" + idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
         Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
-        documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
-                resource, extensions, copytrans, true, handle);
+        ListenableFuture<HDocument> future = documentServiceImpl
+                .saveDocumentAsync(projectSlug, iterationSlug,
+                        resource, extensions, copytrans, true, handle);
+        logWhenUploadComplete(future, name, taskId);
         return getProcessStatus(taskId.toString()); // TODO Change to return 202
         // Accepted,
         // with a url to get the
         // progress
+    }
+
+    private void logWhenUploadComplete(ListenableFuture<?> future,
+            final String taskName, final Serializable taskId) {
+        Futures.addCallback(future, new FutureCallback<Object>() {
+            @Override
+            public void onSuccess(@Nullable Object result) {
+                log.info(
+                        "async upload complete. id={}, job={}, result={}",
+                        taskId, taskName, result);
+            }
+
+            @Override
+            public void onFailure(@Nonnull Throwable e) {
+                log.warn("async upload failed. id={}, job={}", taskId, taskName,
+                        e);
+            }
+        });
     }
 
     /**
@@ -178,12 +205,15 @@ public class AsynchronousProcessResourceService
         }
         final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         final MergeType finalMergeType = mergeType;
+        String taskName = "TranslatedDocUpload: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
         Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
-        translationServiceImpl.translateAllInDocAsync(projectSlug,
-                iterationSlug, id, locale, translatedDoc, extensions,
-                finalMergeType, assignCreditToUploader, true, handle,
-                TranslationSourceType.API_UPLOAD);
+        ListenableFuture<List<String>> future =
+                translationServiceImpl.translateAllInDocAsync(projectSlug,
+                        iterationSlug, id, locale, translatedDoc, extensions,
+                        finalMergeType, assignCreditToUploader, true, handle,
+                        TranslationSourceType.API_UPLOAD);
+        logWhenUploadComplete(future, taskName, taskId);
         return this.getProcessStatus(taskId.toString());
     }
 

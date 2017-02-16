@@ -64,6 +64,7 @@ import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.util.concurrent.ListenableFuture;
 import javax.enterprise.event.Event;
 import org.zanata.util.UrlUtil;
 import org.zanata.webhook.events.SourceDocumentChangedEvent;
@@ -140,7 +141,7 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     @Async
     @Transactional
-    public Future<HDocument> saveDocumentAsync(String projectSlug,
+    public ListenableFuture<HDocument> saveDocumentAsync(String projectSlug,
             String iterationSlug, Resource sourceDoc, Set<String> extensions,
             boolean copyTrans, boolean lock,
             AsyncTaskHandle<HDocument> handle) {
