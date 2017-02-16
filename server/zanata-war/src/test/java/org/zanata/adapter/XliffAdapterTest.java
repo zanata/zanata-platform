@@ -36,7 +36,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
-import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
