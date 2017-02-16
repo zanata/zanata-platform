@@ -6120,24 +6120,26 @@ i.i--left.i--lock, i.i--left.i--trash {x
 }
 
 .accordion-section-title span {
-  vertical-align: text-top;
+  vertical-align: bottom;
 }
 
 .accordion-section-content ul {
-  line-height:2em;
   list-style-type:none;
   padding-left:0;
 }
 
-span.s1.sidebar-icon svg {
-  fill: @color-dark;
+.sidebar-icon svg {
+  fill: @color-dark !important;
   vertical-align:middle;
   margin-right: @spacing-re;
 }
 
+.sidebar .nav-stacked {
+  font-weight:600;
+}
+
 li.active .sidebar-icon svg {
   fill: #fff !important;
-  margin-left:15px;
 }
 
 .sidebar ul.menu-list li.active a {
@@ -6166,8 +6168,8 @@ li.active .sidebar-icon svg {
   margin-bottom:@spacing-rh;
 }
 
-.version-inline .dropdown {
-  vertical-align:baseline;
+.sidebar .version-inline .dropdown.btn-group {
+  vertical-align:sub;
   padding-left:@spacing-rh;
 
 }
@@ -6181,7 +6183,7 @@ li.active .sidebar-icon svg {
 }
 
 .version-settings {
-  margin-bottom:0;
+  margin-bottom:@spacing-rq;
 }
 
 .sidebar .dropdown-menu, .version-settings {
@@ -6189,7 +6191,7 @@ li.active .sidebar-icon svg {
 }
 
 .sidebar #version {
-  margin-top: 10px;
+  margin-top: 1.5em;
   padding-top:10px;
   border-top:solid 1px #bdd4dc;
 }
@@ -6198,14 +6200,18 @@ li.active .sidebar-icon svg {
   padding-right: 0;
 }
 
-.sidebar ul li.active {
-  background-color:@color-light;
-}
-
 .sidebar ul li.active a {
   color:#fff;
 }
 
+#options-dropdown {
+  margin-top: @spacing-rq;
+}
+
+.v-heading {
+  vertical-align:text-top;
+  padding-left:@spacing-re;
+}
 
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
@@ -6761,6 +6767,9 @@ li.active .sidebar-icon svg {
     overflow: hidden;
   }
 
+.sidebar .dropdown.btn-group {
+    vertical-align:top;
+  }
   /*----- Section Titles -----*/
 
   .hide-desktop {
@@ -6817,10 +6826,9 @@ li.active .sidebar-icon svg {
   }
 
   #version {
-    margin-top:0px !important;
+    margin-top:0.5em !important;
 
   }
-
 
 
   #version .drop {
@@ -6834,16 +6842,9 @@ li.active .sidebar-icon svg {
 
   .sidebar ul li.active  {
     display:inline-block;
-    margin-right:10px !important;
     margin-left:0px !important;
-    height:2em;
   }
 
-  li.active a {
-    margin-left:10px !important;
-
-
-  }
 
   .sidebar ul li {
     padding-right:10px;
@@ -7048,8 +7049,21 @@ li.active .sidebar-icon svg {
     margin-right: -15px;
   }
 
-  .sidebar ul li.active a {
+  li.active .sidebar-icon svg {
     margin-left:15px;
+  }
+
+  .sidebar ul {
+    margin-left:-10px;
+  }
+
+  ul.v-links {
+    margin-top:@spacing-rq;
+  }
+
+  ul.v-links li.active a {
+    padding-left: 45px;
+    margin-left: -15px;
   }
 
   .modal-lg {

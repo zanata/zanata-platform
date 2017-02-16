@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import { DropdownButton, MenuItem, ProgressBar } from 'react-bootstrap'
+import { DropdownButton, MenuItem, ProgressBar,
+  Nav, NavItem } from 'react-bootstrap'
 import { Icon } from '../../components'
 /**
  * Root component for Sidebar
@@ -38,20 +39,17 @@ class Sidebar extends Component {
                   <use xlinkHref='#Icon-chevron-down'></use></svg>
               </a>
               <div id='accordion-1' className={displayAccordion}>
-                <ul className='menu-list'>
-                  <li className='active'>
+                <Nav bsStyle='pills' stacked activeKey={1}>
+                  <NavItem eventKey={1} href=''>
                     <Icon name='users' className='s1 sidebar-icon' />
-                    <a href=''>People</a>
-                  </li>
-                  <li>
+                  People</NavItem>
+                  <NavItem eventKey={2} href=''>
                     <Icon name='info' className='s1 sidebar-icon' />
-                    <a href=''>About</a>
-                  </li>
-                  <li>
+                  About</NavItem>
+                  <NavItem eventKey={3} href=''>
                     <Icon name='settings' className='s1 sidebar-icon' />
-                    <a href=''>Settings</a>
-                  </li>
-                </ul>
+                  Settings </NavItem>
+                </Nav>
                 <DropdownButton title='Options' id='options-dropdown'
                   className='btn-sm btn-default'>
                   <MenuItem eventKey='1'>Copy translations</MenuItem>
@@ -59,14 +57,15 @@ class Sidebar extends Component {
                   <MenuItem eventKey='3'>Copy to new version</MenuItem>
                   <MenuItem eventKey='4'>Download config file</MenuItem>
                   <MenuItem eventKey='5'>Export version to TMX</MenuItem>
-                </DropdownButton><br />
+                </DropdownButton>
                 <div id='version'>
                   <div className='version-inline'>
                     <span className='sidebar-version-title'>
                       <Icon name='version' className='s2' />
-                    VERSION</span>
+                      <span className='v-heading'>VERSION</span>
+                    </span>
                     <DropdownButton id='version-dropdown'
-                      className='btn-sm btn-primary'
+                      className='btn-sm btn-default'
                       title='master'>
                       <MenuItem eventKey='1'>release</MenuItem>
                       <MenuItem eventKey='2'>test-1</MenuItem>
@@ -88,17 +87,15 @@ class Sidebar extends Component {
                     <ProgressBar className='progress-bar-approved'
                       now={10} key={4} />
                   </ProgressBar>
-                  <ul id='expList'>
-                    <li className='active'>
-                      <a href=''>Languages</a>
-                    </li>
-                    <li>
-                      <a href=''>Documents</a>
-                    </li>
-                    <li>
-                      <a href=''>Groups</a>
-                    </li>
-                  </ul>
+                  <Nav className='v-links'
+                    bsStyle='pills' stacked activeKey={1}>
+                    <NavItem eventKey={1} href=''>
+                    Languages</NavItem>
+                    <NavItem eventKey={2} href=''>
+                    Documents</NavItem>
+                    <NavItem eventKey={3} href=''>
+                    Groups </NavItem>
+                  </Nav>
                 </div>
               </div>
             </div>
