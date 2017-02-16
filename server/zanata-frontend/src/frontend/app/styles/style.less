@@ -2727,8 +2727,8 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
   z-index: 1000;
   display: none;
   float: left;
-  min-width: 160px;
-  padding: @spacing-small-horizontal 0;
+  min-width: 120px;
+  padding:0;
   margin: 2px 0 0;
   list-style: none;
   font-size: 14px;
@@ -2842,7 +2842,7 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
   display: none; // none by default, but block on "open" of the menu
   float: left;
   min-width: 160px;
-  padding: @spacing-small-horizontal 0;
+  padding: 0;
   margin: 2px 0 0; // override default ul
   list-style: none;
   font-size: @font-size-base;
@@ -3024,11 +3024,11 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
   height: 1rem;
   margin-bottom: @line-height-computed;
   background-color: @progress-bg;
-  border-radius: @border-radius-base;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
 }
 
 // Bar of progress
+//untranslated
 .progress-bar {
   float: left;
   width: 0%;
@@ -3056,21 +3056,25 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
 
 // Variations
 // -------------------------
-.progress-bar-success {
-  background-color: @progress-bar-success-bg;
+
+//translated
+.progress-bar-translated {
+  background-color: @progress-bar-translated-bg;
 }
 
-.progress-bar-info {
-  background-color: @progress-bar-info-bg;
+.progress-bar-approved {
+  background-color: @progress-bar-approved-bg;
 }
 
-.progress-bar-warning {
+//fuzzy
+.progress-bar-fuzzy {
   background-color: @progress-bar-unsure-bg;
 }
 
-.progress-bar-danger {
-  background-color: @progress-bar-warning-bg;
+.progress-bar-rejected {
+  background-color: @progress-bar-rejected-bg;
 }
+
 
 ul.list--stats li.progress-bar__expander,
 li.progress-bar__expander.panels__panel__item,
@@ -6122,7 +6126,59 @@ svg.sidebar-icon {
   margin-right: @spacing-re;
 }
 
+.version-percent {
+  color:@color-success;
+}
 
+.version-percent span.percent {
+  font-size:1.8em;
+}
+
+.version-percent p {
+  margin-bottom:0;
+}
+
+.sidebar-version-title {
+  vertical-align: super;
+  padding-left: 3px;
+  font-size: 1.6em;
+}
+
+.version-inline {
+  margin-bottom:@spacing-rh;
+}
+
+.version-inline .dropdown {
+  vertical-align:baseline;
+  padding-left:@spacing-rh;
+
+}
+
+.version-inline .btn-sm {
+  padding: 0.16rem 0.31rem;
+}
+
+.version-inline svg {
+  fill:@color-dark;
+}
+
+.version-settings {
+  margin-bottom:0;
+}
+
+.sidebar .dropdown-menu, .version-settings {
+  font-size:0.857rem;
+}
+
+.sidebar #version {
+  margin-top: 10px;
+  padding-top:10px;
+  border-top:solid 1px #bdd4dc;
+}
+
+.sidebar ul.dropdown-menu li {
+  padding-right: 0;
+}
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
   .view {
@@ -6755,11 +6811,6 @@ svg.sidebar-icon {
     margin-left:10px !important;
 
 
-  }
-
-
-  .sidebar p {
-    margin-top:-10px;
   }
 
   .sidebar ul li {

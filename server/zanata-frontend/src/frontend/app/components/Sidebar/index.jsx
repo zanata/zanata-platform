@@ -62,25 +62,42 @@ class Sidebar extends Component {
                     Settings</a>
                   </li>
                 </ul>
-                <hr />
+                <DropdownButton title='Options'
+                  className='btn-sm btn-primary'>
+                  <MenuItem eventKey='1'>Copy translations</MenuItem>
+                  <MenuItem eventKey='2'>Merge translations</MenuItem>
+                  <MenuItem eventKey='3'>Copy to new version</MenuItem>
+                  <MenuItem eventKey='4'>Download config file</MenuItem>
+                  <MenuItem eventKey='5'>Export version to TMX</MenuItem>
+                </DropdownButton><br />
                 <div id='version'>
-                  <div>
-                    <span>VERSION</span>
+                  <div className='version-inline'>
+                    <span className='sidebar-version-title'>
+                      <svg className='s2'>
+                        <use xlinkHref='#Icon-version'></use>
+                      </svg>
+                    VERSION</span>
+                    <DropdownButton className='btn-sm' title='master'>
+                      <MenuItem eventKey='1'>release</MenuItem>
+                      <MenuItem eventKey='2'>test-1</MenuItem>
+                    </DropdownButton>
                   </div>
-                  <DropdownButton className='btn-sm' title='master'>
-                    <MenuItem eventKey='1'>release</MenuItem>
-                    <MenuItem eventKey='2'>test-1</MenuItem>
-                  </DropdownButton>
-                  <p><a href='vsettings.html'>Version settings</a></p>
-                  <p><span>10%</span> translated</p>
+                  <p className='version-settings'>
+                    <a href='vsettings.html'>Version settings</a>
+                  </p>
+                  <div className='version-percent'>
+                    <p><span className='percent'>10%</span> translated</p>
+                  </div>
                   <ProgressBar>
-                    <ProgressBar bsStyle='success' now={35} key={1} />
-                    <ProgressBar bsStyle='warning' now={20} key={2} />
-                    <ProgressBar bsStyle='danger' now={10} key={3} />
+                    <ProgressBar className='progress-bar-translated'
+                      now={10} key={1} />
+                    <ProgressBar className='progress-bar-fuzzy'
+                      now={7} key={2} />
+                    <ProgressBar className='progress-bar-rejected'
+                      now={3} key={3} />
+                    <ProgressBar className='progress-bar-approved'
+                      now={10} key={4} />
                   </ProgressBar>
-                  <div>
-                    <div></div>
-                  </div>
                   <ul id='expList'>
                     <li className='active'>
                       <a href='languages.html'>Languages</a>
@@ -92,14 +109,6 @@ class Sidebar extends Component {
                       <a href='groups.html'>Groups</a>
                     </li>
                   </ul>
-                  <DropdownButton title='Options'
-                    className='btn-sm btn-primary'>
-                    <MenuItem eventKey='1'>Copy translations</MenuItem>
-                    <MenuItem eventKey='2'>Merge translations</MenuItem>
-                    <MenuItem eventKey='3'>Copy to new version</MenuItem>
-                    <MenuItem eventKey='4'>Download config file</MenuItem>
-                    <MenuItem eventKey='5'>Export version to TMX</MenuItem>
-                  </DropdownButton>
                 </div>
               </div>
             </div>
