@@ -419,7 +419,7 @@ body.templatestyle {
   flex-direction: column;
   overflow: hidden;
   width:25%;
-  font-size:14px;
+  font-size:0.875rem;
   z-index:2;
 }
 
@@ -2408,6 +2408,15 @@ a.btn-primary {
   background-color: #333;
 }
 
+
+.btn-primary.dark {
+  background-color: @color-dark;
+  border-color: #ccc;
+  color: #fff;
+// inherits btn-default styling
+}
+
+
 span.greentext.badge {
   color: #fff;
   background-color: @color-success;
@@ -3022,7 +3031,7 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
 .progress {
   overflow: hidden;
   height: 1rem;
-  margin-bottom: @line-height-computed;
+  margin-bottom: @spacing-base;
   background-color: @progress-bg;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
 }
@@ -6102,7 +6111,7 @@ i.i--left.i--lock, i.i--left.i--trash {x
   letter-spacing: -0.05em;
 }
 
-.accordion-section-title svg.projicon {
+.accordion-section-title .projicon svg {
   fill: @color-dark;
   height: 30px;
   width: 30px;
@@ -6120,10 +6129,19 @@ i.i--left.i--lock, i.i--left.i--trash {x
   padding-left:0;
 }
 
-svg.sidebar-icon {
+span.s1.sidebar-icon svg {
   fill: @color-dark;
   vertical-align:middle;
   margin-right: @spacing-re;
+}
+
+li.active .sidebar-icon svg {
+  fill: #fff !important;
+  margin-left:15px;
+}
+
+.sidebar ul.menu-list li.active a {
+  margin-left:0;
 }
 
 .version-percent {
@@ -6131,7 +6149,7 @@ svg.sidebar-icon {
 }
 
 .version-percent span.percent {
-  font-size:1.8em;
+  font-size:1.6em;
 }
 
 .version-percent p {
@@ -6179,6 +6197,16 @@ svg.sidebar-icon {
 .sidebar ul.dropdown-menu li {
   padding-right: 0;
 }
+
+.sidebar ul li.active {
+  background-color:@color-light;
+}
+
+.sidebar ul li.active a {
+  color:#fff;
+}
+
+
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
   .view {
@@ -6708,6 +6736,10 @@ svg.sidebar-icon {
     font-size: 1.4rem;
   }
 
+  ul#expList {
+    margin-bottom:-5px;
+  }
+
   svg.hide-desktop {
     fill: rgb(84, 102, 122);
     height: 30px;
@@ -7009,6 +7041,15 @@ svg.sidebar-icon {
   .sidebar {
     float:left;
     height:100vh;
+  }
+
+  .sidebar ul li.active {
+    margin-left: -15px;
+    margin-right: -15px;
+  }
+
+  .sidebar ul li.active a {
+    margin-left:15px;
   }
 
   .modal-lg {

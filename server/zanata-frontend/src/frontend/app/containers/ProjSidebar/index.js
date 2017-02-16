@@ -12,7 +12,9 @@ class ProjSidebar extends Component {
       <div>
         <Sidebar />
         <div className='flextab'>
-          <p>Blah</p>
+          <p>This sidebar example has the active tag applied to both the People
+          and Languages pages to provide examples of how this design handles
+          sidebar links.</p>
         </div>
       </div>
     )

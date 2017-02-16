@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
 import { DropdownButton, MenuItem, ProgressBar } from 'react-bootstrap'
+import { Icon } from '../../components'
 /**
  * Root component for Sidebar
  */
@@ -31,39 +32,28 @@ class Sidebar extends Component {
             <div className='sidebar-content'>
               <a className='accordion-section-title'
                 onClick={::this.toggleDisplay}>
-                <svg className='projicon'>
-                  <use xlinkHref='#Icon-project'></use>
-                </svg>
+                <Icon name='project' className='projicon' />
                 <span>Zanata Server</span>
                 <svg className={toggleArrow}>
                   <use xlinkHref='#Icon-chevron-down'></use></svg>
               </a>
               <div id='accordion-1' className={displayAccordion}>
-                <ul>
-                  <li>
-                    <a href='people.html'>
-                      <svg className='s1 sidebar-icon'>
-                        <use xlinkHref='#Icon-users'></use>
-                      </svg>
-                    People</a>
+                <ul className='menu-list'>
+                  <li className='active'>
+                    <Icon name='users' className='s1 sidebar-icon' />
+                    <a href=''>People</a>
                   </li>
                   <li>
-                    <a href='about.html'>
-                      <svg className='s1 sidebar-icon'>
-                        <use xlinkHref='#Icon-info'></use>
-                      </svg>
-                    About</a>
+                    <Icon name='info' className='s1 sidebar-icon' />
+                    <a href=''>About</a>
                   </li>
                   <li>
-                    <a href='settings.html'>
-                      <svg className='s1 sidebar-icon'>
-                        <use xlinkHref='#Icon-settings'></use>
-                      </svg>
-                    Settings</a>
+                    <Icon name='settings' className='s1 sidebar-icon' />
+                    <a href=''>Settings</a>
                   </li>
                 </ul>
                 <DropdownButton title='Options' id='options-dropdown'
-                  className='btn-sm btn-primary'>
+                  className='btn-sm btn-default'>
                   <MenuItem eventKey='1'>Copy translations</MenuItem>
                   <MenuItem eventKey='2'>Merge translations</MenuItem>
                   <MenuItem eventKey='3'>Copy to new version</MenuItem>
@@ -73,18 +63,17 @@ class Sidebar extends Component {
                 <div id='version'>
                   <div className='version-inline'>
                     <span className='sidebar-version-title'>
-                      <svg className='s2'>
-                        <use xlinkHref='#Icon-version'></use>
-                      </svg>
+                      <Icon name='version' className='s2' />
                     VERSION</span>
-                    <DropdownButton id='version-dropdown' className='btn-sm'
+                    <DropdownButton id='version-dropdown'
+                      className='btn-sm btn-primary'
                       title='master'>
                       <MenuItem eventKey='1'>release</MenuItem>
                       <MenuItem eventKey='2'>test-1</MenuItem>
                     </DropdownButton>
                   </div>
                   <p className='version-settings'>
-                    <a href='vsettings.html'>Version settings</a>
+                    <a href=''>Version settings</a>
                   </p>
                   <div className='version-percent'>
                     <p><span className='percent'>10%</span> translated</p>
@@ -101,13 +90,13 @@ class Sidebar extends Component {
                   </ProgressBar>
                   <ul id='expList'>
                     <li className='active'>
-                      <a href='languages.html'>Languages</a>
+                      <a href=''>Languages</a>
                     </li>
                     <li>
-                      <a href='docs.html'>Documents</a>
+                      <a href=''>Documents</a>
                     </li>
                     <li>
-                      <a href='groups.html'>Groups</a>
+                      <a href=''>Groups</a>
                     </li>
                   </ul>
                 </div>
