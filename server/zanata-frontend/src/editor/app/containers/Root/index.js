@@ -11,6 +11,8 @@ import { saveSuggestionPanelHeight } from '../../actions/suggestions'
 import SplitPane from 'react-split-pane'
 import { Icons } from 'zanata-ui'
 import Sidebar from 'react-sidebar'
+import SidebarContent from './SidebarContent'
+
 /**
  * Top level of Zanata view hierarchy.
  */
@@ -83,7 +85,7 @@ class Root extends Component {
       ? this.props.percentHeight * window.innerHeight
       : 0
 
-    const sidebar = <b>Sidebar content</b>
+    const sidebar = <SidebarContent />
 
     const sidebarProps = {
       sidebar: sidebar,
