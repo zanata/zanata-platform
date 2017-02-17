@@ -22,21 +22,27 @@ package org.zanata.adapter;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Optional;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.zanata.adapter.properties.PropReader;
 import org.zanata.adapter.properties.PropWriter;
+import static org.zanata.adapter.AdapterUtils.readStream;
 import org.zanata.common.ContentState;
+import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
+import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.util.FileUtil;
+
+import javax.annotation.Nonnull;
+import javax.ejb.Local;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 
 /**
  * Properties file adapter to read and write.
@@ -69,15 +75,10 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
     }
 
     @Override
-    public Resource parseDocumentFile(URI fileUri, LocaleId sourceLocale,
-            Optional<String> params)
+    public Resource parseDocumentFile(@Nonnull URI fileUri,
+                                      @Nonnull LocaleId sourceLocale,
+                                      Optional<String> params)
             throws FileFormatAdapterException, IllegalArgumentException {
-        if (sourceLocale == null) {
-            throw new IllegalArgumentException("Source locale cannot be null");
-        }
-        if (fileUri == null) {
-            throw new IllegalArgumentException("Document URI cannot be null");
-        }
         PropReader propReader =
                 new PropReader(charset, sourceLocale, ContentState.Approved);
         Resource doc = new Resource();
@@ -136,27 +137,21 @@ public class GenericPropertiesAdapter implements FileFormatAdapter {
         }
     }
 
-    private BufferedInputStream readStream(URI fileUri)
-            throws FileFormatAdapterException, IllegalArgumentException {
-        URL url = null;
-        try {
-            url = fileUri.toURL();
-            return new BufferedInputStream(url.openStream());
-        } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException(
-                    "Could not open the URI. The URI must be absolute: "
-                            + ((url == null) ? "URL is null" : url.toString()),
-                    e);
-        } catch (MalformedURLException e) {
-            throw new FileFormatAdapterException(
-                    "Could not open the URI. The URI may be malformed: "
-                            + ((url == null) ? "URL is null" : url.toString()),
-                    e);
-        } catch (IOException e) {
-            throw new FileFormatAdapterException(
-                    "Could not open the URL. The URL is OK but the input stream could not be opened.\n"
-                            + e.getMessage(),
-                    e);
+    @Override
+    public String generateTranslationFilename(@Nonnull HDocument document,
+                                              @Nonnull String locale) {
+        String srcExt = FilenameUtils.getExtension(document.getName());
+        DocumentType documentType = document.getRawDocument().getType();
+        String transExt = documentType.getExtensions().get(srcExt);
+        LocaleId localeId = new LocaleId(locale);
+        if (StringUtils.isEmpty(transExt)) {
+            log.warn("Adding missing .properties extension to generated filename");
+            return document.getName() + "_" +
+                    localeId.toJavaName() + ".properties";
         }
+        return FilenameUtils.removeExtension(document.getName()) + "_"
+                + localeId.toJavaName()
+                + "." + transExt;
     }
+
 }
