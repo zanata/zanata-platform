@@ -165,18 +165,14 @@ public class TSAdapterTest extends AbstractAdapterTest {
 
     @Test
     public void testTranslatedTSDocument() throws Exception {
+        Resource resource = parseTestFile("test-ts-untranslated.ts");
         Map<String, TextFlowTarget> translations = new HashMap<>();
-
-        TextFlowTarget firstTranslation = new TextFlowTarget();
-        firstTranslation.setContents("Foun’dé metalkcta");
-        firstTranslation.setState(ContentState.Approved);
-        translations.put("cce8987584dbcd8f4157bad5278a4fb4", firstTranslation);
-
-        TextFlowTarget secondTranslation = new TextFlowTarget();
-        secondTranslation.setContents("Tba’dé metalkcta");
-        secondTranslation.setState(ContentState.Translated);
-        translations.put("d636f9b49152f22ed8c9452f96e131a2", secondTranslation);
-
+        addTranslation(translations, resource.getTextFlows().get(0).getId(),
+                "Foun’dé metalkcta",
+                ContentState.Approved);
+        addTranslation(translations, resource.getTextFlows().get(1).getId(),
+                "Tba’dé metalkcta",
+                ContentState.Translated);
         File originalFile = getTestFile("test-ts-untranslated.ts");
         LocaleId localeId = new LocaleId("en");
         OutputStream outputStream = new ByteArrayOutputStream();
