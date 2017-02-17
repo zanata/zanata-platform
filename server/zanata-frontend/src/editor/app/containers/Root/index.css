@@ -139,6 +139,10 @@ li.docName span.ellipsis {
   clear: both;
 }
 
+.sidebar-editor {
+  width:25%;
+}
+
 /**
  * Media Queries
  */

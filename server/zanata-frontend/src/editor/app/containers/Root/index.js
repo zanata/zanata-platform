@@ -21,7 +21,8 @@ class Root extends Component {
     // available in ES7
     this.resizeFinished = ::this.resizeFinished
     this.onWindowResize = ::this.onWindowResize
-    this.state = {docked: false, open: false}
+    this.state = {docked: false, open: false, pullRight: true,
+      shadow: true}
   }
 
   componentWillMount () {
@@ -88,16 +89,19 @@ class Root extends Component {
       sidebar: sidebar,
       docked: this.state.docked,
       open: this.state.open,
-      onSetOpen: this.onSetSidebarOpen
+      pullRight: this.state.pullRight,
+      onSetOpen: this.onSetSidebarOpen,
+      shadow: this.state.shadow,
+      sidebarClassName: 'sidebar-editor'
     }
 
     // TODO adjust scrollbar width on div like Angular template editor.html
     return (
       <ParamPropDispatcher {...this.props}>
-        <KeyShortcutDispatcher className="Editor is-suggestions-active">
-          <Icons />
-          <EditorHeader />
-          <Sidebar {...sidebarProps}>
+        <Sidebar {...sidebarProps}>
+          <KeyShortcutDispatcher className="Editor is-suggestions-active">
+            <Icons />
+            <EditorHeader />
             <SplitPane ref="suggestionResizer"
               split="horizontal"
               defaultSize={pixelHeight}
@@ -106,9 +110,9 @@ class Root extends Component {
               <MainContent />
               {this.props.showSuggestion && <SuggestionsPanel />}
             </SplitPane>
-          </Sidebar>
-          <KeyShortcutCheatSheet />
-        </KeyShortcutDispatcher>
+            <KeyShortcutCheatSheet />
+          </KeyShortcutDispatcher>
+        </Sidebar>
       </ParamPropDispatcher>
     )
   }
