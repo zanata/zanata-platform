@@ -45,7 +45,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
+public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest {
 
     @Before
     public void setup() {
@@ -54,7 +54,7 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
 
     @Test
     public void parseLatinOneProperties() throws Exception {
-        File latin1EncodedFile = createTempFile(StandardCharsets.ISO_8859_1);
+        File latin1EncodedFile = createTempPropertiesFile(StandardCharsets.ISO_8859_1);
         Resource resource =
                 adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
                         Optional.absent());
@@ -88,7 +88,7 @@ public class PropertiesLatinOneAdapterTest extends PropertiesAbstractTest {
         addTranslation(tResource, "line2", "ÀTbade metalkcta", ContentState.Translated);
         addTranslation(tResource, "line3", "ÀKbade metalkcta", ContentState.NeedReview);
 
-        File latin1EncodedFile = createTempFile(StandardCharsets.ISO_8859_1);
+        File latin1EncodedFile = createTempPropertiesFile(StandardCharsets.ISO_8859_1);
         Resource resource =
                 adapter.parseDocumentFile(latin1EncodedFile.toURI(), LocaleId.EN,
                         Optional.absent());
