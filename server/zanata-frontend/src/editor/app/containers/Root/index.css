@@ -149,72 +149,110 @@ li.docName span.ellipsis {
   width:50%;
 }
 
+.sidebar-wrapper {
+  padding:0.75em;
+}
 
-  .n2, .n2 svg {
-    width: 0.694rem;
-    height: 0.694rem;
-  }
+.sidebar-heading {
+  height:48px;
+  background-color:#bcd4dc;
+  color:#20718a;
+  padding:0.75em;
+  font-weight: 600;
+}
 
-  .n1, .n1 svg {
-    width: 0.833rem;
-    height: 0.833rem;
-  }
+.sidebar-heading svg {
+  vertical-align: sub;
+}
 
-  .s0, .s0 svg {
-    width: 1rem;
-    height: 1rem;
-  }
+ul.sidebar-details {
+  font-size:0.875em;
+  color:#20718a;
+}
 
-  .s1, .s1 svg {
-    width: 1.2rem;
-    height: 1.2rem;
-  }
+ul.sidebar-details span {
+  font-weight: 600;
+}
 
-  .s2, .s2 svg {
-    width: 1.44rem;
-    height: 1.44rem;
-    vertical-align: middle;
-  }
+.trans-link.form-group {
+   padding-top:0.75em;
+}
 
-  .s3, .s3 svg {
-    width: 1.728rem;
-    height: 1.728rem;
-  }
+.trans-link.form-group .form-control {
+  padding-top:0.75em;
+  width:90%;
+}
 
-  .s4, .s4 svg {
-    width: 2.074rem;
-    height: 2.074rem;
-  }
+.input-group-addon {
+  vertical-align: text-bottom;
+  color:#20718a;
+}
 
-  .s5, .s5 svg {
-    width: 2.488rem;
-    height: 2.488rem;
-  }
+.n2, .n2 svg {
+  width: 0.694rem;
+  height: 0.694rem;
+}
 
-  .s6, .s6 svg {
-    width: 2.986rem;
-    height: 2.986rem;
-  }
+.n1, .n1 svg {
+  width: 0.833rem;
+  height: 0.833rem;
+}
 
-  .s7, .s7 svg {
-    width: 3.583rem;
-    height: 3.583rem;
-  }
+.s0, .s0 svg {
+  width: 1rem;
+  height: 1rem;
+}
 
-  .s8, .s8 svg {
-    width: 4.3rem;
-    height: 4.3rem;
-  }
+.s1, .s1 svg {
+  width: 1.2rem;
+  height: 1.2rem;
+}
 
-  .s9, .s9 svg {
-    width: 5.16rem;
-    height: 5.16rem;
-  }
+.s2, .s2 svg {
+  width: 1.44rem;
+  height: 1.44rem;
+  vertical-align: middle;
+}
 
-  .s10, .s10 svg {
-    width: 6.192rem;
-    height: 6.192rem;
-  }
+.s3, .s3 svg {
+  width: 1.728rem;
+  height: 1.728rem;
+}
+
+.s4, .s4 svg {
+  width: 2.074rem;
+  height: 2.074rem;
+}
+
+.s5, .s5 svg {
+  width: 2.488rem;
+  height: 2.488rem;
+}
+
+.s6, .s6 svg {
+  width: 2.986rem;
+  height: 2.986rem;
+}
+
+.s7, .s7 svg {
+  width: 3.583rem;
+  height: 3.583rem;
+}
+
+.s8, .s8 svg {
+  width: 4.3rem;
+  height: 4.3rem;
+}
+
+.s9, .s9 svg {
+  width: 5.16rem;
+  height: 5.16rem;
+}
+
+.s10, .s10 svg {
+  width: 6.192rem;
+  height: 6.192rem;
+}
 
 .nav {
   padding-left: 0;
@@ -231,6 +269,7 @@ li.docName span.ellipsis {
   position: relative;
   display: block;
   padding: 10px 15px;
+  color:#20718a;
 }
 
 .nav > li > a:hover,
@@ -267,10 +306,10 @@ li.docName span.ellipsis {
 }
 
 .nav-tabs > li > a {
-  margin-right: 2px;
   line-height: 1.42857143;
   border: 1px solid transparent;
   border-radius: 4px 4px 0 0;
+  background-color:#bcd4dc;
 }
 
 .nav-tabs > li > a:hover {
@@ -294,6 +333,11 @@ li.docName span.ellipsis {
 .tab-content > .active {
   display: block;
   background: #fff;
+  height:100vh;
+}
+
+.tab-pane #tab1, .tab-pane #tab2 {
+  margin-top:2.7em;
 }
 
 .nav-tabs .dropdown-menu {
