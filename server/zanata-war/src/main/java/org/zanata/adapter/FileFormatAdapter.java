@@ -32,6 +32,7 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
@@ -88,7 +89,7 @@ public interface FileFormatAdapter {
      *             if translatedDocumentContent or localeId is null
      */
     TranslationsResource parseTranslationFile(@Nonnull URI fileUri,
-            @Nonnull LocaleId sourceLocaleId, @Nonnull String localeId,
+            @Nonnull LocaleId sourceLocaleId, @Nonnull @NotEmpty String localeId,
             Optional<String> params)
             throws FileFormatAdapterException, IllegalArgumentException;
 
