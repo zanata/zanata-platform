@@ -10,7 +10,8 @@ zanatadb:
   volumes:
     - $HOME/docker-volumes/zanata-mariadb:/var/lib/mysql
 zanata:
-  build: .
+  # build: .
+  image: zanata-dev
   links:
     - zanatadb
   environment:
