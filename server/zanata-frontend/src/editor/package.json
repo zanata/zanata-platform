@@ -91,6 +91,7 @@
   "dependencies": {
     "combokeys": "2.4.6",
     "normalize.css": "3.0.1",
+    "react-sidebar": "^2.3.0",
     "suitcss-components-button": "^4.0.0",
     "suitcss-components-button-group": "2.2.0",
     "suitcss-components-grid": "2.0.1",

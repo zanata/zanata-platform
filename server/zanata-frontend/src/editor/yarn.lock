@@ -4646,6 +4646,10 @@ react-select@^1.0.0-beta10:
     classnames "^2.2.4"
     react-input-autosize "^1.1.0"
 
+react-sidebar@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/react-sidebar/-/react-sidebar-2.3.0.tgz#8a86df1f7cb7a1bf98b6dd75c47c6689a1877cbe"
+
 react-simple-di@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/react-simple-di/-/react-simple-di-1.2.0.tgz#dde0e5bf689f391ef2ab02c9043b213fe239c6d0"
