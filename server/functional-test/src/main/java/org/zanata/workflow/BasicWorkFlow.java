@@ -31,6 +31,9 @@ import com.google.common.base.Preconditions;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class BasicWorkFlow extends AbstractWebWorkFlow {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(BasicWorkFlow.class);
+
     public static final String EDITOR_TEMPLATE = "webtrans/translate?project=%s&iteration=%s&localeId=%s&locale=en#view:doc;doc:%s";
     public static final String PROJECT_VERSION_TEMPLATE = "iteration/view/%s/%s";
 
@@ -42,6 +45,7 @@ public class BasicWorkFlow extends AbstractWebWorkFlow {
     }
 
     public <P extends AbstractPage> P goToUrl(String url, Class<P> pageClass) {
+        log.info("Navigating directly to page {}", url);
         return WebDriverFactory.INSTANCE.ignoringDswid(() -> {
             driver.navigate().to(url);
             return PageFactory.initElements(driver, pageClass);

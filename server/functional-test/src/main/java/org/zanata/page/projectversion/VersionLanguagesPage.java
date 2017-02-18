@@ -122,4 +122,11 @@ public class VersionLanguagesPage extends VersionBasePage {
                     return figure;
                 }, "Find the stats for locale " + localeId);
     }
+
+    public String getVersionID() {
+        log.info("Query version ID");
+        return getDriver()
+                .findElement(By.id("version-info"))
+                .findElement(By.tagName("h1")).getText();
+    }
 }
