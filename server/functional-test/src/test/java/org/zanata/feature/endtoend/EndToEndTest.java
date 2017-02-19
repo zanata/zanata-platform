@@ -78,7 +78,6 @@ public class EndToEndTest extends ZanataTestCase {
     private final String PROJECTDESCRIPTION = "The stones are in me";
 
     private final String ADDEDLOCALE = "en-US";
-    private final String BADDOCUMENT = "/tmp/mydocument.pdf";
 
     private String dswid;
     private File testFile;
@@ -159,7 +158,10 @@ public class EndToEndTest extends ZanataTestCase {
         EditorPage editorPage = goToEditor(versionDocumentsTab);
 
         // Successfully translates their document
-        translateDocument(editorPage);
+        editorPage = translateDocument(editorPage);
+
+        // Downloads the translated po
+        downloadTranslatedDocuments(editorPage);
     }
 
     private Error404Page goToBadLink() {
@@ -359,6 +361,17 @@ public class EndToEndTest extends ZanataTestCase {
         assertThat(editorPage.getBasicTranslationTargetAtRowIndex(0))
                 .contains("Lyn Wun");
         return editorPage;
+    }
+
+    private VersionLanguagesPage downloadTranslatedDocuments(EditorPage editorPage) {
+        // Make sure we don't verify the source
+        assertThat(testFile.delete());
+        VersionLanguagesPage versionLanguagesPage = editorPage
+                .clickVersionBreadcrumb("master")
+                .clickLocale("en-US")
+                .clickDownloadTranslatedFile(testFile.getName(), "txt");
+        assertThat(new File("/tmp/" + testFile.getName()).exists());
+        return versionLanguagesPage;
     }
 
     private String getDswid(AbstractPage page) {

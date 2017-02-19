@@ -107,6 +107,7 @@ public class ProjectPeoplePage extends ProjectBasePage {
             }
             return found;
         });
+        slightPause();
         return new ProjectPeoplePage(getDriver());
     }
 
@@ -115,6 +116,7 @@ public class ProjectPeoplePage extends ProjectBasePage {
         clickElement(existingElement(
                 By.id("peopleTab-permissions:modalManagePermissions-submit-buttons"))
                 .findElement(By.tagName("input")));
+        slightPause();
         return new ProjectPeoplePage(getDriver());
     }
 }

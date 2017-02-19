@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import com.google.common.reflect.AbstractInvocationHandler;
@@ -350,7 +351,14 @@ public enum WebDriverFactory {
                 PropertiesHolder.properties.getProperty("webdriver.chrome.bin");
         log().info("Setting chrome.binary: {}", chromeBin);
         capabilities.setCapability("chrome.binary", chromeBin);
+
+        HashMap<String, Object> prefs = new HashMap<>();
+        prefs.put("profile.default_content_settings.popups", 0);
+        prefs.put("download.default_directory", "/tmp/");
+
         ChromeOptions options = new ChromeOptions();
+        options.setExperimentalOption("prefs", prefs);
+
         URL url = Thread.currentThread().getContextClassLoader()
                 .getResource("zanata-testing-extension/chrome/manifest.json");
         assert url != null : "can\'t find extension (check testResource config in pom.xml)";

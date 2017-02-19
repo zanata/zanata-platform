@@ -102,6 +102,45 @@ public class VersionLanguagesPage extends VersionBasePage {
         return gotoLanguageTab().clickLocale(locale).clickDocument(docName);
     }
 
+    public VersionLanguagesPage clickDownloadTranslatedPo(String documentName) {
+        WebElement document = waitForAMoment()
+                .until((Function<WebDriver, WebElement>) webDriver -> {
+                    for (WebElement doc : getLanguageTabDocumentList()) {
+                        if (existingElement(doc, documentListItemTitle)
+                                .getText().equals(documentName)) {
+                            return doc;
+                        }
+                    }
+                    return null;
+                });
+        document.findElement(By.className("dropdown__toggle")).click();
+        slightPause();
+        clickLinkAfterAnimation(document
+                .findElement(By.linkText("Download translated [offline .po]")));
+        slightPause();
+        return new VersionLanguagesPage(getDriver());
+    }
+
+    public VersionLanguagesPage clickDownloadTranslatedFile(final String documentName,
+                                                            final String format) {
+        WebElement document = waitForAMoment()
+                .until((Function<WebDriver, WebElement>) webDriver -> {
+                    for (WebElement doc : getLanguageTabDocumentList()) {
+                        if (existingElement(doc, documentListItemTitle)
+                                .getText().equals(documentName)) {
+                            return doc;
+                        }
+                    }
+                    return null;
+                });
+        document.findElement(By.className("dropdown__toggle")).click();
+        slightPause();
+        clickLinkAfterAnimation(document
+                .findElement(By.linkText("Download translated [." + format + "]")));
+        slightPause();
+        return new VersionLanguagesPage(getDriver());
+    }
+
     public String getStatisticsForLocale(final String localeId) {
         log.info("Query stats for {}", localeId);
         gotoLanguageTab();
