@@ -95,6 +95,31 @@ This setting will cause Zanata to output CORS headers for REST requests, includi
 `Access-Control-Allow-Origin` (if Origin is in the whitelist above),
 `Access-Control-Allow-Credentials: true` and
 `Access-Control-Allow-Methods: PUT,POST,DELETE,GET,OPTIONS`.
+
+
+## Redirecting HTTP to HTTPS
+
+If you have set up a TLS/SSL termination proxy, such as nginx or a load balancer, in front of Zanata's
+application server (out of scope for this document), you can configure Zanata to redirect any HTTP
+requests to HTTPS. Any HTTP requests will be redirected to the HTTPS homepage, eg `https://zanata.example.com/`.
+
+### Requirements
+The proxy must set the HTTP header `X-Forwarded-Proto` to `http` when forwarding HTTP requests.
+
+### Enabling
+Just set the system property `zanata.redirectHttpToHttps` to `true` in `standalone.xml`/`standalone-full.xml`.
+
+```xml
+<system-properties>
+  ...
+  <property name="zanata.redirectHttpToHttps" value="true"/>
+  ...
+</system-properties>
+```
+
+
+## Email configuration
+
 ### Email configuration (Zanata 3.6 or earlier)
 
 In Zanata 3.6 or earlier, email is configured by admin in the server settings screen.  By default, an SMTP server on localhost port 25 is expected.
