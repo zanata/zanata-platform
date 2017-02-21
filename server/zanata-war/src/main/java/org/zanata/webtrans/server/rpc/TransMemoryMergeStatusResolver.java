@@ -125,29 +125,25 @@ public class TransMemoryMergeStatusResolver {
 
     private void compareTextFlowResId(TransMemoryMerge action,
             HTextFlow tfToBeFilled, TransMemoryDetails tmDetail) {
-        if (action.getDifferentContextRule() != MergeRule.IGNORE_CHECK
-                && notEqual(tfToBeFilled.getResId(), tmDetail.getResId())) {
+        if (notEqual(tfToBeFilled.getResId(), tmDetail.getResId())) {
             setFlagsBasedOnOption(action.getDifferentContextRule());
         }
     }
 
     private void compareTextFlowMsgContext(TransMemoryMerge action,
             HTextFlow tfToBeFilled, TransMemoryDetails tmDetail) {
-        if (action.getDifferentContextRule() != MergeRule.IGNORE_CHECK) {
-            String msgCtx = null;
-            if (tfToBeFilled.getPotEntryData() != null) {
-                msgCtx = tfToBeFilled.getPotEntryData().getContext();
-            }
-            if (notEqual(msgCtx, tmDetail.getMsgContext())) {
-                setFlagsBasedOnOption(action.getDifferentContextRule());
-            }
+        String msgCtx = null;
+        if (tfToBeFilled.getPotEntryData() != null) {
+            msgCtx = tfToBeFilled.getPotEntryData().getContext();
+        }
+        if (notEqual(msgCtx, tmDetail.getMsgContext())) {
+            setFlagsBasedOnOption(action.getDifferentContextRule());
         }
     }
 
     private void compareDocId(TransMemoryMerge action, HTextFlow tfToBeFilled,
             TransMemoryDetails tmDetail) {
-        if (action.getDifferentDocumentRule() != MergeRule.IGNORE_CHECK
-                && notEqual(tfToBeFilled.getDocument().getDocId(),
+        if (notEqual(tfToBeFilled.getDocument().getDocId(),
                         tmDetail.getDocId())) {
             setFlagsBasedOnOption(action.getDifferentDocumentRule());
         }
@@ -155,8 +151,7 @@ public class TransMemoryMergeStatusResolver {
 
     private void compareProjectName(TransMemoryMerge action,
             HTextFlow tfToBeFilled, TransMemoryDetails tmDetail) {
-        if (action.getDifferentProjectRule() != MergeRule.IGNORE_CHECK
-                && notEqual(tfToBeFilled.getDocument().getProjectIteration()
+        if (notEqual(tfToBeFilled.getDocument().getProjectIteration()
                         .getProject().getName(), tmDetail.getProjectName())) {
             setFlagsBasedOnOption(action.getDifferentProjectRule());
         }
@@ -165,7 +160,7 @@ public class TransMemoryMergeStatusResolver {
     private void setFlagsBasedOnOption(MergeRule mergeOption) {
         if (mergeOption == MergeRule.REJECT) {
             needSkip = true;
-        } else if (mergeOption == MergeRule.FUZZY) {
+        } else {
             needReview = true;
         }
     }

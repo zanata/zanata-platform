@@ -132,7 +132,6 @@ public class TransMemoryMergePresenterTest {
 
         // When:
         MergeOptions opts = MergeOptions.allFuzzy();
-        opts.setDifferentProject(MergeRule.IGNORE_CHECK);
         opts.setDifferentDocument(MergeRule.REJECT);
         presenter.proceedToMergeTM(80, opts);
 
@@ -166,7 +165,6 @@ public class TransMemoryMergePresenterTest {
 
         // When:
         MergeOptions opts = MergeOptions.allFuzzy();
-        opts.setDifferentProject(MergeRule.IGNORE_CHECK);
         opts.setDifferentDocument(MergeRule.REJECT);
         presenter.proceedToMergeTM(80, opts);
 
@@ -183,7 +181,7 @@ public class TransMemoryMergePresenterTest {
         assertThat(getIds(updateRequests),
                 Matchers.contains(1L, 3L, 4L, 5L, 6L));
         assertThat(action.getDifferentProjectRule(),
-                Matchers.equalTo(MergeRule.IGNORE_CHECK));
+                Matchers.equalTo(MergeRule.FUZZY));
         assertThat(action.getDifferentDocumentRule(),
                 Matchers.equalTo(MergeRule.REJECT));
         assertThat(action.getDifferentContextRule(),
@@ -203,7 +201,6 @@ public class TransMemoryMergePresenterTest {
         // When:
         MergeOptions opts = MergeOptions.allFuzzy();
         opts.setDifferentProject(MergeRule.REJECT);
-        opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
         presenter.proceedToMergeTM(100, opts);
 
         verify(dispatcher).execute(transMemoryMergeCaptor.capture(),
@@ -242,7 +239,6 @@ public class TransMemoryMergePresenterTest {
         // When:
         MergeOptions opts = MergeOptions.allFuzzy();
         opts.setDifferentProject(MergeRule.REJECT);
-        opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
         presenter.proceedToMergeTM(100, opts);
 
         verify(dispatcher).execute(transMemoryMergeCaptor.capture(),
@@ -289,7 +285,6 @@ public class TransMemoryMergePresenterTest {
         // When:
         MergeOptions opts = MergeOptions.allFuzzy();
         opts.setDifferentProject(MergeRule.REJECT);
-        opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
         presenter.proceedToMergeTM(100, opts);
 
         verify(dispatcher).execute(transMemoryMergeCaptor.capture(),

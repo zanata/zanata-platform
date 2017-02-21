@@ -21,7 +21,9 @@
 
 package org.zanata.webtrans.shared.rpc;
 
-public enum MergeRule {
+import com.google.gwt.user.client.rpc.IsSerializable;
+
+public enum MergeRule implements IsSerializable {
     /**
      * Reject the match.
      */
@@ -29,10 +31,5 @@ public enum MergeRule {
     /**
      * Use the match, but mark as fuzzy.
      */
-    FUZZY,
-    /**
-     * Continue to the next rule, if any. If there are no more rules, use the
-     * match.
-     */
-    IGNORE_CHECK
+    FUZZY
 }
