@@ -39,6 +39,8 @@ import liquibase.logging.Logger;
 import liquibase.resource.ResourceAccessor;
 
 /**
+ * Rebuilds the plain text segments of all TransMemoryUnitVariant
+ * to apply an encoding fix - https://zanata.atlassian.net/browse/ZNTA-1740
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class RebuildTMXPlainText implements CustomTaskChange {
