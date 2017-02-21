@@ -86,8 +86,8 @@ public class TransMemoryUnitVariant extends ModelEntityBase
     }
 
     private void updatePlainTextSegment() {
-        updatePlainTextSegmentHash();
         this.plainTextSegment = TMXUtil.removeFormattingMarkup(taggedSegment);
+        updatePlainTextSegmentHash();
     }
 
     private void updatePlainTextSegmentHash() {
