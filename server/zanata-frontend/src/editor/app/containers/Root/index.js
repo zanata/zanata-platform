@@ -100,8 +100,8 @@ class Root extends Component {
     // TODO adjust scrollbar width on div like Angular template editor.html
     return (
       <ParamPropDispatcher {...this.props}>
-        <Sidebar {...sidebarProps}>
-          <KeyShortcutDispatcher className="Editor is-suggestions-active">
+        <KeyShortcutDispatcher className="Editor is-suggestions-active">
+          <Sidebar {...sidebarProps}>
             <Icons />
             <EditorHeader />
             <SplitPane ref="suggestionResizer"
@@ -113,8 +113,8 @@ class Root extends Component {
               {this.props.showSuggestion && <SuggestionsPanel />}
             </SplitPane>
             <KeyShortcutCheatSheet />
-          </KeyShortcutDispatcher>
-        </Sidebar>
+          </Sidebar>
+        </KeyShortcutDispatcher>
       </ParamPropDispatcher>
     )
   }
