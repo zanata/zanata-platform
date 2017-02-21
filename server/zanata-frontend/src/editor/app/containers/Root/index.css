@@ -139,40 +139,9 @@ li.docName span.ellipsis {
   clear: both;
 }
 
-/* Editor Sidebar Styling */
-
-.sidebar-editor {
-  width:25%;
-}
-
-.sidebar-editor .nav-tabs li {
-  width:50%;
-}
-
-.sidebar-wrapper {
-  padding:0.75em;
-}
-
-.sidebar-heading {
-  height:48px;
-  background-color:#bcd4dc;
-  color:#20718a;
-  padding:0.75em;
-  font-weight: 600;
-}
-
-.sidebar-heading svg {
-  vertical-align: sub;
-}
-
-ul.sidebar-details {
-  font-size:0.875em;
-  color:#20718a;
-}
-
-ul.sidebar-details span {
-  font-weight: 600;
-}
+/* FIXME this was under a heading for sidebar stuff, but looks like it may
+   be unrelated stuff that just happens to be after that section with no
+   divider */
 
 .trans-link.form-group {
    padding-top:0.75em;

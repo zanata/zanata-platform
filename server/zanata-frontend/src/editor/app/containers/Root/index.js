@@ -10,8 +10,7 @@ import { fetchUiLocales } from '../../actions/headerActions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions'
 import SplitPane from 'react-split-pane'
 import { Icons } from 'zanata-ui'
-import Sidebar from 'react-sidebar'
-import SidebarContent from './SidebarContent'
+import Sidebar from '../Sidebar'
 
 /**
  * Top level of Zanata view hierarchy.
@@ -23,14 +22,6 @@ class Root extends Component {
     // available in ES7
     this.resizeFinished = ::this.resizeFinished
     this.onWindowResize = ::this.onWindowResize
-    this.state = {docked: false, open: false, pullRight: true,
-      shadow: true}
-  }
-
-  componentWillMount () {
-    const mql = window.matchMedia('(min-width: 800px)')
-    mql.addListener(this.mediaQueryChanged.bind(this))
-    this.setState({mql: mql, docked: mql.matches})
   }
 
   componentDidMount () {
@@ -40,15 +31,6 @@ class Root extends Component {
 
   componentWillUnmount () {
     window.removeEventListener('resize', this.onWindowResize)
-    this.state.mql.removeListener(this.mediaQueryChanged)
-  }
-
-  onSetSidebarOpen (open) {
-    this.setState({open: open})
-  }
-
-  mediaQueryChanged () {
-    this.setState({docked: this.state.mql.matches})
   }
 
   // TODO could debounce this
@@ -85,23 +67,11 @@ class Root extends Component {
       ? this.props.percentHeight * window.innerHeight
       : 0
 
-    const sidebar = <SidebarContent />
-
-    const sidebarProps = {
-      sidebar: sidebar,
-      docked: this.state.docked,
-      open: this.state.open,
-      pullRight: this.state.pullRight,
-      onSetOpen: this.onSetSidebarOpen,
-      shadow: this.state.shadow,
-      sidebarClassName: 'sidebar-editor'
-    }
-
     // TODO adjust scrollbar width on div like Angular template editor.html
     return (
       <ParamPropDispatcher {...this.props}>
         <KeyShortcutDispatcher className="Editor is-suggestions-active">
-          <Sidebar {...sidebarProps}>
+          <Sidebar>
             <Icons />
             <EditorHeader />
             <SplitPane ref="suggestionResizer"

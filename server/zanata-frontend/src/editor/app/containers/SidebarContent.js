@@ -1,10 +1,9 @@
 import React from 'react'
 import { Tabs, Tab, FormGroup, InputGroup,
   FormControl } from 'react-bootstrap'
-import Icon from '../../../../frontend/app/components/Icon'
+import Icon from '../../../frontend/app/components/Icon'
 
 const activityTitle = 'Activity'
-
 const glossaryTitle = 'Glossary'
 
 // https://dmfrancisco.github.io/react-icons/
@@ -50,5 +49,7 @@ const SidebarContent = React.createClass({
     )
   }
 })
+
+// TODO connect this component to get props from the app
 
 export default SidebarContent
