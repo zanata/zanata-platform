@@ -1,7 +1,7 @@
 import React from 'react'
 import { Tabs, Tab, FormGroup, InputGroup,
   FormControl } from 'react-bootstrap'
-import Icon from '../../components/Icon'
+import Icon from '../../../../frontend/app/components/Icon'
 
 const activityTitle = 'Activity'
 
