@@ -37,8 +37,8 @@ import org.hibernate.search.annotations.ClassBridge;
 import org.zanata.hibernate.search.TextContainerAnalyzerDiscriminator;
 import org.zanata.hibernate.search.TransUnitVariantClassBridge;
 import org.zanata.model.ModelEntityBase;
+import org.zanata.tmx.TMXUtil;
 import org.zanata.util.HashUtil;
-import org.zanata.util.OkapiUtil;
 
 /**
  * A translation unit variant. This is the equivalent of a translated string.
@@ -86,8 +86,8 @@ public class TransMemoryUnitVariant extends ModelEntityBase
     }
 
     private void updatePlainTextSegment() {
-        this.plainTextSegment = OkapiUtil.removeFormattingMarkup(taggedSegment);
         updatePlainTextSegmentHash();
+        this.plainTextSegment = TMXUtil.removeFormattingMarkup(taggedSegment);
     }
 
     private void updatePlainTextSegmentHash() {
