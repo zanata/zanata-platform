@@ -33,7 +33,7 @@ const SidebarContent = React.createClass({
             </InputGroup>
           </FormGroup>
         </div>
-        <Tabs defaultActiveKey={1}>
+        <Tabs id="sidebartabs" defaultActiveKey={1}>
           <Tab eventKey={1} title={activityTitle}>
             <div className="sidebar-wrapper" id="tab1">
               Tab 1 content

@@ -14,7 +14,7 @@ const defaultState = {
  * displays content from SidebarContent.
  */
 class Sidebar extends Component {
-  constructor() {
+  constructor () {
     super()
     // have to bind this for es6 classes until property initializers are
     // available in ES7
@@ -45,13 +45,13 @@ class Sidebar extends Component {
 
     return (
       <ReactSidebar
-          sidebar={content}
-          docked={this.state.docked}
-          open={this.state.open}
-          pullRight={this.state.pullRight}
-          onSetOpen={this.setSidebarOpen}
-          shadow={this.state.shadow}
-          sidebarClassName="sidebar-editor">
+        sidebar={content}
+        docked={this.state.docked}
+        open={this.state.open}
+        pullRight={this.state.pullRight}
+        onSetOpen={this.setSidebarOpen}
+        shadow={this.state.shadow}
+        sidebarClassName="sidebar-editor">
         {this.props.children}
       </ReactSidebar>
     )
