@@ -46,6 +46,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.resources.WebTransMessages;
 import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
+import org.zanata.webtrans.client.service.GetTransUnitActionContext;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
@@ -54,6 +55,8 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.rest.TransMemoryMergeResource;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
@@ -91,12 +94,16 @@ public class TransMemoryMergePresenterTest {
     private NavigationService navigationService;
     @Mock
     private WebTransMessages webTranMessages;
+    @Mock
+    private TransMemoryMergeResource mergeResource;
+    private UserWorkspaceContext workspaceContext;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         presenter =
                 new TransMemoryMergePresenter(display, eventBus, dispatcher,
+                        mergeResource, workspaceContext,
                         navigationService, messages, undoLinkProvider);
 
         verify(display).setListener(presenter);

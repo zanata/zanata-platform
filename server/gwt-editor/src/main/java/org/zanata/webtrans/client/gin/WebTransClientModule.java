@@ -22,11 +22,8 @@ package org.zanata.webtrans.client.gin;
 
 import java.util.List;
 
-import net.customware.gwt.presenter.client.DefaultEventBus;
-import net.customware.gwt.presenter.client.Display;
-import net.customware.gwt.presenter.client.EventBus;
-import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
-
+import org.fusesource.restygwt.client.Resource;
+import org.fusesource.restygwt.client.RestServiceProxy;
 import org.zanata.webtrans.client.Application;
 import org.zanata.webtrans.client.EventProcessor;
 import org.zanata.webtrans.client.events.NativeEvent;
@@ -42,6 +39,7 @@ import org.zanata.webtrans.client.keys.TimerFactory;
 import org.zanata.webtrans.client.keys.TimerFactoryImpl;
 import org.zanata.webtrans.client.presenter.AppPresenter;
 import org.zanata.webtrans.client.presenter.AttentionKeyShortcutPresenter;
+import org.zanata.webtrans.client.presenter.ChangeReferenceLangPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListOptionsPresenter;
 import org.zanata.webtrans.client.presenter.DocumentListPresenter;
 import org.zanata.webtrans.client.presenter.EditorOptionsPresenter;
@@ -75,6 +73,8 @@ import org.zanata.webtrans.client.view.AppDisplay;
 import org.zanata.webtrans.client.view.AppView;
 import org.zanata.webtrans.client.view.AttentionKeyShortcutDisplay;
 import org.zanata.webtrans.client.view.AttentionKeyShortcutView;
+import org.zanata.webtrans.client.view.ChangeReferenceLangDisplay;
+import org.zanata.webtrans.client.view.ChangeReferenceLangView;
 import org.zanata.webtrans.client.view.DocumentListDisplay;
 import org.zanata.webtrans.client.view.DocumentListOptionsDisplay;
 import org.zanata.webtrans.client.view.DocumentListOptionsView;
@@ -117,9 +117,11 @@ import org.zanata.webtrans.client.view.WorkspaceUsersDisplay;
 import org.zanata.webtrans.client.view.WorkspaceUsersView;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.rest.TransMemoryMergeResource;
 
 import com.google.common.collect.ImmutableList;
 import com.google.gwt.canvas.dom.client.CssColor;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
@@ -128,9 +130,10 @@ import com.google.inject.name.Named;
 
 import de.novanic.eventservice.client.event.RemoteEventService;
 import de.novanic.eventservice.client.event.RemoteEventServiceFactory;
-import org.zanata.webtrans.client.presenter.ChangeReferenceLangPresenter;
-import org.zanata.webtrans.client.view.ChangeReferenceLangDisplay;
-import org.zanata.webtrans.client.view.ChangeReferenceLangView;
+import net.customware.gwt.presenter.client.DefaultEventBus;
+import net.customware.gwt.presenter.client.Display;
+import net.customware.gwt.presenter.client.EventBus;
+import net.customware.gwt.presenter.client.gin.AbstractPresenterModule;
 
 public class WebTransClientModule extends AbstractPresenterModule {
 
@@ -230,6 +233,16 @@ public class WebTransClientModule extends AbstractPresenterModule {
     @Provides
     public Scheduler provideScheduler() {
         return Scheduler.get();
+    }
+
+    @Provides
+    public TransMemoryMergeResource provideTransMemoryMergeResource() {
+        TransMemoryMergeResource resource =
+                GWT.create(TransMemoryMergeResource.class);
+        Resource res = new Resource(Application.getModuleParentBaseUrl()
+                + "rest" + TransMemoryMergeResource.TM_PATH);
+        ((RestServiceProxy) resource).setResource(res);
+        return resource;
     }
 
     static class UserWorkspaceContextProvider implements
