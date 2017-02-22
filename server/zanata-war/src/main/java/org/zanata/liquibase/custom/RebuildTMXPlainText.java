@@ -87,7 +87,7 @@ public class RebuildTMXPlainText implements CustomTaskChange {
                         rsUpdatable.updateRow();
                         ++modifiedCount;
                     }
-                    if (++rowsVisited % 1000 == 0) {
+                    if (++rowsVisited % 10_000 == 0) {
                         log.info("RebuildTMXPlainText: visited "
                                 + rowsVisited + "/" + segmentCount);
                     }
