@@ -7,6 +7,11 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.TextFlow;
 
 /**
+ * TextFlow with added fields needed by the editor.
+ *
+ * This class holds extra TextFlow metadata for serialization so that it is
+ * available in the editor without extra network traffic.
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @JsonPropertyOrder({ "id", "lang", "content", "contents", "plural",
