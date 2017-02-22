@@ -27,14 +27,26 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
+import org.zanata.model.HTextFlow;
 import org.zanata.rest.editor.dto.suggestion.Suggestion;
 import org.zanata.rest.editor.service.resource.SuggestionsResource;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.SecurityService;
+import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationMemoryService;
+import org.zanata.webtrans.shared.NoSuchWorkspaceException;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
+import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.TransMemoryMergeStarted;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import javax.annotation.Nullable;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
@@ -60,6 +72,18 @@ public class SuggestionsService implements SuggestionsResource {
 
     @Inject
     private LocaleService localeService;
+
+    @Inject
+    private ZanataIdentity identity;
+
+    @Inject
+    private TransMemoryMergeService transMemoryMergeServiceImpl;
+
+    @Inject
+    private TextFlowDAO textFlowDAO;
+
+    @Inject
+    private SecurityService securityServiceImpl;
 
     @Override
     public Response query(List<String> query, String sourceLocaleString,
@@ -140,5 +164,34 @@ public class SuggestionsService implements SuggestionsResource {
         String error = String.format("Unrecognized search type: \"%s\". Expected one of: %s",
                 searchTypeString, SEARCH_TYPES);
         return Response.status(BAD_REQUEST).entity(error).build();
+    }
+
+    @Override
+    public TransMemoryMergeStarted merge(ProjectIterationId projectIterationId, DocumentId docId, String localeId) {
+        identity.checkLoggedIn();
+
+        try {
+            securityServiceImpl.checkWorkspaceAction(new WorkspaceId(projectIterationId, new LocaleId(localeId)), SecurityService.TranslationAction.MODIFY);
+        } catch (NoSuchWorkspaceException e) {
+            throw new NotFoundException(e);
+        }
+
+        HLocale hLocale =
+                localeService.getByLocaleId(new LocaleId(localeId));
+
+        // get all untranslated text flows
+        List<HTextFlow> textFlows = textFlowDAO
+                .getAllTextFlowByDocumentIdWithConstraints(docId, hLocale,
+                        FilterConstraints.builder().keepAll().excludeApproved()
+                                .excludeFuzzy().excludeTranslated()
+                                .excludeRejected().build());
+
+
+        transMemoryMergeServiceImpl.executeMerge()
+
+        TransMemoryMergeStarted response =
+                new TransMemoryMergeStarted();
+        response.numOfTransUnits = textFlows.size();
+        return response;
     }
 }

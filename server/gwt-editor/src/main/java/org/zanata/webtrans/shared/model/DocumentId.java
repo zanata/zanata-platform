@@ -2,12 +2,14 @@ package org.zanata.webtrans.shared.model;
 
 import java.io.Serializable;
 
+import com.google.common.base.Preconditions;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 //@Immutable
 public class DocumentId implements Identifier<Long>, Comparable,
         IsSerializable, Serializable {
     private static final long serialVersionUID = 1L;
+    private static final String SEPARATOR = ":";
 
     private Long id;
 
@@ -25,7 +27,13 @@ public class DocumentId implements Identifier<Long>, Comparable,
 
     @Override
     public String toString() {
-        return String.valueOf(id);
+        return id + SEPARATOR + docId;
+    }
+
+    public static DocumentId valueOf(String value) {
+        String[] parts = value.split(SEPARATOR);
+        Preconditions.checkArgument(parts.length == 2);
+        return new DocumentId(Long.parseLong(parts[0]), parts[1]);
     }
 
     @Override

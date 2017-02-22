@@ -240,7 +240,7 @@ public class WebTransClientModule extends AbstractPresenterModule {
         TransMemoryMergeResource resource =
                 GWT.create(TransMemoryMergeResource.class);
         Resource res = new Resource(Application.getModuleParentBaseUrl()
-                + "rest" + TransMemoryMergeResource.TM_PATH);
+                + "rest/suggestions");
         ((RestServiceProxy) resource).setResource(res);
         return resource;
     }

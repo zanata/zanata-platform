@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.model;
 
 import org.zanata.common.ProjectType;
 
+import com.google.common.base.Preconditions;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ProjectIterationId implements IsSerializable {
@@ -36,6 +37,12 @@ public class ProjectIterationId implements IsSerializable {
     @Override
     public String toString() {
         return projectSlug + "/" + iterationSlug;
+    }
+
+    public static ProjectIterationId valueOf(String value) {
+        String[] parts = value.split("/");
+        Preconditions.checkArgument(parts.length == 2, "must be in format: projectSlug/versionSlug");
+        return new ProjectIterationId(parts[0], parts[1], null);
     }
 
     @Override

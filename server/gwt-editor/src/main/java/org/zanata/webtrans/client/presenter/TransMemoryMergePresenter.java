@@ -41,10 +41,12 @@ import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.TransMemoryMergeResource;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
@@ -108,9 +110,11 @@ public class TransMemoryMergePresenter extends
         display.showProcessing();
 
         DocumentId currentDoc = userWorkspaceContext.getSelectedDoc().getId();
-        LocaleId localeId =
-                userWorkspaceContext.getWorkspaceContext().getWorkspaceId()
-                        .getLocaleId();
+        WorkspaceId workspaceId =
+                userWorkspaceContext.getWorkspaceContext().getWorkspaceId();
+        LocaleId localeId = workspaceId.getLocaleId();
+        ProjectIterationId projectIterationId = workspaceId
+                .getProjectIterationId();
 
         // the result is always null as the call is async
         // this is just so compiler will check the return type for us
@@ -157,7 +161,7 @@ public class TransMemoryMergePresenter extends
                     }
                 })
                 .call(transMemoryMergeClient)
-                .merge(currentDoc.getDocId(), localeId.getId());
+                .merge(projectIterationId, currentDoc, localeId.getId());
 
         /*TransMemoryMerge action =
                 prepareTMMergeAction(items, percentage, mergeOptions);*/
