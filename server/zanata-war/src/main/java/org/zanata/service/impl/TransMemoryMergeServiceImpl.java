@@ -96,6 +96,14 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                 transformToMap(action.getUpdateRequests());
         List<HTextFlow> hTextFlows = textFlowDAO
                 .findByIdList(Lists.newArrayList(requestMap.keySet()));
+        return fillTextFlowsFromTMResult(action, targetLocale, requestMap,
+                hTextFlows);
+    }
+
+    private List<TranslationService.TranslationResult> fillTextFlowsFromTMResult(
+            TransMemoryMerge action, HLocale targetLocale,
+            Map<Long, TransUnitUpdateRequest> requestMap,
+            List<HTextFlow> hTextFlows) {
         List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
         for (HTextFlow hTextFlow : hTextFlows) {
             HTextFlowTarget hTextFlowTarget =
