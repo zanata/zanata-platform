@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,14 +49,14 @@ import org.zanata.util.TranslationUtil;
 import org.zanata.webtrans.server.rpc.TransMemoryMergeStatusResolver;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
-import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
+import org.zanata.webtrans.shared.search.FilterConstraints;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import net.customware.gwt.dispatch.shared.ActionException;
-import static org.zanata.service.SecurityService.TranslationAction.MODIFY;
 
 /**
  * @author Sean Flanigan
@@ -86,22 +87,40 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             "auto translated by TM merge from";
 
     @Override
-    public List<TranslationService.TranslationResult>
-            executeMerge(TransMemoryMerge action) throws ActionException {
-        HLocale targetLocale = localeServiceImpl
-                .getByLocaleId(action.getWorkspaceId().getLocaleId());
-        securityServiceImpl.checkWorkspaceAction(action.getWorkspaceId(),
-                MODIFY);
+    public long executeMerge(TransMemoryMergeRequest request) {
+        HLocale targetLocale =
+                localeServiceImpl.getByLocaleId(request.localeId);
+
+        // get all untranslated text flows
+        List<HTextFlow> textFlows = textFlowDAO
+                .getAllTextFlowByDocumentIdWithConstraints(
+                        request.documentId, targetLocale,
+                        FilterConstraints.builder().keepAll().excludeApproved()
+                                .excludeFuzzy().excludeTranslated()
+                                .excludeRejected().build());
+
+        // here we set baseTranslationVersion to 0 because we only target untranslated textflows
+        int baseTranslationVersion = 0;
+        List<TransUnitUpdateRequest> updateRequests =
+                textFlows.stream().map(
+                        from -> new TransUnitUpdateRequest(
+                                new TransUnitId(from.getId()),
+                                null, null, baseTranslationVersion,
+                                TranslationSourceType.TM_MERGE.getAbbr()))
+                        .collect(Collectors.toList());
         Map<Long, TransUnitUpdateRequest> requestMap =
-                transformToMap(action.getUpdateRequests());
+                transformToMap(updateRequests);
         List<HTextFlow> hTextFlows = textFlowDAO
                 .findByIdList(Lists.newArrayList(requestMap.keySet()));
-        return fillTextFlowsFromTMResult(action, targetLocale, requestMap,
-                hTextFlows);
+        // TODO pahuang this is doing synchronize call
+        return fillTextFlowsFromTMResult(request, targetLocale, requestMap,
+                hTextFlows
+        ).size();
     }
 
+
     private List<TranslationService.TranslationResult> fillTextFlowsFromTMResult(
-            TransMemoryMerge action, HLocale targetLocale,
+            TransMemoryMergeRequest action, HLocale targetLocale,
             Map<Long, TransUnitUpdateRequest> requestMap,
             List<HTextFlow> hTextFlows) {
         List<TransUnitUpdateRequest> updateRequests = Lists.newArrayList();
@@ -143,12 +162,12 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             textFlowTargetUpdateContextEvent
                     .fire(new TextFlowTargetUpdateContextEvent(
                             updateRequest.getTransUnitId(),
-                            action.getWorkspaceId().getLocaleId(),
-                            action.getEditorClientId(),
+                            targetLocale.getLocaleId(),
+                            action.editorClientId,
                             TransUnitUpdated.UpdateType.NonEditorSave));
         }
         return translationServiceImpl.translate(
-                action.getWorkspaceId().getLocaleId(), updateRequests);
+                targetLocale.getLocaleId(), updateRequests);
     }
 
     private Map<Long, TransUnitUpdateRequest>
@@ -162,7 +181,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         return mapBuilder.build();
     }
 
-    private TransUnitUpdateRequest createRequest(TransMemoryMerge action,
+    private TransUnitUpdateRequest createRequest(TransMemoryMergeRequest action,
             HLocale hLocale, Map<Long, TransUnitUpdateRequest> requestMap,
             HTextFlow hTextFlowToBeFilled, TransMemoryResultItem tmResult,
             HTextFlowTarget oldTarget) {

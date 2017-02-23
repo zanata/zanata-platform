@@ -18,7 +18,7 @@ public final class EditorClientId implements Identifier<String>, IsSerializable 
     private long editorClientNum;
 
     @SuppressWarnings("unused")
-    private EditorClientId() {
+    public EditorClientId() {
     }
 
     public EditorClientId(String httpSessionId, long editorClientNum) {

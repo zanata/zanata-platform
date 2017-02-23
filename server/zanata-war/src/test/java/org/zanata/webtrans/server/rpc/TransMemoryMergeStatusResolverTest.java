@@ -37,6 +37,7 @@ import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
@@ -54,7 +55,7 @@ import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
  */
 public class TransMemoryMergeStatusResolverTest {
     TransMemoryMergeStatusResolver resolver;
-    private TransMemoryMerge action;
+    private TransMemoryMergeRequest action;
     private HTextFlow textFlow;
     private TransMemoryDetails tmDetail;
     private String docId = "/po/message.po";
@@ -97,29 +98,31 @@ public class TransMemoryMergeStatusResolverTest {
                 resId, msgContext, null, null, null, null);
     }
 
-    private static TransMemoryMerge mergeTMAction(MergeOptions mergeOptions) {
-        TransUnitUpdateRequest updateRequest =
-                new TransUnitUpdateRequest(new TransUnitId(1), null, null, 0,
-                    TranslationSourceType.TM_MERGE.getAbbr());
-        return new TransMemoryMerge(80, Lists.newArrayList(updateRequest),
-                mergeOptions);
+    private static TransMemoryMergeRequest mergeTMAction(MergeOptions mergeOptions) {
+        TransMemoryMergeRequest mergeRequest =
+                new TransMemoryMergeRequest();
+        mergeRequest.differentProjectRule = mergeOptions.getDifferentProject();
+        mergeRequest.differentContextRule = mergeOptions.getDifferentResId();
+        mergeRequest.differentDocumentRule = mergeOptions.getDifferentDocument();
+        mergeRequest.thresholdPercent = 80;
+        return mergeRequest;
     }
 
-    private static TransMemoryMerge mergeTMActionWhenResIdIsDifferent(
+    private static TransMemoryMergeRequest mergeTMActionWhenResIdIsDifferent(
             MergeRule resIdOption) {
         MergeOptions opts = MergeOptions.allFuzzy();
         opts.setDifferentResId(resIdOption);
         return mergeTMAction(opts);
     }
 
-    private static TransMemoryMerge mergeTMActionWhenDocIdIsDifferent(
+    private static TransMemoryMergeRequest mergeTMActionWhenDocIdIsDifferent(
             MergeRule documentOption) {
         MergeOptions opts = MergeOptions.allFuzzy();
         opts.setDifferentDocument(documentOption);
         return mergeTMAction(opts);
     }
 
-    private TransMemoryMerge mergeTMActionWhenProjectNameIsDifferent(
+    private TransMemoryMergeRequest mergeTMActionWhenProjectNameIsDifferent(
             MergeRule projectOption) {
         MergeOptions opts = MergeOptions.allFuzzy();
         opts.setDifferentProject(projectOption);
@@ -187,7 +190,7 @@ public class TransMemoryMergeStatusResolverTest {
 
     @Test
     public void fromImportedTmAndOptionIsFuzzy() {
-        TransMemoryMerge transMemoryMerge =
+        TransMemoryMergeRequest transMemoryMerge =
                 mergeTMAction(importedMatch(MergeRule.FUZZY));
         assertThat(resolver.decideStatus(transMemoryMerge,
                 tmResultWithSimilarityAndExternallyImported(100), null),

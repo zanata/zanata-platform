@@ -27,7 +27,6 @@ import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import static org.zanata.service.SecurityService.TranslationAction.MODIFY;
 import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLURAL;
 
@@ -35,7 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import net.customware.gwt.dispatch.shared.ActionException;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
@@ -61,6 +61,8 @@ import org.zanata.service.TranslationService;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
+import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
@@ -68,13 +70,12 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.MergeRule;
-import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
+import net.customware.gwt.dispatch.shared.ActionException;
 
 /**
  * @author Patrick Huang <a
@@ -112,23 +113,32 @@ public class TransMemoryMergeServiceImplTest {
 
     private static ArrayList<String> tmSource = newArrayList("tm source");
     private static ArrayList<String> tmTarget = newArrayList("tm target");
+    private WorkspaceId workspaceId;
 
-    private TransMemoryMerge prepareAction(int threshold,
+    private TransMemoryMergeRequest prepareAction(int threshold,
             List<TransUnitUpdateRequest> requests, MergeOptions opts) {
-        TransMemoryMerge action =
-                new TransMemoryMerge(threshold, requests, opts);
-        action.setWorkspaceId(new WorkspaceId(new ProjectIterationId(
-                projectSlug, versionSlug, ProjectType.File), targetLocale
-                .getLocaleId()));
+        ProjectIterationId projectIterationId = new ProjectIterationId(
+                projectSlug, versionSlug, ProjectType.File);
+        LocaleId localeId = targetLocale.getLocaleId();
+        workspaceId =
+                new WorkspaceId(projectIterationId, localeId);
+        EditorClientId editorClientId = new EditorClientId("sessionId", 1);
+        DocumentId documentId = new DocumentId(1L, docId);
+        TransMemoryMergeRequest action =
+                new TransMemoryMergeRequest(
+                        editorClientId, projectIterationId,
+                        documentId, localeId, threshold,
+                        opts.getDifferentProject(), opts.getDifferentDocument(),
+                        opts.getDifferentResId(), opts.getImportedMatch());
         return action;
     }
 
-    private TransMemoryMerge prepareAction(int threshold, long... tranUnitIds)
+    private TransMemoryMergeRequest prepareAction(int threshold, long... tranUnitIds)
             throws NoSuchWorkspaceException {
         return prepareAction(threshold, true, tranUnitIds);
     }
 
-    private TransMemoryMerge prepareAction(int threshold,
+    private TransMemoryMergeRequest prepareAction(int threshold,
             boolean acceptImportedTMResults, long... tranUnitIds)
             throws NoSuchWorkspaceException {
         List<TransUnitUpdateRequest> requests = newArrayList();
@@ -206,7 +216,7 @@ public class TransMemoryMergeServiceImplTest {
         // Given:
         // an action with threshold 80% and trans unit id is 1
         final long transUnitId = 1L;
-        TransMemoryMerge action = prepareAction(80, transUnitId);
+        TransMemoryMergeRequest action = prepareAction(80, transUnitId);
 
         HTextFlow hTextFlow =
                 TestFixture.makeHTextFlow(transUnitId, sourceLocale,
@@ -224,7 +234,7 @@ public class TransMemoryMergeServiceImplTest {
         when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(
                 tmResultSource);
 
-        when(localeService.getByLocaleId(action.getWorkspaceId().getLocaleId()))
+        when(localeService.getByLocaleId(action.localeId))
                 .thenReturn(targetLocale);
 
         when(
@@ -243,9 +253,6 @@ public class TransMemoryMergeServiceImplTest {
         transMemoryMergeService.executeMerge(action);
 
         // Then:
-        verify(securityService).checkWorkspaceAction(action.getWorkspaceId(),
-                MODIFY);
-
         // we should have text flow auto translated by using the most
         // similar TM
         verify(translationService).translate(same(targetLocale.getLocaleId()),
@@ -268,7 +275,7 @@ public class TransMemoryMergeServiceImplTest {
     @InRequestScope
     public void willNotTranslateIfNoMatches() throws ActionException {
         final long transUnitId = 1L;
-        TransMemoryMerge action = prepareAction(80, transUnitId);
+        TransMemoryMergeRequest action = prepareAction(80, transUnitId);
 
         HTextFlow hTextFlow =
                 TestFixture.makeHTextFlow(transUnitId, sourceLocale,
@@ -287,14 +294,11 @@ public class TransMemoryMergeServiceImplTest {
                         false, false, false, action.getThresholdPercent()))
                 .thenReturn(matches);
 
-        when(localeService.getByLocaleId(action.getWorkspaceId().getLocaleId()))
+        when(localeService.getByLocaleId(action.localeId))
                 .thenReturn(targetLocale);
 
         // When: execute the action
         transMemoryMergeService.executeMerge(action);
-
-        verify(securityService).checkWorkspaceAction(action.getWorkspaceId(),
-                MODIFY);
 
         // Then: we should have EMPTY trans unit update request
         verifyZeroInteractions(translationService);
@@ -308,7 +312,7 @@ public class TransMemoryMergeServiceImplTest {
         final long idWithoutTM = 2L;
         final long idWith80MatchTM = 3L;
         final long idWith90MatchTM = 4L;
-        TransMemoryMerge action =
+        TransMemoryMergeRequest action =
                 prepareAction(90, idWith100MatchTM, idWithoutTM,
                         idWith80MatchTM, idWith90MatchTM);
 
@@ -330,7 +334,7 @@ public class TransMemoryMergeServiceImplTest {
                         targetLocale, ContentState.New, docId, versionSlug,
                         projectSlug);
 
-        when(localeService.getByLocaleId(action.getWorkspaceId().getLocaleId()))
+        when(localeService.getByLocaleId(action.localeId))
                 .thenReturn(targetLocale);
 
         when(
@@ -382,13 +386,10 @@ public class TransMemoryMergeServiceImplTest {
         // When: execute the action
         transMemoryMergeService.executeMerge(action);
 
-        verify(securityService).checkWorkspaceAction(action.getWorkspaceId(),
-                MODIFY);
-
         // Then: we should have text flow auto translated by using the most
         // similar TM
         verify(translationService).translate(
-                same(action.getWorkspaceId().getLocaleId()),
+                same(action.localeId),
                 updateRequestCaptor.capture());
 
         List<TransUnitUpdateRequest> updateRequest =
@@ -415,7 +416,7 @@ public class TransMemoryMergeServiceImplTest {
         // Given:
         // an action with threshold 80% and trans unit id
         final long transUnitId = 1L;
-        TransMemoryMerge action = prepareAction(80, transUnitId);
+        TransMemoryMergeRequest action = prepareAction(80, transUnitId);
 
         // A Text Flow to be translated
         HTextFlow hTextFlow =
@@ -439,7 +440,7 @@ public class TransMemoryMergeServiceImplTest {
                         hTextFlow.getResId());
 
         // Expectations:
-        when(localeService.getByLocaleId(action.getWorkspaceId().getLocaleId()))
+        when(localeService.getByLocaleId(action.localeId))
                 .thenReturn(targetLocale);
 
         when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(
@@ -459,7 +460,7 @@ public class TransMemoryMergeServiceImplTest {
         // Then: we should have text flow auto translated by using the most
         // similar TM
         verify(translationService).translate(
-                same(action.getWorkspaceId().getLocaleId()),
+                same(action.localeId),
                 updateRequestCaptor.capture());
 
         List<TransUnitUpdateRequest> updateRequest =

@@ -24,10 +24,13 @@ import java.util.List;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 
+import org.zanata.model.HLocale;
+import org.zanata.model.HTextFlow;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 
 public interface TransMemoryMergeService {
 
-    List<TranslationService.TranslationResult> executeMerge(
-            TransMemoryMerge action) throws ActionException;
+    long executeMerge(TransMemoryMergeRequest request);
 }

@@ -51,6 +51,7 @@ import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
@@ -97,13 +98,15 @@ public class TransMemoryMergePresenterTest {
     @Mock
     private TransMemoryMergeResource mergeResource;
     private UserWorkspaceContext workspaceContext;
+    @Mock
+    private Identity identity;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         presenter =
                 new TransMemoryMergePresenter(display, eventBus, dispatcher,
-                        mergeResource, workspaceContext,
+                        mergeResource, identity, workspaceContext,
                         navigationService, messages, undoLinkProvider);
 
         verify(display).setListener(presenter);

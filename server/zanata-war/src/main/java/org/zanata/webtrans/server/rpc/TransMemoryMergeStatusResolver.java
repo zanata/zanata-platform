@@ -26,6 +26,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import com.google.common.base.Objects;
@@ -64,7 +65,7 @@ public class TransMemoryMergeStatusResolver {
      * @return content state to be set on auto translated target. If null means
      *         we want to reject the auto translation via TM merge
      */
-    public ContentState decideStatus(TransMemoryMerge action,
+    public ContentState decideStatus(TransMemoryMergeRequest action,
             HTextFlow tfToBeFilled, TransMemoryDetails tmDetail,
             TransMemoryResultItem tmResult, HTextFlowTarget oldTarget) {
 
@@ -101,7 +102,7 @@ public class TransMemoryMergeStatusResolver {
      * @return content state to be set on auto translated target. If null means
      *         we want to reject the auto translation via TM merge
      */
-    public ContentState decideStatus(TransMemoryMerge action,
+    public ContentState decideStatus(TransMemoryMergeRequest action,
             TransMemoryResultItem tmResult, HTextFlowTarget oldTarget) {
 
         if ((int) tmResult.getSimilarityPercent() != 100) {
@@ -123,14 +124,14 @@ public class TransMemoryMergeStatusResolver {
         return ContentState.Translated;
     }
 
-    private void compareTextFlowResId(TransMemoryMerge action,
+    private void compareTextFlowResId(TransMemoryMergeRequest action,
             HTextFlow tfToBeFilled, TransMemoryDetails tmDetail) {
         if (notEqual(tfToBeFilled.getResId(), tmDetail.getResId())) {
             setFlagsBasedOnOption(action.getDifferentContextRule());
         }
     }
 
-    private void compareTextFlowMsgContext(TransMemoryMerge action,
+    private void compareTextFlowMsgContext(TransMemoryMergeRequest action,
             HTextFlow tfToBeFilled, TransMemoryDetails tmDetail) {
         String msgCtx = null;
         if (tfToBeFilled.getPotEntryData() != null) {
@@ -141,7 +142,7 @@ public class TransMemoryMergeStatusResolver {
         }
     }
 
-    private void compareDocId(TransMemoryMerge action, HTextFlow tfToBeFilled,
+    private void compareDocId(TransMemoryMergeRequest action, HTextFlow tfToBeFilled,
             TransMemoryDetails tmDetail) {
         if (notEqual(tfToBeFilled.getDocument().getDocId(),
                         tmDetail.getDocId())) {
@@ -149,7 +150,7 @@ public class TransMemoryMergeStatusResolver {
         }
     }
 
-    private void compareProjectName(TransMemoryMerge action,
+    private void compareProjectName(TransMemoryMergeRequest action,
             HTextFlow tfToBeFilled, TransMemoryDetails tmDetail) {
         if (notEqual(tfToBeFilled.getDocument().getProjectIteration()
                         .getProject().getName(), tmDetail.getProjectName())) {

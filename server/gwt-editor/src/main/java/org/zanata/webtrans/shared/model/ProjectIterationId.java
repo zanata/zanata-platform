@@ -12,7 +12,7 @@ public class ProjectIterationId implements IsSerializable {
 
     // for GWT
     @SuppressWarnings("unused")
-    private ProjectIterationId() {
+    public ProjectIterationId() {
     }
 
     public ProjectIterationId(String projectSlug, String iterationSlug,

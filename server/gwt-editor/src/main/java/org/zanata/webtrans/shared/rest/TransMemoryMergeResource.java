@@ -22,11 +22,9 @@ package org.zanata.webtrans.shared.rest;
 
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.QueryParam;
 
 import org.fusesource.restygwt.client.DirectRestService;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.TransMemoryMergeStarted;
 
 public interface TransMemoryMergeResource extends DirectRestService {
@@ -34,8 +32,5 @@ public interface TransMemoryMergeResource extends DirectRestService {
 
     @POST
     @Path(TMMERGE_PATH)
-    TransMemoryMergeStarted merge(@QueryParam("projectIterationId")
-            ProjectIterationId projectIterationId,
-            @QueryParam("docId") DocumentId docId,
-            @QueryParam("localeId") String localeId);
+    TransMemoryMergeStarted merge(TransMemoryMergeRequest request);
 }

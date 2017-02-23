@@ -20,16 +20,28 @@
  */
 package org.zanata.rest.editor.service;
 
-import com.google.common.base.Joiner;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
+import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.editor.dto.suggestion.Suggestion;
 import org.zanata.rest.editor.service.resource.SuggestionsResource;
 import org.zanata.security.ZanataIdentity;
@@ -38,23 +50,15 @@ import org.zanata.service.SecurityService;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
+import org.zanata.webtrans.shared.model.TransUnitId;
+import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.TransMemoryMergeStarted;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
-import javax.annotation.Nullable;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Optional;
-
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.zanata.webtrans.shared.rpc.HasSearchType.*;
+import com.google.common.base.Joiner;
 
 /**
  * @see org.zanata.rest.editor.service.resource.SuggestionsResource
@@ -167,31 +171,49 @@ public class SuggestionsService implements SuggestionsResource {
     }
 
     @Override
-    public TransMemoryMergeStarted merge(ProjectIterationId projectIterationId, DocumentId docId, String localeId) {
-        identity.checkLoggedIn();
-
-        try {
-            securityServiceImpl.checkWorkspaceAction(new WorkspaceId(projectIterationId, new LocaleId(localeId)), SecurityService.TranslationAction.MODIFY);
-        } catch (NoSuchWorkspaceException e) {
-            throw new NotFoundException(e);
-        }
+    @Transactional
+    public TransMemoryMergeStarted merge(TransMemoryMergeRequest request) {
+        securityCheck(request);
 
         HLocale hLocale =
-                localeService.getByLocaleId(new LocaleId(localeId));
+                localeService.getByLocaleId(request.localeId);
 
         // get all untranslated text flows
         List<HTextFlow> textFlows = textFlowDAO
-                .getAllTextFlowByDocumentIdWithConstraints(docId, hLocale,
+                .getAllTextFlowByDocumentIdWithConstraints(request.documentId, hLocale,
                         FilterConstraints.builder().keepAll().excludeApproved()
                                 .excludeFuzzy().excludeTranslated()
                                 .excludeRejected().build());
 
+        // here we set baseTranslationVersion to 0 because we only target untranslated textflows
+        int baseTranslationVersion = 0;
+        List<TransUnitUpdateRequest> updateRequests =
+                textFlows.stream().map(
+                        from -> new TransUnitUpdateRequest(
+                                new TransUnitId(from.getId()),
+                                null, null, baseTranslationVersion,
+                                TranslationSourceType.TM_MERGE.getAbbr()))
+                .collect(Collectors.toList());
 
-        transMemoryMergeServiceImpl.executeMerge()
+        long textFlowsNumber = transMemoryMergeServiceImpl.executeMerge(request);
 
         TransMemoryMergeStarted response =
                 new TransMemoryMergeStarted();
-        response.numOfTransUnits = textFlows.size();
+        response.numOfTransUnits = textFlowsNumber;
         return response;
+    }
+
+    private void securityCheck(TransMemoryMergeRequest request) {
+        identity.checkLoggedIn();
+
+        try {
+            WorkspaceId workspaceId =
+                    new WorkspaceId(request.projectIterationId,
+                            request.localeId);
+            securityServiceImpl.checkWorkspaceAction(workspaceId,
+                    SecurityService.TranslationAction.MODIFY);
+        } catch (NoSuchWorkspaceException e) {
+            throw new NotFoundException(e);
+        }
     }
 }

@@ -40,6 +40,7 @@ import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.service.NavigationService;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -48,6 +49,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.TransMemoryMergeResource;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import org.zanata.webtrans.shared.rpc.TransMemoryMergeStarted;
@@ -72,6 +74,7 @@ public class TransMemoryMergePresenter extends
     private final EventBus eventBus;
     private final CachingDispatchAsync dispatcher;
     private final TransMemoryMergeResource transMemoryMergeClient;
+    private final Identity identity;
     private final UserWorkspaceContext userWorkspaceContext;
     private final NavigationService navigationService;
     private final UiMessages messages;
@@ -81,6 +84,7 @@ public class TransMemoryMergePresenter extends
     public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display,
             EventBus eventBus, CachingDispatchAsync dispatcher,
             TransMemoryMergeResource transMemoryMergeClient,
+            Identity identity,
             UserWorkspaceContext userWorkspaceContext,
             NavigationService navigationService, UiMessages messages,
             Provider<UndoLink> undoLinkProvider) {
@@ -89,6 +93,7 @@ public class TransMemoryMergePresenter extends
         this.eventBus = eventBus;
         this.dispatcher = dispatcher;
         this.transMemoryMergeClient = transMemoryMergeClient;
+        this.identity = identity;
         this.userWorkspaceContext = userWorkspaceContext;
         this.navigationService = navigationService;
         this.messages = messages;
@@ -118,6 +123,14 @@ public class TransMemoryMergePresenter extends
 
         // the result is always null as the call is async
         // this is just so compiler will check the return type for us
+        TransMemoryMergeRequest request =
+                new TransMemoryMergeRequest(
+                        identity.getEditorClientId(),
+                        projectIterationId, currentDoc, localeId, percentage,
+                        mergeOptions.getDifferentProject(),
+                        mergeOptions.getDifferentDocument(),
+                        mergeOptions.getDifferentResId(),
+                        mergeOptions.getImportedMatch());
         TransMemoryMergeStarted noop = REST.withCallback(
                 new MethodCallback<TransMemoryMergeStarted>() {
                     @Override
@@ -160,8 +173,7 @@ public class TransMemoryMergePresenter extends
                         }
                     }
                 })
-                .call(transMemoryMergeClient)
-                .merge(projectIterationId, currentDoc, localeId.getId());
+                .call(transMemoryMergeClient).merge(request);
 
         /*TransMemoryMerge action =
                 prepareTMMergeAction(items, percentage, mergeOptions);*/

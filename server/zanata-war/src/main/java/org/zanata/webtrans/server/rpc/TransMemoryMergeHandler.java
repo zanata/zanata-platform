@@ -23,6 +23,8 @@ package org.zanata.webtrans.server.rpc;
 import java.util.List;
 import net.customware.gwt.dispatch.server.ExecutionContext;
 import net.customware.gwt.dispatch.shared.ActionException;
+import net.customware.gwt.dispatch.shared.UnsupportedActionException;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,10 +50,11 @@ public class TransMemoryMergeHandler
     @Override
     public UpdateTransUnitResult execute(TransMemoryMerge action,
             ExecutionContext context) throws ActionException {
-        List<TranslationService.TranslationResult> translationResults =
-                transMemoryMergeServiceImpl.executeMerge(action);
-        return transUnitUpdateHelper
-                .generateUpdateTransUnitResult(translationResults);
+//        List<TranslationService.TranslationResult> translationResults =
+//                transMemoryMergeServiceImpl.executeMerge(action);
+//        return transUnitUpdateHelper
+//                .generateUpdateTransUnitResult(translationResults);
+        throw new UnsupportedActionException(action);
     }
 
     @Override
