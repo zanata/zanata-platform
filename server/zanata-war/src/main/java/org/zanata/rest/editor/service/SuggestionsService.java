@@ -47,7 +47,6 @@ import org.zanata.rest.editor.service.resource.SuggestionsResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
-import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
@@ -81,13 +80,13 @@ public class SuggestionsService implements SuggestionsResource {
     private ZanataIdentity identity;
 
     @Inject
-    private TransMemoryMergeService transMemoryMergeServiceImpl;
-
-    @Inject
     private TextFlowDAO textFlowDAO;
 
     @Inject
     private SecurityService securityServiceImpl;
+
+    @Inject
+    private TransMemoryMergeManager transMemoryMergeManager;
 
     @Override
     public Response query(List<String> query, String sourceLocaleString,
@@ -171,7 +170,6 @@ public class SuggestionsService implements SuggestionsResource {
     }
 
     @Override
-    @Transactional
     public TransMemoryMergeStarted merge(TransMemoryMergeRequest request) {
         securityCheck(request);
 
@@ -195,12 +193,14 @@ public class SuggestionsService implements SuggestionsResource {
                                 TranslationSourceType.TM_MERGE.getAbbr()))
                 .collect(Collectors.toList());
 
-        long textFlowsNumber = transMemoryMergeServiceImpl.executeMerge(request);
+        boolean started = transMemoryMergeManager.startTransMemoryMerge(request);
+        if (started) {
+            TransMemoryMergeStarted response =
+                    new TransMemoryMergeStarted();
+            return response;
+        }
 
-        TransMemoryMergeStarted response =
-                new TransMemoryMergeStarted();
-        response.numOfTransUnits = textFlowsNumber;
-        return response;
+        throw new UnsupportedOperationException("There is already a TM merge operation in progress");
     }
 
     private void securityCheck(TransMemoryMergeRequest request) {

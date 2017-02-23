@@ -39,11 +39,14 @@ import javax.inject.Inject;
 
 import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.zanata.async.handle.TransMemoryMergeTaskHandle;
+import org.zanata.cdi.TestTransaction;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
@@ -59,6 +62,8 @@ import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.transaction.TransactionUtil;
+import org.zanata.transaction.TransactionUtilForUnitTest;
 import org.zanata.webtrans.server.TranslationWorkspace;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.auth.EditorClientId;
@@ -104,6 +109,9 @@ public class TransMemoryMergeServiceImplTest {
     @Captor
     ArgumentCaptor<List<TransUnitUpdateRequest>> updateRequestCaptor;
 
+    @Produces
+    TransactionUtil transactionUtil = new TransactionUtilForUnitTest();
+
     private String projectSlug = "projectSlug";
     private String versionSlug = "versionSlug";
     private String docId = "pot/a.po";
@@ -114,6 +122,7 @@ public class TransMemoryMergeServiceImplTest {
     private static ArrayList<String> tmSource = newArrayList("tm source");
     private static ArrayList<String> tmTarget = newArrayList("tm target");
     private WorkspaceId workspaceId;
+    private TransMemoryMergeTaskHandle asyncTaskHandle;
 
     private TransMemoryMergeRequest prepareAction(int threshold,
             List<TransUnitUpdateRequest> requests, MergeOptions opts) {
@@ -210,6 +219,11 @@ public class TransMemoryMergeServiceImplTest {
         }
     }
 
+    @Before
+    public void setUp() {
+        asyncTaskHandle = new TransMemoryMergeTaskHandle();
+    }
+
     @Test
     @InRequestScope
     public void willTranslateIfMatches() throws ActionException {
@@ -250,7 +264,7 @@ public class TransMemoryMergeServiceImplTest {
                 .thenReturn(matches);
 
         // When: execute the action
-        transMemoryMergeService.executeMerge(action);
+        transMemoryMergeService.executeMerge(action, asyncTaskHandle);
 
         // Then:
         // we should have text flow auto translated by using the most
@@ -298,7 +312,7 @@ public class TransMemoryMergeServiceImplTest {
                 .thenReturn(targetLocale);
 
         // When: execute the action
-        transMemoryMergeService.executeMerge(action);
+        transMemoryMergeService.executeMerge(action, asyncTaskHandle);
 
         // Then: we should have EMPTY trans unit update request
         verifyZeroInteractions(translationService);
@@ -384,7 +398,7 @@ public class TransMemoryMergeServiceImplTest {
                         tmResultSource)).thenReturn(tmDetail());
 
         // When: execute the action
-        transMemoryMergeService.executeMerge(action);
+        transMemoryMergeService.executeMerge(action, asyncTaskHandle);
 
         // Then: we should have text flow auto translated by using the most
         // similar TM
@@ -455,7 +469,7 @@ public class TransMemoryMergeServiceImplTest {
                 tuResultSource);
 
         // When: execute the action
-        transMemoryMergeService.executeMerge(action);
+        transMemoryMergeService.executeMerge(action, asyncTaskHandle);
 
         // Then: we should have text flow auto translated by using the most
         // similar TM
