@@ -17,18 +17,17 @@ import java.util.Date;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @JsonPropertyOrder({ "id", "lang", "content", "contents", "plural",
-    "extensions", "wordCount" })
+    "extensions", "wordCount", "msgctxt", "sourceReferences", "sourceFlags",
+    "sourceComment" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class EditorTextFlow extends TextFlow {
 
     private int wordCount;
-    private String msgCtxt;
+    private String msgctxt;
     private String sourceReferences;
     private String sourceFlags;
     private String sourceComment;
-    private String lastModifiedBy;
-    private Date lastModifiedTime;
 
     public EditorTextFlow() {
         super(null, null, (String) null);
@@ -46,12 +45,12 @@ public class EditorTextFlow extends TextFlow {
         this.wordCount = wordCount;
     }
 
-    public String getMsgCtxt() {
-        return msgCtxt;
+    public String getMsgctxt() {
+        return msgctxt;
     }
 
-    public void setMsgCtxt(String msgCtxt) {
-        this.msgCtxt = msgCtxt;
+    public void setMsgctxt(String msgctxt) {
+        this.msgctxt = msgctxt;
     }
 
     public String getSourceReferences() {
@@ -78,20 +77,20 @@ public class EditorTextFlow extends TextFlow {
         this.sourceComment = sourceComment;
     }
 
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public Date getLastModifiedTime() {
-        return lastModifiedTime;
-    }
-
-    public void setLastModifiedTime(Date lastModifiedTime) {
-        this.lastModifiedTime = lastModifiedTime;
-    }
+//    public String getLastModifiedBy() {
+//        return lastModifiedBy;
+//    }
+//
+//    public void setLastModifiedBy(String lastModifiedBy) {
+//        this.lastModifiedBy = lastModifiedBy;
+//    }
+//
+//    public Date getLastModifiedTime() {
+//        return lastModifiedTime;
+//    }
+//
+//    public void setLastModifiedTime(Date lastModifiedTime) {
+//        this.lastModifiedTime = lastModifiedTime;
+//    }
 
 }

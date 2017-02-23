@@ -106,20 +106,34 @@ export function requestPhraseDetail (localeId, phraseIds) {
  * is needed for the component tree.
  */
 function transUnitDetailToPhraseDetail (transUnitDetail, localeId) {
-  return mapValues(transUnitDetail, (transUnit, id) => {
-    const source = transUnit.source
-    const plural = source.plural
+  return mapValues(transUnitDetail, (transUnit, index) => {
+    const {
+      content,
+      contents,
+      id,
+      msgctxt,
+      plural,
+      sourceComment,
+      sourceFlags,
+      sourceReferences,
+      wordCount
+    } = transUnit.source
     const trans = transUnit[localeId]
     const translations = extractTranslations(trans)
     return {
-      id: parseInt(id, 10),
+      id: parseInt(index, 10),
+      resId: id,
+      msgctxt,
+      sourceComment,
+      sourceFlags,
+      sourceReferences,
       plural,
-      sources: plural ? source.contents : [source.content],
+      sources: plural ? contents : [content],
       translations,
       newTranslations: [...translations],
       status: transUnitStatusToPhraseStatus(trans && trans.state),
       revision: trans && trans.revision ? parseInt(trans.revision, 10) : 0,
-      wordCount: parseInt(source.wordCount, 10)
+      wordCount: parseInt(wordCount, 10)
     }
   })
 }
