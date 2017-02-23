@@ -29,7 +29,7 @@ import org.zanata.feature.concurrentedit.ConcurrentEditTestSuite;
 import org.zanata.feature.dashboard.DashboardTestSuite;
 import org.zanata.feature.document.DocumentTestSuite;
 import org.zanata.feature.editor.EditorTestSuite;
-import org.zanata.feature.endtoend.EndToEndTest;
+import org.zanata.feature.endtoend.EndToEndTestSuite;
 import org.zanata.feature.glossary.GlossaryTestSuite;
 import org.zanata.feature.language.LanguageTestSuite;
 import org.zanata.feature.misc.MiscTestSuite;
@@ -57,7 +57,7 @@ import org.zanata.feature.versionGroup.VersionGroupTestSuite;
         /*
          * End to End tests
          */
-        EndToEndTest.class,
+        EndToEndTestSuite.class,
 
         /*
          * Account

@@ -57,8 +57,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Category(TestPlan.DetailedTest.class)
-public class EndToEndTest extends ZanataTestCase {
+@Category(TestPlan.BasicAcceptanceTest.class)
+public class UserEndToEndTest extends ZanataTestCase {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();

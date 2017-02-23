@@ -57,7 +57,6 @@ public class CreateProjectTest extends ZanataTestCase {
     @Feature(summary = "The user can create a project",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 144262)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
     public void createABasicProject() throws Exception {
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
                 .createNewSimpleProject("basicproject", "basicproject");
