@@ -11,6 +11,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.rest.editor.dto.EditorTextFlow;
+import org.zanata.rest.editor.dto.EditorTextFlowTarget;
 import org.zanata.rest.editor.dto.TransUnit;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.service.ResourceUtils;
@@ -71,24 +72,15 @@ public class TransUnitUtils {
             LocaleId localeId) {
         TransUnit tu = new TransUnit();
         if (hTft != null) {
-            TextFlowTarget target = new TextFlowTarget(hTf.getResId());
+            EditorTextFlowTarget target = new EditorTextFlowTarget(hTf.getResId());
             resourceUtils.transferToTextFlowTarget(hTft, target,
                     Optional.of("Editor"));
+            target.setLastModifiedTime(hTft.getLastChanged());
             tu.put(hTft.getLocaleId().toString(), target);
         } else {
             tu.put(localeId.toString(), new TextFlowTarget(hTf.getResId()));
         }
         return tu;
-    }
-
-    /**
-     * @return username, or null if none is available
-     */
-    private String findUsername(HPerson person) {
-        if (person == null || !person.hasAccount()) {
-            return null;
-        }
-        return person.getAccount().getUsername();
     }
 
     public void transferToTextFlow(HTextFlow from, EditorTextFlow to) {
@@ -98,16 +90,13 @@ public class TransUnitUtils {
         HPotEntryData potEntryData = from.getPotEntryData();
 
         if (potEntryData != null) {
-            to.setMsgCtxt(potEntryData.getContext());
+            to.setMsgctxt(potEntryData.getContext());
             to.setSourceReferences(potEntryData.getReferences());
             to.setsourceFlags(potEntryData.getFlags());
         }
 
         to.setSourceComment(
                 TransUnitTransformer.commentToString(from.getComment()));
-//        to.setLastModifiedBy(_);
-//        to.setLastModifiedTime();
-
     }
 
     public TransUnitUtils() {

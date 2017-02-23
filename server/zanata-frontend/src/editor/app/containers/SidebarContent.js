@@ -1,14 +1,67 @@
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { Tabs, Tab, FormGroup, InputGroup,
   FormControl } from 'react-bootstrap'
 import Icon from '../../../frontend/app/components/Icon'
+import { connect } from 'react-redux'
+import { isUndefined } from 'lodash'
 
 const activityTitle = 'Activity'
 const glossaryTitle = 'Glossary'
 
+// FIXME what is the following comment for?
 // https://dmfrancisco.github.io/react-icons/
 
 const SidebarContent = React.createClass({
+
+  propTypes: {
+    hasSelectedPhrase: PropTypes.bool.isRequired,
+    selectedPhrase: PropTypes.shape({
+      msgctxt: PropTypes.string,
+      resId: PropTypes.string.isRequired,
+      sourceComment: PropTypes.string,
+      sourceFlags: PropTypes.string,
+      sourceReferences: PropTypes.string,
+      lastModifiedBy: PropTypes.string,
+      lastModifiedTime: PropTypes.date
+    })
+  },
+
+  sidebarDetails () {
+    if (!this.props.hasSelectedPhrase) {
+      return <span>Select a phrase to see details.</span>
+    }
+    const {
+      msgctxt,
+      resId,
+      sourceComment,
+      sourceFlags,
+      sourceReferences,
+      lastModifiedBy,
+      lastModifiedTime
+    } = this.props.selectedPhrase
+
+    return (
+      <ul className="sidebar-details">
+        {this.detailItem('Resource ID', resId)}
+        {this.detailItem('Message Context', msgctxt)}
+        {this.detailItem('Reference', sourceReferences)}
+        {this.detailItem('Flags', sourceFlags)}
+        {this.detailItem('Source Comment', sourceComment)}
+        {this.detailItem('Last Modified', '(personIcon) ' + lastModifiedBy +
+            '(clockIcon)' + lastModifiedTime)}
+      </ul>
+    )
+  },
+
+  detailItem (label, value) {
+    // FIXME made it stand out so it is obvious it needs design work.
+    return (
+      <li>
+        <span>{label}</span> <span style={{color: 'magenta'}}>{value}</span>
+      </li>
+    )
+  },
+
   render () {
     return (
       <div>
@@ -16,14 +69,7 @@ const SidebarContent = React.createClass({
           <Icon name="info" className="s1" /> Details
         </h1>
         <div className="sidebar-wrapper">
-          <ul className="sidebar-details">
-            <li><span>Resource ID</span></li>
-            <li><span>Message Context</span></li>
-            <li><span>Reference</span></li>
-            <li><span>Flags</span></li>
-            <li><span>Source Comment</span></li>
-            <li><span>Last Modified</span></li>
-          </ul>
+          {this.sidebarDetails()}
           <FormGroup className="trans-link">
             <InputGroup>
               <InputGroup.Addon><Icon name="copy"
@@ -50,6 +96,30 @@ const SidebarContent = React.createClass({
   }
 })
 
-// TODO connect this component to get props from the app
+function mapStateToProps (state) {
+  const { detail, selectedPhraseId } = state.phrases
+  const selectedPhrase = detail[selectedPhraseId]
 
-export default SidebarContent
+  // Need to check whether phrase itself is undefined since the detail may not
+  // yet have been fetched from the server.
+  const hasSelectedPhrase = !isUndefined(selectedPhraseId) &&
+      !isUndefined(selectedPhrase)
+  if (hasSelectedPhrase) {
+    return {
+      hasSelectedPhrase,
+      selectedPhrase
+    }
+  } else {
+    return {
+      hasSelectedPhrase
+    }
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SidebarContent)

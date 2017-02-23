@@ -120,6 +120,7 @@ function transUnitDetailToPhraseDetail (transUnitDetail, localeId) {
     } = transUnit.source
     const trans = transUnit[localeId]
     const translations = extractTranslations(trans)
+
     return {
       id: parseInt(index, 10),
       resId: id,
@@ -133,7 +134,10 @@ function transUnitDetailToPhraseDetail (transUnitDetail, localeId) {
       newTranslations: [...translations],
       status: transUnitStatusToPhraseStatus(trans && trans.state),
       revision: trans && trans.revision ? parseInt(trans.revision, 10) : 0,
-      wordCount: parseInt(wordCount, 10)
+      wordCount: parseInt(wordCount, 10),
+      lastModifiedBy: trans && trans.translator && trans.translator.name,
+      lastModifiedTime: trans && trans.lastModifiedTime &&
+        new Date(trans.lastModifiedTime)
     }
   })
 }
