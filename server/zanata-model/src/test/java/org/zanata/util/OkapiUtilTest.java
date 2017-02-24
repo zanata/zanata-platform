@@ -3,13 +3,11 @@ package org.zanata.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 import static org.zanata.util.OkapiUtil.countWords;
 
 public class OkapiUtilTest {
     // @formatter:off
-    String[] strings = {
+    private String[] strings = {
         "<author><firstname>Emmanuel</firstname> <surname>Bernard</surname></author>",
         "Graphic Design",
         "the object is passed up to the UI tier",
@@ -37,7 +35,7 @@ public class OkapiUtilTest {
     // @formatter:on
     // These counts represent the expected word counts for the strings listed
     // above.
-    long[] count = { 2, 2, 9,
+    private long[] count = { 2, 2, 9,
             // Okapi says the fourth string has 49 words, but it looks like 54
             // ?!
             // TODO work out why
@@ -58,40 +56,4 @@ public class OkapiUtilTest {
         }
     }
 
-    @Test
-    public void extractPlainTextContent() throws Exception {
-        assertThat(
-                OkapiUtil
-                        .removeFormattingMarkup("<seg><bpt i=\"1\" x=\"1\">{\\b </bpt>Special<ept i=\"1\">}</ept> text</seg>"),
-                equalTo("Special text"));
-        assertThat(
-                OkapiUtil
-                        .removeFormattingMarkup("<seg><bpt i=\"1\" x=\"1\">{\\cf7 </bpt>Special<ept i=\"1\">}</ept> text</seg>"),
-                equalTo("Special text"));
-        assertThat(
-                OkapiUtil
-                        .removeFormattingMarkup("<seg><bpt i=\"1\" x=\"1\">&lt;B></bpt>Special<ept i=\"1\">&lt;/B></ept> text</seg>"),
-                equalTo("Special text"));
-
-        assertThat(
-                OkapiUtil
-                        .removeFormattingMarkup("<seg>The <bpt i=\"1\" x=\"1\">&lt;i></bpt><bpt i=\"2\" x=\"2\">&lt;b></bpt>"
-                                + "big<ept i=\"2\">&lt;/b></ept> black<ept i=\"1\">&lt;/i></ept> cat.</seg>"),
-                equalTo("The big black cat."));
-
-        assertThat(
-                OkapiUtil.removeFormattingMarkup("<seg>The icon <ph x=\"1\">&lt;img src=\"testNode.gif\"/></ph>represents "
-                        + "a conditional node.</seg>"),
-                equalTo("The icon represents a conditional node."));
-    }
-
-    @Test
-    public void extractPlainTextContentWithNested() throws Exception {
-        assertThat(
-                OkapiUtil.removeFormattingMarkup("<seg>Elephants<ph type=\"fnote\">{\\cs16\\super \\chftn {\\footnote \\pard\\plain"
-                        + "\\s15\\widctlpar \\f4\\fs20"
-                        + "{\\cs16\\super \\chftn } <sub>An elephant is a very "
-                        + "large animal.</sub>}}</ph> are big.</seg>"),
-                equalTo("Elephants are big."));
-    }
 }

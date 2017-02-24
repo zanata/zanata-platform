@@ -1,3 +1,9 @@
+## 4.1.1
+### Data migration
+Imported TMX translation memories may be changed if they were previously
+parsed with a non-Unicode encoding (ZNTA-1740). A warning will be logged if
+re-indexing is required.
+
 ## 4.1.0
 ### Breaking changes
 New Zanata instances will now block anonymous users from accessing any resources.
