@@ -8,10 +8,13 @@ import org.ocpsoft.rewrite.config.Configuration;
 import org.ocpsoft.rewrite.config.ConfigurationBuilder;
 import org.ocpsoft.rewrite.config.Direction;
 import org.ocpsoft.rewrite.context.EvaluationContext;
+import org.ocpsoft.rewrite.servlet.config.Domain;
 import org.ocpsoft.rewrite.servlet.config.Forward;
+import org.ocpsoft.rewrite.servlet.config.Header;
 import org.ocpsoft.rewrite.servlet.config.HttpConfigurationProvider;
 import org.ocpsoft.rewrite.servlet.config.HttpOperation;
 import org.ocpsoft.rewrite.servlet.config.Path;
+import org.ocpsoft.rewrite.servlet.config.PathAndQuery;
 import org.ocpsoft.rewrite.servlet.config.Query;
 import org.ocpsoft.rewrite.servlet.config.Redirect;
 import org.ocpsoft.rewrite.servlet.config.rule.Join;
@@ -25,6 +28,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.ocpsoft.rewrite.config.And.all;
 
 /*
  * This class replaces urlrewrite.xml, with simpler bidirectional mappings for external/internal URLs.
@@ -32,12 +36,33 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 @RewriteConfiguration
 public class UrlRewriteConfig extends HttpConfigurationProvider {
 
+    // Should we redirect any HTTP requests (forwarded by a proxy/load
+    // balancer) to the corresponding HTTPS URL?
+    private static final boolean REDIRECT_TO_HTTPS =
+            // check system property is 'true'
+            Boolean.getBoolean("zanata.redirectHttpToHttps");
+
     @Override
     public Configuration getConfiguration(final ServletContext context) {
         String contextPath = context.getContextPath();
         // NB: inbound rules are processed in order, outbound rules in reverse order (as of Rewrite 3.0.0.Alpha1)
-        return ConfigurationBuilder.begin()
-
+        ConfigurationBuilder builder = ConfigurationBuilder.begin();
+        if (REDIRECT_TO_HTTPS) {
+            // TODO handle RFC7239 Forwarded header as well
+            // https://tools.ietf.org/html/rfc7239#section-5.4
+            builder.addRule()
+                    .when(all(
+                            Header.matches("X-Forwarded-Proto", "http"),
+                            Domain.matches("{server}"),
+                            PathAndQuery.matches("{pathAndQuery}")))
+                    // TODO Redirect wants to encode the URL, but pathAndQuery is already encoded
+//                    .perform(Redirect.temporary("https://{server}{pathAndQuery}"))
+                    // Because of the above problem, we just redirect to the home page.
+                    .perform(Redirect.temporary("https://{server}/"))
+            .where("server").matches(".*")
+            .where("pathAndQuery").matches(".*");
+        }
+        builder
                 // strip cid params to avoid NonexistentConversationException
                 .addRule()
                 .when(Query.parameterExists("cid"))
@@ -77,6 +102,8 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                         // There is a 302 redirect from profile to profile/
                         // I don't know why it does it, but it causes 403 Forbidden
                         // unless there is also a rewrite for profile/ here
+                        // Probably caused by the presence of the profile
+                        // directory (which contains merge_account.xhtml).
                         "profile",
                         "profile/",
                         "profile/view/[^/]*"))
@@ -164,6 +191,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 // OAuth authorization
                 .addRule(Join.path("/oauth/").to("/oauth/home.xhtml"))
                 ;
+        return builder;
     }
 
     @Override
