@@ -76,21 +76,4 @@ public class EditorTextFlow extends TextFlow {
     public void setSourceComment(String sourceComment) {
         this.sourceComment = sourceComment;
     }
-
-//    public String getLastModifiedBy() {
-//        return lastModifiedBy;
-//    }
-//
-//    public void setLastModifiedBy(String lastModifiedBy) {
-//        this.lastModifiedBy = lastModifiedBy;
-//    }
-//
-//    public Date getLastModifiedTime() {
-//        return lastModifiedTime;
-//    }
-//
-//    public void setLastModifiedTime(Date lastModifiedTime) {
-//        this.lastModifiedTime = lastModifiedTime;
-//    }
-
 }
