@@ -3,7 +3,7 @@ import { Tabs, Tab, FormGroup, InputGroup,
   FormControl } from 'react-bootstrap'
 import Icon from '../../../frontend/app/components/Icon'
 import { connect } from 'react-redux'
-import { isUndefined } from 'lodash'
+import { isEmpty, isUndefined } from 'lodash'
 
 const activityTitle = 'Activity'
 const glossaryTitle = 'Glossary'
@@ -47,19 +47,35 @@ const SidebarContent = React.createClass({
         {this.detailItem('Reference', sourceReferences)}
         {this.detailItem('Flags', sourceFlags)}
         {this.detailItem('Source Comment', sourceComment)}
-        {this.detailItem('Last Modified', '(personIcon) ' + lastModifiedBy +
-            '(clockIcon)' + lastModifiedTime)}
+        {this.detailItem('Last Modified',
+            this.lastModifiedDisplay(lastModifiedBy, lastModifiedTime))}
       </ul>
     )
   },
 
   detailItem (label, value) {
-    // FIXME made it stand out so it is obvious it needs design work.
+    // FIXME kgough make this look good.
+    const valueDisplay = isEmpty(value)
+        ? <span style={{color: 'red'}}>No content</span>
+        : <span style={{color: 'magenta'}}>{value}</span>
     return (
       <li>
-        <span>{label}</span> <span style={{color: 'magenta'}}>{value}</span>
+        <span>{label}</span> {valueDisplay}
       </li>
     )
+  },
+
+  // FIXME kgough include icons, format date appropriately
+  lastModifiedDisplay (lastModifiedBy, lastModifiedTime) {
+    if (isUndefined(lastModifiedBy) && isUndefined(lastModifiedTime)) {
+      return undefined
+    }
+
+    const modifiedByDisplay = isUndefined(lastModifiedBy) ? undefined
+        : '(personIcon) ' + lastModifiedBy
+    const modifiedTimeDisplay = isUndefined(lastModifiedTime) ? undefined
+        : '(clockIcon)' + lastModifiedTime
+    return <span>{modifiedByDisplay} {modifiedTimeDisplay}</span>
   },
 
   render () {
