@@ -29,6 +29,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.security.annotations.Authenticated;
@@ -50,6 +51,8 @@ import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.RequestService;
 import org.zanata.ui.faces.FacesMessages;
+
+import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -106,23 +109,12 @@ public class LanguageJoinAction implements Serializable {
         LanguageRequest request =
                 requestServiceImpl.getLanguageRequest(languageRequestId);
         Long personId = request.getRequest().getRequester().getPerson().getId();
-        boolean updateAsTranslator;
-        boolean updateAsReviewer;
-        boolean updateAsCoordinator;
-        HLocaleMember member = localeMemberDAO.findByPersonAndLocale(personId,
-                new LocaleId(language));
-        if (member == null) {
-            updateAsTranslator = request.isTranslator();
-            updateAsReviewer = request.isReviewer();
-            updateAsCoordinator = request.isCoordinator();
-        } else {
-            updateAsTranslator =
-                    member.isTranslator() ? true : request.isTranslator();
-            updateAsReviewer =
-                    member.isReviewer() ? true : request.isReviewer();
-            updateAsCoordinator =
-                    member.isCoordinator() ? true : request.isCoordinator();
-        }
+        HLocaleMember member = firstNonNull(localeMemberDAO.findByPersonAndLocale(personId,
+                new LocaleId(language)), new HLocaleMember());
+        boolean updateAsTranslator = member.isTranslator() || request.isTranslator();
+        boolean updateAsReviewer = member.isReviewer() || request.isReviewer();
+        boolean updateAsCoordinator = member.isCoordinator() || request.isCoordinator();
+
         languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(language,
                 personId, updateAsTranslator, updateAsReviewer,
                 updateAsCoordinator);
