@@ -55,6 +55,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
+ * This aim of this test is to provide a method of testing as many
+ * components as possible in a short period of time. Individual tests for
+ * UI components via WebDriver are very time expensive.
+ *
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(TestPlan.BasicAcceptanceTest.class)
