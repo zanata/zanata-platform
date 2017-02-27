@@ -714,6 +714,11 @@
           </dependencies>
         </plugin>
         <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.0.0</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-source-plugin</artifactId>
           <version>${maven.source.version}</version>
         </plugin>
@@ -1466,7 +1471,7 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>sonatype-nexus-staging</id>
+      <id>sonatype-nexus-snapshots</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
     <repository>
