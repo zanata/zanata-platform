@@ -4,6 +4,7 @@ import { Tabs, Tab, FormGroup, InputGroup,
 import Icon from '../../../frontend/app/components/Icon'
 import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
+import { FormattedDate, FormattedTime } from 'react-intl'
 
 const activityTitle = 'Activity'
 const glossaryTitle = 'Glossary'
@@ -67,11 +68,20 @@ const SidebarContent = React.createClass({
       return undefined
     }
 
-    const modifiedByDisplay = isUndefined(lastModifiedBy) ? undefined
-        : [<Icon name="user" className="n1" />, 'lastModifiedBy']
-    const modifiedTimeDisplay = isUndefined(lastModifiedTime) ? undefined
-        : [<Icon name="clock" className="n1" />, 'lastModifiedTime']
-    return <span>{modifiedByDisplay} {modifiedTimeDisplay}</span>
+    const modifiedByIcon = isUndefined(lastModifiedBy) ? undefined
+        : <Icon name="user" className="n1" />
+    const modifiedTimeIcon = isUndefined(lastModifiedTime) ? undefined
+        : <Icon name="clock" className="n1" />
+    const modifiedDate = isUndefined(lastModifiedTime) ? undefined
+        : <FormattedDate value={lastModifiedTime} format="medium" />
+    const modifiedTime = isUndefined(lastModifiedTime) ? undefined
+        : <FormattedTime value={lastModifiedTime} />
+    return (
+      <span>
+        {modifiedByIcon} {lastModifiedBy} {modifiedTimeIcon
+        } {modifiedDate} {modifiedTime}
+      </span>
+    )
   },
 
   render () {
