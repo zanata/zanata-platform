@@ -22,16 +22,16 @@ try {
           // Checkout code from repository
           // Based on https://issues.jenkins-ci.org/browse/JENKINS-33022?focusedCommentId=248530&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-248530
           // This should be equivalent to checkout scm (noTags: true, shallow: true)
-          // checkout([
-          //   $class: 'GitSCM',
-          //   branches: scm.branches,
-          //   doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-          //   extensions: scm.extensions + [[$class: 'CloneOption', noTags: true, reference: '', shallow: true]],
-          //   submoduleCfg: [],
-          //   userRemoteConfigs: scm.userRemoteConfigs
-          // ])
+          checkout([
+             $class: 'GitSCM',
+             branches: scm.branches,
+             doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
+             extensions: scm.extensions + [[$class: 'CloneOption', noTags: true, reference: '', shallow: true]],
+             submoduleCfg: [],
+             userRemoteConfigs: scm.userRemoteConfigs + [ ssh://git@github.com:zanata/zanata-platform.git ]
+           ])
 
-          checkout scm
+          //checkout scm
         }
 
         stage('Install build tools') {
