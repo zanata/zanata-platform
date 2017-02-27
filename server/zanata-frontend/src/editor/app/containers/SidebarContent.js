@@ -1,13 +1,14 @@
 import React, { PropTypes } from 'react'
-import { Tabs, Tab, FormGroup, InputGroup,
-  FormControl } from 'react-bootstrap'
+import { // Tabs, Tab,
+  FormGroup, InputGroup,
+  FormControl, Button } from 'react-bootstrap'
 import Icon from '../../../frontend/app/components/Icon'
 import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
 
-const activityTitle = 'Activity'
-const glossaryTitle = 'Glossary'
+// const activityTitle = 'Activity'
+// const glossaryTitle = 'Glossary'
 
 const SidebarContent = React.createClass({
 
@@ -62,7 +63,6 @@ const SidebarContent = React.createClass({
     )
   },
 
-  // FIXME kgough include icons, format date appropriately
   lastModifiedDisplay (lastModifiedBy, lastModifiedTime) {
     if (isUndefined(lastModifiedBy) && isUndefined(lastModifiedTime)) {
       return undefined
@@ -89,6 +89,11 @@ const SidebarContent = React.createClass({
       <div>
         <h1 className="sidebar-heading">
           <Icon name="info" className="s1" /> Details
+          <span className="s1 pull-right">
+            <Button bsStyle="link">
+              <Icon name="cross" />
+            </Button>
+          </span>
         </h1>
         <div className="sidebar-wrapper">
           {this.sidebarDetails()}
@@ -101,6 +106,7 @@ const SidebarContent = React.createClass({
             </InputGroup>
           </FormGroup>
         </div>
+        {/*
         <Tabs id="sidebartabs" defaultActiveKey={1}>
           <Tab eventKey={1} title={activityTitle}>
             <div className="sidebar-wrapper" id="tab1">
@@ -113,6 +119,7 @@ const SidebarContent = React.createClass({
             </div>
           </Tab>
         </Tabs>
+        */}
       </div>
     )
   }

@@ -42,3 +42,7 @@ span.details-nocontent {
   color: #20718A;
   font-weight: 500 !important;
 }
+
+.details-content .n1 {
+  vertical-align:middle;
+}

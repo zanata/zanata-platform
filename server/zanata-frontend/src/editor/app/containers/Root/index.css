@@ -312,6 +312,10 @@ li.docName span.ellipsis {
   border-top-right-radius: 0;
 }
 
+.pull-right {
+  float:right !important;
+}
+
   /**
    * Media Queries
    */
