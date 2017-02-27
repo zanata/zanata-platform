@@ -21,12 +21,13 @@
 
 package org.zanata.webtrans.shared.rpc;
 
+import java.util.Date;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class TransMemoryMergeStarted {
 
-    public long numOfTransUnits;
-
+    public Date startedTime;
 }

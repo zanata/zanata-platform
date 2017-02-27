@@ -40,6 +40,8 @@ import com.google.inject.Singleton;
 public class TransMemoryMergePopupPanelView implements
         TransMemoryMergePopupPanelDisplay {
 
+    private final UiMessages messages;
+
     interface TMIMergeUiBinder extends
             UiBinder<DialogBox, TransMemoryMergePopupPanelView> {
     }
@@ -55,6 +57,7 @@ public class TransMemoryMergePopupPanelView implements
     @Inject
     public TransMemoryMergePopupPanelView(TMMergeForm TMMergeForm,
             UiMessages messages) {
+        this.messages = messages;
         // auto hide false, modal true
 
         dialogBox = uiBinder.createAndBindUi(this);
@@ -80,13 +83,15 @@ public class TransMemoryMergePopupPanelView implements
     }
 
     @Override
-    public void showProcessing() {
+    public void showProcessing(String progress) {
         TMMergeForm.setVisible(false);
         processingLabel.setVisible(true);
+        processingLabel.setText(progress);
     }
 
     @Override
     public void showForm() {
+        processingLabel.setText(messages.processing());
         processingLabel.setVisible(false);
         TMMergeForm.setVisible(true);
         dialogBox.center();

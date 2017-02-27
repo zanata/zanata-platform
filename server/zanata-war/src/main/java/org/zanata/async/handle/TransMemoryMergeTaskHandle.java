@@ -21,6 +21,11 @@
 package org.zanata.async.handle;
 
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.common.LocaleId;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+
+import com.google.common.base.MoreObjects;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -31,6 +36,7 @@ public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> {
     private String cancelledBy;
     private long cancelledTime;
     private String triggeredBy;
+    private String mergeTarget;
 
     /**
      * Increments the processed text flow count by 1
@@ -77,5 +83,23 @@ public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> {
 
     public void setTriggeredBy(final String triggeredBy) {
         this.triggeredBy = triggeredBy;
+    }
+
+    public void setTMMergeTarget(ProjectIterationId projectIterationId,
+            DocumentId documentId, LocaleId localeId) {
+        this.mergeTarget = String.format("%s - %s (%s)", projectIterationId,
+                documentId.getDocId(), localeId);
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("mergeTarget", mergeTarget)
+                .add("textFlowFilled", textFlowFilled)
+                .add("totalTextFlows", totalTextFlows)
+                .add("cancelledBy", cancelledBy)
+                .add("cancelledTime", cancelledTime)
+                .add("triggeredBy", triggeredBy)
+                .toString();
     }
 }

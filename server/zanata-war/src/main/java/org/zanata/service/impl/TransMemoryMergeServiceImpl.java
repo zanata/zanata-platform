@@ -42,25 +42,32 @@ import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
+import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.type.EntityType;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
 import org.zanata.transaction.TransactionUtil;
 import org.zanata.util.TranslationUtil;
+import org.zanata.webtrans.server.TranslationWorkspace;
+import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.server.rpc.TransMemoryMergeStatusResolver;
+import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
+import org.zanata.webtrans.shared.rpc.TMMergeInProgress;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
@@ -96,6 +103,13 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     @Inject
     private TransactionUtil transactionUtil;
 
+    @Inject
+    private TranslationWorkspaceManager translationWorkspaceManager;
+
+    @Inject
+    @Authenticated
+    private HAccount authenticatedAccount;
+
 
     @Override
     public List<TranslationService.TranslationResult> executeMerge(
@@ -112,6 +126,8 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                 .excludeFuzzy().excludeTranslated()
                                 .excludeRejected().build());
         asyncTaskHandle.setTotalTextFlows(textFlows.size());
+        asyncTaskHandle.setTriggeredBy(authenticatedAccount.getUsername());
+        asyncTaskHandle.setTMMergeTarget(request.projectIterationId, request.documentId, request.localeId);
 
         // here we set baseTranslationVersion to 0 because we only target untranslated textflows
         int baseTranslationVersion = 0;
@@ -127,7 +143,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         List<HTextFlow> hTextFlows = textFlowDAO
                 .findByIdList(Lists.newArrayList(requestMap.keySet()));
         return fillTextFlowsFromTMResult(request, targetLocale, requestMap,
-                hTextFlows
+                hTextFlows, asyncTaskHandle
         );
     }
 
@@ -142,18 +158,23 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
 
     private List<TranslationService.TranslationResult> fillTextFlowsFromTMResult(
-            TransMemoryMergeRequest action, HLocale targetLocale,
+            TransMemoryMergeRequest request, HLocale targetLocale,
             Map<Long, TransUnitUpdateRequest> requestMap,
-            List<HTextFlow> hTextFlows) {
+            List<HTextFlow> hTextFlows,
+            TransMemoryMergeTaskHandle asyncTaskHandle) {
         List<HTextFlow> textFlowBatch = Lists.newLinkedList();
         List<TranslationService.TranslationResult> finalResult = Lists.newLinkedList();
 
+        final WorkspaceId workspaceId =
+                new WorkspaceId(request.projectIterationId, request.localeId);
         int index = 0;
-        while (index < hTextFlows.size()) {
+        int totalTextFlows = hTextFlows.size();
+        while (index < totalTextFlows) {
             HTextFlow hTextFlow = hTextFlows.get(index);
             HTextFlowTarget hTextFlowTarget =
                     hTextFlow.getTargets().get(targetLocale.getId());
             index++;
+            asyncTaskHandle.incrementTextFlowProcessed();
             // TODO rhbz953734 - TM getUpdateRequests won't override Translated
             // to Approved
             // yet. May or may not want this feature.
@@ -168,19 +189,37 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
             if (index % BATCH_SIZE == 0) {
                 List<TranslationService.TranslationResult> batchResult =
-                        translateInBatch(action, textFlowBatch, targetLocale,
+                        translateInBatch(request, textFlowBatch, targetLocale,
                                 requestMap);
                 finalResult.addAll(batchResult);
                 textFlowBatch.clear();
+                publishTMMergeProgressToWorkspace(workspaceId, index + 1,
+                        totalTextFlows);
             }
 
         }
         List<TranslationService.TranslationResult> batchResult =
-                translateInBatch(action, textFlowBatch, targetLocale,
+                translateInBatch(request, textFlowBatch, targetLocale,
                         requestMap);
         finalResult.addAll(batchResult);
+        publishTMMergeProgressToWorkspace(workspaceId, totalTextFlows,
+                totalTextFlows);
 
         return finalResult;
+    }
+
+    private void publishTMMergeProgressToWorkspace(WorkspaceId workspaceId,
+            int processedTextFlows, int totalTextFlows) {
+        try {
+            TranslationWorkspace workspace =
+                    translationWorkspaceManager.getOrRegisterWorkspace(
+                            workspaceId);
+            workspace.publish(
+                    new TMMergeInProgress(totalTextFlows, processedTextFlows));
+
+        } catch (NoSuchWorkspaceException e) {
+            log.info("no workspace for {}", workspaceId);
+        }
     }
 
     private List<TranslationService.TranslationResult> translateInBatch(

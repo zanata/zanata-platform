@@ -108,14 +108,21 @@ public interface UiMessages extends Messages {
     @DefaultMessage("TM merge failed")
     String mergeTMFailed();
 
-    @DefaultMessage("TM merge success on following rows: {0,list,string}")
-    String mergeTMSuccess(List<String> rowIndices);
+    @DefaultMessage("TM merge success on {0} rows")
+    String mergeTMSuccess(int count);
 
     @DefaultMessage("Proceed to auto-fill")
     String mergeTMConfirm();
 
     @DefaultMessage("Cancel")
     String mergeTMCancel();
+
+    @DefaultMessage("TM merge started...")
+    String mergeTMStarted();
+
+    @DefaultMessage("{0}% has been processed")
+    String mergeProgressPercentage(String percentDisplay);
+
 
     @DefaultMessage("Match percentage threshold")
     String matchThreshold();

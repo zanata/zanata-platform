@@ -18,19 +18,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.rest;
+package org.zanata.webtrans.client.events;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
 
-import org.fusesource.restygwt.client.DirectRestService;
-import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
-import org.zanata.webtrans.shared.rpc.TransMemoryMergeStarted;
+import com.google.gwt.event.shared.EventHandler;
 
-public interface TransMemoryMergeResource extends DirectRestService {
-    String TMMERGE_PATH = "/tmmerge";
+public interface TMMergeProgressHandler extends EventHandler {
 
-    @POST
-    @Path(TMMERGE_PATH)
-    Boolean merge(TransMemoryMergeRequest request);
+    void onTMMergeProgress(TMMergeProgressEvent event);
 }

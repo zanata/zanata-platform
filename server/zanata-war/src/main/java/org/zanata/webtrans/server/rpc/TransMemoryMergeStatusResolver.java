@@ -28,7 +28,6 @@ import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
-import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
 import com.google.common.base.Objects;
 
 /**

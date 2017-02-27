@@ -25,7 +25,6 @@ import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
@@ -37,11 +36,10 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
-import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
-import org.zanata.model.HTextFlow;
-import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.editor.dto.suggestion.Suggestion;
 import org.zanata.rest.editor.service.resource.SuggestionsResource;
 import org.zanata.security.ZanataIdentity;
@@ -50,12 +48,8 @@ import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
-import org.zanata.webtrans.shared.model.TransUnitId;
-import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
-import org.zanata.webtrans.shared.rpc.TransMemoryMergeStarted;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 
 import com.google.common.base.Joiner;
 
@@ -67,6 +61,8 @@ import com.google.common.base.Joiner;
 @Path(SuggestionsResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class SuggestionsService implements SuggestionsResource {
+    private static final Logger log =
+            LoggerFactory.getLogger(SuggestionsService.class);
 
     public static final String SEARCH_TYPES = Joiner.on(", ").join(SearchType.values());
 
@@ -78,9 +74,6 @@ public class SuggestionsService implements SuggestionsResource {
 
     @Inject
     private ZanataIdentity identity;
-
-    @Inject
-    private TextFlowDAO textFlowDAO;
 
     @Inject
     private SecurityService securityServiceImpl;
@@ -170,34 +163,12 @@ public class SuggestionsService implements SuggestionsResource {
     }
 
     @Override
-    public TransMemoryMergeStarted merge(TransMemoryMergeRequest request) {
+    public Boolean merge(TransMemoryMergeRequest request) {
         securityCheck(request);
-
-        HLocale hLocale =
-                localeService.getByLocaleId(request.localeId);
-
-        // get all untranslated text flows
-        List<HTextFlow> textFlows = textFlowDAO
-                .getAllTextFlowByDocumentIdWithConstraints(request.documentId, hLocale,
-                        FilterConstraints.builder().keepAll().excludeApproved()
-                                .excludeFuzzy().excludeTranslated()
-                                .excludeRejected().build());
-
-        // here we set baseTranslationVersion to 0 because we only target untranslated textflows
-        int baseTranslationVersion = 0;
-        List<TransUnitUpdateRequest> updateRequests =
-                textFlows.stream().map(
-                        from -> new TransUnitUpdateRequest(
-                                new TransUnitId(from.getId()),
-                                null, null, baseTranslationVersion,
-                                TranslationSourceType.TM_MERGE.getAbbr()))
-                .collect(Collectors.toList());
 
         boolean started = transMemoryMergeManager.startTransMemoryMerge(request);
         if (started) {
-            TransMemoryMergeStarted response =
-                    new TransMemoryMergeStarted();
-            return response;
+            return true;
         }
 
         throw new UnsupportedOperationException("There is already a TM merge operation in progress");
