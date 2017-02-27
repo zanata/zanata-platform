@@ -76,4 +76,10 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
         // This value is NOT provided in the DB Unit script above
         assertThat(databaseBackedConfig.getAdminEmailAddress(), nullValue());
     }
+
+    @Test
+    @InRequestScope
+    public void autoAcceptTranslatorIsFalseIfNull() {
+        assertThat(databaseBackedConfig.isAutoAcceptTranslators(), equalTo(false));
+    }
 }
