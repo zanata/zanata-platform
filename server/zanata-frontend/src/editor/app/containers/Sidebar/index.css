@@ -32,3 +32,13 @@ ul.sidebar-details {
 ul.sidebar-details span {
   font-weight: 600;
 }
+
+span.details-nocontent {
+  color: #b3b3b3;
+  font-weight: 500 !important;
+}
+
+.details-content *, span.details-content {
+  color: #20718A;
+  font-weight: 500 !important;
+}

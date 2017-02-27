@@ -8,9 +8,6 @@ import { isEmpty, isUndefined } from 'lodash'
 const activityTitle = 'Activity'
 const glossaryTitle = 'Glossary'
 
-// FIXME what is the following comment for?
-// https://dmfrancisco.github.io/react-icons/
-
 const SidebarContent = React.createClass({
 
   propTypes: {
@@ -54,10 +51,9 @@ const SidebarContent = React.createClass({
   },
 
   detailItem (label, value) {
-    // FIXME kgough make this look good.
     const valueDisplay = isEmpty(value)
-        ? <span style={{color: 'red'}}>No content</span>
-        : <span style={{color: 'magenta'}}>{value}</span>
+        ? <span className="details-nocontent">No content</span>
+        : <span className="details-content">{value}</span>
     return (
       <li>
         <span>{label}</span> {valueDisplay}
@@ -72,9 +68,9 @@ const SidebarContent = React.createClass({
     }
 
     const modifiedByDisplay = isUndefined(lastModifiedBy) ? undefined
-        : '(personIcon) ' + lastModifiedBy
+        : [<Icon name="user" className="n1" />, 'lastModifiedBy']
     const modifiedTimeDisplay = isUndefined(lastModifiedTime) ? undefined
-        : '(clockIcon)' + lastModifiedTime
+        : [<Icon name="clock" className="n1" />, 'lastModifiedTime']
     return <span>{modifiedByDisplay} {modifiedTimeDisplay}</span>
   },
 

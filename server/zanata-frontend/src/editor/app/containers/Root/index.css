@@ -139,21 +139,18 @@ li.docName span.ellipsis {
   clear: both;
 }
 
-/* FIXME this was under a heading for sidebar stuff, but looks like it may
-   be unrelated stuff that just happens to be after that section with no
-   divider */
-
 .trans-link.form-group {
    padding-top:0.75em;
 }
 
 .trans-link.form-group .form-control {
-  padding-top:0.75em;
+  height:2.25em;
   width:90%;
+  color:#20718a;
 }
 
 .input-group-addon {
-  vertical-align: text-bottom;
+  vertical-align: middle;
   color:#20718a;
 }
 
