@@ -20,6 +20,7 @@
  */
 package org.zanata.ui.faces;
 
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 import static javax.faces.application.FacesMessage.Severity;
 import java.io.Serializable;
@@ -136,20 +137,29 @@ public class FacesMessages implements Serializable {
      * <p/>
      * You can also specify the severity, and parameters to be interpolated
      */
-    void addToControl(String id, Severity severity, String key,
+    private void addToControl(String id, Severity severity,
             String messageTemplate, final Object... params) {
         log.debug("{}: addToControl(id={}, template={})", this, id,
                 messageTemplate);
         // NB This needs to change when migrating out of Seam
         String interpolatedMessage = String.format(messageTemplate, params);
-        log.info("message to user (wid: {}): {})",
-                windowContext.getCurrentWindowId(), interpolatedMessage);
         FacesMessage jsfMssg =
                 new FacesMessage(severity, interpolatedMessage, null);
         if (id == null) {
+            if (shouldLogAsWarning(severity)) {
+                log.warn("Global message to user (wid: {}): {})",
+                        windowContext.getCurrentWindowId(),
+                        interpolatedMessage);
+            } else {
+                log.debug("Global message to user (wid: {}): {})",
+                        windowContext.getCurrentWindowId(),
+                        interpolatedMessage);
+            }
             // Global message
             globalMessages.add(jsfMssg);
         } else {
+            log.debug("Message to user (wid: {} id: {}): {})",
+                    windowContext.getCurrentWindowId(), id, interpolatedMessage);
             // Control specific message
             if (keyedMessages.containsKey(id)) {
                 keyedMessages.get(id).add(jsfMssg);
@@ -161,9 +171,14 @@ public class FacesMessages implements Serializable {
         }
     }
 
+    private boolean shouldLogAsWarning(Severity severity) {
+        // log error and fatal messages (to user) as warning (to log)
+        return severity.compareTo(SEVERITY_ERROR) >= 0;
+    }
+
     public void addToControl(String id, String messageTemplate,
             final Object... params) {
-        addToControl(id, SEVERITY_INFO, null, messageTemplate, params);
+        addToControl(id, SEVERITY_INFO, messageTemplate, params);
     }
 
     /**
@@ -175,7 +190,7 @@ public class FacesMessages implements Serializable {
      *            The parameters to be interpolated into the template.
      */
     public void addGlobal(String messageTemplate, final Object... params) {
-        addToControl(null, SEVERITY_INFO, null, messageTemplate, params);
+        addToControl(null, SEVERITY_INFO, messageTemplate, params);
     }
 
     /**
@@ -190,12 +205,14 @@ public class FacesMessages implements Serializable {
      */
     public void addGlobal(Severity severity, String messageTemplate,
             final Object... params) {
-        addToControl(null, severity, null, messageTemplate, params);
+        addToControl(null, severity, messageTemplate, params);
     }
 
     public void addGlobal(FacesMessage msg) {
-        log.info("FacesMessage to user (wid: {}): {})",
-                windowContext.getCurrentWindowId(), msg.getSummary());
+        if (shouldLogAsWarning(msg.getSeverity())) {
+            log.warn("Global FacesMessage to user (wid: {}): {})",
+                    windowContext.getCurrentWindowId(), msg.getSummary());
+        }
         globalMessages.add(msg);
     }
 
