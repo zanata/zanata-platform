@@ -28,7 +28,7 @@ try {
              doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
              extensions: scm.extensions + [[$class: 'CloneOption', noTags: true, reference: '', shallow: true]],
              submoduleCfg: [],
-             userRemoteConfigs: scm.userRemoteConfigs + [ 'ssh://git@github.com:zanata/zanata-platform.git' ]
+             userRemoteConfigs: [[ url: 'ssh://git@github.com:zanata/zanata-platform.git' ]]
            ])
 
           //checkout scm
