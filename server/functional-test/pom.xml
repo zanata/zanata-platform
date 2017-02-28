@@ -490,7 +490,7 @@
         </property>
       </activation>
       <properties>
-        <include.test.patterns>**/BasicAcceptanceTestSuite.java</include.test.patterns>
+        <include.test.patterns>**/DetailedTestSuite.java</include.test.patterns>
       </properties>
       <build>
         <plugins>
