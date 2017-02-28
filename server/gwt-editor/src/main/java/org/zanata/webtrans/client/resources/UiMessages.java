@@ -109,7 +109,7 @@ public interface UiMessages extends Messages {
     String mergeTMFailed();
 
     @DefaultMessage("TM merge success on {0} rows")
-    String mergeTMSuccess(int count);
+    String mergeTMSuccess(long count);
 
     @DefaultMessage("Proceed to auto-fill")
     String mergeTMConfirm();

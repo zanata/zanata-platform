@@ -25,7 +25,6 @@ import javax.ws.rs.Path;
 
 import org.fusesource.restygwt.client.DirectRestService;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
-import org.zanata.webtrans.shared.rpc.TransMemoryMergeStarted;
 
 public interface TransMemoryMergeResource extends DirectRestService {
     String TMMERGE_PATH = "/tmmerge";

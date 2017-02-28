@@ -34,22 +34,15 @@ public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> {
     private long textFlowFilled;
     private long totalTextFlows;
     private String cancelledBy;
-    private long cancelledTime;
+    private Long cancelledTime;
     private String triggeredBy;
     private String mergeTarget;
-
-    /**
-     * Increments the processed text flow count by 1
-     */
-    public void incrementTextFlowProcessed() {
-        textFlowFilled++;
-    }
 
     public long getTextFlowFilled() {
         return this.textFlowFilled;
     }
 
-    public void setTextFlowFilled(final int textFlowFilled) {
+    public void setTextFlowFilled(final long textFlowFilled) {
         this.textFlowFilled = textFlowFilled;
     }
 
@@ -57,7 +50,7 @@ public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> {
         return this.totalTextFlows;
     }
 
-    public void setTotalTextFlows(final int totalTextFlows) {
+    public void setTotalTextFlows(final long totalTextFlows) {
         this.totalTextFlows = totalTextFlows;
     }
 
@@ -91,9 +84,14 @@ public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> {
                 documentId.getDocId(), localeId);
     }
 
+    public String getMergeTarget() {
+        return mergeTarget;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
+                .omitNullValues()
                 .add("mergeTarget", mergeTarget)
                 .add("textFlowFilled", textFlowFilled)
                 .add("totalTextFlows", totalTextFlows)

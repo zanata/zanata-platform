@@ -28,12 +28,12 @@ import com.google.gwt.event.shared.GwtEvent;
  */
 public class TMMergeProgressEvent extends GwtEvent<TMMergeProgressHandler> {
     public static final Type<TMMergeProgressHandler> TYPE = new Type<>();
-    private final int processedTextFlows;
-    private final int totalTextFlows;
+    private final long processedTextFlows;
+    private final long totalTextFlows;
     private final double percent;
 
 
-    public TMMergeProgressEvent(int processedTextFlows, int totalTextFlows) {
+    public TMMergeProgressEvent(long processedTextFlows, long totalTextFlows) {
         this.processedTextFlows = processedTextFlows;
         this.totalTextFlows = totalTextFlows;
         this.percent = processedTextFlows * 100.0 / totalTextFlows;
@@ -62,7 +62,7 @@ public class TMMergeProgressEvent extends GwtEvent<TMMergeProgressHandler> {
         handler.onTMMergeProgress(this);
     }
 
-    public int getTotalTextFlows() {
+    public long getTotalTextFlows() {
         return totalTextFlows;
     }
 }

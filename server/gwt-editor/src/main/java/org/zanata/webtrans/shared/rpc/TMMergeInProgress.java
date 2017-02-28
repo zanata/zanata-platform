@@ -27,10 +27,10 @@ import com.google.common.base.MoreObjects;
  */
 public class TMMergeInProgress implements SessionEventData {
     private static final long serialVersionUID = 1L;
-    private int totalTextFlows;
-    private int processedTextFlows;
+    private long totalTextFlows;
+    private long processedTextFlows;
 
-    public TMMergeInProgress(int totalTextFlows, int processedTextFlows) {
+    public TMMergeInProgress(long totalTextFlows, long processedTextFlows) {
         this.totalTextFlows = totalTextFlows;
         this.processedTextFlows = processedTextFlows;
     }
@@ -39,11 +39,11 @@ public class TMMergeInProgress implements SessionEventData {
     public TMMergeInProgress() {
     }
 
-    public int getTotalTextFlows() {
+    public long getTotalTextFlows() {
         return totalTextFlows;
     }
 
-    public int getProcessedTextFlows() {
+    public long getProcessedTextFlows() {
         return processedTextFlows;
     }
 

@@ -41,7 +41,6 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.TransMemoryMergeResource;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
-import org.zanata.webtrans.shared.rpc.TransMemoryMergeStarted;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.inject.Inject;

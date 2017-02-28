@@ -30,4 +30,5 @@ import java.util.Date;
 public class TransMemoryMergeStarted {
 
     public Date startedTime;
+    public String startedBy;
 }
