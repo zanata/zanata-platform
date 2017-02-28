@@ -6,6 +6,8 @@ def projectProperties = [
 [$class: 'BuildDiscarderProperty',strategy: [$class: 'LogRotator', numToKeepStr: '10']],
     ]
 
+properties(projectProperties)
+
 
 def dummyForLibrary = ""
 
@@ -139,6 +141,7 @@ void integrationTests(def appserver) {
                    -DstaticAnalysis=false \
                    -Dcheckstyle.skip \
                    -Dappserver=$appserver \
+                   -Dcargo.debug.jvm.args= \
                    -DskipUnitTests \
                    -Dmaven.test.failure.ignore \
                    -Dmaven.main.skip \
@@ -146,7 +149,7 @@ void integrationTests(def appserver) {
                    -Dwebdriver.display=${env.DISPLAY} \
                    -Dwebdriver.type=chrome \
                    -Dwebdriver.chrome.driver=/opt/chromedriver \
-                   -DallFuncTests \\
+                   -DallFuncTests
       """
 // FIXME put this back
       // TODO add -Dmaven.war.skip (but we need zanata-test-war)
