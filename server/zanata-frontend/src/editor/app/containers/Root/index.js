@@ -10,7 +10,7 @@ import { fetchUiLocales } from '../../actions/headerActions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions'
 import SplitPane from 'react-split-pane'
 import { Icons } from 'zanata-ui'
-
+import Sidebar from 'react-sidebar'
 /**
  * Top level of Zanata view hierarchy.
  */
@@ -26,10 +26,22 @@ class Root extends Component {
   componentDidMount () {
     this.props.requestUiLocales()
     window.addEventListener('resize', this.onWindowResize)
+    var mql = window.matchMedia('(min-width: 800px)')
+    mql.addListener(this.mediaQueryChanged)
+    this.setState({mql: mql, sidebarDocked: mql.matches})
   }
 
   componentWillUnmount () {
     window.removeEventListener('resize', this.onWindowResize)
+    this.state.mql.removeListener(this.mediaQueryChanged)
+  }
+
+  onSetSidebarOpen (open) {
+    this.setState({sidebarOpen: open})
+  }
+
+  mediaQueryChanged () {
+    this.setState({sidebarDocked: this.state.mql.matches})
   }
 
   // TODO could debounce this
@@ -66,20 +78,27 @@ class Root extends Component {
       ? this.props.percentHeight * window.innerHeight
       : 0
 
+    var sidebarContent = <b>Sidebar content</b>
+
     // TODO adjust scrollbar width on div like Angular template editor.html
     return (
       <ParamPropDispatcher {...this.props}>
         <KeyShortcutDispatcher className="Editor is-suggestions-active">
           <Icons />
           <EditorHeader />
-          <SplitPane ref="suggestionResizer"
-            split="horizontal"
-            defaultSize={pixelHeight}
-            primary="second"
-            onDragFinished={this.resizeFinished}>
-            <MainContent />
-            {this.props.showSuggestion && <SuggestionsPanel />}
-          </SplitPane>
+          <Sidebar sidebar={sidebarContent}
+            open={this.state.sidebarOpen}
+            docked={this.state.sidebarDocked}
+            onSetOpen={this.onSetSidebarOpen}>
+            <SplitPane ref="suggestionResizer"
+              split="horizontal"
+              defaultSize={pixelHeight}
+              primary="second"
+              onDragFinished={this.resizeFinished}>
+              <MainContent />
+              {this.props.showSuggestion && <SuggestionsPanel />}
+            </SplitPane>
+          </Sidebar>
           <KeyShortcutCheatSheet />
         </KeyShortcutDispatcher>
       </ParamPropDispatcher>
