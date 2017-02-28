@@ -13,6 +13,8 @@ import { FormattedDate, FormattedTime } from 'react-intl'
 const SidebarContent = React.createClass({
 
   propTypes: {
+    /* close the sidebar */
+    close: PropTypes.func.isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
     selectedPhrase: PropTypes.shape({
       msgctxt: PropTypes.string,
@@ -84,27 +86,35 @@ const SidebarContent = React.createClass({
     )
   },
 
+  /* URL of the selected phrase, with copy button. */
+  phraseLink () {
+    // TODO need to set up phrase ID in the URL first
+    return (
+      <FormGroup className="trans-link">
+        <InputGroup>
+          <InputGroup.Addon><Icon name="copy"
+            className="s1" />
+          </InputGroup.Addon>
+          <FormControl type="text" />
+        </InputGroup>
+      </FormGroup>
+    )
+  },
+
   render () {
     return (
       <div>
         <h1 className="sidebar-heading">
           <Icon name="info" className="s1" /> Details
           <span className="s1 pull-right">
-            <Button bsStyle="link">
+            <Button bsStyle="link" onClick={this.props.close}>
               <Icon name="cross" />
             </Button>
           </span>
         </h1>
         <div className="sidebar-wrapper">
           {this.sidebarDetails()}
-          <FormGroup className="trans-link">
-            <InputGroup>
-              <InputGroup.Addon><Icon name="copy"
-                className="s1" />
-              </InputGroup.Addon>
-              <FormControl type="text" />
-            </InputGroup>
-          </FormGroup>
+          {/* this.phraseLink() */}
         </div>
         {/*
         <Tabs id="sidebartabs" defaultActiveKey={1}>

@@ -6,6 +6,7 @@ import EditorHeader from '../EditorHeader'
 import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
+import { setSidebarVisibility } from '../../actions'
 import { fetchUiLocales } from '../../actions/headerActions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions'
 import SplitPane from 'react-split-pane'
@@ -71,7 +72,8 @@ class Root extends Component {
     return (
       <ParamPropDispatcher {...this.props}>
         <KeyShortcutDispatcher className="Editor is-suggestions-active">
-          <Sidebar>
+          <Sidebar open={this.props.showSidebar}
+            setSidebarVisible={this.props.setSidebarVisible}>
             <Icons />
             <EditorHeader />
             <SplitPane ref="suggestionResizer"
@@ -92,8 +94,10 @@ class Root extends Component {
 
 Root.propTypes = {
   percentHeight: PropTypes.number.isRequired,
+  showSidebar: PropTypes.bool.isRequired,
   showSuggestion: PropTypes.bool,
   requestUiLocales: PropTypes.func.isRequired,
+  setSidebarVisible: PropTypes.func.isRequired,
   saveSuggestionPanelHeight: PropTypes.func.isRequired
 }
 
@@ -108,12 +112,16 @@ function mapStateToProps (state, ownProps) {
   return {
     phrases: withDetail,
     percentHeight,
+    showSidebar: ui.panels.sidebar.visible,
     showSuggestion: ui.panels.suggestions.visible
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    setSidebarVisible: (visible) => {
+      dispatch(setSidebarVisibility(visible))
+    },
     saveSuggestionPanelHeight: (pixelHeight) => {
       const percent = pixelHeight / window.innerHeight
       dispatch(saveSuggestionPanelHeight(percent))

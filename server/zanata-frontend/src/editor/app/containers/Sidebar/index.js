@@ -3,10 +3,7 @@ import ReactSidebar from 'react-sidebar'
 import SidebarContent from '../SidebarContent'
 
 const defaultState = {
-  docked: false,
-  open: false,
-  pullRight: true,
-  shadow: true
+  docked: true
 }
 
 /**
@@ -16,41 +13,49 @@ const defaultState = {
 class Sidebar extends Component {
   constructor () {
     super()
-    // have to bind this for es6 classes until property initializers are
-    // available in ES7
-    this.setSidebarOpen = ::this.setSidebarOpen
+    this.setOpen = ::this.setOpen
+    this.close = ::this.close
     this.state = defaultState
   }
 
-  componentWillMount () {
-    const mql = window.matchMedia('(min-width: 800px)')
-    mql.addListener(this.mediaQueryChanged.bind(this))
-    this.setState({mql: mql, docked: mql.matches})
+  // These functions are to dock/undock the sidebar when depending on screen
+  // width, but the undocked sidebar has display issues at the moment so this is
+  // disabled.
+  // componentWillMount () {
+  //   const mql = window.matchMedia('(min-width: 800px)')
+  //   mql.addListener(this.mediaQueryChanged.bind(this))
+  //   this.setState({mql: mql, docked: mql.matches})
+  // }
+  //
+  // componentWillUnmount () {
+  //   this.state.mql.removeListener(this.mediaQueryChanged)
+  // }
+  //
+  // mediaQueryChanged () {
+  //   this.setState({docked: this.state.mql.matches})
+  // }
+
+  setOpen (open) {
+    this.props.setSidebarVisible(open)
   }
 
-  componentWillUnmount () {
-    this.state.mql.removeListener(this.mediaQueryChanged)
-  }
-
-  setSidebarOpen (open) {
-    this.setState({open: open})
-  }
-
-  mediaQueryChanged () {
-    this.setState({docked: this.state.mql.matches})
+  close () {
+    this.props.setSidebarVisible(false)
   }
 
   render () {
-    const content = <SidebarContent />
+    const content = <SidebarContent
+      close={this.close}
+    />
 
     return (
       <ReactSidebar
         sidebar={content}
-        docked={this.state.docked}
-        open={this.state.open}
-        pullRight={this.state.pullRight}
-        onSetOpen={this.setSidebarOpen}
-        shadow={this.state.shadow}
+        docked={this.props.open && this.state.docked}
+        open={this.props.open}
+        pullRight
+        onSetOpen={this.setOpen}
+        shadow
         sidebarClassName="sidebar-editor">
         {this.props.children}
       </ReactSidebar>
@@ -59,6 +64,8 @@ class Sidebar extends Component {
 }
 
 Sidebar.propTypes = {
+  open: PropTypes.bool.isRequired,
+  setSidebarVisible: PropTypes.func.isRequired,
   /* The main content display should be passed as children to this component */
   children: PropTypes.any
 }
