@@ -1,6 +1,12 @@
 #!/usr/bin/env groovy
 @Library('github.com/zanata/zanata-pipeline-library@master')
 
+/* Only keep the 10 most recent builds. */
+def projectProperties = [
+[$class: 'BuildDiscarderProperty',strategy: [$class: 'LogRotator', numToKeepStr: '10']],
+    ]
+
+
 def dummyForLibrary = ""
 
 try {
@@ -13,45 +19,31 @@ try {
           info.printNode()
           notify.started()
 
-          // TODO use reference repo instead of shallow clone
-          // see https://issues.jenkins-ci.org/browse/JENKINS-33273?focusedCommentId=268631&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-268631
-          // and https://issues.jenkins-ci.org/browse/JENKINS-33273?focusedCommentId=273644&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-273644
-
-          // This doesn't work on RHEL 7: https://issues.jenkins-ci.org/browse/JENKINS-37229
-
-          // Checkout code from repository
-          // Based on https://issues.jenkins-ci.org/browse/JENKINS-33022?focusedCommentId=248530&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-248530
-          // This should be equivalent to checkout scm (noTags: true, shallow: true)
-          checkout([
-             $class: 'GitSCM',
-             branches: scm.branches,
-             doGenerateSubmoduleConfigurations: scm.doGenerateSubmoduleConfigurations,
-             extensions: scm.extensions + [[$class: 'CloneOption', noTags: true, reference: '', shallow: true]],
-             submoduleCfg: [],
-             userRemoteConfigs: [[ url: 'https://github.com/zanata/zanata-platform.git' ]]
-           ])
-
-          //checkout scm
+          // Shallow Clone does not work with RHEL7, which use git-1.8.3
+          // https://issues.jenkins-ci.org/browse/JENKINS-37229
+            checkout scm
         }
 
-        stage('Install build tools') {
+        stage('Check build tools') {
           info.printNode()
-          // TODO yum install the following
-          // Xvfb libaio xorg-x11-server-Xvfb wget unzip git-core
-          // https://dl.google.com/linux/direct/google-chrome-stable_current_x86_64.rpm
-          // gcc-c++
-          // java-devel; set alternatives for java
-          // groovy firefox rpm-build docker
-          // download chromedriver
+          // TBD: whether install tools using Jenkinsfile
 
           // Note: if next step happens on another node, mvnw might have to download again
           sh "./mvnw --version"
         }
 
+        stage('Pre-build'){
+          info.printNode()
+          /* Check Translation */
+          sh """./run-clean.sh ./mvnw -e \
+                     com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
+                     -pl :zanata-war -am -DexcludeFrontend
+             """
+        }
+
         // TODO build and archive binaries with unit tests, then in parallel, unarchive and run:
         //   mysql 5.6, functional tests (on wildfly)
         //   and (later) mariadb 10 functional tests (on wildfly)
-
 
         stage('Build') {
           info.printNode()
@@ -59,16 +51,15 @@ try {
           def testReports = '**/target/surefire-reports/TEST-*.xml'
           def warFiles = '**/target/*.war'
           sh "shopt -s globstar && rm -f $testReports $warFiles"
-          sh """./run-clean.sh ./mvnw -e clean package \
+          sh """./run-clean.sh ./mvnw -e clean package jxr:aggregate\
                      --batch-mode \
                      --settings .travis-settings.xml \
                      --update-snapshots \
-                     -Dmaven.test.failure.ignore \
                      -DstaticAnalysis \
                      -Dchromefirefox \
                      -DskipFuncTests \
                      -DskipArqTests \
-          """
+             """
           setJUnitPrefix("UNIT", testReports)
           junit testResults: testReports, testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
 
@@ -138,8 +129,7 @@ void debugChromeDriver() {
 }
 
 void integrationTests(def appserver) {
-  def testReports = '**/target/failsafe-reports/TEST-*.xml'
-  sh "shopt -s globstar && rm -f $testReports"
+  sh "find . -path */target/failsafe-reports/TEST-*.xml -print -delete"
   xvfb {
     withPorts {
       // Run the maven build
@@ -154,7 +144,6 @@ void integrationTests(def appserver) {
                    -Dmaven.main.skip \
                    -Dgwt.compiler.skip \
                    -Dwebdriver.display=${env.DISPLAY} \
-                   -Dcargo.debug.jvm.args= \
                    -Dwebdriver.type=chrome \
                    -Dwebdriver.chrome.driver=/opt/chromedriver \
                    -DallFuncTests \\

@@ -6,11 +6,14 @@ fi
 Cmd=$1
 shift
 
+CmdExitStatus=0
 # execute the command
-$Cmd ${@-}
+$Cmd ${@-} || CmdExitStatus=$?
 
 # remove stray processes
 if pkill -P $$; then
     ## pkill returns zero if processes killed
     echo "killed stray process" > /dev/stderr
 fi
+
+exit $CmdExitStatus
