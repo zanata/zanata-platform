@@ -24,4 +24,140 @@
     config_key="allow.anonymous.user"
     config_value="true"
   />
+  <HApplicationConfiguration
+      id="4"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="email.admin.addr"
+      config_value="lcroft@redhat.com"
+  />
+  <HApplicationConfiguration
+      id="5"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="email.from.addr"
+      config_value="aloy@redhat.com"
+  />
+  <HApplicationConfiguration
+      id="6"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="email.domain"
+      config_value="redhat.com"
+  />
+  <HApplicationConfiguration
+      id="7"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="log.email.active"
+      config_value="true"
+  />
+  <HApplicationConfiguration
+      id="8"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="log.email.level"
+      config_value="INFO"
+  />
+  <HApplicationConfiguration
+      id="9"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="help.url"
+      config_value="http://zanata.org/help"
+  />
+  <HApplicationConfiguration
+      id="10"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="host.url"
+      config_value="http://localhost:8080"
+  />
+  <HApplicationConfiguration
+      id="11"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="permitted.user.email.domain"
+      config_value="horizon.com"
+  />
+  <HApplicationConfiguration
+      id="12"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="log.destination.email"
+      config_value="tihocan@redhat.com"
+  />
+  <HApplicationConfiguration
+      id="13"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="register.url"
+      config_value="http://zanata.org/register"
+  />
+  <HApplicationConfiguration
+      id="14"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="piwik.url"
+      config_value="http://zanata.org/piwik"
+  />
+  <HApplicationConfiguration
+      id="15"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="piwik.idSite"
+      config_value="47"
+  />
+  <HApplicationConfiguration
+      id="16"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="terms.conditions.url"
+      config_value="http://zanata.org/terms"
+  />
+  <HApplicationConfiguration
+      id="17"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="max.concurrent.req.per.apikey"
+      config_value="9"
+  />
+  <HApplicationConfiguration
+      id="18"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="max.active.req.per.apikey"
+      config_value="8"
+  />
+  <HApplicationConfiguration
+      id="19"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="fileupload.max.files.per.upload"
+      config_value="7"
+  />
+  <HApplicationConfiguration
+      id="20"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="display.user.email"
+      config_value="true"
+  />
 </dataset>
