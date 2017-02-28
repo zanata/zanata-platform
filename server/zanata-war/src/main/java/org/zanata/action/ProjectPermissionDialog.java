@@ -33,6 +33,7 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.hibernate.Session;
 import org.zanata.dao.PersonDAO;
 import org.zanata.dao.ProjectDAO;
 import org.zanata.exception.AuthorizationException;
@@ -90,6 +91,8 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
     private ProjectDAO projectDAO;
     @Inject
     private ProjectService projectServiceImpl;
+    @Inject
+    private Session session;
     private PersonProjectMemberships data;
     private HProject project;
 
@@ -250,6 +253,7 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
         // HLocale
         // so they are all attached before any persistence is attempted.
         HPerson person = personDAO.findById(data.getPerson().getId());
+        session.refresh(person);
         data.setPerson(person);
         for (PersonProjectMemberships.LocaleRoles roles : data
                 .getLocaleRoles()) {
