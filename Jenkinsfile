@@ -3,13 +3,13 @@
 
 /* Only keep the 10 most recent builds. */
 def projectProperties = [
-[$class: 'BuildDiscarderProperty',strategy: [$class: 'LogRotator', numToKeepStr: '10']],
-    ]
+  [
+    $class: 'BuildDiscarderProperty',
+    strategy: [$class: 'LogRotator', numToKeepStr: '10']
+  ],
+]
 
 properties(projectProperties)
-
-
-def dummyForLibrary = ""
 
 try {
   pullRequests.ensureJobDescription()
@@ -23,7 +23,7 @@ try {
 
           // Shallow Clone does not work with RHEL7, which use git-1.8.3
           // https://issues.jenkins-ci.org/browse/JENKINS-37229
-            checkout scm
+          checkout scm
         }
 
         stage('Check build tools') {
@@ -39,20 +39,21 @@ try {
           /* Check Translation */
           sh """./run-clean.sh ./mvnw -e \
                      com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
-                     -pl :zanata-war -am -DexcludeFrontend
+                     -pl :zanata-war -am -DexcludeFrontend \
              """
         }
 
-        // TODO build and archive binaries with unit tests, then in parallel, unarchive and run:
-        //   mysql 5.6, functional tests (on wildfly)
-        //   and (later) mariadb 10 functional tests (on wildfly)
-
+        // Build and Unit Tests
+        // The result is archived for integration tests in other nodes.
         stage('Build') {
           info.printNode()
           info.printEnv()
           def testReports = '**/target/surefire-reports/TEST-*.xml'
           def warFiles = '**/target/*.war'
           sh "shopt -s globstar && rm -f $testReports $warFiles"
+
+          // Continue building even when test failure
+          // Thus -Dmaven.test.failure.ignore is required
           sh """./run-clean.sh ./mvnw -e clean package jxr:aggregate\
                      --batch-mode \
                      --settings .travis-settings.xml \
@@ -61,14 +62,14 @@ try {
                      -Dchromefirefox \
                      -DskipFuncTests \
                      -DskipArqTests \
-             """
-          setJUnitPrefix("UNIT", testReports)
-          junit testResults: testReports, testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
+                    -Dmaven.test.failure.ignore \
+            """
+            setJUnitPrefix("UNIT", testReports)
+            junit testResults: testReports, testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
 
-          // notify if compile+unit test successful
-          notify.testResults("UNIT")
-
-          archive warFiles
+            // notify if compile+unit test successful
+            notify.testResults("UNIT")
+            archive warFiles
         }
 
         stage('stash') {
@@ -77,17 +78,16 @@ try {
       }
     }
 
-    // TODO limit parallel runs of integration tests
     stage('Integration tests') {
       def tasks = [:]
       tasks['Integration tests: WILDFLY'] = {
-        node {
-          ansicolor {
-            info.printNode()
-            info.printEnv()
-            debugChromeDriver()
-            unstash 'workspace'
-            integrationTests('wildfly8')
+         node {
+           ansicolor {
+             info.printNode()
+             info.printEnv()
+             debugChromeDriver()
+             unstash 'workspace'
+             integrationTests('wildfly8')
           }
         }
       }
@@ -127,34 +127,30 @@ void xvfb(Closure wrapped) {
 
 void debugChromeDriver() {
   sh returnStatus: true, script: 'which chromedriver google-chrome'
-  sh returnStatus: true, script: 'ls -l /opt/chromedriver /opt/google/chrome/google-chrome'
+    sh returnStatus: true, script: 'ls -l /opt/chromedriver /opt/google/chrome/google-chrome'
 }
 
 void integrationTests(def appserver) {
-  sh "find . -path */target/failsafe-reports/TEST-*.xml -print -delete"
+  def testReports = '**/target/surefire-reports/TEST-*.xml'
+  sh "shopt -s globstar && rm -f $testReports"
   xvfb {
     withPorts {
       // Run the maven build
       sh """./run-clean.sh ./mvnw -e verify \
-                   --batch-mode \
-                   --settings .travis-settings.xml \
-                   -DstaticAnalysis=false \
-                   -Dcheckstyle.skip \
-                   -Dappserver=$appserver \
-                   -Dcargo.debug.jvm.args= \
-                   -DskipUnitTests \
-                   -Dmaven.test.failure.ignore \
-                   -Dmaven.main.skip \
-                   -Dgwt.compiler.skip \
-                   -Dwebdriver.display=${env.DISPLAY} \
-                   -Dwebdriver.type=chrome \
-                   -Dwebdriver.chrome.driver=/opt/chromedriver \
-                   -DallFuncTests
-      """
-// FIXME put this back
-      // TODO add -Dmaven.war.skip (but we need zanata-test-war)
-
-      // TODO try to remove cargo.debug.jvm.args webdriver.*
+                 --batch-mode \
+                 --settings .travis-settings.xml \
+                 -DstaticAnalysis=false \
+                 -Dcheckstyle.skip \
+                 -Dappserver=$appserver \
+                 -Dcargo.debug.jvm.args= \
+                 -DskipUnitTests \
+                 -Dmaven.main.skip \
+                 -Dgwt.compiler.skip \
+                 -Dwebdriver.display=${env.DISPLAY} \
+                 -Dwebdriver.type=chrome \
+                 -Dwebdriver.chrome.driver=/opt/chromedriver \
+                 -DallFuncTests
+         """
     }
   }
   setJUnitPrefix(appserver.toUpperCase(), testReports)
@@ -165,9 +161,9 @@ void integrationTests(def appserver) {
 
 void withPorts(Closure wrapped) {
   def ports = sh(script: 'server/etc/scripts/allocate-jboss-ports', returnStdout: true)
-  withEnv(ports.trim().readLines()) {
-    wrapped.call()
-  }
+    withEnv(ports.trim().readLines()) {
+      wrapped.call()
+    }
 }
 
 // Modify classnames of tests, to avoid collision between EAP and WildFly test runs.
