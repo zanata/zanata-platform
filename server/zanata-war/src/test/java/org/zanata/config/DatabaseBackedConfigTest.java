@@ -72,8 +72,118 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
 
     @Test
     @InRequestScope
+    public void getAdminEmailAddress() {
+        assertThat(databaseBackedConfig.getAdminEmailAddress(),
+                equalTo("lcroft@redhat.com"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getAdminFromAddress() {
+        assertThat(databaseBackedConfig.getFromEmailAddress(),
+                equalTo("aloy@redhat.com"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getDomain() {
+        assertThat(databaseBackedConfig.getDomain(), equalTo("redhat.com"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getShouldLogEvents() {
+        assertThat(databaseBackedConfig.getShouldLogEvents(), equalTo("true"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getEmailLogLevel() {
+        assertThat(databaseBackedConfig.getEmailLogLevel(), equalTo("INFO"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getHelpUrl() {
+        assertThat(databaseBackedConfig.getHelpUrl(), equalTo("http://zanata.org/help"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getServerHost() {
+        assertThat(databaseBackedConfig.getServerHost(), equalTo("http://localhost:8080"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getLogEventsDestinationEmailAddress() {
+        assertThat(databaseBackedConfig.getLogEventsDestinationEmailAddress(),
+                equalTo("tihocan@redhat.com"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getRegistrationUrl() {
+        assertThat(databaseBackedConfig.getRegistrationUrl(),
+                equalTo("http://zanata.org/register"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getPiwikUrl() {
+        assertThat(databaseBackedConfig.getPiwikUrl(),
+                equalTo("http://zanata.org/piwik"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getPiwikSiteId() {
+        assertThat(databaseBackedConfig.getPiwikSiteId(), equalTo("47"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getTermsOfUseUrl() {
+        assertThat(databaseBackedConfig.getTermsOfUseUrl(),
+                equalTo("http://zanata.org/terms"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getMaxConcurrentRequestsPerApiKey() {
+        assertThat(databaseBackedConfig.getMaxConcurrentRequestsPerApiKey(),
+                equalTo("9"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getMaxActiveRequestsPerApiKey() {
+        assertThat(databaseBackedConfig.getMaxActiveRequestsPerApiKey(), equalTo("8"));
+    }
+
+    @Test
+    @InRequestScope
+    public void getMaxFilesPerUpload() {
+        assertThat(databaseBackedConfig.getMaxFilesPerUpload(), equalTo("7"));
+    }
+
+    @Test
+    @InRequestScope
+    public void isDisplayUserEmail() {
+        assertThat(databaseBackedConfig.isDisplayUserEmail(), equalTo(true));
+    }
+
+    @Test
+    @InRequestScope
+    public void getPermittedEmailDomains() {
+        assertThat(databaseBackedConfig.getPermittedEmailDomains(), equalTo("horizon.com"));
+    }
+
+    @Test
+    @InRequestScope
     public void getNonExistentValue() throws Exception {
-        // This value is NOT provided in the DB Unit script above
+        // Prematurely clean out data, assert missing value is null
+        cleanDataAfterTest();
         assertThat(databaseBackedConfig.getAdminEmailAddress(), nullValue());
     }
 }

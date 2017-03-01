@@ -72,8 +72,7 @@
 
   <div style="position: relative">
 
-    <ui:fragment
-      rendered="#{versionHomeAction.zipFileDownloadAllowed}">
+    <ui:fragment rendered="#{versionHomeAction.getDocuments().size() > 0}">
       <zanata:confirm-modal id="exportTMXModal"
         title="#{msgs['jsf.iteration.ExportTMXIter']}"
         message="#{msgs['jsf.ConfirmExportTMXIter']}"
@@ -220,15 +219,17 @@
                 </a>
               </li>
             </ui:fragment>
+            <ui:fragment rendered="#{versionHomeAction.getDocuments().size() > 0}">
+              <li>
+                <ui:param name="message" value="#{msgs.format('jsf.ConfirmExportTMXIterLanguage', versionHomeAction.selectedLocale.retrieveDisplayName())}" />
+                <a href="#" class="i__item--right" onclick="setSelectedLanguage('#{versionHomeAction.selectedLocale.localeId.id}', '#{message}')"
+                    data-toggle="modal" data-target="#exportTMXModal">
+                  #{msgs.format('jsf.iteration.ExportTMX.Language', versionHomeAction.selectedLocale.retrieveDisplayName())}
+                  <i class="i i--export i__item__icon"></i>
+                </a>
+              </li>
+            </ui:fragment>
 
-            <li>
-              <ui:param name="message" value="#{msgs.format('jsf.ConfirmExportTMXIterLanguage', versionHomeAction.selectedLocale.retrieveDisplayName())}" />
-              <a href="#" class="i__item--right" onclick="setSelectedLanguage('#{versionHomeAction.selectedLocale.localeId.id}', '#{message}')"
-                data-toggle="modal" data-target="#exportTMXModal">
-                #{msgs.format('jsf.iteration.ExportTMX.Language', versionHomeAction.selectedLocale.retrieveDisplayName())}
-                <i class="i i--export i__item__icon"></i>
-              </a>
-            </li>
 
             <ui:fragment rendered="#{versionHomeAction.canTriggerManualWebhook()}">
               <li>

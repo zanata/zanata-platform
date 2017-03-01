@@ -24,6 +24,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +66,12 @@ public class ManageUserPage extends BasePage {
         return null;
     }
 
+    public boolean isUserEnabled(String username) {
+            List<WebElement> locks = findRowByUserName(username)
+                    .findElements(By.className("i--lock"));
+        return locks.isEmpty();
+    }
+
     public List<WebElement> getRows() {
         return readyElement(userTable)
                 .findElements(By.className("list__item--actionable"));
@@ -90,5 +97,11 @@ public class ManageUserPage extends BasePage {
             names.add(getListItemUsername(element));
         }
         return names;
+    }
+
+    public CreateUserAccountPage selectCreateNewUser() {
+        clickElement(By.id("rolemanage-more-actions"));
+        clickLinkAfterAnimation(By.linkText("Create new user"));
+        return new CreateUserAccountPage(getDriver());
     }
 }

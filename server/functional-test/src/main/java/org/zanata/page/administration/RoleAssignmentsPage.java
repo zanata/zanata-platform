@@ -48,6 +48,12 @@ public class RoleAssignmentsPage extends BasePage {
         return new RoleAssignmentsPage(getDriver());
     }
 
+    public EditRoleAssignmentPage selectCreateNewRule() {
+        log.info("Click Create New in dropdown");
+        clickLinkAfterAnimation(By.linkText("New Rule"));
+        return new EditRoleAssignmentPage(getDriver());
+    }
+
     public EditRoleAssignmentPage clickCreateNew() {
         log.info("Click Create New");
         clickElement(newRuleButton);

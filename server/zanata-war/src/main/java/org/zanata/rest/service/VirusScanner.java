@@ -79,7 +79,7 @@ public class VirusScanner {
         String scannerProperty = System.getProperty("virusScanner");
         DISABLED = "DISABLED".equals(scannerProperty);
         if (DISABLED) {
-            log.warn("virus scanning disabled");
+            log.info("virus scanning disabled");
             SCANNER_SET = true;
             SCANNER_NAME = scannerProperty;
             USING_CLAM = false;

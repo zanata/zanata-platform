@@ -24,33 +24,21 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.zanata.feature.account.*;
 import org.zanata.feature.administration.*;
-import org.zanata.feature.clientserver.GettextPluralSupportTest;
-import org.zanata.feature.clientserver.ProjectMaintainerTest;
-import org.zanata.feature.clientserver.PropertiesRoundTripTest;
-import org.zanata.feature.concurrentedit.ConcurrentAccessTest;
-import org.zanata.feature.concurrentedit.ConcurrentEditTest;
-import org.zanata.feature.dashboard.DashboardTest;
-import org.zanata.feature.document.*;
-import org.zanata.feature.editor.*;
-import org.zanata.feature.glossary.GlossaryAdminTest;
-import org.zanata.feature.glossary.GlossaryPushTest;
-import org.zanata.feature.glossary.InvalidGlossaryPushTest;
-import org.zanata.feature.language.AddLanguageTest;
-import org.zanata.feature.language.ContactLanguageTeamTest;
-import org.zanata.feature.language.JoinLanguageTeamTest;
-import org.zanata.feature.misc.ContactAdminTest;
-import org.zanata.feature.misc.FlakyTest;
-import org.zanata.feature.misc.ObsoleteTextTest;
-import org.zanata.feature.misc.RateLimitRestAndUITest;
-import org.zanata.feature.project.*;
-import org.zanata.feature.projectversion.CreateProjectVersionTest;
-import org.zanata.feature.projectversion.EditVersionLanguagesTest;
-import org.zanata.feature.projectversion.EditVersionValidationsTest;
-import org.zanata.feature.projectversion.VersionFilteringTest;
-import org.zanata.feature.search.ProjectSearchTest;
-import org.zanata.feature.security.SecurityTest;
-import org.zanata.feature.versionGroup.VersionGroupTest;
-import org.zanata.feature.versionGroup.VersionGroupUrlTest;
+import org.zanata.feature.clientserver.ClientServerSuite;
+import org.zanata.feature.concurrentedit.ConcurrentEditTestSuite;
+import org.zanata.feature.dashboard.DashboardTestSuite;
+import org.zanata.feature.document.DocumentTestSuite;
+import org.zanata.feature.editor.EditorTestSuite;
+import org.zanata.feature.endtoend.EndToEndTestSuite;
+import org.zanata.feature.glossary.GlossaryTestSuite;
+import org.zanata.feature.language.LanguageTestSuite;
+import org.zanata.feature.misc.MiscTestSuite;
+import org.zanata.feature.project.ProjectTestSuite;
+import org.zanata.feature.projectversion.ProjectVersionTestSuite;
+import org.zanata.feature.rest.RestTestSuite;
+import org.zanata.feature.search.SearchTestSuite;
+import org.zanata.feature.security.SecurityTestSuite;
+import org.zanata.feature.versionGroup.VersionGroupTestSuite;
 
 /**
  * The Zanata feature test list and suite interface.<br/>
@@ -67,128 +55,105 @@ import org.zanata.feature.versionGroup.VersionGroupUrlTest;
 @Suite.SuiteClasses({
 
         /*
+         * End to End tests
+         */
+        EndToEndTestSuite.class,
+
+        /*
          * Account
          * The user account and management of, such as registration and
          * password changing
          */
-        ChangePasswordTest.class,
-        InactiveUserLoginTest.class,
-        ProfileTest.class,
-        RegisterTest.class,
-        UsernameValidationTest.class,
-        EmailValidationTest.class,
+        AccountTestSuite.class,
 
         /*
          * Administration
          * The actions of an administrator, such as editing users and
          * translation memory sets
          */
-        AutoRoleAssignmentTest.class,
-        EditHomePageTest.class,
-        EditTranslationMemoryTest.class,
-        ManageSearchTest.class,
-        ManageUsersTest.class,
-        ServerSettingsTest.class,
+        AdministrationTestSuite.class,
 
         /* Client-Server
          * Usage of the mvn client
          */
-        GettextPluralSupportTest.class,
-        ProjectMaintainerTest.class,
-        PropertiesRoundTripTest.class,
+        ClientServerSuite.class,
 
         /*
          * Concurrent Edit
          * Multiple user access to an editor instance
          */
-        ConcurrentAccessTest.class,
-        ConcurrentEditTest.class,
-
+        ConcurrentEditTestSuite.class,
         /*
          * Dashboard
          * User dashboard testing
          */
-        DashboardTest.class,
+        DashboardTestSuite.class,
 
         /*
          * Document
          * Source document upload and management
          */
-        MultiFileUploadTest.class,
-        UploadTest.class,
+        DocumentTestSuite.class,
 
         /*
          * Editor
          * Translation editor general features
          */
-        EditorFilterMessagesTest.class,
-        TranslateTextTest.class,
-        TranslationHistoryTest.class,
+        EditorTestSuite.class,
 
         /*
          * Glossary
          * Glossary management features
          */
-        GlossaryAdminTest.class,
-        GlossaryPushTest.class,
-        InvalidGlossaryPushTest.class,
+        GlossaryTestSuite.class,
 
         /*
          * Language
          * Participation in an management of language teams
          */
-        AddLanguageTest.class,
-        ContactLanguageTeamTest.class,
-        JoinLanguageTeamTest.class,
+        LanguageTestSuite.class,
 
         /*
          * Miscellaneous
          * Tests that don't fit into the other packages
          */
-        ContactAdminTest.class,
-        FlakyTest.class,
-        ObsoleteTextTest.class,
-        RateLimitRestAndUITest.class,
+        MiscTestSuite.class,
 
         /*
          * Project
          * Creation and management of Projects
          */
-        CreateProjectTest.class,
-        EditPermissionsTest.class,
-        EditProjectAboutTest.class,
-        EditProjectGeneralTest.class,
-        EditProjectLanguagesTest.class,
-        EditProjectValidationsTest.class,
-        EditWebHooksTest.class,
-        SetProjectVisibilityTest.class,
+        ProjectTestSuite.class,
+
         /*
          * Project Version
          * Creation and management of Project Versions
          */
-        CreateProjectVersionTest.class,
-        EditVersionLanguagesTest.class,
-        EditVersionValidationsTest.class,
-        VersionFilteringTest.class,
+        ProjectVersionTestSuite.class,
+
+        /*
+         * Rest
+         * Test for UI and Rest interaction
+         */
+        RestTestSuite.class,
 
         /*
          * Search
          * Search bar functionality
          */
-        ProjectSearchTest.class,
+        SearchTestSuite.class,
 
         /*
          * Security
          * Login/logout and access rights
          */
-        SecurityTest.class,
+        SecurityTestSuite.class,
 
         /*
          * Version Groups
          * Creation and management of Version Groups
          */
-        VersionGroupTest.class,
-        VersionGroupUrlTest.class
+        VersionGroupTestSuite.class
 })
 public class TestPlan {
 

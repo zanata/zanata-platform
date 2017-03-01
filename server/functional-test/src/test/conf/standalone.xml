@@ -42,6 +42,7 @@
       <property name="zanata.security.adminusers" value="admin"/>
       <property name="zanata.email.defaultfromaddress" value="no-reply@zanata.org"/>
       <property name="zanata.file.directory" value="./target/documents"/>
+      <property name="virusScanner" value="DISABLED"/>
     </system-properties>
     <management>
         <security-realms>

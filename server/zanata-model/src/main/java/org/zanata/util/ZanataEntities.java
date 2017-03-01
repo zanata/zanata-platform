@@ -38,6 +38,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HRoleAssignmentRule;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowHistory;
 import org.zanata.model.HTextFlowTarget;
@@ -100,6 +101,7 @@ public class ZanataEntities {
                 HPerson.class,
                 HAccountResetPasswordKey.class,
                 HAccount.class);
+        builder.add(HRoleAssignmentRule.class);
 
         entitiesForDelete = builder.build();
         return entitiesForDelete;

@@ -109,7 +109,7 @@ public class TMXParser {
         } catch (Exception e) {
             Throwable rootCause = Throwables.getRootCause(e);
             if (rootCause instanceof TMXParseException) {
-                throw (TMXParseException) e;
+                throw (TMXParseException) rootCause;
             } else if (rootCause instanceof XMLStreamException) {
                 throw new TMXParseException(rootCause);
             } else {

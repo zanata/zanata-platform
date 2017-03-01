@@ -32,6 +32,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.zanata.page.BasePage;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
@@ -553,6 +554,12 @@ public class EditorPage extends BasePage {
             }
         }
         return diffs;
+    }
+
+    public VersionLanguagesPage clickVersionBreadcrumb(String versionName) {
+        readyElement(By.linkText(versionName)).click();
+        slightPause();
+        return new VersionLanguagesPage(getDriver());
     }
 
     private WebElement getTranslationHistoryBox() {

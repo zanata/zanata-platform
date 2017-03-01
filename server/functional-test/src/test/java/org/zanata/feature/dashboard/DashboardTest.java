@@ -69,7 +69,6 @@ public class DashboardTest extends ZanataTestCase {
     @Feature(summary = "The user can traverse Dashboard activity lists",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
     public void dashboardBasicTests() throws Exception {
         assertThat(dashboardPresentAfterLogin()).as("Dashboard is present")
                 .isTrue();

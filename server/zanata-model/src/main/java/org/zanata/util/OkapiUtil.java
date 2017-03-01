@@ -20,16 +20,8 @@
  */
 package org.zanata.util;
 
-import java.io.ByteArrayInputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.EndElement;
-import javax.xml.stream.events.StartElement;
-import javax.xml.stream.events.XMLEvent;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,89 +87,6 @@ public class OkapiUtil {
                     args);
             return 0;
         }
-    }
-
-    /**
-     * Extracts plain text from a TMX entry. This ignores the TMX elements that
-     * mark up native code sequences: {@code
-     * <bpt></bpt>
-     * <ept></ept>
-     * <it></it>
-     * <ph></ph>
-     * <seg></seg>}
-     *
-     * @param content
-     *            The tmx marked up content.
-     * @return A string with all tmx mark-up content stripped out. Essentially a
-     *         plain text version of the string.
-     */
-    public static String removeFormattingMarkup(String content) {
-        // The content must be a fully formed <seg> element with optional
-        // attributes and with no leading/trailing whitespace
-        assert content.startsWith("<seg") && content.endsWith("</seg>");
-
-        try {
-            XMLInputFactory inputFactory = XMLInputFactory.newFactory();
-            inputFactory.setProperty(XMLInputFactory.IS_VALIDATING, false);
-            inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
-            XMLEventReader reader =
-                    inputFactory.createXMLEventReader(new ByteArrayInputStream(
-                            content.getBytes()));
-            StringBuilder writer = new StringBuilder();
-
-            // Nesting level. When this is > 0 it means we are ignoring events
-            int ignoreLevel = 0;
-
-            while (reader.hasNext()) {
-                XMLEvent nextEv = reader.nextEvent();
-
-                switch (nextEv.getEventType()) {
-                case XMLStreamConstants.START_ELEMENT:
-                    ignoreLevel =
-                            handleStartElem(ignoreLevel,
-                                    nextEv.asStartElement());
-                    break;
-                case XMLStreamConstants.END_ELEMENT:
-                    ignoreLevel =
-                            handleEndElem(ignoreLevel, nextEv.asEndElement());
-                    break;
-                case XMLStreamConstants.CHARACTERS:
-                    if (ignoreLevel == 0)
-                        writer.append(nextEv.asCharacters().getData());
-                    break;
-                }
-            }
-
-            return writer.toString();
-        } catch (XMLStreamException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static int handleStartElem(int ignoreLevel, StartElement startElem) {
-        String elemName = startElem.getName().getLocalPart();
-        if (ignoreElement(elemName)) {
-            return ignoreLevel + 1;
-        }
-        return ignoreLevel;
-    }
-
-    private static int handleEndElem(int ignoreLevel, EndElement endElem) {
-        String elemName = endElem.getName().getLocalPart();
-
-        if (ignoreElement(elemName)) {
-            if (ignoreLevel > 0) {
-                return ignoreLevel - 1;
-            }
-        }
-        return ignoreLevel;
-    }
-
-    private static boolean ignoreElement(String elemName) {
-        // NB we do want the contents of 'hi' elements, but not these elements:
-        return elemName.equals("bpt") || elemName.equals("ept")
-                || elemName.equals("it") || elemName.equals("ph")
-                || elemName.equals("sub");
     }
 
     private static class StringTokenizer extends Tokenizer {

@@ -23,6 +23,7 @@ package org.zanata.page.projectversion.versionsettings;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.projectversion.VersionBasePage;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 
 /**
  * @author Damian Jansen
@@ -46,11 +47,11 @@ public class VersionGeneralTab extends VersionBasePage {
         return new VersionGeneralTab(getDriver());
     }
 
-    public VersionGeneralTab updateVersion() {
+    public VersionLanguagesPage updateVersion() {
         log.info("Click Update general settings");
         scrollIntoView(readyElement(updateButton));
         clickAndCheckErrors(readyElement(updateButton));
-        return new VersionGeneralTab(getDriver());
+        return new VersionLanguagesPage(getDriver());
     }
 
     public String getVersionID() {
