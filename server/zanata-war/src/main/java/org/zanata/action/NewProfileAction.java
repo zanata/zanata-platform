@@ -87,16 +87,14 @@ public class NewProfileAction extends AbstractProfileAction
             if (applicationConfiguration.isEnforceMatchingUsernames()) {
                 if (StringUtils.isBlank(username)) {
                     throw new ZanataServiceException(
-                            "Server option zanata.enforce.matchingusernames is set, but username from external authentication is missing.");
+                            msgs.get("jsf.register.EnforcedUserIsBlank"));
                 } else if (isUsernameTaken(username)) {
-                    throw new ZanataServiceException(
-                            "Server option zanata.enforce.matchingusernames is set, but username from external authentication is already in use: "
-                                    + username);
+                    throw new ZanataServiceException(msgs.format(
+                            "jsf.register.EnforcedUserIsTaken", username));
                 } else if (!isUsernameValid(username)) {
                     throw new ZanataServiceException(
-                            "Server option zanata.enforce.matchingusernames is set, but username from external authentication is not valid for Zanata: "
-                                    + username + ", valid pattern: "
-                                    + USERNAME_REGEX);
+                            msgs.format("jsf.register.EnforcedUserNotValid",
+                                    username, USERNAME_REGEX));
                 }
             }
         }
