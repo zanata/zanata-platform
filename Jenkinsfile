@@ -133,7 +133,7 @@ void debugChromeDriver() {
 }
 
 void integrationTests(def appserver) {
-  def testReports = '**/target/surefire-reports/TEST-*.xml'
+  def testReports = '**/target/failsafe-reports/TEST-*.xml'
   sh "shopt -s globstar && rm -f $testReports"
   xvfb {
     withPorts {
