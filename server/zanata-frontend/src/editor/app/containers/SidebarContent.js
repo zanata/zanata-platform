@@ -114,7 +114,6 @@ const SidebarContent = React.createClass({
         </h1>
         <div className="sidebar-wrapper">
           {this.sidebarDetails()}
-          {/* this.phraseLink() */}
         </div>
         {/*
         <Tabs id="sidebartabs" defaultActiveKey={1}>
