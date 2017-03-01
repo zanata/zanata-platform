@@ -1,4 +1,4 @@
-import { chain, map } from 'lodash'
+import { chain, isNaN, map } from 'lodash'
 
 /* convert from structure used in angular to structure used in react */
 // TODO we should change the server response to save us from doing this
@@ -6,13 +6,35 @@ import { chain, map } from 'lodash'
 export const prepareLocales = (locales) => {
   return chain(locales || [])
       .map(function (locale) {
+        const nplurals = parseNPlurals(locale.pluralForms)
+
         return {
           id: locale.localeId,
-          name: locale.displayName
+          name: locale.displayName,
+          nplurals
         }
       })
       .keyBy('id')
       .value()
+}
+
+const npluralRegex = /^nplurals\s*=\s*(\d*)\s*;/
+
+/**
+ * Extract nplurals value as an integer from a Plural-Forms string.
+ *
+ * Given a string in the form 'nplurals=x; plural=(y)', extract x
+ */
+function parseNPlurals (pluralFormsString) {
+  const result = npluralRegex.exec(pluralFormsString)
+  if (result !== null) {
+    const nplurals = parseInt(result[1], 10)
+    if (!isNaN(nplurals)) {
+      return nplurals
+    }
+  }
+  // Could not find and parse a valid nplurals integer
+  return undefined
 }
 
 /**
