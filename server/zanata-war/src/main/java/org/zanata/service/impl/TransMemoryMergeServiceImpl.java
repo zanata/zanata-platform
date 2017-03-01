@@ -21,6 +21,7 @@
 package org.zanata.service.impl;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
@@ -65,7 +66,9 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
+import org.zanata.webtrans.shared.rpc.SessionEventData;
 import org.zanata.webtrans.shared.rpc.TMMergeInProgress;
+import org.zanata.webtrans.shared.rpc.TransMemoryMergeStartOrEnd;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
@@ -120,6 +123,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         final WorkspaceId workspaceId =
                 new WorkspaceId(request.projectIterationId, request.localeId);
 
+        Date startTime = new Date();
         int index = 0;
         long total = 0;
         try {
@@ -128,6 +132,14 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
             total = textFlowDAO
                     .getUntranslatedTextFlowCount(request.documentId, targetLocale);
+
+            if (total > 0) {
+                publishTMMergeEventToWorkspace(workspaceId,
+                        new TransMemoryMergeStartOrEnd(startTime,
+                                authenticatedAccount.getUsername(),
+                                request.editorClientId, request.documentId,
+                                total, null));
+            }
 
             asyncTaskHandle.setTotalTextFlows(total);
             asyncTaskHandle.setTriggeredBy(authenticatedAccount.getUsername());
@@ -154,15 +166,25 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                         translateInBatch(request, textFlowsBatch, targetLocale);
                 finalResult.addAll(batchResult);
                 log.debug("TM merge handle: {}", asyncTaskHandle);
-                publishTMMergeProgressToWorkspace(workspaceId,
-                        asyncTaskHandle.getTextFlowFilled(), total);
+                publishTMMergeEventToWorkspace(workspaceId,
+                        new TMMergeInProgress(total,
+                                asyncTaskHandle.getTextFlowFilled(),
+                                request.editorClientId, request.documentId));
             }
         } catch (Exception e) {
             log.error("exception happen in TM merge", e);
+            publishTMMergeEventToWorkspace(workspaceId,
+                    new TransMemoryMergeStartOrEnd(startTime,
+                            authenticatedAccount.getUsername(),
+                            request.editorClientId, request.documentId, index,
+                            new Date()));
             // TODO pahuang need to publish a notification to tell the user something went wrong
         } finally {
-            // we need to publish the event to workspace so that the pop up is closed
-            publishTMMergeProgressToWorkspace(workspaceId, total, total);
+            publishTMMergeEventToWorkspace(workspaceId,
+                    new TransMemoryMergeStartOrEnd(startTime,
+                            authenticatedAccount.getUsername(),
+                            request.editorClientId, request.documentId, index,
+                            new Date()));
         }
 
         return finalResult;
@@ -178,14 +200,13 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     }
 
 
-    private void publishTMMergeProgressToWorkspace(WorkspaceId workspaceId,
-            long processedTextFlows, long totalTextFlows) {
+    private <E extends SessionEventData> void publishTMMergeEventToWorkspace(
+            WorkspaceId workspaceId, E event) {
         try {
             TranslationWorkspace workspace =
                     translationWorkspaceManager.getOrRegisterWorkspace(
                             workspaceId);
-            workspace.publish(
-                    new TMMergeInProgress(totalTextFlows, processedTextFlows));
+            workspace.publish(event);
 
         } catch (NoSuchWorkspaceException e) {
             log.info("no workspace for {}", workspaceId);

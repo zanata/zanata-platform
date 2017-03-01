@@ -20,46 +20,48 @@
  */
 package org.zanata.webtrans.client.events;
 
-import org.zanata.webtrans.client.util.TextFormatUtil;
+import java.util.Date;
+
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
+
 import com.google.gwt.event.shared.GwtEvent;
 
-/**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
- */
-public class TMMergeProgressEvent extends GwtEvent<TMMergeProgressHandler> {
-    public static final Type<TMMergeProgressHandler> TYPE = new Type<>();
-    private final long totalTextFlows;
-    private final double percent;
+public class TMMergeStartOrEndEvent extends GwtEvent<TMMergeStartOrEndHandler> {
+    public static final Type<TMMergeStartOrEndHandler> TYPE =
+            new Type<TMMergeStartOrEndHandler>();
+    private final String startedBy;
+    private final Date startedTime;
     private final EditorClientId editorClientId;
-    private DocumentId documentId;
+    private final DocumentId documentId;
+    private final Date endTime;
+    private final long textFlowCount;
 
-
-    public TMMergeProgressEvent(long processedTextFlows, long totalTextFlows,
-            EditorClientId editorClientId, DocumentId documentId) {
-        this.totalTextFlows = totalTextFlows;
+    public TMMergeStartOrEndEvent(
+            String startedBy, Date startedTime, EditorClientId editorClientId,
+            DocumentId documentId, Date endTime, long textFlowCount) {
+        this.startedBy = startedBy;
+        this.startedTime = startedTime;
         this.editorClientId = editorClientId;
         this.documentId = documentId;
-        this.percent = processedTextFlows * 100.0 / totalTextFlows;
+        this.endTime = endTime;
+        this.textFlowCount = textFlowCount;
     }
 
-    public boolean hasNoTextFlowsToMerge() {
-        return totalTextFlows == 0;
-    }
-
-    public String getPercentDisplay() {
-        return TextFormatUtil.formatPercentage(percent);
-    }
-
-    @Override
-    public Type<TMMergeProgressHandler> getAssociatedType() {
+    public Type<TMMergeStartOrEndHandler> getAssociatedType() {
         return TYPE;
     }
 
-    @Override
-    protected void dispatch(TMMergeProgressHandler handler) {
-        handler.onTMMergeProgress(this);
+    protected void dispatch(TMMergeStartOrEndHandler handler) {
+        handler.onTMMergeStartOrEnd(this);
+    }
+
+    public String getStartedBy() {
+        return startedBy;
+    }
+
+    public Date getStartedTime() {
+        return startedTime;
     }
 
     public EditorClientId getEditorClientId() {
@@ -68,5 +70,17 @@ public class TMMergeProgressEvent extends GwtEvent<TMMergeProgressHandler> {
 
     public DocumentId getDocumentId() {
         return documentId;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public long getTextFlowCount() {
+        return textFlowCount;
+    }
+
+    public boolean isEnded() {
+        return endTime != null;
     }
 }

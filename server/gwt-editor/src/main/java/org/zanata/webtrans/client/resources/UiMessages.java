@@ -111,6 +111,9 @@ public interface UiMessages extends Messages {
     @DefaultMessage("TM merge success on {0} rows")
     String mergeTMSuccess(long count);
 
+    @DefaultMessage("TM merge triggered by {0} has finished {1} - {2}")
+    String mergeTMFinished(String triggerBy, String startTime, String endTime);
+
     @DefaultMessage("Proceed to auto-fill")
     String mergeTMConfirm();
 
@@ -119,6 +122,9 @@ public interface UiMessages extends Messages {
 
     @DefaultMessage("TM merge started...")
     String mergeTMStarted();
+
+    @DefaultMessage("Someone has started TM merge for this document. Please wait for it to finish before working on translation")
+    String mergeTMStartedBySomeone();
 
     @DefaultMessage("{0}% has been processed")
     String mergeProgressPercentage(String percentDisplay);

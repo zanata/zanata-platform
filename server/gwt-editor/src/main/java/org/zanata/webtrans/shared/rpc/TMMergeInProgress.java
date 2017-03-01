@@ -20,6 +20,8 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
+import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.model.DocumentId;
 import com.google.common.base.MoreObjects;
 
 /**
@@ -29,10 +31,15 @@ public class TMMergeInProgress implements SessionEventData {
     private static final long serialVersionUID = 1L;
     private long totalTextFlows;
     private long processedTextFlows;
+    private EditorClientId editorClientId;
+    private DocumentId documentId;
 
-    public TMMergeInProgress(long totalTextFlows, long processedTextFlows) {
+    public TMMergeInProgress(long totalTextFlows, long processedTextFlows,
+            EditorClientId editorClientId, DocumentId documentId) {
         this.totalTextFlows = totalTextFlows;
         this.processedTextFlows = processedTextFlows;
+        this.editorClientId = editorClientId;
+        this.documentId = documentId;
     }
 
     @SuppressWarnings("unused")
@@ -53,5 +60,13 @@ public class TMMergeInProgress implements SessionEventData {
                 .add("totalTextFlows", totalTextFlows)
                 .add("processedTextFlows", processedTextFlows)
                 .toString();
+    }
+
+    public EditorClientId getEditorClientId() {
+        return editorClientId;
+    }
+
+    public DocumentId getDocumentId() {
+        return documentId;
     }
 }

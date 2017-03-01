@@ -7,6 +7,7 @@ import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
 import org.zanata.webtrans.client.events.TMMergeProgressEvent;
+import org.zanata.webtrans.client.events.TMMergeStartOrEndEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -23,6 +24,7 @@ import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
 import org.zanata.webtrans.shared.rpc.TMMergeInProgress;
+import org.zanata.webtrans.shared.rpc.TransMemoryMergeStartOrEnd;
 import org.zanata.webtrans.shared.rpc.TransUnitEdit;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
@@ -99,7 +101,16 @@ public class EventProcessor implements RemoteEventListener {
                 TMMergeInProgress tmMergeInProgress = (TMMergeInProgress) event;
                 return new TMMergeProgressEvent(
                         tmMergeInProgress.getProcessedTextFlows(),
-                        tmMergeInProgress.getTotalTextFlows());
+                        tmMergeInProgress.getTotalTextFlows(),
+                        tmMergeInProgress.getEditorClientId(),
+                        tmMergeInProgress.getDocumentId());
+            });
+            factories.put(TransMemoryMergeStartOrEnd.class, event -> {
+                TransMemoryMergeStartOrEnd e = (TransMemoryMergeStartOrEnd) event;
+                return new TMMergeStartOrEndEvent(e.getStartedBy(),
+                        e.getStartedTime(), e.getEditorClientId(),
+                        e.getDocumentId(), e.getEndTime(), e.getTextFlowCount()
+                );
             });
         }
 

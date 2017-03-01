@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.presenter;
 
 import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Error;
 import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Info;
+import static org.zanata.webtrans.client.events.NotificationEvent.Severity.Warning;
 
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
@@ -31,8 +32,11 @@ import org.zanata.common.LocaleId;
 import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TMMergeProgressEvent;
 import org.zanata.webtrans.client.events.TMMergeProgressHandler;
+import org.zanata.webtrans.client.events.TMMergeStartOrEndEvent;
+import org.zanata.webtrans.client.events.TMMergeStartOrEndHandler;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
+import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -41,8 +45,10 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.TransMemoryMergeResource;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
+import org.zanata.webtrans.shared.rpc.TransMemoryMergeStartOrEnd;
 
 import com.allen_sauer.gwt.log.client.Log;
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Inject;
 
 import net.customware.gwt.presenter.client.EventBus;
@@ -54,7 +60,8 @@ import net.customware.gwt.presenter.client.widget.WidgetPresenter;
  */
 public class TransMemoryMergePresenter extends
         WidgetPresenter<TransMemoryMergePopupPanelDisplay> implements
-        TransMemoryMergePopupPanelDisplay.Listener, TMMergeProgressHandler {
+        TransMemoryMergePopupPanelDisplay.Listener, TMMergeProgressHandler,
+        TMMergeStartOrEndHandler {
 
     private TransMemoryMergePopupPanelDisplay display;
     private final EventBus eventBus;
@@ -62,6 +69,7 @@ public class TransMemoryMergePresenter extends
     private final Identity identity;
     private final UserWorkspaceContext userWorkspaceContext;
     private final UiMessages messages;
+    private boolean mergeStarted;
 
     @Inject
     public TransMemoryMergePresenter(TransMemoryMergePopupPanelDisplay display,
@@ -79,6 +87,7 @@ public class TransMemoryMergePresenter extends
         this.messages = messages;
         display.setListener(this);
         registerHandler(eventBus.addHandler(TMMergeProgressEvent.TYPE, this));
+        registerHandler(eventBus.addHandler(TMMergeStartOrEndEvent.TYPE, this));
     }
 
     @Override
@@ -110,12 +119,14 @@ public class TransMemoryMergePresenter extends
                         eventBus.fireEvent(new NotificationEvent(Error, messages
                                 .mergeTMFailed()));
                         display.hide();
+                        mergeStarted = false;
                     }
 
                     @Override
                     public void onSuccess(Method method,
                             Boolean response) {
                         display.showProcessing(messages.mergeTMStarted());
+                        mergeStarted = true;
                     }
                 }).call(transMemoryMergeClient).merge(request);
 
@@ -123,7 +134,12 @@ public class TransMemoryMergePresenter extends
 
     @Override
     public void cancelMergeTM() {
-        display.hide();
+        if (mergeStarted) {
+            // TODO pahuang we need to tell the server to cancel
+            Log.info("============ you want to cancel the merge? TOO LATE MATE");
+        } else {
+            display.hide();
+        }
     }
 
     public void prepareTMMerge() {
@@ -144,37 +160,79 @@ public class TransMemoryMergePresenter extends
 
     @Override
     public void onTMMergeProgress(TMMergeProgressEvent event) {
-        if (event.hasNoTextFlowsToMerge()) {
-            eventBus.fireEvent(
-                    new NotificationEvent(Info, messages
-                            .noTranslationToMerge()));
-            display.hide();
-        } else if (event.isFinished()) {
-            /*final UndoLink undoLink = undoLinkProvider.get();
-            undoLink.prepareUndoFor(result);
+        if (!event.getEditorClientId().equals(identity.getEditorClientId())) {
+            // if TM merge is initiated from another user, we don't care the progress
+            return;
+        }
+        // TODO pahuang if we want to do undo, the undo will need to be performed asynchronously too
+        /*final UndoLink undoLink = undoLinkProvider.get();
+        undoLink.prepareUndoFor(result);
 
-            List<String> rowIndicesOrNull =
-                    Lists.transform(result.getUpdateInfoList(),
-                            SuccessRowIndexOrNullFunction.FUNCTION);
-            Iterable<String> successRowIndices =
-                    Iterables.filter(rowIndicesOrNull,
-                            StringNotEmptyPredicate.INSTANCE);
+        List<String> rowIndicesOrNull =
+                Lists.transform(result.getUpdateInfoList(),
+                        SuccessRowIndexOrNullFunction.FUNCTION);
+        Iterable<String> successRowIndices =
+                Iterables.filter(rowIndicesOrNull,
+                        StringNotEmptyPredicate.INSTANCE);
 
-            Log.info("number of rows auto filled by TM merge: "
-                    + Iterables.size(successRowIndices));
-            NotificationEvent notificationEvent =
-                    new NotificationEvent(Info, messages
-                            .mergeTMSuccess(Lists
-                                    .newArrayList(successRowIndices)),
-                            undoLink);*/
-            // TODO pahuang if we want to do undo, the undo will need to be performed asynchronously too
+        Log.info("number of rows auto filled by TM merge: "
+                + Iterables.size(successRowIndices));
+        NotificationEvent notificationEvent =
+                new NotificationEvent(Info, messages
+                        .mergeTMSuccess(Lists
+                                .newArrayList(successRowIndices)),
+                        undoLink);*/
 
-            eventBus.fireEvent(new NotificationEvent(Info,
-                    messages.mergeTMSuccess(event.getTotalTextFlows())));
-            display.hide();
+        display.showProcessing(messages.mergeProgressPercentage(event.getPercentDisplay()));
+    }
+
+    @Override
+    public void onTMMergeStartOrEnd(TMMergeStartOrEndEvent event) {
+        boolean eventFromOtherUser = !event.getEditorClientId()
+                .equals(identity.getEditorClientId());
+        if (!eventFromOtherUser) {
+            handleEventFromCurrentUser(event);
+            return;
+        }
+        handleEventFromOtherUser(event);
+    }
+
+    @VisibleForTesting
+    protected void handleEventFromOtherUser(TMMergeStartOrEndEvent event) {
+        if (!event.isEnded()) {
+            if (userWorkspaceContext.getSelectedDoc().getId()
+                    .equals(event.getDocumentId())) {
+                // another user has stared TM merge for this document
+                eventBus.fireEvent(new NotificationEvent(Warning,
+                        messages.mergeTMStartedBySomeone()));
+            } else {
+                // another user has started TM merge for other document
+                eventBus.fireEvent(new NotificationEvent(Info,
+                        messages.mergeTMStartedBySomeone()));
+            }
         } else {
-            display.showProcessing(messages.mergeProgressPercentage(event.getPercentDisplay()));
+            // TM merge triggered by another user has ended
+            eventBus.fireEvent(new NotificationEvent(Info,
+                    messages.mergeTMFinished(event.getStartedBy(),
+                            DateUtil.formatTimeOnly(event.getStartedTime()),
+                            DateUtil.formatTimeOnly(event.getEndTime()))));
         }
     }
 
+    @VisibleForTesting
+    protected void handleEventFromCurrentUser(TMMergeStartOrEndEvent event) {
+        // event are from current user, we only care about the ending event
+        if (event.isEnded()) {
+            if (event.getTextFlowCount() == 0) {
+                eventBus.fireEvent(
+                        new NotificationEvent(Info, messages
+                                .noTranslationToMerge()));
+            } else {
+                eventBus.fireEvent(new NotificationEvent(Info,
+                        messages.mergeTMSuccess(event.getTextFlowCount())));
+            }
+            display.hide();
+            mergeStarted = false;
+        }
+    }
 }
