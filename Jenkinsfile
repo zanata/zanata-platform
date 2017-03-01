@@ -49,8 +49,9 @@ try {
           info.printNode()
           info.printEnv()
           def testReports = '**/target/surefire-reports/TEST-*.xml'
+	  def jarFiles = '**/target/*.jar'
           def warFiles = '**/target/*.war'
-          sh "shopt -s globstar && rm -f $testReports $warFiles"
+          sh "shopt -s globstar && rm -f $testReports $jarFiles $warFiles"
 
           // Continue building even when test failure
           // Thus -Dmaven.test.failure.ignore is required
@@ -69,7 +70,8 @@ try {
 
             // notify if compile+unit test successful
             notify.testResults("UNIT")
-            archive warFiles
+	    // animal-sniffer requires jar files
+            archive "${jarFiles},${warFiles}"
         }
 
         stage('stash') {
