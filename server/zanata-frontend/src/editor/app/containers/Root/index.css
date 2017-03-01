@@ -316,6 +316,7 @@ li.docName span.ellipsis {
   float:right !important;
 }
 
+
   /**
    * Media Queries
    */
@@ -339,5 +340,17 @@ li.docName span.ellipsis {
       50% 100%;
     background-repeat:
       no-repeat;
+  }
+}
+
+@media (max-width:740px) {
+ .TransUnit-heading {
+    padding-left: 1.5em;
+  }
+}
+
+@media (min-width:741px) {
+  .TransUnit-heading {
+    padding-left: 0 !important;
   }
 }

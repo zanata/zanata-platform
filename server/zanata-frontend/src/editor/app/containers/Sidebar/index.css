@@ -27,6 +27,7 @@
 ul.sidebar-details {
   font-size:0.875em;
   color:#20718a;
+  word-wrap:break-word;
 }
 
 ul.sidebar-details span {
