@@ -139,7 +139,7 @@ const SidebarContent = React.createClass({
                   <th>Target term</th>
                   <th>
                   </th>
-                  <th className="align-right">Details</th>
+                  <th className="align-center">Details</th>
                 </tr>
               </thead>
               <tbody>
@@ -153,7 +153,7 @@ const SidebarContent = React.createClass({
                       Copy
                     </Button>
                   </td>
-                  <td className="align-right">
+                  <td className="align-center">
                     <IconButton
                       icon="info"
                       title="Details"
@@ -171,7 +171,7 @@ const SidebarContent = React.createClass({
                       Copy
                     </Button>
                   </td>
-                  <td className="align-right">
+                  <td className="align-center">
                     <IconButton
                       icon="info"
                       title="Details"
@@ -189,7 +189,7 @@ const SidebarContent = React.createClass({
                       Copy
                     </Button>
                   </td>
-                  <td className="align-right">
+                  <td className="align-center">
                     <IconButton
                       icon="info"
                       title="Details"
@@ -207,7 +207,7 @@ const SidebarContent = React.createClass({
                       Copy
                     </Button>
                   </td>
-                  <td className="align-right">
+                  <td className="align-center">
                     <IconButton
                       icon="info"
                       title="Details"

@@ -67,7 +67,7 @@ a#sidebartabs-tab-1, a#sidebartabs-tab-2 {
 }
 
 #sidebartabs-pane-2 {
-  background-color: #bcd4dc;
+  background-color: rgb(228, 238, 241);
 }
 
 ul.nav-tabs li.active {
@@ -83,7 +83,7 @@ table {
 }
 
 table th {
- border-bottom: solid 1px rgb(228, 238, 241);
+ border-bottom: solid 1px #bcd4dc;
 }
 
 table tr {
@@ -99,14 +99,14 @@ table tr {
   vertical-align:bottom;
 }
 
-.details-icon svg {
-  color:#03a6d7;
-}
-
 .align-right {
   text-align: right;
 }
 
 .align-center {
   text-align: center;
+}
+
+.details-icon button {
+  color:#03a6d7;
 }

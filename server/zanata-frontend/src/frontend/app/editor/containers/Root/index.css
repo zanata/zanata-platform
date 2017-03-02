@@ -319,6 +319,11 @@ li.docName span.ellipsis {
   vertical-align:sub;
 }
 
+
+.sidebar-editor select {
+    color:#20718a;
+}
+
   /**
    * Media Queries
    */
