@@ -369,6 +369,7 @@ li.docName span.ellipsis {
 
     .inline-flex-search .InputGroup--outlined {
       width:100%;
+      padding-bottom: 0.375em;
     }
 
   }

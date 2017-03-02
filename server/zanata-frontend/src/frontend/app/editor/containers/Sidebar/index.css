@@ -75,10 +75,11 @@ ul.nav-tabs li.active {
 }
 
 table {
-  width: 98%;
-  margin: 0.375em;
+  width: 95%;
+  margin: 0.75em;
   color:#20718A;
   text-align: left;
+  font-size:0.875em;
 }
 
 table th {
@@ -86,17 +87,26 @@ table th {
 }
 
 table tr {
-  height:1.5em;
+  height:1.8em;
 }
 
 .bold-text {
   font-weight:600;
+  color:#000;
 }
 
 .details-icon {
   vertical-align:bottom;
 }
 
+.details-icon svg {
+  color:#03a6d7;
+}
+
 .align-right {
   text-align: right;
+}
+
+.align-center {
+  text-align: center;
 }
