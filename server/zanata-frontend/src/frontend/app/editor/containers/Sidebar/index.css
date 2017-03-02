@@ -84,19 +84,16 @@ table {
 
 table th {
  border-bottom: solid 1px #bcd4dc;
+  color:#333;
 }
 
-table tr {
-  height:1.8em;
+table tbody tr {
+  height: 2em;
 }
 
 .bold-text {
   font-weight:600;
-  color:#000;
-}
-
-.details-icon {
-  vertical-align:bottom;
+  color:#333;
 }
 
 .align-right {
@@ -107,6 +104,7 @@ table tr {
   text-align: center;
 }
 
-.details-icon button {
+table td button.Button--link {
   color:#03a6d7;
+  vertical-align:bottom;
 }
