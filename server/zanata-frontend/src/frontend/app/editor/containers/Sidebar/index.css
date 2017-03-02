@@ -82,7 +82,7 @@ table {
 }
 
 table th {
- border-bottom: solid 1px #20718A;
+ border-bottom: solid 1px rgb(228, 238, 241);
 }
 
 table tr {
@@ -91,4 +91,12 @@ table tr {
 
 .bold-text {
   font-weight:600;
+}
+
+.details-icon {
+  vertical-align:bottom;
+}
+
+.align-right {
+  text-align: right;
 }

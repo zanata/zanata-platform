@@ -132,20 +132,20 @@ const SidebarContent = React.createClass({
             <div className="sidebar-wrapper" id="tab2">
               <GlossarySearchInput />
             </div>
-            <Table striped bordered condensed hover>
+            <Table reponsive>
               <thead>
                 <tr>
                   <th>Source term</th>
                   <th>Target term</th>
                   <th>
                   </th>
-                  <th>Details</th>
+                  <th className="align-right">Details</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td>Zanata</td>
-                  <td>Zanata</td>
+                  <td className="bold-text">Zanata</td>
+                  <td className="bold-text">Zanata</td>
                   <td>
                     <Button title="copy"
                       className="Button Button--small
@@ -153,7 +153,7 @@ const SidebarContent = React.createClass({
                       Copy
                     </Button>
                   </td>
-                  <td>
+                  <td className="align-right">
                     <IconButton
                       icon="info"
                       title="Details"
@@ -171,7 +171,7 @@ const SidebarContent = React.createClass({
                       Copy
                     </Button>
                   </td>
-                  <td>
+                  <td className="align-right">
                     <IconButton
                       icon="info"
                       title="Details"
@@ -189,7 +189,7 @@ const SidebarContent = React.createClass({
                       Copy
                     </Button>
                   </td>
-                  <td>
+                  <td className="align-right">
                     <IconButton
                       icon="info"
                       title="Details"
@@ -207,7 +207,7 @@ const SidebarContent = React.createClass({
                       Copy
                     </Button>
                   </td>
-                  <td>
+                  <td className="align-right">
                     <IconButton
                       icon="info"
                       title="Details"

@@ -80,7 +80,7 @@ const GlossarySearchInput = React.createClass({
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
         </div>
         <FormGroup controlId="formControlsSelect">
-          <FormControl componentClass="select" placeholder="select">
+          <FormControl componentClass="select" placeholder="Fuzzy">
             <option value="fuzzy">Fuzzy</option>
             <option value="lucene">Lucene</option>
             <option value="phrase">Phrase</option>
