@@ -4,6 +4,10 @@
   width:25%;
 }
 
+.sidebar-editor :focus {
+  outline: 0;
+}
+
 .sidebar-editor .nav-tabs li {
   width:50%;
 }
@@ -46,4 +50,17 @@ span.details-nocontent {
 
 .details-content .n1 {
   vertical-align:middle;
+}
+
+span.s1.gloss-tab-svg, span.s1.act-tab-svg {
+  vertical-align: sub;
+  margin-right: 0.375em;
+}
+
+a#sidebartabs-tab-1, a#sidebartabs-tab-2 {
+  font-weight: 600;
+}
+
+ul.nav-tabs li.active {
+  color:#20718a;
 }

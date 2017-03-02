@@ -1,14 +1,17 @@
 import React, { PropTypes } from 'react'
-import { // Tabs, Tab,
-  FormGroup, InputGroup,
+import { Tabs, Tab, FormGroup, InputGroup,
   FormControl, Button } from 'react-bootstrap'
 import Icon from '../../components/Icon'
 import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
 
-// const activityTitle = 'Activity'
-// const glossaryTitle = 'Glossary'
+var activityTitle = <span>
+  <Icon name="clock" className="s1 act-tab-svg" />Activity
+</span>
+var glossaryTitle = <span>
+  <Icon name="glossary" className="s1 gloss-tab-svg" />Glossary
+</span>
 
 const SidebarContent = React.createClass({
 
@@ -115,7 +118,6 @@ const SidebarContent = React.createClass({
         <div className="sidebar-wrapper">
           {this.sidebarDetails()}
         </div>
-        {/*
         <Tabs id="sidebartabs" defaultActiveKey={1}>
           <Tab eventKey={1} title={activityTitle}>
             <div className="sidebar-wrapper" id="tab1">
@@ -128,7 +130,6 @@ const SidebarContent = React.createClass({
             </div>
           </Tab>
         </Tabs>
-        */}
       </div>
     )
   }
