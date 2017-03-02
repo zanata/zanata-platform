@@ -20,7 +20,6 @@
  */
 package org.zanata.action;
 
-import com.google.gwt.thirdparty.guava.common.base.Throwables;
 import org.jboss.weld.exceptions.WeldException;
 import org.jglue.cdiunit.InRequestScope;
 import org.jglue.cdiunit.InSessionScope;
@@ -56,6 +55,7 @@ import javax.inject.Inject;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -273,15 +273,11 @@ public class NewProfileActionTest {
         when(applicationConfiguration.isEnforceMatchingUsernames()).thenReturn(true);
         when(zanataOpenId.getAuthResult().getUsername()).thenReturn(username);
 
-        try {
-            newProfileAction.setUsername(username);
-            fail("Weld Exception not thrown");
-        } catch (WeldException we) {
-            Throwable rootCause = Throwables.getRootCause(we);
-            assertThat(rootCause).isInstanceOf(ZanataServiceException.class);
-            assertThat(rootCause.getMessage()).isEqualTo(
-                    msgs.format("jsf.register.EnforcedUserIsTaken", username));
-        }
+        assertThatThrownBy(() -> newProfileAction.setUsername(username))
+                .isInstanceOf(WeldException.class)
+                .hasRootCauseExactlyInstanceOf(ZanataServiceException.class)
+                .hasStackTraceContaining(
+                        msgs.format("jsf.register.EnforcedUserIsTaken", username));
     }
 
     @Test
@@ -293,16 +289,12 @@ public class NewProfileActionTest {
         when(applicationConfiguration.isEnforceMatchingUsernames()).thenReturn(true);
         when(zanataOpenId.getAuthResult().getUsername()).thenReturn(username);
 
-        try {
-            newProfileAction.setUsername(username);
-            fail("Weld Exception not thrown");
-        } catch (WeldException we) {
-            Throwable rootCause = Throwables.getRootCause(we);
-            assertThat(rootCause).isInstanceOf(ZanataServiceException.class);
-            assertThat(rootCause.getMessage()).isEqualTo(
-                    msgs.format("jsf.register.EnforcedUserNotValid", username,
-                    NewProfileAction.USERNAME_REGEX));
-        }
+        assertThatThrownBy(() -> newProfileAction.setUsername(username))
+                .isInstanceOf(WeldException.class)
+                .hasRootCauseExactlyInstanceOf(ZanataServiceException.class)
+                .hasStackTraceContaining(msgs
+                        .format("jsf.register.EnforcedUserNotValid", username,
+                                NewProfileAction.USERNAME_REGEX));
     }
 
     @Test
@@ -314,14 +306,9 @@ public class NewProfileActionTest {
 
     @Test
     public void preAuthenticationIsRequired() {
-        // No authentication set
-        try {
-            newProfileAction.setUsername("test");
-        } catch (WeldException we) {
-            Throwable rootCause = Throwables.getRootCause(we);
-            assertThat(rootCause).isInstanceOf(AuthorizationException.class);
-            assertThat(rootCause.getMessage())
-                    .isEqualTo("Need to be in pre authenticated state");
-        }
+        assertThatThrownBy(() -> newProfileAction.setUsername("test"))
+                .isInstanceOf(WeldException.class)
+                .hasRootCauseExactlyInstanceOf(AuthorizationException.class)
+                .hasStackTraceContaining("Need to be in pre authenticated state");
     }
 }
