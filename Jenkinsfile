@@ -11,9 +11,11 @@ def projectProperties = [
 
 properties(projectProperties)
 
+/* Upto stash stage should fail fast:
+ * Failed and stop the build
+ * Yet able to create report
+ */
 try {
-  pullRequests.ensureJobDescription()
-
   timestamps {
     node {
       ansicolor {
@@ -48,10 +50,13 @@ try {
         stage('Build') {
           info.printNode()
           info.printEnv()
-          def testReports = '**/target/surefire-reports/TEST-*.xml'
-	  def jarFiles = '**/target/*.jar'
-          def warFiles = '**/target/*.war'
-          sh "shopt -s globstar && rm -f $testReports $jarFiles $warFiles"
+          def testReports = 'target/surefire-reports/TEST-*.xml'
+          def jarFiles = 'target/*.jar'
+          def warFiles = 'target/*.war'
+          // globstar might failed to match
+          sh "find . -path \"*/${testReports}\" -delete"
+          sh "find . -path \"*/${jarFiles}\" -delete"
+          sh "find . -path \"*/${warFiles}\" -delete"
 
           // Continue building even when test failure
           // Thus -Dmaven.test.failure.ignore is required
@@ -63,15 +68,17 @@ try {
                      -Dchromefirefox \
                      -DskipFuncTests \
                      -DskipArqTests \
-                    -Dmaven.test.failure.ignore \
+                     -Dmaven.test.failure.ignore \
             """
             setJUnitPrefix("UNIT", testReports)
-            junit testResults: testReports, testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
+            junit allowEmptyResults: true,
+                keepLongStdio: true,
+                testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
+                testResults: "**/${testReports}"
 
             // notify if compile+unit test successful
             notify.testResults("UNIT")
-	    // animal-sniffer requires jar files
-            archive "${jarFiles},${warFiles}"
+            archive "**/${jarFiles},**/${warFiles}"
         }
 
         stage('stash') {
@@ -79,33 +86,47 @@ try {
         }
       }
     }
+  }
+} catch (e) {
+  notify.failed()
+  junit allowEmptyResults: true,
+      keepLongStdio: true,
+      testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
+      testResults: "**/${testReports}"
+  throw e
+}
 
-    stage('Integration tests') {
-      def tasks = [:]
-      tasks['Integration tests: WILDFLY'] = {
-         node {
-           ansicolor {
-             info.printNode()
-             info.printEnv()
-             debugChromeDriver()
-             unstash 'workspace'
-             integrationTests('wildfly8')
+try {
+  timestamps {
+    node {
+      ansicolor {
+        stage('Integration tests') {
+        def tasks = [:]
+        tasks['Integration tests: WILDFLY'] = {
+          node {
+            ansicolor {
+              info.printNode()
+              info.printEnv()
+              debugChromeDriver()
+              unstash 'workspace'
+              integrationTests('wildfly8')
+            }
           }
         }
-      }
-      tasks['Integration tests: JBOSSEAP'] = {
-        node {
-          ansicolor {
-            info.printNode()
-            info.printEnv()
-            debugChromeDriver()
-            unstash 'workspace'
-            integrationTests('jbosseap6')
+        tasks['Integration tests: JBOSSEAP'] = {
+          node {
+            ansicolor {
+              info.printNode()
+              info.printEnv()
+              debugChromeDriver()
+              unstash 'workspace'
+              integrationTests('jbosseap6')
+            }
           }
         }
+        tasks.failFast = true
+        parallel tasks
       }
-      tasks.failFast = true
-      parallel tasks
     }
     // TODO in case of failure, notify culprits via IRC and/or email
     // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
@@ -116,6 +137,10 @@ try {
   }
 } catch (e) {
   notify.failed()
+  junit allowEmptyResults: true,
+      keepLongStdio: true,
+      testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
+      testResults: "**/${testReports}"
   throw e
 }
 
@@ -133,14 +158,16 @@ void debugChromeDriver() {
 }
 
 void integrationTests(def appserver) {
-  def testReports = '**/target/failsafe-reports/TEST-*.xml'
-  sh "shopt -s globstar && rm -f $testReports"
+  def testReports = 'target/failsafe-reports/TEST-*.xml'
+  sh "find . -path \"*/${testReports}\" -delete"
+
   xvfb {
     withPorts {
       // Run the maven build
       sh """./run-clean.sh ./mvnw -e verify \
                  --batch-mode \
                  --settings .travis-settings.xml \
+                 -Danimal.sniffer.skip=true \
                  -DstaticAnalysis=false \
                  -Dcheckstyle.skip \
                  -Dappserver=$appserver \
@@ -156,7 +183,10 @@ void integrationTests(def appserver) {
     }
   }
   setJUnitPrefix(appserver.toUpperCase(), testReports)
-  junit testReports
+  junit allowEmptyResults: true,
+      keepLongStdio: true,
+      testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
+      testResults: "**/${testReports}"
   archiveTestFilesIfUnstable()
   notify.testResults(appserver.toUpperCase())
 }
@@ -173,7 +203,7 @@ void withPorts(Closure wrapped) {
 // from https://issues.jenkins-ci.org/browse/JENKINS-27395?focusedCommentId=256459&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-256459
 void setJUnitPrefix(prefix, files) {
   // add prefix to qualified classname
-  sh "shopt -s globstar && sed -i \"s/\\(<testcase .*classname=['\\\"]\\)\\([a-z]\\)/\\1${prefix}.\\2/g\" $files"
+  sh "find . -path \"*/${file}\" -exec sed -i \"s/\\(<testcase .*classname=['\\\"]\\)\\([a-z]\\)/\\1${prefix}.\\2/g\" '{}' +"
 }
 
 void archiveTestFilesIfUnstable() {
