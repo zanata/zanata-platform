@@ -314,16 +314,6 @@ li.docName span.ellipsis {
 .pull-right {
   float:right !important;
 }
-
-.inline-flex-search .form-group {
-  vertical-align:sub;
-}
-
-
-.sidebar-editor select {
-    color:#20718a;
-}
-
   /**
    * Media Queries
    */
@@ -366,26 +356,3 @@ li.docName span.ellipsis {
     padding-left: 0 !important;
   }
 }
-
-  @media (max-width:1009px) {
-    .inline-flex-search {
-      display: block;
-    }
-
-    .inline-flex-search .InputGroup--outlined {
-      width:100%;
-      padding-bottom: 0.375em;
-    }
-
-  }
-
-
-  @media (min-width:1100px) {
-    .inline-flex-search {
-      display: inline-flex;
-    }
-
-    .inline-flex-search .InputGroup--outlined {
-      width:70%;
-    }
-  }

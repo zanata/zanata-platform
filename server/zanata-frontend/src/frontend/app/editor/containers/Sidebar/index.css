@@ -108,3 +108,43 @@ table td button.Button--link {
   color:#03a6d7;
   vertical-align:bottom;
 }
+
+
+.inline-flex-search .form-group {
+  vertical-align:sub;
+}
+
+.sidebar-editor select {
+  color:#20718a;
+}
+
+@media (max-width:1009px) {
+  .inline-flex-search {
+    display: block;
+  }
+
+  .inline-flex-search .InputGroup--outlined {
+    width:100%;
+    padding-bottom: 0.375em;
+  }
+
+}
+
+@media (min-width:1100px) {
+  .inline-flex-search {
+    display: inline-flex;
+  }
+
+  .inline-flex-search .InputGroup--outlined {
+    width:70%;
+  }
+
+  .inline-flex-search .form-group {
+    margin-left:0.375em;
+  }
+
+  .inline-flex-search .form-group select.form-control {
+    vertical-align: sub;
+  }
+}
+
