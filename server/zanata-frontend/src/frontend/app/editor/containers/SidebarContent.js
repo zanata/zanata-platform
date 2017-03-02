@@ -5,6 +5,7 @@ import Icon from '../../components/Icon'
 import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
+import GlossarySearchInput from '../components/GlossarySearchInput'
 
 var activityTitle = <span>
   <Icon name="clock" className="s1 act-tab-svg" />Activity
@@ -126,7 +127,7 @@ const SidebarContent = React.createClass({
           </Tab>
           <Tab eventKey={2} title={glossaryTitle}>
             <div className="sidebar-wrapper" id="tab2">
-              Tab 2 content
+              <GlossarySearchInput />
             </div>
           </Tab>
         </Tabs>
