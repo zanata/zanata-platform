@@ -11,6 +11,9 @@ def projectProperties = [
 
 properties(projectProperties)
 
+def surefireTestReports='target/surefire-reports/TEST-*.xml'
+def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
+
 /* Upto stash stage should fail fast:
  * Failed and stop the build
  * Yet able to create report
@@ -50,11 +53,10 @@ try {
         stage('Build') {
           info.printNode()
           info.printEnv()
-          def testReports = 'target/surefire-reports/TEST-*.xml'
           def jarFiles = 'target/*.jar'
           def warFiles = 'target/*.war'
           // globstar might failed to match
-          sh "find . -path \"*/${testReports}\" -delete"
+          sh "find . -path \"*/${surefireTestReports}\" -delete"
           sh "find . -path \"*/${jarFiles}\" -delete"
           sh "find . -path \"*/${warFiles}\" -delete"
 
@@ -70,7 +72,7 @@ try {
                      -DskipArqTests \
                      -Dmaven.test.failure.ignore \
             """
-            setJUnitPrefix("UNIT", testReports)
+            setJUnitPrefix("UNIT", surefireTestReports)
 
             // notify if compile+unit test successful
             notify.testResults("UNIT")
@@ -92,14 +94,13 @@ try {
   junit allowEmptyResults: true,
       keepLongStdio: true,
       testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
-      testResults: "**/${testReports}"
+      testResults: "**/${surefireTestReports}"
 }
 
 if (currentBuild.result.equals('FAILURE')){
   return 1
 }
 
-def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
 try {
   timestamps {
     node {
@@ -160,7 +161,6 @@ void debugChromeDriver() {
 }
 
 void integrationTests(def appserver) {
-  def testReports = 'target/failsafe-reports/TEST-*.xml'
   sh "find . -path \"*/${failsafeTestReports}\" -delete"
 
   try{
