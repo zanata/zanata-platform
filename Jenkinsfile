@@ -95,7 +95,7 @@ try {
       testResults: "**/${testReports}"
 }
 
-if currentBuild.result.equals('FAILURE'){
+if (currentBuild.result.equals('FAILURE')){
   return 1
 }
 
@@ -144,11 +144,6 @@ try {
 } catch (e) {
   notify.failed()
   throw e
-} finally {
-  junit allowEmptyResults: true,
-      keepLongStdio: true,
-      testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
-      testResults: "**/${failsafeTestReports}"
 }
 
 // TODO factor these out into zanata-pipeline-library too
@@ -196,6 +191,10 @@ void integrationTests(def appserver) {
     throw e
   }finally{
     notify.testResults(appserver.toUpperCase())
+    junit allowEmptyResults: true,
+        keepLongStdio: true,
+        testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
+        testResults: "**/${failsafeTestReports}"
   }
 }
 
