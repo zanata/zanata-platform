@@ -71,14 +71,11 @@ try {
                      -Dmaven.test.failure.ignore \
             """
             setJUnitPrefix("UNIT", testReports)
-            junit allowEmptyResults: true,
-                keepLongStdio: true,
-                testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
-                testResults: "**/${testReports}"
 
             // notify if compile+unit test successful
             notify.testResults("UNIT")
             archive "**/${jarFiles},**/${warFiles}"
+            currentBuild.result = 'SUCCESS'
         }
 
         stage('stash') {
@@ -89,17 +86,25 @@ try {
   }
 } catch (e) {
   notify.failed()
+  currentBuild.result = 'FAILURE'
+  throw e
+} finally {
   junit allowEmptyResults: true,
       keepLongStdio: true,
       testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
       testResults: "**/${testReports}"
-  throw e
 }
 
+if currentBuild.result.equals('FAILURE'){
+  return 1
+}
+
+def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
 try {
   timestamps {
     node {
       ansicolor {
+
         stage('Integration tests') {
           def tasks = [:]
           tasks['Integration tests: WILDFLY'] = {
@@ -138,11 +143,12 @@ try {
   }
 } catch (e) {
   notify.failed()
+  throw e
+} finally {
   junit allowEmptyResults: true,
       keepLongStdio: true,
       testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
-      testResults: "**/${testReports}"
-  throw e
+      testResults: "**/${failsafeTestReports}"
 }
 
 // TODO factor these out into zanata-pipeline-library too
@@ -155,41 +161,42 @@ void xvfb(Closure wrapped) {
 
 void debugChromeDriver() {
   sh returnStatus: true, script: 'which chromedriver google-chrome'
-    sh returnStatus: true, script: 'ls -l /opt/chromedriver /opt/google/chrome/google-chrome'
+  sh returnStatus: true, script: 'ls -l /opt/chromedriver /opt/google/chrome/google-chrome'
 }
 
 void integrationTests(def appserver) {
   def testReports = 'target/failsafe-reports/TEST-*.xml'
-  sh "find . -path \"*/${testReports}\" -delete"
+  sh "find . -path \"*/${failsafeTestReports}\" -delete"
 
-  xvfb {
-    withPorts {
-      // Run the maven build
-      sh """./run-clean.sh ./mvnw -e verify \
-                 --batch-mode \
-                 --settings .travis-settings.xml \
-                 -Danimal.sniffer.skip=true \
-                 -DstaticAnalysis=false \
-                 -Dcheckstyle.skip \
-                 -Dappserver=$appserver \
-                 -Dcargo.debug.jvm.args= \
-                 -DskipUnitTests \
-                 -Dmaven.main.skip \
-                 -Dgwt.compiler.skip \
-                 -Dwebdriver.display=${env.DISPLAY} \
-                 -Dwebdriver.type=chrome \
-                 -Dwebdriver.chrome.driver=/opt/chromedriver \
-                 -DallFuncTests
-         """
+  try{
+    xvfb {
+      withPorts {
+        // Run the maven build
+        sh """./run-clean.sh ./mvnw -e verify \
+                   --batch-mode \
+                   --settings .travis-settings.xml \
+                   -Danimal.sniffer.skip=true \
+                   -DstaticAnalysis=false \
+                   -Dcheckstyle.skip \
+                   -Dappserver=$appserver \
+                   -Dcargo.debug.jvm.args= \
+                   -DskipUnitTests \
+                   -Dmaven.main.skip \
+                   -Dgwt.compiler.skip \
+                   -Dwebdriver.display=${env.DISPLAY} \
+                   -Dwebdriver.type=chrome \
+                   -Dwebdriver.chrome.driver=/opt/chromedriver \
+                   -DallFuncTests
+          """
+      }
     }
+  }catch(e){
+    currentBuild.result = 'UNSTABLE'
+    archiveTestFilesIfUnstable()
+    throw e
+  }finally{
+    notify.testResults(appserver.toUpperCase())
   }
-  setJUnitPrefix(appserver.toUpperCase(), testReports)
-  junit allowEmptyResults: true,
-      keepLongStdio: true,
-      testDataPublishers: [[$class: 'StabilityTestDataPublisher']],
-      testResults: "**/${testReports}"
-  archiveTestFilesIfUnstable()
-  notify.testResults(appserver.toUpperCase())
 }
 
 void withPorts(Closure wrapped) {
