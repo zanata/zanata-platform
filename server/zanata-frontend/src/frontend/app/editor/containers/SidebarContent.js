@@ -1,17 +1,20 @@
 import React, { PropTypes } from 'react'
 import { Tabs, Tab, FormGroup, InputGroup,
-  FormControl, Button } from 'react-bootstrap'
+  FormControl, Button, Table } from 'react-bootstrap'
 import Icon from '../../components/Icon'
 import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossarySearchInput from '../components/GlossarySearchInput'
+import IconButton from '../components/IconButton'
 
 var activityTitle = <span>
-  <Icon name="clock" className="s1 act-tab-svg" />Activity
+  <Icon name="clock" className="s1 act-tab-svg" />
+  <span className="hide-md">Activity</span>
 </span>
 var glossaryTitle = <span>
-  <Icon name="glossary" className="s1 gloss-tab-svg" />Glossary
+  <Icon name="glossary" className="s1 gloss-tab-svg" />
+  <span className="hide-md">Glossary</span>
 </span>
 
 const SidebarContent = React.createClass({
@@ -129,6 +132,91 @@ const SidebarContent = React.createClass({
             <div className="sidebar-wrapper" id="tab2">
               <GlossarySearchInput />
             </div>
+            <Table striped bordered condensed hover>
+              <thead>
+                <tr>
+                  <th>Source term</th>
+                  <th>Target term</th>
+                  <th>
+                  </th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Zanata</td>
+                  <td>Zanata</td>
+                  <td>
+                    <Button title="copy"
+                      className="Button Button--small
+                      u-rounded Button--primary">
+                      Copy
+                    </Button>
+                  </td>
+                  <td>
+                    <IconButton
+                      icon="info"
+                      title="Details"
+                      className="Button--link"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="bold-text">Zanata</td>
+                  <td className="bold-text">Zanata</td>
+                  <td>
+                    <Button title="copy"
+                      className="Button Button--small
+                      u-rounded Button--primary">
+                      Copy
+                    </Button>
+                  </td>
+                  <td>
+                    <IconButton
+                      icon="info"
+                      title="Details"
+                      className="Button--link"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="bold-text">Zanata</td>
+                  <td className="bold-text">Zanata</td>
+                  <td>
+                    <Button title="copy"
+                      className="Button Button--small
+                      u-rounded Button--primary">
+                      Copy
+                    </Button>
+                  </td>
+                  <td>
+                    <IconButton
+                      icon="info"
+                      title="Details"
+                      className="Button--link"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td className="bold-text">Zanata</td>
+                  <td className="bold-text">Zanata</td>
+                  <td>
+                    <Button title="copy"
+                      className="Button Button--small
+                      u-rounded Button--primary">
+                      Copy
+                    </Button>
+                  </td>
+                  <td>
+                    <IconButton
+                      icon="info"
+                      title="Details"
+                      className="Button--link"
+                    />
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
           </Tab>
         </Tabs>
       </div>

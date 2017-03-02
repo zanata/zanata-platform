@@ -298,7 +298,6 @@ li.docName span.ellipsis {
 
 .tab-content > .active {
   display: block;
-  background: #fff;
   height:100vh;
 }
 
@@ -316,6 +315,9 @@ li.docName span.ellipsis {
   float:right !important;
 }
 
+.inline-flex-search .form-group {
+  vertical-align:sub;
+}
 
   /**
    * Media Queries
@@ -347,10 +349,37 @@ li.docName span.ellipsis {
  .TransUnit-heading {
     padding-left: 1.5em;
   }
+  .hide-md {
+    display: none;
+    visibility: hidden;
+  }
 }
+
 
 @media (min-width:741px) {
   .TransUnit-heading {
     padding-left: 0 !important;
   }
 }
+
+  @media (max-width:1009px) {
+    .inline-flex-search {
+      display: block;
+    }
+
+    .inline-flex-search .InputGroup--outlined {
+      width:100%;
+    }
+
+  }
+
+
+  @media (min-width:1100px) {
+    .inline-flex-search {
+      display: inline-flex;
+    }
+
+    .inline-flex-search .InputGroup--outlined {
+      width:70%;
+    }
+  }

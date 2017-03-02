@@ -22,6 +22,8 @@
 import cx from 'classnames'
 import { Icon } from 'zanata-ui'
 import React from 'react'
+import { FormGroup, FormControl }
+  from 'react-bootstrap'
 
 /**
  * Styled text input that displays result count.
@@ -61,19 +63,29 @@ const GlossarySearchInput = React.createClass({
 
   render () {
     return (
-      <div className={cx('InputGroup InputGroup--outlined InputGroup--rounded',
-                         { 'is-focused': this.state.focused })}>
-        <span className="InputGroup-addon"
-          onClick={this.focusInput}>
-          <Icon name="search"
-            title="Search glossary"
-            size="n1" />
-        </span>
-        <input ref="input"
-          type="search"
-          placeholder="Search glossary…"
-          maxLength="1000"
-          className="InputGroup-input u-sizeLineHeight-1_1-4" />
+      <div className="inline-flex-search">
+        <div className={cx('InputGroup InputGroup--outlined ' +
+            'InputGroup--rounded',
+          { 'is-focused': this.state.focused })}>
+          <span className="InputGroup-addon"
+            onClick={this.focusInput}>
+            <Icon name="search"
+              title="Search glossary"
+              size="n1" />
+          </span>
+          <input ref="input"
+            type="search"
+            placeholder="Search glossary…"
+            maxLength="100"
+            className="InputGroup-input u-sizeLineHeight-1_1-4" />
+        </div>
+        <FormGroup controlId="formControlsSelect">
+          <FormControl componentClass="select" placeholder="select">
+            <option value="fuzzy">Fuzzy</option>
+            <option value="lucene">Lucene</option>
+            <option value="phrase">Phrase</option>
+          </FormControl>
+        </FormGroup>
       </div>
     )
   }
