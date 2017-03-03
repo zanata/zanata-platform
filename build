@@ -58,7 +58,7 @@ function shouldRunFuncTests() {
 # NB: please keep help() and zparseopts in sync!
 help() {
   cat <<EOF
-Usage: $scriptname <build-target> <options>
+Usage: $scriptname <build-target> <options> -- <passthrough-options>
 
 Build targets (choose one):
     --client, --server or --all (client and server)
