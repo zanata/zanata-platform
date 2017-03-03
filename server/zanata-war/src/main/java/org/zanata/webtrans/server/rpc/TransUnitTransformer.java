@@ -102,7 +102,7 @@ public class TransUnitTransformer {
         return target.getReviewComments().size();
     }
 
-    private static String commentToString(HSimpleComment comment) {
+    public static String commentToString(HSimpleComment comment) {
         return comment == null ? null : comment.getComment();
     }
 

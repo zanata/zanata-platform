@@ -94,3 +94,11 @@ export function documentListFetched (projectSlug, versionSlug, documents) {
     documents
   }
 }
+
+export const SET_SIDEBAR_VISIBILITY = Symbol('SET_SIDEBAR_VISIBILITY')
+export function setSidebarVisibility (visible) {
+  return {
+    type: SET_SIDEBAR_VISIBILITY,
+    visible
+  }
+}

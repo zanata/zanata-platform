@@ -173,6 +173,10 @@
   text-transform: uppercase;
 }
 
+h3.TransUnit-heading {
+  padding-left:1.5em;
+}
+
 .TransUnit-text {
   font-family: var(--TransUnit-text-font-family);
   font-size: var(--TransUnit-text-font-size);

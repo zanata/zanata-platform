@@ -1,3 +1,4 @@
+import { SET_SIDEBAR_VISIBILITY } from '../actions'
 import {
   CHANGE_UI_LOCALE,
   TOGGLE_HEADER,
@@ -33,6 +34,9 @@ const DEFAULT_FILTER_STATE = {
 const defaultState = {
   panels: {
     navHeader: {
+      visible: true
+    },
+    sidebar: {
       visible: true
     },
     suggestions: {
@@ -159,6 +163,15 @@ const ui = (state = defaultState, action) => {
         textFlowDisplay: {
           filter: {
             $set: allStatusesSame(newFilter) ? DEFAULT_FILTER_STATE : newFilter
+          }
+        }
+      })
+
+    case SET_SIDEBAR_VISIBILITY:
+      return update({
+        panels: {
+          sidebar: {
+            visible: {$set: action.visible}
           }
         }
       })

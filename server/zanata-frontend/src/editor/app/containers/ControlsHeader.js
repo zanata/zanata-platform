@@ -5,6 +5,7 @@ import TranslatingIndicator from '../components/TranslatingIndicator'
 import TransUnitFilter from '../components/TransUnitFilter'
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+import { setSidebarVisibility } from '../actions'
 import {
   toggleHeader,
   toggleKeyboardShortcutsModal
@@ -35,6 +36,7 @@ const ControlsHeader = React.createClass({
       previousPage: func.isRequired,
       nextPage: func.isRequired,
       lastPage: func.isRequired,
+      setSidebarVisibility: func.isRequired,
       toggleSuggestionPanel: func.isRequired,
       toggleKeyboardShortcutsModal: func.isRequired,
       toggleMainNav: func.isRequired
@@ -46,6 +48,9 @@ const ControlsHeader = React.createClass({
 
     ui: shape({
       panels: shape({
+        sidebar: shape({
+          visible: bool.isRequired
+        }).isRequired,
         suggestions: shape({
           visible: bool.isRequired
         }).isRequired
@@ -76,6 +81,11 @@ const ControlsHeader = React.createClass({
       needswork: number,
       untranslated: number
     })
+  },
+
+  toggleSidebarVisibility: function () {
+    const { actions, ui } = this.props
+    actions.setSidebarVisibility(!ui.panels.sidebar.visible)
   },
 
   render: function () {
@@ -113,6 +123,15 @@ const ControlsHeader = React.createClass({
                 onClick={this.props.actions.toggleSuggestionPanel}
                 active={this.props.ui.panels.suggestions.visible} />
 
+            </li>
+            <li className="u-sM-1-8">
+              <IconButtonToggle
+                icon="info"
+                title={this.props.ui.panels.sidebar.visible
+                  ? gettextCatalog.getString('Hide sidebar')
+                  : gettextCatalog.getString('Show sidebar')}
+                onClick={this.toggleSidebarVisibility}
+                active={this.props.ui.panels.sidebar.visible} />
             </li>
       {/* extra items from the angular template that were not being displayed
             <li ng-show="appCtrl.PRODUCTION">
@@ -190,6 +209,9 @@ function mapDispatchToProps (dispatch) {
       },
       lastPage: () => {
         dispatch(lastPage())
+      },
+      setSidebarVisibility: (visible) => {
+        dispatch(setSidebarVisibility(visible))
       },
       toggleSuggestionPanel: () => dispatch(toggleSuggestions()),
       toggleKeyboardShortcutsModal: () => {

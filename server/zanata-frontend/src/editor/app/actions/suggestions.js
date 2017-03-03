@@ -1,5 +1,5 @@
 import { getSuggestions } from '../api/suggestions'
-import { debounce } from 'lodash'
+import { debounce, isUndefined } from 'lodash'
 
 export const TOGGLE_SUGGESTIONS = Symbol('TOGGLE_SUGGESTIONS')
 export function toggleSuggestions () {
@@ -246,6 +246,9 @@ export function findTextSuggestions (searchText) {
  */
 export function findPhraseSuggestionsById (phraseId) {
   return (dispatch, getState) => {
+    if (isUndefined(phraseId)) {
+      return
+    }
     waitForPhraseDetail(20)
 
     function waitForPhraseDetail (times) {
