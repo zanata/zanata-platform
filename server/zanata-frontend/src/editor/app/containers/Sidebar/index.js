@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import ReactSidebar from 'react-sidebar'
-import SidebarContent from '../SidebarContent'
+import SidebarSettings from '../SidebarSettings'
 
 const defaultState = {
   docked: true
@@ -44,7 +44,7 @@ class Sidebar extends Component {
   }
 
   render () {
-    const content = <SidebarContent
+    const content = <SidebarSettings
       close={this.close}
     />
 
