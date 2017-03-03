@@ -32,9 +32,13 @@ import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
+import org.zanata.model.HAccount;
+import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
 import com.google.common.base.MoreObjects;
@@ -53,6 +57,10 @@ public class TransMemoryMergeManager implements Serializable {
     @Inject
     private TransMemoryMergeService transMemoryMergeService;
 
+    @Inject
+    @Authenticated
+    private HAccount authenticated;
+
     /**
      * start an async TM merge operation for given request.
      *
@@ -63,7 +71,6 @@ public class TransMemoryMergeManager implements Serializable {
      *             if there is already a task running
      */
     public boolean startTransMemoryMerge(TransMemoryMergeRequest request) {
-        TransMemoryMergeTaskHandle handle = new TransMemoryMergeTaskHandle();
         TransMemoryTaskKey key =
                 new TransMemoryTaskKey(request.projectIterationId,
                         request.documentId, request.localeId);
@@ -71,9 +78,34 @@ public class TransMemoryMergeManager implements Serializable {
                 asyncTaskHandleManager.getHandleByKey(key);
         if (handleByKey == null || handleByKey.isCancelled()
                 || handleByKey.isDone()) {
+            TransMemoryMergeTaskHandle handle = new TransMemoryMergeTaskHandle();
+            handle.setTriggeredBy(authenticated.getUsername());
             asyncTaskHandleManager.registerTaskHandle(handle, key);
             transMemoryMergeService.executeMergeAsync(request, handle);
             return true;
+        }
+        return false;
+    }
+
+    public boolean cancelTransMemoryMerge(TransMemoryMergeCancelRequest request) {
+        TransMemoryTaskKey key =
+                new TransMemoryTaskKey(request.projectIterationId,
+                        request.documentId, request.localeId);
+        AsyncTaskHandle handleByKey =
+                asyncTaskHandleManager.getHandleByKey(key);
+        if (handleByKey != null && !(handleByKey.isDone() || handleByKey.isCancelled())) {
+            TransMemoryMergeTaskHandle handle =
+                    (TransMemoryMergeTaskHandle) handleByKey;
+            String triggeredBy = handle.getTriggeredBy();
+            if (Objects.equals(authenticated.getUsername(), triggeredBy)) {
+                handle.cancel(true);
+                handle.setCancelledTime(System.currentTimeMillis());
+                handle.setCancelledBy(authenticated.getUsername());
+                log.info("task: {} cancelled by its creator", handle);
+                return true;
+            } else {
+                log.warn("{} is attempting to cancel {}", authenticated.getUsername(), handle);
+            }
         }
         return false;
     }

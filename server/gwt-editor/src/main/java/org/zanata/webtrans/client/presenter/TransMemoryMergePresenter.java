@@ -43,6 +43,7 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.TransMemoryMergeResource;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.TransMemoryMergeStartOrEnd;
@@ -111,8 +112,8 @@ public class TransMemoryMergePresenter extends
                         mergeOptions.getImportedMatch());
         // the result is always null as the call is async
         // this is just so compiler will check the return type for us
-        Boolean noop = REST.withCallback(
-                new MethodCallback<Boolean>() {
+        REST.withCallback(
+                new MethodCallback<Void>() {
                     @Override
                     public void onFailure(Method method, Throwable exception) {
                         Log.warn("TM merge failed", exception);
@@ -124,7 +125,7 @@ public class TransMemoryMergePresenter extends
 
                     @Override
                     public void onSuccess(Method method,
-                            Boolean response) {
+                            Void response) {
                         display.showProcessing(messages.mergeTMStarted());
                         mergeStarted = true;
                     }
@@ -135,8 +136,34 @@ public class TransMemoryMergePresenter extends
     @Override
     public void cancelMergeTM() {
         if (mergeStarted) {
-            // TODO pahuang we need to tell the server to cancel
-            Log.info("============ you want to cancel the merge? TOO LATE MATE");
+            DocumentId currentDoc = userWorkspaceContext.getSelectedDoc().getId();
+            WorkspaceId workspaceId =
+                    userWorkspaceContext.getWorkspaceContext().getWorkspaceId();
+            LocaleId localeId = workspaceId.getLocaleId();
+            ProjectIterationId projectIterationId = workspaceId
+                    .getProjectIterationId();
+            TransMemoryMergeCancelRequest request =
+                    new TransMemoryMergeCancelRequest();
+            request.documentId = currentDoc;
+            request.localeId = localeId;
+            request.projectIterationId = projectIterationId;
+            REST.withCallback(
+            new MethodCallback<Void>() {
+                @Override
+                public void onFailure(Method method, Throwable exception) {
+                    Log.warn("TM merge cancel failed", exception);
+                    eventBus.fireEvent(new NotificationEvent(Error, messages
+                            .mergeTMCancelFailed()));
+                }
+
+                @Override
+                public void onSuccess(Method method,
+                        Void response) {
+                    display.hide();
+                    mergeStarted = false;
+                }
+            }).call(transMemoryMergeClient).cancelMerge(request);
+
         } else {
             display.hide();
         }

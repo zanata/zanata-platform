@@ -108,6 +108,9 @@ public interface UiMessages extends Messages {
     @DefaultMessage("TM merge failed")
     String mergeTMFailed();
 
+    @DefaultMessage("Cancel TM merge failed")
+    String mergeTMCancelFailed();
+
     @DefaultMessage("TM merge success on {0} rows")
     String mergeTMSuccess(long count);
 

@@ -18,23 +18,27 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.rest;
+package org.zanata.webtrans.shared.rest.dto;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import org.zanata.common.LocaleId;
+import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+import com.google.common.base.MoreObjects;
 
-import org.fusesource.restygwt.client.DirectRestService;
-import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
-import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
+/**
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
+public class TransMemoryMergeCancelRequest {
+    public ProjectIterationId projectIterationId;
+    public DocumentId documentId;
+    public LocaleId localeId;
 
-public interface TransMemoryMergeResource extends DirectRestService {
-    String TMMERGE_PATH = "/tmmerge";
-
-    @POST
-    @Path(TMMERGE_PATH)
-    void merge(TransMemoryMergeRequest request);
-
-    @POST
-    @Path(TMMERGE_PATH + "/cancel")
-    void cancelMerge(TransMemoryMergeCancelRequest request);
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("projectIterationId", projectIterationId)
+                .add("documentId", documentId)
+                .add("localeId", localeId)
+                .toString();
+    }
 }

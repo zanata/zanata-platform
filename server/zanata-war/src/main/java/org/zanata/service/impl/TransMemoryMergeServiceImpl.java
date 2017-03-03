@@ -142,7 +142,6 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             }
 
             asyncTaskHandle.setTotalTextFlows(total);
-            asyncTaskHandle.setTriggeredBy(authenticatedAccount.getUsername());
             asyncTaskHandle.setTMMergeTarget(request.projectIterationId,
                     request.documentId, request.localeId);
 

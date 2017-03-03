@@ -49,6 +49,7 @@ import org.zanata.service.TranslationMemoryService;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
 import com.google.common.base.Joiner;
@@ -163,28 +164,34 @@ public class SuggestionsService implements SuggestionsResource {
     }
 
     @Override
-    public Boolean merge(TransMemoryMergeRequest request) {
-        securityCheck(request);
+    public void merge(TransMemoryMergeRequest request) {
+        securityCheck(new WorkspaceId(request.projectIterationId,
+                request.localeId));
 
         boolean started = transMemoryMergeManager.startTransMemoryMerge(request);
-        if (started) {
-            return true;
+        if (!started) {
+            throw new UnsupportedOperationException("There is already a TM merge operation in progress");
         }
-
-        throw new UnsupportedOperationException("There is already a TM merge operation in progress");
     }
 
-    private void securityCheck(TransMemoryMergeRequest request) {
+    private void securityCheck(WorkspaceId workspaceId) {
         identity.checkLoggedIn();
 
         try {
-            WorkspaceId workspaceId =
-                    new WorkspaceId(request.projectIterationId,
-                            request.localeId);
             securityServiceImpl.checkWorkspaceAction(workspaceId,
                     SecurityService.TranslationAction.MODIFY);
         } catch (NoSuchWorkspaceException e) {
             throw new NotFoundException(e);
+        }
+    }
+
+    @Override
+    public void cancelMerge(TransMemoryMergeCancelRequest request) {
+        securityCheck(
+                new WorkspaceId(request.projectIterationId, request.localeId));
+        boolean cancelled = transMemoryMergeManager.cancelTransMemoryMerge(request);
+        if (!cancelled) {
+            throw new UnsupportedOperationException("Can not cancel TM merge for " + request.toString());
         }
     }
 }
