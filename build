@@ -58,7 +58,7 @@ function shouldRunFuncTests() {
 # NB: please keep help() and zparseopts in sync!
 help() {
   cat <<EOF
-Usage: $scriptname <options> <build-target>
+Usage: $scriptname <build-target> <options>
 
 Build targets (choose one):
     --client, --server or --all (client and server)
@@ -83,7 +83,7 @@ General options:
     --full          equivalent to -O --analyse --verify-all -i; all possible tests and optimisations
     -n, --dry-run   output the mvn command line, don't run it
     --              pass through remaining options to mvn command line
-                    eg ./build -Q -- -Dchrome --server
+                    eg ./build --server -Q -- -Dchrome
 
 Server options:
     --skip-install-node     skip node/npm install in frontend
