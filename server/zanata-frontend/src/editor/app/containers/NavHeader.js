@@ -124,6 +124,9 @@ const NavHeader = React.createClass({
           </li>
           */}
           <li>
+            <Icon name="settings" className="s3" />
+          </li>
+          <li>
             <DashboardLink {...this.props.data.user} />
           </li>
         </ul>

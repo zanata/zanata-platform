@@ -47,3 +47,23 @@ span.details-nocontent {
 .details-content .n1 {
   vertical-align:middle;
 }
+
+h2.validation {
+  font-size: 15px;
+  font-weight:600;
+  color: #20718A;
+  margin-top:1em;
+}
+
+li .checkbox {
+  font-size:0.875em;
+}
+
+li .checkbox input {
+  margin-right:0.375em !important;
+}
+
+.Button--spacing {
+  margin-right:0.375em;
+  margin-bottom: 0.375em;
+}
