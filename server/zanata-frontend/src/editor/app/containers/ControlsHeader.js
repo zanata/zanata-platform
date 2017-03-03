@@ -133,6 +133,11 @@ const ControlsHeader = React.createClass({
                 onClick={this.toggleSidebarVisibility}
                 active={this.props.ui.panels.sidebar.visible} />
             </li>
+            <li className="u-sM-1-8">
+              <IconButtonToggle
+                icon="settings"
+                title="Settings" />
+            </li>
       {/* extra items from the angular template that were not being displayed
             <li ng-show="appCtrl.PRODUCTION">
               <button class="Link--neutral u-sizeHeight-1_1-2"

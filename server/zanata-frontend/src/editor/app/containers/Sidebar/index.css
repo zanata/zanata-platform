@@ -52,7 +52,10 @@ h2.validation {
   font-size: 15px;
   font-weight:600;
   color: #20718A;
-  margin-top:1em;
+}
+
+.sidebar-settings .sidebar-wrapper ul {
+  margin-bottom:1em;
 }
 
 li .checkbox {

@@ -100,7 +100,7 @@ const SidebarSettings = React.createClass({
 
   render () {
     return (
-      <div>
+      <div className="sidebar-settings">
         <h1 className="sidebar-heading">
           <Icon name="settings" className="s1" /> Settings
           <span className="s1 pull-right">
