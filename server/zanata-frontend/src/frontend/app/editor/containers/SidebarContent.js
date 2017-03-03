@@ -8,10 +8,10 @@ import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossarySearchInput from '../components/GlossarySearchInput'
 import IconButton from '../components/IconButton'
 
-var activityTitle = <span>
+/* var activityTitle = <span>
   <Icon name="clock" className="s1 act-tab-svg" />
   <span className="hide-md">Activity</span>
-</span>
+</span> */
 var glossaryTitle = <span>
   <Icon name="glossary" className="s1 gloss-tab-svg" />
   <span className="hide-md">Glossary</span>
@@ -123,12 +123,12 @@ const SidebarContent = React.createClass({
           {this.sidebarDetails()}
         </div>
         <Tabs id="sidebartabs" defaultActiveKey={1}>
-          <Tab eventKey={1} title={activityTitle}>
+          { /* <Tab eventKey={2} title={activityTitle}>
             <div className="sidebar-wrapper" id="tab1">
               Tab 1 content
             </div>
-          </Tab>
-          <Tab eventKey={2} title={glossaryTitle}>
+          </Tab> */ }
+          <Tab eventKey={1} title={glossaryTitle}>
             <div className="sidebar-wrapper" id="tab2">
               <GlossarySearchInput />
             </div>

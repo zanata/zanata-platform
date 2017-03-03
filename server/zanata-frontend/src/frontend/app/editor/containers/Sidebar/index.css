@@ -1,7 +1,7 @@
 /* Editor Sidebar Styling */
 
 .sidebar-editor {
-  width:35%;
+  max-width:35%;
 }
 
 .sidebar-editor :focus {
@@ -116,6 +116,10 @@ table td button.Button--link {
 
 .sidebar-editor select {
   color:#20718a;
+}
+
+.hide-sidebar-toggle span {
+  vertical-align: sub;
 }
 
 @media (max-width:1009px) {

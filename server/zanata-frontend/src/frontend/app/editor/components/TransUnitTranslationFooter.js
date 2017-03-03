@@ -124,7 +124,7 @@ const TransUnitTranslationFooter = React.createClass({
         <li>
           <Button
             className={iconClasses}
-            title="Suggestions available"
+            title=" Suggestions available"
             onClick={toggleSuggestionPanel}>
             <Row>
               <Icon name="suggestions" />
@@ -185,13 +185,31 @@ const TransUnitTranslationFooter = React.createClass({
       </ul>
     )
 
+    const iconGlossaryClasses = cx('Button Button--snug Button--invisible' +
+        ' u-roundish')
+
+    const glossaryIcon = (
+      <li>
+        <Button
+          className={iconGlossaryClasses}
+          title="Glossary terms available">
+          <Row>
+            <Icon name="glossary" />
+            <span className="u-textMini">
+              #
+            </span>
+          </Row>
+        </Button>
+      </li>
+    )
+
     return (
       <div className="TransUnit-panelFooter u-cf
                       TransUnit-panelFooter--translation">
         <div className="TransUnit-panelFooterLeftNav u-floatLeft
                         u-sizeHeight-1_1-2">
           <ul className="u-listHorizontal">
-{/* don't think this was ever displayed
+          {/* don't think this was ever displayed
             <li class="u-gtemd-hidden" ng-show="appCtrl.PRODUCTION">
               <button class="Link Link--neutral u-sizeHeight-1_1-2"
                 title="{{::'Details'|translate}}">
@@ -199,8 +217,9 @@ const TransUnitTranslationFooter = React.createClass({
                       class="u-sizeWidth-1_1-2"></icon>
               </button>
             </li>
-*/}
+          */}
             {suggestionsIcon}
+            {glossaryIcon}
           </ul>
         </div>
         <div className="u-floatRight">

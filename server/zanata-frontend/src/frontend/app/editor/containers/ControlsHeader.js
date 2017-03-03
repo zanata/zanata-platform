@@ -18,7 +18,6 @@ import {
   previousPage,
   lastPage
 } from '../actions/controlsHeaderActions'
-import { toggleSuggestions } from '../actions/suggestions'
 import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
 
 const { bool, func, number, shape } = PropTypes
@@ -37,7 +36,6 @@ const ControlsHeader = React.createClass({
       nextPage: func.isRequired,
       lastPage: func.isRequired,
       setSidebarVisibility: func.isRequired,
-      toggleSuggestionPanel: func.isRequired,
       toggleKeyboardShortcutsModal: func.isRequired,
       toggleMainNav: func.isRequired
     }).isRequired,
@@ -116,17 +114,8 @@ const ControlsHeader = React.createClass({
             </li>
             <li className="u-sM-1-8">
               <IconButtonToggle
-                icon="suggestions"
-                title={this.props.ui.panels.suggestions.visible
-                  ? gettextCatalog.getString('Hide suggestions panel')
-                  : gettextCatalog.getString('Show suggestions panel')}
-                onClick={this.props.actions.toggleSuggestionPanel}
-                active={this.props.ui.panels.suggestions.visible} />
-
-            </li>
-            <li className="u-sM-1-8">
-              <IconButtonToggle
                 icon="info"
+                className="hide-sidebar-toggle"
                 title={this.props.ui.panels.sidebar.visible
                   ? gettextCatalog.getString('Hide sidebar')
                   : gettextCatalog.getString('Show sidebar')}
@@ -213,7 +202,6 @@ function mapDispatchToProps (dispatch) {
       setSidebarVisibility: (visible) => {
         dispatch(setSidebarVisibility(visible))
       },
-      toggleSuggestionPanel: () => dispatch(toggleSuggestions()),
       toggleKeyboardShortcutsModal: () => {
         // TODO pahuang implement toggle keyboard shutcut modal
         // console.log('======== toggleKeyboardShortcutsModal')
