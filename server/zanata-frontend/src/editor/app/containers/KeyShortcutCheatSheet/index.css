@@ -84,6 +84,7 @@
 .Modal-close {
   position: absolute;
   top: 0;
+  display:block;
   right: 0;
   width: calc(var(--Modal-rhythm) * 2);
   height: calc(var(--Modal-rhythm) * 2);
