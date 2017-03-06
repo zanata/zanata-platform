@@ -44,6 +44,15 @@ const SidebarSettings = React.createClass({
             </Checkbox>
           </li>
         </ul>
+        <div className="settings-reftrans">
+          <label>Show reference translations from:</label>
+          <br />
+          <select className="settings-select">
+            <option value="None">None</option>
+            <option value="Option 1">Option 1</option>
+            <option value="Option 2">Option 2</option>
+          </select>
+        </div>
         <h2 className="validation">Validation options</h2>
         <ul>
           <li>

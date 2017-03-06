@@ -70,3 +70,12 @@ li .checkbox input {
   margin-right:0.375em;
   margin-bottom: 0.375em;
 }
+
+.settings-reftrans {
+  font-size:0.875em;
+}
+
+select.settings-select {
+  color:#20718A;
+  margin-bottom:1em;
+}
