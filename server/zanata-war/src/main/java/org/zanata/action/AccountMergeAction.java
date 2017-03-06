@@ -77,6 +77,8 @@ public class AccountMergeAction implements Serializable {
     @Inject
     private ObsoleteHolder obsolete;
     private boolean accountsValid;
+    @Inject
+    private ZanataIdentity zanataIdentity;
 
     @Inject
     private AccountDAO accountDAO;
@@ -94,7 +96,7 @@ public class AccountMergeAction implements Serializable {
 
     @PostConstruct
     public void onCreate() {
-        ZanataIdentity.instance().checkLoggedIn();
+        zanataIdentity.checkLoggedIn();
     }
 
     public boolean getAccountsValid() {
