@@ -21,27 +21,26 @@
 
 package org.zanata.webtrans.client.ui;
 
-import com.google.gwt.user.client.ui.Widget;
 import org.zanata.webtrans.client.resources.EnumMessages;
 import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
+import org.zanata.webtrans.shared.rpc.MergeRule;
 
 import com.google.common.base.Preconditions;
 import com.google.gwt.core.shared.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.InlineLabel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.inject.Inject;
 
 /**
@@ -75,53 +74,58 @@ public class TMMergeForm extends Composite implements
     @UiField
     UiMessages messages;
 
-    private final EnumRadioButtonGroup<MergeRule> projectOptionGroup;
-    private final EnumRadioButtonGroup<MergeRule> docIdOptionGroup;
-    private final EnumRadioButtonGroup<MergeRule> contextOptionGroup;
-    private final EnumRadioButtonGroup<MergeRule> importedMatchOptionGroup;
+    private final CheckBox projectOption;
+    private final CheckBox docOption;
+    private final CheckBox contextOption;
+    private final CheckBox importedTMOption;
+
     private final MergeStatusRenderer mergeStatusRenderer;
 
     private TransMemoryMergePopupPanelDisplay.Listener listener;
 
     @Inject
-    public TMMergeForm(MergeRuleRenderer mergeOptionRenderer,
-            MergeStatusRenderer mergeStatusRenderer) {
+    public TMMergeForm(MergeStatusRenderer mergeStatusRenderer) {
         this.mergeStatusRenderer = mergeStatusRenderer;
         initWidget(uiBinder.createAndBindUi(this));
 
         matchThreshold.setItemText(0, messages.identical());
 
-        projectOptionGroup =
-                new EnumRadioButtonGroup<MergeRule>(
-                        OptionType.PROJECT_MISMATCH.name(), MergeRule.class,
-                        mergeOptionRenderer);
-        projectOptionGroup.setSelectionChangeListener(this);
-        projectOptionGroup.addToContainer(differentProject).setDefaultSelected(
-                MergeRule.FUZZY);
+        projectOption = new CheckBox(messages.copyAsFuzzy());
+        changeStatusLabelFor(MergeRule.fromSelection(projectOption.getValue()),
+                OptionType.PROJECT_MISMATCH);
+        projectOption.addValueChangeHandler(event -> {
+            changeStatusLabelFor(MergeRule.fromSelection(event.getValue()),
+                    OptionType.PROJECT_MISMATCH);
+        });
+        differentProject.add(projectOption);
 
-        docIdOptionGroup =
-                new EnumRadioButtonGroup<MergeRule>(
-                        OptionType.DOC_ID_MISMATCH.name(), MergeRule.class,
-                        mergeOptionRenderer);
-        docIdOptionGroup.setSelectionChangeListener(this);
-        docIdOptionGroup.addToContainer(differentDocument).setDefaultSelected(
-                MergeRule.FUZZY);
+        docOption = new CheckBox(messages.copyAsFuzzy());
+        changeStatusLabelFor(MergeRule.fromSelection(docOption.getValue()),
+                OptionType.DOC_ID_MISMATCH);
+        docOption.addValueChangeHandler(event -> {
+            changeStatusLabelFor(MergeRule.fromSelection(event.getValue()),
+                    OptionType.DOC_ID_MISMATCH);
+        });
+        differentDocument.add(docOption);
 
-        contextOptionGroup =
-                new EnumRadioButtonGroup<MergeRule>(
-                        OptionType.CTX_MISMATCH.name(), MergeRule.class,
-                        mergeOptionRenderer);
-        contextOptionGroup.setSelectionChangeListener(this);
-        contextOptionGroup.addToContainer(differentContext).setDefaultSelected(
-                MergeRule.FUZZY);
+        contextOption = new CheckBox(messages.copyAsFuzzy());
+        changeStatusLabelFor(MergeRule.fromSelection(contextOption.getValue()),
+                OptionType.CTX_MISMATCH);
+        contextOption.addValueChangeHandler(event -> {
+            changeStatusLabelFor(MergeRule.fromSelection(event.getValue()),
+                    OptionType.CTX_MISMATCH);
+        });
+        differentContext.add(contextOption);
 
-        importedMatchOptionGroup =
-                new EnumRadioButtonGroup<MergeRule>(
-                        OptionType.IMPORTED_MATCH.name(), MergeRule.class,
-                        mergeOptionRenderer);
-        importedMatchOptionGroup.setSelectionChangeListener(this);
-        importedMatchOptionGroup.addToContainer(importedMatchPanel)
-                .setDefaultSelected(MergeRule.FUZZY);
+        importedTMOption = new CheckBox(messages.copyAsFuzzy());
+        changeStatusLabelFor(
+                MergeRule.fromSelection(importedTMOption.getValue()),
+                OptionType.IMPORTED_MATCH);
+        importedTMOption.addValueChangeHandler(event -> {
+            changeStatusLabelFor(MergeRule.fromSelection(event.getValue()),
+                    OptionType.IMPORTED_MATCH);
+        });
+        importedMatchPanel.add(importedTMOption);
     }
 
     public void
@@ -140,10 +144,11 @@ public class TMMergeForm extends Composite implements
     private MergeOptions getSelectedMergeOptions() {
         // default to most conservative option
         MergeOptions opts = MergeOptions.allReject();
-        opts.setDifferentDocument(docIdOptionGroup.getSelected());
-        opts.setDifferentProject(projectOptionGroup.getSelected());
-        opts.setDifferentResId(contextOptionGroup.getSelected());
-        opts.setImportedMatch(importedMatchOptionGroup.getSelected());
+
+        opts.setDifferentDocument(MergeRule.fromSelection(docOption.getValue()));
+        opts.setDifferentProject(MergeRule.fromSelection(projectOption.getValue()));
+        opts.setDifferentResId(MergeRule.fromSelection(contextOption.getValue()));
+        opts.setImportedMatch(MergeRule.fromSelection(importedTMOption.getValue()));
         return opts;
     }
 
@@ -174,6 +179,11 @@ public class TMMergeForm extends Composite implements
     @Override
     public void onSelectionChange(String groupName, MergeRule option) {
         OptionType optionType = OptionType.valueOf(groupName);
+        changeStatusLabelFor(option, optionType);
+    }
+
+    private void changeStatusLabelFor(MergeRule option,
+            OptionType optionType) {
         InlineLabel statusLabel = getStatusLabelFor(optionType);
         statusLabel.setText(mergeStatusRenderer.render(option));
         statusLabel.setStyleName(resolveStyle(option));

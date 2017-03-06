@@ -32,6 +32,8 @@ import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -77,6 +79,8 @@ public class TransMemoryMergePopupPanelView implements
         dialogBox.setModal(true);
 
         VerticalPanel main = new VerticalPanel();
+        HTMLPanel heading = new HTMLPanel(messages.mergeTMHeading());
+        main.add(heading);
         main.add(TMMergeForm);
 
         processingLabel = new Label(messages.processing());

@@ -31,5 +31,9 @@ public enum MergeRule implements IsSerializable {
     /**
      * Use the match, but mark as fuzzy.
      */
-    FUZZY
+    FUZZY;
+
+    public static MergeRule fromSelection(boolean selected) {
+        return selected ? MergeRule.FUZZY : MergeRule.REJECT;
+    }
 }
