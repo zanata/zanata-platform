@@ -157,7 +157,7 @@ public class AccountMergeAction implements Serializable {
         return "cancel";
     }
 
-    private static class AccountMergeAuthCallback
+    static class AccountMergeAuthCallback
             implements OpenIdAuthCallback, Serializable {
 
         private static final long serialVersionUID = 1L;
