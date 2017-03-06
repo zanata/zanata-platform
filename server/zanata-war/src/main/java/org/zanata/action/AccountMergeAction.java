@@ -29,6 +29,8 @@ import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
@@ -76,6 +78,11 @@ public class AccountMergeAction implements Serializable {
     private ObsoleteHolder obsolete;
     private boolean accountsValid;
 
+    @Inject
+    private AccountDAO accountDAO;
+    @Inject
+    private ObsoleteHolder obsoleteHolder;
+
     @Nullable
     public HAccount getObsoleteAccount() {
         return obsolete.account;
@@ -106,10 +113,10 @@ public class AccountMergeAction implements Serializable {
             }
             if (providerType == OpenIdProviderType.Generic) {
                 authenticationManager.openIdAuthenticate(openId, providerType,
-                        new AccountMergeAuthCallback());
+                        new AccountMergeAuthCallback(accountDAO, obsoleteHolder));
             } else {
                 authenticationManager.openIdAuthenticate(providerType,
-                        new AccountMergeAuthCallback());
+                        new AccountMergeAuthCallback(accountDAO, obsoleteHolder));
             }
         }
     }
@@ -154,20 +161,20 @@ public class AccountMergeAction implements Serializable {
             implements OpenIdAuthCallback, Serializable {
 
         private static final long serialVersionUID = 1L;
-        @Inject
         private AccountDAO accountDAO;
-        @Inject
         private ObsoleteHolder obsoleteHolder;
+
+        AccountMergeAuthCallback(AccountDAO accountDAO, ObsoleteHolder obsoleteHolder) {
+            this.accountDAO = accountDAO;
+            this.obsoleteHolder = obsoleteHolder;
+        }
 
         @Override
         public void afterOpenIdAuth(OpenIdAuthenticationResult result) {
             if (result.isAuthenticated()) {
-                HAccount account = accountDAO
-                        .getByCredentialsId(result.getAuthenticatedId());
-                if (account == null) {
-                    account = new HAccount(); // In case an account is not found
-                }
-                obsoleteHolder.account = account;
+                obsoleteHolder.account = ObjectUtils.firstNonNull(accountDAO
+                        .getByCredentialsId(result.getAuthenticatedId()),
+                        new HAccount());
             }
         }
 
