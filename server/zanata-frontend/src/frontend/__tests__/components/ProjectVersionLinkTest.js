@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import ProjectVersionLink from '../../app/components/ProjectVersionLink'
+import ProjectVersionLink from '../../app/editor/components/ProjectVersionLink'
 
 describe('ProjectVersionLinkTest', () => {
   it('ProjectVersionLink markup', () => {

@@ -3,7 +3,7 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { Icon, Row } from 'zanata-ui'
-import SuggestionDetailsSummary from '../../app/components/SuggestionDetailsSummary'
+import SuggestionDetailsSummary from '../../app/editor/components/SuggestionDetailsSummary'
 
 describe('SuggestionDetailsSummaryTest', () => {
   it('SuggestionDetailsSummary markup (imported)', () => {

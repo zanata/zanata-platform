@@ -2,8 +2,8 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import DocsDropdown from '../../app/components/DocsDropdown'
-import Dropdown from '../../app/components/Dropdown'
+import DocsDropdown from '../../app/editor/components/DocsDropdown'
+import Dropdown from '../../app/editor/components/Dropdown'
 import { Icon, Row } from 'zanata-ui'
 
 describe('DocsDropdownTest', () => {

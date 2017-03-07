@@ -2,8 +2,8 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import IconButton from '../../app/components/IconButton'
-import IconButtonToggle from '../../app/components/IconButtonToggle'
+import IconButton from '../../app/editor/components/IconButton'
+import IconButtonToggle from '../../app/editor/components/IconButtonToggle'
 
 describe('IconButtonToggleTest', () => {
   it('IconButtonToggle markup', () => {
