@@ -58,7 +58,6 @@ module.exports = {
        */
       {
         test: /\.css$/,
-        exclude: /node_modules/,
         loader: ExtractTextPlugin.extract(
           'style',
           'css!csso!postcss!rework'
@@ -122,7 +121,7 @@ module.exports = {
   /* Enables a range of syntax improvements and checks for css files */
   rework: {
     use: [
-      reworkNpm(),
+      reworkNpm({ root: join(__dirname, 'app') }),
       reworkVars(),
       reworkCalc,
       reworkColorFunction,

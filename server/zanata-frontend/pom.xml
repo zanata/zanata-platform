@@ -36,23 +36,12 @@
     <!-- Command to use after 'npm ' for the frontend build. Default is the faster draft build. -->
     <frontend.build.command>draft</frontend.build.command>
 
-    <!-- Directory for editor to run the build from. -->
-    <editor.build.directory>${project.basedir}/src/editor</editor.build.directory>
-
-    <!-- Command to use after 'npm ' for the editor build. Default is the faster draft build. -->
-    <editor.build.command>draft</editor.build.command>
-
     <test.command>test</test.command>
 
     <!-- Root path within the jar to put the built artifacts.
          Note: META-INF/resources/* is served as static content, so this serves
          the built files at the root of the website -->
     <bundle.dest>${project.build.outputDirectory}/META-INF/resources</bundle.dest>
-
-    <!-- Editor path within the jar to put the built artifacts.
-        Note: META-INF/resources/* is served as static content, so this puts
-              the editor at http://<server>/app -->
-    <editor.bundle.destination>${bundle.dest}/app</editor.bundle.destination>
 
     <!-- Do not run checkstyle (eslint is used instead for this module) -->
     <checkstyle.skip>true</checkstyle.skip>
@@ -97,19 +86,6 @@
             </configuration>
           </execution>
 
-          <!-- editor: Transpile and bundle all the javascript and css. -->
-          <execution>
-            <id>editor: execute yarn build</id>
-            <phase>compile</phase>
-            <goals>
-              <goal>yarn</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>${editor.build.command}</arguments>
-            </configuration>
-          </execution>
-
           <!-- Run javascript tests for frontend -->
           <execution>
             <id>frontend: execute yarn test</id>
@@ -122,20 +98,6 @@
               <arguments>${test.command}</arguments>
             </configuration>
           </execution>
-
-          <!-- Run javascript tests for editor -->
-          <execution>
-            <id>editor: execute yarn test</id>
-            <phase>test</phase>
-            <goals>
-              <goal>yarn</goal>
-            </goals>
-            <configuration>
-              <workingDirectory>${editor.build.directory}</workingDirectory>
-              <arguments>${test.command}</arguments>
-            </configuration>
-          </execution>
-
         </executions>
       </plugin>
 
@@ -167,34 +129,16 @@
               <resources>
                 <resource>
                   <directory>src/frontend/dist</directory>
-                  <include>frontend.*.min.js</include>
-                  <include>atomic.css</include>
+                  <include>editor.min.js</include>
+                  <include>editor.css</include>
+                  <include>editor.css.map</include>
+                  <include>frontend.min.js</include>
+                  <include>frontend.legacy.min.js</include>
                   <include>frontend.css</include>
+                  <include>frontend.css.map</include>
+                  <include>*.js.map</include>
                   <!-- TODO eliminate generate bootstrap.css, bundle.js, style.css? -->
                   <!-- TODO try including everything -->
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-
-          <!-- Copy the built editor files to their position in the jar file. -->
-          <execution>
-            <phase>prepare-package</phase>
-            <id>editor copy-resources</id>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <useBuildFilters>false</useBuildFilters>
-              <outputDirectory>${editor.bundle.destination}</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>src/editor/app/dist</directory>
-                  <!-- TODO try including everything -->
-                  <include>bundle.js</include>
-                  <include>bundle.js.map</include>
-                  <include>bundle.css</include>
-                  <include>bundle.css.map</include>
                 </resource>
               </resources>
             </configuration>
@@ -237,25 +181,13 @@
             <executions>
               <!-- Download all dependency modules from yarn (or mirror). -->
               <execution>
-                <id>frontend: execute npm install</id>
+                <id>frontend: execute yarn install</id>
                 <phase>generate-sources</phase>
                 <goals>
                   <goal>yarn</goal>
                 </goals>
                 <configuration>
                   <workingDirectory>${frontend.build.directory}</workingDirectory>
-                </configuration>
-              </execution>
-
-              <!-- Download all dependency modules from yarn (or mirror). -->
-              <execution>
-                <id>editor: execute yarn install</id>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>yarn</goal>
-                </goals>
-                <configuration>
-                  <workingDirectory>${editor.build.directory}</workingDirectory>
                 </configuration>
               </execution>
             </executions>
@@ -297,7 +229,6 @@
       </activation>
       <properties>
         <frontend.build.command>build</frontend.build.command>
-        <editor.build.command>build</editor.build.command>
       </properties>
     </profile>
   </profiles>

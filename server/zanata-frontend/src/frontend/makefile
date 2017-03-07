@@ -21,7 +21,7 @@ watch:
 
 # Run the app on a local development server, automatically rebuild and refresh
 # when the code changes (sprites are only built at the beginning).
-watch:editor:
+watch-editor:
 	yarn watch --ignore-scripts=false
 
 styleguide-build:
@@ -53,7 +53,7 @@ fakeserver:
 	cd node_modules/fake-zanata-server && yarn start
 
 # Run a local development server backed by a fake Zanata server
-watch:fakeserver:
+watch-fakeserver:
 	${MAKE} -j2 watch fakeserver
 
 .PHONY: test build

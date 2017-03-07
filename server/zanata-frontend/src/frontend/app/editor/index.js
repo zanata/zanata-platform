@@ -24,7 +24,7 @@ import './index.css'
 /**
  * Top level of the Zanata editor app.
  *
- * This is the entry-point for the app webpack build.
+ * This is the entry-point for the editor webpack build.
  *
  * Responsible for:-
  *  - creating the redux store

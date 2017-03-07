@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { // Tabs, Tab,
   FormGroup, InputGroup,
   FormControl, Button } from 'react-bootstrap'
-import Icon from '../../../frontend/app/components/Icon'
+import Icon from '../../components/Icon'
 import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'

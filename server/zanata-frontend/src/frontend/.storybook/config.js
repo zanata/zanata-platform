@@ -10,7 +10,7 @@ fontLink.setAttribute('async', '')
 document.getElementsByTagName('head')[0].appendChild(fontLink)
 
 function loadStories () {
-  require('../app/components/stories.js')
+  require('../app/editor/components/stories.js')
 }
 
 configure(loadStories, module)
