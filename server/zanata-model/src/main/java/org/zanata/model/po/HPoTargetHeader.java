@@ -67,4 +67,9 @@ public class HPoTargetHeader extends PoHeaderBase {
         return "HPoTargetHeader(super=" + super.toString() + ", targetLanguage="
                 + this.getTargetLanguage() + ")";
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
 }
