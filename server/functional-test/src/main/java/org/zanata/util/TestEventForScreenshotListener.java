@@ -77,8 +77,8 @@ public class TestEventForScreenshotListener
             if (!testIDDir.exists()) {
                 log.info("[Screenshot]: Creating screenshot dir {}",
                         testIDDir.getAbsolutePath());
-                assert testIDDir.mkdirs();
-                assert testIDDir.isDirectory();
+                boolean mkdirSuccess = testIDDir.mkdirs();
+                assert mkdirSuccess && testIDDir.isDirectory();
             }
             String filename = generateFileName(ofType);
             File screenshotFile = new File(testIDDir, filename);
