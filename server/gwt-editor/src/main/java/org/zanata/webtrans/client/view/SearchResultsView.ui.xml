@@ -21,10 +21,24 @@
       font-size: 1.3em;
       margin-right: 6px;
       padding: 6px 10px;
-      width: 80px
+      width: 80px;
     }
 
-    .projectWideSearchPanel {
+    .projectWideSearchPanel, .projectWideSearchPanel2 {
+      color: #555555;
+      background-color: #f3f2f2;
+      border-bottom: 1px solid #d3d3d3;
+      padding: 0px 15px;
+      white-space: nowrap;
+      width: 100%;
+      height: 100%;
+    }
+
+    .projectWideSearchPanel2 {
+      padding-top: 0.75em !important;
+    }
+
+    .projectWideSearchPanel2 {
       color: #555555;
       background-color: #f3f2f2;
       border-bottom: 1px solid #d3d3d3;
@@ -36,7 +50,7 @@
 
     .table {
       padding-bottom: 30px;
-      display: table!important;
+      display: table !important;
     }
 
   </ui:style>
@@ -69,7 +83,7 @@
 
     <g:layer top='0px' height='74px' right="0px" width="50%">
       <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE'
-        styleName="{style.projectWideSearchPanel}">
+        styleName="{style.projectWideSearchPanel2}">
         <g:cell horizontalAlignment="ALIGN_LEFT">
           <g:TextBox ui:field='replacementTextBox'
             styleName="{style.projectWideSearchBox}" />
