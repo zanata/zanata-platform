@@ -33,13 +33,21 @@ import javax.persistence.TemporalType;
 @EntityListeners({ HAccountActivationKey.EntityListener.class })
 public class HAccountActivationKey extends AccountKeyBase
         implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(HAccountActivationKey.class);
+
     private static final long serialVersionUID = 1L;
     private Date creationDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     public Date getCreationDate() {
-        return creationDate;
+        if (creationDate == null) {
+            log.error("Null HAccountActivationKey creation date");
+            setCreationDate(new Date(0L));
+        }
+        // Deep-copy to prevent malicious code vulnerability (EI_EXPOSE_REP)
+        return new Date(creationDate.getTime());
     }
 
     public static class EntityListener {
@@ -52,7 +60,8 @@ public class HAccountActivationKey extends AccountKeyBase
     }
 
     public void setCreationDate(final Date creationDate) {
-        this.creationDate = creationDate;
+        // Deep-copy to prevent malicious code vulnerability (EI_EXPOSE_REP)
+        this.creationDate = new Date(creationDate.getTime());
     }
 
     @Override

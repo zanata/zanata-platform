@@ -37,6 +37,7 @@ public class DomainListValidator implements ConstraintValidator<DomainList, Stri
     public void initialize(DomainList annotation) {
     }
 
+    @SuppressWarnings("GBU_GUAVA_BETA_METHOD_USAGE")
     @Override
     public boolean isValid(String value,
             ConstraintValidatorContext context) {

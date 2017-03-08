@@ -71,7 +71,7 @@ import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
 
-
+@SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
 public enum WebDriverFactory {
     INSTANCE;
     private static final org.slf4j.Logger log =

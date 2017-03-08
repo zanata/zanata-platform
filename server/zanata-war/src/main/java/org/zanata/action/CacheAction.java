@@ -95,6 +95,7 @@ public class CacheAction implements Serializable {
      * @param cacheName
      * @return
      */
+    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     public String getDisplayName(String cacheName) {
         String emptyString = msgs.get("jsf.cacheStats.emptyString");
         if (cacheName.isEmpty()) {

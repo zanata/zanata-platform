@@ -107,7 +107,7 @@ public class HApplicationConfiguration extends ModelEntityBase {
                         try {
                             input.setAccessible(true);
                             return (String) input.get(dummy);
-                        } catch (IllegalAccessException|NullPointerException e) {
+                        } catch (IllegalAccessException | NullPointerException e) {
                             throw Throwables.propagate(e);
                         }
                     }

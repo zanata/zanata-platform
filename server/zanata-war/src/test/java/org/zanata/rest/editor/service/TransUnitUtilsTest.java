@@ -31,6 +31,6 @@ public class TransUnitUtilsTest {
     public void verifyIDsStringToList() {
         assertThat(TransUnitUtils.filterAndConvertIdsToList(
                 "1234567890,123456789,12345678"
-        )).containsExactly(1234567890L,123456789L,12345678L);
+        )).containsExactly(1234567890L, 123456789L, 12345678L);
     }
 }

@@ -228,6 +228,7 @@ public class ProjectHomeAction extends AbstractSortAction
 
                     @Override
                     public Long apply(@Nullable HProjectIteration input) {
+                        if (input == null) return 0L;
                         return input.getId();
                     }
                 });
@@ -631,6 +632,7 @@ public class ProjectHomeAction extends AbstractSortAction
                 @Override
                 public String apply(
                         @Nullable Map.Entry<HLocale, Collection<LocaleRole>> entry) {
+                    if (entry == null) return "";
                     final String localeName =
                             entry.getKey().retrieveDisplayName();
                     final List<LocaleRole> sortedRoles =

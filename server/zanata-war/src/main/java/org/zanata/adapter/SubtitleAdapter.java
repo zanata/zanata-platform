@@ -46,6 +46,7 @@ public class SubtitleAdapter extends OkapiFilterAdapter {
 
     private static final String defaultConfig = loadDefaultConfig();
 
+    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     private static String loadDefaultConfig() {
         URL configURL = SubtitleAdapter.class
                 .getResource("SubtitleAdapterDefaultConfiguration.yml");

@@ -48,6 +48,7 @@ public class HTMLAdapter extends OkapiFilterAdapter {
         Config.LoggerProvider = LoggerProvider.SLF4J;
     }
 
+    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     private static String loadDefaultConfig() {
         URL configURL =
                 HTMLAdapter.class

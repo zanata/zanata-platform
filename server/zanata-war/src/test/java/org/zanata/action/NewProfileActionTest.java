@@ -52,6 +52,7 @@ import org.zanata.util.UrlUtil;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import java.util.Date;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -61,6 +62,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
 @InRequestScope
 @InSessionScope
 @RunWith(CdiUnitRunner.class)
@@ -133,7 +138,7 @@ public class NewProfileActionTest {
 
         HAccountActivationKey key = new HAccountActivationKey();
         key.setKeyHash("0123456789");
-
+        key.setCreationDate(new Date());
 
         when(identity.isPreAuthenticated()).thenReturn(true);
         when(accountDAO.getByUsername(username)).thenReturn(authenticatedAccount);
