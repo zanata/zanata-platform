@@ -42,7 +42,7 @@
   </ui:style>
 
   <g:LayoutPanel>
-    <g:layer top='0px' height='64px' left="0px" width="50%">
+    <g:layer top='0px' height='74px' left="0px" width="50%">
       <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE'
         styleName="{style.projectWideSearchPanel}">
         <g:cell>
