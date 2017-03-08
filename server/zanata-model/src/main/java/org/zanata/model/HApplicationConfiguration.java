@@ -22,12 +22,12 @@ package org.zanata.model;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
@@ -103,11 +103,11 @@ public class HApplicationConfiguration extends ModelEntityBase {
                 new Function<Field, String>() {
 
                     @Override
-                    public String apply(Field input) {
+                    public String apply(@Nonnull Field input) {
                         try {
                             input.setAccessible(true);
                             return (String) input.get(dummy);
-                        } catch (IllegalAccessException e) {
+                        } catch (IllegalAccessException|NullPointerException e) {
                             throw Throwables.propagate(e);
                         }
                     }
@@ -130,5 +130,29 @@ public class HApplicationConfiguration extends ModelEntityBase {
     public HApplicationConfiguration(final String key, final String value) {
         this.key = key;
         this.value = value;
+    }
+
+    /**
+     * Business equality comparison
+     * @param other
+     * @return other is equal
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        if (!super.equals(other)) return false;
+
+        HApplicationConfiguration that = (HApplicationConfiguration) other;
+
+        return key.equals(that.key) && value.equals(that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (key != null ? key.hashCode() : 0);
+        result = 31 * result + (value != null ? value.hashCode() : 0);
+        return result;
     }
 }

@@ -162,4 +162,37 @@ public class Activity extends ModelEntityBase implements Serializable {
     public EntityType getContextType() {
         return this.contextType;
     }
+
+    /**
+     * Business equality comparison
+     * @param other
+     * @return other is equal
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        if (!super.equals(other)) return false;
+
+        Activity activity = (Activity) other;
+
+        return (actor.equals(activity.actor)) &&
+            (eventCount == activity.eventCount) &&
+            (wordCount == activity.wordCount) &&
+            (contextType == activity.contextType) &&
+            (lastTargetType == activity.lastTargetType) &&
+            (activityType == activity.activityType);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (actor != null ? actor.hashCode() : 0);
+        result = 31 * result + (contextType != null ? contextType.hashCode() : 0);
+        result = 31 * result + (lastTargetType != null ? lastTargetType.hashCode() : 0);
+        result = 31 * result + (activityType != null ? activityType.hashCode() : 0);
+        result = 31 * result + eventCount;
+        result = 31 * result + wordCount;
+        return result;
+    }
 }
