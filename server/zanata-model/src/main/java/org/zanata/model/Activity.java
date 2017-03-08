@@ -123,7 +123,8 @@ public class Activity extends ModelEntityBase implements Serializable {
     }
 
     public Date getApproxTime() {
-        return this.approxTime;
+        // Deep-copy to prevent malicious code vulnerability (EI_EXPOSE_REP)
+        return new Date(this.approxTime.getTime());
     }
 
     public long getStartOffsetMillis() {
