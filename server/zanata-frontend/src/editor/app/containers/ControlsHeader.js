@@ -3,6 +3,7 @@ import IconButtonToggle from '../components/IconButtonToggle'
 import Pager from '../components/Pager'
 import TranslatingIndicator from '../components/TranslatingIndicator'
 import TransUnitFilter from '../components/TransUnitFilter'
+import EditorSearchInput from '../components/EditorSearchInput'
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { setSidebarVisibility } from '../actions'
@@ -108,6 +109,9 @@ const ControlsHeader = React.createClass({
         <TranslatingIndicator gettextCatalog={gettextCatalog} />
         <div className="u-floatLeft">
           <TransUnitFilter {...transFilterProps} />
+        </div>
+        <div className="u-floatLeft">
+          <EditorSearchInput />
         </div>
         <div className="u-floatRight">
           <ul className="u-listHorizontal u-textCenter">
