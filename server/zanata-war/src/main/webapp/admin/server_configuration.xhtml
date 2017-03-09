@@ -161,6 +161,13 @@
           <h:selectBooleanCheckbox id="allowAnonymousUser" styleClass="l--push-h-quarter"
             value="#{serverConfigurationBean.allowAnonymousUser}"/>
         </div>
+        <div class="form__item l--push-top-1">
+          <h3 class="heading--secondary l--push-all-0">#{msgs['jsf.config.autoAcceptRequests.heading']}</h3>
+          <p>#{msgs['jsf.config.autoAcceptRequests.description']}</p>
+          <h:outputLabel for="autoAcceptRequests">#{msgs['jsf.config.autoAcceptRequests.label']}</h:outputLabel>
+          <h:selectBooleanCheckbox id="autoAcceptRequests" styleClass="l--push-h-quarter"
+                                   value="#{serverConfigurationBean.autoAcceptRequests}"/>
+        </div>
 
         <div class="form__item l--push-top-1">
           <h3 class="heading--secondary l--push-all-0">#{msgs['jsf.config.Log']}</h3>
