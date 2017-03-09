@@ -219,13 +219,12 @@ public class TransMemoryMergePresenter extends
                 .equals(identity.getEditorClientId());
         if (!eventFromOtherUser) {
             handleEventFromCurrentUser(event);
-            return;
+        } else {
+            handleEventFromOtherUser(event);
         }
-        handleEventFromOtherUser(event);
     }
 
-    @VisibleForTesting
-    protected void handleEventFromOtherUser(TMMergeStartOrEndEvent event) {
+    private void handleEventFromOtherUser(TMMergeStartOrEndEvent event) {
         if (!event.isEnded()) {
             if (userWorkspaceContext.getSelectedDoc().getId()
                     .equals(event.getDocumentId())) {
@@ -246,8 +245,7 @@ public class TransMemoryMergePresenter extends
         }
     }
 
-    @VisibleForTesting
-    protected void handleEventFromCurrentUser(TMMergeStartOrEndEvent event) {
+    private void handleEventFromCurrentUser(TMMergeStartOrEndEvent event) {
         // event are from current user, we only care about the ending event
         if (event.isEnded()) {
             if (event.getTextFlowCount() == 0) {
@@ -261,5 +259,10 @@ public class TransMemoryMergePresenter extends
             display.hide();
             mergeStarted = false;
         }
+    }
+
+    @VisibleForTesting
+    protected boolean isMergeStarted() {
+        return mergeStarted;
     }
 }

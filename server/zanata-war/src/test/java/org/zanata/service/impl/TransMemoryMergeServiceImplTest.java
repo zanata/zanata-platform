@@ -23,11 +23,11 @@ package org.zanata.service.impl;
 
 import static com.google.common.collect.Lists.newArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.zanata.service.impl.TransMemoryMergeServiceImpl.BATCH_SIZE;
 import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLURAL;
 
@@ -139,6 +139,7 @@ public class TransMemoryMergeServiceImplTest {
     private final DocumentId documentId = new DocumentId(1L, docId);
     private final EditorClientId editorClientId =
             new EditorClientId("sessionId", 1);
+    private FilterConstraints untranslatedFilter;
 
     private TransMemoryMergeRequest prepareAction(int threshold, MergeOptions opts) {
         LocaleId localeId = targetLocale.getLocaleId();
@@ -229,6 +230,9 @@ public class TransMemoryMergeServiceImplTest {
                 new WorkspaceId(projectIterationId, targetLocale.getLocaleId());
         when(translationWorkspaceManager.getOrRegisterWorkspace(
                 workspaceId)).thenReturn(workspace);
+        untranslatedFilter = FilterConstraints.builder().keepAll().excludeApproved()
+                .excludeFuzzy().excludeTranslated()
+                .excludeRejected().build();
     }
 
     @Test
@@ -251,15 +255,16 @@ public class TransMemoryMergeServiceImplTest {
         TransMemoryResultItem mostSimilarTM =
                 tmResult(tmResultSource.getId(), 100);
 
-        FilterConstraints untranslatedFilter =
-                FilterConstraints.builder().keepAll().excludeApproved()
-                        .excludeFuzzy().excludeTranslated()
-                        .excludeRejected().build();
         when(localeService.getByLocaleId(action.localeId))
                 .thenReturn(targetLocale);
-        when(textFlowDAO.getAllTextFlowByDocumentIdWithConstraints(Mockito.eq(documentId),
-                Mockito.eq(targetLocale), Mockito.eq(untranslatedFilter)))
-                        .thenReturn(Lists.newArrayList(hTextFlow));
+        List<HTextFlow> untranslated = Lists.newArrayList(hTextFlow);
+        when(textFlowDAO.getUntranslatedTextFlowCount(documentId, targetLocale))
+                .thenReturn(Long.valueOf(untranslated.size()));
+        when(textFlowDAO.getTextFlowByDocumentIdWithConstraints(documentId,
+                targetLocale, untranslatedFilter, 0, BATCH_SIZE))
+                        .thenReturn(untranslated);
+        when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(
+                tmResultSource);
 
         when(
                 translationMemoryService.getTransMemoryDetail(targetLocale,
@@ -275,8 +280,6 @@ public class TransMemoryMergeServiceImplTest {
 
         // When: execute the action
         transMemoryMergeService.executeMerge(action, asyncTaskHandle);
-
-        verify(textFlowDAO).getAllTextFlowByDocumentIdWithConstraints(Mockito.eq(documentId), Mockito.eq(targetLocale), Mockito.eq(untranslatedFilter));
 
         // Then:
         // we should have text flow auto translated by using the most
@@ -363,12 +366,13 @@ public class TransMemoryMergeServiceImplTest {
         when(localeService.getByLocaleId(action.localeId))
                 .thenReturn(targetLocale);
 
-        when(
-                textFlowDAO.findByIdList(newArrayList(idWith100MatchTM,
-                        idWithoutTM, idWith80MatchTM, idWith90MatchTM)))
-                .thenReturn(
-                        newArrayList(textFlow100TM, textFlowNoTM, textFlow80TM,
-                                textFLow90TM));
+        List<HTextFlow> untranslated = Lists.newArrayList(textFlow80TM, textFLow90TM, textFlow100TM, textFlowNoTM);
+        when(textFlowDAO.getUntranslatedTextFlowCount(documentId, targetLocale))
+                .thenReturn(Long.valueOf(untranslated.size()));
+        when(textFlowDAO.getTextFlowByDocumentIdWithConstraints(documentId,
+                targetLocale, untranslatedFilter, 0, BATCH_SIZE))
+                .thenReturn(untranslated);
+
         // Given: TM results
         HTextFlow tmResultSource =
                 TestFixture.makeApprovedHTextFlow(11L, targetLocale);
@@ -469,8 +473,12 @@ public class TransMemoryMergeServiceImplTest {
         when(localeService.getByLocaleId(action.localeId))
                 .thenReturn(targetLocale);
 
-        when(textFlowDAO.findByIdList(newArrayList(transUnitId))).thenReturn(
-                newArrayList(hTextFlow));
+        List<HTextFlow> untranslated = Lists.newArrayList(hTextFlow);
+        when(textFlowDAO.getUntranslatedTextFlowCount(documentId, targetLocale))
+                .thenReturn(Long.valueOf(untranslated.size()));
+        when(textFlowDAO.getTextFlowByDocumentIdWithConstraints(documentId,
+                targetLocale, untranslatedFilter, 0, BATCH_SIZE))
+                .thenReturn(untranslated);
 
         when(
                 translationMemoryService.searchBestMatchTransMemory(hTextFlow,

@@ -72,6 +72,7 @@ import org.zanata.webtrans.shared.rpc.TransMemoryMergeStartOrEnd;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 
 /**
@@ -86,7 +87,8 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             .getLogger(TransMemoryMergeServiceImpl.class);
     private static final String commentPrefix =
             "auto translated by TM merge from";
-    private static final int BATCH_SIZE = 50;
+    @VisibleForTesting
+    protected static final int BATCH_SIZE = 50;
     private static final FilterConstraints
             UNTRANSLATED_FILTER = FilterConstraints.builder().keepAll().excludeRejected()
                     .excludeApproved().excludeTranslated()
