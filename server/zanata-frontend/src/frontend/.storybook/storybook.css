@@ -1,0 +1,8 @@
+/* At the time I wrote this, webpack does not get the path right for top-level
+ * css that is not in the directory I run webpack in.
+ * This just adds a new top level file in the directory webpack will run from to
+ * avoid that problem.
+ *
+ * The path is relative to the top level of this project.
+ */
+@import './app/editor/app.css';
