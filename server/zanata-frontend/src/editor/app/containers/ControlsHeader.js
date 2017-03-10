@@ -117,7 +117,7 @@ const ControlsHeader = React.createClass({
             <Icon name="help" />
           </div>
         </div>
-        <div className="u-floatRight">
+        <div className="u-floatRight flex">
           <ul className="u-listHorizontal u-textCenter">
             <li className="u-sMV-1-4">
               <Pager {...pagerProps} />

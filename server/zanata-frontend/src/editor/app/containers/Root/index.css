@@ -332,6 +332,13 @@ li.docName span.ellipsis {
   margin-left:0.375em;
 }
 
+.flex {
+  display: flex;
+}
+
+.Header {
+  z-index:301;
+}
   /**
    * Media Queries
    */
