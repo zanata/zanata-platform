@@ -104,6 +104,7 @@
     <wildfly.client.version>2.0.10.Final</wildfly.client.version>
     <!-- Version of the management api used by Arquillian -->
     <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
+    <jackson2.version>2.7.2</jackson2.version>
   </properties>
 
   <dependencyManagement>
@@ -873,6 +874,21 @@
         <groupId>org.fusesource.restygwt</groupId>
         <artifactId>restygwt</artifactId>
         <version>2.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson2.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.gwt</groupId>
