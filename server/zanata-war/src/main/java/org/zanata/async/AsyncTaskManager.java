@@ -22,30 +22,21 @@ package org.zanata.async;
 
 import java.security.Principal;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
 import javax.inject.Named;
 import javax.security.auth.Subject;
 import org.apache.deltaspike.cdise.api.ContextControl;
-import org.zanata.config.AsyncConfig;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.util.ServiceLocator;
-import com.google.common.util.concurrent.ListenableFuture;
-// TODO consider switching from Guava's ListenableFuture to Java 8's CompletableFuture
 
 /**
  * @author Carlos Munoz
@@ -59,18 +50,6 @@ public class AsyncTaskManager {
 
     @Resource
     private ManagedExecutorService scheduler;
-
-    @Inject
-    private AsyncConfig asyncConfig;
-
-    @PostConstruct
-    public void init() {
-    }
-
-    @PreDestroy
-    public void cleanup() {
-        scheduler.shutdown();
-    }
 
     /**
      * Starts a task asynchronously. In its present implementation can only run
