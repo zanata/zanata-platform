@@ -56,7 +56,7 @@
   </ui:style>
 
   <g:LayoutPanel>
-    <g:layer top='0px' height='74px' left="0px" width="50%">
+    <g:layer top='0px' height='84px' left="0px" width="50%">
       <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE'
         styleName="{style.projectWideSearchPanel}">
         <g:cell>
@@ -81,7 +81,7 @@
     </g:layer>
 
 
-    <g:layer top='0px' height='74px' right="0px" width="50%">
+    <g:layer top='0px' height='84px' right="0px" width="50%">
       <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE'
         styleName="{style.projectWideSearchPanel2}">
         <g:cell horizontalAlignment="ALIGN_LEFT">
@@ -103,7 +103,7 @@
     </g:layer>
 
 
-    <g:layer top='74px' height='34px' left="0px" right="0px">
+    <g:layer top='84px' height='34px' left="0px" right="0px">
       <g:HorizontalPanel verticalAlignment='ALIGN_MIDDLE'
         styleName="{style.projectWideSearchPanel}">
         <g:CheckBox ui:field="selectAllChk"
@@ -114,7 +114,7 @@
           styleName='projectWideSearchReportLabel'></g:InlineLabel>
       </g:HorizontalPanel>
     </g:layer>
-    <g:layer top='108px' bottom='0'>
+    <g:layer top='118px' bottom='0'>
       <g:ScrollPanel styleName='projectWideSearchResultsPanel'>
         <g:VerticalPanel ui:field='searchResultsPanel' width="100%" styleName="{style.table}" />
       </g:ScrollPanel>
