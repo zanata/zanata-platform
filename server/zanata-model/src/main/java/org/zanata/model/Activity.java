@@ -165,7 +165,7 @@ public class Activity extends ModelEntityBase implements Serializable {
 
     /**
      * Business equality comparison
-     * @param other
+     * @param other Activity
      * @return other is equal
      */
     @Override
@@ -176,7 +176,8 @@ public class Activity extends ModelEntityBase implements Serializable {
 
         Activity activity = (Activity) other;
 
-        return (actor.equals(activity.actor)) &&
+        return (actor == null ?
+                activity.actor == null : actor.equals(activity.actor)) &&
             (eventCount == activity.eventCount) &&
             (wordCount == activity.wordCount) &&
             (contextType == activity.contextType) &&

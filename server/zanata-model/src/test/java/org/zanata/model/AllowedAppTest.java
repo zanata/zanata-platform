@@ -21,30 +21,30 @@
 package org.zanata.model;
 
 import org.junit.Test;
-import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
  *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class HAccountActivationKeyTest {
+public class AllowedAppTest {
 
     @Test
-    public void catchNullCreationDate() {
-        HAccountActivationKey hAccountActivationKey =
-                new HAccountActivationKey();
-        assertThat(hAccountActivationKey.getCreationDate())
-                .isEqualTo(new Date(0L));
-    }
+    public void testEquals() {
+        HAccount account = new HAccount();
+        account.setUsername("aloy");
+        AllowedApp allowedApp = new AllowedApp(account, "qwertyuiop");
+        AllowedApp other = new AllowedApp();
+        assertThat(allowedApp.equals(other)).isFalse();
+        assertThat(allowedApp.hashCode()).isNotEqualTo(other.hashCode());
 
-    @Test
-    public void toStringTest() {
-        HAccountActivationKey hAccountActivationKey =
-                new HAccountActivationKey();
-        hAccountActivationKey.setCreationDate(new Date(1L));
-        assertThat(hAccountActivationKey.toString())
-                .isEqualTo("HAccountActivationKey(creationDate=" +
-                        new Date(1L).toString() + ")");
+        other = new AllowedApp(account, "test");
+        assertThat(allowedApp.equals(other)).isFalse();
+        assertThat(allowedApp.hashCode()).isNotEqualTo(other.hashCode());
+
+        other = new AllowedApp(account, "qwertyuiop");
+        assertThat(allowedApp.equals(other)).isTrue();
+        assertThat(allowedApp.hashCode()).isEqualTo(other.hashCode());
     }
 }
