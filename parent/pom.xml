@@ -1466,7 +1466,7 @@
 
   <distributionManagement>
     <snapshotRepository>
-      <id>sonatype-nexus-staging</id>
+      <id>sonatype-nexus-snapshots</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
     <repository>
