@@ -359,6 +359,7 @@ ul.source-infolist {
 
 .tab-content > .active {
   display: block;
+  background: #fff;
   height:100vh;
 }
 
@@ -380,6 +381,30 @@ ul.source-infolist {
   float: right;
 }
 
+.InputEditorSearch {
+  width:18em;
+  margin-left:0.75em;
+  display:inline-flex;
+  font-size:0.875em;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+.InputEditorSearch .help-icon svg {
+  height: 1.2em;
+  width: 1.2em;
+  margin-top: 0.5em;
+  margin-left:0.375em;
+}
+
+.flex {
+  display: flex;
+}
+
+.Header {
+  z-index:301;
+}
+
 /**
  * Media Queries
  */
@@ -393,21 +418,20 @@ ul.source-infolist {
 @media (--gtemd-viewport) {
   .Editor-translations {
     background:
-        linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg)),
-        linear-gradient(to right, var(--Editor-color-translation-bg), var(--Editor-color-translation-bg));
+      linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg)),
+      linear-gradient(to right, var(--Editor-color-translation-bg), var(--Editor-color-translation-bg));
     background-position:
-        center,
-        right;
+      center,
+      right;
     background-size:
-        var(--rhythm) 100%,
-        50% 100%;
+      var(--rhythm) 100%,
+      50% 100%;
     background-repeat:
-        no-repeat;
+      no-repeat;
   }
 }
 
 @media (max-width:740px) {
-
   .TransUnit-heading {
     padding-left: 1.5em;
   }

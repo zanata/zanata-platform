@@ -119,7 +119,7 @@ const ControlsHeader = React.createClass({
         <div className="u-floatLeft">
           <EditorSearchInput />
         </div>
-        <div className="u-floatRight">
+        <div className="u-floatRight flex">
           <ul className="u-listHorizontal u-textCenter">
             <li className="u-sMV-1-4">
               <Pager {...pagerProps} />
