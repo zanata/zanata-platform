@@ -34,13 +34,15 @@ import org.zanata.security.AuthenticationManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.openid.OpenIdAuthenticationResult;
+import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.service.RegisterService;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.ui.faces.FacesMessages;
 import org.jglue.cdiunit.InSessionScope;
 
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.zanata.action.AccountMergeAction.ObsoleteHolder;
 import static org.zanata.action.AccountMergeAction.AccountMergeAuthCallback;
 
@@ -102,4 +104,82 @@ public class AccountMergeActionTest implements Serializable {
                 .isEqualTo("/profile/merge_account.xhtml");
     }
 
+    @Test
+    public void validIfNotObsolete() throws Exception {
+        accountMergeAction.validateAccounts();
+        assertThat(accountMergeAction.getAccountsValid()).isTrue();
+    }
+
+    @Test
+    public void invalidProviderTypeDefault() {
+        String provider = "invalid";
+        accountMergeAction.loginToMergingAccount(provider);
+        verify(authenticationManager, times(1)).openIdAuthenticate(eq("http://"),
+                eq(OpenIdProviderType.Generic), any(AccountMergeAuthCallback.class));
+    }
+
+    @Test
+    public void validProviderType() {
+        String provider = "Fedora";
+        accountMergeAction.loginToMergingAccount(provider);
+        verify(authenticationManager, times(1)).openIdAuthenticate(
+                eq(OpenIdProviderType.Fedora), any(AccountMergeAuthCallback.class));
+    }
+
+    @Test
+    public void invalidIfIdsAreNull() throws Exception {
+        String error = "Could not find an account for that user.";
+        obsolete.account = new HAccount();
+
+        doNothing().when(zanataIdentity).checkLoggedIn();
+        doNothing().when(facesMessages).addGlobal(SEVERITY_ERROR, error);
+        accountMergeAction.validateAccounts();
+        verify(facesMessages).addGlobal(SEVERITY_ERROR, error);
+        assertThat(accountMergeAction.getAccountsValid()).isFalse();
+    }
+
+    @Test
+    public void invalidIfIdsAreEqual() throws Exception {
+        doCallRealMethod().when(authenticatedAccount).setId(anyLong());
+        doCallRealMethod().when(authenticatedAccount).getId();
+        String error = "You are attempting to merge the same account.";
+        HAccount hAccount = new HAccount();
+        hAccount.setId(1234567890L);
+        obsolete.account = hAccount;
+        authenticatedAccount.setId(1234567890L);
+
+        doNothing().when(zanataIdentity).checkLoggedIn();
+        doNothing().when(facesMessages).addGlobal(SEVERITY_ERROR, error);
+        accountMergeAction.validateAccounts();
+        verify(facesMessages).addGlobal(SEVERITY_ERROR, error);
+        assertThat(accountMergeAction.getAccountsValid()).isFalse();
+    }
+
+    @Test
+    public void validateOpenIDSetting() {
+        accountMergeAction.setOpenId("xyz");
+        assertThat(accountMergeAction.getOpenId()).isEqualTo("xyz");
+    }
+
+    @Test
+    public void cancelMerge() {
+        obsolete.account = new HAccount();
+        assertThat(accountMergeAction.isAccountSelected()).isTrue();
+        assertThat(accountMergeAction.cancel()).isEqualTo("cancel");
+        assertThat(accountMergeAction.getObsoleteAccount()).isNull();
+    }
+
+    @Test
+    public void testMergeAction() {
+        HAccount account = new HAccount();
+        account.setUsername("aloy");
+        account.setId(1234567890L);
+        obsolete.account = account;
+        doNothing().when(registerServiceImpl).mergeAccounts(authenticatedAccount, account);
+        accountMergeAction.mergeAccounts();
+
+        assertThat(accountMergeAction.getObsoleteAccount()).isNull();
+        verify(registerServiceImpl).mergeAccounts(authenticatedAccount, account);
+        verify(facesMessages, times(1)).addGlobal("Your accounts have been merged.");
+    }
 }
