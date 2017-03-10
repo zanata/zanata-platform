@@ -27,8 +27,7 @@ public class DocumentId implements Identifier<Long>, Comparable,
 
     @Override
     public String toString() {
-//        return id + SEPARATOR + docId;
-        return super.toString();
+        return id + SEPARATOR + docId;
     }
 
     public static DocumentId valueOf(String value) {

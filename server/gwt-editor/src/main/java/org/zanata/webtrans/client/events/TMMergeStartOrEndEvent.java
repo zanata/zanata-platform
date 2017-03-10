@@ -27,6 +27,16 @@ import org.zanata.webtrans.shared.model.DocumentId;
 
 import com.google.gwt.event.shared.GwtEvent;
 
+/**
+ * This is an event to indicate a server side TM Merge has started or ended.
+ * Client will then be able to respond to it.
+ *
+ * @see org.zanata.webtrans.shared.rpc.TransMemoryMergeStartOrEnd
+ * @see org.zanata.webtrans.client.presenter.TransMemoryMergePresenter
+ *
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ */
 public class TMMergeStartOrEndEvent extends GwtEvent<TMMergeStartOrEndHandler> {
     public static final Type<TMMergeStartOrEndHandler> TYPE =
             new Type<TMMergeStartOrEndHandler>();
@@ -37,9 +47,9 @@ public class TMMergeStartOrEndEvent extends GwtEvent<TMMergeStartOrEndHandler> {
     private final Date endTime;
     private final long textFlowCount;
 
-    public TMMergeStartOrEndEvent(
-            String startedBy, Date startedTime, EditorClientId editorClientId,
-            DocumentId documentId, Date endTime, long textFlowCount) {
+    public TMMergeStartOrEndEvent(String startedBy, Date startedTime,
+            EditorClientId editorClientId, DocumentId documentId, Date endTime,
+            long textFlowCount) {
         this.startedBy = startedBy;
         this.startedTime = startedTime;
         this.editorClientId = editorClientId;

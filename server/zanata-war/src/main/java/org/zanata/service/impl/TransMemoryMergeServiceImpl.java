@@ -135,13 +135,11 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             total = textFlowDAO
                     .getUntranslatedTextFlowCount(request.documentId, targetLocale);
 
-            if (total > 0) {
-                publishTMMergeEventToWorkspace(workspaceId,
-                        new TransMemoryMergeStartOrEnd(startTime,
-                                authenticatedAccount.getUsername(),
-                                request.editorClientId, request.documentId,
-                                total, null));
-            }
+            publishTMMergeEventToWorkspace(workspaceId,
+                    new TransMemoryMergeStartOrEnd(startTime,
+                            authenticatedAccount.getUsername(),
+                            request.editorClientId, request.documentId,
+                            total, null));
 
             asyncTaskHandle.setTotalTextFlows(total);
             asyncTaskHandle.setTMMergeTarget(request.projectIterationId,

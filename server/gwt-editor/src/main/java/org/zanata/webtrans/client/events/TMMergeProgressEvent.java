@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Red Hat, Inc. and individual contributors
+ * Copyright 2017, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -23,10 +23,16 @@ package org.zanata.webtrans.client.events;
 import org.zanata.webtrans.client.util.TextFormatUtil;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
+
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * This is an event for showing users the current progress of TM merge on the
+ * server.
+ *
+ * @see org.zanata.webtrans.shared.rpc.TMMergeInProgress
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class TMMergeProgressEvent extends GwtEvent<TMMergeProgressHandler> {
     public static final Type<TMMergeProgressHandler> TYPE = new Type<>();
@@ -34,7 +40,6 @@ public class TMMergeProgressEvent extends GwtEvent<TMMergeProgressHandler> {
     private final double percent;
     private final EditorClientId editorClientId;
     private DocumentId documentId;
-
 
     public TMMergeProgressEvent(long processedTextFlows, long totalTextFlows,
             EditorClientId editorClientId, DocumentId documentId) {

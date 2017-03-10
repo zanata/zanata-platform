@@ -164,9 +164,9 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
         return other is HLocale
     }
 
-//    override fun toString(): String {
-//        return "HLocale(localeId=$localeId)"
-//    }
+    override fun toString(): String {
+        return "HLocale(localeId=$localeId)"
+    }
 
     companion object {
         private const val serialVersionUID = 1L
