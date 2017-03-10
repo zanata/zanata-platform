@@ -21,6 +21,7 @@ import {
 } from '../actions/controlsHeaderActions'
 import { toggleSuggestions } from '../actions/suggestions'
 import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
+import { Icon } from 'zanata-ui'
 
 const { bool, func, number, shape } = PropTypes
 
@@ -110,8 +111,11 @@ const ControlsHeader = React.createClass({
         <div className="u-floatLeft">
           <TransUnitFilter {...transFilterProps} />
         </div>
-        <div className="u-floatLeft">
+        <div className="u-floatLeft InputEditorSearch">
           <EditorSearchInput />
+          <div className="help-icon">
+            <Icon name="help" />
+          </div>
         </div>
         <div className="u-floatRight">
           <ul className="u-listHorizontal u-textCenter">

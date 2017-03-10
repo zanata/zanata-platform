@@ -30,7 +30,6 @@
 
 .InputGroup-input {
   border: none;
-  width: 100%;
   color: var(--InputGroup-input-color);
 }
 
@@ -94,3 +93,4 @@
   border-top-right-radius: calc(var(--InputGroup-rhythm) * 1);
   padding-right: calc(var(--InputGroup-rhythm) * .375);
 }
+

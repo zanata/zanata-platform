@@ -316,6 +316,21 @@ li.docName span.ellipsis {
   float:right !important;
 }
 
+.InputEditorSearch {
+  width:18em;
+  margin-left:0.75em;
+  display:inline-flex;
+  font-size:0.875em;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+.InputEditorSearch .help-icon svg {
+  height: 1.2em;
+  width: 1.2em;
+  margin-top: 0.5em;
+  margin-left:0.375em;
+}
 
   /**
    * Media Queries

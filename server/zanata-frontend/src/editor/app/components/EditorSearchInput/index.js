@@ -137,17 +137,17 @@ const EditorSearchInput = React.createClass({
 
   render: function () {
     return (
-      <div className={cx('InputGroup InputGroup--outlined InputGroup--rounded',
-                         { 'is-focused': this.state.focused })}>
+      <div className={cx('InputGroup InputGroup--outlined' +
+          ' InputGroup--rounded', { 'is-focused': this.state.focused })}>
         <span className="InputGroup-addon"
           onClick={this.focusInput}>
           <Icon name="search"
-            title="Search document"
+            title="Search"
             size="n1" />
         </span>
         <input ref="input"
           type="search"
-          placeholder="Search document…"
+          placeholder="Search"
           maxLength="1000"
           value={this.props.text}
           onChange={this.props.onTextChange}
