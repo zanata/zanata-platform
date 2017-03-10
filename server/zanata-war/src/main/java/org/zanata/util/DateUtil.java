@@ -6,7 +6,6 @@ package org.zanata.util;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Period;
@@ -16,19 +15,13 @@ import org.joda.time.format.PeriodFormatter;
 import org.joda.time.format.PeriodFormatterBuilder;
 import org.ocpsoft.prettytime.PrettyTime;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
 /**
- *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
- *
  */
 public class DateUtil {
-    private final static String DATE_TIME_SHORT_PATTERN = "dd/MM/yy HH:mm";
-    private final static String TIME_SHORT_PATTERN = "hh:mm:ss";
 
+    private static final String DATE_TIME_SHORT_PATTERN = "dd/MM/yy HH:mm";
+    private static final String TIME_SHORT_PATTERN = "hh:mm:ss";
     // Period Formatters are thread safe and immutable according to joda time
     // docs
     private static final PeriodFormatter TIME_REMAINING_FORMATTER =
@@ -97,11 +90,11 @@ public class DateUtil {
     public static DateUnitAndFigure getUnitAndFigure(long durationInMillis) {
         Period period = new Period(durationInMillis);
         if (period.toStandardMinutes().getMinutes() <= 0) {
-            return new DateUnitAndFigure("seconds", period.toStandardSeconds()
-                    .getSeconds());
+            return new DateUnitAndFigure("seconds",
+                    period.toStandardSeconds().getSeconds());
         } else if (period.toStandardDays().getDays() <= 0) {
-            return new DateUnitAndFigure("minutes", period.toStandardMinutes()
-                    .getMinutes());
+            return new DateUnitAndFigure("minutes",
+                    period.toStandardMinutes().getMinutes());
         }
         return new DateUnitAndFigure("days", period.toStandardDays().getDays());
     }
@@ -110,20 +103,32 @@ public class DateUtil {
         if (date1 == null && date2 == null) {
             return 0;
         }
-
         if (date1 == null || date2 == null) {
             return date1 == null ? -1 : 1;
         }
-
         return date1.compareTo(date2);
     }
 
-    @Getter
-    @AllArgsConstructor
-    @NoArgsConstructor
     public static class DateUnitAndFigure {
         private String unit; // s(second) m(minute) or d(day)
         private int figure;
+
+        public String getUnit() {
+            return this.unit;
+        }
+
+        public int getFigure() {
+            return this.figure;
+        }
+
+        @java.beans.ConstructorProperties({ "unit", "figure" })
+        public DateUnitAndFigure(final String unit, final int figure) {
+            this.unit = unit;
+            this.figure = figure;
+        }
+
+        public DateUnitAndFigure() {
+        }
     }
 
     /**
@@ -170,9 +175,8 @@ public class DateUtil {
      * @return
      */
     public static Date getEndOfTheWeek(Date actionTime) {
-        DateTime truncateMonth =
-                new DateTime(actionTime).weekOfWeekyear().roundCeilingCopy()
-                        .minusMillis(1);
+        DateTime truncateMonth = new DateTime(actionTime).weekOfWeekyear()
+                .roundCeilingCopy().minusMillis(1);
         return truncateMonth.toDate();
     }
 
@@ -197,9 +201,8 @@ public class DateUtil {
      * @return
      */
     public static Date getEndOfTheMonth(Date actionTime) {
-        DateTime truncateMonth =
-                new DateTime(actionTime).monthOfYear().roundCeilingCopy()
-                        .minusMillis(1);
+        DateTime truncateMonth = new DateTime(actionTime).monthOfYear()
+                .roundCeilingCopy().minusMillis(1);
         return truncateMonth.toDate();
     }
 
@@ -212,8 +215,7 @@ public class DateUtil {
      */
     public static Date getDate(String date, String pattern)
             throws IllegalArgumentException {
-        DateTimeFormatter formatter =
-                DateTimeFormat.forPattern(pattern);
+        DateTimeFormatter formatter = DateTimeFormat.forPattern(pattern);
         return formatter.parseDateTime(date).toDate();
     }
 
@@ -227,7 +229,6 @@ public class DateUtil {
     public static boolean isDatesInRange(Date from, Date to, int days) {
         DateTime fromDate = new DateTime(from);
         DateTime toDate = new DateTime(to);
-
         Days d = Days.daysBetween(fromDate, toDate);
         return d.getDays() <= days;
     }

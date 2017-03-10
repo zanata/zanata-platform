@@ -220,7 +220,7 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                 GenericContent.fromFragmentToLetterCoded(tu.getSource()
                         .getFirstContent(), true);
         if (separateNonTranslatable) {
-            return getPartitionedText(letterCodedText).str;
+            return getPartitionedText(letterCodedText).getStr();
         } else {
             return letterCodedText;
         }
@@ -481,8 +481,8 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
     private String getFullTranslationText(TextUnit tu, String translated) {
         if (separateNonTranslatable) {
             SplitString partitionedContent = getPartitionedText(tu);
-            return partitionedContent.pre + translated
-                    + partitionedContent.suf;
+            return partitionedContent.getPre() + translated
+                    + partitionedContent.getSuf();
         } else {
             return translated;
         }

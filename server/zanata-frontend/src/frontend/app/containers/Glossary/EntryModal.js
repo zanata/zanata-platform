@@ -1,11 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import { isEmpty } from 'lodash'
-import {
-  Icon,
-  LoaderText,
-  Modal
-} from 'zanata-ui'
-import { EditableText } from '../../components'
+import { EditableText, Icon, LoaderText, Modal } from '../../components'
 import { Button, ButtonGroup } from 'react-bootstrap'
 
 /**
@@ -68,33 +63,31 @@ class EntryModal extends Component {
             Glossary Term
             {transSelected
               ? (<span>
-                <Icon name='language'
-                  atomic={{m: 'Mstart(rq) Mend(re)', c: 'C(neutral)'}} />
-                <span className='C(muted)'>{selectedTransLocale}</span>
+                <Icon name='language' className='languageicon-neutral s1' />
+                <span className='text-muted'>{selectedTransLocale}</span>
               </span>)
               : (<span>
-                <Icon name='translate'
-                  atomic={{m: 'Mstart(rq) Mend(re)', c: 'C(neutral)'}} />
-                <span className='C(muted)'>{entry.termsCount}</span>
+                <Icon name='translate' className='translateicon-neutral s1' />
+                <span className='text-muted'>{entry.termsCount}</span>
               </span>)
             }
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className='Mb(rh)'>
-            <label className='Fw(b)'>Term</label>
+          <div className='modal-section'>
+            <label className='text-bold'>Term</label>
             <EditableText
               editable={false}
               editing={false}>
               {entry.srcTerm.content}
             </EditableText>
           </div>
-          <div className='Mb(rh)'>
-            <label className='Fw(b)'>Part of speech</label>
+          <div className='modal-section'>
+            <label className='text-bold'>Part of speech</label>
             <EditableText
               editable={!transSelected}
               editing={true}
-              className='textStateClasses'
+              className='text-state-classes'
               maxLength={255}
               placeholder='Add part of speech…'
               emptyReadOnlyText='No part of speech'
@@ -102,8 +95,8 @@ class EntryModal extends Component {
               {entry.pos}
             </EditableText>
           </div>
-          <div className='Mb(rh)'>
-            <label className='Fw(b)'>Description</label>
+          <div className='modal-section'>
+            <label className='text-bold'>Description</label>
             <EditableText
               editable={!transSelected}
               editing={true}
@@ -115,8 +108,8 @@ class EntryModal extends Component {
             </EditableText>
           </div>
           {transSelected ? (
-            <div className='Mb(rh)'>
-              <label className='Fw(b)'>Translation</label>
+            <div className='modal-section'>
+              <label className='text-bold'>Translation</label>
               <EditableText
                 editable={true}
                 editing={true}
@@ -130,8 +123,8 @@ class EntryModal extends Component {
             ) : ''}
 
           {transSelected ? (
-            <div className='Mb(rh)'>
-              <label className='Fw(b)'>Comment</label>
+            <div className='modal-section'>
+              <label className='text-bold'>Comment</label><br />
               <EditableText
                 maxLength={255}
                 editable={enableComment}
@@ -145,7 +138,7 @@ class EntryModal extends Component {
             </div>
           ) : ''}
           {!isEmpty(info) &&
-            <div className='C(muted) Pt(rq)'>{info}</div>
+            <div className='modal-muted'>{info}</div>
           }
         </Modal.Body>
         <Modal.Footer>

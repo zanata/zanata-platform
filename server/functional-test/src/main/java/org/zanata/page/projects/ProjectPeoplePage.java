@@ -18,40 +18,105 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.page.projects;
 
-import lombok.extern.slf4j.Slf4j;
+import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.zanata.util.WebElementUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ProjectPeoplePage extends ProjectBasePage {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectPeoplePage.class);
+    private By peopleList = By.id("people_form");
+    private By addSomeoneForm = By.id("project-people_add");
+    private By addSomeoneInput = By.id("modalManagePermissionsAutocomplete");
 
-    private By peopleList = By.id("people");
     public ProjectPeoplePage(WebDriver driver) {
         super(driver);
     }
 
     public List<String> getPeople() {
-        log.info("Query maintainers list");
+        log.info("Query people list");
         List<String> names = new ArrayList<>();
         for (WebElement row : readyElement(peopleList)
                 .findElements(By.tagName("li"))) {
             String username = row.findElement(By.tagName("a")).getText().trim();
             String roles = "";
-            for (WebElement role : row.findElements(By.className("txt--understated"))) {
+            for (WebElement role : row
+                    .findElements(By.className("txt--understated"))) {
                 roles = roles.concat(role.getText().trim() + ";");
             }
             names.add(username + "|" + roles);
         }
         return names;
+    }
+
+    public ProjectPeoplePage clickAddSomeone() {
+        log.info("Click Add Someone button");
+        clickElement(existingElement(addSomeoneForm).findElement(By.tagName("button")));
+        return new ProjectPeoplePage(getDriver());
+    }
+
+    public ProjectPeoplePage enterAddSomeoneUsername(final String username) {
+        log.info("Enter user's username to search for");
+        enterText(existingElement(addSomeoneInput), username, true, false, false);
+        return new ProjectPeoplePage(getDriver());
+    }
+
+    public ProjectPeoplePage selectUserFromAddList(String username) {
+        log.info("Click project version {}", username);
+        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+            List<WebElement> items =
+                    WebElementUtil.getSearchAutocompleteResults(driver,
+                            "peopleTab-permissions", "modalManagePermissionsAutocomplete");
+            for (WebElement item : items) {
+                if (item.getText().equals(username)) {
+                    item.click();
+                    return true;
+                }
+            }
+            return false;
+        });
+        return new ProjectPeoplePage(getDriver());
+    }
+
+    public ProjectPeoplePage clickTranslatorCheckboxFor(final String language) {
+        log.info("Click checkbox for translator: {}", language);
+        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+            boolean found = false;
+            List<WebElement> items = existingElement(By.id("peopleTab-permissions"))
+                    .findElement(By.className("list--slat")).findElements(By.tagName("li"));
+            log.info("Size: {}", items.size());
+            for (WebElement item : items) {
+                log.info("Name: {}", item.findElement(By.tagName("label")).getText().trim());
+                if (item.findElement(By.tagName("label")).getText().trim().equals(language)) {
+                    found = true;
+                    WebElement element = existingElement(item, By.className("form__checkbox"));
+                    element.click();
+                    break;
+                }
+            }
+            return found;
+        });
+        slightPause();
+        return new ProjectPeoplePage(getDriver());
+    }
+
+    public ProjectPeoplePage clickAddPerson() {
+        log.info("Click Add Person button");
+        clickElement(existingElement(
+                By.id("peopleTab-permissions:modalManagePermissions-submit-buttons"))
+                .findElement(By.tagName("input")));
+        slightPause();
+        return new ProjectPeoplePage(getDriver());
     }
 }

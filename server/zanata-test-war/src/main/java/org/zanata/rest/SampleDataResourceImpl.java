@@ -151,6 +151,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
     }
 
     @Override
+    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     public Response dummyService(long timeInMillis,
             String qualifiedExceptionClass) throws Throwable {
         if (timeInMillis > 0) {

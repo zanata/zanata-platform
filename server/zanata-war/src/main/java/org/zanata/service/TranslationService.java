@@ -33,6 +33,7 @@ import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import com.google.common.util.concurrent.ListenableFuture;
 
 public interface TranslationService {
     /**
@@ -107,7 +108,7 @@ public interface TranslationService {
      * java.util.Set, org.zanata.common.MergeType,
      * org.zanata.async.AsyncTaskHandle)
      */
-    public Future<List<String>> translateAllInDocAsync(String projectSlug,
+    ListenableFuture<List<String>> translateAllInDocAsync(String projectSlug,
             String iterationSlug, String docId, LocaleId locale,
             TranslationsResource translations, Set<String> extensions,
             MergeType mergeType, boolean assignCreditToUploader, boolean lock,

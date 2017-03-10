@@ -1,7 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
 import java.util.List;
-
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,29 +17,27 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetLocaleList;
 import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
 import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Slf4j
 @RunWith(CdiUnitRunner.class)
 public class GetLocaleListHandlerTest extends ZanataTest {
-    @Inject @Any
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(GetLocaleListHandlerTest.class);
+
+    @Inject
+    @Any
     private GetLocaleListHandler handler;
-
-    @Produces @Mock
+    @Produces
+    @Mock
     private ZanataIdentity identity;
-
-    @Produces @Mock
+    @Produces
+    @Mock
     private LocaleServiceImpl localeServiceImpl;
-
     private GetLocaleList action;
 
     @Before
@@ -48,9 +45,8 @@ public class GetLocaleListHandlerTest extends ZanataTest {
         WorkspaceId workspaceId = TestFixture.workspaceId();
         action = new GetLocaleList();
         action.setWorkspaceId(workspaceId);
-        when(
-                localeServiceImpl.getSupportedLanguageByProjectIteration(
-                        "project", "master")).thenReturn(getHLocaleList());
+        when(localeServiceImpl.getSupportedLanguageByProjectIteration("project",
+                "master")).thenReturn(getHLocaleList());
     }
 
     @Test
@@ -59,7 +55,7 @@ public class GetLocaleListHandlerTest extends ZanataTest {
         GetLocaleListResult result = handler.execute(action, null);
         verify(identity).checkLoggedIn();
         assertThat(result.getLocales()).extracting("id.localeId").containsOnly(
-            LocaleId.EN_US, LocaleId.DE, LocaleId.FR, LocaleId.EN);
+                LocaleId.EN_US, LocaleId.DE, LocaleId.FR, LocaleId.EN);
     }
 
     @Test

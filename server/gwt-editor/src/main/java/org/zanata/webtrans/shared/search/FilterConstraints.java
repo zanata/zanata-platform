@@ -22,13 +22,9 @@ package org.zanata.webtrans.shared.search;
 
 //TODO May want to add document(someDocument) to these constraints
 //so that only one search method is needed on the interface.
-
 import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
-
-import lombok.Getter;
-
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
 
@@ -37,7 +33,6 @@ import com.google.common.base.Preconditions;
  *
  * @author David Mason, damason@redhat.com
  */
-@Getter
 public class FilterConstraints {
     private String searchString;
     private boolean isCaseSensitive;
@@ -62,11 +57,9 @@ public class FilterConstraints {
         changedBefore = builder.changedBefore;
         changedAfter = builder.changedAfter;
         if (changedAfter != null && changedBefore != null) {
-            Preconditions
-                    .checkArgument(
-                            changedBefore.isAfter(changedAfter),
-                            "change before date [%s] must be after change after date [%s]",
-                            changedBefore, changedAfter);
+            Preconditions.checkArgument(changedBefore.isAfter(changedAfter),
+                    "change before date [%s] must be after change after date [%s]",
+                    changedBefore, changedAfter);
         }
         lastModifiedByUser = builder.lastModifiedByUser;
         sourceComment = builder.sourceComment;
@@ -81,20 +74,7 @@ public class FilterConstraints {
     @Override
     public String toString() {
         // @formatter:off
-        return MoreObjects.toStringHelper(this)
-                .add("searchString", searchString)
-                .add("isCaseSensitive", isCaseSensitive)
-                .add("searchInSource", searchInSource)
-                .add("searchInTarget", searchInTarget)
-                .add("includedStates", includedStates)
-                .add("resId", resId)
-                .add("changedBefore", changedBefore)
-                .add("changedAfter", changedAfter)
-                .add("lastModifiedByUser", lastModifiedByUser)
-                .add("sourceComment", sourceComment)
-                .add("transComment", transComment)
-                .add("msgContext", msgContext)
-                .toString();
+        return MoreObjects.toStringHelper(this).add("searchString", searchString).add("isCaseSensitive", isCaseSensitive).add("searchInSource", searchInSource).add("searchInTarget", searchInTarget).add("includedStates", includedStates).add("resId", resId).add("changedBefore", changedBefore).add("changedAfter", changedAfter).add("lastModifiedByUser", lastModifiedByUser).add("sourceComment", sourceComment).add("transComment", transComment).add("msgContext", msgContext).toString();
         // @formatter:on
     }
 
@@ -272,7 +252,53 @@ public class FilterConstraints {
             this.transComment = content;
             return this;
         }
-
     }
 
+    public String getSearchString() {
+        return this.searchString;
+    }
+
+    public boolean isCaseSensitive() {
+        return this.isCaseSensitive;
+    }
+
+    public boolean isSearchInSource() {
+        return this.searchInSource;
+    }
+
+    public boolean isSearchInTarget() {
+        return this.searchInTarget;
+    }
+
+    public ContentStateGroup getIncludedStates() {
+        return this.includedStates;
+    }
+
+    public String getResId() {
+        return this.resId;
+    }
+
+    public DateTime getChangedBefore() {
+        return this.changedBefore;
+    }
+
+    public DateTime getChangedAfter() {
+        return this.changedAfter;
+    }
+
+    public String getLastModifiedByUser() {
+        return this.lastModifiedByUser;
+    }
+
+    public String getSourceComment() {
+        return this.sourceComment;
+    }
+
+    public String getTransComment() {
+        return this.transComment;
+    }
+
+    public String getMsgContext() {
+        return this.msgContext;
+    }
 }

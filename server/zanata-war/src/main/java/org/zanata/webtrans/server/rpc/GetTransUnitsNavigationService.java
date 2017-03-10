@@ -24,13 +24,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.hibernate.transform.ResultTransformer;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.model.HLocale;
@@ -41,12 +38,11 @@ import org.zanata.webtrans.shared.rpc.EditorFilter;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Named("getTransUnitsNavigationService")
 @RequestScoped
-@Slf4j
 public class GetTransUnitsNavigationService {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(GetTransUnitsNavigationService.class);
 
     @Inject
     private TextFlowDAO textFlowDAO;
@@ -56,22 +52,20 @@ public class GetTransUnitsNavigationService {
         List<TransUnitId> idIndexList = new ArrayList<TransUnitId>();
         Map<TransUnitId, ContentState> transIdStateMap =
                 new HashMap<TransUnitId, ContentState>();
-
         List<HTextFlow> textFlows;
         TextFlowResultTransformer resultTransformer =
                 new TextFlowResultTransformer(hLocale);
-
         textFlows =
-                textFlowDAO.getNavigationByDocumentId(action.getDocumentId(), hLocale,
-                        resultTransformer, action.getConstraints());
+                textFlowDAO.getNavigationByDocumentId(action.getDocumentId(),
+                        hLocale, resultTransformer, action.getConstraints());
         for (HTextFlow textFlow : textFlows) {
             TransUnitId transUnitId = new TransUnitId(textFlow.getId());
             idIndexList.add(transUnitId);
             transIdStateMap.put(transUnitId,
                     textFlow.getTargets().get(hLocale.getId()).getState());
         }
-
-        log.debug("for action {} returned size: {}", action, idIndexList.size());
+        log.debug("for action {} returned size: {}", action,
+                idIndexList.size());
         return new GetTransUnitsNavigationResult(idIndexList, transIdStateMap);
     }
 
@@ -84,7 +78,6 @@ public class GetTransUnitsNavigationService {
 
         public SimpleHTextFlow(Long id, String resId, ContentState contentState,
                 HLocale hLocale) {
-            super();
             setId(id);
             setResId(resId);
             HTextFlowTarget target = new HTextFlowTarget(this, hLocale);
@@ -105,20 +98,21 @@ public class GetTransUnitsNavigationService {
         }
 
         @Override
-        public SimpleHTextFlow transformTuple(Object[] tuple, String[] aliases) {
+        public SimpleHTextFlow transformTuple(Object[] tuple,
+                String[] aliases) {
             Long id = null;
             ContentState state = null;
             String resId = null;
-            for (int i = 0, aliasesLength = aliases.length; i < aliasesLength; i++) {
+            for (int i = 0, aliasesLength =
+                    aliases.length; i < aliasesLength; i++) {
                 String columnName = aliases[i];
                 if (columnName.equals(ID)) {
                     id = (Long) tuple[i];
                 }
                 if (columnName.equals(CONTENT_STATE)) {
                     Integer index = (Integer) tuple[i];
-                    state =
-                            index == null ? ContentState.New : ContentState
-                                    .values()[index];
+                    state = index == null ? ContentState.New
+                            : ContentState.values()[index];
                 }
                 if (columnName.equals(RESID)) {
                     resId = (String) tuple[i];
@@ -134,5 +128,4 @@ public class GetTransUnitsNavigationService {
             return collection;
         }
     }
-
 }

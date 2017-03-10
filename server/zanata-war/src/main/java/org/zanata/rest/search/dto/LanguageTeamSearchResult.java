@@ -20,8 +20,6 @@
  */
 package org.zanata.rest.search.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.LocaleId;
@@ -29,16 +27,13 @@ import org.zanata.model.HLocale;
 import org.zanata.rest.dto.LocaleDetails;
 
 /**
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class LanguageTeamSearchResult extends SearchResult {
-
-    @Getter @Setter
     private LocaleDetails localeDetails;
-
-    @Getter @Setter
     private long memberCount;
 
     public LanguageTeamSearchResult() {
@@ -53,5 +48,21 @@ public class LanguageTeamSearchResult extends SearchResult {
                 locale.isActive(), locale.isEnabledByDefault(),
                 locale.getPluralForms());
         this.memberCount = locale.getMembers().size();
+    }
+
+    public LocaleDetails getLocaleDetails() {
+        return this.localeDetails;
+    }
+
+    public void setLocaleDetails(final LocaleDetails localeDetails) {
+        this.localeDetails = localeDetails;
+    }
+
+    public long getMemberCount() {
+        return this.memberCount;
+    }
+
+    public void setMemberCount(final long memberCount) {
+        this.memberCount = memberCount;
     }
 }

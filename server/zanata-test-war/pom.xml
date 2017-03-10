@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-test-war</artifactId>
   <packaging>war</packaging>
@@ -74,10 +74,6 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
     </dependency>
     <dependency>
       <groupId>com.github.huangp</groupId>
@@ -153,7 +149,6 @@
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
-            <usedDependency>org.projectlombok:lombok</usedDependency>
             <usedDependency>org.zanata:zanata-war</usedDependency>
             <!-- needed by entityunit -->
             <usedDependency>org.hamcrest:hamcrest-core</usedDependency>

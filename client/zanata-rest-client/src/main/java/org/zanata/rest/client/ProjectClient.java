@@ -23,6 +23,7 @@ package org.zanata.rest.client;
 
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.ResponseProcessingException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -42,8 +43,15 @@ public class ProjectClient {
     }
 
     public Project get() {
-        return webResource()
-                .get(Project.class);
+        try {
+            return webResource()
+                    .get(Project.class);
+        } catch (ResponseProcessingException rpe) {
+            if (rpe.getResponse().getStatus() == 404) {
+                return null;
+            }
+            throw rpe;
+        }
     }
 
     private Invocation.Builder webResource() {
@@ -55,6 +63,9 @@ public class ProjectClient {
 
     public void put(Project project) {
         Response response = webResource().put(Entity.xml(project));
+        if (response.getStatusInfo().getFamily() != Response.Status.Family.SUCCESSFUL) {
+            throw new RuntimeException(response.getStatusInfo().toString());
+        }
         response.close();
     }
 }

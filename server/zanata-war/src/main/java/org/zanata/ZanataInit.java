@@ -36,8 +36,8 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Observes;
 import javax.management.AttributeNotFoundException;
 import javax.management.InstanceNotFoundException;
@@ -53,69 +53,66 @@ import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.servlet.ServletContext;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.deltaspike.core.api.lifecycle.Initialized;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.zanata.email.EmailBuilder;
 import org.zanata.events.ServerStarted;
 import org.zanata.exception.ZanataInitializationException;
 import org.zanata.rest.dto.VersionInfo;
 import javax.enterprise.event.Event;
+
+import org.zanata.servlet.annotations.ServerPath;
 import org.zanata.util.VersionUtility;
+import org.zanata.util.WithRequestScope;
 
 /**
- * This class handles various tasks at startup.  It disables warnings for a
- * couple of verbose log categories, logs some information about the system
- * and configuration, checks for stray Lucene lock files, and finally fires
- * the "Zanata.startup" event.
+ * This class handles various tasks at startup. It disables warnings for a
+ * couple of verbose log categories, logs some information about the system and
+ * configuration, checks for stray Lucene lock files, and finally fires the
+ * "Zanata.startup" event.
  *
  * @author Christian Bauer
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("zanataInit")
 @ApplicationScoped
-@Slf4j
 public class ZanataInit {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataInit.class);
+
     private static final DefaultArtifactVersion MIN_EAP_VERSION =
             new DefaultArtifactVersion("7.0.1.GA");
     private static final DefaultArtifactVersion MIN_WILDFLY_VERSION =
             new DefaultArtifactVersion("10.1.0.Final");
-
-
     static {
         // Prevent JBoss/WildFly from warning about gwt-servlet's
         // org.hibernate.validator.ValidationMessages
         Logger.getLogger("org.jboss.modules").setLevel(Level.SEVERE);
         // Disable "RP discovery / realm validation disabled;"
-        Logger.getLogger("org.openid4java.server.RealmVerifier").setLevel(
-                Level.SEVERE);
+        Logger.getLogger("org.openid4java.server.RealmVerifier")
+                .setLevel(Level.SEVERE);
         // Disable "Queue with name '.*' has already been registered"
-        Logger.getLogger("org.richfaces.log.Components").setLevel(
-                Level.SEVERE);
+        Logger.getLogger("org.richfaces.log.Components").setLevel(Level.SEVERE);
     }
-
     @Inject
     private ApplicationConfiguration applicationConfiguration;
-
     @Inject
     private Event<ServerStarted> startupEvent;
 
-    public void onCreate(@Observes @Initialized ServletContext context) throws Exception {
+    @WithRequestScope
+    public void onCreate(@Observes @Initialized ServletContext context)
+            throws Exception {
         initZanata(context);
     }
 
     public void initZanata(ServletContext context) throws Exception {
         checkAppServerVersion();
         String appServerHome = context.getRealPath("/");
-
         File manifestFile = new File(appServerHome, "META-INF/MANIFEST.MF");
-
         VersionInfo zanataVersion;
         Attributes atts = null;
         if (manifestFile.canRead()) {
@@ -126,15 +123,14 @@ public class ZanataInit {
             atts = mf.getMainAttributes();
         }
         zanataVersion = VersionUtility.getVersionInfo(atts, ZanataInit.class);
-
         this.applicationConfiguration.setVersion(zanataVersion.getVersionNo());
-        this.applicationConfiguration.setBuildTimestamp(zanataVersion.getBuildTimeStamp());
-        this.applicationConfiguration.setScmDescribe(zanataVersion.getScmDescribe());
-
+        this.applicationConfiguration
+                .setBuildTimestamp(zanataVersion.getBuildTimeStamp());
+        this.applicationConfiguration
+                .setScmDescribe(zanataVersion.getScmDescribe());
+        this.applicationConfiguration.applyLoggingConfiguration();
         logBanner(zanataVersion);
-
         boolean authlogged = false;
-
         if (applicationConfiguration.isInternalAuth()) {
             log.info("Internal authentication: enabled");
             authlogged = true;
@@ -161,12 +157,9 @@ public class ZanataInit {
         if (indexBase != null) {
             checkLuceneLocks(new File(indexBase));
         }
-
         // Email server information
         log.info("Mail Session (JNDI): {}", EmailBuilder.MAIL_SESSION_JNDI);
-
         startupEvent.fire(new ServerStarted());
-
         log.info("Started Zanata...");
     }
 
@@ -179,27 +172,28 @@ public class ZanataInit {
                 (String) jmx.getAttribute(server, "releaseCodename");
         String releaseVersion =
                 (String) jmx.getAttribute(server, "releaseVersion");
-        String productName =
-                (String) jmx.getAttribute(server, "productName");
+        String productName = (String) jmx.getAttribute(server, "productName");
         String productVersion =
                 (String) jmx.getAttribute(server, "productVersion");
-
         log.info("App server release codename: {}", releaseCodename);
         log.info("App server release version: {}", releaseVersion);
-
         switch ((productName == null) ? "" : productName) {
-            case "JBoss EAP":
-            case "EAP":
-                checkEAPVersion(productVersion);
-                break;
-            case "WildFly Full":
-                checkWildFlyVersion(productVersion);
-                break;
-            default:
-                log.warn(
-                        "Unknown app server.  This application requires EAP >= {} or WildFly Full >= {}",
-                        MIN_EAP_VERSION, MIN_WILDFLY_VERSION);
-                break;
+        case "JBoss EAP":
+
+        case "EAP":
+            checkEAPVersion(productVersion);
+            break;
+
+        case "WildFly Full":
+            checkWildFlyVersion(productVersion);
+            break;
+
+        default:
+            log.warn(
+                    "Unknown app server.  This application requires EAP >= {} or WildFly Full >= {}",
+                    MIN_EAP_VERSION, MIN_WILDFLY_VERSION);
+            break;
+
         }
     }
 
@@ -208,8 +202,7 @@ public class ZanataInit {
             DefaultArtifactVersion pv =
                     new DefaultArtifactVersion(productVersion);
             if (pv.compareTo(MIN_EAP_VERSION) < 0) {
-                log.warn(
-                        "EAP version is {}.  Please upgrade to {} or later.",
+                log.warn("EAP version is {}.  Please upgrade to {} or later.",
                         productVersion, MIN_EAP_VERSION);
             } else {
                 log.info("EAP version: {}", productVersion);
@@ -228,8 +221,7 @@ public class ZanataInit {
                         "WildFly Full version is {}.  Please upgrade to {} or later.",
                         productVersion, MIN_WILDFLY_VERSION);
             } else {
-                log.info("WildFly Full version: {}",
-                        productVersion);
+                log.info("WildFly Full version: {}", productVersion);
             }
         } else {
             log.warn("WildFly Full version is unknown");
@@ -248,30 +240,31 @@ public class ZanataInit {
         // TODO switch between native and simple locks based on this check?
         if (mightUseNFS(indexDir)) {
             // we don't trust Lucene's NativeFSLockFactory for NFS locks
-            String docURL = "http://docs.jboss.org/hibernate/search/4.4/reference/en-US/html/search-configuration.html#search-configuration-directory-lockfactories";
-            log.info("The Hibernate Search index dir '{}' might be NFS. ",
+            String docURL =
+                    "http://docs.jboss.org/hibernate/search/4.4/reference/en-US/html/search-configuration.html#search-configuration-directory-lockfactories";
+            log.info("The Hibernate Search index dir \'{}\' might be NFS. ",
                     "Using NativeFSLockFactory would not be safe: See {}",
                     indexDir, docURL);
         }
         Collection<File> lockFiles =
                 FileUtils.listFiles(indexDir, new String[] { "lock" }, true);
         if (!lockFiles.isEmpty()) {
-            String msg = "Lucene lock files found. Check if Zanata is " +
-                    "already running. Otherwise, Zanata was not shut down " +
-                    "cleanly: delete the lock files: " + lockFiles;
+            String msg =
+                    "Lucene lock files found. Check if Zanata is already running. Otherwise, Zanata was not shut down cleanly: delete the lock files: "
+                            + lockFiles;
             // TODO just log a warning if using native locks
             throw new ZanataInitializationException(msg);
         }
     }
 
     /**
-     * Returns true if any of the files appear to be stored in NFS (or we
-     * can't tell).
+     * Returns true if any of the files appear to be stored in NFS (or we can't
+     * tell).
      */
     private boolean mightUseNFS(File... files) {
         try {
             FileSystem fileSystem = FileSystems.getDefault();
-            for (File file: files) {
+            for (File file : files) {
                 Path path = fileSystem.getPath(file.getAbsolutePath());
                 String fileStoreType = Files.getFileStore(path).type();
                 if (fileStoreType.toLowerCase().contains("nfs")) {
@@ -286,7 +279,9 @@ public class ZanataInit {
         }
     }
 
-    /** Utility to debug JBoss JNDI problems */
+    /**
+     * Utility to debug JBoss JNDI problems
+     */
     public static String listJNDITree(String namespace) {
         StringBuffer buffer = new StringBuffer(4096);
         try {
@@ -300,8 +295,8 @@ public class ZanataInit {
             list(context, " ", buffer, true);
             buffer.append("#####################################\n");
         } catch (NamingException e) {
-            buffer.append("Failed to get InitialContext, ").append(
-                    e.toString(true));
+            buffer.append("Failed to get InitialContext, ")
+                    .append(e.toString(true));
         }
         return buffer.toString();
     }
@@ -313,7 +308,6 @@ public class ZanataInit {
             NamingEnumeration<NameClassPair> ne = ctx.list("");
             while (ne.hasMore()) {
                 NameClassPair pair = ne.next();
-
                 String name = pair.getName();
                 String className = pair.getClassName();
                 boolean recursive = false;
@@ -322,14 +316,12 @@ public class ZanataInit {
                 Class<?> c = null;
                 try {
                     c = loader.loadClass(className);
-
                     if (Context.class.isAssignableFrom(c)) {
                         recursive = true;
                     }
                     if (LinkRef.class.isAssignableFrom(c)) {
                         isLinkRef = true;
                     }
-
                     isProxy = Proxy.isProxyClass(c);
                 } catch (ClassNotFoundException cnfe) {
                     // If this is a $Proxy* class its a proxy
@@ -352,15 +344,12 @@ public class ZanataInit {
                         }
                     }
                 }
-
                 buffer.append(indent).append(" +- ").append(name);
-
                 // Display reference targets
                 if (isLinkRef) {
                     // Get the
                     try {
                         Object obj = ctx.lookupLink(name);
-
                         LinkRef link = (LinkRef) obj;
                         buffer.append("[link -> ");
                         buffer.append(link.getLinkName());
@@ -369,7 +358,6 @@ public class ZanataInit {
                         buffer.append("invalid]");
                     }
                 }
-
                 // Display proxy interfaces
                 if (isProxy) {
                     buffer.append(" (proxy: ").append(pair.getClassName());
@@ -389,7 +377,6 @@ public class ZanataInit {
                     buffer.append(" (class: ").append(pair.getClassName())
                             .append(")");
                 }
-
                 buffer.append('\n');
                 if (recursive) {
                     try {
@@ -411,9 +398,8 @@ public class ZanataInit {
             }
             ne.close();
         } catch (NamingException ne) {
-            buffer.append("error while listing context ")
-                    .append(ctx.toString()).append(": ")
-                    .append(ne.toString(true));
+            buffer.append("error while listing context ").append(ctx.toString())
+                    .append(": ").append(ne.toString(true));
         }
     }
 
@@ -445,5 +431,4 @@ public class ZanataInit {
                 Calendar.getInstance().get(Calendar.YEAR));
         log.info("============================================");
     }
-
 }

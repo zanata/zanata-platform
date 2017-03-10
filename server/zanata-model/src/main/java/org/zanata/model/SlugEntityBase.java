@@ -27,37 +27,23 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-import lombok.extern.slf4j.Slf4j;
-
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.search.annotations.Field;
 import org.zanata.model.validator.Slug;
 import com.google.common.annotations.VisibleForTesting;
 
 @MappedSuperclass
-@ToString(callSuper = true)
 @Access(AccessType.FIELD)
-@Setter
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-@Slf4j
 public abstract class SlugEntityBase extends ModelEntityBase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SlugEntityBase.class);
 
     /**
      * We append this suffix to a deleted slug entity so that its original slug
      * become available to use.
      */
     private static final String DELETED_SLUG_SUFFIX = "_.-";
-
     private static final long serialVersionUID = -1911540675412928681L;
-
     @NaturalId(mutable = true)
     @Size(min = 1, max = 40)
     @Slug
@@ -82,9 +68,8 @@ public abstract class SlugEntityBase extends ModelEntityBase {
         if (newSlug.length() <= 40) {
             return newSlug;
         } else {
-            newSlug =
-                    slug.substring(0, 40 - deletedSlugSuffix.length())
-                            + deletedSlugSuffix;
+            newSlug = slug.substring(0, 40 - deletedSlugSuffix.length())
+                    + deletedSlugSuffix;
             log.warn(
                     "Entity [{}] old slug [{}] is too long to apply suffix. We will add suffix in place [{}]",
                     this, slug, newSlug);
@@ -96,5 +81,27 @@ public abstract class SlugEntityBase extends ModelEntityBase {
     protected String deletedSlugSuffix() {
         int timeSuffix = new Date().hashCode();
         return DELETED_SLUG_SUFFIX + timeSuffix;
+    }
+
+    @Override
+    public String toString() {
+        return "SlugEntityBase(super=" + super.toString() + ", slug="
+                + this.getSlug() + ")";
+    }
+
+    public void setSlug(final String slug) {
+        this.slug = slug;
+    }
+
+    public String getSlug() {
+        return this.slug;
+    }
+
+    @java.beans.ConstructorProperties({ "slug" })
+    public SlugEntityBase(final String slug) {
+        this.slug = slug;
+    }
+
+    public SlugEntityBase() {
     }
 }

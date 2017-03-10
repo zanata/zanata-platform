@@ -1,12 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import ReactDOM from 'react-dom'
-import {
-  LoaderText,
-  Icon,
-  Tooltip,
-  Overlay
-} from 'zanata-ui'
-import { Button } from 'react-bootstrap'
+import { LoaderText, Icon } from '../../components'
+import { Button, Tooltip, Overlay } from 'react-bootstrap'
 
 class DeleteEntryModal extends Component {
 
@@ -20,7 +15,6 @@ class DeleteEntryModal extends Component {
   render () {
     const {
       entry,
-      className,
       show,
       isDeleting,
       handleDeleteEntryDisplay,
@@ -35,7 +29,7 @@ class DeleteEntryModal extends Component {
     ) : (<p>Are you sure you want to delete this term?</p>)
     /* eslint-disable react/jsx-no-bind */
     return (
-      <div className={className + ' D(ib)'}>
+      <div className='block'>
         <Overlay
           placement='top'
           target={() => ReactDOM.findDOMNode(this)}
@@ -45,11 +39,11 @@ class DeleteEntryModal extends Component {
           <Tooltip id='delete-glossary' title='Delete term and translations'>
             {info}
             <span className='button-spacing'>
-              <Button bsStyle='default'
+              <Button bsStyle='default' className='btn-sm'
                 onClick={() => handleDeleteEntryDisplay(false)}>
                 Cancel
               </Button>
-              <Button bsStyle='danger' type='button'
+              <Button bsStyle='danger' type='button' className='btn-sm'
                 disabled={isDeleting}
                 onClick={() => {
                   handleDeleteEntry(entry.id)
@@ -67,8 +61,8 @@ class DeleteEntryModal extends Component {
           type='button' disabled={isDeleting}
           onClick={() => handleDeleteEntryDisplay(true)}>
           <LoaderText loading={isDeleting} loadingText='Deleting'>
-            <Icon name='trash' atomic={{m: 'Mend(re)'}} />
-            <span className='Hidden--lesm'>Delete</span>
+            <Icon name='trash' className='deleteicon s1' />
+            <span className='hidden-lesm'>Delete</span>
           </LoaderText>
         </Button>
       </div>
@@ -78,7 +72,6 @@ class DeleteEntryModal extends Component {
 }
 
 DeleteEntryModal.propTypes = {
-  className: React.PropTypes.string,
   entry: React.PropTypes.object,
   show: React.PropTypes.bool,
   isDeleting: React.PropTypes.bool,

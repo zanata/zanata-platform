@@ -18,14 +18,11 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.model.type;
 
-import lombok.Getter;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.tm.TransMemoryUnit;
-
 import java.io.Serializable;
 
 /**
@@ -40,12 +37,14 @@ public enum TranslationEntityType implements Serializable {
     TMX(TransMemoryUnit.class),
     TFT(HTextFlowTarget.class),
     TTH(HTextFlowTargetHistory.class);
-    //    MT(null);
-
-    @Getter
+    // MT(null);
     private final Class clazz;
 
     private TranslationEntityType(Class clazz) {
         this.clazz = clazz;
+    }
+
+    public Class getClazz() {
+        return this.clazz;
     }
 }

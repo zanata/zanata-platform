@@ -18,10 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.search;
-
-import lombok.extern.slf4j.Slf4j;
 
 import org.hibernate.CacheMode;
 import org.hibernate.FlushMode;
@@ -30,19 +27,18 @@ import org.hibernate.search.FullTextSession;
 import org.zanata.async.AsyncTaskHandle;
 
 /**
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 public class ClassIndexer<T> {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ClassIndexer.class);
     private final AbstractIndexingStrategy<T> indexingStrategy;
     private AsyncTaskHandle handle;
     private Class<?> entityType;
 
-    public ClassIndexer(AsyncTaskHandle handle,
-            Class<?> entityType, AbstractIndexingStrategy<T> indexingStrategy) {
+    public ClassIndexer(AsyncTaskHandle handle, Class<?> entityType,
+            AbstractIndexingStrategy<T> indexingStrategy) {
         this.handle = handle;
         this.entityType = entityType;
         this.indexingStrategy = indexingStrategy;
@@ -53,9 +49,8 @@ public class ClassIndexer<T> {
     }
 
     public int getEntityCount(FullTextSession session) {
-        Long result =
-                (Long) session.createCriteria(entityType)
-                        .setProjection(Projections.rowCount()).list().get(0);
+        Long result = (Long) session.createCriteria(entityType)
+                .setProjection(Projections.rowCount()).list().get(0);
         return result.intValue();
     }
 
@@ -67,5 +62,4 @@ public class ClassIndexer<T> {
         session.flushToIndexes(); // apply changes to indexes
         session.clear(); // clear since the queue is processed
     }
-
 }

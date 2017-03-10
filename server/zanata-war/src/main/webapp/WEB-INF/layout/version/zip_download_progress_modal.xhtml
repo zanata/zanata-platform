@@ -47,11 +47,11 @@
             id="downloadDialogMsg"></div>
 
           <h:panelGroup layout="block"  styleClass="l--pad-top-half form__item" id="download-progress">
-            <ui:fragment
-              rendered="#{projectIterationZipFileAction.zipFilePrepHandle ne null and not projectIterationZipFileAction.zipFilePrepHandle.done}">
-              <a4j:poll render="download-progress" interval="500"
+            <a4j:poll render="download-progress" interval="500"
                 enabled="#{projectIterationZipFileAction.zipFilePrepHandle ne null and not projectIterationZipFileAction.zipFilePrepHandle.done}"/>
 
+            <ui:fragment
+              rendered="#{projectIterationZipFileAction.zipFilePrepHandle ne null and not projectIterationZipFileAction.zipFilePrepHandle.done}">
               <ul class="list--panel bg--higher">
                 <li>
                   <div class="list__item__content">

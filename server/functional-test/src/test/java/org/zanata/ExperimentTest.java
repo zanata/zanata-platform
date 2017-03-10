@@ -20,8 +20,6 @@
  */
 package org.zanata;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.zanata.util.SampleProjectRule;
@@ -31,8 +29,10 @@ import org.zanata.util.SampleProjectRule;
  * some example users and languages so that a manual test can be performed.
  * Under normal circumstances it will have no active tests in it.
  */
-@Slf4j
 public class ExperimentTest {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ExperimentTest.class);
+
     @Rule
     public SampleProjectRule sampleProjectRule = new SampleProjectRule();
 

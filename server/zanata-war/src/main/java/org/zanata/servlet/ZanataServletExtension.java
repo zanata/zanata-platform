@@ -23,40 +23,38 @@ package org.zanata.servlet;
 import io.undertow.servlet.ServletExtension;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.util.ImmediateAuthenticationMechanismFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.security.DummyAuthenticationMechanism;
-
 import javax.servlet.ServletContext;
 import javax.servlet.SessionCookieConfig;
 
 /**
- * This Undertow servlet extension adds a dummy SPNEGO implementation so
- * that we can deploy on WildFly, and also provides other workarounds as
- * needed.
+ * This Undertow servlet extension adds a dummy SPNEGO implementation so that we
+ * can deploy on WildFly, and also provides other workarounds as needed.
  *
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 public class ZanataServletExtension implements ServletExtension {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataServletExtension.class);
 
     @Override
     public void handleDeployment(DeploymentInfo deploymentInfo,
             ServletContext servletContext) {
-        if (!deploymentInfo.getAuthenticationMechanisms().containsKey("SPNEGO")) {
+        if (!deploymentInfo.getAuthenticationMechanisms()
+                .containsKey("SPNEGO")) {
             log.debug("Registering dummy SPNEGO authentication mechanism");
             deploymentInfo.addAuthenticationMechanism("SPNEGO",
                     new ImmediateAuthenticationMechanismFactory(
                             new DummyAuthenticationMechanism()));
         }
-
         String contextPath = servletContext.getContextPath();
-
         // workaround for https://issues.jboss.org/browse/WFLY-3744
         if (contextPath == null || contextPath.equals("/")) {
-            log.warn("ContextPath was \"/\", changing to \"\" (WFLY-3744 workaround)");
+            log.warn(
+                    "ContextPath was \"/\", changing to \"\" (WFLY-3744 workaround)");
             deploymentInfo.setContextPath("");
         }
-
         // workaround for https://issues.jboss.org/browse/WFLY-3617
         SessionCookieConfig cookieConfig =
                 servletContext.getSessionCookieConfig();
@@ -70,7 +68,9 @@ public class ZanataServletExtension implements ServletExtension {
             } else {
                 newCookiePath = contextPath;
             }
-            log.warn("Cookie path was empty, changing to \"{}\" (WFLY-3617 workaround)", newCookiePath);
+            log.warn(
+                    "Cookie path was empty, changing to \"{}\" (WFLY-3617 workaround)",
+                    newCookiePath);
             cookieConfig.setPath(newCookiePath);
         } else {
             log.info("Cookie path is \"{}\"", cookiePath);

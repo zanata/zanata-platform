@@ -20,29 +20,46 @@
  */
 package org.zanata.rest.search.dto;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.EntityStatus;
 
 /**
- * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ProjectSearchResult extends SearchResult {
-
-    @Getter @Setter
     private String title;
-
-    @Getter @Setter
     private long contributorCount;
-
-    @Getter @Setter
     private EntityStatus status;
 
     public ProjectSearchResult() {
         this.setType(SearchResultType.Project);
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+    public long getContributorCount() {
+        return this.contributorCount;
+    }
+
+    public void setContributorCount(final long contributorCount) {
+        this.contributorCount = contributorCount;
+    }
+
+    public EntityStatus getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(final EntityStatus status) {
+        this.status = status;
     }
 }

@@ -21,18 +21,8 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-
 import javax.annotation.Nonnull;
-
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-import lombok.extern.slf4j.Slf4j;
-
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -44,34 +34,32 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
+// TODO This class should be merged with the copy trans service (?)
 
 /**
  * Manager Bean that keeps track of manual copy trans being run in the system,
  * to avoid duplicates and to provide asynchronous feedback.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-
 @Dependent
-@Slf4j
-// TODO This class should be merged with the copy trans service (?)
 public class CopyTransManager implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(CopyTransManager.class);
+
     private static final long serialVersionUID = 1L;
-
     @Inject
-    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
+    @SuppressFBWarnings(value = "SE_BAD_FIELD",
+            justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
-
     @Inject
     private CopyTransService copyTransServiceImpl;
-
     @Inject
     private ZanataIdentity identity;
 
     public boolean isCopyTransRunning(@Nonnull Object target) {
         CopyTransProcessKey key;
-
         if (target instanceof HProjectIteration) {
             key = CopyTransProcessKey.getKey((HProjectIteration) target);
         } else if (target instanceof HDocument) {
@@ -80,7 +68,6 @@ public class CopyTransManager implements Serializable {
             throw new IllegalArgumentException(
                     "Copy Trans can only run for HProjectIteration and HDocument");
         }
-
         AsyncTaskHandle handle = asyncTaskHandleManager.getHandleByKey(key);
         return handle != null && !handle.isDone();
     }
@@ -103,10 +90,9 @@ public class CopyTransManager implements Serializable {
     public void startCopyTrans(HDocument document, HCopyTransOptions options) {
         if (isCopyTransRunning(document)) {
             throw new RuntimeException(
-                    "Copy Trans is already running for document '"
-                            + document.getDocId() + "'");
+                    "Copy Trans is already running for document \'"
+                            + document.getDocId() + "\'");
         }
-
         CopyTransProcessKey key = CopyTransProcessKey.getKey(document);
         CopyTransTaskHandle handle = new CopyTransTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, key);
@@ -122,10 +108,9 @@ public class CopyTransManager implements Serializable {
         // double check
         if (isCopyTransRunning(iteration)) {
             throw new RuntimeException(
-                    "Copy Trans is already running for version '"
-                            + iteration.getSlug() + "'");
+                    "Copy Trans is already running for version \'"
+                            + iteration.getSlug() + "\'");
         }
-
         CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
         CopyTransTaskHandle handle = new CopyTransTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, key);
@@ -133,9 +118,9 @@ public class CopyTransManager implements Serializable {
                 handle);
     }
 
-    public CopyTransTaskHandle getCopyTransProcessHandle(@Nonnull Object target) {
+    public CopyTransTaskHandle
+            getCopyTransProcessHandle(@Nonnull Object target) {
         CopyTransProcessKey key;
-
         if (target instanceof HProjectIteration) {
             key = CopyTransProcessKey.getKey((HProjectIteration) target);
         } else if (target instanceof HDocument) {
@@ -144,8 +129,7 @@ public class CopyTransManager implements Serializable {
             throw new IllegalArgumentException(
                     "Copy Trans can only run for HProjectIteration and HDocument");
         }
-        return (CopyTransTaskHandle) asyncTaskHandleManager
-                .getHandleByKey(key);
+        return (CopyTransTaskHandle) asyncTaskHandleManager.getHandleByKey(key);
     }
 
     public void cancelCopyTrans(@Nonnull HProjectIteration iteration) {
@@ -162,10 +146,6 @@ public class CopyTransManager implements Serializable {
     /**
      * Internal class to index Copy Trans processes.
      */
-    @EqualsAndHashCode
-    @Getter
-    @Setter
-    @NoArgsConstructor(access = AccessLevel.PRIVATE)
     private static final class CopyTransProcessKey implements Serializable {
         private static final long serialVersionUID = -2054359069473618887L;
         private String projectSlug;
@@ -182,11 +162,77 @@ public class CopyTransManager implements Serializable {
         public static CopyTransProcessKey getKey(HDocument document) {
             CopyTransProcessKey newKey = new CopyTransProcessKey();
             newKey.setDocId(document.getDocId());
-            newKey.setProjectSlug(document.getProjectIteration().getProject()
-                    .getSlug());
+            newKey.setProjectSlug(
+                    document.getProjectIteration().getProject().getSlug());
             newKey.setIterationSlug(document.getProjectIteration().getSlug());
             return newKey;
         }
-    }
 
+        @Override
+        public boolean equals(final Object o) {
+            if (o == this)
+                return true;
+            if (!(o instanceof CopyTransManager.CopyTransProcessKey))
+                return false;
+            final CopyTransProcessKey other = (CopyTransProcessKey) o;
+            final Object this$projectSlug = this.getProjectSlug();
+            final Object other$projectSlug = other.getProjectSlug();
+            if (this$projectSlug == null ? other$projectSlug != null
+                    : !this$projectSlug.equals(other$projectSlug))
+                return false;
+            final Object this$iterationSlug = this.getIterationSlug();
+            final Object other$iterationSlug = other.getIterationSlug();
+            if (this$iterationSlug == null ? other$iterationSlug != null
+                    : !this$iterationSlug.equals(other$iterationSlug))
+                return false;
+            final Object this$docId = this.getDocId();
+            final Object other$docId = other.getDocId();
+            if (this$docId == null ? other$docId != null
+                    : !this$docId.equals(other$docId))
+                return false;
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            final int PRIME = 59;
+            int result = 1;
+            final Object $projectSlug = this.getProjectSlug();
+            result = result * PRIME
+                    + ($projectSlug == null ? 43 : $projectSlug.hashCode());
+            final Object $iterationSlug = this.getIterationSlug();
+            result = result * PRIME
+                    + ($iterationSlug == null ? 43 : $iterationSlug.hashCode());
+            final Object $docId = this.getDocId();
+            result = result * PRIME + ($docId == null ? 43 : $docId.hashCode());
+            return result;
+        }
+
+        public String getProjectSlug() {
+            return this.projectSlug;
+        }
+
+        public String getIterationSlug() {
+            return this.iterationSlug;
+        }
+
+        public String getDocId() {
+            return this.docId;
+        }
+
+        public void setProjectSlug(final String projectSlug) {
+            this.projectSlug = projectSlug;
+        }
+
+        public void setIterationSlug(final String iterationSlug) {
+            this.iterationSlug = iterationSlug;
+        }
+
+        public void setDocId(final String docId) {
+            this.docId = docId;
+        }
+
+        private CopyTransProcessKey() {
+        }
+    }
 }

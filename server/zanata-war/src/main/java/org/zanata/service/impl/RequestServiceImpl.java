@@ -18,11 +18,9 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.service.impl;
 
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
@@ -42,7 +40,6 @@ import org.zanata.model.type.RequestState;
 import org.zanata.model.type.RequestType;
 import org.zanata.service.EmailService;
 import org.zanata.service.RequestService;
-
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
@@ -57,25 +54,21 @@ import java.util.List;
  */
 @Named("requestServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class RequestServiceImpl implements RequestService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(RequestServiceImpl.class);
 
     @Inject
     private RequestDAO requestDAO;
-
     @Inject
     private LanguageRequestDAO languageRequestDAO;
-
     @Inject
     private Event<RequestUpdatedEvent> requestUpdatedEvent;
-
     @Inject
     private ApplicationConfiguration applicationConfiguration;
-
     @Inject
     private EmailService emailServiceImpl;
-
     @Inject
     private Messages msgs;
 
@@ -84,64 +77,54 @@ public class RequestServiceImpl implements RequestService {
             HLocale locale, boolean isRequestAsCoordinator,
             boolean isRequestAsReviewer, boolean isRequestAsTranslator)
             throws RequestExistsException {
-        //search if there's any existing language request
-        //of the same requester, account and locale
-
-        LanguageRequest languageRequest =
-            languageRequestDAO.findRequesterPendingRequests(requester,
-                locale.getLocaleId());
-
+        // search if there's any existing language request
+        // of the same requester, account and locale
+        LanguageRequest languageRequest = languageRequestDAO
+                .findRequesterPendingRequests(requester, locale.getLocaleId());
         if (languageRequest != null) {
             throw new RequestExistsException(
-                RequestType.LOCALE + ", " + requester.getUsername() + ", " +
-                    ", " + locale.getDisplayName());
+                    RequestType.LOCALE + ", " + requester.getUsername() + ", , "
+                            + locale.getDisplayName());
         }
         String entityId = requestDAO.generateEntityId();
-
         Date now = new Date();
         Request request =
                 new Request(RequestType.LOCALE, requester, entityId, now);
-
-        LanguageRequestBuilder requestBuilder =
-            new LanguageRequestBuilder().setRequest(request)
-                .setLocale(locale)
+        LanguageRequestBuilder requestBuilder = new LanguageRequestBuilder()
+                .setRequest(request).setLocale(locale)
                 .setCoordinator(isRequestAsCoordinator)
                 .setReviewer(isRequestAsReviewer)
                 .setTranslator(isRequestAsTranslator);
-
         languageRequest = requestBuilder.build();
-
         requestDAO.makePersistent(request);
         languageRequestDAO.makePersistent(languageRequest);
         return languageRequest;
     }
 
     @Override
-    public boolean doesLanguageRequestExist(HAccount requester, HLocale locale) {
-        LanguageRequest languageRequest =
-                languageRequestDAO.findRequesterPendingRequests(requester,
-                    locale.getLocaleId());
+    public boolean doesLanguageRequestExist(HAccount requester,
+            HLocale locale) {
+        LanguageRequest languageRequest = languageRequestDAO
+                .findRequesterPendingRequests(requester, locale.getLocaleId());
         return languageRequest != null;
     }
 
     @Override
     public void updateLanguageRequest(Long requestId, HAccount actor,
-        RequestState state, String comment) throws EntityNotFoundException {
-        LanguageRequest languageRequest = languageRequestDAO.findById(requestId);
+            RequestState state, String comment) throws EntityNotFoundException {
+        LanguageRequest languageRequest =
+                languageRequestDAO.findById(requestId);
         if (languageRequest != null) {
             Request oldRequest = languageRequest.getRequest();
-
             Request newRequest =
-                oldRequest.update(actor, state, comment, new Date());
+                    oldRequest.update(actor, state, comment, new Date());
             requestDAO.makePersistent(oldRequest);
-
             languageRequest.setRequest(newRequest);
             requestDAO.makePersistent(oldRequest);
             requestDAO.makePersistent(newRequest);
             languageRequestDAO.makePersistent(languageRequest);
-            requestUpdatedEvent.fire(new RequestUpdatedEvent(
-                newRequest.getId(), languageRequest.getId(), actor.getId(),
-                state));
+            requestUpdatedEvent.fire(new RequestUpdatedEvent(newRequest.getId(),
+                    languageRequest.getId(), actor.getId(), state));
         } else {
             throw new EntityNotFoundException();
         }
@@ -149,7 +132,7 @@ public class RequestServiceImpl implements RequestService {
 
     public void onRequestUpdated(@Observes RequestUpdatedEvent event) {
         Request request = requestDAO.findById(event.getId());
-        if(request.getRequestType().equals(RequestType.LOCALE)) {
+        if (request.getRequestType().equals(RequestType.LOCALE)) {
             processOnLanguageRequestUpdated(event);
         }
     }
@@ -160,55 +143,46 @@ public class RequestServiceImpl implements RequestService {
     private void processOnLanguageRequestUpdated(RequestUpdatedEvent event) {
         if (event.getState().equals(RequestState.REJECTED)) {
             LanguageRequest languageRequest =
-                languageRequestDAO.findById(event.getRequestId());
-
+                    languageRequestDAO.findById(event.getRequestId());
             String contactCoordinatorLink =
-                applicationConfiguration.getServerPath() +
-                    "/language/view/" +
-                    languageRequest.getLocale().getLocaleId();
-
+                    applicationConfiguration.getServerPath() + "/language/view/"
+                            + languageRequest.getLocale().getLocaleId();
             HAccount requester = languageRequest.getRequest().getRequester();
             String message = languageRequest.getRequest().getComment();
-
-            EmailStrategy strategy =
-                new DeclineLanguageRequestEmailStrategy(
-                    requester.getUsername(),
-                    getRequestRoles(languageRequest), contactCoordinatorLink,
+            EmailStrategy strategy = new DeclineLanguageRequestEmailStrategy(
+                    requester.getUsername(), getRequestRoles(languageRequest),
+                    contactCoordinatorLink,
                     languageRequest.getLocale().retrieveDisplayName(),
                     languageRequest.getRequest().getComment());
             try {
-                emailServiceImpl
-                    .sendToLanguageRequester(strategy, requester.getPerson());
+                emailServiceImpl.sendToLanguageRequester(strategy,
+                        requester.getPerson());
             } catch (Exception e) {
                 String subject = strategy.getSubject(msgs);
-
-                StringBuilder sb =
-                    new StringBuilder()
-                        .append("Failed to send email with subject '")
+                StringBuilder sb = new StringBuilder()
+                        .append("Failed to send email with subject \'")
                         .append(strategy.getSubject(msgs))
-                        .append("' , message '").append(message)
-                        .append("'");
+                        .append("\' , message \'").append(message).append("\'");
                 log.error(
-                    "Failed to send email: toName '{}', subject '{}', message '{}'. {}",
-                    requester.getUsername(), subject, message, e);
+                        "Failed to send email: toName \'{}\', subject \'{}\', message \'{}\'. {}",
+                        requester.getUsername(), subject, message, e);
             }
         }
     }
 
     private String getRequestRoles(LanguageRequest languageRequest) {
         StringBuilder sb = new StringBuilder();
-        if(languageRequest.isCoordinator()) {
+        if (languageRequest.isCoordinator()) {
             sb.append(StringUtils.lowerCase(msgs.get("jsf.Coordinator")));
         }
-        if(languageRequest.isReviewer()) {
+        if (languageRequest.isReviewer()) {
             sb.append(StringUtils.lowerCase(msgs.get("jsf.Reviewer")));
         }
-        if(languageRequest.isTranslator()) {
+        if (languageRequest.isTranslator()) {
             sb.append(StringUtils.lowerCase(msgs.get("jsf.Translator")));
         }
         return sb.toString();
     }
-
 
     @Override
     public LanguageRequest getLanguageRequest(long languageRequestId) {
@@ -217,16 +191,16 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public LanguageRequest getPendingLanguageRequests(HAccount account,
-        LocaleId localeId) {
-        return languageRequestDAO.findRequesterPendingRequests(
-            account, localeId);
+            LocaleId localeId) {
+        return languageRequestDAO.findRequesterPendingRequests(account,
+                localeId);
     }
 
     @Override
-    public List<LanguageRequest> getPendingLanguageRequests(
-        LocaleId... localeIds) {
+    public List<LanguageRequest>
+            getPendingLanguageRequests(LocaleId... localeIds) {
         return languageRequestDAO
-            .findPendingRequests(Lists.newArrayList(localeIds));
+                .findPendingRequests(Lists.newArrayList(localeIds));
     }
 
     @Override
@@ -241,6 +215,7 @@ public class RequestServiceImpl implements RequestService {
 
     /**
      * Return true if request have been processed (validTo is not null)
+     *
      * @param request
      */
     private boolean isRequestProcessed(Request request) {
@@ -248,8 +223,8 @@ public class RequestServiceImpl implements RequestService {
     }
 
     /**
-     * Builder for languageRequest
-     * TODO: use @Builder in LanguageRequest but issue with @NoArgsConstructor and @AllArgsConstructor
+     * Builder for languageRequest TODO: use @Builder in LanguageRequest but
+     * issue with @NoArgsConstructor and @AllArgsConstructor
      */
     public class LanguageRequestBuilder {
 
@@ -286,7 +261,7 @@ public class RequestServiceImpl implements RequestService {
 
         public LanguageRequest build() {
             return new LanguageRequest(request, locale, coordinator, reviewer,
-                translator);
-        };
+                    translator);
+        }
     }
 }

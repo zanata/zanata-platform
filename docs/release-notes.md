@@ -1,9 +1,91 @@
+## 4.1.1
+### Data migration
+Imported TMX translation memories may be changed if they were previously
+parsed with a non-Unicode encoding (ZNTA-1740). A warning will be logged if
+re-indexing is required.
+
+##### Changes
+ * [ZNTA-1746](https://zanata.atlassian.net/browse/ZNTA-1746) - Add option to redirect forwarded HTTP requests to HTTPS
+ * [ZNTA-1688](https://zanata.atlassian.net/browse/ZNTA-1688) - Include docker documentation and admin create users manual in docs.zanata.org
+ * [ZNTA-1660](https://zanata.atlassian.net/browse/ZNTA-1660) - Update docker script to avoid 'chcon' error
+
+##### Bug Fixes
+ * [ZNTA-1748](https://zanata.atlassian.net/browse/ZNTA-1748) - Export TMX per language does not work
+ * [ZNTA-1738](https://zanata.atlassian.net/browse/ZNTA-1738) - Link boxes in GWT editor huge
+
+-----------------------
+
 ## 4.1.0
 ### Breaking changes
-New Zanata instances will now block anonymous users from accessing any resources. 
+New Zanata instances will now block anonymous users from accessing any resources.
 For existing instances, anonymous users can still access read-only resources
 including web pages and REST resources. To change the behavior, admin user
 can sign in and go to server configuration page to change the value there.
+
+##### Changes
+ * [ZNTA-1721](https://zanata.atlassian.net/browse/ZNTA-1721) - Remove zanata-ui and atomic css from build scripts in frontend
+ * [ZNTA-1652](https://zanata.atlassian.net/browse/ZNTA-1652) - Remove all Zanata-UI dependencies from Glossary container
+ * [ZNTA-1646](https://zanata.atlassian.net/browse/ZNTA-1646) - Enable eslint check in Draft mode
+ * [ZNTA-1628](https://zanata.atlassian.net/browse/ZNTA-1628) - Update "explode" profile for Zanata-server
+ * [ZNTA-1626](https://zanata.atlassian.net/browse/ZNTA-1626) - Admin page to create new user
+ * [ZNTA-1618](https://zanata.atlassian.net/browse/ZNTA-1618) - User experience for private instance signup
+ * [ZNTA-1606](https://zanata.atlassian.net/browse/ZNTA-1606) - Migrate all atomic into bootstrap css
+ * [ZNTA-1605](https://zanata.atlassian.net/browse/ZNTA-1605) - Remove all container zanata ui dependencies
+ * [ZNTA-1604](https://zanata.atlassian.net/browse/ZNTA-1604) - Remove all component zanata ui dependencies
+ * [ZNTA-1586](https://zanata.atlassian.net/browse/ZNTA-1586) - Switch from Cobertura to Jacoco for test coverage
+ * [ZNTA-1574](https://zanata.atlassian.net/browse/ZNTA-1574) - Developer Guide Wiki
+ * [ZNTA-1567](https://zanata.atlassian.net/browse/ZNTA-1567) - Limit signup to list of email-domains
+ * [ZNTA-1555](https://zanata.atlassian.net/browse/ZNTA-1555) - Try out Yarn instead of npm
+ * [ZNTA-1527](https://zanata.atlassian.net/browse/ZNTA-1527) - Admin option to block access by anonymous users
+ * [ZNTA-1418](https://zanata.atlassian.net/browse/ZNTA-1418) - RFE - Add links to user pages
+ * [ZNTA-1398](https://zanata.atlassian.net/browse/ZNTA-1398) - Convert Z-UI components from atomic to bootstrap
+ * [ZNTA-1304](https://zanata.atlassian.net/browse/ZNTA-1304) - Remove Lombok from the code
+ * [ZNTA-1195](https://zanata.atlassian.net/browse/ZNTA-1195) - Use annotation for finer-grained REST security control
+ * [ZNTA-1181](https://zanata.atlassian.net/browse/ZNTA-1181) - Use cleaner URLs for OpenID
+ * [ZNTA-107](https://zanata.atlassian.net/browse/ZNTA-107) - RFE/TECH DEBT: Create build script for Zanata
+ * [ZNTA-100](https://zanata.atlassian.net/browse/ZNTA-100) - RFE: Changing group settings does not show a success notification
+
+##### Bug Fixes
+ * [ZNTA-1717](https://zanata.atlassian.net/browse/ZNTA-1717) - Filter error while glossary term search on glossary page
+ * [ZNTA-1712](https://zanata.atlassian.net/browse/ZNTA-1712) - Sign up menu hides when anonymous user click on explore.
+ * [ZNTA-1707](https://zanata.atlassian.net/browse/ZNTA-1707) - Language team checkboxes not redrawn on filter
+ * [ZNTA-1704](https://zanata.atlassian.net/browse/ZNTA-1704) - Language list/names are not separated on profile page.
+ * [ZNTA-1703](https://zanata.atlassian.net/browse/ZNTA-1703) - "Error destroying an instance" triggered by logout
+ * [ZNTA-1681](https://zanata.atlassian.net/browse/ZNTA-1681) - Language delete button not working
+ * [ZNTA-1680](https://zanata.atlassian.net/browse/ZNTA-1680) - Bootstrap modal layout on mobile needs styling fixes
+ * [ZNTA-1671](https://zanata.atlassian.net/browse/ZNTA-1671) - client init fails on missing zanata.ini despite given auth
+ * [ZNTA-1670](https://zanata.atlassian.net/browse/ZNTA-1670) - client init overwrites project instead of checking
+ * [ZNTA-1667](https://zanata.atlassian.net/browse/ZNTA-1667) - 403 error on project glossary insert/delete
+ * [ZNTA-1665](https://zanata.atlassian.net/browse/ZNTA-1665) - New user redirect to 404 when click login with Kerberos
+ * [ZNTA-1664](https://zanata.atlassian.net/browse/ZNTA-1664) - Can we have info/details about access rights,roles on user profile.
+ * [ZNTA-1657](https://zanata.atlassian.net/browse/ZNTA-1657) - Fix layout of TM suggestions modal
+ * [ZNTA-1650](https://zanata.atlassian.net/browse/ZNTA-1650) - User contribution table not generating correctly
+ * [ZNTA-1647](https://zanata.atlassian.net/browse/ZNTA-1647) - Text/Strings are not wrapped correctly on document page languages panel
+ * [ZNTA-1645](https://zanata.atlassian.net/browse/ZNTA-1645) - Text/Strings are not wrapped correctly on reject translation pop-up.
+ * [ZNTA-1644](https://zanata.atlassian.net/browse/ZNTA-1644) - Cancel and upload buttons are not alligned on upload translation pop-up/modal.
+ * [ZNTA-1632](https://zanata.atlassian.net/browse/ZNTA-1632) - --project-desc should not be a required argument for put-project
+ * [ZNTA-1630](https://zanata.atlassian.net/browse/ZNTA-1630) - Nullpointer exception when help subcommand is not recognised
+ * [ZNTA-1629](https://zanata.atlassian.net/browse/ZNTA-1629) - Search  is case sensitive on Dashboard -> project search and Admin -> manage users.
+ * [ZNTA-1627](https://zanata.atlassian.net/browse/ZNTA-1627) - Alpha editor break its behaviour with long file name.
+ * [ZNTA-1624](https://zanata.atlassian.net/browse/ZNTA-1624) - Buttons are not aligned on Download all translation modal.
+ * [ZNTA-1614](https://zanata.atlassian.net/browse/ZNTA-1614) - Buttons on Upload new document modal are not aligned
+ * [ZNTA-1596](https://zanata.atlassian.net/browse/ZNTA-1596) - Client command put-user demands too much info
+ * [ZNTA-1595](https://zanata.atlassian.net/browse/ZNTA-1595) - Internal server error deleting a non-existing glossary entry
+ * [ZNTA-1591](https://zanata.atlassian.net/browse/ZNTA-1591) - [Glossary] Old last Updated date & time is shown on glossary info.
+ * [ZNTA-1578](https://zanata.atlassian.net/browse/ZNTA-1578) - Update and cancel button is not aligned on glossary page.
+ * [ZNTA-1577](https://zanata.atlassian.net/browse/ZNTA-1577) - Left menu panel height is getting half on home screen and few menu selections.
+ * [ZNTA-1576](https://zanata.atlassian.net/browse/ZNTA-1576) - RFE: Include url in screenshots
+ * [ZNTA-1541](https://zanata.atlassian.net/browse/ZNTA-1541) - Glossary entry Update/Cancel buttons not displayed correctly in narrow window
+ * [ZNTA-1500](https://zanata.atlassian.net/browse/ZNTA-1500) - Unable to cancel manage role -> create role panel.
+ * [ZNTA-1479](https://zanata.atlassian.net/browse/ZNTA-1479) - Uncaught validation exception when rejecting user language team request
+ * [ZNTA-1381](https://zanata.atlassian.net/browse/ZNTA-1381) - Unable to "Download All for Offline Translation" as zip (File project)
+ * [ZNTA-1210](https://zanata.atlassian.net/browse/ZNTA-1210) - Change of contact details on Language Team with no members
+ * [ZNTA-579](https://zanata.atlassian.net/browse/ZNTA-579) - Project creation "restrict access" feature too ambiguous.
+ * [ZNTA-468](https://zanata.atlassian.net/browse/ZNTA-468) - Missing information about CopyTrans state "Approved" when copy from "Approved"
+ * [ZNTA-61](https://zanata.atlassian.net/browse/ZNTA-61) - Add suggestion match details view to React editor.
+ * [ZNTA-3](https://zanata.atlassian.net/browse/ZNTA-3) - Download all as zip should not be available if 0 documents
+
+-----------------------
 
 ## 4.0.0
 ##### Infrastructure Changes
@@ -16,7 +98,8 @@ If using EAP, you must upgrade to EAP 7 and apply the various Zanata
 changes to `JBOSS_HOME/standalone/configuration/standalone.xml`.
 
 If using WildFly, you must remove any previously installed JSF or Hibernate
-modules from `WILDFLY_HOME/modules/{com,javax,org}`.
+modules from `WILDFLY_HOME/modules/{com,javax,org}`. (But not from
+`WILDFLY_HOME/modules/system/layers/base`.)
 
 Also, Hibernate Search and Lucene have been upgraded - before starting
 Zanata 4.0 you will need to clear your index directory (as configured
@@ -30,8 +113,8 @@ From version 4.0.0, Zanata platform depends on JBossEAP 7 or Wildfly 10, thus pl
 [JBoss EAP 7 Migration Guide](https://access.redhat.com/documentation/en/red-hat-jboss-enterprise-application-platform/7.0/single/migration-guide/)
 or [Migrate my appliction from AS7 to WildFly](https://docs.jboss.org/author/display/WFLY10/How+do+I+migrate+my+application+from+AS7+to+WildFly) to migrate your configuration.
 
-We use system properties instead of JNDI from 4.0.0,
-thus, following configuration became obsolete and deployment will abort on presence of these obsolete JNDI entries
+Zanata has used system properties instead of JNDI since 3.9.0, but in Zanata 4.0.0,
+deployment will abort if obsolete JNDI entries like the following are present:
 ```xml
 <subsystem xmlns="urn:jboss:domain:naming:1.3">
   <bindings>
@@ -49,7 +132,8 @@ thus, following configuration became obsolete and deployment will abort on prese
   <remote-naming/>
 </subsystem>
 ```
-Settings have moved to `<system-properties>` section.
+These settings have moved to the `<system-properties>` section. Please see the
+[release notes for Zanata 3.9.0](#390) for more details of these settings.
 
 Zanata aborts deployment when *required* properties are absent or
 *obsolete* properties are present in `standalone.xml`.
@@ -154,7 +238,7 @@ Directory of `ehcache.disk.store.dir` needs to be cleaned.
  * [ZNTA-1556](https://zanata.atlassian.net/browse/ZNTA-1556) - Show Transunit Details option not working
  * [ZNTA-1552](https://zanata.atlassian.net/browse/ZNTA-1552) - Obsolete JNDI setting should return Error and stop service
  * [ZNTA-1551](https://zanata.atlassian.net/browse/ZNTA-1551) - Groups should be clickable to go back to the group list from group page.
- * [ZNTA-1550](https://zanata.atlassian.net/browse/ZNTA-1550) - While adding projects to the group it shows project-id_Version instead of project-name_version   
+ * [ZNTA-1550](https://zanata.atlassian.net/browse/ZNTA-1550) - While adding projects to the group it shows project-id_Version instead of project-name_version
  * [ZNTA-1546](https://zanata.atlassian.net/browse/ZNTA-1546) - Projects should have to be clickable for going back to the projects list from project version page..
  * [ZNTA-1545](https://zanata.atlassian.net/browse/ZNTA-1545) - Edit entry link for glossary from webtrans broken
  * [ZNTA-1544](https://zanata.atlassian.net/browse/ZNTA-1544) - Glossary Select Language list not always showing correct count
@@ -177,7 +261,7 @@ Directory of `ehcache.disk.store.dir` needs to be cleaned.
  * [ZNTA-1451](https://zanata.atlassian.net/browse/ZNTA-1451) - project type md file should reference documents md file for file type project
  * [ZNTA-1442](https://zanata.atlassian.net/browse/ZNTA-1442) - zanata client does not handle 404 properly when the code is designed to ignore it
  * [ZNTA-1437](https://zanata.atlassian.net/browse/ZNTA-1437) - Zanata docker image can not send emails
- * [ZNTA-1427](https://zanata.atlassian.net/browse/ZNTA-1427) - No way to override Zanata client cache file location 
+ * [ZNTA-1427](https://zanata.atlassian.net/browse/ZNTA-1427) - No way to override Zanata client cache file location
  * [ZNTA-1406](https://zanata.atlassian.net/browse/ZNTA-1406) - Link to glossary from editor does not work
  * [ZNTA-1363](https://zanata.atlassian.net/browse/ZNTA-1363) - Loading cachestats page triggers IndexOutOfBoundsException
  * [ZNTA-1348](https://zanata.atlassian.net/browse/ZNTA-1348) - Bad redirect when coming from a translate action
@@ -189,7 +273,7 @@ Directory of `ehcache.disk.store.dir` needs to be cleaned.
  * [ZNTA-1230](https://zanata.atlassian.net/browse/ZNTA-1230) - Extract general components from frontend to zanata-ui
  * [ZNTA-1213](https://zanata.atlassian.net/browse/ZNTA-1213) - Profile, Glossary page not loading
  * [ZNTA-1199](https://zanata.atlassian.net/browse/ZNTA-1199) - Suggestion panel flicker when css transform
- * [ZNTA-1183](https://zanata.atlassian.net/browse/ZNTA-1183) - Loading page forever for empty glossary 
+ * [ZNTA-1183](https://zanata.atlassian.net/browse/ZNTA-1183) - Loading page forever for empty glossary
  * [ZNTA-1172](https://zanata.atlassian.net/browse/ZNTA-1172) - Admin: Failed to delete user
  * [ZNTA-1164](https://zanata.atlassian.net/browse/ZNTA-1164) - Nothing happened when clicking the menu item when deploy as ROOT.war
  * [ZNTA-1140](https://zanata.atlassian.net/browse/ZNTA-1140) - Editor UI not complete after sidebar update
@@ -199,7 +283,7 @@ Directory of `ehcache.disk.store.dir` needs to be cleaned.
  * [ZNTA-1129](https://zanata.atlassian.net/browse/ZNTA-1129) - Milestone webhook fires too many when uploading translations
  * [ZNTA-1097](https://zanata.atlassian.net/browse/ZNTA-1097) - "Contact Coordinators+" option in team page to be hidden if not logged in
  * [ZNTA-1073](https://zanata.atlassian.net/browse/ZNTA-1073) - NullPointerException when trying to access non-existing project
- * [ZNTA-1051](https://zanata.atlassian.net/browse/ZNTA-1051) - Redirection after login doesn't pick up hash location in url 
+ * [ZNTA-1051](https://zanata.atlassian.net/browse/ZNTA-1051) - Redirection after login doesn't pick up hash location in url
  * [ZNTA-906](https://zanata.atlassian.net/browse/ZNTA-906) - NullPointerException in getLocaleAliasesByIteration
  * [ZNTA-895](https://zanata.atlassian.net/browse/ZNTA-895) - Glossary entries endpoint not working for application/xml
  * [ZNTA-872](https://zanata.atlassian.net/browse/ZNTA-872) - Superfluous 'Cancel' button on "New User" page
@@ -289,9 +373,9 @@ Directory of `ehcache.disk.store.dir` needs to be cleaned.
 ##### Infrastructure Changes
 * System admin can set system property `zanata.enforce.matchingusernames` to enforce matching username to be used for new user registration.
 * Zanata has eliminated all JNDI-based configuration and replaced it with system properties. Please see the following sections for how certain values are now configured:
-  * (/user-guide/system-admin/configuration/installation)
-  * (/user-guide/system-admin/configuration/authentication)
-  * (/user-guide/system-admin/configuration/document-storage-directory)
+  * [Installation](/user-guide/system-admin/configuration/installation)
+  * [Configuration](/user-guide/system-admin/configuration/authentication)
+  * [Document Storage Directory](/user-guide/system-admin/configuration/document-storage-directory)
 
 ##### New feature
 * [ZNTA-746](https://zanata.atlassian.net/browse/ZNTA-746) - Add shortcut key for approve and reject translation

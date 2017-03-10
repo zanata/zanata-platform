@@ -32,6 +32,12 @@ public class PutVersionMojo extends ConfigurableMojo<PutVersionOptions>
     @Parameter(property = "zanata.projectType")
     private String projectType;
 
+    /**
+     * Version status (active, readonly)
+     */
+    @Parameter(property = "zanata.versionStatus")
+    private String versionStatus;
+
     public PutVersionMojo() throws Exception {
         super();
     }
@@ -62,6 +68,14 @@ public class PutVersionMojo extends ConfigurableMojo<PutVersionOptions>
 
     public void setProjectType(String projectType) {
         this.projectType = projectType;
+    }
+
+    public String getVersionStatus() {
+        return this.versionStatus;
+    }
+
+    public void setVersionStatus(String status) {
+        this.versionStatus = status;
     }
 
     @Override

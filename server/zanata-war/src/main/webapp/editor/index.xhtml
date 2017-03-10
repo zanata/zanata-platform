@@ -38,7 +38,7 @@
     <meta http-equiv="cleartype" content="on"/>
 
     <link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}" type="image/x-icon" />
-    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/app/bundle.css"/>
+    <link type="text/css" rel="stylesheet" href="#{request.contextPath}/editor.css"/>
     <link rel="stylesheet" type="text/css" async="async"
             href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic"/>
   </head>
@@ -61,9 +61,12 @@
           run.</p>
       </div>
     </noscript>
+    <script type="application/javascript">
+      window.config = JSON.parse(JSON.stringify(document.getElementById('config').dataset))
+    </script>
 
     <div id="appRoot"/>
-    <script type="text/javascript" src="#{request.contextPath}/app/bundle.js" charset="utf-8"></script>
+    <script type="text/javascript" src="#{request.contextPath}/editor.min.js" charset="utf-8"></script>
   </body>
   </html>
 </f:view>

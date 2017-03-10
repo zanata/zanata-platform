@@ -3,17 +3,8 @@ import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isUndefined, size, map } from 'lodash'
 import ReactList from 'react-list'
-import {
-  Page,
-  ScrollView,
-  View,
-  Row,
-  LoaderText,
-  Icon,
-  Select
-} from 'zanata-ui'
-import { Notification } from '../../components/'
-import { Button } from 'react-bootstrap'
+import { Icon, LoaderText, Select, Notification } from '../../components/'
+import { Button, Row } from 'react-bootstrap'
 import {
   glossaryDeleteTerm,
   glossaryResetTerm,
@@ -32,14 +23,6 @@ import {
 import ViewHeader from './ViewHeader'
 import Entry from './Entry'
 
-const loadingContainerTheme = {
-  base: {
-    ai: 'Ai(c)',
-    flxg: 'Flxg(1)',
-    jc: 'Jc(c)',
-    w: 'W(100%)'
-  }
-}
 /**
  * Root component for Glossary page
  */
@@ -140,27 +123,28 @@ class Glossary extends Component {
 
     /* eslint-disable react/jsx-no-bind */
     if (termsLoading) {
-      list = (<View theme={loadingContainerTheme}>
+      list = (<div className='loading-container-theme'>
         <LoaderText loading loadingText='Loading' />
-      </View>)
+      </div>)
     } else if (!termsLoading && termCount) {
       list = (<ReactList
         useTranslate3d
         itemRenderer={::this.renderItem}
         length={size(terms)}
         type='uniform'
+        className='react-list'
         ref={(c) => { this.list = c }} />)
     } else {
-      list = (<View theme={loadingContainerTheme}>
-        <span className='Mb(rq) C(muted)'>
-          <Icon name='glossary' size='6' />
+      list = (<div className='loading-container-theme'>
+        <span className='loading-muted'>
+          <Icon name='glossary' />
         </span>
-        <p className='C(muted)'>No content</p>
-      </View>)
+        <p className='glossary-text-muted'>No content</p>
+      </div>)
     }
 
     return (
-      <Page>
+      <div>
         {notification &&
           (<Notification severity={notification.severity}
             message={notification.message}
@@ -169,65 +153,65 @@ class Glossary extends Component {
           )
         }
         <Helmet title={headerTitle} />
-        <ScrollView>
+        <div className='wide-view-theme-glossary'>
           <ViewHeader title={headerTitle} />
-          <View theme={{ base: {p: 'Pt(r6)--sm Pt(r4)', fld: 'Fld(rr)'} }}>
+          <div className='glossary-header'>
             <Row>
               {termCount > 0 &&
                 <Row>
-                  <span className='Hidden--lesm Pend(rq)'>Show</span>
+                  <span className='hidden-lesm glossary-row'>Show</span>
                   <Select options={pageSizeOption}
                     placeholder='Terms per page'
                     value={intPageSize}
                     name='glossary-page'
-                    className='Mend(re) W(ms8)'
+                    className='glossary-select'
                     searchable={false}
                     clearable={false}
                     onChange={handlePageSizeChange} />
                 </Row>
               }
               {displayPaging &&
-                <div className='D(f)'>
+                <div className='pull-right glossary-paging'>
                   <Button bsStyle='link' disabled={currentPage <= 1}
                     title='First page'
                     onClick={() => { gotoFirstPage(currentPage, totalPage) }}>
-                    <Icon name='previous' size='1' />
+                    <Icon name='previous' className='s1' />
                   </Button>
                   <Button bsStyle='link' disabled={currentPage <= 1}
                     title='Previous page'
                     onClick={
                     () => { gotoPreviousPage(currentPage, totalPage) }}>
-                    <Icon name='chevron-left' size='1' />
+                    <Icon name='chevron-left' className='s1' />
                   </Button>
-                  <span className='C(muted) Mx(re)'>
+                  <span className='text-neutral-top'>
                     {currentPage} of {totalPage}
                   </span>
                   <Button bsStyle='link' disabled={currentPage === totalPage}
                     title='Next page'
                     onClick={() => { gotoNextPage(currentPage, totalPage) }}>
-                    <Icon name='chevron-right' size='1' />
+                    <Icon name='chevron-right' className='s1' />
                   </Button>
                   <Button bsStyle='link' disabled={currentPage === totalPage}
                     title='Last page'
                     onClick={() => { gotoLastPage(currentPage, totalPage) }}>
-                    <Icon name='next' size='1' />
+                    <Icon name='next' className='s1' />
                   </Button>
-                  <span className='Mx(rq) C(muted)'
+                  <span className='text-neutral-total'
                     title='Total glossary terms'>
                     <Row>
-                      <Icon name='glossary' size='1' /> {termCount}
+                      <Icon name='glossary' className='s1' /> {termCount}
                     </Row>
                   </span>
                 </div>
                 }
             </Row>
-          </View>
+          </div>
 
-          <View theme={{ base: {p: 'Pb(r2)'} }}>
+          <div className='glossary-list'>
             {list}
-          </View>
-        </ScrollView>
-      </Page>
+          </div>
+        </div>
+      </div>
     )
     /* eslint-enable react/jsx-no-bind */
   }

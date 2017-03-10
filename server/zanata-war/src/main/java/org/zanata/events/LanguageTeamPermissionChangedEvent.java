@@ -2,27 +2,19 @@ package org.zanata.events;
 
 import java.io.Serializable;
 import java.util.List;
-
-import lombok.Getter;
-import lombok.ToString;
-
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.model.HLocaleMember;
 import org.zanata.model.HPerson;
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Getter
-@ToString
 public class LanguageTeamPermissionChangedEvent implements Serializable {
     private static final long serialVersionUID = -1L;
-
     private final LocaleId language;
     private final String name;
     private final String email;
@@ -52,31 +44,29 @@ public class LanguageTeamPermissionChangedEvent implements Serializable {
                 .newPermission(isTranslator, isReviewer, isCoordinator);
     }
 
-    public LanguageTeamPermissionChangedEvent changedTranslatorPermission(
-            HLocaleMember localeMember) {
-        return this.oldPermission(!localeMember.isTranslator(),
-                localeMember.isReviewer(),
-                localeMember.isCoordinator())
+    public LanguageTeamPermissionChangedEvent
+            changedTranslatorPermission(HLocaleMember localeMember) {
+        return this
+                .oldPermission(!localeMember.isTranslator(),
+                        localeMember.isReviewer(), localeMember.isCoordinator())
                 .newPermission(localeMember.isTranslator(),
                         localeMember.isReviewer(),
                         localeMember.isCoordinator());
     }
 
-    public LanguageTeamPermissionChangedEvent changedReviewerPermission(
-            HLocaleMember localeMember) {
+    public LanguageTeamPermissionChangedEvent
+            changedReviewerPermission(HLocaleMember localeMember) {
         return this.oldPermission(localeMember.isTranslator(),
-                !localeMember.isReviewer(),
-                localeMember.isCoordinator())
+                !localeMember.isReviewer(), localeMember.isCoordinator())
                 .newPermission(localeMember.isTranslator(),
                         localeMember.isReviewer(),
                         localeMember.isCoordinator());
     }
 
-    public LanguageTeamPermissionChangedEvent changedCoordinatorPermission(
-            HLocaleMember localeMember) {
+    public LanguageTeamPermissionChangedEvent
+            changedCoordinatorPermission(HLocaleMember localeMember) {
         return this.oldPermission(localeMember.isTranslator(),
-                localeMember.isReviewer(),
-                !localeMember.isCoordinator())
+                localeMember.isReviewer(), !localeMember.isCoordinator())
                 .newPermission(localeMember.isTranslator(),
                         localeMember.isReviewer(),
                         localeMember.isCoordinator());
@@ -95,13 +85,13 @@ public class LanguageTeamPermissionChangedEvent implements Serializable {
                 ImmutableList.of(isTranslator, isReviewer, isCoordinator);
         return this;
     }
-
     // when user has no roles assigned or was not part of the team
+
     public boolean hasNoOldPermissions() {
         return Iterables.frequency(oldPermission, Boolean.TRUE) == 0;
     }
-
     // when user has no roles assigned or is removed from the team
+
     public boolean hasNoNewPermissions() {
         return Iterables.frequency(newPermission, Boolean.TRUE) == 0;
     }
@@ -128,6 +118,42 @@ public class LanguageTeamPermissionChangedEvent implements Serializable {
     }
 
     private static enum Permission {
-        translator, reviewer, coordinator
+        translator,
+        reviewer,
+        coordinator;
+
+    }
+
+    public LocaleId getLanguage() {
+        return this.language;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public String getChangedByName() {
+        return this.changedByName;
+    }
+
+    public List<Boolean> getOldPermission() {
+        return this.oldPermission;
+    }
+
+    public List<Boolean> getNewPermission() {
+        return this.newPermission;
+    }
+
+    @Override
+    public String toString() {
+        return "LanguageTeamPermissionChangedEvent(language="
+                + this.getLanguage() + ", name=" + this.getName() + ", email="
+                + this.getEmail() + ", changedByName=" + this.getChangedByName()
+                + ", oldPermission=" + this.getOldPermission()
+                + ", newPermission=" + this.getNewPermission() + ")";
     }
 }

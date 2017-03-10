@@ -13,7 +13,6 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.common.util.Strings;
 import org.zanata.async.Async;
@@ -36,32 +35,26 @@ import org.zanata.webhook.events.SourceDocumentChangedEvent;
 import org.zanata.webhook.events.TestEvent;
 import org.zanata.webhook.events.ManuallyTriggeredEvent;
 import org.zanata.webhook.events.VersionChangedEvent;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 @Named("webhookServiceImpl")
 @RequestScoped
 public class WebhookServiceImpl implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(WebhookServiceImpl.class);
 
     @Inject
     private Messages msgs;
-
     @Inject
     private Event<WebhookEvent> webhookEventEvent;
-
     @Inject
     @Authenticated
     private HAccount authenticatedUser;
-
     private static final int URL_MAX_LENGTH = 255;
-
     @Inject
     @ServerPath
     private String serverUrl;
@@ -71,9 +64,8 @@ public class WebhookServiceImpl implements Serializable {
      */
     @Async
     public void onPublishWebhook(@Observes(
-        during = TransactionPhase.AFTER_SUCCESS) WebhookEvent event) {
-        WebHooksPublisher
-            .publish(event.getUrl(), event.getType(),
+            during = TransactionPhase.AFTER_SUCCESS) WebhookEvent event) {
+        WebHooksPublisher.publish(event.getUrl(), event.getType(),
                 Optional.ofNullable(event.getSecret()));
     }
 
@@ -89,11 +81,11 @@ public class WebhookServiceImpl implements Serializable {
     /**
      * Process VersionChangedEvent
      */
-    public void processWebhookVersionChanged(String projectSlug, String versionSlug,
-            List<WebHook> webHooks, VersionChangedEvent.ChangeType changeType) {
+    public void processWebhookVersionChanged(String projectSlug,
+            String versionSlug, List<WebHook> webHooks,
+            VersionChangedEvent.ChangeType changeType) {
         List<WebHook> versionWebhooks =
                 filterWebhookByType(webHooks, WebhookType.VersionChangedEvent);
-
         if (versionWebhooks.isEmpty()) {
             return;
         }
@@ -108,17 +100,13 @@ public class WebhookServiceImpl implements Serializable {
     public void processWebhookMaintainerChanged(String projectSlug,
             String username, ProjectRole role, List<WebHook> webHooks,
             ProjectMaintainerChangedEvent.ChangeType changeType) {
-
-        List<WebHook> maintainerWebhooks =
-                filterWebhookByType(webHooks,
-                        WebhookType.ProjectMaintainerChangedEvent);
-
+        List<WebHook> maintainerWebhooks = filterWebhookByType(webHooks,
+                WebhookType.ProjectMaintainerChangedEvent);
         if (maintainerWebhooks.isEmpty()) {
             return;
         }
-        ProjectMaintainerChangedEvent event =
-                new ProjectMaintainerChangedEvent(projectSlug, username,
-                    role, changeType);
+        ProjectMaintainerChangedEvent event = new ProjectMaintainerChangedEvent(
+                projectSlug, username, role, changeType);
         publishWebhooks(maintainerWebhooks, event);
     }
 
@@ -130,25 +118,22 @@ public class WebhookServiceImpl implements Serializable {
             SourceDocumentChangedEvent.ChangeType changeType) {
         List<WebHook> eventWebhooks = filterWebhookByType(webHooks,
                 WebhookType.SourceDocumentChangedEvent);
-
         if (eventWebhooks.isEmpty()) {
             return;
         }
         SourceDocumentChangedEvent event = new SourceDocumentChangedEvent(
                 project, version, docId, changeType);
-
         publishWebhooks(eventWebhooks, event);
     }
 
     /**
      * Process DocumentMilestoneEvent
      */
-    public void processDocumentMilestone(String projectSlug,
-            String versionSlug, String docId, LocaleId localeId, String message,
-            String editorUrl, List<WebHook> webHooks) {
-        DocumentMilestoneEvent milestoneEvent =
-                new DocumentMilestoneEvent(projectSlug, versionSlug, docId,
-                        localeId, message, editorUrl);
+    public void processDocumentMilestone(String projectSlug, String versionSlug,
+            String docId, LocaleId localeId, String message, String editorUrl,
+            List<WebHook> webHooks) {
+        DocumentMilestoneEvent milestoneEvent = new DocumentMilestoneEvent(
+                projectSlug, versionSlug, docId, localeId, message, editorUrl);
         publishWebhooks(webHooks, milestoneEvent);
     }
 
@@ -158,56 +143,48 @@ public class WebhookServiceImpl implements Serializable {
     public void processDocumentStats(String username, String projectSlug,
             String versionSlug, String docId, LocaleId localeId,
             Map<ContentState, Long> wordDeltasByState, List<WebHook> webHooks) {
-        DocumentStatsEvent statsEvent =
-                new DocumentStatsEvent(username, projectSlug, versionSlug,
-                        docId, localeId, wordDeltasByState);
+        DocumentStatsEvent statsEvent = new DocumentStatsEvent(username,
+                projectSlug, versionSlug, docId, localeId, wordDeltasByState);
         publishWebhooks(webHooks, statsEvent);
     }
 
     /**
      * Process ManuallyTriggeredEvent
      */
-    public void processManualEvent(String projectSlug,
-            String versionSlug, LocaleId localeId, List<WebHook> webHooks) {
-        ManuallyTriggeredEvent event =
-                new ManuallyTriggeredEvent(serverUrl, authenticatedUser.getUsername(),
-                        projectSlug, versionSlug, localeId);
+    public void processManualEvent(String projectSlug, String versionSlug,
+            LocaleId localeId, List<WebHook> webHooks) {
+        ManuallyTriggeredEvent event = new ManuallyTriggeredEvent(serverUrl,
+                authenticatedUser.getUsername(), projectSlug, versionSlug,
+                localeId);
         publishWebhooks(webHooks, event);
     }
 
     public List<WebhookTypeItem> getAvailableWebhookTypes() {
-        WebhookTypeItem docMilestone =
-            new WebhookTypeItem(WebhookType.DocumentMilestoneEvent,
-                msgs.get(
-                    "jsf.webhookType.DocumentMilestoneEvent.desc"));
-
+        WebhookTypeItem docMilestone = new WebhookTypeItem(
+                WebhookType.DocumentMilestoneEvent,
+                msgs.get("jsf.webhookType.DocumentMilestoneEvent.desc"));
         WebhookTypeItem stats =
-            new WebhookTypeItem(WebhookType.DocumentStatsEvent,
-                msgs.get("jsf.webhookType.DocumentStatsEvent.desc"));
-
+                new WebhookTypeItem(WebhookType.DocumentStatsEvent,
+                        msgs.get("jsf.webhookType.DocumentStatsEvent.desc"));
         WebhookTypeItem version =
-            new WebhookTypeItem(WebhookType.VersionChangedEvent,
-                msgs.get("jsf.webhookType.VersionChangedEvent.desc"));
-
-        WebhookTypeItem maintainer =
-            new WebhookTypeItem(WebhookType.ProjectMaintainerChangedEvent,
+                new WebhookTypeItem(WebhookType.VersionChangedEvent,
+                        msgs.get("jsf.webhookType.VersionChangedEvent.desc"));
+        WebhookTypeItem maintainer = new WebhookTypeItem(
+                WebhookType.ProjectMaintainerChangedEvent,
                 msgs.get("jsf.webhookType.ProjectMaintainerChangedEvent.desc"));
-
-        WebhookTypeItem srcDoc =
-            new WebhookTypeItem(WebhookType.SourceDocumentChangedEvent,
+        WebhookTypeItem srcDoc = new WebhookTypeItem(
+                WebhookType.SourceDocumentChangedEvent,
                 msgs.get("jsf.webhookType.SourceDocumentChangedEvent.desc"));
-
-        WebhookTypeItem manualEvent =
-                new WebhookTypeItem(WebhookType.ManuallyTriggeredEvent,
-                        msgs.get(
-                                "jsf.webhookType.ManuallyTriggeredEvent.desc"));
-        return Lists
-            .newArrayList(docMilestone, stats, version, maintainer, srcDoc, manualEvent);
+        WebhookTypeItem manualEvent = new WebhookTypeItem(
+                WebhookType.ManuallyTriggeredEvent,
+                msgs.get("jsf.webhookType.ManuallyTriggeredEvent.desc"));
+        return Lists.newArrayList(docMilestone, stats, version, maintainer,
+                srcDoc, manualEvent);
     }
 
     public List<String> getDisplayNames(Set<WebhookType> types) {
         return types.stream().map(WebhookType::getDisplayName)
-            .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     public String getTypesAsString(WebHook webHook) {
@@ -215,7 +192,7 @@ public class WebhookServiceImpl implements Serializable {
             return "";
         }
         List<String> results = webHook.getTypes().stream().map(Enum::name)
-            .collect(Collectors.toList());
+                .collect(Collectors.toList());
         return Strings.join(results, ",");
     }
 
@@ -225,13 +202,13 @@ public class WebhookServiceImpl implements Serializable {
     }
 
     public static Set<WebhookType> getTypesFromString(String strTypes) {
-        return new HashSet(
-                Lists.transform(Lists.newArrayList(strTypes.split(",")),
-                        convertToWebHookType));
+        return new HashSet(Lists.transform(
+                Lists.newArrayList(strTypes.split(",")), convertToWebHookType));
     }
 
     private static Function convertToWebHookType =
             new Function<String, WebhookType>() {
+
                 @Override
                 public WebhookType apply(String input) {
                     return WebhookType.valueOf(input);
@@ -241,14 +218,21 @@ public class WebhookServiceImpl implements Serializable {
     /**
      * Object for all available webhook list
      */
-    @Getter
-    public final static class WebhookTypeItem {
+    public static final class WebhookTypeItem {
         private WebhookType type;
         private String description;
 
         public WebhookTypeItem(WebhookType webhookType, String desc) {
             this.type = webhookType;
             this.description = desc;
+        }
+
+        public WebhookType getType() {
+            return this.type;
+        }
+
+        public String getDescription() {
+            return this.description;
         }
     }
 
@@ -262,7 +246,8 @@ public class WebhookServiceImpl implements Serializable {
 
     private List<WebHook> filterWebhookByType(List<WebHook> webHooks,
             WebhookType webhookType) {
-        return webHooks.stream().filter(webHook -> webHook.getTypes()
-                .contains(webhookType)).collect(Collectors.toList());
+        return webHooks.stream()
+                .filter(webHook -> webHook.getTypes().contains(webhookType))
+                .collect(Collectors.toList());
     }
 }

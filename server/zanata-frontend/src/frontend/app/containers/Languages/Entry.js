@@ -4,6 +4,7 @@ import DeleteEntry from './DeleteEntry'
 import { Loader, Icon }
  from '../../components'
 import { Label } from 'react-bootstrap'
+import { getLanguageUrl } from '../../utils/UrlHelper'
 
 class Entry extends Component {
   constructor () {
@@ -32,8 +33,8 @@ class Entry extends Component {
     /* eslint-disable react/jsx-no-bind */
     const isUserInTeam = includes(userLanguageTeams, localeDetails.localeId)
 
-    const url = window.config.baseUrl + '/language/view/' +
-      localeDetails.localeId
+    const url = getLanguageUrl(localeDetails.localeId)
+
     return (
       <tr name='language-entry'>
         <td>
@@ -63,7 +64,7 @@ class Entry extends Component {
           </span>
         </td>
         <td>
-          <span>
+          <span className='text-muted'>
             <Icon name='user' title='user' className='s1 usericon' />
             {locale.memberCount}
           </span>

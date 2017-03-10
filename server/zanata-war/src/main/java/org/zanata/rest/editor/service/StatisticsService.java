@@ -22,13 +22,11 @@ package org.zanata.rest.editor.service;
 
 import java.lang.reflect.Type;
 import java.util.List;
-
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
@@ -42,11 +40,7 @@ import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.URIHelper;
 import org.zanata.rest.editor.service.resource.StatisticResource;
 import org.zanata.util.StatisticsUtil;
-
 import com.google.common.collect.Lists;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -54,8 +48,6 @@ import lombok.NoArgsConstructor;
 @RequestScoped
 @Named("editor.statisticService")
 @Path(StatisticResource.SERVICE_PATH)
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Transactional(readOnly = true)
 public class StatisticsService implements StatisticResource {
     @Inject
@@ -67,50 +59,48 @@ public class StatisticsService implements StatisticResource {
             @PathParam("versionSlug") String versionSlug,
             @PathParam("docId") String docId,
             @PathParam("localeId") String localeId) {
-
         docId = URIHelper.convertFromDocumentURIId(docId);
-
-        HDocument doc =
-                documentDAO.getByProjectIterationAndDocId(projectSlug,
-                        versionSlug, docId);
-
+        HDocument doc = documentDAO.getByProjectIterationAndDocId(projectSlug,
+                versionSlug, docId);
         if (doc == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-
         ContainerTranslationStatistics docStats =
                 getDocStatistics(doc.getId(), new LocaleId(localeId));
-
         TranslationStatistics docWordStatistic =
                 docStats.getStats(localeId, StatUnit.WORD);
         TranslationStatistics docMsgStatistic =
                 docStats.getStats(localeId, StatUnit.MESSAGE);
-
         Type genericType = new GenericType<List<TranslationStatistics>>() {
+
         }.getGenericType();
-        Object entity =
-                new GenericEntity<List<TranslationStatistics>>(
-                        Lists.newArrayList(docWordStatistic, docMsgStatistic),
-                        genericType);
+        Object entity = new GenericEntity<List<TranslationStatistics>>(
+                Lists.newArrayList(docWordStatistic, docMsgStatistic),
+                genericType);
         return Response.ok(entity).build();
     }
+    // TODO: need to merge with StatisticsServiceImpl.getDocStatistics
 
-    //TODO: need to merge with StatisticsServiceImpl.getDocStatistics
     public ContainerTranslationStatistics getDocStatistics(Long documentId,
             LocaleId localeId) {
         ContainerTranslationStatistics result =
                 documentDAO.getStatistics(documentId, localeId);
-
         TranslationStatistics wordStatistics =
                 result.getStats(localeId.getId(), StatUnit.WORD);
-        wordStatistics.setRemainingHours(StatisticsUtil
-                .getRemainingHours(wordStatistics));
-
+        wordStatistics.setRemainingHours(
+                StatisticsUtil.getRemainingHours(wordStatistics));
         TranslationStatistics msgStatistics =
                 result.getStats(localeId.getId(), StatUnit.MESSAGE);
-        msgStatistics.setRemainingHours(StatisticsUtil
-                .getRemainingHours(wordStatistics));
-
+        msgStatistics.setRemainingHours(
+                StatisticsUtil.getRemainingHours(wordStatistics));
         return result;
+    }
+
+    public StatisticsService() {
+    }
+
+    @java.beans.ConstructorProperties({ "documentDAO" })
+    protected StatisticsService(final DocumentDAO documentDAO) {
+        this.documentDAO = documentDAO;
     }
 }

@@ -31,7 +31,6 @@ import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
@@ -63,8 +62,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 
-import lombok.Getter;
-
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
@@ -75,46 +72,31 @@ import lombok.Getter;
 public class VersionGroupHome extends SlugHome<HIterationGroup>
         implements Serializable {
     private static final long serialVersionUID = 1L;
-
     @Inject
     @Any
-    @Getter
     private VersionGroupSlug versionGroupSlug;
-
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
-
     @Inject
     private FacesMessages facesMessages;
-
     @Inject
     private SlugEntityService slugEntityServiceImpl;
-
     @Inject
     private Messages msgs;
-
     @Inject
     private ConversationScopeMessages conversationScopeMessages;
-
     @Inject
     private ZanataIdentity identity;
-
-    @Getter
     @Inject
     private GroupMaintainerAutocomplete maintainerAutocomplete;
-
-    @Getter
     @Inject
     private VersionAutocomplete versionAutocomplete;
-
-    @Getter
     @Inject
     private GroupLocaleAutocomplete localeAutocomplete;
-
-    @Getter
     private AbstractListFilter<HPerson> maintainerFilter =
             new InMemoryListFilter<HPerson>() {
+
                 @Override
                 protected List<HPerson> fetchAll() {
                     return getInstanceMaintainers();
@@ -174,7 +156,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         identity.checkPermission(getInstance(), "update");
         if (!validateSlug(getInstance().getSlug(), "slug"))
             return null;
-
         if (authenticatedAccount != null) {
             getInstance().addMaintainer(authenticatedAccount.getPerson());
         }
@@ -186,13 +167,12 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     public String update() {
         identity.checkPermission(getInstance(), "update");
         String state = super.update();
-        conversationScopeMessages.setMessage(
-                FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 msgs.get("jsf.group.settings.updated"));
         return state;
     }
-
     // TODO ask camunoz if this is still needed
+
     /**
      * This is for autocomplete components of which ConversationScopeMessages
      * will be null
@@ -217,8 +197,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         identity.checkPermission(getInstance(), "update");
         getInstance().getActiveLocales().remove(locale);
         update();
-        conversationScopeMessages.setMessage(
-                FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.LanguageRemoveFromGroup",
                         locale.retrieveDisplayName()));
     }
@@ -228,8 +207,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         identity.checkPermission(getInstance(), "update");
         getInstance().getProjectIterations().remove(version);
         update();
-        conversationScopeMessages.setMessage(
-                FacesMessage.SEVERITY_INFO,
+        conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                 msgs.format("jsf.VersionRemoveFromGroup", version.getSlug(),
                         version.getProject().getSlug()));
     }
@@ -253,7 +231,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     public List<HLocale> getInstanceActiveLocales() {
         List<HLocale> activeLocales =
                 Lists.newArrayList(getInstance().getActiveLocales());
-
         Collections.sort(activeLocales, ComparatorUtil.LOCALE_COMPARATOR);
         return activeLocales;
     }
@@ -264,22 +241,18 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         return (HIterationGroup) session.byNaturalId(HIterationGroup.class)
                 .using("slug", getSlug()).load();
     }
-
     // sort by slug
+
     public List<HProjectIteration> getSortedInstanceProjectIterations() {
         List<HProjectIteration> list =
                 Lists.newArrayList(getInstance().getProjectIterations());
-
         Collections.sort(list, ComparatorUtil.VERSION_PROJECT_NAME_COMPARATOR);
-
         return list;
     }
 
     public List<HPerson> getInstanceMaintainers() {
         List<HPerson> list = Lists.newArrayList(getInstance().getMaintainers());
-
         Collections.sort(list, ComparatorUtil.PERSON_NAME_COMPARATOR);
-
         return list;
     }
 
@@ -306,14 +279,13 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     }
 
     @ViewScoped
-    public static class GroupMaintainerAutocomplete extends MaintainerAutocomplete {
+    public static class GroupMaintainerAutocomplete
+            extends MaintainerAutocomplete {
 
         @Inject
         private VersionGroupHome versionGroupHome;
-
         @Inject
         private ZanataIdentity identity;
-
         @Inject
         private Messages msgs;
 
@@ -335,7 +307,6 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
             }
-
             identity.checkPermission(getInstance(), "update");
             HPerson maintainer = personDAO.findByUsername(getSelectedItem());
             getInstance().getMaintainers().add(maintainer);
@@ -348,20 +319,17 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     }
 
     @ViewScoped
-    public static class VersionAutocomplete extends
-            AbstractAutocomplete<HProjectIteration> {
+    public static class VersionAutocomplete
+            extends AbstractAutocomplete<HProjectIteration> {
+
         @Inject
         private ProjectIterationDAO projectIterationDAO;
-
         @Inject
         private VersionGroupService versionGroupServiceImpl;
-
         @Inject
         private VersionGroupHome versionGroupHome;
-
         @Inject
         private ZanataIdentity identity;
-
         @Inject
         private Messages msgs;
 
@@ -371,21 +339,18 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
         @Override
         public List<HProjectIteration> suggest() {
-            List<HProjectIteration> versionList =
-                    versionGroupServiceImpl
-                            .searchLikeSlugOrProjectSlug(getQuery());
+            List<HProjectIteration> versionList = versionGroupServiceImpl
+                    .searchLikeSlugOrProjectSlug(getQuery());
+            Collection<HProjectIteration> filtered = Collections2
+                    .filter(versionList, new Predicate<HProjectIteration>() {
 
-            Collection<HProjectIteration> filtered =
-                    Collections2.filter(versionList,
-                            new Predicate<HProjectIteration>() {
-                                @Override
-                                public boolean apply(
-                                        @Nullable HProjectIteration input) {
-                                    return input != null && !input.getGroups().contains(
-                                            getInstance());
-                                }
-                            });
-
+                        @Override
+                        public boolean
+                                apply(@Nullable HProjectIteration input) {
+                            return input != null && !input.getGroups()
+                                    .contains(getInstance());
+                        }
+                    });
             return Lists.newArrayList(filtered);
         }
 
@@ -395,15 +360,12 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
             if (StringUtils.isEmpty(getSelectedItem())) {
                 return;
             }
-
             identity.checkPermission(getInstance(), "update");
             HProjectIteration version =
                     projectIterationDAO.findById(new Long(getSelectedItem()));
             getInstance().getProjectIterations().add(version);
-
             versionGroupHome.update(conversationScopeMessages);
             reset();
-
             conversationScopeMessages.setMessage(FacesMessage.SEVERITY_INFO,
                     msgs.format("jsf.VersionAddedToGroup", version.getSlug(),
                             version.getProject().getSlug()));
@@ -412,12 +374,11 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
 
     @ViewScoped
     public static class GroupLocaleAutocomplete extends LocaleAutocomplete {
+
         @Inject
         private VersionGroupHome versionGroupHome;
-
         @Inject
         private ZanataIdentity identity;
-
         @Inject
         private Messages msgs;
 
@@ -434,26 +395,28 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         @Override
         public List<HLocale> suggest() {
             List<HLocale> localeList = localeServiceImpl.getSupportedLocales();
-
             Collection<HLocale> filtered =
                     Collections2.filter(localeList, new Predicate<HLocale>() {
+
                         @Override
                         public boolean apply(HLocale input) {
-                            return !getInstance().getActiveLocales().contains(
-                                    input)
-                                    && (StringUtils.startsWithIgnoreCase(input
-                                            .getLocaleId().getId(), getQuery()) || StringUtils.containsIgnoreCase(
-                                            input.retrieveDisplayName(),
-                                            getQuery()));
+                            return !getInstance().getActiveLocales()
+                                    .contains(input)
+                                    && (StringUtils.startsWithIgnoreCase(
+                                            input.getLocaleId().getId(),
+                                            getQuery())
+                                            || StringUtils.containsIgnoreCase(
+                                                    input.retrieveDisplayName(),
+                                                    getQuery()));
                         }
                     });
-
             return Lists.newArrayList(filtered);
         }
 
         /**
          * Action when an item is selected
          */
+
         @Override
         @Transactional
         public void onSelectItemAction() {
@@ -461,11 +424,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
                 return;
             }
             identity.checkPermission(getInstance(), "update");
-
             HLocale locale = localeServiceImpl.getByLocaleId(getSelectedItem());
-
             getInstance().getActiveLocales().add(locale);
-
             versionGroupHome.update();
             reset();
             versionGroupHome.getMaintainerFilter().reset();
@@ -475,4 +435,23 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
         }
     }
 
+    public VersionGroupSlug getVersionGroupSlug() {
+        return this.versionGroupSlug;
+    }
+
+    public GroupMaintainerAutocomplete getMaintainerAutocomplete() {
+        return this.maintainerAutocomplete;
+    }
+
+    public VersionAutocomplete getVersionAutocomplete() {
+        return this.versionAutocomplete;
+    }
+
+    public GroupLocaleAutocomplete getLocaleAutocomplete() {
+        return this.localeAutocomplete;
+    }
+
+    public AbstractListFilter<HPerson> getMaintainerFilter() {
+        return this.maintainerFilter;
+    }
 }

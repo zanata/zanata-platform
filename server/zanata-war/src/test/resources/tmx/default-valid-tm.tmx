@@ -39,7 +39,7 @@ o-tmf="zanata.org"
         <seg>Questo è il primo elemento.</seg>
     </tuv>
   </tu>
-  <tu>
+  <tu tuid="tuid2">
     <tuv xml:lang="en">
         <seg>Select &lt;guimenuitem&gt;Burn Image&lt;/guimenuitem&gt;.</seg>
     </tuv>

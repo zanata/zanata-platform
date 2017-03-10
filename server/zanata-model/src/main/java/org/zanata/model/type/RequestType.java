@@ -18,10 +18,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.model.type;
-
-import lombok.Getter;
 
 /**
  * Request type with single char
@@ -34,8 +31,6 @@ public enum RequestType {
     LOCALE("L"),
     PROJECT("P"),
     PROJECT_LOCALE("PL");
-
-    @Getter
     private final String abbr;
 
     RequestType(String abbr) {
@@ -44,14 +39,22 @@ public enum RequestType {
 
     public static RequestType getValueOf(String abbr) {
         switch (abbr) {
-            case "L":
-                return RequestType.LOCALE;
-            case "P":
-                return RequestType.PROJECT;
-            case "PL":
-                return RequestType.PROJECT_LOCALE;
-            default:
-                throw new IllegalArgumentException(abbr);
+        case "L":
+            return RequestType.LOCALE;
+
+        case "P":
+            return RequestType.PROJECT;
+
+        case "PL":
+            return RequestType.PROJECT_LOCALE;
+
+        default:
+            throw new IllegalArgumentException(abbr);
+
         }
+    }
+
+    public String getAbbr() {
+        return this.abbr;
     }
 }

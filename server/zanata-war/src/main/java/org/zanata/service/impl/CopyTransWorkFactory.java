@@ -27,15 +27,9 @@ import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.ContentState;
@@ -56,34 +50,33 @@ import org.zanata.service.ValidationService;
 import org.zanata.service.VersionStateCache;
 import org.zanata.util.TranslationUtil;
 import org.zanata.webtrans.shared.model.ValidationAction;
-
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Named("copyTransWorkFactory")
 @javax.enterprise.context.Dependent
-@Slf4j
 public class CopyTransWorkFactory {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(CopyTransWorkFactory.class);
 
     // Inject textFlowTargetDAO (@DatabaseSearch) for Hibernate-based query
-    // Inject translationMemoryServiceImpl (no qualifier) for Hibernate Search query
+    // Inject translationMemoryServiceImpl (no qualifier) for Hibernate Search
+    // query
     @Inject
     private TextFlowTargetDAO translationFinder;
-
     @Inject
     private TextFlowTargetDAO textFlowTargetDAO;
-
     @Inject
     private ValidationService validationServiceImpl;
-
     @Inject
     private VersionStateCache versionStateCacheImpl;
-
-    @Inject @Authenticated
+    @Inject
+    @Authenticated
     private HAccount authenticatedAccount;
 
     public Integer runCopyTransInNewTx(HLocale targetLocale,
@@ -94,40 +87,39 @@ public class CopyTransWorkFactory {
                 document, requireTranslationReview, copyTargets));
     }
 
-    public Integer runCopyTrans(HLocale targetLocale,
-            HCopyTransOptions options, HDocument document,
-            boolean requireTranslationReview, List<HTextFlow> copyTargets) {
+    public Integer runCopyTrans(HLocale targetLocale, HCopyTransOptions options,
+            HDocument document, boolean requireTranslationReview,
+            List<HTextFlow> copyTargets) {
         int numCopied = 0;
-        boolean checkContext = false, checkProject = false, checkDocument =
-                false;
-
+        boolean checkContext = false;
+        boolean checkProject = false;
+        boolean checkDocument = false;
         // Only outright reject copies if the options say so
-        if (options.getDocIdMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT) {
+        if (options
+                .getDocIdMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT) {
             checkDocument = true;
         }
-        if (options.getProjectMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT) {
+        if (options
+                .getProjectMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT) {
             checkProject = true;
         }
-        if (options.getContextMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT) {
+        if (options
+                .getContextMismatchAction() == HCopyTransOptions.ConditionRuleAction.REJECT) {
             checkContext = true;
         }
-
         Long actorId = authenticatedAccount.getPerson().getId();
         for (HTextFlow textFlow : copyTargets) {
             if (shouldFindMatch(textFlow, targetLocale,
                     requireTranslationReview)) {
-
                 Optional<HTextFlowTarget> bestMatch =
                         translationFinder.searchBestMatchTransMemory(textFlow,
-                                targetLocale.getLocaleId(), document
-                                        .getLocale().getLocaleId(),
+                                targetLocale.getLocaleId(),
+                                document.getLocale().getLocaleId(),
                                 checkContext, checkDocument, checkProject);
                 if (bestMatch.isPresent()) {
                     numCopied++;
-
                     saveCopyTransMatch(actorId, bestMatch.get(), textFlow,
-                        options, requireTranslationReview);
-
+                            options, requireTranslationReview);
                 }
             }
         }
@@ -151,7 +143,6 @@ public class CopyTransWorkFactory {
         if (pairs.isEmpty()) {
             return initialState;
         }
-
         MatchRulePair p = pairs.get(0);
         if (shouldReject(p.getMatchResult().get(), p.getRuleAction())) {
             return New;
@@ -216,73 +207,60 @@ public class CopyTransWorkFactory {
             Supplier<Boolean> projectMatches, Supplier<Boolean> docIdMatches,
             HCopyTransOptions options, boolean requireTranslationReview,
             ContentState matchingTargetState) {
-        List<MatchRulePair> rules =
-                ImmutableList.of(
-                        new MatchRulePair(contextMatches, options
-                                .getContextMismatchAction()),
-                        new MatchRulePair(projectMatches, options
-                                .getProjectMismatchAction()),
-                        new MatchRulePair(docIdMatches, options
-                                .getDocIdMismatchAction()));
-
+        List<MatchRulePair> rules = ImmutableList.of(
+                new MatchRulePair(contextMatches,
+                        options.getContextMismatchAction()),
+                new MatchRulePair(projectMatches,
+                        options.getProjectMismatchAction()),
+                new MatchRulePair(docIdMatches,
+                        options.getDocIdMismatchAction()));
         return determineContentStateFromRuleList(rules,
                 requireTranslationReview, matchingTargetState);
     }
 
     private void saveCopyTransMatch(Long actorId,
-        final HTextFlowTarget matchingTarget,
-        final HTextFlow originalTf, final HCopyTransOptions options,
-        final boolean requireTranslationReview) {
-        final HProjectIteration matchingTargetProjectIteration =
-                matchingTarget.getTextFlow().getDocument()
-                        .getProjectIteration();
+            final HTextFlowTarget matchingTarget, final HTextFlow originalTf,
+            final HCopyTransOptions options,
+            final boolean requireTranslationReview) {
+        final HProjectIteration matchingTargetProjectIteration = matchingTarget
+                .getTextFlow().getDocument().getProjectIteration();
         // lazy evaluation of some conditions
         Supplier<Boolean> contextMatches = new Supplier<Boolean>() {
+
             @Override
             public Boolean get() {
-                return originalTf.getResId().equals(
-                        matchingTarget.getTextFlow().getResId());
+                return originalTf.getResId()
+                        .equals(matchingTarget.getTextFlow().getResId());
             }
-
         };
         Supplier<Boolean> projectMatches = new Supplier<Boolean>() {
+
             public Boolean get() {
-                return originalTf
-                        .getDocument()
-                        .getProjectIteration()
-                        .getProject()
-                        .getId()
-                        .equals(matchingTargetProjectIteration
-                                .getProject().getId());
+                return originalTf.getDocument().getProjectIteration()
+                        .getProject().getId()
+                        .equals(matchingTargetProjectIteration.getProject()
+                                .getId());
             }
         };
         Supplier<Boolean> docIdMatches = new Supplier<Boolean>() {
+
             @Override
             public Boolean get() {
-                return originalTf
-                        .getDocument()
-                        .getDocId()
-                        .equals(matchingTarget.getTextFlow()
-                                .getDocument().getDocId());
+                return originalTf.getDocument().getDocId().equals(
+                        matchingTarget.getTextFlow().getDocument().getDocId());
             }
         };
-        final ContentState copyState =
-                determineContentState(contextMatches, projectMatches,
-                        docIdMatches, options,
-                        requireTranslationReview, matchingTarget.getState());
-
-        boolean hasValidationError =
-                validationTranslations(copyState,
-                        matchingTargetProjectIteration,
-                        originalTf.getContents(), matchingTarget.getContents());
-
+        final ContentState copyState = determineContentState(contextMatches,
+                projectMatches, docIdMatches, options, requireTranslationReview,
+                matchingTarget.getState());
+        boolean hasValidationError = validationTranslations(copyState,
+                matchingTargetProjectIteration, originalTf.getContents(),
+                matchingTarget.getContents());
         if (hasValidationError) {
             return;
         }
-
-        HTextFlowTarget hTarget =
-                textFlowTargetDAO.getOrCreateTarget(originalTf,
-                        matchingTarget.getLocale());
+        HTextFlowTarget hTarget = textFlowTargetDAO
+                .getOrCreateTarget(originalTf, matchingTarget.getLocale());
         ContentState prevState =
                 hTarget.getId() == null ? ContentState.New : hTarget.getState();
         if (shouldOverwrite(hTarget, copyState)) {
@@ -298,7 +276,7 @@ public class CopyTransWorkFactory {
             }
             hTarget.setContents(matchingTarget.getContents());
             hTarget.setState(copyState);
-            if(matchingTarget.getComment() == null) {
+            if (matchingTarget.getComment() == null) {
                 hTarget.setComment(null);
             } else {
                 HSimpleComment hComment = hTarget.getComment();
@@ -308,16 +286,14 @@ public class CopyTransWorkFactory {
                 }
                 hComment.setComment(matchingTarget.getComment().getComment());
             }
-            hTarget.setRevisionComment(TranslationUtil
-                    .getCopyTransMessage(matchingTarget));
+            hTarget.setRevisionComment(
+                    TranslationUtil.getCopyTransMessage(matchingTarget));
             hTarget.setSourceType(TranslationSourceType.COPY_TRANS);
-
             TranslationUtil.copyEntity(matchingTarget, hTarget);
-
             // TODO Maybe we should think about registering a Hibernate
             // integrator for these updates
             signalCopiedTranslation(hTarget, prevState,
-                originalTf.getWordCount());
+                    originalTf.getWordCount());
         }
     }
 
@@ -347,9 +323,10 @@ public class CopyTransWorkFactory {
         // and locales. Check which one is more efficient
         HTextFlowTarget targetForLocale =
                 textFlow.getTargets().get(locale.getId());
-//        HTextFlowTarget targetForLocale = textFlowTargetDAO.getTextFlowTarget(
-//                textFlow, locale);
 
+        // HTextFlowTarget targetForLocale =
+        // textFlowTargetDAO.getTextFlowTarget(
+        // textFlow, locale);
         if (targetForLocale == null
                 || targetForLocale.getState() == ContentState.NeedReview) {
             return true;
@@ -412,21 +389,18 @@ public class CopyTransWorkFactory {
          * to an 'after Transaction' events), there is no big performance gain
          * and makes the code easier to read and navigate.
          */
-        // TODO how was this not causing duplicate events?  Is this bypassing TranslationServiceImpl?
+        // TODO how was this not causing duplicate events? Is this bypassing
+        // TranslationServiceImpl?
         // FIXME other observers may not be notified
         HDocument document = target.getTextFlow().getDocument();
-
         DocumentLocaleKey key =
-            new DocumentLocaleKey(document.getId(), target.getLocaleId());
-
+                new DocumentLocaleKey(document.getId(), target.getLocaleId());
         Map<ContentState, Long> contentStates = Maps.newHashMap();
         DocStatsEvent.updateContentStateDeltas(contentStates, target.getState(),
                 previousState, wordCount);
-
         DocStatsEvent docEvent =
                 new DocStatsEvent(key, document.getProjectIteration().getId(),
                         contentStates, target.getId());
-
         versionStateCacheImpl.docStatsUpdated(docEvent);
     }
 
@@ -444,11 +418,9 @@ public class CopyTransWorkFactory {
             HProjectIteration projectVersion, List<String> sources,
             List<String> translations) {
         if (newState.isTranslated()) {
-            List<String> validationMessages =
-                    validationServiceImpl.validateWithServerRules(
-                            projectVersion, sources, translations,
-                            ValidationAction.State.Error);
-
+            List<String> validationMessages = validationServiceImpl
+                    .validateWithServerRules(projectVersion, sources,
+                            translations, ValidationAction.State.Error);
             if (!validationMessages.isEmpty()) {
                 log.warn(validationMessages.toString());
                 return true;
@@ -461,10 +433,23 @@ public class CopyTransWorkFactory {
      * Holds the result of a match evaluation in the form of a boolean, and the
      * corresponding action to be taken for the result.
      */
-    @AllArgsConstructor
-    @Getter
     static final class MatchRulePair {
         private final Supplier<Boolean> matchResult;
         private final HCopyTransOptions.ConditionRuleAction ruleAction;
+
+        @java.beans.ConstructorProperties({ "matchResult", "ruleAction" })
+        public MatchRulePair(final Supplier<Boolean> matchResult,
+                final HCopyTransOptions.ConditionRuleAction ruleAction) {
+            this.matchResult = matchResult;
+            this.ruleAction = ruleAction;
+        }
+
+        public Supplier<Boolean> getMatchResult() {
+            return this.matchResult;
+        }
+
+        public HCopyTransOptions.ConditionRuleAction getRuleAction() {
+            return this.ruleAction;
+        }
     }
 }

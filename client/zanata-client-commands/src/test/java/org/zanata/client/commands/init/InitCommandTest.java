@@ -3,6 +3,7 @@ package org.zanata.client.commands.init;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
 import static org.zanata.client.TestUtils.readFromClasspath;
+import static org.zanata.client.commands.Messages.get;
 
 import java.io.File;
 import java.io.IOException;
@@ -109,4 +110,12 @@ public class InitCommandTest {
         command.ensureServerVersion();
     }
 
+    @Test
+    public void willQuitIfUsernameAndConfigUnavailable()
+            throws Exception {
+        expectException.expect(RuntimeException.class);
+        expectException.expectMessage(get("missing.user.config"));
+        opts.setUserConfig(new File("/planet/Mars/zanata.ini"));
+        command.run();
+    }
 }

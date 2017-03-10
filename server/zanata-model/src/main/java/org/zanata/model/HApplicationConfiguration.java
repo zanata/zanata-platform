@@ -26,23 +26,15 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
+// FIXME Cacheable
 
 @Entity
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-// FIXME Cacheable
 public class HApplicationConfiguration extends ModelEntityBase {
 
     /**
@@ -51,7 +43,6 @@ public class HApplicationConfiguration extends ModelEntityBase {
      */
     @Deprecated
     public static String KEY_HELP_CONTENT = "pages.help.content";
-
     public static String KEY_HOST = "host.url";
     public static String KEY_REGISTER = "register.url";
     public static String KEY_DOMAIN = "email.domain";
@@ -66,20 +57,22 @@ public class HApplicationConfiguration extends ModelEntityBase {
     public static String KEY_HELP_URL = "help.url";
     public static String KEY_PIWIK_IDSITE = "piwik.idSite";
     public static String KEY_TERMS_CONDITIONS_URL = "terms.conditions.url";
-    public static String KEY_MAX_CONCURRENT_REQ_PER_API_KEY = "max.concurrent.req.per.apikey";
-    public static String KEY_MAX_ACTIVE_REQ_PER_API_KEY = "max.active.req.per.apikey";
-    public static String KEY_MAX_FILES_PER_UPLOAD = "fileupload.max.files.per.upload";
+    public static String KEY_MAX_CONCURRENT_REQ_PER_API_KEY =
+            "max.concurrent.req.per.apikey";
+    public static String KEY_MAX_ACTIVE_REQ_PER_API_KEY =
+            "max.active.req.per.apikey";
+    public static String KEY_MAX_FILES_PER_UPLOAD =
+            "fileupload.max.files.per.upload";
     public static String KEY_ALLOW_ANONYMOUS_USER = "allow.anonymous.user";
-    public static String KEY_PERMITTED_USER_EMAIL_DOMAIN = "permitted.user.email.domain";
-
+    public static String KEY_PERMITTED_USER_EMAIL_DOMAIN =
+            "permitted.user.email.domain";
+    public static String KEY_AUTO_ACCEPT_TRANSLATOR = "accept.translator.requests";
     private static final long serialVersionUID = 8652817113098817448L;
-
     private static List<String> availableKeys;
-
     private String key;
     private String value;
-
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
+
     @NaturalId
     @NotEmpty
     @Size(max = 255)
@@ -108,6 +101,7 @@ public class HApplicationConfiguration extends ModelEntityBase {
                 Lists.newArrayList(HApplicationConfiguration.class.getFields());
         availableKeys = Lists.transform(availableConfigKeys,
                 new Function<Field, String>() {
+
                     @Override
                     public String apply(Field input) {
                         try {
@@ -119,5 +113,22 @@ public class HApplicationConfiguration extends ModelEntityBase {
                     }
                 });
         return availableKeys;
+    }
+
+    public void setKey(final String key) {
+        this.key = key;
+    }
+
+    public void setValue(final String value) {
+        this.value = value;
+    }
+
+    public HApplicationConfiguration() {
+    }
+
+    @java.beans.ConstructorProperties({ "key", "value" })
+    public HApplicationConfiguration(final String key, final String value) {
+        this.key = key;
+        this.value = value;
     }
 }

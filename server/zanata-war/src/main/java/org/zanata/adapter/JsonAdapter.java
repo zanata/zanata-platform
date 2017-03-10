@@ -46,4 +46,12 @@ public class JsonAdapter extends OkapiFilterAdapter {
         Parameters p = (Parameters) params;
         p.fromString("extractIsolatedStrings.b=true");
     }
+
+    /*
+     * TODO Get a global ID for the JSON fragment ZNTA-1731
+    @Override
+    protected String getIdFor(TextUnit tu, String content, String subDocName) {
+        return HashUtil.generateHash(tu.getName().concat(content));
+    }
+    */
 }

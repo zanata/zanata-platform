@@ -24,9 +24,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
-
 import org.jboss.resteasy.spi.NotFoundException;
-
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -51,50 +51,43 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
-
 import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
-
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import javax.ws.rs.Path;
-
 import static org.zanata.rest.dto.ProcessStatus.ProcessStatusCode;
 
 /**
  * Default server-side implementation of the Asynchronous RunnableProcess
  * Resource.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @RequestScoped
 @Named("asynchronousProcessResourceService")
 @Path(AsynchronousProcessResource.SERVICE_PATH)
 @Transactional
-@Slf4j
-public class AsynchronousProcessResourceService implements
-        AsynchronousProcessResource {
+public class AsynchronousProcessResourceService
+        implements AsynchronousProcessResource {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(AsynchronousProcessResourceService.class);
+
     @Inject
     private LocaleService localeServiceImpl;
-
     @Inject
     private DocumentService documentServiceImpl;
-
     @Inject
     private TranslationService translationServiceImpl;
-
     @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
-
     @Inject
     private DocumentDAO documentDAO;
-
     @Inject
     private ProjectIterationDAO projectIterationDAO;
-
     @Inject
     private ResourceUtils resourceUtils;
-
     @Inject
     private ZanataIdentity identity;
 
@@ -105,39 +98,34 @@ public class AsynchronousProcessResourceService implements
             final boolean copytrans) {
         HProjectIteration hProjectIteration =
                 retrieveAndCheckIteration(projectSlug, iterationSlug, true);
-
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
-
         resourceUtils.validateExtensions(extensions); // gettext, comment
-
-        HDocument document =
-                documentDAO.getByDocIdAndIteration(hProjectIteration,
-                        resource.getName());
-
+        HDocument document = documentDAO
+                .getByDocIdAndIteration(hProjectIteration, resource.getName());
         // already existing non-obsolete document.
         if (document != null) {
             if (!document.isObsolete()) {
                 // updates must happen through PUT on the actual resource
                 ProcessStatus status = new ProcessStatus();
                 status.setStatusCode(ProcessStatusCode.Failed);
-                status.getMessages().add(
-                        "A document with name " + resource.getName()
-                                + " already exists.");
+                status.getMessages().add("A document with name "
+                        + resource.getName() + " already exists.");
                 return status;
             }
         }
-
-        String name = "SourceDocCreation: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
+        String name = "SourceDocCreation: " + projectSlug + "-" + iterationSlug
+                + "-" + idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
         Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
-        documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
-                resource, extensions, copytrans, true, handle);
-
+        ListenableFuture<HDocument> future = documentServiceImpl
+                .saveDocumentAsync(projectSlug, iterationSlug,
+                        resource, extensions, copytrans, true, handle);
+        logWhenUploadComplete(future, name, taskId);
         return getProcessStatus(taskId.toString()); // TODO Change to return 202
-                                                    // Accepted,
-                                                    // with a url to get the
-                                                    // progress
+        // Accepted,
+        // with a url to get the
+        // progress
     }
 
     @Override
@@ -145,29 +133,44 @@ public class AsynchronousProcessResourceService implements
             final String projectSlug, final String iterationSlug,
             final Resource resource, final Set<String> extensions,
             final boolean copytrans) {
-
         HProjectIteration hProjectIteration =
                 retrieveAndCheckIteration(projectSlug, iterationSlug, true);
-
         resourceUtils.validateExtensions(extensions); // gettext, comment
-
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
-
-        String name = "SourceDocCreationOrUpdate: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
+        String name = "SourceDocCreationOrUpdate: " + projectSlug + "-"
+                + iterationSlug + "-" + idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
         Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
-        documentServiceImpl.saveDocumentAsync(projectSlug, iterationSlug,
-                resource, extensions, copytrans, true, handle);
-
+        ListenableFuture<HDocument> future = documentServiceImpl
+                .saveDocumentAsync(projectSlug, iterationSlug,
+                        resource, extensions, copytrans, true, handle);
+        logWhenUploadComplete(future, name, taskId);
         return getProcessStatus(taskId.toString()); // TODO Change to return 202
-                                                    // Accepted,
-                                                    // with a url to get the
-                                                    // progress
+        // Accepted,
+        // with a url to get the
+        // progress
+    }
+
+    private void logWhenUploadComplete(ListenableFuture<?> future,
+            final String taskName, final Serializable taskId) {
+        Futures.addCallback(future, new FutureCallback<Object>() {
+            @Override
+            public void onSuccess(@Nullable Object result) {
+                log.info(
+                        "async upload complete. id={}, job={}, result={}",
+                        taskId, taskName, result);
+            }
+
+            @Override
+            public void onFailure(@Nonnull Throwable e) {
+                log.warn("async upload failed. id={}, job={}", taskId, taskName,
+                        e);
+            }
+        });
     }
 
     /**
-     *
      * @param idNoSlash
      * @param projectSlug
      * @param iterationSlug
@@ -187,11 +190,10 @@ public class AsynchronousProcessResourceService implements
             final boolean assignCreditToUploader) {
         // check security (cannot be on @Restrict as it refers to method
         // parameters)
-        identity.checkPermission("modify-translation", this.localeServiceImpl
-                .getByLocaleId(locale),
+        identity.checkPermission("modify-translation",
+                this.localeServiceImpl.getByLocaleId(locale),
                 this.getSecuredIteration(projectSlug, iterationSlug)
                         .getProject());
-
         MergeType mergeType;
         try {
             mergeType = MergeType.valueOf(merge.toUpperCase());
@@ -201,17 +203,17 @@ public class AsynchronousProcessResourceService implements
             status.getMessages().add("bad merge type " + merge);
             return status;
         }
-
         final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         final MergeType finalMergeType = mergeType;
-
+        String taskName = "TranslatedDocUpload: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
         Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
-        translationServiceImpl.translateAllInDocAsync(projectSlug,
-                iterationSlug, id, locale, translatedDoc, extensions,
-                finalMergeType, assignCreditToUploader, true, handle,
-                TranslationSourceType.API_UPLOAD);
-
+        ListenableFuture<List<String>> future =
+                translationServiceImpl.translateAllInDocAsync(projectSlug,
+                        iterationSlug, id, locale, translatedDoc, extensions,
+                        finalMergeType, assignCreditToUploader, true, handle,
+                        TranslationSourceType.API_UPLOAD);
+        logWhenUploadComplete(future, taskName, taskId);
         return this.getProcessStatus(taskId.toString());
     }
 
@@ -219,24 +221,20 @@ public class AsynchronousProcessResourceService implements
     public ProcessStatus getProcessStatus(String processId) {
         AsyncTaskHandle handle =
                 asyncTaskHandleManager.getHandleByKey(processId);
-
         if (handle == null) {
-            throw new NotFoundException("A process was not found for id "
-                    + processId);
+            throw new NotFoundException(
+                    "A process was not found for id " + processId);
         }
-
         ProcessStatus status = new ProcessStatus();
         status.setStatusCode(handle.isDone() ? ProcessStatusCode.Finished
                 : ProcessStatusCode.Running);
         int perComplete = 100;
         if (handle.getMaxProgress() > 0) {
-            perComplete =
-                    (handle.getCurrentProgress() * 100 / handle
-                            .getMaxProgress());
+            perComplete = (handle.getCurrentProgress() * 100
+                    / handle.getMaxProgress());
         }
         status.setPercentageComplete(perComplete);
         status.setUrl("" + processId);
-
         if (handle.isDone()) {
             Object result = null;
             try {
@@ -248,10 +246,9 @@ public class AsynchronousProcessResourceService implements
             } catch (ExecutionException e) {
                 // Exception thrown while running the task
                 status.setStatusCode(ProcessStatusCode.Failed);
-                status.setMessages(Lists
-                        .newArrayList(e.getCause().getMessage()));
+                status.setMessages(
+                        Lists.newArrayList(e.getCause().getMessage()));
             }
-
             // TODO Need to find a generic way of returning all object types.
             // Since the only current
             // scenario involves lists of strings, hardcoding to that
@@ -259,7 +256,6 @@ public class AsynchronousProcessResourceService implements
                 status.getMessages().addAll((List) result);
             }
         }
-
         return status;
     }
 
@@ -267,22 +263,21 @@ public class AsynchronousProcessResourceService implements
             String iterationSlug, boolean writeOperation) {
         HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug);
-        HProject hProject =
-                hProjectIteration == null ? null : hProjectIteration
-                        .getProject();
-
+        HProject hProject = hProjectIteration == null ? null
+                : hProjectIteration.getProject();
         if (hProjectIteration == null) {
-            throw new NoSuchEntityException("Project Iteration '" + projectSlug
-                    + ":" + iterationSlug + "' not found.");
+            throw new NoSuchEntityException("Project Iteration \'" + projectSlug
+                    + ":" + iterationSlug + "\' not found.");
         } else if (hProjectIteration.getStatus().equals(EntityStatus.OBSOLETE)
                 || hProject.getStatus().equals(EntityStatus.OBSOLETE)) {
-            throw new NoSuchEntityException("Project Iteration '" + projectSlug
-                    + ":" + iterationSlug + "' not found.");
+            throw new NoSuchEntityException("Project Iteration \'" + projectSlug
+                    + ":" + iterationSlug + "\' not found.");
         } else if (writeOperation) {
             if (hProjectIteration.getStatus().equals(EntityStatus.READONLY)
                     || hProject.getStatus().equals(EntityStatus.READONLY)) {
-                throw new ReadOnlyEntityException("Project Iteration '"
-                        + projectSlug + ":" + iterationSlug + "' is read-only.");
+                throw new ReadOnlyEntityException(
+                        "Project Iteration \'" + projectSlug + ":"
+                                + iterationSlug + "\' is read-only.");
             } else {
                 return hProjectIteration;
             }

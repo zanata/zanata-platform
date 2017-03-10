@@ -1,7 +1,6 @@
 package org.zanata.webtrans.client.service;
 
 import java.util.List;
-
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,16 +8,16 @@ import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.collect.Lists;
-
-import lombok.extern.slf4j.Slf4j;
 import static org.hamcrest.MatcherAssert.*;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class SaveEventQueueTest {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(SaveEventQueueTest.class);
+
     private SaveEventQueue queue;
 
     @Before
@@ -60,7 +59,6 @@ public class SaveEventQueueTest {
         TransUnitSaveEvent firstEvent = saveEvent(1, 0, "new", "old");
         queue.push(firstEvent);
         assertThat(queue.getEventQueue(), Matchers.hasSize(1));
-
         // pushing another event with same id and version should replace the old
         // pending one
         TransUnitSaveEvent anotherEvent = saveEvent(1, 0, "newer", "new");
@@ -69,17 +67,15 @@ public class SaveEventQueueTest {
         assertEventEquals(fromQueueAsEvent(queue.getEventQueue(), 0),
                 anotherEvent);
         assertThat(queue.hasPending(), Matchers.is(true));
-
         // pushing another event but doesn't match previous one. It will get
         // discarded
         TransUnitSaveEvent invalidEvent =
-                saveEvent(1, 0, "blah", "content don't match previous");
+                saveEvent(1, 0, "blah", "content don\'t match previous");
         queue.push(invalidEvent);
         assertThat(queue.getEventQueue(), Matchers.hasSize(1));
         assertEventEquals(fromQueueAsEvent(queue.getEventQueue(), 0),
                 anotherEvent);
         assertThat(queue.hasPending(), Matchers.is(true));
-
         // pushing another event with different id will not conflict with other
         // pending one
         TransUnitSaveEvent differentId = saveEvent(2, 1, "different id", "hi");
@@ -90,7 +86,6 @@ public class SaveEventQueueTest {
         assertEventEquals(fromQueueAsEvent(queue.getEventQueue(), 1),
                 differentId);
         assertThat(queue.hasPending(), Matchers.is(true));
-
         // pushing an event with equal state as the saving event. It will be
         // discarded
         queue.getNextPendingForSaving(anotherEvent.getTransUnitId());
@@ -112,7 +107,6 @@ public class SaveEventQueueTest {
         assertThat(queue.getEventQueue().get(0).isSaving(), Matchers.is(true));
         assertThat(queue.isSaving(firstEvent.getTransUnitId()),
                 Matchers.is(true));
-
         // pushing another event won't replace saving event
         TransUnitSaveEvent anotherSave = saveEvent(1, 0, "newer", "new");
         queue.push(anotherSave);
@@ -129,7 +123,6 @@ public class SaveEventQueueTest {
                 queue.getNextPendingForSaving(firstEvent.getTransUnitId());
         TransUnitSaveEvent pendingBeforeSave = saveEvent(1, 0, "newer", "new");
         queue.push(pendingBeforeSave);
-
         // after save success we remove saved event
         queue.removeSaved(goToSave, 1);
         assertThat(queue.getEventQueue(), Matchers.hasSize(1));
@@ -152,9 +145,7 @@ public class SaveEventQueueTest {
     public void testRemoveAllPending() throws Exception {
         TransUnitSaveEvent saveEvent = saveEvent(1, 0, "new", "old");
         queue.push(saveEvent);
-
         queue.removeAllPending(saveEvent.getTransUnitId());
-
         assertThat(queue.getEventQueue(),
                 Matchers.<SaveEventQueue.EventWrapper> empty());
         assertThat(queue.hasPending(), Matchers.is(false));

@@ -21,16 +21,11 @@
 package org.zanata.email;
 
 import javax.mail.internet.InternetAddress;
-
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
-
 import org.zanata.i18n.Messages;
-
 import com.google.common.base.Optional;
 import org.zanata.util.HtmlUtil;
 
-@RequiredArgsConstructor
 public class ContactAdminAnonymousEmailStrategy extends EmailStrategy {
     private final String ipAddress;
     private final String userSubject;
@@ -48,19 +43,25 @@ public class ContactAdminAnonymousEmailStrategy extends EmailStrategy {
 
     @Override
     public String getSubject(Messages msgs) {
-        return msgs.format("jsf.email.admin.SubjectPrefix",
-            ipAddress) + " " + userSubject;
+        return msgs.format("jsf.email.admin.SubjectPrefix", ipAddress) + " "
+                + userSubject;
     }
 
     @Override
-    public Map<String, Object> makeContext(
-            Map<String, Object> genericContext,
+    public Map<String, Object> makeContext(Map<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context = super.makeContext(
-                genericContext, toAddresses);
+        Map<String, Object> context =
+                super.makeContext(genericContext, toAddresses);
         String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
-        return context
-                .put("ipAddress", ipAddress)
-                .put("htmlMessage", safeHTML);
+        return context.put("ipAddress", ipAddress).put("htmlMessage", safeHTML);
+    }
+
+    @java.beans.ConstructorProperties({ "ipAddress", "userSubject",
+            "htmlMessage" })
+    public ContactAdminAnonymousEmailStrategy(final String ipAddress,
+            final String userSubject, final String htmlMessage) {
+        this.ipAddress = ipAddress;
+        this.userSubject = userSubject;
+        this.htmlMessage = htmlMessage;
     }
 }

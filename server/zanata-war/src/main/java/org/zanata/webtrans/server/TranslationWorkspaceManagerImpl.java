@@ -12,7 +12,6 @@ import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.registry.user.UserManager;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.async.Async;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
@@ -37,7 +36,6 @@ import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
-
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.enterprise.event.Observes;
@@ -48,34 +46,28 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import static com.google.common.base.MoreObjects.firstNonNull;
 import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 
 @javax.enterprise.context.ApplicationScoped
 @Named("translationWorkspaceManager")
-@Slf4j
-public class TranslationWorkspaceManagerImpl implements
-        TranslationWorkspaceManager {
+public class TranslationWorkspaceManagerImpl
+        implements TranslationWorkspaceManager {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslationWorkspaceManagerImpl.class);
 
     @Inject
     private GravatarService gravatarServiceImpl;
-
     @Inject
     private ProjectIterationDAO projectIterationDAO;
-
     @Inject
     private EntityManager entityManager;
-
     @Inject
     private LocaleService localeServiceImpl;
-
     @Inject
     private ValidationService validationServiceImpl;
-
     @Inject
     private TranslationWorkspaceFactory translationWorkspaceFactory;
-
     private ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
     private Multimap<ProjectIterationId, TranslationWorkspace> projIterWorkspaceMap;
     private EventRegistry eventRegistry;
@@ -109,7 +101,6 @@ public class TranslationWorkspaceManagerImpl implements
             log.debug("Logout: null session");
             return;
         }
-
         ImmutableSet<TranslationWorkspace> workspaceSet =
                 ImmutableSet.copyOf(workspaceMap.values());
         for (TranslationWorkspace workspace : workspaceSet) {
@@ -117,25 +108,23 @@ public class TranslationWorkspaceManagerImpl implements
                     workspace.removeEditorClients(httpSessionId);
             for (EditorClientId editorClientId : editorClients) {
                 log.info(
-                        "Publishing ExitWorkspace event for user {} " +
-                                "with editorClientId {} from workspace {}",
+                        "Publishing ExitWorkspace event for user {} with editorClientId {} from workspace {}",
                         username, editorClientId,
                         workspace.getWorkspaceContext());
                 // Send GWT Event to client to update the userlist
-                ExitWorkspace event =
-                        new ExitWorkspace(editorClientId, new Person(
-                                new PersonId(username), personName,
+                ExitWorkspace event = new ExitWorkspace(editorClientId,
+                        new Person(new PersonId(username), personName,
                                 gravatarServiceImpl.getUserImageUrl(16,
                                         personEmail)));
                 workspace.publish(event);
             }
         }
     }
-
     // transaction has already been committed and marked as rolled back only for
     // current thread. We have to open a new transaction to load any lazy
     // properties (otherwise exception like javax.resource.ResourceException:
     // IJ000460: Error checking for a transaction: Transactions are not active)
+
     @Async
     public void projectUpdate(@Observes final ProjectUpdate payload) {
         // avoid WELD-2019
@@ -146,7 +135,6 @@ public class TranslationWorkspaceManagerImpl implements
         } catch (Exception e) {
             throw Throwables.propagate(e);
         }
-
     }
 
     void projectUpdate(HProject project, String oldProjectSlug) {
@@ -155,7 +143,6 @@ public class TranslationWorkspaceManagerImpl implements
         String projectSlug = project.getSlug();
         log.info("Project newSlug={}, oldSlug={} updated, status={}",
                 projectSlug, oldProjectSlug, project.getStatus());
-
         for (HProjectIteration iter : project.getProjectIterations()) {
             projectIterationUpdate(iter, Optional.of(oldProjectSlug),
                     Optional.<String> absent());
@@ -163,52 +150,45 @@ public class TranslationWorkspaceManagerImpl implements
     }
 
     @Async
-    public void projectIterationUpdate(@Observes ProjectIterationUpdate payload) {
+    public void
+            projectIterationUpdate(@Observes ProjectIterationUpdate payload) {
         projectIterationUpdate(payload.getIteration(),
                 Optional.<String> absent(), Optional.of(payload.getOldSlug()));
     }
 
     void projectIterationUpdate(HProjectIteration projectIteration,
-            Optional<String> oldProjectSlug, Optional<String> oldIterationSlug) {
+            Optional<String> oldProjectSlug,
+            Optional<String> oldIterationSlug) {
         HashMap<ValidationId, State> validationStates = Maps.newHashMap();
-
         for (ValidationAction validationAction : validationServiceImpl
                 .getValidationActions(projectIteration.getProject().getSlug(),
                         projectIteration.getSlug())) {
             validationStates.put(validationAction.getId(),
                     validationAction.getState());
         }
-
         String projectSlug = projectIteration.getProject().getSlug();
         String iterSlug = projectIteration.getSlug();
         HProject project = projectIteration.getProject();
-        Boolean isProjectActive =
-                projectIterationIsActive(project.getStatus(),
-                        projectIteration.getStatus());
+        Boolean isProjectActive = projectIterationIsActive(project.getStatus(),
+                projectIteration.getStatus());
         ProjectType projectType = projectIteration.getProjectType();
         log.info(
                 "Project {} iteration {} updated, status={}, isProjectActive={}, projectType={}, oldProjectSlug={}, oldIterationSlug={}",
-                projectSlug, iterSlug,
-                projectIteration.getStatus(), isProjectActive,
-                projectType, oldProjectSlug, oldIterationSlug);
-
-        ProjectIterationId iterId =
-                createProjectIterationId(projectIteration, oldProjectSlug,
-                        oldIterationSlug,
-                        projectSlug, iterSlug);
-        for (TranslationWorkspace workspace : projIterWorkspaceMap.get(iterId)) {
-            WorkspaceContextUpdate event =
-                    new WorkspaceContextUpdate(isProjectActive, projectType,
-                            validationStates);
+                projectSlug, iterSlug, projectIteration.getStatus(),
+                isProjectActive, projectType, oldProjectSlug, oldIterationSlug);
+        ProjectIterationId iterId = createProjectIterationId(projectIteration,
+                oldProjectSlug, oldIterationSlug, projectSlug, iterSlug);
+        for (TranslationWorkspace workspace : projIterWorkspaceMap
+                .get(iterId)) {
+            WorkspaceContextUpdate event = new WorkspaceContextUpdate(
+                    isProjectActive, projectType, validationStates);
             if (oldProjectSlug.isPresent()) {
-                event =
-                        event.projectSlugChanged(oldProjectSlug.get(),
-                                projectSlug);
+                event = event.projectSlugChanged(oldProjectSlug.get(),
+                        projectSlug);
             }
             if (oldIterationSlug.isPresent()) {
-                event =
-                        event.iterationSlugChanged(oldIterationSlug.get(),
-                                iterSlug);
+                event = event.iterationSlugChanged(oldIterationSlug.get(),
+                        iterSlug);
             }
             workspace.publish(event);
         }
@@ -238,19 +218,15 @@ public class TranslationWorkspaceManagerImpl implements
         ProjectIterationId iterId;
         if (oldProjectSlug.isPresent() && oldIterationSlug.isPresent()) {
             iterId = new ProjectIterationId(oldProjectSlug.get(),
-                    oldIterationSlug.get(),
-                    projectIteration.getProjectType());
+                    oldIterationSlug.get(), projectIteration.getProjectType());
         } else if (oldProjectSlug.isPresent()) {
-            iterId = new ProjectIterationId(oldProjectSlug.get(),
-                    iterSlug,
+            iterId = new ProjectIterationId(oldProjectSlug.get(), iterSlug,
                     projectIteration.getProjectType());
         } else if (oldIterationSlug.isPresent()) {
-            iterId = new ProjectIterationId(projectSlug,
-                    oldIterationSlug.get(),
+            iterId = new ProjectIterationId(projectSlug, oldIterationSlug.get(),
                     projectIteration.getProjectType());
         } else {
-            iterId = new ProjectIterationId(projectSlug,
-                    iterSlug,
+            iterId = new ProjectIterationId(projectSlug, iterSlug,
                     projectIteration.getProjectType());
         }
         return iterId;
@@ -258,15 +234,14 @@ public class TranslationWorkspaceManagerImpl implements
 
     private boolean projectIterationIsActive(EntityStatus projectStatus,
             EntityStatus iterStatus) {
-        return (projectStatus.equals(EntityStatus.ACTIVE) && iterStatus
-                .equals(EntityStatus.ACTIVE));
+        return (projectStatus.equals(EntityStatus.ACTIVE)
+                && iterStatus.equals(EntityStatus.ACTIVE));
     }
 
     @PreDestroy
     public void stop() {
         log.info("stopping...");
         log.info("closing down {} workspaces: ", workspaceMap.size());
-
         // Stopping the listeners frees up the EventServiceImpl servlet, which
         // would otherwise prevent Apache Coyote from shutting down quickly.
         // Note that the servlet may still hang around up to the max timeout
@@ -295,19 +270,18 @@ public class TranslationWorkspaceManagerImpl implements
                     translationWorkspaceFactory.createWorkspace(workspaceId);
             TranslationWorkspace prev =
                     workspaceMap.putIfAbsent(workspaceId, workspace);
-
             if (prev == null) {
                 projIterWorkspaceMap.put(workspaceId.getProjectIterationId(),
                         workspace);
             }
-
             return prev == null ? workspace : prev;
         }
         return workspace;
     }
 
     @Override
-    public Optional<TranslationWorkspace> tryGetWorkspace(WorkspaceId workspaceId) {
+    public Optional<TranslationWorkspace>
+            tryGetWorkspace(WorkspaceId workspaceId) {
         return Optional.fromNullable(workspaceMap.get(workspaceId));
     }
 }

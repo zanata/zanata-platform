@@ -86,8 +86,7 @@ public class Account implements Serializable, HasMediaType {
         this.username = username;
     }
 
-    @XmlAttribute(name = "passwordHash", required = true)
-    @NotEmpty
+    @XmlAttribute(name = "passwordHash")
     public String getPasswordHash() {
         return passwordHash;
     }
@@ -96,7 +95,7 @@ public class Account implements Serializable, HasMediaType {
         this.passwordHash = password;
     }
 
-    @XmlAttribute(name = "apiKey", required = false)
+    @XmlAttribute(name = "apiKey")
     @Size(min = 32, max = 32)
     public String getApiKey() {
         return apiKey;

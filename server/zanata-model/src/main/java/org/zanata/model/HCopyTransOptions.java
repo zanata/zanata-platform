@@ -23,12 +23,6 @@ package org.zanata.model;
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
-
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.zanata.model.type.ConditionRuleActionType;
@@ -36,23 +30,21 @@ import org.zanata.model.type.ConditionRuleActionType;
 /**
  * Persistent representation of Copy Trans options.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Entity
 @TypeDef(name = "conditionRuleAction",
         typeClass = ConditionRuleActionType.class)
 @Cacheable
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class HCopyTransOptions extends ModelEntityBase {
+
     /**
      * Indicates the different actions that can be taken when evaluating
      * conditions for a Text Flow during Copy Trans.
      */
     public enum ConditionRuleAction {
+
         /**
          * Indicates to reject the text flow.
          */
@@ -76,22 +68,24 @@ public class HCopyTransOptions extends ModelEntityBase {
             switch (initial) {
             case 'R':
                 return REJECT;
+
             case 'D':
                 return DOWNGRADE_TO_FUZZY;
+
             case 'I':
                 return IGNORE;
+
             default:
                 throw new IllegalArgumentException(String.valueOf(initial));
+
             }
         }
     }
 
     private ConditionRuleAction contextMismatchAction =
             ConditionRuleAction.REJECT;
-
     private ConditionRuleAction docIdMismatchAction =
             ConditionRuleAction.REJECT;
-
     private ConditionRuleAction projectMismatchAction =
             ConditionRuleAction.REJECT;
 
@@ -111,5 +105,41 @@ public class HCopyTransOptions extends ModelEntityBase {
     @NotNull
     public ConditionRuleAction getProjectMismatchAction() {
         return projectMismatchAction;
+    }
+
+    public void setContextMismatchAction(
+            final ConditionRuleAction contextMismatchAction) {
+        this.contextMismatchAction = contextMismatchAction;
+    }
+
+    public void setDocIdMismatchAction(
+            final ConditionRuleAction docIdMismatchAction) {
+        this.docIdMismatchAction = docIdMismatchAction;
+    }
+
+    public void setProjectMismatchAction(
+            final ConditionRuleAction projectMismatchAction) {
+        this.projectMismatchAction = projectMismatchAction;
+    }
+
+    public HCopyTransOptions() {
+    }
+
+    @java.beans.ConstructorProperties({ "contextMismatchAction",
+            "docIdMismatchAction", "projectMismatchAction" })
+    public HCopyTransOptions(final ConditionRuleAction contextMismatchAction,
+            final ConditionRuleAction docIdMismatchAction,
+            final ConditionRuleAction projectMismatchAction) {
+        this.contextMismatchAction = contextMismatchAction;
+        this.docIdMismatchAction = docIdMismatchAction;
+        this.projectMismatchAction = projectMismatchAction;
+    }
+
+    @Override
+    public String toString() {
+        return "HCopyTransOptions(contextMismatchAction="
+                + this.getContextMismatchAction() + ", docIdMismatchAction="
+                + this.getDocIdMismatchAction() + ", projectMismatchAction="
+                + this.getProjectMismatchAction() + ")";
     }
 }

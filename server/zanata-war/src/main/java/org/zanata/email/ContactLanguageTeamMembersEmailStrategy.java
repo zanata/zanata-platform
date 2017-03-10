@@ -21,18 +21,14 @@
 package org.zanata.email;
 
 import javaslang.collection.Map;
-import lombok.RequiredArgsConstructor;
 import org.zanata.i18n.Messages;
 import org.zanata.util.HtmlUtil;
-
 import javax.mail.internet.InternetAddress;
 
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
-@RequiredArgsConstructor
-public class ContactLanguageTeamMembersEmailStrategy
-        extends EmailStrategy {
+public class ContactLanguageTeamMembersEmailStrategy extends EmailStrategy {
     private final String fromLoginName;
     private final String userSubject;
     private final String localeId;
@@ -47,20 +43,33 @@ public class ContactLanguageTeamMembersEmailStrategy
 
     @Override
     public String getSubject(Messages msgs) {
-        return msgs.format("jsf.email.language.members.SubjectPrefix",
-                localeId, fromLoginName) + " " + userSubject;
+        return msgs.format("jsf.email.language.members.SubjectPrefix", localeId,
+                fromLoginName) + " " + userSubject;
     }
 
     @Override
-    public Map<String, Object> makeContext(
-            Map<String, Object> genericContext,
+    public Map<String, Object> makeContext(Map<String, Object> genericContext,
             InternetAddress[] toAddresses) {
-        Map<String, Object> context = super.makeContext(genericContext,
-                toAddresses);
+        Map<String, Object> context =
+                super.makeContext(genericContext, toAddresses);
         String safeHTML = HtmlUtil.SANITIZER.sanitize(htmlMessage);
-        return context
-                .put("contactCoordinatorLink", contactCoordinatorLink)
+        return context.put("contactCoordinatorLink", contactCoordinatorLink)
                 .put("localeNativeName", localeNativeName)
                 .put("htmlMessage", safeHTML);
+    }
+
+    @java.beans.ConstructorProperties({ "fromLoginName", "userSubject",
+            "localeId", "localeNativeName", "htmlMessage",
+            "contactCoordinatorLink" })
+    public ContactLanguageTeamMembersEmailStrategy(final String fromLoginName,
+            final String userSubject, final String localeId,
+            final String localeNativeName, final String htmlMessage,
+            final String contactCoordinatorLink) {
+        this.fromLoginName = fromLoginName;
+        this.userSubject = userSubject;
+        this.localeId = localeId;
+        this.localeNativeName = localeNativeName;
+        this.htmlMessage = htmlMessage;
+        this.contactCoordinatorLink = contactCoordinatorLink;
     }
 }

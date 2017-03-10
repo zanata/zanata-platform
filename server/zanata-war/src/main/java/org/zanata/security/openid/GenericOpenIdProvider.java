@@ -21,15 +21,11 @@
 package org.zanata.security.openid;
 
 import com.google.common.collect.Sets;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
 import org.openid4java.message.AuthSuccess;
 import org.openid4java.message.MessageExtension;
 import org.openid4java.message.Parameter;
 import org.openid4java.message.ax.AxMessage;
 import org.openid4java.message.sreg.SRegMessage;
-
 import javax.enterprise.inject.Alternative;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,18 +33,13 @@ import java.util.HashSet;
 /**
  * Open Id Provider for most Open Id services.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Alternative
 public class GenericOpenIdProvider implements OpenIdProvider {
 
-    @Setter(AccessLevel.PROTECTED)
-    @Getter(AccessLevel.PROTECTED)
     private boolean sregEnabled = true;
-
-    @Setter(AccessLevel.PROTECTED)
-    @Getter(AccessLevel.PROTECTED)
     private boolean aexEnabled = true;
 
     @Override
@@ -64,8 +55,7 @@ public class GenericOpenIdProvider implements OpenIdProvider {
     @Override
     public Collection<MessageExtension> createExtensions() {
         HashSet<MessageExtension> extensions = Sets.newHashSet();
-
-        if(aexEnabled) {
+        if (aexEnabled) {
             AxMessage aexExt = new AxMessage();
             aexExt.getParameters().set(new Parameter("mode", "fetch_request"));
             aexExt.getParameters()
@@ -76,26 +66,22 @@ public class GenericOpenIdProvider implements OpenIdProvider {
                     "http://axschema.org/namePerson"));
             aexExt.getParameters().set(new Parameter("type.nickname",
                     "http://axschema.org/namePerson/friendly"));
-
             extensions.add(aexExt);
         }
-
-        if(sregEnabled) {
+        if (sregEnabled) {
             SRegMessage sregExt = new SRegMessage();
             // We use the 1.1 SREG spec
             sregExt.setTypeUri(SRegMessage.OPENID_NS_SREG11);
             sregExt.getParameters()
                     .set(new Parameter("required", "email,fullname,nickname"));
-
             extensions.add(sregExt);
         }
-
         return extensions;
     }
 
     @Override
     public String getAliasForExtension(MessageExtension ext) {
-        if(ext instanceof AxMessage) {
+        if (ext instanceof AxMessage) {
             return "ax";
         } else if (ext instanceof SRegMessage) {
             return "sreg";
@@ -131,10 +117,10 @@ public class GenericOpenIdProvider implements OpenIdProvider {
     @Override
     public String getEmail(AuthSuccess authSuccess) {
         String email = null;
-        if(aexEnabled) {
+        if (aexEnabled) {
             email = getAttExchangeParameter(authSuccess, "email");
         }
-        if(email == null && sregEnabled) {
+        if (email == null && sregEnabled) {
             email = getSregParameter(authSuccess, "email");
         }
         return email;
@@ -143,10 +129,10 @@ public class GenericOpenIdProvider implements OpenIdProvider {
     @Override
     public String getUsername(AuthSuccess authSuccess) {
         String username = null;
-        if(aexEnabled) {
+        if (aexEnabled) {
             username = getAttExchangeParameter(authSuccess, "nickname");
         }
-        if(username == null && sregEnabled) {
+        if (username == null && sregEnabled) {
             username = getSregParameter(authSuccess, "nickname");
         }
         return username;
@@ -155,12 +141,28 @@ public class GenericOpenIdProvider implements OpenIdProvider {
     @Override
     public String getFullName(AuthSuccess authSuccess) {
         String fullName = null;
-        if(aexEnabled) {
+        if (aexEnabled) {
             fullName = getAttExchangeParameter(authSuccess, "fullname");
         }
-        if(fullName == null && sregEnabled) {
+        if (fullName == null && sregEnabled) {
             fullName = getSregParameter(authSuccess, "fullname");
         }
         return fullName;
+    }
+
+    protected void setSregEnabled(final boolean sregEnabled) {
+        this.sregEnabled = sregEnabled;
+    }
+
+    protected boolean isSregEnabled() {
+        return this.sregEnabled;
+    }
+
+    protected void setAexEnabled(final boolean aexEnabled) {
+        this.aexEnabled = aexEnabled;
+    }
+
+    protected boolean isAexEnabled() {
+        return this.aexEnabled;
     }
 }

@@ -23,6 +23,7 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TextFlowTargetReviewCommentsDAO;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
@@ -262,6 +263,9 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
         HTextFlowTarget target = new HTextFlowTarget();
         target.setLastChanged(lastChanged);
         HPerson person = new HPerson();
+        HAccount acc = new HAccount();
+        acc.setUsername(lastModifiedPerson);
+        person.setAccount(acc);
         person.setName(lastModifiedPerson);
         target.setLastModifiedBy(person);
         target.setVersionNum(versionNum);

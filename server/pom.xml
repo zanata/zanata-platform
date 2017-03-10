@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.2.0-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -20,9 +20,9 @@
 
   <properties>
     <byteman.version>2.1.2</byteman.version>
-    <delombok.dir>${project.build.directory}/delombok/org/zanata</delombok.dir>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
+    <kotlin.version>1.0.6</kotlin.version>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
@@ -30,14 +30,12 @@
     <picketlink.version>2.5.5.SP1</picketlink.version>
     <!-- This is the WildFly 10 version: -->
     <infinispan.version>8.1.0.Final</infinispan.version>
-    <lombok.version>1.16.6</lombok.version>
     <weld.version>2.3.2.Final</weld.version>
     <weld.se.version>${weld.version}</weld.se.version>
     <groovy.version>2.4.7</groovy.version>
     <icu4j.version>56.1</icu4j.version>
     <guava.version>21.0</guava.version>
     <gwt.version>2.8.0</gwt.version>
-    <lombok.source.dir>${project.build.sourceDirectory}/org/zanata</lombok.source.dir>
     <lucene.version>5.3.1</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
     <rewrite.version>3.0.0.Alpha10</rewrite.version>
@@ -52,11 +50,11 @@
 
     <solr.version>${lucene.version}</solr.version>
     <seam.version>2.3.1.Final</seam.version>
-    <slf4j.version>1.7.18</slf4j.version>
+    <slf4j.version>1.7.22</slf4j.version>
     <gwteventservice.version>1.2.1</gwteventservice.version>
     <okapi.version>0.29</okapi.version>
 
-    <zanata.assets.version>10.2-SNAPSHOT</zanata.assets.version>
+    <zanata.assets.version>10.4</zanata.assets.version>
     <zanata.client.version>${project.version}</zanata.client.version>
 
     <richfaces.version>4.5.17.Final</richfaces.version>
@@ -266,15 +264,34 @@
       </dependency>
 
       <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-stdlib</artifactId>
+        <version>${kotlin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-test-junit</artifactId>
+        <version>${kotlin.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.yaml</groupId>
         <artifactId>snakeyaml</artifactId>
         <version>1.16</version>
       </dependency>
 
       <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>2.6.2</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.objenesis</groupId>
         <artifactId>objenesis</artifactId>
-        <version>2.1</version>
+        <version>2.4</version>
       </dependency>
 
       <dependency>
@@ -282,13 +299,6 @@
         <artifactId>picketlink-idm-api</artifactId>
         <version>${picketlink.version}</version>
         <scope>compile</scope>
-      </dependency>
-
-      <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>${lombok.version}</version>
-        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -1716,15 +1726,102 @@
         <updatePolicy>never</updatePolicy>
       </snapshots>
     </pluginRepository>
+    <pluginRepository>
+      <id>arturbosch-code-analysis</id>
+      <name>arturbosch-code-analysis (for detekt)</name>
+      <url>https://dl.bintray.com/arturbosch/code-analysis/</url>
+      <layout>default</layout>
+      <releases>
+        <enabled>true</enabled>
+        <updatePolicy>never</updatePolicy>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+        <updatePolicy>never</updatePolicy>
+      </snapshots>
+    </pluginRepository>
   </pluginRepositories>
 
 
   <build>
     <plugins>
+
+      <!-- We declare the compiler plugins in this order: Kotlin, then Groovy, then Java/Takari.
+           Java code can depend on either Groovy or Kotlin (because they are compiled first).
+           Groovy code can depend on Kotlin because it is compiled first, and on Java because of "joint compilation"
+           http://groovy-lang.org/groovyc.html#section-jointcompilation https://github.com/groovy/GMavenPlus/wiki/Examples#joint-compilation
+           Kotlin code can't depend on Groovy (because Groovy is compiled later), but can depend on Java because
+           the Kotlin compiler can read .java files: https://discuss.kotlinlang.org/t/compiling-mixed-java-and-kotlin-files-on-the-command-line/1553/2
+      -->
+
+      <plugin>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <version>${kotlin.version}</version>
+        <!-- kotlin-maven-plugin gets .kt files from src/main/java and
+             src/test/java, as recommended by JetBrains:
+             https://youtrack.jetbrains.com/issue/KT-15889#comment=27-1866699
+        -->
+        <executions>
+          <execution>
+            <id>compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <compilerPlugins>
+            <plugin>all-open</plugin>
+            <plugin>no-arg</plugin>
+          </compilerPlugins>
+          <pluginOptions>
+            <option>all-open:annotation=javax.enterprise.context.NormalScope</option>
+            <option>all-open:annotation=javax.persistence.Entity</option>
+            <option>all-open:annotation=org.junit.runner.RunWith</option>
+            <option>no-arg:annotation=javax.persistence.Entity</option>
+          </pluginOptions>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-allopen</artifactId>
+            <version>${kotlin.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-noarg</artifactId>
+            <version>${kotlin.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+
       <plugin>
         <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
         <executions>
+          <execution>
+            <id>default</id>
+            <goals>
+              <!-- src/main/groovy disabled, because such code would be invisible to Kotlin classes -->
+              <!--<goal>addSources</goal>-->
+              <goal>addTestSources</goal>
+              <!--<goal>generateStubs</goal>-->
+              <!--<goal>compile</goal>-->
+              <goal>testGenerateStubs</goal>
+              <goal>testCompile</goal>
+              <!--<goal>removeStubs</goal>-->
+              <goal>removeTestStubs</goal>
+            </goals>
+          </execution>
           <!-- NB: This execution needs to be before antrun, because it
                creates the wildfly directory for the unzip tasks. -->
           <execution>
@@ -1749,6 +1846,67 @@
           </dependency>
         </dependencies>
       </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <executions>
+          <!-- Replacing default-compile as it is treated specially by Maven.
+               We need kotlin-maven-plugin to compile first. -->
+          <execution>
+            <id>default-compile</id>
+            <phase>none</phase>
+          </execution>
+          <!-- Replacing default-testCompile as it is treated specially by Maven.
+               We need kotlin-maven-plugin to compile first. -->
+          <execution>
+            <id>default-testCompile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java-compile</id>
+            <phase>compile</phase>
+            <goals> <goal>compile</goal> </goals>
+          </execution>
+          <execution>
+            <id>java-test-compile</id>
+            <phase>test-compile</phase>
+            <goals> <goal>testCompile</goal> </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>io.takari.maven.plugins</groupId>
+        <artifactId>takari-lifecycle-plugin</artifactId>
+        <extensions>true</extensions>
+
+        <executions>
+          <!-- Replacing default-compile as it is treated specially by Maven.
+               We need kotlin-maven-plugin to compile first. -->
+          <execution>
+            <id>default-compile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java-compile</id>
+            <phase>compile</phase>
+            <goals> <goal>compile</goal> </goals>
+          </execution>
+          <!-- Replacing default-testCompile as it is treated specially by Maven.
+               We need kotlin-maven-plugin to compile first. -->
+          <execution>
+            <id>default-testCompile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java-test-compile</id>
+            <phase>test-compile</phase>
+            <goals> <goal>testCompile</goal> </goals>
+          </execution>
+        </executions>
+      </plugin>
+
       <plugin>
         <groupId>org.zanata</groupId>
         <artifactId>zanata-maven-plugin</artifactId>
@@ -1815,6 +1973,7 @@
               </allowedRepositories>
               <allowedPluginRepositories combine.children="append">
                 <allowedPluginRepository>apache.snapshots.https</allowedPluginRepository>
+                <allowedPluginRepository>arturbosch-code-analysis</allowedPluginRepository>
                 <allowedPluginRepository>jboss-public-repository-group</allowedPluginRepository>
               </allowedPluginRepositories>
             </requireNoRepositories>
@@ -1842,7 +2001,45 @@
               </target>
             </configuration>
           </execution>
+          <execution>
+            <!-- This can be run separately with mvn antrun:run@detekt -->
+            <id>detekt</id>
+            <!-- Disabled until config-resource option is released (1.0.0.M7?).
+                 https://gitlab.com/arturbosch/detekt/merge_requests/2 -->
+            <!--<phase>verify</phase>-->
+            <configuration>
+              <target name="detekt">
+                <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
+                  classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
+                  <arg value="--config-resource"/>
+                  <arg value="zanata-build-tools/detekt.yml"/>
+                  <arg value="--project"/>
+                  <arg value="${basedir}/src"/>
+                  <arg value="--filters"/>
+                  <arg value=".*test.*"/>
+                </java>
+              </target>
+            </configuration>
+            <goals><goal>run</goal></goals>
+          </execution>
         </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>build-tools</artifactId>
+            <version>${project.version}</version>
+          </dependency>
+          <dependency>
+            <groupId>io.gitlab.arturbosch.detekt</groupId>
+            <artifactId>detekt-cli</artifactId>
+            <version>1.0.0.M6</version>
+          </dependency>
+          <dependency>
+            <groupId>io.gitlab.arturbosch.detekt</groupId>
+            <artifactId>detekt-formatting</artifactId>
+            <version>1.0.0.M6</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
 
@@ -1972,7 +2169,7 @@
         <plugin>
           <groupId>org.codehaus.gmavenplus</groupId>
           <artifactId>gmavenplus-plugin</artifactId>
-          <version>1.1</version>
+          <version>1.5</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -2005,64 +2202,6 @@
             <configuration>
               <failIfNoSpecifiedTests>false</failIfNoSpecifiedTests>
             </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <!--this is used to run GWT in dev mode. Adjust your IDE to include the delombok -->
-      <id>delombok</id>
-      <properties>
-        <zanata.gwt.module>org.zanata.webtrans.ApplicationSafari</zanata.gwt.module>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
-                <configuration>
-                  <target>
-                    <echo>include following as source in your IDE</echo>
-                    <echo>${delombok.dir}</echo>
-                    <echo>exclude following as source in your IDE</echo>
-                    <echo>${lombok.source.dir}</echo>
-                  </target>
-                </configuration>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok-maven-plugin</artifactId>
-            <version>1.16.6.1</version>
-            <executions>
-              <execution>
-                <phase>generate-sources</phase>
-                <goals>
-                  <goal>delombok</goal>
-                </goals>
-                <configuration>
-                  <sourceDirectory>${lombok.source.dir}</sourceDirectory>
-                  <outputDirectory>${delombok.dir}</outputDirectory>
-                  <verbose>true</verbose>
-                </configuration>
-              </execution>
-            </executions>
-            <dependencies>
-              <dependency>
-                <groupId>sun.jdk</groupId>
-                <artifactId>tools</artifactId>
-                <version>${required.jvm}</version>
-                <scope>system</scope>
-                <systemPath>${java.home}/../lib/tools.jar</systemPath>
-              </dependency>
-            </dependencies>
           </plugin>
         </plugins>
       </build>

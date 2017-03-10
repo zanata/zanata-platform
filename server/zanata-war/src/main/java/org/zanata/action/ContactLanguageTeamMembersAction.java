@@ -18,12 +18,7 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.action;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang.StringUtils;
 import org.zanata.ApplicationConfiguration;
@@ -40,103 +35,78 @@ import org.zanata.security.annotations.CheckLoggedIn;
 import org.zanata.service.EmailService;
 import org.zanata.service.LocaleService;
 import org.zanata.ui.faces.FacesMessages;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
 import java.util.List;
-
 import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-
 @Named("contactLanguageTeamMembersAction")
 @javax.faces.bean.ViewScoped
-
-@Slf4j
 public class ContactLanguageTeamMembersAction implements Serializable {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(ContactLanguageTeamMembersAction.class);
 
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
-
     @Inject
     private FacesMessages facesMessages;
-
     @Inject
     private EmailService emailServiceImpl;
-
     @Inject
     private LocaleService localeServiceImpl;
-
     @Inject
     private Messages msgs;
-
     @Inject
     private ApplicationConfiguration applicationConfiguration;
-
     @Inject
     private LocaleMemberDAO localeMemberDAO;
-
-    @Getter
-    @Setter
     private String message;
-
-    @Getter
-    @Setter
     private String subject;
-
-    @Getter
-    @Setter
     private String localeId;
-
     private HLocale locale;
 
     public List<HLocaleMember> getMembers() {
-        if(StringUtils.isBlank(localeId)) {
+        if (StringUtils.isBlank(localeId)) {
             return Lists.newArrayList();
         }
         if (authenticatedAccount == null) {
             return localeMemberDAO.findAllActiveMembers(new LocaleId(localeId));
         }
         return localeMemberDAO.findActiveMembers(new LocaleId(localeId),
-            authenticatedAccount.getPerson());
+                authenticatedAccount.getPerson());
     }
 
     @CheckLoggedIn
     public void send() {
         List<HLocaleMember> members = getMembers();
-        if(!members.isEmpty()) {
+        if (!members.isEmpty()) {
             String fromLoginName = authenticatedAccount.getUsername();
             String contactCoordinatorLink =
-                applicationConfiguration.getServerPath() +
-                    "/language/view/" + localeId;
-
+                    applicationConfiguration.getServerPath() + "/language/view/"
+                            + localeId;
             String localeNativeName = getLocale().retrieveNativeName();
             LocaleId localeId = getLocale().getLocaleId();
-
             EmailStrategy strategy =
-                    new ContactLanguageTeamMembersEmailStrategy(
-                            fromLoginName, getSubject(),
-                            localeId.getId(), localeNativeName, message,
-                            contactCoordinatorLink);
+                    new ContactLanguageTeamMembersEmailStrategy(fromLoginName,
+                            getSubject(), localeId.getId(), localeNativeName,
+                            message, contactCoordinatorLink);
             try {
-                String msg = emailServiceImpl.sendToLanguageTeamMembers(
-                        localeId, strategy, members);
+                String msg = emailServiceImpl
+                        .sendToLanguageTeamMembers(localeId, strategy, members);
                 facesMessages.addGlobal(msg);
             } catch (Exception e) {
                 String subject = strategy.getSubject(msgs);
-
-                StringBuilder sb =
-                        new StringBuilder()
-                                .append("Failed to send email with subject '")
-                                .append(strategy.getSubject(msgs))
-                                .append("' , message '").append(message)
-                                .append("'");
+                StringBuilder sb = new StringBuilder()
+                        .append("Failed to send email with subject \'")
+                        .append(strategy.getSubject(msgs))
+                        .append("\' , message \'").append(message).append("\'");
                 log.error(
-                        "Failed to send email: fromLoginName '{}', subject '{}', message '{}'. {}",
+                        "Failed to send email: fromLoginName \'{}\', subject \'{}\', message \'{}\'. {}",
                         fromLoginName, subject, message, e);
                 facesMessages.addGlobal(sb.toString());
             } finally {
@@ -151,5 +121,29 @@ public class ContactLanguageTeamMembersAction implements Serializable {
             locale = localeServiceImpl.getByLocaleId(new LocaleId(localeId));
         }
         return locale;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public void setMessage(final String message) {
+        this.message = message;
+    }
+
+    public String getSubject() {
+        return this.subject;
+    }
+
+    public void setSubject(final String subject) {
+        this.subject = subject;
+    }
+
+    public String getLocaleId() {
+        return this.localeId;
+    }
+
+    public void setLocaleId(final String localeId) {
+        this.localeId = localeId;
     }
 }

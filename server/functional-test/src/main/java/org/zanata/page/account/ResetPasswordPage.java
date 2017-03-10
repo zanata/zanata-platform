@@ -20,20 +20,20 @@
  */
 package org.zanata.page.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ResetPasswordPage extends BasePage {
-
-    private By usernameEmailField = By.id("passwordResetRequestForm:usernameEmail:input:usernameEmail");
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ResetPasswordPage.class);
+    private By usernameEmailField =
+            By.id("passwordResetRequestForm:usernameEmail:input:usernameEmail");
     private By submitButton = By.id("passwordResetRequestForm:submitRequest");
 
     public ResetPasswordPage(WebDriver driver) {

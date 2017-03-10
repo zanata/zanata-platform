@@ -1,7 +1,5 @@
 package org.zanata.model.type;
 
-import lombok.Getter;
-
 import java.io.Serializable;
 
 /**
@@ -15,13 +13,14 @@ public enum WebhookType implements Serializable {
     VersionChangedEvent("Project version"),
     ProjectMaintainerChangedEvent("Project maintainer update"),
     SourceDocumentChangedEvent("Document"),
-    ManuallyTriggeredEvent("Manual event")
-    ;
-
-    @Getter
+    ManuallyTriggeredEvent("Manual event");
     private String displayName;
 
     WebhookType(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getDisplayName() {
+        return this.displayName;
     }
 }

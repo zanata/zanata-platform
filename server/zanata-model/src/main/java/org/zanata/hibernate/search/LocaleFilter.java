@@ -21,7 +21,6 @@
 package org.zanata.hibernate.search;
 
 import java.io.IOException;
-
 import org.apache.lucene.index.LeafReader;
 import org.apache.lucene.index.LeafReaderContext;
 import org.apache.lucene.index.PostingsEnum;
@@ -32,13 +31,11 @@ import org.apache.lucene.util.BitDocIdSet;
 import org.apache.lucene.util.Bits;
 import org.apache.lucene.util.FixedBitSet;
 import org.zanata.common.LocaleId;
-
-import lombok.extern.slf4j.Slf4j;
-
 import static org.apache.lucene.search.DocIdSetIterator.NO_MORE_DOCS;
 
-@Slf4j
 public class LocaleFilter extends Filter {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(LocaleFilter.class);
     private static final long serialVersionUID = 1L;
     private LocaleId locale;
 
@@ -48,9 +45,7 @@ public class LocaleFilter extends Filter {
 
     @Override
     public String toString(String field) {
-        return "LocaleFilter(" +
-                "locale=" + locale +
-                ")";
+        return "LocaleFilter(locale=" + locale + ")";
     }
 
     @Override
@@ -78,5 +73,4 @@ public class LocaleFilter extends Filter {
         }
         return new BitDocIdSet(bitSet, setSize);
     }
-
 }

@@ -23,7 +23,6 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -31,21 +30,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-
-import lombok.Getter;
-import lombok.Setter;
-
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
 
 @Entity
-@Getter
-@Setter
 public class HDocumentUpload extends ModelEntityBase implements Serializable {
-
     private static final long serialVersionUID = 1L;
-
     private HProjectIteration projectIteration;
     private String docId;
     private DocumentType type;
@@ -77,8 +68,8 @@ public class HDocumentUpload extends ModelEntityBase implements Serializable {
     public DocumentType getType() {
         return type;
     }
-
     // null for source document upload
+
     @ManyToOne
     @JoinColumn(name = "localeId", nullable = true)
     public HLocale getLocale() {
@@ -100,9 +91,31 @@ public class HDocumentUpload extends ModelEntityBase implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "@"
-                + Integer.toHexString(hashCode()) + "[id=" + id
-                + ",versionNum=" + versionNum + ",contentHash=" + contentHash
-                + "]";
+                + Integer.toHexString(hashCode()) + "[id=" + id + ",versionNum="
+                + versionNum + ",contentHash=" + contentHash + "]";
     }
 
+    public void setProjectIteration(final HProjectIteration projectIteration) {
+        this.projectIteration = projectIteration;
+    }
+
+    public void setDocId(final String docId) {
+        this.docId = docId;
+    }
+
+    public void setType(final DocumentType type) {
+        this.type = type;
+    }
+
+    public void setLocale(final HLocale locale) {
+        this.locale = locale;
+    }
+
+    public void setContentHash(final String contentHash) {
+        this.contentHash = contentHash;
+    }
+
+    public void setParts(final List<HDocumentUploadPart> parts) {
+        this.parts = parts;
+    }
 }

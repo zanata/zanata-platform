@@ -41,6 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.FunctionalTestHelper.assumeFalse;
 
 /**
+ * See the unit tests in package org.zanata.adapter for other file types.
  * @author Damian Jansen <a
  *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */

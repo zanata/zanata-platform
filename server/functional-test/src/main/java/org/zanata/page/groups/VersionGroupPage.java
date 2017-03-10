@@ -22,9 +22,6 @@ package org.zanata.page.groups;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.zanata.page.BasePage;
@@ -32,41 +29,35 @@ import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class VersionGroupPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionGroupPage.class);
     private By versionsInGroupTable = By.id("projects-project_list");
     private By projectForm = By.id("projects-project_form");
-    private By projectSearchField = By
-            .id("settings-projects-form:newVersionField:newVersionInput");
-    private By projectAddButton = By
-            .id("settings-projects-form:group-add-new-project-button");
-    private final By newVersionList = By
-            .id("settings-projects-form:newVersionField:newVersionItems");
-
+    private By projectSearchField =
+            By.id("settings-projects-form:newVersionField:newVersionInput");
+    private By projectAddButton =
+            By.id("settings-projects-form:group-add-new-project-button");
+    private final By newVersionList =
+            By.id("settings-projects-form:newVersionField:newVersionItems");
     private By languageForm = By.id("languages-language_form");
     private By groupNameLabel = By.id("group-info");
-
     private By groupLanguagesList = By.id("languages-language_list");
-
     private By languagesTab = By.id("languages_tab");
     private By projectsTab = By.id("projects_tab");
     private By maintainersTab = By.id("maintainers_tab");
     private By settingsTab = By.id("settings_tab");
-
     private By languagesTabBody = By.id("languages");
     private By projectsTabBody = By.id("projects");
     private By maintainersTabBody = By.id("maintainers");
     private By settingsTabBody = By.id("settings");
-
     private By settingsLanguagesTab = By.id("settings-languages_tab");
 
     public VersionGroupPage(final WebDriver driver) {
@@ -74,14 +65,13 @@ public class VersionGroupPage extends BasePage {
     }
 
     public String getGroupName() {
-        return readyElement(groupNameLabel)
-                .findElement(By.tagName("h1")).getText();
+        return readyElement(groupNameLabel).findElement(By.tagName("h1"))
+                .getText();
     }
 
     public List<WebElement> searchProject(final String projectName,
             final int expectedResultNum) {
         enterText(readyElement(projectSearchField), projectName);
-
         return refreshPageUntil(this,
                 (Function<WebDriver, List<WebElement>>) driver -> {
                     // we want to wait until search result comes back. There
@@ -91,11 +81,8 @@ public class VersionGroupPage extends BasePage {
                     // org.openqa.selenium.StaleElementReferenceException
                     // (http://seleniumhq.org/exceptions/stale_element_reference.html),
                     // we have to set expected result num
-
-                    List<WebElement> listItems =
-                            WebElementUtil.getListItems(getDriver(),
-                                    newVersionList);
-
+                    List<WebElement> listItems = WebElementUtil
+                            .getListItems(getDriver(), newVersionList);
                     if (listItems.size() != expectedResultNum) {
                         log.debug("waiting for search result refresh...");
                         return null;
@@ -105,27 +92,25 @@ public class VersionGroupPage extends BasePage {
     }
 
     public VersionGroupPage addToGroup(int rowIndex) {
-        WebElementUtil.getListItems(getDriver(), newVersionList)
-                .get(rowIndex).click();
+        WebElementUtil.getListItems(getDriver(), newVersionList).get(rowIndex)
+                .click();
         clickElement(projectAddButton);
         return new VersionGroupPage(getDriver());
     }
 
     /**
      * Get the list of project versions attached to the group
-     * @return a list of version group identifiers in the format
-     *         "$projectID $version"
+     *
+     * @return a list of version group identifiers in the format "$projectID
+     *         $version"
      */
     public List<String> getProjectVersionsInGroup() {
         log.info("Query Group project versions");
-        List<WebElement> elements = WebElementUtil
-                .getListItems(getDriver(), versionsInGroupTable);
-
+        List<WebElement> elements =
+                WebElementUtil.getListItems(getDriver(), versionsInGroupTable);
         List<String> result = new ArrayList<>();
-
         for (WebElement element : elements) {
-            result.add(element
-                    .findElement(By.className("list__item__info"))
+            result.add(element.findElement(By.className("list__item__info"))
                     .getText());
         }
         return result;
@@ -133,22 +118,18 @@ public class VersionGroupPage extends BasePage {
 
     public ProjectVersionsPage clickOnProjectLinkOnRow(int row) {
         List<TableRow> tableRows =
-                WebElementUtil
-                        .getTableRows(getDriver(), versionsInGroupTable);
-        WebElement projectLink =
-                tableRows.get(row).getCells().get(0)
-                        .findElement(By.tagName("a"));
+                WebElementUtil.getTableRows(getDriver(), versionsInGroupTable);
+        WebElement projectLink = tableRows.get(row).getCells().get(0)
+                .findElement(By.tagName("a"));
         projectLink.click();
         return new ProjectVersionsPage(getDriver());
     }
 
     public VersionLanguagesPage clickOnProjectVersionLinkOnRow(int row) {
         List<TableRow> tableRows =
-                WebElementUtil
-                        .getTableRows(getDriver(), versionsInGroupTable);
-        WebElement versionLink =
-                tableRows.get(row).getCells().get(1)
-                        .findElement(By.tagName("a"));
+                WebElementUtil.getTableRows(getDriver(), versionsInGroupTable);
+        WebElement versionLink = tableRows.get(row).getCells().get(1)
+                .findElement(By.tagName("a"));
         versionLink.click();
         return new VersionLanguagesPage(getDriver());
     }
@@ -214,31 +195,33 @@ public class VersionGroupPage extends BasePage {
 
     /**
      * Enter a project version identifier
-     * @param projectVersion identifier in format "$projectID $version"
+     *
+     * @param projectVersion
+     *            identifier in format "$projectID $version"
      * @return new VersionGroupPage
      */
     public VersionGroupPage enterProjectVersion(String projectVersion) {
         log.info("Enter project version {}", projectVersion);
-        enterText(readyElement(By.id("versionAutocomplete-autocomplete__input")), projectVersion);
+        enterText(
+                readyElement(By.id("versionAutocomplete-autocomplete__input")),
+                projectVersion);
         return new VersionGroupPage(getDriver());
     }
 
     public VersionGroupPage selectProjectVersion(final String searchEntry) {
         log.info("Click project version {}", searchEntry);
-        waitForAMoment().until(
-                (Predicate<WebDriver>) driver -> {
-                    List<WebElement> items = WebElementUtil
-                            .getSearchAutocompleteResults(driver,
-                                    "settings-projects-form",
-                                    "versionAutocomplete");
-                    for (WebElement item : items) {
-                        if (item.getText().equals(searchEntry)) {
-                            item.click();
-                            return true;
-                        }
-                    }
-                    return false;
-                });
+        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+            List<WebElement> items =
+                    WebElementUtil.getSearchAutocompleteResults(driver,
+                            "settings-projects-form", "versionAutocomplete");
+            for (WebElement item : items) {
+                if (item.getText().equals(searchEntry)) {
+                    item.click();
+                    return true;
+                }
+            }
+            return false;
+        });
         return new VersionGroupPage(getDriver());
     }
 
@@ -250,8 +233,8 @@ public class VersionGroupPage extends BasePage {
     public VersionGroupPage clickAddLanguagesButton() {
         log.info("Click Add Languages Button");
         // parent
-        readyElement(existingElement(languageForm),
-                By.id("addLanguagesButton")).click();
+        readyElement(existingElement(languageForm), By.id("addLanguagesButton"))
+                .click();
         return new VersionGroupPage(getDriver());
     }
 
@@ -264,33 +247,28 @@ public class VersionGroupPage extends BasePage {
 
     public VersionGroupPage selectLanguage(final String searchEntry) {
         log.info("Click language {}", searchEntry);
-        waitForAMoment().until(
-                (Predicate<WebDriver>) driver -> {
-                    List<WebElement> items = WebElementUtil
-                            .getSearchAutocompleteResults(driver,
-                                    "settings-languages-form",
-                                    "languageAutocomplete");
-                    for (WebElement item : items) {
-                        if (item.getText().equals(searchEntry)) {
-                            item.click();
-                            return true;
-                        }
-                    }
-                    return false;
-                });
+        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+            List<WebElement> items =
+                    WebElementUtil.getSearchAutocompleteResults(driver,
+                            "settings-languages-form", "languageAutocomplete");
+            for (WebElement item : items) {
+                if (item.getText().equals(searchEntry)) {
+                    item.click();
+                    return true;
+                }
+            }
+            return false;
+        });
         return new VersionGroupPage(getDriver());
     }
 
     public List<String> getLanguagesForGroup() {
         log.info("Query Group languages");
-        List<WebElement> elements = WebElementUtil
-                .getListItems(getDriver(), groupLanguagesList);
-
+        List<WebElement> elements =
+                WebElementUtil.getListItems(getDriver(), groupLanguagesList);
         List<String> result = new ArrayList<>();
-
         for (WebElement element : elements) {
-            result.add(element
-                    .findElement(By.className("list__item__info"))
+            result.add(element.findElement(By.className("list__item__info"))
                     .getText());
         }
         return result;

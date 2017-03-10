@@ -20,10 +20,11 @@
  */
 package org.zanata.feature.document;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.*;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.common.DocumentType;
+import org.zanata.common.ProjectType;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
@@ -34,25 +35,26 @@ import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.ProjectWorkFlow;
-
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
- * <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 @Category(DetailedTest.class)
-@Slf4j
 public class MultiFileUploadTest extends ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(MultiFileUploadTest.class);
 
     @Rule
     public CleanDocumentStorageRule documentStorageRule =
             new CleanDocumentStorageRule();
-
     private TestFileGenerator testFileGenerator = new TestFileGenerator();
-    private String documentStorageDirectory;
+    private static String testString = "Test text 1";
 
     @Before
     public void before() {
@@ -60,93 +62,100 @@ public class MultiFileUploadTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
         new ZanataRestCaller().createProjectAndVersion("multi-upload",
                 "multi-upload", "file");
-        documentStorageDirectory = CleanDocumentStorageRule
-                .getDocumentStoragePath()
-                .concat(File.separator)
-                .concat("documents")
-                .concat(File.separator);
-
+        String documentStorageDirectory = CleanDocumentStorageRule
+                .getDocumentStoragePath().concat(File.separator)
+                .concat("documents").concat(File.separator);
         if (new File(documentStorageDirectory).exists()) {
             log.warn("Document storage directory exists (cleanup incomplete)");
         }
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
-    @Ignore("Error in system path")
-    public void uploadedDocumentsAreInFilesystem() {
-        File firstFile = testFileGenerator.generateTestFileWithContent(
-                "multiuploadInFilesystem", ".txt",
-                "This is a test file");
-        File secondFile = testFileGenerator.generateTestFileWithContent(
-                "multiuploadInFilesystem2", ".txt",
-                "This is another test file");
-        String testFileName = firstFile.getName();
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("multi-upload")
-                .gotoVersion("multi-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(firstFile.getAbsolutePath())
-                .enterFilePath(secondFile.getAbsolutePath())
-                .submitUpload()
-                .clickUploadDone();
-
-        assertThat(new File(documentStorageDirectory).list().length)
-                .isEqualTo(2)
-                .as("There are two uploaded source files");
-
-        VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .gotoDocumentTab()
-                .expectSourceDocsContains(testFileName);
-
-        assertThat(versionDocumentsPage.getSourceDocumentNames())
-                .contains(firstFile.getName())
-                .contains(secondFile.getName())
-                .as("The documents were uploaded");
+    @Feature(bugzilla = 980670,
+            summary = "The administrator can upload raw files for translation",
+            tcmsTestCaseIds = { 377743 }, tcmsTestPlanIds = { 5316 })
+    public void uploadFileTypeDocument() throws Exception {
+        File testFile = new TestFileGenerator()
+                .generateTestFileWithContent("testtxtfile", ".txt", testString);
+        String testFileName = testFile.getName();
+        VersionDocumentsPage versionDocumentsPage =
+                new ProjectWorkFlow().goToProjectByName("multi-upload")
+                        .gotoVersion("multi-upload")
+                        .gotoSettingsTab()
+                        .gotoSettingsDocumentsTab()
+                        .pressUploadFileButton()
+                        .enterFilePath(testFile.getAbsolutePath())
+                        .submitUpload()
+                        .clickUploadDone()
+                        .gotoDocumentTab();
+        assertThat(versionDocumentsPage.expectSourceDocsContains(testFileName))
+                .as("Document shows in table");
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeFileFromUploadList() {
         File keptUploadFile = testFileGenerator.generateTestFileWithContent(
                 "removeFileFromUploadList", ".txt", "Remove File Upload Test");
-
-        VersionDocumentsTab versionDocumentsTab = new ProjectWorkFlow()
-                .goToProjectByName("multi-upload")
-                .gotoVersion("multi-upload")
-                .gotoSettingsTab()
-                .gotoSettingsDocumentsTab()
-                .pressUploadFileButton()
-                .enterFilePath(keptUploadFile.getAbsolutePath())
-                .enterFilePath("/tmp/fakefile.txt");
-
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("multi-upload")
+                        .gotoVersion("multi-upload")
+                        .gotoSettingsTab()
+                        .gotoSettingsDocumentsTab()
+                        .pressUploadFileButton()
+                        .enterFilePath(keptUploadFile.getAbsolutePath())
+                        .enterFilePath("/tmp/fakefile.txt");
         versionDocumentsTab.waitForPageSilence();
         // TODO try to eliminate this:
         versionDocumentsTab.expectSomeUploadItems();
         assertThat(versionDocumentsTab.getUploadList())
-                .contains(keptUploadFile.getName())
-                .contains("fakefile.txt")
+                .contains(keptUploadFile.getName()).contains("fakefile.txt")
                 .as("The intended files are listed");
-
         versionDocumentsTab = versionDocumentsTab.clickRemoveOn("fakefile.txt");
-
         versionDocumentsTab.waitForPageSilence();
         assertThat(versionDocumentsTab.getUploadList())
                 .contains(keptUploadFile.getName())
                 .doesNotContain("fakefile.txt")
                 .as("The fakefile has been removed");
-
         VersionDocumentsPage versionDocumentsPage = versionDocumentsTab
-                .submitUpload()
-                .clickUploadDone()
-                .gotoDocumentTab();
-
+                .submitUpload().clickUploadDone().gotoDocumentTab();
         assertThat(versionDocumentsPage.getSourceDocumentNames())
                 .contains(keptUploadFile.getName())
                 .doesNotContain("fakefile.txt")
                 .as("Only the intended file was uploaded");
     }
 
+    /*
+     * Ensure none of the supported file types will cause an error when queued
+     */
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void addAllTypesTOTheQueue() {
+        VersionDocumentsTab versionDocumentsTab =
+                new ProjectWorkFlow().goToProjectByName("multi-upload")
+                        .gotoVersion("multi-upload")
+                        .gotoSettingsTab()
+                        .gotoSettingsDocumentsTab()
+                        .pressUploadFileButton();
+        versionDocumentsTab = createAndAddToQueue(versionDocumentsTab);
+        versionDocumentsTab.assertNoCriticalErrors();
+        assertThat(versionDocumentsTab.getErrors().isEmpty());
+    }
+
+    private VersionDocumentsTab createAndAddToQueue(VersionDocumentsTab versionDocumentsTab) {
+        List<DocumentType> projectTypes = ProjectType
+                .getSupportedSourceFileTypes(ProjectType.File);
+        List<String> types = Collections.emptyList();
+        for (DocumentType documentType : projectTypes) {
+            for (String extension : documentType.getSourceExtensions()) {
+                log.info("[addAllTypesTOTheQueue]: Test {}", extension);
+                File testFile = testFileGenerator.generateTestFileWithContent(
+                        "testfile",
+                        "." + extension,
+                        testString);
+                assertThat(testFile.exists());
+                versionDocumentsTab = versionDocumentsTab.enterFilePath(testFile.getPath());
+                assertThat(versionDocumentsTab.getErrors().isEmpty());
+            }
+        }
+        return versionDocumentsTab;
+    }
 }

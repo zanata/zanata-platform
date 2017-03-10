@@ -22,19 +22,13 @@ package org.zanata.service.impl;
 
 import java.util.List;
 import java.util.regex.Pattern;
-
 import javax.annotation.Nonnull;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Query;
 import org.hibernate.Session;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.zanata.dao.AccountDAO;
 import org.zanata.dao.AccountResetPasswordKeyDAO;
 import org.zanata.dao.RoleAssignmentRuleDAO;
@@ -47,23 +41,22 @@ import org.zanata.service.UserAccountService;
 import org.zanata.util.HashUtil;
 
 /**
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("userAccountServiceImpl")
 @RequestScoped
-@Slf4j
 @Transactional
 public class UserAccountServiceImpl implements UserAccountService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(UserAccountServiceImpl.class);
+
     @Inject
     private Session session;
-
     @Inject
     private AccountDAO accountDAO;
-
     @Inject
     private AccountResetPasswordKeyDAO accountResetPasswordKeyDAO;
-
     @Inject
     private RoleAssignmentRuleDAO roleAssignmentRuleDAO;
 
@@ -71,30 +64,26 @@ public class UserAccountServiceImpl implements UserAccountService {
     public void clearPasswordResetRequests(HAccount account) {
         HAccountResetPasswordKey key =
                 accountResetPasswordKeyDAO.findByAccount(account.getId());
-        if(key != null) {
+        if (key != null) {
             accountResetPasswordKeyDAO.makeTransient(key);
             accountResetPasswordKeyDAO.flush();
         }
     }
 
     @Override
-    public HAccountResetPasswordKey requestPasswordReset(
-            @Nonnull HAccount account) {
+    public HAccountResetPasswordKey
+            requestPasswordReset(@Nonnull HAccount account) {
         if (account.getPerson() == null) {
             return null;
         }
-
         clearPasswordResetRequests(account);
-
         HAccountResetPasswordKey key = new HAccountResetPasswordKey();
         key.setAccount(account);
         key.setKeyHash(HashUtil.generateHash(account.getUsername()
-            + account.getPasswordHash() + account.getPerson().getEmail()
-            + account.getPerson().getName() + System.currentTimeMillis()));
-
+                + account.getPasswordHash() + account.getPerson().getEmail()
+                + account.getPerson().getName() + System.currentTimeMillis()));
         account.setAccountResetPasswordKey(key);
         key = accountResetPasswordKeyDAO.makePersistent(key);
-
         return key;
     }
 
@@ -108,18 +97,14 @@ public class UserAccountServiceImpl implements UserAccountService {
         if (account == null) {
             throw new NoSuchUserException(username + " can not be found");
         }
-
         clearPasswordResetRequests(account);
-
         HAccountResetPasswordKey key = new HAccountResetPasswordKey();
         key.setAccount(account);
-        key.setKeyHash(HashUtil.generateHash(username
-                + account.getPasswordHash() + email
-                + System.currentTimeMillis()));
-
+        key.setKeyHash(
+                HashUtil.generateHash(username + account.getPasswordHash()
+                        + email + System.currentTimeMillis()));
         account.setAccountResetPasswordKey(key);
         key = accountResetPasswordKeyDAO.makePersistent(key);
-
         return key;
     }
 
@@ -127,54 +112,50 @@ public class UserAccountServiceImpl implements UserAccountService {
     public HAccount runRoleAssignmentRules(HAccount account,
             HCredentials credentials, String policyName) {
         List<HRoleAssignmentRule> allRules = roleAssignmentRuleDAO.findAll();
-
         for (HRoleAssignmentRule rule : allRules) {
             boolean ruleMatches = false;
-
             if (rule.getIdentityRegExp() != null) {
                 Pattern rulePattern = Pattern.compile(rule.getIdentityRegExp());
                 String userName = account.getUsername();
                 if (credentials != null) {
                     userName = credentials.getUser();
                 }
-
                 if (rulePattern.matcher(userName).matches()) {
                     ruleMatches = true;
                 }
             }
-
             if (rule.getPolicyName() != null
                     && rule.getPolicyName().equals(policyName)) {
                 ruleMatches = ruleMatches && true;
             }
-
             if (ruleMatches) {
                 // apply the rule
                 account.getRoles().add(rule.getRoleToAssign());
             }
         }
-
         HAccount persistedAcc = accountDAO.makePersistent(account);
         accountDAO.flush();
         return persistedAcc;
     }
 
     public void editUsername(String currentUsername, String newUsername) {
-        Query updateQuery =
-                session.createQuery(
+        Query updateQuery = session
+                .createQuery(
                         "update HAccount set username = :newUsername where username = :currentUsername")
-                        .setParameter("newUsername", newUsername)
-                        .setParameter("currentUsername", currentUsername);
+                .setParameter("newUsername", newUsername)
+                .setParameter("currentUsername", currentUsername);
         updateQuery.setComment("UserAccountServiceImpl.editUsername");
         updateQuery.executeUpdate();
         // Because a Natural Id was modified:
-        session.getSessionFactory().getCache().evictQueryRegion(AccountDAO.REGION);
+        session.getSessionFactory().getCache()
+                .evictQueryRegion(AccountDAO.REGION);
     }
 
     @Override
     public boolean isUsernameUsed(String username) {
-        Long usernameCount = (Long) session.createQuery(
-                "select count(*) from HAccount where username = :username")
+        Long usernameCount = (Long) session
+                .createQuery(
+                        "select count(*) from HAccount where username = :username")
                 .setParameter("username", username)
                 .setComment("UserAccountServiceImpl.isUsernameUsed")
                 .uniqueResult();

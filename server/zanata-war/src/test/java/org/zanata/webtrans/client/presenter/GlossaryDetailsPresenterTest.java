@@ -66,6 +66,7 @@ public class GlossaryDetailsPresenterTest {
     private EventBus mockEventBus;
     @Mock
     private CachingDispatchAsync mockDispatcher;
+    // TODO we shouldn't mock UIMessages methods by hand
     @Mock
     private UiMessages messages;
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
@@ -134,8 +135,11 @@ public class GlossaryDetailsPresenterTest {
         when(glossaryDetails.getSrcLocale()).thenReturn(new LocaleId("en-US"));
         when(glossaryDetails.getTargetLocale()).thenReturn(new LocaleId("zh"));
         when(glossaryDetails.getTarget()).thenReturn("source text");
+        when(glossaryDetails.getUrl()).thenReturn("http://example.com/");
         when(display.getTargetText()).thenReturn(targetText);
         when(messages.entriesLabel(1)).thenReturn("1");
+        when(messages.glossarySourceTermLabel(anyString())).thenReturn("sourceTermLabel");
+        when(messages.glossaryTargetTermLabel(anyString())).thenReturn("targetTermLabel");
 
         callback.onSuccess(new GetGlossaryDetailsResult(Lists
                 .newArrayList(glossaryDetails)));

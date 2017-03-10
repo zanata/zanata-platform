@@ -18,13 +18,11 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.page.explore;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -32,23 +30,21 @@ import org.zanata.page.BasePage;
 import org.zanata.page.account.ProfilePage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.util.WebElementUtil;
-
 import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class ExplorePage extends BasePage {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ExplorePage.class);
     private static final By searchInput = By.id("explore_search");
     private static final By projectResult = By.id("explore_Project_result");
     private static final By personResult = By.id("explore_Person_result");
-
-
     private static final By groupResult = By.id("explore_Group_result");
-    private static final By languageTeamResult = By.id("explore_LanguageTeam_result");
+    private static final By languageTeamResult =
+            By.id("explore_LanguageTeam_result");
 
     public ExplorePage(WebDriver driver) {
         super(driver);
@@ -57,8 +53,8 @@ public class ExplorePage extends BasePage {
     public ExplorePage enterSearch(String searchText) {
         log.info("Enter Explore search {}", searchText);
         existingElement(searchInput).sendKeys(searchText);
-        waitForAMoment().withMessage("Waiting for search complete").until(
-                (Predicate<WebDriver>) webDriver -> !isProjectSearchLoading()
+        waitForAMoment().withMessage("Waiting for search complete")
+                .until((Predicate<WebDriver>) webDriver -> !isProjectSearchLoading()
                         && !isGroupSearchLoading()
                         && !isLanguageTeamSearchLoading()
                         && !isPersonSearchLoading());
@@ -67,24 +63,20 @@ public class ExplorePage extends BasePage {
 
     public ExplorePage expectProjectListContains(final String expected) {
         String msg = "Project search list contains " + expected;
-        waitForAMoment().withMessage("Waiting for search contains").until(
-            (Predicate<WebDriver>) webDriver ->
-                getProjectSearchResults().contains(expected)
-        );
-        assertThat(getProjectSearchResults()).as(msg).contains(
-            expected);
+        waitForAMoment().withMessage("Waiting for search contains")
+                .until((Predicate<WebDriver>) webDriver -> getProjectSearchResults()
+                        .contains(expected));
+        assertThat(getProjectSearchResults()).as(msg).contains(expected);
         return new ExplorePage(getDriver());
     }
 
     public ExplorePage expectPersonListContains(final String expected) {
         waitForPageSilence();
         String msg = "Person search list contains " + expected;
-        waitForAMoment().withMessage("Waiting for search contains").until(
-            (Predicate<WebDriver>) webDriver ->
-                getUserSearchResults().contains(expected)
-        );
-        assertThat(getUserSearchResults()).as(msg).contains(
-            expected);
+        waitForAMoment().withMessage("Waiting for search contains")
+                .until((Predicate<WebDriver>) webDriver -> getUserSearchResults()
+                        .contains(expected));
+        assertThat(getUserSearchResults()).as(msg).contains(expected);
         return new ExplorePage(getDriver());
     }
 
@@ -115,14 +107,12 @@ public class ExplorePage extends BasePage {
     }
 
     private boolean isSearchLoading(By by) {
-        return !existingElement(by)
-            .findElements(By.name("loader")).isEmpty();
+        return !existingElement(by).findElements(By.name("loader")).isEmpty();
     }
 
     private List<String> getResultText(By by) {
         List<WebElement> entries =
-            existingElement(by).findElements(By.name("entry"));
-
+                existingElement(by).findElements(By.name("entry"));
         List<String> list = Lists.newArrayList();
         for (WebElement element : entries) {
             WebElement aTag = element.findElement(By.tagName("a"));
@@ -135,10 +125,8 @@ public class ExplorePage extends BasePage {
 
     public ProfilePage clickUserSearchEntry(final String searchEntry) {
         log.info("Click user search result {}", searchEntry);
-
         List<WebElement> users =
-            existingElement(personResult).findElements(By.name("entry"));
-
+                existingElement(personResult).findElements(By.name("entry"));
         for (WebElement element : users) {
             WebElement aTag = element.findElement(By.tagName("a"));
             if (aTag != null && aTag.getText().equals(searchEntry)) {
@@ -151,10 +139,8 @@ public class ExplorePage extends BasePage {
 
     public ProjectVersionsPage clickProjectEntry(String searchEntry) {
         log.info("Click Projects search result {}", searchEntry);
-
         List<WebElement> projects =
-            existingElement(projectResult).findElements(By.name("entry"));
-
+                existingElement(projectResult).findElements(By.name("entry"));
         for (WebElement element : projects) {
             WebElement aTag = element.findElement(By.tagName("a"));
             if (aTag != null && aTag.getText().equals(searchEntry)) {

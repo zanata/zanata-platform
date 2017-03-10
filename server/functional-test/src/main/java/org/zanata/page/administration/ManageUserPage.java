@@ -20,7 +20,6 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,12 +29,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class ManageUserPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ManageUserPage.class);
     private By userTable = By.id("usermanagerForm");
 
     public ManageUserPage(WebDriver driver) {
@@ -67,6 +66,12 @@ public class ManageUserPage extends BasePage {
         return null;
     }
 
+    public boolean isUserEnabled(String username) {
+            List<WebElement> locks = findRowByUserName(username)
+                    .findElements(By.className("i--lock"));
+        return locks.isEmpty();
+    }
+
     public List<WebElement> getRows() {
         return readyElement(userTable)
                 .findElements(By.className("list__item--actionable"));
@@ -74,8 +79,10 @@ public class ManageUserPage extends BasePage {
 
     public String getListItemUsername(WebElement listItem) {
         String listItemText = listItem.findElement(By.tagName("h3")).getText();
-        return listItemText.substring(0, listItemText
-                .lastIndexOf(getListItemRoles(listItem))).trim();
+        return listItemText
+                .substring(0,
+                        listItemText.lastIndexOf(getListItemRoles(listItem)))
+                .trim();
     }
 
     public String getListItemRoles(WebElement listItem) {
@@ -90,5 +97,11 @@ public class ManageUserPage extends BasePage {
             names.add(getListItemUsername(element));
         }
         return names;
+    }
+
+    public CreateUserAccountPage selectCreateNewUser() {
+        clickElement(By.id("rolemanage-more-actions"));
+        clickLinkAfterAnimation(By.linkText("Create new user"));
+        return new CreateUserAccountPage(getDriver());
     }
 }

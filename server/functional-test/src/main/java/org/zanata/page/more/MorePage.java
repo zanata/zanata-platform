@@ -18,10 +18,8 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.page.more;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -30,8 +28,9 @@ import org.zanata.page.BasePage;
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Slf4j
 public class MorePage extends BasePage {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(MorePage.class);
     private By helpLink = By.id("more_help");
     private By contactAdminLink = By.id("more_contact_admin");
 

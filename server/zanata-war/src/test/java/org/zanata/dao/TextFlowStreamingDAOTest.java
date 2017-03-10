@@ -2,8 +2,6 @@ package org.zanata.dao;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import lombok.Cleanup;
-
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
@@ -15,7 +13,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.util.CloseableIterator;
-
 import com.google.common.collect.Iterators;
 
 public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
@@ -44,9 +41,8 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
 
     @Before
     public void setup() {
-        dao =
-                new TextFlowStreamingDAO(
-                        (HibernateEntityManagerFactory) getEmf());
+        dao = new TextFlowStreamingDAO(
+                (HibernateEntityManagerFactory) getEmf());
         session = getSession();
         projectDao = new ProjectDAO(session);
         projectIterDao = new ProjectIterationDAO(session);
@@ -54,48 +50,72 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
 
     @Test
     public void findAllTextFlows() throws Exception {
-        @Cleanup
         CloseableIterator<HTextFlow> iter = dao.findTextFlows();
-        assertThat(Iterators.size(iter),
-                equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
+        try {
+            assertThat(Iterators.size(iter),
+                    equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
+        } finally {
+            if (iter != null) {
+                iter.close();
+            }
+        }
     }
 
     @Test
     public void findTextFlowsForProject() throws Exception {
         HProject proj = projectDao.getBySlug("sample-project");
-        @Cleanup
         CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProject(proj);
-        assertThat(Iterators.size(iter),
-                equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
+        try {
+            assertThat(Iterators.size(iter),
+                    equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
+        } finally {
+            if (iter != null) {
+                iter.close();
+            }
+        }
     }
 
     @Test
     public void findTextFlowsForEmptyProject() throws Exception {
         HProject proj = projectDao.getBySlug("retired-project");
-        @Cleanup
         CloseableIterator<HTextFlow> iter = dao.findTextFlowsByProject(proj);
-        assertThat(iter.hasNext(), Matchers.not(true));
+        try {
+            assertThat(iter.hasNext(), Matchers.not(true));
+        } finally {
+            if (iter != null) {
+                iter.close();
+            }
+        }
     }
 
     @Test
     public void findTextFlowsForProjectIter() throws Exception {
         HProjectIteration projIter =
                 projectIterDao.getBySlug("sample-project", "1.0");
-        @Cleanup
         CloseableIterator<HTextFlow> iter =
                 dao.findTextFlowsByProjectIteration(projIter);
-        assertThat(Iterators.size(iter),
-                equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
+        try {
+            assertThat(Iterators.size(iter),
+                    equalTo(TEXTFLOWS_IN_SAMPLE_PROJECT_10));
+        } finally {
+            if (iter != null) {
+                iter.close();
+            }
+        }
     }
 
     @Test
     public void findTextFlowsForEmptyProjectIteration() throws Exception {
         HProjectIteration projIter =
                 projectIterDao.getBySlug("retired-project", "retired-current");
-        @Cleanup
         CloseableIterator<HTextFlow> iter =
                 dao.findTextFlowsByProjectIteration(projIter);
-        assertThat(iter.hasNext(), Matchers.not(true));
+        try {
+            assertThat(iter.hasNext(), Matchers.not(true));
+        } finally {
+            if (iter != null) {
+                iter.close();
+            }
+        }
     }
-
 }

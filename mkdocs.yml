@@ -119,6 +119,7 @@ pages:
   - Contact Admin: 'user-guide/admin/contact-admin.md'
   - Server configuration: 'user-guide/admin/server-config.md'
   - Manage search: 'user-guide/admin/manage-search.md'
+  - Manage users: 'user-guide/admin/manage-users.md'
   - Process manager: 'user-guide/admin/process-manager.md'
   - Role assignment rules: 'user-guide/admin/role-assignment-rules.md'
   - Statistic: 'user-guide/admin/statistic.md'

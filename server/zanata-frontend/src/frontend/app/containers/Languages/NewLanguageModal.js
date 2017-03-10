@@ -104,10 +104,10 @@ class NewLanguageModal extends Component {
   renderSuggestion (suggestion) {
     return (
       <span name='new-language-displayName'>
-        <span className='Fw(400)'>
+        <span className='text-light'>
           {suggestion.displayName}
         </span>
-        <span className='C(muted) Fz(msn1) Mstart(eq)'>
+        <span className='text-suggestion'>
           {suggestion.localeId}
         </span>
       </span>
@@ -191,7 +191,7 @@ class NewLanguageModal extends Component {
                   <Icon name='info' className='s0 infoicon' title='Help' />
                 </a>
                 {showPluralFormsWarning &&
-                  <div className='Fz(msn1)'
+                  <div className='small-text'
                     id='new-language-pluralforms-warning'>
                     No plural information available. Assuming no plurals.
                   </div>

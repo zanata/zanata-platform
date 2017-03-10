@@ -20,19 +20,18 @@
  */
 package org.zanata.page.administration;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class EditHomeContentPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(EditHomeContentPage.class);
     private By updateButton = By.id("homeContentForm:update");
     private By cancelButton = By.id("homeContentForm:cancel");
 
@@ -42,8 +41,7 @@ public class EditHomeContentPage extends BasePage {
 
     public EditHomeContentPage enterText(String text) {
         log.info("Enter homepage code\n{}", text);
-        readyElement(By
-                .id("homeContentForm:homeContent")).sendKeys(text);
+        readyElement(By.id("homeContentForm:homeContent")).sendKeys(text);
         return new EditHomeContentPage(getDriver());
     }
 

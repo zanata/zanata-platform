@@ -1,7 +1,7 @@
 package org.zanata.webtrans.server.rpc;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Mockito.doReturn;
@@ -164,7 +164,7 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
                 new LoadOptionsResult(new UserConfigHolder().getState());
         when(
                 loadOptionsHandler.execute(isA(LoadOptionsAction.class),
-                        any(ExecutionContext.class))).thenReturn(optionsResult);
+                        nullable(ExecutionContext.class))).thenReturn(optionsResult);
 
         when(translationWorkspace.getWorkspaceContext()).thenReturn(
                 workspaceContext);
@@ -183,7 +183,7 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
         when(
                 getValidationRulesHandler.execute(
                         isA(GetValidationRulesAction.class),
-                        any(ExecutionContext.class))).thenReturn(
+                        nullable(ExecutionContext.class))).thenReturn(
                 validationResult);
 
         ActivateWorkspaceResult result = handler.execute(action, null);

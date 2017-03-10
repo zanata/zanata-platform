@@ -18,15 +18,10 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.service.impl;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.ProjectDAO;
@@ -42,14 +37,12 @@ import org.zanata.model.ProjectRole;
 import org.zanata.model.WebHook;
 import org.zanata.model.type.WebhookType;
 import org.zanata.service.ProjectService;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import static org.zanata.model.LocaleRole.Coordinator;
 import static org.zanata.model.LocaleRole.Reviewer;
 import static org.zanata.model.LocaleRole.Translator;
@@ -61,45 +54,38 @@ import static org.zanata.model.ProjectRole.TranslationMaintainer;
  */
 @Named("projectServiceImpl")
 @RequestScoped
-@Slf4j
 public class ProjectServiceImpl implements ProjectService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ProjectServiceImpl.class);
 
     @Inject
     private ProjectDAO projectDAO;
-
     @Inject
     private WebHookDAO webHookDAO;
 
     @Override
     public List<UpdatedRole> updateProjectPermissions(HProject project,
-        PersonProjectMemberships memberships) {
+            PersonProjectMemberships memberships) {
         HPerson person = memberships.getPerson();
-
         boolean wasMaintainer =
-            project.getMaintainers().contains(memberships.getPerson());
+                project.getMaintainers().contains(memberships.getPerson());
         boolean isLastMaintainer =
-            wasMaintainer && project.getMaintainers().size() <= 1;
+                wasMaintainer && project.getMaintainers().size() <= 1;
         // business rule: every project must have at least one maintainer
         boolean isMaintainer = isLastMaintainer || memberships.isMaintainer();
-
         List<UpdatedRole> updatedRoles = Lists.newArrayList();
-
-        Optional<UpdatedRole>
-            updatedMaintainerRole = ensureMembership(project, isMaintainer,
-            asMember(project, person, Maintainer));
-
+        Optional<UpdatedRole> updatedMaintainerRole = ensureMembership(project,
+                isMaintainer, asMember(project, person, Maintainer));
         if (updatedMaintainerRole.isPresent()) {
             updatedRoles.add(updatedMaintainerRole.get());
         }
-
-        // business rule: if someone is a Maintainer, they must also be a TranslationMaintainer
-        boolean isTranslationMaintainer = memberships.isMaintainer() ||
-            memberships.isTranslationMaintainer();
-
+        // business rule: if someone is a Maintainer, they must also be a
+        // TranslationMaintainer
+        boolean isTranslationMaintainer = memberships.isMaintainer()
+                || memberships.isTranslationMaintainer();
         Optional<UpdatedRole> updatedTranslationMaintainer =
-            ensureMembership(project, isTranslationMaintainer,
-                asMember(project, person, TranslationMaintainer));
-
+                ensureMembership(project, isTranslationMaintainer,
+                        asMember(project, person, TranslationMaintainer));
         if (updatedTranslationMaintainer.isPresent()) {
             updatedRoles.add(updatedTranslationMaintainer.get());
         }
@@ -137,8 +123,8 @@ public class ProjectServiceImpl implements ProjectService {
             return false;
         }
         secret = StringUtils.isBlank(secret) ? null : secret;
-        WebHook webHook =
-                new WebHook(project, url, Strings.emptyToNull(name), types, secret);
+        WebHook webHook = new WebHook(project, url, Strings.emptyToNull(name),
+                types, secret);
         project.getWebHooks().add(webHook);
         projectDAO.makePersistent(project);
         return true;
@@ -168,50 +154,68 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public void updateLocalePermissions(HProject project,
-        PersonProjectMemberships memberships) {
+            PersonProjectMemberships memberships) {
         HPerson person = memberships.getPerson();
-
-        for (PersonProjectMemberships.LocaleRoles localeRoles
-            : memberships.getLocaleRoles()) {
+        for (PersonProjectMemberships.LocaleRoles localeRoles : memberships
+                .getLocaleRoles()) {
             HLocale locale = localeRoles.getLocale();
             ensureMembership(project, localeRoles.isTranslator(),
-                asMember(project, locale, person, Translator));
+                    asMember(project, locale, person, Translator));
             ensureMembership(project, localeRoles.isReviewer(),
-                asMember(project, locale, person, Reviewer));
+                    asMember(project, locale, person, Reviewer));
             ensureMembership(project, localeRoles.isCoordinator(),
-                asMember(project, locale, person, Coordinator));
+                    asMember(project, locale, person, Coordinator));
         }
     }
 
-    @Getter
-    @AllArgsConstructor
     public class UpdatedRole {
         private String username;
         private ProjectRole role;
         private boolean added;
+
+        public String getUsername() {
+            return this.username;
+        }
+
+        public ProjectRole getRole() {
+            return this.role;
+        }
+
+        public boolean isAdded() {
+            return this.added;
+        }
+
+        @java.beans.ConstructorProperties({ "username", "role", "added" })
+        public UpdatedRole(final String username, final ProjectRole role,
+                final boolean added) {
+            this.username = username;
+            this.role = role;
+            this.added = added;
+        }
     }
 
     /**
      * Get a person as a member object in this project for a role.
      */
     private HProjectMember asMember(HProject project, HPerson person,
-        ProjectRole role) {
+            ProjectRole role) {
         return new HProjectMember(project, person, role);
     }
 
     /**
-     * Get a person as a member object in this project for a locale-specific role.
+     * Get a person as a member object in this project for a locale-specific
+     * role.
      */
     private HProjectLocaleMember asMember(HProject project, HLocale locale,
-        HPerson person, LocaleRole role) {
+            HPerson person, LocaleRole role) {
         return new HProjectLocaleMember(project, locale, person, role);
     }
 
     /**
      * Ensure the given membership is present or absent.
      */
-    private Optional<UpdatedRole> ensureMembership(HProject project, boolean shouldBePresent,
-        HProjectMember membership) {
+    private Optional<UpdatedRole> ensureMembership(HProject project,
+            boolean shouldBePresent, HProjectMember membership) {
         UpdatedRole updatedRole = null;
         final Set<HProjectMember> members = project.getMembers();
         final boolean isPresent = members.contains(membership);
@@ -219,13 +223,13 @@ public class ProjectServiceImpl implements ProjectService {
             if (shouldBePresent) {
                 members.add(membership);
                 updatedRole = new UpdatedRole(
-                    membership.getPerson().getAccount().getUsername(),
-                    membership.getRole(), true);
+                        membership.getPerson().getAccount().getUsername(),
+                        membership.getRole(), true);
             } else {
                 members.remove(membership);
                 updatedRole = new UpdatedRole(
-                    membership.getPerson().getAccount().getUsername(),
-                    membership.getRole(), false);
+                        membership.getPerson().getAccount().getUsername(),
+                        membership.getRole(), false);
             }
         }
         return Optional.ofNullable(updatedRole);
@@ -235,7 +239,7 @@ public class ProjectServiceImpl implements ProjectService {
      * Ensure the given locale membership is present or absent.
      */
     private void ensureMembership(HProject project, boolean shouldBePresent,
-        HProjectLocaleMember membership) {
+            HProjectLocaleMember membership) {
         final Set<HProjectLocaleMember> members = project.getLocaleMembers();
         final boolean isPresent = members.contains(membership);
         if (isPresent != shouldBePresent) {

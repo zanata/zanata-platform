@@ -1,0 +1,49 @@
+/* Editor Sidebar Styling */
+
+.sidebar-editor {
+  width:25%;
+}
+
+.sidebar-editor .nav-tabs li {
+  width:50%;
+}
+
+.sidebar-wrapper {
+  padding:0.75em;
+}
+
+.sidebar-heading {
+  height:48px;
+  background-color:#bcd4dc;
+  color:#20718a;
+  padding:0.75em;
+  font-weight: 600;
+}
+
+.sidebar-heading svg {
+  vertical-align: sub;
+}
+
+ul.sidebar-details {
+  font-size:0.875em;
+  color:#20718a;
+  word-wrap:break-word;
+}
+
+ul.sidebar-details span {
+  font-weight: 600;
+}
+
+span.details-nocontent {
+  color: #b3b3b3;
+  font-weight: 500 !important;
+}
+
+.details-content *, span.details-content {
+  color: #20718A;
+  font-weight: 500 !important;
+}
+
+.details-content .n1 {
+  vertical-align:middle;
+}

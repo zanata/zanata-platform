@@ -18,7 +18,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.database;
 
 import java.lang.reflect.InvocationHandler;
@@ -28,26 +27,19 @@ import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.Statement;
 import java.util.Set;
-
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Sets;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import javax.annotation.Nullable;
-
 import static java.lang.reflect.Proxy.getInvocationHandler;
 import static java.lang.reflect.Proxy.isProxyClass;
 
 /**
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
-@Slf4j
 class ConnectionWrapper implements InvocationHandler {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ConnectionWrapper.class);
     // For reference, this is what the mysql exception looks like:
     // Streaming result set com.mysql.jdbc.RowDataDynamic@1950740 is
     // still active. No statements may be issued when any streaming
@@ -58,8 +50,10 @@ class ConnectionWrapper implements InvocationHandler {
             "Streaming ResultSet is still open on this Connection";
     private final Connection originalConnection;
     private final Set<Throwable> resultSetsOpened = Sets.newHashSet();
-    private @Nullable Throwable streamingResultSetOpened;
-    private @Nullable Throwable firstExecuted;
+    @Nullable
+    private Throwable streamingResultSetOpened;
+    @Nullable
+    private Throwable firstExecuted;
     private boolean autoCommit = true;
     @VisibleForTesting
     boolean transactionActive = false;
@@ -70,8 +64,7 @@ class ConnectionWrapper implements InvocationHandler {
                 && getInvocationHandler(conn) instanceof ConnectionWrapper) {
             return conn;
         }
-        return ProxyUtil
-                .newProxy(conn, new ConnectionWrapper(conn));
+        return ProxyUtil.newProxy(conn, new ConnectionWrapper(conn));
     }
 
     @VisibleForTesting
@@ -87,11 +80,11 @@ class ConnectionWrapper implements InvocationHandler {
         }
         if (method.getName().equals("close") && args == null) {
             beforeClose();
-        } else if ((method.getName().equals("commit") || method.getName().equals("rollback"))
-                && args == null) {
+        } else if ((method.getName().equals("commit")
+                || method.getName().equals("rollback")) && args == null) {
             beforeTransactionComplete();
-        } else if (method.getName().equals("setAutoCommit")
-                && args.length == 1 && args[0] instanceof Boolean) {
+        } else if (method.getName().equals("setAutoCommit") && args.length == 1
+                && args[0] instanceof Boolean) {
             beforeSetAutoCommit((boolean) args[0]);
         }
         try {
@@ -131,8 +124,7 @@ class ConnectionWrapper implements InvocationHandler {
         }
         if (transactionActive) {
             throw new RuntimeException(
-                    "Connection.close() called with transaction active. " +
-                            "First executed statement was here:",
+                    "Connection.close() called with transaction active. First executed statement was here:",
                     firstExecuted);
         }
         firstExecuted = null;
@@ -140,11 +132,13 @@ class ConnectionWrapper implements InvocationHandler {
 
     /**
      * Notify ConnectionWrapper that Statement.execute() has been called.
+     *
      * @throws StreamingResultSetSQLException
      */
     public void afterStatementExecute() throws StreamingResultSetSQLException {
         if (!autoCommit) {
-            // TODO it might be a little better to do this in beforeStatementExecute
+            // TODO it might be a little better to do this in
+            // beforeStatementExecute
             // If we read/write the database with autoCommit off, but we
             // later forget to commit/rollback before close, we want to know
             // about it, so we track the first execute() in the transaction.
@@ -162,9 +156,11 @@ class ConnectionWrapper implements InvocationHandler {
     /**
      * Notify ConnectionWrapper that a Statement has opened a non-streaming
      * ResultSet.
+     *
      * @throws StreamingResultSetSQLException
      */
-    public void afterResultSetOpened(Throwable throwable) throws StreamingResultSetSQLException {
+    public void afterResultSetOpened(Throwable throwable)
+            throws StreamingResultSetSQLException {
         if (streamingResultSetOpened != null) {
             throw new StreamingResultSetSQLException(CONCURRENT_RESULTSET,
                     streamingResultSetOpened);
@@ -175,6 +171,7 @@ class ConnectionWrapper implements InvocationHandler {
     /**
      * Notify ConnectionWrapper that a Statement has opened a streaming
      * ResultSet.
+     *
      * @throws StreamingResultSetSQLException
      */
     public void afterStreamingResultSetOpened(Throwable throwable)
@@ -191,6 +188,7 @@ class ConnectionWrapper implements InvocationHandler {
 
     /**
      * Notify ConnectionWrapper that a non-streaming ResultSet has been closed.
+     *
      * @throws StreamingResultSetSQLException
      */
     public void afterResultSetClosed(Throwable throwable) {
@@ -199,9 +197,14 @@ class ConnectionWrapper implements InvocationHandler {
 
     /**
      * Notify ConnectionWrapper that a streaming ResultSet has been closed.
+     *
      * @throws StreamingResultSetSQLException
      */
     public void afterStreamingResultSetClosed() {
         streamingResultSetOpened = null;
+    }
+
+    private ConnectionWrapper(final Connection originalConnection) {
+        this.originalConnection = originalConnection;
     }
 }

@@ -18,30 +18,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.rest.service;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
-
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
-
-import lombok.extern.slf4j.Slf4j;
-
 import nu.xom.Attribute;
 import nu.xom.DocType;
 import nu.xom.Element;
 import nu.xom.Text;
-
 import org.zanata.util.CloseableIterator;
 import org.zanata.util.NullCloseable;
 import org.zanata.xml.StreamSerializer;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.Iterators;
 import com.google.common.collect.PeekingIterator;
@@ -49,15 +42,16 @@ import com.google.common.collect.PeekingIterator;
 /**
  * Exports a series of translation units (T) to an OutputStream in TMX format.
  *
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * @param T
  */
 @ParametersAreNonnullByDefault
-@Slf4j
 public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
-    private final @Nonnull
-    Iterator<T> tuIter;
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TMXStreamingOutput.class);
+    @Nonnull
+    private final Iterator<T> tuIter;
     private final TMXExportStrategy<T> exportStrategy;
     private final Closeable closeable;
     private final String jobName;
@@ -67,9 +61,8 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
         this.jobName = jobName;
         this.tuIter = tuIter;
         this.exportStrategy = exportTUStrategy;
-        this.closeable =
-                (Closeable) (tuIter instanceof Closeable ? tuIter
-                        : NullCloseable.INSTANCE);
+        this.closeable = (Closeable) (tuIter instanceof Closeable ? tuIter
+                : NullCloseable.INSTANCE);
     }
 
     /**
@@ -123,8 +116,8 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
      * method exits.
      */
     @Override
-    public void write(OutputStream output) throws IOException,
-            WebApplicationException {
+    public void write(OutputStream output)
+            throws IOException, WebApplicationException {
         int tuCount = 0;
         try {
             log.info("streaming output started for: {}", jobName);
@@ -135,23 +128,19 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
             // error instead of simply aborting the output stream.
             if (iter.hasNext())
                 iter.peek();
-
             StreamSerializer stream = new StreamSerializer(output);
             stream.writeXMLDeclaration();
-            stream.write(new DocType("tmx", "http://www.lisa.org/tmx/tmx14.dtd"));
+            stream.write(
+                    new DocType("tmx", "http://www.lisa.org/tmx/tmx14.dtd"));
             stream.writeNewLine();
-
             Element tmx = new Element("tmx");
             tmx.addAttribute(new Attribute("version", "1.4"));
             startElem(stream, tmx);
-
             indent(stream);
             writeElem(stream, exportStrategy.buildHeader());
-
             indent(stream);
             Element body = new Element("body");
             startElem(stream, body);
-
             while (iter.hasNext()) {
                 T tu = iter.next();
                 writeIfComplete(stream, tu);
@@ -203,5 +192,4 @@ public class TMXStreamingOutput<T> implements StreamingOutput, Closeable {
             writeElem(stream, textUnit.get());
         }
     }
-
 }

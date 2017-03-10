@@ -1,16 +1,9 @@
 import React, { Component, PropTypes } from 'react'
 import { isEqual } from 'lodash'
-import {
-  Icon,
-  LoaderText,
-  TableCell,
-  TableRow,
-  Row
-} from 'zanata-ui'
 import EntryModal from './EntryModal'
 import DeleteEntryModal from './DeleteEntryModal'
-import { EditableText } from '../../components'
-import { Button } from 'react-bootstrap'
+import { EditableText, Icon, LoaderText } from '../../components'
+import { Button, Row, Table } from 'react-bootstrap'
 /**
  * Component to display a GlossaryEntry
  */
@@ -54,18 +47,17 @@ class Entry extends Component {
       selected,
       termsLoading
     } = this.props
-
     const transContent = entry && entry.transTerm
       ? entry.transTerm.content : ''
     const transSelected = !!selectedTransLocale
 
     if (!entry) {
       return (
-        <TableRow>
-          <TableCell>
-            <div className='LineClamp(1,24px) Px(rq)'>Loading…</div>
-          </TableCell>
-        </TableRow>
+        <tr>
+          <td>
+            <div className='lineclamp'>Loading…</div>
+          </td>
+        </tr>
       )
     }
 
@@ -88,7 +80,7 @@ class Entry extends Component {
     )
 
     const loadingDiv = (
-      <div className='LineClamp(1,24px) Px(rq)'>Loading…</div>
+      <div className='lineclamp'>Loading…</div>
     )
 
     let secondColumnContent
@@ -107,18 +99,19 @@ class Entry extends Component {
         </EditableText>
     } else {
       secondColumnContent =
-        <div className='LineClamp(1,24px) Px(rq)'>
+        <div className='lineclamp'>
           {entry.termsCount}
         </div>
     }
 
+    const cssClass = 'highlight editable' + (selected ? ' selected' : '')
+
     return (
-      <div>
-        <TableRow highlight
-          className='editable'
+      <Table className='glossary-entry'>
+        <tr className={cssClass}
           selected={selected}
           onClick={() => handleSelectTerm(entry.id)}>
-          <TableCell size='3' tight>
+          <td className='td-4 tight'>
             {termsLoading
               ? loadingDiv
               : (<EditableText
@@ -128,15 +121,15 @@ class Entry extends Component {
                 {entry.srcTerm.content}
               </EditableText>)
             }
-          </TableCell>
-          <TableCell>
+          </td>
+          <td className='td-3'>
             {secondColumnContent}
-          </TableCell>
-          <TableCell hideSmall>
+          </td>
+          <td className='hidesmall td-2'>
           {termsLoading
             ? loadingDiv
             : (<EditableText
-              className='textStateClasses'
+              className='text-state-classes'
               title={entry.pos}
               editable={!transSelected && editable}
               editing={selected}
@@ -146,15 +139,15 @@ class Entry extends Component {
               {entry.pos}
             </EditableText>)
           }
-          </TableCell>
-          <TableCell size='3'>
+          </td>
+          <td className='td-2'>
             {termsLoading
               ? loadingDiv
-              : (<Row>
-                <Button bsStyle='link' atomic={{m: 'Mend(rq)'}}
+              : (<Row className='entry-row'>
+                <Button bsStyle='link btn-link-end'
                   disabled={isDeleting}
                   onClick={() => this.setShowingEntryModal(true)}>
-                  <Icon name='info' />
+                  <Icon name='info' className='s1 infoicon-nomargin' />
                 </Button>
                 <EntryModal entry={entry}
                   show={this.state.showEntryModal}
@@ -168,10 +161,10 @@ class Entry extends Component {
                     handleTermFieldUpdate(field, e)}
                   handleUpdateTerm={(entry) =>
                     handleUpdateTerm(entry, false)} />
-                <div className='Op(0) row--selected_Op(1)
-                  editable:h_Op(1) Trs(eo)'>
-                  <div className='Hidden--lesm'>
-                    <Row>
+                <div className='trans-row row--selected
+                  editable-op1'>
+                  <div className='hidden-lesm'>
+                    <Row className='entry-row'>
                       {updateButton}
                       {displayUpdateButton && !isSaving ? (
                         <Button bsStyle='link' bsSize='small'
@@ -193,9 +186,9 @@ class Entry extends Component {
                 </div>
               </Row>)
             }
-          </TableCell>
-        </TableRow>
-      </div>
+          </td>
+        </tr>
+      </Table>
     )
     /* eslint-enable react/jsx-no-bind */
   }

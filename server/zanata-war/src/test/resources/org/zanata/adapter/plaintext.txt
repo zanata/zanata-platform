@@ -1,0 +1,4 @@
+The first paragraph is split over more than one line. It has more than
+one sentence.
+
+The second paragraph fits on one line, with only one sentence.

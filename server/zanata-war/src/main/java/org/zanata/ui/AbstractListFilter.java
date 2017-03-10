@@ -19,42 +19,28 @@
  *  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  *  * site: http://www.fsf.org.
  */
-
 package org.zanata.ui;
 
 import java.io.Serializable;
 import java.util.List;
-
 import com.google.common.collect.Lists;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Helper class to assist with the paging of data.
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public abstract class AbstractListFilter<T> implements Serializable {
 
-    @Getter
-    @Setter
     private int pageSize = 100;
-
-    @Getter
-    @Setter
     private int pageNumber = 1;
-
-    @Getter
-    @Setter
     private String filter;
-
     private List<T> currentPageData;
-
     private long totalRecords = -1L;
 
     public List<T> getCurrentPage() {
         if (currentPageData == null) {
-            currentPageData = fetchRecords(getPageStartIdx(),
-                    pageSize, filter);
+            currentPageData = fetchRecords(getPageStartIdx(), pageSize, filter);
         }
         return currentPageData;
     }
@@ -84,25 +70,26 @@ public abstract class AbstractListFilter<T> implements Serializable {
     }
 
     public void nextPage() {
-        if(allowsNextPage()) {
+        if (allowsNextPage()) {
             pageNumber++;
             reset();
         }
     }
 
     public void previousPage() {
-        if(allowsPreviousPage()) {
+        if (allowsPreviousPage()) {
             pageNumber--;
             reset();
         }
     }
 
     public int getPageStartIdx() {
-        return (pageNumber-1) * pageSize;
+        return (pageNumber - 1) * pageSize;
     }
 
     public int getPageEndIdx() {
-        return Math.min(getPageStartIdx() + pageSize, (int) getTotalRecords()) - 1;
+        return Math.min(getPageStartIdx() + pageSize, (int) getTotalRecords())
+                - 1;
     }
 
     public void reset() {
@@ -112,5 +99,29 @@ public abstract class AbstractListFilter<T> implements Serializable {
 
     public void clearFilter() {
         filter = null;
+    }
+
+    public int getPageSize() {
+        return this.pageSize;
+    }
+
+    public void setPageSize(final int pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public int getPageNumber() {
+        return this.pageNumber;
+    }
+
+    public void setPageNumber(final int pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public String getFilter() {
+        return this.filter;
+    }
+
+    public void setFilter(final String filter) {
+        this.filter = filter;
     }
 }

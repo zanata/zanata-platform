@@ -64,16 +64,20 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TimeZone;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
 /**
@@ -208,6 +212,14 @@ public class TMXParserTest {
         for (TransMemoryUnit tu : tm.getTranslationUnits()) {
             assertThat(tu.getTransUnitVariants().size(), greaterThan(0));
         }
+
+        Optional<String> seg = tm.getTranslationUnits().stream()
+                .filter(tu -> tu.getTransUnitId() != null && tu.getTransUnitId().equals("tuid2"))
+                .map(TransMemoryUnit::getTransUnitVariants)
+                .map(map ->  map.get("ja"))
+                .map(TransMemoryUnitVariant::getPlainTextSegment)
+                .findAny();
+        assertThat(seg.orElseGet(null), containsString("を選択します"));
     }
 
     @Test

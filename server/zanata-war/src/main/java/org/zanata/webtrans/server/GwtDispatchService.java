@@ -3,16 +3,12 @@ package org.zanata.webtrans.server;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.servlet.annotation.WebServlet;
-
-import lombok.extern.slf4j.Slf4j;
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
-
 import org.zanata.ApplicationConfiguration;
 import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.shared.DispatchService;
-
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
@@ -29,17 +25,18 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
  * @see org.zanata.webtrans.shared.DispatchServiceAsync
  * @see com.google.gwt.user.server.rpc.RemoteServiceServlet
  * @see SeamDispatch
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @WebServlet(urlPatterns = "/seam/resource/gwt")
 @RemoteServiceRelativePath("seam/resource/gwt")
-@Slf4j
-public class GwtDispatchService extends RemoteServiceServlet implements
-        DispatchService {
+public class GwtDispatchService extends RemoteServiceServlet
+        implements DispatchService {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(GwtDispatchService.class);
+
     @Inject
     private SeamDispatch dispatch;
-
     @Inject
     private ZanataIdentity identity;
 

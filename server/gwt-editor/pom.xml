@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>gwt-editor</artifactId>
   <name>gwt-editor</name>
@@ -25,11 +25,6 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-common-util</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
     </dependency>
 
     <dependency>
@@ -240,8 +235,6 @@
           <sourceLevel>auto</sourceLevel>
           <runTarget>zanata/webtrans/Application.html</runTarget>
           <noServer>true</noServer>
-          <!--below is needed if you want to use lombok on gwt code-->
-          <!--<extraJvmArgs>-javaagent:${lombok.lib}=ECJ</extraJvmArgs>-->
           <!-- GWT needs more memory for more threads, or for Java 8+ -->
           <extraJvmArgs>-Xmx1024M -Xss1024k</extraJvmArgs>
         </configuration>

@@ -25,20 +25,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
-import lombok.NonNull;
 import org.apache.commons.lang.StringUtils;
 
+import javax.annotation.Nonnull;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
 import org.zanata.dao.VersionGroupDAO;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.model.HIterationGroup;
+import org.zanata.seam.security.IdentityManager;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.CheckLoggedIn;
@@ -59,10 +58,7 @@ import org.zanata.service.LanguageTeamService;
 import org.zanata.util.DateUtil;
 import org.zanata.util.IServiceLocator;
 import org.zanata.util.ServiceLocator;
-
 import javax.annotation.Nullable;
-
-import lombok.Getter;
 
 @Named("dashboardAction")
 @ViewScoped
@@ -70,52 +66,40 @@ import lombok.Getter;
 @Model
 @Transactional
 public class DashboardAction implements Serializable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     @Inject
     private GravatarService gravatarServiceImpl;
-
     @Inject
     private ActivityService activityServiceImpl;
-
     @Inject
     private LanguageTeamService languageTeamServiceImpl;
-
     @Inject
     private AccountDAO accountDAO;
-
     @Inject
     private ProjectDAO projectDAO;
-
     @Inject
     private ZanataIdentity identity;
-
     @Inject
     private Messages msgs;
-
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
-
     @Inject
-    @Getter
     private ProjectFilter projectList;
-
     @Inject
-    @Getter
     private GroupFilter groupList;
+    private final java.util.concurrent.atomic.AtomicReference<Object> userMaintainedProjectsCount =
+            new java.util.concurrent.atomic.AtomicReference<Object>();
+    private final java.util.concurrent.atomic.AtomicReference<Object> userMaintainedProjects =
+            new java.util.concurrent.atomic.AtomicReference<Object>();
+    @Inject
+    private IdentityManager identityManager;
 
-    @Getter(lazy = true)
-    private final int userMaintainedProjectsCount =
-            countUserMaintainedProjects();
-
-    @Getter(lazy = true)
-    private final List<HProject> userMaintainedProjects =
-            fetchUserMaintainedProjects();
 
     public String getUserImageUrl() {
-        return gravatarServiceImpl.getUserImageUrl(
-                GravatarService.USER_IMAGE_SIZE);
+        return gravatarServiceImpl
+                .getUserImageUrl(GravatarService.USER_IMAGE_SIZE);
     }
 
     public String getUsername() {
@@ -128,30 +112,38 @@ public class DashboardAction implements Serializable {
 
     public String getUserLanguageTeams() {
         HAccount account = accountDAO.findById(authenticatedAccount.getId());
-        return StringUtils.join(
-            Collections2.transform(account.getPerson()
-                    .getLanguageMemberships(),
+        return StringUtils.join(Collections2.transform(
+                account.getPerson().getLanguageMemberships(),
                 new Function<HLocale, Object>() {
+
                     @Nullable
                     @Override
-                    public Object apply(@NonNull HLocale locale) {
+                    public Object apply(@Nonnull HLocale locale) {
+                        if (locale == null) {
+                            throw new NullPointerException("locale");
+                        }
                         return locale.retrieveDisplayName();
                     }
-                }),
-            ", ");
+                }), ", ");
+    }
+
+    public String getUserRoles() {
+        HAccount account = accountDAO.findById(authenticatedAccount.getId());
+        List<String> roles =
+            identityManager.getGrantedRoles(account.getUsername());
+        return StringUtils.join(roles, ", ");
     }
 
     private int countUserMaintainedProjects() {
         return projectDAO.getMaintainedProjectCount(
-            authenticatedAccount.getPerson(), null);
+                authenticatedAccount.getPerson(), null);
     }
 
     private List<HProject> fetchUserMaintainedProjects() {
         List<HProject> sortedList = new ArrayList<HProject>();
-
         if (canViewObsolete()) {
-            sortedList.addAll(authenticatedAccount.getPerson()
-                    .getMaintainerProjects());
+            sortedList.addAll(
+                    authenticatedAccount.getPerson().getMaintainerProjects());
         } else {
             for (HProject project : authenticatedAccount.getPerson()
                     .getMaintainerProjects()) {
@@ -162,15 +154,14 @@ public class DashboardAction implements Serializable {
         }
         Collections.sort(sortedList,
                 ComparatorUtil.PROJECT_CREATION_DATE_COMPARATOR);
-
         return sortedList;
     }
 
     public String getLastTranslatedTimeLapseMessage(HProject project) {
         Date lastTranslatedDate = projectDAO.getLastTranslatedDate(project);
         // TODO i18n needed
-        return lastTranslatedDate == null ? "never" :
-                DateUtil.getHowLongAgoDescription(lastTranslatedDate);
+        return lastTranslatedDate == null ? "never"
+                : DateUtil.getHowLongAgoDescription(lastTranslatedDate);
     }
 
     public String getShortTime(Date date) {
@@ -204,8 +195,8 @@ public class DashboardAction implements Serializable {
     }
 
     public boolean isUserReviewer() {
-        return languageTeamServiceImpl.isUserReviewer(
-            authenticatedAccount.getPerson().getId());
+        return languageTeamServiceImpl
+                .isUserReviewer(authenticatedAccount.getPerson().getId());
     }
 
     public String getLastTranslatorMessage(HProject project) {
@@ -219,9 +210,9 @@ public class DashboardAction implements Serializable {
             } else {
                 username = lastTrans.getName();
             }
-            return msgs
-                    .format("jsf.dashboard.activity.lastTranslatedBy.message",
-                            username);
+            return msgs.format(
+                    "jsf.dashboard.activity.lastTranslatedBy.message",
+                    username);
         }
         return "";
     }
@@ -237,13 +228,12 @@ public class DashboardAction implements Serializable {
     /**
      * Project list filter. Pages its elements directly from the database.
      */
-    public static class ProjectFilter
-            extends AbstractListFilter<HProject> implements Serializable {
+    public static class ProjectFilter extends AbstractListFilter<HProject>
+            implements Serializable {
 
         @Inject
         @Authenticated
         private HAccount authenticatedAccount;
-
         @Inject
         private ProjectDAO projectDAO;
 
@@ -264,28 +254,67 @@ public class DashboardAction implements Serializable {
     /**
      * Group list filter. Pages its elements directly from the database.
      */
-    public static class GroupFilter
-        extends AbstractListFilter<HIterationGroup> implements Serializable {
+    public static class GroupFilter extends AbstractListFilter<HIterationGroup>
+            implements Serializable {
 
         @Inject
         @Authenticated
         private HAccount authenticatedAccount;
-
         @Inject
         private VersionGroupDAO versionGroupDAO;
 
         @Override
         protected List<HIterationGroup> fetchRecords(int start, int max,
-            String filter) {
-            return versionGroupDAO
-                .getGroupsByMaintainer(authenticatedAccount.getPerson(), filter,
-                    start, max);
+                String filter) {
+            return versionGroupDAO.getGroupsByMaintainer(
+                    authenticatedAccount.getPerson(), filter, start, max);
         }
 
         @Override
         protected long fetchTotalRecords(String filter) {
             return versionGroupDAO.getMaintainedGroupCount(
-                authenticatedAccount.getPerson(), filter);
+                    authenticatedAccount.getPerson(), filter);
         }
+    }
+
+    public ProjectFilter getProjectList() {
+        return this.projectList;
+    }
+
+    public GroupFilter getGroupList() {
+        return this.groupList;
+    }
+
+    public int getUserMaintainedProjectsCount() {
+        Object value = this.userMaintainedProjectsCount.get();
+        if (value == null) {
+            synchronized (this.userMaintainedProjectsCount) {
+                value = this.userMaintainedProjectsCount.get();
+                if (value == null) {
+                    final int actualValue = countUserMaintainedProjects();
+                    value = actualValue;
+                    this.userMaintainedProjectsCount.set(value);
+                }
+            }
+        }
+        return (Integer) value;
+    }
+
+    public List<HProject> getUserMaintainedProjects() {
+        Object value = this.userMaintainedProjects.get();
+        if (value == null) {
+            synchronized (this.userMaintainedProjects) {
+                value = this.userMaintainedProjects.get();
+                if (value == null) {
+                    final List<HProject> actualValue =
+                            fetchUserMaintainedProjects();
+                    value = actualValue == null ? this.userMaintainedProjects
+                            : actualValue;
+                    this.userMaintainedProjects.set(value);
+                }
+            }
+        }
+        return (List<HProject>) (value == this.userMaintainedProjects ? null
+                : value);
     }
 }

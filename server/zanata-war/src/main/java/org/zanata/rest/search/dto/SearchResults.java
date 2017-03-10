@@ -18,31 +18,40 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.rest.search.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-
 import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
-@AllArgsConstructor
 public class SearchResults implements Serializable {
-    @Getter
     public int totalCount;
-
-    @Getter
     public List<SearchResult> results;
-
-    @Getter
     private SearchResult.SearchResultType type;
+
+    @java.beans.ConstructorProperties({ "totalCount", "results", "type" })
+    public SearchResults(final int totalCount, final List<SearchResult> results,
+            final SearchResult.SearchResultType type) {
+        this.totalCount = totalCount;
+        this.results = results;
+        this.type = type;
+    }
+
+    public int getTotalCount() {
+        return this.totalCount;
+    }
+
+    public List<SearchResult> getResults() {
+        return this.results;
+    }
+
+    public SearchResult.SearchResultType getType() {
+        return this.type;
+    }
 }

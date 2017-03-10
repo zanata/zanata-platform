@@ -18,7 +18,6 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
 package org.zanata.model;
 
 import javax.persistence.Access;
@@ -30,52 +29,35 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
 
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Entity
 @Immutable
 @Cacheable
 @BatchSize(size = 20)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Access(AccessType.FIELD)
 public class HTextFlowTargetReviewComment extends ModelEntityBase {
     private static final long serialVersionUID = 1413384329431214946L;
-
-    @Getter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "commenter_id", nullable = false)
     private HPerson commenter;
-
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_id")
     @IndexedEmbedded
-    @Getter
     private HTextFlowTarget textFlowTarget;
-
     @NotEmpty
     @javax.persistence.Lob
-    @Getter
     private String comment;
-
-    @Setter(AccessLevel.PROTECTED)
-    @Getter
     @NotNull
     private Integer targetVersion;
-
     private transient String commenterName;
 
     public HTextFlowTargetReviewComment(HTextFlowTarget target, String comment,
@@ -95,4 +77,26 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
         return commenterName;
     }
 
+    protected HTextFlowTargetReviewComment() {
+    }
+
+    public HPerson getCommenter() {
+        return this.commenter;
+    }
+
+    public HTextFlowTarget getTextFlowTarget() {
+        return this.textFlowTarget;
+    }
+
+    public String getComment() {
+        return this.comment;
+    }
+
+    protected void setTargetVersion(final Integer targetVersion) {
+        this.targetVersion = targetVersion;
+    }
+
+    public Integer getTargetVersion() {
+        return this.targetVersion;
+    }
 }

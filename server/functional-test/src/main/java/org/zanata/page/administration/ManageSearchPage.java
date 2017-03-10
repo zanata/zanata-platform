@@ -22,9 +22,7 @@ package org.zanata.page.administration;
 
 import com.google.common.base.Predicate;
 import java.util.List;
-
 import com.google.common.base.Throwables;
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -37,11 +35,10 @@ import org.zanata.util.WebElementUtil;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class ManageSearchPage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ManageSearchPage.class);
     private static final int SELECT_ALL_COLUMN = 0;
-
     private By classesTable = By.id("form:actions");
     private By abortButton = By.id("form:cancel");
     private By selectAllButton = By.id("form:selectAll");
@@ -61,11 +58,11 @@ public class ManageSearchPage extends BasePage {
         for (TableRow tableRow : tableRows) {
             if (tableRow.getCellContents().contains(clazz)) {
                 WebElement allActionsChkBox =
-                    tableRow.getCells().get(SELECT_ALL_COLUMN).findElement(By.tagName("input"));
+                        tableRow.getCells().get(SELECT_ALL_COLUMN)
+                                .findElement(By.tagName("input"));
                 Checkbox.of(allActionsChkBox).check();
             }
         }
-
         return new ManageSearchPage(getDriver());
     }
 
@@ -84,13 +81,14 @@ public class ManageSearchPage extends BasePage {
 
     public boolean allActionsSelected() {
         log.info("Query all actions selected");
-        List<TableRow> tableRows = WebElementUtil.getTableRows(getDriver(),
-                readyElement(existingElement(classesTable),
-                        By.tagName("table")));
+        List<TableRow> tableRows =
+                WebElementUtil.getTableRows(getDriver(), readyElement(
+                        existingElement(classesTable), By.tagName("table")));
         for (TableRow tableRow : tableRows) {
             // column 2, 3, 4 are checkboxes for purge, reindex and optimize
             for (int i = 1; i <= 3; i++) {
-                WebElement checkBox = tableRow.getHeaders().get(i).findElement(By.tagName("input"));
+                WebElement checkBox = tableRow.getHeaders().get(i)
+                        .findElement(By.tagName("input"));
                 if (!Checkbox.of(checkBox).checked()) {
                     return false;
                 }
@@ -122,7 +120,6 @@ public class ManageSearchPage extends BasePage {
         return new ManageSearchPage(getDriver());
     }
 
-
     public boolean noOperationsRunningIsDisplayed() {
         log.info("Query No Operations");
         return readyElement(noOpsLabel).isDisplayed();
@@ -137,5 +134,4 @@ public class ManageSearchPage extends BasePage {
         log.info("Query is action aborted");
         return readyElement(abortedLabel).isDisplayed();
     }
-
 }

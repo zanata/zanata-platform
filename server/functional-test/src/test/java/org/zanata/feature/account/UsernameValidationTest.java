@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
@@ -28,28 +27,25 @@ import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
 import org.zanata.workflow.BasicWorkFlow;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 @Category(DetailedTest.class)
 public class UsernameValidationTest extends ZanataTestCase {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(UsernameValidationTest.class);
 
-    @Feature(summary = "The user must enter acceptable username characters" +
-            "to register",
+    @Feature(
+            summary = "The user must enter acceptable username charactersto register",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernameCharacterValidation() throws Exception {
-        RegisterPage registerPage = new BasicWorkFlow()
-                .goToHome()
-                .goToRegistration()
-                .enterUserName("user|name");
+        RegisterPage registerPage = new BasicWorkFlow().goToHome()
+                .goToRegistration().enterUserName("user|name");
         registerPage.defocus(registerPage.usernameField);
-
         assertThat(registerPage.getErrors())
                 .contains(RegisterPage.USERNAME_VALIDATION_ERROR)
                 .as("Username validation errors are shown");

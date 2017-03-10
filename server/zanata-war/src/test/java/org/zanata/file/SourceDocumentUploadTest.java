@@ -25,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
@@ -38,15 +39,13 @@ import org.jglue.cdiunit.InRequestScope;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Matchers;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.zanata.common.DocumentType;
 import org.zanata.exception.ChunkUploadException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HRawDocument;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.service.VirusScanner;
 import org.zanata.security.ZanataCredentials;
 import org.zanata.service.DocumentService;
 import org.zanata.service.TranslationFileService;
@@ -76,6 +75,8 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     WindowContext windowContext;
     @Produces @Mock
     UrlUtil urlUtil;
+    @Produces @Mock
+    VirusScanner virusScanner;
 
     @Produces @Mock Session session;
     @Produces @SessionId String sessionId = "";
@@ -108,7 +109,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         File someFile = File.createTempFile("tests", "something");
         when(documentUploadUtil.persistTempFileFromUpload(conf.uploadForm))
                 .thenReturn(someFile);
-
+        doNothing().when(virusScanner).scan(someFile, "myproject:myversion:mydoc");
         when(
                 documentDAO.getAdapterParams(conf.projectSlug,
                         conf.versionSlug, conf.docId)).thenReturn(

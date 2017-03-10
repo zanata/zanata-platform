@@ -17,7 +17,6 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
-
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
@@ -27,12 +26,12 @@ import org.zanata.security.annotations.CheckRole;
 import org.zanata.util.Introspectable;
 import com.google.common.annotations.Beta;
 import com.google.common.collect.Lists;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * This API is experimental only and subject to change or even removal.
  *
- * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @RequestScoped
 @Path("/monitor")
@@ -40,20 +39,21 @@ import lombok.extern.slf4j.Slf4j;
 @Consumes({ "application/xml" })
 @Transactional(readOnly = true)
 @CheckRole("admin")
-@Slf4j
 @Beta
 public class IntrospectableObjectMonitorService {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(IntrospectableObjectMonitorService.class);
 
     @Inject
     private Instance<Introspectable> introspectables;
-
 
     /**
      * Return all Introspectable objects link.
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
-     *         OK(200) - all available introspectable objects with hypermedia link.<br>
+     *         OK(200) - all available introspectable objects with hypermedia
+     *         link.<br>
      *         UNAUTHORIZED(401) - if not admin role.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
@@ -61,16 +61,14 @@ public class IntrospectableObjectMonitorService {
     @GET
     @Wrapped(element = "introspectable", namespace = Namespaces.ZANATA_API)
     public Response get() {
-        List<LinkRoot> all =
-                Lists.newArrayList(introspectables.iterator()).stream().map(
-                        introspectable -> new LinkRoot(URI.create(
-                                "/" + introspectable.getIntrospectableId()),
-                                "self",
-                                MediaType.APPLICATION_JSON)
-                ).collect(Collectors.toList());
-
-
+        List<LinkRoot> all = Lists.newArrayList(introspectables.iterator())
+                .stream()
+                .map(introspectable -> new LinkRoot(
+                        URI.create("/" + introspectable.getIntrospectableId()),
+                        "self", MediaType.APPLICATION_JSON))
+                .collect(Collectors.toList());
         Type genericType = new GenericType<List<LinkRoot>>() {
+
         }.getGenericType();
         Object entity = new GenericEntity<>(all, genericType);
         return Response.ok().entity(entity).build();
@@ -80,18 +78,19 @@ public class IntrospectableObjectMonitorService {
      * Return a single introspectable fields as String.
      *
      * @param id
-     *         introspectable id
+     *            introspectable id
      * @return The following response status codes will be returned from this
      *         operation:<br>
-     *         OK(200) - Response containing a string of all fields and values.<br>
-     *         NOT_FOUND(404) - given id does not represent an introspectable.<br>
+     *         OK(200) - Response containing a string of all fields and
+     *         values.<br>
+     *         NOT_FOUND(404) - given id does not represent an
+     *         introspectable.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
      */
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") final String id) {
-
         Optional<Introspectable> optional =
                 Lists.newArrayList(introspectables.iterator()).stream()
                         .filter(input -> input.getIntrospectableId().equals(id))
@@ -100,17 +99,15 @@ public class IntrospectableObjectMonitorService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         final Introspectable introspectable = optional.get();
-
         String json = introspectable.getFieldValuesAsJSON();
         return Response.ok(json).build();
-
     }
 
     @XmlRootElement(name = "link")
     public static class LinkRoot extends Link {
+
         @SuppressWarnings("unused")
         public LinkRoot() {
-            super();
         }
 
         public LinkRoot(URI href, String rel, String type) {

@@ -25,18 +25,18 @@ import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.search.FullTextSession;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
  * Indexing strategy that fetches all instances in a given class and indexes
  * them. This class batches the fetching of the entities and might be a bit
  * slower as it does not account for lazily loaded entity relationships.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-@Slf4j
-public class SimpleClassIndexingStrategy<T> extends AbstractIndexingStrategy<T> {
+public class SimpleClassIndexingStrategy<T>
+        extends AbstractIndexingStrategy<T> {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(SimpleClassIndexingStrategy.class);
     public static final int MAX_QUERY_ROWS = 5000;
 
     public SimpleClassIndexingStrategy(Class<T> entityType) {
@@ -54,12 +54,11 @@ public class SimpleClassIndexingStrategy<T> extends AbstractIndexingStrategy<T> 
     }
 
     @Override
-    protected ScrollableResults queryResults(int offset, FullTextSession session) {
-        Query query =
-                session.createQuery("from " + getEntityType().getName());
+    protected ScrollableResults queryResults(int offset,
+            FullTextSession session) {
+        Query query = session.createQuery("from " + getEntityType().getName());
         query.setFirstResult(offset);
         query.setMaxResults(MAX_QUERY_ROWS);
         return query.scroll(ScrollMode.FORWARD_ONLY);
     }
-
 }

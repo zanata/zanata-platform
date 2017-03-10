@@ -3,46 +3,8 @@ import ContributionChart from './ContributionChart'
 import FilterableMatrixTable from './FilterableMatrixTable'
 import { DateRange } from 'react-date-range'
 import utilsDate from '../../utils/DateHelper'
-import {
-  Base,
-  Flex,
-  TextInput,
-  Modal
-} from 'zanata-ui'
 import { Button } from 'react-bootstrap'
-
-const classes = {
-  root: {
-    flxg: 'Flxg(1)',
-    flxs: 'Flxg(0)',
-    m: 'Mstart(r2)--md',
-    maw: 'Maw(100%)',
-    miw: 'Miw(100%) Miw(0)--md'
-  },
-  heading: {
-    fz: 'Fz(ms1)',
-    fw: 'Fw(600)',
-    tt: 'Tt(u)'
-  },
-  dateRangeContainer: {
-    m: 'Mstart(a)',
-    miw: 'Miw(r6)'
-  },
-  chartContainer: {
-    m: 'Mb(r1)',
-    mih: 'Mih(r4)'
-  },
-  calendar: {
-    DateRange: {
-      width: '100%'
-    }
-  },
-  dataRangeTextField: {
-    base: {
-      w: 'W(r8)'
-    }
-  }
-}
+import { Modal, TextInput } from '../../components'
 
 const STATS_MAX_DAYS = 365
 
@@ -104,15 +66,15 @@ var RecentContributions = React.createClass({
 
     /* eslint-disable react/jsx-no-bind */
     return (
-      <Base atomic={classes.root} id='profile-matrix'>
-        <Flex align='c'>
-          <Base tagName='h2' atomic={classes.heading}>
-            Recent Contributions
-          </Base>
-          <Base atomic={classes.dateRangeContainer}>
-            <Button bsStyle='link' onClick={() => this.onToggleShowDateRange()}>
-              <TextInput editable={false} value={displayDateRange}
-                theme={classes.dataRangeTextField} />
+      <div className='matrix-heading' id='profile-matrix'>
+        <div className='flex-center'>
+          <h2 className='recent-contrib'>Recent Contributions</h2>
+          <div className='daterange-container'>
+            <Button bsStyle='link' className='pull-right'
+              onClick={() => this.onToggleShowDateRange()}>
+              <span className='daterange-textfield'>
+                <TextInput editable={false} value={displayDateRange} />
+              </span>
             </Button>
 
             {this.state.showDateRange &&
@@ -120,14 +82,14 @@ var RecentContributions = React.createClass({
                 onHide={() => this.onToggleShowDateRange()}>
                 <Modal.Header>
                   <Modal.Title>Date range selection</Modal.Title>
-                  <span className='C(muted)'>(Maximum 365 days)</span>
+                  <span className='text-muted'>(Maximum 365 days)</span>
                 </Modal.Header>
                 <Modal.Body>
                   <DateRange
                     startDate={this.state.dateRange.startDate}
                     endDate={this.state.dateRange.endDate}
                     ranges={utilsDate.getDefaultDateRange()}
-                    theme={classes.calendar}
+                    className='calendar-daterange'
                     onChange={this.onDateRangeChanged} />
                 </Modal.Body>
                 <Modal.Footer>
@@ -145,13 +107,13 @@ var RecentContributions = React.createClass({
                 </Modal.Footer>
               </Modal>
             }
-          </Base>
-        </Flex>
-        <Flex dir='c' align='c' justify='c' atomic={classes.chartContainer}>
+          </div>
+        </div>
+        <div className='flex-chart-container'>
           <ContributionChart
             wordCountForEachDay={matrixForAllDays}
             dateRange={dateRange} />
-        </Flex>
+        </div>
         <FilterableMatrixTable
           wordCountForSelectedDay={wordCountsForSelectedDayFilteredByContentState} // eslint-disable-line max-len
           wordCountForEachDay={wordCountsForEachDayFilteredByContentState}
@@ -161,7 +123,7 @@ var RecentContributions = React.createClass({
           handleFilterChanged={handleFilterChanged}
           handleSelectedDayChanged={handleSelectedDayChanged}
         />
-      </Base>
+      </div>
     )
     /* eslint-enable react/jsx-no-bind */
   }

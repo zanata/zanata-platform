@@ -24,31 +24,29 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import lombok.extern.slf4j.Slf4j;
-
 /**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang
+ *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Slf4j
 public class PropertiesHolder {
-    public final static Properties properties;
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(PropertiesHolder.class);
 
+    public static final Properties properties;
     static {
         Properties result;
-        InputStream inputStream =
-                Thread.currentThread().getContextClassLoader()
-                        .getResourceAsStream(Constants.propFile.value());
+        InputStream inputStream = Thread.currentThread().getContextClassLoader()
+                .getResourceAsStream(Constants.propFile.value());
         if (inputStream == null) {
-            throw new RuntimeException("can't find setup.properties");
+            throw new RuntimeException("can\'t find setup.properties");
         }
         Properties properties1 = new Properties();
         try {
             properties1.load(inputStream);
             result = properties1;
         } catch (IOException e) {
-            PropertiesHolder.log.error("can't load {}", Constants.propFile);
-            throw new IllegalStateException("can't load setup.properties");
+            PropertiesHolder.log.error("can\'t load {}", Constants.propFile);
+            throw new IllegalStateException("can\'t load setup.properties");
         }
         properties = result;
     }

@@ -1,12 +1,6 @@
 import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
-
-import {
-  LoaderText,
-  Modal,
-  Select
-} from 'zanata-ui'
-
+import { LoaderText, Modal, Select } from '../../components'
 import { Button, ButtonGroup } from 'react-bootstrap'
 
 import {
@@ -53,7 +47,7 @@ class ExportModal extends Component {
           <Select
             disabled={isExporting}
             name='glossary-export-type-selection'
-            className='Maw(r16) Mb(r1)'
+            className='modal-select'
             placeholder='Select a file type…'
             value={type}
             options={types}
@@ -62,7 +56,7 @@ class ExportModal extends Component {
             {message}
             <br />
             For more details on how to export glossary
-            files, see our <a href={exportGlossaryUrl} className='C(pri)'
+            files, see our <a href={exportGlossaryUrl} className='text-info'
               target='_blank'>glossary export documentation</a>.
           </p>
         </Modal.Body>

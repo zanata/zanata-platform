@@ -36,8 +36,11 @@
 
     <module name="MethodParamPad"/>
 
-    <!-- TODO enable, pending https://github.com/checkstyle/checkstyle/issues/300 -->
-    <!--<module name="NeedBraces"/>-->
+<!-- TODO reformat offending files and enable this:
+    <module name="NeedBraces">
+      <property name="allowSingleLineStatement" value="true"/>
+    </module>
+-->
 
     <module name="ParenPad"/>
 

@@ -22,7 +22,6 @@
     <link rel="shortcut icon" href="#{assets['img/logo/logo.ico']}"
       type="image/x-icon" />
     <link rel="stylesheet" href="#{request.contextPath}/frontend.css" type="text/css"/>
-    <link rel="stylesheet" href="#{request.contextPath}/atomic.css" type="text/css"/>
     <link type="text/css" rel="stylesheet"
       href="#{request.contextPath}/resources/fontello/css/fontello.css"/>
     <link type="text/css" rel="stylesheet" href="#{assets['css/style.min.css']}"/>
@@ -68,14 +67,14 @@
     </script>
 
 
-    <div class='Ai(st) D(f) Fld(c) Flxs(0) H(100%)'>
-      <div class='Ai(st) D(f) Fld(c) Fld(r)--sm Flxs(0) H(100vh) H(100%)'>
-        <div id="root" class="Or(1) Or(0)--sm" />
-        <div id="container" class="Ovx(s) Ovx(h)--lg"/>
+    <div class='template-wrapper'>
+      <div class='template-container'>
+        <div id="root" />
+        <div id="container" class="container-editor"/>
       </div>
     </div>
     <script type="text/javascript"
-      src="#{request.contextPath}/frontend.bundle.legacy.min.js"></script>
+      src="#{request.contextPath}/frontend.legacy.min.js"></script>
     <!-- OPTIONAL: include this if you want history support -->
     <iframe src="javascript:''" id="__gwt_historyFrame" tabIndex='-1'
       style="position:absolute;width:0;height:0;border:0"></iframe>

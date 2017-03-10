@@ -28,32 +28,29 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.PasswordCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
-
 import javax.inject.Named;
 import org.zanata.security.openid.OpenIdProviderType;
-
-import lombok.extern.slf4j.Slf4j;
 import org.zanata.util.Synchronized;
 
 /**
  * Overrides the default Seam credentials. Adds app-specific security concepts
  * like authentication mechanisms.
  *
- * @author Carlos Munoz <a
- *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
+ * @author Carlos Munoz
+ *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("credentials")
 @SessionScoped
-@Slf4j
 @Synchronized
 public class ZanataCredentials implements Serializable {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(ZanataCredentials.class);
+
     private static final long serialVersionUID = 5520824011655916917L;
     private String username;
     private String password;
     private boolean initialized;
-
     private AuthenticationType authType;
-
     private OpenIdProviderType openIdProviderType;
 
     public AuthenticationType getAuthType() {
@@ -116,15 +113,16 @@ public class ZanataCredentials implements Serializable {
 
     public CallbackHandler createCallbackHandler() {
         return new CallbackHandler() {
-            public void handle(Callback[] callbacks) throws IOException,
-                    UnsupportedCallbackException {
+
+            public void handle(Callback[] callbacks)
+                    throws IOException, UnsupportedCallbackException {
                 for (int i = 0; i < callbacks.length; i++) {
                     if (callbacks[i] instanceof NameCallback) {
                         ((NameCallback) callbacks[i]).setName(getUsername());
                     } else if (callbacks[i] instanceof PasswordCallback) {
                         ((PasswordCallback) callbacks[i])
-                                .setPassword(getPassword() != null ? getPassword()
-                                        .toCharArray() : null);
+                                .setPassword(getPassword() != null
+                                        ? getPassword().toCharArray() : null);
                     } else if (callbacks[i] instanceof AuthenticationTypeCallback) {
                         ((AuthenticationTypeCallback) callbacks[i])
                                 .setAuthType(getAuthType());

@@ -20,23 +20,22 @@
  */
 package org.zanata.page.account;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
 import org.zanata.page.utility.HomePage;
 
 /**
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class EditProfilePage extends BasePage {
-
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(EditProfilePage.class);
     private By nameField = By.id("profile-form:nameField:name");
     private By usernameField = By.id("profile-form:usernameField:username");
     private By emailField = By.id("profile-form:emailField:email");
-    private By saveButton =  By.id("profile-form:user-create-new");
+    private By saveButton = By.id("profile-form:user-create-new");
     private By cancelButton = By.id("profile-form:user-create-cancel");
 
     public EditProfilePage(WebDriver driver) {
@@ -77,5 +76,4 @@ public class EditProfilePage extends BasePage {
         clickElement(saveButton);
         return new EditProfilePage(getDriver());
     }
-
 }

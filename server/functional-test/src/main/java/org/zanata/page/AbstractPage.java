@@ -22,9 +22,6 @@ package org.zanata.page;
 
 import java.util.List;
 import java.util.Set;
-
-import lombok.extern.slf4j.Slf4j;
-
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
@@ -33,18 +30,17 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.zanata.util.ShortString;
 import org.zanata.util.WebElementUtil;
-
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * The base class for the page driver. Contains functionality not generally of
- * a user visible nature.
+ * The base class for the page driver. Contains functionality not generally of a
+ * user visible nature.
  */
-@Slf4j
 public class AbstractPage {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(AbstractPage.class);
     private final WebDriver driver;
 
     public AbstractPage(final WebDriver driver) {
@@ -94,13 +90,13 @@ public class AbstractPage {
     }
 
     /**
-     * TODO: need to replace javascript alert.
-     * chromedriver have issue with handling alert popup
+     * TODO: need to replace javascript alert. chromedriver have issue with
+     * handling alert popup
      */
     @Deprecated
     public Alert switchToAlert() {
-        return waitForAMoment().withMessage("alert").until(
-                (Function<WebDriver, Alert>) webDriver -> {
+        return waitForAMoment().withMessage("alert")
+                .until((Function<WebDriver, Alert>) webDriver -> {
                     try {
                         return getDriver().switchTo().alert();
                     } catch (NoAlertPresentException noAlertPresent) {
@@ -112,7 +108,8 @@ public class AbstractPage {
     /**
      * @param currentPage
      * @param predicate
-     * @param message description of predicate
+     * @param message
+     *            description of predicate
      * @param <P>
      * @return
      */
@@ -124,10 +121,10 @@ public class AbstractPage {
     }
 
     /**
-     *
      * @param currentPage
      * @param function
-     * @param message description of function
+     * @param message
+     *            description of function
      * @param <P>
      * @param <T>
      * @return
@@ -140,23 +137,24 @@ public class AbstractPage {
     }
 
     /**
-     * Normally a page has no outstanding ajax requests when it has
-     * finished an operation, but some pages use long polling to
-     * "push" changes to the user, eg for the editor's event service.
+     * Normally a page has no outstanding ajax requests when it has finished an
+     * operation, but some pages use long polling to "push" changes to the user,
+     * eg for the editor's event service.
+     *
      * @return
      */
     protected int getExpectedBackgroundRequests() {
         return 0;
     }
-
     // TODO use this to wait for a page load after user input (eg click)
+
     public void execAndWaitForNewPage(Runnable runnable) {
         final WebElement oldPage = driver.findElement(By.tagName("html"));
         runnable.run();
         String msg = "new page load";
         logWaiting(msg);
-        waitForAMoment().withMessage(msg).until(
-                (Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().withMessage(msg)
+                .until((Predicate<WebDriver>) webDriver -> {
                     try {
                         // ignore result
                         oldPage.getAttribute("class");
@@ -167,11 +165,10 @@ public class AbstractPage {
                         //
                         // This exception means the new page has loaded
                         // (or started to).
-                        String script = "return document.readyState === " +
-                                "'complete' && window.deferScriptsFinished";
+                        String script =
+                                "return document.readyState === \'complete\' && window.deferScriptsFinished";
                         Boolean documentComplete =
-                                (Boolean) getExecutor().executeScript(
-                                        script);
+                                (Boolean) getExecutor().executeScript(script);
                         // TODO wait for ajax?
                         // NB documentComplete might be null/undefined
                         return documentComplete == Boolean.TRUE;
@@ -184,33 +181,29 @@ public class AbstractPage {
      * Wait for any AJAX/timeout requests to return.
      */
     public void waitForPageSilence() {
-        // TODO wait for any short-lived timeouts to expire (eg less than 1000 ms)
+        // TODO wait for any short-lived timeouts to expire (eg less than 1000
+        // ms)
         // but not multi-second timeouts (eg global faces messages)
         final String script = "return XMLHttpRequest.active";
         // Wait for AJAX/timeout requests to be 0
-        waitForAMoment().withMessage("page silence").until(
-                (Predicate<WebDriver>) webDriver -> {
-                    Long outstanding = (Long) getExecutor().executeScript(script);
+        waitForAMoment().withMessage("page silence")
+                .until((Predicate<WebDriver>) webDriver -> {
+                    Long outstanding =
+                            (Long) getExecutor().executeScript(script);
                     if (outstanding == null) {
                         if (log.isWarnEnabled()) {
                             String url = getDriver().getCurrentUrl();
-                            String pageSource = ShortString.shorten(
-                                    getDriver().getPageSource(), 2000);
-                            log.warn("XMLHttpRequest.active is null. " +
-                                    "Is zanata-testing-extension installed? " +
-                                    "URL: {}\n" +
-                                    "Partial page source follows:\n{}",
+                            String pageSource = ShortString
+                                    .shorten(getDriver().getPageSource(), 2000);
+                            log.warn(
+                                    "XMLHttpRequest.active is null. Is zanata-testing-extension installed? URL: {}\nPartial page source follows:\n{}",
                                     url, pageSource);
                         }
                         return true;
                     }
                     if (outstanding < 0) {
-                        throw new RuntimeException("XMLHttpRequest.active " +
-                                "and/or window.timeoutCounter " +
-                                "is negative.  Please check the " +
-                                "implementation of zanata-testing-extension, " +
-                                "and ensure that the injected script is run " +
-                                "before any other JavaScript in the page.");
+                        throw new RuntimeException(
+                                "XMLHttpRequest.active and/or window.timeoutCounter is negative.  Please check the implementation of zanata-testing-extension, and ensure that the injected script is run before any other JavaScript in the page.");
                     }
                     int expected = getExpectedBackgroundRequests();
                     if (outstanding < expected) {
@@ -218,7 +211,8 @@ public class AbstractPage {
                                 "Expected at least {} background requests, but actual count is {}",
                                 expected, outstanding, new Throwable());
                     } else {
-                        log.debug("Waiting: outstanding = {}, expected = {}", outstanding, expected);
+                        log.debug("Waiting: outstanding = {}, expected = {}",
+                                outstanding, expected);
                     }
                     return outstanding <= expected;
                 });
@@ -229,16 +223,17 @@ public class AbstractPage {
      * Wait for all loaders to be inactive
      */
     private void waitForLoaders() {
-        waitForAMoment().withMessage("Loader indicator").until(
-                (Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().withMessage("Loader indicator")
+                .until((Predicate<WebDriver>) webDriver -> {
                     // Find all elements with class name js-loader, or return []
-                    String script = "return (typeof $ == 'undefined') ?  [] : " +
-                            "$('.js-loader').toArray()";
+                    String script =
+                            "return (typeof $ == \'undefined\') ?  [] : $(\'.js-loader\').toArray()";
                     @SuppressWarnings("unchecked")
                     List<WebElement> loaders = (List<WebElement>) getExecutor()
                             .executeScript(script);
                     for (WebElement loader : loaders) {
-                        if (loader.getAttribute("class").contains("is-active")) {
+                        if (loader.getAttribute("class")
+                                .contains("is-active")) {
                             log.info("Wait for loader finished");
                             return false;
                         }
@@ -249,7 +244,9 @@ public class AbstractPage {
 
     /**
      * Expect an element to be interactive, and return it
-     * @param elementBy WebDriver By locator
+     *
+     * @param elementBy
+     *            WebDriver By locator
      * @return target WebElement
      */
     public WebElement readyElement(final By elementBy) {
@@ -264,8 +261,11 @@ public class AbstractPage {
 
     /**
      * Wait for a child element to be visible, and return it
-     * @param parentElement parent element of target
-     * @param elementBy WebDriver By locator
+     *
+     * @param parentElement
+     *            parent element of target
+     * @param elementBy
+     *            WebDriver By locator
      * @return target WebElement
      */
     public WebElement readyElement(final WebElement parentElement,
@@ -279,27 +279,31 @@ public class AbstractPage {
     }
 
     /**
-     * Wait for an element to exist on the page, and return it.
-     * Generally used for situations where checking on the state of an element,
-     * e.g isVisible, rather than clicking on it or getting its text.
-     * @param elementBy WebDriver By locator
+     * Wait for an element to exist on the page, and return it. Generally used
+     * for situations where checking on the state of an element, e.g isVisible,
+     * rather than clicking on it or getting its text.
+     *
+     * @param elementBy
+     *            WebDriver By locator
      * @return target WebElement
      */
     public WebElement existingElement(final By elementBy) {
         String msg = "element exists " + elementBy;
         logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().withMessage(msg).until(
-                (Function<WebDriver, WebElement>) webDriver -> {
+        return waitForAMoment().withMessage(msg)
+                .until((Function<WebDriver, WebElement>) webDriver -> {
                     return getDriver().findElement(elementBy);
                 });
     }
 
     /**
-     * Wait for a child element to exist on the page, and return it.
-     * Generally used for situations where checking on the state of an element,
-     * e.g isVisible, rather than clicking on it or getting its text.
-     * @param elementBy WebDriver By locator
+     * Wait for a child element to exist on the page, and return it. Generally
+     * used for situations where checking on the state of an element, e.g
+     * isVisible, rather than clicking on it or getting its text.
+     *
+     * @param elementBy
+     *            WebDriver By locator
      * @return target WebElement
      */
     public WebElement existingElement(final WebElement parentElement,
@@ -307,40 +311,46 @@ public class AbstractPage {
         String msg = "element exists " + elementBy;
         logWaiting(msg);
         waitForPageSilence();
-        return waitForAMoment().withMessage(msg).until(
-                (Function<WebDriver, WebElement>) webDriver -> {
+        return waitForAMoment().withMessage(msg)
+                .until((Function<WebDriver, WebElement>) webDriver -> {
                     return parentElement.findElement(elementBy);
                 });
     }
 
     /**
-     * Convenience function for clicking elements.  Removes obstructing
-     * elements, scrolls the item into view and clicks it when it is ready.
-     * @param findby locator for element to be clicked
+     * Convenience function for clicking elements. Removes obstructing elements,
+     * scrolls the item into view and clicks it when it is ready.
+     *
+     * @param findby
+     *            locator for element to be clicked
      */
     public void clickElement(By findby) {
         clickElement(readyElement(findby));
     }
 
     /**
-     * Convenience function for clicking elements.  Removes obstructing
-     * elements, scrolls the item into view and clicks it when it is ready.
-     * @param element element to be clicked
+     * Convenience function for clicking elements. Removes obstructing elements,
+     * scrolls the item into view and clicks it when it is ready.
+     *
+     * @param element
+     *            element to be clicked
      */
     public void clickElement(final WebElement element) {
         removeNotifications();
         waitForNotificationsGone();
         scrollIntoView(element);
-        waitForAMoment().withMessage("clickable: " + element.toString()).until(
-                ExpectedConditions.elementToBeClickable(element));
+        waitForAMoment().withMessage("clickable: " + element.toString())
+                .until(ExpectedConditions.elementToBeClickable(element));
         element.click();
     }
 
     /**
      * Convenience function for enter text (common case)
      *
-     * @param element element to pass text to
-     * @param text text to be entered
+     * @param element
+     *            element to pass text to
+     * @param text
+     *            text to be entered
      */
     public void enterText(final WebElement element, final String text) {
         enterText(element, text, true, false, true);
@@ -349,35 +359,45 @@ public class AbstractPage {
     /**
      * Enter text into an element.
      *
-     * Waits for notifications to be dismissed and element to be ready and visible before entering
-     * the text.
-     * If no checking is performed, the resulting screenshot may not be accurate.
-     * @param element element to pass text to
-     * @param text text to be entered
-     * @param clear clear the element's text before entering new text
-     * @param inject use sendKeys rather than the Actions chain (direct injection)
-     * @param check check the 'value' attribute for success, and accurate screenshot delay
+     * Waits for notifications to be dismissed and element to be ready and
+     * visible before entering the text. If no checking is performed, the
+     * resulting screenshot may not be accurate.
+     *
+     * @param element
+     *            element to pass text to
+     * @param text
+     *            text to be entered
+     * @param clear
+     *            clear the element's text before entering new text
+     * @param inject
+     *            use sendKeys rather than the Actions chain (direct injection)
+     * @param check
+     *            check the 'value' attribute for success, and accurate
+     *            screenshot delay
      */
-    public void enterText(final WebElement element, final String text, boolean clear,
-                          boolean inject, final boolean check) {
+    public void enterText(final WebElement element, final String text,
+            boolean clear, boolean inject, final boolean check) {
         removeNotifications();
         waitForNotificationsGone();
         scrollIntoView(element);
         triggerScreenshot("_pretext");
-        waitForAMoment().withMessage("editable: " + element.toString()).until(
-                ExpectedConditions.elementToBeClickable(element));
+        waitForAMoment().withMessage("editable: " + element.toString())
+                .until(ExpectedConditions.elementToBeClickable(element));
         if (inject) {
             if (clear) {
                 element.clear();
             }
             element.sendKeys(text);
         } else {
-            Actions enterTextAction = new Actions(getDriver()).moveToElement(element);
+            Actions enterTextAction =
+                    new Actions(getDriver()).moveToElement(element);
             enterTextAction = enterTextAction.click();
             // Fields can 'blur' on click
             waitForPageSilence();
             if (clear) {
-                enterTextAction = enterTextAction.sendKeys(Keys.chord(Keys.CONTROL, "a")).sendKeys(Keys.DELETE);
+                enterTextAction =
+                        enterTextAction.sendKeys(Keys.chord(Keys.CONTROL, "a"))
+                                .sendKeys(Keys.DELETE);
                 // Fields can 'blur' on clear
                 waitForPageSilence();
             }
@@ -401,9 +421,9 @@ public class AbstractPage {
     }
 
     /**
-     * 'Touch' a text field to see if it's writable. For cases
-     * where fields are available but briefly won't accept text
-     * for some reason
+     * 'Touch' a text field to see if it's writable. For cases where fields are
+     * available but briefly won't accept text for some reason
+     *
      * @param textField
      */
     public void touchTextField(WebElement textField) {
@@ -415,11 +435,12 @@ public class AbstractPage {
     }
 
     private void waitForElementReady(final WebElement element) {
-         waitForAMoment().withMessage("Waiting for element to be ready").until(
-                 (Predicate<WebDriver>) webDriver -> element.isDisplayed() && element.isEnabled());
+        waitForAMoment().withMessage("Waiting for element to be ready")
+                .until((Predicate<WebDriver>) webDriver -> element.isDisplayed()
+                        && element.isEnabled());
     }
-
     // Assert the element is available and visible
+
     private void assertReady(WebElement targetElement) {
         assertThat(targetElement.isDisplayed()).as("displayed").isTrue();
         assertThat(targetElement.isEnabled()).as("enabled").isTrue();
@@ -430,9 +451,9 @@ public class AbstractPage {
      */
     public void removeNotifications() {
         @SuppressWarnings("unchecked")
-        List<WebElement> notifications = (List<WebElement>) getExecutor()
-                .executeScript("return (typeof $ == 'undefined') ?  [] : " +
-                        "$('a.message__remove').toArray()");
+        List<WebElement> notifications =
+                (List<WebElement>) getExecutor().executeScript(
+                        "return (typeof $ == \'undefined\') ?  [] : $(\'a.message__remove\').toArray()");
         if (notifications.isEmpty()) {
             return;
         }
@@ -445,14 +466,14 @@ public class AbstractPage {
             }
         }
         // Finally, forcibly un-is-active the message container - for speed
-        String script = "return (typeof $ == 'undefined') ?  [] : " +
-                "$('ul.message--global').toArray()";
+        String script =
+                "return (typeof $ == \'undefined\') ?  [] : $(\'ul.message--global\').toArray()";
         @SuppressWarnings("unchecked")
-        List<WebElement> messageBoxes = ((List<WebElement>) getExecutor()
-                .executeScript(script));
+        List<WebElement> messageBoxes =
+                ((List<WebElement>) getExecutor().executeScript(script));
         for (WebElement messageBox : messageBoxes) {
             getExecutor().executeScript(
-                    "arguments[0].setAttribute('class', arguments[1]);",
+                    "arguments[0].setAttribute(\'class\', arguments[1]);",
                     messageBox,
                     messageBox.getAttribute("class").replace("is-active", ""));
         }
@@ -463,11 +484,11 @@ public class AbstractPage {
      * removing it, or is waiting for it to time out.
      */
     public void waitForNotificationsGone() {
-        final String script = "return (typeof $ == 'undefined') ?  [] : " +
-                "$('ul.message--global').toArray()";
+        final String script =
+                "return (typeof $ == \'undefined\') ?  [] : $(\'ul.message--global\').toArray()";
         final String message = "Waiting for notifications box to go";
-        waitForAMoment().withMessage(message).until(
-                (Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().withMessage(message)
+                .until((Predicate<WebDriver>) webDriver -> {
                     @SuppressWarnings("unchecked")
                     List<WebElement> boxes = (List<WebElement>) getExecutor()
                             .executeScript(script);
@@ -508,10 +529,11 @@ public class AbstractPage {
         getExecutor().executeScript("arguments[0].blur()", element);
         waitForPageSilence();
     }
-
-    /* The system sometimes moves too fast for the Ajax pages, so provide a
+    /*
+     * The system sometimes moves too fast for the Ajax pages, so provide a
      * pause
      */
+
     public void slightPause() {
         try {
             Thread.sleep(500);
@@ -521,22 +543,20 @@ public class AbstractPage {
     }
 
     public void scrollIntoView(WebElement targetElement) {
-        getExecutor().executeScript(
-                "arguments[0].scrollIntoView(true);", targetElement);
+        getExecutor().executeScript("arguments[0].scrollIntoView(true);",
+                targetElement);
     }
 
     public void scrollToTop() {
         getExecutor().executeScript("scroll(0, 0);");
     }
 
-
     public String getHtmlSource(WebElement webElement) {
-        return (String) getExecutor().executeScript(
-                "return arguments[0].innerHTML;", webElement);
+        return (String) getExecutor()
+                .executeScript("return arguments[0].innerHTML;", webElement);
     }
 
     public void triggerScreenshot(String tag) {
         WebElementUtil.triggerScreenshot(tag);
     }
-
 }

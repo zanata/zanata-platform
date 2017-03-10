@@ -85,7 +85,7 @@ public class MockGlossaryResource implements GlossaryResource {
     }
 
     @Override
-    public Response deleteEntry(Long id) {
+    public Response deleteEntry(Long id, String qualifiedName) {
         return MockResourceUtil.notUsedByClient();
     }
 

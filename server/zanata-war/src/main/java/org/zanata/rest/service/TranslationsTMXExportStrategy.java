@@ -18,40 +18,35 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.zanata.rest.service;
 
 import java.io.IOException;
 import java.util.Set;
-
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import javax.xml.XMLConstants;
-
-import lombok.extern.slf4j.Slf4j;
 import nu.xom.Attribute;
 import nu.xom.Element;
-
 import org.zanata.common.LocaleId;
 import org.zanata.model.ITextFlow;
 import org.zanata.model.ITextFlowTarget;
 import org.zanata.util.TMXConstants;
 import org.zanata.util.VersionUtility;
-
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 
 /**
  * Writes translations for Zanata Projects/TextFlows as TMX.
  *
- * @author Sean Flanigan <a
- *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
- *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @ParametersAreNonnullByDefault
-@Slf4j
-public class TranslationsTMXExportStrategy implements
-        TMXExportStrategy<ITextFlow> {
+public class TranslationsTMXExportStrategy
+        implements TMXExportStrategy<ITextFlow> {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(TranslationsTMXExportStrategy.class);
+
     private static class InvalidContentsException extends Exception {
         private static final long serialVersionUID = 1L;
 
@@ -60,13 +55,12 @@ public class TranslationsTMXExportStrategy implements
         }
     }
 
-    private static final String creationTool = "Zanata "
-            + TranslationsTMXExportStrategy.class.getSimpleName();
+    private static final String creationTool =
+            "Zanata " + TranslationsTMXExportStrategy.class.getSimpleName();
     private static final String creationToolVersion = VersionUtility
             .getVersionInfo(TranslationsTMXExportStrategy.class).getVersionNo();
-
-    private final @Nullable
-    LocaleId localeId;
+    @Nullable
+    private final LocaleId localeId;
 
     /**
      * Exports one or all locales.
@@ -75,7 +69,6 @@ public class TranslationsTMXExportStrategy implements
      *            locale to export, or null for all locales
      */
     public TranslationsTMXExportStrategy(@Nullable LocaleId localeId) {
-        super();
         this.localeId = localeId;
     }
 
@@ -83,8 +76,8 @@ public class TranslationsTMXExportStrategy implements
     public Element buildHeader() throws IOException {
         Element header = new Element("header");
         header.addAttribute(new Attribute("creationtool", creationTool));
-        header.addAttribute(new Attribute("creationtoolversion",
-                creationToolVersion));
+        header.addAttribute(
+                new Attribute("creationtoolversion", creationToolVersion));
         header.addAttribute(new Attribute("segtype", "block"));
         header.addAttribute(new Attribute("o-tmf", "unknown"));
         header.addAttribute(new Attribute("adminlang", "en"));
@@ -146,7 +139,7 @@ public class TranslationsTMXExportStrategy implements
                 XMLConstants.XML_NS_URI, tf.getLocale().getId()));
         Element seg = new Element("seg");
         String srcContent = tf.getContents().get(0);
-        if (srcContent.contains("\0")) {
+        if (srcContent.contains("\000")) {
             // this should be very rare, so we can afford to use an exception
             String msg =
                     "illegal null character; discarding SourceContents with id="
@@ -162,7 +155,7 @@ public class TranslationsTMXExportStrategy implements
         if (target.getState().isTranslated()) {
             LocaleId locId = target.getLocaleId();
             String trgContent = target.getContents().get(0);
-            if (trgContent.contains("\0")) {
+            if (trgContent.contains("\000")) {
                 String msg =
                         "illegal null character; discarding TargetContents with locale="
                                 + locId + ", contents=" + trgContent;
@@ -179,5 +172,4 @@ public class TranslationsTMXExportStrategy implements
         }
         return Optional.absent();
     }
-
 }

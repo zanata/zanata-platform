@@ -21,15 +21,10 @@
 package org.zanata.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.logging.LogManager;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-
-import lombok.extern.slf4j.Slf4j;
 import net.jodah.concurrentunit.ConcurrentTestCase;
-
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jglue.cdiunit.AdditionalClasses;
@@ -39,7 +34,7 @@ import org.junit.runner.RunWith;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.zanata.test.CdiUnitRunner;
 
-@AdditionalClasses({ SynchronizationInterceptor.class})
+@AdditionalClasses({ SynchronizationInterceptor.class })
 @SupportDeltaspikeCore
 @RunWith(CdiUnitRunner.class)
 public class SynchronizationTest extends ConcurrentTestCase {
@@ -48,16 +43,18 @@ public class SynchronizationTest extends ConcurrentTestCase {
         // redirect JUL to slf4j
         LogManager.getLogManager().reset();
         SLF4JBridgeHandler.install();
-
         // Tell DeltaSpike to give more warning messages
         ProjectStageProducer.setProjectStage(ProjectStage.UnitTest);
     }
 
     @ApplicationScoped
     @Synchronized
-    @Slf4j
     public static class SyncClassBean {
+        private static final org.slf4j.Logger log =
+                org.slf4j.LoggerFactory.getLogger(SyncClassBean.class);
+
         volatile boolean executing;
+
         public void blockingMethod() {
             assertThat(executing).isFalse();
             executing = true;
@@ -87,5 +84,4 @@ public class SynchronizationTest extends ConcurrentTestCase {
         }).start();
         await(1000, 2);
     }
-
 }

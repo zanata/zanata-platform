@@ -20,20 +20,20 @@
  */
 package org.zanata.page.projectversion.versionsettings;
 
-import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.VersionBasePage;
-
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class VersionTranslationTab extends VersionBasePage {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(VersionTranslationTab.class);
 
     public VersionTranslationTab(WebDriver driver) {
         super(driver);
@@ -43,24 +43,20 @@ public class VersionTranslationTab extends VersionBasePage {
 
     public boolean isValidationLevel(String optionName, String level) {
         log.info("Query is {}  validation at level {}", optionName, level);
-        String optionElementID = validationNames
-                .get(optionName).toString().concat(level);
-
-        return existingElement(By.id(optionElementID))
-                .getAttribute("checked")
+        String optionElementID =
+                validationNames.get(optionName).toString().concat(level);
+        return existingElement(By.id(optionElementID)).getAttribute("checked")
                 .equals("true");
     }
 
     public VersionTranslationTab setValidationLevel(String optionName,
-                                                    String level) {
+            String level) {
         log.info("Click to set {} validation to {}", optionName, level);
-        final String optionElementID = validationNames
-                .get(optionName).toString().concat(level);
-
-        WebElement option = readyElement(
-                By.id("settings-translation-validation-form"))
-                .findElement(By.id(optionElementID));
-
+        final String optionElementID =
+                validationNames.get(optionName).toString().concat(level);
+        WebElement option =
+                readyElement(By.id("settings-translation-validation-form"))
+                        .findElement(By.id(optionElementID));
         getExecutor().executeScript("arguments[0].click();", option);
         try {
             Thread.sleep(500);

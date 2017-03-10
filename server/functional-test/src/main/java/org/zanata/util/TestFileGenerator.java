@@ -38,30 +38,25 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
-
 import com.google.common.base.Preconditions;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.fedorahosted.openprops.Properties;
 import com.google.common.base.Throwables;
-import lombok.Setter;
 
 /**
  * Create and manipulate basic text files for testing.
  *
- * @author Damian Jansen <a
- *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-@Slf4j
 public class TestFileGenerator {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(TestFileGenerator.class);
     // Length is maximum filename length - 4 (.xxx) - 19 (for tmp file
     // randomness)
-    private static final String longFileName = "lRRDXddgEnKzT2Wpu3VfT3Zs4pYuPXaqorA" +
-            "1CAtGcaZq6xydHdOghbsyPu5GnbbmknPNRZ0vc7IEaiPm59CBQ9NkIH1if9Y4uHH" +
-            "YgjWJT8Yhs5qibcEZDNAZwLmDNHaRJhQr2Y1z3VslMFGGSP25eqzU1lDjejCsd26" +
-            "wRhT1UOkbhRRlm0ybGk8lTQgHEqT9sno1Veuw8A0StLGDfHAmCDFcUzAz9HMeuMU" +
-            "n9nFW";
-
+    private static final String longFileName =
+            "lRRDXddgEnKzT2Wpu3VfT3Zs4pYuPXaqorA1CAtGcaZq6xydHdOghbsyPu5GnbbmknPNRZ0vc7IEaiPm59CBQ9NkIH1if9Y4uHHYgjWJT8Yhs5qibcEZDNAZwLmDNHaRJhQr2Y1z3VslMFGGSP25eqzU1lDjejCsd26wRhT1UOkbhRRlm0ybGk8lTQgHEqT9sno1Veuw8A0StLGDfHAmCDFcUzAz9HMeuMUn9nFW";
 
     public TestFileGenerator() {
     }
@@ -99,8 +94,8 @@ public class TestFileGenerator {
         try {
             testFile = File.createTempFile(fileName, suffix);
         } catch (IOException ioException) {
-            throw new RuntimeException("Unable to create temporary file "
-                    + fileName);
+            throw new RuntimeException(
+                    "Unable to create temporary file " + fileName);
         }
         testFile.deleteOnExit();
         return testFile;
@@ -108,16 +103,16 @@ public class TestFileGenerator {
 
     private void setTestFileContent(File testFile, String testContent) {
         try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
-                    new FileOutputStream(testFile),
-                    Charset.forName("UTF-8").newEncoder());
-            outputStreamWriter.write(testContent
-                    .replaceAll("\n", System.getProperty("line.separator")));
+            OutputStreamWriter outputStreamWriter =
+                    new OutputStreamWriter(new FileOutputStream(testFile),
+                            Charset.forName("UTF-8").newEncoder());
+            outputStreamWriter.write(testContent.replaceAll("\n",
+                    System.getProperty("line.separator")));
             outputStreamWriter.flush();
             outputStreamWriter.close();
         } catch (IOException ioException) {
-            throw new RuntimeException("Could not open file for writing "
-                    + testFile.getName());
+            throw new RuntimeException(
+                    "Could not open file for writing " + testFile.getName());
         }
     }
 
@@ -171,25 +166,34 @@ public class TestFileGenerator {
      * @throws RuntimeException
      *             if no files are found
      */
+    @SuppressWarnings("unused")
     public String getFirstFileNameInDirectory(String directory) {
         try {
-            return new File(directory).list()[0];
+            String[] list = ObjectUtils.firstNonNull(
+                    new File(directory).list(), new String[0]);
+            return list[0];
         } catch (ArrayIndexOutOfBoundsException arrayException) {
-            throw new RuntimeException("Expected files in dir " + directory
-                    + " but none found.");
+            throw new RuntimeException(
+                    "Expected files in dir " + directory + " but none found.");
         }
     }
 
     /**
      * Generates a zanata.xml with url default to test instance.
      *
-     * @param output where to write it
-     * @param projectSlug project slug
-     * @param versionSlug version slug
-     * @param projectType project type
-     * @param locales locales
+     * @param output
+     *            where to write it
+     * @param projectSlug
+     *            project slug
+     * @param versionSlug
+     *            version slug
+     * @param projectType
+     *            project type
+     * @param locales
+     *            locales
      */
-    public static void generateZanataXml(File output, String projectSlug, String versionSlug, String projectType, List<String> locales) {
+    public static void generateZanataXml(File output, String projectSlug,
+            String versionSlug, String projectType, List<String> locales) {
         ZanataXml zanataXml = new ZanataXml();
         zanataXml.setProject(projectSlug);
         zanataXml.setProjectVersion(versionSlug);
@@ -215,17 +219,17 @@ public class TestFileGenerator {
         for (Map.Entry<String, String> entry : entries.entrySet()) {
             resource.setProperty(entry.getKey(), entry.getValue());
         }
-        resource.store(new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8), null);
+        resource.store(new OutputStreamWriter(new FileOutputStream(file),
+                StandardCharsets.UTF_8), null);
     }
 
-    @XmlRootElement(namespace = ZanataXml.NS,
-            name = "config")
-    @Setter
+    @XmlRootElement(namespace = ZanataXml.NS, name = "config")
     private static class ZanataXml {
+
         static final String NS = "http://zanata.org/namespace/config/";
         @XmlElement(namespace = ZanataXml.NS)
-        private String url = PropertiesHolder
-                .getProperty(Constants.zanataInstance.value());
+        private String url =
+                PropertiesHolder.getProperty(Constants.zanataInstance.value());
         @XmlElement(namespace = ZanataXml.NS)
         private String project;
         @XmlElement(name = "project-version", namespace = ZanataXml.NS)
@@ -233,20 +237,38 @@ public class TestFileGenerator {
         @XmlElement(name = "project-type", namespace = ZanataXml.NS)
         private String projectType;
         @XmlElementWrapper(name = "locales", namespace = ZanataXml.NS)
-        @XmlElements(
-                @XmlElement(name = "locale", namespace = ZanataXml.NS)
-        )
+        @XmlElements(@XmlElement(name = "locale", namespace = ZanataXml.NS))
         private List<String> locales;
+
+        public void setUrl(final String url) {
+            this.url = url;
+        }
+
+        public void setProject(final String project) {
+            this.project = project;
+        }
+
+        public void setProjectVersion(final String projectVersion) {
+            this.projectVersion = projectVersion;
+        }
+
+        public void setProjectType(final String projectType) {
+            this.projectType = projectType;
+        }
+
+        public void setLocales(final List<String> locales) {
+            this.locales = locales;
+        }
     }
 
     public File openTestFile(String filename) {
         File testFile;
-        URL url = Thread.currentThread()
-                .getContextClassLoader().getResource(filename);
+        URL url = Thread.currentThread().getContextClassLoader()
+                .getResource(filename);
         Preconditions.checkNotNull(url, "File %s url is null", filename);
         testFile = new File(url.getPath());
-        Preconditions.checkArgument(testFile.exists(), "%s not found", testFile);
+        Preconditions.checkArgument(testFile.exists(), "%s not found",
+                testFile);
         return testFile;
     }
-
 }

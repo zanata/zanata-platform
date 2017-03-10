@@ -22,8 +22,6 @@ package org.zanata.test;
 
 import java.util.Arrays;
 import java.util.List;
-
-import lombok.extern.slf4j.Slf4j;
 import org.jglue.cdiunit.AdditionalClasses;
 import org.junit.runner.Runner;
 import org.junit.runners.Parameterized.Parameter;
@@ -34,15 +32,20 @@ import org.junit.runners.parameterized.ParametersRunnerFactory;
 import org.junit.runners.parameterized.TestWithParameters;
 
 /**
- * Parameterized Runner for CDI-Unit. Based on http://stackoverflow.com/a/27750897/14379
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * Parameterized Runner for CDI-Unit. Based on
+ * http://stackoverflow.com/a/27750897/14379
+ *
+ * @author Sean Flanigan
+ *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-@Slf4j
 public class CdiUnitRunnerWithParameters extends CdiUnitRunner {
+    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
+            .getLogger(CdiUnitRunnerWithParameters.class);
     private final Object[] parameters;
     private final String paramsName;
 
-    public CdiUnitRunnerWithParameters(TestWithParameters test) throws InitializationError {
+    public CdiUnitRunnerWithParameters(TestWithParameters test)
+            throws InitializationError {
         super(test.getTestClass().getJavaClass());
         this.parameters = test.getParameters().toArray();
         this.paramsName = test.getName();
@@ -68,13 +71,15 @@ public class CdiUnitRunnerWithParameters extends CdiUnitRunner {
         // we only support field injection for parameters
         // for compatibility with CDI constructor rules.
         if (!fieldsAreAnnotated()) {
-            errors.add(new Exception("This runner only supports field injection for parameters"));
+            errors.add(new Exception(
+                    "This runner only supports field injection for parameters"));
         }
-        // TODO ParamTestCdiExtension might be added by AdditionalClasspaths or AdditionalPackages
+        // TODO ParamTestCdiExtension might be added by AdditionalClasspaths or
+        // AdditionalPackages
         AdditionalClasses additionalClasses =
                 getTestClass().getAnnotation(AdditionalClasses.class);
-        if (additionalClasses == null ||
-                !Arrays.asList(additionalClasses.value())
+        if (additionalClasses == null
+                || !Arrays.asList(additionalClasses.value())
                         .contains(ParamTestCdiExtension.class)) {
             errors.add(new Exception(
                     "Please add @AdditionalClasses(ParamTestCdiExtension.class)"));
@@ -94,11 +99,11 @@ public class CdiUnitRunnerWithParameters extends CdiUnitRunner {
     }
 
     public static class Factory implements ParametersRunnerFactory {
+
         @Override
         public Runner createRunnerForTestWithParameters(TestWithParameters test)
                 throws InitializationError {
             return new CdiUnitRunnerWithParameters(test);
         }
     }
-
 }

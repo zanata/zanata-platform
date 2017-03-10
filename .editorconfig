@@ -1,0 +1,83 @@
+# EditorConfig: http://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# default settings for most files, including .java, .groovy, .kt
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Note that continuation_indent_size is IntelliJ-specific.
+# IDEA doesn't support `continuation_indent_size` for all these
+# languages, but it's easier to ensure the continuation rule is
+# consistent if we just set it everywhere `indent_size` is set.
+continuation_indent_size = 8
+
+[{Makefile,makefile,*.mk}]
+indent_style = tab
+trim_trailing_whitespace = false
+
+[LICENSE*.txt]
+indent_style = unset
+indent_size = unset
+trim_trailing_whitespace = false
+
+[{.babelrc,.stylelintrc,.eslintrc,*.json,*.jsb3,*.jsb2,*.bowerrc}]
+indent_style = space
+indent_size = 2
+continuation_indent_size = 4
+
+[{*.bat,*.cmd}]
+end_of_line = crlf
+
+[{*.css,*.less,*.sass,*.scss}]
+indent_style = space
+indent_size = 2
+continuation_indent_size = 4
+
+[{db.changelog-[123]*.xml,*_baseline.sql}]
+indent_style = unset
+indent_size = unset
+trim_trailing_whitespace = false
+
+[{*.ddl,*.sql}]
+indent_style = space
+indent_size = 2
+continuation_indent_size = 4
+
+[{*.js,*.jsx}]
+indent_style = space
+indent_size = 2
+continuation_indent_size = 4
+
+[{jshint.json,*.jshintrc}]
+indent_style = space
+indent_size = 2
+continuation_indent_size = 4
+
+[{*.md}]
+# two spaces at EOL means <br>
+trim_trailing_whitespace = false
+
+[{*.min.js}]
+indent_style = unset
+indent_size = unset
+insert_final_newline = unset
+trim_trailing_whitespace = false
+
+[{*.xml,*.xhtml,*.html}]
+indent_style = space
+indent_size = 2
+continuation_indent_size = 4
+
+[{*.yml,*.yaml}]
+indent_style = space
+indent_size = 2
+# Can be significant if strings aren't quoted (although they should be quoted):
+trim_trailing_whitespace = false
+continuation_indent_size = 4

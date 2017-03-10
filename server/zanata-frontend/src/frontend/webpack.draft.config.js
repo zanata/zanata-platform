@@ -21,18 +21,18 @@ module.exports = merge.smart(defaultConfig, {
     loaders: [
       {
         test: /\.css$/,
+        // prevent css optimisation and minification
         loader: ExtractTextPlugin.extract(
           'style',
-          'css?-minimize',
-          'autoprefixer?browsers=last 2 versions'
+          'css?-minimize!postcss!rework'
         )
       },
       {
         test: /\.less$/,
+        exclude: /node_modules/,
         loader: ExtractTextPlugin.extract(
           'style',
-          'css?-minimize!less',
-          'autoprefixer?browsers=last 2 versions'
+          'css?-minimize!less'
         )
       }
     ]
