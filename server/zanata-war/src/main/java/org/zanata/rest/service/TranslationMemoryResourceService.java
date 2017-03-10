@@ -31,9 +31,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import javax.inject.Inject;
 import javax.inject.Named;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
+
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
@@ -224,7 +222,7 @@ public class TranslationMemoryResourceService
         // TODO the handle is not being used for progress tracking in the
         // current implementation
         return AsyncTaskResult
-                .taskResult(deleteTranslationUnitsUnguarded(slug));
+                .completed(deleteTranslationUnitsUnguarded(slug));
     }
 
     private Lock lockTM(String slug) {

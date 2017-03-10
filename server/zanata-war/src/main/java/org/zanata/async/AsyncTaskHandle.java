@@ -20,10 +20,13 @@
  */
 package org.zanata.async;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.BiConsumer;
+
 import com.google.common.base.Optional;
 
 /**
@@ -35,7 +38,7 @@ import com.google.common.base.Optional;
  */
 public class AsyncTaskHandle<V> {
 
-    private Future<V> futureResult;
+    private CompletableFuture<V> futureResult;
     public int maxProgress = 100;
     public int minProgress = 0;
     public int currentProgress = 0;
@@ -141,7 +144,7 @@ public class AsyncTaskHandle<V> {
         }
     }
 
-    void setFutureResult(final Future<V> futureResult) {
+    void setFutureResult(final CompletableFuture<V> futureResult) {
         this.futureResult = futureResult;
     }
 
@@ -175,5 +178,18 @@ public class AsyncTaskHandle<V> {
 
     public long getFinishTime() {
         return this.finishTime;
+    }
+
+    /**
+     * Registers a callback to be run when the task completes. Keep in mind this
+     * callback is run in the same context as the task itself.
+     *
+     * @param action the action to take when the task is completed. The action
+     *               itself accepts a result and a Throwable. The throwable will
+     *               be null if the task has completed successfully.
+     * @see CompletableFuture#whenComplete(BiConsumer)
+     */
+    public void whenTaskComplete(BiConsumer<V, Throwable> action) {
+        futureResult = futureResult.whenComplete(action);
     }
 }

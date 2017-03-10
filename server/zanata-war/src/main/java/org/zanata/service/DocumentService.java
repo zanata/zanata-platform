@@ -26,9 +26,7 @@ import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 
 import java.util.Set;
-import java.util.concurrent.Future;
-
-import com.google.common.util.concurrent.ListenableFuture;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author Carlos Munoz <a
@@ -98,7 +96,7 @@ public interface DocumentService {
      * document save.
      * @see {@link org.zanata.service.DocumentService#saveDocument(String, String, org.zanata.rest.dto.resource.Resource, java.util.Set, boolean, boolean)}
      */
-    ListenableFuture<HDocument> saveDocumentAsync(String projectSlug,
+    CompletableFuture<HDocument> saveDocumentAsync(String projectSlug,
             String iterationSlug,
             Resource sourceDoc, Set<String> extensions, boolean copyTrans,
             boolean lock, AsyncTaskHandle<HDocument> handle);
