@@ -41,6 +41,7 @@ import org.zanata.common.ContentState;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
+import org.zanata.events.TransMemoryMergeEvent;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -55,10 +56,7 @@ import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
 import org.zanata.transaction.TransactionUtil;
 import org.zanata.util.TranslationUtil;
-import org.zanata.webtrans.server.TranslationWorkspace;
-import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.server.rpc.TransMemoryMergeStatusResolver;
-import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -106,11 +104,11 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     private TranslationService translationServiceImpl;
     @Inject
     private Event<TextFlowTargetUpdateContextEvent> textFlowTargetUpdateContextEvent;
-    @Inject
-    private TransactionUtil transactionUtil;
 
     @Inject
-    private TranslationWorkspaceManager translationWorkspaceManager;
+    private Event<TransMemoryMergeEvent> transMemoryMergeEvent;
+    @Inject
+    private TransactionUtil transactionUtil;
 
     @Inject
     @Authenticated
@@ -199,17 +197,10 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     }
 
 
-    private <E extends SessionEventData> void publishTMMergeEventToWorkspace(
-            WorkspaceId workspaceId, E event) {
-        try {
-            TranslationWorkspace workspace =
-                    translationWorkspaceManager.getOrRegisterWorkspace(
-                            workspaceId);
-            workspace.publish(event);
-
-        } catch (NoSuchWorkspaceException e) {
-            log.info("no workspace for {}", workspaceId);
-        }
+    private <E extends SessionEventData> void
+            publishTMMergeEventToWorkspace(WorkspaceId workspaceId, E event) {
+        transMemoryMergeEvent
+                .fire(new TransMemoryMergeEvent(workspaceId, event));
     }
 
     /**

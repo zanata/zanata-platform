@@ -220,7 +220,8 @@ public class Deployments {
         return context.matches(
                 ".*/org/zanata/webtrans/client/resources/ValidationMessages") ||
                 context.matches(".*/org/zanata/webtrans/server/locale/.*") ||
-                !context.contains("/org/zanata/webtrans/client");
+                !context.contains("/org/zanata/webtrans/client") &&
+                !context.contains("/org/zanata/webtrans/server");
     }
 
     private static <T> void forEachRemaining(Enumeration<T> enumeration,
