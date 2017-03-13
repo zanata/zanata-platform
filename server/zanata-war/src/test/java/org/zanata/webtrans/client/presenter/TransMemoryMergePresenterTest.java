@@ -25,17 +25,21 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import java.util.Date;
 import java.util.List;
 
+import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
 import org.fusesource.restygwt.client.callback.CallbackAware;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
+import org.mockito.MockSettings;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.common.LocaleId;
@@ -168,7 +172,7 @@ public class TransMemoryMergePresenterTest {
     }
 
     @Test
-    public void onRequestTMMergeFailureWillHideFormAndNotify() {
+    public void onRequestTMMergeFailureDueToSomeoneRunningItWillHideFormAndNotify() {
         // When:
         MergeOptions opts = MergeOptions.allFuzzy();
         opts.setDifferentProject(MergeRule.REJECT);
@@ -176,7 +180,34 @@ public class TransMemoryMergePresenterTest {
 
         assertThat(mergeResource.callback).isNotNull();
         // REST call failed
-        mergeResource.callback.onFailure(null, new RuntimeException("Die!!!!!"));
+        Method method = Mockito.mock(Method.class, withSettings().defaultAnswer(
+                Answers.RETURNS_DEEP_STUBS));
+        when(method.getResponse().getStatusCode()).thenReturn(400);
+        mergeResource.callback.onFailure(method, new RuntimeException("Die!!!!!"));
+
+        // Then:
+        verify(messages).mergeTMStartedBySomeone();
+        verify(eventBus).fireEvent(notificationEventCaptor.capture());
+        verify(display).hide();
+        NotificationEvent event = notificationEventCaptor.getValue();
+        assertThat(event.getSeverity()).isEqualTo(NotificationEvent.Severity.Warning);
+        assertThat(event.getMessage()).isSameAs(messages.mergeTMStartedBySomeone());
+        assertThat(presenter.isMergeStarted()).isFalse();
+    }
+
+    @Test
+    public void onRequestTMMergeFailureOnOtherErrorWillHideFormAndNotify() {
+        // When:
+        MergeOptions opts = MergeOptions.allFuzzy();
+        opts.setDifferentProject(MergeRule.REJECT);
+        presenter.proceedToMergeTM(100, opts);
+
+        assertThat(mergeResource.callback).isNotNull();
+        // REST call failed
+        Method method = Mockito.mock(Method.class, withSettings().defaultAnswer(
+                Answers.RETURNS_DEEP_STUBS));
+        when(method.getResponse().getStatusCode()).thenReturn(500);
+        mergeResource.callback.onFailure(method, new RuntimeException("Die!!!!!"));
 
         // Then:
         verify(messages).mergeTMFailed();
@@ -280,7 +311,7 @@ public class TransMemoryMergePresenterTest {
         TMMergeStartOrEndEvent event =
                 new TMMergeStartOrEndEvent("someone", new Date(), new EditorClientId("other session", 2L),
                         new DocumentId(2L, "otherDoc"), null, 10);
-        when(messages.mergeTMStartedBySomeone()).thenReturn("someone else started TM merge");
+        when(messages.mergeTMStartedBySomeoneForOtherDoc("otherDoc")).thenReturn("someone else started TM merge");
         presenter.onTMMergeStartOrEnd(event);
 
         verify(eventBus).fireEvent(notificationEventCaptor.capture());

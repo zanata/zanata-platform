@@ -132,6 +132,9 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Someone has started TM merge for this document. Please wait for it to finish before working on translation")
     String mergeTMStartedBySomeone();
 
+    @DefaultMessage("Someone has started TM merge for document: {0}")
+    String mergeTMStartedBySomeoneForOtherDoc(String document);
+
     @DefaultMessage("{0}% has been processed")
     String mergeProgressPercentage(String percentDisplay);
 

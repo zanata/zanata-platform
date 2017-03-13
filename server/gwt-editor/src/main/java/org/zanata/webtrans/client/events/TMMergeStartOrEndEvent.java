@@ -25,6 +25,7 @@ import java.util.Date;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
 
+import com.google.common.base.MoreObjects;
 import com.google.gwt.event.shared.GwtEvent;
 
 /**
@@ -92,5 +93,17 @@ public class TMMergeStartOrEndEvent extends GwtEvent<TMMergeStartOrEndHandler> {
 
     public boolean isEnded() {
         return endTime != null;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("startedBy", startedBy)
+                .add("startedTime", startedTime)
+                .add("editorClientId", editorClientId)
+                .add("documentId", documentId)
+                .add("endTime", endTime)
+                .add("textFlowCount", textFlowCount)
+                .toString();
     }
 }

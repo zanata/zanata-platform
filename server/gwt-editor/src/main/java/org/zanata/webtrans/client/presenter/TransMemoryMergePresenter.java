@@ -37,6 +37,7 @@ import org.zanata.webtrans.client.events.TMMergeStartOrEndHandler;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.util.DateUtil;
+import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -46,7 +47,6 @@ import org.zanata.webtrans.shared.rest.TransMemoryMergeResource;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
-import org.zanata.webtrans.shared.rpc.TransMemoryMergeStartOrEnd;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.common.annotations.VisibleForTesting;
@@ -117,8 +117,12 @@ public class TransMemoryMergePresenter extends
                     @Override
                     public void onFailure(Method method, Throwable exception) {
                         Log.warn("TM merge failed", exception);
-                        eventBus.fireEvent(new NotificationEvent(Error, messages
-                                .mergeTMFailed()));
+                        if (method.getResponse().getStatusCode() == 400) {
+                            eventBus.fireEvent(new NotificationEvent(Warning, messages.mergeTMStartedBySomeone()));
+                        } else {
+                            eventBus.fireEvent(new NotificationEvent(Error, messages
+                                    .mergeTMFailed()));
+                        }
                         display.hide();
                         mergeStarted = false;
                     }
@@ -154,6 +158,8 @@ public class TransMemoryMergePresenter extends
                     Log.warn("TM merge cancel failed", exception);
                     eventBus.fireEvent(new NotificationEvent(Error, messages
                             .mergeTMCancelFailed()));
+                    display.hide();
+                    mergeStarted = false;
                 }
 
                 @Override
@@ -187,7 +193,8 @@ public class TransMemoryMergePresenter extends
 
     @Override
     public void onTMMergeProgress(TMMergeProgressEvent event) {
-        if (!event.getEditorClientId().equals(identity.getEditorClientId())) {
+        if (!isEventFromSelf(event.getEditorClientId(),
+                identity.getEditorClientId())) {
             // if TM merge is initiated from another user, we don't care the progress
             return;
         }
@@ -213,10 +220,16 @@ public class TransMemoryMergePresenter extends
         display.showProcessing(messages.mergeProgressPercentage(event.getPercentDisplay()));
     }
 
+    private static boolean isEventFromSelf(EditorClientId editorClientIdInEvent,
+            EditorClientId editorClientIdInIdentity) {
+        return editorClientIdInEvent
+                .equals(editorClientIdInIdentity);
+    }
+
     @Override
     public void onTMMergeStartOrEnd(TMMergeStartOrEndEvent event) {
-        boolean eventFromOtherUser = !event.getEditorClientId()
-                .equals(identity.getEditorClientId());
+        boolean eventFromOtherUser = !isEventFromSelf(event.getEditorClientId(),
+                identity.getEditorClientId());
         if (!eventFromOtherUser) {
             handleEventFromCurrentUser(event);
         } else {
@@ -234,7 +247,7 @@ public class TransMemoryMergePresenter extends
             } else {
                 // another user has started TM merge for other document
                 eventBus.fireEvent(new NotificationEvent(Info,
-                        messages.mergeTMStartedBySomeone()));
+                        messages.mergeTMStartedBySomeoneForOtherDoc(event.getDocumentId().getDocId())));
             }
         } else {
             // TM merge triggered by another user has ended
