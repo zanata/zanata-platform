@@ -1,4 +1,4 @@
-import { hashHistory } from 'react-router'
+import { browserHistory } from 'react-router'
 
 const isChromium = window.chrome
 const vendorName = window.navigator.vendor
@@ -23,7 +23,7 @@ export const replaceRouteQuery = (location, paramsToReplace) => {
       delete newLocation.query[key]
     }
   })
-  hashHistory.replace({
+  browserHistory.replace({
     ...newLocation
   })
 }
