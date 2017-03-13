@@ -25,6 +25,8 @@ import React from 'react'
 import { FormGroup, FormControl }
   from 'react-bootstrap'
 
+// FIXME copied from SuggestionSearchInput. Can pull out a common component.
+
 /**
  * Styled text input that displays result count.
  */
