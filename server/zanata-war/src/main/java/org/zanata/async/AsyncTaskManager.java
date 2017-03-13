@@ -22,15 +22,19 @@ package org.zanata.async;
 
 import java.security.Principal;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
-import javax.annotation.Resource;
-import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.security.auth.Subject;
 import org.apache.deltaspike.cdise.api.ContextControl;
+import org.zanata.config.AsyncConfig;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
@@ -48,8 +52,20 @@ public class AsyncTaskManager {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(AsyncTaskManager.class);
 
-    @Resource
-    private ManagedExecutorService scheduler;
+    private ExecutorService scheduler;
+    @Inject
+    private AsyncConfig asyncConfig;
+
+    @PostConstruct
+    public void init() {
+        scheduler =
+                Executors.newFixedThreadPool(asyncConfig.getThreadPoolSize());
+    }
+
+    @PreDestroy
+    public void cleanup() {
+        scheduler.shutdown();
+    }
 
     /**
      * Starts a task asynchronously. In its present implementation can only run
