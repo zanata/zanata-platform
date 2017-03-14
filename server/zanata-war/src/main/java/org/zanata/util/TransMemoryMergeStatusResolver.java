@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-package org.zanata.webtrans.server.rpc;
+package org.zanata.util;
 
 import org.zanata.common.ContentState;
 import org.zanata.model.HTextFlow;

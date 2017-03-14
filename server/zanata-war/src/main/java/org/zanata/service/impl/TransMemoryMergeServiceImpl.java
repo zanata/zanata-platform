@@ -42,6 +42,7 @@ import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.events.TextFlowTargetUpdateContextEvent;
 import org.zanata.events.TransMemoryMergeEvent;
+import org.zanata.events.TransMemoryMergeProgressEvent;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
@@ -55,8 +56,8 @@ import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
 import org.zanata.transaction.TransactionUtil;
+import org.zanata.util.TransMemoryMergeStatusResolver;
 import org.zanata.util.TranslationUtil;
-import org.zanata.webtrans.server.rpc.TransMemoryMergeStatusResolver;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
@@ -64,9 +65,6 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
-import org.zanata.webtrans.shared.rpc.SessionEventData;
-import org.zanata.webtrans.shared.rpc.TMMergeInProgress;
-import org.zanata.webtrans.shared.rpc.TransMemoryMergeStartOrEnd;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
@@ -108,6 +106,8 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     @Inject
     private Event<TransMemoryMergeEvent> transMemoryMergeEvent;
     @Inject
+    private Event<TransMemoryMergeProgressEvent> transMemoryMergeProgressEvent;
+    @Inject
     private TransactionUtil transactionUtil;
 
     @Inject
@@ -133,11 +133,9 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             total = textFlowDAO
                     .getUntranslatedTextFlowCount(request.documentId, targetLocale);
 
-            publishTMMergeEventToWorkspace(workspaceId,
-                    new TransMemoryMergeStartOrEnd(startTime,
-                            authenticatedAccount.getUsername(),
-                            request.editorClientId, request.documentId,
-                            total, null));
+            transMemoryMergeEvent.fire(TransMemoryMergeEvent.start(workspaceId,
+                    startTime, authenticatedAccount.getUsername(),
+                    request.editorClientId, request.documentId, total));
 
             asyncTaskHandle.setTotalTextFlows(total);
             asyncTaskHandle.setTMMergeTarget(request.projectIterationId,
@@ -163,25 +161,21 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                         translateInBatch(request, textFlowsBatch, targetLocale);
                 finalResult.addAll(batchResult);
                 log.debug("TM merge handle: {}", asyncTaskHandle);
-                publishTMMergeEventToWorkspace(workspaceId,
-                        new TMMergeInProgress(total,
+                transMemoryMergeProgressEvent
+                        .fire(new TransMemoryMergeProgressEvent(workspaceId, total,
                                 asyncTaskHandle.getTextFlowFilled(),
                                 request.editorClientId, request.documentId));
             }
         } catch (Exception e) {
             log.error("exception happen in TM merge", e);
-            publishTMMergeEventToWorkspace(workspaceId,
-                    new TransMemoryMergeStartOrEnd(startTime,
-                            authenticatedAccount.getUsername(),
-                            request.editorClientId, request.documentId, index,
-                            new Date()));
+            transMemoryMergeEvent.fire(TransMemoryMergeEvent.end(workspaceId,
+                    startTime, authenticatedAccount.getUsername(),
+                    request.editorClientId, request.documentId, total));
             // TODO pahuang need to publish a notification to tell the user something went wrong
         } finally {
-            publishTMMergeEventToWorkspace(workspaceId,
-                    new TransMemoryMergeStartOrEnd(startTime,
-                            authenticatedAccount.getUsername(),
-                            request.editorClientId, request.documentId, index,
-                            new Date()));
+            transMemoryMergeEvent.fire(TransMemoryMergeEvent.end(workspaceId,
+                    startTime, authenticatedAccount.getUsername(),
+                    request.editorClientId, request.documentId, total));
         }
 
         return finalResult;
@@ -194,13 +188,6 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         List<TranslationService.TranslationResult> translationResults =
                 executeMerge(request, asyncTaskHandle);
         return AsyncTaskResult.taskResult(translationResults);
-    }
-
-
-    private <E extends SessionEventData> void
-            publishTMMergeEventToWorkspace(WorkspaceId workspaceId, E event) {
-        transMemoryMergeEvent
-                .fire(new TransMemoryMergeEvent(workspaceId, event));
     }
 
     /**
