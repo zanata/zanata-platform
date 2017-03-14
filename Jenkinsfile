@@ -83,7 +83,7 @@ timestamps {
         }
 
         stage('stash') {
-          stash name: 'workspace', includes: '**/target/**,.mvn/**,server/zanata-frontend/src/**'
+          stash name: 'workspace', includes: '**/target/**,.mvn/**,server/zanata-frontend/src/**,server/'
         }
       } catch (e) {
         notify.failed()
@@ -148,6 +148,13 @@ void integrationTests(String appserver) {
 
     unstash 'workspace'
     // TODO: Consider touching the target files for test, so it won't recompile
+
+    // Are jar files actually in?
+    def jarFileList = findFiles glob: "**/*.jar"
+    echo "${jarFileList.join('\n')}"
+    echo "${jarFileList.size()} jar files"
+    sh "touch ${jarFileList.join(' ')}"
+
     try {
       xvfb {
         withPorts {
