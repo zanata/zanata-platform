@@ -128,8 +128,8 @@ const ControlsHeader = React.createClass({
               <IconButtonToggle
                 icon="suggestions"
                 title={this.props.ui.panels.suggestions.visible
-                    ? gettextCatalog.getString('Hide suggestions panel')
-                    : gettextCatalog.getString('Show suggestions panel')}
+                  ? gettextCatalog.getString('Hide suggestions panel')
+                  : gettextCatalog.getString('Show suggestions panel')}
                 onClick={this.props.actions.toggleSuggestionPanel}
                 active={this.props.ui.panels.suggestions.visible} />
             </li>
