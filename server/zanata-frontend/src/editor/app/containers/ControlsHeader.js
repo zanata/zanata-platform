@@ -21,7 +21,6 @@ import {
 } from '../actions/controlsHeaderActions'
 import { toggleSuggestions } from '../actions/suggestions'
 import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
-import { Icon } from 'zanata-ui'
 
 const { bool, func, number, shape } = PropTypes
 
@@ -114,7 +113,13 @@ const ControlsHeader = React.createClass({
         <div className="u-floatLeft InputEditorSearch">
           <EditorSearchInput />
           <div className="help-icon">
-            <Icon name="help" />
+            <IconButtonToggle
+              icon="help"
+              title={this.props.ui.panels.suggestions.visible
+                ? gettextCatalog.getString('Hide suggestions panel')
+                : gettextCatalog.getString('Show suggestions panel')}
+              onClick={this.props.actions.toggleSuggestionPanel}
+              active={this.props.ui.panels.suggestions.visible} />
           </div>
         </div>
         <div className="u-floatRight flex">
@@ -130,7 +135,6 @@ const ControlsHeader = React.createClass({
                   : gettextCatalog.getString('Show suggestions panel')}
                 onClick={this.props.actions.toggleSuggestionPanel}
                 active={this.props.ui.panels.suggestions.visible} />
-
             </li>
             <li className="u-sM-1-8">
               <IconButtonToggle

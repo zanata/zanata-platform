@@ -320,25 +320,36 @@ li.docName span.ellipsis {
   width:18em;
   margin-left:0.75em;
   display:inline-flex;
-  font-size:0.875em;
   margin-top: 0.1em;
-  margin-bottom: 0.1em;
 }
 
-.InputEditorSearch .help-icon svg {
-  height: 1.2em;
-  width: 1.2em;
-  margin-top: 0.5em;
+.InputEditorSearch .help-icon button {
+  vertical-align: sub;
   margin-left:0.375em;
 }
+
+.InputEditorSearch .help-icon button span {
+  vertical-align:bottom;
+}
+
 
 .flex {
   display: flex;
 }
 
+.flex ul.u-listHorizontal {
+  z-index:1000;
+}
+
 .Header {
   z-index:301;
 }
+
+.InputGroup-addon {
+  vertical-align: baseline;
+}
+
+
   /**
    * Media Queries
    */
