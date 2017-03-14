@@ -125,7 +125,7 @@ timestamps {
 // TODO factor these out into zanata-pipeline-library too
 
 void xvfb(Closure wrapped) {
-  wrap([$class: 'Xvfb']) {
+  wrap([$class: 'Xvfb', autoDisplayName: true]) {
     wrapped.call()
   }
 }
