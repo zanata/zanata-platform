@@ -22,6 +22,7 @@ package org.zanata.arquillian;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -54,6 +55,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.jboss.shrinkwrap.resolver.api.maven.ScopeType.*;
 
 /**
@@ -167,13 +169,16 @@ public class Deployments {
                     Thread.currentThread().getContextClassLoader()
                             .getResources(
                                     "META-INF/annotations/javax.ws.rs.Path");
+            if (!resources.hasMoreElements()) {
+                throw new IllegalStateException(
+                        "cannot find any annotation index files (javax.ws.rs.Path)");
+            }
             ImmutableList.Builder<String> builder = ImmutableList.builder();
             forEachRemaining(resources, url -> {
                 File file = new File(url.getPath());
                 if (file.exists() && file.canRead()) {
                     try {
-                        Files.lines(Paths.get(url.toURI()),
-                                StandardCharsets.UTF_8)
+                        Files.lines(Paths.get(url.toURI()), UTF_8)
                                 .forEach(builder::add);
                     } catch (URISyntaxException | IOException e) {
                         log.error("error handling file: {}", file, e);
@@ -182,17 +187,13 @@ public class Deployments {
             });
             List<String> pathClasses = builder.build();
             log.debug("all javax.ws.rs.Path classes: {}", pathClasses);
-            URL metaInf = Thread.currentThread().getContextClassLoader()
-                    .getResource("META-INF/annotations/javax.ws.rs.Path");
-            if (metaInf != null) {
-                File allPathClassesIndex = new File(metaInf.getPath() + "-concatenated");
-                Files.write(
-                        allPathClassesIndex.toPath(), pathClasses, StandardCharsets.UTF_8);
-                return allPathClassesIndex;
-            }
-            throw new IllegalStateException("can not find annotation index file");
+            File concatenatedIndex = File.createTempFile(
+                    "javax.ws.rs.Path-concatenated", ".tmp");
+            concatenatedIndex.deleteOnExit();
+            Files.write(concatenatedIndex.toPath(), pathClasses, UTF_8);
+            return concatenatedIndex;
         } catch (IOException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

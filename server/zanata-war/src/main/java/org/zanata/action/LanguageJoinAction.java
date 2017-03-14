@@ -29,16 +29,15 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.ApplicationConfiguration;
 import org.zanata.security.annotations.Authenticated;
 import org.apache.commons.lang.StringUtils;
 import org.zanata.exception.RequestExistsException;
-import org.zanata.model.HPerson;
 import org.zanata.model.LanguageRequest;
-import org.zanata.model.LocaleRole;
 import org.zanata.model.type.RequestState;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleMemberDAO;
 import org.zanata.email.EmailStrategy;
@@ -52,6 +51,8 @@ import org.zanata.service.LanguageTeamService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.RequestService;
 import org.zanata.ui.faces.FacesMessages;
+
+import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -90,6 +91,8 @@ public class LanguageJoinAction implements Serializable {
     @Inject
     @Authenticated
     private HAccount authenticatedAccount;
+    @Inject
+    private ApplicationConfiguration applicationConfiguration;
 
     /**
      * Return localised roles requested
@@ -106,23 +109,12 @@ public class LanguageJoinAction implements Serializable {
         LanguageRequest request =
                 requestServiceImpl.getLanguageRequest(languageRequestId);
         Long personId = request.getRequest().getRequester().getPerson().getId();
-        boolean updateAsTranslator;
-        boolean updateAsReviewer;
-        boolean updateAsCoordinator;
-        HLocaleMember member = localeMemberDAO.findByPersonAndLocale(personId,
-                new LocaleId(language));
-        if (member == null) {
-            updateAsTranslator = request.isTranslator();
-            updateAsReviewer = request.isReviewer();
-            updateAsCoordinator = request.isCoordinator();
-        } else {
-            updateAsTranslator =
-                    member.isTranslator() ? true : request.isTranslator();
-            updateAsReviewer =
-                    member.isReviewer() ? true : request.isReviewer();
-            updateAsCoordinator =
-                    member.isCoordinator() ? true : request.isCoordinator();
-        }
+        HLocaleMember member = firstNonNull(localeMemberDAO.findByPersonAndLocale(personId,
+                new LocaleId(language)), new HLocaleMember());
+        boolean updateAsTranslator = member.isTranslator() || request.isTranslator();
+        boolean updateAsReviewer = member.isReviewer() || request.isReviewer();
+        boolean updateAsCoordinator = member.isCoordinator() || request.isCoordinator();
+
         languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(language,
                 personId, updateAsTranslator, updateAsReviewer,
                 updateAsCoordinator);
@@ -145,9 +137,19 @@ public class LanguageJoinAction implements Serializable {
     public void processRequest(boolean translator, boolean reviewer,
             boolean coordinator) {
         try {
-            requestServiceImpl.createLanguageRequest(authenticatedAccount,
-                    getLocale(), coordinator, reviewer, translator);
-            sendRequestEmail(coordinator, reviewer, translator);
+            // Grant translator only request automatically if enabled
+            if (applicationConfiguration.isAutoAcceptRequests() &&
+                    (translator && !(coordinator || reviewer))) {
+                languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(language,
+                        authenticatedAccount.getId(), translator, reviewer,
+                        coordinator);
+                log.info("User {} was added to the language team {}",
+                        authenticatedAccount.getUsername(), language);
+            } else {
+                requestServiceImpl.createLanguageRequest(authenticatedAccount,
+                        getLocale(), coordinator, reviewer, translator);
+                sendRequestEmail(coordinator, reviewer, translator);
+            }
         } catch (RequestExistsException e) {
             String message = msgs.format("jsf.language.request.exists",
                     authenticatedAccount.getUsername(),
