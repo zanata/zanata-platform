@@ -61,7 +61,7 @@ timestamps {
 
           // Continue building even when test failure
           // Thus -Dmaven.test.failure.ignore is required
-          sh """./run-clean.sh ./mvnw -e clean package jxr:aggregate\
+          sh """./run-clean.sh ./mvnw -e clean install jxr:aggregate\
                       --batch-mode \
                       --settings .travis-settings.xml \
                       --update-snapshots \
@@ -147,11 +147,12 @@ void integrationTests(String appserver) {
     debugChromeDriver()
 
     unstash 'workspace'
+    // TODO: Consider touching the target files for test, so it won't recompile
     try {
       xvfb {
         withPorts {
           // Run the maven build
-          sh """./run-clean.sh ./mvnw -e verify \
+          sh """./run-clean.sh ./mvnw -e install \
                      --batch-mode \
                      --settings .travis-settings.xml \
                      -Danimal.sniffer.skip=true \
