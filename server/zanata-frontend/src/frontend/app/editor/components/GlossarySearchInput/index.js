@@ -46,6 +46,12 @@ const GlossarySearchInput = React.createClass({
     })
   },
 
+  onBlur: function () {
+    this.setState({
+      focused: false
+    })
+  },
+
   focusInput: function () {
     // TODO different approach for React 0.14
 
