@@ -27,8 +27,11 @@ import javax.inject.Inject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.events.TransMemoryMergeEvent;
+import org.zanata.events.TransMemoryMergeProgressEvent;
 import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rpc.TMMergeInProgress;
+import org.zanata.webtrans.shared.rpc.TransMemoryMergeStartOrEnd;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -47,7 +50,28 @@ public class TransMemoryMergeEventPublisher {
             TranslationWorkspace workspace =
                     translationWorkspaceManager.getOrRegisterWorkspace(
                             workspaceId);
-            workspace.publish(event.getClientEvent());
+            TransMemoryMergeStartOrEnd clientEvent =
+                    new TransMemoryMergeStartOrEnd(event.getStartTime(),
+                            event.getUsername(),
+                            event.getEditorClientId(), event.getDocumentId(),
+                            event.getTotal(), event.getEndTime());
+            workspace.publish(clientEvent);
+
+        } catch (NoSuchWorkspaceException e) {
+            log.info("no workspace for {}", workspaceId);
+        }
+    }
+
+    public void onTMMergeProgress(@Observes TransMemoryMergeProgressEvent event) {
+        WorkspaceId workspaceId = event.getWorkspaceId();
+        try {
+            TranslationWorkspace workspace =
+                    translationWorkspaceManager.getOrRegisterWorkspace(
+                            workspaceId);
+            TMMergeInProgress clientEvent =
+                    new TMMergeInProgress(event.getTotal(), event.getFilled(),
+                            event.getEditorClientId(), event.getDocumentId());
+            workspace.publish(clientEvent);
 
         } catch (NoSuchWorkspaceException e) {
             log.info("no workspace for {}", workspaceId);

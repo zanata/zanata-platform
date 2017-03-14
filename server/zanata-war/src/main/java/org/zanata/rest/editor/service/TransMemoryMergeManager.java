@@ -35,7 +35,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
-import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;

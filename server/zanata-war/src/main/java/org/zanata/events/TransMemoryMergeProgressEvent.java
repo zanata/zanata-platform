@@ -20,61 +20,40 @@
  */
 package org.zanata.events;
 
-import java.util.Date;
-
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 /**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransMemoryMergeEvent {
+public class TransMemoryMergeProgressEvent {
     private final WorkspaceId workspaceId;
-    private final Date startTime;
-    private final String username;
+    private final long total;
+    private final long filled;
     private final EditorClientId editorClientId;
     private final DocumentId documentId;
-    private final long total;
-    private final Date endTime;
 
-    public TransMemoryMergeEvent(WorkspaceId workspaceId,
-            Date startTime, String username, EditorClientId editorClientId,
-            DocumentId documentId, long total, Date endTime) {
+    public TransMemoryMergeProgressEvent(WorkspaceId workspaceId, long total,
+            long filled,
+            EditorClientId editorClientId, DocumentId documentId) {
         this.workspaceId = workspaceId;
-        this.startTime = startTime;
-        this.username = username;
+        this.total = total;
+        this.filled = filled;
         this.editorClientId = editorClientId;
         this.documentId = documentId;
-        this.total = total;
-        this.endTime = endTime;
-    }
-
-    public static TransMemoryMergeEvent start(WorkspaceId workspaceId,
-            Date startTime, String username, EditorClientId editorClientId,
-            DocumentId documentId, long total) {
-        return new TransMemoryMergeEvent(workspaceId, startTime,
-                username, editorClientId, documentId, total, null);
-    }
-
-    public static TransMemoryMergeEvent end(WorkspaceId workspaceId,
-            Date startTime, String username, EditorClientId editorClientId,
-            DocumentId documentId, long total) {
-        return new TransMemoryMergeEvent(workspaceId, startTime,
-                username, editorClientId, documentId, total, new Date());
     }
 
     public WorkspaceId getWorkspaceId() {
         return workspaceId;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public long getTotal() {
+        return total;
     }
 
-    public String getUsername() {
-        return username;
+    public long getFilled() {
+        return filled;
     }
 
     public EditorClientId getEditorClientId() {
@@ -83,13 +62,5 @@ public class TransMemoryMergeEvent {
 
     public DocumentId getDocumentId() {
         return documentId;
-    }
-
-    public long getTotal() {
-        return total;
-    }
-
-    public Date getEndTime() {
-        return endTime;
     }
 }
