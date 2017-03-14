@@ -20,6 +20,7 @@ import {
   lastPage
 } from '../actions/controlsHeaderActions'
 import { toggleSuggestions } from '../actions/suggestions'
+import { toggleAdvanceSearchModal } from '../actions/search'
 import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
 
 const { bool, func, number, shape } = PropTypes
@@ -116,10 +117,10 @@ const ControlsHeader = React.createClass({
             <IconButtonToggle
               icon="help"
               title={this.props.ui.panels.suggestions.visible
-                ? gettextCatalog.getString('Hide suggestions panel')
-                : gettextCatalog.getString('Show suggestions panel')}
-              onClick={this.props.actions.toggleSuggestionPanel}
-              active={this.props.ui.panels.suggestions.visible} />
+                ? gettextCatalog.getString('Hide search panel')
+                : gettextCatalog.getString('Show search panel')}
+              onClick={this.props.actions.toggleAdvanceSearchModal}
+              active={this.props.ui.panels.search.visible} />
           </div>
         </div>
         <div className="u-floatRight flex">
@@ -226,6 +227,7 @@ function mapDispatchToProps (dispatch) {
         dispatch(setSidebarVisibility(visible))
       },
       toggleSuggestionPanel: () => dispatch(toggleSuggestions()),
+      toggleAdvanceSearchModal: () => dispatch(toggleAdvanceSearchModal()),
       toggleKeyboardShortcutsModal: () => {
         // TODO pahuang implement toggle keyboard shutcut modal
         // console.log('======== toggleKeyboardShortcutsModal')

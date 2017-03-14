@@ -6,6 +6,7 @@ import EditorHeader from '../EditorHeader'
 import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
+import SearchModal from '../SearchModal'
 import { setSidebarVisibility } from '../../actions'
 import { fetchUiLocales } from '../../actions/headerActions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions'
@@ -83,6 +84,7 @@ class Root extends Component {
               onDragFinished={this.resizeFinished}>
               <MainContent />
               {this.props.showSuggestion && <SuggestionsPanel />}
+              <SearchModal />
             </SplitPane>
             <KeyShortcutCheatSheet />
           </Sidebar>
@@ -96,6 +98,7 @@ Root.propTypes = {
   percentHeight: PropTypes.number.isRequired,
   showSidebar: PropTypes.bool.isRequired,
   showSuggestion: PropTypes.bool,
+  showAdvanceSearch: PropTypes.bool,
   requestUiLocales: PropTypes.func.isRequired,
   setSidebarVisible: PropTypes.func.isRequired,
   saveSuggestionPanelHeight: PropTypes.func.isRequired
@@ -113,7 +116,8 @@ function mapStateToProps (state, ownProps) {
     phrases: withDetail,
     percentHeight,
     showSidebar: ui.panels.sidebar.visible,
-    showSuggestion: ui.panels.suggestions.visible
+    showSuggestion: ui.panels.suggestions.visible,
+    showAdvanceSearch: ui.panels.search.visible
   }
 }
 
