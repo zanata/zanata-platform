@@ -27,6 +27,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import net.sf.okapi.common.*;
 import net.sf.okapi.common.exceptions.OkapiIOException;
@@ -159,10 +160,12 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
     }
 
     @Override
-    public Resource parseDocumentFile(URI documentContent,
+    public Resource parseDocumentFile(@Nonnull URI documentContent,
                                       @Nonnull LocaleId sourceLocale,
                                       Optional<String> filterParams)
             throws FileFormatAdapterException, IllegalArgumentException {
+        Objects.requireNonNull(sourceLocale, "SourceLocale cannot be null");
+        Objects.requireNonNull(documentContent, "DocumentContent cannot be null");
         Resource document = new Resource();
         document.setLang(sourceLocale);
         document.setContentType(ContentType.TextPlain);
@@ -292,7 +295,10 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                                                      @Nonnull LocaleId sourceLocaleId,
                                                      @Nonnull @NotEmpty String localeId,
                                                      Optional<String> filterParams)
-            throws FileFormatAdapterException, IllegalArgumentException {
+            throws FileFormatAdapterException,
+            IllegalArgumentException {
+        Objects.requireNonNull(fileUri, "fileURI cannot be null");
+        Objects.requireNonNull(localeId, "LocaleID cannot be null");
         RawDocument rawDoc =
                 new RawDocument(fileUri, "UTF-8",
                         net.sf.okapi.common.LocaleId.fromString("en"));
