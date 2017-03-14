@@ -20,6 +20,7 @@
 @import './css/base/index.css';
 @import './components/SplitDropdown/index.css';
 @import './components/Button/index.css';
+@import './components/GlossarySearchInput/index.css';
 @import './components/SuggestionSearchInput/index.css';
 @import './components/Dropdown/index.css';
 @import './containers/EditorHeader/index.css';
