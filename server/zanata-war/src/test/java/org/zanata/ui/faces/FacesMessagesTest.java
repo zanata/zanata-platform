@@ -23,6 +23,7 @@ package org.zanata.ui.faces;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -43,6 +44,7 @@ import org.zanata.i18n.Messages;
 import org.zanata.test.CdiUnitRunner;
 
 import static java.util.Collections.emptyIterator;
+import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -58,6 +60,10 @@ import static org.mockito.Mockito.when;
 @WithActiveWindow("34")
 @SupportDeltaspikeCore
 public class FacesMessagesTest {
+
+    private String testMessage = "test message";
+    private ArgumentCaptor<FacesMessage> message =
+            ArgumentCaptor.forClass(FacesMessage.class);
 
     @Inject
     private FacesMessages facesMessages;
@@ -78,37 +84,40 @@ public class FacesMessagesTest {
     }
 
     @Test
-    public void addInfoToControl() throws Exception {
+    public void addToControl() throws Exception {
         when(uiViewRoot.getId()).thenReturn("id");
         when(uiViewRoot.getClientId()).thenReturn("clientId");
-        facesMessages.addToControl("id", "This is a message with {0}.", "parameters");
+        facesMessages.addToControl("id", testMessage);
         facesMessages.beforeRenderResponse();
 
-        ArgumentCaptor<FacesMessage> message = ArgumentCaptor.forClass(FacesMessage.class);
-        String expectedMessage = "This is a message with parameters.";
         verify(facesContext).addMessage(eq("clientId"), message.capture());
-        assertThat(message.getValue().getSummary()).isEqualTo(expectedMessage);
+        assertThat(message.getValue().getSummary()).isEqualTo(testMessage);
+        //noinspection unchecked
+        assertThat(message.getValue().getSeverity()).isEqualTo(
+                SEVERITY_INFO);
     }
 
     @Test
-    public void addGlobal() throws Exception {
-        String expectedMessage = "test message";
-        FacesMessage msg = new FacesMessage(expectedMessage);
-        facesMessages.addGlobal(msg);
+    public void addGlobalString() throws Exception {
+        facesMessages.addGlobal(testMessage);
         facesMessages.beforeRenderResponse();
-        ArgumentCaptor<FacesMessage> message = ArgumentCaptor.forClass(FacesMessage.class);
         verify(facesContext).addMessage(eq(null), message.capture());
-        assertThat(message.getValue().getSummary()).isEqualTo(expectedMessage);
+        assertThat(message.getValue().getSummary()).isEqualTo(testMessage);
+        //noinspection unchecked
+        assertThat(message.getValue().getSeverity()).isEqualTo(
+                SEVERITY_INFO);
     }
 
-//    @Test
-//    public void getMessagesList() throws Exception {
-////        facesMessages.getMessagesList();
-//    }
-//
-//    @Test
-//    public void getGlobalMessagesList() throws Exception {
-//        facesMessages.getGlobalMessagesList();
-//    }
+    @Test
+    public void addGlobalFacesMessage() throws Exception {
+        FacesMessage msg = new FacesMessage(testMessage);
+        facesMessages.addGlobal(msg);
+        facesMessages.beforeRenderResponse();
+        verify(facesContext).addMessage(eq(null), message.capture());
+        assertThat(message.getValue()).isSameAs(msg);
+        //noinspection unchecked
+        assertThat(message.getValue().getSeverity()).isEqualTo(
+                SEVERITY_INFO);
+    }
 
 }

@@ -130,9 +130,7 @@ public class FacesMessages implements Serializable {
     }
 
     /**
-     * Add a status message, looking up the message in the resource bundle using
-     * the provided key. If the message is found, it is used, otherwise, the
-     * defaultMessageTemplate will be used.
+     * Add a status message.
      * <p/>
      * The message will be added to the widget specified by the ID. The
      * algorithm used determine which widget the id refers to is determined by
@@ -140,28 +138,26 @@ public class FacesMessages implements Serializable {
      * <p/>
      * You can also specify the severity, and parameters to be interpolated
      */
-    private void addToControl(String id, Severity severity,
-            String messageTemplate, final Object... params) {
+    private void addToControl(String id, Severity severity, String message) {
         log.debug("{}: addToControl(id={}, template={})", this, id,
-                messageTemplate);
-        String interpolatedMessage = MessageFormat.format(messageTemplate, params);
+                message);
         FacesMessage jsfMssg =
-                new FacesMessage(severity, interpolatedMessage, null);
+                new FacesMessage(severity, message, null);
         if (id == null) {
             if (shouldLogAsWarning(severity)) {
                 log.warn("Global message to user (wid: {}): {})",
                         windowContext.getCurrentWindowId(),
-                        interpolatedMessage);
+                        message);
             } else {
                 log.debug("Global message to user (wid: {}): {})",
                         windowContext.getCurrentWindowId(),
-                        interpolatedMessage);
+                        message);
             }
             // Global message
             globalMessages.add(jsfMssg);
         } else {
             log.debug("Message to user (wid: {} id: {}): {})",
-                    windowContext.getCurrentWindowId(), id, interpolatedMessage);
+                    windowContext.getCurrentWindowId(), id, message);
             // Control specific message
             if (keyedMessages.containsKey(id)) {
                 keyedMessages.get(id).add(jsfMssg);
@@ -178,21 +174,20 @@ public class FacesMessages implements Serializable {
         return severity.compareTo(SEVERITY_ERROR) >= 0;
     }
 
-    public void addToControl(String id, String messageTemplate,
-            final Object... params) {
-        addToControl(id, SEVERITY_INFO, messageTemplate, params);
+    public void addToControl(String id, String message) {
+        addToControl(id, SEVERITY_INFO, message);
     }
 
     /**
      * Adds a global message with the default severity (info).
      *
-     * @param messageTemplate
-     *            The message template string (not a key).
+     * @param message
+     *            The message string (not a key).
      * @param params
      *            The parameters to be interpolated into the template.
      */
-    public void addGlobal(String messageTemplate, final Object... params) {
-        addToControl(null, SEVERITY_INFO, messageTemplate, params);
+    public void addGlobal(String message) {
+        addGlobal(SEVERITY_INFO, message);
     }
 
     /**
@@ -200,14 +195,13 @@ public class FacesMessages implements Serializable {
      *
      * @param severity
      *            Message severity
-     * @param messageTemplate
-     *            The message template string (not a key).
+     * @param message
+     *            The message string (not a key).
      * @param params
      *            The parameters to be interpolated into the template.
      */
-    public void addGlobal(Severity severity, String messageTemplate,
-            final Object... params) {
-        addToControl(null, severity, messageTemplate, params);
+    public void addGlobal(Severity severity, String message) {
+        addToControl(null, severity, message);
     }
 
     public void addGlobal(FacesMessage msg) {
@@ -231,7 +225,7 @@ public class FacesMessages implements Serializable {
     public void addFromResourceBundle(Severity severity, String key,
             final Object... params) {
         String formatedMssg = msgs.formatWithAnyArgs(key, params);
-        addGlobal(severity, formatedMssg, params);
+        addGlobal(severity, formatedMssg);
     }
 
     /**
