@@ -20,6 +20,7 @@
  */
 package org.zanata.i18n;
 
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.AbstractMap;
 import java.util.Enumeration;
@@ -49,9 +50,8 @@ import javax.enterprise.event.Observes;
  * Utility component to help with programmatic access to the message resource
  * bundle.
  *
- * Unlike the {@link org.jboss.seam.international.Messages} component, this
- * component formats messages using positional arguments like {0} and
- * {1}, not by interpolating EL expressions.
+ * Unlike Seam 2's Messages component, this component formats messages using
+ * positional arguments like {0} and {1}, not by interpolating EL expressions.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -60,7 +60,8 @@ import javax.enterprise.event.Observes;
  */
 
 @Alternative
-public class Messages extends AbstractMap<String, String> {
+public class Messages extends AbstractMap<String, String>
+        implements Serializable {
 
     /**
      * Gets the 'messages' ResourceBundle for the specified locale.
@@ -86,11 +87,13 @@ public class Messages extends AbstractMap<String, String> {
         }
     }
 
+    // non-private for AutoLocaleMessages's benefit
     Locale locale;
     // NB: getBundle will load the bundle whenever it is null
     @Nullable
     transient ResourceBundle resourceBundle;
 
+    // non-private constructor for CDI proxy
     protected Messages() {
     }
 

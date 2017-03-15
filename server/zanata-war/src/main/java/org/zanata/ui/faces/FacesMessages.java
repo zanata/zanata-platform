@@ -24,6 +24,7 @@ import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 import static javax.faces.application.FacesMessage.Severity;
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Stack;
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.faces.application.FacesMessage;
@@ -63,6 +65,8 @@ public class FacesMessages implements Serializable {
     private WindowContext windowContext;
     @Inject
     private Messages msgs;
+    @Inject
+    private FacesContext facesContext;
 
     @PostConstruct
     void postConstruct() {
@@ -80,13 +84,13 @@ public class FacesMessages implements Serializable {
     public void beforeRenderResponse() {
         log.debug("{}: beforeRenderResponse", this);
         for (FacesMessage message : globalMessages) {
-            FacesContext.getCurrentInstance().addMessage(null, message);
+            facesContext.addMessage(null, message);
         }
         for (Map.Entry<String, List<FacesMessage>> entry : keyedMessages
                 .entrySet()) {
             for (FacesMessage message : entry.getValue()) {
                 String clientId = getClientId(entry.getKey());
-                FacesContext.getCurrentInstance().addMessage(clientId, message);
+                facesContext.addMessage(clientId, message);
             }
         }
         clear();
@@ -95,8 +99,7 @@ public class FacesMessages implements Serializable {
     /**
      * Calculate the JSF client ID from the provided widget ID
      */
-    private String getClientId(String id) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
+    private @Nullable String getClientId(String id) {
         // we search from backwards, so for a component tree A->B->C, we search
         // id from C then B then A for a match of id. If we found
         // C.getId().equals(id), we will use C.getClientId()
@@ -141,8 +144,7 @@ public class FacesMessages implements Serializable {
             String messageTemplate, final Object... params) {
         log.debug("{}: addToControl(id={}, template={})", this, id,
                 messageTemplate);
-        // NB This needs to change when migrating out of Seam
-        String interpolatedMessage = String.format(messageTemplate, params);
+        String interpolatedMessage = MessageFormat.format(messageTemplate, params);
         FacesMessage jsfMssg =
                 new FacesMessage(severity, interpolatedMessage, null);
         if (id == null) {
@@ -245,7 +247,7 @@ public class FacesMessages implements Serializable {
      * and which reside in the current Faces context.
      */
     public List<FacesMessage> getMessagesList(String componentId) {
-        return FacesContext.getCurrentInstance().getMessageList(componentId);
+        return facesContext.getMessageList(componentId);
     }
 
     /**
@@ -255,6 +257,6 @@ public class FacesMessages implements Serializable {
      * is not well handled in EL)
      */
     public List<FacesMessage> getGlobalMessagesList() {
-        return FacesContext.getCurrentInstance().getMessageList(null);
+        return facesContext.getMessageList(null);
     }
 }
