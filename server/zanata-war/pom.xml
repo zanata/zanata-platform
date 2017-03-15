@@ -1866,6 +1866,11 @@
       <classifier>classes</classifier>
     </dependency>
 
+    <dependency>
+      <groupId>org.fusesource.restygwt</groupId>
+      <artifactId>restygwt</artifactId>
+    </dependency>
+
     <!-- because we want to get gwt-editor from maven reactor when running
       arquillian test, the transitive dependencies of gwt-editor will not be
       brought in automatically -->

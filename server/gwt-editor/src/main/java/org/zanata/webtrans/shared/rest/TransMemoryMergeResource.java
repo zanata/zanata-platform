@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2016, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,20 +18,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.service;
+package org.zanata.webtrans.shared.rest;
 
-import java.util.List;
-import java.util.concurrent.Future;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
 
-import org.zanata.async.handle.TransMemoryMergeTaskHandle;
+import org.fusesource.restygwt.client.DirectRestService;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
-public interface TransMemoryMergeService {
+public interface TransMemoryMergeResource extends DirectRestService {
+    String TMMERGE_PATH = "/tmmerge";
 
-    List<TranslationService.TranslationResult> executeMerge(
-            TransMemoryMergeRequest request,
-            TransMemoryMergeTaskHandle asyncTaskHandle);
+    @POST
+    @Path(TMMERGE_PATH)
+    void merge(TransMemoryMergeRequest request);
 
-    Future<List<TranslationService.TranslationResult>> executeMergeAsync(TransMemoryMergeRequest request,
-            TransMemoryMergeTaskHandle asyncTaskHandle);
+    @POST
+    @Path(TMMERGE_PATH + "/cancel")
+    void cancelMerge(TransMemoryMergeCancelRequest request);
 }

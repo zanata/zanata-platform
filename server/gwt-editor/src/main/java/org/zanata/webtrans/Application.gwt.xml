@@ -18,6 +18,8 @@
   <inherits name='net.customware.gwt.dispatch.Dispatch' />
   <inherits name='net.customware.gwt.presenter.Presenter' />
 
+  <inherits name="org.fusesource.restygwt.RestyGWT"/>
+
   <inherits name="org.zanata.Common" />
 
   <inherits name="org.zanata.CommonUtil" />

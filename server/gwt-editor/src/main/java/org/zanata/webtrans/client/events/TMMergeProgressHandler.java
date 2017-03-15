@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors
+ * Copyright 2016, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,20 +18,12 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.service;
+package org.zanata.webtrans.client.events;
 
-import java.util.List;
-import java.util.concurrent.Future;
 
-import org.zanata.async.handle.TransMemoryMergeTaskHandle;
-import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
+import com.google.gwt.event.shared.EventHandler;
 
-public interface TransMemoryMergeService {
+public interface TMMergeProgressHandler extends EventHandler {
 
-    List<TranslationService.TranslationResult> executeMerge(
-            TransMemoryMergeRequest request,
-            TransMemoryMergeTaskHandle asyncTaskHandle);
-
-    Future<List<TranslationService.TranslationResult>> executeMergeAsync(TransMemoryMergeRequest request,
-            TransMemoryMergeTaskHandle asyncTaskHandle);
+    void onTMMergeProgress(TMMergeProgressEvent event);
 }
