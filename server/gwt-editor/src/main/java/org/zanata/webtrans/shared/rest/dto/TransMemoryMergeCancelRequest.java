@@ -33,6 +33,17 @@ public class TransMemoryMergeCancelRequest {
     public DocumentId documentId;
     public LocaleId localeId;
 
+    public TransMemoryMergeCancelRequest() {
+    }
+
+    public TransMemoryMergeCancelRequest(
+            ProjectIterationId projectIterationId,
+            DocumentId documentId, LocaleId localeId) {
+        this.projectIterationId = projectIterationId;
+        this.documentId = documentId;
+        this.localeId = localeId;
+    }
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

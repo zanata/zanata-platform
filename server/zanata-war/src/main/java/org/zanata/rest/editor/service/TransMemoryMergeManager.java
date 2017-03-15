@@ -50,15 +50,21 @@ import com.google.common.base.MoreObjects;
 public class TransMemoryMergeManager implements Serializable {
     private static final Logger log =
             LoggerFactory.getLogger(TransMemoryMergeManager.class);
-    @Inject
-    private AsyncTaskHandleManager asyncTaskHandleManager;
+    private final AsyncTaskHandleManager asyncTaskHandleManager;
+
+    private final TransMemoryMergeService transMemoryMergeService;
+
+    private final HAccount authenticated;
 
     @Inject
-    private TransMemoryMergeService transMemoryMergeService;
-
-    @Inject
-    @Authenticated
-    private HAccount authenticated;
+    public TransMemoryMergeManager(
+            AsyncTaskHandleManager asyncTaskHandleManager,
+            TransMemoryMergeService transMemoryMergeService,
+            @Authenticated HAccount authenticated) {
+        this.asyncTaskHandleManager = asyncTaskHandleManager;
+        this.transMemoryMergeService = transMemoryMergeService;
+        this.authenticated = authenticated;
+    }
 
     /**
      * start an async TM merge operation for given request.
