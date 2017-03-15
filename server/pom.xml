@@ -836,7 +836,7 @@
       <dependency>
         <groupId>com.github.huangp</groupId>
         <artifactId>entityunit</artifactId>
-        <version>0.3</version>
+        <version>0.4</version>
         <exclusions>
           <exclusion>
             <groupId>javax.validation</groupId>
