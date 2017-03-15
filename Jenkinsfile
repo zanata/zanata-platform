@@ -28,6 +28,8 @@ timestamps {
           // Shallow Clone does not work with RHEL7, which use git-1.8.3
           // https://issues.jenkins-ci.org/browse/JENKINS-37229
           checkout scm
+          // Clean the workspace
+          sh "git clean -fdx"
         }
 
         stage('Check build tools') {
@@ -125,7 +127,7 @@ timestamps {
 // TODO factor these out into zanata-pipeline-library too
 
 void xvfb(Closure wrapped) {
-  wrap([$class: 'Xvfb', autoDisplayName: true]) {
+  wrap([$class: 'Xvfb', autoDisplayName: true, debug: true]) {
     wrapped.call()
   }
 }
