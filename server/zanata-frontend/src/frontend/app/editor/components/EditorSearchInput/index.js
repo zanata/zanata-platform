@@ -21,8 +21,11 @@
 
 import cx from 'classnames'
 import { Icon } from 'zanata-ui'
+import IconButtonToggle from '../IconButtonToggle'
 import IconButton from '../IconButton'
 import React, { PropTypes } from 'react'
+
+const { func } = PropTypes
 
 /**
  * Styled text input that displays result count.
@@ -30,12 +33,11 @@ import React, { PropTypes } from 'react'
 const EditorSearchInput = React.createClass({
 
   propTypes: {
+    toggleDisplay: func.isRequired,
     text: PropTypes.string.isRequired,
-    onTextChange: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
-    resultCount: PropTypes.number,
     hasSearch: PropTypes.bool.isRequired,
-    clearSearch: PropTypes.func.isRequired
+    clearSearch: PropTypes.func.isRequired,
+    showPanel: PropTypes.bool
   },
 
   clearSearch: function () {
@@ -86,41 +88,6 @@ const EditorSearchInput = React.createClass({
     this.focusInput()
   },
 
-  loadingResultsElement: function () {
-    return (
-      <span onClick={this.focusInput}
-        className="Editor-suggestionsSearchLoader">
-        {/* TODO proper loader */}
-        Loading…
-      </span>
-    )
-  },
-
-  resultCountElement: function () {
-    return (
-      <span onClick={this.focusInput}
-        className="Editor-suggestionsSearchResults">
-        {this.props.resultCount} results
-      </span>
-    )
-  },
-
-  resultsElement: function () {
-    if (!this.props.loading && !this.props.hasSearch) {
-      return undefined
-    }
-
-    const innerElement = this.props.loading
-      ? this.loadingResultsElement()
-      : this.resultCountElement()
-
-    return (
-      <span className="InputGroup-addon">
-        {innerElement}
-      </span>
-    )
-  },
-
   clearButtonElement: function () {
     if (!this.props.hasSearch) {
       return undefined
@@ -137,23 +104,27 @@ const EditorSearchInput = React.createClass({
 
   render: function () {
     return (
-      <div className={cx('InputGroup InputGroup--outlined' +
-          ' InputGroup--rounded', { 'is-focused': this.state.focused })}>
-        <span className="InputGroup-addon"
-          onClick={this.focusInput}>
-          <Icon name="search"
-            title="Search"
-            size="n1" />
-        </span>
-        <input ref="input"
-          type="search"
-          placeholder="Search"
-          maxLength="1000"
-          value={this.props.text}
-          onChange={this.props.onTextChange}
-          className="InputGroup-input u-sizeLineHeight-1_1-4" />
-        {this.resultsElement()}
-        {this.clearButtonElement()}
+      <div>
+        <div className={cx('InputGroup InputGroup--outlined' +
+        ' InputGroup--rounded', { 'is-focused': this.state.focused })}>
+          <span className="InputGroup-addon"
+            onClick={this.focusInput}>
+            <Icon name="search" title="Search"
+              size="n1" />
+          </span>
+          <input ref="input"
+            type="search"
+            placeholder="Search"
+            maxLength="1000"
+            value={this.props.text}
+            className="InputGroup-input u-sizeLineHeight-1_1-4" />
+            {this.clearButtonElement()}
+        </div>
+        <div className="help-icon">
+          <IconButtonToggle icon="help"
+            onClick={this.props.toggleDisplay}
+            active={this.props.showPanel} />
+        </div>
       </div>
     )
   }

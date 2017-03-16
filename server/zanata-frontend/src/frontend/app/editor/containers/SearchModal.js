@@ -4,14 +4,25 @@ import { Button, ButtonGroup } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { toggleAdvanceSearchModal } from '../actions/search'
 
+const { bool, shape } = PropTypes
+
 const SearchModal = React.createClass({
   propTypes: {
     showPanel: PropTypes.bool,
-    toggleAdvanceSearchModal: PropTypes.func
+    toggleAdvanceSearchModal: PropTypes.func,
+    ui: shape({
+      panels: shape({
+        sidebar: shape({
+          visible: bool.isRequired
+        }).isRequired,
+        suggestions: shape({
+          visible: bool.isRequired
+        }).isRequired
+      }).isRequired
+    })
   },
 
-  render: function () {
-    console.log('this.props.showPanel', this.props.showPanel)
+  render () {
     return (
       <Modal show={this.props.showPanel}
         onHide={this.props.toggleAdvanceSearchModal}>

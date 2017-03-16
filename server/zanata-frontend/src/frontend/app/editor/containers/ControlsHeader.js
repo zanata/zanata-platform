@@ -31,6 +31,7 @@ const { bool, func, number, shape } = PropTypes
 const ControlsHeader = React.createClass({
 
   propTypes: {
+    toggleAdvanceSearchModal: func.isRequired,
     actions: shape({
       resetFilter: func.isRequired,
       onFilterChange: func.isRequired,
@@ -51,6 +52,9 @@ const ControlsHeader = React.createClass({
     ui: shape({
       panels: shape({
         sidebar: shape({
+          visible: bool.isRequired
+        }).isRequired,
+        navHeader: shape({
           visible: bool.isRequired
         }).isRequired,
         suggestions: shape({
@@ -112,16 +116,11 @@ const ControlsHeader = React.createClass({
           <TransUnitFilter {...transFilterProps} />
         </div>
         <div className="u-floatLeft InputEditorSearch">
-          <EditorSearchInput />
-          <div className="help-icon">
-            <IconButtonToggle
-              icon="help"
-              title={this.props.ui.panels.suggestions.visible
-                ? gettextCatalog.getString('Hide search panel')
-                : gettextCatalog.getString('Show search panel')}
-              onClick={this.props.actions.toggleAdvanceSearchModal}
-              active={this.props.ui.panels.search.visible} />
-          </div>
+          <EditorSearchInput
+            toggleDisplay={this.props.toggleAdvanceSearchModal}
+            text="editor search"
+
+          />
         </div>
         <div className="u-floatRight flex">
           <ul className="u-listHorizontal u-textCenter">
