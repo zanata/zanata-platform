@@ -381,13 +381,26 @@ ul.source-infolist {
   float: right;
 }
 
+li.inline-search-list {
+  display:inline-flex;
+  width:28em;
+}
+
+li.inline-search-list span {
+  width:40%;
+}
+
+/* advanced search panel */
+.panel.panel-default {
+  margin-bottom:0.5em !important;
+}
+
 .InputEditorSearch {
   width:18em;
   margin-left:0.75em;
   display:inline-flex;
+  margin-top: 0.15em;
   font-size:0.875em;
-  margin-top: 0.1em;
-  margin-bottom: 0.1em;
 }
 
 .InputEditorSearch .help-icon button {
@@ -416,6 +429,9 @@ ul.source-infolist {
   vertical-align: baseline;
 }
 
+.InputEditorSearch.InputGroup {
+  width:18em;
+}
 
 /**
  * Media Queries

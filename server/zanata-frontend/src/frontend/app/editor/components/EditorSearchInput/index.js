@@ -21,9 +21,9 @@
 
 import cx from 'classnames'
 import { Icon } from 'zanata-ui'
-import IconButtonToggle from '../IconButtonToggle'
 import IconButton from '../IconButton'
 import React, { PropTypes } from 'react'
+import { Panel } from 'react-bootstrap'
 
 const { func } = PropTypes
 
@@ -36,8 +36,7 @@ const EditorSearchInput = React.createClass({
     toggleDisplay: func.isRequired,
     text: PropTypes.string.isRequired,
     hasSearch: PropTypes.bool.isRequired,
-    clearSearch: PropTypes.func.isRequired,
-    showPanel: PropTypes.bool
+    clearSearch: PropTypes.func.isRequired
   },
 
   clearSearch: function () {
@@ -55,7 +54,8 @@ const EditorSearchInput = React.createClass({
     return {
       // FIXME one other component is interested in this state
       //       just deal with that when I get to it
-      focused: false
+      focused: false,
+      open: true
     }
   },
 
@@ -68,6 +68,14 @@ const EditorSearchInput = React.createClass({
   onBlur: function () {
     this.setState({
       focused: false
+    })
+  },
+
+  openPanel: function () {
+    this.setState({
+      open: true
+    }, () => {
+      this.refs.input.open()
     })
   },
 
@@ -89,15 +97,11 @@ const EditorSearchInput = React.createClass({
   },
 
   clearButtonElement: function () {
-    if (!this.props.hasSearch) {
-      return undefined
-    }
     return (
       <span className="InputGroup-addon">
         <IconButton icon="cross"
           title="Clear search"
-          iconSize="n1"
-          onClick={this.clearSearch} />
+          iconSize="n1" />
       </span>
     )
   },
@@ -117,14 +121,77 @@ const EditorSearchInput = React.createClass({
             placeholder="Search"
             maxLength="1000"
             value={this.props.text}
+            onClick={this.state.open}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
             {this.clearButtonElement()}
         </div>
-        <div className="help-icon">
-          <IconButtonToggle icon="help"
-            onClick={this.props.toggleDisplay}
-            active={this.props.showPanel} />
-        </div>
+        <Panel collapsible expanded={this.openPanel}>
+          <ul>
+            <li className="inline-search-list">
+              text:
+              <input ref="text"
+                type="text"
+                placeholder="source and target text"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              resource-id:
+              <input ref="resid"
+                type="text"
+                placeholder="exact Resource ID for a string"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              last-modified-by:
+              <input ref="modby"
+                type="text"
+                placeholder="username"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              last-modified-by:
+              <input ref="modby"
+                type="text"
+                placeholder="username"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              last-modified-before:
+              <input ref="modbefore"
+                type="text"
+                placeholder="date in format yyyy/mm/dd"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              last-modified-after:
+              <input ref="modafter"
+                type="text"
+                placeholder="date in format yyyy/mm/dd"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              source-comment:
+              <input ref="sourcecomm"
+                type="text"
+                placeholder="source comment text"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              translation-comment:
+              <input ref="transcomm"
+                type="text"
+                placeholder="translation comment text"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              msgctxt:
+              <input ref="msgctxt"
+                type="text"
+                placeholder="exact Message Context for a string"
+                className="InputGroup-input" />
+            </li>
+          </ul>
+        </Panel>
       </div>
     )
   }
