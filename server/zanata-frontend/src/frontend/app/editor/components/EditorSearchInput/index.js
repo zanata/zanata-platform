@@ -21,9 +21,9 @@
 
 import cx from 'classnames'
 import { Icon } from 'zanata-ui'
-import IconButtonToggle from '../IconButtonToggle'
 import IconButton from '../IconButton'
 import React, { PropTypes } from 'react'
+import { Panel } from 'react-bootstrap'
 
 const { func } = PropTypes
 
@@ -36,8 +36,7 @@ const EditorSearchInput = React.createClass({
     toggleDisplay: func.isRequired,
     text: PropTypes.string.isRequired,
     hasSearch: PropTypes.bool.isRequired,
-    clearSearch: PropTypes.func.isRequired,
-    showPanel: PropTypes.bool
+    clearSearch: PropTypes.func.isRequired
   },
 
   clearSearch: function () {
@@ -55,7 +54,8 @@ const EditorSearchInput = React.createClass({
     return {
       // FIXME one other component is interested in this state
       //       just deal with that when I get to it
-      focused: false
+      focused: false,
+      open: true
     }
   },
 
@@ -68,6 +68,14 @@ const EditorSearchInput = React.createClass({
   onBlur: function () {
     this.setState({
       focused: false
+    })
+  },
+
+  openPanel: function () {
+    this.setState({
+      open: true
+    }, () => {
+      this.refs.input.open()
     })
   },
 
@@ -117,14 +125,14 @@ const EditorSearchInput = React.createClass({
             placeholder="Search"
             maxLength="1000"
             value={this.props.text}
+            onClick={this.state.open}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
             {this.clearButtonElement()}
         </div>
-        <div className="help-icon">
-          <IconButtonToggle icon="help"
-            onClick={this.props.toggleDisplay}
-            active={this.props.showPanel} />
-        </div>
+        <Panel collapsible expanded={this.openPanel}>
+          Anim pariatur cliche reprehenderit, enim eiusmod high life
+          Nihil anim keffiyeh helvetica, craft beer labore wes anderson
+        </Panel>
       </div>
     )
   }
