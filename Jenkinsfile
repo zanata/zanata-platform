@@ -161,7 +161,7 @@ void integrationTests(String appserver) {
       xvfb {
         withPorts {
           // Run the maven build
-          sh """./run-clean.sh ./mvnw -e install \
+          sh """./run-clean.sh ./mvnw -e -T 1 install \
                      --batch-mode \
                      --settings .travis-settings.xml \
                      -Danimal.sniffer.skip=true \
@@ -212,7 +212,10 @@ void withPorts(Closure wrapped) {
 void setJUnitPrefix(prefix, files) {
   // add prefix to qualified classname
   def reportFiles = findFiles glob: "**/${files}"
-  assert reportFiles.size() > 0 : "Failed to find JUnit report files **/${files}"
-  sh "sed -i \"s/\\(<testcase .*classname=['\\\"]\\)\\([a-z]\\)/\\1${prefix.toUpperCase()}.\\2/g\" ${reportFiles.join(" ")}"
+  if (reportFiles.size() > 0){
+    sh "sed -i \"s/\\(<testcase .*classname=['\\\"]\\)\\([a-z]\\)/\\1${prefix.toUpperCase()}.\\2/g\" ${reportFiles.join(" ")}"
+  }else{
+    echo "[WARNING] Failed to find JUnit report files **/${files}"
+  }
 }
 
