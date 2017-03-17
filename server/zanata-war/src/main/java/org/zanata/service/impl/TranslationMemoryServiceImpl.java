@@ -315,7 +315,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 }
             }
         } catch (RuntimeException e) {
-            log.error("Runtime exception:" + e.getMessage());
+            log.error("Runtime exception:", e);
         }
         return Lists.newArrayList();
     }

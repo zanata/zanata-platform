@@ -2,13 +2,12 @@ package org.zanata.webtrans.client;
 
 import java.util.HashMap;
 
-import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
-import net.customware.gwt.presenter.client.EventBus;
-
 import org.zanata.webtrans.client.events.CommentChangedEvent;
 import org.zanata.webtrans.client.events.EnterWorkspaceEvent;
 import org.zanata.webtrans.client.events.ExitWorkspaceEvent;
 import org.zanata.webtrans.client.events.PublishWorkspaceChatEvent;
+import org.zanata.webtrans.client.events.TMMergeProgressEvent;
+import org.zanata.webtrans.client.events.TMMergeStartOrEndEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.WorkspaceContextUpdateEvent;
@@ -24,6 +23,8 @@ import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceContextUpdateData;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.SessionEventData;
+import org.zanata.webtrans.shared.rpc.TMMergeInProgress;
+import org.zanata.webtrans.shared.rpc.TransMemoryMergeStartOrEnd;
 import org.zanata.webtrans.shared.rpc.TransUnitEdit;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
@@ -35,11 +36,13 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.inject.Inject;
 
 import de.novanic.eventservice.client.config.ConfigurationTransferableDependentFactory;
+import de.novanic.eventservice.client.config.EventServiceConfigurationTransferable;
 import de.novanic.eventservice.client.event.Event;
 import de.novanic.eventservice.client.event.RemoteEventService;
 import de.novanic.eventservice.client.event.domain.Domain;
 import de.novanic.eventservice.client.event.domain.DomainFactory;
 import de.novanic.eventservice.client.event.listener.RemoteEventListener;
+import net.customware.gwt.presenter.client.EventBus;
 
 public class EventProcessor implements RemoteEventListener {
 
@@ -94,6 +97,21 @@ public class EventProcessor implements RemoteEventListener {
                         AddReviewComment comment = (AddReviewComment) event;
                         return new CommentChangedEvent(comment.getTransUnitId(), comment.getCommentCount());
                     });
+            factories.put(TMMergeInProgress.class, event -> {
+                TMMergeInProgress tmMergeInProgress = (TMMergeInProgress) event;
+                return new TMMergeProgressEvent(
+                        tmMergeInProgress.getProcessedTextFlows(),
+                        tmMergeInProgress.getTotalTextFlows(),
+                        tmMergeInProgress.getEditorClientId(),
+                        tmMergeInProgress.getDocumentId());
+            });
+            factories.put(TransMemoryMergeStartOrEnd.class, event -> {
+                TransMemoryMergeStartOrEnd e = (TransMemoryMergeStartOrEnd) event;
+                return new TMMergeStartOrEndEvent(e.getStartedBy(),
+                        e.getStartedTime(), e.getEditorClientId(),
+                        e.getDocumentId(), e.getEndTime(), e.getTextFlowCount()
+                );
+            });
         }
 
         public GwtEvent<?> getEvent(SessionEventData sessionEventData) {

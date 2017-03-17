@@ -41,7 +41,7 @@ import org.zanata.common.EntityStatus;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.exception.ChunkUploadException;
+import org.zanata.exception.DocumentUploadException;
 import org.zanata.exception.HashMismatchException;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.model.HDocumentUploadPart;
@@ -78,7 +78,7 @@ public class DocumentUploadUtil {
     // TODO damason: move all validation checks to separate class
 
     public void failIfUploadNotValid(GlobalDocumentId id,
-            DocumentFileUploadForm uploadForm) throws ChunkUploadException {
+            DocumentFileUploadForm uploadForm) throws DocumentUploadException {
         failIfNotLoggedIn();
         failIfRequiredParametersNullOrEmpty(id, uploadForm);
         failIfUploadPartIsOrphaned(id, uploadForm);
@@ -88,60 +88,60 @@ public class DocumentUploadUtil {
 
     public void failIfHashNotPresent(DocumentFileUploadForm uploadForm) {
         if (isNullOrEmpty(uploadForm.getHash())) {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+            throw new DocumentUploadException(Status.PRECONDITION_FAILED,
                     "Required form parameter \'hash\' was not found.");
         }
     }
 
-    private void failIfNotLoggedIn() throws ChunkUploadException {
+    private void failIfNotLoggedIn() throws DocumentUploadException {
         if (!identity.isLoggedIn()) {
-            throw new ChunkUploadException(Status.UNAUTHORIZED,
+            throw new DocumentUploadException(Status.UNAUTHORIZED,
                     "Valid combination of username and api-key for this server were not included in the request.");
         }
     }
 
     private static void failIfRequiredParametersNullOrEmpty(GlobalDocumentId id,
-            DocumentFileUploadForm uploadForm) throws ChunkUploadException {
+            DocumentFileUploadForm uploadForm) throws DocumentUploadException {
         if (isNullOrEmpty(id.getDocId())) {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+            throw new DocumentUploadException(Status.PRECONDITION_FAILED,
                     "Required query string parameter \'docId\' was not found.");
         }
         if (uploadForm.getFileStream() == null) {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+            throw new DocumentUploadException(Status.PRECONDITION_FAILED,
                     "Required form parameter \'file\' containing file content was not found.");
         }
         if (uploadForm.getFirst() == null || uploadForm.getLast() == null) {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+            throw new DocumentUploadException(Status.PRECONDITION_FAILED,
                     "Form parameters \'first\' and \'last\' must both be provided.");
         }
         if (isNullOrEmpty(uploadForm.getFileType())) {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+            throw new DocumentUploadException(Status.PRECONDITION_FAILED,
                     "Required form parameter \'type\' was not found.");
         }
     }
 
     private void failIfUploadPartIsOrphaned(GlobalDocumentId id,
-            DocumentFileUploadForm uploadForm) throws ChunkUploadException {
+            DocumentFileUploadForm uploadForm) throws DocumentUploadException {
         if (!uploadForm.getFirst()) {
             failIfUploadIdNotValidAndMatching(id, uploadForm);
         }
     }
 
     private void failIfUploadIdNotValidAndMatching(GlobalDocumentId id,
-            DocumentFileUploadForm uploadForm) throws ChunkUploadException {
+            DocumentFileUploadForm uploadForm) throws DocumentUploadException {
         if (uploadForm.getUploadId() == null) {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+            throw new DocumentUploadException(Status.PRECONDITION_FAILED,
                     "Form parameter \'uploadId\' must be provided when this is not the first part.");
         }
         HDocumentUpload upload =
                 documentUploadDAO.findById(uploadForm.getUploadId());
         if (upload == null) {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+            throw new DocumentUploadException(Status.PRECONDITION_FAILED,
                     "No incomplete uploads found for uploadId \'"
                             + uploadForm.getUploadId() + "\'.");
         }
         if (!upload.getDocId().equals(id.getDocId())) {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+            throw new DocumentUploadException(Status.PRECONDITION_FAILED,
                     "Supplied uploadId \'" + uploadForm.getUploadId()
                             + "\' in request is not valid for document \'"
                             + id.getDocId() + "\'.");
@@ -149,38 +149,38 @@ public class DocumentUploadUtil {
     }
 
     private static void failIfDocumentTypeNotRecognized(
-            DocumentFileUploadForm uploadForm) throws ChunkUploadException {
+            DocumentFileUploadForm uploadForm) throws DocumentUploadException {
         try {
             DocumentType type = DocumentType.valueOf(uploadForm.getFileType());
             if (type == null) {
-                throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+                throw new DocumentUploadException(Status.PRECONDITION_FAILED,
                         "Value \'" + uploadForm.getFileType()
                                 + "\' is not a recognized document type.");
             }
         } catch (IllegalArgumentException e) {
-            throw new ChunkUploadException(Status.PRECONDITION_FAILED,
+            throw new DocumentUploadException(Status.PRECONDITION_FAILED,
                     "Value \'" + uploadForm.getFileType()
                             + "\' is not a recognized document type.");
         }
     }
 
     private void failIfVersionCannotAcceptUpload(GlobalDocumentId id)
-            throws ChunkUploadException {
+            throws DocumentUploadException {
         HProjectIteration projectIteration = projectIterationDAO
                 .getBySlug(id.getProjectSlug(), id.getVersionSlug());
         if (projectIteration == null) {
-            throw new ChunkUploadException(Status.NOT_FOUND,
+            throw new DocumentUploadException(Status.NOT_FOUND,
                     "The specified project-version \"" + id.getProjectSlug()
                             + ":" + id.getVersionSlug()
                             + "\" does not exist on this server.");
         }
         if (projectIteration.getProject().getStatus() != EntityStatus.ACTIVE) {
-            throw new ChunkUploadException(Status.FORBIDDEN, "The project \""
+            throw new DocumentUploadException(Status.FORBIDDEN, "The project \""
                     + id.getProjectSlug()
                     + "\" is not active. Document upload is not allowed.");
         }
         if (projectIteration.getStatus() != EntityStatus.ACTIVE) {
-            throw new ChunkUploadException(Status.FORBIDDEN,
+            throw new DocumentUploadException(Status.FORBIDDEN,
                     "The project-version \"" + id.getProjectSlug() + ":"
                             + id.getVersionSlug()
                             + "\" is not active. Document upload is not allowed.");
@@ -234,13 +234,13 @@ public class DocumentUploadUtil {
         try {
             tempFile = combineToTempFile(upload, finalPart);
         } catch (HashMismatchException e) {
-            throw new ChunkUploadException(Status.CONFLICT, "MD5 hash \""
+            throw new DocumentUploadException(Status.CONFLICT, "MD5 hash \""
                     + e.getExpectedHash()
                     + "\" sent with initial request does not match server-generated hash of combined parts \""
                     + e.getGeneratedHash()
                     + "\". Upload aborted. Retry upload from first part.");
         } catch (SQLException e) {
-            throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+            throw new DocumentUploadException(Status.INTERNAL_SERVER_ERROR,
                     "Error while retrieving document upload part contents", e);
         } finally {
             // no more need for upload
@@ -300,7 +300,7 @@ public class DocumentUploadUtil {
             String providedHash = uploadForm.getHash();
             checkAndUpdateHash(uploadForm, md, providedHash);
         } catch (NoSuchAlgorithmException e) {
-            throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+            throw new DocumentUploadException(Status.INTERNAL_SERVER_ERROR,
                     "MD5 hash algorithm not available", e);
         }
         return tempFile;
@@ -315,7 +315,7 @@ public class DocumentUploadUtil {
      *            streamed through it.
      * @param providedHash
      *            provided by client, may be null or empty
-     * @throws ChunkUploadException
+     * @throws DocumentUploadException
      *             if a hash is provided and it does not match the hash of the
      *             file contents.
      */
@@ -326,7 +326,7 @@ public class DocumentUploadUtil {
             // Web upload with no hash provided, use generated hash for metadata
             uploadForm.setHash(md5hash);
         } else if (!md5hash.equals(providedHash)) {
-            throw new ChunkUploadException(Status.CONFLICT, "MD5 hash \""
+            throw new DocumentUploadException(Status.CONFLICT, "MD5 hash \""
                     + providedHash
                     + "\" sent with request does not match server-generated hash. Aborted upload operation.");
         }

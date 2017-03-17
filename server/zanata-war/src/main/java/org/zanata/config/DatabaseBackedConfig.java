@@ -26,6 +26,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.zanata.util.Synchronized;
 import org.zanata.ServerConstants;
 import org.zanata.dao.ApplicationConfigurationDAO;
@@ -138,5 +139,11 @@ public class DatabaseBackedConfig implements Serializable {
         // For new instances, we will set the value in database on first boot
         // see EssentialDataCreator
         return dbValue == null || Boolean.valueOf(dbValue);
+    }
+
+    public boolean isAutoAcceptTranslators() {
+        return ObjectUtils.firstNonNull(Boolean.valueOf(
+                getConfigValue(HApplicationConfiguration.KEY_AUTO_ACCEPT_TRANSLATOR)),
+                false);
     }
 }

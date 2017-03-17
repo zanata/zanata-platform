@@ -38,9 +38,6 @@ public interface EnumMessages extends com.google.gwt.i18n.client.Messages {
     @DefaultMessage("Don''t Copy")
     String rejectMerge();
 
-    @DefaultMessage("Next Condition")
-    String ignoreDifference();
-
     @DefaultMessage("Copy as Fuzzy")
     String downgradeToFuzzy();
 

@@ -97,6 +97,11 @@ public class ServerConfigurationBean implements Serializable {
     private PropertyWithKey<Boolean> allowAnonymousUserProperty =
             new PropertyWithKey<Boolean>("allowAnonymousUser",
                     KEY_ALLOW_ANONYMOUS_USER);
+    private boolean autoAcceptRequests = false;
+    private PropertyWithKey<Boolean> autoAcceptRequestsProperty =
+            new PropertyWithKey<Boolean>("autoAcceptRequests",
+                    KEY_AUTO_ACCEPT_TRANSLATOR);
+
     @EmailList
     private String logDestinationEmails;
     private String logEmailLevel;
@@ -159,6 +164,7 @@ public class ServerConfigurationBean implements Serializable {
         setPropertiesFromConfigIfNotNull(commonStringProperties);
         setBooleanPropertyFromConfigIfNotNull(enableLogEmailProperty);
         setBooleanPropertyFromConfigIfNotNull(allowAnonymousUserProperty);
+        setBooleanPropertyFromConfigIfNotNull(autoAcceptRequestsProperty);
         this.fromEmailAddr = applicationConfiguration.getFromEmailAddr();
     }
 
@@ -222,7 +228,18 @@ public class ServerConfigurationBean implements Serializable {
             allowAnonymousUserValue
                     .setValue(Boolean.toString(allowAnonymousUser));
         }
+        HApplicationConfiguration autoAcceptRequestsValue =
+                applicationConfigurationDAO.findByKey(KEY_AUTO_ACCEPT_TRANSLATOR);
+        if (autoAcceptRequestsValue == null) {
+            autoAcceptRequestsValue =
+                    new HApplicationConfiguration(KEY_AUTO_ACCEPT_TRANSLATOR,
+                            Boolean.toString(autoAcceptRequests));
+        } else {
+            autoAcceptRequestsValue
+                    .setValue(Boolean.toString(autoAcceptRequests));
+        }
         applicationConfigurationDAO.makePersistent(allowAnonymousUserValue);
+        applicationConfigurationDAO.makePersistent(autoAcceptRequestsValue);
         applicationConfigurationDAO.flush();
         facesMessages.clear();
         facesMessages.addGlobal("Configuration was successfully updated.");
@@ -407,6 +424,14 @@ public class ServerConfigurationBean implements Serializable {
 
     public void setAllowAnonymousUser(final boolean allowAnonymousUser) {
         this.allowAnonymousUser = allowAnonymousUser;
+    }
+
+    public boolean isAutoAcceptRequests() {
+        return this.autoAcceptRequests;
+    }
+
+    public void setAutoAcceptRequests(final boolean autoAcceptRequests) {
+        this.autoAcceptRequests = autoAcceptRequests;
     }
 
     public String getLogDestinationEmails() {

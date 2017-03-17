@@ -93,6 +93,8 @@ public class TMXUtil {
                             if (ignoreLevel == 0)
                                 writer.append(nextEv.asCharacters().getData());
                             break;
+                        default:
+                            // Ignore uninteresting types
                     }
                 }
                 return writer.toString();

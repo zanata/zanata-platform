@@ -125,7 +125,7 @@ public class ProjectWebHooksTab extends ProjectBasePage {
         return listWrapper.get(0).findElements(By.className("list-item"));
     }
 
-    public class WebhookItem {
+    static class WebhookItem {
         private String url;
         private List<String> types;
 
