@@ -353,6 +353,11 @@ ul.source-infolist {
   border-bottom-color: transparent;
 }
 
+/* bootstrap override */
+:focus, button:focus {
+  outline: none;
+}
+
 .tab-content > .tab-pane {
   display: none;
 }
