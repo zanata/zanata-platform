@@ -22,11 +22,13 @@ package org.zanata.webtrans.shared.search;
 
 //TODO May want to add document(someDocument) to these constraints
 //so that only one search method is needed on the interface.
+import java.util.Objects;
+
 import com.google.common.base.MoreObjects;
 import org.joda.time.DateTime;
 import org.zanata.webtrans.shared.model.ContentStateGroup;
-import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+
 
 /**
  * Specifies a set of constraints to be applied by a filter.
@@ -67,15 +69,55 @@ public class FilterConstraints {
         msgContext = builder.msgContext;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FilterConstraints that = (FilterConstraints) o;
+        return isCaseSensitive == that.isCaseSensitive &&
+                searchInSource == that.searchInSource &&
+                searchInTarget == that.searchInTarget &&
+                Objects.equals(searchString, that.searchString) &&
+                Objects.equals(includedStates, that.includedStates) &&
+                Objects.equals(resId, that.resId) &&
+                Objects.equals(changedBefore, that.changedBefore) &&
+                Objects.equals(changedAfter, that.changedAfter) &&
+                Objects
+                        .equals(lastModifiedByUser, that.lastModifiedByUser) &&
+                Objects.equals(sourceComment, that.sourceComment) &&
+                Objects.equals(transComment, that.transComment) &&
+                Objects.equals(msgContext, that.msgContext);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(searchString, isCaseSensitive, searchInSource,
+                        searchInTarget,
+                        includedStates, resId, changedBefore, changedAfter,
+                        lastModifiedByUser, sourceComment, transComment,
+                        msgContext);
+    }
+
     public static Builder builder() {
         return new Builder();
     }
 
     @Override
     public String toString() {
-        // @formatter:off
-        return MoreObjects.toStringHelper(this).add("searchString", searchString).add("isCaseSensitive", isCaseSensitive).add("searchInSource", searchInSource).add("searchInTarget", searchInTarget).add("includedStates", includedStates).add("resId", resId).add("changedBefore", changedBefore).add("changedAfter", changedAfter).add("lastModifiedByUser", lastModifiedByUser).add("sourceComment", sourceComment).add("transComment", transComment).add("msgContext", msgContext).toString();
-        // @formatter:on
+        return MoreObjects.toStringHelper(this)
+                .add("searchString", searchString)
+                .add("isCaseSensitive", isCaseSensitive)
+                .add("searchInSource", searchInSource)
+                .add("searchInTarget", searchInTarget)
+                .add("includedStates", includedStates)
+                .add("resId", resId)
+                .add("changedBefore", changedBefore)
+                .add("changedAfter", changedAfter)
+                .add("lastModifiedByUser", lastModifiedByUser)
+                .add("sourceComment", sourceComment)
+                .add("transComment", transComment)
+                .add("msgContext", msgContext)
+                .toString();
     }
 
     public static class Builder {

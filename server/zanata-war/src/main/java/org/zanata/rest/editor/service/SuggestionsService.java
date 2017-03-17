@@ -20,29 +20,39 @@
  */
 package org.zanata.rest.editor.service;
 
-import com.google.common.base.Joiner;
+import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
+import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
+import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.NotFoundException;
+import javax.ws.rs.Path;
+import javax.ws.rs.core.GenericEntity;
+import javax.ws.rs.core.Response;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
 import org.zanata.rest.editor.dto.suggestion.Suggestion;
 import org.zanata.rest.editor.service.resource.SuggestionsResource;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
+import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationMemoryService;
+import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
+import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
-import javax.annotation.Nullable;
-import javax.ws.rs.Path;
-import javax.ws.rs.core.GenericEntity;
-import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.Optional;
-
-import static javax.ws.rs.core.Response.Status.BAD_REQUEST;
-import static org.zanata.webtrans.shared.rpc.HasSearchType.*;
+import com.google.common.base.Joiner;
 
 /**
  * @see org.zanata.rest.editor.service.resource.SuggestionsResource
@@ -52,6 +62,8 @@ import static org.zanata.webtrans.shared.rpc.HasSearchType.*;
 @Path(SuggestionsResource.SERVICE_PATH)
 @Transactional(readOnly = true)
 public class SuggestionsService implements SuggestionsResource {
+    private static final Logger log =
+            LoggerFactory.getLogger(SuggestionsService.class);
 
     public static final String SEARCH_TYPES = Joiner.on(", ").join(SearchType.values());
 
@@ -60,6 +72,15 @@ public class SuggestionsService implements SuggestionsResource {
 
     @Inject
     private LocaleService localeService;
+
+    @Inject
+    private ZanataIdentity identity;
+
+    @Inject
+    private SecurityService securityServiceImpl;
+
+    @Inject
+    private TransMemoryMergeManager transMemoryMergeManager;
 
     @Override
     public Response query(List<String> query, String sourceLocaleString,
@@ -140,5 +161,37 @@ public class SuggestionsService implements SuggestionsResource {
         String error = String.format("Unrecognized search type: \"%s\". Expected one of: %s",
                 searchTypeString, SEARCH_TYPES);
         return Response.status(BAD_REQUEST).entity(error).build();
+    }
+
+    @Override
+    public void merge(TransMemoryMergeRequest request) {
+        securityCheck(new WorkspaceId(request.projectIterationId,
+                request.localeId));
+
+        boolean started = transMemoryMergeManager.startTransMemoryMerge(request);
+        if (!started) {
+            throw new UnsupportedOperationException("There is already a TM merge operation in progress");
+        }
+    }
+
+    private void securityCheck(WorkspaceId workspaceId) {
+        identity.checkLoggedIn();
+
+        try {
+            securityServiceImpl.checkWorkspaceAction(workspaceId,
+                    SecurityService.TranslationAction.MODIFY);
+        } catch (NoSuchWorkspaceException e) {
+            throw new NotFoundException(e);
+        }
+    }
+
+    @Override
+    public void cancelMerge(TransMemoryMergeCancelRequest request) {
+        securityCheck(
+                new WorkspaceId(request.projectIterationId, request.localeId));
+        boolean cancelled = transMemoryMergeManager.cancelTransMemoryMerge(request);
+        if (!cancelled) {
+            throw new UnsupportedOperationException("Can not cancel TM merge for " + request.toString());
+        }
     }
 }

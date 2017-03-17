@@ -29,7 +29,7 @@ public interface TransMemoryMergePopupPanelDisplay extends WidgetDisplay {
 
     void setListener(Listener listener);
 
-    void showProcessing();
+    void showProcessing(String progress);
 
     void showForm();
 

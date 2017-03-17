@@ -21,49 +21,58 @@
 
 package org.zanata.webtrans.client.presenter;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
-import static org.zanata.model.TestFixture.makeTransUnit;
+import static org.mockito.Mockito.withSettings;
 
+import java.util.Date;
 import java.util.List;
 
-import net.customware.gwt.presenter.client.EventBus;
-
-import org.hamcrest.Matchers;
+import org.fusesource.restygwt.client.Method;
+import org.fusesource.restygwt.client.MethodCallback;
+import org.fusesource.restygwt.client.callback.CallbackAware;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
-import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.MockSettings;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.zanata.common.ContentState;
+import org.zanata.common.LocaleId;
+import org.zanata.common.ProjectType;
 import org.zanata.webtrans.client.events.NotificationEvent;
+import org.zanata.webtrans.client.events.TMMergeProgressEvent;
+import org.zanata.webtrans.client.events.TMMergeStartOrEndEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
-import org.zanata.webtrans.client.resources.WebTransMessages;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
-import org.zanata.webtrans.client.service.NavigationService;
-import org.zanata.webtrans.client.ui.InlineLink;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
+import org.zanata.webtrans.client.util.DateUtil;
+import org.zanata.webtrans.shared.auth.EditorClientId;
+import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.TransUnit;
-import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
+import org.zanata.webtrans.shared.model.DocumentInfo;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
+import org.zanata.webtrans.shared.model.UserWorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceContext;
+import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.model.WorkspaceRestrictions;
+import org.zanata.webtrans.shared.rest.TransMemoryMergeResource;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.MergeRule;
-import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
-import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
 
 import com.google.common.base.Function;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.common.collect.Maps;
 import com.google.inject.Provider;
+
+import net.customware.gwt.presenter.client.EventBus;
 
 /**
  * @author Patrick Huang <a
@@ -76,30 +85,53 @@ public class TransMemoryMergePresenterTest {
     @Mock
     private EventBus eventBus;
     @Mock
-    private CachingDispatchAsync dispatcher;
-    @Mock
     private UiMessages messages;
     @Mock
     private Provider<UndoLink> undoLinkProvider;
     @Captor
     private ArgumentCaptor<NotificationEvent> notificationEventCaptor;
-    @Captor
-    private ArgumentCaptor<TransMemoryMerge> transMemoryMergeCaptor;
-    @Captor
-    private ArgumentCaptor<AsyncCallback<UpdateTransUnitResult>> callbackCaptor;
+    private FakeTransMemoryMergeResource mergeResource;
     @Mock
-    private NavigationService navigationService;
-    @Mock
-    private WebTransMessages webTranMessages;
+    private Identity identity;
+    private WorkspaceId workspaceId;
+    private DocumentId documentId;
+    private EditorClientId editorClientId;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
+        ProjectIterationId projectIterationId =
+                new ProjectIterationId("project", "master",
+                        ProjectType.Gettext);
+        workspaceId = new WorkspaceId(
+                projectIterationId, LocaleId.DE);
+        WorkspaceContext workspaceContext = new WorkspaceContext(
+                workspaceId, "de", "de");
+        WorkspaceRestrictions workspaceRestrictions =
+                new WorkspaceRestrictions(true, false, true, false, false);
+        UserWorkspaceContext userWorkspaceContext =
+                new UserWorkspaceContext(workspaceContext,
+                        workspaceRestrictions);
+        documentId = new DocumentId(1L, "path/book");
+        userWorkspaceContext
+                .setSelectedDoc(new DocumentInfo(
+                        documentId, "book", "path/", LocaleId.EN, null, null,
+                Maps.newHashMap(), null));
+
+        mergeResource = new FakeTransMemoryMergeResource();
+
+        editorClientId = new EditorClientId("session", 1L);
+        when(identity.getEditorClientId()).thenReturn(editorClientId);
+
         presenter =
-                new TransMemoryMergePresenter(display, eventBus, dispatcher,
-                        navigationService, messages, undoLinkProvider);
+                new TransMemoryMergePresenter(display, eventBus,
+                        mergeResource, identity, userWorkspaceContext,
+                        messages);
 
         verify(display).setListener(presenter);
+
+
     }
 
     @Test
@@ -117,209 +149,213 @@ public class TransMemoryMergePresenterTest {
     }
 
     @Test
-    public void willIgnoreTranslatedTextFlow() {
-        // Given:
-        // current table page has a list of trans units but all of them are
-        // approved
-        // @formatter:off
-      List<TransUnit> currentPageRows = ImmutableList.<TransUnit>builder()
-            .add(makeTransUnit(2, ContentState.Approved))
-            .add(makeTransUnit(3, ContentState.Translated))
-            .add(makeTransUnit(6, ContentState.Approved))
-            .build();
-      // @formatter:on
-        mockCurrentPageToReturn(currentPageRows);
-
-        // When:
-        MergeOptions opts = MergeOptions.allFuzzy();
-        opts.setDifferentProject(MergeRule.IGNORE_CHECK);
-        opts.setDifferentDocument(MergeRule.REJECT);
-        presenter.proceedToMergeTM(80, opts);
-
-        // Then:
-        verify(eventBus).fireEvent(notificationEventCaptor.capture());
-        verify(messages).noTranslationToMerge();
-        verify(display).hide();
-        verifyZeroInteractions(dispatcher, undoLinkProvider);
-    }
-
-    private void mockCurrentPageToReturn(List<TransUnit> allRowValues) {
-        when(navigationService.getCurrentPageValues()).thenReturn(allRowValues);
-    }
-
-    @Test
     public void canRequestTMMerge() {
         // Given:
-        // current table page has a list of trans units and 3 of them are in NEW
-        // status
-        // @formatter:off
-      List<TransUnit> currentPageRows = ImmutableList.<TransUnit>builder()
-            .add(makeTransUnit(1, ContentState.New))
-            .add(makeTransUnit(2, ContentState.Approved))
-            .add(makeTransUnit(3, ContentState.NeedReview))
-            .add(makeTransUnit(4, ContentState.New))
-            .add(makeTransUnit(5, ContentState.New))
-            .add(makeTransUnit(6, ContentState.NeedReview))
-            .build();
-      // @formatter:on
-        mockCurrentPageToReturn(currentPageRows);
 
         // When:
         MergeOptions opts = MergeOptions.allFuzzy();
-        opts.setDifferentProject(MergeRule.IGNORE_CHECK);
         opts.setDifferentDocument(MergeRule.REJECT);
         presenter.proceedToMergeTM(80, opts);
 
         // Then:
-        InOrder inOrder = inOrder(display, dispatcher);
-        inOrder.verify(display).showProcessing();
-        inOrder.verify(dispatcher).execute(transMemoryMergeCaptor.capture(),
-                callbackCaptor.capture());
+        assertThat(mergeResource.request).isNotNull();
 
-        TransMemoryMerge action = transMemoryMergeCaptor.getValue();
-        List<TransUnitUpdateRequest> updateRequests =
-                action.getUpdateRequests();
-        assertThat(updateRequests, Matchers.hasSize(5));
-        assertThat(getIds(updateRequests),
-                Matchers.contains(1L, 3L, 4L, 5L, 6L));
-        assertThat(action.getDifferentProjectRule(),
-                Matchers.equalTo(MergeRule.IGNORE_CHECK));
-        assertThat(action.getDifferentDocumentRule(),
-                Matchers.equalTo(MergeRule.REJECT));
-        assertThat(action.getDifferentContextRule(),
-                Matchers.equalTo(MergeRule.FUZZY));
-        assertThat(action.getImportedMatchRule(),
-                Matchers.equalTo(MergeRule.FUZZY));
+        assertThat(mergeResource.request.getDifferentDocumentRule()).isEqualTo(MergeRule.REJECT);
+        assertThat(mergeResource.request.getDifferentProjectRule()).isEqualTo(MergeRule.FUZZY);
+        assertThat(mergeResource.request.getDifferentContextRule()).isEqualTo(MergeRule.FUZZY);
+        assertThat(mergeResource.request.getImportedMatchRule()).isEqualTo(MergeRule.FUZZY);
+        assertThat(mergeResource.request.getThresholdPercent()).isEqualTo(80);
+        assertThat(mergeResource.request.editorClientId).isSameAs(editorClientId);
+        assertThat(mergeResource.request.documentId).isSameAs(documentId);
+        assertThat(mergeResource.request.localeId).isSameAs(workspaceId.getLocaleId());
+
     }
 
     @Test
-    public void onRequestTMMergeFailureWillHideFormAndNotify() {
-        // Given:
-        // there is untranslated text flow on page
-        List<TransUnit> currentPageRows =
-                Lists.newArrayList(makeTransUnit(1, ContentState.New));
-        mockCurrentPageToReturn(currentPageRows);
-
+    public void onRequestTMMergeFailureDueToSomeoneRunningItWillHideFormAndNotify() {
         // When:
         MergeOptions opts = MergeOptions.allFuzzy();
         opts.setDifferentProject(MergeRule.REJECT);
-        opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
         presenter.proceedToMergeTM(100, opts);
 
-        verify(dispatcher).execute(transMemoryMergeCaptor.capture(),
-                callbackCaptor.capture());
-        AsyncCallback<UpdateTransUnitResult> callback =
-                callbackCaptor.getValue();
-        // rpc call failed
-        callback.onFailure(new RuntimeException("Die!!!!!"));
+        assertThat(mergeResource.callback).isNotNull();
+        // REST call failed
+        Method method = Mockito.mock(Method.class, withSettings().defaultAnswer(
+                Answers.RETURNS_DEEP_STUBS));
+        when(method.getResponse().getStatusCode()).thenReturn(400);
+        mergeResource.callback.onFailure(method, new RuntimeException("Die!!!!!"));
+
+        // Then:
+        verify(messages).mergeTMStartedBySomeone();
+        verify(eventBus).fireEvent(notificationEventCaptor.capture());
+        verify(display).hide();
+        NotificationEvent event = notificationEventCaptor.getValue();
+        assertThat(event.getSeverity()).isEqualTo(NotificationEvent.Severity.Warning);
+        assertThat(event.getMessage()).isSameAs(messages.mergeTMStartedBySomeone());
+        assertThat(presenter.isMergeStarted()).isFalse();
+    }
+
+    @Test
+    public void onRequestTMMergeFailureOnOtherErrorWillHideFormAndNotify() {
+        // When:
+        MergeOptions opts = MergeOptions.allFuzzy();
+        opts.setDifferentProject(MergeRule.REJECT);
+        presenter.proceedToMergeTM(100, opts);
+
+        assertThat(mergeResource.callback).isNotNull();
+        // REST call failed
+        Method method = Mockito.mock(Method.class, withSettings().defaultAnswer(
+                Answers.RETURNS_DEEP_STUBS));
+        when(method.getResponse().getStatusCode()).thenReturn(500);
+        mergeResource.callback.onFailure(method, new RuntimeException("Die!!!!!"));
 
         // Then:
         verify(messages).mergeTMFailed();
         verify(eventBus).fireEvent(notificationEventCaptor.capture());
         verify(display).hide();
         NotificationEvent event = notificationEventCaptor.getValue();
-        assertThat(event.getSeverity(),
-                Matchers.equalTo(NotificationEvent.Severity.Error));
-        assertThat(event.getMessage(),
-                Matchers.sameInstance(messages.mergeTMFailed()));
+        assertThat(event.getSeverity()).isEqualTo(NotificationEvent.Severity.Error);
+        assertThat(event.getMessage()).isSameAs(messages.mergeTMFailed());
+        assertThat(presenter.isMergeStarted()).isFalse();
     }
 
     @Test
     public void
-            onRequestTMMergeSuccessWithTranslationWillCreateUndoLinkAndNotify() {
+            onRequestTMMergeSuccessWithStartTheAsyncMergeOnServer() {
         // Given:
-        // there is untranslated text flow on page
-        List<TransUnit> currentPageRows =
-                Lists.newArrayList(makeTransUnit(1, ContentState.New),
-                        makeTransUnit(2, ContentState.NeedReview),
-                        makeTransUnit(3, ContentState.New),
-                        makeTransUnit(4, ContentState.NeedReview));
-        mockCurrentPageToReturn(currentPageRows);
-        UndoLink undoLink = mock(UndoLink.class);
-        DocumentId documentId = new DocumentId(new Long(0), "");
-        when(undoLinkProvider.get()).thenReturn(undoLink);
+        when(messages.mergeTMStarted()).thenReturn("merge started");
 
         // When:
         MergeOptions opts = MergeOptions.allFuzzy();
         opts.setDifferentProject(MergeRule.REJECT);
-        opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
         presenter.proceedToMergeTM(100, opts);
 
-        verify(dispatcher).execute(transMemoryMergeCaptor.capture(),
-                callbackCaptor.capture());
-        AsyncCallback<UpdateTransUnitResult> callback =
-                callbackCaptor.getValue();
-        // rpc call success and result has some updated info
-        UpdateTransUnitResult result = new UpdateTransUnitResult();
-        result.addUpdateResult(new TransUnitUpdateInfo(true, true, documentId,
-                currentPageRows.get(0), 0, 0, ContentState.Approved));
-        // add an unsuccessful result
-        result.addUpdateResult(new TransUnitUpdateInfo(false, true, documentId,
-                currentPageRows.get(1), 0, 0, ContentState.Approved));
-        result.addUpdateResult(new TransUnitUpdateInfo(true, true, documentId,
-                currentPageRows.get(2), 0, 0, ContentState.Approved));
-        result.addUpdateResult(new TransUnitUpdateInfo(true, true, documentId,
-                currentPageRows.get(3), 0, 0, ContentState.Approved));
-        callback.onSuccess(result);
+        assertThat(mergeResource.callback).isNotNull();
+
+        // REST call success
+        mergeResource.callback.onSuccess(null, null);
 
         // Then:
-        verify(messages).mergeTMSuccess(Lists.newArrayList("1", "3", "4"));
-        verify(eventBus).fireEvent(notificationEventCaptor.capture());
-        verify(display).hide();
-        NotificationEvent event = notificationEventCaptor.getValue();
-        assertThat(event.getSeverity(),
-                Matchers.equalTo(NotificationEvent.Severity.Info));
-        assertThat(event.getMessage(), Matchers.sameInstance(messages
-                .mergeTMSuccess(Lists.newArrayList("1", "3", "4"))));
-        assertThat(event.getInlineLink(),
-                Matchers.<InlineLink> sameInstance(undoLink));
-        verify(undoLink).prepareUndoFor(result);
+        verify(display).showProcessing("merge started");
+        assertThat(presenter.isMergeStarted()).isTrue();
     }
 
     @Test
-    public void onRequestTMMergeSuccessWithoutTranslationWillJustNotify() {
-        // Given:
-        // there is untranslated text flow on page
-        List<TransUnit> currentPageRows =
-                Lists.newArrayList(makeTransUnit(1, ContentState.New));
-        mockCurrentPageToReturn(currentPageRows);
-        UndoLink undoLink = mock(UndoLink.class);
-        when(undoLinkProvider.get()).thenReturn(undoLink);
+    public void onTMMergeProgressEventWillShowProgress() {
+        TMMergeProgressEvent event =
+                new TMMergeProgressEvent(1, 10, editorClientId, documentId);
+        when(messages.mergeProgressPercentage(event.getPercentDisplay())).thenReturn("10% processed");
+        presenter.onTMMergeProgress(
+                event);
 
-        // When:
-        MergeOptions opts = MergeOptions.allFuzzy();
-        opts.setDifferentProject(MergeRule.REJECT);
-        opts.setDifferentDocument(MergeRule.IGNORE_CHECK);
-        presenter.proceedToMergeTM(100, opts);
-
-        verify(dispatcher).execute(transMemoryMergeCaptor.capture(),
-                callbackCaptor.capture());
-        AsyncCallback<UpdateTransUnitResult> callback =
-                callbackCaptor.getValue();
-        // rpc call success but result has no updated info
-        UpdateTransUnitResult result = new UpdateTransUnitResult();
-        callback.onSuccess(result);
-
-        // Then:
-        verify(messages).noTranslationToMerge();
-        verify(eventBus).fireEvent(notificationEventCaptor.capture());
-        verify(display).hide();
-        NotificationEvent event = notificationEventCaptor.getValue();
-        assertThat(event.getSeverity(),
-                Matchers.equalTo(NotificationEvent.Severity.Info));
-        assertThat(event.getMessage(),
-                Matchers.sameInstance(messages.noTranslationToMerge()));
-        assertThat(event.getInlineLink(), Matchers.nullValue());
+        verify(display).showProcessing("10% processed");
     }
 
-    private static List<Long>
-            getIds(List<TransUnitUpdateRequest> updateRequests) {
-        return Lists.transform(updateRequests,
-                new Function<TransUnitUpdateRequest, Long>() {
-                    @Override
-                    public Long apply(TransUnitUpdateRequest from) {
-                        return from.getTransUnitId().getId();
-                    }
-                });
+    @Test
+    public void onTMMergeStartedFromSelfNothingHappen() {
+        TMMergeStartOrEndEvent event =
+                new TMMergeStartOrEndEvent("self", new Date(), editorClientId,
+                        documentId, null, 10);
+        presenter.onTMMergeStartOrEnd(event);
+        verifyZeroInteractions(messages, display);
+    }
+
+    @Test
+    public void onTMMergeEndedFromSelfAndSomeTextFlowsAreMerged() {
+        when(messages.mergeTMSuccess(10)).thenReturn("10 merged");
+        TMMergeStartOrEndEvent event =
+                new TMMergeStartOrEndEvent("self", new Date(), editorClientId,
+                        documentId, new Date(), 10);
+        presenter.onTMMergeStartOrEnd(event);
+
+        verify(eventBus).fireEvent(notificationEventCaptor.capture());
+        verify(display).hide();
+        NotificationEvent notificationEvent = notificationEventCaptor.getValue();
+        assertThat(notificationEvent.getSeverity()).isEqualTo(NotificationEvent.Severity.Info);
+        assertThat(notificationEvent.getMessage()).isEqualTo("10 merged");
+        assertThat(presenter.isMergeStarted()).isFalse();
+    }
+
+    @Test
+    public void onTMMergeEndedFromSelfAndNoTextFlowIsMerged() {
+        when(messages.noTranslationToMerge()).thenReturn("nothing to be merged");
+        TMMergeStartOrEndEvent event =
+                new TMMergeStartOrEndEvent("self", new Date(), editorClientId,
+                        documentId, new Date(), 0);
+        presenter.onTMMergeStartOrEnd(event);
+
+        verify(eventBus).fireEvent(notificationEventCaptor.capture());
+        verify(display).hide();
+        NotificationEvent notificationEvent = notificationEventCaptor.getValue();
+        assertThat(notificationEvent.getSeverity()).isEqualTo(NotificationEvent.Severity.Info);
+        assertThat(notificationEvent.getMessage()).isEqualTo("nothing to be merged");
+        assertThat(presenter.isMergeStarted()).isFalse();
+    }
+
+    @Test
+    public void onTMMergeStartedFromOthersOnSameDoc() {
+        TMMergeStartOrEndEvent event =
+                new TMMergeStartOrEndEvent("someone", new Date(), new EditorClientId("other session", 2L),
+                        documentId, null, 10);
+        when(messages.mergeTMStartedBySomeone()).thenReturn("someone else started TM merge");
+        presenter.onTMMergeStartOrEnd(event);
+
+        verify(eventBus).fireEvent(notificationEventCaptor.capture());
+        NotificationEvent notificationEvent = notificationEventCaptor.getValue();
+        assertThat(notificationEvent.getSeverity()).isEqualTo(NotificationEvent.Severity.Warning);
+        assertThat(notificationEvent.getMessage()).isEqualTo("someone else started TM merge");
+    }
+
+    @Test
+    public void onTMMergeStartedFromOthersOnDifferentDoc() {
+        TMMergeStartOrEndEvent event =
+                new TMMergeStartOrEndEvent("someone", new Date(), new EditorClientId("other session", 2L),
+                        new DocumentId(2L, "otherDoc"), null, 10);
+        when(messages.mergeTMStartedBySomeoneForOtherDoc("otherDoc")).thenReturn("someone else started TM merge");
+        presenter.onTMMergeStartOrEnd(event);
+
+        verify(eventBus).fireEvent(notificationEventCaptor.capture());
+        NotificationEvent notificationEvent = notificationEventCaptor.getValue();
+        assertThat(notificationEvent.getSeverity()).isEqualTo(NotificationEvent.Severity.Info);
+        assertThat(notificationEvent.getMessage()).isEqualTo("someone else started TM merge");
+    }
+
+    @Test
+    public void onTMMergeEndedFromOthers() {
+        Date time = new Date();
+        TMMergeStartOrEndEvent event =
+                new TMMergeStartOrEndEvent("someone",
+                        time, new EditorClientId("other session", 2L),
+                        documentId, time, 10);
+        when(messages.mergeTMFinished(Mockito.eq("someone"), Mockito.anyString(), Mockito.anyString())).thenReturn("someone else finished TM merge");
+        presenter.onTMMergeStartOrEnd(event);
+
+        verify(eventBus).fireEvent(notificationEventCaptor.capture());
+        NotificationEvent notificationEvent = notificationEventCaptor.getValue();
+        assertThat(notificationEvent.getSeverity()).isEqualTo(NotificationEvent.Severity.Info);
+        assertThat(notificationEvent.getMessage()).isEqualTo("someone else finished TM merge");
+    }
+
+    private static class FakeTransMemoryMergeResource implements TransMemoryMergeResource,
+            CallbackAware {
+
+        private TransMemoryMergeRequest request;
+        private TransMemoryMergeCancelRequest cancelRequest;
+        private MethodCallback callback;
+
+        @Override
+        public void setCallback(MethodCallback callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void merge(TransMemoryMergeRequest request) {
+            this.request = request;
+        }
+
+        @Override
+        public void cancelMerge(TransMemoryMergeCancelRequest request) {
+            cancelRequest = request;
+        }
     }
 }

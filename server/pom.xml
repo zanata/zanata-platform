@@ -22,7 +22,7 @@
     <byteman.version>2.1.2</byteman.version>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <kotlin.version>1.0.6</kotlin.version>
+    <kotlin.version>1.0.7</kotlin.version>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
@@ -104,6 +104,7 @@
     <wildfly.client.version>2.0.10.Final</wildfly.client.version>
     <!-- Version of the management api used by Arquillian -->
     <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
+    <jackson2.version>2.7.2</jackson2.version>
   </properties>
 
   <dependencyManagement>
@@ -868,6 +869,26 @@
         <artifactId>gwt-servlet</artifactId>
         <version>${gwt.version}</version>
         <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.fusesource.restygwt</groupId>
+        <artifactId>restygwt</artifactId>
+        <version>2.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson2.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.gwt</groupId>
@@ -1784,9 +1805,16 @@
             <plugin>no-arg</plugin>
           </compilerPlugins>
           <pluginOptions>
+            <!-- Mark classes with certain annotations as non-final: -->
+
+            <!-- CDI beans (so they can be proxied) -->
             <option>all-open:annotation=javax.enterprise.context.NormalScope</option>
+            <!-- Hibernate/JPA entities -->
             <option>all-open:annotation=javax.persistence.Entity</option>
+            <!-- JUnit tests (CDI-Unit or Mockito) -->
             <option>all-open:annotation=org.junit.runner.RunWith</option>
+
+            <!-- Create synthetic no-arg constructors for JPA entities: -->
             <option>no-arg:annotation=javax.persistence.Entity</option>
           </pluginOptions>
         </configuration>

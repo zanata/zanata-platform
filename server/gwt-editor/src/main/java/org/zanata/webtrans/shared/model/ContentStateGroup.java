@@ -1,6 +1,8 @@
 package org.zanata.webtrans.shared.model;
 
 import java.util.List;
+import java.util.Objects;
+
 import org.zanata.common.ContentState;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -61,6 +63,25 @@ public class ContentStateGroup implements IsSerializable {
     public boolean hasNoStates() {
         return !(hasNew || hasFuzzy || hasTranslated || hasApproved
                 || hasRejected);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ContentStateGroup that = (ContentStateGroup) o;
+        return hasNew == that.hasNew &&
+                hasFuzzy == that.hasFuzzy &&
+                hasTranslated == that.hasTranslated &&
+                hasApproved == that.hasApproved &&
+                hasRejected == that.hasRejected;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects
+                .hash(hasNew, hasFuzzy, hasTranslated, hasApproved,
+                        hasRejected);
     }
 
     public List<ContentState> asList() {

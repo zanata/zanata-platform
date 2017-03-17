@@ -2,8 +2,7 @@
   xmlns:g='urn:import:com.google.gwt.user.client.ui'>
   <ui:with field="messages"
     type="org.zanata.webtrans.client.resources.UiMessages" />
-  <ui:with field="enumMessages"
-    type="org.zanata.webtrans.client.resources.EnumMessages" />
+
   <ui:style>
 
 
