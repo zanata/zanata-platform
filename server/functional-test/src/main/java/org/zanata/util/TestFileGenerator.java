@@ -40,6 +40,7 @@ import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import com.google.common.base.Preconditions;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.fedorahosted.openprops.Properties;
 import com.google.common.base.Throwables;
 
@@ -165,9 +166,12 @@ public class TestFileGenerator {
      * @throws RuntimeException
      *             if no files are found
      */
+    @SuppressWarnings("unused")
     public String getFirstFileNameInDirectory(String directory) {
         try {
-            return new File(directory).list()[0];
+            String[] list = ObjectUtils.firstNonNull(
+                    new File(directory).list(), new String[0]);
+            return list[0];
         } catch (ArrayIndexOutOfBoundsException arrayException) {
             throw new RuntimeException(
                     "Expected files in dir " + directory + " but none found.");

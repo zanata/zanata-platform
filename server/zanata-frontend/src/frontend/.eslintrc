@@ -1,3 +1,14 @@
-{
-  "extends": ["zanata/react"]
-}
+
+extends: zanata/react
+
+rules:
+  # Specify the type of quotes that are acceptable to use in JSX attributes.
+  # Standard enforces single-quotes, but we discussed this in our team and
+  # decided that it makes more sense to be consistent with other markup by using
+  # double-quotes for attributes.
+  # TODO migrate frontend to have all double-quotes and reactivate this rule
+  jsx-quotes:
+#    - 2              # Error to enforce compliance.
+    - 0              # Off, can't enforce yet as frontend all has single-quotes
+    - prefer-double  # Use double quotes unless the string contains a literal
+                     # double-quote character.

@@ -62,6 +62,8 @@ import org.zanata.util.PropertiesHolder;
 import com.google.common.base.Strings;
 import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -69,6 +71,7 @@ import static java.lang.reflect.Proxy.newProxyInstance;
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
+
 
 public enum WebDriverFactory {
     INSTANCE;
@@ -88,7 +91,7 @@ public enum WebDriverFactory {
     private static final boolean useProxy = true;
     @Nullable
     private EventFiringWebDriver driver;
-    @Nonnull
+    @CheckForNull
     private DswidParamChecker dswidParamChecker;
     private DriverService driverService;
     private TestEventForScreenshotListener screenshotListener;
@@ -298,16 +301,18 @@ public enum WebDriverFactory {
     }
 
     public void registerScreenshotListener(String testName) {
+        if (!ScreenshotDirForTest.isScreenshotEnabled())
+            return;
         log.info("Enabling screenshot module...");
         EventFiringWebDriver driver = getDriver();
-        if (screenshotListener == null
-                && ScreenshotDirForTest.isScreenshotEnabled()) {
+        if (screenshotListener == null) {
             screenshotListener = new TestEventForScreenshotListener(driver);
         }
         driver.register(screenshotListener);
         screenshotListener.updateTestID(testName);
     }
 
+    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     @ParametersAreNonnullByDefault
     public void registerLogListener() {
         if (logListener == null) {

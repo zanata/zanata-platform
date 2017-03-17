@@ -22,6 +22,8 @@ public class DateUtil {
     private static DateTimeFormat dtfShort = new DateTimeFormat(DATE_TIME_SHORT_PATTERN, info) {};
     private final static String DATE_TIME_LONG_PATTERN = "dd/MM/yy HH:mm:ss";
     private static DateTimeFormat dtfLong = new DateTimeFormat(DATE_TIME_LONG_PATTERN, info) {};
+    private final static String TIME_ONLY_PATTERN = "HH:mm:ss";
+    private static DateTimeFormat timeOnlyFmt = new DateTimeFormat(TIME_ONLY_PATTERN, info) {};
 
     /**
      * Format date to dd/MM/yy hh:mm a
@@ -32,6 +34,13 @@ public class DateUtil {
     public static String formatShortDate(Date date) {
         if (date != null) {
             return dtfShort.format(date);
+        }
+        return null;
+    }
+
+    public static String formatTimeOnly(Date date) {
+        if (date != null) {
+            return timeOnlyFmt.format(date);
         }
         return null;
     }
