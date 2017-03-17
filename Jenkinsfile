@@ -127,7 +127,7 @@ timestamps {
 // TODO factor these out into zanata-pipeline-library too
 
 void xvfb(Closure wrapped) {
-  wrap([$class: 'Xvfb', autoDisplayName: true, debug: true]) {
+  wrap([$class: 'Xvfb', parallelBuild:true, debug: true]) {
     wrapped.call()
   }
 }
@@ -156,7 +156,7 @@ void integrationTests(String appserver) {
     echo "${jarFileList.join('\n')}"
     echo "${jarFileList.size()} jar files"
     sh "touch ${jarFileList.join(' ')}"
-
+ 
     try {
       xvfb {
         withPorts {
