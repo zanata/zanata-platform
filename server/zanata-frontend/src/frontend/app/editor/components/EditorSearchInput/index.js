@@ -97,15 +97,11 @@ const EditorSearchInput = React.createClass({
   },
 
   clearButtonElement: function () {
-    if (!this.props.hasSearch) {
-      return undefined
-    }
     return (
       <span className="InputGroup-addon">
         <IconButton icon="cross"
           title="Clear search"
-          iconSize="n1"
-          onClick={this.clearSearch} />
+          iconSize="n1" />
       </span>
     )
   },
@@ -130,8 +126,71 @@ const EditorSearchInput = React.createClass({
             {this.clearButtonElement()}
         </div>
         <Panel collapsible expanded={this.openPanel}>
-          Anim pariatur cliche reprehenderit, enim eiusmod high life
-          Nihil anim keffiyeh helvetica, craft beer labore wes anderson
+          <ul>
+            <li className="inline-search-list">
+              text:
+              <input ref="text"
+                type="text"
+                placeholder="source and target text"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              resource-id:
+              <input ref="resid"
+                type="text"
+                placeholder="exact Resource ID for a string"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              last-modified-by:
+              <input ref="modby"
+                type="text"
+                placeholder="username"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              last-modified-by:
+              <input ref="modby"
+                type="text"
+                placeholder="username"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              last-modified-before:
+              <input ref="modbefore"
+                type="text"
+                placeholder="date in format yyyy/mm/dd"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              last-modified-after:
+              <input ref="modafter"
+                type="text"
+                placeholder="date in format yyyy/mm/dd"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              source-comment:
+              <input ref="sourcecomm"
+                type="text"
+                placeholder="source comment text"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              translation-comment:
+              <input ref="transcomm"
+                type="text"
+                placeholder="translation comment text"
+                className="InputGroup-input" />
+            </li>
+            <li className="inline-search-list">
+              msgctxt:
+              <input ref="msgctxt"
+                type="text"
+                placeholder="exact Message Context for a string"
+                className="InputGroup-input" />
+            </li>
+          </ul>
         </Panel>
       </div>
     )
