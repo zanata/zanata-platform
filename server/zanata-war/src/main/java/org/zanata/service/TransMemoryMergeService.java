@@ -21,13 +21,17 @@
 package org.zanata.service;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
-import net.customware.gwt.dispatch.shared.ActionException;
-
-import org.zanata.webtrans.shared.rpc.TransMemoryMerge;
+import org.zanata.async.handle.TransMemoryMergeTaskHandle;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
 public interface TransMemoryMergeService {
 
     List<TranslationService.TranslationResult> executeMerge(
-            TransMemoryMerge action) throws ActionException;
+            TransMemoryMergeRequest request,
+            TransMemoryMergeTaskHandle asyncTaskHandle);
+
+    Future<List<TranslationService.TranslationResult>> executeMergeAsync(TransMemoryMergeRequest request,
+            TransMemoryMergeTaskHandle asyncTaskHandle);
 }

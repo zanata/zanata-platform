@@ -1,6 +1,6 @@
 import { fetchPhraseList, fetchPhraseDetail, savePhrase } from '../api'
 import { toggleDropdown } from '.'
-import { isUndefined, mapValues, slice } from 'lodash'
+import { fill, get, isUndefined, mapValues, slice } from 'lodash'
 import {
   defaultSaveStatus,
   STATUS_NEW,
@@ -79,7 +79,7 @@ export function phraseListFetchFailed (error) {
 export const FETCHING_PHRASE_DETAIL = Symbol('FETCHING_PHRASE_DETAIL')
 // API lookup of the detail for a given set of phrases (by id)
 export function requestPhraseDetail (localeId, phraseIds) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch({ type: FETCHING_PHRASE_DETAIL })
     fetchPhraseDetail(localeId, phraseIds)
       .then(response => {
@@ -91,10 +91,14 @@ export function requestPhraseDetail (localeId, phraseIds) {
         return response.json()
       })
       .then(transUnitDetail => {
+        const locale = get(getState(),
+            ['headerData', 'context', 'projectVersion', 'locales', localeId],
+            // default value if locale object cannot be found
+            { id: localeId })
         dispatch(
           phraseDetailFetched(
             // phraseDetail
-            transUnitDetailToPhraseDetail(transUnitDetail, localeId)
+            transUnitDetailToPhraseDetail(transUnitDetail, locale)
           )
         )
       })
@@ -105,7 +109,9 @@ export function requestPhraseDetail (localeId, phraseIds) {
  * Convert the TransUnit response objects to the Phrase structure that
  * is needed for the component tree.
  */
-function transUnitDetailToPhraseDetail (transUnitDetail, localeId) {
+function transUnitDetailToPhraseDetail (transUnitDetail, locale) {
+  const localeId = locale.id
+  const nplurals = locale.nplurals || 1
   return mapValues(transUnitDetail, (transUnit, index) => {
     const {
       content,
@@ -119,7 +125,12 @@ function transUnitDetailToPhraseDetail (transUnitDetail, localeId) {
       wordCount
     } = transUnit.source
     const trans = transUnit[localeId]
+    const status = transUnitStatusToPhraseStatus(trans && trans.state)
     const translations = extractTranslations(trans)
+    const emptyTranslations = Array(plural ? nplurals : 1)
+    fill(emptyTranslations, '')
+    const newTranslations =
+        status === STATUS_UNTRANSLATED ? emptyTranslations : [...translations]
 
     return {
       id: parseInt(index, 10),
@@ -131,8 +142,8 @@ function transUnitDetailToPhraseDetail (transUnitDetail, localeId) {
       plural,
       sources: plural ? contents : [content],
       translations,
-      newTranslations: [...translations],
-      status: transUnitStatusToPhraseStatus(trans && trans.state),
+      newTranslations,
+      status,
       revision: trans && trans.revision ? parseInt(trans.revision, 10) : 0,
       wordCount: parseInt(wordCount, 10),
       lastModifiedBy: trans && trans.translator && trans.translator.name,

@@ -24,11 +24,15 @@ export function getSaveButtonStatus (phrase) {
 export function hasTranslationChanged (phrase) {
   // on Firefox with input method turned on,
   // when hitting tab it seems to turn undefined value into ''
-  var allSame = every(phrase.translations,
+
+  // Iterating newTranslations since those are guaranteed to exist for all
+  // plural forms. translations can be just an empty array.
+  const allSame = every(phrase.newTranslations,
       function (translation, index) {
         return nullToEmpty(translation) ===
-            nullToEmpty(phrase.newTranslations[index])
+            nullToEmpty(phrase.translations[index])
       })
+
   return !allSame
 }
 
