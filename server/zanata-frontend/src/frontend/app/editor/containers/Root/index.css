@@ -318,11 +318,12 @@ li.docName span.ellipsis {
 
 li.inline-search-list {
   display:inline-flex;
-  width:28em;
+  width:25em;
 }
 
 li.inline-search-list span {
-  width:40%;
+  width:60%;
+  color:#20718A;
 }
 
 /* advanced search panel */
@@ -347,6 +348,9 @@ li.inline-search-list span {
   vertical-align:bottom;
 }
 
+.InputGroup--wide {
+  width:inherit !important;
+}
 
 .flex {
   display: flex;
@@ -364,7 +368,7 @@ li.inline-search-list span {
   vertical-align: baseline;
 }
 
-.InputEditorSearch.InputGroup {
+#editor-header .InputGroup--outlined {
   width:18em;
 }
 
