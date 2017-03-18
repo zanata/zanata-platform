@@ -17,12 +17,12 @@ draft:
 	yarn draft --ignore-scripts=false
 
 watch:
-	yarn watch --ignore-scripts=false
+	yarn watch
 
 # Run the app on a local development server, automatically rebuild and refresh
 # when the code changes (sprites are only built at the beginning).
 watch-editor:
-	yarn watch --ignore-scripts=false
+	yarn watch:editor
 
 styleguide-build:
 	yarn styleguide-build --ignore-scripts=false
