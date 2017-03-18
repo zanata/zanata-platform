@@ -8,6 +8,38 @@ import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossarySearchInput from '../components/GlossarySearchInput'
 import IconButton from '../components/IconButton'
 
+// FIXME extract component for glossary
+// FIXME use real data
+const dummyData = [
+  {
+    source: 'dog',
+    target: 'Hund'
+  },
+  {
+    source: 'sausage',
+    target: 'Wurst'
+  },
+  {
+    source: 'incomprehensibilities',
+    target: 'Unverständlichkeiten'
+  },
+  {
+    source: 'tree',
+    target: 'Baum'
+  },
+  {
+    source: 'head district chimney sweep',
+    target: 'Bezirksschornsteinfegermeister'
+  },
+  {
+    source: 'German',
+    target: 'Deutsche'
+  }
+]
+const logDetailsClick = () => {
+  console.log('Details button clicked...?')
+}
+
 /* var activityTitle = <span>
   <Icon name="clock" className="s1 act-tab-svg" />
   <span className="hide-md">Activity</span>
@@ -109,6 +141,31 @@ const SidebarContent = React.createClass({
   },
 
   render () {
+    const terms = dummyData
+
+    const termsDisplay = terms.map((term, index) => {
+      return (
+        <tr key={index}>
+          <td className="bold-text">{term.source}</td>
+          <td className="bold-text">{term.target}</td>
+          <td>
+            <Button title="copy"
+              className="Button Button--small u-rounded Button--primary">
+              Copy
+            </Button>
+          </td>
+          <td className="align-center">
+            <IconButton
+              icon="info"
+              title="Details"
+              className="Button--link"
+              onClick={logDetailsClick}
+            />
+          </td>
+        </tr>
+      )
+    })
+
     return (
       <div>
         <h1 className="sidebar-heading">
@@ -143,78 +200,7 @@ const SidebarContent = React.createClass({
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="bold-text">Zanata</td>
-                  <td className="bold-text">Zanata</td>
-                  <td>
-                    <Button title="copy"
-                      className="Button Button--small
-                      u-rounded Button--primary">
-                      Copy
-                    </Button>
-                  </td>
-                  <td className="align-center">
-                    <IconButton
-                      icon="info"
-                      title="Details"
-                      className="Button--link"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="bold-text">Zanata</td>
-                  <td className="bold-text">Zanata</td>
-                  <td>
-                    <Button title="copy"
-                      className="Button Button--small
-                      u-rounded Button--primary">
-                      Copy
-                    </Button>
-                  </td>
-                  <td className="align-center">
-                    <IconButton
-                      icon="info"
-                      title="Details"
-                      className="Button--link"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="bold-text">Zanata</td>
-                  <td className="bold-text">Zanata</td>
-                  <td>
-                    <Button title="copy"
-                      className="Button Button--small
-                      u-rounded Button--primary">
-                      Copy
-                    </Button>
-                  </td>
-                  <td className="align-center">
-                    <IconButton
-                      icon="info"
-                      title="Details"
-                      className="Button--link"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="bold-text">Zanata</td>
-                  <td className="bold-text">Zanata</td>
-                  <td>
-                    <Button title="copy"
-                      className="Button Button--small
-                      u-rounded Button--primary">
-                      Copy
-                    </Button>
-                  </td>
-                  <td className="align-center">
-                    <IconButton
-                      icon="info"
-                      title="Details"
-                      className="Button--link"
-                    />
-                  </td>
-                </tr>
+                {termsDisplay}
               </tbody>
             </Table>
           </Tab>
