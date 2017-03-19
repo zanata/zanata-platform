@@ -23,6 +23,10 @@ import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
 
 const { bool, func, number, shape } = PropTypes
 
+const logToggleGlossary = () => {
+  console.log('Toggle glossary')
+}
+
 /**
  * Header row with editor controls (filtering, paging, etc.)
  */
@@ -125,7 +129,10 @@ const ControlsHeader = React.createClass({
             </li>
             <li className="u-sM-1-8">
               <IconButtonToggle
-                icon="glossary" />
+                icon="glossary"
+                title="Show or hide glossary"
+                onClick={logToggleGlossary}
+              />
             </li>
             <li className="u-sM-1-8">
               <IconButtonToggle
