@@ -7,35 +7,36 @@ import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossarySearchInput from '../components/GlossarySearchInput'
 import IconButton from '../components/IconButton'
+import { glossarySearchTextEntered } from '../actions/glossary'
 
 // FIXME extract component for glossary
 // FIXME use real data
-const dummyData = [
-  {
-    source: 'dog',
-    target: 'Hund'
-  },
-  {
-    source: 'sausage',
-    target: 'Wurst'
-  },
-  {
-    source: 'incomprehensibilities',
-    target: 'Unverständlichkeiten'
-  },
-  {
-    source: 'tree',
-    target: 'Baum'
-  },
-  {
-    source: 'head district chimney sweep',
-    target: 'Bezirksschornsteinfegermeister'
-  },
-  {
-    source: 'German',
-    target: 'Deutsche'
-  }
-]
+// const dummyData = [
+//   {
+//     source: 'dog',
+//     target: 'Hund'
+//   },
+//   {
+//     source: 'sausage',
+//     target: 'Wurst'
+//   },
+//   {
+//     source: 'incomprehensibilities',
+//     target: 'Unverständlichkeiten'
+//   },
+//   {
+//     source: 'tree',
+//     target: 'Baum'
+//   },
+//   {
+//     source: 'head district chimney sweep',
+//     target: 'Bezirksschornsteinfegermeister'
+//   },
+//   {
+//     source: 'German',
+//     target: 'Deutsche'
+//   }
+// ]
 const logDetailsClick = () => {
   console.log('Details button clicked...?')
 }
@@ -54,6 +55,11 @@ const SidebarContent = React.createClass({
   propTypes: {
     /* close the sidebar */
     close: PropTypes.func.isRequired,
+    glossary: PropTypes.shape({
+      searchText: PropTypes.string.isRequired,
+      searching: PropTypes.bool.isRequired,
+      results: PropTypes.arrayOf(PropTypes.object).isRequired
+    }).isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
     selectedPhrase: PropTypes.shape({
       msgctxt: PropTypes.string,
@@ -63,7 +69,8 @@ const SidebarContent = React.createClass({
       sourceReferences: PropTypes.string,
       lastModifiedBy: PropTypes.string,
       lastModifiedTime: PropTypes.date
-    })
+    }),
+    onGlossaryTextChange: PropTypes.func.isRequired
   },
 
   sidebarDetails () {
@@ -140,14 +147,26 @@ const SidebarContent = React.createClass({
     )
   },
 
-  render () {
-    const terms = dummyData
+  renderGlossaryResultsPanel () {
+    const { results, searching, searchText } = this.props.glossary
 
-    const termsDisplay = terms.map((term, index) => {
+    if (searching) {
+      return 'Searching...'
+    }
+
+    if (isEmpty(searchText)) {
+      return 'Enter text to search'
+    }
+
+    if (isEmpty(results)) {
+      return 'No results'
+    }
+
+    const resultsDisplay = results.map((term, index) => {
       return (
         <tr key={index}>
-          <td className="bold-text">{term.source}</td>
-          <td className="bold-text">{term.target}</td>
+          <td className="bold-text">{term.source.content}</td>
+          <td className="bold-text">{term.target.content}</td>
           <td>
             <Button title="copy"
               className="Button Button--small u-rounded Button--primary">
@@ -166,6 +185,25 @@ const SidebarContent = React.createClass({
       )
     })
 
+    return (
+      <Table reponsive>
+        <thead>
+          <tr>
+            <th>Source term</th>
+            <th>Target term</th>
+            <th>
+            </th>
+            <th className="align-center">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          {resultsDisplay}
+        </tbody>
+      </Table>
+    )
+  },
+
+  render () {
     return (
       <div>
         <h1 className="sidebar-heading">
@@ -187,22 +225,11 @@ const SidebarContent = React.createClass({
           </Tab> */ }
           <Tab eventKey={1} title={glossaryTitle}>
             <div className="sidebar-wrapper" id="tab2">
-              <GlossarySearchInput />
+              <GlossarySearchInput
+                text={this.props.glossary.searchText}
+                onTextChange={this.props.onGlossaryTextChange} />
             </div>
-            <Table reponsive>
-              <thead>
-                <tr>
-                  <th>Source term</th>
-                  <th>Target term</th>
-                  <th>
-                  </th>
-                  <th className="align-center">Details</th>
-                </tr>
-              </thead>
-              <tbody>
-                {termsDisplay}
-              </tbody>
-            </Table>
+            {this.renderGlossaryResultsPanel()}
           </Tab>
         </Tabs>
       </div>
@@ -211,28 +238,42 @@ const SidebarContent = React.createClass({
 })
 
 function mapStateToProps (state) {
-  const { detail, selectedPhraseId } = state.phrases
+  const { context, glossary, headerData, phrases } = state
+  const { detail, selectedPhraseId } = phrases
   const selectedPhrase = detail[selectedPhraseId]
+
+  const sourceLanguage = context.sourceLocale.localeId
+  const targetLanguage = headerData.context.selectedLocale
 
   // Need to check whether phrase itself is undefined since the detail may not
   // yet have been fetched from the server.
   const hasSelectedPhrase = !isUndefined(selectedPhraseId) &&
       !isUndefined(selectedPhrase)
-  if (hasSelectedPhrase) {
-    return {
-      hasSelectedPhrase,
-      selectedPhrase
-    }
-  } else {
-    return {
-      hasSelectedPhrase
-    }
+
+  const newProps = {
+    glossary: {
+      ...glossary,
+      results: glossary.results.map(result => {
+        return {
+          source: result[sourceLanguage],
+          target: result[targetLanguage]
+        }
+      })
+    },
+    hasSelectedPhrase
   }
+
+  if (hasSelectedPhrase) {
+    newProps.selectedPhrase = selectedPhrase
+  }
+
+  return newProps
 }
 
 function mapDispatchToProps (dispatch) {
   return {
-
+    onGlossaryTextChange: event =>
+      dispatch(glossarySearchTextEntered(event.target.value))
   }
 }
 

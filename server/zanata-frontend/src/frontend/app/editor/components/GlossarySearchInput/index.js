@@ -21,7 +21,7 @@
 
 import cx from 'classnames'
 import { Icon } from 'zanata-ui'
-import React from 'react'
+import React, { PropTypes } from 'react'
 import { FormGroup, FormControl }
   from 'react-bootstrap'
 
@@ -31,6 +31,14 @@ import { FormGroup, FormControl }
  * Styled text input that displays result count.
  */
 const GlossarySearchInput = React.createClass({
+  propTypes: {
+    text: PropTypes.string.isRequired,
+    onTextChange: PropTypes.func.isRequired
+    // loading: PropTypes.bool.isRequired,
+    // resultCount: PropTypes.number,
+    // hasSearch: PropTypes.bool.isRequired,
+    // clearSearch: PropTypes.func.isRequired
+  },
 
   getInitialState: () => {
     return {
@@ -85,6 +93,8 @@ const GlossarySearchInput = React.createClass({
             type="search"
             placeholder="Search glossary…"
             maxLength="100"
+            value={this.props.text}
+            onChange={this.props.onTextChange}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
         </div>
         <FormGroup controlId="formControlsSelect">

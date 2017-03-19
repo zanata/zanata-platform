@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { locale, formats } from './config/intl'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import { createStore, applyMiddleware } from 'redux'
+import { apiMiddleware } from 'redux-api-middleware'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
 import { syncHistory } from 'redux-simple-router'
@@ -77,6 +78,7 @@ const createStoreWithMiddleware =
     searchSelectedPhraseMiddleware,
     reduxRouterMiddleware,
     thunk,
+    apiMiddleware,
     // must run after thunk because it fails with thunks
     getStateInActions,
     loggerMiddleware
