@@ -123,7 +123,7 @@ timestamps {
 // TODO factor these out into zanata-pipeline-library too
 
 void xvfb(Closure wrapped) {
-  wrap([$class: 'Xvfb', parallelBuild:true, debug: true]) {
+wrap([$class: 'Xvfb', debug: true, timeout: 30, displayName: (10+ "${env.EXECUTOR_NUMBER}".toInteger())]) {
     wrapped.call()
   }
 }
@@ -154,6 +154,7 @@ void integrationTests(String appserver) {
       xvfb {
         withPorts {
           // Run the maven build
+          echo "DISPLAY=${env.DISPLAY}"
           sh """./run-clean.sh ./mvnw -e -T 1 install \
                      --batch-mode \
                      --settings .travis-settings.xml \
