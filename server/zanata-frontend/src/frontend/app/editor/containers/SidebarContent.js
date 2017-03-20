@@ -7,11 +7,6 @@ import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossaryTab from './GlossaryTab'
 
-/* var activityTitle = <span>
-  <Icon name="clock" className="s1 act-tab-svg" />
-  <span className="hide-md">Activity</span>
-</span> */
-
 const SidebarContent = React.createClass({
 
   propTypes: {
@@ -104,6 +99,10 @@ const SidebarContent = React.createClass({
   },
 
   render () {
+    var glossaryTitle = <span>
+      <Icon name="glossary" className="s1 gloss-tab-svg" />
+      <span className="hide-md">Glossary</span>
+    </span>
     return (
       <div>
         <h1 className="sidebar-heading">
@@ -123,7 +122,7 @@ const SidebarContent = React.createClass({
               Tab 1 content
             </div>
           </Tab> */ }
-          <GlossaryTab eventKey={1} />
+          <GlossaryTab eventKey={1} title={glossaryTitle} />
         </Tabs>
       </div>
     )

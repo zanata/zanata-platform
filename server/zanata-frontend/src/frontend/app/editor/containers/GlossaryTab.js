@@ -6,7 +6,6 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { Button, Tab, Table } from 'react-bootstrap'
 import GlossarySearchInput from '../components/GlossarySearchInput'
-import Icon from '../../components/Icon'
 import IconButton from '../components/IconButton'
 import { glossarySearchTextEntered } from '../actions/glossary'
 import { isEmpty } from 'lodash'
@@ -41,7 +40,6 @@ import { isEmpty } from 'lodash'
 
 // FIXME need a modal to open when this is clicked
 const logDetailsClick = () => {
-  console.log('Details button clicked...?')
 }
 
 const GlossaryTab = React.createClass({
@@ -118,13 +116,8 @@ const GlossaryTab = React.createClass({
 
   render () {
     const { eventKey, searchText, onGlossaryTextChange } = this.props
-    const title = <span>
-      <Icon name="glossary" className="s1 gloss-tab-svg" />
-      <span className="hide-md">Glossary</span>
-    </span>
-
     return (
-      <Tab eventKey={eventKey} title={title}>
+      <Tab eventKey={eventKey} title="">
         <div className="sidebar-wrapper" id="tab2">
           <GlossarySearchInput
             text={searchText}

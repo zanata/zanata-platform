@@ -24,7 +24,6 @@ import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
 const { bool, func, number, shape } = PropTypes
 
 const logToggleGlossary = () => {
-  console.log('Toggle glossary')
 }
 
 /**
