@@ -15,7 +15,8 @@ import {
 const defaultState = {
   searchText: '',
   searching: false,
-  results: []
+  results: [],
+  resultsTimestamp: Date.now()
 }
 
 const glossary = (state = defaultState, action) => {
@@ -27,22 +28,32 @@ const glossary = (state = defaultState, action) => {
       return update({searching: {$set: true}})
 
     case GLOSSARY_TERMS_FAILURE:
-      return update({
-        searching: {$set: false},
-        results: {$set: []}
-      })
+      if (action.meta.timestamp > state.resultsTimestamp) {
+        return update({
+          searching: {$set: false},
+          results: {$set: []},
+          resultsTimestamp: {$set: action.meta.timestamp}
+        })
+      } else {
+        return state
+      }
 
     case GLOSSARY_TERMS_SUCCESS:
-      return update({
-        searching: {$set: false},
-        results: {$set: action.payload.results.map(
-          ({ glossaryTerms }) => {
-            return keyBy(glossaryTerms, (term) => {
-              return term.locale
+      if (action.meta.timestamp > state.resultsTimestamp) {
+        return update({
+          searching: {$set: false},
+          results: {$set: action.payload.results.map(
+            ({ glossaryTerms }) => {
+              return keyBy(glossaryTerms, (term) => {
+                return term.locale
+              })
             })
-          })
-        }
-      })
+          },
+          resultsTimestamp: {$set: action.meta.timestamp}
+        })
+      } else {
+        return state
+      }
 
     default:
       return state
