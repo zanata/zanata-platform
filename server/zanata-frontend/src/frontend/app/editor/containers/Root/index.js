@@ -6,7 +6,6 @@ import EditorHeader from '../EditorHeader'
 import KeyShortcutCheatSheet from '../KeyShortcutCheatSheet'
 import KeyShortcutDispatcher from '../KeyShortcutDispatcher'
 import SuggestionsPanel from '../SuggestionsPanel'
-import SearchModal from '../SearchModal'
 import { setSidebarVisibility } from '../../actions'
 import { fetchUiLocales } from '../../actions/headerActions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions'
@@ -84,7 +83,6 @@ class Root extends Component {
               onDragFinished={this.resizeFinished}>
               <MainContent />
               {this.props.showSuggestion && <SuggestionsPanel />}
-              <SearchModal />
             </SplitPane>
             <KeyShortcutCheatSheet />
           </Sidebar>
