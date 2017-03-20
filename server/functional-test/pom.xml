@@ -83,6 +83,10 @@
     <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
     <jndi-remote-client.version>${wildfly.client.version}</jndi-remote-client.version>
     <standalone.xml.file>standalone.xml</standalone.xml.file>
+    <mysql.dist>${project.build.directory}/mysql-dist</mysql.dist>
+
+    <mysqldump.bin>${mysql.dist}/bin/mysqldump</mysqldump.bin>
+    <mysqldump.ddl.cmd>${mysqldump.bin} --host=localhost --user=${ds.username} --password=${ds.password} --port=${mysql.port} --socket=${mysql.socket} --no-data ${ds.database}</mysqldump.ddl.cmd>
   </properties>
 
   <dependencyManagement>
@@ -122,6 +126,47 @@
       <type>war</type>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-model</artifactId>
+      <version>${project.version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <scope>${hibernate.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <scope>${hibernate.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <scope>${hibernate.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.transaction</groupId>
+      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.el</artifactId>
+      <version>3.0.1-b08</version>
+      <scope>test</scope>
+    </dependency>
+
+
     <dependency>
       <groupId>net.lightbody.bmp</groupId>
       <artifactId>browsermob-core-littleproxy</artifactId>
@@ -566,7 +611,7 @@
                       <classifier>${mysql.classifier}</classifier>
                       <type>zip</type>
                       <overWrite>false</overWrite>
-                      <outputDirectory>${project.build.directory}/mysql-dist</outputDirectory>
+                      <outputDirectory>${mysql.dist}</outputDirectory>
                     </artifactItem>
                   </artifactItems>
                 </configuration>
@@ -627,12 +672,6 @@
                 <phase>package</phase>
                 <configuration>
                   <sqlCommand>ALTER DATABASE ${ds.database} CHARACTER SET utf8 COLLATE utf8_general_ci;</sqlCommand>
-                  <srcFiles>
-                    <!-- we can take a snapshot of the database in previous run -->
-                    <!-- see server/etc/scripts/functional-test-db-snapshot.sh -->
-                    <!-- see server/etc/scripts/cargowait.sh -->
-                    <srcFile>${project.build.directory}/database.sql</srcFile>
-                  </srcFiles>
                   <onError>continue</onError>
                 </configuration>
               </execution>
@@ -952,8 +991,6 @@
                 <echo>NB: set env var DISPLAY to run test browser in alternative display, for Xnest/Xvfb/Xvnc. eg: xvfb-run -e mvn verify -Dappserver=wildfly8</echo>
                 <echo>==========================================================</echo>
                 <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8 -Dmysql.port=13306</echo>
-                <!-- placeholder. Actual content should be populated by running server/etc/scripts/functional-test-db-snapshot.sh -->
-                <touch file="${project.build.directory}/database.sql" />
               </target>
             </configuration>
           </execution>

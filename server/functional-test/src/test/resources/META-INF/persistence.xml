@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence
+             http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+  version="2.1">
+
+  <persistence-unit name="zanataDatasourcePU"
+    transaction-type="RESOURCE_LOCAL">
+    <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+    <!--
+      NB non-jta-data-source is not compatible with JPA tests, but is
+      needed by Seam tests.  The list of classes seems to be necessary,
+      unfortunately. Please keep the list in sync between
+      zanata-war/src/main/webapp-jboss/WEB-INF/classes/META-INF/persistence.xml
+      zanata-war/src/test/resources/arquillian/persistence.xml
+      and zanata-war/src/test/resources/META-INF/persistence.xml.
+     -->
+
+    <!-- <mapping-file>META-INF/orm.xml</mapping-file> -->
+
+    <class>org.zanata.model.Activity</class>
+    <class>org.zanata.model.Glossary</class>
+    <class>org.zanata.model.HAccount</class>
+    <class>org.zanata.model.HAccountActivationKey</class>
+    <class>org.zanata.model.HAccountOption</class>
+    <class>org.zanata.model.HAccountResetPasswordKey</class>
+    <class>org.zanata.model.HAccountRole</class>
+    <class>org.zanata.model.HApplicationConfiguration</class>
+    <class>org.zanata.model.HasSimpleComment</class>
+    <class>org.zanata.model.HCopyTransOptions</class>
+    <class>org.zanata.model.HDocument</class>
+    <class>org.zanata.model.HDocumentHistory</class>
+    <class>org.zanata.model.HDocumentUpload</class>
+    <class>org.zanata.model.HDocumentUploadPart</class>
+    <class>org.zanata.model.HGlossaryEntry</class>
+    <class>org.zanata.model.HGlossaryTerm</class>
+    <class>org.zanata.model.HIterationGroup</class>
+    <class>org.zanata.model.HLocale</class>
+    <class>org.zanata.model.HLocaleMember</class>
+    <class>org.zanata.model.HPerson</class>
+    <class>org.zanata.model.HPersonEmailValidationKey</class>
+    <class>org.zanata.model.HProject</class>
+    <class>org.zanata.model.HProjectGlossary</class>
+    <class>org.zanata.model.HProjectIteration</class>
+    <class>org.zanata.model.HProjectLocaleMember</class>
+    <class>org.zanata.model.HProjectMember</class>
+    <class>org.zanata.model.HRawDocument</class>
+    <class>org.zanata.model.HRoleAssignmentRule</class>
+    <class>org.zanata.model.HSimpleComment</class>
+    <class>org.zanata.model.HTextFlowHistory</class>
+    <class>org.zanata.model.HTextFlow</class>
+    <class>org.zanata.model.HTextFlowTarget</class>
+    <class>org.zanata.model.HTextFlowTargetHistory</class>
+    <class>org.zanata.model.HTextFlowTargetReviewComment</class>
+    <class>org.zanata.model.LanguageRequest</class>
+    <class>org.zanata.model.po.HPoHeader</class>
+    <class>org.zanata.model.po.HPoTargetHeader</class>
+    <class>org.zanata.model.po.HPotEntryData</class>
+    <class>org.zanata.model.Request</class>
+    <class>org.zanata.model.security.HCredentials</class>
+    <class>org.zanata.model.security.HOpenIdCredentials</class>
+    <class>org.zanata.model.tm.TransMemoryUnit</class>
+    <class>org.zanata.model.tm.TransMemoryUnitVariant</class>
+    <class>org.zanata.model.tm.TransMemory</class>
+    <class>org.zanata.model.WebHook</class>
+    <class>org.zanata.model.AllowedApp</class>
+
+    <!-- TODO This may be removed once the class files are packaged in the zanata-model jar as intended
+     Otherwise, hibernate will scan the whole war file and dependency jars -->
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+
+    <properties>
+      <property name="hibernate.cache.use_second_level_cache" value="false" />
+      <!-- NB create/create-drop/update are only safe for testing! -->
+      <property name="hibernate.hbm2ddl.auto" value="validate" />
+
+      <property name="hibernate.connection.driver_class"
+        value="com.mysql.jdbc.Driver" />
+
+      <!--hibernate3-maven-plugin:hbm2ddl needs this  -->
+      <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
+
+
+    </properties>
+  </persistence-unit>
+</persistence>

@@ -28,6 +28,12 @@
         <filtering>true</filtering>
       </resource>
     </resources>
+    <testResources>
+      <testResource>
+        <!-- see below hibernate5-ddl-maven-plugin. It will generate DDL from hibernate -->
+        <directory>$project.build.directory/generated-resources/sql/ddl/auto</directory>
+      </testResource>
+    </testResources>
     <plugins>
 
       <!--
@@ -48,6 +54,46 @@
                      </executions>
                   </plugin>
       -->
+      <plugin>
+        <groupId>de.jpdigital</groupId>
+        <artifactId>hibernate5-ddl-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <configuration>
+          <dialects>
+            <param>mysql</param>
+          </dialects>
+          <packages>
+            <param>org.zanata.model</param>
+          </packages>
+          <outputDirectory>${project.build.testOutputDirectory}/hibernate-ddl</outputDirectory>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>gen-ddl</goal>
+            </goals>
+            <phase>process-classes</phase>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <!-- we will package test resource into test-jar. It will include the hibernate DDL -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/*.sql</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
