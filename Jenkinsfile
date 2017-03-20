@@ -56,10 +56,6 @@ timestamps {
           info.printEnv()
           def jarFiles = 'target/*.jar'
           def warFiles = 'target/*.war'
-          // globstar might failed to match
-          sh "find . -path \"*/${surefireTestReports}\" -delete"
-          sh "find . -path \"*/${jarFiles}\" -delete"
-          sh "find . -path \"*/${warFiles}\" -delete"
 
           // Continue building even when test failure
           // Thus -Dmaven.test.failure.ignore is required
@@ -85,7 +81,7 @@ timestamps {
         }
 
         stage('stash') {
-          stash name: 'workspace', includes: '**/target/**,.mvn/**,server/zanata-frontend/src/**,server/'
+          stash name: 'workspace', includes: '**/target/**, server/zanata-frontend/src/**,server/'
         }
       } catch (e) {
         notify.failed()

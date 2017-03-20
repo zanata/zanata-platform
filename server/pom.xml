@@ -2365,18 +2365,11 @@
     </repository>
     <snapshotRepository>
       <uniqueVersion>false</uniqueVersion>
-      <id>sonatype-nexus-snapshots</id>
-      <url>dav:https://oss.sonatype.org/content/repositories/snapshots</url>
-      <layout>default</layout>
-    </snapshotRepository>
-
-    <!-- <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
       <id>cloudbees-private-snapshot-repository</id>
       <name>cloudbees-private-snapshot-repository</name>
       <url>dav:https://repository-zanata.forge.cloudbees.com/snapshot/</url>
       <layout>default</layout>
-    </snapshotRepository> -->
+    </snapshotRepository>
   </distributionManagement>
 
   <modules>
