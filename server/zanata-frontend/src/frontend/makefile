@@ -32,7 +32,7 @@ styleguide-server:
 
 # Run react-storybook server for development and testing of React components.
 storybook:
-	yarn storybook --ignore-scripts=false
+	yarn storybook
 
 # Build a static version of the React component storybook
 #  - outputs to ./storybook-static
