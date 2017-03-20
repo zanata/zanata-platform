@@ -10,34 +10,6 @@ import IconButton from '../components/IconButton'
 import { glossarySearchTextEntered } from '../actions/glossary'
 import { isEmpty } from 'lodash'
 
-// FIXME move this to storybook for this component
-// const dummyData = [
-//   {
-//     source: 'dog',
-//     target: 'Hund'
-//   },
-//   {
-//     source: 'sausage',
-//     target: 'Wurst'
-//   },
-//   {
-//     source: 'incomprehensibilities',
-//     target: 'Unverständlichkeiten'
-//   },
-//   {
-//     source: 'tree',
-//     target: 'Baum'
-//   },
-//   {
-//     source: 'head district chimney sweep',
-//     target: 'Bezirksschornsteinfegermeister'
-//   },
-//   {
-//     source: 'German',
-//     target: 'Deutsche'
-//   }
-// ]
-
 // FIXME need a modal to open when this is clicked
 const logDetailsClick = () => {
 }
@@ -135,6 +107,34 @@ function mapStateToProps (state) {
 
   const sourceLanguage = context.sourceLocale.localeId
   const targetLanguage = headerData.context.selectedLocale
+
+  // FIXME move this to storybook for this component
+  // const dummyData = [
+  //   {
+  //     source: 'dog',
+  //     target: 'Hund'
+  //   },
+  //   {
+  //     source: 'sausage',
+  //     target: 'Wurst'
+  //   },
+  //   {
+  //     source: 'incomprehensibilities',
+  //     target: 'Unverständlichkeiten'
+  //   },
+  //   {
+  //     source: 'tree',
+  //     target: 'Baum'
+  //   },
+  //   {
+  //     source: 'head district chimney sweep',
+  //     target: 'Bezirksschornsteinfegermeister'
+  //   },
+  //   {
+  //     source: 'German',
+  //     target: 'Deutsche'
+  //   }
+  // ]
 
   return {
     ...glossary,

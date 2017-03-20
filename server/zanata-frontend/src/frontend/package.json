@@ -28,7 +28,7 @@
   },
   "license": "LGPL-2.1",
   "devDependencies": {
-    "@kadira/storybook": "1.36.0",
+    "@kadira/storybook": "2.35.3",
     "autoprefixer-loader": "3.2.0",
     "babel-core": "6.9.1",
     "babel-eslint": "6.1.0",
@@ -85,6 +85,8 @@
     "webpack-merge": "1.1.1"
   },
   "dependencies": {
+    "@kadira/storybook-addon-actions": "1.1.1",
+    "@kadira/storybook-addons": "1.6.1",
     "babel-polyfill": "6.9.1",
     "chart.js": "1.1.1",
     "combokeys": "2.4.6",
