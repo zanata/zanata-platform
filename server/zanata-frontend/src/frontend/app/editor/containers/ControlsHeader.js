@@ -7,6 +7,7 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { setSidebarVisibility } from '../actions'
 import {
+  toggleGlossary,
   toggleHeader,
   toggleKeyboardShortcutsModal
 } from '../actions/headerActions'
@@ -20,11 +21,9 @@ import {
 } from '../actions/controlsHeaderActions'
 import { toggleSuggestions } from '../actions/suggestions'
 import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
+import { GLOSSARY_TAB } from '../reducers/ui'
 
 const { bool, func, number, shape } = PropTypes
-
-const logToggleGlossary = () => {
-}
 
 /**
  * Header row with editor controls (filtering, paging, etc.)
@@ -41,6 +40,7 @@ const ControlsHeader = React.createClass({
       lastPage: func.isRequired,
       toggleSuggestionPanel: func.isRequired,
       setSidebarVisibility: func.isRequired,
+      toggleGlossary: func.isRequired,
       toggleKeyboardShortcutsModal: func.isRequired,
       toggleMainNav: func.isRequired
     }).isRequired,
@@ -93,7 +93,7 @@ const ControlsHeader = React.createClass({
 
   render: function () {
     const { actions, counts, paging, ui } = this.props
-    const { textFlowDisplay, gettextCatalog } = ui
+    const { panels, textFlowDisplay, gettextCatalog } = ui
     const transFilterProps = {
       actions,
       counts,
@@ -105,7 +105,10 @@ const ControlsHeader = React.createClass({
       actions,
       gettextCatalog
     }
+    // FIXME use above const bindings in the JSX to make it less verbose
     const navHeaderHidden = !ui.panels.navHeader.visible
+    const glossaryVisible = panels.sidebar.visible &&
+      panels.sidebar.selectedTab === GLOSSARY_TAB
     return (
       <nav className="u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
         <TranslatingIndicator gettextCatalog={gettextCatalog} />
@@ -129,8 +132,9 @@ const ControlsHeader = React.createClass({
             <li className="u-sM-1-8">
               <IconButtonToggle
                 icon="glossary"
-                title="Show or hide glossary"
-                onClick={logToggleGlossary}
+                title={glossaryVisible ? 'Hide glossary' : 'Show glossary'}
+                onClick={actions.toggleGlossary}
+                active={glossaryVisible}
               />
             </li>
             <li className="u-sM-1-8">
@@ -224,6 +228,7 @@ function mapDispatchToProps (dispatch) {
       setSidebarVisibility: (visible) => {
         dispatch(setSidebarVisibility(visible))
       },
+      toggleGlossary: () => dispatch(toggleGlossary()),
       toggleSuggestionPanel: () => dispatch(toggleSuggestions()),
       toggleKeyboardShortcutsModal: () => {
         // TODO pahuang implement toggle keyboard shutcut modal
