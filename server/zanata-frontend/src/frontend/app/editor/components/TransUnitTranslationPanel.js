@@ -11,6 +11,8 @@ import { pick } from 'lodash'
 const TransUnitTranslationPanel = React.createClass({
 
   propTypes: {
+    glossaryCount: PropTypes.number.isRequired,
+    glossaryVisible: PropTypes.bool.isRequired,
     // the key of the currently open dropdown (may be undefined if none is open)
     openDropdown: PropTypes.any,
     // the key for the save dropdown for this translation panel. Can be compared
@@ -32,6 +34,7 @@ const TransUnitTranslationPanel = React.createClass({
     selectPhrasePluralIndex: PropTypes.func.isRequired,
     suggestionCount: PropTypes.number.isRequired,
     showSuggestions: PropTypes.bool.isRequired,
+    toggleGlossary: PropTypes.func.isRequired,
     toggleSuggestionPanel: PropTypes.func.isRequired,
     suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired
   },
@@ -100,6 +103,8 @@ const TransUnitTranslationPanel = React.createClass({
       header = <TransUnitTranslationHeader {...headerProps} />
 
       const footerProps = pick(this.props, [
+        'glossaryCount',
+        'glossaryVisible',
         'openDropdown',
         'phrase',
         'saveAsMode',
@@ -109,6 +114,7 @@ const TransUnitTranslationPanel = React.createClass({
         'suggestionCount',
         'suggestionSearchType',
         'toggleDropdown',
+        'toggleGlossary',
         'toggleSuggestionPanel'
       ])
       footer = <TransUnitTranslationFooter {...footerProps} />

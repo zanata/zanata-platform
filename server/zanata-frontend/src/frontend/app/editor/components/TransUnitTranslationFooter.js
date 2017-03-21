@@ -34,6 +34,9 @@ const TransUnitTranslationFooter = React.createClass({
 
   propTypes: {
     phrase: PropTypes.object.isRequired,
+    glossaryCount: PropTypes.number.isRequired,
+    glossaryVisible: PropTypes.bool.isRequired,
+    toggleGlossary: PropTypes.func.isRequired,
     suggestionCount: PropTypes.number.isRequired,
     toggleSuggestionPanel: PropTypes.func.isRequired,
     savePhraseWithStatus: PropTypes.func.isRequired,
@@ -96,10 +99,45 @@ const TransUnitTranslationFooter = React.createClass({
     )
   },
 
+  /* Icons for suggestion and glossary count */
+  renderCountIconIfNonZero: function ({count, active, onClick, iconName}) {
+    if (count === 0) {
+      return undefined
+    }
+
+    return (
+      <li className="u-sM-1-8">
+        <Button
+          className={cx('Button Button--snug Button--invisible u-roundish',
+            { 'is-active': active })}
+          title=" Suggestions available"
+          onClick={onClick}>
+          <Row>
+            <Icon name={iconName} />
+            <span className="u-textMini">
+              {count}
+            </span>
+          </Row>
+        </Button>
+      </li>
+    )
+  },
+
   render: function () {
-    const { openDropdown, phrase, saveAsMode, saveDropdownKey,
-      savePhraseWithStatus, showSuggestions, suggestionCount,
-      suggestionSearchType, toggleSuggestionPanel } = this.props
+    const {
+      glossaryCount,
+      glossaryVisible,
+      openDropdown,
+      phrase,
+      saveAsMode,
+      saveDropdownKey,
+      savePhraseWithStatus,
+      showSuggestions,
+      suggestionCount,
+      suggestionSearchType,
+      toggleGlossary,
+      toggleSuggestionPanel
+    } = this.props
 
     const dropdownIsOpen = openDropdown === saveDropdownKey || saveAsMode
     const translationHasChanged = hasTranslationChanged(phrase)
@@ -113,29 +151,19 @@ const TransUnitTranslationFooter = React.createClass({
       savePhraseWithStatus(phrase, selectedButtonStatus, event)
     }
 
-    var suggestionsIcon
-    if (suggestionCount > 0) {
-      const isPhraseSearchActive = showSuggestions &&
-        suggestionSearchType === 'phrase'
-      const iconClasses = cx('Button Button--snug Button--invisible u-roundish',
-       { 'is-active': isPhraseSearchActive })
+    const suggestionsIcon = this.renderCountIconIfNonZero({
+      count: suggestionCount,
+      active: showSuggestions && suggestionSearchType === 'phrase',
+      onClick: toggleSuggestionPanel,
+      iconName: 'suggestions'
+    })
 
-      suggestionsIcon = (
-        <li>
-          <Button
-            className={iconClasses}
-            title=" Suggestions available"
-            onClick={toggleSuggestionPanel}>
-            <Row>
-              <Icon name="suggestions" />
-              <span className="u-textMini">
-                {suggestionCount}
-              </span>
-            </Row>
-          </Button>
-        </li>
-      )
-    }
+    const glossaryIcon = this.renderCountIconIfNonZero({
+      count: glossaryCount,
+      active: glossaryVisible,
+      onClick: toggleGlossary,
+      iconName: 'glossary'
+    })
 
     // TODO translate "Save as"
     const saveAsLabel = translationHasChanged &&
@@ -183,24 +211,6 @@ const TransUnitTranslationFooter = React.createClass({
                      u-rounded">
         {otherActionButtons}
       </ul>
-    )
-
-    const iconGlossaryClasses = cx('Button Button--snug Button--invisible' +
-        ' u-roundish')
-
-    const glossaryIcon = (
-      <li>
-        <Button
-          className={iconGlossaryClasses}
-          title="Glossary terms available">
-          <Row>
-            <Icon name="glossary" />
-            <span className="u-textMini">
-              #
-            </span>
-          </Row>
-        </Button>
-      </li>
     )
 
     return (
