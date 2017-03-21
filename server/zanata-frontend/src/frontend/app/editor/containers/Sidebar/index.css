@@ -98,6 +98,16 @@ table tbody tr {
   color:#333;
 }
 
+.no-gloss-results, .enter-search-text {
+  color:#20718a;
+  text-align: center;
+  margin-top:0.75em;
+}
+
+.no-gloss-results svg {
+  fill: #a9bfc6;
+}
+
 .align-right {
   text-align: right;
 }

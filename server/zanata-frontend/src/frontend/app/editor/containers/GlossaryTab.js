@@ -9,6 +9,7 @@ import GlossarySearchInput from '../components/GlossarySearchInput'
 import IconButton from '../components/IconButton'
 import { glossarySearchTextEntered } from '../actions/glossary'
 import { isEmpty } from 'lodash'
+import { Icon, LoaderText } from '../../components'
 
 // FIXME need a modal to open when this is clicked
 const logDetailsClick = () => {
@@ -35,15 +36,20 @@ const GlossaryTab = React.createClass({
     const { results, searching, searchText } = this.props
 
     if (searching) {
-      return 'Searching...'
+      return <LoaderText searching />
     }
 
     if (isEmpty(searchText)) {
-      return 'Enter text to search'
+      return <div className="enter-search-text">Enter text to search</div>
     }
 
     if (isEmpty(results)) {
-      return 'No results'
+      return <div className="no-gloss-results">
+        No results<br />
+        <span>
+          <Icon name='glossary' className="s6" />
+        </span>
+      </div>
     }
 
     const resultsDisplay = results.map((term, index) => {
