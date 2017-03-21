@@ -104,15 +104,12 @@ table tbody tr {
 .no-gloss-results, .enter-search-text, .search-glos {
   color:#20718a;
   text-align: center;
+  text-align: -moz-center;
   margin-top:0.75em;
 }
 
 .no-gloss-results svg {
   fill: #a9bfc6;
-}
-
-.search-glos .loader {
-  text-align: center;
 }
 
 .align-right {
