@@ -1,4 +1,5 @@
 import { getSuggestions } from '../api/suggestions'
+import { waitForPhraseDetail } from '../utils/phrase'
 import { debounce, isUndefined } from 'lodash'
 
 export const TOGGLE_SUGGESTIONS = Symbol('TOGGLE_SUGGESTIONS')
@@ -249,23 +250,13 @@ export function findPhraseSuggestionsById (phraseId) {
     if (isUndefined(phraseId)) {
       return
     }
-    waitForPhraseDetail(20)
 
-    function waitForPhraseDetail (times) {
-      const phrase = getState().phrases.detail[phraseId]
-      if (phrase) {
-        dispatch(findPhraseSuggestions(phrase))
-      } else if (times > 0) {
-        // FIXME need a better way than polling to trigger this search as soon
-        //       as the phrase detail is available.
-        setTimeout(() => {
-          waitForPhraseDetail(times - 1)
-        }, 500)
-      } else {
-        console.error('No detail available for phrase search after 20 tries. ' +
+    waitForPhraseDetail(getState, phraseId, (phrase) => {
+      dispatch(findPhraseSuggestions(phrase))
+    }, 20, () => {
+      console.error('No detail available for phrase search after 20 tries. ' +
           'phraseId: ' + phraseId)
-      }
-    }
+    })
   }
 }
 

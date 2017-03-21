@@ -9,7 +9,7 @@ import { browserHistory, Router, Route } from 'react-router'
 import { syncHistory } from 'redux-simple-router'
 import newContextFetchMiddleware from './middlewares/new-context-fetch'
 import searchSelectedPhraseMiddleware
-  from './middlewares/selected-phrase-suggestion-search'
+  from './middlewares/selected-phrase-searches'
 import getStateInActions from './middlewares/getstate-in-actions'
 import titleUpdateMiddleware from './middlewares/title-update'
 import thunk from 'redux-thunk'

@@ -6,6 +6,7 @@ import { debounce, isEmpty } from 'lodash'
 import { CALL_API } from 'redux-api-middleware'
 
 import { baseRestUrl } from '../api'
+import { waitForPhraseDetail } from '../utils/phrase'
 
 /* Call as search text changes to trigger a glossary search when the text stops
  * changing. This prevents excessive requests while the user is typing.
@@ -24,6 +25,19 @@ export function glossarySearchTextEntered (searchText) {
   return (dispatch) => {
     dispatch(glossarySearchTextChange(searchText))
     dispatchFindGlossaryTermsWhenInactive(dispatch, searchText)
+  }
+}
+
+/**
+ * Run a glossary search based on the given phrase content when available.
+ */
+export function findGlossaryTermsByPhraseId (phraseId) {
+  return (dispatch, getState) => {
+    waitForPhraseDetail(getState, phraseId, (phrase) => {
+      dispatch(glossarySearchTextEntered(phrase.sources.join(' ')))
+    }, 20, () => {
+      console.error('No phrase detail for glossary search after to tries.')
+    })
   }
 }
 
@@ -69,7 +83,7 @@ function findGlossaryTerms (searchText) {
     const transLocale = headerData.context.selectedLocale
 
     const glossaryUrl =
-      `${baseRestUrl}/glossary/entries?srcLocale=${srcLocale}&transLocale=${transLocale}&filter=${searchText}&page=1&sizePerPage=15` // eslint-disable-line max-len
+      `${baseRestUrl}/glossary/entries?srcLocale=${srcLocale}&transLocale=${transLocale}&filter=${encodeURIComponent(searchText)}&page=1&sizePerPage=15` // eslint-disable-line max-len
 
     dispatch({
       [CALL_API]: {
