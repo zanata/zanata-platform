@@ -22,8 +22,6 @@
 import cx from 'classnames'
 import { Icon } from 'zanata-ui'
 import React, { PropTypes } from 'react'
-import { FormGroup, FormControl }
-  from 'react-bootstrap'
 
 // FIXME copied from SuggestionSearchInput. Can pull out a common component.
 
@@ -97,13 +95,6 @@ const GlossarySearchInput = React.createClass({
             onChange={this.props.onTextChange}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
         </div>
-        <FormGroup controlId="formControlsSelect">
-          <FormControl componentClass="select" placeholder="Fuzzy">
-            <option value="fuzzy">Fuzzy</option>
-            <option value="lucene">Lucene</option>
-            <option value="phrase">Phrase</option>
-          </FormControl>
-        </FormGroup>
       </div>
     )
   }
