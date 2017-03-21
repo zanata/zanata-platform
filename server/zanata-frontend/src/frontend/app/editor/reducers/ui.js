@@ -23,6 +23,8 @@ export const DEFAULT_LOCALE = {
   'name': 'English'
 }
 
+export const GLOSSARY_TAB = Symbol('GLOSSARY_TAB')
+
 const DEFAULT_FILTER_STATE = {
   all: true,
   approved: false,
@@ -31,8 +33,6 @@ const DEFAULT_FILTER_STATE = {
   needswork: false,
   untranslated: false
 }
-
-export const GLOSSARY_TAB = Symbol('GLOSSARY_TAB')
 
 const defaultState = {
   panels: {
