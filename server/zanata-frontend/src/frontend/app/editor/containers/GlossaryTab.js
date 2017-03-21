@@ -36,7 +36,9 @@ const GlossaryTab = React.createClass({
     const { results, searching, searchText } = this.props
 
     if (searching) {
-      return <LoaderText searching />
+      return <div className="search-glos">
+        <LoaderText loading loadingText='Searching...' />
+      </div>
     }
 
     if (isEmpty(searchText)) {

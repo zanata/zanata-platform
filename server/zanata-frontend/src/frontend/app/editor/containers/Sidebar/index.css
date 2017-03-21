@@ -2,6 +2,9 @@
 
 .sidebar-editor {
   max-width:35%;
+  float: right !important;
+  position: static !important;
+  margin-top: 90px !important;
 }
 
 .sidebar-editor :focus {
@@ -98,7 +101,7 @@ table tbody tr {
   color:#333;
 }
 
-.no-gloss-results, .enter-search-text {
+.no-gloss-results, .enter-search-text, .search-glos {
   color:#20718a;
   text-align: center;
   margin-top:0.75em;
@@ -106,6 +109,10 @@ table tbody tr {
 
 .no-gloss-results svg {
   fill: #a9bfc6;
+}
+
+.search-glos .loader {
+  text-align: center;
 }
 
 .align-right {
