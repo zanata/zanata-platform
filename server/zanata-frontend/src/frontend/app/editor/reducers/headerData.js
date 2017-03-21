@@ -1,3 +1,6 @@
+// TODO refactor all this state to a sensible structure
+// e.g. 'user' and 'context' can just be top-level items
+
 import {
   DOCUMENT_SELECTED,
   HEADER_DATA_FETCHED,

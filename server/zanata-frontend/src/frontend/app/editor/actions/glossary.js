@@ -2,7 +2,7 @@
  * Actions related to the glossary.
  */
 
-import { debounce } from 'lodash'
+import { debounce, isEmpty } from 'lodash'
 import { CALL_API } from 'redux-api-middleware'
 
 import { baseRestUrl } from '../api'
@@ -43,11 +43,22 @@ export const GLOSSARY_TERMS_SUCCESS = Symbol('GLOSSARY_TERMS_SUCCESS')
 /* API request for glossary search has failed. */
 export const GLOSSARY_TERMS_FAILURE = Symbol('GLOSSARY_TERMS_FAILURE')
 
-// action creators for API requests with redux-api-middleware always have type
-// [CALL_API] which is a symbol from redux-api-middleware
 /* Request glossary terms from the API */
 function findGlossaryTerms (searchText) {
-  // need state to look up all the needed fields.
+  // used for success/failure to ensure the most recent results are used
+  const timestamp = Date.now()
+
+  if (isEmpty(searchText)) {
+    return {
+      type: GLOSSARY_TERMS_SUCCESS,
+      payload: {
+        totalCount: 0,
+        results: []
+      },
+      meta: { timestamp }
+    }
+  }
+
   return (dispatch, getState) => {
     const {
       context,
@@ -57,11 +68,8 @@ function findGlossaryTerms (searchText) {
     const srcLocale = context.sourceLocale.localeId
     const transLocale = headerData.context.selectedLocale
 
-    // This query works and gives me some results:
-    // http://localhost:8080/rest/glossary/entries?srcLocale=en-US&
-    // transLocale=de&page=1&sizePerPage=100&filter=dog
     const glossaryUrl =
-      `${baseRestUrl}/glossary/entries?srcLocale=${srcLocale}&transLocale=${transLocale}&filter=${searchText}` // eslint-disable-line max-len
+      `${baseRestUrl}/glossary/entries?srcLocale=${srcLocale}&transLocale=${transLocale}&filter=${searchText}&page=1&sizePerPage=15` // eslint-disable-line max-len
 
     dispatch({
       [CALL_API]: {
@@ -76,9 +84,14 @@ function findGlossaryTerms (searchText) {
         },
         types: [
           GLOSSARY_TERMS_REQUEST,
-          // default will have payload as response JSON parsed
-          GLOSSARY_TERMS_SUCCESS,
-          GLOSSARY_TERMS_FAILURE
+          {
+            type: GLOSSARY_TERMS_SUCCESS,
+            meta: { timestamp }
+          },
+          {
+            type: GLOSSARY_TERMS_FAILURE,
+            meta: { timestamp }
+          }
         ]
       }
     })
