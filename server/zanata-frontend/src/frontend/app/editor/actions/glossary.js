@@ -69,7 +69,7 @@ function findGlossaryTerms (searchText) {
     const transLocale = headerData.context.selectedLocale
 
     const glossaryUrl =
-      `${baseRestUrl}/glossary/entries?srcLocale=${srcLocale}&transLocale=${transLocale}&filter=${searchText}` // eslint-disable-line max-len
+      `${baseRestUrl}/glossary/entries?srcLocale=${srcLocale}&transLocale=${transLocale}&filter=${searchText}&page=1&sizePerPage=15` // eslint-disable-line max-len
 
     dispatch({
       [CALL_API]: {
