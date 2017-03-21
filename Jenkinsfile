@@ -151,12 +151,9 @@ void integrationTests(String appserver) {
     unstash 'workspace'
     // TODO: Consider touching the target files for test, so it won't recompile
 
-    // Are jar files actually in?
-    def jarFileList = findFiles glob: "**/*.jar"
-    echo "${jarFileList.join('\n')}"
-    echo "${jarFileList.size()} jar files"
-    sh "touch ${jarFileList.join(' ')}"
- 
+    /* touch all target */
+    sh "find . -path '*/target/*' -print -exec touch '{}' \\;"
+
     try {
       xvfb {
         withPorts {
