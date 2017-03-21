@@ -105,6 +105,7 @@ table tbody tr {
   color:#20718a;
   text-align: center;
   text-align: -moz-center;
+  text-align: -webkit-center;
   margin-top:0.75em;
 }
 
