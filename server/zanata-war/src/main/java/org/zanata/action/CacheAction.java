@@ -21,7 +21,6 @@
 package org.zanata.action;
 
 import com.google.common.base.Throwables;
-import com.google.common.html.HtmlEscapers;
 import org.apache.commons.beanutils.BeanUtils;
 import org.infinispan.Cache;
 import org.infinispan.manager.EmbeddedCacheManager;
@@ -39,6 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 /**
  * @author Armagan Ersoz
  *         <a href="mailto:aersoz@redhat.com">aersoz@redhat.com</a>
@@ -101,7 +101,7 @@ public class CacheAction implements Serializable {
             return "<em>(" + emptyString + ")</em>";
         } else {
             // Escape cache name in case it includes user input in future
-            return HtmlEscapers.htmlEscaper().escape(cacheName);
+            return escapeHtml4(cacheName);
         }
     }
 

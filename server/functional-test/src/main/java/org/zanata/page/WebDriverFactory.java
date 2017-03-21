@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import com.google.common.reflect.AbstractInvocationHandler;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
@@ -64,7 +65,6 @@ import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import static java.lang.reflect.Proxy.newProxyInstance;
@@ -312,7 +312,7 @@ public enum WebDriverFactory {
         screenshotListener.updateTestID(testName);
     }
 
-    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
+    @SuppressFBWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     @ParametersAreNonnullByDefault
     public void registerLogListener() {
         if (logListener == null) {

@@ -23,6 +23,7 @@ package org.zanata.adapter;
 import java.io.IOException;
 import java.net.URL;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.htmlparser.jericho.Config;
 import net.htmlparser.jericho.LoggerProvider;
 import net.sf.okapi.common.IParameters;
@@ -48,6 +49,7 @@ public class HTMLAdapter extends OkapiFilterAdapter {
         Config.LoggerProvider = LoggerProvider.SLF4J;
     }
 
+    @SuppressFBWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     private static String loadDefaultConfig() {
         URL configURL =
                 HTMLAdapter.class
