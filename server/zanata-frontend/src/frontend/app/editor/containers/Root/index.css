@@ -397,8 +397,10 @@ li.inline-search-list span {
 }
 
 /* advanced search panel */
-.panel.panel-default {
+.InputEditorSearch  .panel.panel-default {
   margin-bottom:0.5em !important;
+  position: absolute;
+  width: 27em;
 }
 
 .InputEditorSearch {
