@@ -148,7 +148,7 @@ void integrationTests(String appserver) {
     // TODO: Consider touching the target files for test, so it won't recompile
 
     /* touch all target */
-    sh "find . -path '*/target/*' -print -exec touch '{}' \\;"
+    sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
 
     try {
       xvfb {
