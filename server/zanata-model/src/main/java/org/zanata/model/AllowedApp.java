@@ -88,18 +88,12 @@ public class AllowedApp extends ModelEntityBase {
 
         AllowedApp that = (AllowedApp) other;
 
-        if (account != null ?
-                !account.equals(that.account) :
-                that.account != null) return false;
-
-        if (clientId != null ?
-                !clientId.equals(that.clientId) :
-                that.clientId != null)
-            return false;
-
-        return refreshToken != null ?
-                refreshToken.equals(that.refreshToken) :
-                that.refreshToken == null;
+        return (account != null ?
+                account.equals(that.account) :
+                that.account == null) &&
+            (clientId != null ?
+                clientId.equals(that.clientId) :
+                that.clientId == null);
     }
 
     @Override
@@ -107,7 +101,6 @@ public class AllowedApp extends ModelEntityBase {
         int result = super.hashCode();
         result = 31 * result + (account != null ? account.hashCode() : 0);
         result = 31 * result + (clientId != null ? clientId.hashCode() : 0);
-        result = 31 * result + (refreshToken != null ? refreshToken.hashCode() : 0);
         return result;
     }
 }

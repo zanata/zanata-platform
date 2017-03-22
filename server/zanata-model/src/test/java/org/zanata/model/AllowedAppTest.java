@@ -46,13 +46,5 @@ public class AllowedAppTest {
         other = new AllowedApp(account, "qwertyuiop");
         assertThat(allowedApp.equals(other)).isTrue();
         assertThat(allowedApp.hashCode()).isEqualTo(other.hashCode());
-
-        other = new AllowedApp(account, "qwertyuiop");
-        other.setRefreshToken("thingamajig");
-        assertThat(allowedApp.equals(other)).isFalse();
-        assertThat(allowedApp.hashCode()).isNotEqualTo(other.hashCode());
-        allowedApp.setRefreshToken("thingamajig");
-        assertThat(allowedApp.equals(other)).isTrue();
-        assertThat(allowedApp.hashCode()).isEqualTo(other.hashCode());
     }
 }
