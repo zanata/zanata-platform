@@ -149,8 +149,9 @@ table td button.Button--link {
 }
 
 #ellipses-string {
-  max-width: 100px;
+  width: inherit;
   padding-right: 0.75em;
+  max-width: 3.5em;
 }
 
 #ellipses-string span {
@@ -195,6 +196,12 @@ table td {
 
 .hide-sidebar-toggle span {
   vertical-align: sub;
+}
+
+@media (max-width: 740px) {
+  table td button.Button--link {
+    padding-right: 0.375em;
+  }
 }
 
 @media (max-width:1009px) {

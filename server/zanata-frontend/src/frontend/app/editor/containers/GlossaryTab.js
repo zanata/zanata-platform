@@ -69,7 +69,7 @@ const GlossaryTab = React.createClass({
           </td>
           <td>
             <Button title="copy"
-              className="Button Button--small u-rounded Button--primary">
+              className="hide-md Button--small u-rounded Button--primary">
               Copy
             </Button>
           </td>
@@ -86,13 +86,13 @@ const GlossaryTab = React.createClass({
     })
 
     return (
-      <Table reponsive>
+      <Table>
         <thead>
           <tr>
             <th>Source term</th>
             <th>Target term</th>
             <th></th>
-            <th className="align-center">Details</th>
+            <th className="hide-md align-center">Details</th>
           </tr>
         </thead>
         <tbody>
