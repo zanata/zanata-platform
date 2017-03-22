@@ -198,6 +198,10 @@ table td {
   vertical-align: sub;
 }
 
+.inline-flex-search .InputGroup--outlined {
+  width:100%;
+}
+
 @media (max-width: 740px) {
   table td button.Button--link {
     padding-right: 0.375em;
@@ -209,18 +213,11 @@ table td {
     display: block;
   }
 
-  .inline-flex-search .InputGroup--outlined {
-    width:100%;
-  }
 }
 
 @media (min-width:1100px) {
   .inline-flex-search {
     display: inline-flex;
-  }
-
-  .inline-flex-search .InputGroup--outlined {
-    width:70%;
   }
 
   .inline-flex-search .form-group {

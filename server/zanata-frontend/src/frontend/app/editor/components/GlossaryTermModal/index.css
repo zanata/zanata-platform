@@ -146,60 +146,150 @@
     z-index: 1000 !important;
 }
 
-.label-primary {
-    background-color: #337ab7;
+
+.modal-open {
+  overflow: hidden;
 }
 
-.label-success {
-    background-color: var(--brand-success);
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1050;
+  overflow: hidden;
+  -webkit-overflow-scrolling: touch;
+  outline: 0;
+  padding: 1em;
 }
 
-.label-info {
-    background-color: var(--brand-info);
+.modal.fade .modal-dialog {
+  -webkit-transition: -webkit-transform 0.3s ease-out;
+  -o-transition: -o-transform 0.3s ease-out;
+  transition: transform 0.3s ease-out;
+  -webkit-transform: translate(0, -25%);
+  -ms-transform: translate(0, -25%);
+  -o-transform: translate(0, -25%);
+  transform: translate(0, -25%);
 }
 
-.source-heading {
-    padding-left: 1.1em;
-    top: inherit;
-    line-height: 3em;
-    font-weight: 600;
+.modal.in .modal-dialog {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
 }
 
-.target-heading {
-    padding-left: 1.9em;
-    top: inherit;
-    line-height: 3em;
-    font-weight: 600;
+.modal-open .modal {
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
-.label {
-    font-size: 70%;
-    font-weight: 600;
-    display: inline;
-    padding: 0.2em 0.6em 0.3em;
-    text-align: center;
-    vertical-align: super;
-    white-space: nowrap;
-    color: #fff;
-    border-radius: 0.25em;
+.modal-dialog {
+  position: relative;
+  width: auto;
+  margin: 1em;
 }
 
-.TransUnit-details {
-    white-space:normal;
-    word-break: break-all;
-    line-height:1em;
+.modal-content {
+  position: relative;
+  background-color: #fff;
+  -webkit-background-clip: padding-box;
+  background-clip: padding-box;
+  border: 1px solid #999;
+  border: 1px solid rgba(0, 0, 0, .2);
+  border-radius: 12px;
+  outline: 0;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+  -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
+  box-shadow: 0 3px 9px rgba(0, 0, 0, .4);
 }
 
-.TransUnit-details .u-listInline {
-    display:inline-flex;
-    width:100%;
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  background-color: #000;
+  opacity: 0.5;
 }
 
-li.TransUnit-label-suggestions {
-    margin-bottom: 0.375rem;
+.modal-backdrop.fade {
+  filter: alpha(opacity=0);
+  opacity: 0;
 }
 
-span.TransUnit-details-inner {
-    padding-left:0.375em;
-    font-weight:bold;
+.modal-backdrop.in {
+  filter: alpha(opacity=50);
+  opacity: 0.5;
+}
+
+.modal-header {
+  padding: 15px;
+  border-bottom: 0;
+}
+
+.modal-header .close {
+  margin-top: -2px;
+  opacity: 0.7;
+}
+
+.modal-title {
+  margin: 0;
+  line-height: 1.333em
+  font-size: 1.725rem;
+  text-align: center;
+}
+
+.modal-body {
+  position: relative;
+  padding: 2em;
+  color:#333;
+}
+
+.modal-body .scrollable {
+  overflow: auto;
+  overflow-x: hidden;
+}
+
+.modal-body label {
+  margin-bottom:0;
+}
+
+.modal-body .checkbox {
+  margin:0;
+}
+
+.modal-footer {
+  padding: 1em;
+  text-align: right;
+  right: 0;
+  border-top: 0;
+  background: rgba(0, 0, 0, .05);
+}
+
+.modal-footer .btn + .btn {
+  margin-bottom: 0;
+  margin-left: 0.75em;
+}
+
+.modal-footer .btn-group .btn + .btn {
+  margin-left: -1px;
+}
+
+.modal-footer .btn-block + .btn-block {
+  margin-left: 0;
+}
+
+.modal-scrollbar-measure {
+  position: absolute;
+  top: -9999px;
+  width: 50px;
+  height: 50px;
+  overflow: scroll;
 }
