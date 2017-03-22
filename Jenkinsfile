@@ -158,14 +158,16 @@ void integrationTests(String appserver) {
           sh """./run-clean.sh ./mvnw -e -T 1 install \
                      --batch-mode \
                      --settings .travis-settings.xml \
-                     -Danimal.sniffer.skip=true \
-                     -DstaticAnalysis=false \
-                     -Dcheckstyle.skip \
                      -Dappserver=$appserver \
+                     -Danimal.sniffer.skip=true \
                      -Dcargo.debug.jvm.args= \
-                     -DskipUnitTests \
-                     -Dmaven.main.skip \
+                     -Dcheckstyle.skip \
+                     -Dfindbugs.skip \
                      -Dgwt.compiler.skip \
+                     -Dmaven.main.skip \
+                     -DskipShade \
+                     -DskipUnitTests \
+                     -DstaticAnalysis=false \
                      -Dwebdriver.display=${env.DISPLAY} \
                      -Dwebdriver.type=chrome \
                      -Dwebdriver.chrome.driver=/opt/chromedriver \
