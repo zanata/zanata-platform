@@ -109,7 +109,7 @@ table tbody tr {
   margin-top:0.75em;
 }
 
-.no-gloss-results svg {
+.no-gloss-results svg, .enter-search-text svg {
   fill: #a9bfc6;
 }
 
