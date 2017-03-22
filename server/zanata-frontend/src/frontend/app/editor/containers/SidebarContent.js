@@ -106,7 +106,8 @@ const SidebarContent = React.createClass({
     return (
       <div>
         <h1 className="sidebar-heading">
-          <Icon name="info" className="s1" /> Details
+          <Icon name="info" className="s1" />
+          <span className="hide-md">Details</span>
           <span className="s1 pull-right">
             <Button bsStyle="link" onClick={this.props.close}>
               <Icon name="cross" />

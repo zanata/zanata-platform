@@ -5,6 +5,11 @@
   float: right !important;
   position: static !important;
   margin-top: 90px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  height: 99.5% !important;
+  overflow: scroll !important;
+
 }
 
 .sidebar-editor :focus {
@@ -37,6 +42,19 @@ ul.sidebar-details {
   color:#20718a;
   word-wrap:break-word;
 }
+
+#sidebartabs-pane-1.tab-pane.active {
+  height:inherit; /* room for pagination below - set to handle 15 entries p/page */
+}
+
+#sidebartabs-pane-1.tab-pane.active table tr {
+  height:3em;
+}
+
+.tab-content > .active {
+  display: block;
+}
+
 
 .tab-content {
   clear:both;
