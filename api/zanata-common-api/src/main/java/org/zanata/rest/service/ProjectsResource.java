@@ -59,10 +59,6 @@ public interface ProjectsResource extends RestResource {
     @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECTS_XML,
             MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON,
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-    // TODO Enunciate doesn't handle arrays/Collections
-    // Ugly workaround:
-    // http://docs.codehaus.org/display/ENUNCIATE/Lists+and+JAX-RS
-    // Eventual solution: https://jira.codehaus.org/browse/ENUNCIATE-429
             @TypeHint(Project[].class)
             public
             Response get();
