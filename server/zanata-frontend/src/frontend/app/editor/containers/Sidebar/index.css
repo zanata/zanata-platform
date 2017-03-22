@@ -44,7 +44,7 @@ ul.sidebar-details {
 }
 
 #sidebartabs-pane-1.tab-pane.active {
-  height:inherit; /* room for pagination below - set to handle 15 entries p/page */
+  height:inherit;
 }
 
 #sidebartabs-pane-1.tab-pane.active table tr {
@@ -80,6 +80,10 @@ span.details-nocontent {
 
 span.s1.gloss-tab-svg, span.s1.act-tab-svg {
   vertical-align: sub;
+  margin-right: 0.375em;
+}
+
+span.s1.details-svg {
   margin-right: 0.375em;
 }
 
@@ -144,6 +148,15 @@ table td button.Button--link {
   vertical-align:bottom;
 }
 
+table td {
+  white-space: nowrap;
+  width: 100%;
+  overflow: hidden;
+  text-overflow-start: clip;
+  text-overflow-middle: ellipsis;
+  text-overflow-end: clip;
+  text-overflow-min-width: 0 3ch;
+}
 
 .inline-flex-search .form-group {
   vertical-align:sub;

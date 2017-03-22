@@ -44,7 +44,7 @@ const GlossaryTab = React.createClass({
     if (isEmpty(searchText)) {
       return <div className="enter-search-text">Enter text to search <br />
         <span>
-          <Icon name='glossary' className="s6" />
+          <Icon name='search' className="s6" />
         </span>
       </div>
     }
