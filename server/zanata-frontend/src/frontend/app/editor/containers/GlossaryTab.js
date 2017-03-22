@@ -61,8 +61,12 @@ const GlossaryTab = React.createClass({
     const resultsDisplay = results.map((term, index) => {
       return (
         <tr key={index}>
-          <td className="bold-text">{term.source.content}</td>
-          <td className="bold-text">{term.target.content}</td>
+          <td id="ellipses-string" data-filetype="text" className="bold-text">
+            <span>{term.source.content}</span>
+          </td>
+          <td id="ellipses-string" data-filetype="text" className="bold-text">
+            <span>{term.target.content}</span>
+          </td>
           <td>
             <Button title="copy"
               className="Button Button--small u-rounded Button--primary">

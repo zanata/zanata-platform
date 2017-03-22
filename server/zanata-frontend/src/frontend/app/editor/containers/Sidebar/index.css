@@ -148,14 +148,41 @@ table td button.Button--link {
   vertical-align:bottom;
 }
 
+#ellipses-string {
+  max-width: 100px;
+  padding-right: 0.75em;
+}
+
+#ellipses-string span {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+#ellipses-string span:after {
+  content: attr(data-filetype);
+  left: 100%;
+  position: absolute;
+  top: 0;
+}
+
+/*Show on hover/active/focus state*/
+#ellipses-string span:hover,
+#ellipses-string span:focus, #ellipses-string span:active {
+  white-space: normal;
+  width:auto;
+}
+
+#ellipses-string span:hover:after {
+  display: none;
+}
+
 table td {
   white-space: nowrap;
-  width: 100%;
+  width: inherit;
   overflow: hidden;
-  text-overflow-start: clip;
-  text-overflow-middle: ellipsis;
-  text-overflow-end: clip;
-  text-overflow-min-width: 0 3ch;
+  position: relative;
+  text-overflow:ellipsis;
 }
 
 .inline-flex-search .form-group {
