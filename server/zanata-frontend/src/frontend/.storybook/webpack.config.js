@@ -1,6 +1,7 @@
 var autoprefixer = require('autoprefixer')
 var reworkCalc = require('rework-calc')
 var reworkColorFunction = require('rework-color-function')
+var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var reworkCustomMedia = require('rework-custom-media')
 var reworkIeLimits = require('rework-ie-limits')
 var reworkNpm = require('rework-npm')
@@ -35,6 +36,18 @@ module.exports = {
         test: /\.css$/,
         exclude: /node_modules/,
         loader: 'style!css!csso!postcss!rework'
+      },
+
+      /* Bundles bootstrap css into the same bundle as the other css.
+       * TODO look at running through csso and rework, same as other css
+       */
+      {
+        test: /\.less$/,
+        exclude: /node_modules/,
+        loader: ExtractTextPlugin.extract(
+            'style',
+            'css!postcss!less'
+        )
       }
     ]
   },
