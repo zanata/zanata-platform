@@ -27,13 +27,14 @@ def projectProperties = [
 properties(projectProperties)
 
 def surefireTestReports='target/surefire-reports/TEST-*.xml'
+def nodeLabel=params.LABEL
 
 /* Upto stash stage should fail fast:
  * Failed and stop the build
  * Yet able to create report
  */
 timestamps {
-  node(params.LABEL) {
+  node(nodeLabel) {
     ansicolor {
       try {
         stage('Checkout') {
