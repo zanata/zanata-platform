@@ -1,11 +1,26 @@
 #!/usr/bin/env groovy
 @Library('github.com/zanata/zanata-pipeline-library@master')
+/**
+ * Jenkinsfile for zanata-platform
+ */
 
 /* Only keep the 10 most recent builds. */
 def projectProperties = [
   [
     $class: 'BuildDiscarderProperty',
     strategy: [$class: 'LogRotator', numToKeepStr: '10']
+  ],
+  [
+    $class: 'ParametersDefinitionProperty',
+    parameterDefinitions: [
+      [
+        $class: 'LabelParameterDefinition',
+        /* Default all node */
+        defaultValue: '!none',
+        description: 'Node label that allow to build',
+        name: 'LABEL'
+      ]
+    ]
   ],
 ]
 
@@ -92,23 +107,21 @@ timestamps {
   }
 
   if ( currentBuild.result == null ) {
-    stage('Integration tests') {
-      try {
-        def tasks = [:]
+    try {
+      def tasks = [:]
 
-        tasks["Integration tests: WILDFLY"] = {
-          integrationTests('wildfly8')
-        }
-        tasks["Integration tests: JBOSSEAP"] = {
-          integrationTests('jbosseap6')
-        }
-        tasks.failFast = true
-        parallel tasks
-        //   notify.successful()
-      } catch (e) {
-        // When it cannot find the failfast report
-        echo "ERROR integrationTests: ${e.toString()}"
+      tasks["Integration tests: WILDFLY"] = {
+         integrationTests('wildfly8')
       }
+      tasks["Integration tests: JBOSSEAP"] = {
+        integrationTests('jbosseap6')
+      }
+      tasks.failFast = true
+      parallel tasks
+      //   notify.successful()
+    } catch (e) {
+            // When it cannot find the failfast report
+            echo "ERROR integrationTests: ${e.toString()}"
     }
 
   // TODO notify finish
@@ -136,62 +149,66 @@ void debugChromeDriver() {
 void integrationTests(String appserver) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
   node {
-    info.printNode()
-    info.printEnv()
-    echo "WORKSPACE=${env.WORKSPACE}"
-    checkout scm
-    // Clean the workspace
-    sh "git clean -fdx"
-    debugChromeDriver()
+    stage('Unstash') {
+      info.printNode()
+      info.printEnv()
+      echo "WORKSPACE=${env.WORKSPACE}"
+      checkout scm
+      // Clean the workspace
+      sh "git clean -fdx"
+      debugChromeDriver()
 
-    unstash 'workspace'
-    // TODO: Consider touching the target files for test, so it won't recompile
+      unstash 'workspace'
+      // TODO: Consider touching the target files for test, so it won't recompile
 
-    /* touch all target */
-    sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
-
-    try {
-      xvfb {
-        withPorts {
-          // Run the maven build
-          echo "DISPLAY=${env.DISPLAY}"
-          sh """./run-clean.sh ./mvnw -e -T 1 install \
-                     --batch-mode \
-                     --settings .travis-settings.xml \
-                     -Dappserver=$appserver \
-                     -Danimal.sniffer.skip=true \
-                     -Dcargo.debug.jvm.args= \
-                     -Dcheckstyle.skip \
-                     -Dfindbugs.skip \
-                     -Dgwt.compiler.skip \
-                     -Dmaven.main.skip \
-                     -DskipShade \
-                     -DskipUnitTests \
-                     -DstaticAnalysis=false \
-                     -Dwebdriver.display=${env.DISPLAY} \
-                     -Dwebdriver.type=chrome \
-                     -Dwebdriver.chrome.driver=/opt/chromedriver \
-
-               """
-// TODO              -DallFuncTests
-
-        }
-      }
-    } catch(e) {
-      // Exception will be thrown if maven fails fast, i.e. a test fails
-      echo "ERROR integrationTests(${appserver}): ${e.toString()}"
-      currentBuild.result = 'UNSTABLE'
-      archive(
-        includes: '*/target/**/*.log,*/target/screenshots/**,**/target/site/xref/**',
-        excludes: '**/BACKUP-*.log')
-    } finally {
-      setJUnitPrefix(appserver, failsafeTestReports)
-      junit([
-        testResults: "**/${failsafeTestReports}"
-//      testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
-      ])
-      notify.testResults(appserver.toUpperCase())
+      /* touch all target */
+      sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
     }
+
+    stage('Integration tests') {
+      try {
+        xvfb {
+          withPorts {
+            // Run the maven build
+            echo "DISPLAY=${env.DISPLAY}"
+            sh """./run-clean.sh ./mvnw -e -T 1 install \
+                       --batch-mode \
+                       --settings .travis-settings.xml \
+                       -Dappserver=$appserver \
+                       -Danimal.sniffer.skip=true \
+                       -Dcargo.debug.jvm.args= \
+                       -Dcheckstyle.skip \
+                       -Dfindbugs.skip \
+                       -Dgwt.compiler.skip \
+                       -Dmaven.main.skip \
+                       -DskipShade \
+                       -DskipUnitTests \
+                       -DstaticAnalysis=false \
+                       -Dwebdriver.display=${env.DISPLAY} \
+                       -Dwebdriver.type=chrome \
+                       -Dwebdriver.chrome.driver=/opt/chromedriver \
+
+                """
+                // TODO              -DallFuncTests
+          }
+        }
+      } catch(e) {
+        // Exception will be thrown if maven fails fast, i.e. a test fails
+        echo "ERROR integrationTests(${appserver}): ${e.toString()}"
+        currentBuild.result = 'UNSTABLE'
+        archive(
+          includes: '*/target/**/*.log,*/target/screenshots/**,**/target/site/xref/**',
+          excludes: '**/BACKUP-*.log')
+      } finally {
+        setJUnitPrefix(appserver, failsafeTestReports)
+        junit([
+          testResults: "**/${failsafeTestReports}"
+          //      testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
+        ])
+        notify.testResults(appserver.toUpperCase())
+      }
+    }
+
   }
 }
 
