@@ -33,7 +33,7 @@ def surefireTestReports='target/surefire-reports/TEST-*.xml'
  * Yet able to create report
  */
 timestamps {
-  node {
+  node(params.LABEL) {
     ansicolor {
       try {
         stage('Checkout') {
