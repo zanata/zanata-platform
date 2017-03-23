@@ -65,25 +65,20 @@ function findGlossaryTerms (searchText) {
   if (isEmpty(searchText)) {
     return {
       type: GLOSSARY_TERMS_SUCCESS,
-      payload: {
-        totalCount: 0,
-        results: []
-      },
+      payload: [],
       meta: { timestamp }
     }
   }
 
   return (dispatch, getState) => {
-    const {
-      context,
-        headerData
-    } = getState()
+    const { context, headerData } = getState()
 
     const srcLocale = context.sourceLocale.localeId
     const transLocale = headerData.context.selectedLocale
+    const projectSlug = headerData.context.projectVersion.project.slug
 
     const glossaryUrl =
-      `${baseRestUrl}/glossary/entries?srcLocale=${srcLocale}&transLocale=${transLocale}&filter=${encodeURIComponent(searchText)}&page=1&sizePerPage=15` // eslint-disable-line max-len
+      `${baseRestUrl}/glossary/search?srcLocale=${srcLocale}&transLocale=${transLocale}&project=${projectSlug}&searchText=${encodeURIComponent(searchText)}&maxResults=15` // eslint-disable-line max-len
 
     dispatch({
       [CALL_API]: {

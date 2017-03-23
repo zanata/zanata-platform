@@ -29,12 +29,8 @@ const GlossaryTab = React.createClass({
     searchText: PropTypes.string.isRequired,
     searching: PropTypes.bool.isRequired,
     results: PropTypes.arrayOf(PropTypes.shape({
-      source: PropTypes.shape({
-        content: PropTypes.string.isRequired
-      }).isRequired,
-      target: PropTypes.shape({
-        content: PropTypes.string.isRequired
-      }).isRequired
+      source: PropTypes.string.isRequired,
+      target: PropTypes.string.isRequired
     })).isRequired,
     onGlossaryTextChange: PropTypes.func.isRequired
   },
@@ -75,7 +71,7 @@ const GlossaryTab = React.createClass({
                   <span className="hide-mdplus text-blue">
                     Source
                   </span>
-                  {term.source.content}
+                  {term.source}
                 </span>
               </Button>
             </OverlayTrigger>
@@ -87,14 +83,14 @@ const GlossaryTab = React.createClass({
                   <span className="hide-mdplus text-blue">
                   Target
                   </span>
-                    {term.target.content}
+                    {term.target}
                 </span>
               </Button>
             </OverlayTrigger>
           </td>
           <td>
             <Button title="Copy"
-              className="Button--small u-rounded Button--primary">
+              className="Button Button--small u-rounded Button--primary">
               Copy
             </Button>
           </td>
@@ -143,12 +139,7 @@ const GlossaryTab = React.createClass({
 
 })
 
-function mapStateToProps (state) {
-  const { context, glossary, headerData } = state
-
-  const sourceLanguage = context.sourceLocale.localeId
-  const targetLanguage = headerData.context.selectedLocale
-
+function mapStateToProps ({ glossary }) {
   // FIXME move this to storybook for this component
   // const dummyData = [
   //   {
@@ -178,13 +169,7 @@ function mapStateToProps (state) {
   // ]
 
   return {
-    ...glossary,
-    results: glossary.results.map(result => {
-      return {
-        source: result[sourceLanguage],
-        target: result[targetLanguage]
-      }
-    })
+    ...glossary
   }
 }
 
