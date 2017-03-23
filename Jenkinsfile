@@ -176,11 +176,13 @@ void integrationTests(String appserver) {
                        --settings .travis-settings.xml \
                        -Dappserver=$appserver \
                        -Danimal.sniffer.skip=true \
+                       -Dassembly.skipAssembly \
                        -Dcargo.debug.jvm.args= \
                        -Dcheckstyle.skip \
                        -Dfindbugs.skip \
                        -Dgwt.compiler.skip \
                        -Dmaven.main.skip \
+                       -Dmaven.war.skip \
                        -DskipShade \
                        -DskipUnitTests \
                        -DstaticAnalysis=false \
