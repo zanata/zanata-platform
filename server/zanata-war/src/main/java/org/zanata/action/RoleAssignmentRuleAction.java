@@ -96,7 +96,7 @@ public class RoleAssignmentRuleAction extends EntityHome<HRoleAssignmentRule>
     }
 
     public void remove(String id) {
-        HRoleAssignmentRule rule = roleAssignmentRuleDAO.findById(new Long(id));
+        HRoleAssignmentRule rule = roleAssignmentRuleDAO.findById(Long.valueOf(id));
         if (rule != null) {
             roleAssignmentRuleDAO.makeTransient(rule);
             roleAssignmentRuleDAO.flush();

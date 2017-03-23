@@ -74,4 +74,33 @@ public class AllowedApp extends ModelEntityBase {
     public void setRefreshToken(final String refreshToken) {
         this.refreshToken = refreshToken;
     }
+
+    /**
+     * Equals based on business equality
+     * @param other object
+     * @return AllowedApp and other are equal
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        if (!super.equals(other)) return false;
+
+        AllowedApp that = (AllowedApp) other;
+
+        return (account != null ?
+                account.equals(that.account) :
+                that.account == null) &&
+            (clientId != null ?
+                clientId.equals(that.clientId) :
+                that.clientId == null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (account != null ? account.hashCode() : 0);
+        result = 31 * result + (clientId != null ? clientId.hashCode() : 0);
+        return result;
+    }
 }

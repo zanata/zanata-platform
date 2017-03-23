@@ -131,4 +131,27 @@ public class HApplicationConfiguration extends ModelEntityBase {
         this.key = key;
         this.value = value;
     }
+
+    /**
+     * Business equality comparison
+     * @param other
+     * @return other is equal
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        if (!super.equals(other)) return false;
+
+        HApplicationConfiguration that = (HApplicationConfiguration) other;
+
+        return key.equals(that.key);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (key != null ? key.hashCode() : 0);
+        return result;
+    }
 }
