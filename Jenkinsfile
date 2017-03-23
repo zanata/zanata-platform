@@ -27,14 +27,13 @@ def projectProperties = [
 properties(projectProperties)
 
 def surefireTestReports='target/surefire-reports/TEST-*.xml'
-def nodeLabel=params.LABEL
 
 /* Upto stash stage should fail fast:
  * Failed and stop the build
  * Yet able to create report
  */
 timestamps {
-  node(nodeLabel) {
+  node(LABEL) {
     ansicolor {
       try {
         stage('Checkout') {
@@ -149,7 +148,7 @@ void debugChromeDriver() {
 
 void integrationTests(String appserver) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
-  node {
+  node(LABEL) {
     stage('Unstash') {
       info.printNode()
       info.printEnv()
@@ -180,6 +179,7 @@ void integrationTests(String appserver) {
                        -Dassembly.skipAssembly \
                        -Dcargo.debug.jvm.args= \
                        -Dcheckstyle.skip \
+                       -Dexec.skip \
                        -Dfindbugs.skip \
                        -Dgwt.compiler.skip \
                        -Dmaven.main.skip \
