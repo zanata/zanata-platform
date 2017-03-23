@@ -20,6 +20,7 @@
 @import './css/base/index.css';
 @import './components/SplitDropdown/index.css';
 @import './components/Button/index.css';
+@import './components/GlossaryTermModal/index.css';
 @import './components/GlossarySearchInput/index.css';
 @import './components/SuggestionSearchInput/index.css';
 @import './components/Dropdown/index.css';
@@ -32,7 +33,6 @@
 @import './components/FilterToggle/index.css';
 @import './components/ToggleSwitch/index.css';
 @import './components/TransUnit/index.css';
-
 
 /**
  * Views
