@@ -548,6 +548,7 @@ public class HTextFlowTarget extends ModelEntityBase
     }
 
     public HTextFlowTarget() {
+        locale = new HLocale(new LocaleId());
     }
 
     @Override
@@ -568,8 +569,7 @@ public class HTextFlowTarget extends ModelEntityBase
             return false;
         final Object this$locale = this.getLocale();
         final Object other$locale = other.getLocale();
-        if (this$locale == null ? other$locale != null
-                : !this$locale.equals(other$locale))
+        if (!this$locale.equals(other$locale))
             return false;
         final Object this$content0 = this.getContent0();
         final Object other$content0 = other.getContent0();
@@ -603,8 +603,7 @@ public class HTextFlowTarget extends ModelEntityBase
             return false;
         final Object this$state = this.getState();
         final Object other$state = other.getState();
-        if (this$state == null ? other$state != null
-                : !this$state.equals(other$state))
+        if (!this$state.equals(other$state))
             return false;
         final Object this$textFlowRevision = this.getTextFlowRevision();
         final Object other$textFlowRevision = other.getTextFlowRevision();

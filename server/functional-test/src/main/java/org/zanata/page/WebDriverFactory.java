@@ -64,7 +64,6 @@ import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import static java.lang.reflect.Proxy.newProxyInstance;
@@ -72,7 +71,7 @@ import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
 
-
+@SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
 public enum WebDriverFactory {
     INSTANCE;
     private static final org.slf4j.Logger log =
@@ -460,13 +459,25 @@ public enum WebDriverFactory {
         clearDswid();
     }
 
+    private void dswidCheckerNotNull() {
+        if (dswidParamChecker == null) {
+            if (driver == null) {
+                throw new RuntimeException("Attempted to use " +
+                        "DswidParamChecker before driver was created");
+            }
+            dswidParamChecker = new DswidParamChecker(driver);
+        }
+    }
+
     private void clearDswid() {
         // clear the browser's memory of the dswid
         getExecutor().executeScript("window.name = \'\'");
+        dswidCheckerNotNull();
         dswidParamChecker.clear();
     }
 
     public <T> T ignoringDswid(Supplier<T> supplier) {
+        dswidCheckerNotNull();
         dswidParamChecker.stopChecking();
         try {
             return supplier.get();
@@ -476,6 +487,7 @@ public enum WebDriverFactory {
     }
 
     public void ignoringDswid(Runnable r) {
+        dswidCheckerNotNull();
         dswidParamChecker.stopChecking();
         try {
             r.run();

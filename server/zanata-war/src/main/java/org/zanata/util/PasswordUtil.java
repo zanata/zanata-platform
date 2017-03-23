@@ -32,6 +32,7 @@ public class PasswordUtil {
             MessageDigest md = MessageDigest.getInstance("MD5");
 
             if (saltPhrase != null) {
+                // TODO: findbugs - DM_DEFAULT_ENCODING, Priority: High
                 md.update(saltPhrase.getBytes());
                 byte[] salt = md.digest();
 

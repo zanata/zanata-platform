@@ -27,6 +27,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -56,6 +57,7 @@ import org.zanata.ui.faces.FacesMessages;
 import javax.enterprise.event.Event;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.InMemoryListFilter;
+import org.zanata.util.StringUtil;
 import org.zanata.util.UrlUtil;
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 
@@ -230,8 +232,10 @@ public class LanguageAction implements Serializable {
         if (!isValidPluralForms(hLocale.getPluralForms(), "pluralForms")) {
             return;
         }
-        hLocale.setDisplayName(hLocale.getDisplayName().trim());
-        hLocale.setNativeName(hLocale.getNativeName().trim());
+        hLocale.setDisplayName(ObjectUtils.firstNonNull(hLocale.getDisplayName(),
+                "").trim());
+        hLocale.setNativeName(ObjectUtils.firstNonNull(hLocale.getNativeName(),
+                "").trim());
         localeDAO.makePersistent(getLocale());
         facesMessages.addGlobal(
                 msgs.format("jsf.language.updated", getLocale().getLocaleId()));
@@ -408,6 +412,10 @@ public class LanguageAction implements Serializable {
             changedEvent = changedEvent.changedCoordinatorPermission(member);
             break;
 
+        default:
+            log.warn("User {} tried to add role {} to member {}",
+                    authenticatedAccount.getUsername(),
+                    role, member);
         }
         languageTeamPermissionChangedEvent.fire(changedEvent);
     }
@@ -428,17 +436,17 @@ public class LanguageAction implements Serializable {
 
     public boolean isTranslator(HPerson person) {
         HLocaleMember member = getLocaleMember(person.getId());
-        return member == null ? false : member.isTranslator();
+        return member != null && member.isTranslator();
     }
 
     public boolean isReviewer(HPerson person) {
         HLocaleMember member = getLocaleMember(person.getId());
-        return member == null ? false : member.isReviewer();
+        return member != null && member.isReviewer();
     }
 
     public boolean isCoordinator(HPerson person) {
         HLocaleMember member = getLocaleMember(person.getId());
-        return member == null ? false : member.isCoordinator();
+        return member != null && member.isCoordinator();
     }
 
     private HLocaleMember getLocaleMember(final Long personId) {

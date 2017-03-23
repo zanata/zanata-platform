@@ -83,6 +83,7 @@ public class ClientWorkFlow {
         return resource.getPath();
     }
 
+    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     public List<String> callWithTimeout(final File workingDirectory,
             String command) {
         log.info("=== about to call ===\n{}", command);
@@ -92,7 +93,6 @@ public class ClientWorkFlow {
         }
         final List<String> commands =
                 Lists.newArrayList(Splitter.on(" ").split(command));
-        @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
         SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
         Callable<List<String>> work = () -> {
             Process process =

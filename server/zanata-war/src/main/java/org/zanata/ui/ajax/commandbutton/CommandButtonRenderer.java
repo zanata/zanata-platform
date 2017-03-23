@@ -40,7 +40,7 @@ import static org.richfaces.renderkit.RenderKitUtils.shouldRenderAttribute;
 @FacesRenderer(componentFamily = CommandButton.COMPONENT_FAMILY,
         rendererType = CommandButtonRenderer.RENDERER_TYPE)
 // TODO why does this class copy so much code from parent class?
-// TODO can we give it a better name?
+// TODO findbugs - NM_SAME_SIMPLE_NAME_AS_SUPERCLASS, Priority: High
 public class CommandButtonRenderer extends
         org.richfaces.renderkit.html.CommandButtonRenderer {
 

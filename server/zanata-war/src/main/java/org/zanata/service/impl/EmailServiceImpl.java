@@ -26,6 +26,7 @@ import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.action.VersionGroupJoinAction;
@@ -187,7 +188,13 @@ public class EmailServiceImpl implements EmailService {
     public String sendToLanguageCoordinators(LocaleId localeId,
             EmailStrategy strategy) {
         HLocale locale = localeDAO.findByLocaleId(localeId);
+        if (locale == null)
+            return msgs.get("jsf.email.coordinator.localeinvalid");
+
         List<HPerson> coordinators = getCoordinators(locale);
+        if (coordinators == null)
+            coordinators = new ArrayList<>();
+
         if (!coordinators.isEmpty()) {
             String receivedReason =
                     msgs.format("jsf.email.coordinator.ReceivedReason",
