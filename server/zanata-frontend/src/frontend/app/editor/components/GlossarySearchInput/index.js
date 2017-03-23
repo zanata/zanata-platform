@@ -20,7 +20,7 @@
  */
 
 import cx from 'classnames'
-import { Icon } from 'zanata-ui'
+import { Icon } from '../../../components'
 import React, { PropTypes } from 'react'
 
 // FIXME copied from SuggestionSearchInput. Can pull out a common component.
@@ -83,9 +83,8 @@ const GlossarySearchInput = React.createClass({
           { 'is-focused': this.state.focused })}>
           <span className="InputGroup-addon"
             onClick={this.focusInput}>
-            <Icon name="search"
-              title="Search glossary"
-              size="n1" />
+            <Icon name="search" className="n1"
+              title="Search glossary" />
           </span>
           <input ref="input"
             type="search"

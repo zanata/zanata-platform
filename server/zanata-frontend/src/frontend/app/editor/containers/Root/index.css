@@ -314,6 +314,11 @@ li.docName span.ellipsis {
 .pull-right {
   float:right !important;
 }
+
+.modal-header .close {
+   float: right;
+}
+
   /**
    * Media Queries
    */
