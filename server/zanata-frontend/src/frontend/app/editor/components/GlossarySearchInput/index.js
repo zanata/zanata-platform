@@ -20,7 +20,7 @@
  */
 
 import cx from 'classnames'
-import { Icon } from '../../../components'
+import { Icons, Icon } from '../../../components'
 import React, { PropTypes } from 'react'
 
 // FIXME copied from SuggestionSearchInput. Can pull out a common component.
@@ -78,6 +78,7 @@ const GlossarySearchInput = React.createClass({
   render () {
     return (
       <div className="inline-flex-search">
+        <Icons />
         <div className={cx('InputGroup InputGroup--outlined ' +
             'InputGroup--rounded',
           { 'is-focused': this.state.focused })}>

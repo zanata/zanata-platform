@@ -162,6 +162,22 @@ h4.modal-title {
   line-height:1em;
 }
 
+.panel-body h3 {
+  font-weight: 500;
+  font-size:1.2em;
+}
+
+.list-inline li {
+  display:inline-flex;
+}
+
+.panel-body .modal-term {
+  font-size:1.2em;
+  font-weight:600;
+  line-height: 2em;
+  color:#333;
+}
+
 .n2, .n2 svg {
   width: 0.694rem;
   height: 0.694rem;
