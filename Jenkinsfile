@@ -15,8 +15,10 @@ def projectProperties = [
     parameterDefinitions: [
       [
         $class: 'LabelParameterDefinition',
-        /* Default all node */
-        defaultValue: '!none',
+        // /* Default all node */
+        // defaultValue: 'master || !master',
+        /* Only kvm working at this point*/
+        defaultValue: 'kvm',
         description: 'Node label that allow to build',
         name: 'LABEL'
       ]
@@ -96,8 +98,7 @@ timestamps {
         }
 
         stage('stash') {
-//          stash name: 'workspace', includes: '**/target/**, server/zanata-frontend/src/**,server/'
-          stash name: 'workspace', includes: '**'
+          stash name: 'workspace', includes: '**/target/**, **/src/main/resources/**,**/.zanata-cache/**'
         }
       } catch (e) {
         notify.failed()
@@ -171,17 +172,13 @@ void integrationTests(String appserver) {
         xvfb {
           withPorts {
             // Run the maven build
-            echo "DISPLAY=${env.DISPLAY}"
+            echo "env.DISPLAY=${env.DISPLAY}"
+            echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
+            echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
             sh """./run-clean.sh ./mvnw -e -T 1 install \
                        --batch-mode \
                        --settings .travis-settings.xml \
                        -Dappserver=$appserver \
-                       -Danimal.sniffer.skip=true \
-                       -Dcargo.debug.jvm.args= \
-                       -Dcheckstyle.skip \
-                       -Dfindbugs.skip \
-                       -DskipUnitTests \
-                       -DstaticAnalysis=false \
                        -Dwebdriver.display=${env.DISPLAY} \
                        -Dwebdriver.type=chrome \
                        -Dwebdriver.chrome.driver=/opt/chromedriver \
@@ -195,7 +192,13 @@ void integrationTests(String appserver) {
                 -DskipAppassembler \
                 -DskipShade \
                 -DallFuncTests \
-                */
+                -Danimal.sniffer.skip=true \
+                -Dcargo.debug.jvm.args= \
+                -Dcheckstyle.skip \
+                -Dfindbugs.skip \
+                -DskipUnitTests \
+                -DstaticAnalysis=false \
+                 */
           }
         }
       } catch(e) {
