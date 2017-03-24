@@ -4,11 +4,11 @@
  * Jenkinsfile for zanata-platform
  */
 
-/* Only keep the 10 most recent builds. */
+/* Only keep the 20 most recent builds. */
 def projectProperties = [
   [
     $class: 'BuildDiscarderProperty',
-    strategy: [$class: 'LogRotator', numToKeepStr: '10']
+    strategy: [$class: 'LogRotator', numToKeepStr: '20']
   ],
   [
     $class: 'ParametersDefinitionProperty',
@@ -96,7 +96,8 @@ timestamps {
         }
 
         stage('stash') {
-          stash name: 'workspace', includes: '**/target/**, server/zanata-frontend/src/**,server/'
+//          stash name: 'workspace', includes: '**/target/**, server/zanata-frontend/src/**,server/'
+          stash name: 'workspace', includes: '**'
         }
       } catch (e) {
         notify.failed()
@@ -149,7 +150,7 @@ void debugChromeDriver() {
 void integrationTests(String appserver) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
   node(LABEL) {
-    stage('Unstash') {
+    stage("Unstash ${appserver}") {
       info.printNode()
       info.printEnv()
       echo "WORKSPACE=${env.WORKSPACE}"
@@ -162,10 +163,10 @@ void integrationTests(String appserver) {
       // TODO: Consider touching the target files for test, so it won't recompile
 
       /* touch all target */
-      sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
+      //sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
     }
 
-    stage('Integration tests') {
+    stage("Integration tests ${appserver}") {
       try {
         xvfb {
           withPorts {
@@ -176,16 +177,9 @@ void integrationTests(String appserver) {
                        --settings .travis-settings.xml \
                        -Dappserver=$appserver \
                        -Danimal.sniffer.skip=true \
-                       -Dassembly.skipAssembly \
                        -Dcargo.debug.jvm.args= \
                        -Dcheckstyle.skip \
-                       -Dexec.skip \
                        -Dfindbugs.skip \
-                       -Dgwt.compiler.skip \
-                       -Dmaven.main.skip \
-                       -Dmaven.war.skip \
-                       -DskipAppassembler \
-                       -DskipShade \
                        -DskipUnitTests \
                        -DstaticAnalysis=false \
                        -Dwebdriver.display=${env.DISPLAY} \
@@ -193,7 +187,15 @@ void integrationTests(String appserver) {
                        -Dwebdriver.chrome.driver=/opt/chromedriver \
 
                 """
-                // TODO              -DallFuncTests
+                /* TODO
+                -Dgwt.compiler.skip \
+                -Dassembly.skipAssembly \
+                -Dmaven.main.skip \
+                -Dmaven.war.skip \
+                -DskipAppassembler \
+                -DskipShade \
+                -DallFuncTests \
+                */
           }
         }
       } catch(e) {
