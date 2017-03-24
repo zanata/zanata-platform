@@ -19,7 +19,7 @@ storiesOf('GlossaryTermModal', module)
         <Panel>
           <h3>Source Term [en-US]:</h3>
           <span className="modal-term">cat</span>
-          <ul>
+          <ul className="source-infolist">
             <li className="list-group-item-heading">Description</li>
             <li>The animal equivalent to the apathetic housemate</li>
             <li className="list-group-item-heading">Part of speech</li>
@@ -30,18 +30,18 @@ storiesOf('GlossaryTermModal', module)
           <h3>Target Term [ar-BH]:</h3>
           <span className="modal-term">caaat</span>
           <br />
-          <span className="comment-box">
-            <span className="list-group-item-heading">Comments</span>
+          <div className="comment-box">
             <ul className="list-inline">
               <li className="s1">
-                <Icon name="comment" title="comment" className="n2"/></li>
+                <Icon name="comment" title="comment"
+                 className="comment-icon n3"/></li>
               <li>This is a comment that was left on the target term</li>
             </ul>
-          </span>
+          </div>
         </Panel>
         <span className="pull-right u-textMeta">
           <Row>
-            <Icon name="history" className="s0" />
+            <Icon name="history" className="s0 history-icon" />
             <span className="u-sML-1-4">Last modified on DATEY TIMEY</span>
           </Row>
         </span>

@@ -171,10 +171,39 @@ h4.modal-title {
   display:inline-flex;
 }
 
+.modal-body .list-group-item-heading {
+  margin-top:0.5em;
+  color:#20718a;
+}
+
 .panel-body .modal-term {
   font-size:1.2em;
   font-weight:600;
   line-height: 2em;
+  color:#333;
+}
+
+.history-icon svg, .comment-icon svg {
+  vertical-align: sub;
+}
+
+.comment-box {
+  margin-top:1em;
+}
+
+.comment-box li {
+  color:#20718a;
+}
+
+.comment-icon svg {
+  fill:#90b8c5 !important;
+}
+
+ul.list-inline li.s1 {
+  margin-right: 0.375em;
+}
+
+ul.source-infolist {
   color:#333;
 }
 
