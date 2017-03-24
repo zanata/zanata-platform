@@ -184,6 +184,7 @@ void integrationTests(String appserver) {
                        -Dgwt.compiler.skip \
                        -Dmaven.main.skip \
                        -Dmaven.war.skip \
+                       -DskipAppassembler \
                        -DskipShade \
                        -DskipUnitTests \
                        -DstaticAnalysis=false \

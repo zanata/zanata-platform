@@ -52,32 +52,6 @@
         </configuration>
       </plugin>
 
-      <!-- prepare script and jars for zip/tar.gz distribution -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>appassembler-maven-plugin</artifactId>
-        <version>1.10</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>assemble</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <licenseHeaderFile>${basedir}/COPYING-header.txt</licenseHeaderFile>
-          <programs>
-            <program>
-              <mainClass>org.zanata.client.ZanataClient</mainClass>
-              <name>zanata-cli</name>
-            </program>
-          </programs>
-          <repositoryName>lib</repositoryName>
-          <repositoryLayout>flat</repositoryLayout>
-        </configuration>
-      </plugin>
-
       <!-- package in zip and tar.gz -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -182,4 +156,45 @@
       <artifactId>simple</artifactId>
     </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>withAppassembler</id>
+      <activation>
+        <property>
+          <name>skipAppassembler</name>
+          <value>!true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <!-- prepare script and jars for zip/tar.gz distribution -->
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>appassembler-maven-plugin</artifactId>
+            <version>1.10</version>
+            <executions>
+              <execution>
+                <phase>package</phase>
+                <goals>
+                  <goal>assemble</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <licenseHeaderFile>${basedir}/COPYING-header.txt</licenseHeaderFile>
+              <programs>
+                <program>
+                  <mainClass>org.zanata.client.ZanataClient</mainClass>
+                  <name>zanata-cli</name>
+                </program>
+              </programs>
+              <repositoryName>lib</repositoryName>
+              <repositoryLayout>flat</repositoryLayout>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>
