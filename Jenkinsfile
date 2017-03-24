@@ -74,7 +74,7 @@ timestamps {
 
           // Continue building even when test failure
           // Thus -Dmaven.test.failure.ignore is required
-          sh """./run-clean.sh ./mvnw -e clean install jxr:aggregate\
+          sh """./run-clean.sh ./mvnw -e -T 1 clean install jxr:aggregate\
                       --batch-mode \
                       --settings .travis-settings.xml \
                       --update-snapshots \
