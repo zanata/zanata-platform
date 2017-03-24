@@ -9,20 +9,22 @@ class GlossaryTermModal extends Component {
   render () {
     return (
       <div className="static-modal">
-        <Modal.Dialog>
-          <Modal.Header>
-            <Modal.Title>Modal title</Modal.Title>
+        <Modal show
+               onHide={action('close')}>
+          <Modal.Header closeButton>
+            <Modal.Title>Glossary details</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            One fine body...
+            <Panel>
+              Source
+            </Panel>
+            <Panel>
+              Target
+            </Panel>
           </Modal.Body>
-          <Modal.Footer>
-            <Button>Close</Button>
-            <Button bsStyle="primary">Save changes</Button>
-          </Modal.Footer>
-        </Modal.Dialog>
+        </Modal>
       </div>
-    )
+  )
   }
 }
 

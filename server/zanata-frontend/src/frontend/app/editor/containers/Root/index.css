@@ -154,6 +154,14 @@ li.docName span.ellipsis {
   color:#20718a;
 }
 
+h4.modal-title {
+  font-size:1.728rem;
+  font-weight:300;
+  text-align:center;
+  color:#1ba7d9;
+  line-height:1em;
+}
+
 .n2, .n2 svg {
   width: 0.694rem;
   height: 0.694rem;
