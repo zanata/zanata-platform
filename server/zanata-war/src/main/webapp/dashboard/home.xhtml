@@ -128,12 +128,15 @@
                 </a>
               </li>
               <li>
-                <a id="groups_tab"
-                  href="#{request.contextPath}/dashboard/groups"
-                  class="js-url-mod" data-content="#groups">
-                  <i class="i i--group"></i>
-                  <span class="is-hidden--s i__text--right">#{msgs['jsf.dashboard.groups.title']}</span>
-                </a>
+                <ui:fragment
+                  rendered="#{dashboardAction.groupList.totalRecords gt 0 or dashboardAction.canCreateGroup()}">
+                  <a id="groups_tab"
+                    href="#{request.contextPath}/dashboard/groups"
+                    class="js-url-mod" data-content="#groups">
+                    <i class="i i--group"></i>
+                    <span class="is-hidden--s i__text--right">#{msgs['jsf.dashboard.groups.title']}</span>
+                  </a>
+                </ui:fragment>
               </li>
               <li class="tab__end">
                 <a href="#{request.contextPath}/dashboard/settings"
