@@ -15,9 +15,9 @@ def projectProperties = [
     parameterDefinitions: [
       [
         $class: 'LabelParameterDefinition',
-        // /* Default all node */
-        // defaultValue: 'master || !master',
-        /* Only kvm working at this point*/
+        /* Specify the default node in Jenkins environment DEFAULT_NODE
+         * or default to build on any node
+         */
         defaultValue: env.DEFAULT_NODE ?: 'master || !master',
         description: 'Node label that allow to build',
         name: 'LABEL'
