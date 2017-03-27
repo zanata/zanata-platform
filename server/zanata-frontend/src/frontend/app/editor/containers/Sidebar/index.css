@@ -142,17 +142,15 @@ table tbody tr {
   text-align: center;
 }
 
-table td button.Button--link {
+table td button.gButton--link {
   color:#03a6d7;
   vertical-align:bottom;
 }
 
 #long-string {
   width: 40%;
-  padding-right: 0.75em;
 }
 
-/*Show on hover/active/focus state*/
 #long-string span,
 #long-string span {
   white-space: normal;
