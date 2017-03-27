@@ -47,9 +47,12 @@ ul.sidebar-details {
   height:inherit;
 }
 
+#sidebartabs-pane-1.tab-pane.active table thead {
+  color:#20718a;
+}
+
 #sidebartabs-pane-1.tab-pane.active table tbody tr {
   height: inherit;
-  display: inline-block;
 }
 
 #sidebartabs-pane-1 td .Button--primary {
@@ -63,6 +66,10 @@ ul.sidebar-details {
 
 .tab-content {
   clear:both;
+}
+
+td.info-icon {
+  vertical-align: bottom;
 }
 
 ul.sidebar-details span {
