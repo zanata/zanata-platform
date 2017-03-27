@@ -61,10 +61,10 @@ const GlossaryTab = React.createClass({
     const resultsDisplay = results.map((term, index) => {
       return (
         <tr key={index}>
-          <td id="ellipses-string" data-filetype="text" className="bold-text">
+          <td id="long-string" data-filetype="text" className="gloss-text">
             <span>{term.source.content}</span>
           </td>
-          <td id="ellipses-string" data-filetype="text" className="bold-text">
+          <td id="long-string" data-filetype="text" className="gloss-text">
             <span>{term.target.content}</span>
           </td>
           <td>
