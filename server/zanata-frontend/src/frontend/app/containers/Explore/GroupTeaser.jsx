@@ -20,7 +20,7 @@ const GroupTeaser = ({
       {details.description}
     </div>)
     : (<div className='text-muted'>
-      <em>Project: {details.id}</em>
+      <em>Group : {details.id}</em>
     </div>)
   const metaData = details.owner ? (
     <div className='meta-info'>
