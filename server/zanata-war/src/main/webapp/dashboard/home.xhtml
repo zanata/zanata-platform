@@ -49,13 +49,19 @@
                 <div class="media__body">
                   <h1 class="l--push-all-0">#{dashboardAction.getUserFullName()}</h1>
                   <ul class="list--no-bullets txt--meta">
-                    <li><i class="i i--user list__icon" title="Username"></i>#{dashboardAction.getUsername()}
+                    <li><i class="i i--user list__icon" title="Username"></i> #{dashboardAction.getUsername()}
                     </li>
                     <li><i class="i i--language list__icon"
-                      title="Spoken languages"></i>#{dashboardAction.getUserLanguageTeams()}
+                      title="Spoken languages"></i>
+                      <ui:fragment rendered="#{dashboardAction.getUserLanguageTeams().length() gt 0}">
+                        #{dashboardAction.getUserLanguageTeams()}
+                      </ui:fragment>
+                      <ui:fragment rendered="#{dashboardAction.getUserLanguageTeams().length() lt 1}">
+                        <a href="#{request.contextPath}/languages#{dswidQuery}">#{msgs['jsf.dashboard.settings.joinLangTeam.message']}</a>
+                      </ui:fragment>
                     </li>
                     <li><i class="i i--users list__icon"
-                      title="Roles"></i>#{dashboardAction.getUserRoles()}
+                      title="Roles"></i> #{dashboardAction.getUserRoles()}
                     </li>
                   </ul>
                 </div>
