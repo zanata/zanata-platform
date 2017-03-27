@@ -428,6 +428,7 @@ ul.source-infolist {
 
   #sidebartabs-pane-1 td .Button--primary {
     margin-top:0.75em;
+    float:right;
   }
 
   .hide-small {
@@ -458,6 +459,20 @@ ul.source-infolist {
 
   #long-string span {
     max-width: 6em;
+  }
+
+  #sidebartabs-pane-1 table tbody tr {
+    display: table-row !important;
+  }
+}
+
+
+@media (min-width:1100px) {
+  #long-string  {
+    max-width: 10em;
+  }
+  #long-string span {
+    max-width: 8em;
   }
 
   #sidebartabs-pane-1 table tbody tr {
