@@ -187,7 +187,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             TransMemoryMergeTaskHandle asyncTaskHandle) {
         List<TranslationService.TranslationResult> translationResults =
                 executeMerge(request, asyncTaskHandle);
-        return AsyncTaskResult.taskResult(translationResults);
+        return AsyncTaskResult.completed(translationResults);
     }
 
     /**

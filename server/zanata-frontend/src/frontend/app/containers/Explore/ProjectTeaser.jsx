@@ -20,7 +20,7 @@ const ProjectTeaser = ({
         {details.description}
     </div>)
     : (<div className='text-muted'>
-      <em>No description available</em>
+      <em>Project: {details.id}</em>
     </div>)
   const metaData = details.owner && (
     <div className='meta-info'>
