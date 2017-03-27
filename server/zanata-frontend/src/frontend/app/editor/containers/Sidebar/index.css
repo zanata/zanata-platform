@@ -148,18 +148,24 @@ table td button.gButton--link {
 }
 
 #long-string {
-  max-width: 40%;
-  width: 40%;
+  padding-bottom:0.75em;
+  width: 10em;
 }
 
-#long-string span,
 #long-string span {
   white-space: normal;
-  width:auto;
-  overflow: hidden;
   text-overflow: ellipsis;
-  word-break: normal; 
+  overflow: hidden;
+  word-break: normal;
+  max-width: 6em;
 }
+
+#long-string span:after {
+  content: attr(data-filetype);
+  left: 100%;
+  position: absolute;
+  top: 0;
+ }
 
 .tooltip {
   position: absolute;
