@@ -98,7 +98,7 @@ const GlossaryTab = React.createClass({
               Copy
             </Button>
           </td>
-          <td className="info-icon align-center">
+          <td className="info-icon">
             <IconButton
               icon="info"
               title="Details"

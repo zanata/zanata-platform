@@ -158,11 +158,6 @@ table td button.gButton--link {
   vertical-align:bottom;
 }
 
-#long-string {
-  padding-bottom:0.75em;
-  width: 10em;
-}
-
 #long-string span {
   white-space: normal;
   text-overflow: ellipsis;
