@@ -18,7 +18,7 @@ def projectProperties = [
         // /* Default all node */
         // defaultValue: 'master || !master',
         /* Only kvm working at this point*/
-        defaultValue: 'kvm',
+        defaultValue: env.DEFAULT_NODE ?: 'master || !master',
         description: 'Node label that allow to build',
         name: 'LABEL'
       ]
