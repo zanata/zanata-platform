@@ -4,7 +4,8 @@
 
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Button, Tab, Table } from 'react-bootstrap'
+import { Button, Tab, Table, Tooltip, OverlayTrigger }
+  from 'react-bootstrap'
 import GlossarySearchInput from '../components/GlossarySearchInput'
 import IconButton from '../components/IconButton'
 import { glossarySearchTextEntered } from '../actions/glossary'
@@ -14,6 +15,12 @@ import { Icon, LoaderText } from '../../components'
 // FIXME need a modal to open when this is clicked
 const logDetailsClick = () => {
 }
+
+const tooltip = (
+  <Tooltip>
+    longwordtextthingy
+  </Tooltip>
+)
 
 const GlossaryTab = React.createClass({
   propTypes: {
@@ -62,10 +69,14 @@ const GlossaryTab = React.createClass({
       return (
         <tr key={index}>
           <td id="long-string" data-filetype="text" className="gloss-text">
-            <span>{term.source.content}</span>
+            <OverlayTrigger placement="top" overlay={tooltip}>
+              <Button bStyle="link"><span>{term.source.content}</span></Button>
+            </OverlayTrigger>
           </td>
           <td id="long-string" data-filetype="text" className="gloss-text">
-            <span>{term.target.content}</span>
+            <OverlayTrigger placement="top" overlay={tooltip}>
+              <Button bStyle="link"><span>{term.target.content}</span></Button>
+            </OverlayTrigger>
           </td>
           <td>
             <Button title="copy"

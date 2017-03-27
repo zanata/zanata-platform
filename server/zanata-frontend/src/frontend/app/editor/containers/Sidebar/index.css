@@ -148,6 +148,7 @@ table td button.gButton--link {
 }
 
 #long-string {
+  max-width: 40%;
   width: 40%;
 }
 
@@ -155,6 +156,61 @@ table td button.gButton--link {
 #long-string span {
   white-space: normal;
   width:auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: normal; 
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 1070;
+  display: block;
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-break: auto;
+  line-height: 1.333em;
+  text-align: left;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  white-space: normal;
+  word-break: normal;
+  word-spacing: normal;
+  word-wrap: normal;
+  font-size: 0.857rem;
+  border-color:#333;
+}
+
+.tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+
+.tooltip.top {
+  margin-top: -0.75em;
+  padding: 0.375em 0;
+}
+
+.tooltip-inner {
+  max-width: 15rem;
+  padding: 0.5em;
+  color: #fff;
+  text-align: center;
+  background-color: #333;
+  border-radius:3px;
+  border: solid 2px #333;
+}
+
+.tooltip.top .tooltip-arrow {
+  bottom: 0;
+  left: 50%;
+  border-width: 5px 5px 0;
+  border-top-color: #333;
 }
 
 table td {
