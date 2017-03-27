@@ -47,8 +47,13 @@ ul.sidebar-details {
   height:inherit;
 }
 
-#sidebartabs-pane-1.tab-pane.active table tr {
-  height:3em;
+#sidebartabs-pane-1.tab-pane.active table tbody tr {
+  height: inherit;
+  display: inline-block;
+}
+
+#sidebartabs-pane-1 td .Button--primary {
+  margin-right: 0.75em;
 }
 
 .tab-content > .active {
@@ -157,7 +162,6 @@ table td button.gButton--link {
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: normal;
-  max-width: 6em;
 }
 
 #long-string span:after {

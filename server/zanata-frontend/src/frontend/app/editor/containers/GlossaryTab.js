@@ -70,17 +70,31 @@ const GlossaryTab = React.createClass({
         <tr key={index}>
           <td id="long-string" data-filetype="text" className="gloss-text">
             <OverlayTrigger placement="top" overlay={tooltip}>
-              <Button bStyle="link"><span>{term.source.content}</span></Button>
+              <Button bStyle="link">
+                <span>
+                  <span className="hide-mdplus text-blue">
+                    Source
+                  </span>
+                  {term.source.content}
+                </span>
+              </Button>
             </OverlayTrigger>
           </td>
           <td id="long-string" data-filetype="text" className="gloss-text">
             <OverlayTrigger placement="top" overlay={tooltip}>
-              <Button bStyle="link"><span>{term.target.content}</span></Button>
+              <Button bStyle="link">
+                <span>
+                  <span className="hide-mdplus text-blue">
+                  Target
+                  </span>
+                    {term.target.content}
+                </span>
+              </Button>
             </OverlayTrigger>
           </td>
           <td>
-            <Button title="copy"
-              className="hide-md Button--small u-rounded Button--primary">
+            <Button title="Copy"
+              className="Button--small u-rounded Button--primary">
               Copy
             </Button>
           </td>
@@ -98,7 +112,7 @@ const GlossaryTab = React.createClass({
 
     return (
       <Table>
-        <thead>
+        <thead className="hide-small">
           <tr>
             <th>Source term</th>
             <th>Target term</th>
