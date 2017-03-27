@@ -231,6 +231,9 @@
         </li>
       </ui:fragment>
       <li>
+        <ui:fragment
+            rendered="#{not empty projectHome.instance.homeContent or
+            identity.hasPermission(projectHome.instance, 'update')}">
         <a id="about_tab"
           href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/about"
           class="js-url-mod" data-content="#about">
@@ -239,6 +242,7 @@
                 #{msgs['jsf.project.About']}
               </span>
         </a>
+        </ui:fragment>
       </li>
       <ui:fragment
         rendered="#{identity.hasPermission(projectHome.instance, 'update')}">
@@ -293,7 +297,8 @@
               rendered="#{not empty projectHome.instance.homeContent}"
               value="#{projectHome.aboutHtml}" escape="false" />
           </div>
-          <ui:fragment rendered="#{empty projectHome.instance.homeContent}">
+          <ui:fragment rendered="#{empty projectHome.instance.homeContent and
+            identity.hasPermission(projectHome.instance, 'update')}">
             #{msgs['jsf.project.NoHomeContent']}
           </ui:fragment>
         </h:panelGroup>
