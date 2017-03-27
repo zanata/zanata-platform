@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManagerFactory;
-import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
+
 import org.hibernate.Session;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.Search;
@@ -76,7 +76,7 @@ public class IndexingServiceImpl implements IndexingService {
             if (handle.getMaxProgress() == 0) {
                 log.info(
                         "Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
-                return AsyncTaskResult.taskResult();
+                return AsyncTaskResult.completed();
             }
             for (Class<?> clazz : indexingOptions.keySet()) {
                 if (!handle.isCancelled()
@@ -115,7 +115,7 @@ public class IndexingServiceImpl implements IndexingService {
         } finally {
             session.close();
         }
-        return AsyncTaskResult.taskResult();
+        return AsyncTaskResult.completed();
     }
 
     private FullTextSession openFullTextSession() {
@@ -175,7 +175,7 @@ public class IndexingServiceImpl implements IndexingService {
             if (handle.getMaxProgress() == 0) {
                 log.info(
                         "Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
-                return AsyncTaskResult.taskResult();
+                return AsyncTaskResult.completed();
             }
             HTextFlowTargetIndexingStrategy indexingStrategy =
                     new HTextFlowTargetIndexingStrategy();
@@ -193,7 +193,7 @@ public class IndexingServiceImpl implements IndexingService {
         } finally {
             session.close();
         }
-        return AsyncTaskResult.taskResult();
+        return AsyncTaskResult.completed();
     }
 
     private static Long getHTextFlowTargetCountForProject(HProject hProject,

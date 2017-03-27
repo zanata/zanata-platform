@@ -21,7 +21,6 @@
 package org.zanata.async;
 
 import com.google.common.base.Optional;
-import com.google.common.util.concurrent.ListenableFuture;
 import org.zanata.util.ServiceLocator;
 
 import javax.inject.Inject;
@@ -29,6 +28,7 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import java.lang.reflect.InvocationTargetException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
 /**
@@ -102,7 +102,7 @@ public class AsyncMethodInterceptor {
                 }
             };
 
-            ListenableFuture<Object> futureResult =
+            CompletableFuture<Object> futureResult =
                     taskManager.startTask(asyncTask);
             if (handle.isPresent()) {
                 handle.get().setFutureResult(futureResult);

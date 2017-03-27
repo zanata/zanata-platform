@@ -24,7 +24,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import com.google.common.collect.Lists;
 import javax.enterprise.context.RequestScoped;
@@ -64,7 +64,6 @@ import org.zanata.service.VersionStateCache;
 import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.StatisticsUtil;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.util.concurrent.ListenableFuture;
 import javax.enterprise.event.Event;
 import org.zanata.util.UrlUtil;
 import org.zanata.webhook.events.SourceDocumentChangedEvent;
@@ -141,12 +140,12 @@ public class DocumentServiceImpl implements DocumentService {
     @Override
     @Async
     @Transactional
-    public ListenableFuture<HDocument> saveDocumentAsync(String projectSlug,
+    public CompletableFuture<HDocument> saveDocumentAsync(String projectSlug,
             String iterationSlug, Resource sourceDoc, Set<String> extensions,
             boolean copyTrans, boolean lock,
             AsyncTaskHandle<HDocument> handle) {
-        // TODO Use the pased in handle
-        return AsyncTaskResult.taskResult(saveDocument(projectSlug,
+        // TODO Use the passed in handle
+        return AsyncTaskResult.completed(saveDocument(projectSlug,
                 iterationSlug, sourceDoc, extensions, copyTrans, lock));
     }
 

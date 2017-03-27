@@ -28,7 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
@@ -89,7 +89,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.ListenableFuture;
 import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetStateChange;
 
 @Named("translationServiceImpl")
@@ -488,7 +487,7 @@ public class TranslationServiceImpl implements TranslationService {
 
     @Override
     @Async
-    public ListenableFuture<List<String>> translateAllInDocAsync(String projectSlug,
+    public CompletableFuture<List<String>> translateAllInDocAsync(String projectSlug,
             String iterationSlug, String docId, LocaleId locale,
             TranslationsResource translations, Set<String> extensions,
             MergeType mergeType, boolean assignCreditToUploader, boolean lock,
@@ -511,7 +510,7 @@ public class TranslationServiceImpl implements TranslationService {
                 lockManagerServiceImpl.release(transLock);
             }
         }
-        return AsyncTaskResult.taskResult(warnings);
+        return AsyncTaskResult.completed(warnings);
     }
 
     /**

@@ -22,7 +22,7 @@ package org.zanata.service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Future;
+import java.util.concurrent.CompletableFuture;
 
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.common.ContentState;
@@ -33,7 +33,6 @@ import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
-import com.google.common.util.concurrent.ListenableFuture;
 
 public interface TranslationService {
     /**
@@ -108,7 +107,7 @@ public interface TranslationService {
      * java.util.Set, org.zanata.common.MergeType,
      * org.zanata.async.AsyncTaskHandle)
      */
-    ListenableFuture<List<String>> translateAllInDocAsync(String projectSlug,
+    CompletableFuture<List<String>> translateAllInDocAsync(String projectSlug,
             String iterationSlug, String docId, LocaleId locale,
             TranslationsResource translations, Set<String> extensions,
             MergeType mergeType, boolean assignCreditToUploader, boolean lock,
