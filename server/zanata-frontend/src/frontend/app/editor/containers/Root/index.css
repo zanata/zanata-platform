@@ -427,8 +427,7 @@ ul.source-infolist {
   }
 
   #sidebartabs-pane-1 td .Button--primary {
-    margin-top:0.75em;
-    float:right;
+    float:none;
   }
 
   .hide-small {
@@ -463,6 +462,10 @@ ul.source-infolist {
 
   #sidebartabs-pane-1 table tbody tr {
     display: table-row !important;
+  }
+
+  #sidebartabs-pane-1 td .Button--primary {
+    float:right;
   }
 }
 
