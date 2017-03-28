@@ -7,5 +7,5 @@
 require('./Button/story.js')
 require('./TextDiff/story.js')
 require('./GlossarySearchInput/story.js')
+require('./GlossaryTerm/story.js')
 require('./GlossaryTermModal/story.js')
-
