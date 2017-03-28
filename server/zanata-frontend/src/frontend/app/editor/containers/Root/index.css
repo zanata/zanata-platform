@@ -456,8 +456,8 @@ ul.source-infolist {
     margin-right: 0;
   }
 
-  .info-icon {
-    text-align:center;
+  .info-icon, th.hide-md {
+    text-align:right !important;
   }
 
   td.long-string  {

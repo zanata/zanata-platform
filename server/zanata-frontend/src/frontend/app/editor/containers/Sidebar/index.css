@@ -49,6 +49,7 @@ ul.sidebar-details {
 
 #sidebartabs-pane-1.tab-pane.active table thead th {
   color:#20718a;
+  padding-bottom:0.75em;
 }
 
 #sidebartabs-pane-1.tab-pane.active table tbody tr {
