@@ -10,11 +10,15 @@ const copyGlossaryTerm = action('copyGlossaryTerm')
  */
 storiesOf('GlossaryTerm', module)
     .add('simple term on its own', () => (
-      <GlossaryTerm key={0} index={0} copyGlossaryTerm={copyGlossaryTerm}
-        term={{
-          source: 'Ambulance',
-          target: 'Krankenwagen'
-        }} />
+      <Table>
+        <tbody>
+          <GlossaryTerm key={0} index={0} copyGlossaryTerm={copyGlossaryTerm}
+            term={{
+              source: 'Ambulance',
+              target: 'Krankenwagen'
+            }} />
+        </tbody>
+      </Table>
     ))
     .add('in a table', () => (
       <Table>
