@@ -68,7 +68,7 @@ const GlossaryTab = React.createClass({
     const resultsDisplay = results.map((term, index) => {
       return (
         <tr key={index}>
-          <td id="long-string" data-filetype="text" className="gloss-text">
+          <td data-filetype="text" className="long-string gloss-text">
             <OverlayTrigger placement="top" overlay={tooltip}>
               <Button bStyle="link">
                 <span>
@@ -80,7 +80,7 @@ const GlossaryTab = React.createClass({
               </Button>
             </OverlayTrigger>
           </td>
-          <td id="long-string" data-filetype="text" className="gloss-text">
+          <td data-filetype="text" className="long-string gloss-text">
             <OverlayTrigger placement="top" overlay={tooltip}>
               <Button bStyle="link">
                 <span>

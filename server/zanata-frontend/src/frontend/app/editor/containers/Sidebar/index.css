@@ -158,14 +158,14 @@ table td button.gButton--link {
   vertical-align:bottom;
 }
 
-#long-string span {
+.long-string span {
   white-space: normal;
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: normal;
 }
 
-#long-string span:after {
+.long-string span:after {
   content: attr(data-filetype);
   left: 100%;
   position: absolute;

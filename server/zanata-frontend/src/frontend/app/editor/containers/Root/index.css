@@ -408,13 +408,13 @@ ul.source-infolist {
     visibility: hidden;
   }
 
-  td#long-string {
+  td.long-string {
     display:table-row !important;
     padding-bottom:0 !important;
     max-width:10em !important;
   }
 
-  #long-string span {
+  .long-string span {
     max-width:8em !important;
   }
 
@@ -463,16 +463,16 @@ ul.source-infolist {
     text-align:center;
   }
 
-  td#long-string  {
+  td.long-string  {
     max-width: 8em;
     padding-bottom:0.75em;
   }
 
-  #long-string span {
+  .long-string span {
     max-width: 6em;
   }
 
-  td#long-string {
+  td.long-string {
     display:inline-grid;
   }
 
@@ -487,10 +487,10 @@ ul.source-infolist {
 
 
 @media (min-width:1100px) {
-  td#long-string  {
+  td.long-string  {
     max-width: 10em;
   }
-  #long-string span {
+  .long-string span {
     max-width: 8em;
   }
 

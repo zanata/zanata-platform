@@ -11,6 +11,7 @@ document.getElementsByTagName('head')[0].appendChild(fontLink)
 
 function loadStories () {
   require('../app/editor/components/stories.js')
+  require('../app/components/stories.js')
 }
 
 configure(loadStories, module)
