@@ -96,7 +96,8 @@ timestamps {
 
           // notify if compile+unit test successful
           notify.testResults("UNIT")
-          archive "**/${jarFiles},**/${warFiles}"
+          archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**"
+
           step([ $class: 'JacocoPublisher' ])
         }
 
@@ -209,7 +210,7 @@ void integrationTests(String appserver) {
         echo "ERROR integrationTests(${appserver}): ${e.toString()}"
         currentBuild.result = 'UNSTABLE'
         archive(
-          includes: '*/target/**/*.log,*/target/screenshots/**,**/target/site/xref/**',
+          includes: '*/target/**/*.log,*/target/screenshots/**',
           excludes: '**/BACKUP-*.log')
       } finally {
         setJUnitPrefix(appserver, failsafeTestReports)
