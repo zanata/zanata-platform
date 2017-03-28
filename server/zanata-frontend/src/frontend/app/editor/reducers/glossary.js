@@ -3,7 +3,6 @@
  */
 
 import updateObject from 'react-addons-update'
-import { keyBy } from 'lodash'
 
 import {
   GLOSSARY_SEARCH_TEXT_CHANGE,
@@ -42,13 +41,7 @@ const glossary = (state = defaultState, action) => {
       if (action.meta.timestamp > state.resultsTimestamp) {
         return update({
           searching: {$set: false},
-          results: {$set: action.payload.results.map(
-            ({ glossaryTerms }) => {
-              return keyBy(glossaryTerms, (term) => {
-                return term.locale
-              })
-            })
-          },
+          results: {$set: action.payload},
           resultsTimestamp: {$set: action.meta.timestamp}
         })
       } else {

@@ -44,7 +44,7 @@ class SuggestionDetailsModal extends Component {
         className="suggestions-modal">
         <Modal.Header>
           <Modal.Title><small><span className="pull-left">
-          Translation Memory Details</span></small></Modal.Title>
+          Suggestion Details</span></small></Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <PlainSuggestionContents suggestion={this.props.suggestion}

@@ -4,43 +4,32 @@
 
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Button, Tab, Table, Tooltip, OverlayTrigger }
-  from 'react-bootstrap'
+import { Tab, Table } from 'react-bootstrap'
 import GlossarySearchInput from '../components/GlossarySearchInput'
-import IconButton from '../components/IconButton'
-import { glossarySearchTextEntered } from '../actions/glossary'
+import GlossaryTerm from '../components/GlossaryTerm'
+import {
+  copyGlossaryTerm,
+    glossarySearchTextEntered
+} from '../actions/glossary'
 import { isEmpty } from 'lodash'
 import { Icon, LoaderText } from '../../components'
 
-// FIXME need a modal to open when this is clicked
-const logDetailsClick = () => {
-}
-
-const tooltip = (
-  <Tooltip>
-    longwordtextthingy
-  </Tooltip>
-)
-
 const GlossaryTab = React.createClass({
   propTypes: {
+    copyGlossaryTerm: PropTypes.func.isRequired,
     // eventKey prop to use for the bootstrap Tab
     eventKey: PropTypes.number.isRequired,
     searchText: PropTypes.string.isRequired,
     searching: PropTypes.bool.isRequired,
     results: PropTypes.arrayOf(PropTypes.shape({
-      source: PropTypes.shape({
-        content: PropTypes.string.isRequired
-      }).isRequired,
-      target: PropTypes.shape({
-        content: PropTypes.string.isRequired
-      }).isRequired
+      source: PropTypes.string.isRequired,
+      target: PropTypes.string.isRequired
     })).isRequired,
     onGlossaryTextChange: PropTypes.func.isRequired
   },
 
   renderResultsPanel () {
-    const { results, searching, searchText } = this.props
+    const { copyGlossaryTerm, results, searching, searchText } = this.props
 
     if (searching) {
       return <div className="search-glos">
@@ -67,46 +56,7 @@ const GlossaryTab = React.createClass({
 
     const resultsDisplay = results.map((term, index) => {
       return (
-        <tr key={index}>
-          <td data-filetype="text" className="long-string gloss-text">
-            <OverlayTrigger placement="top" overlay={tooltip}>
-              <Button bStyle="link">
-                <span>
-                  <span className="hide-mdplus text-blue">
-                    Source
-                  </span>
-                  {term.source.content}
-                </span>
-              </Button>
-            </OverlayTrigger>
-          </td>
-          <td data-filetype="text" className="long-string gloss-text">
-            <OverlayTrigger placement="top" overlay={tooltip}>
-              <Button bStyle="link">
-                <span>
-                  <span className="hide-mdplus text-blue">
-                  Target
-                  </span>
-                    {term.target.content}
-                </span>
-              </Button>
-            </OverlayTrigger>
-          </td>
-          <td>
-            <Button title="Copy"
-              className="Button--small u-rounded Button--primary">
-              Copy
-            </Button>
-          </td>
-          <td className="info-icon">
-            <IconButton
-              icon="info"
-              title="Details"
-              className="Button--link"
-              onClick={logDetailsClick}
-            />
-          </td>
-        </tr>
+        <GlossaryTerm {...{key: index, index, term, copyGlossaryTerm}} />
       )
     })
 
@@ -143,12 +93,7 @@ const GlossaryTab = React.createClass({
 
 })
 
-function mapStateToProps (state) {
-  const { context, glossary, headerData } = state
-
-  const sourceLanguage = context.sourceLocale.localeId
-  const targetLanguage = headerData.context.selectedLocale
-
+function mapStateToProps ({ glossary }) {
   // FIXME move this to storybook for this component
   // const dummyData = [
   //   {
@@ -178,18 +123,13 @@ function mapStateToProps (state) {
   // ]
 
   return {
-    ...glossary,
-    results: glossary.results.map(result => {
-      return {
-        source: result[sourceLanguage],
-        target: result[targetLanguage]
-      }
-    })
+    ...glossary
   }
 }
 
 function mapDispatchToProps (dispatch) {
   return {
+    copyGlossaryTerm: index => dispatch(copyGlossaryTerm(index)),
     onGlossaryTextChange: event =>
         dispatch(glossarySearchTextEntered(event.target.value))
   }
