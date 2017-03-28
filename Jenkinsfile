@@ -4,11 +4,14 @@
  * Jenkinsfile for zanata-platform
  */
 
-/* Only keep the 20 most recent builds. */
 def projectProperties = [
   [
     $class: 'BuildDiscarderProperty',
-    strategy: [$class: 'LogRotator', numToKeepStr: '20']
+    strategy: [$class: 'LogRotator',
+      daysToKeepStr: '30',       // keep records no more than X days
+      numToKeepStr: '20',        // keep records for at most X builds
+      artifactDaysToKeepStr: '', // keep artifacts no more than X days
+      artifactNumToKeepStr: '4'] // keep artifacts for at most X builds
   ],
   [
     $class: 'ParametersDefinitionProperty',
