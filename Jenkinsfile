@@ -182,15 +182,18 @@ void integrationTests(String appserver) {
           echo "env.DISPLAY=${env.DISPLAY}"
           echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
           echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
-          def ftOpts = '-DskipUnitTests -Dcargo.debug.jvm.args= '
+          // avoid port conflict for debugger:
+          def ftOpts = '-Dcargo.debug.jvm.args= '
           // run all functional tests in these branches:
           if (env.BRANCH_NAME in ['master', 'release', 'legacy']) {
             ftOpts += '-DallFuncTests '
           }
-          // skip recompilation:
+          // skip recompilation, unit tests, static analysis:
           ftOpts += """\
               -Dgwt.compiler.skip \
               -Dmaven.main.skip \
+              -Dskip.npminstall \
+              -DskipUnitTests \
               -Danimal.sniffer.skip \
               -Dcheckstyle.skip \
               -Dfindbugs.skip \
