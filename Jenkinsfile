@@ -102,7 +102,7 @@ timestamps {
         }
 
         stage('stash') {
-          stash name: 'workspace', includes: '**/target/**, **/src/main/resources/**,**/.zanata-cache/**'
+          stash name: 'generated-files', includes: '**/target/**, **/src/main/resources/**,**/.zanata-cache/**'
         }
       } catch (e) {
         notify.failed()
@@ -164,7 +164,7 @@ void integrationTests(String appserver) {
       sh "git clean -fdx"
       debugChromeDriver()
 
-      unstash 'workspace'
+      unstash 'generated-files'
       // TODO: Consider touching the target files for test, so it won't recompile
 
       /* touch all target */
