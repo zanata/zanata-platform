@@ -52,28 +52,18 @@ timestamps {
           sh "git clean -fdx"
         }
 
-        stage('Check build tools') {
+        // Build and Unit Tests
+        // The built files are stashed for integration tests in other nodes.
+        stage('Build') {
           info.printNode()
-          // TBD: whether install tools using Jenkinsfile
+          info.printEnv()
 
-          // Note: if next step happens on another node, mvnw might have to download again
-          sh "./mvnw --version"
-        }
-
-        stage('Pre-build'){
-          info.printNode()
-          /* Check Translation */
+          // validate translations
           sh """./run-clean.sh ./mvnw -e \
                      com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
                      -pl :zanata-war -am -DexcludeFrontend \
              """
-        }
 
-        // Build and Unit Tests
-        // The result is archived for integration tests in other nodes.
-        stage('Build') {
-          info.printNode()
-          info.printEnv()
           def jarFiles = 'target/*.jar'
           def warFiles = 'target/*.war'
 
@@ -101,7 +91,7 @@ timestamps {
           step([ $class: 'JacocoPublisher' ])
         }
 
-        stage('stash') {
+        stage('Stash') {
           stash name: 'generated-files', includes: '**/target/**, **/src/main/resources/**,**/.zanata-cache/**'
         }
       } catch (e) {
@@ -113,29 +103,33 @@ timestamps {
   }
 
   if ( currentBuild.result == null ) {
-    try {
-      def tasks = [:]
+    // NB all the parallel tasks must be in one stage, because you can't use `stage` inside `parallel`.
+    // See https://issues.jenkins-ci.org/browse/JENKINS-34696 and https://issues.jenkins-ci.org/browse/JENKINS-33185
+    stage('Integration tests') {
+      try {
+        def tasks = [:]
 
-      tasks["Integration tests: WILDFLY"] = {
-         integrationTests('wildfly8')
+        tasks["Integration tests: WILDFLY"] = {
+           integrationTests('wildfly8')
+        }
+        tasks["Integration tests: JBOSSEAP"] = {
+          integrationTests('jbosseap6')
+        }
+        tasks.failFast = true
+        parallel tasks
+        //   notify.successful()
+      } catch (e) {
+              // When it cannot find the failfast report
+              echo "ERROR integrationTests: ${e.toString()}"
       }
-      tasks["Integration tests: JBOSSEAP"] = {
-        integrationTests('jbosseap6')
-      }
-      tasks.failFast = true
-      parallel tasks
-      //   notify.successful()
-    } catch (e) {
-            // When it cannot find the failfast report
-            echo "ERROR integrationTests: ${e.toString()}"
+
+    // TODO notify finish
+    // TODO in case of failure, notify culprits via IRC and/or email
+    // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
+    // http://stackoverflow.com/a/39535424/14379
+    // IRC: https://issues.jenkins-ci.org/browse/JENKINS-33922
+    // possible alternatives: Slack, HipChat, RocketChat, Telegram?
     }
-
-  // TODO notify finish
-  // TODO in case of failure, notify culprits via IRC and/or email
-  // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
-  // http://stackoverflow.com/a/39535424/14379
-  // IRC: https://issues.jenkins-ci.org/browse/JENKINS-33922
-  // possible alternatives: Slack, HipChat, RocketChat, Telegram?
   }
 }
 
@@ -155,74 +149,69 @@ void debugChromeDriver() {
 void integrationTests(String appserver) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
   node(LABEL) {
-    stage("Unstash ${appserver}") {
-      info.printNode()
-      info.printEnv()
-      echo "WORKSPACE=${env.WORKSPACE}"
-      checkout scm
-      // Clean the workspace
-      sh "git clean -fdx"
-      debugChromeDriver()
+    info.printNode()
+    info.printEnv()
+    echo "WORKSPACE=${env.WORKSPACE}"
+    checkout scm
+    // Clean the workspace
+    sh "git clean -fdx"
+    debugChromeDriver()
 
-      unstash 'generated-files'
-      // TODO: Consider touching the target files for test, so it won't recompile
+    unstash 'generated-files'
+    // TODO: Consider touching the target files for test, so it won't recompile
 
-      /* touch all target */
-      //sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
-    }
+    /* touch all target */
+    //sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
 
-    stage("Integration tests ${appserver}") {
-      try {
-        xvfb {
-          withPorts {
-            // Run the maven build
-            echo "env.DISPLAY=${env.DISPLAY}"
-            echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
-            echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
-            sh """./run-clean.sh ./mvnw -e -T 1 install \
-                       --batch-mode \
-                       --settings .travis-settings.xml \
-                       --update-snapshots \
-                       -Dappserver=$appserver \
-                       -Dwebdriver.display=${env.DISPLAY} \
-                       -Dwebdriver.type=chrome \
-                       -Dwebdriver.chrome.driver=/opt/chromedriver \
+    try {
+      xvfb {
+        withPorts {
+          // Run the maven build
+          echo "env.DISPLAY=${env.DISPLAY}"
+          echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
+          echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
+          sh """./run-clean.sh ./mvnw -e -T 1 install \
+                     --batch-mode \
+                     --settings .travis-settings.xml \
+                     --update-snapshots \
+                     -Dappserver=$appserver \
+                     -Dwebdriver.display=${env.DISPLAY} \
+                     -Dwebdriver.type=chrome \
+                     -Dwebdriver.chrome.driver=/opt/chromedriver \
 
-                """
-                /* TODO
-                -Dgwt.compiler.skip \
-                -Dassembly.skipAssembly \
-                -Dmaven.main.skip \
-                -Dmaven.war.skip \
-                -DskipAppassembler \
-                -DskipShade \
-                -DallFuncTests \
-                -Danimal.sniffer.skip=true \
-                -Dcargo.debug.jvm.args= \
-                -Dcheckstyle.skip \
-                -Dfindbugs.skip \
-                -DskipUnitTests \
-                -DstaticAnalysis=false \
-                 */
-          }
+              """
+              /* TODO
+              -Dgwt.compiler.skip \
+              -Dassembly.skipAssembly \
+              -Dmaven.main.skip \
+              -Dmaven.war.skip \
+              -DskipAppassembler \
+              -DskipShade \
+              -DallFuncTests \
+              -Danimal.sniffer.skip=true \
+              -Dcargo.debug.jvm.args= \
+              -Dcheckstyle.skip \
+              -Dfindbugs.skip \
+              -DskipUnitTests \
+              -DstaticAnalysis=false \
+               */
         }
-      } catch(e) {
-        // Exception will be thrown if maven fails fast, i.e. a test fails
-        echo "ERROR integrationTests(${appserver}): ${e.toString()}"
-        currentBuild.result = 'UNSTABLE'
-        archive(
-          includes: '*/target/**/*.log,*/target/screenshots/**',
-          excludes: '**/BACKUP-*.log')
-      } finally {
-        setJUnitPrefix(appserver, failsafeTestReports)
-        junit([
-          testResults: "**/${failsafeTestReports}"
-          //      testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
-        ])
-        notify.testResults(appserver.toUpperCase())
       }
+    } catch(e) {
+      // Exception will be thrown if maven fails fast, i.e. a test fails
+      echo "ERROR integrationTests(${appserver}): ${e.toString()}"
+      currentBuild.result = 'UNSTABLE'
+      archive(
+        includes: '*/target/**/*.log,*/target/screenshots/**',
+        excludes: '**/BACKUP-*.log')
+    } finally {
+      setJUnitPrefix(appserver, failsafeTestReports)
+      junit([
+        testResults: "**/${failsafeTestReports}"
+        //      testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
+      ])
+      notify.testResults(appserver.toUpperCase())
     }
-
   }
 }
 
