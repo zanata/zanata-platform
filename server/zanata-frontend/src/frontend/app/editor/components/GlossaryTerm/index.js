@@ -40,11 +40,11 @@ const GlossaryTerm = React.createClass({
 
     return (
       <tr key={index}>
-        <td id="long-string" data-filetype="text" className="gloss-text">
+        <td data-filetype="text" className="gloss-text long-string">
           <OverlayTrigger placement="top" overlay={sourceTip}>
             <Button bStyle="link">
               <span>
-                <span className="hide-mdplus text-blue">
+                <span className="hide-mdplus u-textMeta">
                   Source
                 </span>
                 {term.source}
@@ -52,11 +52,11 @@ const GlossaryTerm = React.createClass({
             </Button>
           </OverlayTrigger>
         </td>
-        <td id="long-string" data-filetype="text" className="gloss-text">
+        <td data-filetype="text" className="gloss-text long-string">
           <OverlayTrigger placement="top" overlay={targetTip}>
             <Button bStyle="link">
               <span>
-                <span className="hide-mdplus text-blue">
+                <span className="hide-mdplus u-textMeta">
                   Target
                 </span>
                 {term.target}
