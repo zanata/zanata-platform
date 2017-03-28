@@ -182,6 +182,7 @@ void integrationTests(String appserver) {
             sh """./run-clean.sh ./mvnw -e -T 1 install \
                        --batch-mode \
                        --settings .travis-settings.xml \
+                       --update-snapshots \
                        -Dappserver=$appserver \
                        -Dwebdriver.display=${env.DISPLAY} \
                        -Dwebdriver.type=chrome \
