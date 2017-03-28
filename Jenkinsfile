@@ -1,35 +1,40 @@
 #!/usr/bin/env groovy
 @Library('github.com/zanata/zanata-pipeline-library@master')
+def dummyForLibrary
+
 /**
  * Jenkinsfile for zanata-platform
  */
 
-def projectProperties = [
-  [
-    $class: 'BuildDiscarderProperty',
-    strategy: [$class: 'LogRotator',
-      daysToKeepStr: '30',       // keep records no more than X days
-      numToKeepStr: '20',        // keep records for at most X builds
-      artifactDaysToKeepStr: '', // keep artifacts no more than X days
-      artifactNumToKeepStr: '4'] // keep artifacts for at most X builds
-  ],
-  [
-    $class: 'ParametersDefinitionProperty',
-    parameterDefinitions: [
-      [
-        $class: 'LabelParameterDefinition',
-        /* Specify the default node in Jenkins environment DEFAULT_NODE
-         * or default to build on any node
-         */
-        defaultValue: env.DEFAULT_NODE ?: 'master || !master',
-        description: 'Node label that allow to build',
-        name: 'LABEL'
+// It seems that we need a node to access env.DEFAULT_NODE
+node {
+  def projectProperties = [
+    [
+      $class: 'BuildDiscarderProperty',
+      strategy: [$class: 'LogRotator',
+        daysToKeepStr: '30',       // keep records no more than X days
+        numToKeepStr: '20',        // keep records for at most X builds
+        artifactDaysToKeepStr: '', // keep artifacts no more than X days
+        artifactNumToKeepStr: '4'] // keep artifacts for at most X builds
+    ],
+    [
+      $class: 'ParametersDefinitionProperty',
+      parameterDefinitions: [
+        [
+          $class: 'LabelParameterDefinition',
+          /* Specify the default node in Jenkins environment DEFAULT_NODE
+           * or default to build on any node
+           */
+          defaultValue: env.DEFAULT_NODE ?: 'master || !master',
+          description: 'Node label that allow to build',
+          name: 'LABEL'
+        ]
       ]
-    ]
-  ],
-]
+    ],
+  ]
 
-properties(projectProperties)
+  properties(projectProperties)
+}
 
 def surefireTestReports='target/surefire-reports/TEST-*.xml'
 
