@@ -64,7 +64,7 @@ timestamps {
           info.printEnv()
 
           // validate translations
-          sh """./run-clean.sh ./mvnw -e \
+          sh """./run-clean.sh ./mvnw -e -V \
                      com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
                      -pl :zanata-war -am -DexcludeFrontend \
              """
@@ -74,7 +74,7 @@ timestamps {
 
           // Continue building even when test failure
           // Thus -Dmaven.test.failure.ignore is required
-          sh """./run-clean.sh ./mvnw -e -T 1 clean install jxr:aggregate\
+          sh """./run-clean.sh ./mvnw -e -V -T 1 clean install jxr:aggregate\
                       --batch-mode \
                       --settings .travis-settings.xml \
                       --update-snapshots \
@@ -175,7 +175,7 @@ void integrationTests(String appserver) {
           echo "env.DISPLAY=${env.DISPLAY}"
           echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
           echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
-          sh """./run-clean.sh ./mvnw -e -T 1 install \
+          sh """./run-clean.sh ./mvnw -e -V -T 1 install \
                      --batch-mode \
                      --settings .travis-settings.xml \
                      --update-snapshots \
