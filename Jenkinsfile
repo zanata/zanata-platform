@@ -83,13 +83,20 @@ timestamps {
                       -DskipFuncTests \
                       -DskipArqTests \
                       -Dmaven.test.failure.ignore \
-             """
+          """
+          // TODO add -Dvictims
+          // TODO should we remove -Dmaven.test.failure.ignore (and catch
+          // exception) to fail fast in case an early unit test fails?
+
           setJUnitPrefix("UNIT", surefireTestReports)
           junit([
               testResults: "**/${surefireTestReports}"
               ])
 
+          // TODO run codecov (NB: need to get correct token for zanata-platform, configured by env var)
+
           // notify if compile+unit test successful
+          // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
           notify.testResults("UNIT")
           archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**"
 
@@ -175,6 +182,20 @@ void integrationTests(String appserver) {
           echo "env.DISPLAY=${env.DISPLAY}"
           echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
           echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
+          def ftOpts = '-DskipUnitTests -Dcargo.debug.jvm.args= '
+          // run all functional tests in these branches:
+          if (env.BRANCH_NAME in ['master', 'release', 'legacy']) {
+            ftOpts += '-DallFuncTests '
+          }
+          // skip recompilation:
+          ftOpts += """\
+              -Dgwt.compiler.skip \
+              -Dmaven.main.skip \
+              -Danimal.sniffer.skip \
+              -Dcheckstyle.skip \
+              -Dfindbugs.skip \
+              -DstaticAnalysis=false \
+          """
           sh """./run-clean.sh ./mvnw -e -V -T 1 install \
                      --batch-mode \
                      --settings .travis-settings.xml \
@@ -183,22 +204,13 @@ void integrationTests(String appserver) {
                      -Dwebdriver.display=${env.DISPLAY} \
                      -Dwebdriver.type=chrome \
                      -Dwebdriver.chrome.driver=/opt/chromedriver \
-
+                     ${ftOpts}
               """
+              // TODO skip npm/yarn (but don't -DexcludeFrontend; we need the version in target/ )
               /* TODO
-              -Dgwt.compiler.skip \
               -Dassembly.skipAssembly \
-              -Dmaven.main.skip \
-              -Dmaven.war.skip \
               -DskipAppassembler \
               -DskipShade \
-              -DallFuncTests \
-              -Danimal.sniffer.skip=true \
-              -Dcargo.debug.jvm.args= \
-              -Dcheckstyle.skip \
-              -Dfindbugs.skip \
-              -DskipUnitTests \
-              -DstaticAnalysis=false \
                */
         }
       }
