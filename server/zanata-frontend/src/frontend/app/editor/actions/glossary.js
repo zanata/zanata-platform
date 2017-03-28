@@ -50,6 +50,16 @@ export function glossarySearchTextChange (searchText) {
   }
 }
 
+export const COPY_GLOSSARY_TERM = Symbol('COPY_GLOSSARY_TERM')
+export function copyGlossaryTerm (termTranslation) {
+  return {
+    type: COPY_GLOSSARY_TERM,
+    payload: {
+      termTranslation
+    }
+  }
+}
+
 /* API request for glossary search has started. */
 export const GLOSSARY_TERMS_REQUEST = Symbol('GLOSSARY_TERMS_REQUEST')
 /* API request for glossary search has completed successfully. */

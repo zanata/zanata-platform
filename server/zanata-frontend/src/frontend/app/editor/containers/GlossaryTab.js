@@ -4,26 +4,19 @@
 
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { Button, Tab, Table, Tooltip, OverlayTrigger }
-  from 'react-bootstrap'
+import { Tab, Table } from 'react-bootstrap'
 import GlossarySearchInput from '../components/GlossarySearchInput'
-import IconButton from '../components/IconButton'
-import { glossarySearchTextEntered } from '../actions/glossary'
+import GlossaryTerm from '../components/GlossaryTerm'
+import {
+  copyGlossaryTerm,
+    glossarySearchTextEntered
+} from '../actions/glossary'
 import { isEmpty } from 'lodash'
 import { Icon, LoaderText } from '../../components'
 
-// FIXME need a modal to open when this is clicked
-const logDetailsClick = () => {
-}
-
-const tooltip = (
-  <Tooltip>
-    longwordtextthingy
-  </Tooltip>
-)
-
 const GlossaryTab = React.createClass({
   propTypes: {
+    copyGlossaryTerm: PropTypes.func.isRequired,
     // eventKey prop to use for the bootstrap Tab
     eventKey: PropTypes.number.isRequired,
     searchText: PropTypes.string.isRequired,
@@ -36,7 +29,7 @@ const GlossaryTab = React.createClass({
   },
 
   renderResultsPanel () {
-    const { results, searching, searchText } = this.props
+    const { copyGlossaryTerm, results, searching, searchText } = this.props
 
     if (searching) {
       return <div className="search-glos">
@@ -63,46 +56,7 @@ const GlossaryTab = React.createClass({
 
     const resultsDisplay = results.map((term, index) => {
       return (
-        <tr key={index}>
-          <td id="long-string" data-filetype="text" className="gloss-text">
-            <OverlayTrigger placement="top" overlay={tooltip}>
-              <Button bStyle="link">
-                <span>
-                  <span className="hide-mdplus text-blue">
-                    Source
-                  </span>
-                  {term.source}
-                </span>
-              </Button>
-            </OverlayTrigger>
-          </td>
-          <td id="long-string" data-filetype="text" className="gloss-text">
-            <OverlayTrigger placement="top" overlay={tooltip}>
-              <Button bStyle="link">
-                <span>
-                  <span className="hide-mdplus text-blue">
-                  Target
-                  </span>
-                    {term.target}
-                </span>
-              </Button>
-            </OverlayTrigger>
-          </td>
-          <td>
-            <Button title="Copy"
-              className="Button Button--small u-rounded Button--primary">
-              Copy
-            </Button>
-          </td>
-          <td className="info-icon">
-            <IconButton
-              icon="info"
-              title="Details"
-              className="Button--link"
-              onClick={logDetailsClick}
-            />
-          </td>
-        </tr>
+        <GlossaryTerm {...{key: index, index, term, copyGlossaryTerm}} />
       )
     })
 
@@ -175,6 +129,7 @@ function mapStateToProps ({ glossary }) {
 
 function mapDispatchToProps (dispatch) {
   return {
+    copyGlossaryTerm: index => dispatch(copyGlossaryTerm(index)),
     onGlossaryTextChange: event =>
         dispatch(glossarySearchTextEntered(event.target.value))
   }
