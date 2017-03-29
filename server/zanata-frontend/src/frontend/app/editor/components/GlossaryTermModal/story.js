@@ -1,7 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@kadira/storybook'
 import { action, decorateAction } from '@kadira/storybook-addon-actions'
-import { Modal, Button, Panel, Row } from 'react-bootstrap'
+import { Modal, Button, Panel, Row, Table } from 'react-bootstrap'
 import { Icons, Icon } from '../../../components'
 /*
 * See .storybook/README.md for info on the component storybook.
@@ -16,28 +16,35 @@ storiesOf('GlossaryTermModal', module)
         <Modal.Title>Glossary details</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Panel>
+        <Panel className="split-panel">
           <h3>Source Term [en-US]:</h3>
           <span className="modal-term">cat</span>
-          <ul className="source-infolist">
-            <li className="list-group-item-heading">Description</li>
-            <li>The animal equivalent to the apathetic housemate</li>
-            <li className="list-group-item-heading">Part of speech</li>
-            <li>Noun</li>
-          </ul>
         </Panel>
-        <Panel>
+        <Panel className="split-panel">
           <h3>Target Term [ar-BH]:</h3>
           <span className="modal-term">caaat</span>
-          <br />
-          <div className="comment-box">
-            <ul className="list-inline">
-              <li className="s1">
-                <Icon name="comment" title="comment"
-                 className="comment-icon n3"/></li>
-              <li>This is a comment that was left on the target term</li>
-            </ul>
-          </div>
+        </Panel>
+        <br />
+        <Panel className="gloss-details-panel">
+          <Table className="gloss-details-table">
+            <thead>
+              <th></th>
+              <th>Description</th>
+              <th>Part of speech</th>
+              <th>Target comment</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>#1</td>
+                <td>The animal equivalent to the apathetic housemate</td>
+                <td>Noun</td>
+                <td>
+                  <Icon name="comment" className="comment-icon n1"/>
+                This is a comment that was left on the target term
+                </td>
+              </tr>
+            </tbody>
+          </Table>
         </Panel>
         <span className="pull-right u-textMeta">
           <Row>

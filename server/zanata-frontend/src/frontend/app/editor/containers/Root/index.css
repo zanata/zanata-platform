@@ -177,11 +177,11 @@ h4.modal-title {
 }
 
 .panel-body .modal-term {
-  font-size:1.2em;
-  font-weight:600;
+  font-size:1.1em;
   line-height: 2em;
   color:#333;
 }
+
 
 .history-icon svg, .comment-icon svg {
   vertical-align: sub;

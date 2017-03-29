@@ -122,6 +122,77 @@ table {
   font-size:0.875em;
 }
 
+
+.table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 1.429rem;
+}
+
+.table>thead>tr>th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #ddd;
+}
+
+.table>tbody>tr>td {
+  vertical-align: middle;
+}
+
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td,
+.table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+  line-height: 1.42857143;
+  padding: .5rem;
+  border-top: 1px solid #ddd;
+}
+
+.table td {
+  width: inherit;
+  position: relative;
+  font-size: 1.071rem;
+}
+
+table td {
+  white-space: nowrap;
+  width: inherit;
+  overflow: hidden;
+  position: relative;
+  text-overflow:ellipsis;
+}
+
+table.gloss-details-table {
+  margin:0;
+}
+
+table.gloss-details-table tbody td {
+ white-space: inherit;
+  font-size:1em;
+}
+
+table.gloss-details-table thead th {
+  color:#03a6d7;
+  font-weight: 500;
+}
+
+.split-panel {
+  width:50%;
+  float:left;
+}
+
+.gloss-details-panel.panel {
+  clear:both;
+}
+
+.gloss-details-panel.panel .panel-body {
+  max-height: 10em;
+  height:inherit;
+  overflow: auto;
+}
+
+.split-panel .panel-body, .gloss-details-panel .panel-body {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 table th {
   color:#333;
 }
@@ -140,6 +211,10 @@ table tbody tr {
   text-align: -moz-center;
   text-align: -webkit-center;
   margin-top:0.75em;
+}
+
+.comment-icon svg {
+  margin-right:0.1375em;
 }
 
 .no-gloss-results svg, .enter-search-text svg {
@@ -225,12 +300,52 @@ table td button.gButton--link {
   border-top-color: #333;
 }
 
-table td {
-  white-space: nowrap;
-  width: inherit;
-  overflow: hidden;
-  position: relative;
-  text-overflow:ellipsis;
+.panel {
+  margin-bottom: 1.3em;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+  box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+  background-color: #fcfcfc;
+}
+
+.panel-default, .well blockquote {
+  border-color: #ddd;
+}
+
+.panel-body {
+  padding: 0.85em;
+  color: #546677;
+}
+
+.panel-title {
+  margin-top: 0;
+  margin-bottom: 0;
+  color: inherit;
+  font-size: 1.143rem;
+}
+
+.panel.panel-side {
+  padding: 0.5em;
+  border: solid 1px #ddd !important;
+  background-color: #fff !important;
+}
+
+.panel-heading {
+  padding: 2em;
+  border-bottom: 1px solid transparent;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  font-size: 1.1em !important;
+  font-weight: 600;
+  color: #03A6D7;
+  background-color: #fff;
+}
+
+.panel-body h3 {
+  margin-top:0.5em;
+  margin-bottom: .714rem;
+  color: #03a6d7;
 }
 
 .inline-flex-search .form-group {
