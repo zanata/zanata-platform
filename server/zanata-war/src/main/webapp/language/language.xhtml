@@ -125,7 +125,7 @@
         <ui:fragment rendered="#{identity.loggedIn}">
           <h:form class="l--push-botton-half" id="member-info">
             <ui:fragment rendered="#{not languageAction.isUserInTeam()}">
-              <ui:fragment rendered="#{identity.hasRole('admin')}">
+              <ui:fragment rendered="#{languageJoinAction.autoAcceptTranslator() or identity.hasRole('admin')}">
                 <zanata:ajax-command-button id="joinTeam"
                   oncomplete="refreshMembersForm();"
                   action="#{languageAction.joinLanguageTeam}"
@@ -207,7 +207,8 @@
                 #{msgs['jsf.language.cancelMyRequest']}
               </zanata:ajax-command-button>
             </ui:fragment>
-            <ui:fragment rendered="#{not languageJoinAction.isUserAlreadyRequest() and not identity.hasRole('admin') and not languageAction.isUserInTeam()}">
+            <ui:fragment rendered="#{not languageJoinAction.isUserAlreadyRequest() and not identity.hasRole('admin')
+              and not languageAction.isUserInTeam() and not languageJoinAction.autoAcceptTranslator()}">
               <button class="button button--primary" data-toggle="modal" onclick="jQuery('#asTranslator').val(true);return false;"
                 data-target="#joinLanguageDialog">
                 #{msgs['jsf.RequestToJoinLanguageTeam']}

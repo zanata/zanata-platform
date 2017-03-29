@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
@@ -31,6 +32,8 @@ import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.ApplicationConfiguration;
+import org.zanata.model.type.RequestState;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.model.LanguageRequest;
 import org.zanata.model.LocaleRole;
@@ -99,6 +102,9 @@ public class LanguageAction implements Serializable {
     private ResourceUtils resourceUtils;
     @Inject
     private UrlUtil urlUtil;
+    @Inject
+    private ApplicationConfiguration applicationConfiguration;
+
     private String language;
     private String searchTerm;
     private HLocale locale;
@@ -294,16 +300,32 @@ public class LanguageAction implements Serializable {
     }
 
     @Transactional
-    @CheckRole("admin")
     public void joinLanguageTeam() {
         if (authenticatedAccount == null) {
             log.error("failed to load auth person");
             return;
         }
+        boolean isAdmin = identity.hasRole("admin");
         try {
+            if (!isAdmin && !applicationConfiguration.isAutoAcceptRequests()) {
+                log.info("User tried to access auto-join when not enabled");
+                throw new AccessDeniedException(msgs.get("jsf.accessDenied"));
+            }
             languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(
                     this.language, authenticatedAccount.getPerson().getId(),
-                    true, true, true);
+                    true, isAdmin, isAdmin);
+
+            LanguageRequest languageRequest = requestServiceImpl
+                    .getPendingLanguageRequests(authenticatedAccount,
+                            getLocale().getLocaleId());
+            if (languageRequest != null &&
+                    languageRequest.isTranslator() &&
+                    !(languageRequest.isReviewer() || languageRequest.isCoordinator())) {
+                requestServiceImpl.updateLanguageRequest(languageRequest.getId(),
+                        authenticatedAccount, RequestState.CANCELLED,
+                        "Outdated language translator request cancelled");
+            }
+
             resetLocale();
             joinLanguageTeamEvent.fire(
                     new JoinedLanguageTeam(authenticatedAccount.getUsername(),
