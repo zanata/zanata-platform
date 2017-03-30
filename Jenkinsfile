@@ -65,9 +65,9 @@ timestamps {
 
           // validate translations
           sh """./run-clean.sh ./mvnw -e -V \
-                     com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
-                     -pl :zanata-war -am -DexcludeFrontend \
-             """
+              com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
+              -pl :zanata-war -am -DexcludeFrontend \
+          """
 
           def jarFiles = 'target/*.jar'
           def warFiles = 'target/*.war'
@@ -75,14 +75,14 @@ timestamps {
           // Continue building even when test failure
           // Thus -Dmaven.test.failure.ignore is required
           sh """./run-clean.sh ./mvnw -e -V -T 1 clean install jxr:aggregate\
-                      --batch-mode \
-                      --settings .travis-settings.xml \
-                      --update-snapshots \
-                      -DstaticAnalysis \
-                      -Dchromefirefox \
-                      -DskipFuncTests \
-                      -DskipArqTests \
-                      -Dmaven.test.failure.ignore \
+              --batch-mode \
+              --settings .travis-settings.xml \
+              --update-snapshots \
+              -DstaticAnalysis \
+              -Dchromefirefox \
+              -DskipFuncTests \
+              -DskipArqTests \
+              -Dmaven.test.failure.ignore \
           """
           // TODO add -Dvictims
           // TODO should we remove -Dmaven.test.failure.ignore (and catch
@@ -90,8 +90,8 @@ timestamps {
 
           setJUnitPrefix("UNIT", surefireTestReports)
           junit([
-              testResults: "**/${surefireTestReports}"
-              ])
+            testResults: "**/${surefireTestReports}"
+          ])
 
           // TODO run codecov (NB: need to get correct token for zanata-platform, configured by env var)
 
@@ -122,7 +122,7 @@ timestamps {
         def tasks = [:]
 
         tasks["Integration tests: WILDFLY"] = {
-           integrationTests('wildfly8')
+          integrationTests('wildfly8')
         }
         tasks["Integration tests: JBOSSEAP"] = {
           integrationTests('jbosseap6')
@@ -131,8 +131,8 @@ timestamps {
         parallel tasks
         //   notify.successful()
       } catch (e) {
-              // When it cannot find the failfast report
-              echo "ERROR integrationTests: ${e.toString()}"
+        // When it cannot find the failfast report
+        echo "ERROR integrationTests: ${e.toString()}"
       }
 
     // TODO notify finish
@@ -148,7 +148,7 @@ timestamps {
 // TODO factor these out into zanata-pipeline-library too
 
 void xvfb(Closure wrapped) {
-wrap([$class: 'Xvfb', debug: true, timeout: 30, displayName: (10+ "${env.EXECUTOR_NUMBER}".toInteger())]) {
+  wrap([$class: 'Xvfb', debug: true, timeout: 30, displayName: (10+ "${env.EXECUTOR_NUMBER}".toInteger())]) {
     wrapped.call()
   }
 }
@@ -200,15 +200,15 @@ void integrationTests(String appserver) {
               -DstaticAnalysis=false \
           """
           sh """./run-clean.sh ./mvnw -e -V -T 1 install \
-                     --batch-mode \
-                     --settings .travis-settings.xml \
-                     --update-snapshots \
-                     -Dappserver=$appserver \
-                     -Dwebdriver.display=${env.DISPLAY} \
-                     -Dwebdriver.type=chrome \
-                     -Dwebdriver.chrome.driver=/opt/chromedriver \
-                     ${ftOpts}
-              """
+              --batch-mode \
+              --settings .travis-settings.xml \
+              --update-snapshots \
+              -Dappserver=$appserver \
+              -Dwebdriver.display=${env.DISPLAY} \
+              -Dwebdriver.type=chrome \
+              -Dwebdriver.chrome.driver=/opt/chromedriver \
+              ${ftOpts}
+          """
               // TODO skip npm/yarn (but don't -DexcludeFrontend; we need the version in target/ )
               /* TODO
               -Dassembly.skipAssembly \
@@ -228,7 +228,7 @@ void integrationTests(String appserver) {
       setJUnitPrefix(appserver, failsafeTestReports)
       junit([
         testResults: "**/${failsafeTestReports}"
-        //      testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
+        // testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
       ])
       notify.testResults(appserver.toUpperCase())
     }
@@ -237,9 +237,9 @@ void integrationTests(String appserver) {
 
 void withPorts(Closure wrapped) {
   def ports = sh(script: 'server/etc/scripts/allocate-jboss-ports', returnStdout: true)
-    withEnv(ports.trim().readLines()) {
-      wrapped.call()
-    }
+  withEnv(ports.trim().readLines()) {
+    wrapped.call()
+  }
 }
 
 // Modify classnames of tests, to avoid collision between EAP and WildFly test runs.
@@ -248,10 +248,9 @@ void withPorts(Closure wrapped) {
 void setJUnitPrefix(prefix, files) {
   // add prefix to qualified classname
   def reportFiles = findFiles glob: "**/${files}"
-  if (reportFiles.size() > 0){
+  if (reportFiles.size() > 0) {
     sh "sed -i \"s/\\(<testcase .*classname=['\\\"]\\)\\([a-z]\\)/\\1${prefix.toUpperCase()}.\\2/g\" ${reportFiles.join(" ")}"
-  }else{
+  } else {
     echo "[WARNING] Failed to find JUnit report files **/${files}"
   }
 }
-
