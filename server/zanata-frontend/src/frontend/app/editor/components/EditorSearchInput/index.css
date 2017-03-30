@@ -94,3 +94,10 @@
   padding-right: calc(var(--InputGroup-rhythm) * .375);
 }
 
+.InputEditorSearch .panel.panel-default {
+  z-index: 1000 !important;
+}
+
+.flex ul.u-listHorizontal {
+  z-index: 999 !important;
+}
