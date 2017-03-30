@@ -2,7 +2,6 @@ import React from 'react'
 import { storiesOf, action } from '@kadira/storybook'
 import GlossaryTerm from '.'
 import { Table } from 'react-bootstrap'
-import { Icons } from 'zanata-ui'
 
 const copyGlossaryTerm = action('copyGlossaryTerm')
 
@@ -10,12 +9,6 @@ const copyGlossaryTerm = action('copyGlossaryTerm')
  * See .storybook/README.md for info on the component storybook.
  */
 storiesOf('GlossaryTerm', module)
-  .addDecorator((story) => (
-    <div>
-      <Icons />
-      {story()}
-    </div>
-  ))
     .add('simple term on its own', () => (
       <Table>
         <tbody>

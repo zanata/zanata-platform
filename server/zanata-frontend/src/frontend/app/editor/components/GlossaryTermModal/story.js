@@ -2,14 +2,14 @@ import React from 'react'
 import { storiesOf } from '@kadira/storybook'
 import { action, decorateAction } from '@kadira/storybook-addon-actions'
 import { Modal, Button, Panel, Row, Table } from 'react-bootstrap'
-import { Icons, Icon } from '../../../components'
+import { Icon } from '../../../components'
+
 /*
 * See .storybook/README.md for info on the component storybook.
 */
 storiesOf('GlossaryTermModal', module)
   .addDecorator((story) => (
     <div className="static-modal">
-      <Icons />
       {story()}
     </div>
   ))
