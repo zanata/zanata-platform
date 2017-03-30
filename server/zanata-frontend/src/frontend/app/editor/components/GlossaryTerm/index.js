@@ -6,6 +6,7 @@ import React, { PropTypes } from 'react'
 import { Button, Tooltip, OverlayTrigger }
     from 'react-bootstrap'
 import IconButton from '../IconButton'
+import { Icons } from '../../../components'
 
 // FIXME need a modal to open when this is clicked
 const logDetailsClick = () => {
@@ -40,6 +41,7 @@ const GlossaryTerm = React.createClass({
 
     return (
       <tr key={index}>
+        <Icons />
         <td data-filetype="text" className="gloss-text long-string">
           <OverlayTrigger placement="top" overlay={sourceTip}>
             <Button bStyle="link">
@@ -74,7 +76,7 @@ const GlossaryTerm = React.createClass({
           <IconButton
             icon="info"
             title="Details"
-            className="Button--link"
+            className="Button--link s1"
             onClick={logDetailsClick}
           />
         </td>

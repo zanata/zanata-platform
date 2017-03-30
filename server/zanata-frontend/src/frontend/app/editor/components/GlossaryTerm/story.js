@@ -27,7 +27,7 @@ storiesOf('GlossaryTerm', module)
             <th>Source</th>
             <th>Target</th>
             <th></th>
-            <th className="align-center">Details</th>
+            <th className="align-right hide-md">Details</th>
           </tr>
         </thead>
         <tbody>

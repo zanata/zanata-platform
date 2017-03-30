@@ -70,7 +70,7 @@ ul.sidebar-details {
 }
 
 td.info-icon {
-  vertical-align: middle;
+  text-align: right;
 }
 
 ul.sidebar-details span {
@@ -123,23 +123,25 @@ table {
 }
 
 
-.table {
+.table.gloss-details-table {
   width: 100%;
   max-width: 100%;
   margin-bottom: 1.429rem;
 }
 
-.table>thead>tr>th {
+.table.gloss-details-table>thead>tr>th {
   vertical-align: bottom;
   border-bottom: 2px solid #ddd;
 }
 
-.table>tbody>tr>td {
+.table.gloss-details-table>tbody>tr>td {
   vertical-align: middle;
 }
 
-.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td,
-.table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+.table.gloss-details-table>tbody>tr>td, .table.gloss-details-table>tbody>tr>th,
+.table.gloss-details-table>tfoot>tr>td,
+.table.gloss-details-table>tfoot>tr>th, .table.gloss-details-table>thead>tr>td,
+.table.gloss-details-table>thead>tr>th {
   line-height: 1.42857143;
   padding: .5rem;
   border-top: 1px solid #ddd;
@@ -368,6 +370,7 @@ table td button.gButton--link {
   table td button.Button--link {
     padding-right: 0.375em;
   }
+
 }
 
 @media (max-width:1009px) {
