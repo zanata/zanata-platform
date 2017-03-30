@@ -1,6 +1,7 @@
 import React from 'react'
 import { storiesOf } from '@kadira/storybook'
 import { action, decorateAction } from '@kadira/storybook-addon-actions'
+import { Icons } from 'zanata-ui'
 
 import GlossarySearchInput from '.'
 
@@ -25,6 +26,12 @@ const eventTarget = decorateAction([
  * See .storybook/README.md for info on the component storybook.
  */
 storiesOf('GlossarySearchInput', module)
+  .addDecorator((story) => (
+    <div>
+      <Icons />
+      {story()}
+    </div>
+  ))
     .add('empty', () => (
         <GlossarySearchInput
           text=""

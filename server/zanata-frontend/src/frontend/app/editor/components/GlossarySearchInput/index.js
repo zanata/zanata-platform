@@ -78,7 +78,6 @@ const GlossarySearchInput = React.createClass({
   render () {
     return (
       <div className="inline-flex-search">
-        <Icons />
         <div className={cx('InputGroup InputGroup--outlined ' +
             'InputGroup--rounded',
           { 'is-focused': this.state.focused })}>

@@ -41,7 +41,6 @@ const GlossaryTerm = React.createClass({
 
     return (
       <tr key={index}>
-        <Icons />
         <td data-filetype="text" className="gloss-text long-string">
           <OverlayTrigger placement="top" overlay={sourceTip}>
             <Button bStyle="link">

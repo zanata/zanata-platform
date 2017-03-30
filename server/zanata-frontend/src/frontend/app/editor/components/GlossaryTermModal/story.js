@@ -7,9 +7,13 @@ import { Icons, Icon } from '../../../components'
 * See .storybook/README.md for info on the component storybook.
 */
 storiesOf('GlossaryTermModal', module)
+  .addDecorator((story) => (
+    <div className="static-modal">
+      <Icons />
+      {story()}
+    </div>
+  ))
 .add('default', () => (
-  <div className="static-modal">
-    <Icons />
     <Modal show
     onHide={action('close')}>
       <Modal.Header closeButton>
@@ -28,10 +32,12 @@ storiesOf('GlossaryTermModal', module)
         <Panel className="gloss-details-panel">
           <Table className="gloss-details-table">
             <thead>
-              <th></th>
-              <th>Description</th>
-              <th>Part of speech</th>
-              <th>Target comment</th>
+              <tr>
+                <th></th>
+                <th>Description</th>
+                <th>Part of speech</th>
+                <th>Target comment</th>
+              </tr>
             </thead>
             <tbody>
               <tr>
@@ -54,6 +60,5 @@ storiesOf('GlossaryTermModal', module)
         </span>
       </Modal.Body>
      </Modal>
-    </div>
   )
 )
