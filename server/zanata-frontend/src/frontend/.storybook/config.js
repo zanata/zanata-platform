@@ -1,5 +1,7 @@
 import React from 'react'
 import Icons from '../app/components/Icons'
+import { addLocaleData, IntlProvider } from 'react-intl'
+import { locale, formats } from '../app/editor/config/intl'
 import { addDecorator, configure } from '@kadira/storybook'
 import './storybook.css'
 
@@ -11,12 +13,27 @@ fontLink.setAttribute('type', 'text/css')
 fontLink.setAttribute('async', '')
 document.getElementsByTagName('head')[0].appendChild(fontLink)
 
-// ensure icons svg will be loaded for any component that needs it
+// Set up locale data so formats etc. will work properly
+addLocaleData({
+  locale: 'en-US'
+})
+
+/*
+ * This sets up the context that all the components are expecting to be in.
+ *
+ * - All components can expect to have react-intl
+ *   configured through <IntlProvider/>
+ * - All components can expect the icon svg to be included by <Icons />
+ * - All components can expect Source Sans Pro to be available in weights
+ *   300, 400 (plain and italic), 600 and 700
+ */
 addDecorator((story) => (
-  <div>
-    <Icons />
-    {story()}
-  </div>
+  <IntlProvider locale={locale} formats={formats}>
+    <div>
+      <Icons />
+      {story()}
+    </div>
+  </IntlProvider>
 ))
 
 function loadStories () {
