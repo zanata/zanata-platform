@@ -35,7 +35,6 @@
       constraintName="FK_HProject_LocaleMember_HPerson"
       referencedTableName="HPerson" referencedColumnNames="id"
       onDelete="CASCADE" />
-    <!-- I don't think we will ever support delete locale -->
     <addForeignKeyConstraint baseTableName="HProject_LocaleMember"
       baseColumnNames="localeId"
       constraintName="FK_HProject_LocaleMember_HLocale"
@@ -44,6 +43,19 @@
       baseColumnNames="projectId"
       constraintName="FK_HProject_LocaleMember_HProject"
       referencedTableName="HProject" referencedColumnNames="id"
+      onDelete="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2" author="pahuang@redhat.com">
+    <comment>Fix up potential referential constraints in HProject_LocaleMember table</comment>
+    <sql>
+      delete from HProject_LocaleMember where localeId NOT in (select id from HLocale)
+    </sql>
+    <dropForeignKeyConstraint baseTableName="HProject_LocaleMember" constraintName="FK_HProject_LocaleMember_HLocale" />
+    <addForeignKeyConstraint baseTableName="HProject_LocaleMember"
+      baseColumnNames="localeId"
+      constraintName="FK_HProject_LocaleMember_HLocale"
+      referencedTableName="HLocale" referencedColumnNames="id"
       onDelete="CASCADE" />
   </changeSet>
 

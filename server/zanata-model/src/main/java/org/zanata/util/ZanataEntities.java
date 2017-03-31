@@ -38,6 +38,7 @@ import org.zanata.model.HPerson;
 import org.zanata.model.HPersonEmailValidationKey;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.model.HProjectLocaleMember;
 import org.zanata.model.HRoleAssignmentRule;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowHistory;
@@ -91,6 +92,8 @@ public class ZanataEntities {
         builder.add(HPoHeader.class);
         // iteration group (references locales)
         builder.add(HIterationGroup.class);
+        // project locale members
+        builder.add(HProjectLocaleMember.class);
         // locales
         builder.add(HLocaleMember.class, HLocale.class);
         // project
