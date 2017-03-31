@@ -4,13 +4,13 @@
  * Jenkinsfile for zanata-platform
  */
 
-// Import pipeline library for utility methods:
-// ansicolor(), info.*, notify.*, pullRequests.*, strings.*
-@Library('github.com/zanata/zanata-pipeline-library@master')
-// You can't put @Library in front of try (eg), so this dummy
-// ensures that won't happen again:
-def dummyForLibraryAnnotation
+import groovy.transform.Field
 
+// Import pipeline library for utility methods:
+// ansicolor(), notify.*, pullRequests.*, strings.*
+@Library('github.com/zanata/zanata-pipeline-library@pipelineunit') _
+
+notify.init(env)
 
 // Define project properties: general properties for the Pipeline-defined jobs.
 // 1. discard old artifacts and build logs
@@ -19,6 +19,7 @@ def dummyForLibraryAnnotation
 // Normally the project properties wouldn't go inside a node, but
 // we need a node to access env.DEFAULT_NODE.
 node {
+  println "running on node ${env.NODE_NAME}"
   def projectProperties = [
     [
       $class: 'BuildDiscarderProperty',
@@ -47,8 +48,9 @@ node {
   properties(projectProperties)
 }
 
-def surefireTestReports='target/surefire-reports/TEST-*.xml'
+@Field
 def mainlineBranches = ['master', 'release', 'legacy']
+@Field
 def gwtOpts = '-Dchromefirefox'
 if (env.BRANCH_NAME in mainlineBranches) {
   gwtOpts = ''
@@ -62,13 +64,12 @@ if (env.BRANCH_NAME in mainlineBranches) {
 timestamps {
   // allocate a node for build+unit tests
   node(LABEL) {
+    println "running on node ${env.NODE_NAME}"
     // generate logs in colour
     ansicolor {
       try {
 
         stage('Checkout') {
-          // info methods output diagnostic information about the node
-          info.printNode()
           // notify methods send instant messages about the build progress
           notify.started()
 
@@ -83,8 +84,6 @@ timestamps {
         // Build and Unit Tests
         // The built files are stashed for integration tests in other nodes.
         stage('Build') {
-          info.printNode()
-          info.printEnv()
 
           // validate translations
           sh """./run-clean.sh ./mvnw -e -V \
@@ -115,17 +114,19 @@ timestamps {
           // TODO should we remove -Dmaven.test.failure.ignore (and catch
           // exception) to fail fast in case an early unit test fails?
 
+          def surefireTestReports = 'target/surefire-reports/TEST-*.xml'
+
           setJUnitPrefix("UNIT", surefireTestReports)
           // gather surefire results; mark build as unstable in case of failures
-          junit([
-            testResults: "**/${surefireTestReports}"
-          ])
+          junit(testResults: "**/${surefireTestReports}")
 
           // TODO send to codecov.io (NB: need to get correct token for zanata-platform, configured by env var)
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
-          notify.testResults("UNIT")
+          notify.testResults("UNIT", currentBuild)
+
+          // TODO ensure the pipeline aborts in case of test failures
 
           // archive build artifacts (and cross-referenced source code)
           archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**"
@@ -143,6 +144,7 @@ timestamps {
       } catch (e) {
         notify.failed()
         currentBuild.result = 'FAILURE'
+        // abort the rest of the pipeline
         throw e
       }
     }
@@ -153,60 +155,40 @@ timestamps {
     // NB all the parallel tasks must be in one stage, because you can't use `stage` inside `parallel`.
     // See https://issues.jenkins-ci.org/browse/JENKINS-34696 and https://issues.jenkins-ci.org/browse/JENKINS-33185
     stage('Integration tests') {
-      try {
-        // define tasks which will run in parallel
-        def tasks = [:]
+      // define tasks which will run in parallel
+      def tasks = [
+              "WILDFLY": { integrationTests('wildfly8') },
+              "JBOSSEAP": { integrationTests('jbosseap6') },
+              // abort other tasks (for faster feedback) as soon as one fails
+              // disabled; not currently handled by pipeline-unit
+//              failFast: true
+      ]
+      // run integration test tasks in parallel
+      parallel tasks
 
-        tasks["Integration tests: WILDFLY"] = {
-          integrationTests('wildfly8')
-        }
-        tasks["Integration tests: JBOSSEAP"] = {
-          integrationTests('jbosseap6')
-        }
-        // abort other tasks (for faster feedback) as soon as one fails
-        tasks.failFast = true
-
-        // run integration test tasks in parallel
-        parallel tasks
-        // notify.successful()
-      } catch (e) {
-        // When it cannot find the failfast report
-        echo "ERROR integrationTests: ${e.toString()}"
+      // if the build is *still* green after running integration tests:
+      if ( currentBuild.result == null ) {
+        echo 'marking build as successful'
+        currentBuild.result = 'SUCCESS'
       }
 
-    // TODO notify finish
-    // TODO in case of failure, notify culprits via IRC and/or email
-    // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
-    // http://stackoverflow.com/a/39535424/14379
-    // IRC: https://issues.jenkins-ci.org/browse/JENKINS-33922
-    // possible alternatives: Slack, HipChat, RocketChat, Telegram?
+      // TODO notify finish
+      // TODO in case of failure, notify culprits via IRC, email and/or Rocket.Chat
+      // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
+      // http://stackoverflow.com/a/39535424/14379
+      // IRC: https://issues.jenkins-ci.org/browse/JENKINS-33922
     }
   }
-}
-
-// TODO factor these out into zanata-pipeline-library too
-
-void xvfb(Closure wrapped) {
-  wrap([$class: 'Xvfb', debug: true, timeout: 30, displayName: (10+ "${env.EXECUTOR_NUMBER}".toInteger())]) {
-    wrapped.call()
-  }
-}
-
-void debugChromeDriver() {
-  sh returnStatus: true, script: 'which chromedriver google-chrome'
-  sh returnStatus: true, script: 'ls -l /opt/chromedriver /opt/google/chrome/google-chrome'
 }
 
 void integrationTests(String appserver) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
   node(LABEL) {
-    info.printNode()
-    info.printEnv()
+    println "running on node ${env.NODE_NAME}"
     echo "WORKSPACE=${env.WORKSPACE}"
     checkout scm
     // Clean the workspace
     sh "git clean -fdx"
-    debugChromeDriver()
 
     unstash 'generated-files'
     // TODO: Consider touching the target files for test, so it won't recompile
@@ -214,27 +196,28 @@ void integrationTests(String appserver) {
     /* touch all target */
     //sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
 
-    try {
-      xvfb {
-        withPorts {
-          // Run the maven build
-          echo "env.DISPLAY=${env.DISPLAY}"
-          echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
-          echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
+    xvfb {
+      withPorts {
+        echo "Running maven build for integration tests"
 
-          // Build up Maven options for running functional tests:
+        // Run the maven build
+        echo "env.DISPLAY=${env.DISPLAY}"
+        echo "env.JBOSS_HTTP_PORT=${env.JBOSS_HTTP_PORT}"
+        echo "env.JBOSS_HTTPS_PORT=${env.JBOSS_HTTPS_PORT}"
 
-          // avoid port conflict for debugger:
-          def ftOpts = '-Dcargo.debug.jvm.args= '
+        // Build up Maven options for running functional tests:
 
-          // run *all* functional tests in these branches only:
-          if (env.BRANCH_NAME in mainlineBranches) {
-            ftOpts += '-DallFuncTests '
-          }
+        // avoid port conflict for debugger:
+        def ftOpts = '-Dcargo.debug.jvm.args= '
 
-          // skip recompilation, unit tests, static analysis
-          // (done in Build stage):
-          ftOpts += """\
+        // run *all* functional tests in these branches only:
+        if (env.BRANCH_NAME in mainlineBranches) {
+          ftOpts += '-DallFuncTests '
+        }
+
+        // skip recompilation, unit tests, static analysis
+        // (done in Build stage):
+        ftOpts += """\
               -Dgwt.compiler.skip \
               -Dmaven.main.skip \
               -Dskip.npminstall \
@@ -246,7 +229,8 @@ void integrationTests(String appserver) {
               $gwtOpts \
           """
 
-          sh """./run-clean.sh ./mvnw -e -V -T 1 install \
+        def mvnResult = sh returnStatus: true, script: """\
+              ./run-clean.sh ./mvnw -e -V -T 1 install \
               --batch-mode \
               --settings .travis-settings.xml \
               --update-snapshots \
@@ -256,32 +240,41 @@ void integrationTests(String appserver) {
               -Dwebdriver.chrome.driver=/opt/chromedriver \
               ${ftOpts}
           """
-              // TODO skip npm/yarn (but don't -DexcludeFrontend; we need the version in target/ )
-              /* TODO
-              -Dassembly.skipAssembly \
-              -DskipAppassembler \
-              -DskipShade \
-               */
-        }
-      }
-    } catch(e) {
-      // Exception will be thrown if maven fails fast, i.e. a test fails
-      echo "ERROR integrationTests(${appserver}): ${e.toString()}"
-      currentBuild.result = 'UNSTABLE'
+        // TODO skip npm/yarn (but don't -DexcludeFrontend; we need the version in target/ )
+        /* TODO
+        -Dassembly.skipAssembly \
+        -DskipAppassembler \
+        -DskipShade \
+         */
 
-      // gather db/app logs and screenshots to help debugging
-      archive(
-        includes: '*/target/**/*.log,*/target/screenshots/**',
-        excludes: '**/BACKUP-*.log')
-    } finally {
-      setJUnitPrefix(appserver, failsafeTestReports)
-      junit([
-        testResults: "**/${failsafeTestReports}"
-        // TODO enable after https://issues.jenkins-ci.org/browse/JENKINS-33168 is fixed
-        // testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
-      ])
-      notify.testResults(appserver.toUpperCase())
+        if (mvnResult != 0) {
+          currentBuild.result = 'UNSTABLE'
+
+          // gather db/app logs and screenshots to help debugging
+          archive(
+                  includes: '*/target/**/*.log,*/target/screenshots/**',
+                  excludes: '**/BACKUP-*.log')
+        }
+
+        echo "Capturing JUnit results"
+        if (setJUnitPrefix(appserver, failsafeTestReports)) {
+          junit(testResults: "**/${failsafeTestReports}"
+                  // TODO enable after https://issues.jenkins-ci.org/browse/JENKINS-33168 is fixed
+                  // , testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
+          )
+        } else {
+          currentBuild.result = 'FAILED'
+        }
+        notify.testResults(appserver.toUpperCase(), currentBuild)
+        // TODO ensure the pipeline aborts in case of test failures
+      }
     }
+  }
+}
+
+void xvfb(Closure wrapped) {
+  wrap([$class: 'Xvfb', debug: true, timeout: 30, displayName: (10 + env.EXECUTOR_NUMBER.toInteger())]) {
+    wrapped.call()
   }
 }
 
@@ -296,12 +289,14 @@ void withPorts(Closure wrapped) {
 // Modify classnames of tests, to avoid collision between EAP and WildFly test runs.
 // We also use this to distinguish unit tests from integration tests.
 // from https://issues.jenkins-ci.org/browse/JENKINS-27395?focusedCommentId=256459&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-256459
-void setJUnitPrefix(prefix, files) {
+boolean setJUnitPrefix(prefix, files) {
   // add prefix to qualified classname
   def reportFiles = findFiles glob: "**/${files}"
   if (reportFiles.size() > 0) {
     sh "sed -i \"s/\\(<testcase .*classname=['\\\"]\\)\\([a-z]\\)/\\1${prefix.toUpperCase()}.\\2/g\" ${reportFiles.join(" ")}"
+    return true
   } else {
     echo "[WARNING] Failed to find JUnit report files **/${files}"
+    return false
   }
 }
