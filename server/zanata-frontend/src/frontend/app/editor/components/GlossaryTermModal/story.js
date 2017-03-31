@@ -3,6 +3,7 @@ import { storiesOf } from '@kadira/storybook'
 import { action, decorateAction } from '@kadira/storybook-addon-actions'
 import { Modal, Button, Panel, Row, Table } from 'react-bootstrap'
 import { Icon } from '../../../components'
+import GlossaryTermModal from '.'
 
 /*
 * See .storybook/README.md for info on the component storybook.
@@ -13,7 +14,57 @@ storiesOf('GlossaryTermModal', module)
       {story()}
     </div>
   ))
-.add('default', () => (
+  .add('with 1 detail item', () => (
+    <GlossaryTermModal
+      show={true}
+      close={action('close')}
+      sourceLocale="en-US"
+      targetLocale="de"
+      term={{
+        source: 'bat',
+        target: 'schlagen'
+      }}
+      details={[
+        {
+          description: 'Take a turn at batting in a game of sportsball.',
+          pos: 'Verb',
+          transComment: 'It sounds a bit like "slugger" like someone might call a junior-league base kid ball.',
+          lastModifiedTime: new Date(1490687578793)
+        }
+      ]}
+    />
+  ))
+  .add('with 3 detail items', () => (
+    <GlossaryTermModal
+      show={true}
+      close={action('close')}
+      sourceLocale="en-US"
+      targetLocale="de"
+      term={{
+        source: 'bat',
+        target: 'schlagen'
+      }}
+      details={[
+        {
+          description: 'To hit something with a bat.',
+          pos: 'Verb',
+          transComment: "So I schlagged 'im.",
+          lastModifiedTime: new Date(1490687563741)
+        },{
+          description: 'Take a turn at batting in a game of sportsball.',
+          pos: 'Verb',
+          transComment: 'It sounds a bit like "slugger" like someone might call a junior-league base kid ball.',
+          lastModifiedTime: new Date(1490687578793)
+        },{
+          description: 'For one who is a bat, to hit something with themself.',
+          pos: 'Norb',
+          transComment: 'I did not just make it up, it is a real thing.',
+          lastModifiedTime: new Date(409872360000)
+        }
+      ]}
+    />
+  ))
+.add('hard-coded story', () => (
     <Modal show
     onHide={action('close')}>
       <Modal.Header closeButton>

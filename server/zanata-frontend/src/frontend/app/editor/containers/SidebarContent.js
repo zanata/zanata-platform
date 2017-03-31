@@ -20,7 +20,7 @@ const SidebarContent = React.createClass({
       sourceFlags: PropTypes.string,
       sourceReferences: PropTypes.string,
       lastModifiedBy: PropTypes.string,
-      lastModifiedTime: PropTypes.date
+      lastModifiedTime: PropTypes.instanceOf(Date)
     })
   },
 

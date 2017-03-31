@@ -20,7 +20,7 @@
  */
 
 import cx from 'classnames'
-import { Icons, Icon } from '../../../components'
+import { Icon } from '../../../components'
 import React, { PropTypes } from 'react'
 
 // FIXME copied from SuggestionSearchInput. Can pull out a common component.

@@ -3,10 +3,8 @@
  */
 
 import React, { PropTypes } from 'react'
-import { Button, Tooltip, OverlayTrigger }
-    from 'react-bootstrap'
+import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import IconButton from '../IconButton'
-import { Icons } from '../../../components'
 
 // FIXME need a modal to open when this is clicked
 const logDetailsClick = () => {
