@@ -179,16 +179,20 @@ public class Activity extends ModelEntityBase implements Serializable {
 
         return (actor == null ?
                 activity.actor == null : actor.equals(activity.actor)) &&
+                (contextId == activity.contextId) &&
                 (contextType == activity.contextType) &&
-                (activityType == activity.activityType);
+                (activityType == activity.activityType) &&
+                (approxTime == activity.approxTime);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (actor != null ? actor.hashCode() : 0);
+        result = 31 * result + Long.valueOf(contextId).hashCode();
         result = 31 * result + (contextType != null ? contextType.hashCode() : 0);
         result = 31 * result + (activityType != null ? activityType.hashCode() : 0);
+        result = 31 * result + (approxTime != null ? approxTime.hashCode() : 0);
         return result;
     }
 }
