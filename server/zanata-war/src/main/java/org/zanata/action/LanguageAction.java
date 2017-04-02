@@ -21,7 +21,6 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
@@ -33,6 +32,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.exception.AuthorizationException;
 import org.zanata.model.type.RequestState;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.model.LanguageRequest;
@@ -309,7 +309,7 @@ public class LanguageAction implements Serializable {
         try {
             if (!isAdmin && !applicationConfiguration.isAutoAcceptRequests()) {
                 log.info("User tried to access auto-join when not enabled");
-                throw new AccessDeniedException(msgs.get("jsf.accessDenied"));
+                throw new AuthorizationException(msgs.get("jsf.accessDenied"));
             }
             languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(
                     this.language, authenticatedAccount.getPerson().getId(),
