@@ -192,4 +192,18 @@ public class DatabaseBackedConfigTest extends ZanataDbunitJpaTest {
     public void autoAcceptTranslatorIsFalseIfNull() {
         assertThat(databaseBackedConfig.isAutoAcceptTranslators(), equalTo(false));
     }
+
+    @Test
+    @InRequestScope
+    public void getGravatarRating() {
+        assertThat(databaseBackedConfig.getMaxGravatarRating(), equalTo("R"));
+    }
+
+    @Test
+    @InRequestScope
+    public void gravatarRatingDefaultsToGeneral() {
+        // Prematurely clean out data, assert missing value is null
+        cleanDataAfterTest();
+        assertThat(databaseBackedConfig.getMaxGravatarRating(), equalTo("G"));
+    }
 }

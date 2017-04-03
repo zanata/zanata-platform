@@ -498,4 +498,8 @@ public class ApplicationConfiguration implements Serializable {
     public boolean isAutoAcceptRequests() {
         return databaseBackedConfig.isAutoAcceptTranslators();
     }
+
+    public String getGravatarRating() {
+        return databaseBackedConfig.getMaxGravatarRating();
+    }
 }

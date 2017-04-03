@@ -67,6 +67,7 @@ public class HApplicationConfiguration extends ModelEntityBase {
     public static String KEY_PERMITTED_USER_EMAIL_DOMAIN =
             "permitted.user.email.domain";
     public static String KEY_AUTO_ACCEPT_TRANSLATOR = "accept.translator.requests";
+    public static String KEY_GRAVATAR_RATING = "gravatar.rating";
     private static final long serialVersionUID = 8652817113098817448L;
     private static List<String> availableKeys;
     private String key;

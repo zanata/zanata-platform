@@ -3,6 +3,8 @@ package org.zanata.service.impl;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.ApplicationConfiguration;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.model.HAccount;
 import org.zanata.security.annotations.Authenticated;
@@ -18,6 +20,9 @@ public class GravatarServiceImpl implements GravatarService {
     @Authenticated
     HAccount authenticatedAccount;
 
+    @Inject
+    private ApplicationConfiguration applicationConfiguration;
+
     @Override
     public String getUserImageUrl(int size) {
         String email = "";
@@ -29,13 +34,23 @@ public class GravatarServiceImpl implements GravatarService {
         return this.getUserImageUrl(size, email);
     }
 
+    /**
+     * Return a url representing the user's Gravatar image.
+     * Query parameters:
+     * d = default image
+     * r = image rating
+     * s = size
+     * @param size pixel size of image
+     * @param email identifier of user image
+     * @return String url for user image
+     */
     @Override
     public String getUserImageUrl(int size, String email) {
-        StringBuilder url = new StringBuilder(GRAVATAR_URL);
-        url.append(getGravatarHash(email));
-        url.append("?d=mm&r=g&s="); // d = default image, r = rating, s = size
-        url.append(size);
-        return url.toString();
+        return new StringBuilder(GRAVATAR_URL)
+            .append(getGravatarHash(email))
+            .append("?d=mm&r=").append(applicationConfiguration.getGravatarRating())
+            .append("&s=")
+            .append(size).toString();
     }
 
     @Override
