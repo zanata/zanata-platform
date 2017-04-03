@@ -151,20 +151,33 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Copy as Fuzzy")
     String copyAsFuzzy();
 
+    @DefaultMessage("Copy as Translated")
+    String copyAsTranslated();
+
     @DefaultMessage("Different Document Id (Document name and path):")
     String differentDocument();
 
     @DefaultMessage("Different Context (resId, msgctxt):")
     String differentContext();
 
-    @DefaultMessage("On match from Imported Translation Memory:")
+    @DefaultMessage("Match from Imported Translation Memory:")
     String importedMatch();
+
+    @DefaultMessage("If none of the above conditions apply")
+    String otherwise();
+
+
+    @DefaultMessage("Only possible when TM is from same project but different version, has same content, context and within same document")
+    String otherwiseTooltip();
 
     @DefaultMessage("Condition")
     String condition();
 
     @DefaultMessage("Action")
     String action();
+
+    @DefaultMessage("Result")
+    String result();
 
     @DefaultMessage("100% (Identical)")
     String identical();
