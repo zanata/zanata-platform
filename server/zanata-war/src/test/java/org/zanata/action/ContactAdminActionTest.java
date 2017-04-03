@@ -78,6 +78,6 @@ public class ContactAdminActionTest {
         contactAdminAction.send();
         when(authenticatedAccount.getUsername()).thenReturn("Joy");
         assertThat(contactAdminAction.getMessage()).isEqualTo(mesg);
-        verify(facesMessages,times(0)).addGlobal(sub);
+        verify(facesMessages, times(0)).addGlobal(sub);
     }
 }
