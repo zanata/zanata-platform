@@ -6,11 +6,15 @@
 
 import groovy.transform.Field
 
-// Import pipeline library for utility methods:
-// ansicolor(), notify.*, pullRequests.*, strings.*
-@Library('github.com/zanata/zanata-pipeline-library@pipelineunit') _
+// Import pipeline library for utility methods & classes:
+// ansicolor(), Notifier, PullRequests, Strings
+@Library('zanata-pipeline-library@pipelineunit')
+import org.zanata.jenkins.Notifier
 
-notify.init(env)
+@Field
+def notify
+// initialiser must be run separately (bindings not available during compilation phase)
+notify = new Notifier(env, steps)
 
 // Define project properties: general properties for the Pipeline-defined jobs.
 // 1. discard old artifacts and build logs
@@ -19,7 +23,7 @@ notify.init(env)
 // Normally the project properties wouldn't go inside a node, but
 // we need a node to access env.DEFAULT_NODE.
 node {
-  println "running on node ${env.NODE_NAME}"
+  echo "running on node ${env.NODE_NAME}"
   def projectProperties = [
     [
       $class: 'BuildDiscarderProperty',
@@ -38,7 +42,7 @@ node {
            * (eg kvm) or default to build on any node
            */
           defaultValue: env.DEFAULT_NODE ?: 'master || !master',
-          description: 'Node label that allow to build',
+          description: 'Jenkins node label to use for build',
           name: 'LABEL'
         ]
       ]
@@ -64,7 +68,7 @@ if (env.BRANCH_NAME in mainlineBranches) {
 timestamps {
   // allocate a node for build+unit tests
   node(LABEL) {
-    println "running on node ${env.NODE_NAME}"
+    echo "running on node ${env.NODE_NAME}"
     // generate logs in colour
     ansicolor {
       try {
@@ -124,7 +128,7 @@ timestamps {
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
-          notify.testResults("UNIT", currentBuild)
+          notify.testResults("UNIT", currentBuild.result)
 
           // TODO ensure the pipeline aborts in case of test failures
 
@@ -142,6 +146,7 @@ timestamps {
           stash name: 'generated-files', includes: '**/target/**, **/src/main/resources/**,**/.zanata-cache/**'
         }
       } catch (e) {
+        echo("Caught exception: " + e)
         notify.failed()
         currentBuild.result = 'FAILURE'
         // abort the rest of the pipeline
@@ -184,7 +189,7 @@ timestamps {
 void integrationTests(String appserver) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
   node(LABEL) {
-    println "running on node ${env.NODE_NAME}"
+    echo "running on node ${env.NODE_NAME}"
     echo "WORKSPACE=${env.WORKSPACE}"
     checkout scm
     // Clean the workspace
@@ -265,7 +270,7 @@ void integrationTests(String appserver) {
         } else {
           currentBuild.result = 'FAILED'
         }
-        notify.testResults(appserver.toUpperCase(), currentBuild)
+        notify.testResults(appserver.toUpperCase(), currentBuild.result)
         // TODO ensure the pipeline aborts in case of test failures
       }
     }

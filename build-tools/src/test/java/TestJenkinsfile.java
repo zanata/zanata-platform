@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.lesfurets.jenkins.unit.cps.BasePipelineTestCPS;
 import com.lesfurets.jenkins.unit.global.lib.LibraryConfiguration;
 import groovy.lang.Closure;
+import org.codehaus.groovy.runtime.MethodClosure;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,7 +18,7 @@ import static com.lesfurets.jenkins.unit.global.lib.GitSource.gitSource;
 import static com.lesfurets.jenkins.unit.global.lib.LibraryConfiguration.library;
 import static java.lang.Boolean.TRUE;
 
-// try 'extends BasePipelineTest' in case of weird Groovy exceptions
+// try 'extends BasePipelineTest' for debugging in case of weird Groovy exceptions
 public class TestJenkinsfile extends BasePipelineTestCPS {
 
     private static final String LIB_PATH = "target/libs";
@@ -28,7 +29,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         super.setUp();
 
         LibraryConfiguration library = library()
-                .name("github.com/zanata/zanata-pipeline-library")
+                .name("zanata-pipeline-library")
                 .retriever(gitSource("https://github.com/zanata/zanata-pipeline-library"))
                 // uncomment to use already-downloaded (perhaps modified) copy instead of git:
 //                .retriever(localSource(LIB_PATH))
@@ -39,7 +40,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
                 .build();
         getHelper().registerSharedLibrary(library);
 
-        // set up mock methods
+        // set up mock methods (Note: built-ins are in BasePipelineTest.setUp)
         getHelper().registerAllowedMethod("archive", ImmutableList.of(Map.class), null);
         getHelper().registerAllowedMethod("archive", ImmutableList.of(Object.class), null);
         getHelper().registerAllowedMethod("hipchatSend", ImmutableList.of(Map.class), null);
@@ -83,11 +84,19 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         env.put("DEFAULT_NODE", "master");
         env.put("NODE_NAME", "jenkins-pipeline-unit");
 
+        // these steps will be passed by reference to library methods
+        Map<String, Closure> steps = new HashMap<>();
+        steps.put("hipchatSend", Closure.IDENTITY);
+        steps.put("echo", Closure.IDENTITY);
+        // we need this for CPS mode
+        MethodClosure.ALLOW_RESOLVE = true;
+
         // global variables
         getBinding().setProperty("env", env);
+        getBinding().setProperty("steps", steps);
         getBinding().setProperty("LABEL", "master");
+        // for "checkout scm"
         getBinding().setProperty("scm", ImmutableMap.of());
-        getBinding().setProperty("currentBuild", new HashMap<>());
     }
 
     @Test
