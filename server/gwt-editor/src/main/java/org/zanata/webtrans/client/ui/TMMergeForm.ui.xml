@@ -19,13 +19,16 @@
             </g:ListBox>
           </td>
         </tr>
-        <tr>
-          <th>
+        <tr class="txt--lead">
+          <td>
             <ui:text from="{messages.condition}" />
-          </th>
-          <th>
+          </td>
+          <td>
             <ui:text from="{messages.action}" />
-          </th>
+          </td>
+          <td>
+            <ui:text from="{messages.result}" />
+          </td>
         </tr>
       </thead>
       <tbody>
@@ -89,6 +92,20 @@
           </td>
           <td>
             <g:HorizontalPanel ui:field="importedMatchPanel" />
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+            <g:InlineLabel ui:field="otherwise" title="{messages.otherwiseTooltip}" styleName="i i--info"/>
+            <ui:text from="{messages.otherwise}" />
+          </td>
+          <td>
+            <g:InlineLabel styleName="label--success l--pad-v-quarter l--pad-h-half"
+              text="{enumMessages.translatedStatus}" />
+          </td>
+          <td>
+            <ui:text from="{messages.copyAsTranslated}" />
           </td>
         </tr>
 

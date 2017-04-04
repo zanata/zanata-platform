@@ -118,7 +118,7 @@ public class TransMemoryMergePresenter extends
                     public void onFailure(Method method, Throwable exception) {
                         Log.warn("TM merge failed", exception);
                         if (method.getResponse().getStatusCode() == 400) {
-                            eventBus.fireEvent(new NotificationEvent(Warning, messages.mergeTMStartedBySomeone()));
+                            eventBus.fireEvent(new NotificationEvent(Warning, messages.mergeTMStartedBySomeone(currentDoc.getDocId())));
                         } else {
                             eventBus.fireEvent(new NotificationEvent(Error, messages
                                     .mergeTMFailed()));
@@ -243,16 +243,25 @@ public class TransMemoryMergePresenter extends
                     .equals(event.getDocumentId())) {
                 // another user has stared TM merge for this document
                 eventBus.fireEvent(new NotificationEvent(Warning,
-                        messages.mergeTMStartedBySomeone()));
+                        messages.mergeTMStartedBySomeone(event.getDocumentId().getDocId())));
             } else {
                 // another user has started TM merge for other document
                 eventBus.fireEvent(new NotificationEvent(Info,
-                        messages.mergeTMStartedBySomeoneForOtherDoc(event.getDocumentId().getDocId())));
+                        messages.mergeTMStartedBySomeoneForDoc(event.getDocumentId().getDocId())));
             }
         } else {
+
             // TM merge triggered by another user has ended
-            eventBus.fireEvent(new NotificationEvent(Info,
-                    messages.mergeTMFinished(event.getStartedBy(),
+            NotificationEvent.Severity level;
+            if (userWorkspaceContext.getSelectedDoc().getId()
+                    .equals(event.getDocumentId())) {
+                level = Warning;
+            } else {
+                level = Info;
+            }
+            eventBus.fireEvent(new NotificationEvent(level,
+                    messages.mergeTMFinished(event.getDocumentId().getDocId(),
+                            event.getStartedBy(),
                             DateUtil.formatTimeOnly(event.getStartedTime()),
                             DateUtil.formatTimeOnly(event.getEndTime()))));
         }
