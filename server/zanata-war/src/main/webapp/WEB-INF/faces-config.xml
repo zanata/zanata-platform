@@ -13,6 +13,8 @@
       <supported-locale>uk</supported-locale>
       <!-- Traditional Chinese -->
       <supported-locale>zh_TW_Hant</supported-locale>
+      <!-- Simplify Chinese -->
+      <supported-locale>zh_Hans_CN</supported-locale>
       <!-- Japanese -->
       <supported-locale>ja</supported-locale>
       <!-- Hungarian -->
