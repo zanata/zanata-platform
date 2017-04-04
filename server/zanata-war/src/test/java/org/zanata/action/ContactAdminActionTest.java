@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
 import org.mockito.Mock;
+import org.zanata.email.EmailStrategy;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HAccount;
 import org.zanata.security.annotations.Authenticated;
@@ -70,14 +71,15 @@ public class ContactAdminActionTest {
 
     @Test
     public void testSendByRegisterUser() {
-        String mesg = "Hello this is message for admin";
         String sub = "Contact admin subject";
+        when(authenticatedAccount.getUsername()).thenReturn("Joy");
+        when(emailServiceImpl.sendToAdmins(any(EmailStrategy.class), eq(null))).thenReturn(sub);
+        String mesg = "Hello this is message for admin";
         contactAdminAction.setSubject(sub);
         contactAdminAction.setMessage(mesg);
         authenticatedAccount.setUsername("tester");
         contactAdminAction.send();
-        when(authenticatedAccount.getUsername()).thenReturn("Joy");
         assertThat(contactAdminAction.getMessage()).isEqualTo(mesg);
-        verify(facesMessages, times(0)).addGlobal(sub);
+        verify(facesMessages, times(1)).addGlobal(sub);
     }
 }
