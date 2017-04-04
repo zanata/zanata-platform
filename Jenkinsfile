@@ -272,6 +272,7 @@ void integrationTests(String appserver) {
           )
         } else {
           currentBuild.result = 'FAILED'
+          error "no integration test results for $appserver"
         }
         notify.testResults(appserver.toUpperCase(), currentBuild.result)
         // TODO ensure the pipeline aborts in case of test failures
