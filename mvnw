@@ -117,7 +117,7 @@ if [ -z "$M2_HOME" ] ; then
   M2_HOME=`cd "$M2_HOME" && pwd`
 
   cd "$saveddir"
-  # echo Using m2 at $M2_HOME
+  # echo "Using m2 at $M2_HOME"
 fi
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched
