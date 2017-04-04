@@ -95,8 +95,10 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         getBinding().setProperty("env", env);
         getBinding().setProperty("steps", steps);
         getBinding().setProperty("LABEL", "master");
-        // for "checkout scm"
+
+        // these objects are just used as parameters
         getBinding().setProperty("scm", ImmutableMap.of());
+        getBinding().setProperty("manager", ImmutableMap.of());
     }
 
     @Test

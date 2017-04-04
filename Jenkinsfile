@@ -10,6 +10,9 @@ import groovy.transform.Field
 // ansicolor(), Notifier, PullRequests, Strings
 @Library('zanata-pipeline-library@pipelineunit')
 import org.zanata.jenkins.Notifier
+import org.zanata.jenkins.PullRequests
+
+PullRequests.ensureJobDescription(env, manager, steps)
 
 @Field
 def notify
