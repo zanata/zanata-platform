@@ -26,7 +26,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel'
+        loader: 'babel?presets[]=react,presets[]=es2015,presets[]=stage-0'
       },
 
       /* Bundles all the css and allows use of various niceities, including
@@ -34,7 +34,6 @@ module.exports = {
        */
       {
         test: /\.css$/,
-        exclude: /node_modules/,
         loader: 'style!css!csso!postcss!rework'
       },
 
