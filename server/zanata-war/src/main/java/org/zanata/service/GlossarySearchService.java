@@ -22,12 +22,14 @@ package org.zanata.service;
 
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles searching and result collation for glossary terms.
@@ -60,5 +62,20 @@ public interface GlossarySearchService {
             @CheckForNull String projectSlug
     ) throws ZanataServiceException;
 
-
+    /**
+     * Get the details for a set of glossary terms.
+     *
+     * Includes source details, and details from the given locale.
+     *
+     * @param locale include locale-specific detail for this locale
+     * @param sourceIds id for glossary terms in the default locale, found in
+     *     results of
+     *     {@link #searchGlossary(LocaleId, LocaleId, String, SearchType, int, String)}
+     * @return source and target glossary details.
+     * @throws ZanataServiceException when locale does not map to a valid locale
+     *     in the system.
+     */
+    ArrayList<GlossaryDetails> lookupDetails(
+            @Nonnull LocaleId locale,
+            @Nonnull List<Long> sourceIds);
 }

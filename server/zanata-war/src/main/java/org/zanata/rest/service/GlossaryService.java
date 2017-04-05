@@ -71,6 +71,7 @@ import org.zanata.service.GlossarySearchService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.GlossaryFileServiceImpl;
 import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 
@@ -201,6 +202,35 @@ public class GlossaryService implements GlossaryResource {
                     HasSearchType.SearchType.FUZZY,
                     maxResults,
                     projectSlug);
+        } catch (ZanataServiceException e) {
+            throw new WebApplicationException(Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build());
+        }
+        return Response.ok(results).build();
+    }
+
+    @Override
+    public Response getDetails(
+            @CheckForNull LocaleId locale,
+            @CheckForNull List<Long> termIds) {
+        if (locale == null) {
+            throw new WebApplicationException(Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity("Missing path parameter \"locale\"")
+                    .build());
+        }
+        if (termIds == null || termIds.isEmpty()) {
+            throw new WebApplicationException(Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity("Missing query parameter \"termIds\"")
+                    .build());
+        }
+
+        ArrayList<GlossaryDetails> results;
+        try {
+            results = glossarySearchService.lookupDetails(locale, termIds);
         } catch (ZanataServiceException e) {
             throw new WebApplicationException(Response
                     .status(Response.Status.BAD_REQUEST)

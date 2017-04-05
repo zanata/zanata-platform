@@ -195,6 +195,24 @@ public interface GlossaryResource extends RestResource {
             @CheckForNull @QueryParam("project") String projectSlug);
 
     /**
+     * Get the details for a set of glossary terms.
+     *
+     * Includes source details, and details from the given locale.
+     *
+     * @param locale include locale-specific detail for this locale
+     * @param termIds id for glossary terms in the default locale, found in
+     *                results of {@link #search(LocaleId, LocaleId, int, String, String)}
+     * @return source and target glossary details.
+     */
+    @GET
+    @Path("/details/{locale}")
+    @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
+            MediaType.APPLICATION_JSON })
+    Response getDetails(
+            @CheckForNull @PathParam("locale") LocaleId locale,
+            @CheckForNull @QueryParam("termIds") List<Long> termIds);
+
+    /**
      * Download all glossary entries as file
      *
      * @param fileType - po or cvs (case insensitive). Default - csv

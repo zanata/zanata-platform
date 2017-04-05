@@ -37,11 +37,16 @@ import org.apache.lucene.search.BooleanQuery;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.exception.ZanataServiceException;
+import org.zanata.model.HGlossaryEntry;
 import org.zanata.model.HGlossaryTerm;
+import org.zanata.model.HLocale;
 import org.zanata.rest.service.ProjectService;
 import org.zanata.search.LevenshteinUtil;
 import org.zanata.service.GlossarySearchService;
+import org.zanata.service.LocaleService;
 import org.zanata.util.GlossaryUtil;
+import org.zanata.util.UrlUtil;
+import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
@@ -50,9 +55,16 @@ import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 public class GlossarySearchServiceImpl implements GlossarySearchService {
     private static final Comparator<GlossaryResultItem> COMPARATOR =
             new GlossaryResultItemComparator();
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(GlossarySearchServiceImpl.class);
+
 
     @Inject
     private GlossaryDAO glossaryDAO;
+    @Inject
+    private LocaleService localeServiceImpl;
+    @Inject
+    private UrlUtil urlUtil;
 
     @Override
     public ArrayList<GlossaryResultItem> searchGlossary(
@@ -151,6 +163,33 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
             matchesMap.put(key, item);
         }
         return item;
+    }
+
+    @Override
+    public ArrayList<GlossaryDetails> lookupDetails(
+            @Nonnull LocaleId locale,
+            @Nonnull List<Long> sourceIds) throws ZanataServiceException {
+        HLocale hLocale = localeServiceImpl.getByLocaleId(locale);
+        log.info("Fetching glossary details for entries {} in locale {}",
+                sourceIds, hLocale);
+        List<HGlossaryTerm> srcTerms = glossaryDAO.findTermByIdList(sourceIds);
+        ArrayList<GlossaryDetails> items =
+                new ArrayList<GlossaryDetails>(srcTerms.size());
+        for (HGlossaryTerm srcTerm : srcTerms) {
+            HGlossaryEntry entry = srcTerm.getGlossaryEntry();
+            HGlossaryTerm hGlossaryTerm = entry.getGlossaryTerms().get(hLocale);
+            String srcContent = srcTerm.getContent();
+            String qualifiedName = entry.getGlossary().getQualifiedName();
+            String url = urlUtil.glossaryUrl(qualifiedName, srcContent,
+                    hLocale.getLocaleId());
+            items.add(new GlossaryDetails(entry.getId(), srcContent,
+                    hGlossaryTerm.getContent(), entry.getDescription(),
+                    entry.getPos(), hGlossaryTerm.getComment(),
+                    entry.getSourceRef(), entry.getSrcLocale().getLocaleId(),
+                    hLocale.getLocaleId(), url, hGlossaryTerm.getVersionNum(),
+                    hGlossaryTerm.getLastChanged()));
+        }
+        return items;
     }
 
     /**
