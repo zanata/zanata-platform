@@ -232,8 +232,7 @@
       </ui:fragment>
       <li>
         <ui:fragment
-            rendered="#{not empty projectHome.instance.homeContent or
-            identity.hasPermission(projectHome.instance, 'update')}">
+            rendered="#{not empty projectHome.instance.homeContent}">
         <a id="about_tab"
           href="#{request.contextPath}/project/view/#{projectHomeAction.slug}/about"
           class="js-url-mod" data-content="#about">
@@ -297,8 +296,7 @@
               rendered="#{not empty projectHome.instance.homeContent}"
               value="#{projectHome.aboutHtml}" escape="false" />
           </div>
-          <ui:fragment rendered="#{empty projectHome.instance.homeContent and
-            identity.hasPermission(projectHome.instance, 'update')}">
+          <ui:fragment rendered="#{empty projectHome.instance.homeContent}">
             #{msgs['jsf.project.NoHomeContent']}
           </ui:fragment>
         </h:panelGroup>
