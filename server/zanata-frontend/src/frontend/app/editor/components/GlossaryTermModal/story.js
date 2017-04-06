@@ -4,7 +4,7 @@ import { action, decorateAction } from '@kadira/storybook-addon-actions'
 import { Modal, Button, Panel, Row, Table } from 'react-bootstrap'
 import { Icon } from '../../../components'
 import Lorem from 'react-lorem-component'
-import GlossaryTermModal from './disconnected'
+import GlossaryTermModal from './component'
 
 /*
 * See .storybook/README.md for info on the component storybook.

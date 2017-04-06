@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import GlossaryTermModal from './disconnected'
+import GlossaryTermModal from './component'
 import { map } from 'lodash'
 import { showGlossaryDetails } from '../../actions/glossary'
 
