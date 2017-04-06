@@ -150,7 +150,8 @@ table {
 .table td {
   width: inherit;
   position: relative;
-  font-size: 1.071rem;
+  font-size: 1rem;
+  vertical-align: baseline;
 }
 
 table td {
@@ -334,7 +335,6 @@ table td button.gButton--link {
 }
 
 .panel-heading {
-  padding: 2em;
   border-bottom: 1px solid transparent;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
@@ -368,9 +368,16 @@ table td button.gButton--link {
 
 @media (max-width: 740px) {
   table td button.Button--link {
-    padding-right: 0.375em;
+    vertical-align: middle;
+    margin-right: 1em;
   }
+}
 
+@media (min-width: 741px) {
+  table td button.Button--link {
+    vertical-align: baseline;
+    margin-right: 0;
+  }
 }
 
 @media (max-width:1009px) {

@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { Modal } from 'zanata-ui'
 import { Panel, Row, Table } from 'react-bootstrap'
 import { FormattedDate, FormattedTime } from 'react-intl'
-import { Icon } from '../../../components'
+import { Icon, LoaderText } from '../../../components'
 
 /**
  * Modal to show detail for a single glossary term
@@ -47,7 +47,11 @@ const GlossaryTermModal = React.createClass({
       (detail, index) => {
         if (!detail) {
           // FIXME add loader icon
-          return <tr key={index}><td>Loading...</td></tr>
+          return <tr key={index}>
+            <td>
+              <LoaderText loading loadingText='Searching...' />
+            </td>
+          </tr>
         }
         const { description, pos, targetComment } = detail
         return (
