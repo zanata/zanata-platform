@@ -59,6 +59,7 @@ static void download(String url, String filePath) {
   def file = new File(filePath)
   // TODO check file length against Content-Length header
   if (!file.exists() || file.length() == 0) {
+    println "Downloading from $url:"
     file.withOutputStream { out ->
       new URL(url).withInputStream { from ->
         out << from;
@@ -68,6 +69,7 @@ static void download(String url, String filePath) {
 }
 
 static void unzip(String zipFileName, String outputDir) {
+  println "Extracting zip file $zipFileName:"
   new ZipFile(new File(zipFileName)).withCloseable { zip ->
     zip.entries().each { entry ->
       if (!entry.isDirectory()) {
