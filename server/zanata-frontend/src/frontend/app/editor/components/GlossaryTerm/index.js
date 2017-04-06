@@ -6,14 +6,11 @@ import React, { PropTypes } from 'react'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import IconButton from '../IconButton'
 
-// FIXME need a modal to open when this is clicked
-const logDetailsClick = () => {
-}
-
 const GlossaryTerm = React.createClass({
   propTypes: {
     index: PropTypes.number.isRequired,
     copyGlossaryTerm: PropTypes.func.isRequired,
+    showDetails: PropTypes.func.isRequired,
     term: PropTypes.shape({
       source: PropTypes.string.isRequired,
       target: PropTypes.string.isRequired
@@ -22,6 +19,10 @@ const GlossaryTerm = React.createClass({
 
   copy () {
     this.props.copyGlossaryTerm(this.props.term.target)
+  },
+
+  showDetails () {
+    this.props.showDetails(this.props.index)
   },
 
   render () {
@@ -74,7 +75,7 @@ const GlossaryTerm = React.createClass({
             icon="info"
             title="Details"
             className="Button--link s1"
-            onClick={logDetailsClick}
+            onClick={this.showDetails}
           />
         </td>
       </tr>

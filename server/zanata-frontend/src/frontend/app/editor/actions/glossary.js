@@ -7,6 +7,7 @@ import { CALL_API } from 'redux-api-middleware'
 
 import { baseRestUrl } from '../api'
 import { waitForPhraseDetail } from '../utils/phrase'
+import { getJsonWithCredentials } from '../utils/api-util'
 
 /* Call as search text changes to trigger a glossary search when the text stops
  * changing. This prevents excessive requests while the user is typing.
@@ -91,16 +92,8 @@ function findGlossaryTerms (searchText) {
       `${baseRestUrl}/glossary/search?srcLocale=${srcLocale}&transLocale=${transLocale}&project=${projectSlug}&searchText=${encodeURIComponent(searchText)}&maxResults=15` // eslint-disable-line max-len
 
     dispatch({
-      [CALL_API]: {
+      [CALL_API]: getJsonWithCredentials({
         endpoint: glossaryUrl,
-        method: 'GET',
-        // TODO credentials and headers should be added in a repeatable way
-        // e.g. withCredentials({...})
-        credentials: 'include',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
         types: [
           GLOSSARY_TERMS_REQUEST,
           {
@@ -112,7 +105,78 @@ function findGlossaryTerms (searchText) {
             meta: { timestamp }
           }
         ]
-      }
+      })
+    })
+  }
+}
+
+/* Indicates the index in glossary results that should have details displayed */
+export const SET_GLOSSARY_DETAILS_INDEX = Symbol('SET_GLOSSARY_DETAILS_INDEX')
+function setGlossaryDetailsIndex (index) {
+  return {
+    type: SET_GLOSSARY_DETAILS_INDEX,
+    payload: { index }
+  }
+}
+
+/* Set whether glossary details modal is showing */
+export const SHOW_GLOSSARY_DETAILS = Symbol('SHOW_GLOSSARY_DETAILS')
+export function showGlossaryDetails (show) {
+  return {
+    type: SHOW_GLOSSARY_DETAILS,
+    payload: { show }
+  }
+}
+
+/**
+ * Show the glossary details modal and fetch details from the API.
+ *
+ * @param index position in results of term to fetch and show details for
+ */
+export function showGlossaryTermDetails (index) {
+  return (dispatch, getState) => {
+    const term = getState().glossary.results[index]
+    dispatch(setGlossaryDetailsIndex(index))
+    dispatch(showGlossaryDetails(true))
+    dispatch(getGlossaryDetails(term))
+  }
+}
+
+/* API request for glossary details has started. */
+export const GLOSSARY_DETAILS_REQUEST = Symbol('GLOSSARY_DETAILS_REQUEST')
+/* API request for glossary details has completed successfully. */
+export const GLOSSARY_DETAILS_SUCCESS = Symbol('GLOSSARY_DETAILS_SUCCESS')
+/* API request for glossary details has failed. */
+export const GLOSSARY_DETAILS_FAILURE = Symbol('GLOSSARY_DETAILS_FAILURE')
+
+/**
+ * Fetch details from the API for all a term's sources for current locales.
+ *
+ * @param term containing sourceIdList used to perform the lookup.
+ */
+function getGlossaryDetails (term) {
+  return (dispatch, getState) => {
+    const { sourceIdList } = term
+    const transLocale = getState().headerData.context.selectedLocale
+
+    const termIdsQuery = 'termIds=' + sourceIdList.join('&termIds=')
+    const glossaryDetailsUrl =
+      `${baseRestUrl}/glossary/details/${transLocale}?${termIdsQuery}`
+
+    dispatch({
+      [CALL_API]: getJsonWithCredentials({
+        endpoint: glossaryDetailsUrl,
+        types: [
+          GLOSSARY_DETAILS_REQUEST,
+          {
+            type: GLOSSARY_DETAILS_SUCCESS,
+            meta: { sourceIdList }
+          },
+          {
+            type: GLOSSARY_DETAILS_FAILURE
+          }
+        ]
+      })
     })
   }
 }

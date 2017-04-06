@@ -7,9 +7,11 @@ import { connect } from 'react-redux'
 import { Tab, Table } from 'react-bootstrap'
 import GlossarySearchInput from '../components/GlossarySearchInput'
 import GlossaryTerm from '../components/GlossaryTerm'
+import GlossaryTermModal from '../components/GlossaryTermModal'
 import {
   copyGlossaryTerm,
-    glossarySearchTextEntered
+  glossarySearchTextEntered,
+  showGlossaryTermDetails
 } from '../actions/glossary'
 import { isEmpty } from 'lodash'
 import { Icon, LoaderText } from '../../components'
@@ -17,10 +19,14 @@ import { Icon, LoaderText } from '../../components'
 const GlossaryTab = React.createClass({
   propTypes: {
     copyGlossaryTerm: PropTypes.func.isRequired,
+    details: PropTypes.shape({
+      show: PropTypes.bool.isRequired
+    }).isRequired,
     // eventKey prop to use for the bootstrap Tab
     eventKey: PropTypes.number.isRequired,
     searchText: PropTypes.string.isRequired,
     searching: PropTypes.bool.isRequired,
+    showDetails: PropTypes.func.isRequired,
     results: PropTypes.arrayOf(PropTypes.shape({
       source: PropTypes.string.isRequired,
       target: PropTypes.string.isRequired
@@ -29,7 +35,13 @@ const GlossaryTab = React.createClass({
   },
 
   renderResultsPanel () {
-    const { copyGlossaryTerm, results, searching, searchText } = this.props
+    const {
+      copyGlossaryTerm,
+      results,
+      searching,
+      searchText,
+      showDetails
+    } = this.props
 
     if (searching) {
       return <div className="search-glos">
@@ -56,7 +68,13 @@ const GlossaryTab = React.createClass({
 
     const resultsDisplay = results.map((term, index) => {
       return (
-        <GlossaryTerm {...{key: index, index, term, copyGlossaryTerm}} />
+        <GlossaryTerm {...{
+          key: index,
+          index,
+          term,
+          copyGlossaryTerm,
+          showDetails
+        }} />
       )
     })
 
@@ -78,6 +96,9 @@ const GlossaryTab = React.createClass({
   },
 
   render () {
+    const glossaryModal = this.props.details.show
+      ? <GlossaryTermModal /> : undefined
+
     const { eventKey, searchText, onGlossaryTextChange } = this.props
     return (
       <Tab eventKey={eventKey} title="">
@@ -87,6 +108,7 @@ const GlossaryTab = React.createClass({
             onTextChange={onGlossaryTextChange} />
         </div>
         {this.renderResultsPanel()}
+        {glossaryModal}
       </Tab>
     )
   }
@@ -131,7 +153,8 @@ function mapDispatchToProps (dispatch) {
   return {
     copyGlossaryTerm: index => dispatch(copyGlossaryTerm(index)),
     onGlossaryTextChange: event =>
-        dispatch(glossarySearchTextEntered(event.target.value))
+        dispatch(glossarySearchTextEntered(event.target.value)),
+    showDetails: term => dispatch(showGlossaryTermDetails(term))
   }
 }
 

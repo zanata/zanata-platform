@@ -73,3 +73,19 @@ storiesOf('GlossaryTermModal', module)
       ]}
     />
   ))
+  .add('details still loading', () => (
+    <GlossaryTermModal
+      show={true}
+      close={action('close')}
+      sourceLocale="en-US"
+      targetLocale="de"
+      term={{
+        source: 'bat',
+        target: 'schlagen'
+      }}
+      details={[
+        undefined,
+        undefined
+      ]}
+    />
+  ))
