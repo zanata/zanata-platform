@@ -21,6 +21,7 @@
 
 package org.zanata.client.commands.pull;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.zanata.adapter.properties.PropWriter;
@@ -50,9 +51,9 @@ public class UTF8PropertiesStrategy extends PropertiesStrategy {
             LocaleMapping localeMapping, TranslationsResource targetDoc)
             throws IOException {
         boolean createSkeletons = getOpts().getCreateSkeletons();
-        PropWriter.writeTranslations(createSkeletons ? doc : null, targetDoc,
-            getOpts().getTransDir(),
-            docName, localeMapping.getJavaLocale(),
+        File transFileToWrite = getTransFileToWrite(docName, localeMapping);
+        PropWriter.writeTranslationsFile(doc, targetDoc,
+            transFileToWrite,
             PropWriter.CHARSET.UTF8, createSkeletons);
         return null;
     }
