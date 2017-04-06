@@ -94,8 +94,8 @@ timestamps {
 
           // validate translations
           sh """./run-clean.sh ./mvnw -e -V \
-              com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
-              -pl :zanata-war -am -DexcludeFrontend \
+            com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
+            -pl :zanata-war -am -DexcludeFrontend \
           """
 
           def jarFiles = 'target/*.jar'
@@ -107,15 +107,16 @@ timestamps {
           // suspected concurrency problems)
           // -Dmaven.test.failure.ignore: Continue building other modules
           // even after test failures.
-          sh """./run-clean.sh ./mvnw -e -V -T 1 clean install jxr:aggregate\
-              --batch-mode \
-              --settings .travis-settings.xml \
-              --update-snapshots \
-              -DstaticAnalysis \
-              $gwtOpts \
-              -DskipFuncTests \
-              -DskipArqTests \
-              -Dmaven.test.failure.ignore \
+          sh """./run-clean.sh ./mvnw -e -V -T 1 \
+            clean install jxr:aggregate \
+            --batch-mode \
+            --settings .travis-settings.xml \
+            --update-snapshots \
+            -DstaticAnalysis \
+            $gwtOpts \
+            -DskipFuncTests \
+            -DskipArqTests \
+            -Dmaven.test.failure.ignore \
           """
           // TODO add -Dvictims
           // TODO should we remove -Dmaven.test.failure.ignore (and catch
@@ -139,14 +140,15 @@ timestamps {
           archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**"
 
           // parse Jacoco test coverage
-          step([ $class: 'JacocoPublisher' ])
+          step([$class: 'JacocoPublisher'])
           // TODO push Jest/Jacoco results to codecov.io (with correct token)
         }
 
         // gather built files to use in following pipeline stages (on
         // other build nodes)
         stage('Stash') {
-          stash name: 'generated-files', includes: '**/target/**, **/src/main/resources/**,**/.zanata-cache/**'
+          stash name: 'generated-files',
+                  includes: '**/target/**, **/src/main/resources/**,**/.zanata-cache/**'
         }
       } catch (e) {
         echo("Caught exception: " + e)
@@ -159,13 +161,13 @@ timestamps {
   }
 
   // if the build is still green:
-  if ( currentBuild.result == null ) {
+  if (currentBuild.result == null) {
     // NB all the parallel tasks must be in one stage, because you can't use `stage` inside `parallel`.
     // See https://issues.jenkins-ci.org/browse/JENKINS-34696 and https://issues.jenkins-ci.org/browse/JENKINS-33185
     stage('Integration tests') {
       // define tasks which will run in parallel
       def tasks = [
-              "WILDFLY": { integrationTests('wildfly8') },
+              "WILDFLY" : { integrationTests('wildfly8') },
               "JBOSSEAP": { integrationTests('jbosseap6') },
               // abort other tasks (for faster feedback) as soon as one fails
               // disabled; not currently handled by pipeline-unit
@@ -175,7 +177,7 @@ timestamps {
       parallel tasks
 
       // if the build is *still* green after running integration tests:
-      if ( currentBuild.result == null ) {
+      if (currentBuild.result == null) {
         echo 'marking build as successful'
         currentBuild.result = 'SUCCESS'
       }
@@ -235,19 +237,20 @@ void integrationTests(String appserver) {
               -Dfindbugs.skip \
               -DstaticAnalysis=false \
               $gwtOpts \
-          """
+        """
 
         def mvnResult = sh returnStatus: true, script: """\
-              ./run-clean.sh ./mvnw -e -V -T 1 install \
-              --batch-mode \
-              --settings .travis-settings.xml \
-              --update-snapshots \
-              -Dappserver=$appserver \
-              -Dwebdriver.display=${env.DISPLAY} \
-              -Dwebdriver.type=chrome \
-              -Dwebdriver.chrome.driver=/opt/chromedriver \
-              ${ftOpts}
-          """
+            ./run-clean.sh ./mvnw -e -V -T 1 \
+            install \
+            --batch-mode \
+            --settings .travis-settings.xml \
+            --update-snapshots \
+            -Dappserver=$appserver \
+            -Dwebdriver.display=${env.DISPLAY} \
+            -Dwebdriver.type=chrome \
+            -Dwebdriver.chrome.driver=/opt/chromedriver \
+            ${ftOpts}
+        """
         // TODO skip npm/yarn (but don't -DexcludeFrontend; we need the version in target/ )
         /* TODO
         -Dassembly.skipAssembly \
