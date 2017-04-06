@@ -46,12 +46,13 @@ const GlossaryTermModal = React.createClass({
     const detailsDisplay = details.map(
       (detail, index) => {
         if (!detail) {
-          // FIXME add loader icon
-          return <tr key={index}>
-            <td>
-              <LoaderText loading loadingText='Searching...' />
-            </td>
-          </tr>
+          return (
+            <tr key={index}>
+              <td colSpan="3" className=" u-textCenter">
+                <LoaderText loading loadingText='Searching...' />
+              </td>
+            </tr>
+          )
         }
         const { description, pos, targetComment } = detail
         return (
