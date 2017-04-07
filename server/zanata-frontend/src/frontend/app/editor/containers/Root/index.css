@@ -11,6 +11,14 @@
   --Editor-suggestionsSearch-z-index      : 300;
 }
 
+
+/* Shorten with an ellipsis when overflowing */
+.ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
 .Editor {
   overflow: hidden;
 }
