@@ -1866,13 +1866,6 @@
             </configuration>
           </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-nodeps</artifactId>
-            <version>1.8.1</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
       <plugin>
@@ -2265,7 +2258,9 @@
         <wildfly.version>10.1.0.Final</wildfly.version>
         <!-- In case this profile was activated by default: -->
         <appserver>wildfly8</appserver>
-        <cargo.installation>https://repository.jboss.org/nexus/content/groups/developer/org/wildfly/wildfly-dist/${wildfly.version}/wildfly-dist-${wildfly.version}.zip</cargo.installation>
+        <!-- https leads to errors like
+             javax.net.ssl.SSLProtocolException: Server returned wrong cipher suite for session -->
+        <cargo.installation>http://repository.jboss.org/nexus/content/groups/developer/org/wildfly/wildfly-dist/${wildfly.version}/wildfly-dist-${wildfly.version}.zip</cargo.installation>
       </properties>
     </profile>
 
