@@ -378,6 +378,7 @@ table td button.gButton--link {
     vertical-align: baseline;
     right: 10px;
     position: fixed;
+  }
 }
 
 @media (max-width:1009px) {
