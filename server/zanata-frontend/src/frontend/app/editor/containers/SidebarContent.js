@@ -12,6 +12,7 @@ const SidebarContent = React.createClass({
   propTypes: {
     /* close the sidebar */
     close: PropTypes.func.isRequired,
+    glossaryCount: PropTypes.number.isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
     selectedPhrase: PropTypes.shape({
       msgctxt: PropTypes.string,
@@ -99,10 +100,18 @@ const SidebarContent = React.createClass({
   },
 
   render () {
-    var glossaryTitle = <span>
-      <Icon name="glossary" className="s1 gloss-tab-svg" />
-      <span className="hide-md">Glossary</span>
-    </span>
+    const { glossaryCount } = this.props
+    const glossaryCountDisplay = glossaryCount > 0
+      // TODO kgough display as a badge instead of text in parens
+      ? <span> ({this.props.glossaryCount})</span>
+      : undefined
+    const glossaryTitle = (
+      <span>
+        <Icon name="glossary" className="s1 gloss-tab-svg" />
+        <span className="hide-md">Glossary{glossaryCountDisplay}</span>
+      </span>
+    )
+
     return (
       <div>
         <h1 className="sidebar-heading">
@@ -131,9 +140,13 @@ const SidebarContent = React.createClass({
 })
 
 function mapStateToProps (state) {
-  const { phrases } = state
+  const { glossary, phrases } = state
   const { detail, selectedPhraseId } = phrases
   const selectedPhrase = detail[selectedPhraseId]
+
+  const { results, searchText } = glossary
+  const glossaryResults = results.get(searchText)
+  const glossaryCount = glossaryResults ? glossaryResults.length : 0
 
   // Need to check whether phrase itself is undefined since the detail may not
   // yet have been fetched from the server.
@@ -141,6 +154,7 @@ function mapStateToProps (state) {
       !isUndefined(selectedPhrase)
 
   const newProps = {
+    glossaryCount,
     hasSelectedPhrase
   }
 

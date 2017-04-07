@@ -98,7 +98,7 @@ function findGlossaryTerms (searchText) {
           GLOSSARY_TERMS_REQUEST,
           {
             type: GLOSSARY_TERMS_SUCCESS,
-            meta: { timestamp }
+            meta: { timestamp, searchText }
           },
           {
             type: GLOSSARY_TERMS_FAILURE,

@@ -19,7 +19,8 @@ import {
 const defaultState = {
   searchText: '',
   searching: false,
-  results: [],
+  // searchText -> results array
+  results: new Map(),
   resultsTimestamp: Date.now(),
   details: {
     show: false,
@@ -85,9 +86,11 @@ const glossary = (state = defaultState, action) => {
 
     case GLOSSARY_TERMS_SUCCESS:
       if (action.meta.timestamp > state.resultsTimestamp) {
+        const newResultsMap = new Map(state.results)
+        newResultsMap.set(action.meta.searchText, action.payload)
         return update({
           searching: {$set: false},
-          results: {$set: action.payload},
+          results: {$set: newResultsMap},
           resultsTimestamp: {$set: action.meta.timestamp}
         })
       } else {

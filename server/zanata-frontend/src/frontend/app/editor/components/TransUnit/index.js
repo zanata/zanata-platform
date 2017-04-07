@@ -120,13 +120,34 @@ const TransUnit = React.createClass({
   }
 })
 
+/**
+ * Get the count of available glossary terms for this phrase.
+ *
+ * Returns 0 if thre is no way to look up the results.
+ *
+ * @param phrase containing source text used for glossary search
+ * @param glossary containing cached search results
+ * @returns {number} count of available results
+ */
+function countGlossaryResults (phrase, glossary) {
+  if (!phrase.sources) {
+    // phrase detail not loaded, no way to look up any results
+    return 0
+  }
+  // Search text that this phrase would generate for glossary search
+  const glossarySearchText = phrase.sources.join(' ')
+  const glossaryResults = glossary.results.get(glossarySearchText)
+
+  return glossaryResults ? glossaryResults.length : 0
+}
+
 function mapStateToProps (state, ownProps) {
   const { index, phrase } = ownProps
   const { glossary, suggestions, ui } = state
   const { sidebar } = ui.panels
   const sourceLocale = state.context.sourceLocale
 
-  const glossaryCount = glossary.results.length
+  const glossaryCount = countGlossaryResults(phrase, glossary)
   const glossaryVisible =
     sidebar.visible && sidebar.selectedTab === GLOSSARY_TAB
 

@@ -144,8 +144,10 @@ function mapStateToProps ({ glossary }) {
   //   }
   // ]
 
+  const results = glossary.results.get(glossary.searchText) || []
   return {
-    ...glossary
+    ...glossary,
+    results
   }
 }
 
