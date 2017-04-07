@@ -94,6 +94,7 @@ timestamps {
 
           // validate translations
           sh """./run-clean.sh ./mvnw -e -V \
+            -Dbuildtime.output.log \
             com.googlecode.l10n-maven-plugin:l10n-maven-plugin:1.8:validate \
             -pl :zanata-war -am -DexcludeFrontend \
           """
@@ -108,6 +109,7 @@ timestamps {
           // -Dmaven.test.failure.ignore: Continue building other modules
           // even after test failures.
           sh """./run-clean.sh ./mvnw -e -V -T 1 \
+            -Dbuildtime.output.log \
             clean install jxr:aggregate \
             --batch-mode \
             --settings .travis-settings.xml \
@@ -241,6 +243,7 @@ void integrationTests(String appserver) {
 
         def mvnResult = sh returnStatus: true, script: """\
             ./run-clean.sh ./mvnw -e -V -T 1 \
+            -Dbuildtime.output.log \
             install \
             --batch-mode \
             --settings .travis-settings.xml \
