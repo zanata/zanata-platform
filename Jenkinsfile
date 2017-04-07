@@ -8,7 +8,7 @@ import groovy.transform.Field
 
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
-@Library('zanata-pipeline-library@pipelineunit')
+@Library('zanata-pipeline-library@master')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
 
