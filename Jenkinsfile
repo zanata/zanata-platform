@@ -4,13 +4,16 @@
  * Jenkinsfile for zanata-platform
  */
 
-import groovy.transform.Field
-
 // Import pipeline library for utility methods & classes:
 // ansicolor(), Notifier, PullRequests, Strings
 @Library('zanata-pipeline-library@master')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
+
+import groovy.transform.Field
+
+// The first milestone step starts tracking concurrent build order
+milestone()
 
 PullRequests.ensureJobDescription(env, manager, steps)
 
@@ -19,9 +22,11 @@ def notify
 // initialiser must be run separately (bindings not available during compilation phase)
 notify = new Notifier(env, steps)
 
-// we can't set this value yet, because we need a node to look at the environment
+// we can't set these values yet, because we need a node to look at the environment
 @Field
 def defaultNodeLabel
+@Field
+def jobName
 
 // Define project properties: general properties for the Pipeline-defined jobs.
 // 1. discard old artifacts and build logs
@@ -32,6 +37,8 @@ def defaultNodeLabel
 node {
   echo "running on node ${env.NODE_NAME}"
   defaultNodeLabel = env.DEFAULT_NODE ?: 'master || !master'
+  // eg github-zanata-org/zanata-platform/update-Jenkinsfile
+  jobName = env.JOB_NAME
   def projectProperties = [
     [
       $class: 'BuildDiscarderProperty',
@@ -75,6 +82,21 @@ def mainlineBranches = ['master', 'release', 'legacy']
 def gwtOpts = '-Dchromefirefox'
 if (env.BRANCH_NAME in mainlineBranches) {
   gwtOpts = ''
+}
+
+String getLockName() {
+  if (env.BRANCH_NAME in mainlineBranches) {
+    // Each mainline branch pipeline will have its own lock.
+    return jobName
+  } else if (env.BRANCH_NAME.startsWith('PR-')) {
+    // All pull requests (in any repo) will share the same lock/locks.
+    // It probably makes sense to define 2 or 3 locks with the name
+    // PullRequest for more concurrency.
+    return 'GitHubPullRequest'
+  } else {
+    // All miscellaneous branches (across all repos) will share the same lock.
+    return 'GitHubMiscBranch'
+  }
 }
 
 /* Build/Unit Tests should fail fast:
@@ -178,31 +200,46 @@ timestamps {
 
   // if the build is still green:
   if (currentBuild.result == null) {
-    // NB all the parallel tasks must be in one stage, because you can't use `stage` inside `parallel`.
-    // See https://issues.jenkins-ci.org/browse/JENKINS-34696 and https://issues.jenkins-ci.org/browse/JENKINS-33185
-    stage('Integration tests') {
-      // define tasks which will run in parallel
-      def tasks = [
-              "WILDFLY" : { integrationTests('wildfly8') },
-              "JBOSSEAP": { integrationTests('jbosseap6') },
-              // abort other tasks (for faster feedback) as soon as one fails
-              // disabled; not currently handled by pipeline-unit
+    // Only one build per lock name is allowed to run integration tests at a
+    // time (unless we define multiple identical locks).
+    // When there are more potential builds than locks available,
+    // *newer* builds are pulled off the queue first. When a build reaches the
+    // milestone at the beginning of the lock, all jobs (from the same pipeline)
+    // started prior to the current build that are still waiting for the lock
+    // will be aborted when they reach the milestone.
+    // Note that the milestone is at the beginning of the lock, because we
+    // want to abort concurrent tests before they are executed.
+    // Ref: https://jenkins.io/blog/2016/10/16/stage-lock-milestone/
+    // You can probably allow increased concurrency by defining more locks
+    // in Jenkins system config. q.v. JENKINS-42339
+    lock(resource: getLockName(), inversePrecedence: true, quantity: 1) {
+      milestone()
+      // NB all the parallel tasks must be in one stage, because you can't use `stage` inside `parallel`.
+      // See https://issues.jenkins-ci.org/browse/JENKINS-34696 and https://issues.jenkins-ci.org/browse/JENKINS-33185
+      stage('Integration tests') {
+        // define tasks which will run in parallel
+        def tasks = [
+                "WILDFLY" : { integrationTests('wildfly8') },
+                "JBOSSEAP": { integrationTests('jbosseap6') },
+                // abort other tasks (for faster feedback) as soon as one fails
+                // disabled; not currently handled by pipeline-unit
 //              failFast: true
-      ]
-      // run integration test tasks in parallel
-      parallel tasks
+        ]
+        // run integration test tasks in parallel
+        parallel tasks
 
-      // if the build is *still* green after running integration tests:
-      if (currentBuild.result == null) {
-        echo 'marking build as successful'
-        currentBuild.result = 'SUCCESS'
+        // if the build is *still* green after running integration tests:
+        if (currentBuild.result == null) {
+          echo 'marking build as successful'
+          currentBuild.result = 'SUCCESS'
+        }
+
+        // TODO notify finish
+        // TODO in case of failure, notify culprits via IRC, email and/or Rocket.Chat
+        // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
+        // http://stackoverflow.com/a/39535424/14379
+        // IRC: https://issues.jenkins-ci.org/browse/JENKINS-33922
       }
-
-      // TODO notify finish
-      // TODO in case of failure, notify culprits via IRC, email and/or Rocket.Chat
-      // https://wiki.jenkins-ci.org/display/JENKINS/Email-ext+plugin#Email-extplugin-PipelineExamples
-      // http://stackoverflow.com/a/39535424/14379
-      // IRC: https://issues.jenkins-ci.org/browse/JENKINS-33922
     }
   }
 }
