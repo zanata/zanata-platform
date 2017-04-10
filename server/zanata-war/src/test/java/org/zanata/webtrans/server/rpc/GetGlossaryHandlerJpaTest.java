@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server.rpc;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
@@ -20,15 +21,20 @@ import org.zanata.model.HGlossaryTerm;
 import org.zanata.model.HLocale;
 import org.zanata.rest.service.ProjectService;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.GlossarySearchService;
 import org.zanata.service.LocaleService;
+import org.zanata.service.impl.GlossarySearchServiceImpl;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.GlossaryUtil;
+import org.zanata.util.UrlUtil;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rpc.GetGlossary;
 import org.zanata.webtrans.shared.rpc.GetGlossaryResult;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 import com.google.common.collect.Lists;
 import javax.enterprise.inject.Any;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -49,13 +55,16 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
     private static final LocaleId TARGET_LOCALE_ID = new LocaleId("zh");
     @Inject
     @Any
-    private GetGlossaryHandler handler;
+    private GlossarySearchServiceImpl glossarySearchServiceImpl;
     @Produces
     @Mock
     private ZanataIdentity identity;
     @Produces
     @Mock
     private LocaleService localeService;
+    @Produces
+    @Mock
+    private UrlUtil urlUtil;
     @Produces
     @Mock
     @FullText
@@ -125,24 +134,23 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
                 GlossaryUtil.GLOBAL_QUALIFIED_NAME);
         // When:
         long start = System.nanoTime();
-        GetGlossaryResult result = handler.execute(action, null);
+        // FIXME this line gives a NPE, but glossarySearchServiceImpl can be
+        //       asserted as non-null value
+        ArrayList<GlossaryResultItem> result = glossarySearchServiceImpl.searchGlossary(
+                LocaleId.EN_US, TARGET_LOCALE_ID, "fedora",
+                HasSearchType.SearchType.FUZZY, 20, "progSlug");
         double duration = (System.nanoTime() - start) / 1.0E9;
         log.info("************** {} second", duration);
-        // Then:
-        assertThat(result.getGlossaries(), Matchers.hasSize(2));
-        assertThat(result.getGlossaries().get(0).getSource(),
-                Matchers.equalTo("Planet Fedora"));
-        assertThat(result.getGlossaries().get(0).getTarget(),
-                Matchers.equalTo("Fedora 博客聚集"));
-        assertThat(result.getGlossaries().get(1).getSource(),
-                Matchers.equalTo("Fedora Artwork"));
-        assertThat(result.getGlossaries().get(1).getTarget(),
-                Matchers.equalTo("Fedora 美工"));
-    }
 
-    @Test
-    @InRequestScope
-    public void testRollback() throws Exception {
-        handler.rollback(null, null, null);
+        // Then:
+        assertThat(result, Matchers.hasSize(2));
+        assertThat(result.get(0).getSource(),
+                Matchers.equalTo("Planet Fedora"));
+        assertThat(result.get(0).getTarget(),
+                Matchers.equalTo("Fedora 博客聚集"));
+        assertThat(result.get(1).getSource(),
+                Matchers.equalTo("Fedora Artwork"));
+        assertThat(result.get(1).getTarget(),
+                Matchers.equalTo("Fedora 美工"));
     }
 }
