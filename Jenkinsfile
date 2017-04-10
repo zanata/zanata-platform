@@ -19,6 +19,10 @@ def notify
 // initialiser must be run separately (bindings not available during compilation phase)
 notify = new Notifier(env, steps)
 
+// we can't set this value yet, because we need a node to look at the environment
+@Field
+def defaultNodeLabel
+
 // Define project properties: general properties for the Pipeline-defined jobs.
 // 1. discard old artifacts and build logs
 // 2. configure build parameters (eg requested labels for build nodes)
@@ -27,6 +31,7 @@ notify = new Notifier(env, steps)
 // we need a node to access env.DEFAULT_NODE.
 node {
   echo "running on node ${env.NODE_NAME}"
+  defaultNodeLabel = env.DEFAULT_NODE ?: 'master || !master'
   def projectProperties = [
     [
       $class: 'BuildDiscarderProperty',
@@ -44,7 +49,7 @@ node {
           /* Specify the default node in Jenkins environment DEFAULT_NODE
            * (eg kvm) or default to build on any node
            */
-          defaultValue: env.DEFAULT_NODE ?: 'master || !master',
+          defaultValue: defaultNodeLabel,
           description: 'Jenkins node label to use for build',
           name: 'LABEL'
         ]
@@ -53,6 +58,15 @@ node {
   ]
 
   properties(projectProperties)
+}
+
+String getLabel() {
+  if (params.LABEL == null) {
+    echo "LABEL param is null; using default value."
+  }
+  def result =  params.LABEL ?: defaultNodeLabel
+  echo "Using build node label: $result"
+  return result
 }
 
 @Field
@@ -70,7 +84,7 @@ if (env.BRANCH_NAME in mainlineBranches) {
 // use timestamps for Jenkins logs
 timestamps {
   // allocate a node for build+unit tests
-  node(LABEL) {
+  node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
     // generate logs in colour
     ansicolor {
@@ -195,7 +209,7 @@ timestamps {
 
 void integrationTests(String appserver) {
   def failsafeTestReports='target/failsafe-reports/TEST-*.xml'
-  node(LABEL) {
+  node(getLabel()) {
     echo "running on node ${env.NODE_NAME}"
     echo "WORKSPACE=${env.WORKSPACE}"
     checkout scm
