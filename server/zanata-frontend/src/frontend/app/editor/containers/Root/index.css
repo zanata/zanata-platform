@@ -477,10 +477,6 @@ ul.source-infolist {
     max-width: 6em;
   }
 
-  td.long-string {
-    display:inline-grid;
-  }
-
   #sidebartabs-pane-1 table tbody tr {
     display: table-row !important;
   }
