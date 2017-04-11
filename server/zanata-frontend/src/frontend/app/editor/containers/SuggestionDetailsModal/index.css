@@ -203,3 +203,10 @@ span.TransUnit-details-inner {
     padding-left:0.375em;
     font-weight:bold;
 }
+
+
+@media (max-width: 740px) {
+  .source-heading {
+    padding-left: 2.1em;
+  }
+}
