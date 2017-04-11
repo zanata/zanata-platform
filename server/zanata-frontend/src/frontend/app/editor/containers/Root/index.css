@@ -1,4 +1,4 @@
-  /** @define Editor; use strict */
+/** @define Editor; use strict */
 
 :root {
   --Editor-rhythm                         : 1.5rem;
@@ -148,7 +148,7 @@ li.docName span.ellipsis {
 }
 
 .trans-link.form-group {
-   padding-top:0.75em;
+  padding-top:0.75em;
 }
 
 .trans-link.form-group .form-control {
@@ -377,12 +377,12 @@ ul.source-infolist {
 }
 
 .modal-header .close {
-   float: right;
+  float: right;
 }
 
-  /**
-   * Media Queries
-   */
+/**
+ * Media Queries
+ */
 
 @media (--sm-viewport) {
   .Editor-currentProject {
@@ -393,16 +393,16 @@ ul.source-infolist {
 @media (--gtemd-viewport) {
   .Editor-translations {
     background:
-      linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg)),
-      linear-gradient(to right, var(--Editor-color-translation-bg), var(--Editor-color-translation-bg));
+        linear-gradient(to right, var(--Editor-color-status-bg), var(--Editor-color-status-bg)),
+        linear-gradient(to right, var(--Editor-color-translation-bg), var(--Editor-color-translation-bg));
     background-position:
-      center,
-      right;
+        center,
+        right;
     background-size:
-      var(--rhythm) 100%,
-      50% 100%;
+        var(--rhythm) 100%,
+        50% 100%;
     background-repeat:
-      no-repeat;
+        no-repeat;
   }
 }
 
@@ -411,33 +411,24 @@ ul.source-infolist {
   .TransUnit-heading {
     padding-left: 1.5em;
   }
-  .hide-md {
-    display: none;
-    visibility: hidden;
-  }
-
   td.long-string {
     display:table-row !important;
     padding-bottom:0 !important;
-    max-width:8em !important;
+    max-width:10em !important;
   }
-
   .long-string span {
-    max-width:8em !important;
+    max-width:9.5em !important;
   }
+}
 
-  #sidebartabs-pane-1 table tbody tr {
-   margin-bottom: 1em;
-    display: inline-table;
+@media (min-width:741px) {
+  .TransUnit-heading {
+    padding-left: 0 !important;
   }
+}
 
-  #sidebartabs-pane-1.tab-pane.active table tbody tr {
-    width:100%;
-  }
 
-  #sidebartabs-pane-1 td .Button--primary {
-    float:none;
-  }
+@media (max-width:909px) {
 
   .info-icon {
     text-align: left;
@@ -451,13 +442,41 @@ ul.source-infolist {
   .hide-mdplus {
     margin-right: 0.75em;
   }
-}
 
-@media (min-width:741px) {
-  .TransUnit-heading {
-    padding-left: 0 !important;
+  td.long-string {
+    display:table-row !important;
+    padding-bottom:0 !important;
+    max-width:14em !important;
   }
 
+  .long-string span {
+    max-width:13.5em !important;
+  }
+
+  .hide-md {
+    display: none;
+    visibility: hidden;
+  }
+
+  #sidebartabs-pane-1 table tbody tr {
+    margin-bottom: 1em;
+    display: inline-table;
+  }
+
+  #sidebartabs-pane-1.tab-pane.active table tbody tr {
+    width:100%;
+    border-bottom: 1px solid rgb(99, 156, 173);
+    padding-bottom:0.375em;
+  }
+
+  #sidebartabs-pane-1 td .Button--primary {
+    float:none;
+    margin-bottom: 0.375em;
+  }
+
+}
+
+@media (min-width:910px) {
   .hide-mdplus {
     display: none;
     visibility: hidden;
@@ -465,17 +484,17 @@ ul.source-infolist {
   }
 
   .info-icon, th.hide-md {
-    text-align:right !important;
+    text-align: right !important;
+    padding-left:1em;
   }
 
-  td.long-string  {
-    padding-bottom:0.75em;
-    max-width: 7em;
-    min-width: 3em;
+  td.long-string {
+    padding-bottom: 0.75em;
+    min-width: 6em;
   }
 
   .long-string span {
-    max-width: 6em;
+    max-width: 5.5em;
   }
 
   #sidebartabs-pane-1 table tbody tr {
@@ -487,13 +506,12 @@ ul.source-infolist {
   }
 }
 
-
 @media (min-width:1100px) {
   td.long-string  {
-    min-width: 8em;
+    max-width: 10em;
   }
   .long-string span {
-    max-width: 8em;
+    max-width: 9.5em;
   }
 
   #sidebartabs-pane-1 table tbody tr {

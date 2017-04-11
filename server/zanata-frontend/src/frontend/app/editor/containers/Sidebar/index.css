@@ -302,6 +302,10 @@ table td button.gButton--link {
   border-top-color: #333;
 }
 
+span.loader span div {
+  margin-left: auto;
+  margin-right: auto;
+}
 .panel {
   margin-bottom: 1.3em;
   border: 1px solid transparent;
