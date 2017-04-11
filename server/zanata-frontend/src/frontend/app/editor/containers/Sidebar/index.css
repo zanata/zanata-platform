@@ -148,7 +148,6 @@ table {
 }
 
 .table td {
-  width: inherit;
   position: relative;
   font-size: 1rem;
   vertical-align: top;

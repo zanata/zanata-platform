@@ -419,7 +419,7 @@ ul.source-infolist {
   td.long-string {
     display:table-row !important;
     padding-bottom:0 !important;
-    max-width:10em !important;
+    max-width:8em !important;
   }
 
   .long-string span {
@@ -469,8 +469,8 @@ ul.source-infolist {
   }
 
   td.long-string  {
-    max-width: 8em;
     padding-bottom:0.75em;
+    max-width:8em;
   }
 
   .long-string span {
@@ -489,7 +489,7 @@ ul.source-infolist {
 
 @media (min-width:1100px) {
   td.long-string  {
-    max-width: 10em;
+    min-width: 10em;
   }
   .long-string span {
     max-width: 8em;
