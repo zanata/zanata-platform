@@ -485,7 +485,6 @@ ul.source-infolist {
 
   .info-icon, th.hide-md {
     text-align: right !important;
-    padding-left:1em;
   }
 
   td.long-string {
@@ -503,6 +502,10 @@ ul.source-infolist {
 
   #sidebartabs-pane-1 td .Button--primary {
     float:right;
+  }
+
+  #sidebartabs-pane-1 table tbody tr td {
+    padding-right:0.5em;
   }
 }
 

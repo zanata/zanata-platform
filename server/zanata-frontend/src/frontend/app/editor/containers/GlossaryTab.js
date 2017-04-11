@@ -85,7 +85,7 @@ const GlossaryTab = React.createClass({
             <th>Source</th>
             <th>Target</th>
             <th></th>
-            <th className="hide-md">Details</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
