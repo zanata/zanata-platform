@@ -4941,7 +4941,7 @@ loose-envify@^1.0.0, loose-envify@^1.1.0:
   dependencies:
     js-tokens "^2.0.0"
 
-lorem-ipsum@^1.0.3:
+lorem-ipsum@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/lorem-ipsum/-/lorem-ipsum-1.0.3.tgz#40afece589b39bcec2c2e4cb8b154122f467b5c0"
   dependencies:
@@ -6294,12 +6294,12 @@ react-loading@0.0.9:
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-0.0.9.tgz#e9fba6948915ba7742a508193828b6c73eb04956"
 
-react-lorem-component@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/react-lorem-component/-/react-lorem-component-0.11.0.tgz#120387e62c934272364e12129a3308c6a2443b2a"
+react-lorem-component@0.10.0:
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/react-lorem-component/-/react-lorem-component-0.10.0.tgz#72508753c33534d32e1b59c705e82a5083b22e7a"
   dependencies:
-    lorem-ipsum "^1.0.3"
-    object-assign "^4.1.0"
+    lorem-ipsum "^1.0.1"
+    object-assign "^4.0.1"
     seedable-random "0.0.1"
 
 react-modal@^1.2.0, react-modal@^1.2.1:
