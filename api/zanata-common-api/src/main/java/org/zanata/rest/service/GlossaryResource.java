@@ -208,6 +208,9 @@ public interface GlossaryResource extends RestResource {
     @Path("/details/{locale}")
     @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
             MediaType.APPLICATION_JSON })
+    // TODO when GWT is removed, move the GlossaryDetails class to this module
+    //      and add the type hint.
+    // @TypeHint(GlossaryDetails[].class)
     Response getDetails(
             @CheckForNull @PathParam("locale") LocaleId locale,
             @CheckForNull @QueryParam("termIds") List<Long> termIds);
