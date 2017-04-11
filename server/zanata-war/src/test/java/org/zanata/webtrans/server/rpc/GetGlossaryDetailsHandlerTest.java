@@ -95,31 +95,8 @@ public class GetGlossaryDetailsHandlerTest extends ZanataTest {
         GetGlossaryDetailsResult result = handler.execute(action, null);
 
         verify(identity).checkLoggedIn();
-//        assertThat(result.getGlossaryDetails(), Matchers.hasSize(1));
-//        assertThat(result.getGlossaryDetails().get(0).getTarget(),
-//                Matchers.equalTo("target term"));
         assertThat(result.getGlossaryDetails(), Matchers.is(details));
     }
-
-//    @Test(expected = ActionException.class)
-//    @InRequestScope
-//    public void testExecuteWithInvalidLocale() throws Exception {
-//        WorkspaceId workspaceId =
-//                TestFixture.workspaceId(targetHLocale.getLocaleId());
-//        GetGlossaryDetailsAction action =
-//                new GetGlossaryDetailsAction(Lists.newArrayList(1L));
-//        action.setWorkspaceId(workspaceId);
-//        ProjectIterationId projectIterationId =
-//                workspaceId.getProjectIterationId();
-//        when(
-//                localeServiceImpl.validateLocaleByProjectIteration(
-//                        workspaceId.getLocaleId(),
-//                        projectIterationId.getProjectSlug(),
-//                        projectIterationId.getIterationSlug())).thenThrow(
-//                new ZanataServiceException("test"));
-//
-//        handler.execute(action, null);
-//    }
 
     @Test
     @InRequestScope
