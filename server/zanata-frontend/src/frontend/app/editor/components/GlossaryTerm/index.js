@@ -5,6 +5,7 @@
 import React, { PropTypes } from 'react'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import IconButton from '../IconButton'
+import { isEmpty } from 'lodash'
 
 const GlossaryTerm = React.createClass({
   propTypes: {
@@ -64,8 +65,13 @@ const GlossaryTerm = React.createClass({
             </Button>
           </OverlayTrigger>
         </td>
-        <td>
-          <Button title="Copy" onClick={this.copy}
+        <td
+          title={isEmpty(term.target)
+            ? 'No translation to copy.'
+            : 'Insert translated term at the cursor position.'}>
+          <Button
+            onClick={this.copy}
+            disabled={isEmpty(term.target)}
             className="Button Button--small u-rounded Button--primary">
             Copy
           </Button>
