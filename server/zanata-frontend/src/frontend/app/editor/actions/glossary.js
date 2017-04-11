@@ -135,7 +135,8 @@ export function showGlossaryDetails (show) {
  */
 export function showGlossaryTermDetails (index) {
   return (dispatch, getState) => {
-    const term = getState().glossary.results[index]
+    const { searchText, results } = getState().glossary
+    const term = results.get(searchText)[index]
     dispatch(setGlossaryDetailsIndex(index))
     dispatch(showGlossaryDetails(true))
     dispatch(getGlossaryDetails(term))

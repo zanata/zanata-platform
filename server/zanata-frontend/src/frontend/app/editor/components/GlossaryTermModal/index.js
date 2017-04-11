@@ -5,10 +5,9 @@ import { showGlossaryDetails } from '../../actions/glossary'
 
 function mapStateToProps (state) {
   const { context, glossary, headerData } = state
-  const { details, results } = glossary
+  const { details, results, searchText } = glossary
   const { byId, resultIndex, show } = details
-
-  const term = results[resultIndex]
+  const term = results.get(searchText)[resultIndex]
 
   // undefined items are kept, that just indicates the detail has not been
   // returned from the API yet.
