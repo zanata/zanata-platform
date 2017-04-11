@@ -53,9 +53,7 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
             org.slf4j.LoggerFactory.getLogger(GetGlossaryHandlerJpaTest.class);
 
     private static final LocaleId TARGET_LOCALE_ID = new LocaleId("zh");
-    @Inject
-    @Any
-    private GlossarySearchServiceImpl glossarySearchServiceImpl;
+
     @Produces
     @Mock
     private ZanataIdentity identity;
@@ -71,12 +69,7 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
     private FullTextEntityManager fullTextEntityManager;
     private HLocale targetHLocale;
     private GlossaryDAO glossaryDAO;
-
-    @Produces
-    @ProducesAlternative
-    GlossaryDAO getGlossaryDAO() {
-        return glossaryDAO;
-    }
+    private GlossarySearchServiceImpl glossarySearchService;
 
     @Override
     @Produces
@@ -102,6 +95,8 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         GlossaryDAO dao = new GlossaryDAO(getSession());
         glossaryDAO = spy(dao);
         targetHLocale = getEm().find(HLocale.class, 2L);
+        glossarySearchService =
+                new GlossarySearchServiceImpl(glossaryDAO, localeService, urlUtil);
     }
 
     @Test
@@ -136,7 +131,7 @@ public class GetGlossaryHandlerJpaTest extends ZanataDbunitJpaTest {
         long start = System.nanoTime();
         // FIXME this line gives a NPE, but glossarySearchServiceImpl can be
         //       asserted as non-null value
-        ArrayList<GlossaryResultItem> result = glossarySearchServiceImpl.searchGlossary(
+        ArrayList<GlossaryResultItem> result = glossarySearchService.searchGlossary(
                 LocaleId.EN_US, TARGET_LOCALE_ID, "fedora",
                 HasSearchType.SearchType.FUZZY, 20, "progSlug");
         double duration = (System.nanoTime() - start) / 1.0E9;

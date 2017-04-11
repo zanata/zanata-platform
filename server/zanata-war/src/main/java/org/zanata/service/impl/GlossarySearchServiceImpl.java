@@ -31,6 +31,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.queryparser.classic.ParseException;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.lucene.search.BooleanQuery;
@@ -51,7 +52,7 @@ import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType.SearchType;
 
 
-@Named("glossarySearchServiceImpl")
+@RequestScoped
 public class GlossarySearchServiceImpl implements GlossarySearchService {
     private static final Comparator<GlossaryResultItem> COMPARATOR =
             new GlossaryResultItemComparator();
@@ -59,12 +60,21 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
             org.slf4j.LoggerFactory.getLogger(GlossarySearchServiceImpl.class);
 
 
-    @Inject
     private GlossaryDAO glossaryDAO;
-    @Inject
     private LocaleService localeServiceImpl;
-    @Inject
     private UrlUtil urlUtil;
+
+    @Inject
+    public GlossarySearchServiceImpl(GlossaryDAO glossaryDAO,
+            LocaleService localeServiceImpl, UrlUtil urlUtil) {
+        this.glossaryDAO = glossaryDAO;
+        this.localeServiceImpl = localeServiceImpl;
+        this.urlUtil = urlUtil;
+    }
+
+    @SuppressWarnings("unused")
+    public GlossarySearchServiceImpl() {
+    }
 
     @Override
     public ArrayList<GlossaryResultItem> searchGlossary(
