@@ -84,6 +84,8 @@ public class GlossaryService implements GlossaryResource {
             org.slf4j.LoggerFactory.getLogger(GlossaryService.class);
 
     public static final String PROJECT_QUALIFIER_PREFIX = "project/";
+    private static final int REQUESTED_MAX_RESULTS_UPPER_LIMIT = 1000;
+
     @Inject
     private GlossaryDAO glossaryDAO;
     @Inject
@@ -186,10 +188,11 @@ public class GlossaryService implements GlossaryResource {
                     .entity("Missing query parameter \"searchText\"")
                     .build());
         }
-        if (maxResults < 1 || maxResults > 1000) {
+        if (maxResults < 1 || maxResults > REQUESTED_MAX_RESULTS_UPPER_LIMIT) {
             throw new WebApplicationException(Response
                     .status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid maxResults \"" + maxResults + "\". Must be between 1 and 1000 inclusive.")
+                    .entity("Invalid maxResults \"" + maxResults + "\". Must be between 1 and " +
+                            REQUESTED_MAX_RESULTS_UPPER_LIMIT + " inclusive.")
                     .build());
         }
 

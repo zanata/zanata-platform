@@ -236,6 +236,8 @@ export function findTextSuggestions (searchText) {
   }
 }
 
+const TIMES_TO_POLL_FOR_PHRASE_DETAIL = 20
+
 /**
  * Trigger a phrase search using the detail for the given phrase id.
  *
@@ -253,7 +255,7 @@ export function findPhraseSuggestionsById (phraseId) {
 
     waitForPhraseDetail(getState, phraseId, (phrase) => {
       dispatch(findPhraseSuggestions(phrase))
-    }, 20, () => {
+    }, TIMES_TO_POLL_FOR_PHRASE_DETAIL, () => {
       console.error('No detail available for phrase search after 20 tries. ' +
           'phraseId: ' + phraseId)
     })

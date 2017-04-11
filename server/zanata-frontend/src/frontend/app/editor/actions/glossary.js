@@ -29,6 +29,8 @@ export function glossarySearchTextEntered (searchText) {
   }
 }
 
+const TIMES_TO_POLL_FOR_PHRASE_DETAIL = 20
+
 /**
  * Run a glossary search based on the given phrase content when available.
  */
@@ -36,8 +38,8 @@ export function findGlossaryTermsByPhraseId (phraseId) {
   return (dispatch, getState) => {
     waitForPhraseDetail(getState, phraseId, (phrase) => {
       dispatch(glossarySearchTextEntered(phrase.sources.join(' ')))
-    }, 20, () => {
-      console.error('No phrase detail for glossary search after to tries.')
+    }, TIMES_TO_POLL_FOR_PHRASE_DETAIL, () => {
+      console.error('No phrase detail for glossary search after 20 tries.')
     })
   }
 }
@@ -68,6 +70,8 @@ export const GLOSSARY_TERMS_SUCCESS = Symbol('GLOSSARY_TERMS_SUCCESS')
 /* API request for glossary search has failed. */
 export const GLOSSARY_TERMS_FAILURE = Symbol('GLOSSARY_TERMS_FAILURE')
 
+const MAX_GLOSSARY_TERMS = 15
+
 /* Request glossary terms from the API */
 function findGlossaryTerms (searchText) {
   // used for success/failure to ensure the most recent results are used
@@ -89,7 +93,7 @@ function findGlossaryTerms (searchText) {
     const projectSlug = headerData.context.projectVersion.project.slug
 
     const glossaryUrl =
-      `${baseRestUrl}/glossary/search?srcLocale=${srcLocale}&transLocale=${transLocale}&project=${projectSlug}&searchText=${encodeURIComponent(searchText)}&maxResults=15` // eslint-disable-line max-len
+      `${baseRestUrl}/glossary/search?srcLocale=${srcLocale}&transLocale=${transLocale}&project=${projectSlug}&searchText=${encodeURIComponent(searchText)}&maxResults=${MAX_GLOSSARY_TERMS}` // eslint-disable-line max-len
 
     dispatch({
       [CALL_API]: getJsonWithCredentials({
