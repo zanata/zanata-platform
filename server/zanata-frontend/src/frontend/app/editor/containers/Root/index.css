@@ -446,11 +446,11 @@ ul.source-infolist {
   td.long-string {
     display:table-row !important;
     padding-bottom:0 !important;
-    max-width:14em !important;
+    max-width:12em !important;
   }
 
   .long-string span {
-    max-width:13.5em !important;
+    max-width:10em !important;
   }
 
   .hide-md {
