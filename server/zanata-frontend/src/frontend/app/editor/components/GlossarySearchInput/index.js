@@ -32,10 +32,6 @@ const GlossarySearchInput = React.createClass({
   propTypes: {
     text: PropTypes.string.isRequired,
     onTextChange: PropTypes.func.isRequired
-    // loading: PropTypes.bool.isRequired,
-    // resultCount: PropTypes.number,
-    // hasSearch: PropTypes.bool.isRequired,
-    // clearSearch: PropTypes.func.isRequired
   },
 
   getInitialState: () => {
