@@ -107,8 +107,9 @@
 
 .panel-info > .panel-heading {
     border-bottom: solid 1px var(--brand-info);
-    color:#fff;
-    background-color: var(--brand-info);
+    color: var(--brand-info);
+    background-color:#fcfcfc;
+    font-weight: 300;
 }
 
 .panel-title > .small,
@@ -163,6 +164,7 @@
     top: inherit;
     line-height: 3em;
     font-weight: 600;
+    color: var(--brand-primary);
 }
 
 .target-heading {
@@ -170,6 +172,7 @@
     top: inherit;
     line-height: 3em;
     font-weight: 600;
+    color: var(--brand-primary);
 }
 
 .label {
@@ -201,5 +204,19 @@ li.TransUnit-label-suggestions {
 
 span.TransUnit-details-inner {
     padding-left:0.375em;
-    font-weight:bold;
+    font-weight:500;
+    color:#444c54;
+}
+
+
+@media (max-width: 740px) {
+  .source-heading {
+    padding-left: 2.1em;
+  }
+
+  .TransUnit--suggestion .TransUnit-text--tight {
+    padding-top: 0 !important;
+    font-size: 1.2em;
+  }
+
 }
