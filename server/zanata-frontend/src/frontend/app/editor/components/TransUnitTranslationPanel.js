@@ -1,18 +1,23 @@
 import React, { PropTypes } from 'react'
+import { connect } from 'react-redux'
 import Textarea from 'react-textarea-autosize'
 import TransUnitTranslationHeader from './TransUnitTranslationHeader'
 import TransUnitTranslationFooter from './TransUnitTranslationFooter'
 import { Icon } from 'zanata-ui'
 import { pick } from 'lodash'
+import { phraseTextSelectionRange } from '../actions/phrases'
 
 /**
- * Panel to display and edit transaltions of a phrase.
+ * Panel to display and edit translations of a phrase.
  */
 const TransUnitTranslationPanel = React.createClass({
 
   propTypes: {
+    glossaryCount: PropTypes.number.isRequired,
+    glossaryVisible: PropTypes.bool.isRequired,
     // the key of the currently open dropdown (may be undefined if none is open)
     openDropdown: PropTypes.any,
+    onSelectionChange: PropTypes.func.isRequired,
     // the key for the save dropdown for this translation panel. Can be compared
     // with openDropdown to see whether this dropdown is open.
     saveDropdownKey: PropTypes.any.isRequired,
@@ -32,6 +37,7 @@ const TransUnitTranslationPanel = React.createClass({
     selectPhrasePluralIndex: PropTypes.func.isRequired,
     suggestionCount: PropTypes.number.isRequired,
     showSuggestions: PropTypes.bool.isRequired,
+    toggleGlossary: PropTypes.func.isRequired,
     toggleSuggestionPanel: PropTypes.func.isRequired,
     suggestionSearchType: PropTypes.oneOf(['phrase', 'text']).isRequired
   },
@@ -86,7 +92,12 @@ const TransUnitTranslationPanel = React.createClass({
   },
 
   render: function () {
-    const { phrase, selected, selectPhrasePluralIndex } = this.props
+    const {
+      onSelectionChange,
+      phrase,
+      selected,
+      selectPhrasePluralIndex
+    } = this.props
     var header, footer
     const isPlural = phrase.plural
 
@@ -100,6 +111,8 @@ const TransUnitTranslationPanel = React.createClass({
       header = <TransUnitTranslationHeader {...headerProps} />
 
       const footerProps = pick(this.props, [
+        'glossaryCount',
+        'glossaryVisible',
         'openDropdown',
         'phrase',
         'saveAsMode',
@@ -109,6 +122,7 @@ const TransUnitTranslationPanel = React.createClass({
         'suggestionCount',
         'suggestionSearchType',
         'toggleDropdown',
+        'toggleGlossary',
         'toggleSuggestionPanel'
       ])
       footer = <TransUnitTranslationFooter {...footerProps} />
@@ -144,6 +158,7 @@ const TransUnitTranslationPanel = React.createClass({
               index={index}
               isPlural={isPlural}
               phrase={phrase}
+              onSelectionChange={onSelectionChange}
               selected={selected}
               selectedPluralIndex={selectedPluralIndex}
               selectPhrasePluralIndex={selectPhrasePluralIndex}
@@ -169,6 +184,7 @@ const TranslationItem = React.createClass({
     dropdownIsOpen: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
     isPlural: PropTypes.bool.isRequired,
+    onSelectionChange: PropTypes.func.isRequired,
     phrase: PropTypes.shape({
       id: PropTypes.any.isRequired
     }).isRequired,
@@ -202,6 +218,7 @@ const TranslationItem = React.createClass({
       dropdownIsOpen,
       index,
       isPlural,
+      onSelectionChange,
       selected,
       selectedPluralIndex,
       translation
@@ -237,10 +254,31 @@ const TranslationItem = React.createClass({
           value={translation}
           placeholder="Enter a translation…"
           onFocus={this.setFocusedPlural}
-          onChange={this._onChange} />
+          onChange={this._onChange}
+          onSelect={onSelectionChange} />
       </div>
     )
   }
 })
 
-export default TransUnitTranslationPanel
+function mapStateToProps (state, ownProps) {
+  // TODO put all the branch-specific stuff here for a start
+  return {
+  }
+}
+
+function mapDispatchToProps (dispatch, ownProps) {
+  // TODO put all the branch-specific stuff here for a start
+  return {
+    onSelectionChange: (event) => {
+      const { selectionStart, selectionEnd } = event.target
+      event.stopPropagation()
+      // This does seem to fire when selected phrase changes, so it is fine
+      // to just transmit the range without info about which row it is for.
+      dispatch(phraseTextSelectionRange(selectionStart, selectionEnd))
+    }
+  }
+}
+
+export default connect(
+    mapStateToProps, mapDispatchToProps)(TransUnitTranslationPanel)

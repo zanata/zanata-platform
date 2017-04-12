@@ -1,6 +1,7 @@
 import { SET_SIDEBAR_VISIBILITY } from '../actions'
 import {
   CHANGE_UI_LOCALE,
+  TOGGLE_GLOSSARY,
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
   UI_LOCALES_FETCHED
@@ -22,6 +23,8 @@ export const DEFAULT_LOCALE = {
   'name': 'English'
 }
 
+export const GLOSSARY_TAB = Symbol('GLOSSARY_TAB')
+
 const DEFAULT_FILTER_STATE = {
   all: true,
   approved: false,
@@ -37,7 +40,8 @@ const defaultState = {
       visible: true
     },
     sidebar: {
-      visible: true
+      visible: true,
+      selectedTab: GLOSSARY_TAB
     },
     suggestions: {
       visible: true,
@@ -68,6 +72,18 @@ const ui = (state = defaultState, action) => {
         panels: {
           suggestions: {
             heightPercent: {$set: action.percentageHeight}
+          }
+        }
+      })
+
+    case TOGGLE_GLOSSARY:
+      const glossaryWasOpen = state.panels.sidebar.visible &&
+        state.panels.sidebar.selectedTab === GLOSSARY_TAB
+      return update({
+        panels: {
+          sidebar: {
+            visible: {$set: !glossaryWasOpen},
+            selectedTab: {$set: GLOSSARY_TAB}
           }
         }
       })

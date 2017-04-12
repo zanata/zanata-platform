@@ -58,6 +58,17 @@ public class MockGlossaryResource implements GlossaryResource {
     }
 
     @Override
+    public Response search(LocaleId srcLocale, LocaleId transLocale,
+        int maxResults, String searchText, String projectSlug) {
+        return MockResourceUtil.notUsedByClient();
+    }
+
+    @Override
+    public Response getDetails(LocaleId locale, List<Long> termIds) {
+        return MockResourceUtil.notUsedByClient();
+    }
+
+    @Override
     public Response downloadFile(@DefaultValue("csv") String fileType,
             String locales, String qualifiedName) {
         return MockResourceUtil.notUsedByClient();

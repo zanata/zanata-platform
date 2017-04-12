@@ -1,8 +1,7 @@
-package org.zanata.webtrans.server.rpc;
+package org.zanata.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-
+import com.google.common.collect.Lists;
+import net.customware.gwt.dispatch.shared.ActionException;
 import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
@@ -12,14 +11,9 @@ import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
 import org.zanata.exception.ZanataServiceException;
-import org.zanata.model.Glossary;
-import org.zanata.model.HGlossaryEntry;
-import org.zanata.model.HGlossaryTerm;
-import org.zanata.model.HLocale;
-import org.zanata.model.TestFixture;
+import org.zanata.model.*;
 import org.zanata.rest.service.GlossaryService;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.GlossarySearchService;
 import org.zanata.service.LocaleService;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.UrlUtil;
@@ -27,36 +21,36 @@ import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
-import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsResult;
-import com.google.common.collect.Lists;
-
-import net.customware.gwt.dispatch.shared.ActionException;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Date;
 
-import static org.hamcrest.MatcherAssert.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-/**
- * @author Patrick Huang <a
- *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
- */
 @RunWith(CdiUnitRunner.class)
-public class GetGlossaryDetailsHandlerTest extends ZanataTest {
+public class GlossarySearchServiceImplTest extends ZanataTest {
+
+// FIXME this is just code from a test for GetGlossaryDetailsHandler, but the
+// code under test is migrated from there anyway.
+
     @Inject @Any
-    private GetGlossaryDetailsHandler handler;
+    private GlossarySearchServiceImpl glossarySearchServiceImpl;
     @Produces @Mock
     private ZanataIdentity identity;
     @Produces @Mock
-    private GlossarySearchService glossarySearchServiceImpl;
-
+    private GlossaryDAO glossaryDAO;
+    @Produces @Mock
+    private LocaleService localeServiceImpl;
+    @Produces @Mock
+    private UrlUtil urlUtil;
     private HLocale targetHLocale = new HLocale(LocaleId.DE);
     private final HLocale srcLocale = new HLocale(LocaleId.EN);
 
-    // FIXME put in common utility class for tests?
     private HGlossaryTerm glossaryTerm(String content, HLocale srcLocale) {
         HGlossaryTerm glossaryTerm = new HGlossaryTerm(content);
         glossaryTerm.setVersionNum(0);
@@ -71,36 +65,33 @@ public class GetGlossaryDetailsHandlerTest extends ZanataTest {
 
     @Test
     @InRequestScope
-    public void testExecute() throws Exception {
+    public void testLookupDetails() throws Exception {
         WorkspaceId workspaceId =
                 TestFixture.workspaceId(targetHLocale.getLocaleId());
         ArrayList<Long> sourceIdList = Lists.newArrayList(1L);
-        GetGlossaryDetailsAction action =
-                new GetGlossaryDetailsAction(sourceIdList);
-        action.setWorkspaceId(workspaceId);
 
-        ArrayList<GlossaryDetails> details = new ArrayList<>();
-        details.add(new GlossaryDetails(5L, "src term", "target term",
-                "term description", "pos", "target comment",
-                "source ref", srcLocale.getLocaleId(), targetHLocale.getLocaleId(),
-                "url", 1, new Date()));
-        when(glossarySearchServiceImpl.lookupDetails(targetHLocale.getLocaleId(), sourceIdList))
-                .thenReturn(details);
+        // Mock to return the locale (I think I changed this to not validate!)
+        when(localeServiceImpl.getByLocaleId(workspaceId.getLocaleId()))
+                .thenReturn(targetHLocale);
 
+        // Mock to return the list of terms
         HGlossaryTerm sourceTerm = glossaryTerm("src term", srcLocale);
         HGlossaryTerm targetTerm = glossaryTerm("target term", srcLocale);
         sourceTerm.getGlossaryEntry().getGlossaryTerms()
                 .put(targetHLocale, targetTerm);
+        when(glossaryDAO.findTermByIdList(sourceIdList)).thenReturn(
+                Lists.newArrayList(sourceTerm));
 
-        GetGlossaryDetailsResult result = handler.execute(action, null);
 
-        verify(identity).checkLoggedIn();
-        assertThat(result.getGlossaryDetails(), Matchers.is(details));
-    }
+        ArrayList<GlossaryDetails> result = glossarySearchServiceImpl.lookupDetails(
+                targetHLocale.getLocaleId(), sourceIdList);
 
-    @Test
-    @InRequestScope
-    public void testRollback() throws Exception {
-        handler.rollback(null, null, null);
+        // The calling class is responsible for checking a login. Make sure this
+        // is tested in the GetGlossaryDetailsHandler test.
+//        verify(identity).checkLoggedIn();
+
+        assertThat(result, Matchers.hasSize(1));
+        assertThat(result.get(0).getTarget(),
+                Matchers.equalTo("target term"));
     }
 }

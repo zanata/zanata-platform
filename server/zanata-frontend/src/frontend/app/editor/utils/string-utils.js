@@ -22,6 +22,12 @@ export function equals (from, to, ignoreCase) {
   return from === to
 }
 
+export function replaceRange (str, replacement, start, end) {
+  const length = end - start
+  return str.replace(
+      new RegExp('^(.{' + start + '}).{' + length + '}'), '$1' + replacement)
+}
+
 /**
  * Template tag function to allow single-line template strings to be wrapped.
  *

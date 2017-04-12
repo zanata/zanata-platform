@@ -44,7 +44,7 @@ Modal.Footer = ModalFooter
 Modal.propTypes = {
   children: PropTypes.node,
   /**
-   * Wether or not to show a close button
+   * Whether or not to show a close button
    */
   closeButton: PropTypes.bool,
   /**

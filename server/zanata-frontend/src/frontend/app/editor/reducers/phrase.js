@@ -3,6 +3,7 @@ import {
   CLAMP_PAGE,
   UPDATE_PAGE
 } from '../actions/controlsHeaderActions'
+import { COPY_GLOSSARY_TERM } from '../actions/glossary'
 import {
   CANCEL_EDIT,
   COPY_FROM_ALIGNED_SOURCE,
@@ -12,6 +13,7 @@ import {
   PENDING_SAVE_INITIATED,
   PHRASE_LIST_FETCHED,
   PHRASE_DETAIL_FETCHED,
+  PHRASE_TEXT_SELECTION_RANGE,
   QUEUE_SAVE,
   SAVE_FINISHED,
   SAVE_INITIATED,
@@ -26,6 +28,7 @@ import {
   calculateMaxPageIndexFromState,
   getFilteredPhrasesFromState
 } from '../utils/filter-paging-util'
+import { replaceRange } from '../utils/string-utils'
 import { SET_SAVE_AS_MODE } from '../actions/editorShortcuts'
 import { MOVE_NEXT, MOVE_PREVIOUS } from '../actions/phraseNavigation'
 
@@ -44,6 +47,12 @@ const defaultState = {
   // expected shape: { [phraseId1]: phrase-object, [phraseId2]: ..., ...}
   detail: {},
   selectedPhraseId: undefined,
+  /* Cursor/selection position within the currently editing translation, used
+   * for inserting terms from glossary etc. */
+  selectedTextRange: {
+    start: 0,
+    end: 0
+  },
   paging: {
     countPerPage: 20,
     pageIndex: 0
@@ -86,6 +95,12 @@ const phraseReducer = (state = defaultState, action) => {
         return copyFromSource(phrase, sourceIndex)
       }})
 
+    case COPY_GLOSSARY_TERM:
+      return updatePhrase(state.selectedPhraseId, {$apply: phrase => {
+        return insertTextAtRange(phrase, action.payload.termTranslation,
+          state.selectedTextRange)
+      }})
+
     case COPY_SUGGESTION:
       const { suggestion } = action
       return updatePhrase(state.selectedPhraseId, {$apply: phrase => {
@@ -126,6 +141,11 @@ const phraseReducer = (state = defaultState, action) => {
       return update({
         fetchingDetail: {$set: false},
         detail: {$merge: action.phrases}
+      })
+
+    case PHRASE_TEXT_SELECTION_RANGE:
+      return update({
+        selectedTextRange: {$set: action.payload}
       })
 
     case QUEUE_SAVE:
@@ -319,6 +339,30 @@ function copyFromSuggestion (phrase, suggestion) {
       // $splice represents an array of calls to Array.prototype.splice
       // with an array of params for each call
       $splice: [[focusedTranslationIndex, 1, targets[targetIndexToCopy]]]
+    }
+  })
+}
+
+function insertTextAtRange (phrase, text, {start, end}) {
+  const { newTranslations, selectedPluralIndex, shouldGainFocus } = phrase
+  const focusedTranslationIndex = selectedPluralIndex || 0
+
+  const original = newTranslations[focusedTranslationIndex]
+  const updated = replaceRange(original, text, start, end)
+
+  // TODO set selected index as end of inserted range
+  //      (likely needs to use refs on the component)
+  // const cursorPositionAfter = start + text.length
+
+  // The textarea is focused when shouldGainFocus has a changed truthy value
+  // so incrementing will lead to focus being gained.
+  const focusId = (shouldGainFocus || 0) + 1
+  return updateObject(phrase, {
+    shouldGainFocus: {$set: focusId},
+    newTranslations: {
+      // $splice represents an array of calls to Array.prototype.splice
+      // with an array of params for each call
+      $splice: [[focusedTranslationIndex, 1, updated]]
     }
   })
 }
