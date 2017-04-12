@@ -166,6 +166,8 @@ timestamps {
           stash name: 'generated-files',
                   includes: '**/target/**, **/src/main/resources/**,**/.zanata-cache/**'
         }
+        // Reduce workspace size
+        sh "git clean -fdx"
       } catch (e) {
         echo("Caught exception: " + e)
         notify.failed()
@@ -290,6 +292,8 @@ void integrationTests(String appserver) {
                   // TODO enable after https://issues.jenkins-ci.org/browse/JENKINS-33168 is fixed
                   // , testDataPublishers: [[$class: 'StabilityTestDataPublisher']]
           )
+          // Reduce workspace size
+          sh "git clean -fdx"
         } else {
           currentBuild.result = 'FAILED'
           error "no integration test results for $appserver"
