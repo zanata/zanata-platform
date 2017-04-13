@@ -20,7 +20,6 @@
  */
 package org.zanata.config;
 
-import com.google.common.annotations.VisibleForTesting;
 import javax.inject.Inject;
 import javax.inject.Named;
 

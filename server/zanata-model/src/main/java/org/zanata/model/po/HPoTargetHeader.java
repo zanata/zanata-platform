@@ -67,4 +67,33 @@ public class HPoTargetHeader extends PoHeaderBase {
         return "HPoTargetHeader(super=" + super.toString() + ", targetLanguage="
                 + this.getTargetLanguage() + ")";
     }
+
+    /**
+     * Business key equality
+     * @param other object
+     * @return objects are equal
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        if (!super.equals(other)) return false;
+
+        HPoTargetHeader that = (HPoTargetHeader) other;
+
+        if (targetLanguage != null
+                ? !targetLanguage.equals(that.targetLanguage)
+                : that.targetLanguage != null) {
+            return false;
+        }
+        return document != null ? document.equals(that.document) : that.document == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (targetLanguage != null ? targetLanguage.hashCode() : 0);
+        result = 31 * result + (document != null ? document.hashCode() : 0);
+        return result;
+    }
 }

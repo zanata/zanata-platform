@@ -95,13 +95,8 @@ public interface SourceDocResource extends RestResource {
      *         the server while performing this operation.
      */
     @GET
-    // TODO Enunciate doesn't handle arrays/Collections
-    // Ugly workaround:
-    // http://docs.codehaus.org/display/ENUNCIATE/Lists+and+JAX-RS
-    // Eventual solution: https://jira.codehaus.org/browse/ENUNCIATE-429
-            @TypeHint(ResourceMeta[].class)
-            public
-            Response get(@QueryParam("ext") Set<String> extensions);
+    @TypeHint(ResourceMeta[].class)
+    Response get(@QueryParam("ext") Set<String> extensions);
 
     /**
      * Creates a new Document.

@@ -23,6 +23,7 @@ package org.zanata.rest.service;
 
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -153,6 +154,66 @@ public interface GlossaryResource extends RestResource {
             @QueryParam("filter") String filter,
             @QueryParam("sort") String fields,
             @DefaultValue(GLOBAL_QUALIFIED_NAME) @QueryParam("qualifiedName") String qualifiedName);
+
+    /**
+     * Returns Glossary entries based on a fuzzy text search.
+     *
+     * @param srcLocale
+     *            Source locale
+     * @param transLocale
+     *            Translation locale
+     * @param maxResults
+     *            Maximum results for global and project queries. May return
+     *            up to double this number. Default: 20
+     * @param searchText
+     *            Text containing terms to match in the search.
+     * @param projectSlug
+     *            (optional) Project slug if a project glossary should be searched
+     *            in addition to the global glossary.
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Response containing all Glossary entries for the given
+     *         locale.
+     *         Bad request(400)
+     *           - When maxResults is not strictly positive or is more than 1000.
+     *           - When searchText is missing
+     *           - When transLocale is missing
+     *           - When there is an error parsing the searchText
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected
+     *         error in the server while performing this operation.
+     */
+    @GET
+    @Path("/search")
+    @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
+            MediaType.APPLICATION_JSON })
+    @TypeHint(ResultList.class)
+    Response search(
+            @DefaultValue("en-US") @QueryParam("srcLocale") LocaleId srcLocale,
+            @CheckForNull @QueryParam("transLocale") LocaleId transLocale,
+            @DefaultValue("20") @QueryParam("maxResults") int maxResults,
+            @CheckForNull @QueryParam("searchText") String searchText,
+            @CheckForNull @QueryParam("project") String projectSlug);
+
+    /**
+     * Get the details for a set of glossary terms.
+     *
+     * Includes source details, and details from the given locale.
+     *
+     * @param locale include locale-specific detail for this locale
+     * @param termIds id for glossary terms in the default locale, found in
+     *                results of {@link #search(LocaleId, LocaleId, int, String, String)}
+     * @return source and target glossary details.
+     */
+    @GET
+    @Path("/details/{locale}")
+    @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
+            MediaType.APPLICATION_JSON })
+    // TODO when GWT is removed, move the GlossaryDetails class to this module
+    //      and add the type hint.
+    // @TypeHint(GlossaryDetails[].class)
+    Response getDetails(
+            @CheckForNull @PathParam("locale") LocaleId locale,
+            @CheckForNull @QueryParam("termIds") List<Long> termIds);
 
     /**
      * Download all glossary entries as file

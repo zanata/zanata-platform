@@ -362,7 +362,7 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
             }
             identity.checkPermission(getInstance(), "update");
             HProjectIteration version =
-                    projectIterationDAO.findById(new Long(getSelectedItem()));
+                    projectIterationDAO.findById(Long.valueOf(getSelectedItem()));
             getInstance().getProjectIterations().add(version);
             versionGroupHome.update(conversationScopeMessages);
             reset();

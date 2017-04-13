@@ -117,23 +117,23 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         if (sourceVersion == null) {
             log.error("Cannot find source version of {}:{}", sourceProjectSlug,
                     sourceVersionSlug);
-            return AsyncTaskResult.taskResult();
+            return AsyncTaskResult.completed();
         }
         HProjectIteration targetVersion = projectIterationDAO
                 .getBySlug(targetProjectSlug, targetVersionSlug);
         if (targetVersion == null) {
             log.error("Cannot find target version of {}:{}", targetProjectSlug,
                     targetVersionSlug);
-            return AsyncTaskResult.taskResult();
+            return AsyncTaskResult.completed();
         }
         if (isVersionsEmpty(sourceVersion, targetVersion)) {
-            return AsyncTaskResult.taskResult();
+            return AsyncTaskResult.completed();
         }
         if (getSupportedLocales(targetProjectSlug, targetVersionSlug)
                 .isEmpty()) {
             log.error("No locales enabled in target version of {} [{}]",
                     targetProjectSlug, targetVersionSlug);
-            return AsyncTaskResult.taskResult();
+            return AsyncTaskResult.completed();
         }
         Optional<MergeTranslationsTaskHandle> taskHandleOpt =
                 Optional.fromNullable(handle);
@@ -164,7 +164,7 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         log.info("merge translation end: from {} to {}, {}",
                 sourceProjectSlug + ":" + sourceVersionSlug,
                 targetProjectSlug + ":" + targetVersionSlug, overallStopwatch);
-        return AsyncTaskResult.taskResult();
+        return AsyncTaskResult.completed();
     }
 
     protected int mergeTranslationBatch(HProjectIteration sourceVersion,

@@ -12,11 +12,11 @@ var defaultConfig = require('./webpack.config.js')
 
 module.exports = merge.smart(defaultConfig, {
   entry: {
-    'bundle.legacy': './app/legacy'
+    'frontend.legacy': './app/legacy'
   },
   cache: false,
   output: {
-    filename: 'frontend.[name].min.js'
+    filename: '[name].min.js'
   },
   module: {
     loaders: [
@@ -37,5 +37,9 @@ module.exports = merge.smart(defaultConfig, {
         'NODE_ENV': JSON.stringify('production')
       }
     })
-  ]
+  ],
+
+  eslint: {
+    failOnWarning: true
+  }
 })

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!--
+    This file is for webpack dev server only.
+    It is not used in production.
+-->
+<html class="new-zanata" lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Zanata</title>
+
+  <meta name="description" content="Open Translation for Everyone">
+  <meta name="author" content="Red Hat">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="cleartype" content="on">
+
+  <link rel="icon" type="image/x-icon" href="http://assets-zanata.rhcloud.com/master/assets/img/logo/logo.ico">
+  <link rel="stylesheet" type="text/css" href="/editor.css">
+  <link rel="stylesheet" type="text/css" async
+    href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic'>
+</head>
+
+<body class="new-zanata">
+<noscript>
+  <div class="l__wrapper l--push-v-1">
+    <p class="message--danger" translate>We're sorry, this application needs Javascript to
+      run.</p>
+  </div>
+</noscript>
+
+<div id="config"
+     data-base-url=""
+     data-api-origin="http://localhost:8080"
+     data-api-root="/rest"
+     data-user="{}"
+     data-links='{
+       "loginUrl": "http://localhost:8080/account/sign_in",
+       "registerUrl": "http://localhost:8080/account/register"
+     }'>
+</div>
+<script type="application/javascript">
+  window.config = document.getElementById('config').dataset
+</script>
+
+  <div id="appRoot"/>
+  <script type="text/javascript" src="/editor.js" charset="utf-8"></script>
+
+</body>
+</html>

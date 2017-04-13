@@ -494,4 +494,12 @@ public class ApplicationConfiguration implements Serializable {
     public boolean isEnforceMatchingUsernames() {
         return this.enforceMatchingUsernames;
     }
+
+    public boolean isAutoAcceptRequests() {
+        return databaseBackedConfig.isAutoAcceptTranslators();
+    }
+
+    public String getGravatarRating() {
+        return databaseBackedConfig.getMaxGravatarRating();
+    }
 }

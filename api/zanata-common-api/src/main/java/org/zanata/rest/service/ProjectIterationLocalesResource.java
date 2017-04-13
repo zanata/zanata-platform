@@ -48,7 +48,6 @@ public interface ProjectIterationLocalesResource extends RestResource {
      *    NOT FOUND 404 if the project-version does not exist
      */
     @GET
-    // workaround for enunciate, see note in org.zanata.rest.service.ProjectResource
     @TypeHint(LocaleDetails[].class)
     @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_LOCALES_XML,
             MediaTypes.APPLICATION_ZANATA_PROJECT_LOCALES_JSON,

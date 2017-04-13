@@ -97,6 +97,11 @@ public class ServerConfigurationBean implements Serializable {
     private PropertyWithKey<Boolean> allowAnonymousUserProperty =
             new PropertyWithKey<Boolean>("allowAnonymousUser",
                     KEY_ALLOW_ANONYMOUS_USER);
+    private boolean autoAcceptRequests = false;
+    private PropertyWithKey<Boolean> autoAcceptRequestsProperty =
+            new PropertyWithKey<Boolean>("autoAcceptRequests",
+                    KEY_AUTO_ACCEPT_TRANSLATOR);
+
     @EmailList
     private String logDestinationEmails;
     private String logEmailLevel;
@@ -118,6 +123,7 @@ public class ServerConfigurationBean implements Serializable {
     private String maxFilesPerUpload;
     @DomainList
     private String permittedUserEmailDomains;
+    private String gravatarRating;
     private List<PropertyWithKey<String>> commonStringProperties = Arrays
             .asList(new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
                     new PropertyWithKey<String>("serverUrl", KEY_HOST),
@@ -144,6 +150,8 @@ public class ServerConfigurationBean implements Serializable {
                             KEY_DISPLAY_USER_EMAIL),
                     new PropertyWithKey<String>("permittedUserEmailDomains",
                             KEY_PERMITTED_USER_EMAIL_DOMAIN),
+                    new PropertyWithKey<String>("gravatarRating",
+                            KEY_GRAVATAR_RATING),
                     homeContentProperty);
 
     public String updateHomeContent() {
@@ -159,6 +167,7 @@ public class ServerConfigurationBean implements Serializable {
         setPropertiesFromConfigIfNotNull(commonStringProperties);
         setBooleanPropertyFromConfigIfNotNull(enableLogEmailProperty);
         setBooleanPropertyFromConfigIfNotNull(allowAnonymousUserProperty);
+        setBooleanPropertyFromConfigIfNotNull(autoAcceptRequestsProperty);
         this.fromEmailAddr = applicationConfiguration.getFromEmailAddr();
     }
 
@@ -222,7 +231,18 @@ public class ServerConfigurationBean implements Serializable {
             allowAnonymousUserValue
                     .setValue(Boolean.toString(allowAnonymousUser));
         }
+        HApplicationConfiguration autoAcceptRequestsValue =
+                applicationConfigurationDAO.findByKey(KEY_AUTO_ACCEPT_TRANSLATOR);
+        if (autoAcceptRequestsValue == null) {
+            autoAcceptRequestsValue =
+                    new HApplicationConfiguration(KEY_AUTO_ACCEPT_TRANSLATOR,
+                            Boolean.toString(autoAcceptRequests));
+        } else {
+            autoAcceptRequestsValue
+                    .setValue(Boolean.toString(autoAcceptRequests));
+        }
         applicationConfigurationDAO.makePersistent(allowAnonymousUserValue);
+        applicationConfigurationDAO.makePersistent(autoAcceptRequestsValue);
         applicationConfigurationDAO.flush();
         facesMessages.clear();
         facesMessages.addGlobal("Configuration was successfully updated.");
@@ -409,6 +429,14 @@ public class ServerConfigurationBean implements Serializable {
         this.allowAnonymousUser = allowAnonymousUser;
     }
 
+    public boolean isAutoAcceptRequests() {
+        return this.autoAcceptRequests;
+    }
+
+    public void setAutoAcceptRequests(final boolean autoAcceptRequests) {
+        this.autoAcceptRequests = autoAcceptRequests;
+    }
+
     public String getLogDestinationEmails() {
         return this.logDestinationEmails;
     }
@@ -490,5 +518,13 @@ public class ServerConfigurationBean implements Serializable {
     public void setPermittedUserEmailDomains(
             final String permittedUserEmailDomains) {
         this.permittedUserEmailDomains = permittedUserEmailDomains;
+    }
+
+    public String getGravatarRating() {
+        return this.gravatarRating;
+    }
+
+    public void setGravatarRating(String gravatarRating) {
+        this.gravatarRating = gravatarRating;
     }
 }

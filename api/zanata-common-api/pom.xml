@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>api</artifactId>
-    <version>4.1.2-SNAPSHOT</version>
+    <version>4.2.0-SNAPSHOT</version>
   </parent>
   <packaging>takari-jar</packaging>
 
@@ -86,66 +86,6 @@
             </goals>
             <configuration>
               <source>project.properties["version-as-java-package"] = "v" + project.version.replaceAll("[.-]", "_")</source>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>2.4</version>
-        <executions>
-          <execution>
-            <id>compat</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <shadedArtifactAttached>true</shadedArtifactAttached>
-              <shadedClassifierName>compat</shadedClassifierName>
-              <artifactSet>
-                <includes>
-                  <include>org.zanata:zanata-common-api</include>
-                </includes>
-                <!-- otherwise, with maven-jar-plugin disabled, Maven tries to shade this module -->
-                <!--<excludes>
-                    <exclude>org.zanata:zanata-api-compat</exclude>
-                </excludes>-->
-              </artifactSet>
-              <relocations>
-                <relocation>
-                  <pattern>org.zanata</pattern>
-                  <shadedPattern>org.zanata.apicompat</shadedPattern>
-                </relocation>
-              </relocations>
-            </configuration>
-          </execution>
-          <execution>
-            <id>versioned-compat</id>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <shadedArtifactAttached>true</shadedArtifactAttached>
-              <shadedClassifierName>compat_${version-as-java-package}</shadedClassifierName>
-              <artifactSet>
-                <includes>
-                  <include>org.zanata:zanata-common-api</include>
-                </includes>
-                <!-- otherwise, with maven-jar-plugin disabled, Maven tries to shade this module -->
-                <!--<excludes>
-                    <exclude>org.zanata:zanata-api-compat</exclude>
-                </excludes>-->
-              </artifactSet>
-              <relocations>
-                <relocation>
-                  <pattern>org.zanata</pattern>
-                  <shadedPattern>org.zanata.${version-as-java-package}</shadedPattern>
-                </relocation>
-              </relocations>
             </configuration>
           </execution>
         </executions>
@@ -330,5 +270,71 @@
     </dependency>
 
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>withShade</id>
+      <activation>
+        <property>
+          <name>skipShade</name>
+          <value>!true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>compat</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <shadedArtifactAttached>true</shadedArtifactAttached>
+                  <shadedClassifierName>compat</shadedClassifierName>
+                  <artifactSet>
+                    <includes>
+                      <include>org.zanata:zanata-common-api</include>
+                    </includes>
+                  </artifactSet>
+                  <relocations>
+                    <relocation>
+                      <pattern>org.zanata</pattern>
+                      <shadedPattern>org.zanata.apicompat</shadedPattern>
+                    </relocation>
+                  </relocations>
+                </configuration>
+              </execution>
+              <execution>
+                <id>versioned-compat</id>
+                <phase>package</phase>
+                <goals>
+                  <goal>shade</goal>
+                </goals>
+                <configuration>
+                  <shadedArtifactAttached>true</shadedArtifactAttached>
+                  <shadedClassifierName>compat_${version-as-java-package}</shadedClassifierName>
+                  <artifactSet>
+                    <includes>
+                      <include>org.zanata:zanata-common-api</include>
+                    </includes>
+                  </artifactSet>
+                  <relocations>
+                    <relocation>
+                      <pattern>org.zanata</pattern>
+                      <shadedPattern>org.zanata.${version-as-java-package}</shadedPattern>
+                    </relocation>
+                  </relocations>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
 </project>

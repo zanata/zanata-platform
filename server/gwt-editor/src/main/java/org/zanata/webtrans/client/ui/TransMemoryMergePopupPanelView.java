@@ -24,8 +24,16 @@ package org.zanata.webtrans.client.ui;
 import org.zanata.webtrans.client.resources.UiMessages;
 
 import com.google.gwt.core.shared.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.uibinder.client.UiHandler;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.HeaderPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -39,6 +47,11 @@ import com.google.inject.Singleton;
 @Singleton
 public class TransMemoryMergePopupPanelView implements
         TransMemoryMergePopupPanelDisplay {
+
+    @UiField(provided = true)
+    final UiMessages messages;
+    private final FlowPanel processingPanel = new FlowPanel();
+    private final Button cancelButton = new Button("Cancel");
 
     interface TMIMergeUiBinder extends
             UiBinder<DialogBox, TransMemoryMergePopupPanelView> {
@@ -55,6 +68,7 @@ public class TransMemoryMergePopupPanelView implements
     @Inject
     public TransMemoryMergePopupPanelView(TMMergeForm TMMergeForm,
             UiMessages messages) {
+        this.messages = messages;
         // auto hide false, modal true
 
         dialogBox = uiBinder.createAndBindUi(this);
@@ -65,29 +79,38 @@ public class TransMemoryMergePopupPanelView implements
         dialogBox.setModal(true);
 
         VerticalPanel main = new VerticalPanel();
+        HTMLPanel heading = new HTMLPanel(messages.mergeTMHeading());
+        main.add(heading);
         main.add(TMMergeForm);
+
         processingLabel = new Label(messages.processing());
-        main.add(processingLabel);
+        processingPanel.add(processingLabel);
+        processingPanel.add(cancelButton);
+
+        main.add(processingPanel);
         dialogBox.add(main);
         this.TMMergeForm = TMMergeForm;
-        processingLabel.setVisible(false);
+        processingPanel.setVisible(false);
         hide();
     }
 
     @Override
     public void setListener(Listener listener) {
         TMMergeForm.setListener(listener);
+        cancelButton.addClickHandler(event -> listener.cancelMergeTM());
     }
 
     @Override
-    public void showProcessing() {
+    public void showProcessing(String progress) {
         TMMergeForm.setVisible(false);
-        processingLabel.setVisible(true);
+        processingPanel.setVisible(true);
+        processingLabel.setText(progress);
     }
 
     @Override
     public void showForm() {
-        processingLabel.setVisible(false);
+        processingLabel.setText(messages.processing());
+        processingPanel.setVisible(false);
         TMMergeForm.setVisible(true);
         dialogBox.center();
     }

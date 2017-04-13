@@ -23,17 +23,21 @@ package org.zanata.dao;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.transform.ResultTransformer;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
+import org.zanata.common.ContentState;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.search.FilterConstraintToQuery;
-import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.webtrans.shared.model.DocumentId;
+import org.zanata.webtrans.shared.search.FilterConstraints;
+
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 
@@ -335,4 +339,31 @@ public class TextFlowDAO extends AbstractDAOImpl<HTextFlow, Long> {
                 .append("and fromTF.document.docId = toTF.document.docId");
         return queryBuilder.toString();
     }
+
+    /**
+     *
+     * @param documentId
+     *            document id
+     * @param targetLocale
+     *            target locale
+     * @return number of text flows that are untranslated in the given document
+     */
+    public long getUntranslatedTextFlowCount(DocumentId documentId,
+            HLocale targetLocale) {
+        String queryString =
+                "select count(*) from HTextFlow tf left join " +
+                        "tf.targets tfts WITH tfts.index=:locale" +
+                        " WHERE (tf.obsolete=0 AND tf.document.id=:documentId ) AND" +
+                        " ( EXISTS ( FROM HTextFlowTarget WHERE ((textFlow=tf AND locale.id=:locale) AND state = :untranslatedState)) OR (:locale not in indices(tf.targets) ))";
+        Long count = (Long) getSession().createQuery(queryString)
+                .setParameter("documentId", documentId.getId())
+                .setParameter("locale", targetLocale.getId())
+                .setParameter("untranslatedState", ContentState.New)
+                .setComment("TextFlowDAO.getUntranslatedTextFlowCount")
+                .setCacheable(true)
+                .uniqueResult();
+        return count;
+    }
+
+
 }

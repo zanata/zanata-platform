@@ -137,11 +137,10 @@ public class ProjectGeneralTab extends ProjectBasePage {
      */
     public String getSelectedProjectType() {
         log.info("Query selected project type");
-        Map<String, WebElement> projectTypes = getProjectTypes();
-        for (String type : projectTypes.keySet()) {
-            if (projectTypes.get(type).findElement(By.tagName("input"))
+        for (Map.Entry<String, WebElement> entry : getProjectTypes().entrySet()) {
+            if (entry.getValue().findElement(By.tagName("input"))
                     .isSelected()) {
-                return type;
+                return entry.getKey();
             }
         }
         return "None";
