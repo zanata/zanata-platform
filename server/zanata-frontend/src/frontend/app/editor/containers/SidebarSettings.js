@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react'
 import {Button, Checkbox} from 'react-bootstrap'
-import Icon from '../../../frontend/app/components/Icon'
+import Icon from '../../components/Icon'
 
 const SidebarSettings = React.createClass({
 
@@ -12,7 +12,7 @@ const SidebarSettings = React.createClass({
   sidebarDetails () {
     return (
       <div>
-        <ul>
+        <ul className="settings-list">
           <li>
             <Checkbox checked>
               Communicate with server for validation
