@@ -94,6 +94,7 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         // global variables
         getBinding().setProperty("env", env);
         getBinding().setProperty("steps", steps);
+        getBinding().setProperty("params", ImmutableMap.of("LABEL", "master"));
         getBinding().setProperty("LABEL", "master");
 
         // these objects are just used as parameters
