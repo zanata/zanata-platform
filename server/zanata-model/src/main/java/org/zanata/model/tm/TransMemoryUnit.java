@@ -73,7 +73,7 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata {
                 new TransMemoryUnitVariant(sourceLanguage, sourceContent));
     }
 
-    @Column(name = "trans_unit_id", nullable = true)
+    @Column(name = "trans_unit_id", nullable = true, columnDefinition = "longtext")
     private String transUnitId;
     // This is the BCP-47 language code, or null iff the TU supports all source
     // languages (*all* in TMX)
@@ -96,7 +96,7 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata {
     @Enumerated(EnumType.STRING)
     @Column(name = "metadata_type", nullable = true)
     private TMMetadataType metadataType;
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "longtext")
     @Basic(fetch = FetchType.LAZY)
     private String metadata;
 

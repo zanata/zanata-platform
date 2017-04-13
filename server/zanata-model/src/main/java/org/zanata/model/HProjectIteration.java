@@ -123,6 +123,7 @@ public class HProjectIteration extends SlugEntityBase
     private ProjectType projectType;
     @Type(type = "entityStatus")
     @NotNull
+    @Column(columnDefinition = "char(1)")
     private EntityStatus status = EntityStatus.ACTIVE;
     @Column(nullable = true)
     private Boolean requireTranslationReview = false;

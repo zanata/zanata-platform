@@ -48,6 +48,7 @@ import com.google.common.collect.Sets;
 @Access(AccessType.FIELD)
 public class TransMemory extends SlugEntityBase implements HasTMMetadata {
     private static final long serialVersionUID = 1L;
+    @Column(columnDefinition = "longtext")
     private String description;
     // This is the BCP-47 language code. Null means any source language (*all*
     // in TMX)

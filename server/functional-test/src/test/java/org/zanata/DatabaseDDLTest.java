@@ -79,7 +79,7 @@ public class DatabaseDDLTest {
     }
 
     @Test
-    @Ignore("This will fail on first error. Eventually we want to fix all of the errors this reports.")
+//    @Ignore("This will fail on first error. Eventually we want to fix all of the errors this reports.")
     public void testHibernateValidate() {
         String url = PropertiesHolder.getProperty("hibernate.connection.url");
         String username =

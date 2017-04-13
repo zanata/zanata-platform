@@ -23,6 +23,7 @@ package org.zanata.model;
 import java.util.Set;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -68,6 +69,7 @@ public class HIterationGroup extends SlugEntityBase
     private Set<HLocale> activeLocales = Sets.newHashSet();
     @Type(type = "entityStatus")
     @NotNull
+    @Column(columnDefinition = "char(1)")
     private EntityStatus status = EntityStatus.ACTIVE;
 
     public void addMaintainer(HPerson maintainer) {

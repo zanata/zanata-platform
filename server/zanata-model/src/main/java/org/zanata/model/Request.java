@@ -50,10 +50,10 @@ import java.util.Date;
         @TypeDef(name = "requestType", typeClass = RequestTypeType.class) })
 public class Request extends TimeEntityBase {
     @Type(type = "requestState")
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "char(1)")
     private RequestState state = RequestState.NEW;
     @Type(type = "requestType")
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "char(2)")
     @NotNull
     private RequestType requestType;
     @Column(nullable = true)

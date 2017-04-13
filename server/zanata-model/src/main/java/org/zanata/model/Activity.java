@@ -57,9 +57,9 @@ public class Activity extends ModelEntityBase implements Serializable {
     @NotNull
     private Date approxTime;
     @NotNull
-    private long startOffsetMillis;
+    private int startOffsetMillis;
     @NotNull
-    private long endOffsetMillis;
+    private int endOffsetMillis;
     @NotNull
     @Enumerated(EnumType.STRING)
     private EntityType contextType;
@@ -91,7 +91,8 @@ public class Activity extends ModelEntityBase implements Serializable {
 
     public void updateActivity(Date currentTime, IsEntityWithType target,
             int wordCount) {
-        this.endOffsetMillis = currentTime.getTime() - approxTime.getTime();
+        this.endOffsetMillis =
+                (int) (currentTime.getTime() - approxTime.getTime());
         this.wordCount += wordCount;
         this.eventCount++;
         this.lastTargetType = target.getEntityType();
@@ -109,8 +110,8 @@ public class Activity extends ModelEntityBase implements Serializable {
         private void onPrePersist(Activity activity) {
             activity.approxTime = DateUtils.truncate(activity.getCreationDate(),
                     Calendar.HOUR);
-            activity.startOffsetMillis = activity.getCreationDate().getTime()
-                    - activity.approxTime.getTime();
+            activity.startOffsetMillis = (int) (activity.getCreationDate().getTime()
+                                - activity.approxTime.getTime());
             activity.endOffsetMillis = activity.startOffsetMillis;
         }
     }

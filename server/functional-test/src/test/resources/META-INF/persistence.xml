@@ -82,6 +82,9 @@
       <!--hibernate3-maven-plugin:hbm2ddl needs this  -->
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect" />
 
+      <property name="hibernate.search.default.indexBase"
+        value="./target/zanatasearchindex" />
+
 
     </properties>
   </persistence-unit>

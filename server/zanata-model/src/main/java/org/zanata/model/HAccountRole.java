@@ -22,6 +22,7 @@ package org.zanata.model;
 
 import java.io.Serializable;
 import java.util.Set;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -72,6 +73,7 @@ public class HAccountRole implements Serializable, HasUserFriendlyToString {
 
     @Type(type = "roleType")
     @NotNull
+    @Column(columnDefinition = "char(1)")
     public RoleType getRoleType() {
         return roleType;
     }

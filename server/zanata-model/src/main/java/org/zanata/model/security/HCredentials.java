@@ -54,7 +54,7 @@ public abstract class HCredentials extends ModelEntityBase {
         return account;
     }
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, columnDefinition = "longtext")
     public String getUser() {
         return user;
     }
