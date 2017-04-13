@@ -31,9 +31,11 @@ styleguide-server:
 	yarn styleguide-server --ignore-scripts=false
 
 # Run react-storybook server for development and testing of React components.
-storybook:
-	yarn storybook
-
+storybook-editor:
+	yarn storybook-editor
+storybook-frontend:
+	yarn storybook-frontend
+	
 # Build a static version of the React component storybook
 #  - outputs to ./storybook-static
 #  - will not display properly from file:// url since it uses an iframe
