@@ -116,7 +116,7 @@ JBOSS_DEPLOYMENT_VOLUME=/opt/jboss/wildfly/standalone/deployments/
 
 # runs zanata/server-dev:latest docker image
 docker run \
-    -e JAVA_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata" \
+    -e PREPEND_JAVA_OPTS="-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/opt/jboss/zanata" \
     -e DB_USERNAME=${DB_USERNAME} -e DB_PASSWORD=${DB_PASSWORD} -e DB_SCHEMA=${DB_SCHEMA} -e DB_HOSTNAME=zanatadb\
     -e MAIL_HOST="${MAIL_HOST}" ${MAIL_CREDENTIAL_ENV} \
     --rm --name zanata --net=${DOCKER_NETWORK} \
