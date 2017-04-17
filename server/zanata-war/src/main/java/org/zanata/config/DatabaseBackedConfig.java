@@ -146,4 +146,9 @@ public class DatabaseBackedConfig implements Serializable {
                 getConfigValue(HApplicationConfiguration.KEY_AUTO_ACCEPT_TRANSLATOR)),
                 false);
     }
+
+    public String getMaxGravatarRating() {
+        return ObjectUtils.firstNonNull(
+                getConfigValue(HApplicationConfiguration.KEY_GRAVATAR_RATING), "G");
+    }
 }

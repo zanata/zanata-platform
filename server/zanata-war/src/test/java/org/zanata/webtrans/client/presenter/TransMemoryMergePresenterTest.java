@@ -28,7 +28,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.withSettings;
 
 import java.util.Date;
-import java.util.List;
 
 import org.fusesource.restygwt.client.Method;
 import org.fusesource.restygwt.client.MethodCallback;
@@ -39,7 +38,6 @@ import org.mockito.Answers;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.MockSettings;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.common.LocaleId;
@@ -50,13 +48,11 @@ import org.zanata.webtrans.client.events.TMMergeStartOrEndEvent;
 import org.zanata.webtrans.client.resources.UiMessages;
 import org.zanata.webtrans.client.ui.TransMemoryMergePopupPanelDisplay;
 import org.zanata.webtrans.client.ui.UndoLink;
-import org.zanata.webtrans.client.util.DateUtil;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
-import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
@@ -67,8 +63,6 @@ import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeOptions;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.inject.Provider;
 
@@ -186,12 +180,12 @@ public class TransMemoryMergePresenterTest {
         mergeResource.callback.onFailure(method, new RuntimeException("Die!!!!!"));
 
         // Then:
-        verify(messages).mergeTMStartedBySomeone();
+        verify(messages).mergeTMStartedBySomeone(documentId.getDocId());
         verify(eventBus).fireEvent(notificationEventCaptor.capture());
         verify(display).hide();
         NotificationEvent event = notificationEventCaptor.getValue();
         assertThat(event.getSeverity()).isEqualTo(NotificationEvent.Severity.Warning);
-        assertThat(event.getMessage()).isSameAs(messages.mergeTMStartedBySomeone());
+        assertThat(event.getMessage()).isSameAs(messages.mergeTMStartedBySomeone(documentId.getDocId()));
         assertThat(presenter.isMergeStarted()).isFalse();
     }
 
@@ -297,7 +291,7 @@ public class TransMemoryMergePresenterTest {
         TMMergeStartOrEndEvent event =
                 new TMMergeStartOrEndEvent("someone", new Date(), new EditorClientId("other session", 2L),
                         documentId, null, 10);
-        when(messages.mergeTMStartedBySomeone()).thenReturn("someone else started TM merge");
+        when(messages.mergeTMStartedBySomeone(documentId.getDocId())).thenReturn("someone else started TM merge");
         presenter.onTMMergeStartOrEnd(event);
 
         verify(eventBus).fireEvent(notificationEventCaptor.capture());
@@ -311,7 +305,7 @@ public class TransMemoryMergePresenterTest {
         TMMergeStartOrEndEvent event =
                 new TMMergeStartOrEndEvent("someone", new Date(), new EditorClientId("other session", 2L),
                         new DocumentId(2L, "otherDoc"), null, 10);
-        when(messages.mergeTMStartedBySomeoneForOtherDoc("otherDoc")).thenReturn("someone else started TM merge");
+        when(messages.mergeTMStartedBySomeoneForDoc("otherDoc")).thenReturn("someone else started TM merge");
         presenter.onTMMergeStartOrEnd(event);
 
         verify(eventBus).fireEvent(notificationEventCaptor.capture());
@@ -321,13 +315,30 @@ public class TransMemoryMergePresenterTest {
     }
 
     @Test
-    public void onTMMergeEndedFromOthers() {
+    public void onTMMergeEndedFromOthersOnSameDoc() {
         Date time = new Date();
         TMMergeStartOrEndEvent event =
                 new TMMergeStartOrEndEvent("someone",
                         time, new EditorClientId("other session", 2L),
                         documentId, time, 10);
-        when(messages.mergeTMFinished(Mockito.eq("someone"), Mockito.anyString(), Mockito.anyString())).thenReturn("someone else finished TM merge");
+        when(messages.mergeTMFinished(Mockito.eq(documentId.getDocId()), Mockito.eq("someone"), Mockito.anyString(), Mockito.anyString())).thenReturn("someone else finished TM merge");
+        presenter.onTMMergeStartOrEnd(event);
+
+        verify(eventBus).fireEvent(notificationEventCaptor.capture());
+        NotificationEvent notificationEvent = notificationEventCaptor.getValue();
+        assertThat(notificationEvent.getSeverity()).isEqualTo(NotificationEvent.Severity.Warning);
+        assertThat(notificationEvent.getMessage()).isEqualTo("someone else finished TM merge");
+    }
+
+    @Test
+    public void onTMMergeEndedFromOthersOnDifferentDoc() {
+        Date time = new Date();
+        DocumentId otherDoc = new DocumentId(2L, "otherDoc");
+        TMMergeStartOrEndEvent event =
+                new TMMergeStartOrEndEvent("someone",
+                        time, new EditorClientId("other session", 2L),
+                        otherDoc, time, 10);
+        when(messages.mergeTMFinished(Mockito.eq(otherDoc.getDocId()), Mockito.eq("someone"), Mockito.anyString(), Mockito.anyString())).thenReturn("someone else finished TM merge");
         presenter.onTMMergeStartOrEnd(event);
 
         verify(eventBus).fireEvent(notificationEventCaptor.capture());

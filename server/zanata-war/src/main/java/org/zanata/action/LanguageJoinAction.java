@@ -138,7 +138,7 @@ public class LanguageJoinAction implements Serializable {
             boolean coordinator) {
         try {
             // Grant translator only request automatically if enabled
-            if (applicationConfiguration.isAutoAcceptRequests() &&
+            if (autoAcceptTranslator() &&
                     (translator && !(coordinator || reviewer))) {
                 languageTeamServiceImpl.joinOrUpdateRoleInLanguageTeam(language,
                         authenticatedAccount.getId(), translator, reviewer,
@@ -158,6 +158,10 @@ public class LanguageJoinAction implements Serializable {
         } finally {
             clearMessage();
         }
+    }
+
+    public boolean autoAcceptTranslator() {
+        return applicationConfiguration.isAutoAcceptRequests();
     }
 
     private void sendRequestEmail(boolean requestAsCoordinator,

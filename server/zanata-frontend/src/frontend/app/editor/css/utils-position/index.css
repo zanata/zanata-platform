@@ -1,5 +1,9 @@
 @import 'suitcss-utils-position';
 
+.abs {
+  position: absolute;
+}
+
 .u-posAbsoluteLeft {
   bottom: 0 !important;
   left: 0 !important;

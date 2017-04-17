@@ -8,10 +8,9 @@
 
 var webpack = require('webpack')
 var merge = require('webpack-merge')
-var _ = require('lodash')
 var defaultConfig = require('./webpack.config.js')
 
-module.exports = merge.smart(defaultConfig, {
+var devConfig = merge.smart(defaultConfig, {
   // TODO change to an option that will show original files in the debugger
   //      and will allow setting breakpoints
   //      See: https://webpack.github.io/docs/configuration.html#devtool
@@ -59,3 +58,9 @@ module.exports = merge.smart(defaultConfig, {
     }
   }
 })
+
+// Overwrite multiple entry points with a single one. Not done in merge because
+// it would keep the other entry points.
+devConfig.entry = { 'frontend': devConfig.entry.frontend }
+
+module.exports = devConfig

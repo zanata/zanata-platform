@@ -36,8 +36,11 @@
     <ui:fragment rendered="#{identity.loggedIn}">
       <div class="g">
         <div class="g__item w--1-m w--3-8-l w--1-3 l--push-bottom-half">
-          <p class="txt--meta l--push-all-0">#{msgs['jsf.Dashboard']}</p>
-
+          <p class="txt--meta l--push-all-0">
+            <a href="#{request.contextPath}/dashboard">
+              #{msgs['jsf.Dashboard']}
+            </a>
+          </p>
           <div class="g--loose">
             <h:panelGroup layout="block"  id="profile-overview" styleClass="g__item w--1-2-m">
               <div class="media l--push-bottom-half">
@@ -49,13 +52,19 @@
                 <div class="media__body">
                   <h1 class="l--push-all-0">#{dashboardAction.getUserFullName()}</h1>
                   <ul class="list--no-bullets txt--meta">
-                    <li><i class="i i--user list__icon" title="Username"></i>#{dashboardAction.getUsername()}
+                    <li><i class="i i--user list__icon" title="Username"></i> #{dashboardAction.getUsername()}
                     </li>
                     <li><i class="i i--language list__icon"
-                      title="Spoken languages"></i>#{dashboardAction.getUserLanguageTeams()}
+                      title="Spoken languages"></i>
+                      <ui:fragment rendered="#{dashboardAction.getUserLanguageTeams().length() gt 0}">
+                        #{dashboardAction.getUserLanguageTeams()}
+                      </ui:fragment>
+                      <ui:fragment rendered="#{dashboardAction.getUserLanguageTeams().length() lt 1}">
+                        <a href="#{request.contextPath}/languages#{dswidQuery}">#{msgs['jsf.dashboard.settings.joinLangTeam.message']}</a>
+                      </ui:fragment>
                     </li>
                     <li><i class="i i--users list__icon"
-                      title="Roles"></i>#{dashboardAction.getUserRoles()}
+                      title="Roles"></i> #{dashboardAction.getUserRoles()}
                     </li>
                   </ul>
                 </div>

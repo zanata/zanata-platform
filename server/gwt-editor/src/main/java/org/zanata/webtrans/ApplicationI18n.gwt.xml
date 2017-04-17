@@ -9,5 +9,5 @@
   <set-property name="log_level" value="DEBUG" />
 
   <!-- add locales to generate different properties template-->
-  <set-property name="locale" value="default,en,ja,zh_Hant_TW,uk" />
+  <set-property name="locale" value="default,en,ja,zh_Hant_TW,zh_Hans_CN,uk" />
 </module>

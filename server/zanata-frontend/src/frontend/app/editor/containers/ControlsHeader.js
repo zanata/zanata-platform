@@ -7,6 +7,7 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { setSidebarVisibility } from '../actions'
 import {
+  toggleGlossary,
   toggleHeader,
   toggleKeyboardShortcutsModal
 } from '../actions/headerActions'
@@ -20,6 +21,7 @@ import {
 } from '../actions/controlsHeaderActions'
 import { toggleSuggestions } from '../actions/suggestions'
 import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
+import { GLOSSARY_TAB } from '../reducers/ui'
 
 const { bool, func, number, shape } = PropTypes
 
@@ -36,8 +38,9 @@ const ControlsHeader = React.createClass({
       previousPage: func.isRequired,
       nextPage: func.isRequired,
       lastPage: func.isRequired,
-      setSidebarVisibility: func.isRequired,
       toggleSuggestionPanel: func.isRequired,
+      setSidebarVisibility: func.isRequired,
+      toggleGlossary: func.isRequired,
       toggleKeyboardShortcutsModal: func.isRequired,
       toggleMainNav: func.isRequired
     }).isRequired,
@@ -90,7 +93,7 @@ const ControlsHeader = React.createClass({
 
   render: function () {
     const { actions, counts, paging, ui } = this.props
-    const { textFlowDisplay, gettextCatalog } = ui
+    const { panels, textFlowDisplay, gettextCatalog } = ui
     const transFilterProps = {
       actions,
       counts,
@@ -102,7 +105,10 @@ const ControlsHeader = React.createClass({
       actions,
       gettextCatalog
     }
+    // FIXME use above const bindings in the JSX to make it less verbose
     const navHeaderHidden = !ui.panels.navHeader.visible
+    const glossaryVisible = panels.sidebar.visible &&
+      panels.sidebar.selectedTab === GLOSSARY_TAB
     return (
       <nav className="u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
         <TranslatingIndicator gettextCatalog={gettextCatalog} />
@@ -118,22 +124,31 @@ const ControlsHeader = React.createClass({
               <IconButtonToggle
                 icon="suggestions"
                 title={this.props.ui.panels.suggestions.visible
-                  ? gettextCatalog.getString('Hide suggestions panel')
-                  : gettextCatalog.getString('Show suggestions panel')}
+                    ? gettextCatalog.getString('Hide suggestions panel')
+                    : gettextCatalog.getString('Show suggestions panel')}
                 onClick={this.props.actions.toggleSuggestionPanel}
                 active={this.props.ui.panels.suggestions.visible} />
-
+            </li>
+            <li className="u-sM-1-8">
+              <IconButtonToggle
+                icon="glossary"
+                title={glossaryVisible ? 'Hide glossary' : 'Show glossary'}
+                onClick={actions.toggleGlossary}
+                active={glossaryVisible}
+              />
             </li>
             <li className="u-sM-1-8">
               <IconButtonToggle
                 icon="info"
+                className="hide-sidebar-toggle"
                 title={this.props.ui.panels.sidebar.visible
                   ? gettextCatalog.getString('Hide sidebar')
                   : gettextCatalog.getString('Show sidebar')}
                 onClick={this.toggleSidebarVisibility}
                 active={this.props.ui.panels.sidebar.visible} />
             </li>
-      {/* extra items from the angular template that were not being displayed
+            {/* extra items from the angular template that were not being
+            displayed
             <li ng-show="appCtrl.PRODUCTION">
               <button class="Link--neutral u-sizeHeight-1_1-2"
                 title="{{'Details'|translate}}">
@@ -148,7 +163,7 @@ const ControlsHeader = React.createClass({
                       class="u-sizeWidth-1_1-2"></icon>
               </button>
             </li>
-      */}
+             */}
             <li className="u-sm-hidden u-sM-1-8">
               <IconButtonToggle
                 icon="keyboard"
@@ -213,6 +228,7 @@ function mapDispatchToProps (dispatch) {
       setSidebarVisibility: (visible) => {
         dispatch(setSidebarVisibility(visible))
       },
+      toggleGlossary: () => dispatch(toggleGlossary()),
       toggleSuggestionPanel: () => dispatch(toggleSuggestions()),
       toggleKeyboardShortcutsModal: () => {
         // TODO pahuang implement toggle keyboard shutcut modal

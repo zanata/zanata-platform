@@ -280,6 +280,24 @@ function savePreviousPhraseIfChanged (phraseId) {
   }
 }
 
+/**
+ * Use to broadcast the cursor location or selection within the focused
+ * translation text.
+ *
+ * @param start position of cursor or beginning of range
+ * @param end position of cursor (if no range is selected) or end of range
+ */
+export const PHRASE_TEXT_SELECTION_RANGE = Symbol('PHRASE_TEXT_SELECTION_RANGE')
+export function phraseTextSelectionRange (start, end) {
+  return {
+    type: PHRASE_TEXT_SELECTION_RANGE,
+    payload: {
+      start,
+      end
+    }
+  }
+}
+
 // User has typed/pasted/etc. text for a translation (not saved yet)
 export const TRANSLATION_TEXT_INPUT_CHANGED =
   Symbol('TRANSLATION_TEXT_INPUT_CHANGED')

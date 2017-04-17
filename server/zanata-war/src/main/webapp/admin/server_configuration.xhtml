@@ -278,6 +278,27 @@
             </h:inputText>
           </zanata:decorate>
         </div>
+        <div class="form__item l--push-top-1">
+          <h3 class="heading--secondary l--push-all-0">#{msgs['jsf.config.gravatar']}</h3>
+          <h:panelGroup layout="block"  id="gravatarSettings" styleClass="l--push-top-half">
+            <h:outputLabel>#{msgs['jsf.config.gravatar.heading']}
+              <span class="txt--meta l--push-right-quarter">
+                    <i class="i i--info" title="#{msgs['jsf.config.gravatar.description']}"></i>
+                  </span>
+            </h:outputLabel>
+            <h:selectOneMenu id="gravatarRating"
+                             value="#{serverConfigurationBean.gravatarRating}">
+              <f:selectItem itemLabel="#{msgs['jsf.config.gravatar.GRating']}"
+                            itemValue="G"/>
+              <f:selectItem itemLabel="#{msgs['jsf.config.gravatar.PGRating']}"
+                            itemValue="PG"/>
+              <f:selectItem itemLabel="#{msgs['jsf.config.gravatar.RRating']}"
+                            itemValue="R"/>
+              <f:selectItem itemLabel="#{msgs['jsf.config.gravatar.XRating']}"
+                            itemValue="X"/>
+            </h:selectOneMenu>
+          </h:panelGroup>
+        </div>
 
         <h:commandButton value="#{msgs['jsf.Save']}" id="save" styleClass="button--primary"
             action="#{serverConfigurationBean.update}"/>
