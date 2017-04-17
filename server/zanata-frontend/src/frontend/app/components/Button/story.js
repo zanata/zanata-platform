@@ -8,4 +8,3 @@ storiesOf('Button', module)
           Unstyled button. Pretty plain. Should be used with some styles.
         </Button>
     ))
-
