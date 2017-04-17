@@ -43,10 +43,7 @@ module.exports = {
       {
         test: /\.less$/,
         exclude: /node_modules/,
-        loader: ExtractTextPlugin.extract(
-            'style',
-            'css!postcss!less'
-        )
+        loader: 'css!postcss!less'
       }
     ]
   },

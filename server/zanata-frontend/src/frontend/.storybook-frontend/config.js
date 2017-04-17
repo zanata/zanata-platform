@@ -3,7 +3,7 @@ import Icons from '../app/components/Icons'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import { locale, formats } from '../app/editor/config/intl'
 import { addDecorator, configure } from '@kadira/storybook'
-import './storybook.css'
+import './storybook.less'
 
 // fonts are included in index.html for the app, but storybook does not use that
 var fontLink = document.createElement('link')
