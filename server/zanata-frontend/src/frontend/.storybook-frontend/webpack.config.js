@@ -43,7 +43,7 @@ module.exports = {
       {
         test: /\.less$/,
         exclude: /node_modules/,
-        loader: 'css!postcss!less'
+        loader: 'style!css!postcss!less'
       }
     ]
   },
