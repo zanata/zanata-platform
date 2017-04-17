@@ -5,3 +5,4 @@
  */
 
 require('./Button/story.js')
+require('./Modal/story.js')
