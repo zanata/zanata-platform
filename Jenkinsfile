@@ -166,7 +166,22 @@ timestamps {
           // gather surefire results; mark build as unstable in case of failures
           junit(testResults: "**/${surefireTestReports}")
 
-          // TODO send to codecov.io (NB: need to get correct token for zanata-platform, configured by env var)
+          // send test coverage data to codecov.io
+          try {
+            withCredentials(
+                    [[$class: 'StringBinding',
+                      credentialsId: 'codecov_zanata-platform',
+                      variable: 'CODECOV_TOKEN']]) {
+              // NB the codecov script uses CODECOV_TOKEN
+              sh "curl -s https://codecov.io/bash | bash -s - -K"
+            }
+          } catch (InterruptedException e) {
+            throw e
+          } catch (hudson.AbortException e) {
+            throw e
+          } catch (e) {
+            echo "[WARNING] Ignoring codecov error: $e"
+          }
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
