@@ -33,7 +33,6 @@ const { bool, func, number, shape } = PropTypes
 const ControlsHeader = React.createClass({
 
   propTypes: {
-    toggleAdvancedSearchPanel: func.isRequired,
     actions: shape({
       resetFilter: func.isRequired,
       onFilterChange: func.isRequired,
@@ -42,6 +41,7 @@ const ControlsHeader = React.createClass({
       nextPage: func.isRequired,
       lastPage: func.isRequired,
       setSidebarVisibility: func.isRequired,
+      toggleAdvancedSearchPanel: func.isRequired,
       toggleSuggestionPanel: func.isRequired,
       toggleGlossary: func.isRequired,
       toggleKeyboardShortcutsModal: func.isRequired,
@@ -99,6 +99,12 @@ const ControlsHeader = React.createClass({
 
   render: function () {
     const { actions, counts, paging, ui } = this.props
+    const {
+      toggleAdvancedSearchPanel,
+      toggleKeyboardShortcutsModal,
+      toggleMainNav,
+      toggleSuggestionPanel
+    } = actions
     const { panels, textFlowDisplay, gettextCatalog } = ui
     const transFilterProps = {
       actions,
@@ -123,9 +129,8 @@ const ControlsHeader = React.createClass({
         </div>
         <div className="u-floatLeft InputEditorSearch">
           <EditorSearchInput
-            toggleDisplay={this.props.toggleAdvancedSearchPanel}
+            toggleDisplay={toggleAdvancedSearchPanel}
             text="editor search"
-
           />
         </div>
         <div className="u-floatRight flex">
@@ -139,7 +144,7 @@ const ControlsHeader = React.createClass({
                 title={this.props.ui.panels.suggestions.visible
                   ? gettextCatalog.getString('Hide suggestions panel')
                   : gettextCatalog.getString('Show suggestions panel')}
-                onClick={this.props.actions.toggleSuggestionPanel}
+                onClick={toggleSuggestionPanel}
                 active={this.props.ui.panels.suggestions.visible} />
             </li>
             <li className="u-sM-1-8">
@@ -180,7 +185,7 @@ const ControlsHeader = React.createClass({
               <IconButtonToggle
                 icon="keyboard"
                 title={gettextCatalog.getString('Keyboard Shortcuts')}
-                onClick={this.props.actions.toggleKeyboardShortcutsModal} />
+                onClick={toggleKeyboardShortcutsModal} />
             </li>
             <li className="u-sM-1-8">
               <IconButtonToggle
@@ -188,7 +193,7 @@ const ControlsHeader = React.createClass({
                 title={navHeaderHidden
                   ? gettextCatalog.getString('Show Menubar')
                   : gettextCatalog.getString('Hide Menubar')}
-                onClick={this.props.actions.toggleMainNav}
+                onClick={toggleMainNav}
                 active={navHeaderHidden}
                 className={cx({'is-rotated': navHeaderHidden})} />
             </li>
