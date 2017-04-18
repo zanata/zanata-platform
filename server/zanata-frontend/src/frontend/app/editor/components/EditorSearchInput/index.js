@@ -28,20 +28,17 @@ import { Panel } from 'react-bootstrap'
 const { func } = PropTypes
 
 /**
- * Styled text input that displays result count.
+ * Multiple-field search input that will suggest fields as the user types.
+ *
+ * Includes an advanced search panel that can be shown to input fields using
+ * more appropriate widgets (e.g. username field that suggests usernames, date
+ * input with calendar widget).
  */
 const EditorSearchInput = React.createClass({
 
   propTypes: {
     toggleDisplay: func.isRequired,
-    text: PropTypes.string.isRequired,
-    hasSearch: PropTypes.bool.isRequired,
-    clearSearch: PropTypes.func.isRequired
-  },
-
-  clearSearch: function () {
-    this.props.clearSearch()
-    this.focusInput()
+    text: PropTypes.string.isRequired
   },
 
   getDefaultProps: () => {
@@ -109,8 +106,9 @@ const EditorSearchInput = React.createClass({
   render: function () {
     return (
       <div>
-        <div className={cx('InputGroup InputGroup--outlined' +
-        ' InputGroup--rounded', { 'is-focused': this.state.focused })}>
+        <div className={
+          cx('InputGroup InputGroup--outlined InputGroup--rounded',
+            { 'is-focused': this.state.focused })}>
           <span className="InputGroup-addon"
             onClick={this.focusInput}>
             <Icon name="search" title="Search"
@@ -125,7 +123,7 @@ const EditorSearchInput = React.createClass({
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
             {this.clearButtonElement()}
         </div>
-        <Panel collapsible expanded={this.openPanel}>
+        <Panel collapsible expanded={this.state.open}>
           <ul>
             <li className="inline-search-list">
               text:
