@@ -45,8 +45,11 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         getHelper().registerAllowedMethod("archive", ImmutableList.of(Object.class), null);
         getHelper().registerAllowedMethod("hipchatSend", ImmutableList.of(Map.class), null);
         getHelper().registerAllowedMethod("junit", ImmutableList.of(Map.class), null);
-        getHelper().registerAllowedMethod("timestamps", ImmutableList.of(Closure.class), null);
+        getHelper().registerAllowedMethod("lock", ImmutableList.of(Map.class, Closure.class), null);
+        getHelper().registerAllowedMethod("lock", ImmutableList.of(String.class, Closure.class), null);
+        getHelper().registerAllowedMethod("milestone", ImmutableList.of(), null);
         getHelper().registerAllowedMethod("stash", ImmutableList.of(Map.class), null);
+        getHelper().registerAllowedMethod("timestamps", ImmutableList.of(Closure.class), null);
         getHelper().registerAllowedMethod("unstash", ImmutableList.of(Map.class), null);
         getHelper().registerAllowedMethod("unstash", ImmutableList.of(String.class), null);
         getHelper().registerAllowedMethod("withEnv", ImmutableList.of(List.class, Closure.class), null);
