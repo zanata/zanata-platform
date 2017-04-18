@@ -6,7 +6,7 @@
   "scripts": {
     "js": "webpack",
     "build": "yarn build:icons && webpack -p --config webpack.prod.config.js --bail --display-error-details",
-    "draft": "yarn build:icons && webpack --config webpack.draft.config.js --progress --bail --display-error-details",
+    "draft": "yarn build:icons && webpack --config webpack.draft.config.js --bail --display-error-details",
     "watch": "webpack-dev-server -d --progress --config webpack.dev.config.js --progress --inline --hot --port 8000",
     "watch:editor": "mkdir -p dist && cp app/editor/index.html dist && webpack-dev-server -d --progress --config webpack.dev.editor.config.js --inline --content-base dist/",
     "build:icons": "yarn svg && yarn icons",
