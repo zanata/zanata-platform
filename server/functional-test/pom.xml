@@ -137,6 +137,20 @@
     </dependency>
 
     <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-war</artifactId>
+      <version>${version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.1-api</artifactId>
       <scope>${hibernate.scope}</scope>

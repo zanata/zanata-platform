@@ -57,15 +57,24 @@ public class DatabaseDDLTest {
     private static final String UNIQUE_KEY_QUERY =
             "select CONSTRAINT_NAME, table_name from information_schema.TABLE_CONSTRAINTS "
                     + "where CONSTRAINT_SCHEMA = ? and constraint_type = 'UNIQUE'";
-    private String username;
-    private String password;
+    private static final String PERSISTENCE_UNIT_NAME = "zanataDatasourcePU";
+    private Map<String, String> propForPersistenceUnit;
 
     @Before
     public void setUp() {
-        username =
+        String username =
                 PropertiesHolder.getProperty("hibernate.connection.username");
-        password =
+        String password =
                 PropertiesHolder.getProperty("hibernate.connection.password");
+        propForPersistenceUnit = new HashMap<>();
+        propForPersistenceUnit.put("hibernate.connection.username", username);
+        propForPersistenceUnit.put("hibernate.connection.password", password);
+        propForPersistenceUnit.put("hibernate.cache.use_second_level_cache", "false");
+        // override below setting from zanata-war test db
+        propForPersistenceUnit.put("hibernate.connection.provider_class", null);
+        propForPersistenceUnit.put("hibernate.connection.driver_class", "com.mysql.jdbc.Driver");
+        propForPersistenceUnit.put("hibernate.dialect", "org.hibernate.dialect.MySQL5InnoDBDialect");
+        propForPersistenceUnit.put("javax.persistence.validation.mode", "none");
     }
 
     @Test
@@ -107,14 +116,12 @@ public class DatabaseDDLTest {
     private EntityManagerFactory entityManagerFactoryFromLiquibase() {
         String url = PropertiesHolder.getProperty("hibernate.connection.url");
 
-        Map<String, String> propForLiquibaseEM = new HashMap<>();
-        propForLiquibaseEM.put("hibernate.connection.url", url);
-        propForLiquibaseEM.put("hibernate.connection.username", username);
-        propForLiquibaseEM.put("hibernate.connection.password", password);
+        propForPersistenceUnit.put("hibernate.connection.url", url);
+
         // hibernate validate only validates columns and sequences
-        propForLiquibaseEM.put("hibernate.hbm2ddl.auto", "validate");
-        return Persistence.createEntityManagerFactory("zanataDatasourcePU",
-                propForLiquibaseEM);
+        propForPersistenceUnit.put("hibernate.hbm2ddl.auto", "validate");
+        return Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME,
+                propForPersistenceUnit);
     }
 
     private EntityManagerFactory entityManagerFactoryFromHibernateMapping() {
@@ -122,13 +129,10 @@ public class DatabaseDDLTest {
         // foreign keys
         String urlForTestDB =
                 PropertiesHolder.getProperty("test.db.connection.url");
-        Map<String, String> propForHbm = new HashMap<>();
-        propForHbm.put("hibernate.connection.url", urlForTestDB);
-        propForHbm.put("hibernate.connection.username", username);
-        propForHbm.put("hibernate.connection.password", password);
-        propForHbm.put("hibernate.hbm2ddl.auto", "create-drop");
-        return Persistence.createEntityManagerFactory("zanataDatasourcePU",
-                propForHbm);
+        propForPersistenceUnit.put("hibernate.connection.url", urlForTestDB);
+        propForPersistenceUnit.put("hibernate.hbm2ddl.auto", "create-drop");
+        return Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME,
+                propForPersistenceUnit);
     }
 
     private static List<ParentAndChild> getForeignKeysForDatabase(String dbName,
