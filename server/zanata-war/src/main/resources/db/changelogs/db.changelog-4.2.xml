@@ -98,4 +98,20 @@
       columnNames="text_flow_target_history_id,pos" />
   </changeSet>
 
+  <changeSet id="5" author="pahuang@redhat.com">
+    <comment>Add missing constraints in HProject_Member table</comment>
+    <sql>
+      delete from HProject_Member where personId NOT in (select id from HPerson) or projectId NOT in (select id from HProject)
+    </sql>
+    <addForeignKeyConstraint baseTableName="HProject_Member"
+      baseColumnNames="projectId"
+      constraintName="FK_HProject_Member_projectId"
+      referencedTableName="HProject"
+      referencedColumnNames="id"/>
+    <addForeignKeyConstraint baseTableName="HProject_Member"
+      baseColumnNames="personId"
+      constraintName="FK_HProject_Member_personId" referencedTableName="HPerson"
+      referencedColumnNames="id" />
+  </changeSet>
+
 </databaseChangeLog>
