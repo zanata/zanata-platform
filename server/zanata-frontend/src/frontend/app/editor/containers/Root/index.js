@@ -96,7 +96,6 @@ Root.propTypes = {
   percentHeight: PropTypes.number.isRequired,
   showSidebar: PropTypes.bool.isRequired,
   showSuggestion: PropTypes.bool,
-  showAdvancedSearch: PropTypes.bool,
   requestUiLocales: PropTypes.func.isRequired,
   setSidebarVisible: PropTypes.func.isRequired,
   saveSuggestionPanelHeight: PropTypes.func.isRequired
@@ -114,8 +113,7 @@ function mapStateToProps (state, ownProps) {
     phrases: withDetail,
     percentHeight,
     showSidebar: ui.panels.sidebar.visible,
-    showSuggestion: ui.panels.suggestions.visible,
-    showAdvancedSearch: ui.panels.search.visible
+    showSuggestion: ui.panels.suggestions.visible
   }
 }
 
