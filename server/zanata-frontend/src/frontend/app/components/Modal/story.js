@@ -1,28 +1,41 @@
 import React from 'react'
 import { storiesOf } from '@kadira/storybook'
 import { action, decorateAction } from '@kadira/storybook-addon-actions'
-import { Modal } from '../Modal'
-import { Modal as OverlayModal } from 'react-overlays'
-import { Button } from 'react-bootstrap'
-import { Icon } from '../../components'
+import { Button, Panel, Row, Table } from 'react-bootstrap'
+import { Icon, Modal } from '../../components'
+import Lorem from 'react-lorem-component'
 
 storiesOf('Modal', module)
     .addDecorator((story) => (
-        <OverlayModal
-            containerClassName='has-modal'
-            className='modal'
-        >
-          <div className='container'>
-            <div className='modal-content'>
-              {closeButton && (
-                  <Button aria-label={closeLabel}
-                          className='close s0'
-                          onClick={onHide}>
-                    <Icon name='cross' className='s2 closeIcon' />
-                  </Button>
-              )}
-              {children}
-            </div>
+          <div className="static-modal">
+            {story()}
           </div>
-        </OverlayModal>
+    ))
+    .add('default', () => (
+        <Modal
+            show={true}
+            onHide={action('onHide')}>
+          <Modal.Header>
+            <Modal.Title>Modal heading</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Modal content
+          </Modal.Body>
+          <Modal.Footer>
+          <span className='bootstrap pull-right'>
+            <Row>
+              <Button bsStyle='link'
+                className='btn-left'
+                onClick={action('onClick')}>
+                Close
+              </Button>
+              <Button
+                  bsStyle='primary'
+                  onClick={action('onClick')}>
+                Save
+              </Button>
+            </Row>
+          </span>
+          </Modal.Footer>
+        </Modal>
     ))
