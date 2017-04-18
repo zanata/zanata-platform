@@ -157,8 +157,6 @@ timestamps {
             -Dmaven.test.failure.ignore \
           """
           // TODO add -Dvictims
-          // TODO should we remove -Dmaven.test.failure.ignore (and catch
-          // exception) to fail fast in case an early unit test fails?
 
           def surefireTestReports = 'target/surefire-reports/TEST-*.xml'
 
@@ -166,20 +164,32 @@ timestamps {
           // gather surefire results; mark build as unstable in case of failures
           junit(testResults: "**/${surefireTestReports}")
 
-          // TODO send to codecov.io (NB: need to get correct token for zanata-platform, configured by env var)
+          // send test coverage data to codecov.io
+          try {
+            withCredentials(
+                    [[$class: 'StringBinding',
+                      credentialsId: 'codecov_zanata-platform',
+                      variable: 'CODECOV_TOKEN']]) {
+              // NB the codecov script uses CODECOV_TOKEN
+              sh "curl -s https://codecov.io/bash | bash -s - -K"
+            }
+          } catch (InterruptedException e) {
+            throw e
+          } catch (hudson.AbortException e) {
+            throw e
+          } catch (e) {
+            echo "[WARNING] Ignoring codecov error: $e"
+          }
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
           notify.testResults("UNIT", currentBuild.result)
-
-          // TODO ensure the pipeline aborts in case of test failures
 
           // archive build artifacts (and cross-referenced source code)
           archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**"
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
-          // TODO push Jest/Jacoco results to codecov.io (with correct token)
         }
 
         // gather built files to use in following pipeline stages (on
@@ -256,7 +266,6 @@ void integrationTests(String appserver) {
     sh "git clean -fdx"
 
     unstash 'generated-files'
-    // TODO: Consider touching the target files for test, so it won't recompile
 
     /* touch all target */
     //sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
@@ -307,7 +316,6 @@ void integrationTests(String appserver) {
             -Dwebdriver.chrome.driver=/opt/chromedriver \
             ${ftOpts}
         """
-        // TODO skip npm/yarn (but don't -DexcludeFrontend; we need the version in target/ )
         /* TODO
         -Dassembly.skipAssembly \
         -DskipAppassembler \
@@ -336,7 +344,6 @@ void integrationTests(String appserver) {
           error "no integration test results for $appserver"
         }
         notify.testResults(appserver.toUpperCase(), currentBuild.result)
-        // TODO ensure the pipeline aborts in case of test failures
       }
     }
   }
