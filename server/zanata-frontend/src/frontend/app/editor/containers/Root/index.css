@@ -1,4 +1,4 @@
-  /** @define Editor; use strict */
+/** @define Editor; use strict */
 
 :root {
   --Editor-rhythm                         : 1.5rem;
@@ -9,6 +9,14 @@
   --Editor-panel-z-index                  : 200;
   --Editor-suggestions-header-z-index     : 300;
   --Editor-suggestionsSearch-z-index      : 300;
+}
+
+
+/* Shorten with an ellipsis when overflowing */
+.ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .Editor {
@@ -140,7 +148,7 @@ li.docName span.ellipsis {
 }
 
 .trans-link.form-group {
-   padding-top:0.75em;
+  padding-top:0.75em;
 }
 
 .trans-link.form-group .form-control {
@@ -152,6 +160,59 @@ li.docName span.ellipsis {
 .input-group-addon {
   vertical-align: middle;
   color:#20718a;
+}
+
+h4.modal-title {
+  font-size:1.728rem;
+  font-weight:300;
+  text-align:center;
+  color:#1ba7d9;
+  line-height:1em;
+}
+
+.panel-body h3 {
+  font-weight: 500;
+  font-size:1.2em;
+}
+
+.list-inline li {
+  display:inline-flex;
+}
+
+.modal-body .list-group-item-heading {
+  margin-top:0.5em;
+  color:#20718a;
+}
+
+.panel-body .modal-term {
+  font-size:1.1em;
+  line-height: 2em;
+  color:#333;
+}
+
+
+.history-icon svg, .comment-icon svg {
+  vertical-align: sub;
+}
+
+.comment-box {
+  margin-top:1em;
+}
+
+.comment-box li {
+  color:#20718a;
+}
+
+.comment-icon svg {
+  fill:#90b8c5 !important;
+}
+
+ul.list-inline li.s1 {
+  margin-right: 0.375em;
+}
+
+ul.source-infolist {
+  color:#333;
 }
 
 .n2, .n2 svg {
@@ -379,9 +440,14 @@ li.inline-search-list span {
   width:18em;
 }
 
-  /**
-   * Media Queries
-   */
+.modal-header .close {
+  float: right;
+}
+
+/**
+ * Media Queries
+ */
+
 
 @media (--sm-viewport) {
   .Editor-currentProject {
@@ -406,8 +472,17 @@ li.inline-search-list span {
 }
 
 @media (max-width:740px) {
- .TransUnit-heading {
+
+  .TransUnit-heading {
     padding-left: 1.5em;
+  }
+  td.long-string {
+    display:table-row !important;
+    padding-bottom:0 !important;
+    max-width:10em !important;
+  }
+  .long-string span {
+    max-width:9.5em !important;
   }
 }
 
@@ -416,3 +491,99 @@ li.inline-search-list span {
     padding-left: 0 !important;
   }
 }
+
+
+@media (max-width:909px) {
+
+  .info-icon {
+    text-align: left;
+  }
+
+  .hide-small {
+    display:none;
+    visibility: hidden;
+  }
+
+  .hide-mdplus {
+    margin-right: 0.75em;
+  }
+
+  td.long-string {
+    display:table-row !important;
+    padding-bottom:0 !important;
+    max-width:12em !important;
+  }
+
+  .long-string span {
+    max-width:10em !important;
+  }
+
+  .hide-md {
+    display: none;
+    visibility: hidden;
+  }
+
+  #sidebartabs-pane-1 table tbody tr {
+    margin-bottom: 1em;
+    display: inline-table;
+  }
+
+  #sidebartabs-pane-1.tab-pane.active table tbody tr {
+    width:100%;
+    border-bottom: 1px solid rgb(99, 156, 173);
+    padding-bottom:0.375em;
+  }
+
+  #sidebartabs-pane-1 td .Button--primary {
+    float:none;
+    margin-bottom: 1em;
+  }
+
+}
+
+@media (min-width:910px) {
+  .hide-mdplus {
+    display: none;
+    visibility: hidden;
+    margin-right: 0;
+  }
+
+  .info-icon, th.hide-md {
+    text-align: right !important;
+  }
+
+  td.long-string {
+    padding-bottom: 0.75em;
+    min-width: 6em;
+  }
+
+  .long-string span {
+    max-width: 5.5em;
+  }
+
+  #sidebartabs-pane-1 table tbody tr {
+    display: table-row !important;
+  }
+
+  #sidebartabs-pane-1 td .Button--primary {
+    float:right;
+  }
+
+  #sidebartabs-pane-1 table tbody tr td {
+    padding-right:0.5em;
+  }
+}
+
+@media (min-width:1100px) {
+  td.long-string  {
+    max-width: 10em;
+  }
+  .long-string span {
+    max-width: 9.5em;
+  }
+
+  #sidebartabs-pane-1 table tbody tr {
+    display: table-row !important;
+  }
+}
+

@@ -117,8 +117,8 @@ public interface UiMessages extends Messages {
     @DefaultMessage("TM merge success on {0} rows")
     String mergeTMSuccess(long count);
 
-    @DefaultMessage("TM merge triggered by {0} has finished {1} - {2}")
-    String mergeTMFinished(String triggerBy, String startTime, String endTime);
+    @DefaultMessage("TM merge for document {0} triggered by {1} has finished {2} - {3}")
+    String mergeTMFinished(String document, String triggerBy, String startTime, String endTime);
 
     @DefaultMessage("Proceed to auto-fill")
     String mergeTMConfirm();
@@ -129,11 +129,11 @@ public interface UiMessages extends Messages {
     @DefaultMessage("TM merge started...")
     String mergeTMStarted();
 
-    @DefaultMessage("Someone has started TM merge for this document. Please wait for it to finish before working on translation")
-    String mergeTMStartedBySomeone();
+    @DefaultMessage("Someone has started TM merge for document {0}. Please wait for it to finish before working on translation")
+    String mergeTMStartedBySomeone(String document);
 
     @DefaultMessage("Someone has started TM merge for document: {0}")
-    String mergeTMStartedBySomeoneForOtherDoc(String document);
+    String mergeTMStartedBySomeoneForDoc(String document);
 
     @DefaultMessage("{0}% has been processed")
     String mergeProgressPercentage(String percentDisplay);
@@ -151,20 +151,33 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Copy as Fuzzy")
     String copyAsFuzzy();
 
+    @DefaultMessage("Copy as Translated")
+    String copyAsTranslated();
+
     @DefaultMessage("Different Document Id (Document name and path):")
     String differentDocument();
 
     @DefaultMessage("Different Context (resId, msgctxt):")
     String differentContext();
 
-    @DefaultMessage("On match from Imported Translation Memory:")
+    @DefaultMessage("Match from Imported Translation Memory:")
     String importedMatch();
+
+    @DefaultMessage("If none of the above conditions apply")
+    String otherwise();
+
+
+    @DefaultMessage("Only possible when TM is from same project but different version, has same content, context and within same document")
+    String otherwiseTooltip();
 
     @DefaultMessage("Condition")
     String condition();
 
     @DefaultMessage("Action")
     String action();
+
+    @DefaultMessage("Result")
+    String result();
 
     @DefaultMessage("100% (Identical)")
     String identical();

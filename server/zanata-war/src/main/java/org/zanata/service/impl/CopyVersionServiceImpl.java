@@ -169,7 +169,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
             @Nonnull String versionSlug, @Nonnull String newVersionSlug,
             CopyVersionTaskHandle handle) {
         copyVersion(projectSlug, versionSlug, newVersionSlug, handle);
-        return AsyncTaskResult.taskResult();
+        return AsyncTaskResult.completed();
     }
 
     private void prepareCopyVersionHandle(

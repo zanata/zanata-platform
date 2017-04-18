@@ -9,6 +9,13 @@ import {
 import { some, curry, isEmpty } from 'lodash'
 import { equals } from '../utils/string-utils'
 
+export const TOGGLE_GLOSSARY = Symbol('TOGGLE_GLOSSARY')
+export function toggleGlossary () {
+  return {
+    type: TOGGLE_GLOSSARY
+  }
+}
+
 export const TOGGLE_HEADER = Symbol('TOGGLE_HEADER')
 
 export function toggleHeader () {

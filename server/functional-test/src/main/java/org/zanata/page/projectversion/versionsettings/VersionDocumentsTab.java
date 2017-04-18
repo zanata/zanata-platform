@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import org.apache.xpath.operations.Bool;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;

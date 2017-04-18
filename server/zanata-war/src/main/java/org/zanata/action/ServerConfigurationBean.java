@@ -123,6 +123,7 @@ public class ServerConfigurationBean implements Serializable {
     private String maxFilesPerUpload;
     @DomainList
     private String permittedUserEmailDomains;
+    private String gravatarRating;
     private List<PropertyWithKey<String>> commonStringProperties = Arrays
             .asList(new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
                     new PropertyWithKey<String>("serverUrl", KEY_HOST),
@@ -149,6 +150,8 @@ public class ServerConfigurationBean implements Serializable {
                             KEY_DISPLAY_USER_EMAIL),
                     new PropertyWithKey<String>("permittedUserEmailDomains",
                             KEY_PERMITTED_USER_EMAIL_DOMAIN),
+                    new PropertyWithKey<String>("gravatarRating",
+                            KEY_GRAVATAR_RATING),
                     homeContentProperty);
 
     public String updateHomeContent() {
@@ -515,5 +518,13 @@ public class ServerConfigurationBean implements Serializable {
     public void setPermittedUserEmailDomains(
             final String permittedUserEmailDomains) {
         this.permittedUserEmailDomains = permittedUserEmailDomains;
+    }
+
+    public String getGravatarRating() {
+        return this.gravatarRating;
+    }
+
+    public void setGravatarRating(String gravatarRating) {
+        this.gravatarRating = gravatarRating;
     }
 }

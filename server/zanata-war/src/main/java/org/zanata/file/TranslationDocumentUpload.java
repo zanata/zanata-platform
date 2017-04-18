@@ -40,7 +40,7 @@ import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.exception.ChunkUploadException;
+import org.zanata.exception.DocumentUploadException;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
@@ -148,7 +148,7 @@ public class TranslationDocumentUpload {
             log.error("failed to create input stream from temp file", e);
             return Response.status(Status.INTERNAL_SERVER_ERROR).entity(e)
                     .build();
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             return Response.status(e.getStatusCode())
                     .entity(new ChunkUploadResponse(e.getMessage())).build();
         }
@@ -156,7 +156,7 @@ public class TranslationDocumentUpload {
 
     private void failIfTranslationUploadNotValid(GlobalDocumentId id,
             String localeId, DocumentFileUploadForm uploadForm)
-            throws ChunkUploadException {
+            throws DocumentUploadException {
         util.failIfUploadNotValid(id, uploadForm);
         util.failIfHashNotPresent(uploadForm);
         failIfDocumentDoesNotExist(id);
@@ -165,9 +165,9 @@ public class TranslationDocumentUpload {
     }
 
     private void failIfDocumentDoesNotExist(GlobalDocumentId id)
-            throws ChunkUploadException {
+            throws DocumentUploadException {
         if (util.isNewDocument(id)) {
-            throw new ChunkUploadException(Status.NOT_FOUND,
+            throw new DocumentUploadException(Status.NOT_FOUND,
                     "No document with id \"" + id.getDocId()
                             + "\" exists in project-version \""
                             + id.getProjectSlug() + ":" + id.getVersionSlug()
@@ -176,21 +176,21 @@ public class TranslationDocumentUpload {
     }
 
     private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm)
-            throws ChunkUploadException {
+            throws DocumentUploadException {
         String fileType = uploadForm.getFileType();
         if (!fileType.equals(".po") && !translationFileServiceImpl
                 .hasAdapterFor(DocumentType.getByName(fileType))) {
-            throw new ChunkUploadException(Status.BAD_REQUEST, "The type \""
+            throw new DocumentUploadException(Status.BAD_REQUEST, "The type \""
                     + fileType
                     + "\" specified in form parameter \'type\' is not valid for a translation file on this server.");
         }
     }
 
     private void failIfTranslationUploadNotAllowed(GlobalDocumentId id,
-            String localeId) throws ChunkUploadException {
+            String localeId) throws DocumentUploadException {
         HLocale locale = findHLocale(localeId);
         if (!isTranslationUploadAllowed(id, locale)) {
-            throw new ChunkUploadException(Status.FORBIDDEN,
+            throw new DocumentUploadException(Status.FORBIDDEN,
                     "You do not have permission to upload translations for locale \""
                             + localeId + "\" to project-version \""
                             + id.getProjectSlug() + ":" + id.getVersionSlug()
@@ -203,12 +203,12 @@ public class TranslationDocumentUpload {
         try {
             localeId = new LocaleId(localeString);
         } catch (IllegalArgumentException e) {
-            throw new ChunkUploadException(Status.BAD_REQUEST,
+            throw new DocumentUploadException(Status.BAD_REQUEST,
                     "Invalid value for locale", e);
         }
         HLocale locale = localeDAO.findByLocaleId(localeId);
         if (locale == null) {
-            throw new ChunkUploadException(Status.NOT_FOUND,
+            throw new DocumentUploadException(Status.NOT_FOUND,
                     "The specified locale \"" + localeString
                             + "\" does not exist on this server.");
         }

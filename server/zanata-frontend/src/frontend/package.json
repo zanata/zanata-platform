@@ -6,9 +6,9 @@
   "scripts": {
     "js": "webpack",
     "build": "yarn build:icons && webpack -p --config webpack.prod.config.js --bail --display-error-details",
-    "draft": "yarn build:icons && webpack --config webpack.draft.config.js --progress --bail --display-error-details",
+    "draft": "yarn build:icons && webpack --config webpack.draft.config.js --bail --display-error-details",
     "watch": "webpack-dev-server -d --progress --config webpack.dev.config.js --progress --inline --hot --port 8000",
-    "watch:editor": "mkdir -p dist && cp app/editor/index.html dist && webpack-dev-server -d --progress --config webpack.dev.config.js --inline --hot --content-base dist/",
+    "watch:editor": "mkdir -p dist && cp app/editor/index.html dist && webpack-dev-server -d --progress --config webpack.dev.editor.config.js --inline --content-base dist/",
     "build:icons": "yarn svg && yarn icons",
     "styleguide-server": "styleguidist server",
     "styleguide-build": "styleguidist build",
@@ -28,7 +28,7 @@
   },
   "license": "LGPL-2.1",
   "devDependencies": {
-    "@kadira/storybook": "1.36.0",
+    "@kadira/storybook": "2.35.3",
     "autoprefixer-loader": "3.2.0",
     "babel-core": "6.9.1",
     "babel-eslint": "6.1.0",
@@ -85,6 +85,8 @@
     "webpack-merge": "1.1.1"
   },
   "dependencies": {
+    "@kadira/storybook-addon-actions": "1.1.1",
+    "@kadira/storybook-addons": "1.6.1",
     "babel-polyfill": "6.9.1",
     "chart.js": "1.1.1",
     "combokeys": "2.4.6",
@@ -106,6 +108,7 @@
     "react-helmet": "3.1.0",
     "react-list": "0.7.19",
     "react-loading": "0.0.9",
+    "react-lorem-component": "0.10.0",
     "react-redux": "4.4.5",
     "react-router": "2.4.0",
     "react-router-redux": "3.0.0",

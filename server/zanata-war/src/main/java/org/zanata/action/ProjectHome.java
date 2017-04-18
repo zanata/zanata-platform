@@ -1039,7 +1039,7 @@ public class ProjectHome extends SlugHome<HProject>
     @Transactional
     public void removeWebHook(String id) {
         identity.checkPermission(getInstance(), "update");
-        WebHook webHook = webHookDAO.findById(new Long(id));
+        WebHook webHook = webHookDAO.findById(Long.valueOf(id));
         if (webHook != null) {
             String url = webHook.getUrl();
             getInstance().getWebHooks().remove(webHook);
@@ -1061,7 +1061,7 @@ public class ProjectHome extends SlugHome<HProject>
         if (!isValidUrl(url)) {
             return;
         }
-        Long webhookId = new Long(id);
+        Long webhookId = Long.valueOf(id);
         if (projectServiceImpl.isDuplicateWebhookUrl(getInstance(), url,
                 webhookId)) {
             facesMessages.addGlobal(SEVERITY_ERROR,

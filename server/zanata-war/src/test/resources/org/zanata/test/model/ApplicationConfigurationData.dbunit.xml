@@ -160,4 +160,12 @@
       config_key="display.user.email"
       config_value="true"
   />
+  <HApplicationConfiguration
+      id="21"
+      creationDate="2009-01-14 11:39:00"
+      lastChanged="2009-01-14 11:39:00"
+      versionNum="1"
+      config_key="gravatar.rating"
+      config_value="R"
+  />
 </dataset>

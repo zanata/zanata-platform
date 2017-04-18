@@ -21,6 +21,7 @@
 package org.zanata.async;
 
 import java.security.Principal;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -38,11 +39,8 @@ import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.seam.security.ZanataJpaIdentityStore;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.security.annotations.AuthenticatedLiteral;
 import org.zanata.util.ServiceLocator;
-import com.google.common.util.concurrent.ListenableFuture;
-// TODO consider switching from Guava's ListenableFuture to Java 8's CompletableFuture
 
 /**
  * @author Carlos Munoz
@@ -54,8 +52,6 @@ public class AsyncTaskManager {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(AsyncTaskManager.class);
 
-    // TODO use ManagedExecutorService on Java EE 7, so that we can eg inject
-    // UserTransaction
     private ExecutorService scheduler;
     @Inject
     private AsyncConfig asyncConfig;
@@ -81,7 +77,7 @@ public class AsyncTaskManager {
      *            The type of result expected.
      * @return A listenable future for the expected result.
      */
-    public <V> ListenableFuture<V>
+    public <V> CompletableFuture<V>
             startTask(@Nonnull final AsyncTask<Future<V>> task) {
         HAccount taskOwner = ServiceLocator.instance()
                 .getInstance(HAccount.class, new AuthenticatedLiteral());
@@ -107,9 +103,9 @@ public class AsyncTaskManager {
                         runAsSubject);
                 // run the task and capture the result
                 V returnValue = getReturnValue(task.call());
-                taskFuture.set(returnValue);
+                taskFuture.complete(returnValue);
             } catch (Throwable t) {
-                taskFuture.setException(t);
+                taskFuture.completeExceptionally(t);
                 log.error("Exception when executing an asynchronous task.", t);
             } finally {
                 // stop the contexts to make sure all beans are cleaned up

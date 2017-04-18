@@ -67,6 +67,7 @@ public class HApplicationConfiguration extends ModelEntityBase {
     public static String KEY_PERMITTED_USER_EMAIL_DOMAIN =
             "permitted.user.email.domain";
     public static String KEY_AUTO_ACCEPT_TRANSLATOR = "accept.translator.requests";
+    public static String KEY_GRAVATAR_RATING = "gravatar.rating";
     private static final long serialVersionUID = 8652817113098817448L;
     private static List<String> availableKeys;
     private String key;
@@ -130,5 +131,28 @@ public class HApplicationConfiguration extends ModelEntityBase {
     public HApplicationConfiguration(final String key, final String value) {
         this.key = key;
         this.value = value;
+    }
+
+    /**
+     * Business equality comparison
+     * @param other
+     * @return other is equal
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        if (!super.equals(other)) return false;
+
+        HApplicationConfiguration that = (HApplicationConfiguration) other;
+
+        return key.equals(that.key);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (key != null ? key.hashCode() : 0);
+        return result;
     }
 }

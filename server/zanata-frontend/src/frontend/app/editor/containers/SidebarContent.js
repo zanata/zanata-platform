@@ -1,20 +1,18 @@
 import React, { PropTypes } from 'react'
-import { // Tabs, Tab,
-  FormGroup, InputGroup,
+import { Tabs, FormGroup, InputGroup,
   FormControl, Button } from 'react-bootstrap'
 import Icon from '../../components/Icon'
 import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
-
-// const activityTitle = 'Activity'
-// const glossaryTitle = 'Glossary'
+import GlossaryTab from './GlossaryTab'
 
 const SidebarContent = React.createClass({
 
   propTypes: {
     /* close the sidebar */
     close: PropTypes.func.isRequired,
+    glossaryCount: PropTypes.number.isRequired,
     hasSelectedPhrase: PropTypes.bool.isRequired,
     selectedPhrase: PropTypes.shape({
       msgctxt: PropTypes.string,
@@ -23,7 +21,7 @@ const SidebarContent = React.createClass({
       sourceFlags: PropTypes.string,
       sourceReferences: PropTypes.string,
       lastModifiedBy: PropTypes.string,
-      lastModifiedTime: PropTypes.date
+      lastModifiedTime: PropTypes.instanceOf(Date)
     })
   },
 
@@ -102,10 +100,23 @@ const SidebarContent = React.createClass({
   },
 
   render () {
+    const { glossaryCount } = this.props
+    const glossaryCountDisplay = glossaryCount > 0
+      // TODO kgough display as a badge instead of text in parens
+      ? <span> ({this.props.glossaryCount})</span>
+      : undefined
+    const glossaryTitle = (
+      <span>
+        <Icon name="glossary" className="s1 gloss-tab-svg" />
+        <span className="hide-md">Glossary{glossaryCountDisplay}</span>
+      </span>
+    )
+
     return (
       <div>
         <h1 className="sidebar-heading">
-          <Icon name="info" className="s1" /> Details
+          <Icon name="info" className="details-svg s1" />
+          <span className="hide-md">Details</span>
           <span className="s1 pull-right">
             <Button bsStyle="link" onClick={this.props.close}>
               <Icon name="cross" />
@@ -115,49 +126,43 @@ const SidebarContent = React.createClass({
         <div className="sidebar-wrapper">
           {this.sidebarDetails()}
         </div>
-        {/*
         <Tabs id="sidebartabs" defaultActiveKey={1}>
-          <Tab eventKey={1} title={activityTitle}>
+          { /* <Tab eventKey={2} title={activityTitle}>
             <div className="sidebar-wrapper" id="tab1">
               Tab 1 content
             </div>
-          </Tab>
-          <Tab eventKey={2} title={glossaryTitle}>
-            <div className="sidebar-wrapper" id="tab2">
-              Tab 2 content
-            </div>
-          </Tab>
+          </Tab> */ }
+          <GlossaryTab eventKey={1} title={glossaryTitle} />
         </Tabs>
-        */}
       </div>
     )
   }
 })
 
 function mapStateToProps (state) {
-  const { detail, selectedPhraseId } = state.phrases
+  const { glossary, phrases } = state
+  const { detail, selectedPhraseId } = phrases
   const selectedPhrase = detail[selectedPhraseId]
+
+  const { results, searchText } = glossary
+  const glossaryResults = results.get(searchText)
+  const glossaryCount = glossaryResults ? glossaryResults.length : 0
 
   // Need to check whether phrase itself is undefined since the detail may not
   // yet have been fetched from the server.
   const hasSelectedPhrase = !isUndefined(selectedPhraseId) &&
       !isUndefined(selectedPhrase)
+
+  const newProps = {
+    glossaryCount,
+    hasSelectedPhrase
+  }
+
   if (hasSelectedPhrase) {
-    return {
-      hasSelectedPhrase,
-      selectedPhrase
-    }
-  } else {
-    return {
-      hasSelectedPhrase
-    }
+    newProps.selectedPhrase = selectedPhrase
   }
+
+  return newProps
 }
 
-function mapDispatchToProps (dispatch) {
-  return {
-
-  }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(SidebarContent)
+export default connect(mapStateToProps)(SidebarContent)

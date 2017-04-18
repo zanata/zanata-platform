@@ -98,7 +98,7 @@ public class HPerson extends ModelEntityBase implements Serializable {
             cascade = CascadeType.ALL)
     public Set<HIterationGroup> getMaintainerVersionGroups() {
         if (maintainerVersionGroups == null) {
-            maintainerVersionGroups = new HashSet<HIterationGroup>();
+            maintainerVersionGroups = new HashSet<>();
         }
         return maintainerVersionGroups;
     }
@@ -112,15 +112,15 @@ public class HPerson extends ModelEntityBase implements Serializable {
         return memberships;
     }
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id.person")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "id.person", orphanRemoval = true)
     protected Set<HLocaleMember> getLanguageTeamMemberships() {
         if (this.languageTeamMemberships == null) {
-            this.languageTeamMemberships = new HashSet<HLocaleMember>();
+            this.languageTeamMemberships = new HashSet<>();
         }
         return languageTeamMemberships;
     }
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "person")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "person", orphanRemoval = true)
     protected Set<HProjectMember> getProjectMemberships() {
         if (projectMemberships == null) {
             projectMemberships = Sets.newHashSet();

@@ -229,7 +229,7 @@ public class CopyTransServiceImpl implements CopyTransService {
     public Future<Void> startCopyTransForDocument(HDocument document,
             HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle) {
         copyTransForDocument(document, copyTransOptions, handle);
-        return AsyncTaskResult.taskResult();
+        return AsyncTaskResult.completed();
     }
 
     @Override
@@ -237,7 +237,7 @@ public class CopyTransServiceImpl implements CopyTransService {
     public Future<Void> startCopyTransForIteration(HProjectIteration iteration,
             HCopyTransOptions copyTransOptions, CopyTransTaskHandle handle) {
         copyTransForIteration(iteration, copyTransOptions, handle);
-        return AsyncTaskResult.taskResult();
+        return AsyncTaskResult.completed();
     }
 
     /**

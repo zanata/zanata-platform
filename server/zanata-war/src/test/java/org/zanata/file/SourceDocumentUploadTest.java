@@ -41,7 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 import org.zanata.common.DocumentType;
-import org.zanata.exception.ChunkUploadException;
+import org.zanata.exception.DocumentUploadException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HRawDocument;
 import org.zanata.rest.dto.resource.Resource;
@@ -149,7 +149,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
     @Test
     public void checksValidityAndFailsIfNotValid() {
         conf = defaultUpload().build();
-        doThrow(new ChunkUploadException(NOT_ACCEPTABLE, "Test message")).when(
+        doThrow(new DocumentUploadException(NOT_ACCEPTABLE, "Test message")).when(
                 documentUploadUtil).failIfUploadNotValid(conf.id,
                 conf.uploadForm);
         response = sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);
@@ -187,7 +187,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         mockHasUploadPermission();
         mockHasPlainTextAdapter();
 
-        doThrow(new ChunkUploadException(NOT_ACCEPTABLE, "Test message")).when(
+        doThrow(new DocumentUploadException(NOT_ACCEPTABLE, "Test message")).when(
                 documentUploadUtil).persistTempFileFromUpload(conf.uploadForm);
 
         response = sourceUpload.tryUploadSourceFile(conf.id, conf.uploadForm);

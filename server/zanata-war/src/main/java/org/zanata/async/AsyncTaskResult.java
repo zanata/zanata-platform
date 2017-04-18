@@ -20,35 +20,26 @@
  */
 package org.zanata.async;
 
-import javax.annotation.Nullable;
-
-import com.google.common.util.concurrent.AbstractFuture;
+import java.util.concurrent.CompletableFuture;
 
 /**
+ * Represents the result of an asynchronous task.
+ * At this point this is a rename of Java's CompletableFuture class with some
+ * utility methods for creating instances.
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class AsyncTaskResult<V> extends AbstractFuture<V> {
+public class AsyncTaskResult<V> extends CompletableFuture<V> {
 
     AsyncTaskResult() {
     }
 
-    public static <T> AsyncTaskResult<T> taskResult(T value) {
+    public static <T> AsyncTaskResult<T> completed(T value) {
         AsyncTaskResult<T> result = new AsyncTaskResult<T>();
-        result.set(value);
+        result.complete(value);
         return result;
     }
 
-    public static <T> AsyncTaskResult<T> taskResult() {
-        return taskResult(null);
-    }
-
-    @Override
-    public boolean set(@Nullable V value) {
-        return super.set(value);
-    }
-
-    @Override
-    public boolean setException(Throwable throwable) {
-        return super.setException(throwable);
+    public static <T> AsyncTaskResult<T> completed() {
+        return completed(null);
     }
 }

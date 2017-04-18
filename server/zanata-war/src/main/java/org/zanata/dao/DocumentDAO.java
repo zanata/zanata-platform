@@ -301,11 +301,11 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
         }
         for (TransUnitCount stat : transUnitCountMap.values()) {
             stat.set(ContentState.New, StatisticsUtil
-                    .calculateUntranslated(new Long(stat.getTotal()), stat));
+                    .calculateUntranslated(Long.valueOf(stat.getTotal()), stat));
         }
         for (TransUnitWords stat : transUnitWordsMap.values()) {
             stat.set(ContentState.New, StatisticsUtil
-                    .calculateUntranslated(new Long(stat.getTotal()), stat));
+                    .calculateUntranslated(Long.valueOf(stat.getTotal()), stat));
         }
         // Merge into a single Stats object
         for (String locale : transUnitCountMap.keySet()) {

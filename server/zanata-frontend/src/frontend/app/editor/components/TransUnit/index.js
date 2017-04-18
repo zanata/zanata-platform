@@ -1,11 +1,13 @@
 import React, { PropTypes } from 'react'
 import cx from 'classnames'
+import { GLOSSARY_TAB } from '../../reducers/ui'
 import TransUnitStatus from '../TransUnitStatus'
 import TransUnitSourcePanel from '../TransUnitSourcePanel'
 import TransUnitTranslationPanel from '../TransUnitTranslationPanel'
 import { connect } from 'react-redux'
 import { pick } from 'lodash'
 import { toggleDropdown, closeDropdown } from '../../actions'
+import { toggleGlossary } from '../../actions/headerActions'
 import {
   cancelEdit,
   copyFromSource,
@@ -24,6 +26,9 @@ import { togglePhraseSuggestions } from '../../actions/suggestions'
  */
 const TransUnit = React.createClass({
   propTypes: {
+    glossaryCount: PropTypes.number.isRequired,
+    glossaryVisible: PropTypes.bool.isRequired,
+    toggleGlossary: PropTypes.func.isRequired,
     phrase: PropTypes.object.isRequired,
     saveAsMode: PropTypes.bool.isRequired,
     selectPhrase: PropTypes.func.isRequired,
@@ -83,6 +88,8 @@ const TransUnit = React.createClass({
     ])
 
     const phraseTranslationPanelProps = pick(this.props, [
+      'glossaryCount',
+      'glossaryVisible',
       'cancelEdit',
       'openDropdown',
       'phrase',
@@ -95,6 +102,7 @@ const TransUnit = React.createClass({
       'suggestionSearchType',
       'textChanged',
       'toggleDropdown',
+      'toggleGlossary',
       'toggleSuggestionPanel',
       'translationLocale',
       'undoEdit'
@@ -112,17 +120,43 @@ const TransUnit = React.createClass({
   }
 })
 
+/**
+ * Get the count of available glossary terms for this phrase.
+ *
+ * Returns 0 if thre is no way to look up the results.
+ *
+ * @param phrase containing source text used for glossary search
+ * @param glossary containing cached search results
+ * @returns {number} count of available results
+ */
+function countGlossaryResults (phrase, glossary) {
+  if (!phrase.sources) {
+    // phrase detail not loaded, no way to look up any results
+    return 0
+  }
+  // Search text that this phrase would generate for glossary search
+  const glossarySearchText = phrase.sources.join(' ')
+  const glossaryResults = glossary.results.get(glossarySearchText)
+
+  return glossaryResults ? glossaryResults.length : 0
+}
+
 function mapStateToProps (state, ownProps) {
-  const index = ownProps.index
-  const phrase = ownProps.phrase
+  const { index, phrase } = ownProps
+  const { glossary, suggestions, ui } = state
+  const { sidebar } = ui.panels
   const sourceLocale = state.context.sourceLocale
+
+  const glossaryCount = countGlossaryResults(phrase, glossary)
+  const glossaryVisible =
+    sidebar.visible && sidebar.selectedTab === GLOSSARY_TAB
 
   // FIXME do not want to show 0 while it is loading, maybe show nothing or show
   //       that the suggestion search is in progress if phraseSearch.loading
-  const phraseSearch = state.suggestions.searchByPhrase[phrase.id]
+  const phraseSearch = suggestions.searchByPhrase[phrase.id]
   const suggestionCount = phraseSearch ? phraseSearch.suggestions.length : 0
-  const suggestionSearchType = state.suggestions.searchType
-  const showSuggestions = state.ui.panels.suggestions.visible
+  const suggestionSearchType = suggestions.searchType
+  const showSuggestions = ui.panels.suggestions.visible
 
   const passThroughProps = pick(state, [
     'openDropdown'
@@ -148,6 +182,8 @@ function mapStateToProps (state, ownProps) {
     isFirstPhrase: index === 0,
     selected: state.phrases.selectedPhraseId === phrase.id,
     // savingStatusId: phrase.isSaving ? phrase.savingStatusId : undefined,
+    glossaryCount,
+    glossaryVisible,
     suggestionCount,
     suggestionSearchType,
     showSuggestions
@@ -184,6 +220,9 @@ function mapDispatchToProps (dispatch, ownProps) {
     },
     toggleDropdown: (key) => {
       dispatch(toggleDropdown(key))
+    },
+    toggleGlossary: () => {
+      dispatch(toggleGlossary())
     },
     toggleSuggestionPanel: () => {
       dispatch(togglePhraseSuggestions())

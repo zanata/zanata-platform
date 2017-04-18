@@ -161,7 +161,7 @@ public class TranslationArchiveServiceImpl
             String userName, AsyncTaskHandle<String> handle) throws Exception {
         String archiveId = buildTranslationFileArchive(projectSlug,
                 iterationSlug, localeId, userName, handle);
-        return AsyncTaskResult.taskResult(archiveId);
+        return AsyncTaskResult.completed(archiveId);
     }
 
     private void prepareHandle(AsyncTaskHandle<String> handle,
