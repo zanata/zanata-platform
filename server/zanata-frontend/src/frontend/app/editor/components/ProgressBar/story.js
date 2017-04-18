@@ -2,18 +2,25 @@ import React from 'react'
 import { storiesOf, action } from '@kadira/storybook'
 import ProgressBar from '.'
 
-const cts = {total: 10,approved: 2,translated: 3,needswork: 2,rejected: 1,untranslated: 2}
+const counts = {
+  total: 10,
+  approved: 2,
+  translated: 3,
+  needswork: 2,
+  rejected: 1,
+  untranslated: 2
+}
 
 /*
  * See .storybook/README.md for info on the component storybook.
  */
 storiesOf('ProgressBar', module)
   .add('Small', () => (
-    <ProgressBar size='small' counts={cts}/>
+    <ProgressBar size='small' counts={counts}/>
   ))
   .add('Medium (default)', () => (
-    <ProgressBar counts={cts}/>
+    <ProgressBar counts={counts}/>
   ))
   .add('Large', () => (
-    <ProgressBar size='large' counts={cts}/>
+    <ProgressBar size='large' counts={counts}/>
   ))
