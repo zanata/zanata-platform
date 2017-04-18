@@ -20,6 +20,8 @@
  */
 package org.zanata;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +32,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,22 +48,64 @@ public class DatabaseDDLTest {
     private static final Logger log =
             LoggerFactory.getLogger(DatabaseDDLTest.class);
 
-    private static final String QUERY_FOR_FK =
+    private static final String FK_QUERY =
             "SELECT ke.referenced_table_name parent, ke.table_name child, ke.constraint_name "
                     + "FROM information_schema.KEY_COLUMN_USAGE ke "
-                    +
-                    "WHERE ke.referenced_table_name IS NOT NULL and ke.TABLE_SCHEMA = ?"
+                    + "WHERE ke.referenced_table_name IS NOT NULL and ke.TABLE_SCHEMA = ?"
                     + "ORDER BY ke.referenced_table_name, ke.table_name";
 
+    private static final String UNIQUE_KEY_QUERY =
+            "select CONSTRAINT_NAME, table_name from information_schema.TABLE_CONSTRAINTS "
+                    + "where CONSTRAINT_SCHEMA = ? and constraint_type = 'UNIQUE'";
+    private String username;
+    private String password;
+
+    @Before
+    public void setUp() {
+        username =
+                PropertiesHolder.getProperty("hibernate.connection.username");
+        password =
+                PropertiesHolder.getProperty("hibernate.connection.password");
+    }
 
     @Test
     public void hibernateValidate() {
-        String url = PropertiesHolder.getProperty("hibernate.connection.url");
-        String username =
-                PropertiesHolder.getProperty("hibernate.connection.username");
-        String password =
-                PropertiesHolder.getProperty("hibernate.connection.password");
         String dbName = PropertiesHolder.getProperty("ds.database");
+
+        EntityManagerFactory emfFromLiquibase =
+                entityManagerFactoryFromLiquibase();
+
+        EntityManager em1 = emfFromLiquibase.createEntityManager();
+        List<ParentAndChild> fkFromLiquibase =
+                getForeignKeysForDatabase(dbName, em1);
+        log.debug("foreign keys from liquibase:{}", fkFromLiquibase);
+
+        EntityManagerFactory emfFromHbm =
+                entityManagerFactoryFromHibernateMapping();
+
+        EntityManager em2 = emfFromHbm.createEntityManager();
+        List<ParentAndChild> fkFromHibernate =
+                getForeignKeysForDatabase("test", em2);
+        log.debug("foreign keys from hibernate:{}", fkFromHibernate);
+
+        assertThat(fkFromLiquibase).isEqualTo(fkFromHibernate)
+                .as("Liquibase foreign keys should equal to hibernate mapping");
+
+        List<Object[]> ukFromLiquibase = getUniqueKeysForDatabase(dbName, em1);
+        List<Object[]> ukFromHibernate = getUniqueKeysForDatabase(dbName, em2);
+        assertThat(ukFromLiquibase).hasSameSizeAs(ukFromHibernate)
+                .as("Liquibase should have same number of unique key as in hibernate mapping");
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Object[]> getUniqueKeysForDatabase(String dbName,
+            EntityManager em) {
+        return em.createNativeQuery(UNIQUE_KEY_QUERY).setParameter(1, dbName)
+                .getResultList();
+    }
+
+    private EntityManagerFactory entityManagerFactoryFromLiquibase() {
+        String url = PropertiesHolder.getProperty("hibernate.connection.url");
 
         Map<String, String> propForLiquibaseEM = new HashMap<>();
         propForLiquibaseEM.put("hibernate.connection.url", url);
@@ -69,20 +113,13 @@ public class DatabaseDDLTest {
         propForLiquibaseEM.put("hibernate.connection.password", password);
         // hibernate validate only validates columns and sequences
         propForLiquibaseEM.put("hibernate.hbm2ddl.auto", "validate");
-        EntityManagerFactory emfFromLiquibase =
-                Persistence.createEntityManagerFactory("zanataDatasourcePU",
-                        propForLiquibaseEM);
+        return Persistence.createEntityManagerFactory("zanataDatasourcePU",
+                propForLiquibaseEM);
+    }
 
-        EntityManager em2 = emfFromLiquibase.createEntityManager();
-        List<Object[]> resultFromLiquibase = em2.createNativeQuery(QUERY_FOR_FK)
-                .setParameter(1, dbName).getResultList();
-        List<ParentAndChild> fkFromLiquibase = resultFromLiquibase.stream()
-                .map(e -> new ParentAndChild(e[0], e[1], e[2]))
-                .collect(Collectors.toList());
-        em2.close();
-        log.debug("{}", fkFromLiquibase);
-
-        // here we use hbm2ddl create-drop to populate test database then query foreign keys
+    private EntityManagerFactory entityManagerFactoryFromHibernateMapping() {
+        // here we use hbm2ddl create-drop to populate test database then query
+        // foreign keys
         String urlForTestDB =
                 PropertiesHolder.getProperty("test.db.connection.url");
         Map<String, String> propForHbm = new HashMap<>();
@@ -90,27 +127,24 @@ public class DatabaseDDLTest {
         propForHbm.put("hibernate.connection.username", username);
         propForHbm.put("hibernate.connection.password", password);
         propForHbm.put("hibernate.hbm2ddl.auto", "create-drop");
-        EntityManagerFactory emfFromHbm = Persistence
-                .createEntityManagerFactory("zanataDatasourcePU", propForHbm);
-
-        EntityManager em1 = emfFromHbm.createEntityManager();
-        List<Object[]> resultFromHibernate =
-                em1.createNativeQuery(QUERY_FOR_FK)
-                        .setParameter(1, "test").getResultList();
-
-        List<ParentAndChild> fkFromHibernate = resultFromHibernate.stream()
-                .map(e -> new ParentAndChild(e[0], e[1], e[2]))
-                .collect(Collectors.toList());
-        em1.close();
-        log.debug("{}", fkFromHibernate);
-
-        Assertions.assertThat(fkFromLiquibase).isEqualTo(fkFromHibernate);
+        return Persistence.createEntityManagerFactory("zanataDatasourcePU",
+                propForHbm);
     }
 
+    private static List<ParentAndChild> getForeignKeysForDatabase(String dbName,
+            EntityManager em) {
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultFromLiquibase = em.createNativeQuery(FK_QUERY)
+                .setParameter(1, dbName).getResultList();
+        return resultFromLiquibase.stream()
+                .map(e -> new ParentAndChild(e[0], e[1], e[2]))
+                .collect(Collectors.toList());
+    }
 
     static class ParentAndChild {
         private final String parent;
         private final String child;
+        // we ignore foreign key name in equal and hashcode method
         private final String fkName;
 
         ParentAndChild(Object parent, Object child, Object fkName) {
@@ -135,10 +169,9 @@ public class DatabaseDDLTest {
 
         @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this)
-                    .add("parent", parent)
+            return MoreObjects.toStringHelper(this).add("parent", parent)
                     .add("child", child)
-//                    .add("fkName", fkName)
+                    // .add("fkName", fkName)
                     .toString();
         }
     }

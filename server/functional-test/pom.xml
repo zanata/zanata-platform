@@ -84,10 +84,6 @@
     <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
     <jndi-remote-client.version>${wildfly.client.version}</jndi-remote-client.version>
     <standalone.xml.file>standalone.xml</standalone.xml.file>
-    <mysql.dist>${project.build.directory}/mysql-dist</mysql.dist>
-
-    <mysqldump.bin>${mysql.dist}/bin/mysqldump</mysqldump.bin>
-    <mysqldump.ddl.cmd>${mysqldump.bin} --host=localhost --user=${ds.username} --password=${ds.password} --port=${mysql.port} --socket=${mysql.socket} --no-data ${ds.database}</mysqldump.ddl.cmd>
   </properties>
 
   <dependencyManagement>
@@ -140,20 +136,6 @@
       </exclusions>
     </dependency>
 
-    <dependency>
-      <groupId>org.zanata</groupId>
-      <artifactId>zanata-model</artifactId>
-      <version>${project.version}</version>
-      <!-- this is to include a hbm2ddl generated ddl for comparison-->
-      <classifier>tests</classifier>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>xerces</groupId>
-          <artifactId>xercesImpl</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
     <dependency>
       <groupId>org.hibernate.javax.persistence</groupId>
       <artifactId>hibernate-jpa-2.1-api</artifactId>
@@ -625,7 +607,7 @@
                       <classifier>${mysql.classifier}</classifier>
                       <type>zip</type>
                       <overWrite>false</overWrite>
-                      <outputDirectory>${mysql.dist}</outputDirectory>
+                      <outputDirectory>${project.build.directory}/mysql-dist</outputDirectory>
                     </artifactItem>
                   </artifactItems>
                 </configuration>
