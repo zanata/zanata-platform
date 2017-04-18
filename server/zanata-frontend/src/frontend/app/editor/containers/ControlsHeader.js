@@ -21,7 +21,7 @@ import {
   lastPage
 } from '../actions/controlsHeaderActions'
 import { toggleSuggestions } from '../actions/suggestions'
-import { toggleAdvanceSearchModal } from '../actions/search'
+import { toggleAdvancedSearchPanel } from '../actions/search'
 import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
 import { GLOSSARY_TAB } from '../reducers/ui'
 
@@ -33,7 +33,7 @@ const { bool, func, number, shape } = PropTypes
 const ControlsHeader = React.createClass({
 
   propTypes: {
-    toggleAdvanceSearchModal: func.isRequired,
+    toggleAdvancedSearchPanel: func.isRequired,
     actions: shape({
       resetFilter: func.isRequired,
       onFilterChange: func.isRequired,
@@ -123,7 +123,7 @@ const ControlsHeader = React.createClass({
         </div>
         <div className="u-floatLeft InputEditorSearch">
           <EditorSearchInput
-            toggleDisplay={this.props.toggleAdvanceSearchModal}
+            toggleDisplay={this.props.toggleAdvancedSearchPanel}
             text="editor search"
 
           />
@@ -242,7 +242,7 @@ function mapDispatchToProps (dispatch) {
       },
       toggleGlossary: () => dispatch(toggleGlossary()),
       toggleSuggestionPanel: () => dispatch(toggleSuggestions()),
-      toggleAdvanceSearchModal: () => dispatch(toggleAdvanceSearchModal()),
+      toggleAdvancedSearchPanel: () => dispatch(toggleAdvancedSearchPanel()),
       toggleKeyboardShortcutsModal: () => {
         // TODO pahuang implement toggle keyboard shutcut modal
         // console.log('======== toggleKeyboardShortcutsModal')
