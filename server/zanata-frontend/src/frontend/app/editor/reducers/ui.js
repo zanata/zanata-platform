@@ -15,7 +15,7 @@ import {
   TOGGLE_SUGGESTIONS
 } from '../actions/suggestions'
 import {
-  TOGGLE_ADVANCE_SEARCH_MODAL
+  TOGGLE_ADVANCED_SEARCH_PANEL
 } from '../actions/search'
 import {prepareLocales} from '../utils/Util'
 import updateObject from 'react-addons-update'
@@ -112,7 +112,7 @@ const ui = (state = defaultState, action) => {
         }
       })
 
-    case TOGGLE_ADVANCE_SEARCH_MODAL:
+    case TOGGLE_ADVANCED_SEARCH_PANEL:
       return update({
         panels: {
           search: {

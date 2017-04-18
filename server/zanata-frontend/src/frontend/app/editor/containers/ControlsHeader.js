@@ -55,6 +55,9 @@ const ControlsHeader = React.createClass({
         sidebar: shape({
           visible: bool.isRequired
         }).isRequired,
+        navHeader: shape({
+          visible: bool.isRequired
+        }).isRequired,
         suggestions: shape({
           visible: bool.isRequired
         }).isRequired
@@ -116,8 +119,12 @@ const ControlsHeader = React.createClass({
         <div className="u-floatLeft">
           <TransUnitFilter {...transFilterProps} />
         </div>
-        <div className="u-floatLeft">
-          <EditorSearchInput />
+        <div className="u-floatLeft InputEditorSearch">
+          <EditorSearchInput
+            toggleDisplay={this.props.toggleAdvanceSearchModal}
+            text="editor search"
+
+          />
         </div>
         <div className="u-floatRight flex">
           <ul className="u-listHorizontal u-textCenter">

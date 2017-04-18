@@ -1,6 +1,7 @@
-export const TOGGLE_ADVANCE_SEARCH_MODAL = Symbol('TOGGLE_ADVANCE_SEARCH_MODAL')
-export function toggleAdvanceSearchModal () {
+export const TOGGLE_ADVANCED_SEARCH_PANEL =
+  Symbol('TOGGLE_ADVANCED_SEARCH_PANEL')
+export function toggleAdvancedSearchPanel () {
   return {
-    type: TOGGLE_ADVANCE_SEARCH_MODAL
+    type: TOGGLE_ADVANCED_SEARCH_PANEL
   }
 }
