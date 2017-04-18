@@ -19,7 +19,7 @@ storiesOf('Modal', module)
             <Modal.Title>Modal heading</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Modal content
+            <Lorem />
           </Modal.Body>
           <Modal.Footer>
           <span className='bootstrap pull-right'>
