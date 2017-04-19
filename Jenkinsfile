@@ -206,6 +206,13 @@ timestamps {
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
+
+          step([$class: 'hudson.plugins.checkstyle.CheckStylePublisher', pattern: '**/target/checkstyle-result.xml'/*, unstableTotalAll:'0'*/])
+
+          // TODO set up maven-pmd-plugin
+          //step([$class: 'PmdPublisher', pattern: '**/target/pmd.xml', unstableTotalAll:'0'])
+
+          step([$class: 'FindBugsPublisher', pattern: '**/findbugsXml.xml'/*, unstableTotalAll:'0'*/])
         }
 
         // gather built files to use in following pipeline stages (on
