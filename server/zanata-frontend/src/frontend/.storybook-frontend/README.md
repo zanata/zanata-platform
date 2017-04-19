@@ -5,6 +5,8 @@ of states for each. This is useful during development and manual testing of
 components. Components should be developed in the storybook first, then used in
 the app.
 
+This storybook is for everything except the editor.
+
 Made with [react-storybook](https://github.com/kadirahq/react-storybook).
 
 ## Usage
@@ -12,7 +14,7 @@ Made with [react-storybook](https://github.com/kadirahq/react-storybook).
 Local storybook on [localhost:9001](http://localhost:9001/) with hot reload:
 
 ```
-make storybook
+make storybook-frontend
 ```
 
 Build a static deployable storybook in `storybook-static`. This could be put in
@@ -29,5 +31,5 @@ make storybook-static
  - `stories.js` is in the component directory, and is just to combine all the
    `story.js` files. It only exists so that the main config does not have lots
    of long import paths in it.
- - `/.storybook/config.js` sets up the environment for components and imports
-   all the stories.
+ - `/.storybook-frontend/config.js` sets up the environment for components and
+   imports all the stories.

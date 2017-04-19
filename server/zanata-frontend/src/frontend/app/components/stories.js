@@ -1,7 +1,7 @@
 /**
  * Collection of component stories for React Storybook.
  *
- * See .storybook for main config
+ * See .storybook-frontend for main config
  */
 
 require('./Button/story.js')
