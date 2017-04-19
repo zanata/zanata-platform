@@ -38,7 +38,8 @@ const EditorSearchInput = React.createClass({
 
   propTypes: {
     toggleDisplay: func.isRequired,
-    text: PropTypes.string.isRequired
+    text: PropTypes.string.isRequired,
+    updateText: PropTypes.func.isRequired
   },
 
   getDefaultProps: () => {
@@ -49,10 +50,8 @@ const EditorSearchInput = React.createClass({
 
   getInitialState: () => {
     return {
-      // FIXME one other component is interested in this state
-      //       just deal with that when I get to it
       focused: false,
-      open: true
+      open: false
     }
   },
 
@@ -62,10 +61,17 @@ const EditorSearchInput = React.createClass({
     })
   },
 
-  onBlur: function () {
-    this.setState({
-      focused: false
-    })
+  onBlur: function (event) {
+    // Note: Not strictly needed since it will blur then immediately focus when
+    //       changing focus to another child of the div, but this is just in
+    //       case there will be some delay that could cause a flicker in the UI.
+    if (!event.currentTarget.contains(document.activeElement)) {
+      this.setState({
+        focused: false
+      })
+    }
+
+
   },
 
   openPanel: function () {
@@ -98,14 +104,41 @@ const EditorSearchInput = React.createClass({
       <span className="InputGroup-addon">
         <IconButton icon="cross"
           title="Clear search"
-          iconSize="n1" />
+          iconSize="n1"
+          onClick={() => this.props.updateText('')}/>
       </span>
     )
   },
 
   render: function () {
+    const fields = [
+      { key: 'text', placeholder: 'source and target text'},
+      { key: 'resource-id', placeholder: 'exact Resource ID for a string'},
+      { key: 'last-modified-by', placeholder: 'username'},
+      { key: 'last-modified-before', placeholder: 'date in format yyyy/mm/dd'},
+      { key: 'last-modified-after', placeholder: 'date in format yyyy/mm/dd'},
+      { key: 'source-comment', placeholder: 'source comment text'},
+      { key: 'translation-comment', placeholder: 'translation comment text'},
+      { key: 'msgctxt', placeholder: 'exact Message Context for a string'},
+    ]
+
+    const items = fields.map(field => (
+      <li key={field.key} className="inline-search-list">
+        {field.key + ':'}
+        <div
+          className="InputGroup--outlined InputGroup--wide InputGroup--rounded">
+          <input ref={field.key}
+             type="text"
+             placeholder={field.placeholder}
+             className="InputGroup-input" />
+        </div>
+      </li>
+    ))
+
     return (
-      <div>
+      <div
+        onBlur={this.onBlur}
+        onFocus={this.onFocus}>
         <div className={
           cx('InputGroup InputGroup--outlined InputGroup--rounded',
             { 'is-focused': this.state.focused })}>
@@ -119,92 +152,14 @@ const EditorSearchInput = React.createClass({
             placeholder="Search"
             maxLength="1000"
             value={this.props.text}
+            onChange={(event) => this.props.updateText(event.target.value)}
             onClick={this.state.open}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
             {this.clearButtonElement()}
         </div>
-        <Panel collapsible expanded={this.state.open}>
+        <Panel collapsible expanded={this.state.focused}>
           <ul>
-            <li className="inline-search-list">
-              text:
-              <div className="InputGroup--outlined
-                InputGroup--wide InputGroup--rounded">
-                <input ref="text"
-                  type="text"
-                  placeholder="source and target text"
-                  className="InputGroup-input" />
-              </div>
-            </li>
-            <li className="inline-search-list">
-              resource-id:
-              <div className="InputGroup--outlined
-                InputGroup--wide InputGroup--rounded">
-                <input ref="resid"
-                  type="text"
-                  placeholder="exact Resource ID for a string"
-                  className="InputGroup-input" />
-              </div>
-            </li>
-            <li className="inline-search-list">
-              last-modified-by:
-              <div className="InputGroup--outlined
-                InputGroup--wide InputGroup--rounded">
-                <input ref="modby"
-                  type="text"
-                  placeholder="username"
-                  className="InputGroup-input" />
-              </div>
-            </li>
-            <li className="inline-search-list">
-              last-modified-before:
-              <div className="InputGroup--outlined
-                InputGroup--wide InputGroup--rounded">
-                <input ref="modbefore"
-                  type="text"
-                  placeholder="date in format yyyy/mm/dd"
-                  className="InputGroup-input" />
-              </div>
-            </li>
-            <li className="inline-search-list">
-              last-modified-after:
-              <div className="InputGroup--outlined
-                InputGroup--wide InputGroup--rounded">
-                <input ref="modafter"
-                  type="text"
-                  placeholder="date in format yyyy/mm/dd"
-                  className="InputGroup-input" />
-              </div>
-            </li>
-            <li className="inline-search-list">
-              source-comment:
-              <div className="InputGroup--outlined
-                InputGroup--wide InputGroup--rounded">
-                <input ref="sourcecomm"
-                  type="text"
-                  placeholder="source comment text"
-                  className="InputGroup-input" />
-              </div>
-            </li>
-            <li className="inline-search-list">
-              translation-comment:
-              <div className="InputGroup--outlined
-                InputGroup--wide InputGroup--rounded">
-                <input ref="transcomm"
-                  type="text"
-                  placeholder="translation comment text"
-                  className="InputGroup-input" />
-              </div>
-            </li>
-            <li className="inline-search-list">
-              msgctxt:
-              <div className="InputGroup--outlined
-                InputGroup--wide InputGroup--rounded">
-                <input ref="msgctxt"
-                  type="text"
-                  placeholder="exact Message Context for a string"
-                  className="InputGroup-input" />
-              </div>
-            </li>
+            {items}
           </ul>
         </Panel>
       </div>
