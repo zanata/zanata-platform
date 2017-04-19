@@ -9,6 +9,7 @@
 @Library('zanata-pipeline-library@master')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
+import static org.zanata.jenkins.StackTraces.getStackTrace
 
 import groovy.transform.Field
 
@@ -68,10 +69,25 @@ node {
 }
 
 String getLabel() {
-  if (params.LABEL == null) {
+  def labelParam = null
+  try {
+    labelParam = params.LABEL
+  } catch (e1) {
+    // workaround for https://issues.jenkins-ci.org/browse/JENKINS-38813
+    echo '[WARNING] unable to access `params`'
+    echo getStackTrace(e1)
+    try {
+      labelParam = LABEL
+    } catch (e2) {
+      echo '[WARNING] unable to access `LABEL`'
+      echo getStackTrace(e2)
+    }
+  }
+
+  if (labelParam == null) {
     echo "LABEL param is null; using default value."
   }
-  def result =  params.LABEL ?: defaultNodeLabel
+  def result = labelParam ?: defaultNodeLabel
   echo "Using build node label: $result"
   return result
 }
