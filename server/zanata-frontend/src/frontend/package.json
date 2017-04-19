@@ -136,7 +136,8 @@
   "jest": {
     "collectCoverageFrom": [
       "app/**/*.{js,jsx}",
-      "!**/node_modules/**"
+      "!**/node_modules/**",
+      "!app/**/stor{y,ies}.js"
     ],
     "coverageReporters": [
       "cobertura",
