@@ -13,8 +13,8 @@ var reworkSuitConformance = require('rework-suit-conformance')
  * It is used primarily to build the css in the same way as the main app, but
  * inserts it onto the page rather than building it to a separate file.
  *
- * The css file is imported in .storybook/config.js to trigger the css build
- * with this configuration.
+ * The css file is imported in .storybook-frontend/config.js to trigger the css
+ * build with this configuration.
  */
 module.exports = {
   module: {

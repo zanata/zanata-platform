@@ -30,9 +30,13 @@ styleguide-build:
 styleguide-server:
 	yarn styleguide-server --ignore-scripts=false
 
-# Run react-storybook server for development and testing of React components.
+# Run react-storybook server for development and testing of React components
+# specific to the editor.
 storybook-editor:
 	yarn storybook-editor
+
+# Run react-storybook server for development and testing of React components
+# for everything except the editor.
 storybook-frontend:
 	yarn storybook-frontend
 	
