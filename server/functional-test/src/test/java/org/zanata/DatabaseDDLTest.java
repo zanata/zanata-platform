@@ -41,6 +41,11 @@ import org.zanata.util.PropertiesHolder;
 import com.google.common.base.MoreObjects;
 
 /**
+ * If you use cargo wait and run this test in IDE, IDE may re-import the project
+ * and wipe some of the maven properties out from setup.properties (normally
+ * mysql.port). You can go to target/test-classes/setup.properties and add 13306
+ * as port to the connection urls.
+ *
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -55,8 +60,9 @@ public class DatabaseDDLTest {
                     + "ORDER BY ke.referenced_table_name, ke.table_name";
 
     private static final String UNIQUE_KEY_QUERY =
-            "select CONSTRAINT_NAME, table_name from information_schema.TABLE_CONSTRAINTS "
-                    + "where CONSTRAINT_SCHEMA = ? and constraint_type = 'UNIQUE'";
+            "select table_name, CONSTRAINT_NAME from information_schema.TABLE_CONSTRAINTS "
+                    + "where CONSTRAINT_SCHEMA = ? and constraint_type = 'UNIQUE' "
+                    + "ORDER BY table_name";
     private static final String PERSISTENCE_UNIT_NAME = "zanataDatasourcePU";
     private Map<String, String> propForPersistenceUnit;
 
@@ -98,19 +104,25 @@ public class DatabaseDDLTest {
         log.debug("foreign keys from hibernate:{}", fkFromHibernate);
 
         assertThat(fkFromLiquibase).isEqualTo(fkFromHibernate)
-                .as("Liquibase foreign keys should equal to hibernate mapping");
+                .as("Liquibase foreign keys should equate to hibernate mapping");
 
-        List<Object[]> ukFromLiquibase = getUniqueKeysForDatabase(dbName, em1);
-        List<Object[]> ukFromHibernate = getUniqueKeysForDatabase(dbName, em2);
-        assertThat(ukFromLiquibase).hasSameSizeAs(ukFromHibernate)
-                .as("Liquibase should have same number of unique key as in hibernate mapping");
+        List<UniqueKey> ukFromLiquibase = getUniqueKeysForDatabase(dbName, em1);
+        List<UniqueKey> ukFromHibernate = getUniqueKeysForDatabase("test", em2);
+
+        // liquibase has more unique keys than in hibernate mapping
+        assertThat(ukFromLiquibase).containsAll(ukFromHibernate)
+                .as("Liquibase unique keys contains all unique keys in hibernate mapping");
     }
 
-    @SuppressWarnings("unchecked")
-    private List<Object[]> getUniqueKeysForDatabase(String dbName,
+    private List<UniqueKey> getUniqueKeysForDatabase(String dbName,
             EntityManager em) {
-        return em.createNativeQuery(UNIQUE_KEY_QUERY).setParameter(1, dbName)
-                .getResultList();
+        @SuppressWarnings("unchecked")
+        List<Object[]> resultList =
+                em.createNativeQuery(UNIQUE_KEY_QUERY).setParameter(1, dbName)
+                        .getResultList();
+
+        return resultList.stream().map(e -> new UniqueKey(e[0], e[1])).collect(
+                Collectors.toList());
     }
 
     private EntityManagerFactory entityManagerFactoryFromLiquibase() {
@@ -176,6 +188,38 @@ public class DatabaseDDLTest {
             return MoreObjects.toStringHelper(this).add("parent", parent)
                     .add("child", child)
                     // .add("fkName", fkName)
+                    .toString();
+        }
+    }
+
+    static class UniqueKey {
+        private final String table;
+        // we ignore key name in equal and hashcode method
+        private final String keyName;
+
+        UniqueKey(Object table, Object keyName) {
+            this.table = table.toString();
+            this.keyName = keyName.toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            UniqueKey uniqueKey = (UniqueKey) o;
+            return Objects.equals(table, uniqueKey.table);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(table);
+        }
+
+        @Override
+        public String toString() {
+            return MoreObjects.toStringHelper(this)
+                    .add("table", table)
+//                    .add("keyName", keyName)
                     .toString();
         }
     }
