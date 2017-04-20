@@ -206,6 +206,22 @@ timestamps {
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
+
+          // ref: https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
+          step([$class: 'hudson.plugins.checkstyle.CheckStylePublisher',
+                pattern: '**/target/checkstyle-result.xml',
+                unstableTotalAll: '0'])
+
+          // TODO set up maven-pmd-plugin
+          //step([$class: 'PmdPublisher', pattern: '**/target/pmd.xml', unstableTotalAll:'0'])
+
+          // TODO reduce unstableTotal thresholds as bugs are eliminated
+          step([$class: 'FindBugsPublisher',
+                pattern: '**/findbugsXml.xml',
+                unstableTotalAll: '467',
+                unstableTotalHigh: '47',
+                unstableTotalNormal: '420',
+                unstableTotalLow: '0'])
         }
 
         // gather built files to use in following pipeline stages (on
