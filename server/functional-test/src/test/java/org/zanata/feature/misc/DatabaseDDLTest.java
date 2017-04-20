@@ -34,8 +34,10 @@ import javax.persistence.Persistence;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.zanata.feature.testharness.TestPlan;
 import org.zanata.util.PropertiesHolder;
 
 import com.google.common.base.MoreObjects;
@@ -49,6 +51,7 @@ import com.google.common.base.MoreObjects;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
+@Category(TestPlan.BasicAcceptanceTest.class)
 public class DatabaseDDLTest {
     private static final Logger log =
             LoggerFactory.getLogger(DatabaseDDLTest.class);
