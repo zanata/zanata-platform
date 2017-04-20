@@ -180,6 +180,8 @@ timestamps {
           // gather surefire results; mark build as unstable in case of failures
           junit(testResults: "**/${surefireTestReports}")
 
+          // TODO try https://github.com/jenkinsci/github-pr-coverage-status-plugin
+
           // send test coverage data to codecov.io
           try {
             withCredentials(
@@ -200,6 +202,19 @@ timestamps {
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
           notify.testResults("UNIT", currentBuild.result)
+
+          // TODO publish coverage for jest (cobertura format)
+          // https://issues.jenkins-ci.org/browse/JENKINS-30700 https://github.com/jenkinsci/cobertura-plugin/pull/62
+
+          // TODO publish reports:
+          // javac/Maven/appserver/browser/flaky warnings
+
+          // TODO more static analysis:
+          // task scanner (for TODOs), DRY, PMD
+          // victims, OWASP, ossindex: scan dependencies for vulnerabilities
+
+          // https://wiki.jenkins-ci.org/display/JENKINS/Static+Code+Analysis+Plug-ins
+          // https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
 
           // archive build artifacts (and cross-referenced source code)
           archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**"
