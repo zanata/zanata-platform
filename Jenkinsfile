@@ -243,14 +243,14 @@ timestamps {
                 consoleParsers: [
                         [parserName: 'Java Compiler (javac)'],    // 335 warnings
 //                        [parserName: 'JavaDoc'],
-                        [parserName: 'Maven'],                    // 278 warnings
+                        [parserName: 'Maven'],                    // 279 warnings
                         // TODO check integration test warnings (EAP and WildFly)
                         //[parserName: 'appserver log messages'], // 119 warnings
                         //[parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '613',
+                unstableTotalAll: '614',
                 unstableTotalHigh: '3',
-                unstableTotalNormal: '610',
+                unstableTotalNormal: '611',
                 unstableTotalLow: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)
