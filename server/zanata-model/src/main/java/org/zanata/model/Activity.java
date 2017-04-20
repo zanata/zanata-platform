@@ -23,6 +23,7 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -37,6 +38,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.zanata.common.ActivityType;
 import org.zanata.model.type.EntityType;
@@ -56,6 +58,12 @@ public class Activity extends ModelEntityBase implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date approxTime;
+    /**
+     * maximum offset we can store equates to about 24.8 days, since this is a
+     * signed int, but we only need one hour
+     * see org.zanata.model.Activity.EntityListener.onPrePersist().
+     * see org.zanata.service.impl.ActivityServiceImpl#logActivityAlreadyLocked(long, org.zanata.model.IsEntityWithType, org.zanata.model.IsEntityWithType, org.zanata.common.ActivityType, int)
+     */
     @NotNull
     private int startOffsetMillis;
     @NotNull
@@ -101,7 +109,7 @@ public class Activity extends ModelEntityBase implements Serializable {
 
     @Transient
     public Date getEndDate() {
-        return DateUtils.addMilliseconds(approxTime, (int) endOffsetMillis);
+        return DateUtils.addMilliseconds(approxTime, endOffsetMillis);
     }
 
     public static class EntityListener {
