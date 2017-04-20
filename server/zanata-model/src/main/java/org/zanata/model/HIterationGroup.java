@@ -28,6 +28,8 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.Type;
@@ -41,6 +43,7 @@ import com.google.common.collect.Sets;
  */
 @Entity
 @Access(AccessType.FIELD)
+@Table(uniqueConstraints = @UniqueConstraint(name = "slug", columnNames = "slug"))
 public class HIterationGroup extends SlugEntityBase
         implements HasEntityStatus, HasUserFriendlyToString {
 

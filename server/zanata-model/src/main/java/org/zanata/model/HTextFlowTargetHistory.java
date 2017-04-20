@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -40,6 +41,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.UniqueConstraint;
+
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.IndexColumn;
@@ -51,8 +54,9 @@ import org.zanata.common.ContentState;
 import org.zanata.model.type.EntityType;
 import org.zanata.model.type.EntityTypeType;
 import org.zanata.model.type.TranslationSourceType;
-import com.google.common.base.Objects;
 import org.zanata.model.type.TranslationSourceTypeType;
+
+import com.google.common.base.Objects;
 
 @Entity
 @Immutable
@@ -158,7 +162,11 @@ public class HTextFlowTargetHistory extends HTextContainer
     @AccessType("field")
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinTable(name = "HTextFlowTargetContentHistory",
-            joinColumns = @JoinColumn(name = "text_flow_target_history_id"))
+            joinColumns = @JoinColumn(name = "text_flow_target_history_id"),
+            uniqueConstraints = @UniqueConstraint(
+                    name = "UKHTextFlowTargetContentHistory",
+                    columnNames = "text_flow_target_history_id")
+    )
     @IndexColumn(name = "pos", nullable = false)
     @Column(name = "content", nullable = false)
     public List<String> getContents() {

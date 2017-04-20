@@ -34,11 +34,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.google.common.base.Objects;
@@ -105,7 +105,10 @@ public class HTextFlowHistory extends HTextContainer implements Serializable,
     @AccessType("field")
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinTable(name = "HTextFlowContentHistory", joinColumns = @JoinColumn(
-            name = "text_flow_history_id"))
+            name = "text_flow_history_id"),
+            uniqueConstraints = @UniqueConstraint(
+                    name = "UKTextFlowContentHistory",
+                    columnNames = "text_flow_history_id"))
     @IndexColumn(name = "pos", nullable = false)
     @Column(name = "content", nullable = false)
     @Override

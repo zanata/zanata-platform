@@ -1,6 +1,8 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import java.util.Objects;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
@@ -11,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.hibernate.annotations.NaturalId;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -79,6 +80,20 @@ public class HProjectGlossary implements Serializable {
         }
 
         public HProjectGlossaryPk() {
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            HProjectGlossaryPk that = (HProjectGlossaryPk) o;
+            return Objects.equals(glossary.getId(), that.glossary.getId()) &&
+                    Objects.equals(project.getId(), that.project.getId());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(glossary.getId(), project.getId());
         }
     }
 

@@ -34,9 +34,11 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -49,6 +51,9 @@ import org.zanata.model.type.EntityType;
 @Entity
 @EntityListeners({ Activity.EntityListener.class })
 @Access(AccessType.FIELD)
+@Table(uniqueConstraints = @UniqueConstraint(name = "UKactivity",
+        columnNames = { "actor_id", "approxTime", "activityType", "contextType",
+                "context_id" }))
 public class Activity extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
     @NotNull

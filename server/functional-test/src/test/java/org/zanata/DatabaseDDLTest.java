@@ -109,9 +109,8 @@ public class DatabaseDDLTest {
         List<UniqueKey> ukFromLiquibase = getUniqueKeysForDatabase(dbName, em1);
         List<UniqueKey> ukFromHibernate = getUniqueKeysForDatabase("test", em2);
 
-        // liquibase has more unique keys than in hibernate mapping
-        assertThat(ukFromLiquibase).containsAll(ukFromHibernate)
-                .as("Liquibase unique keys contains all unique keys in hibernate mapping");
+        assertThat(ukFromLiquibase).isEqualTo(ukFromHibernate)
+                .as("Liquibase unique keys should equate to hibernate mapping");
     }
 
     private List<UniqueKey> getUniqueKeysForDatabase(String dbName,
@@ -219,7 +218,7 @@ public class DatabaseDDLTest {
         public String toString() {
             return MoreObjects.toStringHelper(this)
                     .add("table", table)
-//                    .add("keyName", keyName)
+                    .add("keyName", keyName)
                     .toString();
         }
     }

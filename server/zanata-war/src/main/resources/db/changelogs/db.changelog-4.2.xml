@@ -114,4 +114,18 @@
       referencedColumnNames="id" />
   </changeSet>
 
+  <changeSet id="6" author="pahuang@redhat.com">
+    <comment>drop duplicate key from HIterationGroup</comment>
+    <dropUniqueConstraint tableName="HIterationGroup" constraintName="UKslug" />
+  </changeSet>
+  <changeSet id="7" author="pahuang@redhat.com">
+    <comment>drop duplicate key from AllowedApp</comment>
+    <dropUniqueConstraint tableName="AllowedApp" constraintName="Idx_account_clientId" />
+  </changeSet>
+  <changeSet id="8" author="pahuang@redhat.com">
+    <comment>drop unique key and use primary key for HProject_Glossary</comment>
+    <addPrimaryKey tableName="HProject_Glossary" columnNames="glossaryId,projectId" />
+    <dropUniqueConstraint tableName="HProject_Glossary" constraintName="UKHProject_Glossary" />
+  </changeSet>
+
 </databaseChangeLog>
