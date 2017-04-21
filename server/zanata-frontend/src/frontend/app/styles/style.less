@@ -1532,6 +1532,7 @@ td span.txt--understated {
   margin-bottom: @line-height-computed;
   border: 1px solid transparent;
   border-radius: @alert-border-radius;
+  text-align: center;
   // Headings for larger alerts
   h4 {
     margin-top: 0;
@@ -4096,7 +4097,7 @@ img.avatar-round {
     // Active state, and its :hover to override normal :hover
     &.active > a {
       &, &:hover, &:focus {
-        color: @nav-tabs-active-link-hover-color;
+        color: @color-dark;
         background-color: @nav-tabs-active-link-hover-bg;
         border: 1px solid @nav-tabs-active-link-hover-border-color;
         border-bottom-color: transparent;
@@ -4767,6 +4768,9 @@ a.label:focus, a.label:hover {
   font-size: 0.9rem;
   line-height: 1rem;
   background-color: #546677;
+  padding-left: 0.375em;
+  padding-right: 0.375em;
+  color: #fff;
 }
 
 .badge:empty {
@@ -5590,11 +5594,11 @@ h3.popover-title {
 .tooltip-inner {
   max-width: 15rem;
   padding: @spacing-half-base;
-  color: @color-dark;
+  color: #fff;
   text-align: center;
-  background-color: #fff;
+  background-color: #333;
   border-radius: @border-radius-base;
-  border: solid 2px @color-dark;
+  border: solid 2px #333;
 }
 
 .tooltip {
@@ -5616,7 +5620,7 @@ h3.popover-title {
   word-spacing: normal;
   word-wrap: normal;
   font-size: 0.857rem;
-  border-color: @color-dark;
+  border-color: #333;
 }
 
 .tooltip-arrow {
@@ -5635,16 +5639,6 @@ h3.popover-title {
 .tooltip.right {
   margin-left: @spacing-tooltip;
   padding: 0 @spacing-small-horizontal;
-}
-
-.tooltip-inner {
-  max-width: 15rem;
-  padding: @spacing-half-base;
-  color: @color-dark;
-  text-align: center;
-  background-color: #fff;
-  border-radius: @border-radius-base;
-  border: solid 2px @color-dark;
 }
 
 .tooltip.left {

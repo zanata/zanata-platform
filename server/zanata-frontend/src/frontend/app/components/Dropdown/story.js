@@ -6,10 +6,11 @@ storiesOf('Dropdown', module)
     .add('default', () => (
       <DropdownButton bsStyle='default' title='Dropdown button'
         id='dropdown-basic'>
-        <MenuItem eventKey='1'>Action</MenuItem>
-        <MenuItem eventKey='2'>Another action</MenuItem>
-        <MenuItem eventKey='3' active>Active Item</MenuItem>
-        <MenuItem divider />
-        <MenuItem eventKey='4'>Separated link</MenuItem>
+        <MenuItem onClick={action('onClick')} eventKey='1'>
+          Action</MenuItem>
+        <MenuItem onClick={action('onClick')} eventKey='2'>
+          Another action</MenuItem>
+        <MenuItem  onClick={action('onClick')}eventKey='3' active>
+          Active Item</MenuItem>
       </DropdownButton>
     ))

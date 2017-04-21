@@ -4,22 +4,22 @@ import { Panel } from 'react-bootstrap'
 
 storiesOf('Panel', module)
     .add('default', () => (
-    <Panel>
-      Basic panel example
-    </Panel>
+        <Panel>
+          Basic panel example
+        </Panel>
     ))
 
-        .add('with-header', () => (
-    <Panel header='Panel header'>
-    Panel content
-</Panel>
-))
+    .add('with heading', () => (
+        <Panel header='Panel header'>
+          Panel content
+        </Panel>
+    ))
 
-.add('primary', () => (
-    <Panel header='Panel header' bsStyle='primary'>
-      Panel content
-    </Panel>
-))
+    .add('primary', () => (
+        <Panel header='Panel header' bsStyle='primary'>
+          Panel content
+        </Panel>
+    ))
 
     .add('success', () => (
 

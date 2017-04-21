@@ -4,7 +4,8 @@ import { Tabs, Tab, Row, Col, Nav, NavItem } from 'react-bootstrap'
 
 storiesOf('Tabs', module)
     .add('horizontal', () => (
-        <Tabs defaultActiveKey={2} id='uncontrolled-tab-example'>
+        <Tabs defaultActiveKey={2} onSelect={action('onSelect')}
+              id='uncontrolled-tab-example'>
           <Tab eventKey={1} title='Tab 1' className='contentViewContainer'>
             Tab 1 content</Tab>
           <Tab eventKey={2} title='Tab 2' className='contentViewContainer'>
@@ -16,7 +17,7 @@ storiesOf('Tabs', module)
     ))
     .add('vertical', () => (
         <Tab.Container id='left-tabs-example' defaultActiveKey='first'
-                       className='contentViewContainer'>
+            onSelect={action('onSelect')} className='contentViewContainer'>
           <Row className='clearfix'>
             <Col sm={4}>
               <Nav bsStyle='pills' stacked>
@@ -40,5 +41,4 @@ storiesOf('Tabs', module)
             </Col>
           </Row>
         </Tab.Container>
-
         ))

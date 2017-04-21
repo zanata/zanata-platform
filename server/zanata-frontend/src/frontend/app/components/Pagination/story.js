@@ -4,23 +4,24 @@ import { Pagination } from 'react-bootstrap'
 
 storiesOf('Pagination', module)
     .add('default', () => (
-        <span>
       <Pagination
-          bsSize='large'
+          bsSize='medium'
           items={10}
           activePage={1}
           onSelect={action('onSelect')} />
-    <br />
-    <Pagination
-        bsSize='medium'
-        items={10}
-        activePage={1}
-        onSelect={action('onSelect')} />
-<br />
-<Pagination
-    bsSize='small'
-    items={10}
-    activePage={1}
-    onSelect={action('onSelect')} />
-        </span>
     ))
+    .add('large', () => (
+        <Pagination
+            bsSize='large'
+            items={10}
+            activePage={1}
+            onSelect={action('onSelect')} />
+    ))
+    .add('small', () => (
+        <Pagination
+            bsSize='small'
+            items={10}
+            activePage={1}
+            onSelect={action('onSelect')} />
+    ))
+
