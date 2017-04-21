@@ -73,6 +73,8 @@
 
     <properties>
       <property name="hibernate.show_sql" value="false" />
+      <property name="hibernate.cache.region.factory_class"
+        value="org.hibernate.cache.infinispan.InfinispanRegionFactory" />
       <!--<property name="hibernate.cache.use_second_level_cache" value="false" />-->
       <!-- NB create/create-drop/update are only safe for testing! -->
       <property name="hibernate.hbm2ddl.auto" value="create-drop" />
