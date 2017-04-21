@@ -6,3 +6,4 @@
 
 require('./Button/story.js')
 require('./Modal/story.js')
+require('./Notification/story.js')
