@@ -87,13 +87,13 @@ public class HProjectGlossary implements Serializable {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             HProjectGlossaryPk that = (HProjectGlossaryPk) o;
-            return Objects.equals(glossary.getId(), that.glossary.getId()) &&
-                    Objects.equals(project.getId(), that.project.getId());
+            return Objects.equals(glossary, that.glossary) &&
+                    Objects.equals(project, that.project);
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(glossary.getId(), project.getId());
+            return Objects.hash(glossary, project);
         }
     }
 

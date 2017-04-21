@@ -1,6 +1,7 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -55,5 +56,18 @@ public class Glossary implements Serializable {
      */
     public String getQualifiedName() {
         return this.qualifiedName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Glossary glossary = (Glossary) o;
+        return Objects.equals(qualifiedName, glossary.qualifiedName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName);
     }
 }
