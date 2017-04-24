@@ -4,6 +4,7 @@
  * See .storybook-frontend for main config
  */
 
+require('./Foundation/story.js')
 require('./Alert/story.js')
 require('./Badge/story.js')
 require('./Breadcrumbs/story.js')
