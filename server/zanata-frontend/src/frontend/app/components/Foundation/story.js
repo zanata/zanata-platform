@@ -44,9 +44,12 @@ storiesOf('Foundation', module)
           <div className='sg-color sg-gray-light sg-lg'>
             <span className='sg-color-swatch'>
               <span className='sg-animated'>#629BAC</span></span></div>
-          <div className='sg-color sg-gray sg-lg'>
+            <div className='sg-color sg-muted sg-lg'>
             <span className='sg-color-swatch'>
-              <span className='sg-animated'>#FCFCFC</span></span></div>
+              <span className='sg-animated'>#A2B3BE</span></span></div>
+            <div className='sg-color sg-neutral sg-lg'>
+            <span className='sg-color-swatch'>
+              <span className='sg-animated'>#BDD4DC</span></span></div>
           <div className='sg-color sg-gray-dark sg-lg'>
             <span className='sg-color-swatch'>
               <span className='sg-animated'>#F5F5F5</span></span></div>
@@ -79,6 +82,7 @@ storiesOf('Foundation', module)
           <h3>Font stack</h3>
           <p>'Source Sans Pro', 'Helvetica Neue',
           Helvetica, Arial, sans-serif;</p>
+          <hr />
         <h3>Headings</h3>
           <h1 className='page-header'>Page Header <small>
           With Small Text</small></h1>
@@ -88,6 +92,7 @@ storiesOf('Foundation', module)
           <h4>h4. Bootstrap heading <small>Secondary text</small></h4>
           <h5>h5. Bootstrap heading <small>Secondary text</small></h5>
           <h6>h6. Bootstrap heading <small>Secondary text</small></h6>
+          <hr />
         <h3>Text styles</h3>
         <p className='lead'>Lead paragraph: vivamus sagittis lacus
         vel augue laoreet rutrum faucibus dolor auctor. Duis
