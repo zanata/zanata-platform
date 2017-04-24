@@ -45,8 +45,11 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
         getHelper().registerAllowedMethod("archive", ImmutableList.of(Object.class), null);
         getHelper().registerAllowedMethod("hipchatSend", ImmutableList.of(Map.class), null);
         getHelper().registerAllowedMethod("junit", ImmutableList.of(Map.class), null);
-        getHelper().registerAllowedMethod("timestamps", ImmutableList.of(Closure.class), null);
+        getHelper().registerAllowedMethod("lock", ImmutableList.of(Map.class, Closure.class), null);
+        getHelper().registerAllowedMethod("lock", ImmutableList.of(String.class, Closure.class), null);
+        getHelper().registerAllowedMethod("milestone", ImmutableList.of(), null);
         getHelper().registerAllowedMethod("stash", ImmutableList.of(Map.class), null);
+        getHelper().registerAllowedMethod("timestamps", ImmutableList.of(Closure.class), null);
         getHelper().registerAllowedMethod("unstash", ImmutableList.of(Map.class), null);
         getHelper().registerAllowedMethod("unstash", ImmutableList.of(String.class), null);
         getHelper().registerAllowedMethod("withEnv", ImmutableList.of(List.class, Closure.class), null);
@@ -74,11 +77,23 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
                     }
                     return 0;
                 });
+        // PipelineUnit(withCredentialsInterceptor) can't handle a List<Map>
+        // TODO for some reason the steps inside closure.call() are not shown as nested
+        getHelper().registerAllowedMethod("withCredentials",
+                ImmutableList.of(List.class, Closure.class),
+                new Closure(null) {
+                    @Override
+                    public Object call(Object... args) {
+                        Closure closure = (Closure) args[1];
+                        return closure.call();
+                    }
+                });
 
         // environment variables
         Map<String, String> env = new HashMap<>();
         env.put("BUILD_URL", "http://example.com/job/JobName/123");
         env.put("JOB_NAME", "JobName");
+        env.put("BRANCH_NAME", "PR-456");
         env.put("BUILD_NUMBER", "123");
         env.put("EXECUTOR_NUMBER", "1");
         env.put("DEFAULT_NODE", "master");

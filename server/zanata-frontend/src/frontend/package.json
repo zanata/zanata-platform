@@ -6,13 +6,14 @@
   "scripts": {
     "js": "webpack",
     "build": "yarn build:icons && webpack -p --config webpack.prod.config.js --bail --display-error-details",
-    "draft": "yarn build:icons && webpack --config webpack.draft.config.js --progress --bail --display-error-details",
+    "draft": "yarn build:icons && webpack --config webpack.draft.config.js --bail --display-error-details",
     "watch": "webpack-dev-server -d --progress --config webpack.dev.config.js --progress --inline --hot --port 8000",
     "watch:editor": "mkdir -p dist && cp app/editor/index.html dist && webpack-dev-server -d --progress --config webpack.dev.editor.config.js --inline --content-base dist/",
     "build:icons": "yarn svg && yarn icons",
     "styleguide-server": "styleguidist server",
     "styleguide-build": "styleguidist build",
-    "storybook": "start-storybook -p 9001 -s ./dist",
+    "storybook-editor": "start-storybook -p 9001 -s ./dist --config-dir .storybook-editor",
+    "storybook-frontend": "start-storybook -p 9001 -s ./dist --config-dir .storybook-frontend",
     "storybook-build": "build-storybook -s ./dist",
     "icons": "node scripts/createIconsComponent && node scripts/generateIconList",
     "svg": "svg-sprite -sD app/components/Icons --symbol-dest '' --ss icons.svg --si app/components/Icons/svgs/*.svg",
@@ -135,7 +136,8 @@
   "jest": {
     "collectCoverageFrom": [
       "app/**/*.{js,jsx}",
-      "!**/node_modules/**"
+      "!**/node_modules/**",
+      "!app/**/stor{y,ies}.js"
     ],
     "coverageReporters": [
       "cobertura",

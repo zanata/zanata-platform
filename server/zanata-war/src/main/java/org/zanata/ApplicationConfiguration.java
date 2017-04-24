@@ -20,6 +20,8 @@
  */
 package org.zanata;
 
+import static java.lang.Math.max;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,42 +29,49 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.event.Observes;
+import javax.enterprise.event.TransactionPhase;
 import javax.enterprise.inject.Produces;
-import com.google.common.base.Optional;
-import org.apache.deltaspike.core.api.common.DeltaSpike;
-import org.apache.log4j.Level;
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
+
+import org.apache.deltaspike.core.api.common.DeltaSpike;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.config.AllowPublicRegistration;
+import org.zanata.config.DatabaseBackedConfig;
+import org.zanata.config.JaasConfig;
 import org.zanata.config.OAuthTokenExpiryInSeconds;
 import org.zanata.config.SupportOAuth;
 import org.zanata.config.SystemPropertyConfigStore;
-import org.zanata.model.validator.AcceptedEmailDomainsForNewAccount;
-import org.zanata.servlet.HttpRequestAndSessionHolder;
-import org.zanata.servlet.annotations.ServerPath;
-import org.zanata.util.DefaultLocale;
-import org.zanata.util.Synchronized;
-import org.zanata.config.DatabaseBackedConfig;
-import org.zanata.config.JaasConfig;
+import org.zanata.events.ConfigurationChanged;
 import org.zanata.events.LogoutEvent;
 import org.zanata.events.PostAuthenticateEvent;
 import org.zanata.i18n.Messages;
 import org.zanata.log4j.ZanataHTMLLayout;
 import org.zanata.log4j.ZanataSMTPAppender;
+import org.zanata.model.HApplicationConfiguration;
+import org.zanata.model.validator.AcceptedEmailDomainsForNewAccount;
 import org.zanata.security.AuthenticationType;
+import org.zanata.security.OpenIdLoginModule;
+import org.zanata.servlet.HttpRequestAndSessionHolder;
+import org.zanata.servlet.annotations.ServerPath;
+import org.zanata.util.DefaultLocale;
+import org.zanata.util.Synchronized;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Optional;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import org.zanata.security.OpenIdLoginModule;
-import static java.lang.Math.max;
 
 @Named("applicationConfiguration")
 @ApplicationScoped
@@ -72,7 +81,8 @@ public class ApplicationConfiguration implements Serializable {
             org.slf4j.LoggerFactory.getLogger(ApplicationConfiguration.class);
 
     private static final long serialVersionUID = -4970657841198107092L;
-    private static final String EMAIL_APPENDER_NAME =
+    @VisibleForTesting
+    protected static final String EMAIL_APPENDER_NAME =
             "zanata.log.appender.email";
     private static final int defaultMaxFilesPerUpload = 100;
     private static final int defaultAnonymousSessionTimeoutMinutes = 30;
@@ -145,30 +155,35 @@ public class ApplicationConfiguration implements Serializable {
      * Apply logging configuration.
      */
     public void applyLoggingConfiguration() {
+        // NB: This appender uses JBoss's email configuration (no need for
+        // host or port)
+        smtpAppenderInstance.setName(EMAIL_APPENDER_NAME);
+        smtpAppenderInstance.setFrom(getFromEmailAddr());
+        smtpAppenderInstance.setTo(
+                databaseBackedConfig.getLogEventsDestinationEmailAddress());
+        // TODO use hostname, not URL
+        smtpAppenderInstance.setSubject(
+                "%p log message from Zanata at " + this.getServerPath());
+        String buildInfo = getVersion() + ", " + getBuildTimestamp() + "["
+                + getScmDescribe() + "]";
+        smtpAppenderInstance.setLayout(new ZanataHTMLLayout(buildInfo));
+        // smtpAppenderInstance.setLayout(new
+        // PatternLayout("%-5p [%c] %m%n"));
+        smtpAppenderInstance
+                .setThreshold(Level.toLevel(getEmailLogLevel()));
+        smtpAppenderInstance.setTimeout(60); // will aggregate identical
+        // messages within 60 sec
+        // periods
+        smtpAppenderInstance.activateOptions();
+
+        enableOrDisableEmailLogAppender();
+    }
+
+    private void enableOrDisableEmailLogAppender() {
         // TODO is this still working with jboss logging?
         final org.apache.log4j.Logger rootLogger =
                 org.apache.log4j.Logger.getRootLogger();
         if (isEmailLogAppenderEnabled()) {
-            // NB: This appender uses JBoss's email configuration (no need for
-            // host or port)
-            smtpAppenderInstance.setName(EMAIL_APPENDER_NAME);
-            smtpAppenderInstance.setFrom(getFromEmailAddr());
-            smtpAppenderInstance.setTo(
-                    databaseBackedConfig.getLogEventsDestinationEmailAddress());
-            // TODO use hostname, not URL
-            smtpAppenderInstance.setSubject(
-                    "%p log message from Zanata at " + this.getServerPath());
-            String buildInfo = getVersion() + ", " + getBuildTimestamp() + "["
-                + getScmDescribe() + "]";
-            smtpAppenderInstance.setLayout(new ZanataHTMLLayout(buildInfo));
-            // smtpAppenderInstance.setLayout(new
-            // PatternLayout("%-5p [%c] %m%n"));
-            smtpAppenderInstance
-                    .setThreshold(Level.toLevel(getEmailLogLevel()));
-            smtpAppenderInstance.setTimeout(60); // will aggregate identical
-            // messages within 60 sec
-            // periods
-            smtpAppenderInstance.activateOptions();
             // Safe to add more than once
             rootLogger.addAppender(smtpAppenderInstance);
             log.info("Email log appender is enabled [level: "
@@ -177,6 +192,36 @@ public class ApplicationConfiguration implements Serializable {
             rootLogger.removeAppender(EMAIL_APPENDER_NAME);
             log.info("Email log appender is disabled.");
         }
+    }
+
+    public void configChanged(@Observes(
+            during = TransactionPhase.AFTER_SUCCESS) ConfigurationChanged event) {
+        String configKey = event.getConfigKey();
+        // if config change is related to email logging
+        if (HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS.equals(configKey)
+                || HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL
+                        .equals(configKey)
+                || HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL
+                        .equals(configKey)
+                || HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS
+                        .equals(configKey)) {
+
+            smtpAppenderInstance.setFrom(getFromEmailAddr());
+            smtpAppenderInstance.setTo(
+                    databaseBackedConfig.getLogEventsDestinationEmailAddress());
+
+            smtpAppenderInstance
+                    .setThreshold(Level.toLevel(getEmailLogLevel()));
+
+            enableOrDisableEmailLogAppender();
+            log.info(
+                    "Email log appender setting changed. Enable: {}, level: {}, from: {}, to: {}",
+                    isEmailLogAppenderEnabled(),
+                    smtpAppenderInstance.getThreshold(),
+                    smtpAppenderInstance.getFrom(),
+                    smtpAppenderInstance.getTo());
+        }
+
     }
 
     /**
@@ -501,5 +546,10 @@ public class ApplicationConfiguration implements Serializable {
 
     public String getGravatarRating() {
         return databaseBackedConfig.getMaxGravatarRating();
+    }
+
+    @VisibleForTesting
+    protected ZanataSMTPAppender getSMTPAppender() {
+        return smtpAppenderInstance;
     }
 }
