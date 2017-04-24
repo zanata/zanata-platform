@@ -9,7 +9,6 @@
 @Library('zanata-pipeline-library@master')
 import org.zanata.jenkins.Notifier
 import org.zanata.jenkins.PullRequests
-import static org.zanata.jenkins.StackTraces.getStackTrace
 
 import groovy.transform.Field
 
@@ -69,25 +68,10 @@ node {
 }
 
 String getLabel() {
-  def labelParam = null
-  try {
-    labelParam = params.LABEL
-  } catch (e1) {
-    // workaround for https://issues.jenkins-ci.org/browse/JENKINS-38813
-    echo '[WARNING] unable to access `params`'
-    echo getStackTrace(e1)
-    try {
-      labelParam = LABEL
-    } catch (e2) {
-      echo '[WARNING] unable to access `LABEL`'
-      echo getStackTrace(e2)
-    }
-  }
-
-  if (labelParam == null) {
+  if (params.LABEL == null) {
     echo "LABEL param is null; using default value."
   }
-  def result = labelParam ?: defaultNodeLabel
+  def result =  params.LABEL ?: defaultNodeLabel
   echo "Using build node label: $result"
   return result
 }
@@ -173,6 +157,8 @@ timestamps {
             -Dmaven.test.failure.ignore \
           """
           // TODO add -Dvictims
+          // TODO should we remove -Dmaven.test.failure.ignore (and catch
+          // exception) to fail fast in case an early unit test fails?
 
           def surefireTestReports = 'target/surefire-reports/TEST-*.xml'
 
@@ -180,48 +166,20 @@ timestamps {
           // gather surefire results; mark build as unstable in case of failures
           junit(testResults: "**/${surefireTestReports}")
 
-          // send test coverage data to codecov.io
-          try {
-            withCredentials(
-                    [[$class: 'StringBinding',
-                      credentialsId: 'codecov_zanata-platform',
-                      variable: 'CODECOV_TOKEN']]) {
-              // NB the codecov script uses CODECOV_TOKEN
-              sh "curl -s https://codecov.io/bash | bash -s - -K"
-            }
-          } catch (InterruptedException e) {
-            throw e
-          } catch (hudson.AbortException e) {
-            throw e
-          } catch (e) {
-            echo "[WARNING] Ignoring codecov error: $e"
-          }
+          // TODO send to codecov.io (NB: need to get correct token for zanata-platform, configured by env var)
 
           // notify if compile+unit test successful
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
           notify.testResults("UNIT", currentBuild.result)
+
+          // TODO ensure the pipeline aborts in case of test failures
 
           // archive build artifacts (and cross-referenced source code)
           archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**"
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
-
-          // ref: https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
-          step([$class: 'hudson.plugins.checkstyle.CheckStylePublisher',
-                pattern: '**/target/checkstyle-result.xml',
-                unstableTotalAll: '0'])
-
-          // TODO set up maven-pmd-plugin
-          //step([$class: 'PmdPublisher', pattern: '**/target/pmd.xml', unstableTotalAll:'0'])
-
-          // TODO reduce unstableTotal thresholds as bugs are eliminated
-          step([$class: 'FindBugsPublisher',
-                pattern: '**/findbugsXml.xml',
-                unstableTotalAll: '467',
-                unstableTotalHigh: '47',
-                unstableTotalNormal: '420',
-                unstableTotalLow: '0'])
+          // TODO push Jest/Jacoco results to codecov.io (with correct token)
         }
 
         // gather built files to use in following pipeline stages (on
@@ -243,7 +201,7 @@ timestamps {
   }
 
   // if the build is still green:
-  if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
+  if (currentBuild.result == null) {
     // Only one build per lock name is allowed to run integration tests at a
     // time (unless we define multiple identical locks).
     // When there are more potential builds than locks available,
@@ -298,6 +256,7 @@ void integrationTests(String appserver) {
     sh "git clean -fdx"
 
     unstash 'generated-files'
+    // TODO: Consider touching the target files for test, so it won't recompile
 
     /* touch all target */
     //sh "find `pwd -P` -path '*/target/*' -print -exec touch '{}' \\;"
@@ -348,6 +307,7 @@ void integrationTests(String appserver) {
             -Dwebdriver.chrome.driver=/opt/chromedriver \
             ${ftOpts}
         """
+        // TODO skip npm/yarn (but don't -DexcludeFrontend; we need the version in target/ )
         /* TODO
         -Dassembly.skipAssembly \
         -DskipAppassembler \
@@ -376,6 +336,7 @@ void integrationTests(String appserver) {
           error "no integration test results for $appserver"
         }
         notify.testResults(appserver.toUpperCase(), currentBuild.result)
+        // TODO ensure the pipeline aborts in case of test failures
       }
     }
   }

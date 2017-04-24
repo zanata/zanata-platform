@@ -14,6 +14,9 @@ import {
   SUGGESTION_PANEL_HEIGHT_CHANGE,
   TOGGLE_SUGGESTIONS
 } from '../actions/suggestions'
+import {
+  TOGGLE_ADVANCED_SEARCH_PANEL
+} from '../actions/search'
 import {prepareLocales} from '../utils/Util'
 import updateObject from 'react-addons-update'
 
@@ -48,6 +51,9 @@ const defaultState = {
       heightPercent: 0.3
     },
     keyShortcuts: {
+      visible: false
+    },
+    search: {
       visible: false
     }
   },
@@ -102,6 +108,15 @@ const ui = (state = defaultState, action) => {
         panels: {
           suggestions: {
             visible: {$set: !state.panels.suggestions.visible}
+          }
+        }
+      })
+
+    case TOGGLE_ADVANCED_SEARCH_PANEL:
+      return update({
+        panels: {
+          search: {
+            visible: {$set: !state.panels.search.visible}
           }
         }
       })
