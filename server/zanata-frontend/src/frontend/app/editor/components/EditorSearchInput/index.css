@@ -101,3 +101,8 @@
 .flex ul.u-listHorizontal {
   z-index: 999 !important;
 }
+
+.panel {
+  border: none !important;
+}
+
