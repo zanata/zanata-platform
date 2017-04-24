@@ -1,4 +1,4 @@
-@import "variables.less";
+@import "./variables.less";
 
 * {
   -webkit-box-sizing: border-box;
@@ -10,12 +10,14 @@ html {
   -webkit-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial,
+  sans-serif;
 }
 
 .htmlstyle {
   font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial,
   sans-serif;
-  line-height: 1.5;
+  line-heig fht: 1.5;
   background-color: #fff;
   font-size: @font-size-base;
 }
@@ -33,7 +35,6 @@ body {
   font-size: 1rem;
   line-height: @line-height-small;
 }
-
 
 .view {
   width: 100%;
@@ -1160,7 +1161,6 @@ table td {
 }
 
 .container-sidebar td {
-
   align-items: center;
   height: 3rem;
   padding-top: @spacing-rh;
@@ -1236,7 +1236,6 @@ table td {
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
   max-height: 2rem;
-
 }
 
 .locale-options-value {
@@ -2558,35 +2557,29 @@ button.btn-link.delete-link, button.btn-link.delete-link .loader-text {
 }
 
 .btn-success:active, .btn-success:hover {
-  border-color: #50a360;
   background-color: #50a360;
   color: #fff;
 }
 
 .btn-success {
-  border-color: #50a360;
   background-color: @color-success;
 }
 
 .btn-info:active, .btn-info:hover {
-  border-color: #4995cf;
   background-color: #4995cf;
   color: #fff;
 }
 
 .btn-info {
-  border-color: #4995cf;
   background-color: @color-info;
 }
 
 .btn-danger:active, .btn-danger:hover {
-  border-color: #cf3031;
   background-color: #cf3031;
   color: #fff;
 }
 
 .btn-danger {
-  border-color: #cf3031;
   background-color: @color-danger;
 }
 
@@ -2595,13 +2588,11 @@ button.btn-link.delete-link, button.btn-link.delete-link .loader-text {
 }
 
 .btn-warning:active, .btn-warning:hover {
-  border-color: #cf8800;
   background-color: #cf8800;
   color: #fff;
 }
 
 .btn-warning {
-  border-color: #cf8800;
   background-color: @color-warning;
 }
 
@@ -3721,7 +3712,6 @@ span.hidden-lesm.glossary-row {
   width: 100%;
 }
 
-
 .Select--single>.Select-control .Select-value, .Select-placeholder {
   bottom: 0;
   color: #bdd4dc;
@@ -3781,7 +3771,6 @@ td.lang-select .Select-input input {
 
 .Select-arrow-zone:focus {
   outline:0;
-
 }
 
 .Select-option:last-child {
@@ -3809,7 +3798,6 @@ td.lang-select .Select-input input {
   vertical-align: middle;
   width: 1.6em;
 }
-
 
 td.lang-select .row {
   position: absolute;
@@ -4525,7 +4513,9 @@ button.unsure.btn.btn-default.active {
 }
 
 #activity-table .btn-clear {
-  margin-top: 0.7rem;
+  margin-top: 0.25em;
+  padding: 0;
+  margin-left: 0.25em;
 }
 
 #activity-table td button {
@@ -4913,17 +4903,14 @@ button.list-group-item {
 
 .teaser-view-theme {
   align-items: center;
-
   margin-bottom: @spacing-rh;
 }
 
 .teaser-header-view-theme {
-
   align-items: center;
   display: inline-flex;
   vertical-align: sub;
   padding-bottom: @spacing-base;
-
 }
 
 .header-icons {
@@ -4981,13 +4968,11 @@ a.lineclamp:after {
 
 .meta-info {
   align-items: center;
-
   font-size: 0.833rem;
 }
 
 .team-teaser-view {
   align-items: center;
-
   margin-bottom: @spacing-rq;
 }
 
@@ -5041,7 +5026,6 @@ a.lineclamp:after {
 .langteam-teaser-view-members {
   align-items: center;
   margin-left: auto;
-
   float: right;
   padding-right: @spacing-xlarge;
 }
@@ -5959,7 +5943,7 @@ table.search-table {
   vertical-align: baseline;
 }
 
-i.i--left.i--lock, i.i--left.i--trash {x
+i.i--left.i--lock, i.i--left.i--trash {
   color:#fff;
   vertical-align: baseline;
 }
@@ -5986,9 +5970,7 @@ i.i--left.i--lock, i.i--left.i--trash {x
 
 .tabs__content {
   padding-bottom:@spacing-base-and-a-half;
-
 }
-
 
 li.more-info {
   padding-top:@spacing-base-and-a-half;
@@ -6020,7 +6002,7 @@ table.search-table {
   vertical-align: baseline;
 }
 
-i.i--left.i--lock, i.i--left.i--trash {x
+i.i--left.i--lock, i.i--left.i--trash {
   color:#fff;
   vertical-align: baseline;
 }
@@ -6603,7 +6585,6 @@ i.i--left.i--lock, i.i--left.i--trash {x
     padding-left: 0;
     padding-right: 0;
   }
-
 
   .header-classes {
     margin-left: 0;
@@ -7312,7 +7293,6 @@ i.i--left.i--lock, i.i--left.i--trash {x
 }
 
 @media (min-width: @screen-sm-min) and (max-width: @screen-md-max) {
-
 }
 
 @media (min-width: @screen-md-min) and (max-width: @screen-md-max) {

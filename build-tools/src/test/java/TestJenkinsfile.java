@@ -77,11 +77,23 @@ public class TestJenkinsfile extends BasePipelineTestCPS {
                     }
                     return 0;
                 });
+        // PipelineUnit(withCredentialsInterceptor) can't handle a List<Map>
+        // TODO for some reason the steps inside closure.call() are not shown as nested
+        getHelper().registerAllowedMethod("withCredentials",
+                ImmutableList.of(List.class, Closure.class),
+                new Closure(null) {
+                    @Override
+                    public Object call(Object... args) {
+                        Closure closure = (Closure) args[1];
+                        return closure.call();
+                    }
+                });
 
         // environment variables
         Map<String, String> env = new HashMap<>();
         env.put("BUILD_URL", "http://example.com/job/JobName/123");
         env.put("JOB_NAME", "JobName");
+        env.put("BRANCH_NAME", "PR-456");
         env.put("BUILD_NUMBER", "123");
         env.put("EXECUTOR_NUMBER", "1");
         env.put("DEFAULT_NODE", "master");
