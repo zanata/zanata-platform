@@ -24,8 +24,7 @@ import { Icon } from 'zanata-ui'
 import IconButton from '../IconButton'
 import React, { PropTypes } from 'react'
 import { Panel } from 'react-bootstrap'
-
-const { func } = PropTypes
+import { map } from 'lodash'
 
 /**
  * Multiple-field search input that will suggest fields as the user types.
@@ -37,15 +36,17 @@ const { func } = PropTypes
 const EditorSearchInput = React.createClass({
 
   propTypes: {
-    toggleDisplay: func.isRequired,
-    text: PropTypes.string.isRequired,
-    updateText: PropTypes.func.isRequired
-  },
-
-  getDefaultProps: () => {
-    return {
-      focused: false
-    }
+    search: PropTypes.shape({
+      text: PropTypes.string.isRequired,
+      resourceId: PropTypes.string.isRequired,
+      lastModifiedBy: PropTypes.string.isRequired,
+      lastModifiedBefore: PropTypes.string.isRequired,
+      lastModifiedAfter: PropTypes.string.isRequired,
+      sourceComment: PropTypes.string.isRequired,
+      translationComment: PropTypes.string.isRequired,
+      msgctxt: PropTypes.string.isRequired
+    }).isRequired,
+    updateSearch: PropTypes.func.isRequired
   },
 
   getInitialState: () => {
@@ -74,14 +75,6 @@ const EditorSearchInput = React.createClass({
 
   },
 
-  openPanel: function () {
-    this.setState({
-      open: true
-    }, () => {
-      this.refs.input.open()
-    })
-  },
-
   focusInput: function () {
     // TODO different approach for React 0.14
 
@@ -105,32 +98,66 @@ const EditorSearchInput = React.createClass({
         <IconButton icon="cross"
           title="Clear search"
           iconSize="n1"
-          onClick={() => this.props.updateText('')}/>
+          onClick={() => this.props.updateSearch({
+            text: '' // FIXME include all the other search parameters?
+          })}/>
       </span>
     )
   },
 
   render: function () {
-    const fields = [
-      { key: 'text', placeholder: 'source and target text'},
-      { key: 'resource-id', placeholder: 'exact Resource ID for a string'},
-      { key: 'last-modified-by', placeholder: 'username'},
-      { key: 'last-modified-before', placeholder: 'date in format yyyy/mm/dd'},
-      { key: 'last-modified-after', placeholder: 'date in format yyyy/mm/dd'},
-      { key: 'source-comment', placeholder: 'source comment text'},
-      { key: 'translation-comment', placeholder: 'translation comment text'},
-      { key: 'msgctxt', placeholder: 'exact Message Context for a string'},
-    ]
+    // TODO get the values from props.search
 
-    const items = fields.map(field => (
-      <li key={field.key} className="inline-search-list">
-        {field.key + ':'}
+    const fields = {
+      // TODO rename placeholder to description
+      text: {
+        label: 'Text',
+        description: 'source and target text',
+      },
+      resourceId: {
+        label: 'Resource ID',
+        description: 'exact Resource ID for a string'
+      },
+      lastModifiedBy: {
+        label: 'Last modified by',
+        description: 'username'
+      },
+      lastModifiedBefore: {
+        label: 'Last modified before',
+        description: 'date in format yyyy/mm/dd'
+      },
+      lastModifiedAfter: {
+        label: 'Last modified after',
+        description: 'date in format yyyy/mm/dd'
+      },
+      sourceComment: {
+        label: 'Source comment',
+        description: 'source comment text'
+      },
+      translationComment: {
+        label: 'Translation comment',
+        description: 'translation comment text'
+      },
+      msgctxt: {
+        label: 'msgctxt (gettext)',
+        description: 'exact Message Context for a string'
+      },
+    }
+
+    const items = map(fields, (value, key) => (
+      <li key={key} className="inline-search-list" title={value.description}>
+        {value.label + ':'}
         <div
           className="InputGroup--outlined InputGroup--wide InputGroup--rounded">
-          <input ref={field.key}
-             type="text"
-             placeholder={field.placeholder}
-             className="InputGroup-input" />
+          <input ref={key}
+            type="text"
+            placeholder={value.description}
+            className="InputGroup-input"
+            value={this.props.search[key]}
+            onChange={(event) => this.props.updateSearch({
+              [key]: event.target.value
+            })}
+          />
         </div>
       </li>
     ))
@@ -149,10 +176,11 @@ const EditorSearchInput = React.createClass({
           </span>
           <input ref="input"
             type="search"
-            placeholder="Search"
+            placeholder="Search source and target text"
             maxLength="1000"
-            value={this.props.text}
-            onChange={(event) => this.props.updateText(event.target.value)}
+            value={this.props.search.text}
+            onChange={(event) =>
+              this.props.updateSearch({ text: event.target.value})}
             onClick={this.state.open}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
             {this.clearButtonElement()}
