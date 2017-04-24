@@ -133,6 +133,10 @@
           <groupId>xerces</groupId>
           <artifactId>xercesImpl</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>solr-core</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -143,6 +147,27 @@
       <classifier>tests</classifier>
       <scope>test</scope>
       <exclusions>
+        <exclusion>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>solr-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>solr-solrj</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpcore</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpmime</artifactId>
+        </exclusion>
+        <!-- enforcer.RequireUpperBoundDeps doesn't seem to support wildcard exclusion!!! -->
         <exclusion>
           <groupId>*</groupId>
           <artifactId>*</artifactId>
@@ -1119,6 +1144,16 @@
               <smtp.port>${smtp.port}</smtp.port>
             </properties>
           </configuration>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.basepom.maven</groupId>
+        <artifactId>duplicate-finder-maven-plugin</artifactId>
+        <configuration>
+          <ignoredResourcePatterns>
+            <ignoredResourcePattern>log4j.xml</ignoredResourcePattern>
+          </ignoredResourcePatterns>
         </configuration>
       </plugin>
     </plugins>
