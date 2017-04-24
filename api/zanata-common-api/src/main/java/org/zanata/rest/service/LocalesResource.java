@@ -1,10 +1,9 @@
-package org.zanata.rest.editor.service.resource;
+package org.zanata.rest.service;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -13,10 +12,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.rest.dto.LocaleDetails;
-import org.zanata.rest.editor.MediaTypes;
-import org.zanata.rest.service.RestResource;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -37,8 +33,7 @@ public interface LocalesResource extends RestResource {
      *         the server while performing this operation.
      */
     @GET
-    @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
-            MediaType.APPLICATION_JSON })
+    @Produces(MediaType.APPLICATION_JSON)
     public Response get(@QueryParam("filter") String filter,
             @QueryParam("sort") String fields,
             @DefaultValue("1") @QueryParam("page") int page,
@@ -49,8 +44,7 @@ public interface LocalesResource extends RestResource {
      */
     @GET
     @Path("/locale/{localeId}")
-    @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
-        MediaType.APPLICATION_JSON })
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getDetails(@PathParam("localeId") String localeId);
 
     /**
@@ -64,8 +58,7 @@ public interface LocalesResource extends RestResource {
      */
     @GET
     @Path("/ui")
-    @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
-        MediaType.APPLICATION_JSON })
+    @Produces(MediaType.APPLICATION_JSON)
     Response getUITranslations();
 
 
@@ -80,8 +73,7 @@ public interface LocalesResource extends RestResource {
      */
     @GET
     @Path("/new")
-    @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
-            MediaType.APPLICATION_JSON })
+    @Produces(MediaType.APPLICATION_JSON)
     Response getNewLocales(@QueryParam("filter") String filter,
             @QueryParam("size") @DefaultValue("10") int size);
 
@@ -96,8 +88,7 @@ public interface LocalesResource extends RestResource {
      */
     @DELETE
     @Path("/locale/{localeId}")
-    @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
-        MediaType.APPLICATION_JSON })
+    @Produces(MediaType.APPLICATION_JSON)
     public Response delete(@PathParam("localeId") String localeId);
 
     /**
@@ -111,7 +102,6 @@ public interface LocalesResource extends RestResource {
      */
     @PUT
     @Path("/locale")
-    @Produces({ MediaTypes.APPLICATION_ZANATA_LOCALES_JSON,
-        MediaType.APPLICATION_JSON })
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createLanguage(LocaleDetails localeDetails);
 }

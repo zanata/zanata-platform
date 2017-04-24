@@ -20,17 +20,22 @@
  */
 package org.zanata.service;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.ws.rs.core.GenericEntity;
 
+import com.google.common.collect.Lists;
+import org.jboss.resteasy.util.GenericType;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.editor.dto.LocaleSortField;
 
 public interface LocaleService {
@@ -114,4 +119,32 @@ public interface LocaleService {
 
     HTextFlowTarget getLastTranslated(String projectSlug, String iterationSlug,
             LocaleId localeId);
+
+    static LocaleDetails convertToDTO(HLocale hLocale, String alias) {
+        return new LocaleDetails(hLocale.getLocaleId(),
+                hLocale.retrieveDisplayName(), alias,
+                hLocale.retrieveNativeName(), hLocale.isActive(),
+                hLocale.isEnabledByDefault(), hLocale.getPluralForms());
+    }
+
+    static LocaleDetails convertToDTO(HLocale hLocale) {
+        return LocaleService.convertToDTO(hLocale, null);
+    }
+
+    static Object buildLocaleDetailsListEntity(List<HLocale> locales,
+            Map<LocaleId, String> localeAliases) {
+        List<LocaleDetails> localeDetails =
+                Lists.newArrayListWithExpectedSize(locales.size());
+
+        for (HLocale hLocale : locales) {
+            LocaleId id = hLocale.getLocaleId();
+            String alias = localeAliases.get(id);
+            localeDetails.add(convertToDTO(hLocale, alias));
+        }
+
+        Type genericType = new GenericType<List<LocaleDetails>>() {
+        }.getGenericType();
+        return new GenericEntity<List<LocaleDetails>>(localeDetails,
+                genericType);
+    }
 }

@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cdi.StaticProducer;
 import org.zanata.jpa.FullText;
+import org.zanata.rest.service.LocalesService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.servlet.annotations.SessionId;

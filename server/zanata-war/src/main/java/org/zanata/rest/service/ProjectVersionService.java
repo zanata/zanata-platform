@@ -249,7 +249,7 @@ public class ProjectVersionService implements ProjectVersionResource {
         List<LocaleDetails> localesRefs =
                 Lists.newArrayListWithExpectedSize(locales.size());
         localesRefs.addAll(locales.stream()
-                .map(hLocale -> LocaleServiceImpl.convertToDTO(hLocale))
+                .map(hLocale -> LocaleService.convertToDTO(hLocale))
                 .collect(Collectors.toList()));
         Type genericType = new GenericType<List<LocaleDetails>>() {
 
