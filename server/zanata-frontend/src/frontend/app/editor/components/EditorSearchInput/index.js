@@ -106,14 +106,7 @@ const EditorSearchInput = React.createClass({
   },
 
   render: function () {
-    // TODO get the values from props.search
-
     const fields = {
-      // TODO rename placeholder to description
-      text: {
-        label: 'Text',
-        description: 'source and target text',
-      },
       resourceId: {
         label: 'Resource ID',
         description: 'exact Resource ID for a string'
@@ -144,7 +137,7 @@ const EditorSearchInput = React.createClass({
       },
     }
 
-    const items = map(fields, (value, key) => (
+    const advancedFields = map(fields, (value, key) => (
       <li key={key} className="inline-search-list" title={value.description}>
         {value.label + ':'}
         <div
@@ -187,7 +180,7 @@ const EditorSearchInput = React.createClass({
         </div>
         <Panel collapsible expanded={this.state.focused}>
           <ul>
-            {items}
+            {advancedFields}
           </ul>
         </Panel>
       </div>
