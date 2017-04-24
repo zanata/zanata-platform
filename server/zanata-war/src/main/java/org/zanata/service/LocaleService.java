@@ -35,6 +35,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.rest.dto.LanguageTeamSearchResult;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.editor.dto.LocaleSortField;
 
@@ -120,15 +121,15 @@ public interface LocaleService {
     HTextFlowTarget getLastTranslated(String projectSlug, String iterationSlug,
             LocaleId localeId);
 
-    static LocaleDetails convertToDTO(HLocale hLocale, String alias) {
+    static LocaleDetails convertHLocaleToDTO(HLocale hLocale, String alias) {
         return new LocaleDetails(hLocale.getLocaleId(),
                 hLocale.retrieveDisplayName(), alias,
                 hLocale.retrieveNativeName(), hLocale.isActive(),
                 hLocale.isEnabledByDefault(), hLocale.getPluralForms());
     }
 
-    static LocaleDetails convertToDTO(HLocale hLocale) {
-        return LocaleService.convertToDTO(hLocale, null);
+    static LocaleDetails convertHLocaleToDTO(HLocale hLocale) {
+        return LocaleService.convertHLocaleToDTO(hLocale, null);
     }
 
     static Object buildLocaleDetailsListEntity(List<HLocale> locales,
@@ -139,12 +140,24 @@ public interface LocaleService {
         for (HLocale hLocale : locales) {
             LocaleId id = hLocale.getLocaleId();
             String alias = localeAliases.get(id);
-            localeDetails.add(convertToDTO(hLocale, alias));
+            localeDetails.add(convertHLocaleToDTO(hLocale, alias));
         }
 
         Type genericType = new GenericType<List<LocaleDetails>>() {
         }.getGenericType();
         return new GenericEntity<List<LocaleDetails>>(localeDetails,
                 genericType);
+    }
+
+    static LanguageTeamSearchResult convertHLocaleToSearchResultDTO(
+            HLocale locale) {
+        LanguageTeamSearchResult result = new LanguageTeamSearchResult();
+        result.setId(locale.getLocaleId().getId());
+        result.setLocaleDetails(new LocaleDetails(locale.getLocaleId(),
+                locale.retrieveDisplayName(), null, locale.retrieveNativeName(),
+                locale.isActive(), locale.isEnabledByDefault(),
+                locale.getPluralForms()));
+        result.setMemberCount(locale.getMembers().size());
+        return result;
     }
 }

@@ -12,7 +12,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.rest.dto.LocaleDetails;
+import org.zanata.rest.dto.LocaleMember;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -34,7 +36,7 @@ public interface LocalesResource extends RestResource {
      */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response get(@QueryParam("filter") String filter,
+    Response get(@QueryParam("filter") String filter,
             @QueryParam("sort") String fields,
             @DefaultValue("1") @QueryParam("page") int page,
             @DefaultValue("10") @QueryParam("sizePerPage") int sizePerPage);
@@ -45,7 +47,17 @@ public interface LocalesResource extends RestResource {
     @GET
     @Path("/locale/{localeId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getDetails(@PathParam("localeId") String localeId);
+    @TypeHint(LocaleDetails.class)
+    Response getDetails(@PathParam("localeId") String localeId);
+
+    /**
+     * Retrieve locale member list
+     */
+    @GET
+    @Path("/locale/{localeId}/members")
+    @Produces(MediaType.APPLICATION_JSON)
+    @TypeHint(LocaleMember[].class)
+    Response getMembers(@PathParam("localeId") String localeId);
 
     /**
      * Retrieves a full list of localized locales for server.
@@ -59,6 +71,7 @@ public interface LocalesResource extends RestResource {
     @GET
     @Path("/ui")
     @Produces(MediaType.APPLICATION_JSON)
+    @TypeHint(LocaleDetails[].class)
     Response getUITranslations();
 
 
@@ -74,6 +87,7 @@ public interface LocalesResource extends RestResource {
     @GET
     @Path("/new")
     @Produces(MediaType.APPLICATION_JSON)
+    @TypeHint(LocaleDetails[].class)
     Response getNewLocales(@QueryParam("filter") String filter,
             @QueryParam("size") @DefaultValue("10") int size);
 
@@ -89,7 +103,7 @@ public interface LocalesResource extends RestResource {
     @DELETE
     @Path("/locale/{localeId}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response delete(@PathParam("localeId") String localeId);
+    Response delete(@PathParam("localeId") String localeId);
 
     /**
      * Create a new language in Zanata
@@ -103,5 +117,6 @@ public interface LocalesResource extends RestResource {
     @PUT
     @Path("/locale")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createLanguage(LocaleDetails localeDetails);
+    @TypeHint(LocaleDetails.class)
+    Response createLanguage(LocaleDetails localeDetails);
 }

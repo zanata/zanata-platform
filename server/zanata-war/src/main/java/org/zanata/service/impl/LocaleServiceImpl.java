@@ -432,7 +432,7 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     public static LocaleDetails convertToDTO(HLocale hLocale) {
-        return LocaleService.convertToDTO(hLocale, null);
+        return LocaleService.convertHLocaleToDTO(hLocale, null);
     }
 
     public static HLocale convertToHLocale(LocaleDetails localeDetails) {

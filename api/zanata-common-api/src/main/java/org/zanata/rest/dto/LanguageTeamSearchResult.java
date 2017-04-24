@@ -18,13 +18,11 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.rest.search.dto;
+package org.zanata.rest.dto;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.zanata.common.LocaleId;
-import org.zanata.model.HLocale;
-import org.zanata.rest.dto.LocaleDetails;
 
 /**
  * @author Carlos Munoz
@@ -40,16 +38,7 @@ public class LanguageTeamSearchResult extends SearchResult {
         this.setType(SearchResultType.LanguageTeam);
     }
 
-    public LanguageTeamSearchResult(HLocale locale) {
-        this.setType(SearchResultType.LanguageTeam);
-        this.setId(locale.getLocaleId().getId());
-        this.localeDetails = new LocaleDetails(locale.getLocaleId(),
-                locale.retrieveDisplayName(), null, locale.retrieveNativeName(),
-                locale.isActive(), locale.isEnabledByDefault(),
-                locale.getPluralForms());
-        this.memberCount = locale.getMembers().size();
-    }
-
+    @JsonProperty("localeDetails")
     public LocaleDetails getLocaleDetails() {
         return this.localeDetails;
     }
@@ -58,6 +47,7 @@ public class LanguageTeamSearchResult extends SearchResult {
         this.localeDetails = localeDetails;
     }
 
+    @JsonProperty("memberCount")
     public long getMemberCount() {
         return this.memberCount;
     }
