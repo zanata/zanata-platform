@@ -3,7 +3,6 @@ import IconButtonToggle from '../components/IconButtonToggle'
 import Pager from '../components/Pager'
 import TranslatingIndicator from '../components/TranslatingIndicator'
 import TransUnitFilter from '../components/TransUnitFilter'
-import EditorSearchInput from '../components/EditorSearchInput'
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { setSidebarVisibility } from '../actions'
@@ -21,7 +20,6 @@ import {
   lastPage
 } from '../actions/controlsHeaderActions'
 import { toggleSuggestions } from '../actions/suggestions'
-import { toggleAdvancedSearchPanel } from '../actions/search'
 import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
 import { GLOSSARY_TAB } from '../reducers/ui'
 
@@ -41,7 +39,6 @@ const ControlsHeader = React.createClass({
       nextPage: func.isRequired,
       lastPage: func.isRequired,
       setSidebarVisibility: func.isRequired,
-      toggleAdvancedSearchPanel: func.isRequired,
       toggleSuggestionPanel: func.isRequired,
       toggleGlossary: func.isRequired,
       toggleKeyboardShortcutsModal: func.isRequired,
@@ -100,7 +97,6 @@ const ControlsHeader = React.createClass({
   render: function () {
     const { actions, counts, paging, ui } = this.props
     const {
-      toggleAdvancedSearchPanel,
       toggleKeyboardShortcutsModal,
       toggleMainNav,
       toggleSuggestionPanel
@@ -126,12 +122,6 @@ const ControlsHeader = React.createClass({
         <TranslatingIndicator gettextCatalog={gettextCatalog} />
         <div className="u-floatLeft">
           <TransUnitFilter {...transFilterProps} />
-        </div>
-        <div className="u-floatLeft InputEditorSearch">
-          <EditorSearchInput
-            toggleDisplay={toggleAdvancedSearchPanel}
-            text="editor search"
-          />
         </div>
         <div className="u-floatRight flex">
           <ul className="u-listHorizontal u-textCenter">
@@ -247,7 +237,6 @@ function mapDispatchToProps (dispatch) {
       },
       toggleGlossary: () => dispatch(toggleGlossary()),
       toggleSuggestionPanel: () => dispatch(toggleSuggestions()),
-      toggleAdvancedSearchPanel: () => dispatch(toggleAdvancedSearchPanel()),
       toggleKeyboardShortcutsModal: () => {
         // TODO pahuang implement toggle keyboard shutcut modal
         // console.log('======== toggleKeyboardShortcutsModal')
