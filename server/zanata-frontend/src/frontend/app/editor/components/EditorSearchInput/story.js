@@ -8,41 +8,50 @@ import RealEditorSearchInput from '.'
 class EditorSearchInput extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      text: props.text
-    }
-    this.updateText = ::this.updateText
+    this.state = props.search
+    this.updateSearch = ::this.updateSearch
   }
 
-  updateText (text) {
+  updateSearch (search) {
     // ensure the action is visible in the logger
-    this.props.updateText(text)
-    this.setState({ text })
+    this.props.updateSearch(search)
+    this.setState(search)
   }
 
   render () {
     return (
       <RealEditorSearchInput
-        toggleDisplay={this.props.toggleDisplay}
-        text={this.state.text}
-        updateText={this.updateText}
+        search={this.state}
+        updateSearch={this.updateSearch}
       />
     )
   }
 }
 
+const blankSearch = {
+  text: '',
+  resourceId: '',
+  lastModifiedBy: '',
+  lastModifiedBefore: '',
+  lastModifiedAfter: '',
+  sourceComment: '',
+  translationComment: '',
+  msgctxt: ''
+}
+
 storiesOf('EditorSearchInput', module)
   .add('empty', () => (
     <EditorSearchInput
-      text=""
-      toggleDisplay={action('toggleDisplay')}
-      updateText={action('updateText')}
+      search={blankSearch}
+      updateSearch={action('updateSearch')}
     />
   ))
-  .add('simple search', () => (
+  .add('text search', () => (
     <EditorSearchInput
-      toggleDisplay={action('toggleDisplay')}
-      text="text: hello there"
-      updateText={action('updateText')}
+      search={{
+        ...blankSearch,
+        text: 'hello there'
+      }}
+      updateSearch={action('updateSearch')}
     />
   ))
