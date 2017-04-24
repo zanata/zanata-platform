@@ -122,7 +122,7 @@ public class TransMemoryMergeServiceImplTest {
     ArgumentCaptor<List<TransUnitUpdateRequest>> updateRequestCaptor;
 
     @Produces
-    TransactionUtil transactionUtil = new TransactionUtilForUnitTest(null);
+    TransactionUtil transactionUtil = new TransactionUtilForUnitTest();
 
     private String projectSlug = "projectSlug";
     private String versionSlug = "versionSlug";

@@ -20,17 +20,6 @@
  */
 package org.zanata;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
-import java.io.Serializable;
-import java.util.List;
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.servlet.http.HttpSession;
-
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,15 +28,19 @@ import org.mockito.Mock;
 import org.zanata.config.DatabaseBackedConfig;
 import org.zanata.config.JaasConfig;
 import org.zanata.config.SystemPropertyConfigStore;
-import org.zanata.events.ConfigurationChanged;
 import org.zanata.i18n.Messages;
-import org.zanata.log4j.ZanataSMTPAppender;
-import org.zanata.model.HApplicationConfiguration;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.DefaultLocale;
 import org.zanata.util.Synchronized;
 
-import com.google.common.collect.Lists;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
+import java.io.Serializable;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 /**
  * @author Damian Jansen
@@ -83,81 +76,4 @@ public class ApplicationConfigurationTest implements Serializable {
         when(databaseBackedConfig.getMaxGravatarRating()).thenReturn("test");
         assertThat(applicationConfiguration.getGravatarRating()).isEqualTo("test");
     }
-
-    @Test
-    public void canApplyLoggingConfiguration() {
-        when(databaseBackedConfig.getFromEmailAddress())
-                .thenReturn("from@example.com");
-        when(databaseBackedConfig.getEmailLogLevel()).thenReturn("INFO");
-        when(databaseBackedConfig.getLogEventsDestinationEmailAddress())
-                .thenReturn("to@example.com");
-        when(databaseBackedConfig.getShouldLogEvents()).thenReturn("true");
-
-        applicationConfiguration.applyLoggingConfiguration();
-
-        ZanataSMTPAppender smtpAppender =
-                applicationConfiguration.getSMTPAppender();
-        assertThat(smtpAppender.getName())
-                .isEqualTo(ApplicationConfiguration.EMAIL_APPENDER_NAME);
-        assertThat(smtpAppender.getFrom()).isEqualTo("from@example.com");
-        assertThat(smtpAppender.getTo()).isEqualTo("to@example.com");
-
-        org.apache.log4j.Logger rootLogger =
-                org.apache.log4j.Logger.getRootLogger();
-        assertThat(rootLogger
-                .getAppender(ApplicationConfiguration.EMAIL_APPENDER_NAME))
-                        .isSameAs(smtpAppender);
-    }
-
-    @Test
-    public void willUpdateLoggingConfigOnRelevantConfigChange() {
-        when(databaseBackedConfig.getFromEmailAddress())
-                .thenReturn("from@example.com");
-        when(databaseBackedConfig.getEmailLogLevel()).thenReturn("INFO");
-        when(databaseBackedConfig.getLogEventsDestinationEmailAddress())
-                .thenReturn("to@example.com");
-        when(databaseBackedConfig.getShouldLogEvents()).thenReturn("true");
-
-        applicationConfiguration.applyLoggingConfiguration();
-
-        List<String> relevantConfigKeys = Lists.newArrayList(
-                HApplicationConfiguration.KEY_EMAIL_FROM_ADDRESS,
-                HApplicationConfiguration.KEY_EMAIL_LOG_EVENTS,
-                HApplicationConfiguration.KEY_EMAIL_LOG_LEVEL,
-                HApplicationConfiguration.KEY_LOG_DESTINATION_EMAIL);
-
-        for (int i = 0; i < relevantConfigKeys.size(); i++) {
-            when(databaseBackedConfig.getFromEmailAddress())
-                    .thenReturn(i + "-from@example.com");
-            when(databaseBackedConfig.getEmailLogLevel()).thenReturn("INFO");
-            when(databaseBackedConfig.getLogEventsDestinationEmailAddress())
-                    .thenReturn(i + "-to@example.com");
-            boolean shouldLogToEmail = i % 2 == 0;
-            when(databaseBackedConfig.getShouldLogEvents())
-                    .thenReturn(Boolean.toString(shouldLogToEmail));
-            String configKey = relevantConfigKeys.get(i);
-            applicationConfiguration
-                    .configChanged(new ConfigurationChanged(configKey));
-
-            ZanataSMTPAppender smtpAppender =
-                    applicationConfiguration.getSMTPAppender();
-
-            assertThat(smtpAppender.getFrom())
-                    .isEqualTo(i + "-from@example.com");
-            assertThat(smtpAppender.getTo()).isEqualTo(i + "-to@example.com");
-
-            org.apache.log4j.Logger rootLogger =
-                    org.apache.log4j.Logger.getRootLogger();
-            if (shouldLogToEmail) {
-                assertThat(rootLogger.getAppender(
-                        ApplicationConfiguration.EMAIL_APPENDER_NAME))
-                                .isSameAs(smtpAppender);
-            } else {
-                assertThat(rootLogger.getAppender(
-                        ApplicationConfiguration.EMAIL_APPENDER_NAME)).isNull();
-            }
-        }
-    }
-
-
 }
