@@ -1,7 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
 import { Icon, Modal } from '../../components'
-import { clearMessage } from '../../actions/common'
 import { isEmpty } from 'lodash'
 import { Button, ButtonGroup, Row } from 'react-bootstrap'
 
