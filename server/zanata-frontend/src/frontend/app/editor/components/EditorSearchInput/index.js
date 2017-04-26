@@ -67,6 +67,7 @@ const fields = {
 const EditorSearchInput = React.createClass({
 
   propTypes: {
+    advanced: PropTypes.bool.isRequired,
     search: PropTypes.shape({
       text: PropTypes.string.isRequired,
       resourceId: PropTypes.string.isRequired,
@@ -77,6 +78,7 @@ const EditorSearchInput = React.createClass({
       translationComment: PropTypes.string.isRequired,
       msgctxt: PropTypes.string.isRequired
     }).isRequired,
+    toggleAdvanced: PropTypes.func.isRequired,
     updateSearch: PropTypes.func.isRequired
   },
 
@@ -102,8 +104,12 @@ const EditorSearchInput = React.createClass({
         focused: false
       })
     }
+  },
 
-
+  toggleAdvanced: function () {
+    this.props.toggleAdvanced()
+    // click on Advanced steals focus, so give focus back.
+    this.focusInput()
   },
 
   focusInput: function () {
@@ -137,6 +143,8 @@ const EditorSearchInput = React.createClass({
   },
 
   render: function () {
+    const { advanced } = this.props
+
     const advancedFields = map(fields, (value, key) => (
       <li key={key} className="inline-search-list" title={value.description}>
         {value.label + ':'}
@@ -177,8 +185,11 @@ const EditorSearchInput = React.createClass({
             onClick={this.state.open}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
             {this.clearButtonElement()}
+          <span className="InputGroup-addon u-textMicro"
+            onClick={this.toggleAdvanced}>
+            {advanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
-        <Panel collapsible expanded={this.state.focused}>
+        <Panel collapsible expanded={this.props.advanced && this.state.focused}>
           <ul>
             {advancedFields}
           </ul>
