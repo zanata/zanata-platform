@@ -359,7 +359,7 @@ void integrationTests(String appserver) {
 
           // gather db/app logs and screenshots to help debugging
           archive(
-                  includes: '*/target/**/*.log,*/target/screenshots/**',
+                  includes: 'server/functional-test/target/**/*.log,server/functional-test/target/screenshots/**',
                   excludes: '**/BACKUP-*.log')
         }
 
