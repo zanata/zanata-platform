@@ -243,7 +243,7 @@ timestamps {
   }
 
   // if the build is still green:
-  if (currentBuild.result == null) {
+  if (currentBuild.result == null || currentBuild.result == 'SUCCESS') {
     // Only one build per lock name is allowed to run integration tests at a
     // time (unless we define multiple identical locks).
     // When there are more potential builds than locks available,
