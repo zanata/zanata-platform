@@ -8,21 +8,40 @@ import RealEditorSearchInput from '.'
 class EditorSearchInput extends React.Component {
   constructor(props) {
     super(props)
-    this.state = props.search
+    this.state = {
+      search: props.search,
+      advanced: props.advanced
+    }
+    this.toggleAdvanced = ::this.toggleAdvanced
     this.updateSearch = ::this.updateSearch
+  }
+
+  toggleAdvanced () {
+    // ensure the action is visible in the logger
+    this.props.toggleAdvanced()
+    this.setState({
+      advanced: !this.state.advanced
+    })
   }
 
   updateSearch (search) {
     // ensure the action is visible in the logger
     this.props.updateSearch(search)
-    this.setState(search)
+    this.setState({
+      search: {
+        ...this.state.search,
+        ...search
+      }
+    })
   }
 
   render () {
     return (
       <RealEditorSearchInput
-        search={this.state}
+        advanced={this.state.advanced}
+        search={this.state.search}
         updateSearch={this.updateSearch}
+        toggleAdvanced={this.toggleAdvanced}
       />
     )
   }
@@ -44,14 +63,29 @@ storiesOf('EditorSearchInput', module)
     <EditorSearchInput
       search={blankSearch}
       updateSearch={action('updateSearch')}
+      advanced={false}
+      toggleAdvanced={action('toggleAdvanced')}
     />
   ))
-  .add('text search', () => (
+  .add('simple search', () => (
     <EditorSearchInput
       search={{
         ...blankSearch,
         text: 'hello there'
       }}
       updateSearch={action('updateSearch')}
+      advanced={false}
+      toggleAdvanced={action('toggleAdvanced')}
+    />
+  ))
+  .add('advanced search', () => (
+    <EditorSearchInput
+      search={{
+        ...blankSearch,
+        text: 'hello there'
+      }}
+      updateSearch={action('updateSearch')}
+      advanced={true}
+      toggleAdvanced={action('toggleAdvanced')}
     />
   ))
