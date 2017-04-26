@@ -43,7 +43,7 @@ import java.util.Map;
 @Named("projectIterationLocalesService")
 @Path(ProjectIterationLocalesService.SERVICE_PATH)
 @Transactional(readOnly = true)
-public class ProjectIterationLocalesService extends LocalesService implements ProjectIterationLocalesResource {
+public class ProjectIterationLocalesService implements ProjectIterationLocalesResource {
     @PathParam("projectSlug")
     String projectSlug;
 
@@ -68,7 +68,7 @@ public class ProjectIterationLocalesService extends LocalesService implements Pr
                 localeServiceImpl.getSupportedLanguageByProjectIteration(projectSlug, iterationSlug);
         Map<LocaleId, String> localeAliases = LocaleServiceImpl.getLocaleAliasesByIteration(iteration);
 
-        Object entity = buildLocaleDetailsListEntity(supportedLocales, localeAliases);
+        Object entity = LocaleService.buildLocaleDetailsListEntity(supportedLocales, localeAliases);
         return Response.ok(entity).build();
     }
 
