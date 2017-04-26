@@ -26,6 +26,37 @@ import React, { PropTypes } from 'react'
 import { Panel } from 'react-bootstrap'
 import { map } from 'lodash'
 
+const fields = {
+  resourceId: {
+    label: 'Resource ID',
+    description: 'exact Resource ID for a string'
+  },
+  lastModifiedBy: {
+    label: 'Last modified by',
+    description: 'username'
+  },
+  lastModifiedBefore: {
+    label: 'Last modified before',
+    description: 'date in format yyyy/mm/dd'
+  },
+  lastModifiedAfter: {
+    label: 'Last modified after',
+    description: 'date in format yyyy/mm/dd'
+  },
+  sourceComment: {
+    label: 'Source comment',
+    description: 'source comment text'
+  },
+  translationComment: {
+    label: 'Translation comment',
+    description: 'translation comment text'
+  },
+  msgctxt: {
+    label: 'msgctxt (gettext)',
+    description: 'exact Message Context for a string'
+  },
+}
+
 /**
  * Multiple-field search input that will suggest fields as the user types.
  *
@@ -106,37 +137,6 @@ const EditorSearchInput = React.createClass({
   },
 
   render: function () {
-    const fields = {
-      resourceId: {
-        label: 'Resource ID',
-        description: 'exact Resource ID for a string'
-      },
-      lastModifiedBy: {
-        label: 'Last modified by',
-        description: 'username'
-      },
-      lastModifiedBefore: {
-        label: 'Last modified before',
-        description: 'date in format yyyy/mm/dd'
-      },
-      lastModifiedAfter: {
-        label: 'Last modified after',
-        description: 'date in format yyyy/mm/dd'
-      },
-      sourceComment: {
-        label: 'Source comment',
-        description: 'source comment text'
-      },
-      translationComment: {
-        label: 'Translation comment',
-        description: 'translation comment text'
-      },
-      msgctxt: {
-        label: 'msgctxt (gettext)',
-        description: 'exact Message Context for a string'
-      },
-    }
-
     const advancedFields = map(fields, (value, key) => (
       <li key={key} className="inline-search-list" title={value.description}>
         {value.label + ':'}
