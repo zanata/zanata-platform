@@ -33,7 +33,7 @@
     <ds.database>root</ds.database>
     <ds.username>root</ds.username>
     <ds.password>root</ds.password>
-    <!-- Note that mysql.port is not set initially -->
+    <mysql.port>13306</mysql.port>
     <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
     <test.db.connection.url>jdbc:mysql://localhost:${mysql.port}/test?characterEncoding=UTF-8</test.db.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
@@ -604,23 +604,6 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>reserve-network-port</goal>
-                </goals>
-                <phase>generate-test-resources</phase>
-                <configuration>
-                  <portNames>
-                    <portName>mysql.port</portName>
-                  </portNames>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
             <groupId>org.codehaus.gmavenplus</groupId>
             <artifactId>gmavenplus-plugin</artifactId>
             <executions>
@@ -846,6 +829,18 @@
     </profile>
 
     <profile>
+      <id>MYSQL_PORT</id>
+      <activation>
+        <property>
+          <name>env.MYSQL_PORT</name>
+        </property>
+      </activation>
+      <properties>
+        <mysql.port>${env.MYSQL_PORT}</mysql.port>
+      </properties>
+    </profile>
+
+    <profile>
       <id>SMTP_PORT</id>
       <activation>
         <property>
@@ -1025,7 +1020,7 @@
                 <echo>-Dwebdriver.screenshot.dir=location to store screenshots during test execution.Default is ${project.build.directory}/screenshots</echo>
                 <echo>NB: set env var DISPLAY to run test browser in alternative display, for Xnest/Xvfb/Xvnc. eg: xvfb-run -e mvn verify -Dappserver=wildfly8</echo>
                 <echo>==========================================================</echo>
-                <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8 -Dmysql.port=13306</echo>
+                <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8</echo>
               </target>
             </configuration>
           </execution>

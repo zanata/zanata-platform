@@ -56,7 +56,7 @@
 
   <HTextFlow id="3" document_id="1" resId="tf3" revision="1" pos="2"
     obsolete="0" plural="false" wordCount="11"
-    contentHash="5eb63bbbe01eeed093cb22bb8f5acdc10" content0="hello world3" />
+    contentHash="5eb63bbbe01eeed093cb22bb8f5acdc0" content0="hello world3" />
 
   <HTextFlow id="4" document_id="2" resId="tf4" revision="1" pos="0"
     obsolete="0" plural="false" wordCount="11"
