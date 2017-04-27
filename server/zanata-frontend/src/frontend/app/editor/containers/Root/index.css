@@ -363,6 +363,10 @@ ul.source-infolist {
   border-bottom-color: transparent;
 }
 
+ul.u-listInline li .u-textSuccess {
+  width:110%;
+}
+
 /* bootstrap override */
 :focus, button:focus {
   outline: none;
