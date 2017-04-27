@@ -128,6 +128,9 @@
             <!-- Used for different content analyzers based on langugage for search. -->
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
+            <!-- Used for unit tests via persistence.xml
+                 (org.hibernate.testing.cache.CachingRegionFactory) -->
+            <usedDependency>org.hibernate:hibernate-testing</usedDependency>
             <usedDependency>org.jboss.arquillian.junit:arquillian-junit-container</usedDependency>
             <usedDependency>org.jboss.arquillian.protocol:arquillian-protocol-servlet</usedDependency>
             <usedDependency>org.codehaus.jackson:jackson-xc</usedDependency>
@@ -1073,6 +1076,12 @@
           <artifactId>jboss-logging</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-testing</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>

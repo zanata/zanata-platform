@@ -1276,6 +1276,22 @@
       </dependency>
 
       <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-testing</artifactId>
+        <version>${hibernate.version}</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>tools</artifactId>
+            <groupId>com.sun</groupId>
+          </exclusion>
+          <exclusion>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-jta_1.1_spec</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
         <groupId>org.javassist</groupId>
         <artifactId>javassist</artifactId>
         <version>3.19.0-GA</version>
