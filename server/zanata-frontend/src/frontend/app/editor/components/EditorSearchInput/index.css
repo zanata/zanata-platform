@@ -106,3 +106,10 @@
   border: none !important;
 }
 
+button.clearadvsearch {
+  color:#03A6D7;
+  padding:0;
+  padding-top:0.75em;
+}
+
+
