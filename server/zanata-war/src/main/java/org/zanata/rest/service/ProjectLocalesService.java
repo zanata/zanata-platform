@@ -41,7 +41,7 @@ import org.zanata.service.LocaleService;
 @Named("projectLocalesService")
 @Path(ProjectLocalesResource.SERVICE_PATH)
 @Transactional(readOnly = true)
-public class ProjectLocalesService extends LocalesService implements ProjectLocalesResource {
+public class ProjectLocalesService implements ProjectLocalesResource {
     @PathParam("projectSlug")
     String projectSlug;
 
@@ -62,7 +62,7 @@ public class ProjectLocalesService extends LocalesService implements ProjectLoca
                 localeServiceImpl.getSupportedLanguageByProject(projectSlug);
         Map<LocaleId, String> localeAliases = project.getLocaleAliases();
 
-        Object entity = buildLocaleDetailsListEntity(supportedLocales, localeAliases);
+        Object entity = LocaleService.buildLocaleDetailsListEntity(supportedLocales, localeAliases);
         return Response.ok(entity).build();
     }
 }

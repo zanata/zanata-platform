@@ -70,7 +70,6 @@ import org.zanata.service.GlossaryFileService;
 import org.zanata.service.GlossarySearchService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.GlossaryFileServiceImpl;
-import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
 import org.zanata.webtrans.shared.model.GlossaryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
@@ -114,7 +113,7 @@ public class GlossaryService implements GlossaryResource {
         int entryCount = glossaryDAO.getEntryCountBySourceLocales(
                 srcLocale.getLocaleId(), qualifiedName);
         GlossaryLocaleInfo srcGlossaryLocale = new GlossaryLocaleInfo(
-                LocaleServiceImpl.convertToDTO(srcLocale), entryCount);
+                LocaleService.convertHLocaleToDTO(srcLocale), entryCount);
         Map<LocaleId, Integer> transMap = glossaryDAO
                 .getTranslationLocales(srcLocale.getLocaleId(), qualifiedName);
         List<HLocale> supportedLocales =
@@ -124,7 +123,7 @@ public class GlossaryService implements GlossaryResource {
                 locale -> !locale.getLocaleId().equals(srcLocale.getLocaleId()))
                 .forEach(locale -> {
                     LocaleDetails localeDetails =
-                            LocaleServiceImpl.convertToDTO(locale);
+                            LocaleService.convertHLocaleToDTO(locale);
                     int count = transMap.containsKey(locale.getLocaleId())
                             ? transMap.get(locale.getLocaleId()) : 0;
                     transLocale

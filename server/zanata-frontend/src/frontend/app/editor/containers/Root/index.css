@@ -455,6 +455,38 @@ li.inline-search-list span {
   width:18em;
 }
 
+button.close {
+  font-weight: 700;
+  line-height: 1;
+  top: 1rem;
+  right: 1rem;
+  position: absolute;
+  border: 0;
+  color: #f00;
+  z-index: 1;
+  padding: @spacing-rq;
+  outline: none;
+}
+
+button.close:focus, button.close:hover, button.close:active:focus {
+  cursor: pointer;
+  text-decoration: none;
+  opacity: 0.5;
+  color: #000;
+  filter: alpha(opacity=50);
+  box-shadow: none;
+  outline: none;
+  background-color: #fff;
+}
+
+.closeIcon svg {
+  opacity: 0.7;
+  height: 1rem;
+  width: 1rem;
+  text-align: center;
+  color: #f00;
+}
+
 /**
  * Media Queries
  */
