@@ -71,18 +71,35 @@ storiesOf('EditorSearchInput', module)
     <EditorSearchInput
       search={{
         ...blankSearch,
-        text: 'hello there'
+        text: 'it was the'
       }}
       updateSearch={action('updateSearch')}
       advanced={false}
       toggleAdvanced={action('toggleAdvanced')}
     />
   ))
-  .add('advanced search', () => (
+  .add('advanced panel open', () => (
     <EditorSearchInput
       search={{
         ...blankSearch,
-        text: 'hello there'
+        text: 'it was the worst'
+      }}
+      updateSearch={action('updateSearch')}
+      advanced={true}
+      toggleAdvanced={action('toggleAdvanced')}
+    />
+  ))
+  .add('advanced search', () => (
+    <EditorSearchInput
+      search={{
+        text: 'it was the worst of',
+        resourceId: 'para-0001',
+        lastModifiedBy: 'cdickens',
+        lastModifiedBefore: '1859-12-31',
+        lastModifiedAfter: '1859-01-01',
+        sourceComment: 'England and France',
+        translationComment: 'blurst of times?! You stupid monkey!',
+        msgctxt: 'chapter01.txt'
       }}
       updateSearch={action('updateSearch')}
       advanced={true}

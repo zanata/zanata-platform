@@ -85,6 +85,7 @@ const EditorSearchInput = React.createClass({
   getInitialState: () => {
     return {
       focused: false,
+      hovered: false,
       open: false
     }
   },
@@ -106,9 +107,35 @@ const EditorSearchInput = React.createClass({
     }
   },
 
+  mouseEnter: function () {
+    this.setState({
+      hovered: true
+    })
+  },
+
+  mouseLeave: function () {
+    this.setState({
+      hovered: false
+    })
+  },
+
   toggleAdvanced: function () {
     this.props.toggleAdvanced()
     // click on Advanced steals focus, so give focus back.
+    this.focusInput()
+  },
+
+  clearAllAdvancedFields: function () {
+    this.props.updateSearch({
+      resourceId: '',
+      lastModifiedBy: '',
+      lastModifiedBefore: '',
+      lastModifiedAfter: '',
+      sourceComment: '',
+      translationComment: '',
+      msgctxt: ''
+    })
+    // click on "Clear all" removes focus from input fields, so give focus back.
     this.focusInput()
   },
 
@@ -189,10 +216,16 @@ const EditorSearchInput = React.createClass({
             onClick={this.toggleAdvanced}>
             {advanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
-        <Panel collapsible expanded={this.props.advanced && this.state.focused}>
+        <Panel collapsible expanded={this.props.advanced &&
+          (this.state.focused || this.state.hovered)}>
           <ul>
             {advancedFields}
           </ul>
+          <span className="u-textMicro" onClick={this.clearAllAdvancedFields}
+            onMouseEnter={this.mouseEnter}
+            onMouseLeave={this.mouseLeave}>
+            Clear all
+          </span>
         </Panel>
       </div>
     )
