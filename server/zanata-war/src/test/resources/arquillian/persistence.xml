@@ -140,9 +140,8 @@
       <property name="hibernate.session_factory_name" value="SessionFactories/zanataSF"/>
       -->
 
-      <!-- Use test version of hibernate cache (in-memory) -->
       <property name="hibernate.cache.region.factory_class"
-        value="org.hibernate.testing.cache.CachingRegionFactory" />
+        value="org.hibernate.cache.infinispan.InfinispanRegionFactory" />
 
       <property name="hibernate.cache.use_second_level_cache" value="true" />
       <!--       http://stackoverflow.com/questions/9060403/hibernate-query-cache-issue -->
