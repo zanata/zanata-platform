@@ -1,6 +1,6 @@
 <enunciate
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="http://enunciate.webcohesion.com/schemas/enunciate-2.6.0.xsd">
+  xsi:noNamespaceSchemaLocation="http://enunciate.webcohesion.com/schemas/enunciate-2.9.0.xsd">
   <namespaces>
     <namespace id="zanata" uri="http://www.zanata.org" />
   </namespaces>
@@ -31,10 +31,10 @@
     ]]>
   </description>
   <!-- https://github.com/stoicflame/enunciate/wiki/Modules -->
-  <!--<modules>-->
+  <modules>
     <!--<jaxb />-->
     <!--<jackson1 />-->
-    <!--<jaxrs />-->
+    <jaxrs groupBy="annotation"/>
     <!--<docs />-->
-  <!--</modules>-->
+  </modules>
 </enunciate>
