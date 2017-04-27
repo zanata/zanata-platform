@@ -23,7 +23,7 @@ import cx from 'classnames'
 import { Icon } from 'zanata-ui'
 import IconButton from '../IconButton'
 import React, { PropTypes } from 'react'
-import { Panel } from 'react-bootstrap'
+import { Panel, Button } from 'react-bootstrap'
 import { map } from 'lodash'
 
 const fields = {
@@ -212,7 +212,7 @@ const EditorSearchInput = React.createClass({
             onClick={this.state.open}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
             {this.clearButtonElement()}
-          <span className="InputGroup-addon u-textMicro"
+          <span className="InputGroup-addon btn-xs advsearch btn-link"
             onClick={this.toggleAdvanced}>
             {advanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
@@ -221,11 +221,12 @@ const EditorSearchInput = React.createClass({
           <ul>
             {advancedFields}
           </ul>
-          <span className="u-textMicro" onClick={this.clearAllAdvancedFields}
+          <Button bsStyle="link" bsSize="xsmall" className="clearadvsearch"
+            onClick={this.clearAllAdvancedFields}
             onMouseEnter={this.mouseEnter}
             onMouseLeave={this.mouseLeave}>
             Clear all
-          </span>
+          </Button>
         </Panel>
       </div>
     )

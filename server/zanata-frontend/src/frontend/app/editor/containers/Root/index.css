@@ -190,6 +190,16 @@ h4.modal-title {
   color:#333;
 }
 
+.btn-group-xs>.btn, .btn-xs {
+  padding: 1px 5px;
+  font-size: 12px;
+  line-height: 1.5;
+  border-radius: 3px;
+}
+
+.InputGroup-addon.btn-xs.advsearch {
+  vertical-align: middle;
+}
 
 .history-icon svg, .comment-icon svg {
   vertical-align: sub;
