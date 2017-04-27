@@ -405,7 +405,8 @@ button.close {
   border: 0;
   color: #f00;
   z-index: 1;
-  padding: @spacing-rq;
+  /* @spacing-rq variable in less */
+  padding: 0.75rem;
   outline: none;
 }
 
