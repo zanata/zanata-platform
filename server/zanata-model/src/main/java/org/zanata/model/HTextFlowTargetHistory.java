@@ -165,7 +165,7 @@ public class HTextFlowTargetHistory extends HTextContainer
             joinColumns = @JoinColumn(name = "text_flow_target_history_id"),
             uniqueConstraints = @UniqueConstraint(
                     name = "UKHTextFlowTargetContentHistory",
-                    columnNames = "text_flow_target_history_id")
+                    columnNames = {"text_flow_target_history_id", "pos"})
     )
     @IndexColumn(name = "pos", nullable = false)
     @Column(name = "content", nullable = false)
