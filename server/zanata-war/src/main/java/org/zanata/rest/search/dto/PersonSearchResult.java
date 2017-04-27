@@ -22,6 +22,7 @@ package org.zanata.rest.search.dto;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.zanata.rest.dto.SearchResult;
 
 /**
  * @author Carlos Munoz
