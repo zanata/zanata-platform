@@ -671,6 +671,8 @@ public class SearchResultsPresenter extends
                 replaceInfo.setPreviewState(PreviewState.Show);
                 refreshInfoDisplay(replaceInfo);
                 break;
+            default:
+                break;
             }
         }
 
@@ -775,6 +777,8 @@ public class SearchResultsPresenter extends
                 setReplaceState(info, ReplacementState.Replacing);
                 info.setPreviewState(PreviewState.Hide);
                 refreshInfoDisplay(info);
+                break;
+            default:
                 break;
             }
         }

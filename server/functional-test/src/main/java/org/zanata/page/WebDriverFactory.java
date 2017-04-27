@@ -463,24 +463,34 @@ public enum WebDriverFactory {
     private void clearDswid() {
         // clear the browser's memory of the dswid
         getExecutor().executeScript("window.name = \'\'");
-        dswidParamChecker.clear();
+        if (dswidParamChecker != null) {
+            dswidParamChecker.clear();
+        }
     }
 
     public <T> T ignoringDswid(Supplier<T> supplier) {
-        dswidParamChecker.stopChecking();
+        if (dswidParamChecker != null) {
+            dswidParamChecker.stopChecking();
+        }
         try {
             return supplier.get();
         } finally {
-            dswidParamChecker.startChecking();
+            if (dswidParamChecker != null) {
+                dswidParamChecker.startChecking();
+            }
         }
     }
 
     public void ignoringDswid(Runnable r) {
-        dswidParamChecker.stopChecking();
+        if (dswidParamChecker != null) {
+            dswidParamChecker.stopChecking();
+        }
         try {
             r.run();
         } finally {
-            dswidParamChecker.startChecking();
+            if (dswidParamChecker != null) {
+                dswidParamChecker.startChecking();
+            }
         }
     }
 

@@ -610,7 +610,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
             return;
         }
         ArrayList<DocumentId> docList = Lists.newArrayList();
-        for (DocumentId documentId : pageRows.keySet()) {
+        for (Entry<DocumentId, Integer> entry: pageRows.entrySet()) {
+            DocumentId documentId = entry.getKey();
             display.showRowLoading(pageRows.get(documentId));
             docList.add(documentId);
         }
