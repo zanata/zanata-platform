@@ -85,7 +85,6 @@ const EditorSearchInput = React.createClass({
   getInitialState: () => {
     return {
       focused: false,
-      hovered: false,
       open: false
     }
   },
@@ -105,18 +104,6 @@ const EditorSearchInput = React.createClass({
         focused: false
       })
     }
-  },
-
-  mouseEnter: function () {
-    this.setState({
-      hovered: true
-    })
-  },
-
-  mouseLeave: function () {
-    this.setState({
-      hovered: false
-    })
   },
 
   toggleAdvanced: function () {
@@ -216,15 +203,12 @@ const EditorSearchInput = React.createClass({
             onClick={this.toggleAdvanced}>
             {advanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
-        <Panel collapsible expanded={this.props.advanced &&
-          (this.state.focused || this.state.hovered)}>
+        <Panel collapsible expanded={this.props.advanced && this.state.focused}>
           <ul>
             {advancedFields}
           </ul>
           <Button bsStyle="link" bsSize="xsmall" className="clearadvsearch"
-            onClick={this.clearAllAdvancedFields}
-            onMouseEnter={this.mouseEnter}
-            onMouseLeave={this.mouseLeave}>
+            onClick={this.clearAllAdvancedFields}>
             Clear all
           </Button>
         </Panel>
