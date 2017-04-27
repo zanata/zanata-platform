@@ -73,6 +73,7 @@
 
     <properties>
       <property name="hibernate.show_sql" value="false" />
+      <!-- Use test version of hibernate cache (in-memory) -->
       <property name="hibernate.cache.region.factory_class"
         value="org.hibernate.testing.cache.CachingRegionFactory" />
       <!--<property name="hibernate.cache.use_second_level_cache" value="false" />-->
