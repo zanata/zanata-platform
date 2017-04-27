@@ -83,7 +83,7 @@
   </changeSet>
 
   <changeSet id="4" author="pahuang@redhat.com">
-    <comment>drop duplicate index and add missing index, unique constraints</comment>
+    <comment>drop duplicate index and add missing index</comment>
     <dropIndex tableName="HTextFlowTargetHistory" indexName="Idx_lastModifiedBy" />
     <createIndex tableName="TransMemoryUnit" indexName="Idx_TransMemoryUnit_tm_id">
       <column name="tm_id"/>
@@ -92,10 +92,6 @@
       indexName="Idx_HProjectIteration_Locale_projectIterationId">
       <column name="projectIterationId"/>
     </createIndex>
-    <addUniqueConstraint tableName="HTextFlowContentHistory"
-      columnNames="text_flow_history_id,pos" />
-    <addUniqueConstraint tableName="HTextFlowTargetContentHistory"
-      columnNames="text_flow_target_history_id,pos" />
   </changeSet>
 
   <changeSet id="5" author="pahuang@redhat.com">
@@ -126,6 +122,18 @@
     <comment>drop unique key and use primary key for HProject_Glossary</comment>
     <addPrimaryKey tableName="HProject_Glossary" columnNames="glossaryId,projectId" />
     <dropUniqueConstraint tableName="HProject_Glossary" constraintName="UKHProject_Glossary" />
+  </changeSet>
+
+  <changeSet id="9" author="pahuang@redhat.com">
+    <comment>modify HTextFlowContentHistory to match hibernate mapping</comment>
+    <dropColumn tableName="HTextFlowContentHistory" columnName="id" />
+    <addPrimaryKey tableName="HTextFlowContentHistory" columnNames="pos,text_flow_history_id"/>
+  </changeSet>
+
+  <changeSet id="10" author="pahuang@redhat.com">
+    <comment>modify HTextFlowTargetContentHistory to match hibernate mapping</comment>
+    <dropColumn tableName="HTextFlowTargetContentHistory" columnName="id" />
+    <addPrimaryKey tableName="HTextFlowTargetContentHistory" columnNames="pos,text_flow_target_history_id"/>
   </changeSet>
 
 </databaseChangeLog>

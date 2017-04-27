@@ -162,10 +162,7 @@ public class HTextFlowTargetHistory extends HTextContainer
     @AccessType("field")
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinTable(name = "HTextFlowTargetContentHistory",
-            joinColumns = @JoinColumn(name = "text_flow_target_history_id"),
-            uniqueConstraints = @UniqueConstraint(
-                    name = "UKHTextFlowTargetContentHistory",
-                    columnNames = {"text_flow_target_history_id", "pos"})
+            joinColumns = @JoinColumn(name = "text_flow_target_history_id")
     )
     @IndexColumn(name = "pos", nullable = false)
     @Column(name = "content", nullable = false)

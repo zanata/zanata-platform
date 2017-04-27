@@ -105,10 +105,7 @@ public class HTextFlowHistory extends HTextContainer implements Serializable,
     @AccessType("field")
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinTable(name = "HTextFlowContentHistory", joinColumns = @JoinColumn(
-            name = "text_flow_history_id"),
-            uniqueConstraints = @UniqueConstraint(
-                    name = "UKTextFlowContentHistory",
-                    columnNames = "text_flow_history_id"))
+            name = "text_flow_history_id"))
     @IndexColumn(name = "pos", nullable = false)
     @Column(name = "content", nullable = false)
     @Override
