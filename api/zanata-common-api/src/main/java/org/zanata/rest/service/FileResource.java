@@ -32,6 +32,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.common.FileTypeInfo;
 import org.zanata.rest.DocumentFileUploadForm;
@@ -40,11 +41,13 @@ import org.zanata.rest.dto.ChunkUploadResponse;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
- * Interface for file upload and download REST methods.
+ * Represents binary translation files. This REST interface provides endpoints
+ * for uploading and downloading files in multiple formats.
  */
 @Path(FileResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_OCTET_STREAM })
 @Consumes({ MediaType.APPLICATION_OCTET_STREAM })
+@ResourceLabel("Files")
 public interface FileResource extends RestResource {
     public static final String SERVICE_PATH = "/file";
     @Deprecated

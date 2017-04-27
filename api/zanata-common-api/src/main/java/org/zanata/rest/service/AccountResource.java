@@ -28,12 +28,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
+ * Represents user accounts in the system.
  * username: User name that identifies an account
  *
  * @author Sean Flanigan <a
@@ -41,6 +43,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
  *
  */
 @Path(AccountResource.SERVICE_PATH)
+@ResourceLabel("Accounts")
 public interface AccountResource extends RestResource {
     public static final String SERVICE_PATH =
             "/accounts/u/{username:[a-z\\d_]{3,20}}";

@@ -36,10 +36,11 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.zanata.common.LocaleId;
 
 /**
- * This resource allows clients to [push and] pull translation memories.
+ * This API allows clients to [push and] pull translation memories.
  *
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -47,6 +48,7 @@ import org.zanata.common.LocaleId;
 @Path(TranslationMemoryResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML /* , "application/x-tmx" */})
 @Consumes({ MediaType.APPLICATION_XML /* , "application/x-tmx" */})
+@ResourceLabel("Translation Memory")
 public interface TranslationMemoryResource extends RestResource {
     public static final String SERVICE_PATH = "/tm";
 

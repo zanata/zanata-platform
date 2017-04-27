@@ -28,12 +28,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Project;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
+ * API endpoint to get a list of projects.
+ *
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
@@ -41,6 +44,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Path(ProjectsResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@ResourceLabel("Project List")
 public interface ProjectsResource extends RestResource {
     public static final String SERVICE_PATH = "/projects";
 

@@ -38,6 +38,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -45,7 +46,11 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
- * projectSlug: Project Identifier. iterationSlug: Project Iteration identifier.
+ * Translated document API. This API uses format-independent data structures. For
+ * format specific source document access see {@link FileResource}
+ *
+ * <br>projectSlug: Project Identifier.
+ * <br>iterationSlug: Project Iteration identifier.
  *
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -54,6 +59,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Path(TranslatedDocResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@ResourceLabel("Translated Documents")
 public interface TranslatedDocResource extends RestResource {
     public static final String SERVICE_PATH =
             ProjectIterationResource.SERVICE_PATH + "/r";
