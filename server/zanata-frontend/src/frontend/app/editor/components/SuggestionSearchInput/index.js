@@ -20,7 +20,7 @@
  */
 
 import cx from 'classnames'
-import { Icon } from '../../components'
+import { Icon } from '../../../components'
 import IconButton from '../IconButton'
 import React, { PropTypes } from 'react'
 

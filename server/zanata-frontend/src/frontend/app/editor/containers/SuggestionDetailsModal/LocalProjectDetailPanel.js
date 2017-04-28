@@ -4,7 +4,7 @@
  */
 
 import React, { Component, PropTypes } from 'react'
-import { Icon } from '../../components'
+import { Icon } from '../../../components'
 import { Panel, Label, Row } from 'react-bootstrap'
 import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'
 import { matchType, MATCH_TYPE } from '../../utils/suggestion-util'
@@ -100,7 +100,7 @@ class LocalProjectDetailPanel extends Component {
         </ul>
         {sourceComment}
         <ul className="list-inline">
-          <li><Icon name="comment" title="comment" className="s1"/></li>
+          <li><Icon name="comment" title="comment" className="s1" /></li>
           <li>Target</li>
         </ul>
         {targetComment}
