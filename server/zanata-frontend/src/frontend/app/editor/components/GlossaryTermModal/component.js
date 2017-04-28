@@ -1,8 +1,7 @@
 import React, { PropTypes } from 'react'
-import { Modal } from 'zanata-ui'
 import { Panel, Row, Table } from 'react-bootstrap'
 import { FormattedDate, FormattedTime } from 'react-intl'
-import { Icon, LoaderText } from '../../../components'
+import { Icon, LoaderText, Modal } from '../../../components'
 
 /**
  * Modal to show detail for a single glossary term

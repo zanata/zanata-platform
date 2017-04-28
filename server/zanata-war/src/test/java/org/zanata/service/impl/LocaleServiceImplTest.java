@@ -37,6 +37,9 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
+import org.zanata.rest.dto.LanguageTeamSearchResult;
+import org.zanata.rest.dto.LocaleDetails;
+import org.zanata.service.LocaleService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -162,4 +165,38 @@ public class LocaleServiceImplTest {
                 LocaleId.FR, LocaleId.EN, LocaleId.DE);
     }
 
+    @Test
+    public void testConvertHLocaleToDTO() {
+        HLocale hLocale = new HLocale(LocaleId.DE);
+        LocaleDetails details = LocaleService.convertHLocaleToDTO(hLocale);
+        assertThat(details.getLocaleId()).isEqualTo(hLocale.getLocaleId());
+        assertThat(details.getAlias()).isNull();
+        assertThat(details.getDisplayName())
+                .isEqualTo(hLocale.retrieveDisplayName());
+        assertThat(details.getNativeName())
+                .isEqualTo(hLocale.retrieveNativeName());
+        assertThat(details.isEnabled()).isEqualTo(hLocale.isActive());
+        assertThat(details.isEnabledByDefault())
+                .isEqualTo(hLocale.isEnabledByDefault());
+    }
+
+    @Test
+    public void testConvertHLocaleToSearchResultDTO() {
+        HLocale hLocale = new HLocale(LocaleId.DE);
+        LanguageTeamSearchResult searchResult =
+                LocaleService.convertHLocaleToSearchResultDTO(hLocale);
+        LocaleDetails details = searchResult.getLocaleDetails();
+
+        assertThat(details.getLocaleId()).isEqualTo(hLocale.getLocaleId());
+        assertThat(details.getAlias()).isNull();
+        assertThat(details.getDisplayName())
+                .isEqualTo(hLocale.retrieveDisplayName());
+        assertThat(details.getNativeName())
+                .isEqualTo(hLocale.retrieveNativeName());
+        assertThat(details.isEnabled()).isEqualTo(hLocale.isActive());
+        assertThat(details.isEnabledByDefault())
+                .isEqualTo(hLocale.isEnabledByDefault());
+        assertThat(searchResult.getMemberCount())
+                .isEqualTo(hLocale.getMembers().size());
+    }
 }

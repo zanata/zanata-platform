@@ -1,4 +1,4 @@
-package org.zanata.rest.editor.service;
+package org.zanata.rest.service;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -11,7 +11,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.cdi.StaticProducer;
+import org.zanata.common.LocaleId;
 import org.zanata.jpa.FullText;
+import org.zanata.rest.dto.LocaleMember;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.servlet.annotations.SessionId;
@@ -23,8 +25,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.ws.rs.core.Response;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -71,6 +74,9 @@ public class LocalesServiceTest extends ZanataDbunitJpaTest implements
         beforeTestOperations.add(new DataSetOperation(
                 "org/zanata/test/model/LocalesData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/AccountData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
     }
 
     @After
@@ -82,7 +88,33 @@ public class LocalesServiceTest extends ZanataDbunitJpaTest implements
     @InRequestScope
     public void testGetLocales() {
         response = localesService.get("test", null, 1, 1);
-        assertThat(response.getStatus(), is(Response.Status.OK.getStatusCode()));
+        assertThat(response.getStatus()).isEqualTo(Response.Status.OK.getStatusCode());
     }
 
+    @Test
+    @InRequestScope
+    public void testGetMembersEmptyLocale() {
+        response = localesService.getMembers("");
+        assertThat(response.getStatus())
+                .isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
+    }
+
+    @Test
+    @InRequestScope
+    public void testGetMembersNotSupportedLocale() {
+        response = localesService.getMembers("invalidLocale");
+        assertThat(response.getStatus())
+                .isEqualTo(Response.Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    @InRequestScope
+    public void testGetMembers() {
+        response = localesService.getMembers(LocaleId.FR.getId());
+        assertThat(response.getStatus())
+                .isEqualTo(Response.Status.OK.getStatusCode());
+
+        List<LocaleMember> results = (List<LocaleMember>) response.getEntity();
+        assertThat(results).hasSize(1);
+    }
 }

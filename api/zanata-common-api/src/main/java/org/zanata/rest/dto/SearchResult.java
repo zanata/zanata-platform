@@ -18,13 +18,19 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.rest.search.dto;
+package org.zanata.rest.dto;
+
+import org.codehaus.jackson.annotate.JsonProperty;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
+import java.io.Serializable;
 
 /**
  * @author Carlos Munoz
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public abstract class SearchResult {
+@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+public abstract class SearchResult implements Serializable {
 
     public enum SearchResultType {
         Project,
@@ -38,6 +44,7 @@ public abstract class SearchResult {
     private String description;
     private SearchResultType type;
 
+    @JsonProperty("id")
     public String getId() {
         return this.id;
     }
@@ -46,6 +53,7 @@ public abstract class SearchResult {
         this.id = id;
     }
 
+    @JsonProperty("description")
     public String getDescription() {
         return this.description;
     }
@@ -54,6 +62,7 @@ public abstract class SearchResult {
         this.description = description;
     }
 
+    @JsonProperty("type")
     public SearchResultType getType() {
         return this.type;
     }

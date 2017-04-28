@@ -49,7 +49,6 @@ import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.LocaleService;
-import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.webtrans.shared.model.DocumentId;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
@@ -249,7 +248,7 @@ public class ProjectVersionService implements ProjectVersionResource {
         List<LocaleDetails> localesRefs =
                 Lists.newArrayListWithExpectedSize(locales.size());
         localesRefs.addAll(locales.stream()
-                .map(hLocale -> LocaleServiceImpl.convertToDTO(hLocale))
+                .map(hLocale -> LocaleService.convertHLocaleToDTO(hLocale))
                 .collect(Collectors.toList()));
         Type genericType = new GenericType<List<LocaleDetails>>() {
 
