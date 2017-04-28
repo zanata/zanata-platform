@@ -4,7 +4,7 @@
  */
 
 import React, { Component, PropTypes } from 'react'
-import { Icon } from '../../components'
+import { Icon } from '../../../components'
 import { Panel, Label, Row } from 'react-bootstrap'
 import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'
 import { MATCH_TYPE } from '../../utils/suggestion-util'
