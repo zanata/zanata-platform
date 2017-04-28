@@ -43,7 +43,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
  * Represents a resource for an asynchronous (i.e. background) process. Only
- * certain types of processes are exposed as an asynchronous resources.
+ * certain types of processes are exposed as asynchronous resources.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
