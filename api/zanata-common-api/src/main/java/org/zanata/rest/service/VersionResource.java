@@ -28,6 +28,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.VersionInfo;
@@ -44,18 +46,18 @@ public interface VersionResource extends RestResource {
 
     /**
      * Retrieve Version information for the application.
-     *
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Response with the system's version information in the
-     *         content.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
      */
     @GET
     @Produces({ MediaTypes.APPLICATION_ZANATA_VERSION_XML,
                 MediaTypes.APPLICATION_ZANATA_VERSION_JSON })
     @TypeHint(VersionInfo.class)
+    @StatusCodes({
+            @ResponseCode(code = 200,
+                condition = "Response with the system's version information in " +
+                        "the body"),
+            @ResponseCode(code = 500,
+                    condition = "If there is an unexpected error in the server while performing this operation")
+    })
     public Response get();
 
 }
