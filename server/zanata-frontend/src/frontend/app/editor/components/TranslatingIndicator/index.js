@@ -19,8 +19,9 @@
  * site: http://www.fsf.org.
  */
 
-import { Icon, Row } from 'zanata-ui'
 import React, { PropTypes } from 'react'
+import { Icon } from '../../components'
+import { Row } from 'react-bootstrap'
 
 /**
  * Indicator that shows 'Translating' when the user is
@@ -42,7 +43,7 @@ const TranslatingIndicator = React.createClass({
       <button className="Link--neutral u-sPV-1-4 u-floatLeft
                          u-sizeHeight-1_1-2 u-sMR-1-4">
         <Row>
-          <Icon name="translate" size="2" /> <span
+          <Icon name="translate" className="s2" /> <span
             className="u-ltemd-hidden u-sMR-1-4">
             {this.props.gettextCatalog.getString('Translating')}
           </span>

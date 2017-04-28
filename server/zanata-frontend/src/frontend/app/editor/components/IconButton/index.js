@@ -1,5 +1,5 @@
 import Button from '../Button'
-import { Icon } from 'zanata-ui'
+import { Icon } from '../../components'
 import React, { PropTypes } from 'react'
 
 /**

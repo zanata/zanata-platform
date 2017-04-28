@@ -4,8 +4,8 @@
  */
 
 import React, { Component, PropTypes } from 'react'
-import { Icon, Row } from 'zanata-ui'
-import { Panel, Label } from 'react-bootstrap'
+import { Icon } from '../../components'
+import { Panel, Label, Row } from 'react-bootstrap'
 import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'
 import { matchType, MATCH_TYPE } from '../../utils/suggestion-util'
 
@@ -21,7 +21,7 @@ class LocalProjectDetailPanel extends Component {
     return (
       <div title={fullDocName} className="TransUnit-details ellipsis">
         <Icon name="document"
-          size="1"
+          className="s1"
           theme={{
             base: {
               px: 'Px(rh)'
@@ -59,13 +59,13 @@ class LocalProjectDetailPanel extends Component {
         <ul className="u-sMB-1-4">
           <li className="TransUnit-label-suggestions" title={projectId}>
             <Row>
-              <Icon name="project" size="1" />PROJECT:
+              <Icon name="project" className="s1" />PROJECT:
               <span className="TransUnit-details-inner">{projectName}</span>
             </Row>
           </li>
           <li className="TransUnit-label-suggestions">
             <Row>
-              <Icon name="version" size="1" />VERSION:
+              <Icon name="version" className="s1" />VERSION:
               <span className="TransUnit-details-inner">{version}</span>
             </Row>
           </li>
@@ -73,7 +73,7 @@ class LocalProjectDetailPanel extends Component {
         <ul className="u-listInline u-sMB-1-4">
           <li title={fullDocName} className="TransUnit-label-suggestions">
             <Row>
-              <Icon name="document" size="1" />DOCUMENT:
+              <Icon name="document" className="s1" />DOCUMENT:
               <span className="TransUnit-details-inner">{fullDocName}</span>
             </Row>
           </li>
@@ -95,12 +95,12 @@ class LocalProjectDetailPanel extends Component {
       <span key="1" className="comment-box">
         <h4 className="list-group-item-heading">Comments</h4>
         <ul className="list-inline">
-          <li><Icon name="comment" title="comment" /></li>
+          <li><Icon name="comment" title="comment" className="s1" /></li>
           <li>Source</li>
         </ul>
         {sourceComment}
         <ul className="list-inline">
-          <li><Icon name="comment" title="comment" /></li>
+          <li><Icon name="comment" title="comment" className="s1"/></li>
           <li>Target</li>
         </ul>
         {targetComment}

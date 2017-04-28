@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react'
-import { Icon, Row } from 'zanata-ui'
+import { Icon } from '../../components'
 import cx from 'classnames'
+import { Row } from 'react-bootstrap'
 
 /**
  * Display metadata for suggestion source.
@@ -30,7 +31,7 @@ const SuggestionDetailsSummary = React.createClass({
     const projectIcon = isTextFlow && (
       <li title={topMatch.projectId}>
         <Row>
-          <Icon name="project" size="n1" /> {topMatch.projectName}
+          <Icon name="project" className="n1" /> {topMatch.projectName}
         </Row>
       </li>
     )
@@ -38,7 +39,7 @@ const SuggestionDetailsSummary = React.createClass({
     const versionIcon = isTextFlow && (
       <li>
         <Row>
-          <Icon name="version" size="n1" /> {topMatch.version}
+          <Icon name="version" className="n1" /> {topMatch.version}
         </Row>
       </li>
     )
@@ -49,7 +50,7 @@ const SuggestionDetailsSummary = React.createClass({
     const documentIcon = isTextFlow && (
       <li className="docName" title={documentPath + topMatch.documentName}>
         <Row>
-          <Icon name="document" size="n1" />
+          <Icon name="document" className="n1" />
           <span className="ellipsis">{topMatch.documentName}</span>
         </Row>
       </li>
@@ -58,7 +59,7 @@ const SuggestionDetailsSummary = React.createClass({
     const importIcon = isTextFlow ? undefined : (
       <li>
         <Row>
-          <Icon name="import" size="n1" /> {topMatch.transMemorySlug}
+          <Icon name="import" className="n1" /> {topMatch.transMemorySlug}
         </Row>
       </li>
     )
@@ -66,7 +67,7 @@ const SuggestionDetailsSummary = React.createClass({
     const remainingIcon = matchDetails.length > 1 && (
       <li>
         <Row>
-          <Icon name="translate" size="n1"
+          <Icon name="translate" className="n1"
           /> {matchDetails.length - 1} more occurrences
         </Row>
       </li>

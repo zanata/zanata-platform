@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-import { Icon } from 'zanata-ui'
+import { Icon } from '../../components'
 import React, { PropTypes } from 'react'
 
 /**
@@ -41,7 +41,7 @@ const PagerButton = React.createClass({
   render: function () {
     const icon =
       <Icon name={this.props.icon}
-        size="2"
+        className="s2"
         title={this.props.title} />
     return (
       <li>

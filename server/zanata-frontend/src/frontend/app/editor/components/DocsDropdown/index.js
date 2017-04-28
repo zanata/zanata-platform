@@ -1,6 +1,7 @@
 import Dropdown from '../Dropdown'
-import { Icon, Row } from 'zanata-ui'
+import { Icon } from '../../components'
 import React, { PropTypes } from 'react'
+import { Row } from 'react-bootstrap'
 
 /**
  * Dropdown to select the current document to work on.
@@ -54,7 +55,7 @@ const DocsDropdown = React.createClass({
             <Row>
               {selectedDoc}
               <div className="u-sML-1-8 Dropdown-toggleIcon">
-                <Icon name="chevron-down" size="1" />
+                <Icon name="chevron-down" className="s1" />
               </div>
             </Row>
           </button>

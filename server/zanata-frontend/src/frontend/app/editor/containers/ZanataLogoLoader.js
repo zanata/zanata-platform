@@ -1,7 +1,7 @@
 import { dashboardUrl } from '../api'
 import cx from 'classnames'
 import { some } from 'lodash'
-import { LogoLoader } from 'zanata-ui'
+import { LogoLoader } from '../../components'
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 
