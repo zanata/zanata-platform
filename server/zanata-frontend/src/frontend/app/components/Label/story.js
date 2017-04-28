@@ -1,9 +1,9 @@
 import React from 'react'
-import { storiesOf, action } from '@kadira/storybook'
+import { storiesOf } from '@kadira/storybook'
 import { Label } from 'react-bootstrap'
 
 storiesOf('Label', module)
-    .add('in headings', () => (
+  .add('in headings', () => (
     <span>
       <h1>Label <Label>New</Label></h1>
       <h2>Label <Label>New</Label></h2>
@@ -12,14 +12,14 @@ storiesOf('Label', module)
       <h5>Label <Label>New</Label></h5>
       <p>Label <Label>New</Label></p>
     </span>
-    ))
+  ))
 
-    .add('validation states', () => (
-        <span>
-    <Label bsStyle='default'>Default</Label>
-    <Label bsStyle='primary'>Primary</Label>
-    <Label bsStyle='success'>Success</Label>
-    <Label bsStyle='warning'>Warning</Label>
-    <Label bsStyle='danger'>Danger</Label>
-        </span>
-    ))
+  .add('validation states', () => (
+    <span>
+      <Label bsStyle='default'>Default</Label>
+      <Label bsStyle='primary'>Primary</Label>
+      <Label bsStyle='success'>Success</Label>
+      <Label bsStyle='warning'>Warning</Label>
+      <Label bsStyle='danger'>Danger</Label>
+    </span>
+  ))

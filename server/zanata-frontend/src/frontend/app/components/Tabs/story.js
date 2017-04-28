@@ -41,4 +41,4 @@ storiesOf('Tabs', module)
             </Col>
           </Row>
         </Tab.Container>
-        ))
+    ))

@@ -1,5 +1,5 @@
 import React from 'react'
-import { storiesOf, action } from '@kadira/storybook'
+import { storiesOf } from '@kadira/storybook'
 import { Panel } from 'react-bootstrap'
 
 storiesOf('Panel', module)
@@ -22,30 +22,25 @@ storiesOf('Panel', module)
     ))
 
     .add('success', () => (
-
         <Panel header='Panel header' bsStyle='success'>
           Panel content
         </Panel>
     ))
 
     .add('info', () => (
-
         <Panel header='Panel header' bsStyle='info'>
           Panel content
         </Panel>
     ))
 
     .add('warning', () => (
-
         <Panel header='Panel header' bsStyle='warning'>
           Panel content
         </Panel>
     ))
 
     .add('danger', () => (
-
         <Panel header='Panel header' bsStyle='danger'>
           Panel content
         </Panel>
     ))
-

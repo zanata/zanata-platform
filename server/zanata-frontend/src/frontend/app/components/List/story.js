@@ -1,5 +1,5 @@
 import React from 'react'
-import { storiesOf, action } from '@kadira/storybook'
+import { storiesOf } from '@kadira/storybook'
 import { ListGroup, ListGroupItem } from 'react-bootstrap'
 
 storiesOf('List', module)
@@ -20,8 +20,8 @@ storiesOf('List', module)
     .add('with headings', () => (
           <ListGroup>
             <ListGroupItem header='Heading 1'>
-            Some body text</ListGroupItem>
+              Some body text</ListGroupItem>
             <ListGroupItem header='Heading 2' href='#'>
-            Linked item</ListGroupItem>
+              Linked item</ListGroupItem>
           </ListGroup>
     ))

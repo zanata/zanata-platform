@@ -1,5 +1,5 @@
 import React from 'react'
-import { storiesOf, action } from '@kadira/storybook'
+import { storiesOf } from '@kadira/storybook'
 import { EditableText } from '../'
 
 storiesOf('EditableText', module)
@@ -25,4 +25,3 @@ storiesOf('EditableText', module)
           Test text
         </EditableText>
     ))
-

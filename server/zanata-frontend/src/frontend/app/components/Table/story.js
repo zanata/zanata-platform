@@ -1,5 +1,5 @@
 import React from 'react'
-import { storiesOf, action } from '@kadira/storybook'
+import { storiesOf } from '@kadira/storybook'
 import { Table } from 'react-bootstrap'
 
 storiesOf('Table', module)

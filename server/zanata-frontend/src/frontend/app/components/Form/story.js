@@ -1,5 +1,5 @@
 import React from 'react'
-import { storiesOf, action } from '@kadira/storybook'
+import { storiesOf } from '@kadira/storybook'
 import { Col, ControlLabel, FormGroup, FormControl, Form, InputGroup,
   Checkbox, Radio } from 'react-bootstrap'
 

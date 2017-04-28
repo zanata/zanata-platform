@@ -1,6 +1,6 @@
 import React from 'react'
-import {storiesOf, action} from '@kadira/storybook'
-import {Grid, Row, Col} from 'react-bootstrap'
+import { storiesOf } from '@kadira/storybook'
+import { Grid, Row, Col } from 'react-bootstrap'
 
 storiesOf('Foundation', module)
     .add('grid', () => (

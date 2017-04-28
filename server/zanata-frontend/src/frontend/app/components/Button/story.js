@@ -43,11 +43,11 @@ storiesOf('Button', module)
         Default button</Button>
       <Button onClick={action('onClick')}>Default button</Button>
       <Button bsStyle='primary' bsSize='small' onClick={action('onClick')}>
-      Small button</Button>
-    <Button bsSize='small' onClick={action('onClick')}>Small button</Button>
-    <Button bsStyle='primary' bsSize='xsmall' onClick={action('onClick')}>
-    Extra small button</Button>
-    <Button bsSize='xsmall' onClick={action('onClick')}>Extra small button</Button>
+        Small button</Button>
+      <Button bsSize='small' onClick={action('onClick')}>Small button</Button>
+      <Button bsStyle='primary' bsSize='xsmall' onClick={action('onClick')}>
+        Extra small button</Button>
+      <Button bsSize='xsmall' onClick={action('onClick')}>Extra small button</Button>
     </ButtonToolbar>
   ))
     .add('group', () => (
