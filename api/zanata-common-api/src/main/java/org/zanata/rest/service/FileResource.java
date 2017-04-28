@@ -41,8 +41,10 @@ import org.zanata.rest.dto.ChunkUploadResponse;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
- * Represents binary translation files. This REST interface provides endpoints
- * for uploading and downloading files in multiple formats.
+ * Represents various types of translatable files to be processed by the server
+ * instead of the REST client.
+ * This REST interface provides endpoints for uploading and downloading files in
+ * multiple formats.
  */
 @Path(FileResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_OCTET_STREAM })

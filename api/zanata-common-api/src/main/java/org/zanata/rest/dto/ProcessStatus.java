@@ -76,7 +76,7 @@ public class ProcessStatus {
     private ProcessStatusCode statusCode;
 
     @XmlElement(required = true)
-    @DocumentationExample("http://example.com")
+    @DocumentationExample("http://zanata.example.com")
     public String getUrl() {
         return url;
     }
