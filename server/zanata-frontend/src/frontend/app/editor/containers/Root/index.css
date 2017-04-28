@@ -357,6 +357,10 @@ ul.u-listInline li .u-textSuccess {
   width:110%;
 }
 
+ul.u-listInline li .u-textHighlight {
+  width:110%;
+}
+
 .tab-content > .tab-pane {
   display: none;
 }
