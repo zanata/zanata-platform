@@ -198,7 +198,7 @@ const EditorSearchInput = React.createClass({
               this.props.updateSearch({ text: event.target.value})}
             onClick={this.state.open}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
-            {this.clearButtonElement()}
+          {this.clearButtonElement()}
           <span className="InputGroup-addon btn-xs advsearch btn-link"
             onClick={this.toggleAdvanced}>
             {advanced ? 'Hide advanced' : 'Advanced'}</span>
