@@ -1,6 +1,7 @@
 import DashboardLink from '../components/DashboardLink'
 import DocsDropdown from '../components/DocsDropdown'
-import { Icon, Row } from 'zanata-ui'
+import { Icon } from '../../components'
+import { Row } from 'react-bootstrap'
 import LanguagesDropdown from '../components/LanguagesDropdown'
 import ProjectVersionLink from '../components/ProjectVersionLink'
 /* Disabled UI locale changes until zanata-spa is internationalised
@@ -94,7 +95,7 @@ const NavHeader = React.createClass({
             <ProjectVersionLink {...ctx.projectVersion} />
             <div className="u-inlineBlock u-sMH-1-4 u-textInvert
                           u-textMuted u-sm-hidden">
-              <Icon name="chevron-right" size="1" />
+              <Icon name="chevron-right" className="s1" />
             </div>
             <span className="Editor-docsDropdown">
               <DocsDropdown {...docsDropdownProps} />

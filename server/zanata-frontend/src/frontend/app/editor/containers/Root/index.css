@@ -389,7 +389,7 @@ button.close {
   border: 0;
   color: #f00;
   z-index: 1;
-  padding: @spacing-rq;
+  padding: 0.75em;
   outline: none;
 }
 

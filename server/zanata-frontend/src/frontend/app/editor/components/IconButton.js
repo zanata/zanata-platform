@@ -1,5 +1,5 @@
 import Button from './Button'
-import { Icon } from 'zanata-ui'
+import { Icon } from '../../components'
 import React, { PropTypes } from 'react'
 
 /**
@@ -24,7 +24,7 @@ const IconButton = React.createClass({
         onClick={this.props.onClick}
         title={this.props.title}>
         <Icon
-          size={this.props.iconSize || '1'}
+          className="s1"
           name={this.props.icon}
           title={this.props.title} />
       </Button>

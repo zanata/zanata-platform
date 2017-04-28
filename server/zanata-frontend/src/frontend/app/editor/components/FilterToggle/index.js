@@ -20,7 +20,8 @@
  */
 
 import cx from 'classnames'
-import { Icon, Row } from 'zanata-ui'
+import { Icon } from '../../components'
+import { Row } from 'react-bootstrap'
 import React, { PropTypes } from 'react'
 
 /**
@@ -52,7 +53,7 @@ const FilterToggle = React.createClass({
 
   render: function () {
     const className = cx('Toggle u-round', this.props.className)
-    const dot = this.props.withDot && <Icon name="dot" size="n1" />
+    const dot = this.props.withDot && <Icon name="dot" className="n1" />
 
     return (
       <div className={className}>
