@@ -6,19 +6,22 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonTypeName;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.Namespaces;
 
 /**
- * Holds version info
+ * Holds system version information
  */
 @XmlRootElement(name = "versionInfo")
 @XmlType(name = "versionType", propOrder = { "versionNo", "buildTimeStamp", "scmDescribe" })
 @JsonTypeName(value = "versionType")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@Label("Version Info")
 public final class VersionInfo implements Serializable {
     private static final long serialVersionUID = 1L;
     private String versionNo;
@@ -43,16 +46,27 @@ public final class VersionInfo implements Serializable {
         this(other.versionNo, other.buildTimeStamp, other.scmDescribe);
     }
 
+    /**
+     * Version number
+     */
     @XmlElement(name = "versionNo", namespace = Namespaces.ZANATA_OLD)
+    @DocumentationExample("4.0.0")
     public String getVersionNo() {
         return versionNo;
     }
 
+    /**
+     * Timestamp when the current system version was built
+     */
     @XmlElement(name = "buildTimeStamp", namespace = Namespaces.ZANATA_OLD)
+    @DocumentationExample("20170225-1448")
     public String getBuildTimeStamp() {
         return buildTimeStamp;
     }
 
+    /**
+     * Identifier for the current version in source control
+     */
     @XmlElement(name = "scmDescribe", namespace = Namespaces.ZANATA_API)
     public String getScmDescribe() {
         return scmDescribe;
