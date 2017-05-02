@@ -10,7 +10,7 @@ import {
   toggleGlossary,
   toggleHeader,
   toggleKeyboardShortcutsModal
-} from '../actions/headerActions'
+} from '../actions/header-actions'
 import {
   resetStatusFilter,
   updateStatusFilter,
@@ -18,10 +18,10 @@ import {
   nextPage,
   previousPage,
   lastPage
-} from '../actions/controlsHeaderActions'
-import { toggleSuggestions } from '../actions/suggestions'
+} from '../actions/controls-header-actions'
+import { toggleSuggestions } from '../actions/suggestions-actions'
 import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
-import { GLOSSARY_TAB } from '../reducers/ui'
+import { GLOSSARY_TAB } from '../reducers/ui-reducer'
 
 const { bool, func, number, shape } = PropTypes
 

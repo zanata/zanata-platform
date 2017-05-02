@@ -15,7 +15,7 @@ import {
   glossaryToggleImportFileDisplay,
   glossaryUpdateImportFileLocale,
   FILE_TYPES
-} from '../../actions/glossary'
+} from '../../actions/glossary-actions'
 
 class ImportModal extends Component {
   getUploadFileExtension (file) {

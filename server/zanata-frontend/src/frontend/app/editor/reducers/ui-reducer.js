@@ -5,15 +5,15 @@ import {
   TOGGLE_HEADER,
   TOGGLE_KEY_SHORTCUTS,
   UI_LOCALES_FETCHED
-} from '../actions/headerActions'
+} from '../actions/header-actions'
 import {
   RESET_STATUS_FILTERS,
   UPDATE_STATUS_FILTER
-} from '../actions/controlsHeaderActions'
+} from '../actions/controls-header-actions'
 import {
   SUGGESTION_PANEL_HEIGHT_CHANGE,
   TOGGLE_SUGGESTIONS
-} from '../actions/suggestions'
+} from '../actions/suggestions-actions'
 import {prepareLocales} from '../utils/Util'
 import updateObject from 'react-addons-update'
 

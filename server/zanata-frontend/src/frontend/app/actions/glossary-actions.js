@@ -11,7 +11,7 @@ import {
   getJsonHeaders,
   getHeaders,
   buildAPIRequest
-} from './common'
+} from './common-actions'
 
 export const FILE_TYPES = ['csv', 'po']
 export const PAGE_SIZE_SELECTION = [20, 50, 100, 300, 500]

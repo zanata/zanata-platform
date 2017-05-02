@@ -7,7 +7,7 @@ import {
   STATUS_TRANSLATED,
   STATUS_APPROVED,
   STATUS_REJECTED
-} from '../../utils/status'
+} from '../../utils/status-util'
 
 const ProgressItem = React.createClass({
   propTypes: {

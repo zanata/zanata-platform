@@ -12,7 +12,7 @@ import {
   copyGlossaryTerm,
   glossarySearchTextEntered,
   showGlossaryTermDetails
-} from '../actions/glossary'
+} from '../actions/glossary-actions'
 import { isEmpty } from 'lodash'
 import { Icon, LoaderText } from '../../components'
 

@@ -1,5 +1,5 @@
 import { getSuggestions } from '../api/suggestions'
-import { waitForPhraseDetail } from '../utils/phrase'
+import { waitForPhraseDetail } from '../utils/phrase-util'
 import { debounce, isUndefined } from 'lodash'
 
 export const TOGGLE_SUGGESTIONS = Symbol('TOGGLE_SUGGESTIONS')

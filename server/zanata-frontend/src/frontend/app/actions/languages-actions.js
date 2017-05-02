@@ -8,7 +8,7 @@ import {
   LOAD_USER_REQUEST,
   LOAD_USER_SUCCESS,
   LOAD_USER_FAILURE
-} from './common'
+} from './common-actions'
 
 export const LOAD_LANGUAGES_REQUEST = 'LOAD_LANGUAGES_REQUEST'
 export const LOAD_LANGUAGES_SUCCESS = 'LOAD_LANGUAGES_SUCCESS'

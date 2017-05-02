@@ -6,13 +6,13 @@
 // https://www.npmjs.com/package/whatwg-fetch
 // (it is just a wrapper around whatwg-fetch)
 import fetch from 'isomorphic-fetch'
-import { encode } from '../utils/doc-id'
+import { encode } from '../utils/doc-id-util'
 import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
   STATUS_TRANSLATED,
   STATUS_APPROVED
-} from '../utils/status'
+} from '../utils/status-util'
 
 /* The part of the path that is just the server deployment path. e.g. if the
  * server is deployed at example.com/zanata then this will be /zanata */
