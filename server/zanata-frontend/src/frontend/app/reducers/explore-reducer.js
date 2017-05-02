@@ -13,7 +13,7 @@ import {
   SEARCH_GROUP_REQUEST,
   SEARCH_GROUP_SUCCESS,
   SEARCH_GROUP_FAILURE
-} from '../actions/explore'
+} from '../actions/explore-actions'
 
 export default handleActions({
   [SEARCH_PROJECT_REQUEST]: (state, action) => {

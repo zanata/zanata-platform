@@ -11,14 +11,14 @@ import {
   GET_LOCALE_REQUEST,
   GET_LOCALE_SUCCESS,
   GET_LOCALE_FAILURE
-} from '../actions/profile'
+} from '../actions/profile-actions'
 import {
   LOAD_USER_REQUEST,
   LOAD_USER_SUCCESS,
   LOAD_USER_FAILURE,
   SEVERITY,
   CLEAR_MESSAGE
-} from '../actions/common'
+} from '../actions/common-actions'
 import { keyBy } from 'lodash'
 
 /**

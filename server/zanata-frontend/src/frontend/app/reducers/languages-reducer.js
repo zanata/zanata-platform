@@ -6,7 +6,7 @@ import {
   LOAD_USER_REQUEST,
   LOAD_USER_SUCCESS,
   LOAD_USER_FAILURE
-} from '../actions/common'
+} from '../actions/common-actions'
 import {
   LOAD_LANGUAGES_REQUEST,
   LOAD_LANGUAGES_SUCCESS,
@@ -24,7 +24,7 @@ import {
   CREATE_LANGUAGE_REQUEST,
   CREATE_LANGUAGE_SUCCESS,
   CREATE_LANGUAGE_FAILURE
-} from '../actions/languages'
+} from '../actions/languages-actions'
 
 const ERROR_MSG = 'We were unable load languages from server. ' +
   'Please refresh this page and try again.'
