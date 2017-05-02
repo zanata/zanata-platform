@@ -7,7 +7,7 @@ import {
   dateRangeChanged,
   filterUpdate,
   selectDayChanged
-} from '../../actions/profile'
+} from '../../actions/profile-actions'
 import RecentContributions from './RecentContributions'
 import { Notification, Icon, LoaderText } from '../../components'
 import { getLanguageUrl } from '../../utils/UrlHelper'

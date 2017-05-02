@@ -5,7 +5,7 @@ import TransUnitTranslationHeader from './TransUnitTranslationHeader'
 import TransUnitTranslationFooter from './TransUnitTranslationFooter'
 import { Icon } from 'zanata-ui'
 import { pick } from 'lodash'
-import { phraseTextSelectionRange } from '../actions/phrases'
+import { phraseTextSelectionRange } from '../actions/phrases-actions'
 
 /**
  * Panel to display and edit translations of a phrase.

@@ -18,7 +18,7 @@ import {
   glossaryToggleNewEntryModal,
   glossaryToggleDeleteAllEntriesModal,
   glossaryDeleteAll
-} from '../../actions/glossary'
+} from '../../actions/glossary-actions'
 import ImportModal from './ImportModal'
 import ExportModal from './ExportModal'
 import NewEntryModal from './NewEntryModal'

@@ -1,6 +1,6 @@
 import Combokeys from 'combokeys'
 import globalBind from 'combokeys/plugins/global-bind'
-import { setSaveAsMode, SHORTCUTS } from '../actions/editorShortcuts'
+import { setSaveAsMode, SHORTCUTS } from '../actions/key-shortcuts-actions'
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { map } from 'lodash'

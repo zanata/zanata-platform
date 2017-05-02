@@ -11,7 +11,7 @@ import {
   searchPageInitialLoad,
   updateSearchPage,
   SIZE_PER_PAGE
-} from '../../actions/explore'
+} from '../../actions/explore-actions'
 
 /**
  * Root component for Explore page
