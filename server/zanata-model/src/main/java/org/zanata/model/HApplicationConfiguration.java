@@ -22,6 +22,7 @@ package org.zanata.model;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -106,8 +107,11 @@ public class HApplicationConfiguration extends ModelEntityBase {
                     @Override
                     public String apply(Field input) {
                         try {
-                            input.setAccessible(true);
-                            return (String) input.get(dummy);
+                            if (input != null) {
+                                input.setAccessible(true);
+                                return (String) input.get(dummy);
+                            }
+                            return null;
                         } catch (IllegalAccessException e) {
                             throw Throwables.propagate(e);
                         }

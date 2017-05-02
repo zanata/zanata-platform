@@ -36,6 +36,7 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -58,7 +59,9 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString {
 
                 @Override
                 public boolean apply(HProjectMember input) {
-                    return input.getRole().equals(ProjectRole.Maintainer);
+                    return input != null ?
+                            input.getRole().equals(ProjectRole.Maintainer) :
+                            false;
                 }
             };
 
@@ -73,7 +76,7 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString {
                 @Nullable
                 @Override
                 public HPerson apply(HProjectMember input) {
-                    return input.getPerson();
+                    return input != null ? input.getPerson() : null;
                 }
             };
 
@@ -88,7 +91,7 @@ public class HProjectMember implements Serializable, HasUserFriendlyToString {
                 @Nullable
                 @Override
                 public HProject apply(HProjectMember input) {
-                    return input.getProject();
+                    return input != null ? input.getProject() : null;
                 }
             };
 

@@ -35,6 +35,7 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -59,7 +60,7 @@ public class HProjectLocaleMember
                 @Nullable
                 @Override
                 public HPerson apply(HProjectLocaleMember input) {
-                    return input.getPerson();
+                    return input != null ? input.getPerson() : null;
                 }
             };
 
@@ -74,7 +75,7 @@ public class HProjectLocaleMember
                 @Nullable
                 @Override
                 public HProject apply(HProjectLocaleMember input) {
-                    return input.getProject();
+                    return input != null ? input.getProject() : null;
                 }
             };
 

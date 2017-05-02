@@ -104,5 +104,40 @@ public class HRawDocument extends ModelEntityBase implements Serializable {
 
     public HRawDocument() {
     }
-    // TODO override equals to use contentHash, type, parameters, etc.
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        HRawDocument that = (HRawDocument) o;
+
+        if (document != null ? !document.equals(that.document) :
+                that.document != null) return false;
+        if (contentHash != null ? !contentHash.equals(that.contentHash) :
+                that.contentHash != null) return false;
+        if (fileId != null ? !fileId.equals(that.fileId) : that.fileId != null)
+            return false;
+        if (type != that.type) return false;
+        if (uploadedBy != null ? !uploadedBy.equals(that.uploadedBy) :
+                that.uploadedBy != null) return false;
+        return adapterParameters != null ?
+                adapterParameters.equals(that.adapterParameters) :
+                that.adapterParameters == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (document != null ? document.hashCode() : 0);
+        result = 31 * result +
+                (contentHash != null ? contentHash.hashCode() : 0);
+        result = 31 * result + (fileId != null ? fileId.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (uploadedBy != null ? uploadedBy.hashCode() : 0);
+        result = 31 * result +
+                (adapterParameters != null ? adapterParameters.hashCode() : 0);
+        return result;
+    }
 }

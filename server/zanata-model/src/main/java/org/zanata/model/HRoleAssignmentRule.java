@@ -74,4 +74,34 @@ public class HRoleAssignmentRule extends ModelEntityBase {
                 + this.getIdentityRegExp() + ", roleToAssign="
                 + this.getRoleToAssign() + ")";
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        HRoleAssignmentRule that = (HRoleAssignmentRule) o;
+
+        if (policyName != null ? !policyName.equals(that.policyName) :
+                that.policyName != null) return false;
+        if (identityRegExp != null ?
+                !identityRegExp.equals(that.identityRegExp) :
+                that.identityRegExp != null) return false;
+        return roleToAssign != null ? roleToAssign.equals(that.roleToAssign) :
+                that.roleToAssign == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (policyName != null ? policyName.hashCode() : 0);
+        result =
+                31 * result +
+                        (identityRegExp != null ? identityRegExp.hashCode() :
+                                0);
+        result = 31 * result +
+                (roleToAssign != null ? roleToAssign.hashCode() : 0);
+        return result;
+    }
 }

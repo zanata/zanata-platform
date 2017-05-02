@@ -38,6 +38,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import org.apache.commons.lang.time.DateUtils;
+import org.hibernate.annotations.NaturalId;
 import org.zanata.common.ActivityType;
 import org.zanata.model.type.EntityType;
 
@@ -52,26 +53,39 @@ public class Activity extends ModelEntityBase implements Serializable {
     @NotNull
     @JoinColumn(name = "actor_id", nullable = false)
     @ManyToOne
+    @NaturalId
     private HPerson actor;
+
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
+    @NaturalId
     private Date approxTime;
+
     @NotNull
     private long startOffsetMillis;
+
     @NotNull
     private long endOffsetMillis;
+
     @NotNull
     @Enumerated(EnumType.STRING)
+    @NaturalId
     private EntityType contextType;
+
     @NotNull
     @Column(name = "context_id")
+    @NaturalId
     private long contextId;
+
     @Enumerated(EnumType.STRING)
     private EntityType lastTargetType;
+
     @NotNull
     @Column(name = "last_target_id")
     private long lastTargetId;
+
     @Enumerated(EnumType.STRING)
+    @NaturalId
     private ActivityType activityType;
     // Event count starts with 1 because there is a single event when new
     // activity created
@@ -161,5 +175,36 @@ public class Activity extends ModelEntityBase implements Serializable {
 
     public EntityType getContextType() {
         return this.contextType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Activity activity = (Activity) o;
+
+        if (contextId != activity.contextId) return false;
+        if (actor != null ? !actor.equals(activity.actor) :
+                activity.actor != null)
+            return false;
+        if (approxTime != null ? !approxTime.equals(activity.approxTime) :
+                activity.approxTime != null) return false;
+        if (contextType != activity.contextType) return false;
+        return activityType == activity.activityType;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (actor != null ? actor.hashCode() : 0);
+        result = 31 * result + (approxTime != null ? approxTime.hashCode() : 0);
+        result = 31 * result +
+                (contextType != null ? contextType.hashCode() : 0);
+        result = 31 * result + (int) (contextId ^ (contextId >>> 32));
+        result = 31 * result +
+                (activityType != null ? activityType.hashCode() : 0);
+        return result;
     }
 }

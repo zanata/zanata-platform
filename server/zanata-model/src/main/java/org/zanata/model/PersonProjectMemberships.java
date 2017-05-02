@@ -28,6 +28,7 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -112,8 +113,8 @@ public class PersonProjectMemberships {
                 public String apply(LocaleRoles input) {
                     // To lowercase to prevent non-caps values appearing after
                     // all caps values (e.g. a appearing after Z)
-                    return input.getLocale().retrieveDisplayName()
-                            .toLowerCase();
+                    return input != null ? input.getLocale().retrieveDisplayName()
+                            .toLowerCase() : null;
                 }
             };
     private static final Ordering<LocaleRoles> LOCALE_NAME_ORDERING =
@@ -130,7 +131,7 @@ public class PersonProjectMemberships {
                 @Nullable
                 @Override
                 public HLocale apply(LocaleRoles input) {
-                    return input.getLocale();
+                    return input != null ? input.getLocale() : null;
                 }
             };
 
@@ -183,7 +184,7 @@ public class PersonProjectMemberships {
      * Intended to use as a row for a single locale in a permission setting
      * table.
      */
-    public class LocaleRoles {
+    public static class LocaleRoles {
         private HLocale locale;
         private boolean translator;
         private boolean reviewer;

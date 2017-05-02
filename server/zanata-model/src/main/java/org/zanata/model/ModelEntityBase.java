@@ -80,11 +80,11 @@ public class ModelEntityBase implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     public Date getCreationDate() {
-        return creationDate;
+        return new Date(creationDate.getTime());
     }
 
     public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
+        this.creationDate = new Date(creationDate.getTime());
     }
     // TODO extract lastChanged from ModelEntityBase and use with @Embedded
     // NB: also used in HSimpleComment
@@ -95,22 +95,20 @@ public class ModelEntityBase implements Serializable {
     @FieldBridge(impl = DateBridge.class)
     @SortableField
     public Date getLastChanged() {
-        return lastChanged;
+        return new Date(lastChanged.getTime());
     }
 
     public void setLastChanged(Date lastChanged) {
-        this.lastChanged = lastChanged;
+        this.lastChanged = new Date(lastChanged.getTime());
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getCreationDate() == null) ? 0
-                : getCreationDate().hashCode());
+        result = prime * result + getCreationDate().hashCode();
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getLastChanged() == null) ? 0
-                : getLastChanged().hashCode());
+        result = prime * result + getLastChanged().hashCode();
         return result;
     }
 
@@ -128,28 +126,22 @@ public class ModelEntityBase implements Serializable {
         assert overridesEquals(this);
         assert overridesEquals(obj);
         ModelEntityBase other = (ModelEntityBase) obj;
-        if (getCreationDate() == null) {
-            if (other.getCreationDate() != null)
-                return false;
-        } else if (!getCreationDate().equals(other.getCreationDate()))
+        if (!getCreationDate().equals(other.getCreationDate()))
             return false;
         if (getId() == null) {
             if (other.getId() != null)
                 return false;
         } else if (!getId().equals(other.getId()))
             return false;
-        if (getLastChanged() == null) {
-            if (other.getLastChanged() != null)
-                return false;
-        } else if (!getLastChanged().equals(other.getLastChanged()))
+        if (!getLastChanged().equals(other.getLastChanged()))
             return false;
         return true;
     }
 
     private boolean overridesEquals(Object obj) {
         try {
-            return obj.getClass().getDeclaredMethod("equals",
-                    Object.class) != null;
+            obj.getClass().getDeclaredMethod("equals", Object.class);
+            return true;
         } catch (NoSuchMethodException e) {
             log.error("class does not override equals: " + obj.getClass(), e);
             return false;
