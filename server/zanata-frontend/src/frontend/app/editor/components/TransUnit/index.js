@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react'
 import cx from 'classnames'
-import { GLOSSARY_TAB } from '../../reducers/ui'
+import { GLOSSARY_TAB } from '../../reducers/ui-reducer'
 import TransUnitStatus from '../TransUnitStatus'
 import TransUnitSourcePanel from '../TransUnitSourcePanel'
 import TransUnitTranslationPanel from '../TransUnitTranslationPanel'
 import { connect } from 'react-redux'
 import { pick } from 'lodash'
 import { toggleDropdown, closeDropdown } from '../../actions'
-import { toggleGlossary } from '../../actions/headerActions'
+import { toggleGlossary } from '../../actions/header-actions'
 import {
   cancelEdit,
   copyFromSource,
@@ -16,8 +16,8 @@ import {
   selectPhrasePluralIndex,
   translationTextInputChanged,
   undoEdit
-} from '../../actions/phrases'
-import { togglePhraseSuggestions } from '../../actions/suggestions'
+} from '../../actions/phrases-actions'
+import { togglePhraseSuggestions } from '../../actions/suggestions-actions'
 
 /**
  * Single row in the editor displaying a whole phrase.

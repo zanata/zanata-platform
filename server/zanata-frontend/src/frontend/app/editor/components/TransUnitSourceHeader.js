@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import IconButton from './IconButton'
 import TransUnitLocaleHeading from './TransUnitLocaleHeading'
-import { hasTranslationChanged } from '../utils/phrase'
+import { hasTranslationChanged } from '../utils/phrase-util'
 
 /**
  * Header for the source of the selected phrase
