@@ -50,12 +50,12 @@ import {
   PROJECT_GET_DETAILS_SUCCESS,
   PROJECT_GET_DETAILS_FAILURE,
   FILE_TYPES
-} from '../actions/glossary'
+} from '../actions/glossary-actions'
 import {
   CLEAR_MESSAGE,
   SEVERITY,
   DEFAULT_LOCALE
-} from '../actions/common'
+} from '../actions/common-actions'
 import GlossaryHelper from '../utils/GlossaryHelper'
 
 const ERROR_MSG = 'We are unable to get glossary information from server. ' +
