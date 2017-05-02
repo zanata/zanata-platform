@@ -1,6 +1,6 @@
 import { CALL_API } from 'redux-api-middleware'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
-import { getJsonHeaders, buildAPIRequest } from './common'
+import { getJsonHeaders, buildAPIRequest } from './common-actions'
 import { isEmpty, includes, clamp } from 'lodash'
 
 export const SEARCH_PROJECT_REQUEST = 'SEARCH_PROJECT_REQUEST'

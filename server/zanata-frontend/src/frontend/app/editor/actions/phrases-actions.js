@@ -7,8 +7,8 @@ import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
   STATUS_NEEDS_WORK_SERVER
-} from '../utils/status'
-import { hasTranslationChanged } from '../utils/phrase'
+} from '../utils/status-util'
+import { hasTranslationChanged } from '../utils/phrase-util'
 
 export const FETCHING_PHRASE_LIST = Symbol('FETCHING_PHRASE_LIST')
 

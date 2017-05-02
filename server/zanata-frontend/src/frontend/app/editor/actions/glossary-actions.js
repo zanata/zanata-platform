@@ -6,7 +6,7 @@ import { debounce, isEmpty } from 'lodash'
 import { CALL_API } from 'redux-api-middleware'
 
 import { baseRestUrl } from '../api'
-import { waitForPhraseDetail } from '../utils/phrase'
+import { waitForPhraseDetail } from '../utils/phrase-util'
 import { getJsonWithCredentials } from '../utils/api-util'
 
 /* Call as search text changes to trigger a glossary search when the text stops

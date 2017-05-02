@@ -6,7 +6,7 @@ import {
   STATUS_TRANSLATED,
   STATUS_APPROVED,
   STATUS_REJECTED
-} from '../utils/status'
+} from '../utils/status-util'
 
 /**
  * Panel with controls to filter the list of trans units

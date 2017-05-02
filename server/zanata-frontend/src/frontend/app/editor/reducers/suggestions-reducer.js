@@ -11,7 +11,7 @@ import {
   TEXT_SUGGESTION_STARTED_COPYING,
   TEXT_SUGGESTION_FINISHED_COPYING,
   TEXT_SUGGESTIONS_UPDATED
-} from '../actions/suggestions'
+} from '../actions/suggestions-actions'
 
 const defaultState = {
   // FIXME should be 'phrase' by default

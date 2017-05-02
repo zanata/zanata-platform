@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import GlossaryTermModal from './component'
 import { map } from 'lodash'
-import { showGlossaryDetails } from '../../actions/glossary'
+import { showGlossaryDetails } from '../../actions/glossary-actions'
 
 function mapStateToProps (state) {
   const { context, glossary, headerData } = state

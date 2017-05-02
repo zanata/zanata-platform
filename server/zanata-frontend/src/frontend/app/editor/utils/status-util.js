@@ -3,7 +3,7 @@ import {
   hasEmptyTranslation,
   hasNoTranslation,
   hasTranslationChanged
-} from './phrase'
+} from './phrase-util'
 
 export const STATUS_NEW = 'new'
 export const STATUS_UNTRANSLATED = 'untranslated'

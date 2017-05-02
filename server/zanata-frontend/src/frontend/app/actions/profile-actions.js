@@ -9,7 +9,7 @@ import {
   LOAD_USER_REQUEST,
   LOAD_USER_SUCCESS,
   LOAD_USER_FAILURE
-} from './common'
+} from './common-actions'
 
 export const FILTER_UPDATE = 'FILTER_UPDATE'
 export const DATE_RANGE_UPDATE = 'DATE_RANGE_UPDATE'

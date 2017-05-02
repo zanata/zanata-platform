@@ -3,7 +3,7 @@ import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
   STATUS_TRANSLATED
-} from './status'
+} from './status-util'
 
 const nullToEmpty = (value) => {
   return value || ''

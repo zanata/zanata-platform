@@ -1,5 +1,5 @@
 import { ROUTING_PARAMS_CHANGED } from '../actions'
-import { DEFAULT_LOCALE } from './ui'
+import { DEFAULT_LOCALE } from './ui-reducer'
 
 const defaultState = {
   sourceLocale: DEFAULT_LOCALE

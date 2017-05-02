@@ -1,15 +1,16 @@
-import { getSaveButtonStatus, hasTranslationChanged } from '../utils/phrase'
+import { getSaveButtonStatus, hasTranslationChanged }
+  from '../utils/phrase-util'
 import {
   copyFromAlignedSource,
   undoEdit,
   cancelEdit,
-  savePhraseWithStatus } from './phrases'
-import { moveNext, movePrevious } from './phraseNavigation'
-import { copySuggestionN } from './suggestions'
+  savePhraseWithStatus } from './phrases-actions'
+import { moveNext, movePrevious } from './phrase-navigation-actions'
+import { copySuggestionN } from './suggestions-actions'
 import {
   STATUS_TRANSLATED,
   STATUS_NEEDS_WORK
-} from '../utils/status'
+} from '../utils/status-util'
 
 function shortcutInfo (keys, eventActionCreator, description, eventType) {
   keys = Array.isArray(keys) ? keys : [keys]

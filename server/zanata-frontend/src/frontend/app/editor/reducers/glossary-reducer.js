@@ -14,7 +14,7 @@ import {
   GLOSSARY_TERMS_FAILURE,
   SET_GLOSSARY_DETAILS_INDEX,
   SHOW_GLOSSARY_DETAILS
-} from '../actions/glossary'
+} from '../actions/glossary-actions'
 
 const defaultState = {
   searchText: '',
