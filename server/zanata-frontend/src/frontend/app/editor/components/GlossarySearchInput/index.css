@@ -32,6 +32,7 @@
   border: none;
   width: 100%;
   color: var(--InputGroup-input-color);
+  max-height: 1.875em;
 }
 
 .InputGroup-addon {
