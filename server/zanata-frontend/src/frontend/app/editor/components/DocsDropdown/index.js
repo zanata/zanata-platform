@@ -1,4 +1,4 @@
-import Dropdown from './Dropdown'
+import Dropdown from '../Dropdown'
 import { Icon, Row } from 'zanata-ui'
 import React, { PropTypes } from 'react'
 

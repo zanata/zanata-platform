@@ -2,8 +2,8 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import SuggestionContents from '../../app/editor/components/SuggestionContents'
-import TextDiff from '../../app/editor/components/TextDiff'
+import SuggestionContents from '.'
+import TextDiff from '../TextDiff'
 
 describe('SuggestionContentTest', () => {
   it('SuggestionContent markup (singular)', () => {

@@ -1,4 +1,4 @@
-import FilterToggle from './FilterToggle'
+import FilterToggle from '../FilterToggle'
 import React, { PropTypes } from 'react'
 import {
   STATUS_UNTRANSLATED,
@@ -6,7 +6,7 @@ import {
   STATUS_TRANSLATED,
   STATUS_APPROVED,
   STATUS_REJECTED
-} from '../utils/status-util'
+} from '../../utils/status-util'
 
 /**
  * Panel with controls to filter the list of trans units

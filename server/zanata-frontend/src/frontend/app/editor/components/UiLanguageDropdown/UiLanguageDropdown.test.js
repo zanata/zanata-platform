@@ -3,8 +3,8 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
-import UiLanguageDropdown from '../../app/editor/components/UiLanguageDropdown'
-import Dropdown from '../../app/editor/components/Dropdown'
+import UiLanguageDropdown from '.'
+import Dropdown from '../Dropdown'
 
 describe('UiLanguageDropdownTest', () => {
   it('UiLanguageDropdown markup', () => {

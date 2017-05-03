@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
 import { Icon } from 'zanata-ui'
-import IconButton from '../../app/editor/components/IconButton'
+import IconButton from '.'
 
 describe('IconButtonTest', () => {
   it('IconButton markup', () => {

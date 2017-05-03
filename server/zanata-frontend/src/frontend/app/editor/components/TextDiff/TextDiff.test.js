@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import TextDiff from '../../app/editor/components/TextDiff'
+import TextDiff from '.'
 
 describe('TextDiffTest', () => {
   it('TextDiff markup', () => {

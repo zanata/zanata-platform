@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import DashboardLink from '../../app/editor/components/DashboardLink'
+import DashboardLink from '.'
 
 describe('DashboardLinkTest', () => {
   it('DashboardLink markup', () => {

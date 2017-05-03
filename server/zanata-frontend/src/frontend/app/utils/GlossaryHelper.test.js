@@ -1,6 +1,6 @@
 jest.disableAutomock()
 
-import GlossaryHelper from '../../app/utils/GlossaryHelper'
+import GlossaryHelper from './GlossaryHelper'
 
 describe('GlossaryHelperTest', function () {
   // var GlossaryHelper

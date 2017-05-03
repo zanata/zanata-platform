@@ -3,7 +3,7 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { Icon }  from 'zanata-ui'
-import NoSuggestionsPanel from '../../app/editor/components/NoSuggestionsPanel'
+import NoSuggestionsPanel from '.'
 
 describe('NoSuggestionsPanelTest', () => {
   it('NoSuggestionsPanel markup', () => {

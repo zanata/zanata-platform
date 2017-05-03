@@ -1,4 +1,4 @@
-import Button from './Button'
+import Button from '../Button'
 import { Icon } from 'zanata-ui'
 import React, { PropTypes } from 'react'
 

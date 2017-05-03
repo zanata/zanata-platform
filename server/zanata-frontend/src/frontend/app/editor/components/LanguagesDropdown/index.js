@@ -1,6 +1,6 @@
 import { values } from 'lodash'
-import { encode } from '../utils/doc-id-util'
-import Dropdown from './Dropdown'
+import { encode } from '../../utils/doc-id-util'
+import Dropdown from '../Dropdown'
 import { Icon, Row } from 'zanata-ui'
 import React, { PropTypes } from 'react'
 

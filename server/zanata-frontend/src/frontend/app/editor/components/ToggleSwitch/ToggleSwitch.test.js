@@ -3,7 +3,7 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
-import ToggleSwitch from '../../app/editor/components/ToggleSwitch'
+import ToggleSwitch from '.'
 
 describe('ToggleSwitchTest', () => {
   it('ToggleSwitch markup', () => {

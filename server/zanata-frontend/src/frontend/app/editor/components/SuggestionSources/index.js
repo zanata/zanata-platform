@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
-import SuggestionContents from './SuggestionContents'
-import SuggestionDetailsSummary from './SuggestionDetailsSummary'
+import SuggestionContents from '../SuggestionContents'
+import SuggestionDetailsSummary from '../SuggestionDetailsSummary'
 
 /**
  * Display all the source strings for a suggestion, with

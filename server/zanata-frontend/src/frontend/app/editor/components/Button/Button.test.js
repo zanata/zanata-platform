@@ -4,7 +4,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
-import Button from '../../app/editor/components/Button'
+import Button from '.'
 
 describe('ButtonTest', () => {
   it('Button markup', () => {
