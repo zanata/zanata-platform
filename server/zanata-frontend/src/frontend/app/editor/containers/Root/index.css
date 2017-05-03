@@ -298,6 +298,10 @@ li.docName span.ellipsis {
   color:#20718a;
 }
 
+.modal-title {
+  font-weight:300;
+}
+
 h4.modal-title {
   font-size:1.728rem;
   font-weight:300;
@@ -326,6 +330,9 @@ h4.modal-title {
   color:#333;
 }
 
+.row span.s1, .row span.s0, .row span.n1  {
+  vertical-align:sub;
+}
 
 .history-icon svg, .comment-icon svg {
   vertical-align: sub;
@@ -374,7 +381,6 @@ ul.source-infolist {
 .s2, .s2 svg {
   width: 1.44rem;
   height: 1.44rem;
-  vertical-align: middle;
 }
 
 .s3, .s3 svg {
@@ -523,7 +529,7 @@ ul.u-listInline li .u-textSuccess {
 button.close {
   font-weight: 700;
   line-height: 1;
-  top: 1rem;
+  top: 0rem;
   right: 1rem;
   position: absolute;
   border: 0;
@@ -552,6 +558,10 @@ button.close:focus, button.close:hover, button.close:active:focus {
   color: #f00;
 }
 
+
+span.u-textNeutral span.s2, a.Link--Neutral span.s2 {
+  vertical-align:baseline !important;
+}
 
 /**
  * Media Queries

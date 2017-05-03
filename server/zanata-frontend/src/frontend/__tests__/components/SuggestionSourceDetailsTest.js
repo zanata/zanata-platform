@@ -2,7 +2,8 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import { Icon, Row } from 'zanata-ui'
+import { Icon } from '../../app/components'
+import { Row } from 'react-bootstrap'
 import SuggestionDetailsSummary from '../../app/editor/components/SuggestionDetailsSummary'
 
 describe('SuggestionDetailsSummaryTest', () => {
@@ -26,7 +27,7 @@ describe('SuggestionDetailsSummaryTest', () => {
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li>
             <Row>
-              <Icon name="import" size="n1"/> {'champagne'}
+              <Icon name="import" className="n1"/> {'champagne'}
             </Row>
           </li>
         </ul>
@@ -57,17 +58,17 @@ describe('SuggestionDetailsSummaryTest', () => {
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li title="sausages">
             <Row>
-              <Icon name="project" size="n1"/> {'Sausages'}
+              <Icon name="project" className="n1"/> {'Sausages'}
             </Row>
           </li>
           <li>
             <Row>
-              <Icon name="version" size="n1"/> {'the-wurst-version'}
+              <Icon name="version" className="n1"/> {'the-wurst-version'}
             </Row>
           </li>
           <li className="docName" title="what-a-brat/i-rote-this.txt">
             <Row>
-              <Icon name="document" size="n1"/>
+              <Icon name="document" className="n1"/>
               <span className="ellipsis">{'i-rote-this.txt'}</span>
             </Row>
           </li>
@@ -113,12 +114,12 @@ describe('SuggestionDetailsSummaryTest', () => {
         <ul className="u-textMeta u-listInline u-sizeLineHeight-1">
           <li>
             <Row>
-              <Icon name="import" size="n1"/> {'champagne'}
+              <Icon name="import" className="n1"/> {'champagne'}
             </Row>
           </li>
           <li>
             <Row>
-              <Icon name="translate" size="n1"
+              <Icon name="translate" className="n1"
               /> {3}{' more occurrences'}
             </Row>
           </li>
