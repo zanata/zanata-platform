@@ -4,10 +4,10 @@
  * See .storybook-editor for main config
  */
 
-require('./Button/story.js')
-require('./TextDiff/story.js')
-require('./EditorSearchInput/story.js')
-require('./ProgressBar/story.js')
-require('./GlossarySearchInput/story.js')
-require('./GlossaryTerm/story.js')
-require('./GlossaryTermModal/story.js')
+require('./Button/Button.story.js')
+require('./TextDiff/TextDiff.story.js')
+require('./EditorSearchInput/EditorSearchInput.story.js')
+require('./ProgressBar/ProgressBar.story.js')
+require('./GlossarySearchInput/GlossarySearchInput.story.js')
+require('./GlossaryTerm/GlossaryTerm.story.js')
+require('./GlossaryTermModal/GlossaryTermModal.story.js')

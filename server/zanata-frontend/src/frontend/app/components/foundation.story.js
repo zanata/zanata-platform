@@ -1,3 +1,7 @@
+/**
+ * Foundational stories, not demonstrating any component in particular.
+ */
+
 import React from 'react'
 import { storiesOf } from '@kadira/storybook'
 import { Grid, Row, Col } from 'react-bootstrap'
