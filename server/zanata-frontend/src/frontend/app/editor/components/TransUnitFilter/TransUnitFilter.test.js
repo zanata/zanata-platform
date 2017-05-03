@@ -5,7 +5,8 @@ import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
 import TransUnitFilter from '.'
 import FilterToggle from '../FilterToggle'
-import { Icon, Row } from 'zanata-ui'
+import { Icon } from '../../app/components'
+import { Row } from 'react-bootstrap'
 import mockGettextCatalog from '../../../../__tests__/mock/mockAngularGettext'
 
 describe('TransUnitFilterTest', () => {
@@ -32,7 +33,7 @@ describe('TransUnitFilterTest', () => {
                htmlFor="government-issued"
                title="titalic">
             <Row>
-              <Icon name="dot" size="n1"/>
+              <Icon name="dot" className="n1"/>
               12
               <span className="u-hiddenVisually">titalic</span>
             </Row>
