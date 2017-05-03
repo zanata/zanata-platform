@@ -26,7 +26,7 @@
   width: calc(1.5rem * 1.625);
   height: calc(1.5rem * 1.625);
   color: #fff;
-  border-radius: @border-radius-loader;
+  border-radius: 100px;
 }
 
 .LogoLoader--inverted {
