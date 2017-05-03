@@ -24,9 +24,9 @@ const IconButton = React.createClass({
         onClick={this.props.onClick}
         title={this.props.title}>
         <Icon
+          title={this.props.title}
           className="s1"
-          name={this.props.icon}
-          title={this.props.title} />
+          name={this.props.icon} />
       </Button>
     )
   }
