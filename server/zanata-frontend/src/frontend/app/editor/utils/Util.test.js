@@ -5,7 +5,7 @@ import {
   prepareDocs,
   prepareLocales,
   prepareStats
-} from '../../app/editor/utils/Util'
+} from './Util'
 
 
 describe('parseNPluralsTest', () => {
