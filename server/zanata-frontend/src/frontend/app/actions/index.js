@@ -1,4 +1,3 @@
-export glossary from './glossary'
-export explore from './explore'
-export common from './common'
-
+export glossary from './glossary-actions'
+export explore from './explore-actions'
+export common from './common-actions'

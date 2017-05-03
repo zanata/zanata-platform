@@ -1,5 +1,5 @@
 import { values } from 'lodash'
-import { encode } from '../utils/doc-id'
+import { encode } from '../utils/doc-id-util'
 import Dropdown from './Dropdown'
 import { Icon } from '../../components'
 import React, { PropTypes } from 'react'

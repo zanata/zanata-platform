@@ -1,14 +1,13 @@
-
 import { combineReducers } from 'redux'
 // TODO update dependency, it is renamed react-router-redux
 import { routeReducer } from 'redux-simple-router'
-import phrases from './phrase'
-import context from './context'
-import dropdown from './dropdown'
-import glossary from './glossary'
-import ui from './ui'
-import headerData from './headerData'
-import suggestions from './suggestions'
+import phrases from './phrase-reducer'
+import context from './context-reducer'
+import dropdown from './dropdown-reducer'
+import glossary from './glossary-reducer'
+import ui from './ui-reducer'
+import headerData from './header-data-reducer'
+import suggestions from './suggestions-reducer'
 
 const rootReducer = combineReducers({
   context,

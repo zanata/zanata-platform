@@ -25,8 +25,9 @@ import Button from './Button'
 import SplitDropdown from './SplitDropdown'
 import { Icon } from '../../components'
 import { Row } from 'react-bootstrap'
-import { defaultSaveStatus, nonDefaultValidSaveStatuses } from '../utils/status'
-import { hasTranslationChanged } from '../utils/phrase'
+import { defaultSaveStatus, nonDefaultValidSaveStatuses }
+  from '../utils/status-util'
+import { hasTranslationChanged } from '../utils/phrase-util'
 
 /**
  * Footer for translation with save buttons and other action widgets.
