@@ -30,7 +30,3 @@ storiesOf('Icon', module)
       {allIconsSize('s4')}
     </div>
 ))
-
-
-
-
