@@ -4,9 +4,9 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
 import EditorSearchInput from '.'
-import { Icon, Row } from 'zanata-ui'
+import { Icon } from '../../../app/components'
 import IconButton from '../IconButton'
-import { Panel, Button } from 'react-bootstrap'
+import { Panel, Button, Row } from 'react-bootstrap'
 
 describe('EditorSearchInputTest', () => {
   it('renders input markup with show advanced but not focused', () => {
@@ -32,7 +32,7 @@ describe('EditorSearchInputTest', () => {
       <div>
         <div className="InputGroup InputGroup--outlined InputGroup--rounded">
           <span className="InputGroup-addon">
-            <Icon name="search" title="Search" size="n1" />
+            <Icon name="search" title="Search" className="n1" />
           </span>
           <input type="search"
             placeholder="Search source and target text"
