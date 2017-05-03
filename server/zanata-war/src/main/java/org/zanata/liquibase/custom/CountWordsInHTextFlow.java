@@ -42,15 +42,18 @@ public class CountWordsInHTextFlow implements CustomTaskChange {
     @Override
     public void execute(Database database) throws CustomChangeException {
         JdbcConnection conn = (JdbcConnection) database.getConnection();
-        try {
-            Statement stmt =
-                    conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-                            ResultSet.CONCUR_UPDATABLE);
+
+        try (Statement stmt =
+                conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
+                        ResultSet.CONCUR_UPDATABLE)) {
+            ResultSet rs1 = null;
+            ResultSet rs2 = null;
+            ResultSet rs3 = null;
             try {
                 Map<Long, String> docToLocaleMap = new HashMap<Long, String>();
                 String docLocaleSql =
                         "select doc.id, loc.localeId from HDocument doc, HLocale loc where doc.locale = loc.id";
-                ResultSet rs1 = stmt.executeQuery(docLocaleSql);
+                rs1 = stmt.executeQuery(docLocaleSql);
                 while (rs1.next()) {
                     long docId = rs1.getLong(1);
                     String locale = rs1.getString(2);
@@ -58,7 +61,7 @@ public class CountWordsInHTextFlow implements CustomTaskChange {
                 }
                 String countSql =
                         "select count(*) from HTextFlow where wordCount is null or wordCount = 0";
-                ResultSet rs2 = stmt.executeQuery(countSql);
+                rs2 = stmt.executeQuery(countSql);
                 rs2.next();
                 long totalRows = rs2.getLong(1);
                 Logger log = LogFactory.getLogger();
@@ -66,7 +69,7 @@ public class CountWordsInHTextFlow implements CustomTaskChange {
                         + " rows");
                 String textFlowSql =
                         "select id, document_id, content, wordCount from HTextFlow where wordCount is null or wordCount = 0";
-                ResultSet rs3 = stmt.executeQuery(textFlowSql);
+                rs3 = stmt.executeQuery(textFlowSql);
                 long rowsUpdated = 0;
                 while (rs3.next()) {
                     // primary key only needed for updatable ResultSet
@@ -84,7 +87,9 @@ public class CountWordsInHTextFlow implements CustomTaskChange {
                 }
                 log.info("CountWordsInHTextFlow: finished");
             } finally {
-                stmt.close();
+                rs1.close();
+                rs2.close();
+                rs3.close();
             }
         } catch (SQLException e) {
             throw new CustomChangeException(e);

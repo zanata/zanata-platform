@@ -51,14 +51,13 @@ public class MigrateDataToHCredentials implements CustomTaskChange {
         // (Only Open Id for now)
         if (dbAuthType.equals("OPENID")) {
             JdbcConnection conn = (JdbcConnection) database.getConnection();
-
-            try {
-                Statement stmt = conn.createStatement();
+            ResultSet rset = null;
+            try (Statement stmt = conn.createStatement()) {
                 PreparedStatement insertStmt =
                         conn.prepareStatement("insert into HCredentials "
                                 + "(account_id, type, user, email, creationDate, lastChanged, versionNum) values"
                                 + "(?, ?, ?, ?, ?, ?, ?)");
-                ResultSet rset =
+                rset =
                         stmt.executeQuery("select acc.id, acc.username, p.email, acc.creationDate, acc.lastChanged "
                                 + " from HAccount acc, HPerson p"
                                 + " where p.accountId = acc.id");
@@ -85,6 +84,14 @@ public class MigrateDataToHCredentials implements CustomTaskChange {
                 throw new CustomChangeException(e);
             } catch (SQLException e) {
                 throw new CustomChangeException(e);
+            } finally {
+                if (rset != null) {
+                    try {
+                        rset.close();
+                    } catch (SQLException e) {
+                        throw new CustomChangeException(e);
+                    }
+                }
             }
         }
     }

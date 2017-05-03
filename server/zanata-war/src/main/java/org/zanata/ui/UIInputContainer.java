@@ -16,6 +16,8 @@
  */
 package org.zanata.ui;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -237,7 +239,7 @@ public class UIInputContainer extends UIComponentBase implements
         String style =
                 (getAttributes().get("style") != null ? getAttributes()
                         .get("style").toString().trim() : null);
-        if (style.length() > 0) {
+        if (StringUtils.isNotBlank(style)) {
             context.getResponseWriter().writeAttribute(HTML_STYLE_ATTR_NAME,
                     style, HTML_STYLE_ATTR_NAME);
         }
@@ -245,7 +247,7 @@ public class UIInputContainer extends UIComponentBase implements
                 (getAttributes().get("styleClass") != null ? getAttributes()
                         .get("styleClass").toString().trim()
                         : null);
-        if (styleClass.length() > 0) {
+        if (StringUtils.isNotBlank(style)) {
             context.getResponseWriter().writeAttribute(HTML_CLASS_ATTR_NAME,
                     styleClass, HTML_CLASS_ATTR_NAME);
         }
@@ -376,7 +378,8 @@ public class UIInputContainer extends UIComponentBase implements
                 return Thread.currentThread().getContextClassLoader()
                         .loadClass(fqcn) != null;
             } else {
-                return Class.forName(fqcn) != null;
+                Class.forName(fqcn);
+                return true;
             }
         } catch (ClassNotFoundException e) {
             return false;

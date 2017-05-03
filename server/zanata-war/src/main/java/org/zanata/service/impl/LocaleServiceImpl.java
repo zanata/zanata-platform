@@ -190,9 +190,8 @@ public class LocaleServiceImpl implements LocaleService {
     @ApplicationScoped
     @AllJavaLocales
     public List<LocaleId> getAllJavaLanguages() {
-        List<LocaleId> allJavaLanguages = new ArrayList<LocaleId>();
         ULocale[] locales = ULocale.getAvailableLocales();
-        allJavaLanguages = new ArrayList<LocaleId>();
+        List<LocaleId> allJavaLanguages = new ArrayList<LocaleId>();
         for (ULocale locale : locales) {
             String id = locale.toLanguageTag();
             LocaleId localeId = new LocaleId(id);

@@ -27,6 +27,8 @@ import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
@@ -49,6 +51,7 @@ import com.google.common.collect.Lists;
 public class CopyTransOptionsModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
     private HCopyTransOptions instance;

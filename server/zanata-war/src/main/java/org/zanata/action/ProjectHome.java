@@ -41,6 +41,7 @@ import javax.persistence.EntityNotFoundException;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
@@ -129,6 +130,7 @@ public class ProjectHome extends SlugHome<HProject>
     private SlugEntityService slugEntityServiceImpl;
     @Inject
     private CommonMarkRenderer renderer;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
     @Inject
@@ -214,6 +216,7 @@ public class ProjectHome extends SlugHome<HProject>
     }
 
     private Map<String, Boolean> roleRestrictions;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     private Map<ValidationId, ValidationAction> availableValidations =
             Maps.newHashMap();
     private final java.util.concurrent.atomic.AtomicReference<Object> versions =
@@ -945,6 +948,7 @@ public class ProjectHome extends SlugHome<HProject>
         return results;
     }
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
     private final Predicate IS_NOT_OBSOLETE =
             new Predicate<HProjectIteration>() {
 
@@ -1305,7 +1309,7 @@ public class ProjectHome extends SlugHome<HProject>
                 value = this.versions.get();
                 if (value == null) {
                     final List<HProjectIteration> actualValue = fetchVersions();
-                    value = actualValue == null ? this.versions : actualValue;
+                    value = actualValue;
                     this.versions.set(value);
                 }
             }

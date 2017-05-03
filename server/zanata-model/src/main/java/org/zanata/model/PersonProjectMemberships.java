@@ -29,6 +29,7 @@ import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -41,7 +42,7 @@ import java.util.Set;
  * boolean properties to represent all roles so they can be easily bound to
  * individual UI elements (e.g. checkboxes).
  */
-public class PersonProjectMemberships {
+public class PersonProjectMemberships implements Serializable {
     private HPerson person;
     private boolean maintainer;
     private boolean translationMaintainer;

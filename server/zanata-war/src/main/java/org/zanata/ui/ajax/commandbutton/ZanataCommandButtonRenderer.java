@@ -20,6 +20,7 @@
  */
 package org.zanata.ui.ajax.commandbutton;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.richfaces.renderkit.RenderKitUtils;
 
 import javax.faces.component.UIComponent;
@@ -38,10 +39,9 @@ import static org.richfaces.renderkit.RenderKitUtils.shouldRenderAttribute;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @FacesRenderer(componentFamily = CommandButton.COMPONENT_FAMILY,
-        rendererType = CommandButtonRenderer.RENDERER_TYPE)
+        rendererType = ZanataCommandButtonRenderer.RENDERER_TYPE)
 // TODO why does this class copy so much code from parent class?
-// TODO can we give it a better name?
-public class CommandButtonRenderer extends
+public class ZanataCommandButtonRenderer extends
         org.richfaces.renderkit.html.CommandButtonRenderer {
 
     public static final String RENDERER_TYPE =

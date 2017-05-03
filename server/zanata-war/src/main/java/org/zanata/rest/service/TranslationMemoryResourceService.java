@@ -21,6 +21,7 @@
 package org.zanata.rest.service;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.concurrent.Future;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -63,7 +64,7 @@ import com.google.common.base.Optional;
 @Path(TranslationMemoryResource.SERVICE_PATH)
 @ParametersAreNonnullByDefault
 public class TranslationMemoryResourceService
-        implements TranslationMemoryResource {
+        implements TranslationMemoryResource, Serializable {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(TranslationMemoryResourceService.class);
 

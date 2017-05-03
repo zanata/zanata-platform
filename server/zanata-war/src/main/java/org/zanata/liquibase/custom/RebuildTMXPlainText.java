@@ -54,13 +54,15 @@ public class RebuildTMXPlainText implements CustomTaskChange {
 
         // apparently we don't need to close this
         JdbcConnection conn = (JdbcConnection) database.getConnection();
+        ResultSet rsCount = null;
+        ResultSet rsUpdatable = null;
         try {
             try (Statement stmt = conn
                     .createStatement(ResultSet.TYPE_FORWARD_ONLY,
                             ResultSet.CONCUR_UPDATABLE)) {
                 String countSql =
                         "select count(*) from TransMemoryUnitVariant";
-                ResultSet rsCount = stmt.executeQuery(countSql);
+                rsCount = stmt.executeQuery(countSql);
                 rsCount.next();
                 this.segmentCount = rsCount.getLong(1);
                 log.info("RebuildTMXPlainText: visiting " + segmentCount
@@ -70,7 +72,7 @@ public class RebuildTMXPlainText implements CustomTaskChange {
                         "select id, lastChanged, tagged_segment, " +
                                 "plain_text_segment, plain_text_segment_hash " +
                                 "from TransMemoryUnitVariant";
-                ResultSet rsUpdatable = stmt.executeQuery(updatableSql);
+                rsUpdatable = stmt.executeQuery(updatableSql);
                 long rowsVisited = 0;
                 while (rsUpdatable.next()) {
                     String taggedSegment = rsUpdatable.getString(3);
@@ -99,6 +101,9 @@ public class RebuildTMXPlainText implements CustomTaskChange {
                 if (rowsVisited != segmentCount) {
                     log.warning("RebuildTMXPlainText: expected " + segmentCount + "rows but visited " + rowsVisited);
                 }
+            } finally {
+                rsCount.close();
+                rsUpdatable.close();
             }
         } catch (SQLException | DatabaseException e) {
             throw new CustomChangeException(e);

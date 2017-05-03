@@ -160,7 +160,8 @@ public class SourceDocumentUpload {
                         "Unsupported source file: " + id.getDocId());
             }
             if (tempFile.isPresent()) {
-                tempFile.get().delete();
+                boolean deleted = tempFile.get().delete();
+                log.debug(deleted ? "Temporary file deleted" : "Unable to delete temporary file");
             }
             return sourceUploadSuccessResponse(util.isNewDocument(id),
                     totalChunks);

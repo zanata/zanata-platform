@@ -29,9 +29,10 @@ import org.zanata.model.HRawDocument;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 
+import java.io.Serializable;
 import java.util.concurrent.Future;
 
-public interface CopyVersionService {
+public interface CopyVersionService extends Serializable {
     //@formatter:off
     /**
      *  Perform copy of HProjectIteration in order

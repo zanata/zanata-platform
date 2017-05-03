@@ -28,7 +28,7 @@ public class SeamTextParser extends antlr.LLkParser implements
         }
     }
 
-    public class HtmlRecognitionException extends RecognitionException {
+    public static class HtmlRecognitionException extends RecognitionException {
         Token openingElement;
         RecognitionException wrappedException;
 

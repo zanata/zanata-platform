@@ -34,6 +34,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.transform.ResultTransformer;
@@ -467,7 +469,9 @@ public class StatisticsServiceImpl implements StatisticsResource {
     public static class UserMatrixResultTransformer
             implements ResultTransformer {
         private static final long serialVersionUID = 1L;
+        @SuppressFBWarnings("SE_BAD_FIELD")
         private final EntityManager entityManager;
+        @SuppressFBWarnings("SE_BAD_FIELD")
         private final DateTimeFormatter dateFormatter;
 
         @Override

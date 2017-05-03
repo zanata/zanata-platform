@@ -20,6 +20,7 @@
  */
 package org.zanata.service;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
@@ -34,12 +35,13 @@ import org.jboss.resteasy.util.GenericType;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.LanguageTeamSearchResult;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.editor.dto.LocaleSortField;
 
-public interface LocaleService {
+public interface LocaleService extends Serializable {
     List<HLocale> getAllLocales(int offset, int maxResults, String filter,
             List<LocaleSortField> sortFields);
 
@@ -157,7 +159,9 @@ public interface LocaleService {
                 locale.retrieveDisplayName(), null, locale.retrieveNativeName(),
                 locale.isActive(), locale.isEnabledByDefault(),
                 locale.getPluralForms()));
-        result.setMemberCount(locale.getMembers().size());
+        Set<HLocaleMember> members = locale.getMembers();
+        int count = members == null ? 0 : members.size();
+        result.setMemberCount(count);
         return result;
     }
 }

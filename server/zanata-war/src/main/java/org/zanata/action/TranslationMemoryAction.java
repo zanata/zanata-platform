@@ -238,7 +238,7 @@ public class TranslationMemoryAction implements Serializable {
         }
     }
 
-    private static class TMComparator implements Comparator<TransMemory> {
+    private static class TMComparator implements Comparator<TransMemory>, Serializable {
         private SortingType sortingType;
 
         public TMComparator(SortingType sortingType) {

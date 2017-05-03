@@ -321,7 +321,7 @@ public class ResourceUtilsTest extends ZanataTest {
      */
     @Test
     public void readPluralForms() {
-        Properties properties = ResourceUtils.getPluralForms();
+        Properties properties = resourceUtils.getPluralForms();
 
         for (Object key : properties.keySet()) {
             String propKey = (String) key;

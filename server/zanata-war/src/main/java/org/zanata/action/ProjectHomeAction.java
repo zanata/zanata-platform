@@ -34,6 +34,7 @@ import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 import com.google.common.base.Strings;
 import com.google.common.collect.Ordering;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
@@ -161,6 +162,7 @@ public class ProjectHomeAction extends AbstractSortAction
     private Map<HPerson, ListMultimap<HLocale, LocaleRole>> personLocaleRoles;
     private List<HProjectIteration> projectVersions;
     private Map<String, WordStatistic> statisticMap = Maps.newHashMap();
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final VersionComparator versionComparator =
             new VersionComparator(getVersionSortingList());
     private final java.util.concurrent.atomic.AtomicReference<Object> projectLastActivity =
@@ -228,7 +230,7 @@ public class ProjectHomeAction extends AbstractSortAction
 
                     @Override
                     public Long apply(@Nullable HProjectIteration input) {
-                        return input.getId();
+                        return input != null ? input.getId(): null;
                     }
                 });
         return activityServiceImpl.findLatestVersionActivitiesByUser(
@@ -250,7 +252,8 @@ public class ProjectHomeAction extends AbstractSortAction
         versionFilter.reset();
     }
 
-    private class VersionComparator implements Comparator<HProjectIteration> {
+    private final class VersionComparator
+            implements Comparator<HProjectIteration> {
         private SortingType sortingType;
 
         public VersionComparator(SortingType sortingType) {
@@ -624,29 +627,37 @@ public class ProjectHomeAction extends AbstractSortAction
         return Lists.newArrayList(Joiner.on(", ").join(roleNames));
     }
 
-    private final Function<Map.Entry<HLocale, Collection<LocaleRole>>, String> TO_LOCALE_ROLES_DISPLAY_STRING =
+    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
+    private final Function<Map.Entry<HLocale, Collection<LocaleRole>>, String>
+            TO_LOCALE_ROLES_DISPLAY_STRING =
             new Function<Map.Entry<HLocale, Collection<LocaleRole>>, String>() {
 
                 @Nullable
                 @Override
                 public String apply(
                         @Nullable Map.Entry<HLocale, Collection<LocaleRole>> entry) {
-                    final String localeName =
-                            entry.getKey().retrieveDisplayName();
-                    final List<LocaleRole> sortedRoles =
-                            LOCALE_ROLE_ORDERING.sortedCopy(entry.getValue());
-                    final List<String> roleNames =
-                            Lists.transform(sortedRoles, TO_DISPLAY_NAME);
-                    return localeName + " " + Joiner.on(", ").join(roleNames);
+                    if (entry != null) {
+                        final String localeName =
+                                entry.getKey().retrieveDisplayName();
+                        final List<LocaleRole> sortedRoles =
+                                LOCALE_ROLE_ORDERING
+                                        .sortedCopy(entry.getValue());
+                        final List<String> roleNames =
+                                Lists.transform(sortedRoles, TO_DISPLAY_NAME);
+                        return localeName + " " +
+                                Joiner.on(", ").join(roleNames);
+                    }
+                    return null;
                 }
             };
+    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
     private final Function<LocaleRole, String> TO_DISPLAY_NAME =
             new Function<LocaleRole, String>() {
 
                 @Nullable
                 @Override
                 public String apply(@Nullable LocaleRole role) {
-                    return localeRoleDisplayName(role);
+                    return role != null ? localeRoleDisplayName(role): null;
                 }
             };
 
@@ -703,7 +714,8 @@ public class ProjectHomeAction extends AbstractSortAction
                 public String apply(HLocale input) {
                     // To lowercase to prevent non-caps values appearing after
                     // all caps values (e.g. a appearing after Z)
-                    return input.retrieveDisplayName().toLowerCase();
+                    return input != null ?
+                            input.retrieveDisplayName().toLowerCase() : null;
                 }
             };
     private static final Ordering<HLocale> LOCALE_NAME_ORDERING =
@@ -862,7 +874,9 @@ public class ProjectHomeAction extends AbstractSortAction
 
         @Override
         public boolean apply(ProjectRole projectRole) {
-            return StringUtils.containsIgnoreCase(projectRole.name(), filter);
+            return projectRole != null ?
+                    StringUtils.containsIgnoreCase(projectRole.name(), filter) :
+                    false;
         }
 
         public void setFilter(final String filter) {
@@ -876,10 +890,10 @@ public class ProjectHomeAction extends AbstractSortAction
 
         @Override
         public boolean apply(HLocale locale) {
-            return StringUtils.containsIgnoreCase(locale.getDisplayName(),
+            return locale != null ? StringUtils.containsIgnoreCase(locale.getDisplayName(),
                     filter)
                     || StringUtils.containsIgnoreCase(
-                            locale.getLocaleId().toString(), filter);
+                    locale.getLocaleId().toString(), filter) : false;
         }
 
         public void setFilter(final String filter) {
@@ -915,6 +929,7 @@ public class ProjectHomeAction extends AbstractSortAction
         return this.peopleFilterComparator;
     }
 
+    @SuppressFBWarnings("JLM_JSR166_UTILCONCURRENT_MONITORENTER")
     public List<Activity> getProjectLastActivity() {
         Object value = this.projectLastActivity.get();
         if (value == null) {

@@ -182,7 +182,7 @@ public class ProjectService implements ProjectResource {
 
         updateProject(project, hProject);
 
-        if (identity != null && hProject.getMaintainers().isEmpty()) {
+        if (hProject.getMaintainers().isEmpty()) {
             HAccount hAccount =
                     accountDAO.getByUsername(identity.getCredentials()
                             .getUsername());

@@ -27,6 +27,7 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import javax.annotation.Nullable;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author Patrick Huang
@@ -42,10 +43,10 @@ public class TransMemoryMergeEvent {
     private final Date endTime;
 
     public TransMemoryMergeEvent(WorkspaceId workspaceId,
-            Date startTime, String username, EditorClientId editorClientId,
+            @NotNull Date startTime, String username, EditorClientId editorClientId,
             DocumentId documentId, long total, @Nullable Date endTime) {
         this.workspaceId = workspaceId;
-        this.startTime = startTime;
+        this.startTime = new Date(startTime.getTime());
         this.username = username;
         this.editorClientId = editorClientId;
         this.documentId = documentId;

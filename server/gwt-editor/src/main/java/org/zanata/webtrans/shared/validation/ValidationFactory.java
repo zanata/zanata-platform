@@ -16,6 +16,7 @@ import org.zanata.webtrans.shared.validation.action.PrintfXSIExtensionValidation
 import org.zanata.webtrans.shared.validation.action.TabValidation;
 import org.zanata.webtrans.shared.validation.action.XmlEntityValidation;
 
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ import java.util.Map;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public final class ValidationFactory {
+public class ValidationFactory implements Serializable {
     private final ValidationMessages validationMessages;
 
     private final Map<ValidationId, ValidationAction> referenceMap;

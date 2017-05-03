@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.infinispan.manager.CacheContainer;
 import javax.annotation.PostConstruct;
@@ -168,8 +169,8 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
                 targetValidationCache.getWithLoader(targetId);
         synchronized (cacheEntry) {
             if (!cacheEntry.containsKey(validationId)) {
-                Boolean result = loadTargetValidation(targetId, validationId);
-                cacheEntry.put(validationId, result);
+                Optional<Boolean> result = loadTargetValidation(targetId, validationId);
+                cacheEntry.put(validationId, result.get());
             }
             return cacheEntry.get(validationId);
         }
@@ -213,7 +214,7 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         }
     }
 
-    private Boolean loadTargetValidation(Long textFlowTargetId,
+    private Optional<Boolean> loadTargetValidation(Long textFlowTargetId,
             ValidationId validationId) {
         HTextFlowTarget tft =
                 textFlowTargetDAO.findById(textFlowTargetId, false);
@@ -224,9 +225,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
             List<String> errorList =
                     action.validate(tft.getTextFlow().getContents().get(0), tft
                             .getContents().get(0));
-            return !errorList.isEmpty();
+            return Optional.of(!errorList.isEmpty());
         }
-        return null;
+        return Optional.empty();
     }
 
     public static class DocumentStatisticLoader extends

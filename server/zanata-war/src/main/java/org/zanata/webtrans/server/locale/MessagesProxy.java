@@ -150,6 +150,7 @@ public class MessagesProxy extends GenericProxy {
     }
 
     static class MessageDescriptor {
+        @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "URF_UNREAD_FIELD")
         String key;
         Map<String, String> defaults = new HashMap<String, String>();
         MessageArgument[] args;
@@ -158,7 +159,9 @@ public class MessagesProxy extends GenericProxy {
     static class MessageArgument {
         boolean pluralCount;
         int pluralOffset;
+        @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "For future enhancement")
         Class<? extends PluralRule> pluralRule;
+        @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "For future enhancement")
         boolean select;
     }
 }

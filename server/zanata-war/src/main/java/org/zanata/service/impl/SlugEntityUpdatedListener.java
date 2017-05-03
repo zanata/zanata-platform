@@ -36,8 +36,8 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
             org.slf4j.LoggerFactory.getLogger(SlugEntityUpdatedListener.class);
 
     private static final long serialVersionUID = -1L;
-    private static Integer slugFieldIndexInProject;
-    private static Integer slugFieldIndexInIteration;
+    private Integer slugFieldIndexInProject;
+    private Integer slugFieldIndexInIteration;
 
     @Override
     public void onPostUpdate(PostUpdateEvent event) {

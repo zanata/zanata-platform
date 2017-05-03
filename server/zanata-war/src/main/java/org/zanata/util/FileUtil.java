@@ -101,7 +101,9 @@ public class FileUtil {
                 output.write(buffer, 0, bytesRead);
             }
         } finally {
-            input.close();
+            if (input != null) {
+                input.close();
+            }
         }
     }
 }

@@ -112,7 +112,7 @@ public class ZanataRestResponseInterceptor implements ContainerResponseFilter {
 
             // Allow any requested headers. Again, check your Origin!
             responseHeaders.add("Access-Control-Allow-Headers",
-                    Joiner.on(",").join(nextRequestHeaders));
+                    Joiner.on(",").join(allowedHeaders));
         }
     }
 

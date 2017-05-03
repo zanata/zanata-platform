@@ -27,6 +27,7 @@ import javax.faces.bean.ViewScoped;
 import javax.faces.event.ValueChangeEvent;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -88,10 +89,13 @@ public class LanguageAction implements Serializable {
     private Messages msgs;
     @Inject
     private FacesMessages facesMessages;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<JoinedLanguageTeam> joinLanguageTeamEvent;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<LanguageTeamPermissionChangedEvent> languageTeamPermissionChangedEvent;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<LeftLanguageTeam> leaveLanguageTeamEvent;
     @Inject
@@ -108,6 +112,8 @@ public class LanguageAction implements Serializable {
     private String language;
     private String searchTerm;
     private HLocale locale;
+
+    @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<SelectablePerson> searchResults;
     private AbstractListFilter<HLocaleMember> membersFilter =
             new InMemoryListFilter<HLocaleMember>() {
@@ -129,8 +135,7 @@ public class LanguageAction implements Serializable {
         if (identity == null) {
             return Lists.newArrayList();
         }
-        if (identity != null
-                && identity.hasPermission(locale, "manage-language-team")) {
+        if (identity.hasPermission(locale, "manage-language-team")) {
             return requestServiceImpl
                     .getPendingLanguageRequests(locale.getLocaleId());
         }
@@ -236,8 +241,8 @@ public class LanguageAction implements Serializable {
         if (!isValidPluralForms(hLocale.getPluralForms(), "pluralForms")) {
             return;
         }
-        hLocale.setDisplayName(hLocale.getDisplayName().trim());
-        hLocale.setNativeName(hLocale.getNativeName().trim());
+        hLocale.setDisplayName(StringUtils.trim(hLocale.getDisplayName()));
+        hLocale.setNativeName(StringUtils.trim(hLocale.getNativeName()));
         localeDAO.makePersistent(getLocale());
         facesMessages.addGlobal(
                 msgs.format("jsf.language.updated", getLocale().getLocaleId()));
@@ -429,7 +434,8 @@ public class LanguageAction implements Serializable {
         case Coordinator:
             changedEvent = changedEvent.changedCoordinatorPermission(member);
             break;
-
+        default:
+            break;
         }
         languageTeamPermissionChangedEvent.fire(changedEvent);
     }

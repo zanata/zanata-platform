@@ -160,9 +160,10 @@ public class LocalesService implements LocalesResource {
         HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
         if (hLocale != null) {
             Set<HLocaleMember> members = hLocale.getMembers();
-            List<LocaleMember> results =
+            List<LocaleMember> results = members != null ?
                     members.stream().map(convertToLocaleMember)
-                            .collect(Collectors.toList());
+                            .collect(Collectors.toList()) :
+                    Lists.newArrayList();
             return Response.ok(results).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();

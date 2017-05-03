@@ -134,10 +134,6 @@ public class ETagUtils {
                 documentDAO.getTranslatedDocumentStateHash(iteration
                         .getProject().getSlug(), iteration.getSlug(), docId,
                         locale);
-
-        if (stateHash == null) {
-            stateHash = "";
-        }
         return EntityTag.valueOf(stateHash);
     }
 }

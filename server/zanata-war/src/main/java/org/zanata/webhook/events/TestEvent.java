@@ -74,8 +74,7 @@ public class TestEvent extends WebhookEventType {
             return false;
         final Object this$date = this.getDate();
         final Object other$date = other.getDate();
-        if (this$date == null ? other$date != null
-                : !this$date.equals(other$date))
+        if (!this$date.equals(other$date))
             return false;
         return true;
     }
@@ -94,7 +93,7 @@ public class TestEvent extends WebhookEventType {
         final Object $project = this.getProject();
         result = result * PRIME + ($project == null ? 43 : $project.hashCode());
         final Object $date = this.getDate();
-        result = result * PRIME + ($date == null ? 43 : $date.hashCode());
+        result = result * PRIME + $date.hashCode();
         return result;
     }
 }

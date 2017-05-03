@@ -8,6 +8,8 @@ import java.util.Comparator;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.util.Contexts;
@@ -186,7 +188,7 @@ public class IdentityManager implements Serializable {
      *            The user for which to return a list of roles
      * @return List containing the names of the granted roles
      */
-    public List<String> getGrantedRoles(String name) {
+    public @NotNull List<String> getGrantedRoles(String name) {
         return identityStore.getGrantedRoles(name);
     }
 

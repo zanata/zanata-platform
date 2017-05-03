@@ -66,7 +66,6 @@ public class MigrateHTermCommentToString implements CustomTaskChange {
     @Override
     public void execute(Database database) throws CustomChangeException {
         final JdbcConnection conn = (JdbcConnection) database.getConnection();
-
         try (Statement stmt =
             conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
                 ResultSet.CONCUR_UPDATABLE)) {
@@ -76,31 +75,39 @@ public class MigrateHTermCommentToString implements CustomTaskChange {
             String termCommentsSql = "select term.id, comment.comment from " +
                 "HGlossaryTerm as term, HTermComment as comment where comment.glossaryTermId = term.id";
 
-            ResultSet rs1 = stmt.executeQuery(termCommentsSql);
-            while (rs1.next()) {
-                long termId = rs1.getLong(1);
-                String comment = rs1.getString(2);
-                String newComment = null;
+            ResultSet rs1 = null;
+            ResultSet rs2 = null;
+            try {
+                rs1 = stmt.executeQuery(termCommentsSql);
 
-                if(termCommentsMap.containsKey(termId)) {
-                    newComment = joinComment(termCommentsMap.get(termId),
-                        comment);
-                } else {
-                    newComment = joinComment(null, comment);
+                while (rs1.next()) {
+                    long termId = rs1.getLong(1);
+                    String comment = rs1.getString(2);
+                    String newComment = null;
+
+                    if(termCommentsMap.containsKey(termId)) {
+                        newComment = joinComment(termCommentsMap.get(termId),
+                                comment);
+                    } else {
+                        newComment = joinComment(null, comment);
+                    }
+                    termCommentsMap.put(termId, newComment);
                 }
-                termCommentsMap.put(termId, newComment);
-            }
 
-            String termSql =
-                "select term.id, term.comment from HGlossaryTerm term";
+                String termSql =
+                        "select term.id, term.comment from HGlossaryTerm term";
 
-            ResultSet rs2 = stmt.executeQuery(termSql);
+                rs2 = stmt.executeQuery(termSql);
 
-            while (rs2.next()) {
-                long termId = rs2.getLong(1);
-                String comment = termCommentsMap.get(termId);
-                rs2.updateString(2, comment);
-                rs2.updateRow();
+                while (rs2.next()) {
+                    long termId = rs2.getLong(1);
+                    String comment = termCommentsMap.get(termId);
+                    rs2.updateString(2, comment);
+                    rs2.updateRow();
+                }
+            } finally {
+                rs1.close();
+                rs2.close();
             }
         } catch (SQLException e) {
             throw new CustomChangeException(e);

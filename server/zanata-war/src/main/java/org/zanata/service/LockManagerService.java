@@ -23,11 +23,13 @@ package org.zanata.service;
 import org.zanata.lock.Lock;
 import org.zanata.lock.LockNotAcquiredException;
 
+import java.io.Serializable;
+
 /**
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface LockManagerService {
+public interface LockManagerService extends Serializable {
     /**
      * Checks for the availability of a lock and attains it if available.
      *

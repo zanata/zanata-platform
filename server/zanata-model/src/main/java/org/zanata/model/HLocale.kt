@@ -77,7 +77,7 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
         @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
         get() {
             if (field == null) field = HashSet()
-            return field
+            return field!!
         }
 
     var pluralForms: String? = null

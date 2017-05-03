@@ -132,17 +132,24 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     }
 
     private void migrateAllRawContents() throws Exception {
-        ResultSet contentsResult = contentsStatement.executeQuery();
-        while (contentsResult.next()) {
-            try {
-                docsCount++;
-                String oldFileId = contentsResult.getString("fileId");
-                Blob content = contentsResult.getBlob("content");
-                migrateRawContentFromLocation(content, oldFileId);
-                successCount++;
-            } catch (Exception e) {
-                problemsCount++;
-                throw e;
+        ResultSet contentsResult = null;
+        try {
+            contentsResult = contentsStatement.executeQuery();
+            while (contentsResult.next()) {
+                try {
+                    docsCount++;
+                    String oldFileId = contentsResult.getString("fileId");
+                    Blob content = contentsResult.getBlob("content");
+                    migrateRawContentFromLocation(content, oldFileId);
+                    successCount++;
+                } catch (Exception e) {
+                    problemsCount++;
+                    throw e;
+                }
+            }
+        } finally {
+            if (contentsResult != null) {
+                contentsResult.close();
             }
         }
     }
@@ -150,16 +157,23 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     private void migrateRawContentFromLocation(Blob content, String oldFileId)
             throws SQLException, IOException {
         idAndTypeStatement.setString(1, oldFileId);
-        ResultSet idAndTypeResult = idAndTypeStatement.executeQuery();
-        if (idAndTypeResult.next()) {
-            String fileName = fileNameFromResults(idAndTypeResult);
-            writeBlobToFile(content, fileName);
-            changeFileIdFromOldToNew(oldFileId, fileName);
-            deleteOldContent(oldFileId);
-        } else {
-            throw new RuntimeException(
-                    "Raw document content with no matching raw document, HRawDocumentContent.fileId = "
-                            + oldFileId);
+        ResultSet idAndTypeResult = null;
+        try {
+            idAndTypeResult = idAndTypeStatement.executeQuery();
+            if (idAndTypeResult.next()) {
+                String fileName = fileNameFromResults(idAndTypeResult);
+                writeBlobToFile(content, fileName);
+                changeFileIdFromOldToNew(oldFileId, fileName);
+                deleteOldContent(oldFileId);
+            } else {
+                throw new RuntimeException(
+                        "Raw document content with no matching raw document, HRawDocumentContent.fileId = "
+                                + oldFileId);
+            }
+        } finally {
+            if (idAndTypeResult != null) {
+                idAndTypeResult.close();
+            }
         }
     }
 

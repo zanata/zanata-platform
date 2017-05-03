@@ -25,6 +25,8 @@ import javax.enterprise.inject.Model;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.validation.constraints.Size;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -54,6 +56,7 @@ public class RegisterAction implements HasUserDetail, Serializable {
     private static final long serialVersionUID = -7883627570614588182L;
     @Inject
     private GroupedConversation conversation;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
     @Inject
