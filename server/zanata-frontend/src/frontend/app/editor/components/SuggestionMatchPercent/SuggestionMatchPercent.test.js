@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import SuggestionMatchPercent from '../../app/editor/components/SuggestionMatchPercent'
+import SuggestionMatchPercent from '.'
 
 describe('SuggestionMatchPercentTest', () => {
   it('SuggestionMatchPercent markup (imported)', () => {

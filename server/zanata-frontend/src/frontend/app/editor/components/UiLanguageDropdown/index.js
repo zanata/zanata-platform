@@ -1,5 +1,5 @@
 import { values } from 'lodash'
-import Dropdown from './Dropdown'
+import Dropdown from '../Dropdown'
 import React, { PropTypes } from 'react'
 
 /**

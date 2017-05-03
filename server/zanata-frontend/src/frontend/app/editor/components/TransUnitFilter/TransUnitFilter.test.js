@@ -3,10 +3,10 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
-import TransUnitFilter from '../../app/editor/components/TransUnitFilter'
-import FilterToggle from '../../app/editor/components/FilterToggle'
+import TransUnitFilter from '.'
+import FilterToggle from '../FilterToggle'
 import { Icon, Row } from 'zanata-ui'
-import mockGettextCatalog from '../mock/mockAngularGettext'
+import mockGettextCatalog from '../../../../__tests__/mock/mockAngularGettext'
 
 describe('TransUnitFilterTest', () => {
   it('FilterToggle markup', () => {

@@ -3,9 +3,9 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
-import EditorSearchInput from '../../../app/editor/components/EditorSearchInput'
+import EditorSearchInput from '.'
 import { Icon, Row } from 'zanata-ui'
-import IconButton from '../../../app/editor/components/IconButton'
+import IconButton from '../IconButton'
 import { Panel, Button } from 'react-bootstrap'
 
 describe('EditorSearchInputTest', () => {

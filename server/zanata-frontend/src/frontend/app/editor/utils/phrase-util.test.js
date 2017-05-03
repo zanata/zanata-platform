@@ -2,12 +2,12 @@ jest.disableAutomock()
 
 import {
   getSaveButtonStatus,
-} from '../../app/editor/utils/phrase-util'
+} from './phrase-util'
 import {
     STATUS_UNTRANSLATED,
     STATUS_NEEDS_WORK,
     STATUS_TRANSLATED
-} from '../../app/editor/utils/status-util'
+} from './status-util'
 
 describe('getSaveButtonStatusTest', () => {
   it('Returns UNTRANSLATED when nothing is translated', () => {

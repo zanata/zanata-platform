@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import TranslatingIndicator from '../../app/editor/components/TranslatingIndicator'
+import TranslatingIndicator from '.'
 import { Icon, Row } from 'zanata-ui'
 
 describe('TranslatingIndicatorTest', () => {

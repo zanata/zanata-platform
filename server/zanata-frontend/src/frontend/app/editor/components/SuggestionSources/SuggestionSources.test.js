@@ -2,9 +2,9 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import SuggestionSources from '../../app/editor/components/SuggestionSources'
-import SuggestionContents from '../../app/editor/components/SuggestionContents'
-import SuggestionDetailsSummary from '../../app/editor/components/SuggestionDetailsSummary'
+import SuggestionSources from '../SuggestionSources'
+import SuggestionContents from '../SuggestionContents'
+import SuggestionDetailsSummary from '../SuggestionDetailsSummary'
 
 describe('SuggestionSourcesTest', () => {
   it('SuggestionSources markup', () => {

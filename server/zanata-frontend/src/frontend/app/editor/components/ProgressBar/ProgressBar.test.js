@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import ProgressBar from '../../app/editor/components/ProgressBar'
+import ProgressBar from '.'
 
 describe('ProgressBarTest', () => {
   it('ProgressBar markup', () => {

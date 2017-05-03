@@ -3,7 +3,7 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
-import Dropdown from '../../app/editor/components/Dropdown'
+import Dropdown from '.'
 
 describe('DropdownTest', () => {
   it('Dropdown markup (closed)', () => {

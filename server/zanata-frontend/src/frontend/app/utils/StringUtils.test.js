@@ -1,6 +1,6 @@
 jest.disableAutomock()
 
-import StringUtils from '../../app/utils/StringUtils'
+import StringUtils from './StringUtils'
 
 describe('StringUtilsTest', function () {
   it('test trim leading space', function () {
