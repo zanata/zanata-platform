@@ -40,7 +40,7 @@ addDecorator((story) => (
 ))
 
 function loadStories () {
-  require('../app/editor/components/stories.js')
+  require('../app/editor/components/components.story.js')
 }
 
 configure(loadStories, module)
