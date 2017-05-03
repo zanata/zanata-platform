@@ -19,7 +19,7 @@
  * site: http://www.fsf.org.
  */
 
-import { Icon } from '../../components'
+import { Icon } from '../../../components'
 import React, { PropTypes } from 'react'
 
 /**

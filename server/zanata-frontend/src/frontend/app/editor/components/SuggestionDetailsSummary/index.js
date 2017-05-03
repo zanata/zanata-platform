@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { Icon } from '../../components'
+import { Icon } from '../../../components'
 import cx from 'classnames'
 import { Row } from 'react-bootstrap'
 

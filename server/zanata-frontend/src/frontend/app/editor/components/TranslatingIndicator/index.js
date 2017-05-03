@@ -20,7 +20,7 @@
  */
 
 import React, { PropTypes } from 'react'
-import { Icon } from '../../components'
+import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'
 
 /**

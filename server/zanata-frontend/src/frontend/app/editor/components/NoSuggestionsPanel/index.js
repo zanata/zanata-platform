@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { Icon } from '../../components'
+import { Icon } from '../../../components'
 
 /**
  * Generic panel showing an icon and message, to
