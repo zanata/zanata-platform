@@ -505,7 +505,7 @@ public class LanguageAction implements Serializable {
         getSearchResults().clear();
     }
 
-    public final class SelectablePerson {
+    public static final class SelectablePerson {
         private HPerson person;
         private boolean selected;
         private boolean isTranslator;

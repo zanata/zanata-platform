@@ -217,7 +217,7 @@ public class SeamDispatch implements Dispatch {
         }
     }
 
-    class ActionHandlerForLiteral
+    static class ActionHandlerForLiteral
             extends AnnotationLiteral<ActionHandlerFor>
             implements ActionHandlerFor {
         private final Class<? extends Action<?>> clazz;

@@ -308,7 +308,9 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                     .calculateUntranslated(Long.valueOf(stat.getTotal()), stat));
         }
         // Merge into a single Stats object
-        for (String locale : transUnitCountMap.keySet()) {
+        for (Map.Entry<String, TransUnitCount> entry : transUnitCountMap
+                .entrySet()) {
+            String locale = entry.getKey();
             ContainerTranslationStatistics newStats =
                     new ContainerTranslationStatistics();
             newStats.addStats(new TranslationStatistics(

@@ -5,6 +5,7 @@ import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -27,12 +28,12 @@ public class EditorTextFlowTarget extends TextFlowTarget {
         super(resId);
     }
 
-    public void setLastModifiedTime(Date lastModifiedTime) {
-        this.lastModifiedTime = lastModifiedTime;
+    public void setLastModifiedTime(@NotNull Date lastModifiedTime) {
+        this.lastModifiedTime = new Date(lastModifiedTime.getTime());
     }
 
     public Date getLastModifiedTime() {
-        return this.lastModifiedTime;
+        return new Date(this.lastModifiedTime.getTime());
     }
 
 }

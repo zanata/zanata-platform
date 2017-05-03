@@ -114,7 +114,7 @@ public abstract class AbstractSortAction {
         return displayUnit;
     }
 
-    public final class DisplayUnit {
+    public static final class DisplayUnit {
         private String cssClass;
         private String figure;
         private String unit;

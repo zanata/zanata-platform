@@ -211,7 +211,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
         projectVersions.clear();
     }
 
-    public final class SelectableVersion extends ProjectIterationId {
+    public static final class SelectableVersion extends ProjectIterationId {
         private boolean selected;
 
         public SelectableVersion(String projectSlug, String versionSlug,

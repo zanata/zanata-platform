@@ -856,7 +856,7 @@ public class ProjectHomeAction extends AbstractSortAction
         }
     }
 
-    private final class ProjectRolePredicate implements Predicate<ProjectRole> {
+    private static final class ProjectRolePredicate implements Predicate<ProjectRole> {
 
         private String filter;
 
@@ -870,7 +870,7 @@ public class ProjectHomeAction extends AbstractSortAction
         }
     }
 
-    private final class ProjectLocalePredicate implements Predicate<HLocale> {
+    private static final class ProjectLocalePredicate implements Predicate<HLocale> {
 
         private String filter;
 

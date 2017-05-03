@@ -123,7 +123,7 @@ public class CopyTransOptionsModel implements Serializable {
         this.setInstance(entityManager.merge(this.getInstance()));
     }
 
-    public class RuleAction {
+    public static class RuleAction {
         private HCopyTransOptions.ConditionRuleAction action;
         private String cssClass;
         private String displayText;

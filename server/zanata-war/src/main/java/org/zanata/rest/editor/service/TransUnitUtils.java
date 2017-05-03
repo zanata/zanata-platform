@@ -28,8 +28,8 @@ import javax.annotation.Nonnull;
 public class TransUnitUtils {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TransUnitUtils.class);
-    public static int MAX_SIZE = 200;
-    public static String ID_SEPARATOR = ",";
+    public static final int MAX_SIZE = 200;
+    public static final String ID_SEPARATOR = ",";
     @Inject
     private ResourceUtils resourceUtils;
 

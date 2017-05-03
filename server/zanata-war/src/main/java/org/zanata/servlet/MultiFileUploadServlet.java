@@ -241,7 +241,7 @@ public class MultiFileUploadServlet extends HttpServlet {
         writer.close();
     }
 
-    private class FileUploadRequestHandler {
+    private static class FileUploadRequestHandler {
         private final HttpServletRequest request;
         private String projectSlug;
         private String versionSlug;

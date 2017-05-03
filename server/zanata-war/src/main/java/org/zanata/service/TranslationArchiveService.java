@@ -20,6 +20,7 @@
  */
 package org.zanata.service;
 
+import java.io.Serializable;
 import java.util.concurrent.Future;
 
 import javax.annotation.Nonnull;
@@ -33,7 +34,7 @@ import org.zanata.async.AsyncTaskHandle;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface TranslationArchiveService {
+public interface TranslationArchiveService extends Serializable {
 
     /**
      * Builds an archive file with translation files for a given project

@@ -267,7 +267,7 @@ public class LocalesService implements LocalesResource {
                 }
             };
 
-    private class FilterLocaleDetails implements Predicate<LocaleDetails> {
+    private static class FilterLocaleDetails implements Predicate<LocaleDetails> {
 
         private String query;
 

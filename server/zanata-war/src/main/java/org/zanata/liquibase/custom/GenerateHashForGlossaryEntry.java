@@ -67,7 +67,7 @@ public class GenerateHashForGlossaryEntry implements CustomTaskChange {
     }
 
     private final static String DATE_FORMAT = "dd/MM/yy HH:mm:ss:SS";
-    private final static SimpleDateFormat formatter = new SimpleDateFormat(
+    private final SimpleDateFormat formatter = new SimpleDateFormat(
             DATE_FORMAT);
 
     /**

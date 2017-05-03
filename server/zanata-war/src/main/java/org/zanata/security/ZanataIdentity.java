@@ -85,7 +85,7 @@ public class ZanataIdentity implements Identity, Serializable {
 
     private static final long serialVersionUID = -5488977241602567930L;
 
-    protected static boolean securityEnabled = true;
+    private static boolean securityEnabled = true;
     private static final String LOGIN_TRIED = "security.loginTried";
     private static final String SILENT_LOGIN = "security.silentLogin";
 

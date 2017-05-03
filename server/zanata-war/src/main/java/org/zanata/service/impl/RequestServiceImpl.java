@@ -226,7 +226,7 @@ public class RequestServiceImpl implements RequestService {
      * Builder for languageRequest TODO: use @Builder in LanguageRequest but
      * issue with @NoArgsConstructor and @AllArgsConstructor
      */
-    public class LanguageRequestBuilder {
+    public static class LanguageRequestBuilder {
 
         private Request request;
         private HLocale locale;

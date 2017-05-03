@@ -219,7 +219,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
         return Collections.emptyList();
     }
 
-    public class VersionItem implements Serializable {
+    public static class VersionItem {
         private boolean selected;
         private HProjectIteration version;
 

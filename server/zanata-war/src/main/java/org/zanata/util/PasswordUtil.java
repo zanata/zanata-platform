@@ -1,5 +1,6 @@
 package org.zanata.util;
 
+import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 

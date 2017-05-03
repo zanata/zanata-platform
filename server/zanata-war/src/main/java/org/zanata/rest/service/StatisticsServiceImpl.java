@@ -503,44 +503,4 @@ public class StatisticsServiceImpl implements StatisticsResource {
             this.dateFormatter = dateFormatter;
         }
     }
-
-    public static class UserTranslationMatrix {
-        private final Date savedDate;
-        private final HProjectIteration projectIteration;
-        private final HLocale locale;
-        private final ContentState savedState;
-        private final long wordCount;
-
-        public Date getSavedDate() {
-            return this.savedDate;
-        }
-
-        public HProjectIteration getProjectIteration() {
-            return this.projectIteration;
-        }
-
-        public HLocale getLocale() {
-            return this.locale;
-        }
-
-        public ContentState getSavedState() {
-            return this.savedState;
-        }
-
-        public long getWordCount() {
-            return this.wordCount;
-        }
-
-        @java.beans.ConstructorProperties({ "savedDate", "projectIteration",
-                "locale", "savedState", "wordCount" })
-        public UserTranslationMatrix(final Date savedDate,
-                final HProjectIteration projectIteration, final HLocale locale,
-                final ContentState savedState, final long wordCount) {
-            this.savedDate = savedDate;
-            this.projectIteration = projectIteration;
-            this.locale = locale;
-            this.savedState = savedState;
-            this.wordCount = wordCount;
-        }
-    }
 }

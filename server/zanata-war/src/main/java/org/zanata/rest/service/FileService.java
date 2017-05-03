@@ -358,7 +358,7 @@ public class FileService implements FileResource {
      * Private class that implements PO file streaming of a document.
      */
 
-    private class POStreamingOutput implements StreamingOutput {
+    private static class POStreamingOutput implements StreamingOutput {
         private Resource resource;
         private TranslationsResource transRes;
         private boolean offlinePo;
@@ -383,7 +383,7 @@ public class FileService implements FileResource {
         }
     }
 
-    private class POTStreamingOutput implements StreamingOutput {
+    private static class POTStreamingOutput implements StreamingOutput {
         private Resource resource;
         private boolean offlinePot;
 
@@ -405,7 +405,7 @@ public class FileService implements FileResource {
         }
     }
 
-    private class InputStreamStreamingOutput implements StreamingOutput {
+    private static class InputStreamStreamingOutput implements StreamingOutput {
         private InputStream input;
 
         public InputStreamStreamingOutput(InputStream input) {
@@ -423,7 +423,7 @@ public class FileService implements FileResource {
         }
     }
 
-    private class FormatAdapterStreamingOutput implements StreamingOutput {
+    private static class FormatAdapterStreamingOutput implements StreamingOutput {
         private Resource resource;
         private TranslationsResource translationsResource;
         private String locale;
@@ -455,7 +455,7 @@ public class FileService implements FileResource {
      * file.
      */
 
-    private class FileStreamingOutput implements StreamingOutput {
+    private static class FileStreamingOutput implements StreamingOutput {
         private File file;
 
         public FileStreamingOutput(File file) {

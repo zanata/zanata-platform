@@ -26,6 +26,8 @@ import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
+import javax.annotation.Nullable;
+
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -41,14 +43,14 @@ public class TransMemoryMergeEvent {
 
     public TransMemoryMergeEvent(WorkspaceId workspaceId,
             Date startTime, String username, EditorClientId editorClientId,
-            DocumentId documentId, long total, Date endTime) {
+            DocumentId documentId, long total, @Nullable Date endTime) {
         this.workspaceId = workspaceId;
         this.startTime = startTime;
         this.username = username;
         this.editorClientId = editorClientId;
         this.documentId = documentId;
         this.total = total;
-        this.endTime = endTime;
+        this.endTime = endTime != null ? new Date(endTime.getTime()) : null;
     }
 
     public static TransMemoryMergeEvent start(WorkspaceId workspaceId,
@@ -70,7 +72,7 @@ public class TransMemoryMergeEvent {
     }
 
     public Date getStartTime() {
-        return startTime;
+        return new Date(startTime.getTime());
     }
 
     public String getUsername() {
@@ -90,6 +92,6 @@ public class TransMemoryMergeEvent {
     }
 
     public Date getEndTime() {
-        return endTime;
+        return new Date(endTime.getTime());
     }
 }

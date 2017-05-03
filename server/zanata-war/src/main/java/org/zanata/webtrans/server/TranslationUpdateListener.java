@@ -59,8 +59,10 @@ public class TranslationUpdateListener
                     .build();
     @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
+    @SuppressWarnings("SE_BAD_FIELD")
     @Inject
     private IServiceLocator serviceLocator;
+    @SuppressWarnings("SE_BAD_FIELD")
     @Inject
     private Event<TextFlowTargetUpdatedEvent> textFlowTargetUpdatedEvent;
 
