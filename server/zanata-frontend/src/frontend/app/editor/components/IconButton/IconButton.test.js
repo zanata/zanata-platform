@@ -4,7 +4,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
-import { Icon } from '../../app/components'
+import { Icon } from '../../../components'
 import IconButton from '.'
 
 describe('IconButtonTest', () => {

@@ -4,7 +4,7 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
 import Pager from '.'
-import { Icon } from '../../app/components'
+import { Icon } from '../../../components'
 import mockGettextCatalog from '../../../../__tests__/mock/mockAngularGettext'
 
 describe('PagerTest', () => {

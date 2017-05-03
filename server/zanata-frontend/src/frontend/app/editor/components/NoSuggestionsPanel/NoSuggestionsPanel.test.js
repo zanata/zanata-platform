@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import { Icon } from '../../app/components'
+import { Icon } from '../../../components'
 import NoSuggestionsPanel from '.'
 
 describe('NoSuggestionsPanelTest', () => {

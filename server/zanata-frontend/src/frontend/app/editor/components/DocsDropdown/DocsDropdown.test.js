@@ -4,7 +4,7 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import DocsDropdown from '.'
 import Dropdown from '../Dropdown'
-import { Icon } from '../../app/components'
+import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'
 
 describe('DocsDropdownTest', () => {

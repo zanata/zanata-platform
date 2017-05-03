@@ -3,7 +3,7 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TranslatingIndicator from '.'
-import { Icon } from '../../app/components'
+import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'
 
 describe('TranslatingIndicatorTest', () => {

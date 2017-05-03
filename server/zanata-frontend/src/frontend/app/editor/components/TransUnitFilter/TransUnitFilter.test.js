@@ -5,7 +5,7 @@ import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
 import TransUnitFilter from '.'
 import FilterToggle from '../FilterToggle'
-import { Icon } from '../../app/components'
+import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'
 import mockGettextCatalog from '../../../../__tests__/mock/mockAngularGettext'
 

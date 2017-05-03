@@ -4,7 +4,7 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
 import EditorSearchInput from '.'
-import { Icon } from '../../../app/components'
+import { Icon } from '../../../components'
 import IconButton from '../IconButton'
 import { Panel, Button, Row } from 'react-bootstrap'
 
