@@ -82,7 +82,6 @@
     <jndi-remote-client.groupId>org.wildfly.core</jndi-remote-client.groupId>
     <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
     <jndi-remote-client.version>${wildfly.client.version}</jndi-remote-client.version>
-    <standalone.xml.file>standalone.xml</standalone.xml.file>
   </properties>
 
   <dependencyManagement>
@@ -461,9 +460,6 @@
           <value>wildfly8</value>
         </property>
       </activation>
-      <properties>
-        <standalone.xml.file>standalone_wildfly.xml</standalone.xml.file>
-      </properties>
     </profile>
 
     <profile>
@@ -635,6 +631,16 @@
                   </srcFiles>
                   <onError>continue</onError>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.gmavenplus</groupId>
+            <artifactId>gmavenplus-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>run-jboss-cli</id>
+                <phase>package</phase>
               </execution>
             </executions>
           </plugin>
@@ -1042,15 +1048,6 @@
                 <file>${project.basedir}/src/test/conf/zanata-ds.xml</file>
                 <todir>deployments</todir>
               </configfile>
-              <!-- see above zipUrlInstaller/extractDir-->
-              <!-- cargo will force todir and tofile to be relative to container home directory -->
-
-              <!-- security and jndi for properties -->
-              <configfile>
-                <file>${project.basedir}/src/test/conf/${standalone.xml.file}</file>
-                <tofile>configuration/standalone.xml</tofile>
-              </configfile>
-
             </configfiles>
 
             <files>
@@ -1061,7 +1058,7 @@
             </files>
 
             <properties>
-              <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
+              <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
               <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
               <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
               <!-- These properties will be interpolated by Cargo into the configfiles above -->
