@@ -363,12 +363,10 @@ ul.source-infolist {
   border-bottom-color: transparent;
 }
 
-ul.u-listInline li .u-textSuccess {
-  width:110%;
-}
-
-ul.u-listInline li .u-textHighlight {
-  width:110%;
+ul.u-listInline li .u-textSuccess, ul.u-listInline li .u-textSecondary,
+ul.u-listInline li .u-textHighlight
+{
+  width:120%;
 }
 
 /* bootstrap override */
