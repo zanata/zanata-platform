@@ -23,8 +23,8 @@ describe('IconButtonTest', () => {
         onClick={clickFun}
         title="Mozart">
         <Icon
-          name="classical" className="s1"
-          title="Mozart" />
+          name="classical" title="Mozart"
+          className="s1" />
       </button>
     )
     expect(actual).toEqual(expected)

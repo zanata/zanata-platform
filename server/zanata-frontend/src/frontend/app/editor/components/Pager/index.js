@@ -41,8 +41,8 @@ const PagerButton = React.createClass({
   render: function () {
     const icon =
       <Icon name={this.props.icon}
-        className="s2"
-        title={this.props.title} />
+        title={this.props.title}
+        className="s2" />
     return (
       <li>
         {this.props.disabled
