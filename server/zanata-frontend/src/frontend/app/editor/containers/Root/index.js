@@ -10,7 +10,7 @@ import { setSidebarVisibility } from '../../actions'
 import { fetchUiLocales } from '../../actions/header-actions'
 import { saveSuggestionPanelHeight } from '../../actions/suggestions-actions'
 import SplitPane from 'react-split-pane'
-import { Icons } from 'zanata-ui'
+import { Icons } from '../../../components'
 import Sidebar from '../Sidebar'
 
 /**

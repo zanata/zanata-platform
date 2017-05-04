@@ -130,8 +130,7 @@
     "suitcss-utils-text": "0.4.1",
     "svg-sprite": "1.3.6",
     "text-diff": "1.0.1",
-    "webfontloader": "1.6.24",
-    "zanata-ui": "3.0.7"
+    "webfontloader": "1.6.24"
   },
   "jest": {
     "collectCoverageFrom": [

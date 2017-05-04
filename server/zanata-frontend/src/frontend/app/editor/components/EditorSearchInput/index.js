@@ -20,7 +20,7 @@
  */
 
 import cx from 'classnames'
-import { Icon } from 'zanata-ui'
+import { Icon } from '../../../components'
 import IconButton from '../IconButton'
 import React, { PropTypes } from 'react'
 import { Panel, Button } from 'react-bootstrap'
@@ -187,7 +187,7 @@ const EditorSearchInput = React.createClass({
           <span className="InputGroup-addon"
             onClick={this.focusInput}>
             <Icon name="search" title="Search"
-              size="n1" />
+              className="n1" />
           </span>
           <input ref="input"
             type="search"

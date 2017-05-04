@@ -4,7 +4,8 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import LanguagesDropdown from '.'
 import Dropdown from '../Dropdown'
-import { Icon, Row } from 'zanata-ui'
+import { Icon } from '../../../components'
+import { Row } from 'react-bootstrap'
 
 describe('LanguageDropdownTest', () => {
   it('LanguagesDropdown markup', () => {
@@ -53,7 +54,7 @@ describe('LanguageDropdownTest', () => {
             <Row>
               Khuzdul
               <div className="u-sML-1-8 Dropdown-toggleIcon">
-                <Icon name="chevron-down" size="1" />
+                <Icon name="chevron-down" className="s1" />
               </div>
             </Row>
           </button>

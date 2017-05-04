@@ -20,7 +20,7 @@
  */
 
 import React, { PropTypes } from 'react'
-import { Icon } from 'zanata-ui'
+import { Icon } from '../../components'
 import IconButton from '../components/IconButton'
 import IconButtonToggle from '../components/IconButtonToggle'
 import SuggestionSearchInput from '../components/SuggestionSearchInput'
@@ -98,7 +98,7 @@ const SuggestionsHeader = React.createClass({
       <nav className="Editor-suggestionsHeader u-bgHighest u-sPH-3-4">
         <h2 className="Heading--panel u-sPV-1-4 u-floatLeft u-sizeHeight-1_1-2">
           <span className="u-textMuted">
-            <Icon name="suggestions" size="0" />
+            <Icon name="suggestions" className="s0" />
           </span>
           Suggestions
         </h2>
