@@ -6,7 +6,7 @@ import { ButtonGroup, Button } from 'react-bootstrap'
 import {
   glossaryToggleNewEntryModal,
   glossaryCreateNewEntry
-} from '../../actions/glossary'
+} from '../../actions/glossary-actions'
 
 class NewEntryModal extends Component {
   constructor (props) {

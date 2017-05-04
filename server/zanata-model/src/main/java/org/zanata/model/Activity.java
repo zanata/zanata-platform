@@ -92,7 +92,7 @@ public class Activity extends ModelEntityBase implements Serializable {
     private int wordCount;
 
     public Activity(HPerson actor, IsEntityWithType context,
-            IsEntityWithType target, ActivityType activityType, int wordCount) {
+                    IsEntityWithType target, ActivityType activityType, int wordCount) {
         this.actor = actor;
         this.contextType = context.getEntityType();
         this.contextId = context.getId();
@@ -175,5 +175,38 @@ public class Activity extends ModelEntityBase implements Serializable {
 
     public EntityType getContextType() {
         return this.contextType;
+    }
+
+    /**
+     * Business equality comparison
+     *
+     * @param other Activity
+     * @return other is equal
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        if (!super.equals(other)) return false;
+
+        Activity activity = (Activity) other;
+
+        return (actor == null ?
+                activity.actor == null : actor.equals(activity.actor)) &&
+                (contextId == activity.contextId) &&
+                (contextType == activity.contextType) &&
+                (activityType == activity.activityType) &&
+                (approxTime == activity.approxTime);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (actor != null ? actor.hashCode() : 0);
+        result = 31 * result + Long.valueOf(contextId).hashCode();
+        result = 31 * result + (contextType != null ? contextType.hashCode() : 0);
+        result = 31 * result + (activityType != null ? activityType.hashCode() : 0);
+        result = 31 * result + (approxTime != null ? approxTime.hashCode() : 0);
+        return result;
     }
 }
