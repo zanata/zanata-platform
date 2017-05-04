@@ -17,6 +17,7 @@ const IconButton = React.createClass({
   },
 
   render: function () {
+    const iconSize = this.props.iconSize || 's1'
     return (
       <Button
         className={this.props.className}
@@ -25,7 +26,7 @@ const IconButton = React.createClass({
         title={this.props.title}>
         <Icon
           title={this.props.title}
-          className="s1"
+          className={iconSize}
           name={this.props.icon} />
       </Button>
     )
