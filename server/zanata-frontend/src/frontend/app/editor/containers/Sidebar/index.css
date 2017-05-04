@@ -5,11 +5,10 @@
   float: right !important;
   position: static !important;
   padding-top: 90px !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
   height: 99.5% !important;
-  overflow: scroll !important;
-
+  overflow: auto !important;
+  overflow-y: scroll !important;
+  overflow-x: hidden !important;
 }
 
 .sidebar-editor :focus {

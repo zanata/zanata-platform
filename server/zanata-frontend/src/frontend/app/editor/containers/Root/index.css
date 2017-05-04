@@ -134,7 +134,7 @@ li.docName span.ellipsis {
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: scroll;
+  overflow: auto;
   overflow-x: hidden;
   overflow-y: scroll;
 }
