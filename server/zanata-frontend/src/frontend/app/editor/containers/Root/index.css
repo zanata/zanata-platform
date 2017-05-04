@@ -268,9 +268,8 @@ li.docName span.ellipsis {
   left: 0;
   right: 0;
   bottom: 0;
-  overflow: scroll;
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .Editor-suggestions.is-search-active .Editor-suggestionsBody {
