@@ -164,7 +164,6 @@ timestamps {
             -Dbuildtime.output.log \
             clean install jxr:aggregate \
             --batch-mode \
-            --settings .travis-settings.xml \
             --update-snapshots \
             -DstaticAnalysis \
             $gwtOpts \
@@ -380,7 +379,6 @@ void integrationTests(String appserver) {
             -Dbuildtime.output.log \
             install \
             --batch-mode \
-            --settings .travis-settings.xml \
             --update-snapshots \
             -Dappserver=$appserver \
             -Dwebdriver.display=${env.DISPLAY} \

@@ -174,8 +174,6 @@ public class ApplicationConfiguration implements Serializable {
         smtpAppenderInstance.setTimeout(60); // will aggregate identical
         // messages within 60 sec
         // periods
-        smtpAppenderInstance.activateOptions();
-
         enableOrDisableEmailLogAppender();
     }
 
@@ -184,6 +182,7 @@ public class ApplicationConfiguration implements Serializable {
         final org.apache.log4j.Logger rootLogger =
                 org.apache.log4j.Logger.getRootLogger();
         if (isEmailLogAppenderEnabled()) {
+            smtpAppenderInstance.activateOptions();
             // Safe to add more than once
             rootLogger.addAppender(smtpAppenderInstance);
             log.info("Email log appender is enabled [level: "
