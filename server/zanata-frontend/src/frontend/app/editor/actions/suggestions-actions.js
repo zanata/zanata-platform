@@ -328,7 +328,6 @@ export function saveSuggestionPanelHeight (percentageHeight) {
   }
 }
 
-
 /**
  * Open or close the suggestion detail modal.
  *

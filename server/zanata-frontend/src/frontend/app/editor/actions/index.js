@@ -1,6 +1,10 @@
 import { fetchDocuments } from '../api'
 import {
-  ROUTING_PARAMS_CHANGED
+  ROUTING_PARAMS_CHANGED,
+  SET_SIDEBAR_VISIBILITY,
+  TOGGLE_DROPDOWN,
+  OPEN_DROPDOWN,
+  CLOSE_DROPDOWN
 } from './action-types'
 
 export function routingParamsChanged (newParams) {
@@ -17,17 +21,14 @@ export function routingParamsChanged (newParams) {
  * since it is unique with reference equality checks and can have a meaningful
  * label.
  */
-export const TOGGLE_DROPDOWN = Symbol('TOGGLE_DROPDOWN')
 export function toggleDropdown (dropdownKey) {
   return { type: TOGGLE_DROPDOWN, key: dropdownKey }
 }
 
-export const OPEN_DROPDOWN = Symbol('OPEN_DROPDOWN')
 export function openDropdown (dropdownKey) {
   return { type: OPEN_DROPDOWN, key: dropdownKey }
 }
 
-export const CLOSE_DROPDOWN = Symbol('CLOSE_DROPDOWN')
 export function closeDropdown () {
   return { type: CLOSE_DROPDOWN }
 }
