@@ -4,7 +4,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
-import { Icon } from 'zanata-ui'
+import { Icon } from '../../../components'
 import IconButton from '.'
 
 describe('IconButtonTest', () => {
@@ -23,8 +23,8 @@ describe('IconButtonTest', () => {
         onClick={clickFun}
         title="Mozart">
         <Icon
-          name="classical" size="1"
-          title="Mozart" />
+          name="classical" title="Mozart"
+          className="s1" />
       </button>
     )
     expect(actual).toEqual(expected)
@@ -48,7 +48,7 @@ describe('IconButtonTest', () => {
         <Icon
           name="tea"
           title="Tea"
-          size="1" />
+          className="s1" />
       </button>
     )
     expect(actual).toEqual(expected)

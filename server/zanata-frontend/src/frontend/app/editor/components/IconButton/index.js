@@ -1,5 +1,5 @@
 import Button from '../Button'
-import { Icon } from 'zanata-ui'
+import { Icon } from '../../../components'
 import React, { PropTypes } from 'react'
 
 /**
@@ -17,6 +17,7 @@ const IconButton = React.createClass({
   },
 
   render: function () {
+    const iconSize = this.props.iconSize || 's1'
     return (
       <Button
         className={this.props.className}
@@ -24,9 +25,9 @@ const IconButton = React.createClass({
         onClick={this.props.onClick}
         title={this.props.title}>
         <Icon
-          size={this.props.iconSize || '1'}
-          name={this.props.icon}
-          title={this.props.title} />
+          title={this.props.title}
+          className={iconSize}
+          name={this.props.icon} />
       </Button>
     )
   }
