@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Textarea from 'react-textarea-autosize'
 import TransUnitTranslationHeader from './TransUnitTranslationHeader'
 import TransUnitTranslationFooter from './TransUnitTranslationFooter'
-import { Icon } from 'zanata-ui'
+import { LoaderText } from '../../components'
 import { pick } from 'lodash'
 import { phraseTextSelectionRange } from '../actions/phrases-actions'
 
@@ -143,7 +143,7 @@ const TransUnitTranslationPanel = React.createClass({
 
     if (isLoading) {
       translations = <span className="u-textMeta">
-        <Icon name="loader" />
+        <LoaderText loading />
       </span>
     } else {
       const newTranslations = phrase.newTranslations
