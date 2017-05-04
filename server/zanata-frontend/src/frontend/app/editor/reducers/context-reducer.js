@@ -1,4 +1,4 @@
-import { ROUTING_PARAMS_CHANGED } from '../actions'
+import { ROUTING_PARAMS_CHANGED } from '../actions/action-types'
 import { DEFAULT_LOCALE } from './ui-reducer'
 
 const defaultState = {

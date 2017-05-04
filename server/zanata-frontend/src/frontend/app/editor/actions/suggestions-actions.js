@@ -1,8 +1,22 @@
 import { getSuggestions } from '../api/suggestions'
 import { waitForPhraseDetail } from '../utils/phrase-util'
 import { debounce, isUndefined } from 'lodash'
-
-export const TOGGLE_SUGGESTIONS = Symbol('TOGGLE_SUGGESTIONS')
+import {
+  TOGGLE_SUGGESTIONS,
+  DIFF_SETTING_CHANGED,
+  SET_SUGGESTION_SEARCH_TYPE,
+  RESET_SUGGESTIONS_COPYING,
+  COPY_SUGGESTION,
+  TEXT_SUGGESTION_STARTED_COPYING,
+  TEXT_SUGGESTION_FINISHED_COPYING,
+  PHRASE_SUGGESTION_STARTED_COPYING,
+  PHRASE_SUGGESTION_FINISHED_COPYING,
+  TEXT_SUGGESTIONS_UPDATED,
+  SUGGESTION_SEARCH_TEXT_CHANGE,
+  PHRASE_SUGGESTIONS_UPDATED,
+  SUGGESTION_PANEL_HEIGHT_CHANGE,
+  SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX
+} from './suggestions-action-types'
 export function toggleSuggestions () {
   return {
     type: TOGGLE_SUGGESTIONS
@@ -29,7 +43,6 @@ export function togglePhraseSuggestions () {
   }
 }
 
-export const DIFF_SETTING_CHANGED = Symbol('DIFF_SETTING_CHANGED')
 export function diffSettingChanged () {
   return { type: DIFF_SETTING_CHANGED }
 }
@@ -56,7 +69,6 @@ export function changeSearchText (searchText) {
   }
 }
 
-export const SET_SUGGESTION_SEARCH_TYPE = Symbol('SET_SUGGESTION_SEARCH_TYPE')
 export function setSuggestionSearchType (type) {
   if (type !== 'phrase' && type !== 'text') {
     console.error('invalid search type', type)
@@ -74,12 +86,10 @@ export function toggleSearchType () {
   }
 }
 
-export const RESET_SUGGESTIONS_COPYING = Symbol('RESET_SUGGESTIONS_COPYING')
 export function resetSuggestionsCopying () {
   return { type: RESET_SUGGESTIONS_COPYING }
 }
 
-export const COPY_SUGGESTION_N = Symbol('COPY_SUGGESTION_N')
 export function copySuggestionN (index) {
   // Decision: keep the logic in here to choose what to copy
   //   reason: reducers are not an easy place to follow complex logic,
@@ -127,36 +137,26 @@ function copyPhraseSuggestionN (phraseId, index) {
   }
 }
 
-export const COPY_SUGGESTION = Symbol('COPY_SUGGESTION')
 function copySuggestion (suggestion) {
   return { type: COPY_SUGGESTION, suggestion }
 }
 
-export const TEXT_SUGGESTION_STARTED_COPYING =
-  Symbol('TEXT_SUGGESTION_STARTED_COPYING')
 function textSuggestionStartedCopying (index) {
   return { type: TEXT_SUGGESTION_STARTED_COPYING, index }
 }
 
-export const TEXT_SUGGESTION_FINISHED_COPYING =
-  Symbol('TEXT_SUGGESTION_FINISHED_COPYING')
 function textSuggestionFinishedCopying (index) {
   return { type: TEXT_SUGGESTION_FINISHED_COPYING, index }
 }
 
-export const PHRASE_SUGGESTION_STARTED_COPYING =
-  Symbol('PHRASE_SUGGESTION_STARTED_COPYING')
 function phraseSuggestionStartedCopying (phraseId, index) {
   return { type: PHRASE_SUGGESTION_STARTED_COPYING, phraseId, index }
 }
 
-export const PHRASE_SUGGESTION_FINISHED_COPYING =
-  Symbol('PHRASE_SUGGESTION_FINISHED_COPYING')
 function phraseSuggestionFinishedCopying (phraseId, index) {
   return { type: PHRASE_SUGGESTION_FINISHED_COPYING, phraseId, index }
 }
 
-export const TEXT_SUGGESTIONS_UPDATED = Symbol('TEXT_SUGGESTIONS_UPDATED')
 export function textSuggestionsUpdated (
   {loading, searchStrings, suggestions, timestamp}) {
   return {
@@ -168,8 +168,6 @@ export function textSuggestionsUpdated (
   }
 }
 
-export const SUGGESTION_SEARCH_TEXT_CHANGE =
-  Symbol('SUGGESTION_SEARCH_TEXT_CHANGE')
 export function suggestionSearchTextChange (text) {
   return { type: SUGGESTION_SEARCH_TEXT_CHANGE, text: text }
 }
@@ -311,7 +309,6 @@ export function findPhraseSuggestions (phrase) {
   }
 }
 
-export const PHRASE_SUGGESTIONS_UPDATED = Symbol('PHRASE_SUGGESTIONS_UPDATED')
 export function phraseSuggestionsUpdated (
     {phraseId, loading, searchStrings, suggestions, timestamp}) {
   return {
@@ -324,8 +321,6 @@ export function phraseSuggestionsUpdated (
   }
 }
 
-export const SUGGESTION_PANEL_HEIGHT_CHANGE =
-  Symbol('SUGGESTION_PANEL_HEIGHT_CHANGE')
 export function saveSuggestionPanelHeight (percentageHeight) {
   return {
     type: SUGGESTION_PANEL_HEIGHT_CHANGE,
@@ -333,8 +328,6 @@ export function saveSuggestionPanelHeight (percentageHeight) {
   }
 }
 
-export const SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX =
-  Symbol('SHOW_DETAIL_FOR_SUGGESTION_BY_INDEX')
 
 /**
  * Open or close the suggestion detail modal.

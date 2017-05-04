@@ -1,6 +1,8 @@
 import { fetchDocuments } from '../api'
+import {
+  ROUTING_PARAMS_CHANGED
+} from './action-types'
 
-export const ROUTING_PARAMS_CHANGED = Symbol('ROUTING_PARAMS_CHANGED')
 export function routingParamsChanged (newParams) {
   // TODO pahuang should we start fetching thing here?
 
@@ -95,7 +97,6 @@ export function documentListFetched (projectSlug, versionSlug, documents) {
   }
 }
 
-export const SET_SIDEBAR_VISIBILITY = Symbol('SET_SIDEBAR_VISIBILITY')
 export function setSidebarVisibility (visible) {
   return {
     type: SET_SIDEBAR_VISIBILITY,
