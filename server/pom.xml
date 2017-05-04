@@ -2062,6 +2062,15 @@
           </dependency>
         </dependencies>
       </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <configuration>
+          <onlyAnalyze>org.zanata.*</onlyAnalyze>
+          <failOnError>true</failOnError>
+        </configuration>
+      </plugin>
     </plugins>
 
     <pluginManagement>
