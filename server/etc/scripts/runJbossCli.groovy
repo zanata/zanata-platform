@@ -36,8 +36,9 @@ if (appServerHome == null) {
 
 File baseDir = new File(project.basedir as String)
 
-// basedir will be functional test module
-File cliScript = new File(baseDir.getParentFile(), "etc/scripts/zanata-config-func-test.cli")
+// basedir will be either functional-test module or zanata-war module
+File funcTestCLIScript = new File(baseDir.getParentFile(), "etc/scripts/zanata-config-func-test.cli")
+File arqTestCLIScript = new File(baseDir.getParentFile(), "etc/scripts/zanata-config-arq-test.cli")
 
 File serverHome = new File(appServerHome)
 
@@ -45,23 +46,32 @@ String ext = isWindows() ? 'bat' : 'sh'
 
 File jbossCLI = new File(serverHome, "bin/jboss-cli.$ext")
 
-// need to set file to executeable
+// need to set file to executable
 Set<PosixFilePermission> permissions = [GROUP_READ, GROUP_EXECUTE, OTHERS_EXECUTE, OTHERS_READ, OWNER_EXECUTE, OWNER_READ, OWNER_WRITE]
 Files.setPosixFilePermissions(jbossCLI.toPath(), permissions)
 
-String cmd = "$jbossCLI.absolutePath --file=$cliScript.absolutePath"
-
-println "about to execute $cmd"
-
-def sout = new StringBuilder(), serr = new StringBuilder()
-def proc = cmd.execute()
-proc.consumeProcessOutput(sout, serr)
-// give it 30 seconds
-proc.waitForOrKill(30000)
-println "jboss cli execution:stdout>  $sout"
-if (!serr.toString().isEmpty()) {
-    println "jboss cli execution:stderr>  $serr"
+runJBossCLI(jbossCLI, funcTestCLIScript)
+if (project.artifactId == 'zanata-war') {
+    // we are running arquillian test. need to run extra script
+    runJBossCLI(jbossCLI, arqTestCLIScript)
 }
+
+static void runJBossCLI(File jbossCLI, File cliScript) {
+    String cmd = "$jbossCLI.absolutePath --file=$cliScript.absolutePath"
+
+    println "about to execute $cmd"
+
+    def sout = new StringBuilder(), serr = new StringBuilder()
+    def proc = cmd.execute()
+    proc.consumeProcessOutput(sout, serr)
+// give it 30 seconds
+    proc.waitForOrKill(30000)
+    println "jboss cli execution:stdout>  $sout"
+    if (!serr.toString().isEmpty()) {
+        println "jboss cli execution:stderr>  $serr"
+    }
+}
+
 
 static boolean isWindows() {
     System.properties.getProperty('os.name').toLowerCase().contains('windows')
