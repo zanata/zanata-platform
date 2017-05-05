@@ -21,6 +21,9 @@
 package org.zanata.model;
 
 import org.junit.Test;
+
+import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -50,18 +53,30 @@ public class HApplicationConfigurationTest {
 
     @Test
     public void testEqualsHashcode() {
+        Date now = new Date();
         HApplicationConfiguration hac =
                 new HApplicationConfiguration("host.url", "test");
+        hac.setCreationDate(now);
+        hac.setLastChanged(now);
 
-        assertThat(hac.equals(
-                new HApplicationConfiguration("host.url", "test")))
-                .isTrue();
-        assertThat(hac.hashCode()).isEqualTo(
-                new HApplicationConfiguration("host.url", "test").hashCode());
-        assertThat(hac.equals(
-                new HApplicationConfiguration("register.url", "test")))
-                .isFalse();
-        assertThat(hac.hashCode()).isNotEqualTo(
-                new HApplicationConfiguration("register.url", "test").hashCode());
+        HApplicationConfiguration other = new HApplicationConfiguration("host.url", "test");
+        other.setCreationDate(now);
+        other.setLastChanged(now);
+        assertThat(hac.equals(other)).isTrue();
+
+        other = new HApplicationConfiguration("host.url", "test");
+        other.setCreationDate(now);
+        other.setLastChanged(now);
+        assertThat(hac.hashCode()).isEqualTo(other.hashCode());
+
+        other = new HApplicationConfiguration("register.url", "test");
+        other.setCreationDate(now);
+        other.setLastChanged(now);
+        assertThat(hac.equals(other)).isFalse();
+
+        other = new HApplicationConfiguration("register.url", "test");
+        other.setCreationDate(now);
+        other.setLastChanged(now);
+        assertThat(hac.hashCode()).isNotEqualTo(other.hashCode());
     }
 }
