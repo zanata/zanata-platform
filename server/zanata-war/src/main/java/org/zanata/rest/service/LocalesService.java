@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
@@ -268,7 +269,8 @@ public class LocalesService implements LocalesResource {
                 }
             };
 
-    private static class FilterLocaleDetails implements Predicate<LocaleDetails> {
+    private static class FilterLocaleDetails implements Predicate<LocaleDetails>,
+            Serializable {
 
         private String query;
 

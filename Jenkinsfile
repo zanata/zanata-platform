@@ -164,7 +164,6 @@ timestamps {
             -Dbuildtime.output.log \
             clean install jxr:aggregate \
             --batch-mode \
-            --settings .travis-settings.xml \
             --update-snapshots \
             -DstaticAnalysis \
             $gwtOpts \
@@ -179,6 +178,8 @@ timestamps {
           setJUnitPrefix("UNIT", surefireTestReports)
           // gather surefire results; mark build as unstable in case of failures
           junit(testResults: "**/${surefireTestReports}")
+
+          // TODO try https://github.com/jenkinsci/github-pr-coverage-status-plugin
 
           // send test coverage data to codecov.io
           try {
@@ -201,6 +202,19 @@ timestamps {
           // TODO update notify (in pipeline library) to support Rocket.Chat webhook integration
           notify.testResults("UNIT", currentBuild.result)
 
+          // TODO publish coverage for jest (cobertura format)
+          // https://issues.jenkins-ci.org/browse/JENKINS-30700 https://github.com/jenkinsci/cobertura-plugin/pull/62
+
+          // TODO publish reports:
+          // appserver/browser/flaky warnings
+
+          // TODO more static analysis:
+          // task scanner (for TODOs), DRY, PMD
+          // victims, OWASP, ossindex: scan dependencies for vulnerabilities
+
+          // https://wiki.jenkins-ci.org/display/JENKINS/Static+Code+Analysis+Plug-ins
+          // https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
+
           // archive build artifacts (and cross-referenced source code)
           archive "**/${jarFiles},**/${warFiles},**/target/site/xref/**"
 
@@ -208,12 +222,13 @@ timestamps {
           step([$class: 'JacocoPublisher'])
 
           // ref: https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
-          step([$class: 'hudson.plugins.checkstyle.CheckStylePublisher',
+          step([$class: 'CheckStylePublisher',
                 pattern: '**/target/checkstyle-result.xml',
                 unstableTotalAll: '0'])
 
-          // TODO set up maven-pmd-plugin
+          // TODO set up maven-pmd-plugin for PMD/CPD
           //step([$class: 'PmdPublisher', pattern: '**/target/pmd.xml', unstableTotalAll:'0'])
+          //step([$class: 'DryPublisher', canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '**/cpd/cpdCheck.xml', unHealthy: ''])
 
           // TODO reduce unstableTotal thresholds as bugs are eliminated
           step([$class: 'FindBugsPublisher',
@@ -222,6 +237,30 @@ timestamps {
                 unstableTotalHigh: '47',
                 unstableTotalNormal: '420',
                 unstableTotalLow: '0'])
+
+          step([$class: 'WarningsPublisher',
+                consoleParsers: [
+                        [parserName: 'Java Compiler (javac)'],    // 339 warnings
+//                        [parserName: 'JavaDoc'],
+//                        [parserName: 'Maven'], // ~279 warnings, but too variable
+                        // TODO check integration test warnings (EAP and WildFly)
+                        //[parserName: 'appserver log messages'], // 119 warnings
+                        //[parserName: 'browser warnings'],       // 0 warnings
+                ],
+                unstableTotalAll: '339',
+                unstableTotalHigh: '0',
+          ])
+          // TODO check integration test warnings (EAP and WildFly)
+//          step([$class: 'WarningsPublisher',
+//                parserConfigurations: [
+//                        [parserName: 'Flaky Tests',
+//                         pattern: '**/target/*-reports/TEST-*.xml']
+//                ],
+//                // there is exactly one deliberately flaky test
+//                unstableTotalAll: '1',
+//          ])
+          // this should appear after all other static analysis steps
+          step([$class: 'AnalysisPublisher'])
         }
 
         // gather built files to use in following pipeline stages (on
@@ -340,7 +379,6 @@ void integrationTests(String appserver) {
             -Dbuildtime.output.log \
             install \
             --batch-mode \
-            --settings .travis-settings.xml \
             --update-snapshots \
             -Dappserver=$appserver \
             -Dwebdriver.display=${env.DISPLAY} \
@@ -359,7 +397,7 @@ void integrationTests(String appserver) {
 
           // gather db/app logs and screenshots to help debugging
           archive(
-                  includes: '*/target/**/*.log,*/target/screenshots/**',
+                  includes: 'server/functional-test/target/**/*.log,server/functional-test/target/screenshots/**',
                   excludes: '**/BACKUP-*.log')
         }
 

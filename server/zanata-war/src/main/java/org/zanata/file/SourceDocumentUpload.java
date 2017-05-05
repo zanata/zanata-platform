@@ -25,6 +25,7 @@ import static org.zanata.file.DocumentUploadUtil.isSinglePart;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Serializable;
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
 import javax.ws.rs.core.Response;
@@ -65,7 +66,7 @@ import com.google.common.base.Strings;
 
 @Dependent
 @Named("sourceDocumentUploader")
-public class SourceDocumentUpload {
+public class SourceDocumentUpload implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(SourceDocumentUpload.class);
 

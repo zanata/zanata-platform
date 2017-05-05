@@ -1,6 +1,6 @@
 import stateChangeDispatchMiddleware from './state-change-dispatch'
-import { findGlossaryTermsByPhraseId } from '../actions/glossary'
-import { findPhraseSuggestionsById } from '../actions/suggestions'
+import { findGlossaryTermsByPhraseId } from '../actions/glossary-actions'
+import { findPhraseSuggestionsById } from '../actions/suggestions-actions'
 
 /**
  * Middleware to search suggestions and glossary when a phrase is selected.

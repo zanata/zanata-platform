@@ -10,7 +10,7 @@ import {
   toggleGlossary,
   toggleHeader,
   toggleKeyboardShortcutsModal
-} from '../actions/headerActions'
+} from '../actions/header-actions'
 import {
   resetStatusFilter,
   updateStatusFilter,
@@ -18,10 +18,10 @@ import {
   nextPage,
   previousPage,
   lastPage
-} from '../actions/controlsHeaderActions'
-import { toggleSuggestions } from '../actions/suggestions'
+} from '../actions/controls-header-actions'
+import { toggleSuggestions } from '../actions/suggestions-actions'
 import { calculateMaxPageIndexFromState } from '../utils/filter-paging-util'
-import { GLOSSARY_TAB } from '../reducers/ui'
+import { GLOSSARY_TAB } from '../reducers/ui-reducer'
 
 const { bool, func, number, shape } = PropTypes
 
@@ -38,8 +38,8 @@ const ControlsHeader = React.createClass({
       previousPage: func.isRequired,
       nextPage: func.isRequired,
       lastPage: func.isRequired,
-      toggleSuggestionPanel: func.isRequired,
       setSidebarVisibility: func.isRequired,
+      toggleSuggestionPanel: func.isRequired,
       toggleGlossary: func.isRequired,
       toggleKeyboardShortcutsModal: func.isRequired,
       toggleMainNav: func.isRequired
@@ -52,6 +52,9 @@ const ControlsHeader = React.createClass({
     ui: shape({
       panels: shape({
         sidebar: shape({
+          visible: bool.isRequired
+        }).isRequired,
+        navHeader: shape({
           visible: bool.isRequired
         }).isRequired,
         suggestions: shape({
@@ -93,6 +96,11 @@ const ControlsHeader = React.createClass({
 
   render: function () {
     const { actions, counts, paging, ui } = this.props
+    const {
+      toggleKeyboardShortcutsModal,
+      toggleMainNav,
+      toggleSuggestionPanel
+    } = actions
     const { panels, textFlowDisplay, gettextCatalog } = ui
     const transFilterProps = {
       actions,
@@ -115,7 +123,7 @@ const ControlsHeader = React.createClass({
         <div className="u-floatLeft">
           <TransUnitFilter {...transFilterProps} />
         </div>
-        <div className="u-floatRight">
+        <div className="u-floatRight flex">
           <ul className="u-listHorizontal u-textCenter">
             <li className="u-sMV-1-4">
               <Pager {...pagerProps} />
@@ -124,9 +132,9 @@ const ControlsHeader = React.createClass({
               <IconButtonToggle
                 icon="suggestions"
                 title={this.props.ui.panels.suggestions.visible
-                    ? gettextCatalog.getString('Hide suggestions panel')
-                    : gettextCatalog.getString('Show suggestions panel')}
-                onClick={this.props.actions.toggleSuggestionPanel}
+                  ? gettextCatalog.getString('Hide suggestions panel')
+                  : gettextCatalog.getString('Show suggestions panel')}
+                onClick={toggleSuggestionPanel}
                 active={this.props.ui.panels.suggestions.visible} />
             </li>
             <li className="u-sM-1-8">
@@ -147,8 +155,7 @@ const ControlsHeader = React.createClass({
                 onClick={this.toggleSidebarVisibility}
                 active={this.props.ui.panels.sidebar.visible} />
             </li>
-            {/* extra items from the angular template that were not being
-            displayed
+      {/* extra items from the angular template that were not being displayed
             <li ng-show="appCtrl.PRODUCTION">
               <button class="Link--neutral u-sizeHeight-1_1-2"
                 title="{{'Details'|translate}}">
@@ -163,12 +170,12 @@ const ControlsHeader = React.createClass({
                       class="u-sizeWidth-1_1-2"></icon>
               </button>
             </li>
-             */}
+      */}
             <li className="u-sm-hidden u-sM-1-8">
               <IconButtonToggle
                 icon="keyboard"
                 title={gettextCatalog.getString('Keyboard Shortcuts')}
-                onClick={this.props.actions.toggleKeyboardShortcutsModal} />
+                onClick={toggleKeyboardShortcutsModal} />
             </li>
             <li className="u-sM-1-8">
               <IconButtonToggle
@@ -176,7 +183,7 @@ const ControlsHeader = React.createClass({
                 title={navHeaderHidden
                   ? gettextCatalog.getString('Show Menubar')
                   : gettextCatalog.getString('Hide Menubar')}
-                onClick={this.props.actions.toggleMainNav}
+                onClick={toggleMainNav}
                 active={navHeaderHidden}
                 className={cx({'is-rotated': navHeaderHidden})} />
             </li>

@@ -52,10 +52,12 @@ public class TMMergeStartOrEndEvent extends GwtEvent<TMMergeStartOrEndHandler> {
             EditorClientId editorClientId, DocumentId documentId,
             final Date endTime, long textFlowCount) {
         this.startedBy = startedBy;
-        this.startedTime = new Date(startedTime.getTime());
+        this.startedTime =
+                startedTime != null ? new Date(startedTime.getTime()) :
+                        null;
         this.editorClientId = editorClientId;
         this.documentId = documentId;
-        this.endTime = new Date(endTime.getTime());
+        this.endTime = endTime != null ? new Date(endTime.getTime()) : null;
         this.textFlowCount = textFlowCount;
     }
 
@@ -72,7 +74,8 @@ public class TMMergeStartOrEndEvent extends GwtEvent<TMMergeStartOrEndHandler> {
     }
 
     public Date getStartedTime() {
-        return new Date(startedTime.getTime());
+        return startedTime != null ? new Date(startedTime.getTime()) :
+                null;
     }
 
     public EditorClientId getEditorClientId() {
@@ -84,7 +87,7 @@ public class TMMergeStartOrEndEvent extends GwtEvent<TMMergeStartOrEndHandler> {
     }
 
     public Date getEndTime() {
-        return new Date(endTime.getTime());
+        return endTime != null ? new Date(endTime.getTime()) : null;
     }
 
     public long getTextFlowCount() {

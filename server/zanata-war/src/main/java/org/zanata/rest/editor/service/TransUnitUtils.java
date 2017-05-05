@@ -1,5 +1,6 @@
 package org.zanata.rest.editor.service;
 
+import java.io.Serializable;
 import java.util.List;
 import com.google.common.base.Optional;
 import org.apache.commons.lang.StringUtils;
@@ -25,7 +26,7 @@ import javax.annotation.Nonnull;
  */
 @Named("transUnitUtils")
 @javax.enterprise.context.Dependent
-public class TransUnitUtils {
+public class TransUnitUtils implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TransUnitUtils.class);
     public static final int MAX_SIZE = 200;

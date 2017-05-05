@@ -183,11 +183,11 @@ public class ZanataIdentity implements Identity, Serializable {
         return credentials;
     }
 
-    public synchronized Subject getSubject() {
+    public Subject getSubject() {
         return subject;
     }
 
-    public synchronized void acceptExternallyAuthenticatedPrincipal(Principal principal) {
+    public void acceptExternallyAuthenticatedPrincipal(Principal principal) {
         if (principal != null) {
             getSubject().getPrincipals().add(principal);
         }
@@ -200,7 +200,7 @@ public class ZanataIdentity implements Identity, Serializable {
      * example when spawing a new thread for an async task, or when
      * authenticating externally through Kerberos.
      */
-    public synchronized void acceptExternalSubjectAndPpal(Subject subject,
+    public void acceptExternalSubjectAndPpal(Subject subject,
             Principal principal) {
         this.subject = subject;
         acceptExternallyAuthenticatedPrincipal(principal);
@@ -279,7 +279,7 @@ public class ZanataIdentity implements Identity, Serializable {
     /**
      * Resets all security state and credentials
      */
-    public synchronized void unAuthenticate() {
+    public void unAuthenticate() {
         principal = null;
         subject = new Subject();
 
@@ -403,7 +403,7 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     // copied from org.jboss.seam.security.Identity.tryLogin()
-    public synchronized boolean tryLogin() {
+    public boolean tryLogin() {
         if (!authenticating && getPrincipal() == null && credentials.isSet() &&
                 Contexts.isRequestContextActive() &&
                 !requestContextValueStore.contains(LOGIN_TRIED)) {
@@ -681,7 +681,7 @@ public class ZanataIdentity implements Identity, Serializable {
         return null;
     }
 
-    public synchronized Principal getPrincipal() {
+    public Principal getPrincipal() {
         return principal;
     }
 

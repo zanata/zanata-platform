@@ -35,6 +35,8 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
+
+import org.apache.commons.lang.ObjectUtils;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.FieldBridge;
@@ -80,11 +82,14 @@ public class ModelEntityBase implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     public Date getCreationDate() {
-        return new Date(creationDate.getTime());
+        return creationDate != null ? new Date(creationDate.getTime()) :
+                creationDate;
     }
 
     public void setCreationDate(Date creationDate) {
-        this.creationDate = new Date(creationDate.getTime());
+        this.creationDate =
+                creationDate != null ? new Date(creationDate.getTime()) :
+                        creationDate;
     }
     // TODO extract lastChanged from ModelEntityBase and use with @Embedded
     // NB: also used in HSimpleComment
@@ -95,20 +100,23 @@ public class ModelEntityBase implements Serializable {
     @FieldBridge(impl = DateBridge.class)
     @SortableField
     public Date getLastChanged() {
-        return new Date(lastChanged.getTime());
+        return lastChanged != null ? new Date(lastChanged.getTime()) :
+                lastChanged;
     }
 
     public void setLastChanged(Date lastChanged) {
-        this.lastChanged = new Date(lastChanged.getTime());
+        this.lastChanged =
+                lastChanged != null ? new Date(lastChanged.getTime()) :
+                        lastChanged;
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + getCreationDate().hashCode();
+        result = prime * result + (getCreationDate() != null ? getCreationDate().hashCode() : 0);
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + getLastChanged().hashCode();
+        result = prime * result + (getLastChanged() != null ? getLastChanged().hashCode() : 0);
         return result;
     }
 
@@ -128,14 +136,14 @@ public class ModelEntityBase implements Serializable {
         assert overridesEquals(this);
         assert overridesEquals(obj);
         ModelEntityBase other = (ModelEntityBase) obj;
-        if (!getCreationDate().equals(other.getCreationDate()))
+        if (!ObjectUtils.equals(getCreationDate(), other.getCreationDate()))
             return false;
         if (getId() == null) {
             if (other.getId() != null)
                 return false;
         } else if (!getId().equals(other.getId()))
             return false;
-        if (!getLastChanged().equals(other.getLastChanged()))
+        if (!ObjectUtils.equals(getLastChanged(), other.getLastChanged()))
             return false;
         return true;
     }

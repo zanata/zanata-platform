@@ -54,8 +54,13 @@ public class HPoTargetHeaderTest {
 
     @Test
     public void testHashcode() {
+        Date now = new Date();
         HPoTargetHeader alpha = new HPoTargetHeader();
+        alpha.setCreationDate(now);
+        alpha.setLastChanged(now);
         HPoTargetHeader bravo = new HPoTargetHeader();
+        bravo.setCreationDate(now);
+        bravo.setLastChanged(now);
         bravo.setId(987654321L);
         assertThat(alpha.hashCode()).isNotEqualTo(bravo.hashCode());
         alpha.setId(987654321L);

@@ -177,34 +177,35 @@ public class Activity extends ModelEntityBase implements Serializable {
         return this.contextType;
     }
 
+    /**
+     * Business equality comparison
+     *
+     * @param other Activity
+     * @return other is equal
+     */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        if (!super.equals(other)) return false;
 
-        Activity activity = (Activity) o;
+        Activity activity = (Activity) other;
 
-        if (contextId != activity.contextId) return false;
-        if (actor != null ? !actor.equals(activity.actor) :
-                activity.actor != null)
-            return false;
-        if (approxTime != null ? !approxTime.equals(activity.approxTime) :
-                activity.approxTime != null) return false;
-        if (contextType != activity.contextType) return false;
-        return activityType == activity.activityType;
+        return (actor.equals(activity.actor)) &&
+                (contextId == activity.contextId) &&
+                (contextType == activity.contextType) &&
+                (activityType == activity.activityType) &&
+                (approxTime == activity.approxTime);
     }
 
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (actor != null ? actor.hashCode() : 0);
+        result = 31 * result + actor.hashCode();
+        result = 31 * result + Long.valueOf(contextId).hashCode();
+        result = 31 * result + (contextType != null ? contextType.hashCode() : 0);
+        result = 31 * result + (activityType != null ? activityType.hashCode() : 0);
         result = 31 * result + (approxTime != null ? approxTime.hashCode() : 0);
-        result = 31 * result +
-                (contextType != null ? contextType.hashCode() : 0);
-        result = 31 * result + (int) (contextId ^ (contextId >>> 32));
-        result = 31 * result +
-                (activityType != null ? activityType.hashCode() : 0);
         return result;
     }
 }

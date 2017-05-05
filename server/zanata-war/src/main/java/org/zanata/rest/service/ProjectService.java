@@ -23,6 +23,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import javax.inject.Inject;
@@ -56,6 +57,7 @@ public class ProjectService implements ProjectResource {
     @PathParam("projectSlug")
     String projectSlug;
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @HeaderParam(HttpHeaderNames.ACCEPT)
     @DefaultValue(MediaType.APPLICATION_XML)
     @Context

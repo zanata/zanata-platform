@@ -38,6 +38,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
@@ -63,6 +64,7 @@ public class ProjectsService implements ProjectsResource {
     private Session session;
 
     /** Type of media requested. */
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @HeaderParam("Accept")
     @DefaultValue(MediaType.APPLICATION_XML)
     @Context

@@ -170,7 +170,9 @@ public class TranslationStateCacheImpl implements TranslationStateCache {
         synchronized (cacheEntry) {
             if (!cacheEntry.containsKey(validationId)) {
                 Optional<Boolean> result = loadTargetValidation(targetId, validationId);
-                cacheEntry.put(validationId, result.get());
+                if (result.isPresent()) {
+                    cacheEntry.put(validationId, result.get());
+                }
             }
             return cacheEntry.get(validationId);
         }

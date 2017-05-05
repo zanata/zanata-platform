@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
 import { routeReducer as routing } from 'react-router-redux'
-import glossary from './glossary'
-import explore from './explore'
-import profile from './profile'
-import common from './common'
-import languages from './languages'
+import glossary from './glossary-reducer'
+import explore from './explore-reducer'
+import profile from './profile-reducer'
+import common from './common-reducer'
+import languages from './languages-reducer'
 
 const rootReducer = combineReducers({
   routing,

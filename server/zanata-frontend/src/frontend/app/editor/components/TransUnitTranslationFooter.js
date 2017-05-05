@@ -23,9 +23,11 @@ import React, { PropTypes } from 'react'
 import cx from 'classnames'
 import Button from './Button'
 import SplitDropdown from './SplitDropdown'
-import { Icon, Row } from 'zanata-ui'
-import { defaultSaveStatus, nonDefaultValidSaveStatuses } from '../utils/status'
-import { hasTranslationChanged } from '../utils/phrase'
+import { Icon } from '../../components'
+import { Row } from 'react-bootstrap'
+import { defaultSaveStatus, nonDefaultValidSaveStatuses }
+  from '../utils/status-util'
+import { hasTranslationChanged } from '../utils/phrase-util'
 
 /**
  * Footer for translation with save buttons and other action widgets.
@@ -113,7 +115,7 @@ const TransUnitTranslationFooter = React.createClass({
           title=" Suggestions available"
           onClick={onClick}>
           <Row>
-            <Icon name={iconName} />
+            <Icon name={iconName} className="s1" />
             <span className="u-textMini">
               {count}
             </span>
@@ -201,7 +203,7 @@ const TransUnitTranslationFooter = React.createClass({
                       this.buttonClassByStatus[selectedButtonStatus])}
         title="Save as…">
         <div className="Dropdown-toggleIcon">
-          <Icon name="chevron-down" size="0" title="Save as…" />
+          <Icon name="chevron-down" className="s0" title="Save as…" />
         </div>
       </Button>
       : undefined

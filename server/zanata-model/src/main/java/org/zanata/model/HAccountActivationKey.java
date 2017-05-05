@@ -39,7 +39,8 @@ public class HAccountActivationKey extends AccountKeyBase
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     public Date getCreationDate() {
-        return new Date(creationDate.getTime());
+        return creationDate != null ? new Date(creationDate.getTime()) :
+                creationDate;
     }
 
     public static class EntityListener {
@@ -52,7 +53,9 @@ public class HAccountActivationKey extends AccountKeyBase
     }
 
     public void setCreationDate(final Date creationDate) {
-        this.creationDate = new Date(creationDate.getTime());
+        this.creationDate =
+                creationDate != null ? new Date(creationDate.getTime()) :
+                        creationDate;
     }
 
     @Override

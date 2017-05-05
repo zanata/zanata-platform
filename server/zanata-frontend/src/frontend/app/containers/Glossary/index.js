@@ -19,7 +19,7 @@ import {
   glossaryUpdatePageSize,
   PAGE_SIZE_DEFAULT,
   PAGE_SIZE_SELECTION
-} from '../../actions/glossary'
+} from '../../actions/glossary-actions'
 import ViewHeader from './ViewHeader'
 import Entry from './Entry'
 
