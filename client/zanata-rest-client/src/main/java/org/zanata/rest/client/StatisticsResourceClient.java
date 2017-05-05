@@ -28,13 +28,12 @@ import javax.ws.rs.core.MediaType;
 
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
-import org.zanata.rest.service.StatisticsResource;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class StatisticsResourceClient implements StatisticsResource {
+public class StatisticsResourceClient {
     private final RestClientFactory factory;
     private final URI baseUri;
 
@@ -43,7 +42,6 @@ public class StatisticsResourceClient implements StatisticsResource {
         baseUri = factory.getBaseUri();
     }
 
-    @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug,
             @DefaultValue("false") boolean includeDetails,
@@ -61,7 +59,6 @@ public class StatisticsResourceClient implements StatisticsResource {
                 .get(ContainerTranslationStatistics.class);
     }
 
-    @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId,
             @DefaultValue("false") boolean includeWordStats, String[] locales) {
@@ -79,7 +76,6 @@ public class StatisticsResourceClient implements StatisticsResource {
                 .get(ContainerTranslationStatistics.class);
     }
 
-    @Override
     public ContributionStatistics getContributionStatistics(String projectSlug,
             String versionSlug, String username, String dateRange, boolean includeAutomatedEntry) {
         WebTarget webResource =
