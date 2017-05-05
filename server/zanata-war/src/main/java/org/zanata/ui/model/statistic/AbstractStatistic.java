@@ -79,19 +79,19 @@ public abstract class AbstractStatistic implements Serializable {
     }
 
     public synchronized void add(AbstractStatistic other) {
-        this.approved += other.approved;
-        this.needReview += other.needReview;
-        this.untranslated += other.untranslated;
-        this.translated += other.translated;
-        this.rejected += other.rejected;
+        approved += other.getApproved();
+        needReview += other.getNeedReview();
+        untranslated += other.getUntranslated();
+        translated += other.getTranslated();
+        rejected += other.getRejected();
     }
 
-    protected void set(AbstractStatistic other) {
-        this.approved = other.approved;
-        this.needReview = other.needReview;
-        this.untranslated = other.untranslated;
-        this.translated = other.translated;
-        this.rejected = other.rejected;
+    protected synchronized void set(AbstractStatistic other) {
+        approved = other.getApproved();
+        needReview = other.getNeedReview();
+        untranslated = other.getUntranslated();
+        translated = other.getTranslated();
+        rejected = other.getRejected();
     }
 
     public synchronized int getTotal() {
@@ -173,9 +173,9 @@ public abstract class AbstractStatistic implements Serializable {
             return false;
         if (obj instanceof AbstractStatistic) {
             AbstractStatistic o = (AbstractStatistic) obj;
-            return (approved == o.approved && needReview == o.needReview
-                    && untranslated == o.untranslated
-                    && translated == o.translated && rejected == o.rejected);
+            return (approved == o.getApproved() && needReview == o.getNeedReview()
+                    && untranslated == o.getUntranslated()
+                    && translated == o.getTranslated() && rejected == o.getRejected());
         }
         return false;
     }

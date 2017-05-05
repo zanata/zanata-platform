@@ -39,12 +39,10 @@ public class TranslationUpdateListenerLazyLoader implements
     private TranslationUpdateListener delegate;
 
     public void init() {
-        if (delegate == null) {
-            synchronized (this) {
-                if (delegate == null) {
-                    delegate = ServiceLocator.instance()
-                            .getInstance(TranslationUpdateListener.class);
-                }
+        synchronized (this) {
+            if (delegate == null) {
+                delegate = ServiceLocator.instance()
+                        .getInstance(TranslationUpdateListener.class);
             }
         }
     }

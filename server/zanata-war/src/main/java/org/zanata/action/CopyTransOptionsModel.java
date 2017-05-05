@@ -157,19 +157,15 @@ public class CopyTransOptionsModel implements Serializable {
         this.instance = instance;
     }
 
-    public List<RuleAction> getRuleActions() {
+    public synchronized List<RuleAction> getRuleActions() {
         Object value = this.ruleActions.get();
         if (value == null) {
-            synchronized (this.ruleActions) {
-                value = this.ruleActions.get();
-                if (value == null) {
-                    final List<RuleAction> actualValue = getRuleActionsList();
-                    value = actualValue == null ? this.ruleActions
-                            : actualValue;
-                    this.ruleActions.set(value);
-                }
-            }
+            final List<RuleAction> actualValue = getRuleActionsList();
+            value = actualValue == null ? this.ruleActions
+                    : actualValue;
+            this.ruleActions.set(value);
         }
-        return (List<RuleAction>) (value == this.ruleActions ? null : value);
+        return (List<RuleAction>) (value == this.ruleActions ? null :
+                value);
     }
 }

@@ -1302,17 +1302,12 @@ public class ProjectHome extends SlugHome<HProject>
         this.selectedCheckbox = selectedCheckbox;
     }
 
-    public List<HProjectIteration> getVersions() {
+    public synchronized List<HProjectIteration> getVersions() {
         Object value = this.versions.get();
         if (value == null) {
-            synchronized (this.versions) {
-                value = this.versions.get();
-                if (value == null) {
-                    final List<HProjectIteration> actualValue = fetchVersions();
-                    value = actualValue;
-                    this.versions.set(value);
-                }
-            }
+            final List<HProjectIteration> actualValue = fetchVersions();
+            value = actualValue;
+            this.versions.set(value);
         }
         return (List<HProjectIteration>) (value == this.versions ? null
                 : value);
