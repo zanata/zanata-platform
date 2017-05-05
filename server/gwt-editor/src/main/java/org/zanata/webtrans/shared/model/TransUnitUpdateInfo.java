@@ -26,13 +26,15 @@ import org.zanata.common.*;
 import com.google.common.base.*;
 import com.google.gwt.user.client.rpc.*;
 
+import java.io.Serializable;
+
 /**
  * Represents information about an attempted update of a {@link TransUnit}.
  *
  * @author David Mason, damason@redhat.com
  *
  */
-public class TransUnitUpdateInfo implements IsSerializable {
+public class TransUnitUpdateInfo implements IsSerializable, Serializable {
     private boolean success;
     private boolean targetChanged;
     private DocumentId documentId;

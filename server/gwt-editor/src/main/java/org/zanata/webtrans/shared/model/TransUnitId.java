@@ -2,7 +2,10 @@ package org.zanata.webtrans.shared.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class TransUnitId implements IsSerializable, Identifier<Long> {
+import java.io.Serializable;
+
+public class TransUnitId implements IsSerializable, Identifier<Long>,
+        Serializable {
     private long id;
 
     // for GWT

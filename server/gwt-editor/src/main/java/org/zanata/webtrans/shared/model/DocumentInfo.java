@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.model;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.zanata.common.LocaleId;
@@ -7,7 +8,8 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable {
+public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable,
+        Serializable {
     private DocumentId id;
     private String name;
     private String path;

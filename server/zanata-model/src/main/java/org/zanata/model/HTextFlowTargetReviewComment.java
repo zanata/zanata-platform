@@ -58,7 +58,8 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
     private String comment;
     @NotNull
     private Integer targetVersion;
-    private transient String commenterName;
+    @Transient
+    private String commenterName;
 
     public HTextFlowTargetReviewComment(HTextFlowTarget target, String comment,
             HPerson commenter) {

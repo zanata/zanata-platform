@@ -606,7 +606,7 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
         if (valIds.isEmpty() || pageRows.keySet().isEmpty()) {
             // no validation to run. we just need to re-enable the button.
             // see org.zanata.webtrans.client.presenter.ValidationOptionsPresenter.onCompleteRunDocValidation()
-            eventBus.fireEvent(new DocValidationResultEvent(null));
+            eventBus.fireEvent(new DocValidationResultEvent(new Date()));
             return;
         }
         ArrayList<DocumentId> docList = Lists.newArrayList();

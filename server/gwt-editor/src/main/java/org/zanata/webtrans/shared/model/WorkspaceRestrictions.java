@@ -4,11 +4,13 @@ import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.io.Serializable;
+
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class WorkspaceRestrictions implements IsSerializable {
+public class WorkspaceRestrictions implements IsSerializable, Serializable {
     private boolean isProjectActive;
     private boolean isProjectObsolete;
     private boolean hasEditTranslationAccess;

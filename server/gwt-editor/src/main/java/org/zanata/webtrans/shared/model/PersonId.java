@@ -2,7 +2,9 @@ package org.zanata.webtrans.shared.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public final class PersonId implements IsSerializable {
+import java.io.Serializable;
+
+public final class PersonId implements IsSerializable, Serializable {
     private String id;
 
     // for GWT

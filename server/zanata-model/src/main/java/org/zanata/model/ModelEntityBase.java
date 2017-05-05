@@ -118,6 +118,8 @@ public class ModelEntityBase implements Serializable {
             return true;
         if (obj == null)
             return false;
+        if (getClass() != obj.getClass())
+            return false;
         // Subclasses *must* override equals to check that their class is a
         // match for the object they are comparing. Simple comparison of the
         // result of getClass() is not possible here because the compared object

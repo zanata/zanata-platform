@@ -5,7 +5,9 @@ import org.zanata.common.ProjectType;
 import com.google.common.base.Preconditions;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ProjectIterationId implements IsSerializable {
+import java.io.Serializable;
+
+public class ProjectIterationId implements IsSerializable, Serializable {
     private String projectSlug;
     private String iterationSlug;
     private ProjectType projectType;

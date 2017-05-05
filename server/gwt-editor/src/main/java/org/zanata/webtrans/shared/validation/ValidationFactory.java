@@ -4,6 +4,7 @@
 package org.zanata.webtrans.shared.validation;
 
 import com.google.common.collect.Maps;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationAction;
 import org.zanata.webtrans.shared.model.ValidationAction.State;
@@ -26,9 +27,10 @@ import java.util.Map;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public class ValidationFactory implements Serializable {
+public final class ValidationFactory implements Serializable {
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final ValidationMessages validationMessages;
-
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final Map<ValidationId, ValidationAction> referenceMap;
 
     public static final Comparator<ValidationAction> ValidationActionComparator =

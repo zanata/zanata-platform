@@ -4,7 +4,9 @@ import org.zanata.webtrans.shared.model.Person;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Identity implements IsSerializable {
+import java.io.Serializable;
+
+public class Identity implements IsSerializable, Serializable {
     private EditorClientId editorClientId;
     private Person person;
 

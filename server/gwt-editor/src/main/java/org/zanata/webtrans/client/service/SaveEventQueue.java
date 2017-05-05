@@ -202,8 +202,8 @@ public class SaveEventQueue {
         INSTANCE;
 
         @Override
-        public boolean apply(@NotNull EventWrapper input) {
-            return !input.isSaving();
+        public boolean apply(EventWrapper input) {
+            return input != null ? !input.isSaving() : true;
         }
     }
 
@@ -211,8 +211,8 @@ public class SaveEventQueue {
         INSTANCE;
 
         @Override
-        public boolean apply(@NotNull EventWrapper input) {
-            return input.isSaving();
+        public boolean apply(EventWrapper input) {
+            return input != null ? input.isSaving() : false;
         }
     }
 }

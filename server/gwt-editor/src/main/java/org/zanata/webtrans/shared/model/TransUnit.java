@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -14,7 +15,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class TransUnit implements IsSerializable, HasTransUnitId {
+public class TransUnit implements IsSerializable, Serializable, HasTransUnitId {
     private ContentState status;
 
     private TransUnitId id;
@@ -164,11 +165,13 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
     }
 
     public Date getLastModifiedTime() {
-        return lastModifiedTime;
+        return lastModifiedTime != null ?
+                new Date(lastModifiedTime.getTime()) : null;
     }
 
     void setLastModifiedTime(Date lastModifiedTime) {
-        this.lastModifiedTime = lastModifiedTime;
+        this.lastModifiedTime = lastModifiedTime != null ?
+                new Date(lastModifiedTime.getTime()) : null;
     }
 
     public Integer getVerNum() {
@@ -374,7 +377,8 @@ public class TransUnit implements IsSerializable, HasTransUnitId {
         }
 
         public Builder setLastModifiedTime(Date lastModifiedTime) {
-            this.lastModifiedTime = lastModifiedTime;
+            this.lastModifiedTime = lastModifiedTime != null ?
+                    new Date(lastModifiedTime.getTime()) : null;
             return this;
         }
 

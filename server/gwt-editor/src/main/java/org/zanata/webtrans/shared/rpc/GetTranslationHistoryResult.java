@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.webtrans.shared.model.ReviewComment;
 import org.zanata.webtrans.shared.model.TransHistoryItem;
 
@@ -12,8 +13,11 @@ import com.google.common.collect.Lists;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class GetTranslationHistoryResult implements DispatchResult {
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<TransHistoryItem> historyItems = Lists.newArrayList();
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<ReviewComment> reviewComments = Lists.newArrayList();
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private TransHistoryItem latest;
 
     @SuppressWarnings("unused")

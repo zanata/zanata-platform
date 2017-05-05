@@ -23,6 +23,7 @@ package org.zanata.webtrans.client.presenter;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.shared.model.DiffMode;
 import org.zanata.webtrans.shared.model.ValidationId;
@@ -36,12 +37,15 @@ import com.google.inject.Singleton;
 import javax.annotation.Nonnull;
 
 @Singleton
-public class UserConfigHolder {
+public class UserConfigHolder implements IsSerializable {
+    @SuppressFBWarnings("SE_BAD_FIELD")
     public static final Predicate<ContentState> INCOMPLETE_PREDICATE =
             contentState -> contentState == ContentState.New
                     || contentState.isRejectedOrFuzzy();
+    @SuppressFBWarnings("SE_BAD_FIELD")
     public static final Predicate<ContentState> DRAFT_PREDICATE =
             ContentState::isRejectedOrFuzzy;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     public static final Predicate<ContentState> NEW_PREDICATE =
             contentState -> contentState == ContentState.New;
     private ConfigurationState state;

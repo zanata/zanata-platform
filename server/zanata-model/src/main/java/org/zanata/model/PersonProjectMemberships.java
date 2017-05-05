@@ -27,6 +27,8 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -46,6 +48,7 @@ public class PersonProjectMemberships implements Serializable {
     private HPerson person;
     private boolean maintainer;
     private boolean translationMaintainer;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Set<LocaleRoles> localeRoles;
 
     public PersonProjectMemberships(HPerson person,

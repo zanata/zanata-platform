@@ -23,7 +23,6 @@ package org.zanata.webtrans.shared.rpc;
 import com.google.common.base.MoreObjects;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
-import com.google.common.base.Objects;
 
 //@ExposeEntity
 public class TransUnitUpdated implements SessionEventData,
