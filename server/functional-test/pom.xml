@@ -33,8 +33,9 @@
     <ds.database>root</ds.database>
     <ds.username>root</ds.username>
     <ds.password>root</ds.password>
-    <!-- Note that mysql.port is not set initially -->
+    <mysql.port>13306</mysql.port>
     <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
+    <test.db.connection.url>jdbc:mysql://localhost:${mysql.port}/test?characterEncoding=UTF-8</test.db.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
     <!-- skipAfterFailureCount=0 due to https://issues.apache.org/jira/browse/SUREFIRE-1219 -->
     <failsafe.skipAfterFailureCount>0</failsafe.skipAfterFailureCount>
@@ -122,6 +123,85 @@
       <type>war</type>
       <scope>provided</scope>
     </dependency>
+
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-model</artifactId>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>xerces</groupId>
+          <artifactId>xercesImpl</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>solr-core</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-war</artifactId>
+      <version>${version}</version>
+      <classifier>tests</classifier>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>solr-core</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.solr</groupId>
+          <artifactId>solr-solrj</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpclient</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpcore</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.httpcomponents</groupId>
+          <artifactId>httpmime</artifactId>
+        </exclusion>
+        <!-- enforcer.RequireUpperBoundDeps doesn't seem to support wildcard exclusion!!! -->
+        <exclusion>
+          <groupId>*</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hibernate.javax.persistence</groupId>
+      <artifactId>hibernate-jpa-2.1-api</artifactId>
+      <scope>${hibernate.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
+      <scope>${hibernate.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <scope>${hibernate.scope}</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.transaction</groupId>
+      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.el</artifactId>
+      <version>3.0.1-b08</version>
+      <scope>test</scope>
+    </dependency>
+
+
     <dependency>
       <groupId>net.lightbody.bmp</groupId>
       <artifactId>browsermob-core-littleproxy</artifactId>
@@ -524,23 +604,6 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>reserve-network-port</goal>
-                </goals>
-                <phase>generate-test-resources</phase>
-                <configuration>
-                  <portNames>
-                    <portName>mysql.port</portName>
-                  </portNames>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
             <groupId>org.codehaus.gmavenplus</groupId>
             <artifactId>gmavenplus-plugin</artifactId>
             <executions>
@@ -627,12 +690,6 @@
                 <phase>package</phase>
                 <configuration>
                   <sqlCommand>ALTER DATABASE ${ds.database} CHARACTER SET utf8 COLLATE utf8_general_ci;</sqlCommand>
-                  <srcFiles>
-                    <!-- we can take a snapshot of the database in previous run -->
-                    <!-- see server/etc/scripts/functional-test-db-snapshot.sh -->
-                    <!-- see server/etc/scripts/cargowait.sh -->
-                    <srcFile>${project.build.directory}/database.sql</srcFile>
-                  </srcFiles>
                   <onError>continue</onError>
                 </configuration>
               </execution>
@@ -767,6 +824,18 @@
       </activation>
       <properties>
         <cargo.jboss.management-native.port>${env.JBOSS_MANAGEMENT_NATIVE_PORT}</cargo.jboss.management-native.port>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>MYSQL_PORT</id>
+      <activation>
+        <property>
+          <name>env.MYSQL_PORT</name>
+        </property>
+      </activation>
+      <properties>
+        <mysql.port>${env.MYSQL_PORT}</mysql.port>
       </properties>
     </profile>
 
@@ -944,9 +1013,7 @@
                 <echo>-Dwebdriver.screenshot.dir=location to store screenshots during test execution.Default is ${project.build.directory}/screenshots</echo>
                 <echo>NB: set env var DISPLAY to run test browser in alternative display, for Xnest/Xvfb/Xvnc. eg: xvfb-run -e mvn verify -Dappserver=wildfly8</echo>
                 <echo>==========================================================</echo>
-                <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8 -Dmysql.port=13306</echo>
-                <!-- placeholder. Actual content should be populated by running server/etc/scripts/functional-test-db-snapshot.sh -->
-                <touch file="${project.build.directory}/database.sql" />
+                <echo>to ask cargo to start up then wait so that tests can be run manually: mvn clean package cargo:run -Dappserver=wildfly8</echo>
               </target>
             </configuration>
           </execution>
@@ -1065,6 +1132,16 @@
               <smtp.port>${smtp.port}</smtp.port>
             </properties>
           </configuration>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.basepom.maven</groupId>
+        <artifactId>duplicate-finder-maven-plugin</artifactId>
+        <configuration>
+          <ignoredResourcePatterns>
+            <ignoredResourcePattern>log4j.xml</ignoredResourcePattern>
+          </ignoredResourcePatterns>
         </configuration>
       </plugin>
     </plugins>
