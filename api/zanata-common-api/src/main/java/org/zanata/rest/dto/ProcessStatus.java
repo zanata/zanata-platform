@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -39,21 +41,28 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 @XmlRootElement(name = "processStatus")
 @XmlType(name = "processStatusType")
+@Label("Process Status")
 public class ProcessStatus {
     @XmlEnum
+    @Label("Process Status Code")
     public enum ProcessStatusCode {
+        /** The process has not been accepted by the server */
         @XmlEnumValue("NotAccepted")
         NotAccepted,
 
+        /** The process has been accepted but is not yet running */
         @XmlEnumValue("Waiting")
         Waiting,
 
+        /** The process is being executed */
         @XmlEnumValue("Running")
         Running,
 
+        /** The process has finished normally */
         @XmlEnumValue("Finished")
         Finished,
 
+        /** The process has finshed with a failure */
         @XmlEnumValue("Failed")
         Failed,
     }
@@ -67,6 +76,7 @@ public class ProcessStatus {
     private ProcessStatusCode statusCode;
 
     @XmlElement(required = true)
+    @DocumentationExample("http://zanata.example.com")
     public String getUrl() {
         return url;
     }
@@ -76,6 +86,7 @@ public class ProcessStatus {
     }
 
     @XmlElement(required = true)
+    @DocumentationExample("55")
     public int getPercentageComplete() {
         return percentageComplete;
     }
@@ -87,6 +98,8 @@ public class ProcessStatus {
     @XmlElement(name = "message")
     @XmlElementWrapper(name = "messages", required = true)
     @JsonProperty("messages")
+    @DocumentationExample(value = "A warning message",
+            value2 = "A second warning message")
     public List<String> getMessages() {
         if (messages == null) {
             messages = new ArrayList<String>();

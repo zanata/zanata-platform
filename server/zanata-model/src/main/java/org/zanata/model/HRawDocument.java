@@ -21,6 +21,7 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -53,6 +54,7 @@ public class HRawDocument extends ModelEntityBase implements Serializable {
     }
 
     @NotEmpty
+    @Column(columnDefinition = "char(32)")
     public String getContentHash() {
         return contentHash;
     }
@@ -74,10 +76,12 @@ public class HRawDocument extends ModelEntityBase implements Serializable {
                 + contentHash + "]";
     }
 
+    @Column(columnDefinition = "longtext")
     public String getFileId() {
         return this.fileId;
     }
 
+    @Column(columnDefinition = "longtext")
     public String getAdapterParameters() {
         return this.adapterParameters;
     }

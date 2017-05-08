@@ -28,17 +28,21 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.zanata.rest.dto.CopyTransStatus;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
+ * Represents the state of a copy trans run. These are special processes which
+ * search for and reuse translations.
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Path(CopyTransResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@ResourceLabel("Copy Trans")
 public interface CopyTransResource extends RestResource {
     public static final String SERVICE_PATH = "/copytrans";
 

@@ -19,7 +19,7 @@
   </scm>
 
   <properties>
-    <enunciate.version>2.6.0</enunciate.version>
+    <enunciate.version>2.9.1</enunciate.version>
   </properties>
 
   <build>

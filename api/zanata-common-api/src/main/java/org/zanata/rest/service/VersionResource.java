@@ -27,13 +27,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.VersionInfo;
 
+/**
+ * Retrieves the system's version.
+ */
 @Path(VersionResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@ResourceLabel("System Version")
 public interface VersionResource extends RestResource {
     public static final String SERVICE_PATH = "/version";
 

@@ -117,6 +117,7 @@ public class HTextFlowTarget extends ModelEntityBase
     private Integer oldVersionNum;
 
     @Type(type = "sourceType")
+    @Column(columnDefinition = "char(3)")
     public TranslationSourceType getSourceType() {
         return sourceType;
     }
@@ -242,6 +243,7 @@ public class HTextFlowTarget extends ModelEntityBase
     }
 
     @Type(type = "entityType")
+    @Column(columnDefinition = "char(3)")
     public EntityType getCopiedEntityType() {
         return copiedEntityType;
     }
@@ -335,26 +337,32 @@ public class HTextFlowTarget extends ModelEntityBase
         }
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent0() {
         return content0;
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent1() {
         return content1;
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent2() {
         return content2;
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent3() {
         return content3;
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent4() {
         return content4;
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent5() {
         return content5;
     }
@@ -755,10 +763,12 @@ public class HTextFlowTarget extends ModelEntityBase
         return result;
     }
 
+    @Column(columnDefinition = "longtext")
     public String getRevisionComment() {
         return this.revisionComment;
     }
 
+    @Column(columnDefinition = "longtext")
     public Long getCopiedEntityId() {
         return this.copiedEntityId;
     }

@@ -45,6 +45,7 @@ public class HRoleAssignmentRule extends ModelEntityBase {
         return policyName;
     }
 
+    @Column(columnDefinition = "longtext")
     public String getIdentityRegExp() {
         return identityRegExp;
     }

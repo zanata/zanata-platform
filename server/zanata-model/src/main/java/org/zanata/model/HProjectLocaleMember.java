@@ -100,7 +100,7 @@ public class HProjectLocaleMember
     @JoinColumn(name = "personId", nullable = false)
     private HPerson person;
     @Id
-    @Column(name = "role")
+    @Column(name = "role", columnDefinition = "char")
     @Type(type = "localeRole")
     private LocaleRole role;
 
