@@ -307,26 +307,32 @@ public class HTextFlow extends HTextContainer implements Serializable,
         }
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent0() {
         return content0;
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent1() {
         return content1;
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent2() {
         return content2;
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent3() {
         return content3;
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent4() {
         return content4;
     }
 
+    @Column(columnDefinition = "longtext")
     protected String getContent5() {
         return content5;
     }
@@ -336,7 +342,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
     @MapKey(name = "revision")
     public Map<Integer, HTextFlowHistory> getHistory() {
         if (this.history == null) {
-            this.history = new HashMap<Integer, HTextFlowHistory>();
+            this.history = new HashMap<>();
         }
         return history;
     }
@@ -347,7 +353,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
     @Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
     public Map<Long, HTextFlowTarget> getTargets() {
         if (targets == null) {
-            targets = new HashMap<Long, HTextFlowTarget>();
+            targets = new HashMap<>();
         }
         return targets;
     }
@@ -385,6 +391,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
     }
 
     @Field(analyze = Analyze.NO)
+    @Column(columnDefinition = "char(32)")
     public String getContentHash() {
         return contentHash;
     }

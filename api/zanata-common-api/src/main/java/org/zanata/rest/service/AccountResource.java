@@ -28,12 +28,16 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Account;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
+ * Represents user accounts in the system.
  * username: User name that identifies an account
  *
  * @author Sean Flanigan <a
@@ -41,23 +45,24 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
  *
  */
 @Path(AccountResource.SERVICE_PATH)
+@ResourceLabel("User Account")
 public interface AccountResource extends RestResource {
     public static final String SERVICE_PATH =
             "/accounts/u/{username:[a-z\\d_]{3,20}}";
 
     /**
      * Retrieves a user account.
-     *
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Response containing information for the user account.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
      */
     @GET
     @Produces({ MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML,
             MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON })
     @TypeHint(Account.class)
+    @StatusCodes({
+            @ResponseCode(code = 200,
+                    condition = "response containing information for the user account"),
+            @ResponseCode(code = 500,
+                    condition = "If there is an unexpected error in the server while performing this operation")
+    })
     public Response get();
 
     /**
@@ -67,18 +72,20 @@ public interface AccountResource extends RestResource {
      *
      * @param account
      *            The account information to create/update.
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - If an existing account was modified.<br>
-     *         CREATED(201) - If a new account was created.<br>
-     *         UNAUTHORIZED(401) - If the user does not have the proper
-     *         permissions to perform this operation.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
      */
     @PUT
     @Consumes({ MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML,
             MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON })
+    @StatusCodes({
+            @ResponseCode(code = 200,
+                    condition = "An existing account was modified"),
+            @ResponseCode(code = 201,
+                    condition = "A new account was created"),
+            @ResponseCode(code = 401,
+                    condition = "The user does not have the proper permissions to perform this operation"),
+            @ResponseCode(code = 500,
+                    condition = "If there is an unexpected error in the server while performing this operation")
+    })
     public Response put(Account account);
 
 }

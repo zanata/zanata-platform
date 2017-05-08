@@ -9,7 +9,8 @@ import org.junit.runners.Suite;
     FlakyTest.class,
     ObsoleteTextTest.class,
     PageNotFoundTest.class,
-    RateLimitRestAndUITest.class
+    RateLimitRestAndUITest.class,
+    DatabaseDDLTest.class
 
 })
 public class MiscTestSuite {

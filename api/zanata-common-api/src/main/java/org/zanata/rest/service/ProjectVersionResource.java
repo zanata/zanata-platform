@@ -33,6 +33,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProjectIteration;
@@ -50,6 +51,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Path(ProjectVersionResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@ResourceLabel("Project Version")
 public interface ProjectVersionResource extends RestResource {
     public static final String PROJECT_SERVICE_PATH = "/project";
 

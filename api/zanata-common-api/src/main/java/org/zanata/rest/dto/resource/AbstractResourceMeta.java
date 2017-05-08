@@ -8,6 +8,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.zanata.common.ContentType;
@@ -22,6 +23,7 @@ import org.zanata.rest.dto.extensions.gettext.AbstractResourceMetaExtension;
 
 @XmlType(name = "abstractResourceMetaType",
         propOrder = { "name", "extensions" })
+@Label("Abstract Resource")
 public abstract class AbstractResourceMeta implements Serializable,
         Extensible<AbstractResourceMetaExtension> {
     private static final long serialVersionUID = 1L;

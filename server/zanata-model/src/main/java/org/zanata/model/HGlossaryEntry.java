@@ -35,6 +35,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -54,6 +56,7 @@ import org.zanata.util.GlossaryUtil;
 @EntityListeners({ HGlossaryEntry.EntityListener.class })
 @Cacheable
 @Indexed
+@Table(uniqueConstraints = @UniqueConstraint(name = "UK_glossaryEntry", columnNames = {"contentHash", "glossaryId"}))
 public class HGlossaryEntry extends ModelEntityBase {
 
     private static final long serialVersionUID = -4200183325180630061L;

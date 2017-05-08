@@ -30,6 +30,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.zanata.rest.dto.ProjectStatisticsMatrix;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
@@ -37,12 +38,14 @@ import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
+ * Fetch different translation statistics
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Path(StatisticsResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@ResourceLabel("Statistics")
 public interface StatisticsResource extends RestResource {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 

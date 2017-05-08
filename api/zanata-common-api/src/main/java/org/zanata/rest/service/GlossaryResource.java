@@ -36,6 +36,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.GlossaryFileUploadForm;
@@ -49,7 +50,7 @@ import org.zanata.rest.dto.ResultList;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
- *
+ * Glossary management via REST
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
@@ -61,6 +62,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
+@ResourceLabel("Glossary")
 public interface GlossaryResource extends RestResource {
     public static final String SERVICE_PATH = "/glossary";
 

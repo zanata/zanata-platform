@@ -30,6 +30,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Project;
 import org.zanata.rest.dto.QualifiedName;
@@ -37,6 +38,8 @@ import org.zanata.rest.dto.QualifiedName;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
+ * Manage projects
+ * <br>
  * projectSlug: Project Identifier.
  *
  * @author Sean Flanigan <a
@@ -46,6 +49,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Path(ProjectResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@ResourceLabel("Project")
 public interface ProjectResource extends RestResource {
     public static final String PROJECT_SLUG_TEMPLATE = "{projectSlug:"
             + RestConstants.SLUG_PATTERN + "}";

@@ -27,13 +27,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.LocaleDetails;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+/**
+ * REST interface for configured version locales.
+ * @see {@link ProjectLocalesResource} Project locales
+ */
 @Path(ProjectIterationLocalesResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@ResourceLabel("Version Locales")
 public interface ProjectIterationLocalesResource extends RestResource {
     public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH
             + "/locales";

@@ -21,6 +21,7 @@
 package org.zanata.model;
 
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -67,6 +68,7 @@ public class HGlossaryTerm extends ModelEntityBase {
         return content;
     }
 
+    @Column(columnDefinition = "longtext")
     public String getComment() {
         return comment;
     }

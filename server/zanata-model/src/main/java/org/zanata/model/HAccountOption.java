@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -45,6 +46,7 @@ public class HAccountOption extends ModelEntityBase {
         return name;
     }
 
+    @Column(columnDefinition = "longtext")
     public String getValue() {
         return value;
     }
