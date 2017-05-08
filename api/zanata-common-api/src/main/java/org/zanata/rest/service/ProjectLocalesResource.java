@@ -27,13 +27,21 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.LocaleDetails;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
+/**
+ * REST interface for configured project locales.
+ * @see {@link ProjectIterationLocalesResource} Version locales
+ */
 @Path(ProjectLocalesResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@ResourceLabel("Project locales")
 public interface ProjectLocalesResource extends RestResource {
     public static final String SERVICE_PATH = ProjectResource.SERVICE_PATH
             + "/locales";
@@ -52,6 +60,10 @@ public interface ProjectLocalesResource extends RestResource {
     @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECT_LOCALES_XML,
             MediaTypes.APPLICATION_ZANATA_PROJECT_LOCALES_JSON,
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Content contains a list of locale details"),
+            @ResponseCode(code = 404, condition = "The project is not found"),
+    })
     public Response get();
 
 }
