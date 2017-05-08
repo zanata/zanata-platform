@@ -29,11 +29,13 @@
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
     <context.path>zanata</context.path>
 
+    <!-- this may be changed by the MYSQL_PORT profile -->
+    <mysql.port>13306</mysql.port>
+
     <!--mysql-maven-plugin will use these setup-->
     <ds.database>root</ds.database>
     <ds.username>root</ds.username>
     <ds.password>root</ds.password>
-    <!-- Note that mysql.port is not set initially -->
     <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
     <!-- skipAfterFailureCount=0 due to https://issues.apache.org/jira/browse/SUREFIRE-1219 -->
@@ -520,23 +522,6 @@
       <build>
         <plugins>
           <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>build-helper-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>reserve-network-port</goal>
-                </goals>
-                <phase>generate-test-resources</phase>
-                <configuration>
-                  <portNames>
-                    <portName>mysql.port</portName>
-                  </portNames>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
             <groupId>org.codehaus.gmavenplus</groupId>
             <artifactId>gmavenplus-plugin</artifactId>
             <executions>
@@ -774,6 +759,18 @@
       </activation>
       <properties>
         <cargo.jboss.management-native.port>${env.JBOSS_MANAGEMENT_NATIVE_PORT}</cargo.jboss.management-native.port>
+      </properties>
+    </profile>
+
+    <profile>
+      <id>MYSQL_PORT</id>
+      <activation>
+        <property>
+          <name>env.MYSQL_PORT</name>
+        </property>
+      </activation>
+      <properties>
+        <mysql.port>${env.MYSQL_PORT}</mysql.port>
       </properties>
     </profile>
 
