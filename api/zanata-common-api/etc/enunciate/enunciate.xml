@@ -1,14 +1,7 @@
 <enunciate
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:noNamespaceSchemaLocation="http://enunciate.webcohesion.com/schemas/enunciate-2.6.0.xsd">
-  <namespaces>
-    <namespace id="zanata" uri="http://www.zanata.org" />
-  </namespaces>
-  <api-classes>
-    <include pattern="org.zanata.rest.*" />
-  </api-classes>
+  xsi:noNamespaceSchemaLocation="http://enunciate.webcohesion.com/schemas/enunciate-2.9.0.xsd">
   <title>Zanata REST API</title>
-  <copyright>Red Hat, Inc and others</copyright>
   <description>
     <![CDATA[
       <h1>Introduction</h1>
@@ -22,19 +15,44 @@
 
         Some of the available resources require authentication and will respond with
         an UNAUTHORIZED (401) code if not available. To prevent this, you must supply
-        credentials in the form of the "X-Auth-User" header, which should contain a
-        valid Zanata user name, and "X-Auth-Token", which should contain the
-        corresponding API key for the user. Additionally, the service might continue
+        credentials in the form of HTTP headers as indicated in the table below.
+        Additionally, the service might continue
         to respond with the same code if the authenticated user does not have
         the right permissions to access the resource.
+
+        <table class='table table-hover resources'>
+          <thead>
+            <tr>
+              <th align="center">Header</th>
+              <th align="center">Description</th>
+            </tr>
+          </thead>
+          <tbody class='rowlink'>
+            <tr>
+              <td>X-Auth-User</td>
+              <td>User name</td>
+            </tr>
+            <tr>
+              <td>X-Auth-Token</td>
+              <td>User's API key</td>
+            </tr>
+          </tbody>
+        </table>
       </p>
     ]]>
   </description>
+  <copyright>Red Hat, Inc and others</copyright>
+  <!--<namespaces>-->
+    <!--<namespace id="zanata" uri="http://www.zanata.org" />-->
+  <!--</namespaces>-->
+  <!--<api-classes>-->
+  <!--<include pattern="org.zanata.rest.*" />-->
+  <!--</api-classes>-->
   <!-- https://github.com/stoicflame/enunciate/wiki/Modules -->
-  <!--<modules>-->
+  <modules>
     <!--<jaxb />-->
     <!--<jackson1 />-->
-    <!--<jaxrs />-->
+    <!--<jaxrs groupBy="path"/>-->
     <!--<docs />-->
-  <!--</modules>-->
+  </modules>
 </enunciate>
