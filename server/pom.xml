@@ -1875,6 +1875,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <compilerArgs>
+            <arg>-Xlint:-processing</arg>
+            <arg>-Xlint:all</arg>
+          </compilerArgs>
+        </configuration>
         <executions>
           <!-- Replacing default-compile as it is treated specially by Maven.
                We need kotlin-maven-plugin to compile first. -->
