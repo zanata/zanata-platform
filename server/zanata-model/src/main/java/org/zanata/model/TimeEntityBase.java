@@ -28,6 +28,7 @@ public class TimeEntityBase implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotNull
+    @Column(columnDefinition = "char(36)")
     private String entityId;
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)

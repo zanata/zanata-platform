@@ -3,7 +3,7 @@
  */
 
 import React, { Component, PropTypes } from 'react'
-import { Modal } from 'zanata-ui'
+import { Modal } from '../../../components'
 import { PanelGroup } from 'react-bootstrap'
 import LocalProjectDetailPanel from './LocalProjectDetailPanel'
 import ImportedTMDetailPanel from './ImportedTMDetailPanel'

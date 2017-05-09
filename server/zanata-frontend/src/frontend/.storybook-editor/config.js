@@ -5,9 +5,6 @@ import { locale, formats } from '../app/editor/config/intl'
 import { addDecorator, configure } from '@kadira/storybook'
 import './storybook.css'
 
-// As long as we use any zanata-ui components, we should keep this import
-import 'zanata-ui/dist/zanata-ui.css'
-
 // fonts are included in index.html for the app, but storybook does not use that
 var fontLink = document.createElement('link')
 fontLink.setAttribute('href', 'http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,400italic') // eslint-disable-line max-len
@@ -40,7 +37,7 @@ addDecorator((story) => (
 ))
 
 function loadStories () {
-  require('../app/editor/components/stories.js')
+  require('../app/editor/components/components.story.js')
 }
 
 configure(loadStories, module)

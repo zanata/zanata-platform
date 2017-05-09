@@ -1,6 +1,6 @@
 import Notification from './component'
 import { connect } from 'react-redux'
-import { clearMessage } from '../../actions/common'
+import { clearMessage } from '../../actions/common-actions'
 
 const mapDispatchToProps = (dispatch) => {
   return {

@@ -24,9 +24,12 @@ import java.io.Serializable;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
 @Cacheable
+@Table(uniqueConstraints = @UniqueConstraint(name = "UKAccountId", columnNames = "accountId"))
 public class HAccountResetPasswordKey extends AccountKeyBase implements
         Serializable {
 

@@ -39,6 +39,8 @@ public class SlugEntityBaseTest {
 
     static class SlugClass extends SlugEntityBase {
 
+        private static final long serialVersionUID = 1L;
+
         public SlugClass(String slug) {
             super(slug);
         }
