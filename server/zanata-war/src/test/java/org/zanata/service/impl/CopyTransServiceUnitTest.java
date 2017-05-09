@@ -20,14 +20,9 @@
  */
 package org.zanata.service.impl;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
-import static org.mockito.Matchers.anyListOf;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
-import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 
 import java.util.Arrays;
 import java.util.List;

@@ -25,6 +25,8 @@ import org.hibernate.search.annotations.Field;
         columnNames = "qualifiedName"))
 public class Glossary implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     public Glossary(String qualifiedName) {
         this.qualifiedName = qualifiedName;
     }
