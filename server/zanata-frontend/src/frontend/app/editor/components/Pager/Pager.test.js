@@ -4,7 +4,7 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-addons-test-utils'
 import Pager from '.'
-import { Icon } from 'zanata-ui'
+import { Icon } from '../../../components'
 import mockGettextCatalog from '../../../../__tests__/mock/mockAngularGettext'
 
 describe('PagerTest', () => {
@@ -25,13 +25,13 @@ describe('PagerTest', () => {
         <li>
           <a className='Link--neutral u-sizeHeight-1_1-2 u-textNoSelect'
              title='First page'>
-            <Icon name='previous' title='First page' size="2" />
+            <Icon name='previous' title='First page' className="s2" />
           </a>
         </li>
         <li>
           <a className='Link--neutral u-sizeHeight-1_1-2 u-textNoSelect'
              title='Previous page'>
-            <Icon name='chevron-left' title='Previous page' size="2" />
+            <Icon name='chevron-left' title='Previous page' className="s2" />
           </a>
         </li>
         <li className='u-sizeHeight-1 u-sPH-1-4'>
@@ -42,13 +42,13 @@ describe('PagerTest', () => {
         <li>
           <a className='Link--neutral u-sizeHeight-1_1-2 u-textNoSelect'
              title='Next page'>
-            <Icon name='chevron-right' title='Next page' size="2" />
+            <Icon name='chevron-right' title='Next page' className="s2" />
           </a>
         </li>
         <li>
           <a className='Link--neutral u-sizeHeight-1_1-2 u-textNoSelect'
              title='Last page'>
-            <Icon name='next' title='Last page' size="2" />
+            <Icon name='next' title='Last page' className="s2" />
           </a>
         </li>
       </ul>

@@ -11,6 +11,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -21,11 +23,15 @@ import org.zanata.common.Namespaces;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.MediaTypes.Format;
 
+/**
+ * System user account.
+ */
 @XmlType(name = "accountType")
 @XmlRootElement(name = "account")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonPropertyOrder({ "email", "name", "username", "password" })
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@Label("Account")
 public class Account implements Serializable, HasMediaType {
 
     private String email;
@@ -58,6 +64,7 @@ public class Account implements Serializable, HasMediaType {
     @XmlAttribute(name = "email", required = true)
     @Email
     @NotNull
+    @DocumentationExample("email@example.com")
     public String getEmail() {
         return email;
     }
@@ -68,6 +75,7 @@ public class Account implements Serializable, HasMediaType {
 
     @XmlAttribute(name = "name", required = true)
     @NotEmpty
+    @DocumentationExample("Homer Simpson")
     public String getName() {
         return name;
     }
@@ -78,6 +86,7 @@ public class Account implements Serializable, HasMediaType {
 
     @XmlAttribute(name = "username", required = true)
     @NotEmpty
+    @DocumentationExample("homer")
     public String getUsername() {
         return username;
     }
@@ -87,6 +96,7 @@ public class Account implements Serializable, HasMediaType {
     }
 
     @XmlAttribute(name = "passwordHash")
+    @DocumentationExample("cf23df2207d99a74fbe169e3eba035e633b65d94")
     public String getPasswordHash() {
         return passwordHash;
     }
@@ -97,6 +107,7 @@ public class Account implements Serializable, HasMediaType {
 
     @XmlAttribute(name = "apiKey")
     @Size(min = 32, max = 32)
+    @DocumentationExample("qiyh4XPJGsOZ2MEAyLkfWqeQ")
     public String getApiKey() {
         return apiKey;
     }
@@ -117,6 +128,7 @@ public class Account implements Serializable, HasMediaType {
 
     @XmlElement(name = "role", namespace = Namespaces.ZANATA_OLD)
     @JsonProperty("roles")
+    @DocumentationExample(value = "admin", value2 = "project-creator")
     public Set<String> getRoles() {
         return roles;
     }
@@ -125,8 +137,12 @@ public class Account implements Serializable, HasMediaType {
         this.roles = roles;
     }
 
+    /**
+     * Global language teams the account belongs to
+     */
     @XmlElement(name = "tribe", namespace = Namespaces.ZANATA_OLD)
     @JsonProperty("tribes")
+    @DocumentationExample(value = "es", value2 = "ja")
     public Set<String> getTribes() {
         return tribes;
     }

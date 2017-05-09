@@ -4,8 +4,8 @@
  */
 
 import React, { Component, PropTypes } from 'react'
-import { Icon, Row } from 'zanata-ui'
-import { Panel, Label } from 'react-bootstrap'
+import { Icon } from '../../../components'
+import { Panel, Label, Row } from 'react-bootstrap'
 import SuggestionUpdateMessage from '../../components/SuggestionUpdateMessage'
 import { MATCH_TYPE } from '../../utils/suggestion-util'
 
@@ -42,7 +42,7 @@ class ImportedTMDetailPanel extends Component {
           <ul className="u-listInline u-sMB-1-4">
             <li>
               <Row>
-                <Icon name="import" size="1" />
+                <Icon name="import" className="s1" />
                 <span className="TransUnit-details-inner">{transMemorySlug}
                 </span>
               </Row>

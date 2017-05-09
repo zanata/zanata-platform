@@ -21,6 +21,7 @@
 package org.zanata.model;
 
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
@@ -91,18 +92,21 @@ public class HCopyTransOptions extends ModelEntityBase {
 
     @Type(type = "conditionRuleAction")
     @NotNull
+    @Column(columnDefinition = "char(1)")
     public ConditionRuleAction getContextMismatchAction() {
         return contextMismatchAction;
     }
 
     @Type(type = "conditionRuleAction")
     @NotNull
+    @Column(columnDefinition = "char(1)")
     public ConditionRuleAction getDocIdMismatchAction() {
         return docIdMismatchAction;
     }
 
     @Type(type = "conditionRuleAction")
     @NotNull
+    @Column(columnDefinition = "char(1)")
     public ConditionRuleAction getProjectMismatchAction() {
         return projectMismatchAction;
     }

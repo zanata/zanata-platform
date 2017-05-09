@@ -1,7 +1,7 @@
 Zanata Platform
 =============
 
-![Zanata](http://assets-zanata.rhcloud.com/master/assets/img/logo/logo-128.png)
+![Zanata](http://zanata.org/images/logo/logo-128.png)
 
 [Zanata.org](http://zanata.org) | [Twitter](http://www.twitter.com/#!/zanatatm) | [Blog](http://blog-zanatatm.rhcloud.com/) | [IRC@Freenode](http://webchat.freenode.net/?channels=zanata)
 

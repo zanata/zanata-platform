@@ -90,8 +90,9 @@ public class TranslationMemoryPage extends BasePage {
     public TranslationMemoryPage clickUploadButtonAndAcknowledge() {
         log.info("Click and accept Upload button");
         clickElement(uploadButton);
-        clickElement(
-                readyElement(uploadNotification).findElement(okConfirmation));
+        WebElement notificationDialog = readyElement(uploadNotification);
+        slightPause();
+        clickElement(readyElement(notificationDialog, okConfirmation));
         return new TranslationMemoryPage(getDriver());
     }
 
