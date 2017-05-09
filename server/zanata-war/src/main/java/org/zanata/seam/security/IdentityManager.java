@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
 import com.google.common.base.Strings;
 

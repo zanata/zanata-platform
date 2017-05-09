@@ -10,6 +10,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class DocumentInfo implements HasIdentifier<DocumentId>, IsSerializable,
         Serializable {
+    private static final long serialVersionUID = -7741028917197462808L;
     private DocumentId id;
     private String name;
     private String path;

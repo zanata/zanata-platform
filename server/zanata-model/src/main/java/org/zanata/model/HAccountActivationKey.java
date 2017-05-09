@@ -58,7 +58,7 @@ public class HAccountActivationKey extends AccountKeyBase
     public void setCreationDate(final Date creationDate) {
         this.creationDate =
                 creationDate != null ? new Date(creationDate.getTime()) :
-                        creationDate;
+                        null;
     }
 
     @Override

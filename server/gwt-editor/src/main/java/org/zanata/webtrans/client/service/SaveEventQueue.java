@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.List;
 
 import com.google.common.base.MoreObjects;
-import edu.umd.cs.findbugs.annotations.NonNull;
 import org.zanata.common.ContentState;
 import org.zanata.webtrans.client.events.TransUnitSaveEvent;
 import org.zanata.webtrans.shared.model.HasTransUnitId;
@@ -19,8 +18,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.inject.Singleton;
-
-import javax.validation.constraints.NotNull;
 
 import static com.google.common.collect.Collections2.filter;
 

@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 public class TextFlowTarget implements HasIdentifier<TextFlowTargetId>,
         IsSerializable, Serializable {
+    private static final long serialVersionUID = -3173500837230830642L;
     private TextFlowTargetId id;
     private Locale locale;
     private String content;

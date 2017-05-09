@@ -7,6 +7,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 
 public final class WorkspaceId implements IsSerializable, Serializable {
+    private static final long serialVersionUID = -6685742030048522614L;
     private ProjectIterationId projectIterationId;
     private LocaleId localeId;
 

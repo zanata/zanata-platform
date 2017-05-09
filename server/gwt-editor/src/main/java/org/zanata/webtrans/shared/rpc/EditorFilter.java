@@ -34,6 +34,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class EditorFilter implements IsSerializable, Serializable {
     public static final EditorFilter ALL = new EditorFilter();
+    private static final long serialVersionUID = -3998075471677886825L;
     private String textInContent;
     private String resId;
     private String lastModifiedBefore;

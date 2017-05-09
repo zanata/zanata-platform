@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class TransUnitId implements IsSerializable, Identifier<Long>,
         Serializable {
+    private static final long serialVersionUID = 7666166109552526377L;
     private long id;
 
     // for GWT

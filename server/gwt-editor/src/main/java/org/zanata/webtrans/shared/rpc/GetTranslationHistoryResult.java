@@ -13,6 +13,7 @@ import com.google.common.collect.Lists;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class GetTranslationHistoryResult implements DispatchResult {
+    private static final long serialVersionUID = 4282378769685041958L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<TransHistoryItem> historyItems = Lists.newArrayList();
     @SuppressFBWarnings(value = "SE_BAD_FIELD")

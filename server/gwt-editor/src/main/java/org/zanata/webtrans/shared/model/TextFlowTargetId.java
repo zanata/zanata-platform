@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 public class TextFlowTargetId implements IsSerializable, Identifier<Long>,
         Serializable {
+    private static final long serialVersionUID = -4796623552425294279L;
     private long id;
 
     // for GWT

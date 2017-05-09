@@ -42,6 +42,8 @@ import java.util.List;
 @Path(StatisticsResource.SERVICE_PATH)
 public class MockStatisticsResource implements StatisticsResource {
 
+    private static final long serialVersionUID = -1270337376508171813L;
+
     @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug,

@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 
 public final class PersonId implements IsSerializable, Serializable {
+    private static final long serialVersionUID = -8135378949325229049L;
     private String id;
 
     // for GWT

@@ -5,6 +5,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 
 public class UserWorkspaceContext implements IsSerializable, Serializable {
+    private static final long serialVersionUID = 3954106559378324802L;
     private WorkspaceRestrictions workspaceRestrictions;
     private DocumentInfo selectedDoc;
 

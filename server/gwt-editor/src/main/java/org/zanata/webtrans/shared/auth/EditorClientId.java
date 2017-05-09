@@ -17,6 +17,7 @@ import java.io.Serializable;
  */
 public final class EditorClientId implements Identifier<String>, IsSerializable,
         Serializable {
+    private static final long serialVersionUID = -7299185331708760703L;
     private String httpSessionId;
     private long editorClientNum;
 

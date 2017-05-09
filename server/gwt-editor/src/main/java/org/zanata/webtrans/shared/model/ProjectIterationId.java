@@ -8,6 +8,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import java.io.Serializable;
 
 public class ProjectIterationId implements IsSerializable, Serializable {
+    private static final long serialVersionUID = -1740873887370595832L;
     private String projectSlug;
     private String iterationSlug;
     private ProjectType projectType;

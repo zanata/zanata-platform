@@ -35,6 +35,7 @@ import java.io.Serializable;
  *
  */
 public class TransUnitUpdateInfo implements IsSerializable, Serializable {
+    private static final long serialVersionUID = -2450216866345707827L;
     private boolean success;
     private boolean targetChanged;
     private DocumentId documentId;

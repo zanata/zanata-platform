@@ -22,16 +22,13 @@ package org.zanata.model;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 // FIXME Cacheable
 
@@ -113,7 +110,7 @@ public class HApplicationConfiguration extends ModelEntityBase {
                             }
                             return null;
                         } catch (IllegalAccessException e) {
-                            throw Throwables.propagate(e);
+                            throw new RuntimeException(e);
                         }
                     }
                 });

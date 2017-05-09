@@ -6,6 +6,7 @@ import java.util.Date;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class AuditInfo implements IsSerializable, Serializable {
+    private static final long serialVersionUID = 3542554308558606387L;
     private Date date;
     private String username;
 

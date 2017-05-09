@@ -16,6 +16,7 @@ import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransUnit implements IsSerializable, Serializable, HasTransUnitId {
+    private static final long serialVersionUID = 8162311083269999522L;
     private ContentState status;
 
     private TransUnitId id;

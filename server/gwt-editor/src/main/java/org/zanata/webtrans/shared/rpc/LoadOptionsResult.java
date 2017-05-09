@@ -28,6 +28,7 @@ import org.zanata.webtrans.client.presenter.UserConfigHolder;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class LoadOptionsResult implements DispatchResult {
+    private static final long serialVersionUID = 8700040710287587742L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Implemented GWT IsSerializable")
     private UserConfigHolder.ConfigurationState configuration;
 

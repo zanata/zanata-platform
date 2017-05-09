@@ -13,6 +13,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  */
 public class ReviewComment extends ComparableByDate implements IsSerializable,
         Serializable {
+    private static final long serialVersionUID = -739227847010028336L;
     private ReviewCommentId id;
     private String comment;
     private List<String> targetContents;

@@ -28,6 +28,7 @@ import java.util.Map;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public final class ValidationFactory implements Serializable {
+    private static final long serialVersionUID = -3012831702205522555L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final ValidationMessages validationMessages;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")

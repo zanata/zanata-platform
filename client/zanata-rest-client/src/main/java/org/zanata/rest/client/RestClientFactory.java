@@ -55,6 +55,7 @@ import com.google.common.base.Throwables;
 public class RestClientFactory implements Serializable {
     private static final Logger log =
             LoggerFactory.getLogger(RestClientFactory.class);
+    private static final long serialVersionUID = -276490112687360482L;
     private String serverVersion;
     private String clientVersion;
     private VersionInfo clientApiVersion;

@@ -35,6 +35,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *
  */
 public class TransMemoryQuery implements IsSerializable, Serializable {
+    private static final long serialVersionUID = -7607303697241443017L;
     private SearchType searchType;
     private List<String> queries;
     private Condition project;
@@ -154,6 +155,7 @@ public class TransMemoryQuery implements IsSerializable, Serializable {
     }
 
     public static class Condition implements IsSerializable, Serializable {
+        private static final long serialVersionUID = -2266963054875014780L;
         private boolean isCheck;
         private String value;
 

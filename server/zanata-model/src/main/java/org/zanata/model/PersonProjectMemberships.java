@@ -45,6 +45,7 @@ import java.util.Set;
  * individual UI elements (e.g. checkboxes).
  */
 public class PersonProjectMemberships implements Serializable {
+    private static final long serialVersionUID = -6361740969547052616L;
     private HPerson person;
     private boolean maintainer;
     private boolean translationMaintainer;

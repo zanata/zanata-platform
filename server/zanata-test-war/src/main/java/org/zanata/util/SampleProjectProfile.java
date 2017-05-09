@@ -46,6 +46,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Transactional
 public class SampleProjectProfile implements Serializable {
     private static final Logger log = getLogger(SampleProjectProfile.class);
+    private static final long serialVersionUID = 8699288697515054056L;
 
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject

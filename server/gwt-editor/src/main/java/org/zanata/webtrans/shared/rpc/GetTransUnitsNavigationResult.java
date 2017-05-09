@@ -14,6 +14,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class GetTransUnitsNavigationResult implements IsSerializable,
         Serializable {
 
+    private static final long serialVersionUID = -5894943261220660864L;
     private List<TransUnitId> idIndexList;
     private Map<TransUnitId, ContentState> transIdStateList;
 

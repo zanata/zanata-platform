@@ -11,6 +11,7 @@ import java.io.Serializable;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class WorkspaceRestrictions implements IsSerializable, Serializable {
+    private static final long serialVersionUID = 649376404082317667L;
     private boolean isProjectActive;
     private boolean isProjectObsolete;
     private boolean hasEditTranslationAccess;

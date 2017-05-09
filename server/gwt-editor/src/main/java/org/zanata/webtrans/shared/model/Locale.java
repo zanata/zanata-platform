@@ -11,6 +11,7 @@ import java.io.Serializable;
  */
 public class Locale implements HasIdentifier<IdForLocale>, IsSerializable,
         Serializable {
+    private static final long serialVersionUID = 6051655587833509927L;
     private IdForLocale id;
     private String displayName;
     public final static Locale notChosenLocale = new Locale();
