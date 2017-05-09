@@ -55,13 +55,13 @@ batch
 /subsystem=logging/logger=org.jboss.weld:write-attribute(name=level,value=DEBUG)
 /subsystem=logging/logger=org.jboss.weld:write-attribute(name=filter-spec, value="any(match(\".*Catching.*\"), levelRange[INFO, FATAL])")
 ## Log Hibernate SQL statements to server.log
-/subsystem=logging/logger=org.hibernate.SQL:add
-/subsystem=logging/logger=org.hibernate.SQL:write-attribute(name=level,value=DEBUG)
+# /subsystem=logging/logger=org.hibernate.SQL:add
+# /subsystem=logging/logger=org.hibernate.SQL:write-attribute(name=level,value=DEBUG)
 ## Log Hibernate SQL parameter values to server.log
-/subsystem=logging/logger=org.hibernate.type.descriptor.sql:add
-/subsystem=logging/logger=org.hibernate.type.descriptor.sql:write-attribute(name=level,value=TRACE)
-/subsystem=logging/logger=jboss.jdbc.spy:add
-/subsystem=logging/logger=jboss.jdbc.spy:write-attribute(name=level,value=TRACE)
+# /subsystem=logging/logger=org.hibernate.type.descriptor.sql:add
+# /subsystem=logging/logger=org.hibernate.type.descriptor.sql:write-attribute(name=level,value=TRACE)
+# /subsystem=logging/logger=jboss.jdbc.spy:add
+# /subsystem=logging/logger=jboss.jdbc.spy:write-attribute(name=level,value=TRACE)
 
 
 # ==== infinispan ====
