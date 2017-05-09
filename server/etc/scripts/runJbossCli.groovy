@@ -5,7 +5,7 @@ import static java.nio.file.attribute.PosixFilePermission.*
 
 
 /*
- * Copyright 2016, Red Hat, Inc. and individual contributors
+ * Copyright 2017, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -37,7 +37,7 @@ if (appServerHome == null) {
 File baseDir = new File(project.basedir as String)
 
 // basedir will be either functional-test module or zanata-war module
-File funcTestCLIScript = new File(baseDir.getParentFile(), "etc/scripts/zanata-config-func-test.cli")
+File commonCLIScript = new File(baseDir.getParentFile(), "etc/scripts/zanata-config-test-common.cli")
 File arqTestCLIScript = new File(baseDir.getParentFile(), "etc/scripts/zanata-config-arq-test.cli")
 
 File serverHome = new File(appServerHome)
@@ -50,7 +50,7 @@ File jbossCLI = new File(serverHome, "bin/jboss-cli.$ext")
 Set<PosixFilePermission> permissions = [GROUP_READ, GROUP_EXECUTE, OTHERS_EXECUTE, OTHERS_READ, OWNER_EXECUTE, OWNER_READ, OWNER_WRITE]
 Files.setPosixFilePermissions(jbossCLI.toPath(), permissions)
 
-runJBossCLI(jbossCLI, funcTestCLIScript)
+runJBossCLI(jbossCLI, commonCLIScript)
 if (project.artifactId == 'zanata-war') {
     // we are running arquillian test. need to run extra script
     runJBossCLI(jbossCLI, arqTestCLIScript)
@@ -70,6 +70,8 @@ static void runJBossCLI(File jbossCLI, File cliScript) {
     if (!serr.toString().isEmpty()) {
         println "jboss cli execution:stderr>  $serr"
     }
+    def exitValue = proc.exitValue
+    assert exitValue == 0 : "jboss cli execution returned non-zero code:$exitValue"
 }
 
 
