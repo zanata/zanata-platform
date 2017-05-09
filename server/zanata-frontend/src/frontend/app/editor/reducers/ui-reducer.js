@@ -24,6 +24,11 @@ export const DEFAULT_LOCALE = {
 }
 
 export const GLOSSARY_TAB = Symbol('GLOSSARY_TAB')
+export const identity = (key) => {
+  // TODO pahuang implement gettextCatalog.getString
+  // console.log('gettextCatalog.getString')
+  return key
+}
 
 const DEFAULT_FILTER_STATE = {
   all: true,
@@ -57,11 +62,7 @@ const defaultState = {
     filter: DEFAULT_FILTER_STATE
   },
   gettextCatalog: {
-    getString: (key) => {
-      // TODO pahuang implement gettextCatalog.getString
-      // console.log('gettextCatalog.getString')
-      return key
-    }
+    getString: identity
   }
 }
 
