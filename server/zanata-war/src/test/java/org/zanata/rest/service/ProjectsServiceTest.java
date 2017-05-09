@@ -60,6 +60,9 @@ public class ProjectsServiceTest extends ZanataDbunitJpaTest {
         beforeTestOperations.add(new DataSetOperation(
                 "org/zanata/test/model/ProjectsData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
+        afterTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
+                DatabaseOperation.DELETE_ALL));
     }
 
     @Test

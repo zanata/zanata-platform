@@ -25,15 +25,17 @@ import java.net.URI;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
+import org.zanata.rest.service.StatisticsResource;
 
 /**
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class StatisticsResourceClient {
+public class StatisticsResourceClient implements StatisticsResource {
     private final RestClientFactory factory;
     private final URI baseUri;
 
@@ -42,6 +44,7 @@ public class StatisticsResourceClient {
         baseUri = factory.getBaseUri();
     }
 
+    @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug,
             @DefaultValue("false") boolean includeDetails,
@@ -59,6 +62,7 @@ public class StatisticsResourceClient {
                 .get(ContainerTranslationStatistics.class);
     }
 
+    @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
             String iterationSlug, String docId,
             @DefaultValue("false") boolean includeWordStats, String[] locales) {
@@ -76,6 +80,7 @@ public class StatisticsResourceClient {
                 .get(ContainerTranslationStatistics.class);
     }
 
+    @Override
     public ContributionStatistics getContributionStatistics(String projectSlug,
             String versionSlug, String username, String dateRange, boolean includeAutomatedEntry) {
         WebTarget webResource =
@@ -90,5 +95,11 @@ public class StatisticsResourceClient {
                         .queryParam("includeAutomatedEntry", includeAutomatedEntry);
         return webResource.request(MediaType.APPLICATION_JSON_TYPE)
                 .get(ContributionStatistics.class);
+    }
+
+    @Override
+    public Response getProjectStatisticsMatrix(String projectSlug,
+            String versionSlug, String dateRangeParam, String timeZoneID) {
+        throw new UnsupportedOperationException("This method is not supported in client");
     }
 }

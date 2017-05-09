@@ -33,8 +33,6 @@ import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 import org.zanata.rest.service.StubbingServerRule;
 
-import javax.ws.rs.core.Response;
-
 public class StatisticsResourceClientTest {
     @ClassRule
     public static StubbingServerRule
