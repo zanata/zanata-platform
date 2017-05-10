@@ -53,6 +53,11 @@ storybook-static:
 test:
 	yarn test
 
+# Run the tests on every change
+test-watch:
+	yarn test:watch
+
+
 # Run a server that implements some of the Zanata API with some dummy data.
 # The server runs on localhost:7878 and has 0.5 to 5s of random latency.
 fakeserver:
