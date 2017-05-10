@@ -28,11 +28,11 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.pagefactory.AjaxElementLocatorFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
-import org.zanata.util.ShortString;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.page.utility.PageSourceKt.shortenPageSource;
 
 /**
  * The base class for the page driver. Contains functionality not generally of a
@@ -193,8 +193,7 @@ public class AbstractPage {
                     if (outstanding == null) {
                         if (log.isWarnEnabled()) {
                             String url = getDriver().getCurrentUrl();
-                            String pageSource = ShortString
-                                    .shorten(getDriver().getPageSource(), 2000);
+                            String pageSource = shortenPageSource(getDriver());
                             log.warn(
                                     "XMLHttpRequest.active is null. Is zanata-testing-extension installed? URL: {}\nPartial page source follows:\n{}",
                                     url, pageSource);
