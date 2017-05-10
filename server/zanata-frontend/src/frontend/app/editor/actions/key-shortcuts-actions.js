@@ -4,9 +4,9 @@ import {
   copyFromAlignedSource,
   undoEdit,
   cancelEdit,
-  savePhraseWithStatus } from './phrases-action-types'
+  savePhraseWithStatus } from './phrases-actions'
 import { moveNext, movePrevious } from './phrase-navigation-actions'
-import { copySuggestionN } from './suggestions-action-types'
+import { copySuggestionN } from './suggestions-actions'
 import {
   STATUS_TRANSLATED,
   STATUS_NEEDS_WORK
