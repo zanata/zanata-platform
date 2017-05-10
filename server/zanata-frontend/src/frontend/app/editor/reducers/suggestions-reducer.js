@@ -11,10 +11,9 @@ import {
   TEXT_SUGGESTION_STARTED_COPYING,
   TEXT_SUGGESTION_FINISHED_COPYING,
   TEXT_SUGGESTIONS_UPDATED
-} from '../actions/suggestions-actions'
+} from '../actions/suggestions-action-types'
 
 const defaultState = {
-  // FIXME should be 'phrase' by default
   searchType: 'phrase',
   showDetailModalForIndex: undefined,
   showDiff: true,

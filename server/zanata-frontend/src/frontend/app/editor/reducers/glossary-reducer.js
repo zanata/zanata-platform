@@ -14,14 +14,16 @@ import {
   GLOSSARY_TERMS_FAILURE,
   SET_GLOSSARY_DETAILS_INDEX,
   SHOW_GLOSSARY_DETAILS
-} from '../actions/glossary-actions'
+} from '../actions/glossary-action-types'
 
 const defaultState = {
   searchText: '',
   searching: false,
   // searchText -> results array
   results: new Map(),
-  resultsTimestamp: Date.now(),
+  // FIXME should have a result per set of results in the map
+  // this works unless the code is sent back in time to the 1960s or earlier.
+  resultsTimestamp: new Date(0),
   details: {
     show: false,
     /* Which glossary result to show detail for. Only valid when show is true */
@@ -97,6 +99,8 @@ const glossary = (state = defaultState, action) => {
         return state
       }
 
+    // TODO consider combining this with SHOW_GLOSSARY_DETAILS since that is
+    //      when an index becomes relevant
     case SET_GLOSSARY_DETAILS_INDEX:
       return update({
         details: {
