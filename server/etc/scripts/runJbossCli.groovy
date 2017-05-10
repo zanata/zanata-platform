@@ -70,7 +70,7 @@ static void runJBossCLI(File jbossCLI, File cliScript) {
     if (!serr.toString().isEmpty()) {
         println "jboss cli execution:stderr>  $serr"
     }
-    def exitValue = proc.exitValue
+    def exitValue = proc.exitValue()
     assert exitValue == 0 : "jboss cli execution returned non-zero code:$exitValue"
 }
 
