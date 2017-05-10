@@ -85,7 +85,6 @@ public class Deployments {
 
     static File[] runtimeAndTestDependenciesFromPom() {
         return Maven.configureResolver()
-                .workOffline()
                 // we want to get zanata-platform dependencies from Maven
                 // reactor classpath if possible, not from repositories
                 .withClassPathResolution(true)
