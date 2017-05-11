@@ -132,9 +132,7 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     }
 
     private void migrateAllRawContents() throws Exception {
-        ResultSet contentsResult = null;
-        try {
-            contentsResult = contentsStatement.executeQuery();
+        try (ResultSet contentsResult = contentsStatement.executeQuery()) {
             while (contentsResult.next()) {
                 try {
                     docsCount++;
@@ -147,19 +145,13 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
                     throw e;
                 }
             }
-        } finally {
-            if (contentsResult != null) {
-                contentsResult.close();
-            }
         }
     }
 
     private void migrateRawContentFromLocation(Blob content, String oldFileId)
             throws SQLException, IOException {
         idAndTypeStatement.setString(1, oldFileId);
-        ResultSet idAndTypeResult = null;
-        try {
-            idAndTypeResult = idAndTypeStatement.executeQuery();
+        try (ResultSet idAndTypeResult = idAndTypeStatement.executeQuery()) {
             if (idAndTypeResult.next()) {
                 String fileName = fileNameFromResults(idAndTypeResult);
                 writeBlobToFile(content, fileName);
@@ -169,10 +161,6 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
                 throw new RuntimeException(
                         "Raw document content with no matching raw document, HRawDocumentContent.fileId = "
                                 + oldFileId);
-            }
-        } finally {
-            if (idAndTypeResult != null) {
-                idAndTypeResult.close();
             }
         }
     }

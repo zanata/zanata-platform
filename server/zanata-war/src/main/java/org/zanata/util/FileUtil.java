@@ -94,15 +94,9 @@ public class FileUtil {
             throws IOException {
         byte[] buffer = new byte[4096]; // To hold file contents
         int bytesRead;
-        FileInputStream input = null;
-        try  {
-            input = new FileInputStream(file);
+        try (FileInputStream input = new FileInputStream(file)) {
             while ((bytesRead = input.read(buffer)) != -1) {
                 output.write(buffer, 0, bytesRead);
-            }
-        } finally {
-            if (input != null) {
-                input.close();
             }
         }
     }

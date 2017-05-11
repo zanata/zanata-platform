@@ -66,48 +66,38 @@ public class MigrateHTermCommentToString implements CustomTaskChange {
     @Override
     public void execute(Database database) throws CustomChangeException {
         final JdbcConnection conn = (JdbcConnection) database.getConnection();
-        try (Statement stmt =
-            conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-                ResultSet.CONCUR_UPDATABLE)) {
+        Map<Long, String> termCommentsMap = new HashMap<Long, String>();
 
-            Map<Long, String> termCommentsMap = new HashMap<Long, String>();
-
-            String termCommentsSql = "select term.id, comment.comment from " +
+        String termCommentsSql = "select term.id, comment.comment from " +
                 "HGlossaryTerm as term, HTermComment as comment where comment.glossaryTermId = term.id";
+        String termSql =
+                "select term.id, term.comment from HGlossaryTerm term";
 
-            ResultSet rs1 = null;
-            ResultSet rs2 = null;
-            try {
-                rs1 = stmt.executeQuery(termCommentsSql);
+        try (
+                Statement stmt =
+                        conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
+                                ResultSet.CONCUR_UPDATABLE);
+                ResultSet rs1 = stmt.executeQuery(termCommentsSql);
+                ResultSet rs2 = stmt.executeQuery(termSql)) {
 
-                while (rs1.next()) {
-                    long termId = rs1.getLong(1);
-                    String comment = rs1.getString(2);
-                    String newComment = null;
+            while (rs1.next()) {
+                long termId = rs1.getLong(1);
+                String comment = rs1.getString(2);
+                String newComment = null;
 
-                    if(termCommentsMap.containsKey(termId)) {
-                        newComment = joinComment(termCommentsMap.get(termId),
-                                comment);
-                    } else {
-                        newComment = joinComment(null, comment);
-                    }
-                    termCommentsMap.put(termId, newComment);
+                if (termCommentsMap.containsKey(termId)) {
+                    newComment = joinComment(termCommentsMap.get(termId),
+                            comment);
+                } else {
+                    newComment = joinComment(null, comment);
                 }
-
-                String termSql =
-                        "select term.id, term.comment from HGlossaryTerm term";
-
-                rs2 = stmt.executeQuery(termSql);
-
-                while (rs2.next()) {
-                    long termId = rs2.getLong(1);
-                    String comment = termCommentsMap.get(termId);
-                    rs2.updateString(2, comment);
-                    rs2.updateRow();
-                }
-            } finally {
-                rs1.close();
-                rs2.close();
+                termCommentsMap.put(termId, newComment);
+            }
+            while (rs2.next()) {
+                long termId = rs2.getLong(1);
+                String comment = termCommentsMap.get(termId);
+                rs2.updateString(2, comment);
+                rs2.updateRow();
             }
         } catch (SQLException e) {
             throw new CustomChangeException(e);

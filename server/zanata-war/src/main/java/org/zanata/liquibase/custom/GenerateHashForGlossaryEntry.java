@@ -81,63 +81,57 @@ public class GenerateHashForGlossaryEntry implements CustomTaskChange {
     @Override
     public void execute(Database database) throws CustomChangeException {
         final JdbcConnection conn = (JdbcConnection) database.getConnection();
-        try (Statement stmt =
+
+        String entryLocaleSql = "select entry.id, entry.pos, entry.description, locale.localeId, term.content from " +
+                "HGlossaryEntry entry, HGlossaryTerm term, HLocale locale  " +
+                "where term.glossaryEntryId = entry.id and term.localeId = locale.id";
+        String entrySql =
+                "select entry.id, entry.contentHash, entry.description from HGlossaryEntry entry";
+
+        try (
+                Statement stmt =
                 conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
-                        ResultSet.CONCUR_UPDATABLE)) {
+                        ResultSet.CONCUR_UPDATABLE);
+                ResultSet rs1 = stmt.executeQuery(entryLocaleSql);
+                ResultSet rs2 = stmt.executeQuery(entrySql)) {
 
             Map<Long, String> entryLocaleMap = new HashMap<Long, String>();
             Map<Long, String> entryDescriptionMap = new HashMap<Long, String>();
 
-            String entryLocaleSql = "select entry.id, entry.pos, entry.description, locale.localeId, term.content from " +
-                "HGlossaryEntry entry, HGlossaryTerm term, HLocale locale  " +
-                "where term.glossaryEntryId = entry.id and term.localeId = locale.id";
-            ResultSet rs1 = null;
-            ResultSet rs2 = null;
+            while (rs1.next()) {
+                long entryId = rs1.getLong(1);
+                String pos = rs1.getString(2);
+                String desc = rs1.getString(3);
+                if(desc == null) {
+                    desc = "";
+                }
+                String localeId = rs1.getString(4);
+                String content = rs1.getString(5);
 
-            try {
-                rs1 = stmt.executeQuery(entryLocaleSql);
+                String hash = GlossaryUtil.generateHash(new LocaleId(localeId),
+                        content, pos, desc);
 
-                while (rs1.next()) {
-                    long entryId = rs1.getLong(1);
-                    String pos = rs1.getString(2);
-                    String desc = rs1.getString(3);
-                    if(desc == null) {
-                        desc = "";
-                    }
-                    String localeId = rs1.getString(4);
-                    String content = rs1.getString(5);
-
-                    String hash = GlossaryUtil.generateHash(new LocaleId(localeId),
+                /**
+                 * Conflict on source content, pos, description
+                 * Update description to unique message string with timestamp.
+                 */
+                if(entryLocaleMap.containsValue(hash)) {
+                    desc = desc + generateConflictMessage(entryId);
+                    hash = GlossaryUtil.generateHash(new LocaleId(localeId),
                             content, pos, desc);
-
-                    /**
-                     * Conflict on source content, pos, description
-                     * Update description to unique message string with timestamp.
-                     */
-                    if(entryLocaleMap.containsValue(hash)) {
-                        desc = desc + generateConflictMessage(entryId);
-                        hash = GlossaryUtil.generateHash(new LocaleId(localeId),
-                                content, pos, desc);
-                        entryDescriptionMap.put(entryId, desc);
-                    }
-                    entryLocaleMap.put(entryId, hash);
+                    entryDescriptionMap.put(entryId, desc);
                 }
+                entryLocaleMap.put(entryId, hash);
+            }
 
-                String entrySql =
-                        "select entry.id, entry.contentHash, entry.description from HGlossaryEntry entry";
-                rs2 = stmt.executeQuery(entrySql);
-                while (rs2.next()) {
-                    long id = rs2.getLong(1);
-                    String hash = entryLocaleMap.get(id);
-                    rs2.updateString(2, hash);
-                    if (entryDescriptionMap.containsKey(id)) {
-                        rs2.updateString(3, entryDescriptionMap.get(id));
-                    }
-                    rs2.updateRow();
+            while (rs2.next()) {
+                long id = rs2.getLong(1);
+                String hash = entryLocaleMap.get(id);
+                rs2.updateString(2, hash);
+                if (entryDescriptionMap.containsKey(id)) {
+                    rs2.updateString(3, entryDescriptionMap.get(id));
                 }
-            } finally {
-                rs1.close();
-                rs2.close();
+                rs2.updateRow();
             }
         } catch (SQLException e) {
             throw new CustomChangeException(e);

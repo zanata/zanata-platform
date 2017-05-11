@@ -64,10 +64,10 @@ import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import static java.lang.reflect.Proxy.newProxyInstance;
+import static org.zanata.page.utility.PageSourceKt.shortenPageSource;
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
@@ -234,17 +234,19 @@ public enum WebDriverFactory {
                 // If firstException was a warning, replace it with this error.
                 if ((firstException == null || !firstException.isErrorLog())
                         && !ignorable(msg)) {
+                    String pageSource = shortenPageSource(getDriver());
                     // We only throw this if throwIfWarn is true
                     firstException = new WebDriverLogException(level, logString,
-                            driver.getPageSource());
+                            pageSource);
                 }
             } else if (level.intValue() >= Level.WARNING.intValue()) {
                 log.warn(logString);
                 if ((firstException == null) && !ignorable(msg)) {
+                    String pageSource = shortenPageSource(getDriver());
                     // We only throw this if throwIfWarn is true
                     firstException =
                             new WebDriverLogException(logEntry.getLevel(),
-                                    logString, driver.getPageSource());
+                                    logString, pageSource);
                 }
             } else if (level.intValue() >= Level.INFO.intValue()) {
                 log.info(logString);

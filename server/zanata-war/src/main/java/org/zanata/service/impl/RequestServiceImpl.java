@@ -159,7 +159,9 @@ public class RequestServiceImpl implements RequestService {
                         requester.getPerson());
             } catch (Exception e) {
                 StringBuilder sb = new StringBuilder()
-                        .append("Failed to send email with subject \'")
+                        .append("Failed to send email: toName \'")
+                        .append(requester.getUsername())
+                        .append("\', subject \'")
                         .append(strategy.getSubject(msgs))
                         .append("\' , message \'").append(message).append("\'");
                 log.error(sb.toString(), e);
