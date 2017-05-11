@@ -108,6 +108,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
     private ZPathService zPathService;
     @Inject
     private PersonDAO personDAO;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
     @Inject
@@ -509,8 +510,9 @@ public class StatisticsServiceImpl implements StatisticsResource {
     public static class ProjectMatrixResultTransformer
             implements ResultTransformer {
         private static final long serialVersionUID = 1L;
+        @SuppressFBWarnings("SE_BAD_FIELD")
         private final EntityManager entityManager;
-        private final DateTimeFormatter dateFormatter;
+        private transient final DateTimeFormatter dateFormatter;
 
         @Override
         public Object transformTuple(Object[] tuple, String[] aliases) {

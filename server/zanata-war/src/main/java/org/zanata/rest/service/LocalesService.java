@@ -243,7 +243,7 @@ public class LocalesService implements LocalesResource {
         return result;
     }
 
-    private final Function<LocaleId, LocaleDetails> convertToLocaleDetails =
+    private transient final Function<LocaleId, LocaleDetails> convertToLocaleDetails =
             new Function<LocaleId, LocaleDetails>() {
                 @Override
                 public LocaleDetails apply(LocaleId localeId) {
@@ -257,7 +257,7 @@ public class LocalesService implements LocalesResource {
                 }
             };
 
-    private final Function<HLocaleMember, LocaleMember> convertToLocaleMember =
+    private transient final Function<HLocaleMember, LocaleMember> convertToLocaleMember =
             new Function<HLocaleMember, LocaleMember>() {
                 @Override
                 public LocaleMember apply(HLocaleMember localeMember) {

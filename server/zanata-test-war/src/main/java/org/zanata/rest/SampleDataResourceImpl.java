@@ -13,6 +13,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import javax.inject.Inject;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
 import org.zanata.security.Identity;
@@ -44,6 +46,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
     @Inject
     private SampleProjectProfile sampleProjectProfile;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
 

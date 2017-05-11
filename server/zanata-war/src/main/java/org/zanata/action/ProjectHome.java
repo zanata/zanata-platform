@@ -1309,7 +1309,7 @@ public class ProjectHome extends SlugHome<HProject>
                 value = this.versions.get();
                 if (value == null) {
                     final List<HProjectIteration> actualValue = fetchVersions();
-                    value = actualValue == null ? this.versions : actualValue;
+                    value = actualValue;
                     this.versions.set(value);
                 }
             }
