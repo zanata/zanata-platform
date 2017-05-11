@@ -66,7 +66,8 @@ function runDevServer () {
         '/languages',
         '/profile/view/' + c.bold('{username}')].join('\n               ')))
     }
-    console.log('REST requests: ' + c.blue('http://localhost:8080/rest (you need to run zanata server)')) // eslint-disable-line max-len
+    console.log('REST requests: ' + c.blue(
+      'http://localhost:8080/rest (you need to run zanata server)'))
     console.log(c.magenta('Watch browser console for actions and errors.'))
     console.log(c.red('Please fix errors before you commit.'))
     console.log(c.yellow(
