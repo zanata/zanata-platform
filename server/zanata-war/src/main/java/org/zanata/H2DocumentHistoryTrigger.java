@@ -13,8 +13,9 @@ public class H2DocumentHistoryTrigger extends TriggerAdapter {
     @Override
     public void fire(Connection conn, ResultSet oldRow, ResultSet newRow)
             throws SQLException {
-        PreparedStatement prep = null;
-        try {
+        try (PreparedStatement prep = conn.prepareStatement(
+                "INSERT INTO HDocumentHistory (document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete) VALUES (?,?,?,?,?,?,?,?,?,?)");
+        ) {
             log.debug("Executing HDocumentHistory trigger");
             int oldRev = oldRow.getInt("revision");
             int newRev = newRow.getInt("revision");
@@ -22,8 +23,6 @@ public class H2DocumentHistoryTrigger extends TriggerAdapter {
                 log.debug(
                         "revision incremented from {} to {}. Executing trigger..",
                         oldRev, newRev);
-                prep = conn.prepareStatement(
-                        "INSERT INTO HDocumentHistory (document_id,revision,contentType,docId,locale,name,path,lastChanged,last_modified_by_id,obsolete) VALUES (?,?,?,?,?,?,?,?,?,?)");
                 prep.setObject(1, oldRow.getObject("id"));
                 prep.setObject(2, oldRow.getObject("revision"));
                 prep.setObject(3, oldRow.getObject("contentType"));
@@ -38,10 +37,6 @@ public class H2DocumentHistoryTrigger extends TriggerAdapter {
             } else {
                 log.warn(
                         "HDocument updated without incrementing revision... skipping trigger");
-            }
-        } finally {
-            if (prep != null) {
-                prep.close();
             }
         }
     }

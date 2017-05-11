@@ -157,7 +157,7 @@ public class CopyTransOptionsModel implements Serializable {
         this.instance = instance;
     }
 
-    public synchronized List<RuleAction> getRuleActions() {
+    public List<RuleAction> getRuleActions() {
         Object value = this.ruleActions.get();
         if (value == null) {
             final List<RuleAction> actualValue = getRuleActionsList();

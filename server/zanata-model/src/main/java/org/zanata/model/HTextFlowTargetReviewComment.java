@@ -117,11 +117,8 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
         if (comment != null ? !comment.equals(that.comment) :
                 that.comment != null)
             return false;
-        if (targetVersion != null ? !targetVersion.equals(that.targetVersion) :
-                that.targetVersion != null) return false;
-        return commenterName != null ?
-                commenterName.equals(that.commenterName) :
-                that.commenterName == null;
+        return targetVersion != null ? !targetVersion.equals(that.targetVersion) :
+                that.targetVersion != null;
     }
 
     @Override
@@ -136,9 +133,6 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
         result =
                 31 * result +
                         (targetVersion != null ? targetVersion.hashCode() : 0);
-        result =
-                31 * result +
-                        (commenterName != null ? commenterName.hashCode() : 0);
         return result;
     }
 }
