@@ -36,6 +36,8 @@ public class VersionDocumentsPage extends VersionBasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(VersionDocumentsPage.class);
 
+    private final By DOCSLIST = By.id("documents-document_list");
+
     public VersionDocumentsPage(WebDriver driver) {
         super(driver);
     }
@@ -70,7 +72,19 @@ public class VersionDocumentsPage extends VersionBasePage {
 
     private List<WebElement> getDocumentsTabDocumentList() {
         slightPause();
-        return readyElement(By.id("documents-document_list"))
+        return readyElement(DOCSLIST)
                 .findElements(By.xpath("./li"));
     }
+
+    public VersionDocumentsPage clickDownloadPotOnDocument(String documentName) {
+        WebElement listItem = readyElement(DOCSLIST)
+                .findElement(By.id(documentName));
+        listItem.findElement(By.className("dropdown__toggle")).click();
+        slightPause();
+        clickLinkAfterAnimation(
+                listItem.findElement(By.linkText("Download this document [offline .pot]")));
+        slightPause();
+        return new VersionDocumentsPage(getDriver());
+    }
+
 }

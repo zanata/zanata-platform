@@ -40,7 +40,7 @@ import org.zanata.common.ProjectType;
 import org.zanata.dao.DocumentDAO;
 import org.zanata.dao.DocumentUploadDAO;
 import org.zanata.dao.ProjectIterationDAO;
-import org.zanata.exception.ChunkUploadException;
+import org.zanata.exception.DocumentUploadException;
 import org.zanata.exception.VirusDetectedException;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
@@ -93,7 +93,7 @@ public class SourceDocumentUpload {
             DocumentFileUploadForm uploadForm) {
         try {
             failIfSourceUploadNotValid(id, uploadForm);
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             return Response.status(e.getStatusCode())
                     .entity(new ChunkUploadResponse(e.getMessage())).build();
         }
@@ -105,7 +105,7 @@ public class SourceDocumentUpload {
         try {
             failIfSourceUploadNotValid(id, uploadForm);
             util.failIfHashNotPresent(uploadForm);
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             return Response.status(e.getStatusCode())
                     .entity(new ChunkUploadResponse(e.getMessage())).build();
         }
@@ -164,7 +164,7 @@ public class SourceDocumentUpload {
             }
             return sourceUploadSuccessResponse(util.isNewDocument(id),
                     totalChunks);
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             return Response.status(e.getStatusCode())
                     .entity(new ChunkUploadResponse(e.getMessage())).build();
         } catch (FileNotFoundException e) {
@@ -175,16 +175,16 @@ public class SourceDocumentUpload {
     }
 
     private void failIfSourceUploadNotValid(GlobalDocumentId id,
-            DocumentFileUploadForm uploadForm) throws ChunkUploadException {
+            DocumentFileUploadForm uploadForm) throws DocumentUploadException {
         util.failIfUploadNotValid(id, uploadForm);
         failIfSourceUploadNotAllowed(id);
         failIfFileTypeNotValid(uploadForm);
     }
 
     private void failIfSourceUploadNotAllowed(GlobalDocumentId id)
-            throws ChunkUploadException {
+            throws DocumentUploadException {
         if (!isDocumentUploadAllowed(id)) {
-            throw new ChunkUploadException(Status.FORBIDDEN,
+            throw new DocumentUploadException(Status.FORBIDDEN,
                     "You do not have permission to upload source documents to project-version \""
                             + id.getProjectSlug() + ":" + id.getVersionSlug()
                             + "\".");
@@ -202,10 +202,10 @@ public class SourceDocumentUpload {
     }
 
     private void failIfFileTypeNotValid(DocumentFileUploadForm uploadForm)
-            throws ChunkUploadException {
+            throws DocumentUploadException {
         DocumentType type = DocumentType.getByName(uploadForm.getFileType());
         if (!isSourceDocumentType(type)) {
-            throw new ChunkUploadException(Status.BAD_REQUEST, "The type \""
+            throw new DocumentUploadException(Status.BAD_REQUEST, "The type \""
                     + uploadForm.getFileType()
                     + "\" specified in form parameter \'type\' is not valid for a source file on this server.");
         }
@@ -251,7 +251,7 @@ public class SourceDocumentUpload {
             virusScanner.scan(tempFile, name);
         } catch (VirusDetectedException e) {
             log.warn("File failed virus scan: {}", e.getMessage());
-            throw new ChunkUploadException(Status.BAD_REQUEST,
+            throw new DocumentUploadException(Status.BAD_REQUEST,
                     "Uploaded file did not pass virus scan");
         }
         HDocument document;
@@ -276,10 +276,10 @@ public class SourceDocumentUpload {
                     Sets.newHashSet(PotEntryHeader.ID, SimpleComment.ID),
                     false);
         } catch (SecurityException e) {
-            throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+            throw new DocumentUploadException(Status.INTERNAL_SERVER_ERROR,
                     e.getMessage(), e);
         } catch (ZanataServiceException e) {
-            throw new ChunkUploadException(Status.INTERNAL_SERVER_ERROR,
+            throw new DocumentUploadException(Status.INTERNAL_SERVER_ERROR,
                     e.getMessage(), e);
         }
         String contentHash = uploadForm.getHash();

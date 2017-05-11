@@ -1,4 +1,13 @@
 {
   // Allows use of modern JavaScript syntax and JSX
-  "presets": ["react", "es2015", "stage-0"]
+  "presets": ["react", "es2015", "stage-0"],
+
+  // Extracts strings for translation.
+  // Strings are output to .json files in the specified messagesDir
+  "plugins": [
+    ["react-intl", {
+      "messagesDir": "./build/messages/",
+      "enforceDescriptions": true
+    }]
+  ]
 }

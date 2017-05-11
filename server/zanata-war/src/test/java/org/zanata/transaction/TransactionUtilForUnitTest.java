@@ -2,6 +2,7 @@ package org.zanata.transaction;
 
 
 import java.util.concurrent.Callable;
+import javax.annotation.CheckForNull;
 import javax.persistence.EntityManager;
 
 import org.slf4j.Logger;
@@ -18,21 +19,24 @@ import org.zanata.util.RunnableEx;
 public class TransactionUtilForUnitTest implements TransactionUtil {
     private static final Logger log =
             LoggerFactory.getLogger(TransactionUtilForUnitTest.class);
-    private EntityManager em;
+    private @CheckForNull EntityManager em;
 
-    public TransactionUtilForUnitTest(EntityManager em) {
+    public TransactionUtilForUnitTest(@CheckForNull EntityManager em) {
         this.em = em;
     }
 
-    public TransactionUtilForUnitTest() {
+    private void flushAndClear() {
+        if (em != null) {
+            em.flush();
+            em.clear();
+        }
     }
 
     @Override
     public <R> R call(Callable<R> function) throws Exception {
         log.debug("running in TestTransactionUtil");
         R result = function.call();
-        em.flush();
-        em.clear();
+        flushAndClear();
         return result;
     }
 
@@ -40,15 +44,13 @@ public class TransactionUtilForUnitTest implements TransactionUtil {
     public void run(Runnable runnable) throws Exception {
         log.debug("running in TestTransactionUtil");
         runnable.run();
-        em.flush();
-        em.clear();
+        flushAndClear();
     }
 
     @Override
     public void runEx(RunnableEx runnable) throws Exception {
         log.debug("running in TestTransactionUtil");
         runnable.run();
-        em.flush();
-        em.clear();
+        flushAndClear();
     }
 }

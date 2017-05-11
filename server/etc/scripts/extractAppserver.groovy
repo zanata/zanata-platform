@@ -23,7 +23,7 @@
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 
-import groovy.util.AntBuilder
+import java.util.zip.*
 
 // NB: project is a MavenProject
 // http://maven.apache.org/ref/3-LATEST/maven-core/apidocs/org/apache/maven/project/MavenProject.html
@@ -41,10 +41,9 @@ String filePath = "${downloadDir}/${filename}"
 String basename = filename.substring(0, filename.lastIndexOf('.'))
 String extractDir = "${cargoExtractDir}/${basename}"
 
-def ant = new AntBuilder()
-ant.mkdir(dir: downloadDir)
-ant.get(src: url, dest: filePath, skipexisting: "true")
-ant.unzip(src: filePath, dest:"${extractDir}")
+new File(downloadDir).mkdirs()
+download(url, filePath)
+unzip(filePath, extractDir)
 
 def files = new File(extractDir).listFiles()
 if (files.length != 1) {
@@ -53,3 +52,35 @@ if (files.length != 1) {
 def topLevelDir = files[0].path
 
 project.properties.put('appserver.home', topLevelDir)
+
+
+// download url to file, skip if file exists
+static void download(String url, String filePath) {
+  def file = new File(filePath)
+  // TODO check file length against Content-Length header
+  if (!file.exists() || file.length() == 0) {
+    println "Downloading from $url:"
+    file.withOutputStream { out ->
+      new URL(url).withInputStream { from ->
+        out << from;
+      }
+    }
+  }
+}
+
+static void unzip(String zipFileName, String outputDir) {
+  println "Extracting zip file $zipFileName:"
+  new ZipFile(new File(zipFileName)).withCloseable { zip ->
+    zip.entries().each { entry ->
+      if (!entry.isDirectory()) {
+        def file = new File(outputDir + File.separator + entry.name)
+        file.parentFile.mkdirs()
+        file.withOutputStream { out ->
+          zip.getInputStream(entry).withStream { from ->
+            out << from;
+          }
+        }
+      }
+    }
+  }
+}

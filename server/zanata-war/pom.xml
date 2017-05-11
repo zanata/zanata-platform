@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.1.1-SNAPSHOT</version>
+    <version>4.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -111,6 +111,24 @@
       </plugin>
 
       <plugin>
+        <!-- we will package test resource into test-jar. It will include the test persistence.xml -->
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test-jar</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>META-INF/persistence.xml</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
         <artifactId>maven-dependency-plugin</artifactId>
         <configuration>
           <usedDependencies combine.children="append">
@@ -128,7 +146,8 @@
             <!-- Used for different content analyzers based on langugage for search. -->
             <usedDependency>org.apache.solr:solr-core</usedDependency>
             <usedDependency>org.apache.solr:solr-solrj</usedDependency>
-            <!-- used for arquillian deployment (org.zanata.Deployments) -->
+            <!-- Used for unit tests via persistence.xml
+                 (org.hibernate.testing.cache.CachingRegionFactory) -->
             <usedDependency>org.hibernate:hibernate-testing</usedDependency>
             <usedDependency>org.jboss.arquillian.junit:arquillian-junit-container</usedDependency>
             <usedDependency>org.jboss.arquillian.protocol:arquillian-protocol-servlet</usedDependency>
@@ -563,6 +582,11 @@
                 <id>extract-appserver</id>
                 <phase>prepare-package</phase>
               </execution>
+              <execution>
+                <!-- run jboss cli script against cargo installed server -->
+                <id>run-jboss-cli</id>
+                <phase>package</phase>
+              </execution>
             </executions>
           </plugin>
 
@@ -598,25 +622,6 @@
       <build>
         <plugins>
           <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <!-- Install arquillian-customised version of standalone.xml -->
-              <execution>
-                <id>prepare-arquillian-container</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <target unless="skipArqTests">
-                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian.xml" tofile="${appserver.home}/standalone/configuration/standalone-arquillian.xml" />
-                  </target>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <systemPropertyVariables>
@@ -640,25 +645,6 @@
       </activation>
       <build>
         <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <!-- Install arquillian-customised version of standalone.xml -->
-              <execution>
-                <id>prepare-arquillian-container</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <target unless="skipArqTests">
-                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml" tofile="${appserver.home}/standalone/configuration/standalone-arquillian.xml" />
-                  </target>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
@@ -1081,12 +1067,6 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-testing</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>tools</artifactId>
-          <groupId>com.sun</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
@@ -1864,6 +1844,11 @@
       <groupId>org.zanata</groupId>
       <artifactId>gwt-editor</artifactId>
       <classifier>classes</classifier>
+    </dependency>
+
+    <dependency>
+      <groupId>org.fusesource.restygwt</groupId>
+      <artifactId>restygwt</artifactId>
     </dependency>
 
     <!-- because we want to get gwt-editor from maven reactor when running

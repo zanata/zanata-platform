@@ -22,7 +22,6 @@ package org.zanata.async;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.failBecauseExceptionWasNotThrown;
-import static org.zanata.async.AsyncTaskResult.taskResult;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -136,7 +135,7 @@ public class AsyncTaskITCase extends ArquillianTest {
 
         @Async
         public Future<String> asyncString() {
-            return taskResult("EXPECTED");
+            return AsyncTaskResult.completed("EXPECTED");
         }
 
         @Async
@@ -156,7 +155,7 @@ public class AsyncTaskITCase extends ArquillianTest {
             handle.setCurrentProgress(50);
             handle.setCurrentProgress(75);
             handle.setCurrentProgress(100);
-            return taskResult();
+            return AsyncTaskResult.completed();
         }
     }
 }

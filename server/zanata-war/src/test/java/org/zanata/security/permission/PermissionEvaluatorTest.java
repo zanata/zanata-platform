@@ -77,7 +77,7 @@ public class PermissionEvaluatorTest {
                         "evaluatesToTrueAlways"));
 
         softly.assertThat(
-                granter.shouldInvokeGranter(null)).isTrue();
+                granter.shouldInvokeGranter((Object) null)).isTrue();
         softly.assertThat(
                 granter.shouldInvokeGranter(
                         null,

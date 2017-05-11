@@ -38,7 +38,6 @@ import com.google.common.collect.Maps;
  */
 @Named("asyncTaskHandleManager")
 @javax.enterprise.context.ApplicationScoped
-
 public class AsyncTaskHandleManager {
 
     private Map<Serializable, AsyncTaskHandle> handlesByKey = Maps

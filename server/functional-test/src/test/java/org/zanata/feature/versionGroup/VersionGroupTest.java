@@ -57,7 +57,6 @@ public class VersionGroupTest extends ZanataTestCase {
     @Feature(summary = "The administrator can create a basic group",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
     public void createABasicGroup() throws Exception {
         String groupID = "basic-group";
         String groupName = "A Basic Group";

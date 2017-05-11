@@ -48,7 +48,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.zanata.common.EntityStatus;
-import org.zanata.exception.ChunkUploadException;
+import org.zanata.exception.DocumentUploadException;
 import org.zanata.model.HDocumentUpload;
 import org.zanata.model.HDocumentUploadPart;
 import org.zanata.rest.DocumentFileUploadForm;
@@ -103,7 +103,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if user is not logged in");
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(UNAUTHORIZED));
             assertThat(e.getMessage(),
                     is("Valid combination of username and api-key for this "
@@ -118,7 +118,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if there is no file content");
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
             assertThat(
                     e.getMessage(),
@@ -134,7 +134,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if file type is not set.");
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
             assertThat(e.getMessage(),
                     is("Required form parameter 'type' was not found."));
@@ -148,7 +148,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.failIfHashNotPresent(conf.uploadForm);
             fail("Should throw exception if hash is not set.");
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
             assertThat(e.getMessage(),
                     is("Required form parameter 'hash' was not found."));
@@ -163,7 +163,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if project-version does not exist.");
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(NOT_FOUND));
             assertThat(e.getMessage(),
                     is("The specified project-version \"myproject:myversion\" "
@@ -188,7 +188,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if project is read only or obsolete.");
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(FORBIDDEN));
             assertThat(
                     e.getMessage(),
@@ -214,7 +214,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if version is read only or obsolete.");
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(FORBIDDEN));
             assertThat(e.getMessage(),
                     is("The project-version \"myproject:myversion\" is not "
@@ -230,7 +230,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if file type is not valid.");
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
             assertThat(e.getMessage(),
                     is("Value 'invalid' is not a recognized document type."));
@@ -245,7 +245,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
             fail("Should throw exception if this is not the first part but no uploadId is supplied");
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
             assertThat(
                     e.getMessage(),
@@ -265,7 +265,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
 
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
             assertThat(e.getMessage(),
                     is("No incomplete uploads found for uploadId '5'."));
@@ -286,7 +286,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
 
         try {
             util.failIfUploadNotValid(conf.id, conf.uploadForm);
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(PRECONDITION_FAILED));
             assertThat(
                     e.getMessage(),
@@ -366,7 +366,7 @@ public class DocumentUploadUtilTest extends DocumentUploadTest {
 
         try {
             util.combineToTempFileAndDeleteUploadRecord(upload, uploadForm);
-        } catch (ChunkUploadException e) {
+        } catch (DocumentUploadException e) {
             assertThat(e.getStatusCode(), is(CONFLICT));
             assertThat(
                     e.getMessage(),

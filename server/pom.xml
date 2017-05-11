@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.1.1-SNAPSHOT</version>
+    <version>4.2.0-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -22,7 +22,7 @@
     <byteman.version>2.1.2</byteman.version>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <kotlin.version>1.0.6</kotlin.version>
+    <kotlin.version>1.0.7</kotlin.version>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
@@ -104,6 +104,7 @@
     <wildfly.client.version>2.0.10.Final</wildfly.client.version>
     <!-- Version of the management api used by Arquillian -->
     <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
+    <jackson2.version>2.7.2</jackson2.version>
   </properties>
 
   <dependencyManagement>
@@ -836,7 +837,7 @@
       <dependency>
         <groupId>com.github.huangp</groupId>
         <artifactId>entityunit</artifactId>
-        <version>0.3</version>
+        <version>0.4</version>
         <exclusions>
           <exclusion>
             <groupId>javax.validation</groupId>
@@ -868,6 +869,26 @@
         <artifactId>gwt-servlet</artifactId>
         <version>${gwt.version}</version>
         <scope>runtime</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.fusesource.restygwt</groupId>
+        <artifactId>restygwt</artifactId>
+        <version>2.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-databind</artifactId>
+        <version>${jackson2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-annotations</artifactId>
+        <version>${jackson2.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.fasterxml.jackson.core</groupId>
+        <artifactId>jackson-core</artifactId>
+        <version>${jackson2.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.gwt</groupId>
@@ -1259,6 +1280,10 @@
         <artifactId>hibernate-testing</artifactId>
         <version>${hibernate.version}</version>
         <exclusions>
+          <exclusion>
+            <artifactId>tools</artifactId>
+            <groupId>com.sun</groupId>
+          </exclusion>
           <exclusion>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-jta_1.1_spec</artifactId>
@@ -1784,9 +1809,16 @@
             <plugin>no-arg</plugin>
           </compilerPlugins>
           <pluginOptions>
+            <!-- Mark classes with certain annotations as non-final: -->
+
+            <!-- CDI beans (so they can be proxied) -->
             <option>all-open:annotation=javax.enterprise.context.NormalScope</option>
+            <!-- Hibernate/JPA entities -->
             <option>all-open:annotation=javax.persistence.Entity</option>
+            <!-- JUnit tests (CDI-Unit or Mockito) -->
             <option>all-open:annotation=org.junit.runner.RunWith</option>
+
+            <!-- Create synthetic no-arg constructors for JPA entities: -->
             <option>no-arg:annotation=javax.persistence.Entity</option>
           </pluginOptions>
         </configuration>
@@ -1837,19 +1869,41 @@
               </scripts>
             </configuration>
           </execution>
+          <execution>
+            <id>run-jboss-cli</id>
+            <!-- submodules should use 'package' to activate this -->
+            <phase>none</phase>
+            <goals><goal>execute</goal></goals>
+            <configuration>
+              <scripts>
+                <!-- run jboss cli script -->
+                <script>file:///${project.basedir}/../etc/scripts/runJbossCli.groovy</script>
+              </scripts>
+            </configuration>
+          </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.apache.ant</groupId>
-            <artifactId>ant-nodeps</artifactId>
-            <version>1.8.1</version>
-          </dependency>
-        </dependencies>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!--
+            Compiler plugin uses Java compiler API since version 3.0.
+            Usage of compiler API is much better than forking javac executable.
+            Compiler API is much faster as it's run in same process.
+            And most importatly ALL compiler messages are printed by maven.
+            When standalone javac executable is run maven parses it's output and
+            some messages are lost in the process!!!
+          -->
+          <forceJavacCompilerUse>false</forceJavacCompilerUse>
+          <useIncrementalCompilation>true</useIncrementalCompilation>
+          <fork>false</fork>
+          <compilerArgs>
+            <arg>-Xlint:-processing</arg>
+            <arg>-Xlint:all</arg>
+          </compilerArgs>
+        </configuration>
         <executions>
           <!-- Replacing default-compile as it is treated specially by Maven.
                We need kotlin-maven-plugin to compile first. -->
@@ -2237,7 +2291,9 @@
         <wildfly.version>10.1.0.Final</wildfly.version>
         <!-- In case this profile was activated by default: -->
         <appserver>wildfly8</appserver>
-        <cargo.installation>https://repository.jboss.org/nexus/content/groups/developer/org/wildfly/wildfly-dist/${wildfly.version}/wildfly-dist-${wildfly.version}.zip</cargo.installation>
+        <!-- https leads to errors like
+             javax.net.ssl.SSLProtocolException: Server returned wrong cipher suite for session -->
+        <cargo.installation>http://repository.jboss.org/nexus/content/groups/developer/org/wildfly/wildfly-dist/${wildfly.version}/wildfly-dist-${wildfly.version}.zip</cargo.installation>
       </properties>
     </profile>
 

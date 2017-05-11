@@ -38,8 +38,9 @@
       <div class="panel__header__actions">
         <ui:fragment rendered="#{canManageMembers}">
 
-          <h:form styleClass="bx--inline">
+          <h:form styleClass="bx--inline" id="project-people_add">
             <z:ajax-command-button
+                id="project-people_addbutton"
                 styleClass="button button--primary panel__header__button"
                 action="#{projectPermissionDialog.setData(projectHome.instance, null)}"
                 render="modalManagePermissions-content"

@@ -108,6 +108,19 @@ public class VersionDocumentsTab extends VersionBasePage {
         return new VersionDocumentsTab(getDriver());
     }
 
+    public List<String> getSourceDocumentsList() {
+        List<WebElement> elements =
+                existingElement(By.id("settings-document_form"))
+                        .findElement(By.tagName("ul"))
+                        .findElements(By.tagName("label"));
+        List<String> namesList = new ArrayList<String>();
+        for (WebElement element : elements) {
+            namesList.add(element.getText());
+        }
+        System.out.println(namesList);
+        return namesList;
+    }
+
     public boolean sourceDocumentsContains(String document) {
         log.info("Query source documents contain {}", document);
         for (String documentLabel : waitForAMoment()
@@ -115,7 +128,7 @@ public class VersionDocumentsTab extends VersionBasePage {
 
                     @Override
                     public List<String> apply(WebDriver input) {
-                        List<WebElement> elements =
+                        /*List<WebElement> elements =
                                 existingElement(By.id("settings-document_form"))
                                         .findElement(By.tagName("ul"))
                                         .findElements(By.xpath(
@@ -124,7 +137,8 @@ public class VersionDocumentsTab extends VersionBasePage {
                         for (WebElement element : elements) {
                             namesList.add(element.getText());
                         }
-                        return namesList;
+                        return namesList;*/
+                        return getSourceDocumentsList();
                     }
                 })) {
             if (documentLabel.contains(document)) {

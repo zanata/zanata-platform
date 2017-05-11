@@ -27,6 +27,7 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.page.projectversion.versionsettings.VersionGeneralTab;
 import org.zanata.util.ZanataRestCaller;
 import org.zanata.workflow.LoginWorkFlow;
@@ -61,7 +62,7 @@ public class EditVersionSlugTest extends ZanataTestCase {
                 .isEqualTo("admin")
                 .as("Admin user has logged in");
 
-        VersionGeneralTab versionGeneralTab = new ProjectWorkFlow()
+        VersionLanguagesPage versionLanguagesPage = new ProjectWorkFlow()
                 .goToProjectByName("change-version-slug")
                 .gotoVersion("oldSlug")
                 .gotoSettingsTab()
@@ -69,10 +70,10 @@ public class EditVersionSlugTest extends ZanataTestCase {
                 .enterVersionID("newSlug")
                 .updateVersion();
 
-        versionGeneralTab.reload();
-        assertThat(versionGeneralTab.getUrl()).contains("/newSlug");
+        versionLanguagesPage.reload();
+        assertThat(versionLanguagesPage.getUrl()).contains("/newSlug");
 
-        versionGeneralTab = versionGeneralTab
+        VersionGeneralTab versionGeneralTab = versionLanguagesPage
                 .gotoSettingsTab()
                 .gotoSettingsGeneral();
         assertThat(versionGeneralTab.getVersionID())

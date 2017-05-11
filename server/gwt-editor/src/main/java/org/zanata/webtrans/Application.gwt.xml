@@ -18,6 +18,8 @@
   <inherits name='net.customware.gwt.dispatch.Dispatch' />
   <inherits name='net.customware.gwt.presenter.Presenter' />
 
+  <inherits name="org.fusesource.restygwt.RestyGWT"/>
+
   <inherits name="org.zanata.Common" />
 
   <inherits name="org.zanata.CommonUtil" />
@@ -48,7 +50,7 @@
   <inherits name="com.google.gwt.i18n.I18N" />
   <!-- if we want to include new locale in our app, add new extend-property value and then add to ApplicationI18n.gwt.xml-->
   <!-- at the moment we have included locales in faces-config.xml -->
-  <extend-property name="locale" values="en,ja,zh_Hant_TW,uk,qc" />
+  <extend-property name="locale" values="en,ja,zh_Hant_TW,zh_Hans_CN,uk,qc" />
   <!--uncomment once translated -->
   <!--<set-property name="locale" value="en,ja,zh_Hant_TW,uk" />-->
   <set-property-fallback name="locale" value="en" />

@@ -23,6 +23,11 @@ package org.zanata.async;
 
 import org.junit.Test;
 
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -57,7 +62,7 @@ public class AsyncTaskHandleTest {
         AsyncTaskResult result = new AsyncTaskResult();
         handle.setFutureResult(result);
 
-        result.set("result");
+        result.complete("result");
 
         assertThat(handle.getResult()).isEqualTo("result");
     }
@@ -69,7 +74,7 @@ public class AsyncTaskHandleTest {
         AsyncTaskResult result = new AsyncTaskResult();
         handle.setFutureResult(result);
 
-        result.setException(new Exception("Exception thrown"));
+        result.completeExceptionally(new Exception("Exception thrown"));
 
         handle.getResult();
     }
@@ -80,7 +85,7 @@ public class AsyncTaskHandleTest {
         AsyncTaskResult result = new AsyncTaskResult();
         handle.setFutureResult(result);
 
-        result.set("result");
+        result.complete("result");
 
         assertThat(handle.isDone()).isTrue();
     }
@@ -109,5 +114,39 @@ public class AsyncTaskHandleTest {
 
         handle.increaseProgress(1);
         assertThat(handle.getEstimatedTimeRemaining().isPresent()).isTrue();
+    }
+
+    @Test
+    public void testCompleteCallback() throws Exception {
+        AsyncTaskHandle handle = new AsyncTaskHandle();
+        AsyncTaskResult result = new AsyncTaskResult();
+        ThreadLocal<Boolean> noException =
+                ThreadLocal.withInitial(() -> false);
+
+        handle.setFutureResult(result);
+        handle.whenTaskComplete((retVal, exception) -> {
+            if(exception == null && retVal != null)
+                noException.set(true);
+        });
+        result.complete(true);
+
+        assertThat(noException.get()).isTrue();
+    }
+
+    @Test
+    public void testCompleteCallbackWithException() throws Exception {
+        AsyncTaskHandle handle = new AsyncTaskHandle();
+        AsyncTaskResult result = new AsyncTaskResult();
+        ThreadLocal<Boolean> withException =
+                ThreadLocal.withInitial(() -> false);
+
+        handle.setFutureResult(result);
+        handle.whenTaskComplete((retVal, exception) -> {
+            if(exception != null && retVal == null)
+                withException.set(true);
+        });
+        result.completeExceptionally(new RuntimeException());
+
+        assertThat(withException.get()).isTrue();
     }
 }

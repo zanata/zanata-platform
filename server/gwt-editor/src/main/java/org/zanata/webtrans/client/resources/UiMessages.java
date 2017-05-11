@@ -96,11 +96,14 @@ public interface UiMessages extends Messages {
     @DefaultMessage("TM merge")
     String mergeTMButtonLabel();
 
-    @DefaultMessage("Merge translation from Translation Memory for untranslated and fuzzy text flows on current page")
+    @DefaultMessage("Merge translation from Translation Memory for untranslated text flows in this document")
             String mergeTMTooltip();
 
-    @DefaultMessage("Select TM match percentage to pre-fill translations. All the conditions will be checked to determine final state.")
-            String mergeTMCaption();
+    @DefaultMessage("Select TM match percentage to pre-fill translations. All the conditions will be checked to determine final state. This will apply to the entire document")
+            String mergeTMHeading();
+
+    @DefaultMessage("Auto-fill Translation Memory")
+    String mergeTMCaption();
 
     @DefaultMessage("No text can be TM merged")
     String noTranslationToMerge();
@@ -108,8 +111,14 @@ public interface UiMessages extends Messages {
     @DefaultMessage("TM merge failed")
     String mergeTMFailed();
 
-    @DefaultMessage("TM merge success on following rows: {0,list,string}")
-    String mergeTMSuccess(List<String> rowIndices);
+    @DefaultMessage("Cancel TM merge failed")
+    String mergeTMCancelFailed();
+
+    @DefaultMessage("TM merge success on {0} rows")
+    String mergeTMSuccess(long count);
+
+    @DefaultMessage("TM merge for document {0} triggered by {1} has finished {2} - {3}")
+    String mergeTMFinished(String document, String triggerBy, String startTime, String endTime);
 
     @DefaultMessage("Proceed to auto-fill")
     String mergeTMConfirm();
@@ -117,35 +126,58 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Cancel")
     String mergeTMCancel();
 
+    @DefaultMessage("TM merge started...")
+    String mergeTMStarted();
+
+    @DefaultMessage("Someone has started TM merge for document {0}. Please wait for it to finish before working on translation")
+    String mergeTMStartedBySomeone(String document);
+
+    @DefaultMessage("Someone has started TM merge for document: {0}")
+    String mergeTMStartedBySomeoneForDoc(String document);
+
+    @DefaultMessage("{0}% has been processed")
+    String mergeProgressPercentage(String percentDisplay);
+
+
     @DefaultMessage("Match percentage threshold")
     String matchThreshold();
 
-    @DefaultMessage("On Content mismatch:")
+    @DefaultMessage("Different Content:")
     String differentContent();
 
-    @DefaultMessage("On Project Name mismatch:")
+    @DefaultMessage("Different Project:")
     String differentProjectSlug();
 
-    @DefaultMessage("On Document Id mismatch (Document name and path):")
+    @DefaultMessage("Copy as Fuzzy")
+    String copyAsFuzzy();
+
+    @DefaultMessage("Copy as Translated")
+    String copyAsTranslated();
+
+    @DefaultMessage("Different Document Id (Document name and path):")
     String differentDocument();
 
-    @DefaultMessage("On Context mismatch (resId, msgctxt):")
+    @DefaultMessage("Different Context (resId, msgctxt):")
     String differentContext();
 
-    @DefaultMessage("On match from Imported Translation Memory:")
+    @DefaultMessage("Match from Imported Translation Memory:")
     String importedMatch();
 
-    @DefaultMessage("If not Rejected or downgraded to Fuzzy:")
+    @DefaultMessage("If none of the above conditions apply")
     String otherwise();
 
-    @DefaultMessage("Review required and match is Translated:")
-    String approval();
+
+    @DefaultMessage("Only possible when TM is from same project but different version, has same content, context and within same document")
+    String otherwiseTooltip();
 
     @DefaultMessage("Condition")
     String condition();
 
     @DefaultMessage("Action")
     String action();
+
+    @DefaultMessage("Result")
+    String result();
 
     @DefaultMessage("100% (Identical)")
     String identical();

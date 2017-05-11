@@ -35,13 +35,19 @@ public class RegisterPage extends CorePage {
             org.slf4j.LoggerFactory.getLogger(RegisterPage.class);
     public static final String USERNAME_VALIDATION_ERROR =
             "Between 3 and 20 lowercase letters, numbers and underscores only";
+    public static final String USERNAME_LENGTH_ERROR =
+            "size must be between 3 and 20";
     public static final String USERNAME_UNAVAILABLE_ERROR =
             "This username is not available";
+    public static final String USERDISPLAYNAME_LENGTH_ERROR =
+            "size must be between 2 and 80";
     public static final String MALFORMED_EMAIL_ERROR =
             "not a well-formed email address";
     public static final String REQUIRED_FIELD_ERROR = "value is required";
-    public static final String USERNAME_LENGTH_ERROR =
-            "size must be between 3 and 20";
+
+    public static final String PASSWORD_LENGTH_ERROR =
+            "size must be between 6 and 1024";
+
     private By nameField = By.id("loginForm:name:input:name");
     private By emailField = By.id("loginForm:email:input:email");
     public By usernameField = By.id("loginForm:username:input:username");

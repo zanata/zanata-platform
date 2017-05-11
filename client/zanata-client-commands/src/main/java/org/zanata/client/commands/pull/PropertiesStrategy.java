@@ -21,6 +21,7 @@
 
 package org.zanata.client.commands.pull;
 
+import java.io.File;
 import java.io.IOException;
 
 import org.zanata.adapter.properties.PropWriter;
@@ -62,9 +63,11 @@ public class PropertiesStrategy extends AbstractPullStrategy {
             LocaleMapping localeMapping, TranslationsResource targetDoc)
             throws IOException {
         boolean createSkeletons = getOpts().getCreateSkeletons();
-        PropWriter.writeTranslations(createSkeletons ? doc : null, targetDoc,
-            getOpts().getTransDir(), docName,
-            localeMapping.getJavaLocale(), PropWriter.CHARSET.Latin1, createSkeletons);
+        File transFileToWrite = getTransFileToWrite(docName, localeMapping);
+        PropWriter.writeTranslationsFile(createSkeletons ? doc : null,
+                targetDoc, transFileToWrite, PropWriter.CHARSET.Latin1,
+                createSkeletons);
+
         return null;
     }
 

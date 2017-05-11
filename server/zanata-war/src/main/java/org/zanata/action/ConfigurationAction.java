@@ -21,6 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Model;
 import javax.faces.context.FacesContext;
@@ -70,7 +71,7 @@ public class ConfigurationAction implements Serializable {
         response.setCharacterEncoding("UTF-8");
         try {
             ServletOutputStream os = response.getOutputStream();
-            os.write(configFileContents.getBytes());
+            os.write(configFileContents.getBytes(StandardCharsets.UTF_8));
             os.flush();
             os.close();
             FacesContext.getCurrentInstance().responseComplete();

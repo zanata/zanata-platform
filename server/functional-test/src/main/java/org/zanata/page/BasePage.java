@@ -82,6 +82,10 @@ public class BasePage extends CorePage {
         return new LanguagesPage(getDriver());
     }
 
+    public boolean isAdministrator() {
+        return getDriver().findElements(BY_ADMINISTRATION_LINK).size() > 0;
+    }
+
     public AdministrationPage goToAdministration() {
         log.info("Click Administration menu link");
         clickLinkAfterAnimation(BY_ADMINISTRATION_LINK);

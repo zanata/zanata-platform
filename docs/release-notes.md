@@ -1,3 +1,20 @@
+## 4.1.1
+### Data migration
+Imported TMX translation memories may be changed if they were previously
+parsed with a non-Unicode encoding (ZNTA-1740). A warning will be logged if
+re-indexing is required.
+
+##### Changes
+ * [ZNTA-1746](https://zanata.atlassian.net/browse/ZNTA-1746) - Add option to redirect forwarded HTTP requests to HTTPS
+ * [ZNTA-1688](https://zanata.atlassian.net/browse/ZNTA-1688) - Include docker documentation and admin create users manual in docs.zanata.org
+ * [ZNTA-1660](https://zanata.atlassian.net/browse/ZNTA-1660) - Update docker script to avoid 'chcon' error
+
+##### Bug Fixes
+ * [ZNTA-1748](https://zanata.atlassian.net/browse/ZNTA-1748) - Export TMX per language does not work
+ * [ZNTA-1738](https://zanata.atlassian.net/browse/ZNTA-1738) - Link boxes in GWT editor huge
+
+-----------------------
+
 ## 4.1.0
 ### Breaking changes
 New Zanata instances will now block anonymous users from accessing any resources.
@@ -11,13 +28,13 @@ can sign in and go to server configuration page to change the value there.
  * [ZNTA-1646](https://zanata.atlassian.net/browse/ZNTA-1646) - Enable eslint check in Draft mode
  * [ZNTA-1628](https://zanata.atlassian.net/browse/ZNTA-1628) - Update "explode" profile for Zanata-server
  * [ZNTA-1626](https://zanata.atlassian.net/browse/ZNTA-1626) - Admin page to create new user
- * [ZNTA-1618](https://zanata.atlassian.net/browse/ZNTA-1618) - User experience for private instance signup 
+ * [ZNTA-1618](https://zanata.atlassian.net/browse/ZNTA-1618) - User experience for private instance signup
  * [ZNTA-1606](https://zanata.atlassian.net/browse/ZNTA-1606) - Migrate all atomic into bootstrap css
  * [ZNTA-1605](https://zanata.atlassian.net/browse/ZNTA-1605) - Remove all container zanata ui dependencies
  * [ZNTA-1604](https://zanata.atlassian.net/browse/ZNTA-1604) - Remove all component zanata ui dependencies
  * [ZNTA-1586](https://zanata.atlassian.net/browse/ZNTA-1586) - Switch from Cobertura to Jacoco for test coverage
  * [ZNTA-1574](https://zanata.atlassian.net/browse/ZNTA-1574) - Developer Guide Wiki
- * [ZNTA-1567](https://zanata.atlassian.net/browse/ZNTA-1567) - Limit signup to list of email-domains 
+ * [ZNTA-1567](https://zanata.atlassian.net/browse/ZNTA-1567) - Limit signup to list of email-domains
  * [ZNTA-1555](https://zanata.atlassian.net/browse/ZNTA-1555) - Try out Yarn instead of npm
  * [ZNTA-1527](https://zanata.atlassian.net/browse/ZNTA-1527) - Admin option to block access by anonymous users
  * [ZNTA-1418](https://zanata.atlassian.net/browse/ZNTA-1418) - RFE - Add links to user pages
@@ -54,7 +71,7 @@ can sign in and go to server configuration page to change the value there.
  * [ZNTA-1614](https://zanata.atlassian.net/browse/ZNTA-1614) - Buttons on Upload new document modal are not aligned
  * [ZNTA-1596](https://zanata.atlassian.net/browse/ZNTA-1596) - Client command put-user demands too much info
  * [ZNTA-1595](https://zanata.atlassian.net/browse/ZNTA-1595) - Internal server error deleting a non-existing glossary entry
- * [ZNTA-1591](https://zanata.atlassian.net/browse/ZNTA-1591) - [Glossary] Old last Updated date & time is shown on glossary info. 
+ * [ZNTA-1591](https://zanata.atlassian.net/browse/ZNTA-1591) - [Glossary] Old last Updated date & time is shown on glossary info.
  * [ZNTA-1578](https://zanata.atlassian.net/browse/ZNTA-1578) - Update and cancel button is not aligned on glossary page.
  * [ZNTA-1577](https://zanata.atlassian.net/browse/ZNTA-1577) - Left menu panel height is getting half on home screen and few menu selections.
  * [ZNTA-1576](https://zanata.atlassian.net/browse/ZNTA-1576) - RFE: Include url in screenshots

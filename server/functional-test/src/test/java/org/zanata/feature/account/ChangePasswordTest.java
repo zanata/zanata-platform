@@ -51,7 +51,6 @@ public class ChangePasswordTest extends ZanataTestCase {
     @Feature(summary = "The user can change their password",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86823)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
     @Ignore("Flaky test")
     public void changePasswordSuccessful() throws Exception {
         DashboardBasePage dashboard = new LoginWorkFlow()

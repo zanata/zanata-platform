@@ -27,6 +27,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -41,6 +43,10 @@ import javax.validation.constraints.NotNull;
 @NamedQueries({ @NamedQuery(
         name = AllowedApp.QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID,
         query = "from AllowedApp where account = :account and clientId = :clientId") })
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "UKAllowedApp_accountId_clientId", columnNames = {"accountId", "clientId"}),
+        @UniqueConstraint(name = "UKAllowedApp_refreshToken", columnNames = "refreshToken"),
+})
 public class AllowedApp extends ModelEntityBase {
     public static final String QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID =
             "AllowedApp.getByAccountAndClientId";
@@ -73,5 +79,34 @@ public class AllowedApp extends ModelEntityBase {
 
     public void setRefreshToken(final String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    /**
+     * Equals based on business equality
+     * @param other object
+     * @return AllowedApp and other are equal
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        if (!super.equals(other)) return false;
+
+        AllowedApp that = (AllowedApp) other;
+
+        return (account != null ?
+                account.equals(that.account) :
+                that.account == null) &&
+            (clientId != null ?
+                clientId.equals(that.clientId) :
+                that.clientId == null);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (account != null ? account.hashCode() : 0);
+        result = 31 * result + (clientId != null ? clientId.hashCode() : 0);
+        return result;
     }
 }

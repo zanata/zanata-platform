@@ -23,6 +23,7 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -33,10 +34,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang.time.DateUtils;
 import org.zanata.common.ActivityType;
 import org.zanata.model.type.EntityType;
@@ -47,6 +51,9 @@ import org.zanata.model.type.EntityType;
 @Entity
 @EntityListeners({ Activity.EntityListener.class })
 @Access(AccessType.FIELD)
+@Table(uniqueConstraints = @UniqueConstraint(name = "UKactivity",
+        columnNames = { "actor_id", "approxTime", "activityType", "contextType",
+                "context_id" }))
 public class Activity extends ModelEntityBase implements Serializable {
     private static final long serialVersionUID = 1L;
     @NotNull
@@ -56,10 +63,16 @@ public class Activity extends ModelEntityBase implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
     private Date approxTime;
+    /**
+     * maximum offset we can store equates to about 24.8 days, since this is a
+     * signed int, but we only need one hour
+     * see org.zanata.model.Activity.EntityListener.onPrePersist().
+     * see org.zanata.service.impl.ActivityServiceImpl#logActivityAlreadyLocked(long, org.zanata.model.IsEntityWithType, org.zanata.model.IsEntityWithType, org.zanata.common.ActivityType, int)
+     */
     @NotNull
-    private long startOffsetMillis;
+    private int startOffsetMillis;
     @NotNull
-    private long endOffsetMillis;
+    private int endOffsetMillis;
     @NotNull
     @Enumerated(EnumType.STRING)
     private EntityType contextType;
@@ -79,7 +92,7 @@ public class Activity extends ModelEntityBase implements Serializable {
     private int wordCount;
 
     public Activity(HPerson actor, IsEntityWithType context,
-            IsEntityWithType target, ActivityType activityType, int wordCount) {
+                    IsEntityWithType target, ActivityType activityType, int wordCount) {
         this.actor = actor;
         this.contextType = context.getEntityType();
         this.contextId = context.getId();
@@ -91,7 +104,8 @@ public class Activity extends ModelEntityBase implements Serializable {
 
     public void updateActivity(Date currentTime, IsEntityWithType target,
             int wordCount) {
-        this.endOffsetMillis = currentTime.getTime() - approxTime.getTime();
+        this.endOffsetMillis =
+                (int) (currentTime.getTime() - approxTime.getTime());
         this.wordCount += wordCount;
         this.eventCount++;
         this.lastTargetType = target.getEntityType();
@@ -100,7 +114,7 @@ public class Activity extends ModelEntityBase implements Serializable {
 
     @Transient
     public Date getEndDate() {
-        return DateUtils.addMilliseconds(approxTime, (int) endOffsetMillis);
+        return DateUtils.addMilliseconds(approxTime, endOffsetMillis);
     }
 
     public static class EntityListener {
@@ -109,8 +123,8 @@ public class Activity extends ModelEntityBase implements Serializable {
         private void onPrePersist(Activity activity) {
             activity.approxTime = DateUtils.truncate(activity.getCreationDate(),
                     Calendar.HOUR);
-            activity.startOffsetMillis = activity.getCreationDate().getTime()
-                    - activity.approxTime.getTime();
+            activity.startOffsetMillis = (int) (activity.getCreationDate().getTime()
+                                - activity.approxTime.getTime());
             activity.endOffsetMillis = activity.startOffsetMillis;
         }
     }
@@ -123,7 +137,8 @@ public class Activity extends ModelEntityBase implements Serializable {
     }
 
     public Date getApproxTime() {
-        return this.approxTime;
+        // Deep-copy to prevent malicious code vulnerability (EI_EXPOSE_REP)
+        return new Date(this.approxTime.getTime());
     }
 
     public long getStartOffsetMillis() {
@@ -160,5 +175,38 @@ public class Activity extends ModelEntityBase implements Serializable {
 
     public EntityType getContextType() {
         return this.contextType;
+    }
+
+    /**
+     * Business equality comparison
+     *
+     * @param other Activity
+     * @return other is equal
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        if (!super.equals(other)) return false;
+
+        Activity activity = (Activity) other;
+
+        return (actor == null ?
+                activity.actor == null : actor.equals(activity.actor)) &&
+                (contextId == activity.contextId) &&
+                (contextType == activity.contextType) &&
+                (activityType == activity.activityType) &&
+                (approxTime == activity.approxTime);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (actor != null ? actor.hashCode() : 0);
+        result = 31 * result + Long.valueOf(contextId).hashCode();
+        result = 31 * result + (contextType != null ? contextType.hashCode() : 0);
+        result = 31 * result + (activityType != null ? activityType.hashCode() : 0);
+        result = 31 * result + (approxTime != null ? approxTime.hashCode() : 0);
+        return result;
     }
 }

@@ -36,13 +36,18 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
- * projectSlug: Project Identifier. iterationSlug: Project Iteration identifier.
+ * Source document API. This API uses format-independent data structures. For
+ * format specific source document access see {@link FileResource}
+ *
+ * <br>projectSlug: Project Identifier.
+ * <br>iterationSlug: Project Iteration identifier.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -50,6 +55,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Path(SourceDocResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@ResourceLabel("Source Documents")
 public interface SourceDocResource extends RestResource {
     String SERVICE_PATH =
             ProjectIterationResource.SERVICE_PATH + "/r";
@@ -62,7 +68,7 @@ public interface SourceDocResource extends RestResource {
             + RESOURCE_SLUG_REGEX + "}";
 
     /**
-     * Returns header information for a Project's iteration translations.
+     * Returns header information for a Project's iteration source strings.
      *
      * @return The following response status codes will be returned from this
      *         operation:<br>
@@ -95,16 +101,11 @@ public interface SourceDocResource extends RestResource {
      *         the server while performing this operation.
      */
     @GET
-    // TODO Enunciate doesn't handle arrays/Collections
-    // Ugly workaround:
-    // http://docs.codehaus.org/display/ENUNCIATE/Lists+and+JAX-RS
-    // Eventual solution: https://jira.codehaus.org/browse/ENUNCIATE-429
-            @TypeHint(ResourceMeta[].class)
-            public
-            Response get(@QueryParam("ext") Set<String> extensions);
+    @TypeHint(ResourceMeta[].class)
+    Response get(@QueryParam("ext") Set<String> extensions);
 
     /**
-     * Creates a new Document.
+     * Creates a new source Document.
      *
      * @param resource
      *            The document information.
@@ -132,7 +133,7 @@ public interface SourceDocResource extends RestResource {
             @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
 
     /**
-     * Retrieves information for a Document.
+     * Retrieves information for a source Document.
      *
      * @param idNoSlash
      *            The document identifier. Some document ids could have forward
@@ -161,7 +162,7 @@ public interface SourceDocResource extends RestResource {
                     @QueryParam("ext") Set<String> extensions);
 
     /**
-     * Creates or modifies a Document.
+     * Creates or modifies a source Document.
      *
      * @param idNoSlash
      *            The document identifier. Some document ids could have forward
@@ -205,7 +206,7 @@ public interface SourceDocResource extends RestResource {
                     @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
 
     /**
-     * Delete a Document. The system keeps the history of this document however.
+     * Delete a source Document. The system keeps the history of this document however.
      *
      * @param idNoSlash
      *            The document identifier. Some document ids could have forward
@@ -233,7 +234,7 @@ public interface SourceDocResource extends RestResource {
             Response deleteResource(@PathParam("id") String idNoSlash);
 
     /**
-     * Retrieves meta-data information for a Document.
+     * Retrieves meta-data information for a source Document.
      *
      * @param idNoSlash
      *            The document identifier. Some document ids could have forward
@@ -263,7 +264,7 @@ public interface SourceDocResource extends RestResource {
                     @QueryParam("ext") Set<String> extensions);
 
     /**
-     * Modifies an existing document's meta-data.
+     * Modifies an existing source document's meta-data.
      *
      * @param idNoSlash
      *            The document identifier. Some document ids could have forward

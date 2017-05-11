@@ -1,7 +1,28 @@
+/*
+ * Copyright 2010, Red Hat, Inc. and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.zanata.rest.service;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,6 +30,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javax.annotation.CheckForNull;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
@@ -45,9 +67,12 @@ import org.zanata.rest.dto.QualifiedName;
 import org.zanata.rest.dto.ResultList;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GlossaryFileService;
+import org.zanata.service.GlossarySearchService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.GlossaryFileServiceImpl;
-import org.zanata.service.impl.LocaleServiceImpl;
+import org.zanata.webtrans.shared.model.GlossaryDetails;
+import org.zanata.webtrans.shared.model.GlossaryResultItem;
+import org.zanata.webtrans.shared.rpc.HasSearchType;
 
 @RequestScoped
 @Named("glossaryService")
@@ -58,6 +83,8 @@ public class GlossaryService implements GlossaryResource {
             org.slf4j.LoggerFactory.getLogger(GlossaryService.class);
 
     public static final String PROJECT_QUALIFIER_PREFIX = "project/";
+    private static final int REQUESTED_MAX_RESULTS_UPPER_LIMIT = 1000;
+
     @Inject
     private GlossaryDAO glossaryDAO;
     @Inject
@@ -68,6 +95,8 @@ public class GlossaryService implements GlossaryResource {
     private LocaleService localeServiceImpl;
     @Inject
     private ProjectDAO projectDAO;
+    @Inject
+    private GlossarySearchService glossarySearchService;
 
     @Override
     public Response getQualifiedName() {
@@ -84,7 +113,7 @@ public class GlossaryService implements GlossaryResource {
         int entryCount = glossaryDAO.getEntryCountBySourceLocales(
                 srcLocale.getLocaleId(), qualifiedName);
         GlossaryLocaleInfo srcGlossaryLocale = new GlossaryLocaleInfo(
-                LocaleServiceImpl.convertToDTO(srcLocale), entryCount);
+                LocaleService.convertHLocaleToDTO(srcLocale), entryCount);
         Map<LocaleId, Integer> transMap = glossaryDAO
                 .getTranslationLocales(srcLocale.getLocaleId(), qualifiedName);
         List<HLocale> supportedLocales =
@@ -94,7 +123,7 @@ public class GlossaryService implements GlossaryResource {
                 locale -> !locale.getLocaleId().equals(srcLocale.getLocaleId()))
                 .forEach(locale -> {
                     LocaleDetails localeDetails =
-                            LocaleServiceImpl.convertToDTO(locale);
+                            LocaleService.convertHLocaleToDTO(locale);
                     int count = transMap.containsKey(locale.getLocaleId())
                             ? transMap.get(locale.getLocaleId()) : 0;
                     transLocale
@@ -136,6 +165,81 @@ public class GlossaryService implements GlossaryResource {
             transferEntriesLocaleResource(hGlossaryEntries, resultList, locale);
         }
         return Response.ok(resultList).build();
+    }
+
+    @Override
+    public Response search(
+            @DefaultValue("en-US") LocaleId srcLocale,
+            @CheckForNull LocaleId transLocale,
+            @DefaultValue("20") int maxResults,
+            @CheckForNull String searchText,
+            @CheckForNull String projectSlug) {
+
+        if (transLocale == null) {
+            throw new WebApplicationException(Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity("Missing query parameter \"transLocale\"")
+                    .build());
+        }
+        if (searchText == null) {
+            throw new WebApplicationException(Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity("Missing query parameter \"searchText\"")
+                    .build());
+        }
+        if (maxResults < 1 || maxResults > REQUESTED_MAX_RESULTS_UPPER_LIMIT) {
+            throw new WebApplicationException(Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid maxResults \"" + maxResults + "\". Must be between 1 and " +
+                            REQUESTED_MAX_RESULTS_UPPER_LIMIT + " inclusive.")
+                    .build());
+        }
+
+        ArrayList<GlossaryResultItem> results;
+        try {
+            results = glossarySearchService.searchGlossary(
+                    srcLocale,
+                    transLocale,
+                    searchText,
+                    HasSearchType.SearchType.FUZZY,
+                    maxResults,
+                    projectSlug);
+        } catch (ZanataServiceException e) {
+            throw new WebApplicationException(Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build());
+        }
+        return Response.ok(results).build();
+    }
+
+    @Override
+    public Response getDetails(
+            @CheckForNull LocaleId locale,
+            @CheckForNull List<Long> termIds) {
+        if (locale == null) {
+            throw new WebApplicationException(Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity("Missing path parameter \"locale\"")
+                    .build());
+        }
+        if (termIds == null || termIds.isEmpty()) {
+            throw new WebApplicationException(Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity("Missing query parameter \"termIds\"")
+                    .build());
+        }
+
+        ArrayList<GlossaryDetails> results;
+        try {
+            results = glossarySearchService.lookupDetails(locale, termIds);
+        } catch (ZanataServiceException e) {
+            throw new WebApplicationException(Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build());
+        }
+        return Response.ok(results).build();
     }
 
     @Override

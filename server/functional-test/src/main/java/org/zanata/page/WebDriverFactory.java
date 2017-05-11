@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import com.google.common.reflect.AbstractInvocationHandler;
@@ -61,13 +62,16 @@ import org.zanata.util.PropertiesHolder;
 import com.google.common.base.Strings;
 import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
-import javax.annotation.Nonnull;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import static java.lang.reflect.Proxy.newProxyInstance;
+import static org.zanata.page.utility.PageSourceKt.shortenPageSource;
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
+
 
 public enum WebDriverFactory {
     INSTANCE;
@@ -87,7 +91,7 @@ public enum WebDriverFactory {
     private static final boolean useProxy = true;
     @Nullable
     private EventFiringWebDriver driver;
-    @Nonnull
+    @CheckForNull
     private DswidParamChecker dswidParamChecker;
     private DriverService driverService;
     private TestEventForScreenshotListener screenshotListener;
@@ -230,17 +234,19 @@ public enum WebDriverFactory {
                 // If firstException was a warning, replace it with this error.
                 if ((firstException == null || !firstException.isErrorLog())
                         && !ignorable(msg)) {
+                    String pageSource = shortenPageSource(getDriver());
                     // We only throw this if throwIfWarn is true
                     firstException = new WebDriverLogException(level, logString,
-                            driver.getPageSource());
+                            pageSource);
                 }
             } else if (level.intValue() >= Level.WARNING.intValue()) {
                 log.warn(logString);
                 if ((firstException == null) && !ignorable(msg)) {
+                    String pageSource = shortenPageSource(getDriver());
                     // We only throw this if throwIfWarn is true
                     firstException =
                             new WebDriverLogException(logEntry.getLevel(),
-                                    logString, driver.getPageSource());
+                                    logString, pageSource);
                 }
             } else if (level.intValue() >= Level.INFO.intValue()) {
                 log.info(logString);
@@ -297,16 +303,18 @@ public enum WebDriverFactory {
     }
 
     public void registerScreenshotListener(String testName) {
+        if (!ScreenshotDirForTest.isScreenshotEnabled())
+            return;
         log.info("Enabling screenshot module...");
         EventFiringWebDriver driver = getDriver();
-        if (screenshotListener == null
-                && ScreenshotDirForTest.isScreenshotEnabled()) {
+        if (screenshotListener == null) {
             screenshotListener = new TestEventForScreenshotListener(driver);
         }
         driver.register(screenshotListener);
         screenshotListener.updateTestID(testName);
     }
 
+    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     @ParametersAreNonnullByDefault
     public void registerLogListener() {
         if (logListener == null) {
@@ -350,7 +358,21 @@ public enum WebDriverFactory {
                 PropertiesHolder.properties.getProperty("webdriver.chrome.bin");
         log().info("Setting chrome.binary: {}", chromeBin);
         capabilities.setCapability("chrome.binary", chromeBin);
+
+        /*
+         * Disable popups, thus automatically accepting downloads, and set
+         * the default destination to /tmp/
+         * See https://developer.chrome.com/extensions/contentSettings#property-popups
+         * and
+         * https://src.chromium.org/viewvc/chrome/trunk/src/chrome/common/pref_names.cc
+         */
+        HashMap<String, Object> prefs = new HashMap<>();
+        prefs.put("profile.default_content_settings.popups", 0);
+        prefs.put("download.default_directory", "/tmp/");
+
         ChromeOptions options = new ChromeOptions();
+        options.setExperimentalOption("prefs", prefs);
+
         URL url = Thread.currentThread().getContextClassLoader()
                 .getResource("zanata-testing-extension/chrome/manifest.json");
         assert url != null : "can\'t find extension (check testResource config in pom.xml)";

@@ -12,6 +12,11 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 
 /**
+ * Representation of a TransUnit for JSON serialization.
+ *
+ * This exists so that we can generate a JSON object that can have dynamic keys.
+ * It also allows keys that are not constrained to standard Java variable names.
+ *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)

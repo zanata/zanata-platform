@@ -56,7 +56,6 @@ public class CreateProjectVersionTest extends ZanataTestCase {
     @Feature(summary = "The administrator can create a project version",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 136517)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
     public void createASimpleProjectVersion() throws Exception {
         VersionLanguagesPage versionLanguagesPage = new ProjectWorkFlow()
                 .goToProjectByName("about fedora")

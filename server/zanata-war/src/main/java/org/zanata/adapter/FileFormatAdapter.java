@@ -20,8 +20,12 @@
  */
 package org.zanata.adapter;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.StreamingOutput;
@@ -139,4 +143,5 @@ public interface FileFormatAdapter {
         return FilenameUtils.removeExtension(document
                 .getName()) + "." + transExt;
     }
+
 }

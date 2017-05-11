@@ -72,7 +72,6 @@ public class RegisterTest extends ZanataTestCase {
     @Feature(summary = "The user can register an account with Zanata",
             tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86816)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Category(BasicAcceptanceTest.class)
     public void registerSuccessful() throws Exception {
         RegisterPage registerPage = homePage
                 .goToRegistration()

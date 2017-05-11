@@ -6,13 +6,18 @@ import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
+import org.zanata.model.HPerson;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.po.HPotEntryData;
 import org.zanata.rest.editor.dto.EditorTextFlow;
+import org.zanata.rest.editor.dto.EditorTextFlowTarget;
 import org.zanata.rest.editor.dto.TransUnit;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.service.ResourceUtils;
 import com.google.common.collect.Lists;
+import org.zanata.webtrans.server.rpc.TransUnitTransformer;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -44,12 +49,13 @@ public class TransUnitUtils {
         return idList;
     }
 
+    /**
+     * Build a fully-populated TransUnit data object ready for serialization.
+     */
     public TransUnit buildTransUnitFull(@Nonnull HTextFlow hTf,
             HTextFlowTarget hTft, LocaleId localeId) {
         TransUnit tu = new TransUnit();
-        // build source
         tu.putAll(buildSourceTransUnit(hTf, localeId));
-        // build target
         tu.putAll(buildTargetTransUnit(hTf, hTft, localeId));
         return tu;
     }
@@ -66,9 +72,10 @@ public class TransUnitUtils {
             LocaleId localeId) {
         TransUnit tu = new TransUnit();
         if (hTft != null) {
-            TextFlowTarget target = new TextFlowTarget(hTf.getResId());
+            EditorTextFlowTarget target = new EditorTextFlowTarget(hTf.getResId());
             resourceUtils.transferToTextFlowTarget(hTft, target,
                     Optional.of("Editor"));
+            target.setLastModifiedTime(hTft.getLastChanged());
             tu.put(hTft.getLocaleId().toString(), target);
         } else {
             tu.put(localeId.toString(), new TextFlowTarget(hTf.getResId()));
@@ -79,6 +86,17 @@ public class TransUnitUtils {
     public void transferToTextFlow(HTextFlow from, EditorTextFlow to) {
         resourceUtils.transferToTextFlow(from, to);
         to.setWordCount(from.getWordCount().intValue());
+
+        HPotEntryData potEntryData = from.getPotEntryData();
+
+        if (potEntryData != null) {
+            to.setMsgctxt(potEntryData.getContext());
+            to.setSourceReferences(potEntryData.getReferences());
+            to.setsourceFlags(potEntryData.getFlags());
+        }
+
+        to.setSourceComment(
+                TransUnitTransformer.commentToString(from.getComment()));
     }
 
     public TransUnitUtils() {

@@ -30,6 +30,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlTransient;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.zanata.common.HasContents;
@@ -47,6 +49,7 @@ import org.zanata.common.Namespaces;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @XmlTransient
+@Label("Text Container")
 class TextContainer implements Serializable, HasContents {
     private static final long serialVersionUID = 1L;
 
@@ -60,6 +63,7 @@ class TextContainer implements Serializable, HasContents {
     @XmlElement(name = "content", required = false,
             namespace = Namespaces.ZANATA_OLD)
     @JsonProperty("content")
+    @DocumentationExample(exclude = true)
     private String content;
 
     /**
@@ -71,6 +75,8 @@ class TextContainer implements Serializable, HasContents {
     @XmlElementWrapper(name = "contents", namespace = Namespaces.ZANATA_OLD)
     @XmlElement(name = "content", namespace = Namespaces.ZANATA_OLD)
     @JsonProperty("contents")
+    @DocumentationExample(value = "An english string to translate",
+        value2 = "A plural english string to translate")
     private List<String> contents;
 
     /**

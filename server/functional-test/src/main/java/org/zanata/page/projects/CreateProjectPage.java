@@ -77,4 +77,10 @@ public class CreateProjectPage extends BasePage {
         clickAndCheckErrors(readyElement(createButton));
         return new ProjectVersionsPage(getDriver());
     }
+
+    public CreateProjectPage pressCreateProjectAndExpectFailure() {
+        log.info("Click Create");
+        clickAndExpectErrors(readyElement(createButton));
+        return new CreateProjectPage(getDriver());
+    }
 }
