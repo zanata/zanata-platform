@@ -23,6 +23,7 @@ package org.zanata.adapter;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.sf.okapi.common.IParameters;
 import net.sf.okapi.filters.regex.RegexFilter;
 
@@ -46,6 +47,7 @@ public class SubtitleAdapter extends OkapiFilterAdapter {
 
     private static final String defaultConfig = loadDefaultConfig();
 
+    @SuppressFBWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     private static String loadDefaultConfig() {
         URL configURL = SubtitleAdapter.class
                 .getResource("SubtitleAdapterDefaultConfiguration.yml");

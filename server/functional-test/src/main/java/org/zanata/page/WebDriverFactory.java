@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import com.google.common.reflect.AbstractInvocationHandler;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
@@ -314,7 +315,7 @@ public enum WebDriverFactory {
         screenshotListener.updateTestID(testName);
     }
 
-    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
+    @SuppressFBWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     @ParametersAreNonnullByDefault
     public void registerLogListener() {
         if (logListener == null) {

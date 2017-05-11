@@ -23,6 +23,7 @@ package org.zanata.webtrans.shared.validation.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.webtrans.client.resources.ValidationMessages;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.validation.AbstractValidationAction;
@@ -34,7 +35,7 @@ public class TabValidation extends AbstractValidationAction {
         super(id, messages.tabValidatorDesc(), messages);
     }
 
-    @edu.umd.cs.findbugs.annotations.SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
+    @SuppressFBWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     @Override
     public List<String> doValidate(String source, String target) {
         ArrayList<String> errors = new ArrayList<String>();
