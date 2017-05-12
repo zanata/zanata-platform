@@ -2,11 +2,17 @@ import React from 'react'
 import { storiesOf } from '@kadira/storybook'
 import { action, decorateAction } from '@kadira/storybook-addon-actions'
 import { Button, Panel, Row, Table, Well, Checkbox, InputGroup, Col,
-  FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem, PanelGroup }
+  FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem, PanelGroup,
+OverlayTrigger, Tooltip }
   from 'react-bootstrap'
 import { Icon, Modal } from '../../components'
 import Lorem from 'react-lorem-component'
 
+const tooltip =  (
+    <Tooltip id='tooltip'>Best match will be chosen based on the priority of
+      selected projects. Exact matches take precendence.
+    </Tooltip>
+)
 
 const heading1 =  <h3><Checkbox checked> Project A</Checkbox></h3>
 const heading2 =  <h3><Checkbox> Project B  <Icon name='locked'
@@ -153,7 +159,9 @@ storiesOf('Modal', module)
                       Adjust priority </span>
                       <span className='text-muted vmerge-adjsub'>(best first)
                       </span>
-                      <Icon name='info' className='s0 info-icon' />
+                      <OverlayTrigger placement='top' overlay={tooltip}>
+                       <Icon name='info' className='s0 info-icon' />
+                      </OverlayTrigger>
                     </ListGroupItem>
                     <ListGroupItem className='v'>2.0</ListGroupItem>
                     <ListGroupItem className='v'>1.0</ListGroupItem>
