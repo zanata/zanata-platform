@@ -48,6 +48,8 @@ import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -219,8 +221,8 @@ public class ProjectHome extends SlugHome<HProject>
     @SuppressFBWarnings("SE_BAD_FIELD")
     private Map<ValidationId, ValidationAction> availableValidations =
             Maps.newHashMap();
-    private final java.util.concurrent.atomic.AtomicReference<Object> versions =
-            new java.util.concurrent.atomic.AtomicReference<Object>();
+    private final java.util.concurrent.atomic.AtomicReference<List<HProjectIteration>>
+            versions = new java.util.concurrent.atomic.AtomicReference<>();
     private String selectedProjectType;
     @Inject
     private ProjectMaintainersAutocomplete maintainerAutocomplete;
@@ -921,7 +923,7 @@ public class ProjectHome extends SlugHome<HProject>
         return allRoles;
     }
 
-    private List<HProjectIteration> fetchVersions() {
+    private @NotNull List<HProjectIteration> fetchVersions() {
         List<HProjectIteration> results = Lists.newArrayList(Iterables
                 .filter(getInstance().getProjectIterations(), IS_NOT_OBSOLETE));
         Collections.sort(results, new Comparator<HProjectIteration>() {
@@ -1303,19 +1305,8 @@ public class ProjectHome extends SlugHome<HProject>
     }
 
     public List<HProjectIteration> getVersions() {
-        Object value = this.versions.get();
-        if (value == null) {
-            synchronized (this.versions) {
-                value = this.versions.get();
-                if (value == null) {
-                    final List<HProjectIteration> actualValue = fetchVersions();
-                    value = actualValue == null ? this.versions : actualValue;
-                    this.versions.set(value);
-                }
-            }
-        }
-        return (List<HProjectIteration>) (value == this.versions ? null
-                : value);
+        this.versions.compareAndSet(null, fetchVersions());
+        return versions.get();
     }
 
     public String getSelectedProjectType() {
