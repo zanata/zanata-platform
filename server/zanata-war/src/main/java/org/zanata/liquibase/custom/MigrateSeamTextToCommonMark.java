@@ -99,13 +99,13 @@ public class MigrateSeamTextToCommonMark implements CustomTaskChange {
     public void execute(Database database) throws CustomChangeException {
         Logger log = LogFactory.getLogger();
         JdbcConnection conn = (JdbcConnection) database.getConnection();
-        try {
-            try (Statement stmt = conn
-                    .createStatement(ResultSet.TYPE_FORWARD_ONLY,
-                            ResultSet.CONCUR_UPDATABLE)) {
-
+        try (Statement stmt = conn
+                .createStatement(ResultSet.TYPE_FORWARD_ONLY,
+                        ResultSet.CONCUR_UPDATABLE)) {
+            ResultSet rs2 = null;
+            try {
                 log.info("MigrateSeamTextToCommonMark: counting records");
-                ResultSet rs2 = stmt.executeQuery(SQL_TOTAL);
+                rs2 = stmt.executeQuery(SQL_TOTAL);
                 rs2.next();
                 long totalRecords = rs2.getLong(IDX_TOTAL);
 
@@ -131,6 +131,8 @@ public class MigrateSeamTextToCommonMark implements CustomTaskChange {
                 }
                 log.info("MigrateSeamTextToCommonMark: updated " +
                         recordsUpdated + " records in total");
+            } finally {
+                rs2.close();
             }
         } catch (SQLException | DatabaseException e) {
             throw new CustomChangeException(e);

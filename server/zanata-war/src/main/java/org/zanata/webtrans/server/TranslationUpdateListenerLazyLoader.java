@@ -42,11 +42,15 @@ public class TranslationUpdateListenerLazyLoader implements
     @SuppressFBWarnings("DC_DOUBLECHECK")
     public void init() {
         if (delegate == null) {
-            synchronized (this) {
-                if (delegate == null) {
-                    delegate = ServiceLocator.instance()
-                            .getInstance(TranslationUpdateListener.class);
-                }
+            synchronizeAndSetDelegate();
+        }
+    }
+
+    public void synchronizeAndSetDelegate() {
+        synchronized (this) {
+            if (delegate == null) {
+                delegate = ServiceLocator.instance()
+                        .getInstance(TranslationUpdateListener.class);
             }
         }
     }
