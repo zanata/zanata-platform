@@ -2,7 +2,6 @@ package org.zanata.rest;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
@@ -28,7 +27,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.util.concurrent.Uninterruptibles;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -160,8 +158,7 @@ public class SampleDataResourceImpl implements SampleDataResource {
             String qualifiedExceptionClass) throws Throwable {
         if (timeInMillis > 0) {
             log.info("I am going to take a nap for {} ms", timeInMillis);
-            Uninterruptibles.sleepUninterruptibly(timeInMillis,
-                    TimeUnit.MILLISECONDS);
+            Thread.sleep(timeInMillis);
         }
         if (Strings.isNullOrEmpty(qualifiedExceptionClass)) {
             return Response.ok().build();

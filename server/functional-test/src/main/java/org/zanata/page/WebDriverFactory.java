@@ -22,14 +22,12 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-import com.google.common.reflect.AbstractInvocationHandler;
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
@@ -39,7 +37,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -311,21 +308,15 @@ public enum WebDriverFactory {
         screenshotListener.updateTestID(testName);
     }
 
-    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     @ParametersAreNonnullByDefault
     public void registerLogListener() {
         if (logListener == null) {
             logListener = (WebDriverEventListener) newProxyInstance(
                     WebDriverEventListener.class.getClassLoader(),
                     new Class<?>[] { WebDriverEventListener.class },
-                    new AbstractInvocationHandler() {
-
-                        @Override
-                        protected Object handleInvocation(Object proxy,
-                                Method method, Object[] args) throws Throwable {
-                            logLogs();
-                            return null;
-                        }
+                    (proxy, method, args) -> {
+                        logLogs();
+                        return null;
                     });
         }
         getDriver().register(logListener);

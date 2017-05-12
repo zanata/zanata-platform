@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,10 +15,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import com.google.common.base.Function;
 import com.google.common.base.Throwables;
-import com.google.common.base.Ticker;
 import com.google.common.collect.Lists;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -91,20 +90,5 @@ public class LeakyBucketTest {
                         }
                     }
                 });
-    }
-
-    @Test
-    public void willMakeUpTheRefillWhenTimePassed()
-            throws InterruptedException {
-        Ticker ticker = mock(Ticker.class);
-        LeakyBucket bucket = new LeakyBucket(2, refillDuration, refillTimeUnit,
-                new LeakyBucket.TimeTracker(ticker));
-        assertThat(bucket.tryAcquire(), Matchers.is(true));
-        assertThat(bucket.tryAcquire(), Matchers.is(true));
-        assertThat(bucket.tryAcquire(), Matchers.is(false));
-        // after twice of refill duration it should've filled up.
-        when(ticker.read()).thenReturn(timeOverRefillDuration * 2);
-        assertThat(bucket.tryAcquire(), Matchers.is(true));
-        assertThat(bucket.tryAcquire(), Matchers.is(true));
     }
 }

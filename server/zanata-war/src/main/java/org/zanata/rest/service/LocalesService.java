@@ -33,6 +33,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.resteasy.util.GenericType;
@@ -62,6 +64,7 @@ import org.zanata.servlet.annotations.AllJavaLocales;
 @Path(LocalesResource.SERVICE_PATH)
 public class LocalesService implements LocalesResource {
 
+    private static final long serialVersionUID = 8093381226182123148L;
     /**
      * Maximum result for per page.
      */
@@ -243,7 +246,8 @@ public class LocalesService implements LocalesResource {
         return result;
     }
 
-    private transient final Function<LocaleId, LocaleDetails> convertToLocaleDetails =
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
+    private final Function<LocaleId, LocaleDetails> convertToLocaleDetails =
             new Function<LocaleId, LocaleDetails>() {
                 @Override
                 public LocaleDetails apply(LocaleId localeId) {
@@ -257,7 +261,8 @@ public class LocalesService implements LocalesResource {
                 }
             };
 
-    private transient final Function<HLocaleMember, LocaleMember> convertToLocaleMember =
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
+    private final Function<HLocaleMember, LocaleMember> convertToLocaleMember =
             new Function<HLocaleMember, LocaleMember>() {
                 @Override
                 public LocaleMember apply(HLocaleMember localeMember) {
