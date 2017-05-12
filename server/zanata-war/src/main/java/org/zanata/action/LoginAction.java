@@ -29,7 +29,10 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.dao.AccountDAO;
+import org.zanata.model.HAccount;
 import org.zanata.security.AuthenticationManager;
 import org.zanata.security.AuthenticationType;
 import org.zanata.security.UserRedirectBean;
@@ -65,6 +68,9 @@ public class LoginAction implements Serializable {
     private AuthenticationManager authenticationManager;
     @Inject
     private ApplicationConfiguration applicationConfiguration;
+    @Inject
+    private AccountDAO accountDAO;
+
     private String username;
     private String password;
     private String openId = "http://";
@@ -80,6 +86,10 @@ public class LoginAction implements Serializable {
         String loginResult;
         switch (credentials.getAuthType()) {
         case INTERNAL:
+            if (new EmailValidator().isValid(username, null)) {
+                HAccount account = accountDAO.getByEmail(username);
+                credentials.setUsername(account == null ? username : account.getUsername());
+            }
             loginResult = authenticationManager.internalLogin();
             break;
 
