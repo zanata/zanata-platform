@@ -1,6 +1,6 @@
 import React from 'react'
-import ReactDOM from 'react-dom';
-import Draggable from 'react-draggable';
+import ReactDOM from 'react-dom'
+import Draggable from 'react-draggable'
 import { storiesOf } from '@kadira/storybook'
 import { action, decorateAction } from '@kadira/storybook-addon-actions'
 import { Button, Panel, Row, Table, Well, Checkbox, InputGroup, Col,
@@ -167,11 +167,18 @@ storiesOf('Modal', module)
                     </div>
                     <Draggable bounds='parent' axis='y' grid={[45, 45]}>
                     <ListGroupItem className='v'>
+                      <Button bsStyle='link'>
+                      <Glyphicon glyph="sort" />
+                      </Button>
                         2.0
                     </ListGroupItem>
                     </Draggable>
                     <Draggable bounds='parent' axis='y' grid={[45, 45]}>
-                    <ListGroupItem className='v'>1.0</ListGroupItem>
+                    <ListGroupItem className='v'>
+                      <Button bsStyle='link'>
+                        <Glyphicon glyph="sort" />
+                      </Button>
+                      1.0</ListGroupItem>
                     </Draggable>
                   </ListGroup>
                 </Col>
