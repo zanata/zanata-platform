@@ -7,9 +7,15 @@ import { Button, Panel, Row, Table, Well, Checkbox, InputGroup, Col,
 import { Icon, Modal } from '../../components'
 import Lorem from 'react-lorem-component'
 
+
+const heading1 =  <h3><Checkbox checked> Project A</Checkbox></h3>
+const heading2 =  <h3><Checkbox> Project B  <Icon name='locked'
+   className='s0' />
+</Checkbox></h3>
+
 storiesOf('Modal', module)
     .addDecorator((story) => (
-          <div className="static-modal">
+          <div className='static-modal'>
             {story()}
           </div>
     ))
@@ -63,12 +69,13 @@ storiesOf('Modal', module)
               </Checkbox>
             </Well>
               <Col xs={2}>
-                <span>Language</span>
+                <span className='vmerge-title text-info'>Language</span>
               </Col>
-              <Col xs={5}>
+              <Col xs={6}>
                 <DropdownButton bsStyle='default' bsSize='small'
                    title='Dropdown button'
-                   id='dropdown-basic'>
+                   id='dropdown-basic'
+                   className='vmerge-ddown' >
                   <MenuItem onClick={action('onClick')} eventKey='1'>
                     Action</MenuItem>
                   <MenuItem onClick={action('onClick')} eventKey='2'>
@@ -79,7 +86,10 @@ storiesOf('Modal', module)
               </Col>
               <Col xs={12}>
               <div className='vmerge-target'>
-                To Target
+                <div  className='vmerge-title'>
+                <span className='text-info'>To </span>
+                <span className='text-muted'> Target</span>
+                </div>
                 <ul>
                   <li>
                     Current project
@@ -90,10 +100,13 @@ storiesOf('Modal', module)
                 </ul>
               </div>
               </Col>
-              <Col xs={2}>
-                <span>From Source</span>
+              <Col xs={3}>
+                <div  className='vmerge-title'>
+                  <span className='text-info'>From </span>
+                  <span className='text-muted'> Source</span>
+                </div>
               </Col>
-              <Col xs={10}>
+              <Col xs={9}>
               <InputGroup>
               <InputGroup.Addon>
                 <Icon name='search'
@@ -105,18 +118,20 @@ storiesOf('Modal', module)
                  />
               </InputGroup>
               </Col>
-            <div>
+            <Col xs={12} className='vmerge-boxes'>
               <Col xs={6}>
-                <PanelGroup defaultActiveKey="1" accordion>
-                  <Panel header="Panel 1" eventKey="1">
+                <PanelGroup defaultActiveKey='1' accordion>
+                  <Panel header={heading1} eventKey='1'>
                     <ListGroup fill>
-                      <ListGroupItem className='v'><Checkbox>2.0</Checkbox>
+                      <ListGroupItem className='v'><Checkbox checked>2.0
+                      </Checkbox>
                       </ListGroupItem>
-                      <ListGroupItem className='v'><Checkbox>1.0</Checkbox>
+                      <ListGroupItem className='v'><Checkbox checked>1.0
+                      </Checkbox>
                       </ListGroupItem>
                     </ListGroup>
                   </Panel>
-                  <Panel header="Panel 2" eventKey="2">
+                  <Panel header={heading2} eventKey='2'>
                     <ListGroup fill>
                     <ListGroupItem className='v'><Checkbox>1.0</Checkbox>
                     </ListGroupItem>
@@ -126,14 +141,18 @@ storiesOf('Modal', module)
               </Col>
                 <Col xs={6}>
                   <ListGroup>
-                    <ListGroupItem><h4>Adjust priority</h4>
-                      <Icon name='info' className='s1' />
+                    <ListGroupItem><span className='vmerge-adjtitle
+                    vmerge-title'>
+                      Adjust priority </span>
+                      <span className='text-muted vmerge-adjsub'>(best first)
+                      </span>
+                      <Icon name='info' className='s0 info-icon' />
                     </ListGroupItem>
-                    <ListGroupItem className='v'>Item 2</ListGroupItem>
-                    <ListGroupItem className='v'>...</ListGroupItem>
+                    <ListGroupItem className='v'>2.0</ListGroupItem>
+                    <ListGroupItem className='v'>1.0</ListGroupItem>
                   </ListGroup>
                 </Col>
-            </div>
+            </Col>
             </div>
           </Modal.Body>
           <Modal.Footer>
