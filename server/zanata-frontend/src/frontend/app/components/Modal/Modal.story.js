@@ -5,7 +5,7 @@ import { storiesOf } from '@kadira/storybook'
 import { action, decorateAction } from '@kadira/storybook-addon-actions'
 import { Button, Panel, Row, Table, Well, Checkbox, InputGroup, Col,
   FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem, PanelGroup,
-OverlayTrigger, Tooltip }
+OverlayTrigger, Tooltip, Glyphicon }
   from 'react-bootstrap'
 import { Icon, Modal } from '../../components'
 import Lorem from 'react-lorem-component'
@@ -156,7 +156,7 @@ storiesOf('Modal', module)
               </Col>
                 <Col xs={6}>
                   <ListGroup>
-                    <ListGroupItem><span className='vmerge-adjtitle
+                    <div><span className='vmerge-adjtitle
                     vmerge-title'>
                       Adjust priority </span>
                       <span className='text-muted vmerge-adjsub'>(best first)
@@ -164,11 +164,13 @@ storiesOf('Modal', module)
                       <OverlayTrigger placement='top' overlay={tooltip}>
                        <Icon name='info' className='s0 info-icon' />
                       </OverlayTrigger>
+                    </div>
+                    <Draggable bounds='parent' axis='y' grid={[45, 45]}>
+                    <ListGroupItem className='v'>
+                        2.0
                     </ListGroupItem>
-                    <Draggable bounds='parent'>
-                    <ListGroupItem className='v'>2.0</ListGroupItem>
                     </Draggable>
-                    <Draggable bounds='parent'>
+                    <Draggable bounds='parent' axis='y' grid={[45, 45]}>
                     <ListGroupItem className='v'>1.0</ListGroupItem>
                     </Draggable>
                   </ListGroup>
