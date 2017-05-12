@@ -33,7 +33,8 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-@SuppressFBWarnings( value = {"GBU_GUAVA_BETA_CLASS_USAGE", "SE_BAD_FIELD"}, justification = "field Striped<Lock>")
+@SuppressFBWarnings(value = { "GBU_GUAVA_BETA_CLASS_USAGE",
+        "SE_BAD_FIELD" }, justification = "field Striped<Lock>")
 @Named("activityLockManager")
 @javax.enterprise.context.ApplicationScoped
 public class ActivityLockManager implements Serializable {

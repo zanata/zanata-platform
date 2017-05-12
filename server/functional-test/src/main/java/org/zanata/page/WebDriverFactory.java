@@ -22,12 +22,16 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
@@ -64,7 +68,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import static java.lang.reflect.Proxy.newProxyInstance;
-import static org.zanata.page.utility.PageSourceKt.shortenPageSource;
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
@@ -228,19 +231,17 @@ public enum WebDriverFactory {
                 // If firstException was a warning, replace it with this error.
                 if ((firstException == null || !firstException.isErrorLog())
                         && !ignorable(msg)) {
-                    String pageSource = shortenPageSource(getDriver());
                     // We only throw this if throwIfWarn is true
                     firstException = new WebDriverLogException(level, logString,
-                            pageSource);
+                            driver.getPageSource());
                 }
             } else if (level.intValue() >= Level.WARNING.intValue()) {
                 log.warn(logString);
                 if ((firstException == null) && !ignorable(msg)) {
-                    String pageSource = shortenPageSource(getDriver());
                     // We only throw this if throwIfWarn is true
                     firstException =
                             new WebDriverLogException(logEntry.getLevel(),
-                                    logString, pageSource);
+                                    logString, driver.getPageSource());
                 }
             } else if (level.intValue() >= Level.INFO.intValue()) {
                 log.info(logString);
@@ -313,13 +314,50 @@ public enum WebDriverFactory {
         if (logListener == null) {
             logListener = (WebDriverEventListener) newProxyInstance(
                     WebDriverEventListener.class.getClassLoader(),
-                    new Class<?>[] { WebDriverEventListener.class },
-                    (proxy, method, args) -> {
-                        logLogs();
-                        return null;
+                    new Class<?>[]{ WebDriverEventListener.class },
+                    new InvocationHandler() {
+                        @Override
+                        public Object invoke(Object proxy, Method method,
+                                Object[] args) throws Throwable {
+                            if (args == null) {
+                                args = new Object[0];
+                            }
+                            if (args.length == 0 && method.getName().equals("hashCode")) {
+                                return hashCode();
+                            }
+                            if (args.length == 1
+                                    && method.getName().equals("equals")
+                                    && method.getParameterTypes()[0] == Object.class) {
+                                Object arg = args[0];
+                                if (arg == null) {
+                                    return false;
+                                }
+                                if (proxy == arg) {
+                                    return true;
+                                }
+                                return isProxyOfSameInterfaces(arg, proxy.getClass())
+                                        && equals(java.lang.reflect.Proxy.getInvocationHandler(arg));
+                            }
+                            if (args.length == 0 && method.getName().equals("toString")) {
+                                return toString();
+                            }
+                            logLogs();
+                            return null;
+                        }
                     });
         }
         getDriver().register(logListener);
+    }
+
+    private static boolean isProxyOfSameInterfaces(Object arg, Class<?> proxyClass) {
+        return proxyClass.isInstance(arg)
+                // Equal proxy instances should mostly be instance of proxyClass
+                // Under some edge cases (such as the proxy of JDK types serialized and then deserialized)
+                // the proxy type may not be the same.
+                // We first check isProxyClass() so that the common case of comparing with non-proxy objects
+                // is efficient.
+                || (java.lang.reflect.Proxy.isProxyClass(arg.getClass())
+                && Arrays.equals(arg.getClass().getInterfaces(), proxyClass.getInterfaces()));
     }
 
     public void unregisterLogListener() {
