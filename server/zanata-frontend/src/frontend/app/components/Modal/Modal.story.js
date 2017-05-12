@@ -1,4 +1,6 @@
 import React from 'react'
+import ReactDOM from 'react-dom';
+import Draggable from 'react-draggable';
 import { storiesOf } from '@kadira/storybook'
 import { action, decorateAction } from '@kadira/storybook-addon-actions'
 import { Button, Panel, Row, Table, Well, Checkbox, InputGroup, Col,
@@ -163,8 +165,12 @@ storiesOf('Modal', module)
                        <Icon name='info' className='s0 info-icon' />
                       </OverlayTrigger>
                     </ListGroupItem>
+                    <Draggable bounds='parent'>
                     <ListGroupItem className='v'>2.0</ListGroupItem>
+                    </Draggable>
+                    <Draggable bounds='parent'>
                     <ListGroupItem className='v'>1.0</ListGroupItem>
+                    </Draggable>
                   </ListGroup>
                 </Col>
             </Col>
