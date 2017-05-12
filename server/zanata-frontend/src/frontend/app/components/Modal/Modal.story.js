@@ -10,7 +10,7 @@ import Lorem from 'react-lorem-component'
 
 const heading1 =  <h3><Checkbox checked> Project A</Checkbox></h3>
 const heading2 =  <h3><Checkbox> Project B  <Icon name='locked'
-   className='s0' />
+   className='s0 icon-locked' />
 </Checkbox></h3>
 
 storiesOf('Modal', module)
@@ -73,22 +73,25 @@ storiesOf('Modal', module)
               </Col>
               <Col xs={6}>
                 <DropdownButton bsStyle='default' bsSize='small'
-                   title='Dropdown button'
+                   title='Japanese'
                    id='dropdown-basic'
                    className='vmerge-ddown' >
                   <MenuItem onClick={action('onClick')} eventKey='1'>
-                    Action</MenuItem>
+                    All</MenuItem>
+                  <MenuItem divider />
                   <MenuItem onClick={action('onClick')} eventKey='2'>
-                    Another action</MenuItem>
+                    Korean</MenuItem>
                   <MenuItem  onClick={action('onClick')}eventKey='3' active>
-                    Active Item</MenuItem>
+                    Japanese</MenuItem>
+                  <MenuItem  onClick={action('onClick')}eventKey='4'>
+                    Russian</MenuItem>
                 </DropdownButton>
               </Col>
               <Col xs={12}>
               <div className='vmerge-target'>
                 <div  className='vmerge-title'>
-                <span className='text-info'>To </span>
-                <span className='text-muted'> Target</span>
+                <span className='text-info'>To  </span>
+                <span className='text-muted'>  Target</span>
                 </div>
                 <ul>
                   <li>
@@ -102,11 +105,11 @@ storiesOf('Modal', module)
               </Col>
               <Col xs={3}>
                 <div  className='vmerge-title'>
-                  <span className='text-info'>From </span>
-                  <span className='text-muted'> Source</span>
+                  <span className='text-info'>From  </span>
+                  <span className='text-muted'>  Source</span>
                 </div>
               </Col>
-              <Col xs={9}>
+              <Col xs={9} className='vmerge-searchbox'>
               <InputGroup>
               <InputGroup.Addon>
                 <Icon name='search'
@@ -115,11 +118,15 @@ storiesOf('Modal', module)
               </InputGroup.Addon>
               <FormControl type='text'
                 value='Project'
+                className='vmerge-searchinput'
                  />
               </InputGroup>
               </Col>
             <Col xs={12} className='vmerge-boxes'>
               <Col xs={6}>
+                 <span className='vmerge-adjtitle
+                    vmerge-title'>Select source project versions to merge
+              </span>
                 <PanelGroup defaultActiveKey='1' accordion>
                   <Panel header={heading1} eventKey='1'>
                     <ListGroup fill>
