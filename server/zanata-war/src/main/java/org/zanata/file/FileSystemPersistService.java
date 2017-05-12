@@ -25,6 +25,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -37,7 +39,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HRawDocument;
 import org.zanata.rest.service.VirusScanner;
-import com.google.common.io.Files;
 
 @Named("filePersistService")
 @RequestScoped
@@ -60,7 +61,7 @@ public class FileSystemPersistService implements FilePersistService {
         rawDocument.setFileId(fileName);
         File newFile = getFileForName(fileName);
         try {
-            Files.copy(fromFile, newFile);
+            FileUtils.copyFile(fromFile, newFile);
         } catch (IOException e) {
             // FIXME damason: throw something more specific and handle at call
             // sites
@@ -96,7 +97,8 @@ public class FileSystemPersistService implements FilePersistService {
         }
         File docsDirectory =
                 new File(basePathStringOrNull, RAW_DOCUMENTS_SUBDIRECTORY);
-        docsDirectory.mkdirs();
+        boolean created = docsDirectory.mkdirs();
+        log.debug(created ? "Directory created" : "Unable to create directory");
         return docsDirectory;
     }
 

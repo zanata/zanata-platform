@@ -20,13 +20,14 @@
  */
 package org.zanata.action.validator;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -40,11 +41,13 @@ public class DomainListValidator implements ConstraintValidator<DomainList, Stri
     @Override
     public boolean isValid(String value,
             ConstraintValidatorContext context) {
-        if (Strings.isNullOrEmpty(value)) {
+        if (StringUtils.isBlank(value)) {
             return true;
         }
-        List<String> domains = Splitter.on(",").trimResults().omitEmptyStrings()
-                .splitToList(value);
+        List<String> domains = Arrays.asList(value.split(","));
+        domains = domains.stream().map(String::trim)
+                .filter(s -> StringUtils.isNotBlank(s))
+                .collect(Collectors.toList());
         // domain validation is pretty complicated http://stackoverflow.com/questions/10306690/domain-name-validation-with-regex
         // here we just take a quick win...
         EmailValidator emailValidator = new EmailValidator();

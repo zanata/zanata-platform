@@ -44,7 +44,8 @@ public class HLocaleMember implements Serializable, HasUserFriendlyToString {
     private boolean isCoordinator;
     private boolean isReviewer;
     private boolean isTranslator;
-    private transient String userFriendlyToString;
+    @Transient
+    private String userFriendlyToString;
 
     public HLocaleMember(HPerson person, HLocale supportedLanguage,
             boolean isTranslator, boolean isReviewer, boolean isCoordinator) {
@@ -93,6 +94,7 @@ public class HLocaleMember implements Serializable, HasUserFriendlyToString {
     }
 
     @Override
+    @Transient
     public String userFriendlyToString() {
         return userFriendlyToString;
     }

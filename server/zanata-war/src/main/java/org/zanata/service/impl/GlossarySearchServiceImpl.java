@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -207,25 +208,25 @@ public class GlossarySearchServiceImpl implements GlossarySearchService {
      * identical.
      */
     private static class GlossaryResultItemComparator
-            implements Comparator<GlossaryResultItem> {
+            implements Comparator<GlossaryResultItem>, Serializable {
 
         @Override
         public int compare(GlossaryResultItem m1, GlossaryResultItem m2) {
             int result;
-            result = Double.compare(m1.getSimilarityPercent(),
-                    m2.getSimilarityPercent());
+            result = Double.compare(m2.getSimilarityPercent(),
+                    m1.getSimilarityPercent());
             if (result != 0) {
-                return -result;
+                return result;
             }
             result = compare(m1.getSource().length(), m2.getSource().length());
             if (result != 0) {
                 // shorter matches are preferred, if similarity is the same
                 return result;
             }
-            result = Double.compare(m1.getRelevanceScore(),
-                    m2.getRelevanceScore());
+            result = Double.compare(m2.getRelevanceScore(),
+                    m1.getRelevanceScore());
             if (result != 0) {
-                return -result;
+                return result;
             }
             return m1.getSource().compareTo(m2.getSource());
         }

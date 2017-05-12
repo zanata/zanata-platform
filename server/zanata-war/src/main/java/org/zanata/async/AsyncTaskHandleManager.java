@@ -32,14 +32,16 @@ import javax.inject.Named;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Maps;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Named("asyncTaskHandleManager")
 @javax.enterprise.context.ApplicationScoped
-public class AsyncTaskHandleManager {
+public class AsyncTaskHandleManager implements Serializable {
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Map<Serializable, AsyncTaskHandle> handlesByKey = Maps
             .newConcurrentMap();
 

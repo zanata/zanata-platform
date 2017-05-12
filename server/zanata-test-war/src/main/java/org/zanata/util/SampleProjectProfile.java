@@ -7,6 +7,7 @@ import com.github.huangp.entityunit.entity.EntityMakerBuilder;
 import com.github.huangp.entityunit.entity.FixIdCallback;
 import com.github.huangp.entityunit.maker.FixedValueMaker;
 import com.ibm.icu.util.ULocale;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.Search;
@@ -32,6 +33,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import java.io.Serializable;
 import java.util.List;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -42,12 +44,15 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 @ApplicationScoped
 @Transactional
-public class SampleProjectProfile {
+public class SampleProjectProfile implements Serializable {
     private static final Logger log = getLogger(SampleProjectProfile.class);
+    private static final long serialVersionUID = 8699288697515054056L;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject @Zanata
     private EntityManagerFactory entityManagerFactory;
 

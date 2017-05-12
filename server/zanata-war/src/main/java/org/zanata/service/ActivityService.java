@@ -20,6 +20,7 @@
  */
 package org.zanata.service;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
@@ -34,7 +35,7 @@ import org.zanata.model.type.EntityType;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public interface ActivityService {
+public interface ActivityService extends Serializable {
     /**
      * Find activity with given person, context, action in the hour of given
      * action time

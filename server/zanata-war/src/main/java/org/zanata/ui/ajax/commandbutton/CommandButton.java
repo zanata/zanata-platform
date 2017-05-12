@@ -44,6 +44,6 @@ public class CommandButton extends UICommandButton {
 
     @Override
     public String getRendererType() {
-        return CommandButtonRenderer.RENDERER_TYPE;
+        return ZanataCommandButtonRenderer.RENDERER_TYPE;
     }
 }

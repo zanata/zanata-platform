@@ -30,6 +30,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import static com.google.common.base.Throwables.propagate;
@@ -40,7 +41,7 @@ import static com.google.common.base.Throwables.propagate;
  */
 @Named("commonMarkRenderer")
 @javax.enterprise.context.ApplicationScoped
-public class CommonMarkRenderer {
+public class CommonMarkRenderer implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(CommonMarkRenderer.class);
 

@@ -10,13 +10,15 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.service.TranslationMergeService;
 
+import java.io.Serializable;
+
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 @Named("translationMergeServiceFactory")
 @RequestScoped
-public class TranslationMergeServiceFactory {
+public class TranslationMergeServiceFactory implements Serializable {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(TranslationMergeServiceFactory.class);
 

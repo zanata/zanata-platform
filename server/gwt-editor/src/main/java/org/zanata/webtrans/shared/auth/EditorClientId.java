@@ -4,6 +4,8 @@ import org.zanata.webtrans.shared.model.Identifier;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.io.Serializable;
+
 /**
  * Represents a single connection to Zanata from GWT. Usually represents one tab
  * in a browser. It has a one-to-one relationship with GWT Event Service's
@@ -13,7 +15,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public final class EditorClientId implements Identifier<String>, IsSerializable {
+public final class EditorClientId implements Identifier<String>, IsSerializable,
+        Serializable {
+    private static final long serialVersionUID = -7299185331708760703L;
     private String httpSessionId;
     private long editorClientNum;
 

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
+    <version>4.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>zanata-war</artifactId>
   <packaging>war</packaging>
@@ -582,6 +582,11 @@
                 <id>extract-appserver</id>
                 <phase>prepare-package</phase>
               </execution>
+              <execution>
+                <!-- run jboss cli script against cargo installed server -->
+                <id>run-jboss-cli</id>
+                <phase>package</phase>
+              </execution>
             </executions>
           </plugin>
 
@@ -617,25 +622,6 @@
       <build>
         <plugins>
           <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <!-- Install arquillian-customised version of standalone.xml -->
-              <execution>
-                <id>prepare-arquillian-container</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <target unless="skipArqTests">
-                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian.xml" tofile="${appserver.home}/standalone/configuration/standalone-arquillian.xml" />
-                  </target>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
-          <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
               <systemPropertyVariables>
@@ -659,25 +645,6 @@
       </activation>
       <build>
         <plugins>
-          <plugin>
-            <artifactId>maven-antrun-plugin</artifactId>
-            <executions>
-              <!-- Install arquillian-customised version of standalone.xml -->
-              <execution>
-                <id>prepare-arquillian-container</id>
-                <phase>package</phase>
-                <goals>
-                  <goal>run</goal>
-                </goals>
-                <configuration>
-                  <target unless="skipArqTests">
-                    <copy overwrite="true" file="${project.basedir}/src/test/resources/arquillian/standalone-arquillian-wildfly.xml" tofile="${appserver.home}/standalone/configuration/standalone-arquillian.xml" />
-                  </target>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>

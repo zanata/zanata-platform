@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.shared.rpc;
 
+import java.io.Serializable;
 import java.util.List;
 
 import com.google.common.base.MoreObjects;
@@ -31,8 +32,9 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class EditorFilter implements IsSerializable {
+public class EditorFilter implements IsSerializable, Serializable {
     public static final EditorFilter ALL = new EditorFilter();
+    private static final long serialVersionUID = -3998075471677886825L;
     private String textInContent;
     private String resId;
     private String lastModifiedBefore;

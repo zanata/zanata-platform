@@ -102,6 +102,7 @@ public class TransMemoryMergePresenter extends
                 .getProjectIterationId();
 
 
+        // the result is always null as the call is async
         TransMemoryMergeRequest request =
                 new TransMemoryMergeRequest(
                         identity.getEditorClientId(),
@@ -110,7 +111,6 @@ public class TransMemoryMergePresenter extends
                         mergeOptions.getDifferentDocument(),
                         mergeOptions.getDifferentResId(),
                         mergeOptions.getImportedMatch());
-        // the result is always null as the call is async
         // this is just so compiler will check the return type for us
         REST.withCallback(
                 new MethodCallback<Void>() {

@@ -284,37 +284,4 @@ public class DashboardAction implements Serializable {
     public GroupFilter getGroupList() {
         return this.groupList;
     }
-
-    public int getUserMaintainedProjectsCount() {
-        Object value = this.userMaintainedProjectsCount.get();
-        if (value == null) {
-            synchronized (this.userMaintainedProjectsCount) {
-                value = this.userMaintainedProjectsCount.get();
-                if (value == null) {
-                    final int actualValue = countUserMaintainedProjects();
-                    value = actualValue;
-                    this.userMaintainedProjectsCount.set(value);
-                }
-            }
-        }
-        return (Integer) value;
-    }
-
-    public List<HProject> getUserMaintainedProjects() {
-        Object value = this.userMaintainedProjects.get();
-        if (value == null) {
-            synchronized (this.userMaintainedProjects) {
-                value = this.userMaintainedProjects.get();
-                if (value == null) {
-                    final List<HProject> actualValue =
-                            fetchUserMaintainedProjects();
-                    value = actualValue == null ? this.userMaintainedProjects
-                            : actualValue;
-                    this.userMaintainedProjects.set(value);
-                }
-            }
-        }
-        return (List<HProject>) (value == this.userMaintainedProjects ? null
-                : value);
-    }
 }

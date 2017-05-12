@@ -21,6 +21,7 @@
 package org.zanata.security;
 
 import com.google.common.base.Throwables;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.openid4java.OpenIDException;
 import org.openid4java.consumer.ConsumerManager;
@@ -94,9 +95,11 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
     @Inject
     private AccountDAO accountDAO;
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<LoginCompleted> loginCompletedEvent;
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<PostAuthenticateEvent> postAuthenticateEvent;
 
@@ -113,6 +116,7 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
     private OpenIdAuthenticationResult authResult;
     private OpenIdAuthCallback callback;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private ConsumerManager manager;
     private DiscoveryInformation discovered;
 

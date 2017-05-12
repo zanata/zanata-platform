@@ -26,6 +26,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.rest.dto.Account;
 
 /**
@@ -34,6 +35,8 @@ import org.zanata.rest.dto.Account;
  */
 @Path(AccountResource.SERVICE_PATH)
 public class MockAccountResource implements AccountResource {
+    private static final long serialVersionUID = 1185065743280002160L;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     UriInfo uriInfo;
     private Account account =

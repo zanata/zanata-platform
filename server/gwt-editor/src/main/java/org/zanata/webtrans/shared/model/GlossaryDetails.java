@@ -40,7 +40,8 @@ public class GlossaryDetails implements IsSerializable {
         this.targetLocale = targetLocale;
         this.url = url;
         this.targetVersionNum = targetVersionNum;
-        this.lastModifiedDate = lastModifiedDate;
+        this.lastModifiedDate = lastModifiedDate != null ?
+                new Date(lastModifiedDate.getTime()) : null;
     }
 
     public Long getId() {
@@ -84,7 +85,8 @@ public class GlossaryDetails implements IsSerializable {
     }
 
     public Date getLastModifiedDate() {
-        return lastModifiedDate;
+        return lastModifiedDate != null ?
+                new Date(lastModifiedDate.getTime()) : null;
     }
 
     public String getUrl() {

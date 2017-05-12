@@ -13,6 +13,8 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.event.TransactionPhase;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.ocpsoft.common.util.Strings;
 import org.zanata.async.Async;
@@ -49,6 +51,7 @@ public class WebhookServiceImpl implements Serializable {
 
     @Inject
     private Messages msgs;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<WebhookEvent> webhookEventEvent;
     @Inject

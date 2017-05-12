@@ -20,6 +20,7 @@
  */
 package org.zanata.security;
 
+import java.io.Serializable;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import javax.enterprise.context.RequestScoped;
@@ -51,7 +52,7 @@ import javax.enterprise.event.Observes;
  */
 @Named("authenticationManager")
 @RequestScoped
-public class AuthenticationManager {
+public class AuthenticationManager implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(AuthenticationManager.class);
 

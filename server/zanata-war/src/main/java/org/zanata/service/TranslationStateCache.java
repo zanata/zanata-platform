@@ -27,13 +27,15 @@ import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.ValidationId;
 
+import java.io.Serializable;
+
 /**
  * Defines a Cache Service for translation states.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface TranslationStateCache {
+public interface TranslationStateCache extends Serializable {
 
     /**
      * Informs the cache that a text flow has changed its state in a given

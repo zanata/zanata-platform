@@ -23,7 +23,6 @@ package org.zanata.model;
 import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -40,8 +39,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
-
 import org.apache.commons.lang.time.DateUtils;
+import org.hibernate.annotations.NaturalId;
 import org.zanata.common.ActivityType;
 import org.zanata.model.type.EntityType;
 
@@ -59,9 +58,12 @@ public class Activity extends ModelEntityBase implements Serializable {
     @NotNull
     @JoinColumn(name = "actor_id", nullable = false)
     @ManyToOne
+    @NaturalId
     private HPerson actor;
+
     @Temporal(TemporalType.TIMESTAMP)
     @NotNull
+    @NaturalId
     private Date approxTime;
     /**
      * maximum offset we can store equates to about 24.8 days, since this is a
@@ -75,16 +77,23 @@ public class Activity extends ModelEntityBase implements Serializable {
     private int endOffsetMillis;
     @NotNull
     @Enumerated(EnumType.STRING)
+    @NaturalId
     private EntityType contextType;
+
     @NotNull
     @Column(name = "context_id")
+    @NaturalId
     private long contextId;
+
     @Enumerated(EnumType.STRING)
     private EntityType lastTargetType;
+
     @NotNull
     @Column(name = "last_target_id")
     private long lastTargetId;
+
     @Enumerated(EnumType.STRING)
+    @NaturalId
     private ActivityType activityType;
     // Event count starts with 1 because there is a single event when new
     // activity created
@@ -92,7 +101,7 @@ public class Activity extends ModelEntityBase implements Serializable {
     private int wordCount;
 
     public Activity(HPerson actor, IsEntityWithType context,
-                    IsEntityWithType target, ActivityType activityType, int wordCount) {
+            IsEntityWithType target, ActivityType activityType, int wordCount) {
         this.actor = actor;
         this.contextType = context.getEntityType();
         this.contextId = context.getId();
@@ -191,8 +200,7 @@ public class Activity extends ModelEntityBase implements Serializable {
 
         Activity activity = (Activity) other;
 
-        return (actor == null ?
-                activity.actor == null : actor.equals(activity.actor)) &&
+        return (actor.equals(activity.actor)) &&
                 (contextId == activity.contextId) &&
                 (contextType == activity.contextType) &&
                 (activityType == activity.activityType) &&
@@ -202,7 +210,7 @@ public class Activity extends ModelEntityBase implements Serializable {
     @Override
     public int hashCode() {
         int result = super.hashCode();
-        result = 31 * result + (actor != null ? actor.hashCode() : 0);
+        result = 31 * result + actor.hashCode();
         result = 31 * result + Long.valueOf(contextId).hashCode();
         result = 31 * result + (contextType != null ? contextType.hashCode() : 0);
         result = 31 * result + (activityType != null ? activityType.hashCode() : 0);

@@ -85,7 +85,7 @@ public class ZanataIdentity implements Identity, Serializable {
 
     private static final long serialVersionUID = -5488977241602567930L;
 
-    protected static boolean securityEnabled = true;
+    private static boolean securityEnabled = true;
     private static final String LOGIN_TRIED = "security.loginTried";
     private static final String SILENT_LOGIN = "security.silentLogin";
 
@@ -104,9 +104,11 @@ public class ZanataIdentity implements Identity, Serializable {
     private boolean authenticating;
     private String jaasConfigName = "zanata";
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<LoginSuccessfulEvent> loginSuccessfulEventEvent;
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<LogoutEvent> logoutEvent;
 
@@ -117,12 +119,15 @@ public class ZanataIdentity implements Identity, Serializable {
     @Inject
     private UrlUtil urlUtil;
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<AlreadyLoggedInEvent> alreadyLoggedInEventEvent;
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<LoginFailedEvent> loginFailedEventEvent;
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<NotLoggedInEvent> notLoggedInEventEvent;
 

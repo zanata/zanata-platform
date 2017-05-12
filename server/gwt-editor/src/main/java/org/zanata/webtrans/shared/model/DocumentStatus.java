@@ -22,7 +22,8 @@ public class DocumentStatus implements IsSerializable, Serializable {
     public DocumentStatus(DocumentId documentId, Date lastTranslatedDate,
             String lastTranslatedBy) {
         this.documentId = documentId;
-        this.lastTranslatedDate = lastTranslatedDate;
+        this.lastTranslatedDate = lastTranslatedDate != null ?
+                new Date(lastTranslatedDate.getTime()) : null;
         this.lastTranslatedBy = lastTranslatedBy;
     }
 
@@ -31,7 +32,8 @@ public class DocumentStatus implements IsSerializable, Serializable {
     }
 
     public Date getLastTranslatedDate() {
-        return lastTranslatedDate;
+        return lastTranslatedDate != null ?
+                new Date(lastTranslatedDate.getTime()) : null;
     }
 
     public String getLastTranslatedBy() {
@@ -42,7 +44,8 @@ public class DocumentStatus implements IsSerializable, Serializable {
             String lastTranslatedBy) {
         this.documentId = documentId;
         this.lastTranslatedBy = lastTranslatedBy;
-        this.lastTranslatedDate = lastTranslatedDate;
+        this.lastTranslatedDate = lastTranslatedDate != null ?
+                new Date(lastTranslatedDate.getTime()) : null;
     }
 
 }

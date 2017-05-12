@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>server</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
+    <version>4.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>functional-test</artifactId>
   <!--if we want to use pom packaging, we need to explicitly enable some plugins and various things-->
@@ -29,11 +29,13 @@
     <cargo.container.home>${project.build.directory}/jboss/container</cargo.container.home>
     <context.path>zanata</context.path>
 
+    <!-- this may be changed by the MYSQL_PORT profile -->
+    <mysql.port>13306</mysql.port>
+
     <!--mysql-maven-plugin will use these setup-->
     <ds.database>root</ds.database>
     <ds.username>root</ds.username>
     <ds.password>root</ds.password>
-    <mysql.port>13306</mysql.port>
     <ds.connection.url>jdbc:mysql://localhost:${mysql.port}/${ds.database}?characterEncoding=UTF-8</ds.connection.url>
     <test.db.connection.url>jdbc:mysql://localhost:${mysql.port}/test?characterEncoding=UTF-8</test.db.connection.url>
     <ds.driver.class>com.mysql.jdbc.Driver</ds.driver.class>
@@ -83,7 +85,6 @@
     <jndi-remote-client.groupId>org.wildfly.core</jndi-remote-client.groupId>
     <jndi-remote-client.artifactId>wildfly-controller-client</jndi-remote-client.artifactId>
     <jndi-remote-client.version>${wildfly.client.version}</jndi-remote-client.version>
-    <standalone.xml.file>standalone.xml</standalone.xml.file>
   </properties>
 
   <dependencyManagement>
@@ -541,9 +542,6 @@
           <value>wildfly8</value>
         </property>
       </activation>
-      <properties>
-        <standalone.xml.file>standalone_wildfly.xml</standalone.xml.file>
-      </properties>
     </profile>
 
     <profile>
@@ -692,6 +690,16 @@
                   <sqlCommand>ALTER DATABASE ${ds.database} CHARACTER SET utf8 COLLATE utf8_general_ci;</sqlCommand>
                   <onError>continue</onError>
                 </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.gmavenplus</groupId>
+            <artifactId>gmavenplus-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>run-jboss-cli</id>
+                <phase>package</phase>
               </execution>
             </executions>
           </plugin>
@@ -1102,15 +1110,6 @@
                 <file>${project.basedir}/src/test/conf/zanata-ds.xml</file>
                 <todir>deployments</todir>
               </configfile>
-              <!-- see above zipUrlInstaller/extractDir-->
-              <!-- cargo will force todir and tofile to be relative to container home directory -->
-
-              <!-- security and jndi for properties -->
-              <configfile>
-                <file>${project.basedir}/src/test/conf/${standalone.xml.file}</file>
-                <tofile>configuration/standalone.xml</tofile>
-              </configfile>
-
             </configfiles>
 
             <files>
@@ -1121,7 +1120,7 @@
             </files>
 
             <properties>
-              <cargo.jboss.configuration>standalone</cargo.jboss.configuration>
+              <cargo.jboss.configuration>standalone-full</cargo.jboss.configuration>
               <cargo.port.offset>${cargo.port.offset}</cargo.port.offset>
               <cargo.jboss.ajp.port>8109</cargo.jboss.ajp.port>
               <!-- These properties will be interpolated by Cargo into the configfiles above -->

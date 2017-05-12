@@ -20,6 +20,8 @@
  */
 package org.zanata.async;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -39,6 +41,8 @@ public class AsyncTaskResult<V> extends CompletableFuture<V> {
         return result;
     }
 
+    @SuppressFBWarnings(value = "NP_NULL_PARAM_DEREF_NONVIRTUAL",
+            justification = "Need to refactor async framework")
     public static <T> AsyncTaskResult<T> completed() {
         return completed(null);
     }

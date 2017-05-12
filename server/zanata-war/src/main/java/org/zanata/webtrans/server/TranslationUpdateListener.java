@@ -3,6 +3,8 @@ package org.zanata.webtrans.server;
 import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
 import java.util.concurrent.TimeUnit;
 import javax.enterprise.event.Observes;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
@@ -59,8 +61,10 @@ public class TranslationUpdateListener
                     .build();
     @Inject
     private TranslationWorkspaceManager translationWorkspaceManager;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private IServiceLocator serviceLocator;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<TextFlowTargetUpdatedEvent> textFlowTargetUpdatedEvent;
 

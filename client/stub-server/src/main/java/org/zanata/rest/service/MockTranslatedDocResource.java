@@ -38,6 +38,8 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 @Path(TranslatedDocResource.SERVICE_PATH)
 public class MockTranslatedDocResource implements TranslatedDocResource {
 
+    private static final long serialVersionUID = 8340847790121969901L;
+
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
             Set<String> extensions, boolean createSkeletons,

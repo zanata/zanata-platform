@@ -22,6 +22,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
 
 /**
@@ -32,7 +33,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
  */
 public class PreviewReplaceTextResult implements DispatchResult {
     private static final long serialVersionUID = 1L;
-
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<TransUnitUpdatePreview> previews;
 
     @SuppressWarnings("unused")

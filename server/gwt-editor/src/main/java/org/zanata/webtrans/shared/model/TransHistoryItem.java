@@ -38,7 +38,8 @@ public class TransHistoryItem extends ComparableByDate implements
         this.contents = Lists.newArrayList(contents);
         this.status = status;
         this.modifiedBy = modifiedBy;
-        this.modifiedDate = modifiedDate;
+        this.modifiedDate = modifiedDate != null ?
+                new Date(modifiedDate.getTime()) : null;
         this.revisionComment = revisionComment;
     }
 
@@ -59,7 +60,8 @@ public class TransHistoryItem extends ComparableByDate implements
     }
 
     public Date getModifiedDate() {
-        return modifiedDate;
+        return modifiedDate != null ?
+                new Date(modifiedDate.getTime()) : null;
     }
 
     public String getRevisionComment() {

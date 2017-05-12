@@ -2,6 +2,7 @@ package org.zanata.rest.service;
 
 import static org.zanata.common.EntityStatus.OBSOLETE;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ import org.zanata.util.HashUtil;
 
 @Named("eTagUtils")
 @javax.enterprise.context.Dependent
-public class ETagUtils {
+public class ETagUtils implements Serializable {
 
     @Inject
     private Session session;
@@ -134,10 +135,6 @@ public class ETagUtils {
                 documentDAO.getTranslatedDocumentStateHash(iteration
                         .getProject().getSlug(), iteration.getSlug(), docId,
                         locale);
-
-        if (stateHash == null) {
-            stateHash = "";
-        }
         return EntityTag.valueOf(stateHash);
     }
 }

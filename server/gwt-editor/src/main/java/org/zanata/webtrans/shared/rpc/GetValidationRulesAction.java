@@ -30,7 +30,6 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 public class GetValidationRulesAction implements
         DispatchAction<GetValidationRulesResult> {
     private static final long serialVersionUID = 1L;
-
     private WorkspaceId workspaceId;
 
     @SuppressWarnings("unused")

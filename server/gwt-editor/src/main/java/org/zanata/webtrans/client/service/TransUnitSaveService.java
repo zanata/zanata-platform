@@ -114,7 +114,7 @@ public class TransUnitSaveService implements TransUnitSaveEventHandler,
     /**
      * See {@link org.zanata.model.type.TranslationSourceType#GWT_EDITOR_ENTRY}
      */
-    private final String sourceType = "GWT";
+    private final static String sourceType = "GWT";
 
     private void performSave(TransUnitId idToSave) {
         TransUnitSaveEvent forSaving = queue.getNextPendingForSaving(idToSave);

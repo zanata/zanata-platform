@@ -6,17 +6,26 @@ import {
   fetchDocuments,
   fetchVersionLocales
 } from '../api'
+import {
+  TOGGLE_GLOSSARY,
+  TOGGLE_HEADER,
+  TOGGLE_KEY_SHORTCUTS,
+  FETCH_FAILED,
+  UI_LOCALES_FETCHED,
+  CHANGE_UI_LOCALE,
+  DOCUMENT_SELECTED,
+  LOCALE_SELECTED,
+  STATS_FETCHED,
+  HEADER_DATA_FETCHED
+} from './header-action-types'
 import { some, curry, isEmpty } from 'lodash'
 import { equals } from '../utils/string-utils'
 
-export const TOGGLE_GLOSSARY = Symbol('TOGGLE_GLOSSARY')
 export function toggleGlossary () {
   return {
     type: TOGGLE_GLOSSARY
   }
 }
-
-export const TOGGLE_HEADER = Symbol('TOGGLE_HEADER')
 
 export function toggleHeader () {
   return {
@@ -24,14 +33,11 @@ export function toggleHeader () {
   }
 }
 
-export const TOGGLE_KEY_SHORTCUTS = Symbol('TOGGLE_KEY_SHORTCUTS')
 export function toggleKeyboardShortcutsModal () {
   return {
     type: TOGGLE_KEY_SHORTCUTS
   }
 }
-
-export const FETCH_FAILED = Symbol('FETCH_FAILED')
 
 const fetchFailed = (error) => {
   return {type: FETCH_FAILED, error: error}
@@ -44,7 +50,6 @@ const unwrapResponse = (dispatch, errorMsg, response) => {
   return response.json()
 }
 
-export const UI_LOCALES_FETCHED = Symbol('UI_LOCALES_FETCHED')
 export function uiLocaleFetched (uiLocales) {
   return {
     type: UI_LOCALES_FETCHED,
@@ -63,7 +68,6 @@ export function fetchUiLocales () {
   }
 }
 
-export const CHANGE_UI_LOCALE = Symbol('CHANGE_UI_LOCALE')
 export function changeUiLocale (locale) {
   return {
     type: CHANGE_UI_LOCALE,
@@ -92,7 +96,6 @@ const containsLocale = (localeList, localeId) => {
   return hasCaseInsensitiveMatchingProp(localeList, 'localeId', localeId)
 }
 
-export const DOCUMENT_SELECTED = Symbol('DOCUMENT_SELECTED')
 export function selectDoc (docId) {
   return {
     type: DOCUMENT_SELECTED,
@@ -102,7 +105,6 @@ export function selectDoc (docId) {
   }
 }
 
-export const LOCALE_SELECTED = Symbol('LOCALE_SELECTED')
 export function selectLocale (localeId) {
   return {
     type: LOCALE_SELECTED,
@@ -112,7 +114,6 @@ export function selectLocale (localeId) {
   }
 }
 
-export const STATS_FETCHED = Symbol('STATS_FETCHED')
 export function statsFetched (stats) {
   return {
     type: STATS_FETCHED,
@@ -120,7 +121,6 @@ export function statsFetched (stats) {
   }
 }
 
-export const HEADER_DATA_FETCHED = Symbol('HEADER_DATA_FETCHED')
 export function headerDataFetched (data) {
   return {type: HEADER_DATA_FETCHED, data: data}
 }

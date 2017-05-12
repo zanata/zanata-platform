@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 
 public class GetTranslationMemoryResult implements DispatchResult {
@@ -9,6 +10,7 @@ public class GetTranslationMemoryResult implements DispatchResult {
     private static final long serialVersionUID = 1L;
 
     private GetTranslationMemory request;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<TransMemoryResultItem> transmemories;
 
     @SuppressWarnings("unused")
