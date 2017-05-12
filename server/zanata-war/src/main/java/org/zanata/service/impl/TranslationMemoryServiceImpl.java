@@ -436,6 +436,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
     private void addTransMemoryUnitToResultMatches(TransMemoryResultItem item,
             TransMemoryUnit transMemoryUnit) {
+        item.addSourceId(transMemoryUnit.getId());
         item.incMatchCount();
         item.addOrigin(transMemoryUnit.getTranslationMemory().getSlug());
     }
