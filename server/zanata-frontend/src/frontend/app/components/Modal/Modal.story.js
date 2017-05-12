@@ -165,18 +165,18 @@ storiesOf('Modal', module)
                        <Icon name='info' className='s0 info-icon' />
                       </OverlayTrigger>
                     </div>
-                    <Draggable bounds='parent' axis='y' grid={[45, 45]}>
+                    <Draggable bounds='parent' axis='y' grid={[36, 36]}>
                     <ListGroupItem className='v'>
-                      <Button bsStyle='link'>
+                      <Button bsStyle='link' className='btn-link-sort'>
                       <Glyphicon glyph="sort" />
                       </Button>
                         2.0
                     </ListGroupItem>
                     </Draggable>
-                    <Draggable bounds='parent' axis='y' grid={[45, 45]}>
+                    <Draggable bounds='parent' axis='y' grid={[36, 36]}>
                     <ListGroupItem className='v'>
-                      <Button bsStyle='link'>
-                        <Glyphicon glyph="sort" />
+                      <Button bsStyle='link' className='btn-link-sort'>
+                        <Glyphicon glyph="sort"  />
                       </Button>
                       1.0</ListGroupItem>
                     </Draggable>

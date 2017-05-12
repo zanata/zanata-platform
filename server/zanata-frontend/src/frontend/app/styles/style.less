@@ -1534,9 +1534,24 @@ td span.txt--understated {
   color: @color-light;
 }
 
+button.btn-link-sort {
+  padding: 0;
+  margin: 0;
+}
+
+button.btn-link-sort span {
+  color:@color-neutral;
+  margin-right:1em;
+}
+
 .vmerge-fuzzytxt {
   font-weight:600;
   color:@color-warning;
+}
+
+.vmerge-boxes .list-group-item:last-child {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
 }
 
 .vmerge-target ul {
@@ -1560,10 +1575,6 @@ td span.txt--understated {
 
 .vmerge-boxes {
   padding-top:1em;
-}
-
-.vmerge-boxes h3.panel-title {
-  height: 1.286em;
 }
 
 .vmerge-source {
@@ -5572,7 +5583,7 @@ a.lineclamp:after {
   margin-bottom:0;
 }
 
-.modal-body .checkbox {
+.vmerge-boxes .checkbox {
   margin:0;
 }
 
