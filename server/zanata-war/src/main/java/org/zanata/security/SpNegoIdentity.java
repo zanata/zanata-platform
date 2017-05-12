@@ -20,6 +20,7 @@ R * Copyright 2010, Red Hat, Inc. and individual contributors
  */
 package org.zanata.security;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.core.api.literal.DeltaSpikeLiteral;
 import org.jboss.security.SecurityContextAssociation;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ public class SpNegoIdentity implements Serializable {
     @Inject
     private ZanataIdentity identity;
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<AlreadyLoggedInEvent> alreadyLoggedInEventEvent;
 

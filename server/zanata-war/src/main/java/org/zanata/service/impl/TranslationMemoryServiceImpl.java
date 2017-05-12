@@ -284,7 +284,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             TransMemoryQuery transMemoryQuery, int maxResults,
             Optional<Long> textFlowTargetId, @Nonnull Class<?>... entityTypes) {
         try {
-            if (entityTypes.length == 0) {
+            if (entityTypes == null || entityTypes.length == 0) {
                 throw new RuntimeException(
                         "Need entity type (HTextFlowTarget.class or TransMemoryUnit.class) for TM search");
             }
@@ -471,18 +471,18 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         @Override
         public int compare(TransMemoryResultItem m1, TransMemoryResultItem m2) {
             int result;
-            result = Double.compare(m1.getSimilarityPercent(),
-                    m2.getSimilarityPercent());
+            result = Double.compare(m2.getSimilarityPercent(),
+                    m1.getSimilarityPercent());
             if (result != 0) {
                 // sort higher similarity first
-                return -result;
+                return result;
             }
-            result = compare(m1.getSourceContents(), m2.getSourceContents());
+            result = compare(m2.getSourceContents(), m1.getSourceContents());
             if (result != 0) {
                 // sort longer string lists first (more plural forms)
-                return -result;
+                return result;
             }
-            return -m1.getMatchType().compareTo(m2.getMatchType());
+            return m2.getMatchType().compareTo(m1.getMatchType());
         }
 
         private int compare(List<String> list1, List<String> list2) {
@@ -870,7 +870,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
 
         @Override
         public boolean apply(TransMemoryResultItem tmResult) {
-            return (int) tmResult.getSimilarityPercent() >= approvedThreshold;
+            return tmResult != null ?
+                    (int) tmResult.getSimilarityPercent() >= approvedThreshold :
+                    false;
         }
     }
 

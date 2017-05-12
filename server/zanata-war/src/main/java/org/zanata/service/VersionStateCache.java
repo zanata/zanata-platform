@@ -26,12 +26,14 @@ import org.zanata.common.LocaleId;
 import org.zanata.events.DocStatsEvent;
 import org.zanata.ui.model.statistic.WordStatistic;
 
+import java.io.Serializable;
+
 /**
  * Defines a Cache Service for project version states.
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public interface VersionStateCache {
+public interface VersionStateCache extends Serializable {
 
     /**
      * Informs the cache that a text flow has changed its state in a given

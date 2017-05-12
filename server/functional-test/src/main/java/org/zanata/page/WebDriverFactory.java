@@ -195,14 +195,11 @@ public enum WebDriverFactory {
      *             exception containing the first warning/error message, if any
      */
     private void logLogs(String type, boolean throwIfWarn) {
-        WebDriver driver = getDriver();
         @Nullable
         WebDriverLogException firstException = null;
         String logName = WebDriverFactory.class.getName() + "." + type;
         Logger log = LoggerFactory.getLogger(logName);
-        int logCount = 0;
         for (LogEntry logEntry : getLogs(type)) {
-            ++logCount;
             Level level;
             long time = logEntry.getTimestamp();
             String text;
@@ -465,24 +462,34 @@ public enum WebDriverFactory {
     private void clearDswid() {
         // clear the browser's memory of the dswid
         getExecutor().executeScript("window.name = \'\'");
-        dswidParamChecker.clear();
+        if (dswidParamChecker != null) {
+            dswidParamChecker.clear();
+        }
     }
 
     public <T> T ignoringDswid(Supplier<T> supplier) {
-        dswidParamChecker.stopChecking();
+        if (dswidParamChecker != null) {
+            dswidParamChecker.stopChecking();
+        }
         try {
             return supplier.get();
         } finally {
-            dswidParamChecker.startChecking();
+            if (dswidParamChecker != null) {
+                dswidParamChecker.startChecking();
+            }
         }
     }
 
     public void ignoringDswid(Runnable r) {
-        dswidParamChecker.stopChecking();
+        if (dswidParamChecker != null) {
+            dswidParamChecker.stopChecking();
+        }
         try {
             r.run();
         } finally {
-            dswidParamChecker.startChecking();
+            if (dswidParamChecker != null) {
+                dswidParamChecker.startChecking();
+            }
         }
     }
 

@@ -4,6 +4,7 @@
 package org.zanata.service;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -19,7 +20,7 @@ import org.zanata.webtrans.shared.model.ValidationId;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  */
-public interface ValidationService {
+public interface ValidationService extends Serializable {
     /**
      * Return all ValidationActions on those which are customized to the project
      *

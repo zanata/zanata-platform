@@ -27,6 +27,8 @@ import static org.zanata.common.ContentState.Translated;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.REJECT;
 import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
+
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -60,7 +62,7 @@ import com.google.common.collect.Maps;
  */
 @Named("copyTransWorkFactory")
 @javax.enterprise.context.Dependent
-public class CopyTransWorkFactory {
+public class CopyTransWorkFactory implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(CopyTransWorkFactory.class);
 

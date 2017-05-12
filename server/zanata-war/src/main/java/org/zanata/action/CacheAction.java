@@ -21,8 +21,9 @@
 package org.zanata.action;
 
 import com.google.common.base.Throwables;
-import com.google.common.html.HtmlEscapers;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.infinispan.Cache;
 import org.infinispan.manager.EmbeddedCacheManager;
 import org.infinispan.stats.Stats;
@@ -49,6 +50,7 @@ import java.util.Map;
 public class CacheAction implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(CacheAction.class);
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     @Zanata
     private EmbeddedCacheManager cacheManager;
@@ -101,7 +103,7 @@ public class CacheAction implements Serializable {
             return "<em>(" + emptyString + ")</em>";
         } else {
             // Escape cache name in case it includes user input in future
-            return HtmlEscapers.htmlEscaper().escape(cacheName);
+            return StringEscapeUtils.escapeHtml4(cacheName);
         }
     }
 

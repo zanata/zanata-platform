@@ -34,6 +34,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.transform.ResultTransformer;
@@ -540,7 +542,9 @@ public class StatisticsServiceImpl implements StatisticsResource {
     public static class UserMatrixResultTransformer
             implements ResultTransformer {
         private static final long serialVersionUID = 1L;
+        @SuppressFBWarnings("SE_BAD_FIELD")
         private final EntityManager entityManager;
+        @SuppressFBWarnings("SE_BAD_FIELD")
         private final DateTimeFormatter dateFormatter;
 
         @Override
@@ -574,46 +578,6 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 final DateTimeFormatter dateFormatter) {
             this.entityManager = entityManager;
             this.dateFormatter = dateFormatter;
-        }
-    }
-
-    public static class UserTranslationMatrix {
-        private final Date savedDate;
-        private final HProjectIteration projectIteration;
-        private final HLocale locale;
-        private final ContentState savedState;
-        private final long wordCount;
-
-        public Date getSavedDate() {
-            return this.savedDate;
-        }
-
-        public HProjectIteration getProjectIteration() {
-            return this.projectIteration;
-        }
-
-        public HLocale getLocale() {
-            return this.locale;
-        }
-
-        public ContentState getSavedState() {
-            return this.savedState;
-        }
-
-        public long getWordCount() {
-            return this.wordCount;
-        }
-
-        @java.beans.ConstructorProperties({ "savedDate", "projectIteration",
-                "locale", "savedState", "wordCount" })
-        public UserTranslationMatrix(final Date savedDate,
-                final HProjectIteration projectIteration, final HLocale locale,
-                final ContentState savedState, final long wordCount) {
-            this.savedDate = savedDate;
-            this.projectIteration = projectIteration;
-            this.locale = locale;
-            this.savedState = savedState;
-            this.wordCount = wordCount;
         }
     }
 }

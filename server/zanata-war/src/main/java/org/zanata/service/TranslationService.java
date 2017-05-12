@@ -20,6 +20,7 @@
  */
 package org.zanata.service;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -34,7 +35,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 
-public interface TranslationService {
+public interface TranslationService extends Serializable {
     /**
      * Batch size processing for large file upload
      *

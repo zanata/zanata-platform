@@ -42,6 +42,8 @@ import org.zanata.rest.service.AsynchronousProcessResource;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class AsyncProcessClient implements AsynchronousProcessResource {
+    private static final long serialVersionUID = -591366219174873189L;
+
     private final RestClientFactory factory;
     private final URI baseUri;
 

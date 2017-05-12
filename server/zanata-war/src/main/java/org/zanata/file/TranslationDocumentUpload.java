@@ -133,7 +133,8 @@ public class TranslationDocumentUpload {
                                 uploadForm.getFileType(), docType);
             }
             if (tempFile.isPresent()) {
-                tempFile.get().delete();
+                boolean deleted = tempFile.get().delete();
+                log.debug(deleted ? "Temporary file deleted" : "Unable to delete temporary file");
             }
             Set<String> extensions =
                     newExtensions(uploadForm.getFileType().equals(".po"));

@@ -296,7 +296,7 @@ public class TranslationServiceImpl implements TranslationService {
                 projectSlug, projectIteration.getSlug());
     }
 
-    public class TranslationDetails {
+    public static class TranslationDetails {
         private final String revisionComment;
         private final EntityType copiedEntityType;
         private final TranslationSourceType sourceType;

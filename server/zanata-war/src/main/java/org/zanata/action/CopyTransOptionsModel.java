@@ -27,6 +27,9 @@ import javax.faces.bean.ViewScoped;
 import javax.persistence.EntityManager;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
@@ -49,13 +52,14 @@ import com.google.common.collect.Lists;
 public class CopyTransOptionsModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
     private HCopyTransOptions instance;
     @Inject
     private Messages msgs;
-    private final java.util.concurrent.atomic.AtomicReference<Object> ruleActions =
-            new java.util.concurrent.atomic.AtomicReference<Object>();
+    private final java.util.concurrent.atomic.AtomicReference<List<RuleAction>>
+            ruleActions = new java.util.concurrent.atomic.AtomicReference<>();
 
     public HCopyTransOptions getInstance() {
         if (instance == null) {
@@ -104,7 +108,7 @@ public class CopyTransOptionsModel implements Serializable {
         }
     }
 
-    private List<RuleAction> getRuleActionsList() {
+    private @NotNull List<RuleAction> getRuleActionsList() {
         return Lists.newArrayList(
                 new RuleAction(HCopyTransOptions.ConditionRuleAction.IGNORE,
                         "button--success",
@@ -123,7 +127,7 @@ public class CopyTransOptionsModel implements Serializable {
         this.setInstance(entityManager.merge(this.getInstance()));
     }
 
-    public class RuleAction {
+    public static class RuleAction {
         private HCopyTransOptions.ConditionRuleAction action;
         private String cssClass;
         private String displayText;
@@ -155,18 +159,7 @@ public class CopyTransOptionsModel implements Serializable {
     }
 
     public List<RuleAction> getRuleActions() {
-        Object value = this.ruleActions.get();
-        if (value == null) {
-            synchronized (this.ruleActions) {
-                value = this.ruleActions.get();
-                if (value == null) {
-                    final List<RuleAction> actualValue = getRuleActionsList();
-                    value = actualValue == null ? this.ruleActions
-                            : actualValue;
-                    this.ruleActions.set(value);
-                }
-            }
-        }
-        return (List<RuleAction>) (value == this.ruleActions ? null : value);
+        this.ruleActions.compareAndSet(null, getRuleActionsList());
+        return this.ruleActions.get();
     }
 }

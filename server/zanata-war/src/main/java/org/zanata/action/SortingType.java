@@ -3,12 +3,15 @@ package org.zanata.action;
 import java.io.Serializable;
 import java.util.List;
 import com.google.common.collect.Lists;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class SortingType implements Serializable {
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private SortOption selectedSortOption = SortOption.ALPHABETICAL;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<SortOption> sortOptions = Lists.newArrayList();
 
     public SortingType(List<SortOption> sortOptions) {
@@ -27,21 +30,22 @@ public class SortingType implements Serializable {
         this.selectedSortOption = selectedSortOption;
     }
 
-    public enum SortOption {
-        PERCENTAGE("Percent translated", false),
-        HOURS("Hours remaining", false),
-        WORDS("Words remaining", false),
-        ALPHABETICAL("Alphabetical", true),
-        LAST_ACTIVITY("Last activity", false),
-        LAST_SOURCE_UPDATE("Last source updated", false),
-        LAST_TRANSLATED("Last translated", false),
-        LAST_UPDATED_BY_YOU("Last updated by you", false),
-        Entry("Entry", false),
-        LOCALE_ID("Locale code", true),
-        MEMBERS("Members", true),
-        CREATED_DATE("Created date", true),
-        NAME("Name", true),
-        ROLE("Role", true);
+    public static final class SortOption {
+        public final static SortOption PERCENTAGE = new SortOption("Percent translated", false);
+        public final static SortOption HOURS = new SortOption("Hours remaining", false);
+        public final static SortOption WORDS = new SortOption("Words remaining", false);
+        public final static SortOption ALPHABETICAL = new SortOption("Alphabetical", true);
+        public final static SortOption LAST_ACTIVITY = new SortOption("Last activity", false);
+        public final static SortOption LAST_SOURCE_UPDATE = new SortOption("Last source updated", false);
+        public final static SortOption LAST_TRANSLATED = new SortOption("Last translated", false);
+        public final static SortOption LAST_UPDATED_BY_YOU = new SortOption("Last updated by you", false);
+        public final static SortOption Entry = new SortOption("Entry", false);
+        public final static SortOption LOCALE_ID = new SortOption("Locale code", true);
+        public final static SortOption MEMBERS = new SortOption("Members", true);
+        public final static SortOption CREATED_DATE = new SortOption("Created date", true);
+        public final static SortOption NAME = new SortOption("Name", true);
+        public final static SortOption ROLE = new SortOption("Role", true);
+
         String display;
         boolean ascending; // default sort
 

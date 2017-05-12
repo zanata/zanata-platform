@@ -21,6 +21,8 @@
 
 package org.zanata.rest.service;
 
+import java.io.Serializable;
+
 /**
  * Marker interface for REST Resource classes (used by org.zanata.util.JaxRSClassIndexProcessor)
  *
@@ -28,5 +30,5 @@ package org.zanata.rest.service;
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface RestResource {
+public interface RestResource extends Serializable {
 }

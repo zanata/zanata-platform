@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.Map;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.webtrans.shared.model.AuditInfo;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -10,7 +11,9 @@ public class GetDocumentStatsResult implements DispatchResult {
 
     private static final long serialVersionUID = 1L;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Map<DocumentId, ContainerTranslationStatistics> statsMap;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Map<DocumentId, AuditInfo> lastTranslatedMap;
 
     @SuppressWarnings("unused")

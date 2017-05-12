@@ -24,6 +24,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Serializable;
+
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteStreamHandler;
@@ -56,7 +58,7 @@ import com.google.common.base.Stopwatch;
  */
 @Named("virusScanner")
 @RequestScoped
-public class VirusScanner {
+public class VirusScanner implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(VirusScanner.class);
 

@@ -235,7 +235,7 @@ public class SeamTextToCommonMarkParser extends SeamTextParser {
         return "* ";
     }
 
-    class DummySanitizer implements Sanitizer {
+    static class DummySanitizer implements Sanitizer {
         @Override
         public void validateLinkTagURI(Token element, String uri)
                 throws SemanticException {

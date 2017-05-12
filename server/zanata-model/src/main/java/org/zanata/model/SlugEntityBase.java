@@ -104,4 +104,22 @@ public abstract class SlugEntityBase extends ModelEntityBase {
 
     public SlugEntityBase() {
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        SlugEntityBase that = (SlugEntityBase) o;
+
+        return slug != null ? slug.equals(that.slug) : that.slug == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (slug != null ? slug.hashCode() : 0);
+        return result;
+    }
 }

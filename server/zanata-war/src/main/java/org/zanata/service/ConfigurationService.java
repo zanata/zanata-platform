@@ -22,7 +22,9 @@ package org.zanata.service;
 
 import org.zanata.model.HLocale;
 
-public interface ConfigurationService {
+import java.io.Serializable;
+
+public interface ConfigurationService extends Serializable {
     /**
      * Get a standard config file for a project-version.
      *

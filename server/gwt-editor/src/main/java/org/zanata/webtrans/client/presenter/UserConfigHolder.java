@@ -33,16 +33,14 @@ import com.google.common.base.Predicate;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.inject.Singleton;
 
-import javax.annotation.Nonnull;
-
 @Singleton
-public class UserConfigHolder {
-    public static final Predicate<ContentState> INCOMPLETE_PREDICATE =
+public class UserConfigHolder implements IsSerializable {
+    public transient static final Predicate<ContentState> INCOMPLETE_PREDICATE =
             contentState -> contentState == ContentState.New
                     || contentState.isRejectedOrFuzzy();
-    public static final Predicate<ContentState> DRAFT_PREDICATE =
+    public transient static final Predicate<ContentState> DRAFT_PREDICATE =
             ContentState::isRejectedOrFuzzy;
-    public static final Predicate<ContentState> NEW_PREDICATE =
+    public transient static final Predicate<ContentState> NEW_PREDICATE =
             contentState -> contentState == ContentState.New;
     private ConfigurationState state;
 

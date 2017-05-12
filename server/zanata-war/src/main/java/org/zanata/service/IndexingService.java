@@ -26,13 +26,14 @@ import org.zanata.async.AsyncTaskHandle;
 import org.zanata.model.HProject;
 import org.zanata.model.SlugEntityBase;
 
+import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.Future;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface IndexingService {
+public interface IndexingService extends Serializable {
     @Async
     Future<Void> startIndexing(
             Map<Class<?>, ReindexClassOptions> indexingOptions,

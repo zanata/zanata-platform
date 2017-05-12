@@ -26,9 +26,10 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 
 import javax.annotation.Nonnull;
+import java.io.Serializable;
 import java.util.concurrent.Future;
 
-public interface CopyTransService {
+public interface CopyTransService extends Serializable {
     /**
      * Copies previous matching translations for all available locales into a
      * document. Translations are matching if their document id, textflow id and

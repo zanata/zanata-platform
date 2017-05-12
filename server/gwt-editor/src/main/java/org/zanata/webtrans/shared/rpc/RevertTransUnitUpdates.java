@@ -23,6 +23,7 @@ package org.zanata.webtrans.shared.rpc;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import com.google.common.collect.Lists;
 
@@ -35,6 +36,7 @@ public class RevertTransUnitUpdates extends
         AbstractWorkspaceAction<UpdateTransUnitResult> {
     private static final long serialVersionUID = 1L;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<TransUnitUpdateInfo> updatesToRevert;
 
     public RevertTransUnitUpdates() {

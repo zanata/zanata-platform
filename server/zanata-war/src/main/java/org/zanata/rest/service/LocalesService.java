@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
@@ -160,9 +161,10 @@ public class LocalesService implements LocalesResource {
         HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
         if (hLocale != null) {
             Set<HLocaleMember> members = hLocale.getMembers();
-            List<LocaleMember> results =
+            List<LocaleMember> results = members != null ?
                     members.stream().map(convertToLocaleMember)
-                            .collect(Collectors.toList());
+                            .collect(Collectors.toList()) :
+                    Lists.newArrayList();
             return Response.ok(results).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -267,7 +269,8 @@ public class LocalesService implements LocalesResource {
                 }
             };
 
-    private class FilterLocaleDetails implements Predicate<LocaleDetails> {
+    private static class FilterLocaleDetails implements Predicate<LocaleDetails>,
+            Serializable {
 
         private String query;
 

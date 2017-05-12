@@ -50,8 +50,8 @@ public class ConstantsProxy extends GenericProxy {
 
     private boolean isMethodOf(Method method, Class<?> clazz) {
         try {
-            return clazz
-                    .getMethod(method.getName(), method.getParameterTypes()) != null;
+            clazz.getMethod(method.getName(), method.getParameterTypes());
+            return true;
         } catch (Exception e) {
             return false;
         }

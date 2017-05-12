@@ -4,6 +4,8 @@ import java.util.Date;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.zanata.events.WebhookEventType;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Test Event WebHook
  *
@@ -36,7 +38,7 @@ public class TestEvent extends WebhookEventType {
     }
 
     public Date getDate() {
-        return this.date;
+        return new Date(this.date.getTime());
     }
 
     public void setUsername(final String username) {
@@ -47,8 +49,8 @@ public class TestEvent extends WebhookEventType {
         this.project = project;
     }
 
-    public void setDate(final Date date) {
-        this.date = date;
+    public void setDate(@NotNull final Date date) {
+        this.date = new Date(date.getTime());
     }
 
     @Override
@@ -72,8 +74,7 @@ public class TestEvent extends WebhookEventType {
             return false;
         final Object this$date = this.getDate();
         final Object other$date = other.getDate();
-        if (this$date == null ? other$date != null
-                : !this$date.equals(other$date))
+        if (!this$date.equals(other$date))
             return false;
         return true;
     }
@@ -92,7 +93,7 @@ public class TestEvent extends WebhookEventType {
         final Object $project = this.getProject();
         result = result * PRIME + ($project == null ? 43 : $project.hashCode());
         final Object $date = this.getDate();
-        result = result * PRIME + ($date == null ? 43 : $date.hashCode());
+        result = result * PRIME + $date.hashCode();
         return result;
     }
 }

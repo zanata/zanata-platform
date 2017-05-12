@@ -47,11 +47,11 @@ public class TimeEntityBase implements Serializable {
     }
 
     public Date getValidFrom() {
-        return this.validFrom;
+        return new Date(validFrom.getTime());
     }
 
     public Date getValidTo() {
-        return this.validTo;
+        return validTo == null ? null : new Date(validTo.getTime());
     }
 
     public void setId(final Long id) {
@@ -63,10 +63,10 @@ public class TimeEntityBase implements Serializable {
     }
 
     public void setValidFrom(final Date validFrom) {
-        this.validFrom = validFrom;
+        this.validFrom = new Date(validFrom.getTime());
     }
 
     public void setValidTo(final Date validTo) {
-        this.validTo = validTo;
+        this.validTo = new Date(validTo.getTime());
     }
 }
