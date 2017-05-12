@@ -43,33 +43,35 @@ public class CountWordsInHTextFlow implements CustomTaskChange {
     public void execute(Database database) throws CustomChangeException {
         JdbcConnection conn = (JdbcConnection) database.getConnection();
 
+        ResultSet rs1 = null;
+        ResultSet rs2 = null;
+        ResultSet rs3 = null;
+
         try (Statement stmt =
                 conn.createStatement(ResultSet.TYPE_FORWARD_ONLY,
                         ResultSet.CONCUR_UPDATABLE)) {
+            Map<Long, String> docToLocaleMap = new HashMap<Long, String>();
 
-            String docLocaleSql =
-                    "select doc.id, loc.localeId from HDocument doc, HLocale loc where doc.locale = loc.id";
-            String countSql =
-                    "select count(*) from HTextFlow where wordCount is null or wordCount = 0";
-            String textFlowSql =
-                    "select id, document_id, content, wordCount from HTextFlow where wordCount is null or wordCount = 0";
-            try (
-                    ResultSet rs1 = stmt.executeQuery(docLocaleSql);
-                    ResultSet rs2 = stmt.executeQuery(countSql);
-                    ResultSet rs3 = stmt.executeQuery(textFlowSql)) {
-                Map<Long, String> docToLocaleMap = new HashMap<Long, String>();
-
+            try {
+                String docLocaleSql =
+                        "select doc.id, loc.localeId from HDocument doc, HLocale loc where doc.locale = loc.id";
+                rs1 = stmt.executeQuery(docLocaleSql);
                 while (rs1.next()) {
                     long docId = rs1.getLong(1);
                     String locale = rs1.getString(2);
                     docToLocaleMap.put(docId, locale);
                 }
+                String countSql =
+                        "select count(*) from HTextFlow where wordCount is null or wordCount = 0";
+                rs2 = stmt.executeQuery(countSql);
                 rs2.next();
                 long totalRows = rs2.getLong(1);
                 Logger log = LogFactory.getLogger();
                 log.info("CountWordsInHTextFlow: updating " + totalRows
                         + " rows");
-
+                String textFlowSql =
+                        "select id, document_id, content, wordCount from HTextFlow where wordCount is null or wordCount = 0";
+                rs3 = stmt.executeQuery(textFlowSql);
                 long rowsUpdated = 0;
                 while (rs3.next()) {
                     // primary key only needed for updatable ResultSet
@@ -86,10 +88,12 @@ public class CountWordsInHTextFlow implements CustomTaskChange {
                     }
                 }
                 log.info("CountWordsInHTextFlow: finished");
+            } finally {
+                rs1.close();
+                rs2.close();
+                rs3.close();
             }
-        } catch (SQLException e) {
-            throw new CustomChangeException(e);
-        } catch (DatabaseException e) {
+        } catch (SQLException | DatabaseException e) {
             throw new CustomChangeException(e);
         }
     }

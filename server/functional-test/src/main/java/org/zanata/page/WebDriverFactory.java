@@ -195,14 +195,11 @@ public enum WebDriverFactory {
      *             exception containing the first warning/error message, if any
      */
     private void logLogs(String type, boolean throwIfWarn) {
-        WebDriver driver = getDriver();
         @Nullable
         WebDriverLogException firstException = null;
         String logName = WebDriverFactory.class.getName() + "." + type;
         Logger log = LoggerFactory.getLogger(logName);
-        int logCount = 0;
         for (LogEntry logEntry : getLogs(type)) {
-            ++logCount;
             Level level;
             long time = logEntry.getTimestamp();
             String text;

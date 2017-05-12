@@ -79,9 +79,7 @@ public class MigrateDataToHCredentials implements CustomTaskChange {
 
                     insertStmt.executeUpdate();
                 }
-            } catch (DatabaseException e) {
-                throw new CustomChangeException(e);
-            } catch (SQLException e) {
+            } catch (DatabaseException | SQLException e) {
                 throw new CustomChangeException(e);
             }
         }
