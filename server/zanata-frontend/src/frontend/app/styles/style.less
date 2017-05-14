@@ -1545,8 +1545,8 @@ button.btn-link-sort span {
 }
 
 .vmerge-fuzzytxt {
-  font-weight:600;
-  color:@color-warning;
+  font-weight: 600;
+  color: @color-warning;
 }
 
 .vmerge-boxes .list-group-item:last-child {
@@ -1554,8 +1554,16 @@ button.btn-link-sort span {
   border-bottom-right-radius: 0;
 }
 
+.vmerge-target {
+  margin-left: 1em;
+}
 .vmerge-target ul {
   list-style-type: none;
+  margin-top: 1em;
+}
+
+.vmerge-langrow {
+  margin-bottom: 1.75em;
 }
 
 .vmerge-ddown {
@@ -1565,27 +1573,18 @@ button.btn-link-sort span {
 .vmerge-title {
   font-weight: 600;
   font-size: 1em;
-  margin-top: 1em;
 }
 
 .vmerge-title .text-muted {
   margin-left: 1em;
 }
 
-.vmerge-boxes {
-  padding-top: 1em;
-}
-
-.vmerge-searchbox {
-  margin-top: 0.65em;
-}
-
 .vmerge-searchbox .input-group-addon {
-  color:@color-muted;
+  color: @color-muted;
 }
 
 .vmerge-boxes .info-icon  {
-  vertical-align:sub;
+  vertical-align: sub;
   color: @color-light;
   margin-left: 0.75em;
 }
@@ -1593,21 +1592,27 @@ button.btn-link-sort span {
 label  .s0.icon-locked  {
   color: @color-warning;
   vertical-align: middle;
+  margin-left: 0.375em;
 }
 
 .vmerge-adjtitle {
-  color:@color-light;
-  font-style:italic;
-  font-weight:500;
+  color: @color-light;
+  font-style: italic;
+  font-weight: 500;
 }
 
 .vmerge-adjsub {
-  font-size:0.75em;
+  font-size: 0.85em;
+}
+
+.vmerge-searchbox {
+  margin-bottom: 1em;
 }
 
 .modal-body .dropdown .dropdown-menu > li > a {
-font-size: 0.85em;
+font-size: 0.6em;
 }
+
 .alert {
   padding: @alert-padding;
   margin-bottom: @line-height-computed;
@@ -2176,7 +2181,7 @@ span.infotxt {
 .checkbox input[type=checkbox], .checkbox-inline input[type=checkbox], .radio input[type=radio], .radio-inline input[type=radio] {
   margin-top: @spacing-rh !important;
   margin-left: @spacing-re !important;
-  margin-right: @spacing-re;
+  margin-right: @spacing-rh !important;;
 }
 
 .highlight-th {
@@ -4801,7 +4806,7 @@ ul.nav-pills > li.active > a {
   color: #fff;
   border-radius: @border-radius-label;
   margin-left: @spacing-tooltip;
-  margin-righta: @spacing-tooltip;
+  margin-right: @spacing-tooltip;
 }
 
 .button-spacing button:first-of-type {
@@ -5750,7 +5755,7 @@ h3.popover-title {
   left: 50%;
   margin-left: -@spacing-small-horizontal;
   border-width: 5px 5px 0;
-  border-top-color: @color-dark;
+  border-top-color: #333;
 }
 
 .tooltip.right .tooltip-arrow {
@@ -5758,7 +5763,7 @@ h3.popover-title {
   left: 0;
   margin-top: -@spacing-small-horizontal;
   border-width: 5px 5px 5px 0;
-  border-right-color: @color-dark;
+  border-right-color: #333;
 }
 
 .tooltip.left .tooltip-arrow {
@@ -5766,7 +5771,7 @@ h3.popover-title {
   right: 0;
   margin-top: -@spacing-small-horizontal;
   border-width: 5px 0 5px 5px;
-  border-left-color: @color-dark;
+  border-left-color: #333;
 }
 
 .tooltip.bottom .tooltip-arrow {
@@ -5774,7 +5779,7 @@ h3.popover-title {
   left: 50%;
   margin-left: -@spacing-small-horizontal;
   border-width: 0 5px 5px;
-  border-bottom-color: @color-dark;
+  border-bottom-color: #333;
 }
 
 //
@@ -5808,10 +5813,6 @@ h3.popover-title {
 
 .well a {
   font-style: italic;
-}
-
-.well label {
-  vertical-align: sub;
 }
 
 .content {

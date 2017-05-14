@@ -10,15 +10,23 @@ OverlayTrigger, Tooltip, Glyphicon }
 import { Icon, Modal } from '../../components'
 import Lorem from 'react-lorem-component'
 
-const tooltip =  (
+const tooltipSort =  (
     <Tooltip id='tooltip'>Best match will be chosen based on the priority of
       selected projects. Exact matches take precendence.
     </Tooltip>
 )
 
+const tooltipReadOnly =  (
+    <Tooltip id='tooltip'>Read only
+    </Tooltip>
+)
+
 const heading1 =  <h3><Checkbox checked> Project A</Checkbox></h3>
-const heading2 =  <h3><Checkbox> Project B  <Icon name='locked'
+const heading2 =  <h3><Checkbox> Project B
+  <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
+  <Icon name='locked'
    className='s0 icon-locked' />
+  </OverlayTrigger>
 </Checkbox></h3>
 
 storiesOf('Modal', module)
@@ -76,6 +84,7 @@ storiesOf('Modal', module)
                 <span className='vmerge-fuzzytxt'> fuzzy</span>.
               </Checkbox>
             </Well>
+              <Col xs={12} className='vmerge-langrow'>
               <Col xs={2}>
                 <span className='vmerge-title text-info'>Language</span>
               </Col>
@@ -95,8 +104,10 @@ storiesOf('Modal', module)
                     Russian</MenuItem>
                 </DropdownButton>
               </Col>
-              <Col xs={12}>
-              <div className='vmerge-target'>
+              </Col>
+              <Col xs={12} className='vmerge-boxes'>
+                <Panel>
+                <div className='vmerge-target'>
                 <div  className='vmerge-title'>
                 <span className='text-info'>To  </span>
                 <span className='text-muted'>  Target</span>
@@ -110,7 +121,10 @@ storiesOf('Modal', module)
                   </li>
                 </ul>
               </div>
+                </Panel>
               </Col>
+              <Col xs={12} className='vmerge-boxes'>
+                <Panel>
               <Col xs={3}>
                 <div  className='vmerge-title'>
                   <span className='text-info'>From  </span>
@@ -130,7 +144,6 @@ storiesOf('Modal', module)
                  />
               </InputGroup>
               </Col>
-            <Col xs={12} className='vmerge-boxes'>
               <Col xs={6}>
                  <span className='vmerge-adjtitle
                     vmerge-title'>Select source project versions to merge
@@ -158,10 +171,10 @@ storiesOf('Modal', module)
                   <ListGroup>
                     <div><span className='vmerge-adjtitle
                     vmerge-title'>
-                      Adjust priority </span>
-                      <span className='text-muted vmerge-adjsub'>(best first)
+                      Adjust priority of selected versions</span>
+                      <br /><span className='text-muted vmerge-adjsub'>(best first)
                       </span>
-                      <OverlayTrigger placement='top' overlay={tooltip}>
+                      <OverlayTrigger placement='top' overlay={tooltipSort}>
                        <Icon name='info' className='s0 info-icon' />
                       </OverlayTrigger>
                     </div>
@@ -182,7 +195,8 @@ storiesOf('Modal', module)
                     </Draggable>
                   </ListGroup>
                 </Col>
-            </Col>
+                </Panel>
+              </Col>
             </div>
           </Modal.Body>
           <Modal.Footer>
