@@ -23,6 +23,7 @@ public class PoHeader implements AbstractResourceMetaExtension {
 
     public static final String ID = "gettext";
     public static final String VERSION = "1.0";
+    private static final long serialVersionUID = 6125429465891909088L;
 
     private String comment;
     private List<HeaderEntry> entries;

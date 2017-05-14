@@ -35,7 +35,7 @@ import java.util.Map;
 public class ProjectTranslationTab extends ProjectBasePage {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ProjectTranslationTab.class);
-    private Map validationNames = getValidationMapping();
+    private Map<String, String> validationNames = getValidationMapping();
     private By validationsList =
             By.id("settings-translation-form:validation-list");
 
@@ -65,7 +65,7 @@ public class ProjectTranslationTab extends ProjectBasePage {
     }
 
     private Map<String, String> getValidationMapping() {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap();
         map.put("HTML/XML tags", "HTML_XML-");
         map.put("Java variables", "JAVA_VARIABLES-");
         map.put("Leading/trailing newline (\\n)", "NEW_LINE-");

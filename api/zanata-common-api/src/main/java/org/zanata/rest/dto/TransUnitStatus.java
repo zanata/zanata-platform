@@ -14,6 +14,7 @@ import org.zanata.common.ContentState;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class TransUnitStatus implements Serializable {
 
+    private static final long serialVersionUID = -6155963443005474428L;
     private Long id;
     private String resId;
     private ContentState status;

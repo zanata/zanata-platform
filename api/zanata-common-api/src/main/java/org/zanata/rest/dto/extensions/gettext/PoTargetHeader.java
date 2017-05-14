@@ -25,6 +25,7 @@ public class PoTargetHeader implements TranslationsResourceExtension {
 
     public static final String ID = "gettext";
     public static final String VERSION = PoHeader.VERSION;
+    private static final long serialVersionUID = 7359524182201964786L;
 
     private String comment;
     private List<HeaderEntry> entries;

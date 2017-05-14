@@ -43,6 +43,7 @@ import org.zanata.rest.MediaTypes.Format;
 public class Project implements Serializable, HasCollectionSample<Project>,
         HasMediaType {
 
+    private static final long serialVersionUID = 7809475317072925948L;
     private String id;
     private String name;
     private String defaultType;

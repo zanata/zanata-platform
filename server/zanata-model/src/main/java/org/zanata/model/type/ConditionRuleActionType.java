@@ -36,6 +36,8 @@ public class ConditionRuleActionType extends
     AbstractSingleColumnStandardBasicType<ConditionRuleAction> implements
         LiteralType<ConditionRuleAction> {
 
+    private static final long serialVersionUID = 988657783180942727L;
+
     public ConditionRuleActionType() {
         super(StringType.INSTANCE.getSqlTypeDescriptor(),
             ConditionRuleActionTypeDescriptor.INSTANCE);

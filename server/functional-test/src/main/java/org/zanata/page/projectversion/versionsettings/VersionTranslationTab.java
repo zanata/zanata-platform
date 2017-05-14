@@ -39,7 +39,7 @@ public class VersionTranslationTab extends VersionBasePage {
         super(driver);
     }
 
-    private Map validationNames = getValidationMapping();
+    private Map<String, String> validationNames = getValidationMapping();
 
     public boolean isValidationLevel(String optionName, String level) {
         log.info("Query is {}  validation at level {}", optionName, level);
@@ -67,7 +67,7 @@ public class VersionTranslationTab extends VersionBasePage {
     }
 
     private Map<String, String> getValidationMapping() {
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap();
         map.put("HTML/XML tags", "HTML_XML-");
         map.put("Java variables", "JAVA_VARIABLES-");
         map.put("Leading/trailing newline (\\n)", "NEW_LINE-");

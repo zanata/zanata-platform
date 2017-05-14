@@ -31,6 +31,7 @@ public class ConditionRuleActionTypeDescriptor extends
 
     public static final ConditionRuleActionTypeDescriptor INSTANCE =
         new ConditionRuleActionTypeDescriptor();
+    private static final long serialVersionUID = 396353709215784267L;
 
     protected ConditionRuleActionTypeDescriptor() {
         super(ConditionRuleAction.class);

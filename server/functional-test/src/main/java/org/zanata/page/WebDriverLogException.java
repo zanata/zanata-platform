@@ -26,6 +26,7 @@ import java.util.logging.Level;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 public class WebDriverLogException extends RuntimeException {
+    private static final long serialVersionUID = 9062314441019005653L;
     private final boolean errorLog;
 
     public WebDriverLogException(Level logLevel, String logMessage,

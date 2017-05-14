@@ -24,6 +24,7 @@ import java.util.Date;
 @Access(AccessType.FIELD)
 public class TimeEntityBase implements Serializable {
 
+    private static final long serialVersionUID = 4099946057081739374L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

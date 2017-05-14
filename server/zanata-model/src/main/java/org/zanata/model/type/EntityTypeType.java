@@ -33,6 +33,8 @@ import org.hibernate.type.StringType;
 public class EntityTypeType extends AbstractSingleColumnStandardBasicType<EntityType>
     implements DiscriminatorType<EntityType> {
 
+    private static final long serialVersionUID = 8492016651013839806L;
+
     public EntityTypeType() {
         super(StringType.INSTANCE.getSqlTypeDescriptor(),
             EntityTypeTypeDescriptor.INSTANCE);
