@@ -16,7 +16,7 @@
     "storybook-frontend": "start-storybook -p 9001 -s ./dist --config-dir .storybook-frontend",
     "storybook-build": "build-storybook -s ./dist",
     "icons": "node scripts/createIconsComponent && node scripts/generateIconList",
-    "svg": "svg-sprite -sD app/components/Icons --symbol-dest '' --ss icons.svg --si app/components/Icons/svgs/*.svg",
+    "svg": "node scripts/build-icon-spritesheet",
     "test": "jest --coverage"
   },
   "repository": {
