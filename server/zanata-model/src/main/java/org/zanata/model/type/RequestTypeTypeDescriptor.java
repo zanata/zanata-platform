@@ -32,6 +32,7 @@ public class RequestTypeTypeDescriptor extends
 
     public static final RequestTypeTypeDescriptor INSTANCE =
         new RequestTypeTypeDescriptor();
+    private static final long serialVersionUID = -3847003177344569894L;
 
     public RequestTypeTypeDescriptor() {
         super(RequestType.class);

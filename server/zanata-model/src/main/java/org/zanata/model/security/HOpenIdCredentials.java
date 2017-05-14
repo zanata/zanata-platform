@@ -32,6 +32,8 @@ import org.zanata.model.HAccount;
 @DiscriminatorValue("OPENID")
 public class HOpenIdCredentials extends HCredentials {
 
+    private static final long serialVersionUID = 931978104598219757L;
+
     public HOpenIdCredentials(HAccount account, String user, String email) {
         setAccount(account);
         setUser(user);

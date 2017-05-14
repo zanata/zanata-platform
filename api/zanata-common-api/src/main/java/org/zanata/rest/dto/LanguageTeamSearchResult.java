@@ -31,6 +31,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class LanguageTeamSearchResult extends SearchResult {
+    private static final long serialVersionUID = 3410996397191527671L;
     private LocaleDetails localeDetails;
     private long memberCount;
 

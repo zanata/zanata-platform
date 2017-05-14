@@ -167,6 +167,6 @@ public enum DocumentType {
     }
 
     public Set<String> getTranslationExtensions() {
-        return unmodifiableSet(new HashSet(extensions.values()));
+        return unmodifiableSet(new HashSet<>(extensions.values()));
     }
 }

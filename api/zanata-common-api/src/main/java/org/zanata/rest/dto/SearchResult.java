@@ -32,6 +32,8 @@ import java.io.Serializable;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public abstract class SearchResult implements Serializable {
 
+    private static final long serialVersionUID = -833059265452561631L;
+
     public enum SearchResultType {
         Project,
         LanguageTeam,

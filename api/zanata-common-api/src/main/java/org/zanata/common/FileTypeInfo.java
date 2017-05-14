@@ -37,6 +37,7 @@ import static java.util.Collections.unmodifiableSet;
  */
 @ParametersAreNonnullByDefault
 public class FileTypeInfo implements Serializable {
+    private static final long serialVersionUID = -8495128842766355483L;
     /** Name of the DocumentType. NS: This may not correspond to a DocumentType
      * recognised by the client (eg if server is newer).
      * @see DocumentType
