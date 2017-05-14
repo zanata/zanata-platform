@@ -24,10 +24,14 @@ const tooltipReadOnly =  (
 const heading1 =  <h3><Checkbox checked> Project A</Checkbox></h3>
 const heading2 =  <h3><Checkbox> Project B
   <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
-  <Icon name='locked'
-   className='s0 icon-locked' />
-  </OverlayTrigger>
+    <Icon name='locked'
+      className='s0 icon-locked' />
+    </OverlayTrigger>
 </Checkbox></h3>
+
+const currentProject = 'Current project'
+const currentVersion = 'Current version'
+
 
 storiesOf('Modal', module)
     .addDecorator((story) => (
@@ -114,10 +118,10 @@ storiesOf('Modal', module)
                 </div>
                 <ul>
                   <li>
-                    Current project
+                    {currentProject}
                   </li>
                   <li>
-                    Current version
+                    {currentVersion}
                   </li>
                 </ul>
               </div>
