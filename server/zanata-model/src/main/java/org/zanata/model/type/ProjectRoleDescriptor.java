@@ -31,6 +31,7 @@ public class ProjectRoleDescriptor
 
     public static final ProjectRoleDescriptor INSTANCE =
             new ProjectRoleDescriptor();
+    private static final long serialVersionUID = 202831184057813030L;
 
     protected ProjectRoleDescriptor() {
         super(ProjectRole.class);

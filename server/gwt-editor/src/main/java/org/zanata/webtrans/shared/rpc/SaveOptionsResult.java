@@ -25,6 +25,7 @@ package org.zanata.webtrans.shared.rpc;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class SaveOptionsResult implements DispatchResult {
+    private static final long serialVersionUID = -4229314344549012877L;
     boolean success;
 
     public boolean isSuccess() {

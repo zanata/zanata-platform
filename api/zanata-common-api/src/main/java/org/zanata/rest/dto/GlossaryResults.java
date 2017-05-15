@@ -28,6 +28,7 @@ import org.zanata.common.Namespaces;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @XmlType(name = "glossaryResults", propOrder = {"glossaryEntries", "warnings"})
 public class GlossaryResults implements Serializable {
+    private static final long serialVersionUID = 7100495681284134288L;
     private List<GlossaryEntry> glossaryEntries;
     private List<String> warnings;
 

@@ -31,6 +31,7 @@ public class EntityStatusTypeDescriptor extends
 
     public static final EntityStatusTypeDescriptor INSTANCE =
         new EntityStatusTypeDescriptor();
+    private static final long serialVersionUID = 1737575586872380911L;
 
     protected EntityStatusTypeDescriptor() {
         super(EntityStatus.class);

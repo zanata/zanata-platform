@@ -28,6 +28,7 @@ import java.io.Serializable;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class LocaleMember implements Serializable {
 
+    private static final long serialVersionUID = 7094715479753034419L;
     private final String username;
     private final Boolean isCoordinator;
     private final Boolean isReviewer;

@@ -36,6 +36,8 @@ public class GlossarySortField implements Serializable {
     public static final String DESCRIPTION = "desc";
 
     private static final Map<String, String> fieldMap;
+    private static final long serialVersionUID = 125507031392704056L;
+
     static {
         fieldMap = new HashMap<String, String>();
         fieldMap.put(SRC_CONTENT, "term.content");

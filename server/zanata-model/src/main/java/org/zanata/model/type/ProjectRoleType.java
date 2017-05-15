@@ -32,6 +32,8 @@ import org.zanata.model.ProjectRole;
 public class ProjectRoleType extends AbstractSingleColumnStandardBasicType<ProjectRole>
     implements DiscriminatorType<ProjectRole> {
 
+    private static final long serialVersionUID = 2417388381315938577L;
+
     public ProjectRoleType() {
         super(StringType.INSTANCE.getSqlTypeDescriptor(),
             ProjectRoleDescriptor.INSTANCE);

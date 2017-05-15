@@ -23,6 +23,7 @@ import org.zanata.common.Namespaces;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class Person implements Serializable, HasSample<Person> {
 
+    private static final long serialVersionUID = 7686060899220005351L;
     private String email;
     private String name;
 

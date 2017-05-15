@@ -50,6 +50,7 @@ import javax.validation.constraints.NotNull;
 public class AllowedApp extends ModelEntityBase {
     public static final String QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID =
             "AllowedApp.getByAccountAndClientId";
+    private static final long serialVersionUID = 1629533874243552852L;
     @ManyToOne(targetEntity = HAccount.class, optional = false)
     @JoinColumn(name = "accountId", nullable = false)
     private HAccount account;

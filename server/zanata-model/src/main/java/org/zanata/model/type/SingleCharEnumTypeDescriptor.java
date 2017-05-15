@@ -30,6 +30,8 @@ import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
  */
 public abstract class SingleCharEnumTypeDescriptor<T extends Enum> extends AbstractTypeDescriptor<T> {
 
+    private static final long serialVersionUID = -5530509335456087808L;
+
     protected SingleCharEnumTypeDescriptor(Class<T> type) {
         super(type);
     }

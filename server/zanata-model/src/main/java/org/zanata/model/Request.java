@@ -53,6 +53,7 @@ import org.zanata.model.type.RequestTypeType;
 @Table(uniqueConstraints = @UniqueConstraint(name = "UK_entityId_validTo",
         columnNames = { "entityId", "validTo" }))
 public class Request extends TimeEntityBase {
+    private static final long serialVersionUID = -7765625863647796620L;
     @Type(type = "requestState")
     @Column(nullable = true, columnDefinition = "char(1)")
     private RequestState state = RequestState.NEW;

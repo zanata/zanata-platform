@@ -32,6 +32,7 @@ import org.zanata.webtrans.shared.model.DocumentId;
  */
 public class TransMemoryMergeStartOrEnd implements SessionEventData {
 
+    private static final long serialVersionUID = 5893474380756113583L;
     private Date startedTime;
     private String startedBy;
     private EditorClientId editorClientId;
