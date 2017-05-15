@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.IOUtils;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
@@ -83,6 +85,7 @@ public class ClientWorkFlow {
         return resource.getPath();
     }
 
+    @SuppressFBWarnings(value = "GBU_GUAVA_BETA_CLASS_USAGE", justification = "field SimpleTimeLimiter")
     public List<String> callWithTimeout(final File workingDirectory,
             String command) {
         log.info("=== about to call ===\n{}", command);
@@ -92,7 +95,6 @@ public class ClientWorkFlow {
         }
         final List<String> commands =
                 Lists.newArrayList(Splitter.on(" ").split(command));
-        @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
         SimpleTimeLimiter timeLimiter = new SimpleTimeLimiter();
         Callable<List<String>> work = () -> {
             Process process =

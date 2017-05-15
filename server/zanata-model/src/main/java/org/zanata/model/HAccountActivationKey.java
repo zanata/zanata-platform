@@ -43,7 +43,7 @@ public class HAccountActivationKey extends AccountKeyBase
     @Column(nullable = false)
     public Date getCreationDate() {
         return creationDate != null ? new Date(creationDate.getTime()) :
-                creationDate;
+                null;
     }
 
     public static class EntityListener {

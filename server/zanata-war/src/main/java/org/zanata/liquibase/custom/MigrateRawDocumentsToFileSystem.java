@@ -35,9 +35,9 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.SetupException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
+import org.apache.commons.io.FileUtils;
 import org.zanata.common.DocumentType;
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
 import org.zanata.config.SystemPropertyConfigStore;
 
 public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
@@ -194,7 +194,7 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
 
     private void writeStreamToFile(final InputStream stream, File file)
             throws IOException {
-        Files.asByteSink(file).writeFrom(stream);
+        FileUtils.copyInputStreamToFile(stream, file);
     }
 
     private void changeFileIdFromOldToNew(String oldFileId, String newFileId)

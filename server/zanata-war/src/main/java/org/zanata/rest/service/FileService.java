@@ -42,6 +42,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
@@ -72,7 +74,6 @@ import org.zanata.service.TranslationFileService;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.io.ByteStreams;
 
 @RequestScoped
 @Named("fileService")
@@ -465,11 +466,8 @@ public class FileService implements FileResource {
         @Override
         public void write(@Nonnull OutputStream output)
                 throws IOException, WebApplicationException {
-            FileInputStream input = new FileInputStream(this.file);
-            try {
-                ByteStreams.copy(input, output);
-            } finally {
-                input.close();
+            try (FileInputStream input = new FileInputStream(this.file)) {
+                IOUtils.copy(input, output);
             }
         }
     }

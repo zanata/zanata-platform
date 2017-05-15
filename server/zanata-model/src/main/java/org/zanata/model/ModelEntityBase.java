@@ -83,13 +83,13 @@ public class ModelEntityBase implements Serializable {
     @Column(nullable = false)
     public Date getCreationDate() {
         return creationDate != null ? new Date(creationDate.getTime()) :
-                creationDate;
+                null;
     }
 
     public void setCreationDate(Date creationDate) {
         this.creationDate =
                 creationDate != null ? new Date(creationDate.getTime()) :
-                        creationDate;
+                        null;
     }
     // TODO extract lastChanged from ModelEntityBase and use with @Embedded
     // NB: also used in HSimpleComment
@@ -101,13 +101,13 @@ public class ModelEntityBase implements Serializable {
     @SortableField
     public Date getLastChanged() {
         return lastChanged != null ? new Date(lastChanged.getTime()) :
-                lastChanged;
+                null;
     }
 
     public void setLastChanged(Date lastChanged) {
         this.lastChanged =
                 lastChanged != null ? new Date(lastChanged.getTime()) :
-                        lastChanged;
+                        null;
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.zanata.limits;
 
 import java.util.concurrent.TimeUnit;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Ticker;
+import com.google.common.base.Stopwatch;
 
 /**
  * @author Patrick Huang
@@ -92,30 +92,31 @@ public class LeakyBucket {
     }
 
     static class TimeTracker {
-        private final Ticker ticker;
-        private long lastRead;
+        private Stopwatch stopWatch;
 
         TimeTracker() {
-            ticker = Ticker.systemTicker();
+            stopWatch = Stopwatch.createStarted();
         }
 
         @VisibleForTesting
-        TimeTracker(Ticker ticker) {
-            this.ticker = ticker;
+        TimeTracker(Stopwatch stopWatch) {
+            this.stopWatch = stopWatch;
         }
 
         void recordCurrentTime() {
-            lastRead = ticker.read();
+            if (stopWatch.isRunning()) {
+                stopWatch.reset();
+                stopWatch.start();
+            }
         }
 
         long timePassed() {
-            return ticker.read() - lastRead;
+            return stopWatch.elapsed(TimeUnit.NANOSECONDS);
         }
 
         @Override
         public String toString() {
-            return "LeakyBucket.TimeTracker(ticker=" + this.ticker
-                    + ", lastRead=" + this.lastRead + ")";
+            return "LeakyBucket.TimeTracker(ticker=" + this.stopWatch + ")";
         }
     }
 

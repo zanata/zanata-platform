@@ -22,9 +22,9 @@
 package org.zanata.adapter;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
 import net.sf.okapi.common.IParameters;
 import net.sf.okapi.filters.regex.RegexFilter;
+import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,7 +50,7 @@ public class SubtitleAdapter extends OkapiFilterAdapter {
         URL configURL = SubtitleAdapter.class
                 .getResource("SubtitleAdapterDefaultConfiguration.yml");
         try {
-            return Resources.toString(configURL, Charsets.UTF_8);
+            return IOUtils.toString(configURL, Charsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(
                     "Failed to load default config for SRT adapter.", e);
