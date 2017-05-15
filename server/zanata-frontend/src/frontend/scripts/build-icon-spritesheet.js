@@ -9,8 +9,6 @@ const fs = require('fs-extra')
 const path = require('path')
 const SVGSpriter = require('svg-sprite')
 
-// TODO run this as part of icon icon creation scripts
-
 console.log(c.bgCyan(c.black(' Generating icons spritesheet ')))
 
 const spriter = new SVGSpriter({
@@ -25,15 +23,10 @@ const spriter = new SVGSpriter({
   }
 })
 const svgsPath = path.resolve('app/components/Icons/svgs/')
-console.log(c.magenta('Reading svgs from ' + svgsPath))
+console.log(c.magenta('Reading svgs from ' + path.relative('', svgsPath)))
 const svgFiles = fs.readdirSync(svgsPath)
-const colWidth = svgFiles.reduce((l, name) => Math.max(l, name.length), 0)
-var count = 0
+printIconFileNames(svgFiles)
 svgFiles.map((fileName) => {
-  count++
-  process.stdout.write(c.blue(' ' +
-    (fileName + '                            ').slice(0, colWidth)))
-  if (count % 4 === 0) process.stdout.write('\n')
   const fullPath = path.join(svgsPath, fileName)
   spriter.add(fullPath, fileName, fs.readFileSync(fullPath))
 })
@@ -43,9 +36,20 @@ spriter.compile((err, result) => {
     process.exit(1)
   }
   for (var type in result.symbol) {
-    console.log(c.cyan('Write ' + type + ': ' + result.symbol[type].path))
-    fs.ensureDirSync(path.dirname(result.symbol[type].path))
-    fs.writeFileSync(result.symbol[type].path, result.symbol[type].contents)
+    const p = result.symbol[type].path
+    console.log(c.cyan('Write ' + type + ': ' + path.relative('', p)))
+    fs.ensureDirSync(path.dirname(p))
+    fs.writeFileSync(p, result.symbol[type].contents)
   }
 })
 console.log(c.green('Done'))
+
+function printIconFileNames (fileNames) {
+  const columnWidth = fileNames.reduce((l, name) => Math.max(l, name.length), 0)
+  fileNames.map((fileName, index) => {
+    process.stdout.write(c.blue(' ' +
+      (fileName + '                            ').slice(0, columnWidth)))
+    if (index % 4 === 3) process.stdout.write('\n')
+  })
+  if (fileNames.length % 4 !== 0) process.stdout.write('\n')
+}
