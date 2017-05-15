@@ -38,7 +38,7 @@
     <gwt.version>2.8.0</gwt.version>
     <lucene.version>5.3.1</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
-    <rewrite.version>3.0.0.Alpha10</rewrite.version>
+    <rewrite.version>3.4.1.Final</rewrite.version>
 
     <!--
     Not used yet.
