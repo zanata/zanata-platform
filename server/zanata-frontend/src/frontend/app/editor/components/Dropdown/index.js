@@ -4,33 +4,30 @@ import React, { PropTypes } from 'react'
 /**
  * Dropdown component that wraps a toggle button and some content to toggle.
  */
-const Dropdown = React.createClass({
-
-  propTypes: {
+class Dropdown extends React.Component {
+  static propTypes = {
     onToggle: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
     enabled: PropTypes.bool,
     className: PropTypes.string,
 
     children: PropTypes.arrayOf(PropTypes.element).isRequired
-  },
+  }
 
-  getDefaultProps: () => {
-    return {
-      enabled: true
-    }
-  },
+  static defaultProps = {
+    enabled: true
+  }
 
-  setButtonDiv: function (buttonDiv) {
+  setButtonDiv = (buttonDiv) => {
     this.buttonDiv = buttonDiv
-  },
+  }
 
-  toggleDropdown: function () {
+  toggleDropdown = () => {
     const node = this.buttonDiv
     this.props.onToggle(node)
-  },
+  }
 
-  render: function () {
+  render () {
     const className = cx({
       'Dropdown': true,
       'is-active': this.props.isOpen
@@ -80,29 +77,31 @@ const Dropdown = React.createClass({
       </div>
     )
   }
-})
+}
 
-Dropdown.Button = React.createClass({
-  propTypes: {
+Dropdown.Button = class extends React.Component {
+  static propTypes = {
     children: PropTypes.element.isRequired
-  },
-  render: function () {
+  }
+
+  render () {
     // just unwrap the child and return it
     return React.Children.only(this.props.children)
   }
-})
+}
 
-Dropdown.Content = React.createClass({
-  propTypes: {
+Dropdown.Content = class extends React.Component {
+  static propTypes = {
     children: PropTypes.node.isRequired
-  },
-  render: function () {
+  }
+
+  render () {
     return (
       <div className="Dropdown-content Dropdown-content--bordered">
         {this.props.children}
       </div>
     )
   }
-})
+}
 
 export default Dropdown

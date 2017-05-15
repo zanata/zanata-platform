@@ -6,9 +6,8 @@ import { Row } from 'react-bootstrap'
 /**
  * Dropdown to select the current document to work on.
  */
-const DocsDropdown = React.createClass({
-
-  propTypes: {
+class DocsDropdown extends React.Component {
+  static propTypes = {
     context: PropTypes.shape({
       projectVersion: PropTypes.shape({
         project: PropTypes.shape({
@@ -24,17 +23,17 @@ const DocsDropdown = React.createClass({
     }).isRequired,
     toggleDropdown: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired
-  },
+  }
 
-  docUrl: function (docId) {
+  docUrl = (docId) => {
     const { projectVersion, selectedLocale } = this.props.context
     const project = projectVersion.project.slug
     const version = projectVersion.version
     return '/project/translate/' + project + '/v/' + version + '/' + docId +
       '?lang=' + selectedLocale
-  },
+  }
 
-  render: function () {
+  render () {
     const ctx = this.props.context
     const selectedDoc = ctx.selectedDoc.id
     const items = ctx.projectVersion.docs.map(docId => {
@@ -68,6 +67,6 @@ const DocsDropdown = React.createClass({
       </Dropdown>
     )
   }
-})
+}
 
 export default DocsDropdown

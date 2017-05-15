@@ -54,7 +54,7 @@ const fields = {
   msgctxt: {
     label: 'msgctxt (gettext)',
     description: 'exact Message Context for a string'
-  },
+  }
 }
 
 /**
@@ -64,9 +64,8 @@ const fields = {
  * more appropriate widgets (e.g. username field that suggests usernames, date
  * input with calendar widget).
  */
-const EditorSearchInput = React.createClass({
-
-  propTypes: {
+class EditorSearchInput extends React.Component {
+  static propTypes = {
     advanced: PropTypes.bool.isRequired,
     search: PropTypes.shape({
       text: PropTypes.string.isRequired,
@@ -80,22 +79,23 @@ const EditorSearchInput = React.createClass({
     }).isRequired,
     toggleAdvanced: PropTypes.func.isRequired,
     updateSearch: PropTypes.func.isRequired
-  },
+  }
 
-  getInitialState: () => {
-    return {
+  constructor (props) {
+    super(props)
+    this.state = {
       focused: false,
       open: false
     }
-  },
+  }
 
-  onFocus: function () {
+  onFocus = () => {
     this.setState({
       focused: true
     })
-  },
+  }
 
-  onBlur: function (event) {
+  onBlur = (event) => {
     // Note: Not strictly needed since it will blur then immediately focus when
     //       changing focus to another child of the div, but this is just in
     //       case there will be some delay that could cause a flicker in the UI.
@@ -104,15 +104,15 @@ const EditorSearchInput = React.createClass({
         focused: false
       })
     }
-  },
+  }
 
-  toggleAdvanced: function () {
+  toggleAdvanced = () => {
     this.props.toggleAdvanced()
     // click on Advanced steals focus, so give focus back.
     this.focusInput()
-  },
+  }
 
-  clearAllAdvancedFields: function () {
+  clearAllAdvancedFields = () => {
     this.props.updateSearch({
       resourceId: '',
       lastModifiedBy: '',
@@ -124,9 +124,9 @@ const EditorSearchInput = React.createClass({
     })
     // click on "Clear all" removes focus from input fields, so give focus back.
     this.focusInput()
-  },
+  }
 
-  focusInput: function () {
+  focusInput = () => {
     // TODO different approach for React 0.14
 
     // may not need to actually set focused=true, mainly using for
@@ -137,44 +137,39 @@ const EditorSearchInput = React.createClass({
     }, () => {
       this.refs.input.focus()
     })
-  },
+  }
 
-  componentDidMount: function () {
+  componentDidMount () {
     this.focusInput()
-  },
+  }
 
-  clearButtonElement: function () {
+  clearSearch = () => this.props.updateSearch({
+    text: '' // FIXME include all the other search parameters?
+  })
+
+  updateSearchText = (event) => {
+    this.props.updateSearch({ text: event.target.value })
+  }
+
+  clearButtonElement = () => {
     return (
       <span className="InputGroup-addon">
         <IconButton icon="cross"
           title="Clear search"
           iconSize="n1"
-          onClick={() => this.props.updateSearch({
-            text: '' // FIXME include all the other search parameters?
-          })}/>
+          onClick={this.clearSearch} />
       </span>
     )
-  },
+  }
 
-  render: function () {
+  render () {
     const { advanced } = this.props
 
-    const advancedFields = map(fields, (value, key) => (
-      <li key={key} className="inline-search-list" title={value.description}>
-        {value.label + ':'}
-        <div
-          className="InputGroup--outlined InputGroup--wide InputGroup--rounded">
-          <input ref={key}
-            type="text"
-            placeholder={value.description}
-            className="InputGroup-input"
-            value={this.props.search[key]}
-            onChange={(event) => this.props.updateSearch({
-              [key]: event.target.value
-            })}
-          />
-        </div>
-      </li>
+    const advancedFields = map(fields, (field, key) => (
+      <AdvancedField key={key}
+        field={field}
+        value={this.props.search[key]}
+        updateSearch={this.props.updateSearch} />
     ))
 
     return (
@@ -194,8 +189,7 @@ const EditorSearchInput = React.createClass({
             placeholder="Search source and target text"
             maxLength="1000"
             value={this.props.search.text}
-            onChange={(event) =>
-              this.props.updateSearch({ text: event.target.value})}
+            onChange={this.updateSearchText}
             onClick={this.state.open}
             className="InputGroup-input u-sizeLineHeight-1_1-4" />
           {this.clearButtonElement()}
@@ -215,6 +209,42 @@ const EditorSearchInput = React.createClass({
       </div>
     )
   }
-})
+}
+
+class AdvancedField extends React.Component {
+  static propTypes = {
+    key: PropTypes.any.isRequired,
+    field: PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired
+    }).isRequired,
+    value: PropTypes.string.isRequired,
+    updateSearch: PropTypes.func.isRequired
+  }
+
+  updateSearch = (event) => this.props.updateSearch({
+    [this.props.key]: event.target.value
+  })
+
+  render () {
+    const { key, field, value } = this.props
+    const { label, description } = field
+    return (
+      <li key={key} className="inline-search-list" title={description}>
+        {label + ':'}
+        <div
+          className="InputGroup--outlined InputGroup--wide InputGroup--rounded">
+          <input ref={key}
+            type="text"
+            placeholder={description}
+            className="InputGroup-input"
+            value={value}
+            onChange={this.updateSearch}
+            />
+        </div>
+      </li>
+    )
+  }
+}
 
 export default EditorSearchInput

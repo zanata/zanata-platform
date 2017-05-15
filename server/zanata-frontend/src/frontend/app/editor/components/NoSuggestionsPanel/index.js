@@ -5,14 +5,13 @@ import { Icon } from '../../../components'
  * Generic panel showing an icon and message, to
  * use when there are no suggestions to display.
  */
-const NoSuggestionsPanel = React.createClass({
-
-  propTypes: {
+class NoSuggestionsPanel extends React.Component {
+  static propTypes = {
     message: PropTypes.string.isRequired,
     icon: PropTypes.oneOf(['loader', 'search', 'suggestions']).isRequired
-  },
+  }
 
-  render: function () {
+  render () {
     return (
       <div
         className="u-posCenterCenter u-textEmpty u-textCenter">
@@ -23,6 +22,6 @@ const NoSuggestionsPanel = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default NoSuggestionsPanel

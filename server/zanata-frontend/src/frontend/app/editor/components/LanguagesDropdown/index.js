@@ -8,9 +8,8 @@ import { Row } from 'react-bootstrap'
 /**
  * Dropdown to select the current language to translate to.
  */
-const LanguagesDropdown = React.createClass({
-
-  propTypes: {
+class LanguagesDropdown extends React.Component {
+  static propTypes = {
     context: PropTypes.shape({
       projectVersion: PropTypes.shape({
         project: PropTypes.shape({
@@ -27,9 +26,9 @@ const LanguagesDropdown = React.createClass({
 
     toggleDropdown: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired
-  },
+  }
 
-  localeUrl: function (locale) {
+  localeUrl = (locale) => {
     const { projectVersion, selectedDoc } = this.props.context
     const docId = encode(selectedDoc.id)
     const project = projectVersion.project.slug
@@ -38,9 +37,9 @@ const LanguagesDropdown = React.createClass({
     // FIXME loses any other query parameters
     return '/project/translate/' + project + '/v/' + version + '/' + docId +
       '?lang=' + locale.id
-  },
+  }
 
-  render: function () {
+  render () {
     const locales = this.props.context.projectVersion.locales
     const items = values(locales).map(locale => {
       const url = this.localeUrl(locale)
@@ -79,6 +78,6 @@ const LanguagesDropdown = React.createClass({
       </Dropdown>
     )
   }
-})
+}
 
 export default LanguagesDropdown
