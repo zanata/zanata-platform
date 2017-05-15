@@ -5,18 +5,15 @@
   "main": "index.js",
   "scripts": {
     "js": "webpack",
-    "build": "yarn build:icons && webpack -p --config webpack.prod.config.js --bail --display-error-details",
-    "draft": "yarn build:icons && webpack --config webpack.draft.config.js --bail --display-error-details",
+    "build": "node scripts/build",
+    "draft": "node scripts/build --draft",
     "watch": "node scripts/dev-server",
     "watch:editor": "node scripts/dev-server --editor",
-    "build:icons": "yarn svg && yarn icons",
     "styleguide-server": "styleguidist server",
     "styleguide-build": "styleguidist build",
     "storybook-editor": "start-storybook -p 9001 -s ./dist --config-dir .storybook-editor",
     "storybook-frontend": "start-storybook -p 9001 -s ./dist --config-dir .storybook-frontend",
     "storybook-build": "build-storybook -s ./dist",
-    "icons": "node scripts/createIconsComponent && node scripts/generateIconList",
-    "svg": "svg-sprite -sD app/components/Icons --symbol-dest '' --ss icons.svg --si app/components/Icons/svgs/*.svg",
     "test": "jest --coverage"
   },
   "repository": {

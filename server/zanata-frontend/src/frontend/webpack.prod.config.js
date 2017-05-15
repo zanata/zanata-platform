@@ -39,6 +39,9 @@ module.exports = merge.smart(defaultConfig, {
     })
   ],
 
+  // fail on first error
+  bail: true,
+
   eslint: {
     failOnWarning: true
   }
