@@ -5,7 +5,7 @@ import { storiesOf } from '@kadira/storybook'
 import { action, decorateAction } from '@kadira/storybook-addon-actions'
 import { Button, Panel, Row, Table, Well, Checkbox, InputGroup, Col,
   FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem, PanelGroup,
-OverlayTrigger, Tooltip, Glyphicon }
+OverlayTrigger, Tooltip }
   from 'react-bootstrap'
 import { Icon, Modal } from '../../components'
 import Lorem from 'react-lorem-component'
@@ -31,7 +31,6 @@ const heading2 =  <h3><Checkbox> Project B
 
 const currentProject = 'Current project'
 const currentVersion = 'Current version'
-
 
 storiesOf('Modal', module)
     .addDecorator((story) => (
@@ -185,7 +184,7 @@ storiesOf('Modal', module)
                     <Draggable bounds='parent' axis='y' grid={[36, 36]}>
                     <ListGroupItem className='v'>
                       <Button bsStyle='link' className='btn-link-sort'>
-                      <Glyphicon glyph="sort" />
+                        <i className='fa fa-sort'></i>
                       </Button>
                         2.0
                     </ListGroupItem>
@@ -193,7 +192,7 @@ storiesOf('Modal', module)
                     <Draggable bounds='parent' axis='y' grid={[36, 36]}>
                     <ListGroupItem className='v'>
                       <Button bsStyle='link' className='btn-link-sort'>
-                        <Glyphicon glyph="sort"  />
+                        <i className='fa fa-sort'></i>
                       </Button>
                       1.0</ListGroupItem>
                     </Draggable>
