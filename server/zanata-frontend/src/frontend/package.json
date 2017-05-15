@@ -106,7 +106,7 @@
     "react-chartjs": "0.4.0",
     "react-date-range": "0.2.4",
     "react-dom": "0.14.8",
-    "react-draggable": "^2.2.6",
+    "react-draggable": "2.2.6",
     "react-helmet": "3.1.0",
     "react-list": "0.7.19",
     "react-loading": "0.0.9",
