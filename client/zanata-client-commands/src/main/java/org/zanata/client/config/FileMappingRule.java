@@ -54,6 +54,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlRootElement(name = "rule")
 @XmlAccessorOrder(XmlAccessOrder.ALPHABETICAL)
 public class FileMappingRule implements Serializable {
+    private static final long serialVersionUID = -6320576568976862094L;
     private String pattern;
     private String rule;
 

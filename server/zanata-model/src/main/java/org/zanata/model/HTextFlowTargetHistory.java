@@ -41,7 +41,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.Immutable;

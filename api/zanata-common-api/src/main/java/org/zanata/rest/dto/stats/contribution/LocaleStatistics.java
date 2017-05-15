@@ -13,6 +13,8 @@ import org.zanata.common.LocaleId;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({ "locale", "translation-stats", "review-stats" })
 public class LocaleStatistics implements Serializable {
+    private static final long serialVersionUID = 711345550950903773L;
+
     public LocaleStatistics() {
     }
 

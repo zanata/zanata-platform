@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "HProject_Glossary")
 public class HProjectGlossary implements Serializable {
+    private static final long serialVersionUID = -3353891750258196418L;
     private HProjectGlossaryPk id = new HProjectGlossaryPk();
 
     public HProjectGlossary(Glossary glossary, HProject project) {
@@ -49,6 +50,7 @@ public class HProjectGlossary implements Serializable {
     @Embeddable
     @Access(AccessType.FIELD)
     public static class HProjectGlossaryPk implements Serializable {
+        private static final long serialVersionUID = -3849528527085874091L;
         @ManyToOne(fetch = FetchType.EAGER, optional = false)
         @JoinColumn(name = "glossaryId", nullable = false)
         private Glossary glossary;

@@ -32,6 +32,7 @@ public class EntityTypeTypeDescriptor extends
 
     public static final EntityTypeTypeDescriptor INSTANCE =
         new EntityTypeTypeDescriptor();
+    private static final long serialVersionUID = -2257691828210473448L;
 
     public EntityTypeTypeDescriptor() {
         super(EntityType.class);

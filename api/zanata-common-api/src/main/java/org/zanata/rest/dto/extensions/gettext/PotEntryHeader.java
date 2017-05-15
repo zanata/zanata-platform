@@ -21,6 +21,7 @@ import org.zanata.rest.dto.DTOUtil;
 public class PotEntryHeader implements TextFlowExtension {
 
     public static final String ID = "gettext";
+    private static final long serialVersionUID = 962567923295656414L;
 
     private String context;
     private List<String> flags;

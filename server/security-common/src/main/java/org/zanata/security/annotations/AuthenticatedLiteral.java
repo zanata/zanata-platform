@@ -27,4 +27,5 @@ import javax.enterprise.util.AnnotationLiteral;
  */
 public class AuthenticatedLiteral extends AnnotationLiteral<Authenticated>
         implements Authenticated {
+    private static final long serialVersionUID = -4788334782510322034L;
 }

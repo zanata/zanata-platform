@@ -20,6 +20,7 @@ import org.zanata.common.Namespaces;
 @XmlType(name = "projectListType", propOrder = { "projects" })
 public class ProjectList implements Serializable, HasSample<ProjectList> {
 
+    private static final long serialVersionUID = 2093156157626506919L;
     private List<Project> projects;
 
     @XmlElementRef(namespace = Namespaces.ZANATA_OLD)
