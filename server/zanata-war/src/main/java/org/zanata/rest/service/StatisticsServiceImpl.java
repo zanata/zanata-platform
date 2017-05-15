@@ -34,11 +34,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.transform.ResultTransformer;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.ws.rs.core.Response;
+
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
@@ -59,6 +63,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.dto.Link;
+import org.zanata.rest.dto.ProjectStatisticsMatrix;
 import org.zanata.rest.dto.TranslationMatrix;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
@@ -103,6 +108,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
     private ZPathService zPathService;
     @Inject
     private PersonDAO personDAO;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
     @Inject
@@ -464,10 +470,83 @@ public class StatisticsServiceImpl implements StatisticsResource {
         return translationMatrixList;
     }
 
+
+    @Override
+    public Response getProjectStatisticsMatrix(final String projectSlug,
+            final String versionSlug, String dateRangeParam,
+            String timeZoneID) {
+        if (StringUtils.isBlank(projectSlug) ||
+                StringUtils.isBlank(versionSlug)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("parameter project and version are required").build();
+        }
+        HProjectIteration version =
+                projectIterationDAO.getBySlug(projectSlug, versionSlug);
+        if (version == null) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Project version not found:" + projectSlug + "-" + versionSlug).build();
+        }
+        DateRange dateRange = DateRange.from(dateRangeParam, timeZoneID);
+        DateTime fromDate = dateRange.getFromDate();
+        DateTime toDate = dateRange.getToDate();
+        DateTimeZone timezone = dateRange.getTimeZone();
+        DateTimeFormatter dateFormatter =
+                DateTimeFormat.forPattern(DATE_FORMAT).withZone(timezone);
+        DateTimeZone systemZone = DateTimeZone.getDefault();
+        Optional<DateTimeZone> timezoneOpt;
+        if (timezone.getStandardOffset(0) != systemZone.getStandardOffset(0)) {
+            timezoneOpt = Optional.of(timezone);
+        } else {
+            timezoneOpt = Optional.absent();
+        }
+        List<ProjectStatisticsMatrix> translationMatrixList =
+                textFlowTargetHistoryDAO.getProjectTranslationMatrix(version,
+                        fromDate, toDate, timezoneOpt, systemZone,
+                        new ProjectMatrixResultTransformer(entityManager,
+                                dateFormatter));
+        return Response.ok(translationMatrixList).build();
+    }
+
+    public static class ProjectMatrixResultTransformer
+            implements ResultTransformer {
+        private static final long serialVersionUID = 1L;
+        @SuppressFBWarnings("SE_BAD_FIELD")
+        private final EntityManager entityManager;
+        private transient final DateTimeFormatter dateFormatter;
+
+        @Override
+        public Object transformTuple(Object[] tuple, String[] aliases) {
+            String savedDate = dateFormatter
+                    .print(new DateTime(tuple[0]).toDate().getTime());
+            HLocale locale = entityManager.find(HLocale.class,
+                    ((BigInteger) tuple[1]).longValue());
+            String localeDisplayName = locale.retrieveDisplayName();
+            LocaleId localeId = locale.getLocaleId();
+            ContentState savedState = ContentState.values()[(int) tuple[2]];
+            long wordCount = ((BigDecimal) tuple[3]).toBigInteger().longValue();
+            return new ProjectStatisticsMatrix(savedDate, localeId,
+                    localeDisplayName, savedState, wordCount);
+        }
+
+        @Override
+        public List transformList(List collection) {
+            return collection;
+        }
+
+        @java.beans.ConstructorProperties({ "entityManager", "dateFormatter" })
+        public ProjectMatrixResultTransformer(final EntityManager entityManager,
+                final DateTimeFormatter dateFormatter) {
+            this.entityManager = entityManager;
+            this.dateFormatter = dateFormatter;
+        }
+    }
+
     public static class UserMatrixResultTransformer
             implements ResultTransformer {
         private static final long serialVersionUID = 1L;
+        @SuppressFBWarnings("SE_BAD_FIELD")
         private final EntityManager entityManager;
+        @SuppressFBWarnings("SE_BAD_FIELD")
         private final DateTimeFormatter dateFormatter;
 
         @Override
@@ -501,46 +580,6 @@ public class StatisticsServiceImpl implements StatisticsResource {
                 final DateTimeFormatter dateFormatter) {
             this.entityManager = entityManager;
             this.dateFormatter = dateFormatter;
-        }
-    }
-
-    public static class UserTranslationMatrix {
-        private final Date savedDate;
-        private final HProjectIteration projectIteration;
-        private final HLocale locale;
-        private final ContentState savedState;
-        private final long wordCount;
-
-        public Date getSavedDate() {
-            return this.savedDate;
-        }
-
-        public HProjectIteration getProjectIteration() {
-            return this.projectIteration;
-        }
-
-        public HLocale getLocale() {
-            return this.locale;
-        }
-
-        public ContentState getSavedState() {
-            return this.savedState;
-        }
-
-        public long getWordCount() {
-            return this.wordCount;
-        }
-
-        @java.beans.ConstructorProperties({ "savedDate", "projectIteration",
-                "locale", "savedState", "wordCount" })
-        public UserTranslationMatrix(final Date savedDate,
-                final HProjectIteration projectIteration, final HLocale locale,
-                final ContentState savedState, final long wordCount) {
-            this.savedDate = savedDate;
-            this.projectIteration = projectIteration;
-            this.locale = locale;
-            this.savedState = savedState;
-            this.wordCount = wordCount;
         }
     }
 }

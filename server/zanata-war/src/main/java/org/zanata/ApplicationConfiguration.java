@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.core.api.common.DeltaSpike;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -104,6 +105,7 @@ public class ApplicationConfiguration implements Serializable {
     private String buildTimestamp;
     private String scmDescribe;
     private boolean copyTransEnabled = true;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     @DeltaSpike
     private HttpSession session;

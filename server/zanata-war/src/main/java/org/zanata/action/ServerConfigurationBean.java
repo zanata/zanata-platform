@@ -27,6 +27,8 @@ import java.util.List;
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.beanutils.BeanUtils;
 import org.hibernate.validator.constraints.Email;
 import javax.annotation.PostConstruct;
@@ -68,6 +70,7 @@ public class ServerConfigurationBean implements Serializable {
     private ApplicationConfigurationDAO applicationConfigurationDAO;
     @Inject
     private ApplicationConfiguration applicationConfiguration;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<HomeContentChangedEvent> homeContentChangedEventEvent;
     @Url(canEndInSlash = true)
@@ -79,25 +82,31 @@ public class ServerConfigurationBean implements Serializable {
     private String adminEmail;
     @Email
     private String fromEmailAddr;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private PropertyWithKey<String> fromEmailAddrProperty =
             new PropertyWithKey<String>("fromEmailAddr",
                     KEY_EMAIL_FROM_ADDRESS);
     private String homeContent = "";
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private PropertyWithKey<String> homeContentProperty =
             new PropertyWithKey<String>("homeContent", KEY_HOME_CONTENT);
     private boolean enableLogEmail;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private PropertyWithKey<Boolean> enableLogEmailProperty =
             new PropertyWithKey<Boolean>("enableLogEmail",
                     KEY_EMAIL_LOG_EVENTS);
     private boolean displayUserEmail;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private PropertyWithKey<Boolean> displayUserEmailProperty =
             new PropertyWithKey<Boolean>("displayUserEmail",
                     KEY_DISPLAY_USER_EMAIL);
     private boolean allowAnonymousUser = true;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private PropertyWithKey<Boolean> allowAnonymousUserProperty =
             new PropertyWithKey<Boolean>("allowAnonymousUser",
                     KEY_ALLOW_ANONYMOUS_USER);
     private boolean autoAcceptRequests = false;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private PropertyWithKey<Boolean> autoAcceptRequestsProperty =
             new PropertyWithKey<Boolean>("autoAcceptRequests",
                     KEY_AUTO_ACCEPT_TRANSLATOR);
@@ -124,6 +133,7 @@ public class ServerConfigurationBean implements Serializable {
     @DomainList
     private String permittedUserEmailDomains;
     private String gravatarRating;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<PropertyWithKey<String>> commonStringProperties = Arrays
             .asList(new PropertyWithKey<String>("registerUrl", KEY_REGISTER),
                     new PropertyWithKey<String>("serverUrl", KEY_HOST),
@@ -274,7 +284,7 @@ public class ServerConfigurationBean implements Serializable {
      * Associates a field of type T with a HApplicationConfiguration key,
      * allowing abstraction around setting fields only if keys are bound.
      */
-    private class PropertyWithKey<T> {
+    private final class PropertyWithKey<T> {
         private final String propertyName;
         private final String key;
 

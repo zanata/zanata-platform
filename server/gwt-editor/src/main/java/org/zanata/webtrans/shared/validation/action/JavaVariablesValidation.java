@@ -251,7 +251,7 @@ public class JavaVariablesValidation extends AbstractValidationAction {
     /**
      * Holds information about java variables, quoting etc. for a string.
      */
-    private class StringInfo {
+    private static class StringInfo {
         private int quotedChars = 0;
         private int singleApostrophes = 0;
 

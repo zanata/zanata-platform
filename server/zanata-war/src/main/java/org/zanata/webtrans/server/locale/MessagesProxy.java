@@ -55,7 +55,8 @@ public class MessagesProxy extends GenericProxy {
     private String buildMessage(String propertyName, Method method,
             Object[] args) throws Throwable {
         MessageDescriptor desc = getDescriptor(method);
-        String pluralKey = "";
+//        String pluralKey = "";
+        StringBuilder pluralKey = new StringBuilder();
         Map<Integer, String> paramIndexpattern = new HashMap<Integer, String>();
 
         for (int i = 0; i < desc.args.length; i++) {
@@ -65,7 +66,8 @@ public class MessagesProxy extends GenericProxy {
 
             if (arg.pluralCount) {
                 int n = getPluralCount(args[i], i);
-                pluralKey += NumberUtils.getWords(n - arg.pluralOffset) + " ";
+                pluralKey.append(NumberUtils.getWords(n - arg.pluralOffset))
+                        .append(" ");
             }
 
             paramIndexpattern.put(i, pattern);
@@ -79,7 +81,7 @@ public class MessagesProxy extends GenericProxy {
              */
         }
 
-        String template = desc.defaults.get(pluralKey);
+        String template = desc.defaults.get(pluralKey.toString());
 
         if (template == null) {
             template = desc.defaults.get("");
@@ -96,7 +98,7 @@ public class MessagesProxy extends GenericProxy {
                     Pattern pattern = Pattern.compile(replacedPattern);
                     Matcher matcher = pattern.matcher(template);
                     value = Matcher.quoteReplacement(value);
-                    template = matcher.replaceAll(value == null ? "" : value);
+                    template = matcher.replaceAll(value);
                 }
             }
         }
@@ -147,16 +149,19 @@ public class MessagesProxy extends GenericProxy {
         return desc;
     }
 
-    class MessageDescriptor {
+    static class MessageDescriptor {
+        @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "URF_UNREAD_FIELD")
         String key;
         Map<String, String> defaults = new HashMap<String, String>();
         MessageArgument[] args;
     }
 
-    class MessageArgument {
+    static class MessageArgument {
         boolean pluralCount;
         int pluralOffset;
+        @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "For future enhancement")
         Class<? extends PluralRule> pluralRule;
+        @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "For future enhancement")
         boolean select;
     }
 }

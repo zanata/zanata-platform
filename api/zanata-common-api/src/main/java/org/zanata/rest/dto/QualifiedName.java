@@ -21,6 +21,7 @@ import org.zanata.rest.MediaTypes;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class QualifiedName implements Serializable, HasMediaType {
+    private static final long serialVersionUID = 934216980812012602L;
     private String name;
 
     public QualifiedName() {

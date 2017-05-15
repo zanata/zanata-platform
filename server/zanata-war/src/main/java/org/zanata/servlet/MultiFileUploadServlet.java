@@ -241,12 +241,13 @@ public class MultiFileUploadServlet extends HttpServlet {
         writer.close();
     }
 
-    private class FileUploadRequestHandler {
+    private static class FileUploadRequestHandler {
         private final HttpServletRequest request;
         private String projectSlug;
         private String versionSlug;
         private final List<String> fileTypes;
         private String path = "";
+        @edu.umd.cs.findbugs.annotations.SuppressFBWarnings(value = "URF_UNREAD_FIELD", justification = "For future enhancement")
         private String lang = "en-US";
         private String fileParams = "";
         private SourceDocumentUpload sourceUploader;

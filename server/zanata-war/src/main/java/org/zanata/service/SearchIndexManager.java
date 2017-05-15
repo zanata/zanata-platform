@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -89,10 +91,9 @@ public class SearchIndexManager implements Serializable {
     }
 
     public List<ReindexClassOptions> getReindexOptions() {
-        List<ReindexClassOptions> result = new ArrayList<ReindexClassOptions>();
-        for (Class<?> clazz : indexingOptions.keySet()) {
-            result.add(indexingOptions.get(clazz));
-        }
+        List<ReindexClassOptions> result = indexingOptions.entrySet().stream()
+                .map(entry -> entry.getValue()).collect(
+                        Collectors.toList());
         return result;
     }
 

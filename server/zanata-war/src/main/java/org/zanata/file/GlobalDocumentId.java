@@ -58,18 +58,15 @@ public class GlobalDocumentId {
             return false;
         final Object this$projectSlug = this.getProjectSlug();
         final Object other$projectSlug = other.getProjectSlug();
-        if (this$projectSlug == null ? other$projectSlug != null
-                : !this$projectSlug.equals(other$projectSlug))
+        if (!this$projectSlug.equals(other$projectSlug))
             return false;
         final Object this$versionSlug = this.getVersionSlug();
         final Object other$versionSlug = other.getVersionSlug();
-        if (this$versionSlug == null ? other$versionSlug != null
-                : !this$versionSlug.equals(other$versionSlug))
+        if (!this$versionSlug.equals(other$versionSlug))
             return false;
         final Object this$docId = this.getDocId();
         final Object other$docId = other.getDocId();
-        if (this$docId == null ? other$docId != null
-                : !this$docId.equals(other$docId))
+        if (!this$docId.equals(other$docId))
             return false;
         return true;
     }
@@ -83,13 +80,11 @@ public class GlobalDocumentId {
         final int PRIME = 59;
         int result = 1;
         final Object $projectSlug = this.getProjectSlug();
-        result = result * PRIME
-                + ($projectSlug == null ? 43 : $projectSlug.hashCode());
+        result = result * PRIME + $projectSlug.hashCode();
         final Object $versionSlug = this.getVersionSlug();
-        result = result * PRIME
-                + ($versionSlug == null ? 43 : $versionSlug.hashCode());
+        result = result * PRIME + $versionSlug.hashCode();
         final Object $docId = this.getDocId();
-        result = result * PRIME + ($docId == null ? 43 : $docId.hashCode());
+        result = result * PRIME + $docId.hashCode();
         return result;
     }
 }

@@ -20,6 +20,7 @@ import java.io.Serializable;
 @Entity
 @Access(AccessType.FIELD)
 public class LanguageRequest implements Serializable {
+    private static final long serialVersionUID = 464624622368897248L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;

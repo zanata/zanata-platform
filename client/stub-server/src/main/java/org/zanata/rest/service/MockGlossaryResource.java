@@ -29,6 +29,7 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.GlossaryFileUploadForm;
 import org.zanata.rest.dto.GlossaryEntry;
@@ -42,6 +43,8 @@ import com.google.common.collect.Lists;
  */
 @Path(GlossaryResource.SERVICE_PATH)
 public class MockGlossaryResource implements GlossaryResource {
+    private static final long serialVersionUID = 4701897409671046397L;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @Context
     UriInfo uriInfo;
 

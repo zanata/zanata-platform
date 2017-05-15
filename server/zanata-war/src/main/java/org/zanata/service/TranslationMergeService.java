@@ -1,12 +1,13 @@
 package org.zanata.service;
 
+import java.io.Serializable;
 import java.util.Set;
 
 import org.zanata.common.ContentState;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.resource.TextFlowTarget;
 
-public interface TranslationMergeService {
+public interface TranslationMergeService extends Serializable {
 
     /**
      * Update hTarget to match targetDto, according to the implemented strategy.

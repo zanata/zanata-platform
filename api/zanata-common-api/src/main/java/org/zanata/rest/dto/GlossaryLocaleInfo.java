@@ -19,6 +19,7 @@ import org.zanata.common.Namespaces;
 @JsonPropertyOrder({ "locale", "numberOfTerms"})
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class GlossaryLocaleInfo implements Serializable {
+    private static final long serialVersionUID = 7486128063191358182L;
     private LocaleDetails locale;
     private int numberOfTerms;
 

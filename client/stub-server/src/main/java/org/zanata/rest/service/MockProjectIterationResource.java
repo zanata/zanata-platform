@@ -27,6 +27,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.rest.dto.ProjectIteration;
 
 /**
@@ -35,6 +36,8 @@ import org.zanata.rest.dto.ProjectIteration;
  */
 @Path(ProjectIterationResource.SERVICE_PATH)
 public class MockProjectIterationResource implements ProjectIterationResource {
+    private static final long serialVersionUID = -3276587657503575605L;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Context
     UriInfo uriInfo;
 

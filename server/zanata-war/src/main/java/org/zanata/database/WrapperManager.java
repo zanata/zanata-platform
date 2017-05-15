@@ -20,6 +20,7 @@
  */
 package org.zanata.database;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -34,7 +35,7 @@ import java.sql.SQLException;
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class WrapperManager {
+public class WrapperManager implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(WrapperManager.class);
 

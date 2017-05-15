@@ -25,6 +25,7 @@ import java.io.Serializable;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 
@@ -33,6 +34,7 @@ public class EmailListValidator implements
         ConstraintValidator<EmailList, String>, Serializable {
     private static final long serialVersionUID = 1L;
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     private ConstraintValidator<Email, CharSequence> emailValidator;
 
     @Override

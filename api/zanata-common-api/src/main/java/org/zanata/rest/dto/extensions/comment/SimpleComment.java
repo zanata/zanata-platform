@@ -25,6 +25,7 @@ public class SimpleComment implements TextFlowExtension,
         TextFlowTargetExtension {
 
     public static final String ID = "comment";
+    private static final long serialVersionUID = -7868490515760584224L;
 
     private String value;
 

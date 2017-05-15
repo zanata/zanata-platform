@@ -22,9 +22,10 @@ package org.zanata.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Properties;
 
-public interface FileSystemService {
+public interface FileSystemService extends Serializable {
     public enum DownloadDescriptorProperties {
         DownloadFileName, PhysicalFileName, OriginatingUserId
     }

@@ -38,6 +38,7 @@ import javax.inject.Named;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.events.LocaleSelectedEvent;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
 import org.zanata.util.Contexts;
@@ -57,6 +58,7 @@ import org.zanata.util.Synchronized;
 @Synchronized
 public class LocaleSelectorAction implements Serializable {
     private static final long serialVersionUID = -7116393807988405479L;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<LocaleSelectedEvent> localeSelectedEvent;
 

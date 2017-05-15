@@ -15,6 +15,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonPropertyOrder({ "username", "contributions" })
 public class ContributionStatistics implements Serializable {
 
+    private static final long serialVersionUID = -6328249224235406066L;
     private String username;
 
     private List<LocaleStatistics> contributions;

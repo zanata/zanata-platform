@@ -18,7 +18,7 @@ import antlr.collections.impl.BitSet;
 public class SeamTextParser extends antlr.LLkParser implements
         SeamTextParserTokenTypes {
 
-    public class Macro {
+    public static class Macro {
         public String name;
         public java.util.SortedMap<String, String> params =
                 new java.util.TreeMap<String, String>();
@@ -28,7 +28,7 @@ public class SeamTextParser extends antlr.LLkParser implements
         }
     }
 
-    public class HtmlRecognitionException extends RecognitionException {
+    public static class HtmlRecognitionException extends RecognitionException {
         Token openingElement;
         RecognitionException wrappedException;
 
@@ -2527,7 +2527,7 @@ public class SeamTextParser extends antlr.LLkParser implements
         return "/>";
     }
 
-    public static final String[] _tokenNames = {
+    private static final String[] _tokenNames = {
             "<0>",
             "the end of the text",
             "<2>",

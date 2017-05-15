@@ -158,14 +158,13 @@ public class RequestServiceImpl implements RequestService {
                 emailServiceImpl.sendToLanguageRequester(strategy,
                         requester.getPerson());
             } catch (Exception e) {
-                String subject = strategy.getSubject(msgs);
                 StringBuilder sb = new StringBuilder()
-                        .append("Failed to send email with subject \'")
+                        .append("Failed to send email: toName \'")
+                        .append(requester.getUsername())
+                        .append("\', subject \'")
                         .append(strategy.getSubject(msgs))
                         .append("\' , message \'").append(message).append("\'");
-                log.error(
-                        "Failed to send email: toName \'{}\', subject \'{}\', message \'{}\'. {}",
-                        requester.getUsername(), subject, message, e);
+                log.error(sb.toString(), e);
             }
         }
     }
@@ -226,7 +225,7 @@ public class RequestServiceImpl implements RequestService {
      * Builder for languageRequest TODO: use @Builder in LanguageRequest but
      * issue with @NoArgsConstructor and @AllArgsConstructor
      */
-    public class LanguageRequestBuilder {
+    public static class LanguageRequestBuilder {
 
         private Request request;
         private HLocale locale;

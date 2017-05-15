@@ -4,25 +4,43 @@ import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
+
+import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class HPoTargetHeaderTest {
 
     @Test
     public void testEquals() {
-        assertThat(new HPoTargetHeader().equals(new HPoTargetHeader())).isTrue();
+        Date now = new Date();
+        HPoTargetHeader header = new HPoTargetHeader();
+        header.setCreationDate(now);
+        header.setLastChanged(now);
+        HPoTargetHeader other = new HPoTargetHeader();
+        other.setCreationDate(now);
+        other.setLastChanged(now);
+        assertThat(header.equals(other)).isTrue();
 
         HDocument docA = new HDocument();
         docA.setName("DocA");
         docA.setId(123456789L);
+        docA.setCreationDate(now);
+        docA.setLastChanged(now);
         HDocument docB = new HDocument();
         docB.setName("DocB");
-        docA.setId(987654321L);
+        docB.setId(987654321L);
+        docB.setCreationDate(now);
+        docB.setLastChanged(now);
         assertThat(docA.equals(docB)).isFalse();
 
         HPoTargetHeader alpha = new HPoTargetHeader();
         alpha.setTargetLanguage(new HLocale(new LocaleId("fr")));
+        alpha.setCreationDate(now);
+        alpha.setLastChanged(now);
         HPoTargetHeader bravo = new HPoTargetHeader();
+        bravo.setCreationDate(now);
+        bravo.setLastChanged(now);
         assertThat(alpha.equals(bravo)).isFalse();
 
         bravo.setTargetLanguage(new HLocale(new LocaleId("fr")));
@@ -36,8 +54,13 @@ public class HPoTargetHeaderTest {
 
     @Test
     public void testHashcode() {
+        Date now = new Date();
         HPoTargetHeader alpha = new HPoTargetHeader();
+        alpha.setCreationDate(now);
+        alpha.setLastChanged(now);
         HPoTargetHeader bravo = new HPoTargetHeader();
+        bravo.setCreationDate(now);
+        bravo.setLastChanged(now);
         bravo.setId(987654321L);
         assertThat(alpha.hashCode()).isNotEqualTo(bravo.hashCode());
         alpha.setId(987654321L);

@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,6 +49,8 @@ import org.zanata.seam.security.IdentityManager;
 import org.zanata.service.EmailService;
 import javax.annotation.Nullable;
 import javax.mail.internet.InternetAddress;
+import javax.validation.constraints.NotNull;
+
 import com.google.common.collect.Lists;
 import static org.zanata.email.Addresses.getAddresses;
 import static org.zanata.email.Addresses.getLocaleMemberAddresses;
@@ -97,9 +100,12 @@ public class EmailServiceImpl implements EmailService {
 
     private List<HPerson> getCoordinators(HLocale locale) {
         List<HPerson> coordinators = new ArrayList<HPerson>();
-        for (HLocaleMember member : locale.getMembers()) {
-            if (member.isCoordinator()) {
-                coordinators.add(member.getPerson());
+        Set<HLocaleMember> members = locale.getMembers();
+        if (members != null && !members.isEmpty()) {
+            for (HLocaleMember member : members) {
+                if (member.isCoordinator()) {
+                    coordinators.add(member.getPerson());
+                }
             }
         }
         return coordinators;
@@ -187,22 +193,26 @@ public class EmailServiceImpl implements EmailService {
     public String sendToLanguageCoordinators(LocaleId localeId,
             EmailStrategy strategy) {
         HLocale locale = localeDAO.findByLocaleId(localeId);
-        List<HPerson> coordinators = getCoordinators(locale);
-        if (!coordinators.isEmpty()) {
-            String receivedReason =
-                    msgs.format("jsf.email.coordinator.ReceivedReason",
-                            locale.retrieveNativeName());
-            emailBuilder.sendMessage(strategy,
-                    Lists.newArrayList(receivedReason),
-                    getAddresses(coordinators));
-            return msgs.format("jsf.email.coordinator.SentNotification",
-                    locale.retrieveNativeName());
-        } else {
-            String receivedReason = msgs.format(
-                    "jsf.email.admin.ReceivedReason.language.noCoordinator",
-                    locale.getLocaleId(), locale.retrieveDisplayName());
-            return sendToAdmins(strategy, Lists.newArrayList(receivedReason));
+        if (locale != null) {
+            List<HPerson> coordinators = getCoordinators(locale);
+            if (!coordinators.isEmpty()) {
+                String receivedReason =
+                        msgs.format("jsf.email.coordinator.ReceivedReason",
+                                locale.retrieveNativeName());
+                emailBuilder.sendMessage(strategy,
+                        Lists.newArrayList(receivedReason),
+                        getAddresses(coordinators));
+                return msgs.format("jsf.email.coordinator.SentNotification",
+                        locale.retrieveNativeName());
+            } else {
+                String receivedReason = msgs.format(
+                        "jsf.email.admin.ReceivedReason.language.noCoordinator",
+                        localeId, locale.retrieveDisplayName());
+                return sendToAdmins(strategy, Lists.newArrayList(receivedReason));
+            }
         }
+        return msgs.format("jsf.language.validation.NotSupport", localeId);
+
     }
 
     @Override

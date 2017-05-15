@@ -64,8 +64,7 @@ public class Application implements EntryPoint {
     public void onModuleLoad() {
         Log.info("Loading Zanata Web Editor...");
         exceptionHandler =
-                new UncaughtExceptionHandlerImpl(injector.getDispatcher(),
-                        injector.getUserConfig());
+                new UncaughtExceptionHandlerImpl(injector.getUserConfig());
         GWT.setUncaughtExceptionHandler(exceptionHandler);
 
         injector.getDispatcher().execute(
@@ -200,10 +199,6 @@ public class Application implements EntryPoint {
                                 .getHistoryEventHandlerService());
                         Log.info("=========== now firing current history state =========== ");
                         history.fireCurrentHistoryState();
-
-                        exceptionHandler.setAppPresenter(appPresenter);
-                        exceptionHandler.setTargetContentsPresenter(injector
-                                .getTargetContentsPresenter());
 
                         documentListPresenter.queryStats();
                         documentListPresenter.showLoading(false);

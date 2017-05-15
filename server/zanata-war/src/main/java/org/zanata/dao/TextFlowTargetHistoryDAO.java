@@ -41,6 +41,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.zanata.common.ContentState;
 import org.zanata.model.HPerson;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 
@@ -309,6 +310,54 @@ public class TextFlowTargetHistoryDAO extends
             .setTimestamp("fromDate", fromDate.toDate())
             .setTimestamp("toDate", toDate.toDate())
             .setResultTransformer(resultTransformer);
+        return query.list();
+    }
+
+    /**
+     * Get words statistics of a project version in given timeframe.
+     */
+    @NativeQuery(value = "need to use union", specificTo = "mysql due to usage of date() and convert_tz() functions.")
+    public <T> List<T> getProjectTranslationMatrix(
+            HProjectIteration version, DateTime fromDate, DateTime toDate,
+            Optional<DateTimeZone> userZoneOpt, DateTimeZone systemZone,
+            ResultTransformer resultTransformer) {
+        // @formatter:off
+        String queryHistory = "select history.id, tft.locale as locale, tf.wordCount as wordCount, history.state as state, history.lastChanged as lastChanged " +
+                "  from HTextFlowTargetHistory history " +
+                "    join HTextFlowTarget tft on tft.id = history.target_id " +
+                "    join HTextFlow tf on tf.id = tft.tf_id " +
+                "    join HDocument doc on doc.id = tf.document_id " +
+                "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
+                "  where iter.id = :versionId " +
+                "    and history.lastChanged >= :fromDate and history.lastChanged <= :toDate " +
+                "    and history.automatedEntry =:automatedEntry";
+
+        String queryTarget = "select tft.id, tft.locale as locale, tf.wordCount as wordCount, tft.state as state, tft.lastChanged as lastChanged " +
+                "  from HTextFlowTarget tft " +
+                "    join HTextFlow tf on tf.id = tft.tf_id " +
+                "    join HDocument doc on doc.id = tf.document_id " +
+                "    join HProjectIteration iter on iter.id = doc.project_iteration_id " +
+                "  where iter.id = :versionId " +
+                "    and tft.lastChanged >= :fromDate and tft.lastChanged <= :toDate " +
+                "    and tft.automatedEntry =:automatedEntry";
+
+        String convertedLastChanged = convertTimeZoneFunction("lastChanged",
+                userZoneOpt, systemZone);
+        // @formatter:on
+        String dateOfLastChanged = stripTimeFromDateTimeFunction(convertedLastChanged);
+        String queryString =
+                "select " + dateOfLastChanged + ", locale, state, sum(wordCount)" +
+                        "  from (" +
+                        "  (" + queryHistory + ") union (" + queryTarget + ")" +
+                        "  ) as all_translation" +
+                        "  group by " + dateOfLastChanged + ", locale, state " +
+                        "  order by lastChanged, locale, state";
+        Query query = getSession().createSQLQuery(queryString)
+                .setParameter("versionId", version.getId())
+                .setBoolean("automatedEntry", false)
+                .setTimestamp("fromDate", fromDate.toDate())
+                .setTimestamp("toDate", toDate.toDate())
+                .setResultTransformer(resultTransformer);
         return query.list();
     }
 

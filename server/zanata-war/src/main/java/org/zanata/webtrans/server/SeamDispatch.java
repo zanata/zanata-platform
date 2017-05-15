@@ -1,5 +1,6 @@
 package org.zanata.webtrans.server;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -13,6 +14,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import net.customware.gwt.dispatch.server.ActionHandler;
 import net.customware.gwt.dispatch.server.ActionResult;
 import net.customware.gwt.dispatch.server.Dispatch;
@@ -39,15 +41,16 @@ import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.WrappedAction;
 
 @ApplicationScoped
-public class SeamDispatch implements Dispatch {
+public class SeamDispatch implements Dispatch, Serializable {
     private static final Logger log =
             LoggerFactory.getLogger(SeamDispatch.class);
+    @SuppressFBWarnings("SE_BAD_FIELD")
     private HttpServletRequest request;
 
     private Provider<Boolean> allowAnonymousAccessProvider;
 
     private ZanataIdentity identity;
-
+    @SuppressFBWarnings("SE_BAD_FIELD")
     private Instance<AbstractActionHandler<?, ?>> actionHandlers;
 
     @Inject
@@ -217,7 +220,7 @@ public class SeamDispatch implements Dispatch {
         }
     }
 
-    class ActionHandlerForLiteral
+    static class ActionHandlerForLiteral
             extends AnnotationLiteral<ActionHandlerFor>
             implements ActionHandlerFor {
         private final Class<? extends Action<?>> clazz;

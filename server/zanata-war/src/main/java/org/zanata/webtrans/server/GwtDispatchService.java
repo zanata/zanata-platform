@@ -1,12 +1,10 @@
 package org.zanata.webtrans.server;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.servlet.annotation.WebServlet;
+
 import net.customware.gwt.dispatch.shared.Action;
 import net.customware.gwt.dispatch.shared.Result;
-import org.zanata.ApplicationConfiguration;
-import org.zanata.config.AllowAnonymousAccess;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.webtrans.shared.DispatchService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;

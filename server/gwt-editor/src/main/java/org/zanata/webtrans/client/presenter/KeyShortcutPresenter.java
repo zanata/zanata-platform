@@ -347,6 +347,8 @@ public class KeyShortcutPresenter extends WidgetPresenter<KeyShortcutDisplay> {
         case Chat:
             contextName = messages.chatScope();
             break;
+        default:
+            contextName = messages.chatScope();
         }
         return contextName;
     }

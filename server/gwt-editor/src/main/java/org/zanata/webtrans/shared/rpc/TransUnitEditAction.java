@@ -5,7 +5,6 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 
 public class TransUnitEditAction extends AbstractWorkspaceAction<NoOpResult> {
     private static final long serialVersionUID = -9165857458963498055L;
-
     private Person person;
     private TransUnitId selectedTransUnitId;
 

@@ -22,10 +22,11 @@ package org.zanata.file;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import org.zanata.model.HRawDocument;
 
-public interface FilePersistService {
+public interface FilePersistService extends Serializable {
     // TODO damason: add persistRawDocumentContentFromStream(HRawDocument,
     // InputStream)
 

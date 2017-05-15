@@ -20,13 +20,15 @@
  */
 package org.zanata.config;
 
+import java.io.Serializable;
+
 /**
  * Base implementation for all Configuration stores in the system.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface ConfigStore {
+public interface ConfigStore extends Serializable {
 
     String get(String propertyName);
 

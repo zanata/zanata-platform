@@ -21,20 +21,23 @@
 
 package org.zanata.service.impl;
 
+import java.io.Serializable;
 import java.util.concurrent.locks.Lock;
 
 import javax.inject.Named;
 
 import com.google.common.util.concurrent.Striped;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
+@SuppressFBWarnings(value = { "GBU_GUAVA_BETA_CLASS_USAGE",
+        "SE_BAD_FIELD" }, justification = "field Striped<Lock>")
 @Named("activityLockManager")
-
 @javax.enterprise.context.ApplicationScoped
-public class ActivityLockManager {
+public class ActivityLockManager implements Serializable {
     private static final int NUM_STRIPES = Runtime.getRuntime().availableProcessors() * 4;
     public ActivityLockManager() {
     }

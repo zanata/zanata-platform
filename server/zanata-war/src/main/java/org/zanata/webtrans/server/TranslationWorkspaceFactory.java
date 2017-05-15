@@ -32,11 +32,12 @@ import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 
 import javax.inject.Inject;
+import java.io.Serializable;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class TranslationWorkspaceFactory {
+public class TranslationWorkspaceFactory implements Serializable {
 
     private final ProjectIterationDAO projectIterationDAO;
     private final LocaleService localeServiceImpl;
