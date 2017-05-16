@@ -15,7 +15,7 @@ import org.zanata.config.ObsoleteJNDIChecker;
 import org.zanata.service.MockInitialContextRule;
 import com.google.common.collect.Lists;
 
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 
 @RunWith(Parameterized.class)
