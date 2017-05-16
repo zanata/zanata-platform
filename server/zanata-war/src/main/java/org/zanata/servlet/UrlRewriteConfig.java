@@ -97,6 +97,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .where("path").matches(anyOf(
                         "explore",
                         "projsidebar",
+                        "about",
                         "glossary",
                         "glossary/project/[^/]*",
                         "languages",

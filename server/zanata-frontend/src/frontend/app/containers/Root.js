@@ -7,6 +7,7 @@ import Languages from '../containers/Languages'
 import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
 import ProjSidebar from '../containers/ProjSidebar'
+import About from '../containers/About'
 
 export default class Root extends Component {
   render () {
@@ -25,6 +26,7 @@ export default class Root extends Component {
             <Route path='glossary' component={Glossary} />
             <Route path='languages' component={Languages} />
             <Route path='projsidebar' component={ProjSidebar} />
+            <Route path='about' component={About} />
             <Route path='profile/view/:username' component={UserProfile} />
             <Redirect from='profile' to={`profile/view/${username}`} />
           </Route>
