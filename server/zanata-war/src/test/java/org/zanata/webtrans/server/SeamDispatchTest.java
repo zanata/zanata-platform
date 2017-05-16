@@ -17,7 +17,7 @@ import org.zanata.webtrans.shared.rpc.WrappedAction;
 import net.customware.gwt.dispatch.shared.ActionException;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
