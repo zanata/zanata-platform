@@ -436,7 +436,8 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     // based on org.jboss.seam.security.Identity.authenticate()
-    private synchronized void authenticate() throws LoginException {
+    // NB: synchronized is being handled by annotation @Synchronized
+    private void authenticate() throws LoginException {
         // If we're already authenticated, then don't authenticate again
         if (!isLoggedIn()) {
             principal = null;

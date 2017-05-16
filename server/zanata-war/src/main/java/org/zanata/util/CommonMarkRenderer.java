@@ -20,8 +20,10 @@
  */
 package org.zanata.util;
 
-import com.google.common.io.Resources;
+import com.google.common.base.Charsets;
 import jdk.nashorn.api.scripting.JSObject;
+import org.apache.commons.io.IOUtils;
+
 import javax.inject.Named;
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -134,8 +136,8 @@ public class CommonMarkRenderer implements Serializable {
         try {
             // Create a javascript function 'mdRender' which takes CommonMark
             // as a string and returns a rendered HTML string:
-            String commonMarkScript = Resources.toString(getScriptResource(),
-                    StandardCharsets.UTF_8);
+            String commonMarkScript =
+                    IOUtils.toString(getScriptResource(), Charsets.UTF_8);
             String functionsScript = commonMarkScript
                     + "var reader = new commonmark.Parser();var writer = new commonmark.HtmlRenderer();function mdRender(src) {  return writer.render(reader.parse(src));};";
             return ((Compilable) engine).compile(functionsScript);
@@ -145,7 +147,13 @@ public class CommonMarkRenderer implements Serializable {
     }
 
     private static URL getScriptResource() {
-        return Resources.getResource(CommonMarkRenderer.class,
-                "/" + RESOURCE_NAME);
+        String resourceName = "/" + RESOURCE_NAME;
+        URL url = CommonMarkRenderer.class.getResource(resourceName);
+        if (url == null) {
+            throw new IllegalArgumentException(
+                    "resource " + resourceName + " relative to " +
+                            CommonMarkRenderer.class.getName() + " not found.");
+        }
+        return url;
     }
 }

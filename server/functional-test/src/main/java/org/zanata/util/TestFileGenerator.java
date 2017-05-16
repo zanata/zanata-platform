@@ -22,7 +22,6 @@ package org.zanata.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
@@ -42,7 +41,6 @@ import com.google.common.base.Preconditions;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.fedorahosted.openprops.Properties;
-import com.google.common.base.Throwables;
 
 /**
  * Create and manipulate basic text files for testing.
@@ -209,7 +207,7 @@ public class TestFileGenerator {
             jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             jaxbMarshaller.marshal(object, output);
         } catch (JAXBException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

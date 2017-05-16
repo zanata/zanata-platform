@@ -40,6 +40,8 @@ import org.zanata.model.type.ConditionRuleActionType;
 @Cacheable
 public class HCopyTransOptions extends ModelEntityBase {
 
+    private static final long serialVersionUID = -2604026393081629260L;
+
     /**
      * Indicates the different actions that can be taken when evaluating
      * conditions for a Text Flow during Copy Trans.

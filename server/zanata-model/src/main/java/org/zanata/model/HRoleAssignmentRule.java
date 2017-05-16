@@ -36,6 +36,7 @@ import javax.persistence.ManyToOne;
 @Cacheable
 public class HRoleAssignmentRule extends ModelEntityBase {
 
+    private static final long serialVersionUID = -3893092614851019323L;
     private String policyName;
     private String identityRegExp;
     private HAccountRole roleToAssign;

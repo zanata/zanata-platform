@@ -29,6 +29,7 @@ public class RequestStateTypeDescriptor
 
     public static final RequestStateTypeDescriptor INSTANCE =
             new RequestStateTypeDescriptor();
+    private static final long serialVersionUID = -701524527277868192L;
 
     protected RequestStateTypeDescriptor() {
         super(RequestState.class);

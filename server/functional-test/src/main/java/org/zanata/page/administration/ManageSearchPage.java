@@ -22,7 +22,6 @@ package org.zanata.page.administration;
 
 import com.google.common.base.Predicate;
 import java.util.List;
-import com.google.common.base.Throwables;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -74,7 +73,7 @@ public class ManageSearchPage extends BasePage {
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ie) {
-            throw Throwables.propagate(ie);
+            throw new RuntimeException(ie);
         }
         return new ManageSearchPage(getDriver());
     }

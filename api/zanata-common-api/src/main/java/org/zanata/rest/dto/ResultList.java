@@ -16,6 +16,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class ResultList<T extends Serializable> implements Serializable {
 
+    private static final long serialVersionUID = -2149554068631922866L;
     private List<T> results;
 
     private int totalCount;

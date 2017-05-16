@@ -22,14 +22,16 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-import com.google.common.reflect.AbstractInvocationHandler;
+
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
@@ -39,7 +41,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -311,24 +312,55 @@ public enum WebDriverFactory {
         screenshotListener.updateTestID(testName);
     }
 
-    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     @ParametersAreNonnullByDefault
     public void registerLogListener() {
         if (logListener == null) {
             logListener = (WebDriverEventListener) newProxyInstance(
                     WebDriverEventListener.class.getClassLoader(),
-                    new Class<?>[] { WebDriverEventListener.class },
-                    new AbstractInvocationHandler() {
-
+                    new Class<?>[]{ WebDriverEventListener.class },
+                    new InvocationHandler() {
                         @Override
-                        protected Object handleInvocation(Object proxy,
-                                Method method, Object[] args) throws Throwable {
+                        public Object invoke(Object proxy, Method method,
+                                Object[] args) throws Throwable {
+                            if (args == null) {
+                                args = new Object[0];
+                            }
+                            if (args.length == 0 && method.getName().equals("hashCode")) {
+                                return hashCode();
+                            }
+                            if (args.length == 1
+                                    && method.getName().equals("equals")
+                                    && method.getParameterTypes()[0] == Object.class) {
+                                Object arg = args[0];
+                                if (arg == null) {
+                                    return false;
+                                }
+                                if (proxy == arg) {
+                                    return true;
+                                }
+                                return isProxyOfSameInterfaces(arg, proxy.getClass())
+                                        && equals(java.lang.reflect.Proxy.getInvocationHandler(arg));
+                            }
+                            if (args.length == 0 && method.getName().equals("toString")) {
+                                return toString();
+                            }
                             logLogs();
                             return null;
                         }
                     });
         }
         getDriver().register(logListener);
+    }
+
+    private static boolean isProxyOfSameInterfaces(Object arg, Class<?> proxyClass) {
+        return proxyClass.isInstance(arg)
+                // Equal proxy instances should mostly be instance of proxyClass
+                // Under some edge cases (such as the proxy of JDK types serialized and then deserialized)
+                // the proxy type may not be the same.
+                // We first check isProxyClass() so that the common case of comparing with non-proxy objects
+                // is efficient.
+                || (java.lang.reflect.Proxy.isProxyClass(arg.getClass())
+                && Arrays.equals(arg.getClass().getInterfaces(), proxyClass.getInterfaces()));
     }
 
     public void unregisterLogListener() {

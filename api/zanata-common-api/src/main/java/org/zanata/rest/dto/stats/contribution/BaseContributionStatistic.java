@@ -17,6 +17,7 @@ import javax.annotation.Nullable;
 @JsonPropertyOrder({ "approved", "rejected", "translated", "needReview" })
 public class BaseContributionStatistic implements Serializable {
 
+    private static final long serialVersionUID = 6615374806881888982L;
     /**
      * Use Wrapper type (Integer) instead of primitive (int) in properties to
      * prevent displaying of irrelevant review stats field in

@@ -18,6 +18,7 @@ import org.zanata.common.LocaleId;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class User implements Serializable {
 
+    private static final long serialVersionUID = -4010197241352403941L;
     private String username;
     private String email;
     private String name;

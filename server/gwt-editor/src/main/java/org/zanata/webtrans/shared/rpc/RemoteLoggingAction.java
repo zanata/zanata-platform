@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class RemoteLoggingAction extends AbstractWorkspaceAction<NoOpResult> {
+    private static final long serialVersionUID = -805803740258034072L;
     private String message;
     private List<String> contextInfo = Lists.newArrayList();
 

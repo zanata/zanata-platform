@@ -34,6 +34,7 @@ import org.zanata.rest.MediaTypes.Format;
 @Label("Account")
 public class Account implements Serializable, HasMediaType {
 
+    private static final long serialVersionUID = 3271307247663618597L;
     private String email;
 
     private String name;

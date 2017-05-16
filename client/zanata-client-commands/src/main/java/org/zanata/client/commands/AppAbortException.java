@@ -28,6 +28,8 @@ package org.zanata.client.commands;
  */
 public class AppAbortException extends RuntimeException {
 
+    private static final long serialVersionUID = 50361641082798982L;
+
     /**
      * @param msg
      * @param e

@@ -59,7 +59,7 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
 import static org.hamcrest.MatcherAssert.*;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.when;
 
 /**
