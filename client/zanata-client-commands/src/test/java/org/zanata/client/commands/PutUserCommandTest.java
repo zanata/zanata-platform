@@ -94,7 +94,7 @@ public class PutUserCommandTest {
         existing.setRoles(new HashSet<>(Arrays.asList("user", "glossarist")));
         opts.setUserRoles("user,glossarist");
 
-        existing.setTribes(new HashSet<>(Arrays.asList("en-AU", "ru")));
+        existing.setLanguages(new HashSet<>(Arrays.asList("en-AU", "ru")));
         opts.setUserLangs("en-AU,ru");
 
         ConsoleInteractor consoleInteractor =
@@ -134,7 +134,7 @@ public class PutUserCommandTest {
         existing.setEnabled(true);
         existing.setApiKey("0987654321234567890");
         existing.setRoles(new HashSet<>(Arrays.asList("user")));
-        existing.setTribes(new HashSet<>(Arrays.asList("en-AU")));
+        existing.setLanguages(new HashSet<>(Arrays.asList("en-AU")));
         return existing;
     }
 }

@@ -81,7 +81,7 @@ public class PutUserCommand extends ConfigurableCommand<PutUserOptions> {
             account.setRoles(newHashSet(splitter.split(getOpts().getUserRoles())));
         }
         if (getOpts().getUserLangs() != null) {
-            account.setTribes(newHashSet(splitter.split(getOpts().getUserLangs())));
+            account.setLanguages(newHashSet(splitter.split(getOpts().getUserLangs())));
         }
 
         if (getOpts().isInteractiveMode()) {
@@ -92,7 +92,7 @@ public class PutUserCommand extends ConfigurableCommand<PutUserOptions> {
             log.info("PasswordHash: {}", firstNonNull(passwordHash, "(unchanged)"));
             log.info("API Key: {}", firstNonNull(getOpts().getUserKey(), "(unchanged)"));
             log.info("Roles: {}", account.getRoles());
-            log.info("Languages: {}", account.getTribes());
+            log.info("Languages: {}", account.getLanguages());
             log.info("Enabled: {}", account.isEnabled());
 
             console.printf(Question, get("continue.yes.no"));
