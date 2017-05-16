@@ -39,12 +39,13 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OrderColumn;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
-import org.hibernate.annotations.AccessType;
+import org.hibernate.annotations.AttributeAccessor;
 import org.hibernate.annotations.Immutable;
-import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -158,12 +159,13 @@ public class HTextFlowTargetHistory extends HTextContainer
 
     @Override
     @javax.persistence.Lob
-    @AccessType("field")
+    @AttributeAccessor("field")
     @ElementCollection(fetch = FetchType.EAGER)
     @JoinTable(name = "HTextFlowTargetContentHistory",
             joinColumns = @JoinColumn(name = "text_flow_target_history_id")
     )
-    @IndexColumn(name = "pos", nullable = false)
+    @OrderColumn(name = "pos", nullable = false)
+    @ListIndexBase
     @Column(name = "content", nullable = false)
     public List<String> getContents() {
         return contents;

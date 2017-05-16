@@ -97,7 +97,7 @@ public class ZanataRestCaller {
             restClientFactory = new RestClientFactory(new URI(baseUrl),
                     username, apiKey, versionInfo, true, false);
         } catch (URISyntaxException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

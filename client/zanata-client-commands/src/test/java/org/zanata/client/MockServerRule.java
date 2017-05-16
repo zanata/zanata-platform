@@ -154,7 +154,7 @@ public class MockServerRule extends ExternalResource {
             opts.setUrl(uri.toURL());
             return uri;
         } catch (Exception e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

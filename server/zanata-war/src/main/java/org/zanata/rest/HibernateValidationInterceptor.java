@@ -45,13 +45,13 @@ public class HibernateValidationInterceptor implements
     @Override
     public Object read(MessageBodyReaderContext context) throws IOException,
             WebApplicationException {
-        Object unmarshalledMssgBody = context.proceed();
+        Object unmarshalledMsgBody = context.proceed();
 
         RestUtils restUtils =
                 ServiceLocator.instance().getInstance(RestUtils.class);
-        restUtils.validateEntity(unmarshalledMssgBody);
+        restUtils.validateEntity(unmarshalledMsgBody);
 
-        return unmarshalledMssgBody;
+        return unmarshalledMsgBody;
     }
 
 }

@@ -115,7 +115,7 @@ public class ConcurrentAccessTest extends ZanataTestCase {
         try {
             return input.get();
         } catch (InterruptedException | ExecutionException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

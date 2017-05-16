@@ -151,7 +151,7 @@ public class UpdateChecker {
             props.load(reader);
         }
         catch (IOException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
         return props;
     }

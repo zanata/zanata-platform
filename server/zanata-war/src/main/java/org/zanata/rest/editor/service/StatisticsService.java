@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.editor.service;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Path;
@@ -28,7 +27,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.common.LocaleId;
@@ -39,7 +37,6 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.rest.service.URIHelper;
 import org.zanata.rest.editor.service.resource.StatisticResource;
-import org.zanata.util.StatisticsUtil;
 import com.google.common.collect.Lists;
 
 /**
@@ -71,12 +68,8 @@ public class StatisticsService implements StatisticResource {
                 docStats.getStats(localeId, StatUnit.WORD);
         TranslationStatistics docMsgStatistic =
                 docStats.getStats(localeId, StatUnit.MESSAGE);
-        Type genericType = new GenericType<List<TranslationStatistics>>() {
-
-        }.getGenericType();
         Object entity = new GenericEntity<List<TranslationStatistics>>(
-                Lists.newArrayList(docWordStatistic, docMsgStatistic),
-                genericType);
+                Lists.newArrayList(docWordStatistic, docMsgStatistic)) {};
         return Response.ok(entity).build();
     }
     // TODO: need to merge with StatisticsServiceImpl.getDocStatistics
@@ -85,14 +78,6 @@ public class StatisticsService implements StatisticResource {
             LocaleId localeId) {
         ContainerTranslationStatistics result =
                 documentDAO.getStatistics(documentId, localeId);
-        TranslationStatistics wordStatistics =
-                result.getStats(localeId.getId(), StatUnit.WORD);
-        wordStatistics.setRemainingHours(
-                StatisticsUtil.getRemainingHours(wordStatistics));
-        TranslationStatistics msgStatistics =
-                result.getStats(localeId.getId(), StatUnit.MESSAGE);
-        msgStatistics.setRemainingHours(
-                StatisticsUtil.getRemainingHours(wordStatistics));
         return result;
     }
 

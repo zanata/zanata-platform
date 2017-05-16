@@ -9,7 +9,6 @@ import java.util.InvalidPropertiesFormatException;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.Charsets;
 import org.fedorahosted.openprops.Properties;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
