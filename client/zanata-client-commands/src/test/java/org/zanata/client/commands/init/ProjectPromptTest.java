@@ -27,6 +27,8 @@ import org.zanata.rest.dto.ProjectIteration;
 
 import com.google.common.collect.Lists;
 
+import javax.ws.rs.core.Response;
+
 public class ProjectPromptTest {
     private ProjectPrompt prompt;
     private InitOptions opts;
@@ -142,7 +144,7 @@ public class ProjectPromptTest {
                         "C compiler",
                         projectType, versionId);
         when(clientFactory.getProjectClient("gcc")).thenReturn(projectClient);
-        doNothing().when(projectClient).put(projectCaptor.capture());
+        when(projectClient.put(projectCaptor.capture())).thenReturn(Response.created(null).build());
         prompt =
                 new ProjectPrompt(console, opts,
                         iterationPrompt, clientFactory);
