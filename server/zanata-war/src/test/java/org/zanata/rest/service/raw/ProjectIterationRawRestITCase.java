@@ -20,13 +20,15 @@
  */
 package org.zanata.rest.service.raw;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.common.EntityStatus;
@@ -64,7 +66,9 @@ public class ProjectIterationRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
@@ -82,18 +86,20 @@ public class ProjectIterationRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
             }
 
             @Override
             protected void onResponse(ClientResponse response) {
                 assertThat(response.getStatus(), is(200)); // Ok
-                assertJaxbUnmarshal(response, ProjectIteration.class);
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, ProjectIteration.class);
 
                 ProjectIteration iteration =
-                        jaxbUnmarshal(response, ProjectIteration.class);
+                        jaxbUnmarshal(entityString, ProjectIteration.class);
                 assertThat(iteration.getId(), is("1.0"));
                 assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
             }
@@ -107,18 +113,19 @@ public class ProjectIterationRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
             }
 
             @Override
             protected void onResponse(ClientResponse response) {
                 assertThat(response.getStatus(), is(200)); // Ok
-                assertJsonUnmarshal(response, ProjectIteration.class);
-
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, ProjectIteration.class);
                 ProjectIteration iteration =
-                        jsonUnmarshal(response, ProjectIteration.class);
+                        jsonUnmarshal(entityString, ProjectIteration.class);
                 assertThat(iteration.getId(), is("1.0"));
                 assertThat(iteration.getStatus(), is(EntityStatus.ACTIVE));
             }
@@ -132,21 +139,17 @@ public class ProjectIterationRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/obsolete-project/iterations/i/obsolete-current"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
             }
 
             @Override
             protected void onResponse(ClientResponse response) {
+                // Iteration not found because project is obsolete
                 assertThat(response.getStatus(),
-                        is(Response.Status.NOT_FOUND.getStatusCode())); // Iteration
-                                                                        // not
-                                                                        // found
-                                                                        // because
-                                                                        // project
-                                                                        // is
-                                                                        // obsolete
+                        is(Response.Status.NOT_FOUND.getStatusCode()));
             }
         }.run();
     }
@@ -158,17 +161,17 @@ public class ProjectIterationRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/retired-project/iterations/i/retired-current"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
             }
 
             @Override
             protected void onResponse(ClientResponse response) {
+                // 200 retired projects are readable
                 assertThat(response.getStatus(),
-                        is(Response.Status.OK.getStatusCode())); // 200 (Retired
-                                                                 // projects are
-                                                                 // readable)
+                        is(Response.Status.OK.getStatusCode()));
             }
         }.run();
     }
@@ -180,8 +183,9 @@ public class ProjectIterationRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/obsolete-project/iterations/i/i-dont-exist"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
             }
 
@@ -200,8 +204,9 @@ public class ProjectIterationRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/current-project/iterations/i/current-obsolete"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
             }
 
@@ -224,10 +229,18 @@ public class ProjectIterationRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/test-iteration"),
                 "PUT", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(
-                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML,
-                        jaxbMarhsal(iteration).getBytes());
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
+                Entity entity = Entity
+                        .entity(jaxbMarhsal(iteration), MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+                ClientResponse response =
+                        (ClientResponse) builder.buildPut(entity).invoke();
+                onResponse(response);
             }
 
             @Override
@@ -248,10 +261,19 @@ public class ProjectIterationRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/my,new,iteration"),
                 "PUT", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(
-                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML,
-                        jaxbMarhsal(iteration).getBytes());
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
+                Entity entity = Entity
+                        .entity(jaxbMarhsal(iteration),
+                                MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+                ClientResponse response =
+                        (ClientResponse) builder.buildPut(entity).invoke();
+                onResponse(response);
             }
 
             @Override
@@ -272,10 +294,18 @@ public class ProjectIterationRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0"),
                 "PUT", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(
-                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML,
-                        jaxbMarhsal(iteration).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
+                Entity entity = Entity
+                        .entity(jaxbMarhsal(iteration),
+                                MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
+                ClientResponse response =
+                        (ClientResponse) builder.buildPut(entity).invoke();
+                onResponse(response);
             }
 
             @Override
@@ -296,10 +326,18 @@ public class ProjectIterationRawRestITCase extends RestTest {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/test-iteration-json"),
                 "PUT", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(
-                        MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON,
-                        jsonMarshal(iteration).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
+                Entity entity = Entity
+                        .entity(jsonMarshal(iteration),
+                                MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
+                ClientResponse response =
+                        (ClientResponse) builder.buildPut(entity).invoke();
+                onResponse(response);
             }
 
             @Override

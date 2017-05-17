@@ -20,13 +20,15 @@
  */
 package org.zanata.rest.service.raw;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.rest.MediaTypes;
@@ -57,8 +59,8 @@ public class AccountRawRestITCase extends RestTest {
     public void xmlGetUnavailable() throws Exception {
         new ResourceRequest(getRestEndpointUrl("/NOT_AVAILABLE"), "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
             }
 
@@ -76,17 +78,19 @@ public class AccountRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("accounts/u/admin"), "GET",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
             }
 
             @Override
             protected void onResponse(ClientResponse response) {
                 assertThat(response.getStatus(), is(200));
-                assertJaxbUnmarshal(response, Account.class);
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, Account.class);
 
-                Account account = jaxbUnmarshal(response, Account.class);
+                Account account = jaxbUnmarshal(entityString, Account.class);
                 assertThat(account.getUsername(), is("admin"));
                 assertThat(account.getPasswordHash(),
                         is("Eyox7xbNQ09MkIfRyH+rjg=="));
@@ -104,17 +108,19 @@ public class AccountRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/accounts/u/admin"), "GET",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
             }
 
             @Override
             protected void onResponse(ClientResponse response) {
                 assertThat(response.getStatus(), is(200));
-                assertJsonUnmarshal(response, Account.class);
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, Account.class);
 
-                Account account = jsonUnmarshal(response, Account.class);
+                Account account = jsonUnmarshal(entityString, Account.class);
                 assertThat(account.getUsername(), is("admin"));
                 assertThat(account.getPasswordHash(),
                         is("Eyox7xbNQ09MkIfRyH+rjg=="));
@@ -137,9 +143,17 @@ public class AccountRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML,
-                        jaxbMarhsal(account).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
+                Entity entity = Entity
+                        .entity(jaxbMarhsal(account), MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
+                ClientResponse response =
+                        (ClientResponse) builder.buildPut(entity).invoke();
+                onResponse(response);
             }
 
             @Override
@@ -161,9 +175,18 @@ public class AccountRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON,
-                        jsonMarshal(account).getBytes());
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
+                Entity entity = Entity
+                        .entity(jsonMarshal(account), MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
+                ClientResponse response =
+                        (ClientResponse) builder.buildPut(entity).invoke();
+                onResponse(response);
             }
 
             @Override
@@ -184,9 +207,17 @@ public class AccountRawRestITCase extends RestTest {
 
         new ResourceRequest(getRestEndpointUrl("/accounts/u/testuser"), "PUT") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON,
-                        jsonMarshal(account).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
+                Entity entity = Entity
+                        .entity(jsonMarshal(account), MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
+                ClientResponse response =
+                        (ClientResponse) builder.buildPut(entity).invoke();
+                onResponse(response);
             }
 
             @Override

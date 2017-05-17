@@ -21,27 +21,23 @@
 
 package org.zanata.rest.service.raw;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
-import org.assertj.core.api.Assertions;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.rest.ResourceRequest;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.provider.DBUnitProvider.DataSetOperation;
 
 public class TokenServiceRestITCase extends RestTest {
-
-    private final String invalidAPI = "InvalidAPIKEY";
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -66,23 +62,35 @@ public class TokenServiceRestITCase extends RestTest {
                 "PUT", getAuthorizedEnvironment()) {
 
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaType.APPLICATION_JSON_TYPE, "false");
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
+                Entity entity = Entity
+                        .entity("false",
+                                MediaType.APPLICATION_JSON_TYPE);
+                ClientResponse response =
+                        (ClientResponse) builder.buildPut(entity)
+                                .invoke();
+                onResponse(response);
             }
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), greaterThan(200));
+                assertThat(response.getStatus()).isGreaterThan(200);
             }
         }.run();
         new ResourceRequest(getRestEndpointUrl("/oauth/token"), "POST") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
             protected void onResponse(ClientResponse response) {
-                Assertions.assertThat(response.getStatus()).isNotEqualTo(Status.UNAUTHORIZED);
+                assertThat(response.getStatus()).isNotEqualTo(Status.UNAUTHORIZED);
             }
         }.run();
     }
@@ -96,23 +104,35 @@ public class TokenServiceRestITCase extends RestTest {
                 "PUT", getAuthorizedEnvironment()) {
 
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.body(MediaType.APPLICATION_JSON_TYPE, "false");
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
+            }
+
+            @Override
+            public void invoke(Invocation.Builder builder) {
+                Entity entity = Entity
+                        .entity("false",
+                                MediaType.APPLICATION_JSON_TYPE);
+                ClientResponse response =
+                        (ClientResponse) builder.buildPut(entity)
+                                .invoke();
+                onResponse(response);
             }
 
             @Override
             protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), greaterThan(200));
+                assertThat(response.getStatus()).isGreaterThan(200);
             }
         }.run();
         new ResourceRequest(getRestEndpointUrl("/oauth/token/refresh"), "POST") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
             protected void onResponse(ClientResponse response) {
-                Assertions.assertThat(response.getStatus()).isNotEqualTo(Status.UNAUTHORIZED);
+                assertThat(response.getStatus()).isNotEqualTo(Status.UNAUTHORIZED);
             }
         }.run();
     }

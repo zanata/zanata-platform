@@ -29,7 +29,6 @@ import org.zanata.common.MergeType;
 import org.zanata.common.ResourceType;
 import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
-import org.zanata.rest.dto.Person;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
@@ -339,7 +338,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response response =
                 getSourceDocResource().putResource(docUrl, doc, null, false);
         assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
-        String message = ((ClientResponse<String>) response).getEntity(String.class);
+        String message = response.readEntity(String.class);
         assertThat(message, containsString("tf1"));
     }
 
@@ -867,8 +866,9 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                 getSourceDocResource().get(null);
 
         assertThat(response.getStatus(), is(200));
+        String entityString = response.readEntity(String.class);
         List<ResourceMeta> actualDocs = Lists.newArrayList(jsonUnmarshal(
-                (ClientResponse) response, ResourceMeta[].class));
+                entityString, ResourceMeta[].class));
         assertThat(actualDocs, notNullValue());
         Map<String, AbstractResourceMeta> expectedDocs =
                 new HashMap<String, AbstractResourceMeta>();
@@ -988,9 +988,9 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         Response resources =
                 getSourceDocResource().get(null);
         assertThat(resources.getStatus(), is(Status.OK.getStatusCode()));
-
+        String entityString = resources.readEntity(String.class);
         ResourceMeta[] resourceMetas =
-                jsonUnmarshal((ClientResponse) resources, ResourceMeta[].class);
+                jsonUnmarshal(entityString, ResourceMeta[].class);
         assertThat(resourceMetas.length, is(n));
     }
 

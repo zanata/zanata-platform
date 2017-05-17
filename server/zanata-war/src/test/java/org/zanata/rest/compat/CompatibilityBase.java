@@ -20,14 +20,17 @@
  */
 package org.zanata.rest.compat;
 
+import java.io.IOException;
 import java.util.Set;
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.zanata.RestTest;
 import org.zanata.apicompat.common.LocaleId;
 import org.zanata.apicompat.rest.MediaTypes;
@@ -56,22 +59,22 @@ import static org.zanata.util.RawRestTestUtils.jsonMarshal;
  */
 public abstract class CompatibilityBase extends RestTest {
 
-    protected void releaseConnection(Response response) {
+    protected void releaseConnection(Response response) throws IOException {
         if (response instanceof ClientResponse) {
             ((ClientResponse) response).releaseConnection();
         }
     }
 
     protected Resource getResourceFromResponse(Response response) {
-        return jaxbUnmarshal((ClientResponse) response, Resource.class);
+        return jaxbUnmarshal(response, Resource.class);
     }
 
     protected ResourceMeta getResourceMetaFromResponse(Response response) {
-        return jaxbUnmarshal((ClientResponse) response, ResourceMeta.class);
+        return jaxbUnmarshal(response, ResourceMeta.class);
     }
 
     protected TranslationsResource getTransResourceFromResponse(Response response) {
-        return jaxbUnmarshal((ClientResponse) response, TranslationsResource.class);
+        return jaxbUnmarshal(response, TranslationsResource.class);
     }
 
     public SourceDocResource getSourceDocResource(final String resourcePath) {
@@ -82,8 +85,9 @@ public abstract class CompatibilityBase extends RestTest {
                             getRestEndpointUrl(resourcePath),
                             "HEAD", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return webTarget.request();
                         }
 
                         @Override
@@ -98,11 +102,12 @@ public abstract class CompatibilityBase extends RestTest {
                             getRestEndpointUrl(resourcePath),
                             "GET", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            request.header(HttpHeaders.ACCEPT,
-                                    MediaType.APPLICATION_JSON);
-                            addExtensionToRequest(extensions, request);
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions,
+                                    webTarget).request()
+                                    .header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_JSON);
                         }
 
                         @Override
@@ -119,14 +124,22 @@ public abstract class CompatibilityBase extends RestTest {
                             getRestEndpointUrl(resourcePath),
                             "POST", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            addExtensionToRequest(extensions, request);
-                            request.queryParameter("copyTrans",
-                                    String.valueOf(copytrans));
-                            request.body(MediaType.APPLICATION_XML_TYPE,
-                                    jaxbMarhsal(
-                                            resource));
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions,
+                                    webTarget).queryParam("copyTrans",
+                                    String.valueOf(copytrans)).request();
+                        }
+
+                        @Override
+                        public ClientResponse invokeWithResponse(
+                                Invocation.Builder builder) {
+                            Entity entity = Entity
+                                    .entity(jaxbMarhsal(resource),
+                                            MediaType.APPLICATION_XML_TYPE);
+                            Response response = builder.buildPost(entity)
+                                    .invoke();
+                            return (ClientResponse) response;
                         }
 
                         @Override
@@ -142,10 +155,12 @@ public abstract class CompatibilityBase extends RestTest {
                             getRestEndpointUrl(resourcePath + idNoSlash),
                             "GET", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            addExtensionToRequest(extensions, request);
-                            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_TYPE);
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions,
+                                    webTarget).request()
+                                    .header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_XML_TYPE);
                         }
 
                         @Override
@@ -163,15 +178,23 @@ public abstract class CompatibilityBase extends RestTest {
                             getRestEndpointUrl(resourcePath + idNoSlash),
                             "PUT", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_TYPE);
-                            addExtensionToRequest(extensions, request);
-                            request.queryParameter("copyTrans",
-                                    String.valueOf(copytrans));
-                            request.body(MediaType.APPLICATION_XML_TYPE,
-                                    jaxbMarhsal(
-                                            resource));
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions,
+                                    webTarget).queryParam("copyTrans",
+                                    String.valueOf(copytrans)).request()
+                                    .header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_XML_TYPE);
+                        }
+
+                        @Override
+                        public ClientResponse invokeWithResponse(
+                                Invocation.Builder builder) {
+                            Entity entity = Entity
+                                    .entity(jaxbMarhsal(resource),
+                                            MediaType.APPLICATION_XML_TYPE);
+                            return (ClientResponse) builder.buildPut(entity)
+                                    .invoke();
                         }
 
                         @Override
@@ -186,8 +209,9 @@ public abstract class CompatibilityBase extends RestTest {
                             getRestEndpointUrl(resourcePath + idNoSlash),
                             "DELETE", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return webTarget.request();
                         }
 
                         @Override
@@ -204,10 +228,12 @@ public abstract class CompatibilityBase extends RestTest {
                                     resourcePath + idNoSlash + "/meta"),
                             "GET", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_TYPE);
-                            addExtensionToRequest(extensions, request);
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions,
+                                    webTarget).request()
+                                    .header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_XML_TYPE);
                         }
 
                         @Override
@@ -226,11 +252,20 @@ public abstract class CompatibilityBase extends RestTest {
                                     resourcePath + idNoSlash + "/meta"),
                             "PUT", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            addExtensionToRequest(extensions, request);
-                            request.body(MediaType.APPLICATION_XML_TYPE,
-                                    jaxbMarhsal(messageBody));
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions,
+                                    webTarget).request();
+                        }
+
+                        @Override
+                        public ClientResponse invokeWithResponse(
+                                Invocation.Builder builder) {
+                            Entity entity = Entity
+                                    .entity(jaxbMarhsal(messageBody),
+                                            MediaType.APPLICATION_XML_TYPE);
+                            return (ClientResponse) builder.buildPut(entity)
+                                    .invoke();
                         }
 
                         @Override
@@ -253,11 +288,13 @@ public abstract class CompatibilityBase extends RestTest {
                             getRestEndpointUrl(resourcePath + idNoSlash + "/translations/" + locale),
                             "GET", authenticatedAsUser.authorizedEnv) {
                         @Override
-                        protected void prepareRequest(ClientRequest request) {
-                            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_TYPE);
-                            addExtensionToRequest(extensions, request);
-                            request.queryParameter("skeletons",
-                                    String.valueOf(createSkeletons));
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions,
+                                    webTarget).queryParam("skeletons",
+                                    String.valueOf(createSkeletons)).request()
+                                    .header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_XML_TYPE);
                         }
 
                         @Override
@@ -273,7 +310,9 @@ public abstract class CompatibilityBase extends RestTest {
                             getRestEndpointUrl(resourcePath + idNoSlash + "/translations/" + locale),
                             "DELETE", authenticatedAsUser.authorizedEnv) {
                         @Override
-                        protected void prepareRequest(ClientRequest request) {
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return webTarget.request();
                         }
 
                         @Override
@@ -290,11 +329,21 @@ public abstract class CompatibilityBase extends RestTest {
                             getRestEndpointUrl(resourcePath + idNoSlash + "/translations/" + locale),
                             "PUT", authenticatedAsUser.authorizedEnv) {
                         @Override
-                        protected void prepareRequest(ClientRequest request) {
-                            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_TYPE);
-                            addExtensionToRequest(extensions, request);
-                            request.queryParameter("merge", merge);
-                            request.body(MediaType.APPLICATION_XML_TYPE, jaxbMarhsal(messageBody));
+                        protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions,
+                                    webTarget).queryParam("merge", merge)
+                                    .request().header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_XML_TYPE);
+                        }
+
+                        @Override
+                        public ClientResponse invokeWithResponse(
+                                Invocation.Builder builder) {
+                            Entity entity = Entity
+                                    .entity(jaxbMarhsal(messageBody),
+                                            MediaType.APPLICATION_XML_TYPE);
+                            return (ClientResponse) builder.buildPut(entity)
+                                    .invoke();
                         }
 
                         @Override
@@ -312,10 +361,12 @@ public abstract class CompatibilityBase extends RestTest {
         return new AccountResource() {
             @Override
             public Response get() {
-                return new ResourceRequest(getRestEndpointUrl(resourceUrl), "GET", authenticatedAsUser.authorizedEnv) {
+                return new ResourceRequest(getRestEndpointUrl(resourceUrl),
+                        "GET", authenticatedAsUser.authorizedEnv) {
                     @Override
-                    protected void prepareRequest(ClientRequest request) {
-                        request.header(HttpHeaders.ACCEPT,
+                    protected Invocation.Builder prepareRequest(
+                            ResteasyWebTarget webTarget) {
+                        return webTarget.request().header(HttpHeaders.ACCEPT,
                                 mediaType);
                     }
 
@@ -327,16 +378,31 @@ public abstract class CompatibilityBase extends RestTest {
 
             @Override
             public Response put(final Account account) {
-                return new ResourceRequest(getRestEndpointUrl(resourceUrl), "PUT", authenticatedAsUser.authorizedEnv) {
+                return new ResourceRequest(getRestEndpointUrl(resourceUrl),
+                        "PUT", authenticatedAsUser.authorizedEnv) {
                     @Override
-                    protected void prepareRequest(ClientRequest request) {
-                        request.header(HttpHeaders.ACCEPT,
+                    protected Invocation.Builder prepareRequest(
+                            ResteasyWebTarget webTarget) {
+                        return webTarget.request().header(HttpHeaders.ACCEPT,
                                 mediaType);
-                        if (MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON.equals(mediaType)) {
-                            request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON, jsonMarshal(account));
+                    }
+
+                    @Override
+                    public ClientResponse invokeWithResponse(
+                            Invocation.Builder builder) {
+                        Entity entity = null;
+                        if (MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON
+                                .equals(mediaType)) {
+                            entity = Entity
+                                    .entity(jsonMarshal(account),
+                                            MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
                         } else {
-                            request.body(MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML, jaxbMarhsal(account));
+                            entity = Entity
+                                    .entity(jaxbMarhsal(account),
+                                            MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
                         }
+                        return (ClientResponse) builder.buildPut(entity)
+                                .invoke();
                     }
 
                     @Override
@@ -359,16 +425,15 @@ public abstract class CompatibilityBase extends RestTest {
                                         projectSlug, iterationSlug)),
                         "GET") {
                     @Override
-                    protected void prepareRequest(ClientRequest request) {
-                        request.header(HttpHeaders.ACCEPT,
-                                MediaType.APPLICATION_XML);
-                        request.queryParameter("detail",
-                                String.valueOf(includeDetails));
-                        request.queryParameter("word", String.valueOf(includeWordStats));
+                    protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                        webTarget = webTarget.queryParam("detail",
+                                String.valueOf(includeDetails)).queryParam("word", String.valueOf(includeWordStats));
                         if (locales != null) {
-                            request.getQueryParameters().put("locale",
+                            webTarget = webTarget.queryParam("locale",
                                     Lists.newArrayList(locales));
                         }
+                        return webTarget.request().header(HttpHeaders.ACCEPT,
+                                MediaType.APPLICATION_XML);
                     }
 
                     @Override
@@ -376,8 +441,8 @@ public abstract class CompatibilityBase extends RestTest {
                     }
 
                 };
-                return (ContainerTranslationStatistics) resourceRequest.runWithResult()
-                        .getEntity(ContainerTranslationStatistics.class);
+                return resourceRequest.runWithResult()
+                        .readEntity(ContainerTranslationStatistics.class);
             }
 
             @Override
@@ -391,14 +456,15 @@ public abstract class CompatibilityBase extends RestTest {
                                 projectSlug, iterationSlug, docId)),
                         "GET") {
                     @Override
-                    protected void prepareRequest(ClientRequest request) {
-                        request.header(HttpHeaders.ACCEPT,
-                                MediaType.APPLICATION_XML);
-                        request.queryParameter("word", String.valueOf(includeWordStats));
+                    protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                        webTarget = webTarget.queryParam("word",
+                                String.valueOf(includeWordStats));
                         if (locales != null) {
-                            request.getQueryParameters().put("locale",
+                            webTarget = webTarget.queryParam("locale",
                                     Lists.newArrayList(locales));
                         }
+                        return webTarget.request().header(HttpHeaders.ACCEPT,
+                                MediaType.APPLICATION_XML);
                     }
 
                     @Override
@@ -406,8 +472,8 @@ public abstract class CompatibilityBase extends RestTest {
                     }
 
                 };
-                return (ContainerTranslationStatistics) resourceRequest.runWithResult()
-                        .getEntity(ContainerTranslationStatistics.class);
+                return resourceRequest.runWithResult()
+                        .readEntity(ContainerTranslationStatistics.class);
             }
 
             @Override
@@ -419,11 +485,11 @@ public abstract class CompatibilityBase extends RestTest {
                                 projectSlug, versionSlug, username, dateRange)),
                         "GET") {
                     @Override
-                    protected void prepareRequest(ClientRequest request) {
-                        request.header(HttpHeaders.ACCEPT,
-                                MediaType.APPLICATION_JSON);
-                        request.queryParameter("includeAutomatedEntry",
-                                String.valueOf(includeAutomatedEntry));
+                    protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                        return webTarget.queryParam("includeAutomatedEntry",
+                                String.valueOf(includeAutomatedEntry)).request()
+                                .header(HttpHeaders.ACCEPT,
+                                        MediaType.APPLICATION_JSON);
                     }
 
                     @Override
@@ -431,8 +497,8 @@ public abstract class CompatibilityBase extends RestTest {
                     }
 
                 };
-                return (ContributionStatistics) resourceRequest.runWithResult()
-                        .getEntity(ContributionStatistics.class);
+                return resourceRequest.runWithResult()
+                        .readEntity(ContributionStatistics.class);
             }
         };
     }

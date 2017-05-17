@@ -22,12 +22,13 @@ package org.zanata.rest.service.raw;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.common.LocaleId;
@@ -66,18 +67,20 @@ public class GlossaryRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl(url), "GET",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML);
             }
 
             @Override
             protected void onResponse(ClientResponse response) {
                 assertThat(response.getStatus()).isEqualTo(200);
-                assertJaxbUnmarshal(response, GlossaryInfo.class);
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, GlossaryInfo.class);
 
                 GlossaryInfo glossaryInfo =
-                        jaxbUnmarshal(response, GlossaryInfo.class);
+                        jaxbUnmarshal(entityString, GlossaryInfo.class);
 
                 assertThat(
                         glossaryInfo.getSrcLocale().getLocale().getLocaleId())
@@ -101,8 +104,8 @@ public class GlossaryRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl(url), "GET",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                     MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON);
             }
 
@@ -122,8 +125,9 @@ public class GlossaryRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl(url), "GET",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON);
             }
 
@@ -143,8 +147,9 @@ public class GlossaryRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl(url), "GET",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON);
             }
 
@@ -164,7 +169,9 @@ public class GlossaryRawRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl(url), "DELETE",
             getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override
@@ -182,7 +189,9 @@ public class GlossaryRawRestITCase extends RestTest {
 
         new ResourceRequest(getRestEndpointUrl(url), "DELETE") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request();
             }
 
             @Override

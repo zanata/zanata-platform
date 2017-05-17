@@ -24,6 +24,7 @@ package org.zanata.rest.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -33,6 +34,10 @@ import org.zanata.rest.dto.GlossaryEntry;
 import org.zanata.rest.dto.ResultList;
 import org.zanata.rest.service.GlossaryResource;
 import org.zanata.rest.service.StubbingServerRule;
+
+import javax.ws.rs.core.Response;
+
+import static org.junit.Assert.assertThat;
 
 public class GlossaryClientTest {
     @ClassRule
@@ -49,9 +54,10 @@ public class GlossaryClientTest {
     @Test
     public void testPut() throws Exception {
         List<GlossaryEntry> glossaryEntries = new ArrayList<>();
-        client.post(glossaryEntries, LocaleId.DE,
+        Response response = client.post(glossaryEntries, LocaleId.DE,
                 GlossaryResource.GLOBAL_QUALIFIED_NAME);
-        MockServerTestUtil.verifyServerRespondSuccessStatus();
+        assertThat("server returns successful status code",
+                response.getStatus(), Matchers.is(200));
     }
 }
 

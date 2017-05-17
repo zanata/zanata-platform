@@ -28,7 +28,10 @@ import org.junit.Test;
 import org.zanata.rest.dto.Account;
 import org.zanata.rest.service.StubbingServerRule;
 
+import javax.ws.rs.core.Response;
+
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 public class AccountClientTest {
     @ClassRule
@@ -52,9 +55,10 @@ public class AccountClientTest {
 
     @Test
     public void testPut() throws Exception {
-        client.put("admin", new Account("a@b.c", "d", "e", "f"));
-
-        MockServerTestUtil.verifyServerRespondSuccessStatus();
+        Response response =
+                client.put("admin", new Account("a@b.c", "d", "e", "f"));
+        assertThat("server returns successful status code",
+                response.getStatus(), Matchers.is(201));
     }
 }
 

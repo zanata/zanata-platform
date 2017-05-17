@@ -28,6 +28,8 @@ import org.junit.Test;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.service.StubbingServerRule;
 
+import javax.ws.rs.core.Response;
+
 import static org.junit.Assert.*;
 
 public class ProjectIterationClientTest {
@@ -51,9 +53,9 @@ public class ProjectIterationClientTest {
 
     @Test
     public void testPut() throws Exception {
-        client.put(new ProjectIteration("1.1"));
-
-        MockServerTestUtil.verifyServerRespondSuccessStatus();
+        Response response = client.put(new ProjectIteration("1.1"));
+        assertThat("server returns successful status code",
+                response.getStatus(), Matchers.is(201));
     }
 
     @Test

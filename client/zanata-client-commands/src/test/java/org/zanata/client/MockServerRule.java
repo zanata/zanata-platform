@@ -272,6 +272,7 @@ public class MockServerRule extends ExternalResource {
                         eq(getPullOpts().getCreateSkeletons()), anyString()))
                 .thenReturn(transResourceResponse);
         when(transResourceResponse.getStatus()).thenReturn(200);
+
         when(transResourceResponse.getStringHeaders()).thenReturn(
                 new MultivaluedMapImpl());
         when(transResourceResponse.readEntity(TranslationsResource.class))
@@ -365,7 +366,7 @@ public class MockServerRule extends ExternalResource {
                 eq(pullOpts.getProjectVersion()), anyString(), anyString(),
                 anyString())).thenReturn(downloadTransResponse);
         when(downloadTransResponse.getStatus()).thenReturn(200);
-        when(downloadTransResponse.getHeaders()).thenReturn(new MultivaluedMapImpl());
+        when(downloadTransResponse.getHeaders()).thenReturn(new MultivaluedMapImpl<>());
         when(downloadTransResponse.getStatusInfo()).thenReturn(
                 Response.Status.OK);
         when(downloadTransResponse.readEntity(InputStream.class))
