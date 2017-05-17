@@ -18,7 +18,8 @@ class UiLanguageDropdown extends React.Component {
   render () {
     const items = values(this.props.uiLocales).map(locale => {
       return (
-        <LocaleItem locale={locale}
+        <LocaleItem key={locale.id}
+          locale={locale}
           changeUiLocale={this.props.changeUiLocale} />
       )
     })

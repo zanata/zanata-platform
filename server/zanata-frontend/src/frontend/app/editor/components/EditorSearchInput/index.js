@@ -167,6 +167,7 @@ class EditorSearchInput extends React.Component {
 
     const advancedFields = map(fields, (field, key) => (
       <AdvancedField key={key}
+        id={key}
         field={field}
         value={this.props.search[key]}
         updateSearch={this.props.updateSearch} />
@@ -213,7 +214,7 @@ class EditorSearchInput extends React.Component {
 
 class AdvancedField extends React.Component {
   static propTypes = {
-    key: PropTypes.any.isRequired,
+    id: PropTypes.any.isRequired,
     field: PropTypes.shape({
       label: PropTypes.string.isRequired,
       description: PropTypes.string.isRequired
@@ -223,18 +224,18 @@ class AdvancedField extends React.Component {
   }
 
   updateSearch = (event) => this.props.updateSearch({
-    [this.props.key]: event.target.value
+    [this.props.id]: event.target.value
   })
 
   render () {
-    const { key, field, value } = this.props
+    const { id, field, value } = this.props
     const { label, description } = field
     return (
-      <li key={key} className="inline-search-list" title={description}>
+      <li key={id} className="inline-search-list" title={description}>
         {label + ':'}
         <div
           className="InputGroup--outlined InputGroup--wide InputGroup--rounded">
-          <input ref={key}
+          <input ref={id}
             type="text"
             placeholder={description}
             className="InputGroup-input"
