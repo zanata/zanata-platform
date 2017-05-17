@@ -13,8 +13,6 @@ const defaultState = {
 class Sidebar extends Component {
   constructor () {
     super()
-    this.setOpen = ::this.setOpen
-    this.close = ::this.close
     this.state = defaultState
   }
 
@@ -35,11 +33,11 @@ class Sidebar extends Component {
   //   this.setState({docked: this.state.mql.matches})
   // }
 
-  setOpen (open) {
+  setOpen = (open) => {
     this.props.setSidebarVisible(open)
   }
 
-  close () {
+  close = () => {
     this.props.setSidebarVisible(false)
   }
 
