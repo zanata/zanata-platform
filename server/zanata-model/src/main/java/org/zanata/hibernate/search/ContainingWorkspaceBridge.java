@@ -15,7 +15,7 @@ import org.zanata.model.HTextFlow;
  * The provided field name is not used
  * <ul>
  * <li>Project slug is indexed as 'project'</li>
- * <li>Iteration slug is indexed as 'iteration'</li>
+ * <li>Iteration slug is indexed as 'projectVersion'</li>
  * <li>Document full path + name is indexed as 'documentId'</li>
  * </ul>
  *
@@ -41,6 +41,8 @@ public class ContainingWorkspaceBridge implements FieldBridge {
         HProject project = iteration.getProject();
 
         addStringField(IndexFieldLabels.PROJECT_FIELD, project.getSlug(),
+                luceneDocument, luceneOptions);
+        addStringField(IndexFieldLabels.PROJECT_VERSION_FIELD, iteration.getSlug(),
                 luceneDocument, luceneOptions);
         addStringField(IndexFieldLabels.DOCUMENT_ID_FIELD, doc.getDocId(),
                 luceneDocument, luceneOptions);
