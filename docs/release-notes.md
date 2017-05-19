@@ -1,5 +1,6 @@
 ## 4.2.0
 ##### Changes
+ * [ZNTA-1973](https://zanata.atlassian.net/browse/ZNTA-1973) - If source have plural, but target does not, translation cannot save as translated
  * [ZNTA-1954](https://zanata.atlassian.net/browse/ZNTA-1954) - API for accumulated statistics of project version translations
  * [ZNTA-1938](https://zanata.atlassian.net/browse/ZNTA-1938) - Remove stories added in error to frontend
  * [ZNTA-1934](https://zanata.atlassian.net/browse/ZNTA-1934) - Glossary input height incorrect in editor
@@ -55,6 +56,7 @@
  * [ZNTA-481](https://zanata.atlassian.net/browse/ZNTA-481) - RFE: User should be able to log in with their username, or their email
 
 ##### Bug Fixes
+ * [ZNTA-1971](https://zanata.atlassian.net/browse/ZNTA-1971) - Long name string pushes image, details off user profile page
  * [ZNTA-1966](https://zanata.atlassian.net/browse/ZNTA-1966) - TM merge will fail on having TM from TMX import
  * [ZNTA-1947](https://zanata.atlassian.net/browse/ZNTA-1947) - There is no any cancel or go back option on Create group page.
  * [ZNTA-1933](https://zanata.atlassian.net/browse/ZNTA-1933) - Remove refs to assets-zanata.rhcloud.com
