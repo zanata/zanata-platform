@@ -1,5 +1,6 @@
 ## 4.2.0
 ##### Changes
+ * [ZNTA-1973](https://zanata.atlassian.net/browse/ZNTA-1973) - If source have plural, but target does not, translation cannot save as translated
  * [ZNTA-1954](https://zanata.atlassian.net/browse/ZNTA-1954) - API for accumulated statistics of project version translations
  * [ZNTA-1938](https://zanata.atlassian.net/browse/ZNTA-1938) - Remove stories added in error to frontend
  * [ZNTA-1934](https://zanata.atlassian.net/browse/ZNTA-1934) - Glossary input height incorrect in editor
