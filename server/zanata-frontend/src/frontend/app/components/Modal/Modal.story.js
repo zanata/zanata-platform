@@ -190,6 +190,9 @@ storiesOf('Modal', module)
                             <i className='fa fa-sort'></i>
                           </Button>
                           2.0
+                          <span className='text-muted'>
+                            Project A
+                          </span>
                         </ListGroupItem>
                       </Draggable>
                       <Draggable bounds='parent' axis='y' grid={[57, 57]}>
@@ -197,7 +200,11 @@ storiesOf('Modal', module)
                           <Button bsStyle='link' className='btn-link-sort'>
                             <i className='fa fa-sort'></i>
                           </Button>
-                          1.0</ListGroupItem>
+                          1.0
+                          <span className='text-muted'>
+                            Project A
+                          </span>
+                        </ListGroupItem>
                       </Draggable>
                     </ListGroup>
                   </Col>
