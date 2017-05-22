@@ -49,7 +49,7 @@ public class Account implements Serializable, HasMediaType {
 
     private Set<String> roles = new HashSet<String>();
 
-    private Set<String> tribes = new HashSet<String>();
+    private Set<String> languages = new HashSet<String>();
 
     public Account() {
     }
@@ -141,15 +141,34 @@ public class Account implements Serializable, HasMediaType {
     /**
      * Global language teams the account belongs to
      */
+    @XmlElement(name = "languages", namespace = Namespaces.ZANATA_OLD)
+    @JsonProperty("languages")
+    @DocumentationExample(value = "es", value2 = "ja")
+    public Set<String> getLanguages() {
+        return languages;
+    }
+
+    public void setLanguages(Set<String> languages) {
+        this.languages = languages;
+    }
+
+    /**
+     * Deprecated. Use {@link #getLanguages()}}
+     */
+    @Deprecated
     @XmlElement(name = "tribe", namespace = Namespaces.ZANATA_OLD)
     @JsonProperty("tribes")
     @DocumentationExample(value = "es", value2 = "ja")
     public Set<String> getTribes() {
-        return tribes;
+        return getLanguages();
     }
 
+    /**
+     * Deprecated. Use {@link #setLanguages(Set)}
+     */
+    @Deprecated
     public void setTribes(Set<String> tribes) {
-        this.tribes = tribes;
+        setLanguages(tribes);
     }
 
     @Override
@@ -175,7 +194,7 @@ public class Account implements Serializable, HasMediaType {
                         * result
                         + ((passwordHash == null) ? 0 : passwordHash.hashCode());
         result = prime * result + ((roles == null) ? 0 : roles.hashCode());
-        result = prime * result + ((tribes == null) ? 0 : tribes.hashCode());
+        result = prime * result + ((languages == null) ? 0 : languages.hashCode());
         result =
                 prime * result + ((username == null) ? 0 : username.hashCode());
         return result;
@@ -231,11 +250,11 @@ public class Account implements Serializable, HasMediaType {
         } else if (!roles.equals(other.roles)) {
             return false;
         }
-        if (tribes == null) {
-            if (other.tribes != null) {
+        if (languages == null) {
+            if (other.languages != null) {
                 return false;
             }
-        } else if (!tribes.equals(other.tribes)) {
+        } else if (!languages.equals(other.languages)) {
             return false;
         }
         if (username == null) {
