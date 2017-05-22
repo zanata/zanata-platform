@@ -79,7 +79,7 @@ storiesOf('Modal', module)
             <div>
               <p className="intro">This feature copies existing translations from similar documents
                 in other projects and versions into this project version if the source
-                text and metadata both match.
+                text and context both match.
                 The translation state will be preserved (
                 <span className='vmerge-transtxt'>translated</span> or
                 <span className='vmerge-apptxt'> approved</span>).
