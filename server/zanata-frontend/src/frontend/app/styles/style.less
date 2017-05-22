@@ -488,7 +488,7 @@ body.templatestyle {
   padding-right: @spacing-base;
 }
 
-input.text-input {
+input.text-input, textarea.text-input {
   align-items: center;
   -webkit-align-items: center; /* Safari 7.0+ */
   border: solid 2px transparent;
@@ -5776,6 +5776,10 @@ a.lineclamp:after {
 
 .react-draggable.list-group-item span.text-muted {
   margin-left: 1em;
+}
+
+.modal-body textarea.text-input {
+  max-width: 100%;
 }
 
 .modal-footer {
