@@ -14,7 +14,7 @@ class DeleteEntry extends Component {
     handleDeleteEntryDisplay: PropTypes.func.isRequired,
     handleDeleteEntry: React.PropTypes.func.isRequired
   }
- 
+
   render () {
     const {
       locale,

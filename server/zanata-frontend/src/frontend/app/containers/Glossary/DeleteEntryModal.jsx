@@ -12,7 +12,6 @@ class DeleteEntryModal extends Component {
     handleDeleteEntry: React.PropTypes.func.isRequired
   }
 
-
   handleDeleteEntry = (entryId) => {
     this.props.handleDeleteEntry(this.props.entry.id)
     setTimeout(() => {
