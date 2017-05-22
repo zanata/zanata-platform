@@ -68,12 +68,12 @@ storiesOf('Modal', module)
           </Modal.Footer>
         </Modal>
     ))
-    .add('version-merge', () => (
+    .add('version-TM', () => (
         <Modal
             show={true}
             onHide={action('onHide')}>
           <Modal.Header>
-            <Modal.Title>Version Merge</Modal.Title>
+            <Modal.Title>Version TM</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div>
