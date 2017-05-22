@@ -8,6 +8,13 @@ import ReactDOM from 'react-dom'
 import { Icon } from '../../components'
 
 class DeleteEntry extends Component {
+  static propTypes = {
+    locale: PropTypes.object,
+    show: PropTypes.bool,
+    handleDeleteEntryDisplay: PropTypes.func.isRequired,
+    handleDeleteEntry: React.PropTypes.func.isRequired
+  }
+ 
   render () {
     const {
       locale,
@@ -48,13 +55,6 @@ class DeleteEntry extends Component {
     )
     /* eslint-enable react/jsx-no-bind */
   }
-}
-
-DeleteEntry.propTypes = {
-  locale: PropTypes.object,
-  show: PropTypes.bool,
-  handleDeleteEntryDisplay: PropTypes.func.isRequired,
-  handleDeleteEntry: React.PropTypes.func.isRequired
 }
 
 export default DeleteEntry

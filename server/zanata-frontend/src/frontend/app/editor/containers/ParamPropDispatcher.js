@@ -16,6 +16,15 @@ import { connect } from 'react-redux'
 import { routingParamsChanged } from '../actions'
 
 class ParamPropDispatcher extends React.Component {
+  static propTypes = {
+    children: PropTypes.node,
+    dispatchParamsAndQuery: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+      pathname: PropTypes.string
+    }),
+    params: PropTypes.object.isRequired
+  }
+
   componentWillMount () {
     const { dispatchParamsAndQuery, params, location } = this.props
     // always dispatch for initial render
@@ -35,15 +44,6 @@ class ParamPropDispatcher extends React.Component {
     // Just render the single child alone
     return React.Children.only(this.props.children)
   }
-}
-
-ParamPropDispatcher.propTypes = {
-  children: PropTypes.node,
-  dispatchParamsAndQuery: PropTypes.func.isRequired,
-  location: PropTypes.shape({
-    pathname: PropTypes.string
-  }),
-  params: PropTypes.object.isRequired
 }
 
 function mapDispatchToProps (dispatch) {

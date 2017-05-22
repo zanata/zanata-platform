@@ -27,6 +27,45 @@ import Entry from './Entry'
  * Root component for Glossary page
  */
 class Glossary extends Component {
+  static propTypes = {
+    /**
+     * Object of glossary id with term
+     */
+    terms: PropTypes.object,
+    project: PropTypes.object,
+    params: PropTypes.object,
+    termIds: PropTypes.array,
+    termCount: PropTypes.number,
+    termsLoading: PropTypes.bool,
+    transLocales: PropTypes.array,
+    srcLocale: PropTypes.object,
+    filterText: PropTypes.string,
+    selectedTerm: PropTypes.object,
+    selectedTransLocale: PropTypes.string,
+    permission: PropTypes.object,
+    location: PropTypes.object,
+    saving: PropTypes.object,
+    deleting: PropTypes.object,
+    notification: PropTypes.object,
+    goPreviousPage: PropTypes.func,
+    goFirstPage: PropTypes.func,
+    goLastPage: PropTypes.func,
+    goNextPage: PropTypes.func,
+    handleInitLoad: PropTypes.func,
+    handleSelectTerm: PropTypes.func,
+    handleTermFieldUpdate: PropTypes.func,
+    handleDeleteTerm: PropTypes.func,
+    handleResetTerm: PropTypes.func,
+    handleUpdateTerm: PropTypes.func,
+    handlePageSizeChange: PropTypes.func,
+    page: PropTypes.string,
+    gotoPreviousPage: PropTypes.func,
+    gotoFirstPage: PropTypes.func,
+    gotoLastPage: PropTypes.func,
+    gotoNextPage: PropTypes.func,
+    pageSize: PropTypes.string
+  }
+
   componentDidMount () {
     const paramProjectSlug = this.props.params.projectSlug
     const projectSlug = (!paramProjectSlug || paramProjectSlug === 'undefined')
@@ -45,7 +84,7 @@ class Glossary extends Component {
     }
   }
 
-  renderItem (index, key) {
+  renderItem = (index, key) => {
     const {
       handleSelectTerm,
       handleTermFieldUpdate,
@@ -129,7 +168,7 @@ class Glossary extends Component {
     } else if (!termsLoading && termCount) {
       list = (<ReactList
         useTranslate3d
-        itemRenderer={::this.renderItem}
+        itemRenderer={this.renderItem}
         length={size(terms)}
         type='uniform'
         className='react-list'
@@ -215,45 +254,6 @@ class Glossary extends Component {
     )
     /* eslint-enable react/jsx-no-bind */
   }
-}
-
-Glossary.propTypes = {
-  /**
-   * Object of glossary id with term
-   */
-  terms: PropTypes.object,
-  project: PropTypes.object,
-  params: PropTypes.object,
-  termIds: PropTypes.array,
-  termCount: PropTypes.number,
-  termsLoading: PropTypes.bool,
-  transLocales: PropTypes.array,
-  srcLocale: PropTypes.object,
-  filterText: PropTypes.string,
-  selectedTerm: PropTypes.object,
-  selectedTransLocale: PropTypes.string,
-  permission: PropTypes.object,
-  location: PropTypes.object,
-  saving: PropTypes.object,
-  deleting: PropTypes.object,
-  notification: PropTypes.object,
-  goPreviousPage: PropTypes.func,
-  goFirstPage: PropTypes.func,
-  goLastPage: PropTypes.func,
-  goNextPage: PropTypes.func,
-  handleInitLoad: PropTypes.func,
-  handleSelectTerm: PropTypes.func,
-  handleTermFieldUpdate: PropTypes.func,
-  handleDeleteTerm: PropTypes.func,
-  handleResetTerm: PropTypes.func,
-  handleUpdateTerm: PropTypes.func,
-  handlePageSizeChange: PropTypes.func,
-  page: PropTypes.string,
-  gotoPreviousPage: PropTypes.func,
-  gotoFirstPage: PropTypes.func,
-  gotoLastPage: PropTypes.func,
-  gotoNextPage: PropTypes.func,
-  pageSize: PropTypes.string
 }
 
 const mapStateToProps = (state) => {
