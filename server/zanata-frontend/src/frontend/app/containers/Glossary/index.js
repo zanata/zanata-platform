@@ -84,7 +84,20 @@ class Glossary extends Component {
     }
   }
 
-  renderItem = (index, key) => {
+  /**
+   * Function passed to react-list to delegate rendering of an item.
+   *
+   * Arguments are the overall index of the item, and the local (page?) index of
+   * the item.
+   *
+   * This is not in the API for the latest version of react-list,which is
+   * now released under a stable version number).
+   *
+   * Best practice is to use an arrow function here so that React will auto-bind
+   * this function, but this stops working properly unless binding is done
+   * inline in the JSX. Hope you have a good garbage collector.
+   */
+  renderItem (index, key) {
     const {
       handleSelectTerm,
       handleTermFieldUpdate,
@@ -168,7 +181,7 @@ class Glossary extends Component {
     } else if (!termsLoading && termCount) {
       list = (<ReactList
         useTranslate3d
-        itemRenderer={this.renderItem}
+        itemRenderer={::this.renderItem}
         length={size(terms)}
         type='uniform'
         className='react-list'
