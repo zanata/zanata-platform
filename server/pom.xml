@@ -1753,7 +1753,7 @@
     </pluginRepository>
     <pluginRepository>
       <id>arturbosch-code-analysis</id>
-      <name>arturbosch-code-analysis (for detekt)</name>
+      <name>arturbosch-code-analysis (for detekt, also available in jcenter)</name>
       <url>https://dl.bintray.com/arturbosch/code-analysis/</url>
       <layout>default</layout>
       <releases>
@@ -2084,12 +2084,12 @@
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-cli</artifactId>
-            <version>1.0.0.M9</version>
+            <version>1.0.0.M10.1</version>
           </dependency>
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-formatting</artifactId>
-            <version>1.0.0.M9</version>
+            <version>1.0.0.M10.1</version>
           </dependency>
         </dependencies>
       </plugin>
