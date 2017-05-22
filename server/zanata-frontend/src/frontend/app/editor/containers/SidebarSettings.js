@@ -12,47 +12,6 @@ const SidebarSettings = React.createClass({
   sidebarDetails () {
     return (
       <div>
-        <ul className="settings-list">
-          <li>
-            <Checkbox checked>
-              Communicate with server for validation
-            </Checkbox>
-          </li>
-          <li>
-            <Checkbox>
-              Validate when translation is saved
-            </Checkbox>
-          </li>
-          <li>
-            <Checkbox>
-              Display validation warning/error in editor
-            </Checkbox>
-          </li>
-          <li>
-            <Checkbox checked>
-              Visual indicator of warning or error
-            </Checkbox>
-          </li>
-          <li>
-            <Checkbox checked>
-              Handle translation rollback if validation failed
-            </Checkbox>
-          </li>
-          <li>
-            <Checkbox checked>
-              Show notifications
-            </Checkbox>
-          </li>
-        </ul>
-        <div className="settings-reftrans">
-          <label>Show reference translations from:</label>
-          <br />
-          <select className="settings-select">
-            <option value="None">None</option>
-            <option value="Option 1">Option 1</option>
-            <option value="Option 2">Option 2</option>
-          </select>
-        </div>
         <h2 className="validation">Validation options</h2>
         <ul>
           <li>
