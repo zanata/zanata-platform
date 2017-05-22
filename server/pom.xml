@@ -1753,7 +1753,7 @@
     </pluginRepository>
     <pluginRepository>
       <id>arturbosch-code-analysis</id>
-      <name>arturbosch-code-analysis (for detekt)</name>
+      <name>arturbosch-code-analysis (for detekt, also available in jcenter)</name>
       <url>https://dl.bintray.com/arturbosch/code-analysis/</url>
       <layout>default</layout>
       <releases>
@@ -2058,9 +2058,7 @@
           <execution>
             <!-- This can be run separately with mvn antrun:run@detekt -->
             <id>detekt</id>
-            <!-- Disabled until config-resource option is released (1.0.0.M7?).
-                 https://gitlab.com/arturbosch/detekt/merge_requests/2 -->
-            <!--<phase>verify</phase>-->
+            <phase>verify</phase>
             <configuration>
               <target name="detekt">
                 <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
@@ -2086,12 +2084,12 @@
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-cli</artifactId>
-            <version>1.0.0.M6</version>
+            <version>1.0.0.M10.1</version>
           </dependency>
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-formatting</artifactId>
-            <version>1.0.0.M6</version>
+            <version>1.0.0.M10.1</version>
           </dependency>
         </dependencies>
       </plugin>

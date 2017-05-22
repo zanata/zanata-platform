@@ -3,6 +3,9 @@ autoCorrect: true
 build:
   warningThreshold: 5
   failThreshold: 10
+  weights:
+    code-smell: 2
+    LongParameterList: 1
 
 potential-bugs:
   active: true
@@ -16,7 +19,7 @@ comments:
 empty:
   active: true
 
-code-smell:
+complexity:
   active: true
   LongMethod:
     threshold: 20
@@ -26,6 +29,17 @@ code-smell:
     threshold: 150
   ComplexMethod:
     threshold: 10
+  TooManyFunctions:
+    threshold: 10
+  ComplexCondition:
+    threshold: 3
+
+code-smell:
+  active: true
+  FeatureEnvy:
+    threshold: 0.5
+    weight: 0.45
+    base: 0.5
 
 formatting:
   active: true
@@ -71,12 +85,13 @@ style:
   active: true
   WildcardImport:
     active: true
-  NoElseInWhenExpression:
-    active: true
   NamingConventionViolation:
-    # Currently disabled until serialVersionUID is allowed.
-    # See https://gitlab.com/arturbosch/detekt/merge_requests/1
-    active: false
+    active: true
+    variablePattern: '^(_)?[a-z$][a-zA-Z$0-9]*$'
+    constantPattern: '^([A-Z_]*|serialVersionUID)$'
+    methodPattern: '^[a-z$][a-zA-Z$0-9]*$'
+    classPattern: '[A-Z$][a-zA-Z$]*'
+    enumEntryPattern: '^[A-Z$][A-Z_$]*$'
 
 comments:
   active: true
