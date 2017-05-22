@@ -23,7 +23,9 @@ package org.zanata.service;
 import org.zanata.model.HAccount;
 import org.zanata.security.AuthenticationType;
 
-public interface RegisterService {
+import java.io.Serializable;
+
+public interface RegisterService extends Serializable {
     String register(final String username, final String password, String name,
             String email);
 

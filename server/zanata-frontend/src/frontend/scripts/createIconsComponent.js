@@ -1,29 +1,23 @@
+/* eslint-disable no-console */
 var fs = require('fs')
+// build spritesheet used in this script (could change to return sheet)
+require('./build-icon-spritesheet')
+
 var svgFile = './app/components/Icons/icons.svg'
 var componentFileSrc = './app/components/Icons/index.jsx.src'
 var componentFile = './app/components/Icons/index.jsx'
 
-function getSVG (cb) {
-  fs.readFile(svgFile, 'utf8', function (err, data) {
-    var result
-    if (err) return console.log(err)
-    result = data.replace(/ style="position:absolute"/g, '')
-    cb(result)
-  })
+function getSVG () {
+  const data = fs.readFileSync(svgFile, 'utf8')
+  return data.replace(/ style="position:absolute"/g, '')
 }
 
-function generateComponent (cb) {
-  fs.readFile(componentFileSrc, 'utf8', function (err, data) {
-    if (err) return console.log(err)
-    getSVG(function (svg) {
-      var component = data.replace(/{{svgFile: 'icons.svg'}}/, '\'' + svg + '\'')
-      cb(component)
-    })
-  })
+function generateComponent () {
+  const data = fs.readFileSync(componentFileSrc, 'utf8')
+  const svg = getSVG()
+  return data.replace(/{{svgFile: 'icons.svg'}}/, '\'' + svg + '\'')
 }
 
-generateComponent(function (component) {
-  fs.writeFile(componentFile, component, 'utf8', function (err) {
-    if (err) return console.log(err)
-  })
-})
+process.stdout.write('Generating Icons component with embedded SVG')
+fs.writeFileSync(componentFile, generateComponent(), 'utf8')
+console.log(' ... Done')

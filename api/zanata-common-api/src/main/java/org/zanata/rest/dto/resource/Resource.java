@@ -8,18 +8,23 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.Namespaces;
-import org.zanata.rest.dto.DTOUtil;
 
+/**
+ * A series of text flows to be translated and sharing common metadata.
+ */
 @XmlType(name = "resourceType", propOrder = { "textFlows" })
 @XmlRootElement(name = "resource")
 @JsonPropertyOrder({ "name", "contentType", "lang", "extensions", "textFlows" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@ResourceLabel("Resource")
 public class Resource extends AbstractResourceMeta {
 
     private static final long serialVersionUID = 1L;
@@ -32,6 +37,9 @@ public class Resource extends AbstractResourceMeta {
         super(name);
     }
 
+    /**
+     * Set of text flows containing the translatable strings.
+     */
     @XmlElementWrapper(name = "text-flows", required = false,
             namespace = Namespaces.ZANATA_OLD)
     @XmlElement(name = "text-flow",

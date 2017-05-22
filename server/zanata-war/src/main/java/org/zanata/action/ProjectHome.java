@@ -41,12 +41,15 @@ import javax.persistence.EntityNotFoundException;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Iterables;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Session;
 import org.hibernate.criterion.NaturalIdentifier;
 import org.hibernate.criterion.Restrictions;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -129,6 +132,7 @@ public class ProjectHome extends SlugHome<HProject>
     private SlugEntityService slugEntityServiceImpl;
     @Inject
     private CommonMarkRenderer renderer;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
     @Inject
@@ -214,10 +218,11 @@ public class ProjectHome extends SlugHome<HProject>
     }
 
     private Map<String, Boolean> roleRestrictions;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     private Map<ValidationId, ValidationAction> availableValidations =
             Maps.newHashMap();
-    private final java.util.concurrent.atomic.AtomicReference<Object> versions =
-            new java.util.concurrent.atomic.AtomicReference<Object>();
+    private final java.util.concurrent.atomic.AtomicReference<List<HProjectIteration>>
+            versions = new java.util.concurrent.atomic.AtomicReference<>();
     private String selectedProjectType;
     @Inject
     private ProjectMaintainersAutocomplete maintainerAutocomplete;
@@ -918,7 +923,7 @@ public class ProjectHome extends SlugHome<HProject>
         return allRoles;
     }
 
-    private List<HProjectIteration> fetchVersions() {
+    private @NotNull List<HProjectIteration> fetchVersions() {
         List<HProjectIteration> results = Lists.newArrayList(Iterables
                 .filter(getInstance().getProjectIterations(), IS_NOT_OBSOLETE));
         Collections.sort(results, new Comparator<HProjectIteration>() {
@@ -945,6 +950,7 @@ public class ProjectHome extends SlugHome<HProject>
         return results;
     }
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
     private final Predicate IS_NOT_OBSOLETE =
             new Predicate<HProjectIteration>() {
 
@@ -1299,19 +1305,8 @@ public class ProjectHome extends SlugHome<HProject>
     }
 
     public List<HProjectIteration> getVersions() {
-        Object value = this.versions.get();
-        if (value == null) {
-            synchronized (this.versions) {
-                value = this.versions.get();
-                if (value == null) {
-                    final List<HProjectIteration> actualValue = fetchVersions();
-                    value = actualValue == null ? this.versions : actualValue;
-                    this.versions.set(value);
-                }
-            }
-        }
-        return (List<HProjectIteration>) (value == this.versions ? null
-                : value);
+        this.versions.compareAndSet(null, fetchVersions());
+        return versions.get();
     }
 
     public String getSelectedProjectType() {

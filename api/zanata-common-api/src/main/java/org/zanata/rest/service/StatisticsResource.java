@@ -28,19 +28,24 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
+import org.zanata.rest.dto.ProjectStatisticsMatrix;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
+ * Fetch different translation statistics
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Path(StatisticsResource.SERVICE_PATH)
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
+@ResourceLabel("Statistics")
 public interface StatisticsResource extends RestResource {
     public static final String DATE_FORMAT = "yyyy-MM-dd";
 
@@ -160,5 +165,30 @@ public interface StatisticsResource extends RestResource {
                     @QueryParam("includeAutomatedEntry")
                     @DefaultValue("false") boolean includeAutomatedEntry
             );
+
+    /**
+     * Return accumulated daily translation statistics including history for a
+     * project version in given date range.
+     *
+     * @param projectSlug
+     *          Project identifier
+     * @param versionSlug
+     *          Version identifier
+     * @param dateRangeParam
+     *          from..to (yyyy-mm-dd..yyyy-mm-dd), date range maximum: 365
+     *            days
+     * @param timeZoneID
+     *          optional user time zone ID. Will use system default in absence
+     *            or GMT zone if provided time zone ID can not be understood.
+     */
+    @Path("project/{projectSlug}/version/{versionSlug}/{dateRangeParam}")
+    @GET
+    @Produces({ "application/json" })
+    @TypeHint(ProjectStatisticsMatrix[].class)
+    Response getProjectStatisticsMatrix(
+            @PathParam("projectSlug") final String projectSlug,
+            @PathParam("versionSlug") final String versionSlug,
+            @PathParam("dateRangeParam") String dateRangeParam,
+            @QueryParam("timeZoneID") String timeZoneID);
 
 }

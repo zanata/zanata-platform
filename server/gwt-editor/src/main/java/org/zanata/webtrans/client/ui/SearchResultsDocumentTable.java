@@ -299,7 +299,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo> 
         };
     }
 
-    private class CheckColumn extends Column<TransUnitReplaceInfo, Boolean> {
+    private static class CheckColumn extends Column<TransUnitReplaceInfo, Boolean> {
 
         private SelectionModel<TransUnitReplaceInfo> selectionModel;
 
@@ -315,7 +315,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo> 
 
     }
 
-    private class CheckboxHeader extends Header<Boolean> implements
+    private static class CheckboxHeader extends Header<Boolean> implements
             HasValue<Boolean> {
 
         private boolean checked;
@@ -377,7 +377,7 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo> 
         }
     }
 
-    private class ActionColumn extends
+    private static class ActionColumn extends
             Column<TransUnitReplaceInfo, TransUnitReplaceInfo> {
 
         public ActionColumn(ActionCell<TransUnitReplaceInfo> actionCell) {
@@ -438,6 +438,8 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo> 
             case Undoing:
                 sb.append(undoingHtml);
                 break;
+            default:
+                break;
             }
         }
 
@@ -456,6 +458,8 @@ public class SearchResultsDocumentTable extends CellTable<TransUnitReplaceInfo> 
                 break;
             case Replaced:
                 undoDelegate.execute(value);
+                break;
+            default:
                 break;
             }
             // else ignore (is processing)

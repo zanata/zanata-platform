@@ -22,6 +22,7 @@ package org.zanata.seam.security;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.dao.AccountDAO;
 import org.zanata.events.PostAuthenticateEvent;
@@ -49,6 +50,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.security.Principal;
 import java.util.ArrayList;
@@ -74,12 +76,16 @@ public class ZanataJpaIdentityStore implements Serializable {
     public static final String AUTHENTICATED_USER =
             "org.jboss.seam.security.management.authenticatedUser";
     private static final long serialVersionUID = 1L;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<UserCreatedEvent> userCreatedEventEvent;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Event<PostAuthenticateEvent> postAuthenticateEventEvent;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Instance<AuthenticatedAccountHolder> authenticatedAccountHolders;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
 
@@ -309,7 +315,7 @@ public class ZanataJpaIdentityStore implements Serializable {
         return PasswordUtil.generateSaltedHash(password, salt);
     }
 
-    public List<String> getGrantedRoles(String name) {
+    public @NotNull List<String> getGrantedRoles(String name) {
         HAccount user = lookupUser(name);
         if (user == null) {
             throw new NoSuchUserException("No such user \'" + name + "\'");

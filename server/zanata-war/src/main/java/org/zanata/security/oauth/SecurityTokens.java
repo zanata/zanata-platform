@@ -31,6 +31,8 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.oltu.oauth2.as.issuer.MD5Generator;
 import org.apache.oltu.oauth2.as.issuer.OAuthIssuerImpl;
 import org.apache.oltu.oauth2.as.response.OAuthASResponse;
@@ -60,6 +62,7 @@ import com.google.common.collect.Maps;
  */
 @ApplicationScoped
 public class SecurityTokens implements Serializable, Introspectable {
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private OAuthIssuerImpl oAuthIssuer =
             new OAuthIssuerImpl(new MD5Generator());
 

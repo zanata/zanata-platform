@@ -12,6 +12,8 @@ import org.hibernate.criterion.Restrictions;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+
 import org.zanata.model.HAccount;
 import org.zanata.model.HAccountRole;
 import org.zanata.model.HProject;
@@ -39,7 +41,7 @@ public class AccountRoleDAO extends AbstractDAOImpl<HAccountRole, Integer> {
         return (HAccountRole) cr.uniqueResult();
     }
 
-    public HAccountRole create(String roleName, HAccountRole.RoleType type,
+    public @NotNull HAccountRole create(String roleName, HAccountRole.RoleType type,
             String... includesRoles) {
         HAccountRole role = new HAccountRole();
         role.setName(roleName);

@@ -27,13 +27,14 @@ import org.zanata.model.PersonProjectMemberships;
 import org.zanata.model.type.WebhookType;
 import org.zanata.service.impl.ProjectServiceImpl;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public interface ProjectService {
+public interface ProjectService extends Serializable {
 
     /**
      * Update all security settings for a person.

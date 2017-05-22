@@ -7,7 +7,7 @@ import {
   dateRangeChanged,
   filterUpdate,
   selectDayChanged
-} from '../../actions/profile'
+} from '../../actions/profile-actions'
 import RecentContributions from './RecentContributions'
 import { Notification, Icon, LoaderText } from '../../components'
 import { getLanguageUrl } from '../../utils/UrlHelper'
@@ -74,13 +74,14 @@ class UserProfile extends Component {
               <LoaderText className='loader-text s8' loading />
             </div>)
             : (<div className='flex-c profile-wrapper'>
-              <div className='flex-rr details' id='profile-overview'>
+              <div className='details' id='profile-overview'>
                 <img className='details-avatar'
                   src={user.imageUrl ? user.imageUrl : ''}
                   alt={username} />
                 <div className='flex-c details-text'>
                   {name &&
-                    <div className='username h2' id='profile-displayname'>
+                    <div className='username h2 ellipsis'
+                      id='profile-displayname'>
                       {name}
                     </div>
                   }

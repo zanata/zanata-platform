@@ -1,6 +1,8 @@
 package org.zanata.model;
 
 import java.io.Serializable;
+import java.util.Objects;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
@@ -11,7 +13,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.hibernate.annotations.NaturalId;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -19,6 +20,7 @@ import org.hibernate.annotations.NaturalId;
 @Entity
 @Table(name = "HProject_Glossary")
 public class HProjectGlossary implements Serializable {
+    private static final long serialVersionUID = -3353891750258196418L;
     private HProjectGlossaryPk id = new HProjectGlossaryPk();
 
     public HProjectGlossary(Glossary glossary, HProject project) {
@@ -48,6 +50,7 @@ public class HProjectGlossary implements Serializable {
     @Embeddable
     @Access(AccessType.FIELD)
     public static class HProjectGlossaryPk implements Serializable {
+        private static final long serialVersionUID = -3849528527085874091L;
         @ManyToOne(fetch = FetchType.EAGER, optional = false)
         @JoinColumn(name = "glossaryId", nullable = false)
         private Glossary glossary;
@@ -79,6 +82,20 @@ public class HProjectGlossary implements Serializable {
         }
 
         public HProjectGlossaryPk() {
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            HProjectGlossaryPk that = (HProjectGlossaryPk) o;
+            return Objects.equals(glossary, that.glossary) &&
+                    Objects.equals(project, that.project);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(glossary, project);
         }
     }
 

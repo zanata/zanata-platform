@@ -33,7 +33,6 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
-import org.apache.lucene.util.Version;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.search.jpa.FullTextEntityManager;
@@ -83,14 +82,19 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
                     filterOutObsolete);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Select distinct p from HProject p ")
+        sb.append("from HProject p ")
             .append(condition)
             .append("order by UPPER(p.name) asc");
-        Query q = getSession().createQuery(sb.toString())
-            .setMaxResults(count)
-            .setFirstResult(offset)
-            .setCacheable(true)
-            .setComment("ProjectDAO.getOffsetList");
+        Query q = getSession().createQuery(sb.toString());
+
+        if (count > 0) {
+            q.setMaxResults(count);
+        }
+        if (offset > 0) {
+            q.setFirstResult(offset);
+        }
+        q.setCacheable(true)
+                .setComment("ProjectDAO.getOffsetList");
         return q.list();
     }
 

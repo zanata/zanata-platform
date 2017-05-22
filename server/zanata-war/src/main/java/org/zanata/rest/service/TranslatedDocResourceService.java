@@ -38,6 +38,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
@@ -89,6 +91,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     /**
      * (This parameter is optional and is currently not used)
      */
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @HeaderParam("Content-Type")
     @Context
     private MediaType requestContentType;

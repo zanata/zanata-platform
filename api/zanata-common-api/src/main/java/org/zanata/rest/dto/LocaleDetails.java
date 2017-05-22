@@ -42,6 +42,7 @@ import org.zanata.common.LocaleId;
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class LocaleDetails implements Serializable {
 
+    private static final long serialVersionUID = -8133147543880728788L;
     private LocaleId localeId;
     private String displayName;
     private String alias;

@@ -32,16 +32,15 @@ import org.zanata.dao.VersionGroupDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HIterationGroup;
 import org.zanata.model.HProject;
-import org.zanata.rest.dto.LocaleDetails;
+import org.zanata.rest.dto.SearchResult;
 import org.zanata.rest.search.dto.GroupSearchResult;
-import org.zanata.rest.search.dto.LanguageTeamSearchResult;
 import org.zanata.rest.search.dto.PersonSearchResult;
 import org.zanata.rest.search.dto.ProjectSearchResult;
-import org.zanata.rest.search.dto.SearchResult;
 import org.zanata.rest.search.dto.SearchResults;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
+import org.zanata.service.LocaleService;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -208,7 +207,7 @@ public class SearchService {
         List<SearchResult> results = localeDAO
                 .find(offset, validatePageSize(sizePerPage), query, null, false)
                 .stream()
-                .map(l -> new LanguageTeamSearchResult(l))
+                .map(l -> LocaleService.convertHLocaleToSearchResultDTO(l))
                 .collect(Collectors.toList());
         return new SearchResults(totalCount, results,
                 SearchResult.SearchResultType.LanguageTeam);

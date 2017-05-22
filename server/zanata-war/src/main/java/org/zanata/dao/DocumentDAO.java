@@ -13,6 +13,8 @@ import org.hibernate.Session;
 import org.hibernate.type.TimestampType;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
@@ -308,7 +310,9 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
                     .calculateUntranslated(Long.valueOf(stat.getTotal()), stat));
         }
         // Merge into a single Stats object
-        for (String locale : transUnitCountMap.keySet()) {
+        for (Map.Entry<String, TransUnitCount> entry : transUnitCountMap
+                .entrySet()) {
+            String locale = entry.getKey();
             ContainerTranslationStatistics newStats =
                     new ContainerTranslationStatistics();
             newStats.addStats(new TranslationStatistics(
@@ -416,7 +420,7 @@ public class DocumentDAO extends AbstractDAOImpl<HDocument, Long> {
      * @return A Hash string (checksum) for a translated document.
      */
     @NativeQuery
-    public String getTranslatedDocumentStateHash(final String projectSlug,
+    public @NotNull String getTranslatedDocumentStateHash(final String projectSlug,
             final String iterationSlug, final String docId,
             final HLocale locale) {
         HDocument doc = getByProjectIterationAndDocId(projectSlug,

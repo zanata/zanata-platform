@@ -22,6 +22,8 @@ package org.zanata.tmx;
 
 import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import nu.xom.Element;
 import nu.xom.Elements;
 import javax.inject.Inject;
@@ -33,6 +35,8 @@ import org.zanata.model.tm.TMXMetadataHelper;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.util.TMXParseException;
 
+import java.io.Serializable;
+
 /**
  * Translation Memory Adapter for the TMX parser. Provides callback effects
  * (functions) to be used when the parser encounters certain specific events.
@@ -42,7 +46,8 @@ import org.zanata.util.TMXParseException;
  */
 @Named("transMemoryAdapter")
 @Dependent
-public class TransMemoryAdapter {
+public class TransMemoryAdapter implements Serializable {
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
     @Inject

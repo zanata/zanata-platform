@@ -30,6 +30,8 @@ import org.hibernate.type.StringType;
 public class RequestStateType extends AbstractSingleColumnStandardBasicType<RequestState>
     implements DiscriminatorType<RequestState> {
 
+    private static final long serialVersionUID = 1365665146745895622L;
+
     public RequestStateType() {
         super(StringType.INSTANCE.getSqlTypeDescriptor(),
             RequestStateTypeDescriptor.INSTANCE);

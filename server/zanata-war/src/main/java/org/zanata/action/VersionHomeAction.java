@@ -38,6 +38,8 @@ import javax.enterprise.inject.Model;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ViewScoped;
 import javax.validation.ConstraintViolationException;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import javax.inject.Inject;
@@ -186,14 +188,19 @@ public class VersionHomeAction extends AbstractSortAction
     private SortingType settingsDocumentSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
                     SortingType.SortOption.LAST_SOURCE_UPDATE));
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final LanguageComparator languageComparator =
             new LanguageComparator(getLanguageSortingList());
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final DocumentComparator documentComparator =
             new DocumentComparator(getDocumentSortingList());
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final DocumentComparator sourceDocumentComparator =
             new DocumentComparator(getSourceDocumentSortingList());
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final DocumentComparator settingsDocumentComparator =
             new DocumentComparator(getSettingsDocumentSortingList());
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final SourceDocumentFilter documentsTabDocumentFilter =
             new SourceDocumentFilter();
     private final DocumentFilter settingsTabDocumentFilter =
@@ -1134,6 +1141,7 @@ public class VersionHomeAction extends AbstractSortAction
     public static class SourceFileUploadHelper implements Serializable {
 
         private static final long serialVersionUID = 1L;
+        @SuppressFBWarnings("SE_BAD_FIELD")
         private InputStream fileContents;
         private String docId;
         private String fileName;
@@ -1207,6 +1215,7 @@ public class VersionHomeAction extends AbstractSortAction
 
         private static final long serialVersionUID = 1L;
         private String docId;
+        @SuppressFBWarnings("SE_BAD_FIELD")
         private InputStream fileContents;
         private String fileName;
         private boolean mergeTranslations = true; // Merge by default

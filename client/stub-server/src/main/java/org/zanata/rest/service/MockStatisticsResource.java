@@ -23,6 +23,7 @@ package org.zanata.rest.service;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.Path;
+import javax.ws.rs.core.Response;
 
 import org.zanata.common.LocaleId;
 import org.zanata.common.TransUnitCount;
@@ -41,6 +42,8 @@ import java.util.List;
  */
 @Path(StatisticsResource.SERVICE_PATH)
 public class MockStatisticsResource implements StatisticsResource {
+
+    private static final long serialVersionUID = -1270337376508171813L;
 
     @Override
     public ContainerTranslationStatistics getStatistics(String projectSlug,
@@ -86,6 +89,12 @@ public class MockStatisticsResource implements StatisticsResource {
             new ContributionStatistics(username, localeStatisticsList);
 
         return contributionStatistics;
+    }
+
+    @Override
+    public Response getProjectStatisticsMatrix(String projectSlug,
+            String versionSlug, String dateRangeParam, String timeZoneID) {
+        return MockResourceUtil.notUsedByClient();
     }
 }
 

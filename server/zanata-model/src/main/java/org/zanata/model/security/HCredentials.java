@@ -44,6 +44,7 @@ import org.zanata.model.validator.Unique;
         discriminatorType = DiscriminatorType.STRING)
 @Unique(properties = { "user" })
 public abstract class HCredentials extends ModelEntityBase {
+    private static final long serialVersionUID = 1437030258583468680L;
     private HAccount account;
     private String user;
     private String email;
@@ -54,7 +55,7 @@ public abstract class HCredentials extends ModelEntityBase {
         return account;
     }
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false, columnDefinition = "longtext")
     public String getUser() {
         return user;
     }

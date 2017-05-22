@@ -8,7 +8,7 @@ import {
   glossaryDownload,
   glossaryToggleExportFileDisplay,
   FILE_TYPES
-} from '../../actions/glossary'
+} from '../../actions/glossary-actions'
 
 class ExportModal extends Component {
   render () {

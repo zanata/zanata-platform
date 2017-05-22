@@ -20,13 +20,14 @@
  */
 package org.zanata.service;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.Future;
 
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
-public interface TransMemoryMergeService {
+public interface TransMemoryMergeService extends Serializable {
 
     List<TranslationService.TranslationResult> executeMerge(
             TransMemoryMergeRequest request,

@@ -68,6 +68,7 @@
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     background-color: #fcfcfc;
+    line-height:1.2em;
 }
 
 .panel-body {
@@ -95,7 +96,7 @@
 }
 
 .panel-heading {
-    padding: var(--padding-small-horizontal);
+    padding:8px !important;
     border-bottom: 1px solid transparent;
     border-top-left-radius: var(--border-radius-small);
     border-top-right-radius: var(--border-radius-small);
@@ -103,6 +104,10 @@
     font-weight: 600;
     color: var(--brand-secondary);
     background-color: #fff;
+}
+
+.panel-heading .TransUnit-details {
+  line-height: 1.2em;
 }
 
 .panel-info > .panel-heading {

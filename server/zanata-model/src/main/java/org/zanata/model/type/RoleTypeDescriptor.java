@@ -31,6 +31,7 @@ public class RoleTypeDescriptor extends
 
     public static final RoleTypeDescriptor INSTANCE =
         new RoleTypeDescriptor();
+    private static final long serialVersionUID = 6619121097493569360L;
 
 
     protected RoleTypeDescriptor() {

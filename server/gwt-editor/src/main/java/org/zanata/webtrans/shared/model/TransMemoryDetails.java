@@ -5,7 +5,6 @@ import java.util.Date;
 import com.google.common.base.MoreObjects;
 import org.zanata.common.ContentState;
 
-import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class TransMemoryDetails implements IsSerializable {
@@ -39,7 +38,8 @@ public class TransMemoryDetails implements IsSerializable {
         this.msgContext = msgContext;
         this.state = state;
         this.lastModifiedBy = lastModifiedBy;
-        this.lastModifiedDate = lastModifiedDate;
+        this.lastModifiedDate = lastModifiedDate != null ?
+                new Date(lastModifiedDate.getTime()) : null;
         this.url = url;
     }
 
@@ -80,7 +80,8 @@ public class TransMemoryDetails implements IsSerializable {
     }
 
     public Date getLastModifiedDate() {
-        return lastModifiedDate;
+        return lastModifiedDate != null ?
+                new Date(lastModifiedDate.getTime()) : null;
     }
 
     public String getUrl() {

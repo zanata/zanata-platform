@@ -198,7 +198,7 @@ public class TranslationMemoryAction implements Serializable {
      * NB: Eventually this class might need to live outside if there are other
      * services that need to control this process.
      */
-    private class ClearTransMemoryProcessKey implements Serializable {
+    private static class ClearTransMemoryProcessKey implements Serializable {
         private String slug;
 
         @java.beans.ConstructorProperties({ "slug" })
@@ -238,7 +238,7 @@ public class TranslationMemoryAction implements Serializable {
         }
     }
 
-    private class TMComparator implements Comparator<TransMemory> {
+    private static class TMComparator implements Comparator<TransMemory>, Serializable {
         private SortingType sortingType;
 
         public TMComparator(SortingType sortingType) {

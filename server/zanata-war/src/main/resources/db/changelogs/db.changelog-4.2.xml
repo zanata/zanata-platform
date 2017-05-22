@@ -59,4 +59,104 @@
       onDelete="CASCADE" />
   </changeSet>
 
+  <changeSet id="3" author="pahuang@redhat.com">
+    <comment>add missing constraints</comment>
+    <addForeignKeyConstraint baseTableName="HTextFlowTarget"
+      baseColumnNames="reviewed_by_id"
+      constraintName="FK_HTextFlowTarget_reviewer"
+      referencedTableName="HPerson" referencedColumnNames="id" />
+    <addForeignKeyConstraint baseTableName="HTextFlowTarget"
+      baseColumnNames="translated_by_id"
+      constraintName="FK_HTextFlowTarget_translator"
+      referencedTableName="HPerson"
+      referencedColumnNames="id" />
+    <addForeignKeyConstraint baseTableName="HTextFlowTargetHistory"
+      baseColumnNames="reviewed_by_id"
+      constraintName="FK_HTextFlowTargetHistory_reviewer"
+      referencedTableName="HPerson" referencedColumnNames="id" />
+    <addForeignKeyConstraint baseTableName="HTextFlowTargetHistory"
+      baseColumnNames="translated_by_id"
+      constraintName="FK_HTextFlowTargetHistory_translator"
+      referencedTableName="HPerson"
+      referencedColumnNames="id" />
+
+  </changeSet>
+
+  <changeSet id="4" author="pahuang@redhat.com">
+    <comment>drop duplicate index</comment>
+    <dropIndex tableName="HTextFlowTargetHistory" indexName="Idx_lastModifiedBy" />
+  </changeSet>
+
+  <changeSet id="5" author="pahuang@redhat.com">
+    <comment>add missing index for TransMemoryUnit</comment>
+    <createIndex tableName="TransMemoryUnit" indexName="Idx_TransMemoryUnit_tm_id">
+      <column name="tm_id"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="6" author="pahuang@redhat.com">
+    <comment>add missing index for HProjectIteration_Locale</comment>
+    <createIndex tableName="HProjectIteration_Locale"
+      indexName="Idx_HProjectIteration_Locale_projectIterationId">
+      <column name="projectIterationId"/>
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="7" author="pahuang@redhat.com">
+    <comment>Add missing constraints in HProject_Member table</comment>
+    <sql>
+      delete from HProject_Member where personId NOT in (select id from HPerson)
+    </sql>
+    <addForeignKeyConstraint baseTableName="HProject_Member"
+      baseColumnNames="personId"
+      constraintName="FK_HProject_Member_personId" referencedTableName="HPerson"
+      referencedColumnNames="id" />
+  </changeSet>
+  <changeSet id="8" author="pahuang@redhat.com">
+    <comment>Add missing constraints in HProject_Member table</comment>
+    <sql>
+      delete from HProject_Member where projectId NOT in (select id from HProject)
+    </sql>
+    <addForeignKeyConstraint baseTableName="HProject_Member"
+      baseColumnNames="projectId"
+      constraintName="FK_HProject_Member_projectId"
+      referencedTableName="HProject"
+      referencedColumnNames="id"/>
+  </changeSet>
+
+  <changeSet id="9" author="pahuang@redhat.com">
+    <comment>drop duplicate key from HIterationGroup</comment>
+    <dropUniqueConstraint tableName="HIterationGroup" constraintName="UKslug" />
+  </changeSet>
+  <changeSet id="10" author="pahuang@redhat.com">
+    <comment>drop duplicate key from AllowedApp</comment>
+    <dropUniqueConstraint tableName="AllowedApp" constraintName="Idx_account_clientId" />
+  </changeSet>
+  <changeSet id="11a" author="pahuang@redhat.com">
+    <comment>drop unique key and use primary key for HProject_Glossary</comment>
+    <addPrimaryKey tableName="HProject_Glossary" columnNames="glossaryId,projectId" />
+  </changeSet>
+  <changeSet id="11b" author="pahuang@redhat.com">
+    <comment>drop unique key and use primary key for HProject_Glossary</comment>
+    <dropUniqueConstraint tableName="HProject_Glossary" constraintName="UKHProject_Glossary" />
+  </changeSet>
+
+  <changeSet id="12a" author="pahuang@redhat.com">
+    <comment>modify HTextFlowContentHistory to match hibernate mapping</comment>
+    <dropColumn tableName="HTextFlowContentHistory" columnName="id" />
+  </changeSet>
+  <changeSet id="12b" author="pahuang@redhat.com">
+    <comment>modify HTextFlowContentHistory to match hibernate mapping</comment>
+    <addPrimaryKey tableName="HTextFlowContentHistory" columnNames="pos,text_flow_history_id"/>
+  </changeSet>
+
+  <changeSet id="13a" author="pahuang@redhat.com">
+    <comment>modify HTextFlowTargetContentHistory to match hibernate mapping</comment>
+    <dropColumn tableName="HTextFlowTargetContentHistory" columnName="id" />
+  </changeSet>
+  <changeSet id="13b" author="pahuang@redhat.com">
+    <comment>modify HTextFlowTargetContentHistory to match hibernate mapping</comment>
+    <addPrimaryKey tableName="HTextFlowTargetContentHistory" columnNames="pos,text_flow_target_history_id"/>
+  </changeSet>
+
 </databaseChangeLog>

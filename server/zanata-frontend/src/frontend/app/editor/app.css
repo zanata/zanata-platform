@@ -25,6 +25,7 @@
 @import './components/SuggestionSearchInput/index.css';
 @import './components/Dropdown/index.css';
 @import './containers/EditorHeader/index.css';
+@import './components/EditorSearchInput/index.css';
 @import './css/heading/index.css';
 @import './css/links/index.css';
 @import './components/TextDiff/index.css';

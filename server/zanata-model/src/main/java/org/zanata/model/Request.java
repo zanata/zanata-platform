@@ -20,6 +20,19 @@
  */
 package org.zanata.model;
 
+import java.util.Date;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
 import org.hibernate.annotations.TypeDefs;
@@ -27,17 +40,6 @@ import org.zanata.model.type.RequestState;
 import org.zanata.model.type.RequestStateType;
 import org.zanata.model.type.RequestType;
 import org.zanata.model.type.RequestTypeType;
-import javax.persistence.Access;
-import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.PrePersist;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.Date;
 
 /**
  * Entity for general request in Zanata.
@@ -48,12 +50,15 @@ import java.util.Date;
 @Entity
 @TypeDefs({ @TypeDef(name = "requestState", typeClass = RequestStateType.class),
         @TypeDef(name = "requestType", typeClass = RequestTypeType.class) })
+@Table(uniqueConstraints = @UniqueConstraint(name = "UK_entityId_validTo",
+        columnNames = { "entityId", "validTo" }))
 public class Request extends TimeEntityBase {
+    private static final long serialVersionUID = -7765625863647796620L;
     @Type(type = "requestState")
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "char(1)")
     private RequestState state = RequestState.NEW;
     @Type(type = "requestType")
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "char(2)")
     @NotNull
     private RequestType requestType;
     @Column(nullable = true)

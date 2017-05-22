@@ -24,6 +24,7 @@ import org.zanata.rest.dto.HasSample;
 public class ResourceMetaList implements Serializable,
         HasSample<ResourceMetaList> {
 
+    private static final long serialVersionUID = -3469563349425397350L;
     private List<ResourceMeta> resources;
 
     @XmlElement(name = "resource", required = true,

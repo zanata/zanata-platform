@@ -20,7 +20,7 @@
  */
 
 import cx from 'classnames'
-import { Icon } from 'zanata-ui'
+import { Icon } from '../../../components'
 import IconButton from '../IconButton'
 import React, { PropTypes } from 'react'
 
@@ -129,7 +129,7 @@ const SuggestionSearchInput = React.createClass({
       <span className="InputGroup-addon">
         <IconButton icon="cross"
           title="Clear search"
-          iconSize="n1"
+          className="n1"
           onClick={this.clearSearch} />
       </span>
     )
@@ -143,7 +143,7 @@ const SuggestionSearchInput = React.createClass({
           onClick={this.focusInput}>
           <Icon name="search"
             title="Search suggestions"
-            size="n1" />
+            className="n1" />
         </span>
         <input ref="input"
           type="search"

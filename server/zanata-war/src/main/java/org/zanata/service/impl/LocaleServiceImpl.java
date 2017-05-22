@@ -34,6 +34,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
@@ -189,9 +190,8 @@ public class LocaleServiceImpl implements LocaleService {
     @ApplicationScoped
     @AllJavaLocales
     public List<LocaleId> getAllJavaLanguages() {
-        List<LocaleId> allJavaLanguages = new ArrayList<LocaleId>();
         ULocale[] locales = ULocale.getAvailableLocales();
-        allJavaLanguages = new ArrayList<LocaleId>();
+        List<LocaleId> allJavaLanguages = new ArrayList<LocaleId>();
         for (ULocale locale : locales) {
             String id = locale.toLanguageTag();
             LocaleId localeId = new LocaleId(id);
@@ -430,15 +430,8 @@ public class LocaleServiceImpl implements LocaleService {
                 localeId);
     }
 
-    public static LocaleDetails convertToDTO(HLocale hLocale, String alias) {
-        return new LocaleDetails(hLocale.getLocaleId(),
-                hLocale.retrieveDisplayName(), alias,
-                hLocale.retrieveNativeName(), hLocale.isActive(),
-                hLocale.isEnabledByDefault(), hLocale.getPluralForms());
-    }
-
     public static LocaleDetails convertToDTO(HLocale hLocale) {
-        return convertToDTO(hLocale, null);
+        return LocaleService.convertHLocaleToDTO(hLocale, null);
     }
 
     public static HLocale convertToHLocale(LocaleDetails localeDetails) {

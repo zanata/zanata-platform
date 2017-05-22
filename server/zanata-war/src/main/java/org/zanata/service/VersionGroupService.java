@@ -20,6 +20,7 @@
  */
 package org.zanata.service;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +34,7 @@ import org.zanata.ui.model.statistic.WordStatistic;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public interface VersionGroupService {
+public interface VersionGroupService extends Serializable {
 
     /**
      * Search not obsolete project version by fuzzy matching of version slug or

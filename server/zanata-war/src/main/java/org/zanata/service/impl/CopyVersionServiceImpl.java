@@ -29,6 +29,8 @@ import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.CopyVersionTaskHandle;
@@ -95,6 +97,7 @@ public class CopyVersionServiceImpl implements CopyVersionService {
     @Inject
     private TransactionUtil transactionUtil;
     // Stop watch for textFlow and target copy process
+    @SuppressFBWarnings("SE_BAD_FIELD")
     private Stopwatch copyTfAndTftStopWatch = Stopwatch.createUnstarted();
 
     @Override

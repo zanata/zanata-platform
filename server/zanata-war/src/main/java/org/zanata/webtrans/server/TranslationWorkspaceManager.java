@@ -25,12 +25,14 @@ import org.zanata.webtrans.shared.NoSuchWorkspaceException;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import com.google.common.base.Optional;
 
+import java.io.Serializable;
+
 /**
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  *
  */
-public interface TranslationWorkspaceManager {
+public interface TranslationWorkspaceManager extends Serializable {
 
     TranslationWorkspace getOrRegisterWorkspace(WorkspaceId workspaceId)
             throws NoSuchWorkspaceException;

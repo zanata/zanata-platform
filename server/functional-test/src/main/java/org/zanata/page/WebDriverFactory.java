@@ -22,14 +22,16 @@ package org.zanata.page;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-import com.google.common.reflect.AbstractInvocationHandler;
+
 import net.lightbody.bmp.BrowserMobProxy;
 import net.lightbody.bmp.BrowserMobProxyServer;
 import net.lightbody.bmp.client.ClientUtil;
@@ -39,7 +41,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ObjectNode;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Proxy;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
@@ -64,10 +65,10 @@ import org.zanata.util.ScreenshotDirForTest;
 import org.zanata.util.TestEventForScreenshotListener;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import static java.lang.reflect.Proxy.newProxyInstance;
+import static org.zanata.page.utility.PageSourceKt.shortenPageSource;
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
@@ -195,14 +196,11 @@ public enum WebDriverFactory {
      *             exception containing the first warning/error message, if any
      */
     private void logLogs(String type, boolean throwIfWarn) {
-        WebDriver driver = getDriver();
         @Nullable
         WebDriverLogException firstException = null;
         String logName = WebDriverFactory.class.getName() + "." + type;
         Logger log = LoggerFactory.getLogger(logName);
-        int logCount = 0;
         for (LogEntry logEntry : getLogs(type)) {
-            ++logCount;
             Level level;
             long time = logEntry.getTimestamp();
             String text;
@@ -234,17 +232,19 @@ public enum WebDriverFactory {
                 // If firstException was a warning, replace it with this error.
                 if ((firstException == null || !firstException.isErrorLog())
                         && !ignorable(msg)) {
+                    String pageSource = shortenPageSource(getDriver());
                     // We only throw this if throwIfWarn is true
                     firstException = new WebDriverLogException(level, logString,
-                            driver.getPageSource());
+                            pageSource);
                 }
             } else if (level.intValue() >= Level.WARNING.intValue()) {
                 log.warn(logString);
                 if ((firstException == null) && !ignorable(msg)) {
+                    String pageSource = shortenPageSource(getDriver());
                     // We only throw this if throwIfWarn is true
                     firstException =
                             new WebDriverLogException(logEntry.getLevel(),
-                                    logString, driver.getPageSource());
+                                    logString, pageSource);
                 }
             } else if (level.intValue() >= Level.INFO.intValue()) {
                 log.info(logString);
@@ -312,24 +312,55 @@ public enum WebDriverFactory {
         screenshotListener.updateTestID(testName);
     }
 
-    @SuppressWarnings("GBU_GUAVA_BETA_CLASS_USAGE")
     @ParametersAreNonnullByDefault
     public void registerLogListener() {
         if (logListener == null) {
             logListener = (WebDriverEventListener) newProxyInstance(
                     WebDriverEventListener.class.getClassLoader(),
-                    new Class<?>[] { WebDriverEventListener.class },
-                    new AbstractInvocationHandler() {
-
+                    new Class<?>[]{ WebDriverEventListener.class },
+                    new InvocationHandler() {
                         @Override
-                        protected Object handleInvocation(Object proxy,
-                                Method method, Object[] args) throws Throwable {
+                        public Object invoke(Object proxy, Method method,
+                                Object[] args) throws Throwable {
+                            if (args == null) {
+                                args = new Object[0];
+                            }
+                            if (args.length == 0 && method.getName().equals("hashCode")) {
+                                return hashCode();
+                            }
+                            if (args.length == 1
+                                    && method.getName().equals("equals")
+                                    && method.getParameterTypes()[0] == Object.class) {
+                                Object arg = args[0];
+                                if (arg == null) {
+                                    return false;
+                                }
+                                if (proxy == arg) {
+                                    return true;
+                                }
+                                return isProxyOfSameInterfaces(arg, proxy.getClass())
+                                        && equals(java.lang.reflect.Proxy.getInvocationHandler(arg));
+                            }
+                            if (args.length == 0 && method.getName().equals("toString")) {
+                                return toString();
+                            }
                             logLogs();
                             return null;
                         }
                     });
         }
         getDriver().register(logListener);
+    }
+
+    private static boolean isProxyOfSameInterfaces(Object arg, Class<?> proxyClass) {
+        return proxyClass.isInstance(arg)
+                // Equal proxy instances should mostly be instance of proxyClass
+                // Under some edge cases (such as the proxy of JDK types serialized and then deserialized)
+                // the proxy type may not be the same.
+                // We first check isProxyClass() so that the common case of comparing with non-proxy objects
+                // is efficient.
+                || (java.lang.reflect.Proxy.isProxyClass(arg.getClass())
+                && Arrays.equals(arg.getClass().getInterfaces(), proxyClass.getInterfaces()));
     }
 
     public void unregisterLogListener() {
@@ -463,24 +494,34 @@ public enum WebDriverFactory {
     private void clearDswid() {
         // clear the browser's memory of the dswid
         getExecutor().executeScript("window.name = \'\'");
-        dswidParamChecker.clear();
+        if (dswidParamChecker != null) {
+            dswidParamChecker.clear();
+        }
     }
 
     public <T> T ignoringDswid(Supplier<T> supplier) {
-        dswidParamChecker.stopChecking();
+        if (dswidParamChecker != null) {
+            dswidParamChecker.stopChecking();
+        }
         try {
             return supplier.get();
         } finally {
-            dswidParamChecker.startChecking();
+            if (dswidParamChecker != null) {
+                dswidParamChecker.startChecking();
+            }
         }
     }
 
     public void ignoringDswid(Runnable r) {
-        dswidParamChecker.stopChecking();
+        if (dswidParamChecker != null) {
+            dswidParamChecker.stopChecking();
+        }
         try {
             r.run();
         } finally {
-            dswidParamChecker.startChecking();
+            if (dswidParamChecker != null) {
+                dswidParamChecker.startChecking();
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package org.zanata.webtrans.shared.rpc;
 
 import java.util.Map;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.UserWorkspaceContext;
@@ -11,9 +12,9 @@ import org.zanata.webtrans.shared.model.ValidationId;
 public class ActivateWorkspaceResult implements DispatchResult {
 
     private static final long serialVersionUID = 1L;
-
     private UserWorkspaceContext userWorkspaceContext;
     private Identity identity;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "Implemented GWT IsSerializable")
     private UserConfigHolder.ConfigurationState storedUserConfiguration;
     private Map<ValidationId, State> validationStates;
 

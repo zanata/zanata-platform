@@ -188,7 +188,7 @@ public class GlossaryFileServiceImpl implements GlossaryFileService {
         return Optional.empty();
     }
 
-    public class GlossaryProcessed {
+    public static class GlossaryProcessed {
         private List<HGlossaryEntry> glossaryEntries;
         private List<String> warnings;
 

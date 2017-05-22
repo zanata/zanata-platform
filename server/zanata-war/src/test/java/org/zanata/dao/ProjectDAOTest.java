@@ -14,6 +14,8 @@ import org.zanata.ZanataDbunitJpaTest;
 import org.zanata.model.HProject;
 import org.zanata.security.ZanataIdentity;
 
+import java.util.List;
+
 public class ProjectDAOTest extends ZanataDbunitJpaTest {
 
     private ProjectDAO dao;
@@ -97,5 +99,12 @@ public class ProjectDAOTest extends ZanataDbunitJpaTest {
     @Test
     public void getFilterProjectSizeOnlyObsoleteAndReadOnly() {
         assertThat(dao.getFilterProjectSize(true, false, false), is(2));
+    }
+
+    @Test
+    public void getOffsetList() {
+        List<HProject> projects =
+                dao.getOffsetList(-1, -1, false, false, false);
+        assertThat(projects.size(), is(4));
     }
 }

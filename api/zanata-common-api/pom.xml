@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>api</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
+    <version>4.3.0-SNAPSHOT</version>
   </parent>
   <packaging>takari-jar</packaging>
 
@@ -19,7 +19,7 @@
   </scm>
 
   <properties>
-    <enunciate.version>2.6.0</enunciate.version>
+    <enunciate.version>2.9.1</enunciate.version>
   </properties>
 
   <build>

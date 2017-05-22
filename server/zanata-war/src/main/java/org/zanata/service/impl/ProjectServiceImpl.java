@@ -168,7 +168,7 @@ public class ProjectServiceImpl implements ProjectService {
         }
     }
 
-    public class UpdatedRole {
+    public static class UpdatedRole {
         private String username;
         private ProjectRole role;
         private boolean added;

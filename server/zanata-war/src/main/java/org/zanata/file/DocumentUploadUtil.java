@@ -26,6 +26,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.SequenceInputStream;
+import java.io.Serializable;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -56,7 +57,7 @@ import com.google.common.base.Optional;
 
 @Named("documentUploadUtil")
 @Dependent
-public class DocumentUploadUtil {
+public class DocumentUploadUtil implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(DocumentUploadUtil.class);
 

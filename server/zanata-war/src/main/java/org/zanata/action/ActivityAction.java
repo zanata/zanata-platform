@@ -53,8 +53,8 @@ public class ActivityAction implements Serializable {
     @Authenticated
     private HAccount authenticatedAccount;
 
-    private final int ACTIVITY_COUNT_PER_LOAD = 5;
-    private final int MAX_ACTIVITIES_COUNT_PER_PAGE = 20;
+    private final static int ACTIVITY_COUNT_PER_LOAD = 5;
+    private final static int MAX_ACTIVITIES_COUNT_PER_PAGE = 20;
 
     private int activityPageIndex = 0;
 

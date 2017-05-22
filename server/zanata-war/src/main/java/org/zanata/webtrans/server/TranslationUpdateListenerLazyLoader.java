@@ -21,6 +21,7 @@
 
 package org.zanata.webtrans.server;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
@@ -38,13 +39,18 @@ public class TranslationUpdateListenerLazyLoader implements
         PostUpdateEventListener, PostInsertEventListener {
     private TranslationUpdateListener delegate;
 
+    @SuppressFBWarnings("DC_DOUBLECHECK")
     public void init() {
         if (delegate == null) {
-            synchronized (this) {
-                if (delegate == null) {
-                    delegate = ServiceLocator.instance()
-                            .getInstance(TranslationUpdateListener.class);
-                }
+            synchronizeAndSetDelegate();
+        }
+    }
+
+    public void synchronizeAndSetDelegate() {
+        synchronized (this) {
+            if (delegate == null) {
+                delegate = ServiceLocator.instance()
+                        .getInstance(TranslationUpdateListener.class);
             }
         }
     }

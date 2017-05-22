@@ -17,7 +17,7 @@ import {
   handleNewLanguageDisplay,
   handleLoadSuggestion,
   handleSaveNewLanguage
-} from '../../actions/languages'
+} from '../../actions/languages-actions'
 
 class NewLanguageModal extends Component {
   constructor (props) {

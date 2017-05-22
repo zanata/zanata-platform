@@ -34,11 +34,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.IndexColumn;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.google.common.base.Objects;

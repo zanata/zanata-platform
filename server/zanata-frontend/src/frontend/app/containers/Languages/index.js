@@ -21,7 +21,7 @@ import {
   handleNewLanguageDisplay,
   pageSizeOption,
   sortOption
-} from '../../actions/languages'
+} from '../../actions/languages-actions'
 
 class Languages extends Component {
   constructor (props) {

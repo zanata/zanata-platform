@@ -40,6 +40,7 @@ public class MockProjectsResource implements ProjectsResource {
             new Project("about-fedora", "About Fedora",
                     Podir.name().toLowerCase())
     };
+    private static final long serialVersionUID = 6999372907166416583L;
 
     @Override
     public Response get() {

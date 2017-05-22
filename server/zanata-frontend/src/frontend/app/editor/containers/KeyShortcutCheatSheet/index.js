@@ -1,11 +1,11 @@
 import cx from 'classnames'
-import { Icon } from 'zanata-ui'
+import { Icon } from '../../../components'
 import KeyCombinations from '../../components/KeyCombinations'
 import { chain, each, map } from 'lodash'
 import { connect } from 'react-redux'
 import React, { PropTypes } from 'react'
-import { SHORTCUTS } from '../../actions/editorShortcuts'
-import { toggleKeyboardShortcutsModal } from '../../actions/headerActions'
+import { SHORTCUTS } from '../../actions/key-shortcuts-actions'
+import { toggleKeyboardShortcutsModal } from '../../actions/header-actions'
 
 /**
  * Modal showing a summary of the available key shortcuts.
@@ -69,7 +69,7 @@ const KeyShortcutCheatSheet = React.createClass({
             <h2 className="Modal-title">Keyboard Shortcuts</h2>
             <button className="Modal-close Link Link--neutral"
               onClick={onClose}>
-              <Icon name="cross" title="Close" />
+              <Icon name="cross" title="Close" className="s1" />
             </button>
           </div>
           <div className="Modal-content u-sP-1">

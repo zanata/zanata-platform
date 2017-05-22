@@ -20,6 +20,7 @@
  */
 package org.zanata.service.impl;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import org.apache.commons.lang.time.DateUtils;
@@ -37,7 +38,7 @@ import org.zanata.util.HashUtil;
 @Named("emailChangeService")
 @RequestScoped
 @Transactional
-public class EmailChangeService {
+public class EmailChangeService implements Serializable {
     @Inject
     PersonEmailValidationKeyDAO personEmailValidationKeyDAO;
 

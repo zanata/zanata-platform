@@ -27,6 +27,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -41,9 +43,14 @@ import javax.validation.constraints.NotNull;
 @NamedQueries({ @NamedQuery(
         name = AllowedApp.QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID,
         query = "from AllowedApp where account = :account and clientId = :clientId") })
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "UKAllowedApp_accountId_clientId", columnNames = {"accountId", "clientId"}),
+        @UniqueConstraint(name = "UKAllowedApp_refreshToken", columnNames = "refreshToken"),
+})
 public class AllowedApp extends ModelEntityBase {
     public static final String QUERY_GET_BY_ACCOUNT_AND_CLIENT_ID =
             "AllowedApp.getByAccountAndClientId";
+    private static final long serialVersionUID = 1629533874243552852L;
     @ManyToOne(targetEntity = HAccount.class, optional = false)
     @JoinColumn(name = "accountId", nullable = false)
     private HAccount account;

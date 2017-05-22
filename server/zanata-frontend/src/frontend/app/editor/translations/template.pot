@@ -24,6 +24,10 @@ msgstr ""
 msgid "Hide suggestions panel"
 msgstr ""
 
+#: app/components/ControlsHeader/index.js
+msgid "Hide search panel"
+msgstr ""
+
 #: app/editor/editor.html
 #: app/components/ControlsHeader/index.js
 msgid "Keyboard Shortcuts"
@@ -51,6 +55,10 @@ msgstr ""
 
 #: app/components/ControlsHeader/index.js
 msgid "Show suggestions panel"
+msgstr ""
+
+#: app/components/ControlsHeader/index.js
+msgid "Show search panel"
 msgstr ""
 
 #: app/components/TransUnitFilter/index.js

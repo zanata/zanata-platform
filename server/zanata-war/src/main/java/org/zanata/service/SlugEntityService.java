@@ -22,6 +22,8 @@ package org.zanata.service;
 
 import org.zanata.model.SlugEntityBase;
 
+import java.io.Serializable;
+
 /**
  * Provides common services related to the slug based entities (
  * {@link org.zanata.model.SlugEntityBase}).
@@ -29,7 +31,7 @@ import org.zanata.model.SlugEntityBase;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface SlugEntityService {
+public interface SlugEntityService extends Serializable {
     /**
      * Determines if a given slug is available in a class.
      *

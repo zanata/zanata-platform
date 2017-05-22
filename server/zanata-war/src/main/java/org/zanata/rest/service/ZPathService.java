@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
@@ -47,7 +48,7 @@ import org.zanata.rest.RestUtil;
 @javax.enterprise.context.Dependent
 
 // TODO this should probably be Transactional (and not Dependent)
-public class ZPathService {
+public class ZPathService implements Serializable {
     /*
      * Public ZPaths. Used for rest resource path declaration.
      */

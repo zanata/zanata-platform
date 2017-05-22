@@ -1,9 +1,6 @@
 package org.zanata.webtrans.client;
 
-import org.zanata.webtrans.client.presenter.AppPresenter;
-import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
-import org.zanata.webtrans.client.rpc.CachingDispatchAsync;
 import org.zanata.webtrans.client.ui.DialogBoxCloseButton;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
@@ -24,14 +21,9 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler {
     private final DialogBoxCloseButton closeButton = new DialogBoxCloseButton(
             globalPopup);
 
-    private final CachingDispatchAsync dispatcher;
     private final UserConfigHolder configHolder;
-    private AppPresenter appPresenter;
-    private TargetContentsPresenter targetContentsPresenter;
 
-    protected UncaughtExceptionHandlerImpl(CachingDispatchAsync dispatcher,
-            UserConfigHolder configHolder) {
-        this.dispatcher = dispatcher;
+    protected UncaughtExceptionHandlerImpl(UserConfigHolder configHolder) {
         this.configHolder = configHolder;
         globalPopup.setGlassEnabled(true);
     }
@@ -125,14 +117,5 @@ class UncaughtExceptionHandlerImpl implements GWT.UncaughtExceptionHandler {
         disclosurePanel.setContent(new HTMLPanel(htmlBuilder.toSafeHtml()));
         disclosurePanel.setOpen(false);
         return disclosurePanel;
-    }
-
-    public void setAppPresenter(AppPresenter appPresenter) {
-        this.appPresenter = appPresenter;
-    }
-
-    public void setTargetContentsPresenter(
-            TargetContentsPresenter targetContentsPresenter) {
-        this.targetContentsPresenter = targetContentsPresenter;
     }
 }

@@ -20,8 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import static org.zanata.common.EntityStatus.OBSOLETE;
-
 import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
@@ -38,7 +36,8 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.hibernate.Query;
+import com.google.common.annotations.VisibleForTesting;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
 import org.jboss.resteasy.util.GenericType;
@@ -46,12 +45,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.Namespaces;
+import org.zanata.dao.ProjectDAO;
 import org.zanata.model.HProject;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Link;
 import org.zanata.rest.dto.Project;
-
-import com.google.common.base.Objects;
 
 @RequestScoped
 @Named("projectsService")
@@ -63,10 +61,14 @@ public class ProjectsService implements ProjectsResource {
     private Session session;
 
     /** Type of media requested. */
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     @HeaderParam("Accept")
     @DefaultValue(MediaType.APPLICATION_XML)
     @Context
     MediaType accept;
+
+    @Inject
+    private ProjectDAO projectDAO;
 
     @Override
     @GET
@@ -75,33 +77,28 @@ public class ProjectsService implements ProjectsResource {
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @Wrapped(element = "projects", namespace = Namespaces.ZANATA_API)
     public Response get() {
-        Query query = session.createQuery("from HProject p");
-        query.setComment("ProjectsService.get");
-        @SuppressWarnings("unchecked")
-        List<HProject> projects = query.list();
+        List<HProject> projects =
+                projectDAO.getOffsetList(-1, -1, false, false, true);
 
         List<Project> projectRefs = new ArrayList<Project>(projects.size());
 
         for (HProject hProject : projects) {
-            // Ignore Obsolete projects
-            if (!Objects.equal(hProject.getStatus(), OBSOLETE)) {
-                String projectType;
-                if (hProject.getDefaultProjectType() == null) {
-                    projectType = "";
-                } else {
-                    projectType = hProject.getDefaultProjectType().toString();
-                }
-                Project project =
-                        new Project(hProject.getSlug(), hProject.getName(),
-                                projectType);
-                project.setStatus(hProject.getStatus());
-                project.getLinks(true).add(
-                        new Link(URI.create("p/" + hProject.getSlug()), "self",
-                                MediaTypes.createFormatSpecificType(
-                                        MediaTypes.APPLICATION_ZANATA_PROJECT,
-                                        accept)));
-                projectRefs.add(project);
+            String projectType;
+            if (hProject.getDefaultProjectType() == null) {
+                projectType = "";
+            } else {
+                projectType = hProject.getDefaultProjectType().toString();
             }
+            Project project =
+                    new Project(hProject.getSlug(), hProject.getName(),
+                            projectType);
+            project.setStatus(hProject.getStatus());
+            project.getLinks(true).add(
+                    new Link(URI.create("p/" + hProject.getSlug()), "self",
+                            MediaTypes.createFormatSpecificType(
+                                    MediaTypes.APPLICATION_ZANATA_PROJECT,
+                                    accept)));
+            projectRefs.add(project);
         }
 
         Type genericType = new GenericType<List<Project>>() {
@@ -112,4 +109,8 @@ public class ProjectsService implements ProjectsResource {
         return Response.ok(entity).build();
     }
 
+    @VisibleForTesting
+    protected void setMediaType(MediaType accept) {
+        this.accept = accept;
+    }
 }

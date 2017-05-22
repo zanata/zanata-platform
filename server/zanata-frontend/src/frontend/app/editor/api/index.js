@@ -6,17 +6,19 @@
 // https://www.npmjs.com/package/whatwg-fetch
 // (it is just a wrapper around whatwg-fetch)
 import fetch from 'isomorphic-fetch'
-import { encode } from '../utils/doc-id'
+import { encode } from '../utils/doc-id-util'
 import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
   STATUS_TRANSLATED,
   STATUS_APPROVED
-} from '../utils/status'
+} from '../utils/status-util'
+
+const config = window.config || {}
 
 /* The part of the path that is just the server deployment path. e.g. if the
  * server is deployed at example.com/zanata then this will be /zanata */
-const baseUrl = window.config.baseUrl || ''
+const baseUrl = config.baseUrl || ''
 
 /* The URL of this editor app. Used as a base for all URLs in the app. */
 export const serviceUrl = getServiceUrl()
@@ -25,11 +27,11 @@ export const dashboardUrl = serviceUrl + '/dashboard'
 
 /* The URL for the server where the REST API is deployed. Defaults to the
  * current server if there is nothing specified in the config. */
-const apiOrigin = window.config.apiOrigin || serviceUrl
+const apiOrigin = config.apiOrigin || serviceUrl
 
 /* The URL where the REST API is deployed.
  * Used as a base for all REST URLs used by the API */
-const apiRoot = window.config.apiRoot || ''
+const apiRoot = config.apiRoot || ''
 export const baseRestUrl = apiOrigin + apiRoot
 
 /**

@@ -223,7 +223,7 @@ public class TextFlowSearchServiceImpl implements TextFlowSearchService {
 
         @Override
         public Long apply(HDocument input) {
-            return input.getId();
+            return input != null ? input.getId(): null;
         }
     }
 }

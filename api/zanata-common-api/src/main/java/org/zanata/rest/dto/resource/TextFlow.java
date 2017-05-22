@@ -11,6 +11,8 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -23,12 +25,16 @@ import org.zanata.rest.dto.Extensible;
 import org.zanata.rest.dto.LocaleIdAdapter;
 import org.zanata.rest.dto.extensions.gettext.TextFlowExtension;
 
+/**
+ * A translatable string
+ */
 @XmlType(name = "textFlowType", propOrder = { "content", "contents", "plural",
         "extensions" })
 @JsonPropertyOrder({ "id", "lang", "content", "contents", "plural",
         "extensions" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@Label("Text Flow")
 public class TextFlow extends TextContainer implements
         Extensible<TextFlowExtension>, Serializable {
     private static final long serialVersionUID = 1L;
@@ -88,6 +94,7 @@ public class TextFlow extends TextContainer implements
     }
 
     @XmlAttribute(name = "id", required = true)
+    @DocumentationExample("abc123")
     public String getId() {
         return id;
     }
@@ -97,7 +104,7 @@ public class TextFlow extends TextContainer implements
     }
 
     /**
-     * @return whether this message supports plurals
+     * Whether this message supports plurals
      */
     @XmlElement(namespace = Namespaces.ZANATA_OLD)
     public boolean isPlural() {
@@ -112,8 +119,12 @@ public class TextFlow extends TextContainer implements
         this.plural = pluralSupported;
     }
 
+    /**
+     * Locale code for this text flow.
+     */
     @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
     @XmlAttribute(name = "lang", namespace = Namespaces.XML, required = false)
+    @DocumentationExample("es-ES")
     public LocaleId getLang() {
         return lang;
     }

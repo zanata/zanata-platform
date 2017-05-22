@@ -73,6 +73,6 @@ public class TransMemoryUnitSuggestionDetail implements SuggestionDetail {
     }
 
     public Date getLastChanged() {
-        return this.lastChanged;
+        return new Date(this.lastChanged.getTime());
     }
 }

@@ -120,7 +120,7 @@ public class TextFlowSuggestionDetail implements SuggestionDetail {
     }
 
     public Date getLastModifiedDate() {
-        return this.lastModifiedDate;
+        return new Date(this.lastModifiedDate.getTime());
     }
 
     public String getLastModifiedBy() {

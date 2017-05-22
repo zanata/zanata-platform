@@ -31,6 +31,7 @@ public class LocaleRoleDescriptor
 
     public static final LocaleRoleDescriptor INSTANCE =
             new LocaleRoleDescriptor();
+    private static final long serialVersionUID = -5368269315396189744L;
 
     protected LocaleRoleDescriptor() {
         super(LocaleRole.class);
