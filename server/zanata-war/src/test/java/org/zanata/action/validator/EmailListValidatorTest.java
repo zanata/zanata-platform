@@ -1,25 +1,30 @@
 package org.zanata.action.validator;
 
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
+import javax.inject.Inject;
+import javax.validation.ConstraintValidatorContext;
+
+import org.hibernate.validator.cdi.HibernateValidator;
+import org.jglue.cdiunit.AdditionalClasspaths;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.zanata.test.CdiUnitRunner;
 
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.validation.ConstraintValidatorContext;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(CdiUnitRunner.class)
+// enable Hibernate Validator's ValidationExtension so we can inject Validator
+@AdditionalClasspaths(HibernateValidator.class)
 public class EmailListValidatorTest {
-
-    @Produces
-    private EmailValidator emailValidator = new EmailValidator();
 
     @Inject
     private EmailListValidator validator;
     private ConstraintValidatorContext context = null;
+
+    @Before
+    public void setUp() {
+        validator.initialize(null);
+    }
 
     @Test
     public void nullIsValid() throws Exception {

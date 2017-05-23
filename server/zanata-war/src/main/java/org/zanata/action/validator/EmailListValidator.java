@@ -21,38 +21,44 @@
 package org.zanata.action.validator;
 
 import java.io.Serializable;
+import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import javax.validation.Validator;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator;
 
-// FIXME don't use org.hibernate.validator.internal.*
+@ApplicationScoped
 public class EmailListValidator implements
         ConstraintValidator<EmailList, String>, Serializable {
     private static final long serialVersionUID = 1L;
 
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
-    // org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator
-    private ConstraintValidator<Email, CharSequence> emailValidator;
+    private Validator validator;
+
+    private static class EmailHolder {
+        EmailHolder(String email) {
+            this.email = email;
+        }
+        final @Email String email;
+    }
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext context) {
-        if (s == null) {
-            return true;
-        }
-        if (s.length() == 0) {
+        if (s == null || s.isEmpty()) {
             return true;
         }
 
         // trim still required to prevent leading whitespace invalidating the
         // first email address
         for (String email : s.trim().split("\\s*,\\s*")) {
-            if (!emailValidator.isValid(email, context)) {
+            Set<?> violations = validator.validate(new EmailHolder(email));
+            if (!violations.isEmpty()) {
                 return false;
             }
         }
