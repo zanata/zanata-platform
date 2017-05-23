@@ -56,6 +56,8 @@
  * [ZNTA-481](https://zanata.atlassian.net/browse/ZNTA-481) - RFE: User should be able to log in with their username, or their email
 
 ##### Bug Fixes
+ * [ZNTA-1980](https://zanata.atlassian.net/browse/ZNTA-1980) - Glossary translation comment box is awful
+ * [ZNTA-1972](https://zanata.atlassian.net/browse/ZNTA-1972) - Glossary "no content" icon not centred
  * [ZNTA-1971](https://zanata.atlassian.net/browse/ZNTA-1971) - Long name string pushes image, details off user profile page
  * [ZNTA-1966](https://zanata.atlassian.net/browse/ZNTA-1966) - TM merge will fail on having TM from TMX import
  * [ZNTA-1947](https://zanata.atlassian.net/browse/ZNTA-1947) - There is no any cancel or go back option on Create group page.
