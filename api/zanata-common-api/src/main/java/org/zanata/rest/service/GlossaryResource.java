@@ -37,6 +37,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.GlossaryFileUploadForm;
@@ -50,7 +52,7 @@ import org.zanata.rest.dto.ResultList;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 /**
- * Glossary management via REST
+ * Glossary management
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
  **/
@@ -63,6 +65,10 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_XML,
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON })
 @ResourceLabel("Glossary")
+@StatusCodes({
+        @ResponseCode(code = 500,
+                condition = "If there is an unexpected error in the server while performing this operation")
+})
 public interface GlossaryResource extends RestResource {
     public static final String SERVICE_PATH = "/glossary";
 
@@ -78,13 +84,6 @@ public interface GlossaryResource extends RestResource {
 
     /**
      * Return default global glossary qualifiedName
-     *
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - List of Global glossary qualified names used in the system.
-     *                   e.g {@link #GLOBAL_QUALIFIED_NAME}
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
      */
     @GET
     @Path("/qualifiedName")
@@ -92,6 +91,10 @@ public interface GlossaryResource extends RestResource {
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @TypeHint(QualifiedName.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Returns the qualified name " +
+                    "for the system-wide glossary"),
+    })
     public Response getQualifiedName();
 
     /**
@@ -99,12 +102,6 @@ public interface GlossaryResource extends RestResource {
      *
      * @param qualifiedName
      *          Qualified name of glossary, default to {@link #GLOBAL_QUALIFIED_NAME}
-     *
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Global glossary info in the system.
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
      */
     @GET
     @Path("/info")
@@ -112,12 +109,19 @@ public interface GlossaryResource extends RestResource {
         MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
         MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
     @TypeHint(GlossaryInfo.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Returns the global glossary " +
+                    "information"),
+    })
     public Response getInfo(
             @DefaultValue(GLOBAL_QUALIFIED_NAME) @QueryParam("qualifiedName") String qualifiedName);
 
     /**
-     * Returns Glossary entries for the given source and translation locale with
-     * paging
+     * Returns a subset of Glossary entries for the given source and translation
+     * locale as indicated by the paging parameters.
+     *
+     * @see {@link org.zanata.rest.dto.GlossaryEntry} for details on the result
+     * list's contents.
      *
      * @param srcLocale
      *            Source locale - Required (default value: en-US).
@@ -135,19 +139,18 @@ public interface GlossaryResource extends RestResource {
      *            See {@link org.zanata.common.GlossarySortField}
      * @param qualifiedName
      *            Qualified name of glossary, default to {@link #GLOBAL_QUALIFIED_NAME}
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Response containing all Glossary entries for the given
-     *         locale.
-     *         Bad request(400) - If page or sizePerPage is negative value, or sizePerPage is more than 1000.
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected
-     *         error in the server while performing this operation.
      */
     @GET
     @Path("/entries")
     @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
             MediaType.APPLICATION_JSON })
     @TypeHint(ResultList.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Response containing Glossary " +
+                    "entries for the given locale."),
+            @ResponseCode(code = 400, condition = "If page or sizePerPage are " +
+                    "negative, or sizePerPage is greater than 1000"),
+    })
     public Response getEntries(
             @DefaultValue("en-US") @QueryParam("srcLocale") LocaleId srcLocale,
             @QueryParam("transLocale") LocaleId transLocale,
@@ -159,6 +162,9 @@ public interface GlossaryResource extends RestResource {
 
     /**
      * Returns Glossary entries based on a fuzzy text search.
+     *
+     * @see {@link org.zanata.rest.dto.GlossaryEntry} for details on the result
+     * list's contents.
      *
      * @param srcLocale
      *            Source locale
@@ -172,23 +178,20 @@ public interface GlossaryResource extends RestResource {
      * @param projectSlug
      *            (optional) Project slug if a project glossary should be searched
      *            in addition to the global glossary.
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Response containing all Glossary entries for the given
-     *         locale.
-     *         Bad request(400)
-     *           - When maxResults is not strictly positive or is more than 1000.
-     *           - When searchText is missing
-     *           - When transLocale is missing
-     *           - When there is an error parsing the searchText
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected
-     *         error in the server while performing this operation.
      */
     @GET
     @Path("/search")
     @Produces({ MediaTypes.APPLICATION_ZANATA_GLOSSARY_JSON,
             MediaType.APPLICATION_JSON })
     @TypeHint(ResultList.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Response containing Glossary " +
+                    "entries for the given search parameters."),
+            @ResponseCode(code = 400, condition = "When maxResults is not strictly positive or is more than 1000"),
+            @ResponseCode(code = 400, condition = "When searchText is missing"),
+            @ResponseCode(code = 400, condition = "When transLocale is missing"),
+            @ResponseCode(code = 400, condition = "When there is an error parsing the searchText"),
+    })
     Response search(
             @DefaultValue("en-US") @QueryParam("srcLocale") LocaleId srcLocale,
             @CheckForNull @QueryParam("transLocale") LocaleId transLocale,
@@ -204,7 +207,7 @@ public interface GlossaryResource extends RestResource {
      * @param locale include locale-specific detail for this locale
      * @param termIds id for glossary terms in the default locale, found in
      *                results of {@link #search(LocaleId, LocaleId, int, String, String)}
-     * @return source and target glossary details.
+     * @return Source and target glossary details.
      */
     @GET
     @Path("/details/{locale}")
@@ -213,111 +216,122 @@ public interface GlossaryResource extends RestResource {
     // TODO when GWT is removed, move the GlossaryDetails class to this module
     //      and add the type hint.
     // @TypeHint(GlossaryDetails[].class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Details successfully found")
+    })
     Response getDetails(
             @CheckForNull @PathParam("locale") LocaleId locale,
             @CheckForNull @QueryParam("termIds") List<Long> termIds);
 
     /**
-     * Download all glossary entries as file
+     * Download all glossary entries as a file
      *
-     * @param fileType - po or cvs (case insensitive). Default - csv
-     * @param locales - optional comma separated list of languages required.
+     * @param fileType po or cvs (case insensitive)
+     * @param locales optional comma separated list of languages required.
      * @param qualifiedName
      *            Qualified name of glossary, default to {@link #GLOBAL_QUALIFIED_NAME}
+     * @return A file stream with the glossary contents in the specified format
      */
     @GET
     @Path("/file")
     @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "File is successfully built " +
+                    "and served")
+    })
     public Response downloadFile(
         @DefaultValue("csv") @QueryParam("fileType") String fileType,
         @QueryParam("locales") String locales,
         @DefaultValue(GLOBAL_QUALIFIED_NAME) @QueryParam("qualifiedName") String qualifiedName);
 
     /**
-     * Create or update glossary entry.
-     * GlossaryTerm with locale different from {@param locale} will be ignored.
+     * Create or update glossary entries.
+     * Glossary Terms with a locale different from the given locale parameter
+     * will be ignored.
      *
      * @param glossaryEntries The glossary entries to create/update
      * @param qualifiedName
-     *            Qualified name of glossary, default to {@link #GLOBAL_QUALIFIED_NAME}
+     *            Qualified name of glossary, defaults to {@link #GLOBAL_QUALIFIED_NAME}
      * @param locale
-     *            The translation locale to create/update
-     *
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - If the glossary entry were successfully created/updated.
-     *         UNAUTHORIZED(401) - If the user does not have the proper
-     *         permissions to perform this operation.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
+     *            Locale to which the given glossary entries belong
      */
     @POST
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     @Path("/entries")
     @TypeHint(GlossaryResults.class)
+    @StatusCodes({
+        @ResponseCode(code = 200, condition = "The glossary entries were " +
+                "successfully created or updated"),
+        @ResponseCode(code = 401, condition = "The user does not have the proper" +
+                " permissions to perform this operation")
+    })
     public Response post(List<GlossaryEntry> glossaryEntries,
             @QueryParam("locale") String locale,
             @DefaultValue(GLOBAL_QUALIFIED_NAME) @QueryParam("qualifiedName") String qualifiedName);
 
     /**
-     * Upload glossary file (po, cvs)
+     * Upload glossary file (currently supported formats: po, csv)
      *
-     * @param form {@link org.zanata.rest.GlossaryFileUploadForm}
      *
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         CREATED(201) - If files successfully uploaded.
-     *         UNAUTHORIZED(401) - If the user does not have the proper
-     *         permissions to perform this operation.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
-     *
+     * @param form Multi-part form with the following named parts: <br>
+     *             file: The file contents <br>
+     *             srcLocale: Source locale for the glossary entries <br>
+     *             transLocale: Translation locale for the glossary entries <br>
+     *             fileName: The name of the file being uploaded<br>
+     *             qualifiedName: The qualified name for the glossary<br>
      */
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
     @POST
     @TypeHint(GlossaryResults.class)
+    @StatusCodes({
+            @ResponseCode(code = 201, condition = "Files successfully uploaded"),
+            @ResponseCode(code = 401, condition = "The user does not have the proper" +
+                    " permissions to perform this operation")
+    })
     public Response upload(@MultipartForm GlossaryFileUploadForm form);
 
     /**
      *
-     * Delete glossary which given id.
+     * Delete a glossary entry.
      *
      * @param id id for source glossary term
      * @param qualifiedName
-     *      Qualified name of glossary, default to {@link #GLOBAL_QUALIFIED_NAME}
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - If the glossary entry were successfully deleted.
-     *         UNAUTHORIZED(401) - If the user does not have the proper
-     *         permissions to perform this operation.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
+     *      Qualified name of glossary, defaults to {@link #GLOBAL_QUALIFIED_NAME}
+     * @return the removed glossary entry
      */
     @DELETE
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/entries/{id}")
     @TypeHint(GlossaryEntry.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "The glossary entry was successfully deleted"),
+            @ResponseCode(code = 401, condition = "The user does not have the proper" +
+                    " permissions to perform this operation")
+    })
     public Response deleteEntry(@PathParam("id") Long id,
         @DefaultValue(GLOBAL_QUALIFIED_NAME) @QueryParam("qualifiedName") String qualifiedName);
 
     /**
-     * Delete all glossary terms.
+     * Delete all entries in a glossary.
      *
      * @param qualifiedName
-     *            Qualified name of glossary, default to {@link #GLOBAL_QUALIFIED_NAME}
+     *            Qualified name of glossary, defaults to {@link #GLOBAL_QUALIFIED_NAME}
      *
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - If the glossary entries were successfully deleted.
-     *         UNAUTHORIZED(401) - If the user does not have the proper
-     *         permissions to perform this operation.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
+     * @return The number of deleted glossary entries
+     *
+     * @responseExample
+     *
+     * TODO Need to define a 'produces' header
      */
     @DELETE
     @TypeHint(Integer.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "The glossary was deleted"),
+            @ResponseCode(code = 401, condition = "The user does not have the proper" +
+                    " permissions to perform this operation")
+    })
     public Response deleteAllEntries(
             @DefaultValue(GLOBAL_QUALIFIED_NAME) @QueryParam("qualifiedName") String qualifiedName);
 
