@@ -291,18 +291,6 @@ public class TranslationFileServiceImpl implements TranslationFileService {
         return DOCTYPEMAP.keySet();
     }
 
-    private boolean hasAdapterFor(String fileNameOrExtension) {
-        String extension = FilenameUtils.getExtension(fileNameOrExtension);
-        if (extension == null) {
-            return false;
-        }
-        DocumentType documentType = DocumentType.getByName(extension);
-        if (documentType == null) {
-            return false;
-        }
-        return hasAdapterFor(documentType);
-    }
-
     private FileFormatAdapter getAdapterFor(String fileNameOrExtension) {
         String extension = FilenameUtils.getExtension(fileNameOrExtension);
         if (extension == null) {

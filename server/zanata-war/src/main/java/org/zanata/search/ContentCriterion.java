@@ -1,6 +1,8 @@
 package org.zanata.search;
 
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
 import org.zanata.common.HasContents;
 import org.zanata.util.HqlCriterion;
 import org.zanata.util.QueryBuilder;
@@ -68,7 +70,7 @@ public class ContentCriterion {
     }
 
     ContentCriterion withEntityAlias(final String entityAlias) {
-        return this.entityAlias == entityAlias ? this
+        return StringUtils.equals(this.entityAlias, entityAlias) ? this
                 : new ContentCriterion(this.numOfContentFields,
                         this.caseSensitive, entityAlias);
     }

@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.cdise.api.ContextControl;
 
 /**
@@ -22,8 +24,10 @@ public class WithRequestScopeInterceptor implements Serializable {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(WithRequestScopeInterceptor.class);
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private BeanManager beanManager;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private ContextControl ctxCtrl;
 

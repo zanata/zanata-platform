@@ -78,7 +78,9 @@ public class IndexingServiceImpl implements IndexingService {
                         "Reindexing aborted because there are no actions to perform (may be indexing an empty table)");
                 return AsyncTaskResult.completed();
             }
-            for (Class<?> clazz : indexingOptions.keySet()) {
+            for (Map.Entry<Class<?>, ReindexClassOptions> entry : indexingOptions
+                    .entrySet()) {
+                Class<?> clazz = entry.getKey();
                 if (!handle.isCancelled()
                         && indexingOptions.get(clazz).isPurge()) {
                     log.info("purging index for {}", clazz);
@@ -131,7 +133,9 @@ public class IndexingServiceImpl implements IndexingService {
             AsyncTaskHandle handle) {
         // set up progress counter
         int totalOperations = 0;
-        for (Class<?> clazz : indexingOptions.keySet()) {
+        for (Map.Entry<Class<?>, ReindexClassOptions> entry : indexingOptions
+                .entrySet()) {
+            Class<?> clazz = entry.getKey();
             ReindexClassOptions opts = indexingOptions.get(clazz);
             if (opts.isPurge()) {
                 totalOperations++;

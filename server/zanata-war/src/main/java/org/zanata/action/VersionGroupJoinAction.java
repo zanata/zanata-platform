@@ -24,6 +24,8 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
@@ -74,6 +76,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
     private HAccount authenticatedAccount;
     private String slug;
     private String projectSlug;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<SelectableVersion> projectVersions = Lists.newArrayList();
     @Inject
     private EmailService emailServiceImpl;
@@ -211,7 +214,7 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
         projectVersions.clear();
     }
 
-    public final class SelectableVersion extends ProjectIterationId {
+    public static final class SelectableVersion extends ProjectIterationId {
         private boolean selected;
 
         public SelectableVersion(String projectSlug, String versionSlug,
@@ -226,6 +229,24 @@ public class VersionGroupJoinAction extends AbstractAutocomplete<HProject>
 
         public void setSelected(final boolean selected) {
             this.selected = selected;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+
+            SelectableVersion that = (SelectableVersion) o;
+
+            return selected == that.selected;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + (selected ? 1 : 0);
+            return result;
         }
     }
 

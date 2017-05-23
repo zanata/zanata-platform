@@ -3,7 +3,7 @@ import {
   CLAMP_PAGE,
   UPDATE_PAGE
 } from '../actions/controls-header-actions'
-import { COPY_GLOSSARY_TERM } from '../actions/glossary-actions'
+import { COPY_GLOSSARY_TERM } from '../actions/glossary-action-types'
 import {
   CANCEL_EDIT,
   COPY_FROM_ALIGNED_SOURCE,
@@ -21,8 +21,8 @@ import {
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
   UNDO_EDIT
-} from '../actions/phrases-actions'
-import { COPY_SUGGESTION } from '../actions/suggestions-actions'
+} from '../actions/phrases-action-types'
+import { COPY_SUGGESTION } from '../actions/suggestions-action-types'
 import {
   calculateMaxPageIndex,
   calculateMaxPageIndexFromState,
@@ -31,6 +31,8 @@ import {
 import { replaceRange } from '../utils/string-utils'
 import { SET_SAVE_AS_MODE } from '../actions/key-shortcuts-actions'
 import { MOVE_NEXT, MOVE_PREVIOUS } from '../actions/phrase-navigation-actions'
+
+// FIXME this reducer is too big. See if it can be split up.
 
 // TODO use lodash when upgraded
 // clamps a number within the inclusive lower and upper bounds
@@ -158,6 +160,7 @@ const phraseReducer = (state = defaultState, action) => {
       const { newTranslations } = phrase
       return updatePhrase(action.phraseId, {
         inProgressSave: {$set: undefined},
+        // FIXME check whether this should be action.translations instead
         translations: {$set: newTranslations},
         // TODO same as inProgressSave.status unless the server adjusted it
         status: {$set: action.status},
@@ -263,6 +266,7 @@ const phraseReducer = (state = defaultState, action) => {
   function changeSelectedIndex (indexUpdateCallback) {
     const { docId } = action.getState().context
     const { inDoc, selectedPhraseId } = state
+    // FIXME looks like this may not work properly for filtered phrase list.
     const phrases = inDoc[docId]
     const currentIndex = phrases.findIndex(x => x.id === selectedPhraseId)
 

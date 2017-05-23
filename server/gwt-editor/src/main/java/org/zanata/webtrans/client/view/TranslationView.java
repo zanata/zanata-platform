@@ -40,7 +40,7 @@ public class TranslationView extends Composite implements
     private static final double MIN_SOUTH_PANEL_HEIGHT = 10;
     private static final double GLOSSARY_PANEL_WIDTH = 500;
     private static final int ANIMATE_DURATION = 200;
-    private static double SOUTH_PANEL_HEIGHT = 150;
+    private double SOUTH_PANEL_HEIGHT = 150;
 
     private final TranslationMemoryDisplay transMemoryView;
     private final GlossaryDisplay glossaryView;

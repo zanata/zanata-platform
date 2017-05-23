@@ -198,7 +198,7 @@ public class ServerConfigurationService {
      * Converts HApplicationConfiguration to dto Configuration. It also contains
      * a link to the configuration itself.
      */
-    private class ToConfigurationFunction
+    private static class ToConfigurationFunction
             implements Function<HApplicationConfiguration, Configuration> {
         private final MediaType accept;
 

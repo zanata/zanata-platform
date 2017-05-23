@@ -56,7 +56,7 @@ public final class HttpUtil {
      * Example header names might be "X-Forwarded-For", "Proxy-Client-IP",
      * "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"
      */
-    public static String PROXY_HEADER = System
+    private static String PROXY_HEADER = System
             .getProperty("ZANATA_PROXY_HEADER");
 
     public static String getApiKey(HttpRequest request) {

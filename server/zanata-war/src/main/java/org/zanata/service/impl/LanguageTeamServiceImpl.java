@@ -1,6 +1,7 @@
 package org.zanata.service.impl;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -72,15 +73,24 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
                                 + " languages at one time.");
             }
             HLocale lang = localeDAO.findByLocaleId(localeId);
-            localeMember =
-                    new HLocaleMember(currentPerson, lang, isTranslator,
-                            isReviewer, isCoordinator);
-            lang.getMembers().add(localeMember);
-            permissionChangedEvent =
-                    new LanguageTeamPermissionChangedEvent(currentPerson,
-                            localeId, authenticatedUser)
-                            .joiningTheTeam(isTranslator, isReviewer,
-                                    isCoordinator);
+            if (lang != null) {
+                localeMember =
+                        new HLocaleMember(currentPerson, lang, isTranslator,
+                                isReviewer, isCoordinator);
+
+                Set<HLocaleMember> members = lang.getMembers();
+                if (members != null) {
+                    members.add(localeMember);
+                }
+                permissionChangedEvent =
+                        new LanguageTeamPermissionChangedEvent(currentPerson,
+                                localeId, authenticatedUser)
+                                .joiningTheTeam(isTranslator, isReviewer,
+                                        isCoordinator);
+                localeMemberDAO.makePersistent(localeMember);
+                localeMemberDAO.flush();
+                languageTeamPermissionChangedEvent.fire(permissionChangedEvent);
+            }
         } else {
             localeMember =
                     localeMemberDAO.findByPersonAndLocale(personId, localeId);
@@ -92,10 +102,11 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
             localeMember.setTranslator(isTranslator);
             localeMember.setReviewer(isReviewer);
             localeMember.setCoordinator(isCoordinator);
+
+            localeMemberDAO.makePersistent(localeMember);
+            localeMemberDAO.flush();
+            languageTeamPermissionChangedEvent.fire(permissionChangedEvent);
         }
-        localeMemberDAO.makePersistent(localeMember);
-        localeMemberDAO.flush();
-        languageTeamPermissionChangedEvent.fire(permissionChangedEvent);
     }
 
     public boolean leaveLanguageTeam(String locale, Long personId) {
@@ -107,7 +118,10 @@ public class LanguageTeamServiceImpl implements LanguageTeamService {
 
         if (membership != null) {
             localeMemberDAO.makeTransient(membership);
-            lang.getMembers().remove(membership);
+            Set<HLocaleMember> members = lang.getMembers();
+            if (members != null) {
+                members.remove(membership);
+            }
             localeMemberDAO.flush();
             HPerson doneByPerson = authenticatedAccount.getPerson();
             languageTeamPermissionChangedEvent.fire(

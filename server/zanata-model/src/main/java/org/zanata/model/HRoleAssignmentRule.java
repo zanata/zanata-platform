@@ -36,6 +36,7 @@ import javax.persistence.ManyToOne;
 @Cacheable
 public class HRoleAssignmentRule extends ModelEntityBase {
 
+    private static final long serialVersionUID = -3893092614851019323L;
     private String policyName;
     private String identityRegExp;
     private HAccountRole roleToAssign;
@@ -45,6 +46,7 @@ public class HRoleAssignmentRule extends ModelEntityBase {
         return policyName;
     }
 
+    @Column(columnDefinition = "longtext")
     public String getIdentityRegExp() {
         return identityRegExp;
     }
@@ -73,5 +75,35 @@ public class HRoleAssignmentRule extends ModelEntityBase {
                 + this.getPolicyName() + ", identityRegExp="
                 + this.getIdentityRegExp() + ", roleToAssign="
                 + this.getRoleToAssign() + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        HRoleAssignmentRule that = (HRoleAssignmentRule) o;
+
+        if (policyName != null ? !policyName.equals(that.policyName) :
+                that.policyName != null) return false;
+        if (identityRegExp != null ?
+                !identityRegExp.equals(that.identityRegExp) :
+                that.identityRegExp != null) return false;
+        return roleToAssign != null ? roleToAssign.equals(that.roleToAssign) :
+                that.roleToAssign == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (policyName != null ? policyName.hashCode() : 0);
+        result =
+                31 * result +
+                        (identityRegExp != null ? identityRegExp.hashCode() :
+                                0);
+        result = 31 * result +
+                (roleToAssign != null ? roleToAssign.hashCode() : 0);
+        return result;
     }
 }

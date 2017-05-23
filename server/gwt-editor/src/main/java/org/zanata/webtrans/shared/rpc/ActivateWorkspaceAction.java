@@ -6,7 +6,6 @@ public class ActivateWorkspaceAction implements
         DispatchAction<ActivateWorkspaceResult> {
 
     private static final long serialVersionUID = 1L;
-
     private WorkspaceId workspaceId;
 
     @SuppressWarnings("unused")

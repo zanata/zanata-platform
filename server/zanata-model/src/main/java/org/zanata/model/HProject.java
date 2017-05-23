@@ -104,7 +104,9 @@ public class HProject extends SlugEntityBase
     @javax.persistence.Lob
     private String homeContent;
     @Url(canEndInSlash = true)
+    @Column(columnDefinition = "longtext")
     private String sourceViewURL;
+    @Column(columnDefinition = "longtext")
     private String sourceCheckoutURL;
     private boolean overrideLocales = false;
     private boolean restrictedByRoles = false;
@@ -171,6 +173,7 @@ public class HProject extends SlugEntityBase
     @Type(type = "entityStatus")
     @NotNull
     @Field
+    @Column(columnDefinition = "char(1)")
     private EntityStatus status = EntityStatus.ACTIVE;
 
     public void addIteration(HProjectIteration iteration) {

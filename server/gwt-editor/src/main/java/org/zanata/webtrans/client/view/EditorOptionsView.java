@@ -224,6 +224,8 @@ public class EditorOptionsView extends Composite implements
                 updatePageSizeAnchorStyle(fifty);
                 listener.onPageSizeClick(pageSize);
                 break;
+            default:
+                break;
         }
     }
 

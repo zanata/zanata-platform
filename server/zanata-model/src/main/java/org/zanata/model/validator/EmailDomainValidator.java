@@ -36,6 +36,7 @@ public class EmailDomainValidator
         implements ConstraintValidator<EmailDomain, String>,
         Serializable {
 
+    private static final long serialVersionUID = -6301906837677156304L;
     private Provider<Set<String>> permittedEmailDomainsProvider;
 
     @Inject

@@ -32,6 +32,7 @@ import org.zanata.webtrans.shared.model.DocumentId;
  */
 public class TransMemoryMergeStartOrEnd implements SessionEventData {
 
+    private static final long serialVersionUID = 5893474380756113583L;
     private Date startedTime;
     private String startedBy;
     private EditorClientId editorClientId;
@@ -42,12 +43,14 @@ public class TransMemoryMergeStartOrEnd implements SessionEventData {
     public TransMemoryMergeStartOrEnd(Date startedTime, String startedBy,
             EditorClientId editorClientId, DocumentId documentId, long total,
             Date endTime) {
-        this.startedTime = startedTime;
+        this.startedTime = startedTime != null ?
+                new Date(startedTime.getTime()) : null;
         this.startedBy = startedBy;
         this.editorClientId = editorClientId;
         this.documentId = documentId;
         textFlowCount = total;
-        this.endTime = endTime;
+        this.endTime = endTime != null ?
+                new Date(endTime.getTime()) : null;
     }
 
     @SuppressWarnings("unused")
@@ -55,7 +58,8 @@ public class TransMemoryMergeStartOrEnd implements SessionEventData {
     }
 
     public Date getStartedTime() {
-        return startedTime;
+        return startedTime != null ?
+                new Date(startedTime.getTime()) : null;
     }
 
     public String getStartedBy() {
@@ -71,7 +75,8 @@ public class TransMemoryMergeStartOrEnd implements SessionEventData {
     }
 
     public Date getEndTime() {
-        return endTime;
+        return endTime != null ?
+                new Date(endTime.getTime()) : null;
     }
 
     public long getTextFlowCount() {

@@ -1,5 +1,6 @@
 <FindBugsFilter>
   <Match>
     <Class name="~.*\.HelpMojo" />
+    <Source name="~.*\.kt"/>
   </Match>
 </FindBugsFilter>

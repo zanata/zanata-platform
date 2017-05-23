@@ -8,6 +8,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
  */
 public class GetTranslationHistoryAction extends
         AbstractWorkspaceAction<GetTranslationHistoryResult> {
+    private static final long serialVersionUID = 5017453189105668699L;
     private TransUnitId transUnitId;
 
     public GetTranslationHistoryAction(TransUnitId transUnitId) {

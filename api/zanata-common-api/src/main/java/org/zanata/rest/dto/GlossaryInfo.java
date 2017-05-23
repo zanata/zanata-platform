@@ -21,6 +21,7 @@ import org.zanata.common.Namespaces;
 @JsonPropertyOrder({ "srcLocale", "transLocale"})
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class GlossaryInfo implements Serializable {
+    private static final long serialVersionUID = -5688873815049369490L;
     private GlossaryLocaleInfo srcLocale;
     private List<GlossaryLocaleInfo> transLocale;
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.common.base.MoreObjects;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 
 import com.google.common.base.Objects;
@@ -11,7 +12,7 @@ import com.google.common.base.Objects;
 public class UpdateTransUnitResult implements DispatchResult {
 
     private static final long serialVersionUID = 1L;
-
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<TransUnitUpdateInfo> tuUpdateInfo;
 
     public UpdateTransUnitResult() {

@@ -21,6 +21,7 @@
 package org.zanata.model.tm;
 
 import java.util.Map;
+
 import javax.annotation.Nonnull;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -35,10 +36,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.zanata.model.ModelEntityBase;
+
 import com.google.common.collect.Maps;
 
 /**
@@ -50,6 +55,8 @@ import com.google.common.collect.Maps;
 @Entity
 @Access(AccessType.FIELD)
 @Indexed
+@Table(uniqueConstraints = @UniqueConstraint(name = "UK_natural_id",
+        columnNames = { "tm_id", "unique_id" }))
 public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata {
     private static final long serialVersionUID = 1L;
 
@@ -73,7 +80,7 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata {
                 new TransMemoryUnitVariant(sourceLanguage, sourceContent));
     }
 
-    @Column(name = "trans_unit_id", nullable = true)
+    @Column(name = "trans_unit_id", nullable = true, columnDefinition = "longtext")
     private String transUnitId;
     // This is the BCP-47 language code, or null iff the TU supports all source
     // languages (*all* in TMX)
@@ -96,7 +103,7 @@ public class TransMemoryUnit extends ModelEntityBase implements HasTMMetadata {
     @Enumerated(EnumType.STRING)
     @Column(name = "metadata_type", nullable = true)
     private TMMetadataType metadataType;
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "longtext")
     @Basic(fetch = FetchType.LAZY)
     private String metadata;
 

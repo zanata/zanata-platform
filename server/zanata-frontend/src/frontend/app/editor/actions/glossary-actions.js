@@ -5,6 +5,19 @@
 import { debounce, isEmpty } from 'lodash'
 import { CALL_API } from 'redux-api-middleware'
 
+import {
+  GLOSSARY_SEARCH_TEXT_CHANGE,
+  COPY_GLOSSARY_TERM,
+  GLOSSARY_TERMS_REQUEST,
+  GLOSSARY_TERMS_SUCCESS,
+  GLOSSARY_TERMS_FAILURE,
+  SET_GLOSSARY_DETAILS_INDEX,
+  SHOW_GLOSSARY_DETAILS,
+  GLOSSARY_DETAILS_REQUEST,
+  GLOSSARY_DETAILS_SUCCESS,
+  GLOSSARY_DETAILS_FAILURE
+} from './glossary-action-types'
+
 import { baseRestUrl } from '../api'
 import { waitForPhraseDetail } from '../utils/phrase-util'
 import { getJsonWithCredentials } from '../utils/api-util'
@@ -45,7 +58,6 @@ export function findGlossaryTermsByPhraseId (phraseId) {
 }
 
 /* Action to set the current glossary search text. Does not trigger a search. */
-export const GLOSSARY_SEARCH_TEXT_CHANGE = Symbol('GLOSSARY_SEARCH_TEXT_CHANGE')
 export function glossarySearchTextChange (searchText) {
   return {
     type: GLOSSARY_SEARCH_TEXT_CHANGE,
@@ -53,7 +65,6 @@ export function glossarySearchTextChange (searchText) {
   }
 }
 
-export const COPY_GLOSSARY_TERM = Symbol('COPY_GLOSSARY_TERM')
 export function copyGlossaryTerm (termTranslation) {
   return {
     type: COPY_GLOSSARY_TERM,
@@ -62,13 +73,6 @@ export function copyGlossaryTerm (termTranslation) {
     }
   }
 }
-
-/* API request for glossary search has started. */
-export const GLOSSARY_TERMS_REQUEST = Symbol('GLOSSARY_TERMS_REQUEST')
-/* API request for glossary search has completed successfully. */
-export const GLOSSARY_TERMS_SUCCESS = Symbol('GLOSSARY_TERMS_SUCCESS')
-/* API request for glossary search has failed. */
-export const GLOSSARY_TERMS_FAILURE = Symbol('GLOSSARY_TERMS_FAILURE')
 
 const MAX_GLOSSARY_TERMS = 15
 
@@ -114,8 +118,6 @@ function findGlossaryTerms (searchText) {
   }
 }
 
-/* Indicates the index in glossary results that should have details displayed */
-export const SET_GLOSSARY_DETAILS_INDEX = Symbol('SET_GLOSSARY_DETAILS_INDEX')
 function setGlossaryDetailsIndex (index) {
   return {
     type: SET_GLOSSARY_DETAILS_INDEX,
@@ -123,8 +125,6 @@ function setGlossaryDetailsIndex (index) {
   }
 }
 
-/* Set whether glossary details modal is showing */
-export const SHOW_GLOSSARY_DETAILS = Symbol('SHOW_GLOSSARY_DETAILS')
 export function showGlossaryDetails (show) {
   return {
     type: SHOW_GLOSSARY_DETAILS,
@@ -146,13 +146,6 @@ export function showGlossaryTermDetails (index) {
     dispatch(getGlossaryDetails(term))
   }
 }
-
-/* API request for glossary details has started. */
-export const GLOSSARY_DETAILS_REQUEST = Symbol('GLOSSARY_DETAILS_REQUEST')
-/* API request for glossary details has completed successfully. */
-export const GLOSSARY_DETAILS_SUCCESS = Symbol('GLOSSARY_DETAILS_SUCCESS')
-/* API request for glossary details has failed. */
-export const GLOSSARY_DETAILS_FAILURE = Symbol('GLOSSARY_DETAILS_FAILURE')
 
 /**
  * Fetch details from the API for all a term's sources for current locales.

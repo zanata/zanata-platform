@@ -29,7 +29,7 @@ import net.sf.okapi.common.IParameters;
 import net.sf.okapi.filters.html.HtmlFilter;
 
 import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
+import org.apache.commons.io.IOUtils;
 
 /**
  * Adapter to handle HTML documents.
@@ -53,7 +53,7 @@ public class HTMLAdapter extends OkapiFilterAdapter {
                 HTMLAdapter.class
                         .getResource("HTMLAdapterDefaultConfiguration.yml");
         try {
-            return Resources.toString(configURL, Charsets.UTF_8);
+            return IOUtils.toString(configURL, Charsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(
                     "Failed to load default config for HTML adapter.", e);

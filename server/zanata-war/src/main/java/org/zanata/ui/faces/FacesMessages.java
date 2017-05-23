@@ -41,6 +41,8 @@ import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 import org.zanata.i18n.Messages;
 /* TODO [CDI] check this: migrated from ScopeType.CONVERSATION */
@@ -65,6 +67,7 @@ public class FacesMessages implements Serializable {
     private WindowContext windowContext;
     @Inject
     private Messages msgs;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private FacesContext facesContext;
 

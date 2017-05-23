@@ -62,12 +62,12 @@ public class TransMemoryUnitVariant extends ModelEntityBase
     @Column(name = "plain_text_segment", nullable = false,
             length = Integer.MAX_VALUE)
     private String plainTextSegment;
-    @Column(name = "plain_text_segment_hash", nullable = false)
+    @Column(name = "plain_text_segment_hash", nullable = false, columnDefinition = "char(32)")
     private String plainTextSegmentHash;
     @Enumerated(EnumType.STRING)
     @Column(name = "metadata_type", nullable = true)
     private TMMetadataType metadataType;
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "longtext")
     @Basic(fetch = FetchType.LAZY)
     private String metadata;
 

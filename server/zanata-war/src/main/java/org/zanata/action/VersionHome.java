@@ -30,6 +30,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.Session;
@@ -125,12 +126,14 @@ public class VersionHome extends SlugHome<HProjectIteration>
     private ZanataIdentity identity;
     @Inject
     private WebhookServiceImpl webhookServiceImpl;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     private Map<ValidationId, ValidationAction> availableValidations =
             Maps.newHashMap();
     private boolean isNewInstance = false;
     private String selectedProjectType;
     private boolean copyFromVersion = true;
     private String copyFromVersionSlug;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD_STORE")
     private final Function<HProjectIteration, VersionItem> VERSION_ITEM_FN =
             new Function<HProjectIteration, VersionItem>() {
 
@@ -219,7 +222,7 @@ public class VersionHome extends SlugHome<HProjectIteration>
         return Collections.emptyList();
     }
 
-    public class VersionItem implements Serializable {
+    public static class VersionItem {
         private boolean selected;
         private HProjectIteration version;
 

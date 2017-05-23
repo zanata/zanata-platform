@@ -48,8 +48,6 @@ public class RoleSearch implements Serializable {
     public String getRoleGroups(String role) {
         List<String> roles = identityManager.getRoleGroups(role);
 
-        if (roles == null) return "";
-
         StringBuilder sb = new StringBuilder();
 
         for (String r : roles) {

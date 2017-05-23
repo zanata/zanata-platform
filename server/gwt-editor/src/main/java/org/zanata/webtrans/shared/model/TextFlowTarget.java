@@ -3,12 +3,15 @@ package org.zanata.webtrans.shared.model;
 import com.google.common.base.Preconditions;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Hannes Eskebaek
  */
 public class TextFlowTarget implements HasIdentifier<TextFlowTargetId>,
-        IsSerializable {
+        IsSerializable, Serializable {
+    private static final long serialVersionUID = -3173500837230830642L;
     private TextFlowTargetId id;
     private Locale locale;
     private String content;

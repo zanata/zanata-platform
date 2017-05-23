@@ -20,6 +20,7 @@
  */
 package org.zanata.model;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -48,6 +49,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
     *
     */
     private static final int NUM_TRANS_UNITS = 5;
+    private Date now = new Date();
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -59,6 +61,8 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
     private TransMemory createDefaultTransMemoryInstance() {
         TransMemory tm = new TransMemory();
         tm.setSlug("new-trans-memory");
+        tm.setCreationDate(now);
+        tm.setLastChanged(now);
         return tm;
     }
 
@@ -102,6 +106,8 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
             unit.setTranslationMemory(tm);
             unit.setSourceLanguage("en-US");
             unit.setTransUnitId("unit-id-" + i);
+            unit.setCreationDate(now);
+            unit.setLastChanged(now);
             tm.getTranslationUnits().add(unit);
         }
 
@@ -124,6 +130,8 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
             unit.setSourceLanguage("en-US");
             unit.setTransUnitId("unit-id-" + i);
             unit.setMetadata(TMMetadataType.TMX14, "Metadata " + i);
+            unit.setCreationDate(now);
+            unit.setLastChanged(now);
             tm.getTranslationUnits().add(unit);
         }
 
@@ -186,6 +194,8 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
         TransMemoryUnitVariant tuvES =
                 new TransMemoryUnitVariant("es",
                         "<seg>Mensaje <bpt>&lt;b></bpt>de<ept i=\"1\">&lt;b></ept> Prueba</seg>");
+        tuvES.setCreationDate(now);
+        tuvES.setLastChanged(now);
 
         tu.getTransUnitVariants().put(tuvES.getLanguage(), tuvES);
 

@@ -21,6 +21,7 @@
 package org.zanata.model;
 
 import javax.persistence.Cacheable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.Type;
@@ -38,6 +39,8 @@ import org.zanata.model.type.ConditionRuleActionType;
         typeClass = ConditionRuleActionType.class)
 @Cacheable
 public class HCopyTransOptions extends ModelEntityBase {
+
+    private static final long serialVersionUID = -2604026393081629260L;
 
     /**
      * Indicates the different actions that can be taken when evaluating
@@ -91,18 +94,21 @@ public class HCopyTransOptions extends ModelEntityBase {
 
     @Type(type = "conditionRuleAction")
     @NotNull
+    @Column(columnDefinition = "char(1)")
     public ConditionRuleAction getContextMismatchAction() {
         return contextMismatchAction;
     }
 
     @Type(type = "conditionRuleAction")
     @NotNull
+    @Column(columnDefinition = "char(1)")
     public ConditionRuleAction getDocIdMismatchAction() {
         return docIdMismatchAction;
     }
 
     @Type(type = "conditionRuleAction")
     @NotNull
+    @Column(columnDefinition = "char(1)")
     public ConditionRuleAction getProjectMismatchAction() {
         return projectMismatchAction;
     }
@@ -141,5 +147,33 @@ public class HCopyTransOptions extends ModelEntityBase {
                 + this.getContextMismatchAction() + ", docIdMismatchAction="
                 + this.getDocIdMismatchAction() + ", projectMismatchAction="
                 + this.getProjectMismatchAction() + ")";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        HCopyTransOptions that = (HCopyTransOptions) o;
+
+        if (contextMismatchAction != that.contextMismatchAction) return false;
+        if (docIdMismatchAction != that.docIdMismatchAction) return false;
+        return projectMismatchAction == that.projectMismatchAction;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result +
+                (contextMismatchAction != null ?
+                        contextMismatchAction.hashCode() : 0);
+        result = 31 * result +
+                (docIdMismatchAction != null ? docIdMismatchAction.hashCode() :
+                        0);
+        result = 31 * result +
+                (projectMismatchAction != null ?
+                        projectMismatchAction.hashCode() : 0);
+        return result;
     }
 }

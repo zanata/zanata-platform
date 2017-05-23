@@ -25,6 +25,7 @@ import java.net.URI;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.contribution.ContributionStatistics;
@@ -35,6 +36,7 @@ import org.zanata.rest.service.StatisticsResource;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class StatisticsResourceClient implements StatisticsResource {
+    private static final long serialVersionUID = 477496423207257099L;
     private final RestClientFactory factory;
     private final URI baseUri;
 
@@ -94,5 +96,11 @@ public class StatisticsResourceClient implements StatisticsResource {
                         .queryParam("includeAutomatedEntry", includeAutomatedEntry);
         return webResource.request(MediaType.APPLICATION_JSON_TYPE)
                 .get(ContributionStatistics.class);
+    }
+
+    @Override
+    public Response getProjectStatisticsMatrix(String projectSlug,
+            String versionSlug, String dateRangeParam, String timeZoneID) {
+        throw new UnsupportedOperationException("This method is not supported in client");
     }
 }

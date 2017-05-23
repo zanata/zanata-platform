@@ -27,10 +27,8 @@ import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.NaturalId;
-import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 import com.google.common.base.Function;
-import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 // FIXME Cacheable
 
@@ -106,10 +104,13 @@ public class HApplicationConfiguration extends ModelEntityBase {
                     @Override
                     public String apply(Field input) {
                         try {
-                            input.setAccessible(true);
-                            return (String) input.get(dummy);
+                            if (input != null) {
+                                input.setAccessible(true);
+                                return (String) input.get(dummy);
+                            }
+                            return null;
                         } catch (IllegalAccessException e) {
-                            throw Throwables.propagate(e);
+                            throw new RuntimeException(e);
                         }
                     }
                 });

@@ -22,6 +22,8 @@ package org.zanata.model;
 
 import org.junit.Test;
 
+import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -32,18 +34,29 @@ public class AllowedAppTest {
 
     @Test
     public void testEquals() {
+        Date now = new Date();
         HAccount account = new HAccount();
         account.setUsername("aloy");
+        account.setCreationDate(now);
+        account.setLastChanged(now);
         AllowedApp allowedApp = new AllowedApp(account, "qwertyuiop");
+        allowedApp.setCreationDate(now);
+        allowedApp.setLastChanged(now);
         AllowedApp other = new AllowedApp();
+        other.setCreationDate(now);
+        other.setLastChanged(now);
         assertThat(allowedApp.equals(other)).isFalse();
         assertThat(allowedApp.hashCode()).isNotEqualTo(other.hashCode());
 
         other = new AllowedApp(account, "test");
+        other.setCreationDate(now);
+        other.setLastChanged(now);
         assertThat(allowedApp.equals(other)).isFalse();
         assertThat(allowedApp.hashCode()).isNotEqualTo(other.hashCode());
 
         other = new AllowedApp(account, "qwertyuiop");
+        other.setCreationDate(now);
+        other.setLastChanged(now);
         assertThat(allowedApp.equals(other)).isTrue();
         assertThat(allowedApp.hashCode()).isEqualTo(other.hashCode());
     }

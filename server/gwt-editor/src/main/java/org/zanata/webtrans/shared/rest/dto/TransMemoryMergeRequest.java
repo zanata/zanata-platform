@@ -20,6 +20,7 @@
  */
 package org.zanata.webtrans.shared.rest.dto;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -30,9 +31,17 @@ import org.zanata.webtrans.shared.rpc.MergeRule;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class TransMemoryMergeRequest {
+    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
+            justification = "For future implement")
     public EditorClientId editorClientId;
+    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
+            justification = "For future implement")
     public ProjectIterationId projectIterationId;
+    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
+            justification = "For future implement")
     public DocumentId documentId;
+    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
+            justification = "For future implement")
     public LocaleId localeId;
     public int thresholdPercent;
     public MergeRule differentProjectRule;

@@ -1,10 +1,12 @@
 package org.zanata.webtrans.shared.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class AuditInfo implements IsSerializable {
+public class AuditInfo implements IsSerializable, Serializable {
+    private static final long serialVersionUID = 3542554308558606387L;
     private Date date;
     private String username;
 
@@ -12,12 +14,12 @@ public class AuditInfo implements IsSerializable {
     }
 
     public AuditInfo(Date date, String username) {
-        this.date = date;
+        this.date = date != null ? new Date(date.getTime()) : null;
         this.username = username;
     }
 
     public Date getDate() {
-        return date;
+        return date != null ? new Date(date.getTime()) : null;
     }
 
     public String getUsername() {

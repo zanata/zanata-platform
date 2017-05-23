@@ -12,6 +12,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 public class LocalesResults implements Serializable {
+    private static final long serialVersionUID = 6238439741333311645L;
     public Integer totalCount;
     public List<LanguageTeamSearchResult> results;
 

@@ -3,6 +3,8 @@ package org.zanata.email;
 import static com.google.common.base.Charsets.UTF_8;
 import static javax.mail.Message.RecipientType.BCC;
 import static javax.mail.Message.RecipientType.TO;
+
+import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.ConnectException;
 import java.util.List;
@@ -16,6 +18,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import com.google.common.base.Throwables;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javaslang.collection.HashMap;
 import javaslang.collection.Map;
 import org.apache.velocity.Template;
@@ -40,7 +43,7 @@ import org.zanata.util.HtmlUtil;
  */
 @Named("emailBuilder")
 @javax.enterprise.context.Dependent
-public class EmailBuilder {
+public class EmailBuilder implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(EmailBuilder.class);
     public static final String MAIL_SESSION_JNDI = "mail/Default";
@@ -52,8 +55,10 @@ public class EmailBuilder {
     public EmailBuilder() {
     }
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Resource(name = MAIL_SESSION_JNDI)
     private Session mailSession;
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private Context emailContext;
     @Inject

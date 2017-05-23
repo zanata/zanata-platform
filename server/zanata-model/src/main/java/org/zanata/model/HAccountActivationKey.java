@@ -26,11 +26,14 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.PrePersist;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 @Entity
 @EntityListeners({ HAccountActivationKey.EntityListener.class })
+@Table(uniqueConstraints = @UniqueConstraint(name = "UKAccountId", columnNames = "accountId"))
 public class HAccountActivationKey extends AccountKeyBase
         implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -39,7 +42,8 @@ public class HAccountActivationKey extends AccountKeyBase
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     public Date getCreationDate() {
-        return creationDate;
+        return creationDate != null ? new Date(creationDate.getTime()) :
+                null;
     }
 
     public static class EntityListener {
@@ -52,7 +56,9 @@ public class HAccountActivationKey extends AccountKeyBase
     }
 
     public void setCreationDate(final Date creationDate) {
-        this.creationDate = creationDate;
+        this.creationDate =
+                creationDate != null ? new Date(creationDate.getTime()) :
+                        null;
     }
 
     @Override

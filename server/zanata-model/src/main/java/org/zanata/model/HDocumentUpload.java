@@ -24,6 +24,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -77,6 +78,7 @@ public class HDocumentUpload extends ModelEntityBase implements Serializable {
     }
 
     @NotEmpty
+    @Column(columnDefinition = "char(32)")
     public String getContentHash() {
         return contentHash;
     }
@@ -117,5 +119,40 @@ public class HDocumentUpload extends ModelEntityBase implements Serializable {
 
     public void setParts(final List<HDocumentUploadPart> parts) {
         this.parts = parts;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        HDocumentUpload that = (HDocumentUpload) o;
+
+        if (projectIteration != null ?
+                !projectIteration.equals(that.projectIteration) :
+                that.projectIteration != null) return false;
+        if (docId != null ? !docId.equals(that.docId) : that.docId != null)
+            return false;
+        if (type != that.type) return false;
+        if (locale != null ? !locale.equals(that.locale) : that.locale != null)
+            return false;
+        if (contentHash != null ? !contentHash.equals(that.contentHash) :
+                that.contentHash != null) return false;
+        return parts != null ? parts.equals(that.parts) : that.parts == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result +
+                (projectIteration != null ? projectIteration.hashCode() : 0);
+        result = 31 * result + (docId != null ? docId.hashCode() : 0);
+        result = 31 * result + (type != null ? type.hashCode() : 0);
+        result = 31 * result + (locale != null ? locale.hashCode() : 0);
+        result = 31 * result +
+                (contentHash != null ? contentHash.hashCode() : 0);
+        result = 31 * result + (parts != null ? parts.hashCode() : 0);
+        return result;
     }
 }

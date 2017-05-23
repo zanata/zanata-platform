@@ -54,7 +54,7 @@ public class TransUnitsTableView extends Composite implements
     // below timer is a hacky fix for firefox (on first load codemirror instance
     // won't show correctly and needs refresh
     // we only need to do this once on first load (WEIRD!!)
-    private static boolean firstTimeLoading = true;
+    private boolean firstTimeLoading = true;
     private Timer timer = new Timer() {
 
         @Override

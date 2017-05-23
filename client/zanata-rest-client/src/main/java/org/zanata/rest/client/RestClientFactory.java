@@ -21,6 +21,7 @@
 
 package org.zanata.rest.client;
 
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -36,6 +37,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.Client;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.slf4j.Logger;
@@ -50,13 +52,15 @@ import com.google.common.base.Throwables;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class RestClientFactory {
+public class RestClientFactory implements Serializable {
     private static final Logger log =
             LoggerFactory.getLogger(RestClientFactory.class);
+    private static final long serialVersionUID = -276490112687360482L;
     private String serverVersion;
     private String clientVersion;
     private VersionInfo clientApiVersion;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Client client;
     private URI baseURI;
 

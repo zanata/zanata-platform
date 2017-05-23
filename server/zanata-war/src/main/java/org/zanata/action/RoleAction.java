@@ -83,7 +83,7 @@ public class RoleAction implements Serializable {
         }
 
         for (String r : groups) {
-            if (grantedRoles == null || !grantedRoles.contains(r)) {
+            if (!grantedRoles.contains(r)) {
                 identityManager.addRoleToGroup(role, r);
             }
         }

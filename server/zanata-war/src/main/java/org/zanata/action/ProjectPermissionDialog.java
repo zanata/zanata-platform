@@ -93,6 +93,7 @@ public class ProjectPermissionDialog extends AbstractAutocomplete<HPerson>
     private ProjectService projectServiceImpl;
     @Inject
     private Session session;
+
     private PersonProjectMemberships data;
     private HProject project;
 

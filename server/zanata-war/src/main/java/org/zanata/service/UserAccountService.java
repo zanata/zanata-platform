@@ -26,13 +26,15 @@ import org.zanata.model.HAccount;
 import org.zanata.model.HAccountResetPasswordKey;
 import org.zanata.model.security.HCredentials;
 
+import java.io.Serializable;
+
 /**
  * Business Service interface for User accounts.
  *
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface UserAccountService {
+public interface UserAccountService extends Serializable {
     void clearPasswordResetRequests(HAccount account);
 
     @Nullable HAccountResetPasswordKey requestPasswordReset(HAccount account);

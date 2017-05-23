@@ -2,6 +2,7 @@ package org.zanata.rest.service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -30,6 +31,8 @@ import javax.persistence.EntityManager;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
@@ -78,7 +81,7 @@ import static org.apache.commons.lang.StringUtils.isNotEmpty;
 
 @Named("resourceUtils")
 @RequestScoped
-public class ResourceUtils {
+public class ResourceUtils implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(ResourceUtils.class);
 
@@ -115,10 +118,11 @@ public class ResourceUtils {
     private static final int DEFAULT_NPLURALS = 1;
     private static final String DEFAULT_PLURAL_FORM = "nplurals=1; plural=0";
     public static final int MAX_TARGET_CONTENTS = 6;
-    private static Properties pluralForms;
+    private Properties pluralForms;
     public static final String COPIED_BY_ZANATA_NAME = "Copied by Zanata";
     public static final String COPIED_BY_ZANATA_NAME_EMAIL =
             "copied-by-zanata@zanata.org";
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Inject
     private EntityManager entityManager;
     @Inject
@@ -137,7 +141,7 @@ public class ResourceUtils {
         }
     }
 
-    static Properties getPluralForms() {
+    Properties getPluralForms() {
         return pluralForms;
     }
 

@@ -22,6 +22,9 @@ package org.zanata.model;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+
+import java.util.Date;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -38,6 +41,8 @@ public class SlugEntityBaseTest {
     // their types.
 
     static class SlugClass extends SlugEntityBase {
+
+        private static final long serialVersionUID = 1L;
 
         public SlugClass(String slug) {
             super(slug);
@@ -79,14 +84,19 @@ public class SlugEntityBaseTest {
     }
 
     @Test
-    public void lombokToStringAndEqualsTest() {
+    public void toStringAndEqualsTest() {
+        Date now = new Date();
         SlugEntityBase entity = new SlugClass();
         entity.setSlug("abc");
         entity.setId(1L);
         entity.setVersionNum(2);
+        entity.setCreationDate(now);
+        entity.setLastChanged(now);
         assertThat(entity.toString(),
                 containsString("[id=1,versionNum=2], slug=abc)"));
         SlugEntityBase other = new SlugClass("abc");
+        other.setCreationDate(now);
+        other.setLastChanged(now);
         assertThat(entity.equals(other), equalTo(false));
         other.setId(entity.getId());
         other.setVersionNum(entity.getVersionNum());

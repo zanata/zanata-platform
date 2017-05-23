@@ -76,4 +76,41 @@ public class EditorTextFlow extends TextFlow {
     public void setSourceComment(String sourceComment) {
         this.sourceComment = sourceComment;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        EditorTextFlow that = (EditorTextFlow) o;
+
+        if (wordCount != that.wordCount) return false;
+        if (msgctxt != null ? !msgctxt.equals(that.msgctxt) :
+                that.msgctxt != null)
+            return false;
+        if (sourceReferences != null ?
+                !sourceReferences.equals(that.sourceReferences) :
+                that.sourceReferences != null) return false;
+        if (sourceFlags != null ? !sourceFlags.equals(that.sourceFlags) :
+                that.sourceFlags != null) return false;
+        return sourceComment != null ?
+                sourceComment.equals(that.sourceComment) :
+                that.sourceComment == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + wordCount;
+        result = 31 * result + (msgctxt != null ? msgctxt.hashCode() : 0);
+        result = 31 * result +
+                (sourceReferences != null ? sourceReferences.hashCode() : 0);
+        result = 31 * result +
+                (sourceFlags != null ? sourceFlags.hashCode() : 0);
+        result =
+                31 * result +
+                        (sourceComment != null ? sourceComment.hashCode() : 0);
+        return result;
+    }
 }

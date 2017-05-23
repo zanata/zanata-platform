@@ -105,25 +105,23 @@ public class UserService implements UserResource {
             return Response.status(Response.Status.FORBIDDEN).build();
         }
         Permission permission = new Permission();
-        boolean canUpdate = false;
-        boolean canInsert = false;
-        boolean canDelete = false;
-        boolean canDownload = false;
-        if (authenticatedAccount != null) {
-            if (GlossaryService.isProjectGlossary(qualifiedName)) {
-                HProject project = projectDAO.getBySlug(
-                        GlossaryService.getProjectSlug(qualifiedName));
-                canUpdate = identity.hasPermission(project, "glossary-update");
-                canInsert = identity.hasPermission(project, "glossary-insert");
-                canDelete = identity.hasPermission(project, "glossary-delete");
-                canDownload =
-                        identity.hasPermission(project, "glossary-download");
-            } else {
-                canUpdate = identity.hasPermission("", "glossary-update");
-                canInsert = identity.hasPermission("", "glossary-insert");
-                canDelete = identity.hasPermission("", "glossary-delete");
-                canDownload = identity.hasPermission("", "glossary-download");
-            }
+        boolean canUpdate;
+        boolean canInsert;
+        boolean canDelete;
+        boolean canDownload;
+        if (GlossaryService.isProjectGlossary(qualifiedName)) {
+            HProject project = projectDAO.getBySlug(
+                    GlossaryService.getProjectSlug(qualifiedName));
+            canUpdate = identity.hasPermission(project, "glossary-update");
+            canInsert = identity.hasPermission(project, "glossary-insert");
+            canDelete = identity.hasPermission(project, "glossary-delete");
+            canDownload =
+                    identity.hasPermission(project, "glossary-download");
+        } else {
+            canUpdate = identity.hasPermission("", "glossary-update");
+            canInsert = identity.hasPermission("", "glossary-insert");
+            canDelete = identity.hasPermission("", "glossary-delete");
+            canDownload = identity.hasPermission("", "glossary-download");
         }
         permission.put("updateGlossary", canUpdate);
         permission.put("insertGlossary", canInsert);

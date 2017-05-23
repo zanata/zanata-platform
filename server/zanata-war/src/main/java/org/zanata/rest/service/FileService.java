@@ -42,6 +42,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
+
+import org.apache.commons.io.IOUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
@@ -72,7 +74,6 @@ import org.zanata.service.TranslationFileService;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.common.io.ByteStreams;
 
 @RequestScoped
 @Named("fileService")
@@ -358,7 +359,7 @@ public class FileService implements FileResource {
      * Private class that implements PO file streaming of a document.
      */
 
-    private class POStreamingOutput implements StreamingOutput {
+    private static class POStreamingOutput implements StreamingOutput {
         private Resource resource;
         private TranslationsResource transRes;
         private boolean offlinePo;
@@ -383,7 +384,7 @@ public class FileService implements FileResource {
         }
     }
 
-    private class POTStreamingOutput implements StreamingOutput {
+    private static class POTStreamingOutput implements StreamingOutput {
         private Resource resource;
         private boolean offlinePot;
 
@@ -405,7 +406,7 @@ public class FileService implements FileResource {
         }
     }
 
-    private class InputStreamStreamingOutput implements StreamingOutput {
+    private static class InputStreamStreamingOutput implements StreamingOutput {
         private InputStream input;
 
         public InputStreamStreamingOutput(InputStream input) {
@@ -423,7 +424,7 @@ public class FileService implements FileResource {
         }
     }
 
-    private class FormatAdapterStreamingOutput implements StreamingOutput {
+    private static class FormatAdapterStreamingOutput implements StreamingOutput {
         private Resource resource;
         private TranslationsResource translationsResource;
         private String locale;
@@ -455,7 +456,7 @@ public class FileService implements FileResource {
      * file.
      */
 
-    private class FileStreamingOutput implements StreamingOutput {
+    private static class FileStreamingOutput implements StreamingOutput {
         private File file;
 
         public FileStreamingOutput(File file) {
@@ -465,11 +466,8 @@ public class FileService implements FileResource {
         @Override
         public void write(@Nonnull OutputStream output)
                 throws IOException, WebApplicationException {
-            FileInputStream input = new FileInputStream(this.file);
-            try {
-                ByteStreams.copy(input, output);
-            } finally {
-                input.close();
+            try (FileInputStream input = new FileInputStream(this.file)) {
+                IOUtils.copy(input, output);
             }
         }
     }

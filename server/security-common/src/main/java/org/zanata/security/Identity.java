@@ -21,6 +21,7 @@
 
 package org.zanata.security;
 
+import java.io.Serializable;
 import java.security.Principal;
 import javax.security.auth.Subject;
 
@@ -31,7 +32,7 @@ import javax.security.auth.Subject;
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public interface Identity {
+public interface Identity extends Serializable {
     void runAs(RunAsOperation operation);
 
     interface RunAsOperation {
