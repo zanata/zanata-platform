@@ -73,7 +73,7 @@ storiesOf('Modal', module)
             show={true}
             onHide={action('onHide')}>
           <Modal.Header>
-            <Modal.Title>Version TM</Modal.Title>
+            <Modal.Title>Version TM Merge</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div>
