@@ -20,6 +20,7 @@
  */
 package org.zanata.rest.service;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +33,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.resteasy.util.GenericType;
@@ -61,6 +64,7 @@ import org.zanata.servlet.annotations.AllJavaLocales;
 @Path(LocalesResource.SERVICE_PATH)
 public class LocalesService implements LocalesResource {
 
+    private static final long serialVersionUID = 8093381226182123148L;
     /**
      * Maximum result for per page.
      */
@@ -160,9 +164,10 @@ public class LocalesService implements LocalesResource {
         HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
         if (hLocale != null) {
             Set<HLocaleMember> members = hLocale.getMembers();
-            List<LocaleMember> results =
+            List<LocaleMember> results = members != null ?
                     members.stream().map(convertToLocaleMember)
-                            .collect(Collectors.toList());
+                            .collect(Collectors.toList()) :
+                    Lists.newArrayList();
             return Response.ok(results).build();
         }
         return Response.status(Response.Status.NOT_FOUND).build();
@@ -241,6 +246,7 @@ public class LocalesService implements LocalesResource {
         return result;
     }
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final Function<LocaleId, LocaleDetails> convertToLocaleDetails =
             new Function<LocaleId, LocaleDetails>() {
                 @Override
@@ -255,6 +261,7 @@ public class LocalesService implements LocalesResource {
                 }
             };
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final Function<HLocaleMember, LocaleMember> convertToLocaleMember =
             new Function<HLocaleMember, LocaleMember>() {
                 @Override
@@ -267,7 +274,8 @@ public class LocalesService implements LocalesResource {
                 }
             };
 
-    private class FilterLocaleDetails implements Predicate<LocaleDetails> {
+    private static class FilterLocaleDetails implements Predicate<LocaleDetails>,
+            Serializable {
 
         private String query;
 

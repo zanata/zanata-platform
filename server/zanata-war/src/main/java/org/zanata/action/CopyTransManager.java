@@ -134,7 +134,6 @@ public class CopyTransManager implements Serializable {
 
     public void cancelCopyTrans(@Nonnull HProjectIteration iteration) {
         if (isCopyTransRunning(iteration)) {
-            CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
             CopyTransTaskHandle handle =
                     this.getCopyTransProcessHandle(iteration);
             handle.cancel(true);

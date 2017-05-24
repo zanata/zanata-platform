@@ -96,9 +96,9 @@ public class JBossSSOLoginModule implements LoginModule {
                     .getStatusCode() == HttpStatus.SC_OK;
             if (loginSuccessful) {
                 // read json
-                ObjectMapper mapper = new ObjectMapper();
-                JsonNode parsedResponse =
-                        mapper.readTree(authResponse.getEntity().getContent());
+//                ObjectMapper mapper = new ObjectMapper();
+//                JsonNode parsedResponse =
+//                        mapper.readTree(authResponse.getEntity().getContent());
                 // TODO These values should be used to pre-populate the
                 // registration form when a user first registers
                 // parsedResponse.get("fullname");

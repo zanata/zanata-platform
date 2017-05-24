@@ -20,6 +20,7 @@
  */
 package org.zanata.async;
 
+import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -28,6 +29,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 
 import com.google.common.base.Optional;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Asynchronous handle to provide communication between an asynchronous task and
@@ -36,8 +38,9 @@ import com.google.common.base.Optional;
  * @author Carlos Munoz
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class AsyncTaskHandle<V> {
+public class AsyncTaskHandle<V> implements Serializable {
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     private CompletableFuture<V> futureResult;
     public int maxProgress = 100;
     public int minProgress = 0;

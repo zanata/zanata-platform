@@ -25,6 +25,7 @@ import javax.security.auth.login.Configuration;
 import javax.security.auth.spi.LoginModule;
 
 import javax.inject.Named;
+import java.io.Serializable;
 
 /**
  * Store for JAAS configuration.
@@ -35,7 +36,7 @@ import javax.inject.Named;
 @Named("jaasConfig")
 
 @javax.enterprise.context.ApplicationScoped
-public class JaasConfig {
+public class JaasConfig implements Serializable {
 
     /**
      * Retrieves all App configuration entries under a given name. In Jboss's

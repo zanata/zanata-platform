@@ -30,12 +30,13 @@ import org.zanata.model.Request;
 import org.zanata.model.type.RequestState;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * @author Alex Eng <a href="aeng@redhat.com">aeng@redhat.com</a>
  */
-public interface RequestService {
+public interface RequestService extends Serializable {
 
     /**
      * Create join language request

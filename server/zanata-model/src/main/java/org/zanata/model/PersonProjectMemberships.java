@@ -27,7 +27,10 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.Sets;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
@@ -40,10 +43,12 @@ import java.util.Set;
  * boolean properties to represent all roles so they can be easily bound to
  * individual UI elements (e.g. checkboxes).
  */
-public class PersonProjectMemberships {
+public class PersonProjectMemberships implements Serializable {
+    private static final long serialVersionUID = -6361740969547052616L;
     private HPerson person;
     private boolean maintainer;
     private boolean translationMaintainer;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Set<LocaleRoles> localeRoles;
 
     public PersonProjectMemberships(HPerson person,
@@ -112,8 +117,8 @@ public class PersonProjectMemberships {
                 public String apply(LocaleRoles input) {
                     // To lowercase to prevent non-caps values appearing after
                     // all caps values (e.g. a appearing after Z)
-                    return input.getLocale().retrieveDisplayName()
-                            .toLowerCase();
+                    return input != null ? input.getLocale().retrieveDisplayName()
+                            .toLowerCase() : null;
                 }
             };
     private static final Ordering<LocaleRoles> LOCALE_NAME_ORDERING =
@@ -130,7 +135,7 @@ public class PersonProjectMemberships {
                 @Nullable
                 @Override
                 public HLocale apply(LocaleRoles input) {
-                    return input.getLocale();
+                    return input != null ? input.getLocale() : null;
                 }
             };
 
@@ -183,7 +188,7 @@ public class PersonProjectMemberships {
      * Intended to use as a row for a single locale in a permission setting
      * table.
      */
-    public class LocaleRoles {
+    public static class LocaleRoles {
         private HLocale locale;
         private boolean translator;
         private boolean reviewer;

@@ -38,13 +38,15 @@ import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.service.LocaleService;
 
+import java.io.Serializable;
+
 /**
  * @author Sean Flanigan
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @Dependent
 @Named("restSlugValidator")
-public class RestSlugValidator {
+public class RestSlugValidator implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(RestSlugValidator.class);
 

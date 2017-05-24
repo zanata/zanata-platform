@@ -24,6 +24,8 @@ import com.google.common.base.Optional;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityNotFoundException;
+
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.adapter.po.PoWriter2;
 import org.zanata.async.Async;
@@ -96,6 +98,9 @@ public class TranslationArchiveServiceImpl
         final String projectDirectory = projectSlug + "-" + iterationSlug + "/";
         final HLocale hLocale =
                 localeDAO.findByLocaleId(new LocaleId(localeId));
+        if (hLocale == null) {
+            throw new EntityNotFoundException("Locale not support " + localeId);
+        }
         final String mappedLocale = hLocale.getLocaleId().getId();
         final String localeDirectory = projectDirectory + mappedLocale + "/";
         final File downloadFile =
@@ -129,7 +134,9 @@ public class TranslationArchiveServiceImpl
             // Stop the process if signaled to do so
             if (handleOpt.isPresent() && handleOpt.get().isCancelled()) {
                 zipOutput.close();
-                downloadFile.delete();
+                boolean deleted = downloadFile.delete();
+                log.debug("File " + downloadFile +
+                        (deleted ? " deleted" : "cannot be deleted"));
                 fileSystemServiceImpl.deleteDownloadDescriptorFile(downloadId);
                 return null;
             }

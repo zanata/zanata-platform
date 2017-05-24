@@ -12,6 +12,7 @@ import de.novanic.eventservice.service.registry.EventRegistry;
 import de.novanic.eventservice.service.registry.EventRegistryFactory;
 import de.novanic.eventservice.service.registry.user.UserManager;
 import de.novanic.eventservice.service.registry.user.UserManagerFactory;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.async.Async;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.ProjectType;
@@ -68,6 +69,7 @@ public class TranslationWorkspaceManagerImpl
     private ValidationService validationServiceImpl;
     @Inject
     private TranslationWorkspaceFactory translationWorkspaceFactory;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private ConcurrentHashMap<WorkspaceId, TranslationWorkspace> workspaceMap;
     private Multimap<ProjectIterationId, TranslationWorkspace> projIterWorkspaceMap;
     private EventRegistry eventRegistry;

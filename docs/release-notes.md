@@ -1,3 +1,95 @@
+## 4.2.0
+##### Changes
+ * [ZNTA-1973](https://zanata.atlassian.net/browse/ZNTA-1973) - If source have plural, but target does not, translation cannot save as translated
+ * [ZNTA-1954](https://zanata.atlassian.net/browse/ZNTA-1954) - API for accumulated statistics of project version translations
+ * [ZNTA-1938](https://zanata.atlassian.net/browse/ZNTA-1938) - Remove stories added in error to frontend
+ * [ZNTA-1934](https://zanata.atlassian.net/browse/ZNTA-1934) - Glossary input height incorrect in editor
+ * [ZNTA-1916](https://zanata.atlassian.net/browse/ZNTA-1916) - Add foundation styling to Storybook-frontend
+ * [ZNTA-1915](https://zanata.atlassian.net/browse/ZNTA-1915) - Fedora - API for all users per team, with role
+ * [ZNTA-1913](https://zanata.atlassian.net/browse/ZNTA-1913) - Fully test all redux editor reducers
+ * [ZNTA-1912](https://zanata.atlassian.net/browse/ZNTA-1912) - More convenient naming for redux action and reducer modules
+ * [ZNTA-1905](https://zanata.atlassian.net/browse/ZNTA-1905) - Rearrange test and storybook directory structure for frontend
+ * [ZNTA-1896](https://zanata.atlassian.net/browse/ZNTA-1896) - Less verbose javascript builds
+ * [ZNTA-1893](https://zanata.atlassian.net/browse/ZNTA-1893) - Add Well component to Storybook
+ * [ZNTA-1892](https://zanata.atlassian.net/browse/ZNTA-1892) - Add Tooltip component to Storybook
+ * [ZNTA-1891](https://zanata.atlassian.net/browse/ZNTA-1891) - Add TextInput component to Storybook
+ * [ZNTA-1890](https://zanata.atlassian.net/browse/ZNTA-1890) - Add Tabs component to Storybook
+ * [ZNTA-1889](https://zanata.atlassian.net/browse/ZNTA-1889) - Add Table component to Storybook
+ * [ZNTA-1888](https://zanata.atlassian.net/browse/ZNTA-1888) - Add ProgressBars component to Storybook
+ * [ZNTA-1887](https://zanata.atlassian.net/browse/ZNTA-1887) - Add Panels component to Storybook
+ * [ZNTA-1886](https://zanata.atlassian.net/browse/ZNTA-1886) - Add Pagination component to Storybook
+ * [ZNTA-1885](https://zanata.atlassian.net/browse/ZNTA-1885) - Add Modal component to Storybook
+ * [ZNTA-1884](https://zanata.atlassian.net/browse/ZNTA-1884) - Add Loader component to Storybook
+ * [ZNTA-1883](https://zanata.atlassian.net/browse/ZNTA-1883) - Add Lists component to Storybook
+ * [ZNTA-1882](https://zanata.atlassian.net/browse/ZNTA-1882) - Add Links component to Storybook
+ * [ZNTA-1881](https://zanata.atlassian.net/browse/ZNTA-1881) - Add Labels component to Storybook
+ * [ZNTA-1880](https://zanata.atlassian.net/browse/ZNTA-1880) - Add Icon/s component to Storybook
+ * [ZNTA-1879](https://zanata.atlassian.net/browse/ZNTA-1879) - Add EditableText component to Storybook
+ * [ZNTA-1878](https://zanata.atlassian.net/browse/ZNTA-1878) - Add Form component to Storybook
+ * [ZNTA-1877](https://zanata.atlassian.net/browse/ZNTA-1877) - Add Dropdown component to Storybook
+ * [ZNTA-1875](https://zanata.atlassian.net/browse/ZNTA-1875) - Add Buttons component to Storybook
+ * [ZNTA-1874](https://zanata.atlassian.net/browse/ZNTA-1874) - Add Breadcrumbs component to Storybook
+ * [ZNTA-1873](https://zanata.atlassian.net/browse/ZNTA-1873) - Add Badges component to Storybook
+ * [ZNTA-1872](https://zanata.atlassian.net/browse/ZNTA-1872) - Add Alert component to Storybook
+ * [ZNTA-1871](https://zanata.atlassian.net/browse/ZNTA-1871) - Setup storybook build for frontend (separate from editor)
+ * [ZNTA-1846](https://zanata.atlassian.net/browse/ZNTA-1846) - Allow admin to set Gravatar rating
+ * [ZNTA-1838](https://zanata.atlassian.net/browse/ZNTA-1838) - Remove zanata-ui modal from Suggestions Detail Modal in editor
+ * [ZNTA-1836](https://zanata.atlassian.net/browse/ZNTA-1836) - Storybook: add editor glossary components
+ * [ZNTA-1835](https://zanata.atlassian.net/browse/ZNTA-1835) - Remove all Zanata-UI dependencies from Editor
+ * [ZNTA-1829](https://zanata.atlassian.net/browse/ZNTA-1829) - Split build commands in package.json (frontend) into multiple lines
+ * [ZNTA-1811](https://zanata.atlassian.net/browse/ZNTA-1811) - Profile the Maven build
+ * [ZNTA-1798](https://zanata.atlassian.net/browse/ZNTA-1798) - Mock up sort functionality and details for Explore page
+ * [ZNTA-1791](https://zanata.atlassian.net/browse/ZNTA-1791) - documentation for how to use zanata jenkins plugin
+ * [ZNTA-1783](https://zanata.atlassian.net/browse/ZNTA-1783) - Remove the "EntityMakerImpl You have to manually resolve this" warnings
+ * [ZNTA-1763](https://zanata.atlassian.net/browse/ZNTA-1763) - Allow users to join a language team immediately
+ * [ZNTA-1735](https://zanata.atlassian.net/browse/ZNTA-1735) - Add Glossary Tab to Editor Sidebar
+ * [ZNTA-1733](https://zanata.atlassian.net/browse/ZNTA-1733) - Add Details to Editor Sidebar
+ * [ZNTA-1732](https://zanata.atlassian.net/browse/ZNTA-1732) - Add Editor sidebar
+ * [ZNTA-1726](https://zanata.atlassian.net/browse/ZNTA-1726) - Doc: Missing manual webhook documentation 
+ * [ZNTA-1705](https://zanata.atlassian.net/browse/ZNTA-1705) - Allow TM Merge for a whole document (in a single language)
+ * [ZNTA-1661](https://zanata.atlassian.net/browse/ZNTA-1661) - Enable Kotlin as additional language for production/test code
+ * [ZNTA-1582](https://zanata.atlassian.net/browse/ZNTA-1582) - http://zanata-client.readthedocs.io/en/latest/ is not available
+ * [ZNTA-1531](https://zanata.atlassian.net/browse/ZNTA-1531) - Combine frontend and editor to a single npm project
+ * [ZNTA-1456](https://zanata.atlassian.net/browse/ZNTA-1456) - Migrate raw file tests (GUI tests) to unit tests
+ * [ZNTA-1414](https://zanata.atlassian.net/browse/ZNTA-1414) - Script our build pipelines with Jenkinsfile
+ * [ZNTA-1113](https://zanata.atlassian.net/browse/ZNTA-1113) - Update information in frontend/src/main/web/docs/*.md
+ * [ZNTA-481](https://zanata.atlassian.net/browse/ZNTA-481) - RFE: User should be able to log in with their username, or their email
+
+##### Bug Fixes
+ * [ZNTA-1980](https://zanata.atlassian.net/browse/ZNTA-1980) - Glossary translation comment box is awful
+ * [ZNTA-1972](https://zanata.atlassian.net/browse/ZNTA-1972) - Glossary "no content" icon not centred
+ * [ZNTA-1971](https://zanata.atlassian.net/browse/ZNTA-1971) - Long name string pushes image, details off user profile page
+ * [ZNTA-1966](https://zanata.atlassian.net/browse/ZNTA-1966) - TM merge will fail on having TM from TMX import
+ * [ZNTA-1947](https://zanata.atlassian.net/browse/ZNTA-1947) - There is no any cancel or go back option on Create group page.
+ * [ZNTA-1933](https://zanata.atlassian.net/browse/ZNTA-1933) - Remove refs to assets-zanata.rhcloud.com
+ * [ZNTA-1914](https://zanata.atlassian.net/browse/ZNTA-1914) - IncompatibleClassChangeError on EAP 7.0.5
+ * [ZNTA-1910](https://zanata.atlassian.net/browse/ZNTA-1910) - New editor: suggestions match % wrapped
+ * [ZNTA-1903](https://zanata.atlassian.net/browse/ZNTA-1903) - [new editor] Unnecessary scrollbars in details/suggestions panels
+ * [ZNTA-1897](https://zanata.atlassian.net/browse/ZNTA-1897) - Misaligned 'clear selection' link in profile
+ * [ZNTA-1868](https://zanata.atlassian.net/browse/ZNTA-1868) - Make hibernate schema validation pass
+ * [ZNTA-1863](https://zanata.atlassian.net/browse/ZNTA-1863) - TM details modal source text incorrectly aligned on small screens
+ * [ZNTA-1860](https://zanata.atlassian.net/browse/ZNTA-1860) - Projects should be clickable for going back to the projects list from create project page
+ * [ZNTA-1853](https://zanata.atlassian.net/browse/ZNTA-1853) - Langauge and dashboard should be clickable on lnaguages page and settings page. 
+ * [ZNTA-1840](https://zanata.atlassian.net/browse/ZNTA-1840) - Unnecessary 'introduce yourself' field when auto join enabled
+ * [ZNTA-1834](https://zanata.atlassian.net/browse/ZNTA-1834) - Reword TM merge pop up and messages
+ * [ZNTA-1826](https://zanata.atlassian.net/browse/ZNTA-1826) - Eliminate log warning "encountered non-rewritten url /404.xhtml"
+ * [ZNTA-1822](https://zanata.atlassian.net/browse/ZNTA-1822) - Email log settings don't take effect until server is restarted
+ * [ZNTA-1821](https://zanata.atlassian.net/browse/ZNTA-1821) - Paging controls on narrow screens have broken layout in React editor when the sidebar is open
+ * [ZNTA-1794](https://zanata.atlassian.net/browse/ZNTA-1794) - Arquillian tests fail when build directory contains '@'
+ * [ZNTA-1780](https://zanata.atlassian.net/browse/ZNTA-1780) - NullPointerException for OpenID account merge
+ * [ZNTA-1778](https://zanata.atlassian.net/browse/ZNTA-1778) - [regression] Project 'Search and Replace' header not sized correctly
+ * [ZNTA-1776](https://zanata.atlassian.net/browse/ZNTA-1776) - Admin TM page dropdown not showing correctly
+ * [ZNTA-1774](https://zanata.atlassian.net/browse/ZNTA-1774) - Only first page of document visible in Alpha Editor
+ * [ZNTA-1767](https://zanata.atlassian.net/browse/ZNTA-1767) - Cannot add translation if field is empty in Alpha Editor
+ * [ZNTA-1760](https://zanata.atlassian.net/browse/ZNTA-1760) - Missing constraints on Project locale table
+ * [ZNTA-1729](https://zanata.atlassian.net/browse/ZNTA-1729) - Source locale is not excluded in target file mappings 
+ * [ZNTA-1710](https://zanata.atlassian.net/browse/ZNTA-1710) - Delete all button css changed on glossary delete.
+ * [ZNTA-1706](https://zanata.atlassian.net/browse/ZNTA-1706) - Filter error on Languages page
+ * [ZNTA-1686](https://zanata.atlassian.net/browse/ZNTA-1686) - After search and delete language search field should have to clear/reset automatically.
+ * [ZNTA-1141](https://zanata.atlassian.net/browse/ZNTA-1141) - Fix 0install on Windows
+
+-----------------------
+
 ## 4.1.1
 ### Data migration
 Imported TMX translation memories may be changed if they were previously

@@ -48,13 +48,6 @@ class TranslatorCredit implements Comparable<TranslatorCredit> {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (o instanceof TranslatorCredit)
-            return this.compareTo((TranslatorCredit) o) == 0;
-        return false;
-    }
-
-    @Override
     public String toString() {
         return getName() + " " + "<" + getEmail() + ">, " + year + ".";
     }
@@ -83,4 +76,25 @@ class TranslatorCredit implements Comparable<TranslatorCredit> {
         this.email = email;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        TranslatorCredit that = (TranslatorCredit) o;
+
+        if (year != null ? !year.equals(that.year) : that.year != null)
+            return false;
+        if (name != null ? !name.equals(that.name) : that.name != null)
+            return false;
+        return email != null ? email.equals(that.email) : that.email == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = year != null ? year.hashCode() : 0;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        return result;
+    }
 }

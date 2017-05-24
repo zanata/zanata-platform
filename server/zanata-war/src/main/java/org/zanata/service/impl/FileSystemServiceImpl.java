@@ -76,10 +76,14 @@ public class FileSystemServiceImpl implements FileSystemService {
         descriptorProps.put(
                 DownloadDescriptorProperties.OriginatingUserId.toString(),
                 generatingUser);
-
-        descriptorProps.storeToXML(new FileOutputStream(descriptorFile),
-                "Zanata Download Descriptor");
-
+        FileOutputStream outputStream =
+                new FileOutputStream(descriptorFile);
+        try {
+            descriptorProps
+                    .storeToXML(outputStream, "Zanata Download Descriptor");
+        } finally {
+            outputStream.close();
+        }
         // Generate the download Id based on the File name
 
         return descriptorFileName;
@@ -136,7 +140,12 @@ public class FileSystemServiceImpl implements FileSystemService {
         if (f.exists()) {
             // Read the properties from the descriptor file
             Properties descriptorProps = new Properties();
-            descriptorProps.loadFromXML(new FileInputStream(f));
+            FileInputStream inputStream = new FileInputStream(f);
+            try {
+                descriptorProps.loadFromXML(inputStream);
+            } finally {
+                inputStream.close();
+            }
             return descriptorProps;
         } else {
             return null;

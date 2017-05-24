@@ -9,8 +9,6 @@ import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationId;
 
-import com.google.common.base.Objects;
-
 public class GetTransUnitList extends
         AbstractWorkspaceAction<GetTransUnitListResult> {
     private static final long serialVersionUID = 1L;

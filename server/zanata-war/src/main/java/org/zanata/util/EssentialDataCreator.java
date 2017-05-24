@@ -157,7 +157,9 @@ public class EssentialDataCreator {
 
     private void createRole(@Nonnull String role, String... includesRoles) {
         log.info("Creating \'{}\' role", role);
-        if (accountRoleDAO.create(role, MANUAL, includesRoles) == null) {
+        try {
+            accountRoleDAO.create(role, MANUAL, includesRoles);
+        } catch (Exception e) {
             throw new RuntimeException(
                     "Could not create \'" + role + "\' role");
         }

@@ -20,12 +20,13 @@
  */
 package org.zanata.service;
 
+import java.io.Serializable;
 import java.util.concurrent.Future;
 
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.model.HProjectIteration;
 
-public interface MergeTranslationsService {
+public interface MergeTranslationsService extends Serializable {
     //@formatter:off
     /**
      *  Starts a background merge translations of a version to another.

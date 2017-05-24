@@ -31,6 +31,7 @@ import com.google.common.base.Optional;
 import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.net.URI;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ import java.util.Set;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface TranslationFileService {
+public interface TranslationFileService extends Serializable {
     /**
      * Extract the translated strings from a document file to a usable form,
      * using appropriate id mapping.

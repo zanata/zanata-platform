@@ -35,9 +35,9 @@ import liquibase.exception.DatabaseException;
 import liquibase.exception.SetupException;
 import liquibase.exception.ValidationErrors;
 import liquibase.resource.ResourceAccessor;
+import org.apache.commons.io.FileUtils;
 import org.zanata.common.DocumentType;
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
 import org.zanata.config.SystemPropertyConfigStore;
 
 public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
@@ -132,17 +132,18 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     }
 
     private void migrateAllRawContents() throws Exception {
-        ResultSet contentsResult = contentsStatement.executeQuery();
-        while (contentsResult.next()) {
-            try {
-                docsCount++;
-                String oldFileId = contentsResult.getString("fileId");
-                Blob content = contentsResult.getBlob("content");
-                migrateRawContentFromLocation(content, oldFileId);
-                successCount++;
-            } catch (Exception e) {
-                problemsCount++;
-                throw e;
+        try (ResultSet contentsResult = contentsStatement.executeQuery()) {
+            while (contentsResult.next()) {
+                try {
+                    docsCount++;
+                    String oldFileId = contentsResult.getString("fileId");
+                    Blob content = contentsResult.getBlob("content");
+                    migrateRawContentFromLocation(content, oldFileId);
+                    successCount++;
+                } catch (Exception e) {
+                    problemsCount++;
+                    throw e;
+                }
             }
         }
     }
@@ -150,16 +151,17 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
     private void migrateRawContentFromLocation(Blob content, String oldFileId)
             throws SQLException, IOException {
         idAndTypeStatement.setString(1, oldFileId);
-        ResultSet idAndTypeResult = idAndTypeStatement.executeQuery();
-        if (idAndTypeResult.next()) {
-            String fileName = fileNameFromResults(idAndTypeResult);
-            writeBlobToFile(content, fileName);
-            changeFileIdFromOldToNew(oldFileId, fileName);
-            deleteOldContent(oldFileId);
-        } else {
-            throw new RuntimeException(
-                    "Raw document content with no matching raw document, HRawDocumentContent.fileId = "
-                            + oldFileId);
+        try (ResultSet idAndTypeResult = idAndTypeStatement.executeQuery()) {
+            if (idAndTypeResult.next()) {
+                String fileName = fileNameFromResults(idAndTypeResult);
+                writeBlobToFile(content, fileName);
+                changeFileIdFromOldToNew(oldFileId, fileName);
+                deleteOldContent(oldFileId);
+            } else {
+                throw new RuntimeException(
+                        "Raw document content with no matching raw document, HRawDocumentContent.fileId = "
+                                + oldFileId);
+            }
         }
     }
 
@@ -192,7 +194,7 @@ public class MigrateRawDocumentsToFileSystem implements CustomTaskChange {
 
     private void writeStreamToFile(final InputStream stream, File file)
             throws IOException {
-        Files.asByteSink(file).writeFrom(stream);
+        FileUtils.copyInputStreamToFile(stream, file);
     }
 
     private void changeFileIdFromOldToNew(String oldFileId, String newFileId)

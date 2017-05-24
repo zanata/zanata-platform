@@ -92,7 +92,6 @@ public class HTextFlowTarget extends ModelEntityBase
         Serializable, ITextFlowTarget, IsEntityWithType {
     private static final long serialVersionUID = 302308010797605435L;
     private HTextFlow textFlow;
-    @Nonnull
     private HLocale locale;
     private String content0;
     private String content1;
@@ -140,6 +139,9 @@ public class HTextFlowTarget extends ModelEntityBase
         this.locale = locale;
         this.textFlow = textFlow;
         this.textFlowRevision = textFlow.getRevision();
+    }
+
+    public HTextFlowTarget() {
     }
     // TODO PERF @NaturalId(mutable=false) for better criteria caching
 
@@ -271,10 +273,20 @@ public class HTextFlowTarget extends ModelEntityBase
 
     public void setContents(List<String> contents) {
         if (!Objects.equal(contents, this.getContents())) {
+            clearContents();
             for (int i = 0; i < contents.size(); i++) {
                 this.setContent(i, contents.get(i));
             }
         }
+    }
+
+    private void clearContents() {
+        content0 = null;
+        content1 = null;
+        content2 = null;
+        content3 = null;
+        content4 = null;
+        content5 = null;
     }
 
     private String getContent(int idx) {
@@ -555,9 +567,6 @@ public class HTextFlowTarget extends ModelEntityBase
         this.revisionCommentSet = revisionCommentSet;
     }
 
-    public HTextFlowTarget() {
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (o == this)
@@ -576,8 +585,7 @@ public class HTextFlowTarget extends ModelEntityBase
             return false;
         final Object this$locale = this.getLocale();
         final Object other$locale = other.getLocale();
-        if (this$locale == null ? other$locale != null
-                : !this$locale.equals(other$locale))
+        if (!this$locale.equals(other$locale))
             return false;
         final Object this$content0 = this.getContent0();
         final Object other$content0 = other.getContent0();
@@ -611,8 +619,7 @@ public class HTextFlowTarget extends ModelEntityBase
             return false;
         final Object this$state = this.getState();
         final Object other$state = other.getState();
-        if (this$state == null ? other$state != null
-                : !this$state.equals(other$state))
+        if (!this$state.equals(other$state))
             return false;
         final Object this$textFlowRevision = this.getTextFlowRevision();
         final Object other$textFlowRevision = other.getTextFlowRevision();
@@ -641,8 +648,7 @@ public class HTextFlowTarget extends ModelEntityBase
             return false;
         final Object this$history = this.getHistory();
         final Object other$history = other.getHistory();
-        if (this$history == null ? other$history != null
-                : !this$history.equals(other$history))
+        if (!this$history.equals(other$history))
             return false;
         final Object this$reviewComments = this.getReviewComments();
         final Object other$reviewComments = other.getReviewComments();
@@ -702,7 +708,7 @@ public class HTextFlowTarget extends ModelEntityBase
         result = result * PRIME
                 + ($textFlow == null ? 43 : $textFlow.hashCode());
         final Object $locale = this.getLocale();
-        result = result * PRIME + ($locale == null ? 43 : $locale.hashCode());
+        result = result * PRIME + $locale.hashCode();
         final Object $content0 = this.getContent0();
         result = result * PRIME
                 + ($content0 == null ? 43 : $content0.hashCode());
@@ -722,7 +728,7 @@ public class HTextFlowTarget extends ModelEntityBase
         result = result * PRIME
                 + ($content5 == null ? 43 : $content5.hashCode());
         final Object $state = this.getState();
-        result = result * PRIME + ($state == null ? 43 : $state.hashCode());
+        result = result * PRIME + $state.hashCode();
         final Object $textFlowRevision = this.getTextFlowRevision();
         result = result * PRIME + ($textFlowRevision == null ? 43
                 : $textFlowRevision.hashCode());
@@ -738,7 +744,7 @@ public class HTextFlowTarget extends ModelEntityBase
         final Object $comment = this.getComment();
         result = result * PRIME + ($comment == null ? 43 : $comment.hashCode());
         final Object $history = this.getHistory();
-        result = result * PRIME + ($history == null ? 43 : $history.hashCode());
+        result = result * PRIME + $history.hashCode();
         final Object $reviewComments = this.getReviewComments();
         result = result * PRIME
                 + ($reviewComments == null ? 43 : $reviewComments.hashCode());

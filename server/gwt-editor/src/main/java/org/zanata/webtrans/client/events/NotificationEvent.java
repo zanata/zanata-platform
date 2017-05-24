@@ -29,9 +29,9 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
     private final Severity severity;
     private final String message;
     private final String details;
-    private boolean displayAsHtml;
-    private InlineLink inlineLink;
-    private Date date;
+    private final boolean displayAsHtml;
+    private final InlineLink inlineLink;
+    private final Date date;
 
     public NotificationEvent(Severity severity, String message) {
         this(severity, message, null);
@@ -83,6 +83,6 @@ public class NotificationEvent extends GwtEvent<NotificationEventHandler> {
     }
 
     public Date getDate() {
-        return date;
+        return new Date(date.getTime());
     }
 }

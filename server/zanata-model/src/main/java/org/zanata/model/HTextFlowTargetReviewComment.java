@@ -58,7 +58,8 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
     private String comment;
     @NotNull
     private Integer targetVersion;
-    private transient String commenterName;
+    @Transient
+    private String commenterName;
 
     public HTextFlowTargetReviewComment(HTextFlowTarget target, String comment,
             HPerson commenter) {
@@ -98,5 +99,40 @@ public class HTextFlowTargetReviewComment extends ModelEntityBase {
 
     public Integer getTargetVersion() {
         return this.targetVersion;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        HTextFlowTargetReviewComment that = (HTextFlowTargetReviewComment) o;
+
+        if (commenter != null ? !commenter.equals(that.commenter) :
+                that.commenter != null) return false;
+        if (textFlowTarget != null ?
+                !textFlowTarget.equals(that.textFlowTarget) :
+                that.textFlowTarget != null) return false;
+        if (comment != null ? !comment.equals(that.comment) :
+                that.comment != null)
+            return false;
+        return targetVersion != null ? !targetVersion.equals(that.targetVersion) :
+                that.targetVersion != null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (commenter != null ? commenter.hashCode() : 0);
+        result =
+                31 * result +
+                        (textFlowTarget != null ? textFlowTarget.hashCode() :
+                                0);
+        result = 31 * result + (comment != null ? comment.hashCode() : 0);
+        result =
+                31 * result +
+                        (targetVersion != null ? targetVersion.hashCode() : 0);
+        return result;
     }
 }

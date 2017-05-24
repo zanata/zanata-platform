@@ -31,6 +31,8 @@ import org.hibernate.type.StringType;
 public class TranslationSourceTypeType extends AbstractSingleColumnStandardBasicType<TranslationSourceType>
     implements DiscriminatorType<TranslationSourceType> {
 
+    private static final long serialVersionUID = 4798513915518681552L;
+
     public TranslationSourceTypeType() {
         super(StringType.INSTANCE.getSqlTypeDescriptor(),
             TranslationSourceTypeTypeDescriptor.INSTANCE);

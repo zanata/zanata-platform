@@ -69,7 +69,8 @@ class CdiDownloadFileCleanupJob implements Job, Serializable {
         // Remove all files that match the filter
         for (File f : toRemove) {
             log.debug("Removing file {}", f.getName());
-            f.delete();
+            boolean deleted = f.delete();
+            log.debug(deleted ? "Temporary file deleted" : "Unable to delete temporary file");
         }
     }
 }

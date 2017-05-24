@@ -29,6 +29,8 @@ import javax.faces.context.ExternalContext;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Size;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -321,6 +323,7 @@ public class UserSettingsAction implements Serializable {
         private CredentialsDAO credentialsDAO;
         @Inject
         private FacesMessages facesMessages;
+        @SuppressFBWarnings("SE_BAD_FIELD")
         @Inject
         private EntityManager em;
         private static final long serialVersionUID = 1L;

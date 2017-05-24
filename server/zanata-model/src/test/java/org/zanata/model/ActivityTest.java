@@ -48,17 +48,23 @@ public class ActivityTest {
 
     @Test
     public void testEquals() {
+        Date now = new Date();
+
         HDocument document = new HDocument();
         document.setId(555666777L);
         HPerson actorA = new HPerson();
         actorA.setName("lara");
         actorA.setEmail("lara@test.com");
         actorA.setId(321654987L);
+        actorA.setLastChanged(now);
+        actorA.setCreationDate(now);
 
         HPerson actorB = new HPerson();
         actorB.setId(987654321L);
         actorB.setName("aloy");
         actorB.setEmail("aloy@test.com");
+        actorB.setLastChanged(now);
+        actorB.setCreationDate(now);
 
         HProjectIteration versionA = new HProjectIteration();
         versionA.setId(1234567890L);
@@ -66,25 +72,36 @@ public class ActivityTest {
         versionB.setId(5678901234L);
         versionB.setProjectType(ProjectType.Utf8Properties);
 
-        Activity activity = new Activity();
-
-        assertThat(activity.equals(new Activity())).isTrue();
-
-        activity = new Activity(actorA, versionA, versionA,
+        Activity activity = new Activity(actorA, versionA, versionA,
                 ActivityType.UPLOAD_SOURCE_DOCUMENT, 9000);
+        activity.setCreationDate(now);
+        activity.setLastChanged(now);
 
-        assertThat(activity.equals(new Activity(actorA, versionA, versionA,
-                ActivityType.UPLOAD_SOURCE_DOCUMENT, 9000))).isTrue();
+        Activity other = new Activity(actorA, versionA, versionA,
+                ActivityType.UPLOAD_SOURCE_DOCUMENT, 9000);
+        other.setCreationDate(now);
+        other.setLastChanged(now);
+
+        assertThat(activity.equals(other)).isTrue();
 
         // Test actor
-        assertEqualsFalse(activity, new Activity(actorB, versionA, versionA,
-                ActivityType.UPLOAD_SOURCE_DOCUMENT, 9000));
+        other = new Activity(actorB, versionA, versionA,
+                ActivityType.UPLOAD_SOURCE_DOCUMENT, 9000);
+        other.setCreationDate(now);
+        other.setLastChanged(now);
+        assertEqualsFalse(activity, other);
         // Test context
-        assertEqualsFalse(activity, new Activity(actorA, document, versionA,
-                ActivityType.UPLOAD_SOURCE_DOCUMENT, 9000));
+        other = new Activity(actorA, document, versionA,
+                ActivityType.UPLOAD_SOURCE_DOCUMENT, 9000);
+        other.setCreationDate(now);
+        other.setLastChanged(now);
+        assertEqualsFalse(activity, other);
         // Test activity type
-        assertEqualsFalse(activity, new Activity(actorA, versionA, versionA,
-                ActivityType.REVIEWED_TRANSLATION, 9000));
+        other = new Activity(actorA, versionA, versionA,
+                ActivityType.REVIEWED_TRANSLATION, 9000);
+        other.setCreationDate(now);
+        other.setLastChanged(now);
+        assertEqualsFalse(activity, other);
     }
 
     private void assertEqualsFalse(Activity a, Activity b) {
@@ -93,10 +110,15 @@ public class ActivityTest {
 
     @Test
     public void hashcodeTest() {
+        Date now = new Date();
         HDocument document = new HDocument();
         document.setId(555666777L);
         HPerson actorA = new HPerson();
+        actorA.setCreationDate(now);
+        actorA.setLastChanged(now);
         HPerson actorB = new HPerson();
+        actorB.setCreationDate(now);
+        actorB.setLastChanged(now);
         actorB.setName("aloy");
 
         HProjectIteration versionA = new HProjectIteration();
@@ -105,14 +127,23 @@ public class ActivityTest {
         versionB.setId(5678901234L);
         versionB.setProjectType(ProjectType.Utf8Properties);
 
-        int hashCode1 = new Activity(actorA, versionA, versionA,
-                ActivityType.UPLOAD_SOURCE_DOCUMENT, 9000).hashCode();
-        int hashCode2 = new Activity(actorB, versionB, versionB,
-                ActivityType.REVIEWED_TRANSLATION, 1000).hashCode();
+        Activity activity = new Activity(actorA, versionA, versionA,
+                ActivityType.UPLOAD_SOURCE_DOCUMENT, 9000);
+        activity.setCreationDate(now);
+        activity.setLastChanged(now);
+        int hashCode1 = activity.hashCode();
+        Activity other = new Activity(actorB, versionB, versionB,
+                ActivityType.REVIEWED_TRANSLATION, 1000);
+        other.setCreationDate(now);
+        other.setLastChanged(now);
+        int hashCode2 = other.hashCode();
         assertThat(hashCode1 == hashCode2).isFalse();
         // Only change business key items
-        hashCode2 = new Activity(actorA, versionA, versionB,
-                ActivityType.UPLOAD_SOURCE_DOCUMENT, 1000).hashCode();
+        other = new Activity(actorA, versionA, versionB,
+                ActivityType.UPLOAD_SOURCE_DOCUMENT, 1000);
+        other.setCreationDate(now);
+        other.setLastChanged(now);
+        hashCode2 = other.hashCode();
         assertThat(hashCode1 == hashCode2).isTrue();
     }
 

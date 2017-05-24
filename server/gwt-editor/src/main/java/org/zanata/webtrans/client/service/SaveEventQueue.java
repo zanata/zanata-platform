@@ -200,7 +200,7 @@ public class SaveEventQueue {
 
         @Override
         public boolean apply(EventWrapper input) {
-            return !input.isSaving();
+            return input != null ? !input.isSaving() : true;
         }
     }
 
@@ -209,7 +209,7 @@ public class SaveEventQueue {
 
         @Override
         public boolean apply(EventWrapper input) {
-            return input.isSaving();
+            return input != null ? input.isSaving() : false;
         }
     }
 }

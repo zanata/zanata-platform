@@ -6,10 +6,10 @@ import com.google.gwt.event.shared.GwtEvent;
 
 public class DocValidationResultEvent extends
         GwtEvent<DocValidationResultHandler> {
-    private Date endTime;
+    private final Date endTime;
 
     public DocValidationResultEvent(Date endTime) {
-        this.endTime = endTime;
+        this.endTime = new Date(endTime.getTime());
     }
 
     /**
@@ -39,6 +39,6 @@ public class DocValidationResultEvent extends
     }
 
     public Date getEndTime() {
-        return endTime;
+        return new Date(endTime.getTime());
     }
 }

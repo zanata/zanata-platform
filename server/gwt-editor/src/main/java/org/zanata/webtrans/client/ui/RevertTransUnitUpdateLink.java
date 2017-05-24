@@ -194,11 +194,11 @@ public class RevertTransUnitUpdateLink extends Anchor implements UndoLink {
 
         @Override
         public boolean apply(TransUnitUpdateInfo input) {
-            return !input.isSuccess();
+            return input != null ? !input.isSuccess() : true;
         }
     }
 
-    private class DefaultUndoCallback implements UndoCallback {
+    private static class DefaultUndoCallback implements UndoCallback {
         @Override
         public void preUndo() {
         }

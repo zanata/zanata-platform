@@ -41,7 +41,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.AccessType;
 import org.hibernate.annotations.Immutable;
@@ -175,11 +174,11 @@ public class HTextFlowTargetHistory extends HTextContainer
     }
 
     public Date getLastChanged() {
-        return lastChanged;
+        return new Date(lastChanged.getTime());
     }
 
     public void setLastChanged(Date lastChanged) {
-        this.lastChanged = lastChanged;
+        this.lastChanged = new Date(lastChanged.getTime());
     }
 
     @ManyToOne(fetch = FetchType.LAZY)

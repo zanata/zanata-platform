@@ -26,6 +26,7 @@ import java.util.Objects;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.AsyncTaskHandle;
@@ -117,6 +118,7 @@ public class TransMemoryMergeManager implements Serializable {
 
     static class TransMemoryTaskKey implements Serializable {
 
+        @SuppressFBWarnings("SE_BAD_FIELD")
         private final ProjectIterationId projectIterationId;
         private final DocumentId documentId;
         private final LocaleId localeId;

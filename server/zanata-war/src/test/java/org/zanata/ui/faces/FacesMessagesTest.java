@@ -46,7 +46,7 @@ import org.zanata.test.CdiUnitRunner;
 import static java.util.Collections.emptyIterator;
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 

@@ -49,6 +49,7 @@ import com.google.common.collect.Sets;
 @Table(uniqueConstraints = @UniqueConstraint(
         columnNames = { "url", "projectId" }))
 public class WebHook implements Serializable {
+    private static final long serialVersionUID = -6175114607622436851L;
     private Long id;
     private HProject project;
     @Url

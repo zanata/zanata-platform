@@ -7,7 +7,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>parent</artifactId>
-    <version>4.2.0-SNAPSHOT</version>
+    <version>4.3.0-SNAPSHOT</version>
     <relativePath>../parent</relativePath>
   </parent>
 
@@ -22,7 +22,7 @@
     <byteman.version>2.1.2</byteman.version>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <kotlin.version>1.0.7</kotlin.version>
+    <kotlin.version>1.1.2</kotlin.version>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
@@ -38,7 +38,7 @@
     <gwt.version>2.8.0</gwt.version>
     <lucene.version>5.3.1</lucene.version>
     <org.mock-server.version>3.9.17</org.mock-server.version>
-    <rewrite.version>3.0.0.Alpha10</rewrite.version>
+    <rewrite.version>3.4.1.Final</rewrite.version>
 
     <!--
     Not used yet.
@@ -230,10 +230,6 @@
           <exclusion>
             <groupId>javax.annotation</groupId>
             <artifactId>jsr250-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <artifactId>jcip-annotations</artifactId>
-            <groupId>net.jcip</groupId>
           </exclusion>
           <exclusion>
             <groupId>org.jboss.spec.javax.annotation</groupId>
@@ -1540,12 +1536,6 @@
         <artifactId>activation</artifactId>
         <version>1.1.1</version>
         <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
@@ -1753,7 +1743,7 @@
     </pluginRepository>
     <pluginRepository>
       <id>arturbosch-code-analysis</id>
-      <name>arturbosch-code-analysis (for detekt)</name>
+      <name>arturbosch-code-analysis (for detekt, also available in jcenter)</name>
       <url>https://dl.bintray.com/arturbosch/code-analysis/</url>
       <layout>default</layout>
       <releases>
@@ -2058,9 +2048,7 @@
           <execution>
             <!-- This can be run separately with mvn antrun:run@detekt -->
             <id>detekt</id>
-            <!-- Disabled until config-resource option is released (1.0.0.M7?).
-                 https://gitlab.com/arturbosch/detekt/merge_requests/2 -->
-            <!--<phase>verify</phase>-->
+            <phase>verify</phase>
             <configuration>
               <target name="detekt">
                 <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
@@ -2086,12 +2074,12 @@
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-cli</artifactId>
-            <version>1.0.0.M6</version>
+            <version>1.0.0.M10.1</version>
           </dependency>
           <dependency>
             <groupId>io.gitlab.arturbosch.detekt</groupId>
             <artifactId>detekt-formatting</artifactId>
-            <version>1.0.0.M6</version>
+            <version>1.0.0.M10.1</version>
           </dependency>
         </dependencies>
       </plugin>

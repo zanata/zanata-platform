@@ -26,6 +26,8 @@ import javax.annotation.Nonnull;
 import org.hibernate.Session;
 import org.hibernate.ejb.HibernateEntityManagerFactory;
 
+import java.io.Serializable;
+
 /**
  * This class uses Hibernate's StatelessSession to iterate over large query
  * results using mysql streaming ResultSets.
@@ -33,7 +35,7 @@ import org.hibernate.ejb.HibernateEntityManagerFactory;
  * @author Sean Flanigan <a
  *         href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public abstract class StreamingDAO<T> {
+public abstract class StreamingDAO<T> implements Serializable {
 
     private HibernateEntityManagerFactory entityManagerFactory;
 

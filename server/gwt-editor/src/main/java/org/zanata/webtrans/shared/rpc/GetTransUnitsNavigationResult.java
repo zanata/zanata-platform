@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.rpc;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -10,8 +11,10 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import com.google.common.base.Objects;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class GetTransUnitsNavigationResult implements IsSerializable {
+public class GetTransUnitsNavigationResult implements IsSerializable,
+        Serializable {
 
+    private static final long serialVersionUID = -5894943261220660864L;
     private List<TransUnitId> idIndexList;
     private Map<TransUnitId, ContentState> transIdStateList;
 

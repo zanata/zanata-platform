@@ -63,6 +63,8 @@ import javax.enterprise.event.Observes;
 public class Messages extends AbstractMap<String, String>
         implements Serializable {
 
+    private static final long serialVersionUID = -7212409186009241380L;
+
     /**
      * Gets the 'messages' ResourceBundle for the specified locale.
      */

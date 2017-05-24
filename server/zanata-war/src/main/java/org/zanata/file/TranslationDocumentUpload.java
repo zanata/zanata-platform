@@ -25,6 +25,7 @@ import static org.zanata.file.DocumentUploadUtil.isSinglePart;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +60,7 @@ import com.google.common.base.Optional;
 
 @Dependent
 @Named("translationDocumentUploader")
-public class TranslationDocumentUpload {
+public class TranslationDocumentUpload implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TranslationDocumentUpload.class);
 
@@ -133,7 +134,8 @@ public class TranslationDocumentUpload {
                                 uploadForm.getFileType(), docType);
             }
             if (tempFile.isPresent()) {
-                tempFile.get().delete();
+                boolean deleted = tempFile.get().delete();
+                log.debug(deleted ? "Temporary file deleted" : "Unable to delete temporary file");
             }
             Set<String> extensions =
                     newExtensions(uploadForm.getFileType().equals(".po"));

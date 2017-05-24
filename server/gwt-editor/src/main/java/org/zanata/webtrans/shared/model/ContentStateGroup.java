@@ -1,5 +1,6 @@
 package org.zanata.webtrans.shared.model;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
@@ -7,7 +8,8 @@ import org.zanata.common.ContentState;
 import com.google.common.collect.Lists;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ContentStateGroup implements IsSerializable {
+public class ContentStateGroup implements IsSerializable, Serializable {
+    private static final long serialVersionUID = -5849576563649685997L;
     private boolean hasNew;
     private boolean hasFuzzy;
     private boolean hasTranslated;

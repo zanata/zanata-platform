@@ -1,5 +1,6 @@
 package org.zanata.util;
 
+import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 
@@ -21,6 +22,8 @@ public class PasswordUtil {
     private static final char[] DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a',
             'b', 'c', 'd', 'e', 'f' };
 
+    private static final String CHARSET = "utf8";
+
     /**
      * Deprecated in Seam. We need to do data migration if we want to use new
      * method.
@@ -32,14 +35,14 @@ public class PasswordUtil {
             MessageDigest md = MessageDigest.getInstance("MD5");
 
             if (saltPhrase != null) {
-                md.update(saltPhrase.getBytes());
+                md.update(saltPhrase.getBytes(CHARSET));
                 byte[] salt = md.digest();
 
                 md.reset();
-                md.update(password.getBytes());
+                md.update(password.getBytes(CHARSET));
                 md.update(salt);
             } else {
-                md.update(password.getBytes());
+                md.update(password.getBytes(CHARSET));
             }
 
             byte[] raw = md.digest();

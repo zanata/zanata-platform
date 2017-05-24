@@ -56,65 +56,50 @@ public abstract class AbstractSortAction {
                     getMessage("jsf.document.noContent.title"));
         }
         DisplayUnit displayUnit;
-        String displayString = null;
-        switch (sortOption) {
-        case HOURS:
+        String displayString;
+        if (sortOption.getDisplay().equals(SortingType.SortOption.HOURS.getDisplay())) {
             displayUnit = new DisplayUnit("stats--small",
                     StatisticsUtil.formatHours(statistic.getRemainingHours()),
                     getMessage("jsf.stats.HoursRemaining"), "");
-            break;
-
-        case WORDS:
+        } else if (sortOption.getDisplay().equals(SortingType.SortOption.WORDS.getDisplay())) {
             displayUnit = new DisplayUnit("stats--small",
                     String.valueOf(statistic.getUntranslated()),
                     getMessage("jsf.WordsRemaining"), "");
-            break;
-
-        case LAST_ACTIVITY:
+        } else if (sortOption.getDisplay().equals(SortingType.SortOption.LAST_ACTIVITY.getDisplay())) {
             displayUnit = new DisplayUnit("stats--mini",
                     DateUtil.getHowLongAgoDescription(date),
                     getMessage("jsf.LastUpdated"),
                     DateUtil.formatShortDate(date));
-            break;
-
-        case LAST_UPDATED_BY_YOU:
+        } else if (sortOption.getDisplay().equals(SortingType.SortOption.LAST_UPDATED_BY_YOU.getDisplay())) {
             displayString = date == null ? "never"
                     : DateUtil.getHowLongAgoDescription(date);
             displayUnit = new DisplayUnit("stats--mini", displayString,
                     getMessage("jsf.LastUpdatedByYou"),
                     DateUtil.formatShortDate(date));
-            break;
-
-        case LAST_TRANSLATED:
+        } else if (sortOption.getDisplay().equals(SortingType.SortOption.LAST_TRANSLATED.getDisplay())) {
             displayString = date == null ? "never"
                     : DateUtil.getHowLongAgoDescription(date);
             displayUnit = new DisplayUnit("stats--mini", displayString,
                     getMessage("jsf.LastTranslated"),
                     DateUtil.formatShortDate(date));
-            break;
-
-        case LAST_SOURCE_UPDATE:
+        } else if (sortOption.getDisplay().equals(SortingType.SortOption.LAST_SOURCE_UPDATE.getDisplay())) {
             displayString = date == null ? "never"
                     : DateUtil.getHowLongAgoDescription(date);
             displayUnit = new DisplayUnit("stats--mini", displayString,
                     getMessage("jsf.LastUpdated"),
                     DateUtil.formatShortDate(date));
-            break;
-
-        default:
+        } else {
             String figure = StatisticsUtil
                     .formatPercentage(statistic.getPercentTranslated()) + "%";
             String style = statistic.getPercentTranslated() == 0
                     ? "stats--small txt--neutral" : "stats--small txt--success";
             displayUnit = new DisplayUnit(style, figure,
                     getMessage("jsf.Translated"), "");
-            break;
-
         }
         return displayUnit;
     }
 
-    public final class DisplayUnit {
+    public static final class DisplayUnit {
         private String cssClass;
         private String figure;
         private String unit;
@@ -154,22 +139,21 @@ public abstract class AbstractSortAction {
         } else if (stats2 == null) {
             return 1;
         }
-        switch (sortOption) {
-        case HOURS:
+
+        if (sortOption.getDisplay()
+                .equals(SortingType.SortOption.HOURS.getDisplay())) {
             return Double.compare(stats1.getRemainingHours(),
                     stats2.getRemainingHours());
-
-        case PERCENTAGE:
+        } else if (sortOption.getDisplay()
+                .equals(SortingType.SortOption.PERCENTAGE.getDisplay())) {
             return Double.compare(stats1.getPercentTranslated(),
                     stats2.getPercentTranslated());
-
-        case WORDS:
+        } else if (sortOption.getDisplay()
+                .equals(SortingType.SortOption.WORDS.getDisplay())) {
             return Double.compare(stats1.getUntranslated(),
                     stats2.getUntranslated());
-
-        default:
+        } else {
             return 0;
-
         }
     }
 

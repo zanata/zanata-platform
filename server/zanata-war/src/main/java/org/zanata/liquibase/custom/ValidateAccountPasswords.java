@@ -53,44 +53,33 @@ public class ValidateAccountPasswords implements CustomTaskChange {
     public void execute(Database database) throws CustomChangeException {
         JdbcConnection conn = (JdbcConnection) database.getConnection();
 
-        Statement stmt = null;
         ResultSet rset = null;
-        try {
-            stmt =
-                    conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-                            ResultSet.CONCUR_UPDATABLE);
-            rset =
-                    stmt.executeQuery("select id, username, passwordHash from HAccount");
-
-            while (rset.next()) {
-                String username = rset.getString("username");
-                String passwordHash = rset.getString("passwordHash");
-                // Deprecated, but it's the same method used to generate
-                // passwords on the rest of Zanata
-                String emptyPasswordHash =
-                        PasswordUtil.generateSaltedHash("", username);
-
-                if (emptyPasswordHash.equals(passwordHash)) {
-                    emptyPasswordsFound++;
-                    rset.updateString("passwordHash", null);
-                    rset.updateRow();
-                }
-            }
-        } catch (DatabaseException e) {
-            throw new CustomChangeException(e);
-        } catch (SQLException e) {
-            throw new CustomChangeException(e);
-        } finally {
+        try (Statement stmt =
+                conn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+                        ResultSet.CONCUR_UPDATABLE)) {
             try {
-                if (rset != null) {
-                    rset.close();
+                rset =
+                        stmt.executeQuery("select id, username, passwordHash from HAccount");
+
+                while (rset.next()) {
+                    String username = rset.getString("username");
+                    String passwordHash = rset.getString("passwordHash");
+                    // Deprecated, but it's the same method used to generate
+                    // passwords on the rest of Zanata
+                    String emptyPasswordHash =
+                            PasswordUtil.generateSaltedHash("", username);
+
+                    if (emptyPasswordHash.equals(passwordHash)) {
+                        emptyPasswordsFound++;
+                        rset.updateString("passwordHash", null);
+                        rset.updateRow();
+                    }
                 }
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (Exception e) {
-                // Ignore this one, already closed probably
+            } finally {
+                rset.close();
             }
+        } catch (SQLException | DatabaseException e) {
+            throw new CustomChangeException(e);
         }
     }
 

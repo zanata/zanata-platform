@@ -32,6 +32,8 @@ import org.zanata.model.LocaleRole;
 public class LocaleRoleType extends AbstractSingleColumnStandardBasicType<LocaleRole>
     implements DiscriminatorType<LocaleRole> {
 
+    private static final long serialVersionUID = -8176902653483296304L;
+
     public LocaleRoleType() {
         super(StringType.INSTANCE.getSqlTypeDescriptor(),
             LocaleRoleDescriptor.INSTANCE);

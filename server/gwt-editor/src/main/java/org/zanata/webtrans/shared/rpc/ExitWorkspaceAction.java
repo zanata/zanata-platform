@@ -5,7 +5,6 @@ import org.zanata.webtrans.shared.model.Person;
 public class ExitWorkspaceAction extends AbstractWorkspaceAction<NoOpResult> {
 
     private static final long serialVersionUID = 1L;
-
     private Person person;
 
     @SuppressWarnings("unused")

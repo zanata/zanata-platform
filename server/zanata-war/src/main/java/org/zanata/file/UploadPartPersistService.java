@@ -21,10 +21,11 @@
 package org.zanata.file;
 
 import java.io.InputStream;
+import java.io.Serializable;
 
 import org.zanata.model.HDocumentUploadPart;
 
-public interface UploadPartPersistService {
+public interface UploadPartPersistService extends Serializable {
 
     public HDocumentUploadPart newUploadPartFromStream(
             InputStream partContentStream, int contentLength);

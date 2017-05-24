@@ -1,6 +1,7 @@
 package org.zanata.webtrans.shared.rpc;
 
 import com.google.common.base.MoreObjects;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated.UpdateType;
 
@@ -13,6 +14,7 @@ public class UpdateTransUnit extends
         AbstractWorkspaceAction<UpdateTransUnitResult> {
     private static final long serialVersionUID = 1L;
 
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private List<TransUnitUpdateRequest> updateRequests;
     private UpdateType updateType;
 

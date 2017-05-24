@@ -5,7 +5,11 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Person implements HasIdentifier<PersonId>, IsSerializable {
+import java.io.Serializable;
+
+public class Person implements HasIdentifier<PersonId>, IsSerializable,
+        Serializable {
+    private static final long serialVersionUID = 6772413435864643160L;
     private PersonId id;
     private String name;
     private String avatarUrl;

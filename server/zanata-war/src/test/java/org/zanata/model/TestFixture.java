@@ -101,8 +101,7 @@ public class TestFixture {
         hTextFlow.setId(id);
         hTextFlow.setPos((int) id);
 
-        HTextFlowTarget target = new HTextFlowTarget();
-        target.setTextFlow(hTextFlow);
+        HTextFlowTarget target = new HTextFlowTarget(hTextFlow, targetLocale);
         target.setVersionNum(0);
         target.setState(contentState);
         target.setLastChanged(new Date());

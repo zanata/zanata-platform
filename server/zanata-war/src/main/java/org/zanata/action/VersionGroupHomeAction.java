@@ -26,6 +26,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
@@ -96,8 +98,10 @@ public class VersionGroupHomeAction extends AbstractSortAction
     private SortingType projectSortingList = new SortingType(Lists.newArrayList(
             SortingType.SortOption.ALPHABETICAL, SortingType.SortOption.HOURS,
             SortingType.SortOption.PERCENTAGE, SortingType.SortOption.WORDS));
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final LanguageComparator languageComparator =
             new LanguageComparator(getLanguageSortingList());
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private final VersionComparator versionComparator =
             new VersionComparator(getProjectSortingList());
     private final AbstractListFilter<HLocale> projectTabLanguageFilter =
@@ -203,19 +207,18 @@ public class VersionGroupHomeAction extends AbstractSortAction
                     wordStatistic2 = statisticMap.get(new VersionLocaleKey(
                             selectedVersionId, o2.getLocaleId()));
                 }
-                switch (selectedSortOption) {
-                case PERCENTAGE:
+                if (selectedSortOption.getDisplay()
+                        .equals(SortingType.SortOption.PERCENTAGE.getDisplay())) {
                     return Double.compare(wordStatistic1.getPercentTranslated(),
                             wordStatistic2.getPercentTranslated());
-
-                case HOURS:
+                } else if (selectedSortOption.getDisplay()
+                        .equals(SortingType.SortOption.HOURS.getDisplay())) {
                     return Double.compare(wordStatistic1.getRemainingHours(),
                             wordStatistic2.getRemainingHours());
-
-                case WORDS:
+                } else if (selectedSortOption.getDisplay()
+                        .equals(SortingType.SortOption.WORDS.getDisplay())) {
                     return Double.compare(wordStatistic1.getUntranslated(),
                             wordStatistic2.getUntranslated());
-
                 }
             } else {
                 return o1.retrieveDisplayName()
@@ -260,19 +263,18 @@ public class VersionGroupHomeAction extends AbstractSortAction
                     wordStatistic1 = getStatisticForProject(o1.getId());
                     wordStatistic2 = getStatisticForProject(o2.getId());
                 }
-                switch (selectedSortOption) {
-                case PERCENTAGE:
+                if (selectedSortOption.getDisplay()
+                        .equals(SortingType.SortOption.PERCENTAGE.getDisplay())) {
                     return Double.compare(wordStatistic1.getPercentTranslated(),
                             wordStatistic2.getPercentTranslated());
-
-                case HOURS:
+                } else if (selectedSortOption.getDisplay()
+                        .equals(SortingType.SortOption.HOURS.getDisplay())) {
                     return Double.compare(wordStatistic1.getRemainingHours(),
                             wordStatistic2.getRemainingHours());
-
-                case WORDS:
+                } else if (selectedSortOption.getDisplay()
+                        .equals(SortingType.SortOption.WORDS.getDisplay())) {
                     return Double.compare(wordStatistic1.getUntranslated(),
                             wordStatistic2.getUntranslated());
-
                 }
             } else {
                 return ComparatorUtil.compareStringIgnoreCase(

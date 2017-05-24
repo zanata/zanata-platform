@@ -296,7 +296,7 @@ public class TranslationServiceImpl implements TranslationService {
                 projectSlug, projectIteration.getSlug());
     }
 
-    public class TranslationDetails {
+    public static class TranslationDetails {
         private final String revisionComment;
         private final EntityType copiedEntityType;
         private final TranslationSourceType sourceType;
@@ -473,7 +473,7 @@ public class TranslationServiceImpl implements TranslationService {
                     + resId + " with contents: " + target.getContents();
             warnings.add(warning);
             List<String> newContents = new ArrayList<String>(legalSize);
-            for (int i = 0; i < contentsSize; i++) {
+            for (int i = 0; i < legalSize; i++) {
                 String content = target.getContents().get(i);
                 newContents.add(content);
             }

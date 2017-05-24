@@ -21,6 +21,7 @@
 package org.zanata.tmx;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import javax.enterprise.context.Dependent;
 import javax.persistence.EntityExistsException;
 import javax.transaction.HeuristicMixedException;
@@ -55,7 +56,7 @@ import com.google.common.base.Throwables;
  */
 @Named("tmxParser")
 @Dependent
-public class TMXParser {
+public class TMXParser implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(TMXParser.class);
 

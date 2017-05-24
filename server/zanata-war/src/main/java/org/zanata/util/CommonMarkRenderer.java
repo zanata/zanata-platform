@@ -20,8 +20,10 @@
  */
 package org.zanata.util;
 
-import com.google.common.io.Resources;
+import com.google.common.base.Charsets;
 import jdk.nashorn.api.scripting.JSObject;
+import org.apache.commons.io.IOUtils;
+
 import javax.inject.Named;
 import javax.script.Bindings;
 import javax.script.Compilable;
@@ -30,6 +32,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import static com.google.common.base.Throwables.propagate;
@@ -40,7 +43,7 @@ import static com.google.common.base.Throwables.propagate;
  */
 @Named("commonMarkRenderer")
 @javax.enterprise.context.ApplicationScoped
-public class CommonMarkRenderer {
+public class CommonMarkRenderer implements Serializable {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(CommonMarkRenderer.class);
 
@@ -133,8 +136,8 @@ public class CommonMarkRenderer {
         try {
             // Create a javascript function 'mdRender' which takes CommonMark
             // as a string and returns a rendered HTML string:
-            String commonMarkScript = Resources.toString(getScriptResource(),
-                    StandardCharsets.UTF_8);
+            String commonMarkScript =
+                    IOUtils.toString(getScriptResource(), Charsets.UTF_8);
             String functionsScript = commonMarkScript
                     + "var reader = new commonmark.Parser();var writer = new commonmark.HtmlRenderer();function mdRender(src) {  return writer.render(reader.parse(src));};";
             return ((Compilable) engine).compile(functionsScript);
@@ -144,7 +147,13 @@ public class CommonMarkRenderer {
     }
 
     private static URL getScriptResource() {
-        return Resources.getResource(CommonMarkRenderer.class,
-                "/" + RESOURCE_NAME);
+        String resourceName = "/" + RESOURCE_NAME;
+        URL url = CommonMarkRenderer.class.getResource(resourceName);
+        if (url == null) {
+            throw new IllegalArgumentException(
+                    "resource " + resourceName + " relative to " +
+                            CommonMarkRenderer.class.getName() + " not found.");
+        }
+        return url;
     }
 }

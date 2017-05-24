@@ -20,6 +20,8 @@
  */
 package org.zanata.model;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.io.Serializable;
 import java.sql.Blob;
 import javax.persistence.Entity;
@@ -37,6 +39,7 @@ public class HDocumentUploadPart implements Serializable {
     private static final long serialVersionUID = 1L;
     private long id;
     private HDocumentUpload upload;
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Blob content;
 
     @Id

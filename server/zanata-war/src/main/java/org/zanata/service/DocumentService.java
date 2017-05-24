@@ -25,6 +25,7 @@ import org.zanata.events.DocStatsEvent;
 import org.zanata.model.HDocument;
 import org.zanata.rest.dto.resource.Resource;
 
+import java.io.Serializable;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
@@ -32,7 +33,7 @@ import java.util.concurrent.CompletableFuture;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public interface DocumentService {
+public interface DocumentService extends Serializable {
     // milestone for contentState to publish event (percentage)
     public static final int DOC_EVENT_MILESTONE= 100;
 

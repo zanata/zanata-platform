@@ -20,7 +20,7 @@
  */
 package org.zanata.service;
 
-import java.lang.reflect.Type;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,16 +30,16 @@ import javax.annotation.Nullable;
 import javax.ws.rs.core.GenericEntity;
 
 import com.google.common.collect.Lists;
-import org.jboss.resteasy.util.GenericType;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HLocale;
+import org.zanata.model.HLocaleMember;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.rest.dto.LanguageTeamSearchResult;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.editor.dto.LocaleSortField;
 
-public interface LocaleService {
+public interface LocaleService extends Serializable {
     List<HLocale> getAllLocales(int offset, int maxResults, String filter,
             List<LocaleSortField> sortFields);
 
@@ -142,11 +142,7 @@ public interface LocaleService {
             String alias = localeAliases.get(id);
             localeDetails.add(convertHLocaleToDTO(hLocale, alias));
         }
-
-        Type genericType = new GenericType<List<LocaleDetails>>() {
-        }.getGenericType();
-        return new GenericEntity<List<LocaleDetails>>(localeDetails,
-                genericType);
+        return new GenericEntity<List<LocaleDetails>>(localeDetails){};
     }
 
     static LanguageTeamSearchResult convertHLocaleToSearchResultDTO(
@@ -157,7 +153,9 @@ public interface LocaleService {
                 locale.retrieveDisplayName(), null, locale.retrieveNativeName(),
                 locale.isActive(), locale.isEnabledByDefault(),
                 locale.getPluralForms()));
-        result.setMemberCount(locale.getMembers().size());
+        Set<HLocaleMember> members = locale.getMembers();
+        int count = members == null ? 0 : members.size();
+        result.setMemberCount(count);
         return result;
     }
 }

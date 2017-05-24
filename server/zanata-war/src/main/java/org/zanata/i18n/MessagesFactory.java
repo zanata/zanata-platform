@@ -24,6 +24,7 @@ import org.zanata.util.DefaultLocale;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
 import javax.inject.Named;
+import java.io.Serializable;
 import java.util.Locale;
 
 /**
@@ -35,7 +36,7 @@ import java.util.Locale;
  */
 @Named("messagesFactory")
 @javax.enterprise.context.ApplicationScoped
-public class MessagesFactory {
+public class MessagesFactory implements Serializable {
 
     /**
      * Returns an instance of Messages for the server's default locale.

@@ -67,7 +67,6 @@ public class TransUnitUpdateHelper {
                 serviceLocator.getInstance(TransUnitTransformer.class);
         UpdateTransUnitResult result = new UpdateTransUnitResult();
         for (TranslationService.TranslationResult translationResult : translationResults) {
-            translationResult.getTranslatedTextFlowTarget().getId();
             HTextFlowTarget newTarget =
                     translationResult.getTranslatedTextFlowTarget();
             TransUnitUpdateInfo transUnitUpdateInfo = cache.getIfPresent(
