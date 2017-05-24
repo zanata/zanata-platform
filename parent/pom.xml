@@ -230,9 +230,7 @@
     <checkstyle.includes>*.xml,*.txt,*.md,etc/**,src/main/**,src/test/**,src/etc/**,src/conf/**</checkstyle.includes>
     <checkstyle.excludes>src/test/resources/**,**/.gitkeep</checkstyle.excludes>
 
-    <!-- NB: If we want to failOnError, we may need to
-         remove GuavaBetaDetector/library-detectors. -->
-    <findbugs.failOnError>false</findbugs.failOnError>
+    <findbugs.failOnError>true</findbugs.failOnError>
     <findbugs.excludeFilterFile>zanata-build-tools/findbugs-filter.xml</findbugs.excludeFilterFile>
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
