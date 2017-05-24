@@ -31,6 +31,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.apicompat.rest.service.AccountResource;
+import org.zanata.rest.ResourceRequest;
 import org.zanata.apicompat.rest.MediaTypes;
 import org.zanata.apicompat.rest.dto.Account;
 import org.zanata.rest.ResourceRequest;
@@ -88,8 +89,8 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
                 assertThat(account.getPasswordHash(),
                         is("/9Se/pfHeUH8FJ4asBD6jQ=="));
                 assertThat(account.getRoles().size(), is(1));
-//                assertThat(account.getTribes().size(), is(1));
-                 // Language teams are not being returned
+                // assertThat(account.getLanguages().size(), is(1)); // Language
+                // teams are not being returned
             }
         }.run();
     }
@@ -121,7 +122,7 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
                 assertThat(account.getPasswordHash(),
                         is("/9Se/pfHeUH8FJ4asBD6jQ=="));
                 assertThat(account.getRoles().size(), is(1));
-                // assertThat(account.getTribes().size(), is(1)); // Language
+                // assertThat(account.getLanguages().size(), is(1)); // Language
                 // teams are not being returned
             }
         }.run();
@@ -183,7 +184,7 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
         assertThat(a2.getName(), is(a.getName()));
         assertThat(a2.getPasswordHash(), is(a.getPasswordHash()));
         assertThat(a2.getRoles().size(), is(0));
-        // assertThat(a2.getTribes().size(), is(1)); // Language teams are not
+        // assertThat(a2.getLanguages().size(), is(1)); // Language teams are not
         // being returned
     }
 
@@ -224,7 +225,7 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
         assertThat(a2.getName(), is(a.getName()));
         assertThat(a2.getPasswordHash(), is(a.getPasswordHash()));
         assertThat(a2.getRoles().size(), is(0));
-        // assertThat(a2.getTribes().size(), is(1)); // Language teams are not
+        // assertThat(a2.getLanguages().size(), is(1)); // Language teams are not
         // being returned
     }
 

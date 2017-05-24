@@ -273,10 +273,20 @@ public class HTextFlowTarget extends ModelEntityBase
 
     public void setContents(List<String> contents) {
         if (!Objects.equal(contents, this.getContents())) {
+            clearContents();
             for (int i = 0; i < contents.size(); i++) {
                 this.setContent(i, contents.get(i));
             }
         }
+    }
+
+    private void clearContents() {
+        content0 = null;
+        content1 = null;
+        content2 = null;
+        content3 = null;
+        content4 = null;
+        content5 = null;
     }
 
     private String getContent(int idx) {

@@ -119,14 +119,14 @@ public class AccountService implements AccountResource {
             to.getRoles().add(hAccountRole);
         }
         hPerson.getLanguageMemberships().clear();
-        for (String tribe : from.getTribes()) {
-            HLocale hTribe = localeDAO.findByLocaleId(new LocaleId(tribe));
-            if (hTribe == null)
-                // generate error for missing tribe
+        for (String language : from.getLanguages()) {
+            HLocale hLocale = localeDAO.findByLocaleId(new LocaleId(language));
+            if (hLocale == null)
+                // generate error for missing language
                 throw new NoLogWebApplicationException(Response
                         .status(Status.BAD_REQUEST)
-                        .entity("Invalid tribe \'" + tribe + "\'").build());
-            hPerson.getLanguageMemberships().add(hTribe);
+                        .entity("Invalid language \'" + language + "\'").build());
+            hPerson.getLanguageMemberships().add(hLocale);
         }
         to.setUsername(from.getUsername());
     }
