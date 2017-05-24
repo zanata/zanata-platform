@@ -194,10 +194,6 @@
             <artifactId>commons-logging</artifactId>
           </exclusion>
           <exclusion>
-            <groupId>net.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
-          </exclusion>
-          <exclusion>
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
           </exclusion>

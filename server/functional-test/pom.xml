@@ -144,7 +144,7 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-war</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
       <exclusions>
@@ -208,10 +208,6 @@
       <artifactId>browsermob-core-littleproxy</artifactId>
       <version>2.1.0-beta-4</version>
       <exclusions>
-        <exclusion>
-          <groupId>com.google.code.findbugs</groupId>
-          <artifactId>jsr305</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>javax.annotation</groupId>
           <artifactId>jsr250-api</artifactId>
@@ -310,10 +306,6 @@
       <artifactId>subethasmtp</artifactId>
       <version>3.1.7</version>
       <exclusions>
-        <exclusion>
-          <groupId>com.google.code.findbugs</groupId>
-          <artifactId>jsr305</artifactId>
-        </exclusion>
         <exclusion>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
@@ -480,7 +472,17 @@
 
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
-      <artifactId>annotations</artifactId>
+      <artifactId>findbugs-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.jcip</groupId>
+      <artifactId>jcip-annotations</artifactId>
     </dependency>
 
     <dependency>
