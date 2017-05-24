@@ -23,9 +23,9 @@ import org.zanata.model.type.EntityType;
 import org.zanata.service.ActivityService;
 import org.zanata.util.UrlUtil;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.zanata.model.TestFixture.makeHTextFlow;
 
