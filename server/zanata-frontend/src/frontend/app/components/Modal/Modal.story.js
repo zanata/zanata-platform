@@ -68,29 +68,49 @@ storiesOf('Modal', module)
           </Modal.Footer>
         </Modal>
     ))
-    .add('version-merge', () => (
+    .add('version-TM', () => (
         <Modal
             show={true}
             onHide={action('onHide')}>
           <Modal.Header>
-            <Modal.Title>Version Merge</Modal.Title>
+            <Modal.Title>Version TM Merge</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div>
-              <p>This feature copies existing translations from similar
-                documents in other projects and versions into this project
-                version.
+              <p className="intro">This feature copies existing translations from similar documents
+                in other projects and versions into this project version if the source
+                text and context both match.
                 The translation state will be preserved (
                 <span className='vmerge-transtxt'>translated</span> or
                 <span className='vmerge-apptxt'> approved</span>).
               </p>
               <Well>
                 <Checkbox>
-                  If metadata matches but source string does not, copy as
+                  If context matches but source text does not, copy as
                   <span className='vmerge-fuzzytxt'> fuzzy</span>.
                 </Checkbox>
               </Well>
-              <Col xs={12} className='vmerge-langrow'>
+              <Col xs={12} className='vmerge-row'>
+                <Col xs={4}>
+                  <span className='vmerge-title text-dark'>TM match percentage</span>
+                </Col>
+                <Col xs={5}>
+                  <DropdownButton bsStyle='default' bsSize='small'
+                                  title='100%'
+                                  id='dropdown-basic'
+                                  className='vmerge-ddown'>
+                    <MenuItem onClick={action('onClick')} eventKey='1'>
+                      90%</MenuItem>
+                    <MenuItem onClick={action('onClick')} eventKey='2'>
+                      80%</MenuItem>
+                    <MenuItem onClick={action('onClick')} eventKey='3' active>
+                      70%</MenuItem>
+                    <MenuItem onClick={action('onClick')} eventKey='4'>
+                      60%</MenuItem>
+                  </DropdownButton>
+                </Col>
+              </Col>
+              <Col xs={12} className='vmerge-row'>
                 <Col xs={2}>
                   <span className='vmerge-title text-info'>Language</span>
                 </Col>

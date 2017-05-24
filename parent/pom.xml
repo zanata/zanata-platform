@@ -442,9 +442,8 @@
                 <exclude>xml-apis:xml-apis</exclude>
                 <exclude>xerces:xmlParserAPIs</exclude>
 
-                <!-- use com.google.code.findbugs:annotations -->
-                <exclude>net.jcip:jcip-annotations</exclude>
-                <exclude>com.google.code.findbugs:jsr305</exclude>
+                <!-- use com.google.code.findbugs:findbugs-annotations, net.jcip:jcip-annotations, com.google.code.findbugs:jsr305 -->
+                <exclude>com.google.code.findbugs:annotations</exclude>
 
                 <!-- use org.glassfish.jaxb:jaxb-core -->
                 <exclude>com.sun.xml.bind:jaxb-core</exclude>
@@ -1184,19 +1183,23 @@
 
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
-        <artifactId>annotations</artifactId>
-        <version>${findbugs.maven.version}</version>
+        <artifactId>findbugs-annotations</artifactId>
+        <version>3.0.1</version>
         <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>net.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
-          </exclusion>
-        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>3.0.2</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>net.jcip</groupId>
+        <artifactId>jcip-annotations</artifactId>
+        <version>1.0</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -1312,10 +1315,6 @@
           <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>net.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
           </exclusion>
           <exclusion>
             <groupId>javassist</groupId>

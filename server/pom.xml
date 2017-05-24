@@ -22,7 +22,7 @@
     <byteman.version>2.1.2</byteman.version>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
-    <kotlin.version>1.1.1</kotlin.version>
+    <kotlin.version>1.1.2</kotlin.version>
     <maven.javadoc.version>2.9.1</maven.javadoc.version>
     <surefire.version>2.19.1</surefire.version>
 
@@ -230,10 +230,6 @@
           <exclusion>
             <groupId>javax.annotation</groupId>
             <artifactId>jsr250-api</artifactId>
-          </exclusion>
-          <exclusion>
-            <artifactId>jcip-annotations</artifactId>
-            <groupId>net.jcip</groupId>
           </exclusion>
           <exclusion>
             <groupId>org.jboss.spec.javax.annotation</groupId>
@@ -1540,12 +1536,6 @@
         <artifactId>activation</artifactId>
         <version>1.1.1</version>
         <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-          </exclusion>
-        </exclusions>
       </dependency>
 
       <dependency>
