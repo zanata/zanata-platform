@@ -96,7 +96,6 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/{path}").to("/a/index.xhtml"))
                 .where("path").matches(anyOf(
                         "explore",
-                        "projsidebar",
                         "about",
                         "glossary",
                         "glossary/project/[^/]*",
