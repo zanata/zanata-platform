@@ -5,14 +5,14 @@ import ValidationOptions from '../components/ValidationOptions'
 
 const SidebarSettings = React.createClass({
 
-  static propTypes: {
+  propTypes: {
     /* close the sidebar */
     close: PropTypes.func.isRequired
   },
 
   sidebarDetails () {
     return (
-        {ValidationOptions}
+      <ValidationOptions />
     )
   },
 

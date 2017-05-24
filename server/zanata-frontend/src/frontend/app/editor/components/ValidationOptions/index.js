@@ -1,9 +1,9 @@
 import React from 'react'
-import {Button, Checkbox} from 'react-bootstrap'
+import { Checkbox } from 'react-bootstrap'
 
 const ValidationOptions = React.createClass({
 
-  render () {
+  render: function () {
     return (
         <div>
           <h2 className="validation">Validation options</h2>
@@ -46,6 +46,7 @@ const ValidationOptions = React.createClass({
           </ul>
         </div>
     )
+  }
   })
 
 export default ValidationOptions
