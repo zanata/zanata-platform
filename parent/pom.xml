@@ -525,6 +525,36 @@
       </plugin>
 
       <plugin>
+        <groupId>com.yamanyar</groupId>
+        <artifactId>restrict-maven-plugin</artifactId>
+        <version>0.8</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>restrict</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <continueOnError>false</continueOnError>
+          <!-- Don't check our dependencies (yet) -->
+          <onlyInspectFolder>true</onlyInspectFolder>
+          <printDebugs>false</printDebugs>
+          <restrictions>
+            <!-- Restrict org.zanata.* access to *.internal.* packages, with some exceptions. -->
+            <!-- kotlin.jvm.internal: required by Kotlin-compiled code -->
+            <!-- TODO remove references to org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl
+                 and org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl -->
+            <!-- TODO remove references to org.hibernate.internal.SessionImpl -->
+            <!-- TODO remove references to org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator -->
+            <!-- TODO block *.impl.* except org.zanata.*, com.google.gwt.i18n.server.impl, antlr.collections.impl.BitSet -->
+            <restriction>org.zanata.* to *.internal.*,!kotlin.jvm.internal.*,!org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator,!org.hibernate.engine.jdbc.connections.internal.*,!org.hibernate.internal.SessionImpl</restriction>
+          </restrictions>
+        </configuration>
+      </plugin>
+
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
         <version>1.15</version>
