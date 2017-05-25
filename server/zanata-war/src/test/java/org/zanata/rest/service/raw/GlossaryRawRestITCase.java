@@ -24,11 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.common.LocaleId;
@@ -74,7 +74,7 @@ public class GlossaryRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, GlossaryInfo.class);
@@ -110,7 +110,7 @@ public class GlossaryRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus()).isEqualTo(200);
             }
         }.run();
@@ -132,7 +132,7 @@ public class GlossaryRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus()).isEqualTo(200);
             }
         }.run();
@@ -154,7 +154,7 @@ public class GlossaryRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus()).isEqualTo(200);
             }
         }.run();
@@ -175,7 +175,7 @@ public class GlossaryRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus()).isEqualTo(200); // Ok
             }
         }.run();
@@ -195,7 +195,7 @@ public class GlossaryRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus()).isEqualTo(401); // Unauthorized
             }
         }.run();

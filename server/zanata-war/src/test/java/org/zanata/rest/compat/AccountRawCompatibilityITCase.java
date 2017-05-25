@@ -28,7 +28,6 @@ import javax.ws.rs.core.Response.Status;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.apicompat.rest.service.AccountResource;
 import org.zanata.rest.ResourceRequest;
@@ -74,7 +73,7 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, Account.class);
@@ -107,7 +106,7 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, Account.class);
@@ -139,7 +138,7 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
             }
 
             @Override
-            protected void onResponse(ClientResponse response)
+            protected void onResponse(Response response)
                     throws IOException {
                 assertThat(response.getStatus(),
                         is(Status.UNAUTHORIZED.getStatusCode()));
@@ -165,12 +164,10 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
 
         // Assert initial put
         assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
-        releaseConnection(putResponse);
 
         // Modified Account
         a.setName("New Account Name");
         putResponse = accountClient.put(a);
-        releaseConnection(putResponse);
 
         // Assert modification
         assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
@@ -206,12 +203,10 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
 
         // Assert initial put
         assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
-        releaseConnection(putResponse);
 
         // Modified Account
         a.setName("New Account Name");
         putResponse = accountClient.put(a);
-        releaseConnection(putResponse);
 
         // Assert modification
         assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
@@ -245,7 +240,6 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
 
         // Assert initial put
         assertThat(putResponse.getStatus(), is(Status.FORBIDDEN.getStatusCode()));
-        releaseConnection(putResponse);
     }
 
 }

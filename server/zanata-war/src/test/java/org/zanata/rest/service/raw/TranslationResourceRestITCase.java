@@ -18,7 +18,6 @@ import javax.ws.rs.core.Response.Status;
 import org.fedorahosted.tennera.jgettext.HeaderFields;
 import org.hamcrest.Matchers;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

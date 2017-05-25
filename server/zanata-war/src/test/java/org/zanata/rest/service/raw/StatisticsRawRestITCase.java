@@ -26,10 +26,11 @@ import java.util.Arrays;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.provider.DBUnitProvider;
@@ -96,7 +97,7 @@ public class StatisticsRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
 
@@ -141,7 +142,7 @@ public class StatisticsRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
 
@@ -194,7 +195,7 @@ public class StatisticsRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString,
@@ -241,7 +242,7 @@ public class StatisticsRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString,
@@ -290,7 +291,7 @@ public class StatisticsRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString,
                         ContainerTranslationStatistics.class);
@@ -334,7 +335,7 @@ public class StatisticsRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
 
@@ -387,7 +388,7 @@ public class StatisticsRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString,
@@ -436,7 +437,7 @@ public class StatisticsRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString,

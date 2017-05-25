@@ -3,7 +3,6 @@ package org.zanata.rest.service.raw;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.common.EntityStatus;
@@ -62,7 +61,7 @@ public class ProjectVersionRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
                 assertHeaderPresent(response, HttpHeaders.ETAG);
             }
@@ -82,7 +81,7 @@ public class ProjectVersionRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, ProjectIteration.class);
@@ -108,7 +107,7 @@ public class ProjectVersionRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, ProjectIteration.class);
@@ -135,7 +134,7 @@ public class ProjectVersionRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 // Version not found because project is obsolete
                 assertThat(response.getStatus(),
                     is(Response.Status.NOT_FOUND.getStatusCode()));
@@ -156,7 +155,7 @@ public class ProjectVersionRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 // 200 (Retired projects are readable)
                 assertThat(response.getStatus(),
                     is(Response.Status.OK.getStatusCode()));
@@ -177,7 +176,7 @@ public class ProjectVersionRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                     is(Response.Status.NOT_FOUND.getStatusCode()));
             }
@@ -197,7 +196,7 @@ public class ProjectVersionRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                     is(Response.Status.NOT_FOUND.getStatusCode())); // 404
             }
@@ -221,15 +220,14 @@ public class ProjectVersionRawRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jaxbMarhsal(version), MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(201)); // Created
             }
         }.run();
@@ -252,15 +250,14 @@ public class ProjectVersionRawRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jaxbMarhsal(version), MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(404));
             }
         }.run();
@@ -282,15 +279,14 @@ public class ProjectVersionRawRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jaxbMarhsal(version), MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
             }
         }.run();
@@ -313,15 +309,14 @@ public class ProjectVersionRawRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jsonMarshal(version), MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(201)); // Created
             }
         }.run();

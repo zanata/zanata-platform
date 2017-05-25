@@ -34,12 +34,12 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.common.ProjectType;
@@ -81,7 +81,7 @@ public class AnonymousUserRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
 
                 assertThat(response.getStatus(),
                     is(Status.UNAUTHORIZED.getStatusCode()));
@@ -101,7 +101,7 @@ public class AnonymousUserRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                     is(Status.OK.getStatusCode()));
             }
@@ -126,14 +126,12 @@ public class AnonymousUserRawRestITCase extends RestTest {
                 Entity entity = Entity
                         .entity("false",
                                 MediaType.APPLICATION_JSON_TYPE);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity)
-                                .invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), greaterThan(200));
             }
         }.run();
@@ -145,7 +143,7 @@ public class AnonymousUserRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                     is(Status.UNAUTHORIZED.getStatusCode()));
             }
@@ -167,17 +165,15 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity("true",
                                 MediaType.APPLICATION_JSON_TYPE);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity)
-                                .invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), greaterThan(200));
             }
         }.run();
@@ -190,7 +186,7 @@ public class AnonymousUserRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.OK.getStatusCode()));
             }
@@ -212,17 +208,15 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jaxbMarhsal(project),
                                 MediaTypes.APPLICATION_ZANATA_PROJECT_XML);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity)
-                                .invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
 
                 assertThat(response.getStatus(),
                     is(Status.UNAUTHORIZED.getStatusCode()));

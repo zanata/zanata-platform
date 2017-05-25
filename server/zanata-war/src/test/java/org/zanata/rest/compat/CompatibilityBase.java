@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.compat;
 
-import java.io.IOException;
 import java.util.Set;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.client.Entity;
@@ -30,7 +29,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.zanata.RestTest;
 import org.zanata.apicompat.common.LocaleId;
 import org.zanata.apicompat.rest.MediaTypes;
@@ -59,12 +57,6 @@ import static org.zanata.util.RawRestTestUtils.jsonMarshal;
  */
 public abstract class CompatibilityBase extends RestTest {
 
-    protected void releaseConnection(Response response) throws IOException {
-        if (response instanceof ClientResponse) {
-            ((ClientResponse) response).releaseConnection();
-        }
-    }
-
     protected Resource getResourceFromResponse(Response response) {
         return jaxbUnmarshal(response, Resource.class);
     }
@@ -91,7 +83,7 @@ public abstract class CompatibilityBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -111,7 +103,7 @@ public abstract class CompatibilityBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -132,18 +124,16 @@ public abstract class CompatibilityBase extends RestTest {
                         }
 
                         @Override
-                        public ClientResponse invokeWithResponse(
+                        public Response invokeWithResponse(
                                 Invocation.Builder builder) {
-                            Entity entity = Entity
+                            Entity<String> entity = Entity
                                     .entity(jaxbMarhsal(resource),
                                             MediaType.APPLICATION_XML_TYPE);
-                            Response response = builder.buildPost(entity)
-                                    .invoke();
-                            return (ClientResponse) response;
+                            return builder.buildPost(entity).invoke();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -164,7 +154,7 @@ public abstract class CompatibilityBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -188,17 +178,16 @@ public abstract class CompatibilityBase extends RestTest {
                         }
 
                         @Override
-                        public ClientResponse invokeWithResponse(
+                        public Response invokeWithResponse(
                                 Invocation.Builder builder) {
-                            Entity entity = Entity
+                            Entity<String> entity = Entity
                                     .entity(jaxbMarhsal(resource),
                                             MediaType.APPLICATION_XML_TYPE);
-                            return (ClientResponse) builder.buildPut(entity)
-                                    .invoke();
+                            return builder.buildPut(entity).invoke();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -215,7 +204,7 @@ public abstract class CompatibilityBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -237,7 +226,7 @@ public abstract class CompatibilityBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -259,17 +248,16 @@ public abstract class CompatibilityBase extends RestTest {
                         }
 
                         @Override
-                        public ClientResponse invokeWithResponse(
+                        public Response invokeWithResponse(
                                 Invocation.Builder builder) {
-                            Entity entity = Entity
+                            Entity<String> entity = Entity
                                     .entity(jaxbMarhsal(messageBody),
                                             MediaType.APPLICATION_XML_TYPE);
-                            return (ClientResponse) builder.buildPut(entity)
-                                    .invoke();
+                            return builder.buildPut(entity).invoke();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -298,7 +286,7 @@ public abstract class CompatibilityBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -316,7 +304,7 @@ public abstract class CompatibilityBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -337,17 +325,16 @@ public abstract class CompatibilityBase extends RestTest {
                         }
 
                         @Override
-                        public ClientResponse invokeWithResponse(
+                        public Response invokeWithResponse(
                                 Invocation.Builder builder) {
-                            Entity entity = Entity
+                            Entity<String> entity = Entity
                                     .entity(jaxbMarhsal(messageBody),
                                             MediaType.APPLICATION_XML_TYPE);
-                            return (ClientResponse) builder.buildPut(entity)
-                                    .invoke();
+                            return builder.buildPut(entity).invoke();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -371,7 +358,7 @@ public abstract class CompatibilityBase extends RestTest {
                     }
 
                     @Override
-                    protected void onResponse(ClientResponse response) {
+                    protected void onResponse(Response response) {
                     }
                 }.runWithResult();
             }
@@ -388,9 +375,9 @@ public abstract class CompatibilityBase extends RestTest {
                     }
 
                     @Override
-                    public ClientResponse invokeWithResponse(
+                    public Response invokeWithResponse(
                             Invocation.Builder builder) {
-                        Entity entity = null;
+                        Entity<String> entity = null;
                         if (MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON
                                 .equals(mediaType)) {
                             entity = Entity
@@ -401,12 +388,11 @@ public abstract class CompatibilityBase extends RestTest {
                                     .entity(jaxbMarhsal(account),
                                             MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
                         }
-                        return (ClientResponse) builder.buildPut(entity)
-                                .invoke();
+                        return builder.buildPut(entity).invoke();
                     }
 
                     @Override
-                    protected void onResponse(ClientResponse response) {
+                    protected void onResponse(Response response) {
                     }
                 }.runWithResult();
             }
@@ -437,7 +423,7 @@ public abstract class CompatibilityBase extends RestTest {
                     }
 
                     @Override
-                    protected void onResponse(ClientResponse response) {
+                    protected void onResponse(Response response) {
                     }
 
                 };
@@ -468,7 +454,7 @@ public abstract class CompatibilityBase extends RestTest {
                     }
 
                     @Override
-                    protected void onResponse(ClientResponse response) {
+                    protected void onResponse(Response response) {
                     }
 
                 };
@@ -493,7 +479,7 @@ public abstract class CompatibilityBase extends RestTest {
                     }
 
                     @Override
-                    protected void onResponse(ClientResponse response) {
+                    protected void onResponse(Response response) {
                     }
 
                 };

@@ -23,12 +23,12 @@ package org.zanata.rest.service.raw;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.rest.MediaTypes;
@@ -65,7 +65,7 @@ public class AccountRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.NOT_FOUND.getStatusCode()));
             }
@@ -85,7 +85,7 @@ public class AccountRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, Account.class);
@@ -115,7 +115,7 @@ public class AccountRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, Account.class);
@@ -151,13 +151,12 @@ public class AccountRawRestITCase extends RestTest {
             public void invoke(Invocation.Builder builder) {
                 Entity entity = Entity
                         .entity(jaxbMarhsal(account), MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.CREATED.getStatusCode()));
             }
@@ -182,15 +181,14 @@ public class AccountRawRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jsonMarshal(account), MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.CREATED.getStatusCode()));
             }
@@ -213,15 +211,14 @@ public class AccountRawRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jsonMarshal(account), MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.UNAUTHORIZED.getStatusCode()));
             }

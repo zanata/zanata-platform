@@ -24,12 +24,12 @@ package org.zanata.rest.service.raw;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.rest.ResourceRequest;
@@ -68,17 +68,15 @@ public class TokenServiceRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity("false",
                                 MediaType.APPLICATION_JSON_TYPE);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity)
-                                .invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus()).isGreaterThan(200);
             }
         }.run();
@@ -89,7 +87,7 @@ public class TokenServiceRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus()).isNotEqualTo(Status.UNAUTHORIZED);
             }
         }.run();
@@ -110,17 +108,15 @@ public class TokenServiceRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity("false",
                                 MediaType.APPLICATION_JSON_TYPE);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity)
-                                .invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus()).isGreaterThan(200);
             }
         }.run();
@@ -131,7 +127,7 @@ public class TokenServiceRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus()).isNotEqualTo(Status.UNAUTHORIZED);
             }
         }.run();

@@ -30,7 +30,6 @@ import javax.ws.rs.core.Response.Status;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.apicompat.rest.service.SourceDocResource;
 import org.zanata.apicompat.rest.service.TranslatedDocResource;
@@ -99,7 +98,7 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, Resource.class);
 
@@ -157,15 +156,14 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jsonMarshal(res), MediaType.APPLICATION_JSON);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPost(entity).invoke();
+                Response response = builder.buildPost(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.CREATED.getStatusCode())); // 201
             }
@@ -239,15 +237,14 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jsonMarshal(res), MediaType.APPLICATION_JSON);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.CREATED.getStatusCode())); // 201
             }
@@ -304,7 +301,7 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, ResourceMeta.class);
@@ -341,16 +338,15 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jsonMarshal(resMeta),
                                 MediaType.APPLICATION_JSON);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.OK.getStatusCode())); // 200
             }
@@ -385,7 +381,7 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, TranslationsResource.class);
@@ -481,16 +477,15 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jsonMarshal(transRes),
                                 MediaType.APPLICATION_JSON);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
             }
         }.run();

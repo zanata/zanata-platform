@@ -27,11 +27,11 @@ import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.provider.DBUnitProvider;
@@ -63,7 +63,7 @@ public class VersionRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, VersionInfo.class);
@@ -82,7 +82,7 @@ public class VersionRawRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, VersionInfo.class);

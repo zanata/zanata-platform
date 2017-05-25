@@ -22,9 +22,9 @@ package org.zanata.rest;
 
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 
 import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Map;
 
@@ -56,7 +56,7 @@ public abstract class ResourceRequest {
 
     protected abstract Invocation.Builder prepareRequest(ResteasyWebTarget webTarget);
 
-    protected abstract void onResponse(ClientResponse response)
+    protected abstract void onResponse(Response response)
             throws IOException;
 
     public void run() throws Exception {
@@ -67,7 +67,7 @@ public abstract class ResourceRequest {
         invoke(builder);
     }
 
-    public ClientResponse runWithResult() {
+    public Response runWithResult() {
         ResteasyWebTarget webTarget = new ResteasyClientBuilder().build()
                 .target(resourceUrl);
         Invocation.Builder builder = prepareRequest(webTarget);
@@ -75,20 +75,13 @@ public abstract class ResourceRequest {
         return invokeWithResponse(builder);
     }
 
-    public ClientResponse invokeWithResponse(Invocation.Builder builder) {
-        return (ClientResponse) builder.build(method).invoke();
+    public Response invokeWithResponse(Invocation.Builder builder) {
+        return builder.build(method).invoke();
     }
 
     public void invoke(Invocation.Builder builder) throws Exception {
-        ClientResponse response = null;
-        try {
-            response = (ClientResponse) builder.build(method).invoke();
-            onResponse(response);
-        } finally {
-            if (response != null) {
-                response.releaseConnection();
-            }
-        }
+        Response response = builder.build(method).invoke();
+        onResponse(response);
     }
 
     private Invocation.Builder prepareEnvironment(Invocation.Builder builder) {

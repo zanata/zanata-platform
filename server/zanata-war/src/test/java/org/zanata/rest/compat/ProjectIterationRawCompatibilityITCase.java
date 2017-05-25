@@ -23,12 +23,12 @@ package org.zanata.rest.compat;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.apicompat.rest.MediaTypes;
@@ -74,7 +74,7 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response)
+            protected void onResponse(Response response)
                     throws IOException {
                 assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
                 String entityString = response.readEntity(String.class);
@@ -101,7 +101,7 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, ProjectIteration.class);
@@ -134,13 +134,12 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
                 Entity entity = Entity
                         .entity(jsonMarshal(newIteration),
                                 MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.CREATED.getStatusCode())); // 201
             }
@@ -160,7 +159,7 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, ProjectIteration.class);
@@ -189,16 +188,15 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jaxbMarhsal(newIteration),
                                 MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_XML);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPut(entity).invoke();
+                Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.CREATED.getStatusCode())); // 201
             }
@@ -217,7 +215,7 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, ProjectIteration.class);

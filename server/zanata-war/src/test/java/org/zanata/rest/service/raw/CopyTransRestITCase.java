@@ -26,12 +26,12 @@ import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.assertj.core.api.Assertions;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.RestTest;
@@ -83,13 +83,12 @@ public class CopyTransRestITCase extends RestTest {
             public void invoke(Invocation.Builder builder) {
                 Entity entity = Entity
                         .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
-                ClientResponse response =
-                        (ClientResponse) builder.buildPost(entity).invoke();
+                Response response = builder.buildPost(entity).invoke();
                 onResponse(response);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 Assertions.assertThat(response.getStatus()).isEqualTo(201);
             }
         }.run();
@@ -114,7 +113,7 @@ public class CopyTransRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 Assertions.assertThat(response.getStatus()).isEqualTo(200);
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, CopyTransStatus.class);
@@ -139,7 +138,7 @@ public class CopyTransRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 Assertions.assertThat(response.getStatus()).isEqualTo(404);
             }
         }.run();
@@ -163,7 +162,7 @@ public class CopyTransRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 Assertions.assertThat(response.getStatus()).isEqualTo(401);
             }
         }.run();
@@ -186,7 +185,7 @@ public class CopyTransRestITCase extends RestTest {
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 Assertions.assertThat(response.getStatus()).isEqualTo(401);
             }
         }.run();

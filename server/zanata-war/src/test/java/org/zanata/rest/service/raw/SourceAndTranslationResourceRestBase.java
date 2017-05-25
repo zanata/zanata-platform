@@ -34,7 +34,6 @@ import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
-import org.jboss.resteasy.client.jaxrs.internal.ClientResponse;
 import org.zanata.RestTest;
 import org.zanata.common.LocaleId;
 import org.zanata.provider.DBUnitProvider;
@@ -109,7 +108,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -128,7 +127,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -150,17 +149,16 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         }
 
                         @Override
-                        public ClientResponse invokeWithResponse(
+                        public Response invokeWithResponse(
                                 Invocation.Builder builder) {
-                            Entity entity = Entity
+                            Entity<String> entity = Entity
                                     .entity(jaxbMarhsal(resource),
                                             MediaType.APPLICATION_XML_TYPE);
-                            return (ClientResponse) builder.buildPost(entity)
-                                            .invoke();
+                            return builder.buildPost(entity).invoke();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -180,7 +178,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -202,17 +200,16 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         }
 
                         @Override
-                        public ClientResponse invokeWithResponse(
+                        public Response invokeWithResponse(
                                 Invocation.Builder builder) {
-                            Entity entity = Entity
+                            Entity<String> entity = Entity
                                     .entity(jaxbMarhsal(resource),
                                             MediaType.APPLICATION_XML_TYPE);
-                            return (ClientResponse) builder.buildPut(entity)
-                                            .invoke();
+                            return builder.buildPut(entity).invoke();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -229,7 +226,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -250,7 +247,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -271,17 +268,16 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         }
 
                         @Override
-                        public ClientResponse invokeWithResponse(
+                        public Response invokeWithResponse(
                                 Invocation.Builder builder) {
-                            Entity entity = Entity
+                            Entity<String> entity = Entity
                                     .entity(jaxbMarhsal(messageBody),
                                             MediaType.APPLICATION_XML_TYPE);
-                            return (ClientResponse) builder.buildPut(entity)
-                                            .invoke();
+                            return builder.buildPut(entity).invoke();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -311,7 +307,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -329,7 +325,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -351,17 +347,16 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         }
 
                         @Override
-                        public ClientResponse invokeWithResponse(
+                        public Response invokeWithResponse(
                                 Invocation.Builder builder) {
-                            Entity entity = Entity
+                            Entity<String> entity = Entity
                                     .entity(jaxbMarhsal(messageBody),
                                             MediaType.APPLICATION_XML_TYPE);
-                            return (ClientResponse) builder.buildPut(entity)
-                                    .invoke();
+                            return builder.buildPut(entity).invoke();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
