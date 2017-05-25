@@ -21,6 +21,10 @@ import rootReducer from './reducers'
 import Root from './containers/Root'
 import NeedSlugMessage from './containers/NeedSlugMessage'
 
+// Set the path that webpack will try to load extra chunks from
+// This is needed to load intl-polyfill
+__webpack_public_path__ = baseUrl || '/' // eslint-disable-line
+
 import './index.css'
 
 /**
@@ -110,10 +114,6 @@ function runApp () {
       </Provider>
     </IntlProvider>, rootElement)
 }
-
-// Set the path that webpack will try to load extra chunks from
-// This is needed to load intl-polyfill
-__webpack_public_path__ = baseUrl // eslint-disable-line
 
 if (window.Intl) {
   runApp()
