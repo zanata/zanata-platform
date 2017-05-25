@@ -20,10 +20,8 @@
  */
 package org.zanata.rest;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
-
-import com.beust.jcommander.internal.Maps;
 
 /**
  * The environment that a <code>ResourceRequest</code> should be executed with.
@@ -41,7 +39,7 @@ public class ResourceRequestEnvironment {
      * the default headers.
      */
     public Map<String, Object> getDefaultHeaders() {
-        Map<String, Object> map = Maps.newHashMap();
+        Map<String, Object> map = new HashMap<>();
         return map;
     }
 }
