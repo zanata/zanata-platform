@@ -97,7 +97,9 @@ String getLabel() {
   return result
 }
 
-boolean getAllFuncTests() {
+// NB: don't call this getAllFuncTests() or isAllFuncTests(), because it would
+// shadow the global parameter allFuncTests.
+boolean resolveAllFuncTests() {
   def paramVal = null
   try {
     paramVal = params.allFuncTests
@@ -385,7 +387,7 @@ void integrationTests(String appserver) {
         def ftOpts = '-Dcargo.debug.jvm.args= '
 
         // run *all* functional tests in these branches only:
-        if (env.BRANCH_NAME in mainlineBranches || getAllFuncTests()) {
+        if (env.BRANCH_NAME in mainlineBranches || resolveAllFuncTests()) {
           ftOpts += '-DallFuncTests '
         }
 
