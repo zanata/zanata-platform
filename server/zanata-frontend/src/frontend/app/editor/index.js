@@ -54,6 +54,7 @@ function runApp () {
   // react-router and has some defaults, so now I am just using one of those.
   // const history = createHistory()
   const history = browserHistory
+  history.basename = baseUrl
 
   const loggerMiddleware = createLogger({
     predicate: (getState, action) =>
