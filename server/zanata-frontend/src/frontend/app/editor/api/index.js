@@ -13,12 +13,7 @@ import {
   STATUS_TRANSLATED,
   STATUS_APPROVED
 } from '../utils/status-util'
-
-const config = window.config || {}
-
-/* The part of the path that is just the server deployment path. e.g. if the
- * server is deployed at example.com/zanata then this will be /zanata */
-const baseUrl = config.baseUrl || ''
+import config, { baseUrl } from '../config'
 
 /* The URL of this editor app. Used as a base for all URLs in the app. */
 export const serviceUrl = getServiceUrl()
