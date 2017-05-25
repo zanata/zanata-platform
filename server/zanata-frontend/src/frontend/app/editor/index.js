@@ -1,6 +1,7 @@
 import 'babel-polyfill'
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { baseUrl } from './config'
 import { locale, formats } from './config/intl'
 import { addLocaleData, IntlProvider } from 'react-intl'
 import { createStore, applyMiddleware } from 'redux'
@@ -108,6 +109,10 @@ function runApp () {
       </Provider>
     </IntlProvider>, rootElement)
 }
+
+// Set the path that webpack will try to load extra chunks from
+// This is needed to load intl-polyfill
+__webpack_public_path__ = baseUrl // eslint-disable-line
 
 if (window.Intl) {
   runApp()
