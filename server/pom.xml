@@ -96,7 +96,7 @@
     <!-- Version of the management api used by Cargo -->
     <wildfly.client.version>2.0.10.Final</wildfly.client.version>
     <!-- Version of the management api used by Arquillian -->
-    <wildfly.arquillian.version>2.0.0.Final</wildfly.arquillian.version>
+    <wildfly.arquillian.version>2.0.2.Final</wildfly.arquillian.version>
     <jackson2.version>2.7.2</jackson2.version>
   </properties>
 
@@ -361,7 +361,7 @@
       <dependency>
         <groupId>org.jboss.security</groupId>
         <artifactId>jboss-negotiation-common</artifactId>
-        <version>3.0.0.Final</version>
+        <version>3.0.2.Final</version>
         <scope>provided</scope>
       </dependency>
 
