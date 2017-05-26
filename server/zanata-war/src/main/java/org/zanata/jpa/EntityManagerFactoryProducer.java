@@ -22,12 +22,11 @@ package org.zanata.jpa;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
-import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 
-import org.hibernate.ejb.HibernateEntityManagerFactory;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.util.Zanata;

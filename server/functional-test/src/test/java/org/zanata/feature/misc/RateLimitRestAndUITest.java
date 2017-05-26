@@ -264,7 +264,7 @@ public class RateLimitRestAndUITest extends ZanataTestCase {
                 if (message.matches(".+429.+too many concurrent request.+")) {
                     return 429;
                 }
-                throw Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         });
     }

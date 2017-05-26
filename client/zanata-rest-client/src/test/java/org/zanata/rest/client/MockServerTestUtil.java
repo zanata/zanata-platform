@@ -27,6 +27,8 @@ import java.net.URISyntaxException;
 import org.hamcrest.Matchers;
 import org.zanata.rest.dto.VersionInfo;
 
+import javax.ws.rs.core.Response;
+
 import static org.junit.Assert.assertThat;
 
 /**
@@ -55,12 +57,5 @@ public class MockServerTestUtil {
                 "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
                 "3.6.0-SNAPSHOT", "unknown", "unknown"), true,
                 true);
-    }
-
-    // FIXME this method doesn't verify anything!
-    @Deprecated
-    static void verifyServerRespondSuccessStatus() {
-        assertThat("server returns successful status code", true, Matchers
-                .is(true));
     }
 }

@@ -144,7 +144,7 @@ public class RestClientFactory implements Serializable {
             return sslContext;
         } catch (Exception e) {
             log.warn("error creating SSL client", e);
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

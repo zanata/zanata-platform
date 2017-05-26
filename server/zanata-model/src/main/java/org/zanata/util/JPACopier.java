@@ -70,7 +70,7 @@ public class JPACopier {
      * Fields to copy using {@link this#copyBean(Object, String...)} in class.
      */
     private static Map<Class, List<String>> FIELDS_TO_COPY =
-            Maps.newConcurrentMap();
+            Maps.<Class, List<String>>newConcurrentMap();
 
     /**
      * Create a clone of all writable properties from fromBean.
@@ -85,6 +85,7 @@ public class JPACopier {
      * @throws InvocationTargetException
      * @throws NoSuchMethodException
      */
+    @SuppressWarnings("unchecked")
     public static <T> T copyBean(@Nonnull T fromBean,
             String... ignoreProperties)
             throws IllegalAccessException, InstantiationException,
@@ -116,6 +117,7 @@ public class JPACopier {
      *         {@link org.zanata.util.JPACopier#isPrimitiveOrString(Object)},
      *         otherwise return toBean
      */
+    @SuppressWarnings("unchecked")
     public static <T> T copyBean(@Nonnull T fromBean, @Nonnull T toBean,
             String... ignoreProperties)
             throws IllegalAccessException, InstantiationException,
@@ -127,8 +129,7 @@ public class JPACopier {
         }
         BeanUtilsBean beanUtilsBean = BeanUtilsBean.getInstance();
         if (isCollectionType(fromBean.getClass())) {
-            toBean = (T) createNewCollection(fromBean.getClass(), fromBean);
-            return toBean;
+            return (T) createNewCollection(fromBean.getClass(), fromBean);
         }
         List<String> ignoreList = Lists.newArrayList(ignoreProperties);
         Map<String, Object> propertiesMap =
@@ -225,6 +226,7 @@ public class JPACopier {
      * @param clazz
      * @param value
      */
+    @SuppressWarnings("unchecked")
     private static Object createNewCollection(Class clazz, Object value) {
         if (value != null) {
             if (clazz == List.class) {

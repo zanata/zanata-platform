@@ -2,7 +2,7 @@ package org.zanata.hibernate.search;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.hibernate.search.bridge.FieldBridge;
+import org.apache.lucene.document.FieldType;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.zanata.model.HDocument;
 import org.zanata.model.HProject;
@@ -22,7 +22,7 @@ import org.zanata.model.HTextFlow;
  * @author David Mason, damason@redhat.com
  *
  */
-public class ContainingWorkspaceBridge implements FieldBridge {
+public class ContainingWorkspaceBridge extends AbstractFieldBridge {
 
     @Override
     public void set(String name, Object value, Document luceneDocument,
@@ -48,11 +48,9 @@ public class ContainingWorkspaceBridge implements FieldBridge {
 
     private void addStringField(String fieldName, String fieldValue,
             Document luceneDocument, LuceneOptions luceneOptions) {
-        Field field =
-                new Field(fieldName, fieldValue, luceneOptions.getStore(),
-                        luceneOptions.getIndex(), luceneOptions.getTermVector());
+        FieldType fieldType = translateFieldType(luceneOptions);
+        Field field = new Field(fieldName, fieldValue, fieldType);
         field.setBoost(luceneOptions.getBoost());
         luceneDocument.add(field);
     }
-
 }

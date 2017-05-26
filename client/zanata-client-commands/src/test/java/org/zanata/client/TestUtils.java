@@ -25,8 +25,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.zanata.client.commands.ConfigurableProjectOptions;
 import org.zanata.client.config.LocaleMapping;
@@ -55,7 +55,7 @@ public class TestUtils {
     public static String readFromClasspath(String relativePath)
             throws IOException {
         URL resource = loadFromClasspath(relativePath);
-        return IOUtils.toString(resource, Charsets.UTF_8);
+        return IOUtils.toString(resource, StandardCharsets.UTF_8);
     }
 
     public static File fileFromClasspath(String relativePath) {

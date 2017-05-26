@@ -103,7 +103,7 @@ public class EmailQueueMessageReceiver implements MessageListener {
                 }
             } catch (Exception e) {
                 log.warn("error handling jms message: {}", message);
-                Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         }
     }

@@ -34,8 +34,6 @@ import javax.script.ScriptException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import static com.google.common.base.Throwables.propagate;
 
 /**
  * @author Sean Flanigan
@@ -71,7 +69,7 @@ public class CommonMarkRenderer implements Serializable {
                     functions.eval(bindings);
                     return bindings;
                 } catch (ScriptException e) {
-                    throw propagate(e);
+                    throw new RuntimeException(e);
                 }
             });
     static {
@@ -128,7 +126,7 @@ public class CommonMarkRenderer implements Serializable {
             JSObject mdRender = (JSObject) bindings.get("mdRender");
             return (String) mdRender.call(bindings, commonMark);
         } catch (Exception e) {
-            throw propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -142,7 +140,7 @@ public class CommonMarkRenderer implements Serializable {
                     + "var reader = new commonmark.Parser();var writer = new commonmark.HtmlRenderer();function mdRender(src) {  return writer.render(reader.parse(src));};";
             return ((Compilable) engine).compile(functionsScript);
         } catch (ScriptException | IOException e) {
-            throw propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

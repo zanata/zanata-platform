@@ -99,7 +99,7 @@ class RestCallLimiter {
             }
             return gotActivePermit;
         } catch (InterruptedException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

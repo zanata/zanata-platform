@@ -4,7 +4,6 @@ import static org.zanata.common.EntityStatus.ACTIVE;
 import static org.zanata.common.EntityStatus.OBSOLETE;
 import static org.zanata.common.EntityStatus.READONLY;
 import static org.zanata.webtrans.server.rpc.GetTransUnitsNavigationService.TextFlowResultTransformer;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +21,6 @@ import javax.ws.rs.core.UriInfo;
 import com.google.common.base.Objects;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.resteasy.util.GenericType;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
@@ -227,10 +225,7 @@ public class ProjectVersionService implements ProjectVersionResource {
         userList.addAll(accountList.stream()
                 .map(account -> userService.getUserInfo(account, displayEmail))
                 .collect(Collectors.toList()));
-        Type genericType = new GenericType<List<User>>() {
-
-        }.getGenericType();
-        Object entity = new GenericEntity<>(userList, genericType);
+        Object entity = new GenericEntity<List<User>>(userList){};
         return Response.ok(entity).build();
     }
 
@@ -250,10 +245,7 @@ public class ProjectVersionService implements ProjectVersionResource {
         localesRefs.addAll(locales.stream()
                 .map(hLocale -> LocaleService.convertHLocaleToDTO(hLocale))
                 .collect(Collectors.toList()));
-        Type genericType = new GenericType<List<LocaleDetails>>() {
-
-        }.getGenericType();
-        Object entity = new GenericEntity<>(localesRefs, genericType);
+        Object entity = new GenericEntity<List<LocaleDetails>>(localesRefs){};
         return Response.ok(entity).build();
     }
 
@@ -274,10 +266,7 @@ public class ProjectVersionService implements ProjectVersionResource {
             resourceUtils.transferToAbstractResourceMeta(doc, resource);
             resources.add(resource);
         }
-        Type genericType = new GenericType<List<ResourceMeta>>() {
-
-        }.getGenericType();
-        Object entity = new GenericEntity<>(resources, genericType);
+        Object entity = new GenericEntity<List<ResourceMeta>>(resources){};
         return Response.ok(entity).tag(etag).build();
     }
 
@@ -315,10 +304,7 @@ public class ProjectVersionService implements ProjectVersionResource {
             statusList.add(new TransUnitStatus(textFlow.getId(),
                     textFlow.getResId(), state));
         }
-        Type genericType = new GenericType<List<TransUnitStatus>>() {
-
-        }.getGenericType();
-        Object entity = new GenericEntity<>(statusList, genericType);
+        Object entity = new GenericEntity<List<TransUnitStatus>>(statusList){};
         return Response.ok(entity).build();
     }
 

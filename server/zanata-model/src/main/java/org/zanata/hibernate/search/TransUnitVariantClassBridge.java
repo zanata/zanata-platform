@@ -22,6 +22,7 @@ package org.zanata.hibernate.search;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+import org.apache.lucene.document.FieldType;
 import org.hibernate.search.bridge.FieldBridge;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.zanata.model.tm.TransMemoryUnitVariant;
@@ -33,18 +34,17 @@ import org.zanata.model.tm.TransMemoryUnitVariant;
  * @author Carlos Munoz <a
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class TransUnitVariantClassBridge implements FieldBridge {
+public class TransUnitVariantClassBridge extends AbstractFieldBridge {
     @Override
     public void set(String s, Object value, Document document,
             LuceneOptions luceneOptions) {
         TransMemoryUnitVariant variant = (TransMemoryUnitVariant) value;
 
         String textToIndex = variant.getPlainTextSegment();
+        FieldType fieldType = translateFieldType(luceneOptions);
         Field field =
                 new Field(IndexFieldLabels.TRANS_UNIT_VARIANT_FIELD
-                        + variant.getLanguage(), textToIndex,
-                        luceneOptions.getStore(), luceneOptions.getIndex(),
-                        luceneOptions.getTermVector());
+                        + variant.getLanguage(), textToIndex, fieldType);
         field.setBoost(luceneOptions.getBoost());
         document.add(field);
     }
