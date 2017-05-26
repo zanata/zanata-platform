@@ -609,6 +609,10 @@
                 <id>extract-appserver</id>
                 <phase>prepare-package</phase>
               </execution>
+              <execution>
+                <id>run-jboss-cli</id>
+                <phase>package</phase>
+              </execution>
             </executions>
           </plugin>
           <plugin>
@@ -690,16 +694,6 @@
                   <sqlCommand>ALTER DATABASE ${ds.database} CHARACTER SET utf8 COLLATE utf8_general_ci;</sqlCommand>
                   <onError>continue</onError>
                 </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.gmavenplus</groupId>
-            <artifactId>gmavenplus-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>run-jboss-cli</id>
-                <phase>package</phase>
               </execution>
             </executions>
           </plugin>
