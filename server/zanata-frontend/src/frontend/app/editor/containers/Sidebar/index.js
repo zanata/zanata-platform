@@ -11,10 +11,15 @@ const defaultState = {
  * displays content from SidebarContent.
  */
 class Sidebar extends Component {
+  static propTypes = {
+    open: PropTypes.bool.isRequired,
+    setSidebarVisible: PropTypes.func.isRequired,
+    // The main content display should be passed as children to this component
+    children: PropTypes.any
+  }
+
   constructor () {
     super()
-    this.setOpen = ::this.setOpen
-    this.close = ::this.close
     this.state = defaultState
   }
 
@@ -35,11 +40,11 @@ class Sidebar extends Component {
   //   this.setState({docked: this.state.mql.matches})
   // }
 
-  setOpen (open) {
+  setOpen = (open) => {
     this.props.setSidebarVisible(open)
   }
 
-  close () {
+  close = () => {
     this.props.setSidebarVisible(false)
   }
 
@@ -61,13 +66,6 @@ class Sidebar extends Component {
       </ReactSidebar>
     )
   }
-}
-
-Sidebar.propTypes = {
-  open: PropTypes.bool.isRequired,
-  setSidebarVisible: PropTypes.func.isRequired,
-  /* The main content display should be passed as children to this component */
-  children: PropTypes.any
 }
 
 export default Sidebar

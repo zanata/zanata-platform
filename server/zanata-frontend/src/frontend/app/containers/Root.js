@@ -8,6 +8,11 @@ import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
 
 export default class Root extends Component {
+  static propTypes = {
+    store: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
+  }
+
   render () {
     const username = window.config.user.username
     const {
@@ -30,9 +35,4 @@ export default class Root extends Component {
       </Provider>
     )
   }
-}
-
-Root.propTypes = {
-  store: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired
 }

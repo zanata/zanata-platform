@@ -20,6 +20,15 @@ import {
 } from '../../actions/languages-actions'
 
 class NewLanguageModal extends Component {
+  static propTypes = {
+    show: PropTypes.bool,
+    saving: PropTypes.bool,
+    searchResults: PropTypes.array,
+    handleOnClose: PropTypes.func,
+    handleOnSave: PropTypes.func,
+    loadSuggestion: PropTypes.func
+  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -36,12 +45,12 @@ class NewLanguageModal extends Component {
     }
   }
 
-  handleCancel () {
+  handleCancel = () => {
     this.resetFields()
     this.props.handleOnClose()
   }
 
-  resetFields () {
+  resetFields = () => {
     this.setState({
       details: {
         enabledByDefault: true,
@@ -53,7 +62,7 @@ class NewLanguageModal extends Component {
     })
   }
 
-  updateField (field, e) {
+  updateField = (field, e) => {
     this.setState({
       details: {
         ...this.state.details,
@@ -62,7 +71,7 @@ class NewLanguageModal extends Component {
     })
   }
 
-  updateCheckbox (field) {
+  updateCheckbox = (field) => {
     this.setState({
       details: {
         ...this.state.details,
@@ -71,7 +80,7 @@ class NewLanguageModal extends Component {
     })
   }
 
-  validateDetails () {
+  validateDetails = () => {
     const displayName = this.state.details.displayName
     const query = this.state.query
     if (isEmpty(displayName) && isEmpty(query)) {
@@ -97,11 +106,11 @@ class NewLanguageModal extends Component {
   onSuggestionsClearRequested = () => {
   }
 
-  getSuggestionValue (selectedLocale) {
+  getSuggestionValue = (selectedLocale) => {
     return selectedLocale.localeId
   }
 
-  renderSuggestion (suggestion) {
+  renderSuggestion = (suggestion) => {
     return (
       <span name='new-language-displayName'>
         <span className='text-light'>
@@ -243,15 +252,6 @@ class NewLanguageModal extends Component {
     )
     /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */
   }
-}
-
-NewLanguageModal.propTypes = {
-  show: PropTypes.bool,
-  saving: PropTypes.bool,
-  searchResults: PropTypes.array,
-  handleOnClose: PropTypes.func,
-  handleOnSave: PropTypes.func,
-  loadSuggestion: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

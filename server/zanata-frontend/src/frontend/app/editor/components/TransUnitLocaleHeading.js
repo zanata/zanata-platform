@@ -3,14 +3,13 @@ import React, { PropTypes } from 'react'
 /**
  * Heading that displays locale name and ID
  */
-const TransUnitLocaleHeading = React.createClass({
-
-  propTypes: {
+class TransUnitLocaleHeading extends React.Component {
+  static propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired
-  },
+  }
 
-  render: function () {
+  render () {
     const { id, name } = this.props
     return (
       <h3 className="TransUnit-heading">
@@ -18,6 +17,6 @@ const TransUnitLocaleHeading = React.createClass({
       </h3>
     )
   }
-})
+}
 
 export default TransUnitLocaleHeading

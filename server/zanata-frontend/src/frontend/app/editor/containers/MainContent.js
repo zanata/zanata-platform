@@ -9,14 +9,13 @@ import { getCurrentPagePhrasesFromState } from '../utils/filter-paging-util'
  * The main content section showing the current page of TransUnit source,
  * status and translations.
  */
-const MainContent = React.createClass({
-
-  propTypes: {
+class MainContent extends React.Component {
+  static propTypes = {
     maximised: PropTypes.bool.isRequired,
     phrases: PropTypes.arrayOf(PropTypes.object).isRequired
-  },
+  }
 
-  render: function () {
+  render () {
     const { maximised, phrases } = this.props
 
     if (phrases.length === 0) {
@@ -62,7 +61,7 @@ const MainContent = React.createClass({
       </main>
     )
   }
-})
+}
 
 function mapStateToProps (state, ownProps) {
   const minimalPhrases = getCurrentPagePhrasesFromState(state)

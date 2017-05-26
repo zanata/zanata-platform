@@ -108,8 +108,8 @@ function convertMatrixDataToChartData (matrixData) {
   return chartData
 }
 
-var ContributionChart = React.createClass({
-  propTypes: {
+class ContributionChart extends React.Component {
+  static propTypes = {
     dateRange: React.PropTypes.object.isRequired,
     wordCountForEachDay: React.PropTypes.arrayOf(
       React.PropTypes.shape(
@@ -122,21 +122,19 @@ var ContributionChart = React.createClass({
         })
     ).isRequired,
     chartOptions: React.PropTypes.object
-  },
+  }
 
-  getDefaultProps: function () {
-    return {
-      chartOptions: defaultChartOptions
-    }
-  },
+  static defaultProps = {
+    chartOptions: defaultChartOptions
+  }
 
-  shouldComponentUpdate: function (nextProps, nextState) {
+  shouldComponentUpdate (nextProps, nextState) {
     return this.props.dateRange !== nextProps.dateRange ||
       this.props.wordCountForEachDay.length !==
       nextProps.wordCountForEachDay.length
-  },
+  }
 
-  render: function () {
+  render () {
     const {
       wordCountForEachDay,
       chartOptions
@@ -150,6 +148,6 @@ var ContributionChart = React.createClass({
         height='250' />
     )
   }
-})
+}
 
 export default ContributionChart

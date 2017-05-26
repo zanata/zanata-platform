@@ -5,8 +5,8 @@ import { pick } from 'lodash'
 /**
  * Display all suggestions that match the current search.
  */
-const SuggestionList = React.createClass({
-  propTypes: {
+class SuggestionList extends React.Component {
+  static propTypes = {
     copySuggestion: PropTypes.func.isRequired,
     search: PropTypes.arrayOf(PropTypes.string),
     showDiff: PropTypes.bool.isRequired,
@@ -27,9 +27,9 @@ const SuggestionList = React.createClass({
           PropTypes.string).isRequired
       })
     }))
-  },
+  }
 
-  render: function () {
+  render () {
     const sharedProps = pick(this.props,
       ['copySuggestion', 'search', 'showDiff', 'showDetail'])
 
@@ -46,6 +46,6 @@ const SuggestionList = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default SuggestionList

@@ -8,6 +8,22 @@ import { Button, Row, Table } from 'react-bootstrap'
  * Component to display a GlossaryEntry
  */
 class Entry extends Component {
+  static propTypes = {
+    entry: PropTypes.object,
+    handleSelectTerm: PropTypes.func,
+    handleTermFieldUpdate: PropTypes.func,
+    handleDeleteTerm: PropTypes.func,
+    handleResetTerm: PropTypes.func,
+    handleUpdateTerm: PropTypes.func,
+    index: PropTypes.number,
+    isSaving: PropTypes.bool,
+    isDeleting: PropTypes.bool,
+    permission: PropTypes.object,
+    selectedTransLocale: PropTypes.string,
+    selected: PropTypes.bool,
+    termsLoading: PropTypes.bool
+  }
+
   constructor () {
     super()
     this.state = {
@@ -192,22 +208,6 @@ class Entry extends Component {
     )
     /* eslint-enable react/jsx-no-bind */
   }
-}
-
-Entry.propTypes = {
-  entry: PropTypes.object,
-  handleSelectTerm: PropTypes.func,
-  handleTermFieldUpdate: PropTypes.func,
-  handleDeleteTerm: PropTypes.func,
-  handleResetTerm: PropTypes.func,
-  handleUpdateTerm: PropTypes.func,
-  index: PropTypes.number,
-  isSaving: PropTypes.bool,
-  isDeleting: PropTypes.bool,
-  permission: PropTypes.object,
-  selectedTransLocale: PropTypes.string,
-  selected: PropTypes.bool,
-  termsLoading: PropTypes.bool
 }
 
 export default Entry

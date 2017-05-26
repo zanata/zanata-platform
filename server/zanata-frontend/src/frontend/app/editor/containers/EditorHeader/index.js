@@ -9,9 +9,8 @@ import ZanataLogoLoader from '../ZanataLogoLoader'
 /**
  * Header for navigation and control of the editor
  */
-const EditorHeader = React.createClass({
-
-  propTypes: {
+class EditorHeader extends React.Component {
+  static propTypes = {
     navHeaderVisible: PropTypes.bool.isRequired,
     counts: PropTypes.shape({
       total: PropTypes.number,
@@ -21,9 +20,9 @@ const EditorHeader = React.createClass({
       rejected: PropTypes.number,
       untranslated: PropTypes.number
     })
-  },
+  }
 
-  render: function () {
+  render () {
     const className = cx('Header', 'Editor-header',
         { 'is-minimised': !this.props.navHeaderVisible })
     return (
@@ -41,7 +40,7 @@ const EditorHeader = React.createClass({
       </div>
     )
   }
-})
+}
 
 function mapStateToProps (state) {
   return {
