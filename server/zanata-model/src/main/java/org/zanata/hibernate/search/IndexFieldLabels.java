@@ -35,4 +35,5 @@ public interface IndexFieldLabels {
 
     public static final String GLOSSARY_QUALIFIED_NAME = "glossaryEntry.glossary.qualifiedName";
 
+    String PROJECT_VERSION_FIELD = "projectVersion";
 }

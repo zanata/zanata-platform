@@ -1,9 +1,10 @@
 package org.zanata.service.impl;
 
+import java.util.Objects;
+
 import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
-import javax.inject.Inject;
 import org.hibernate.persister.entity.EntityPersister;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
@@ -13,16 +14,16 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.SlugEntityBase;
 import org.zanata.service.IndexingService;
-import javax.enterprise.event.Event;
 import org.zanata.util.ServiceLocator;
+
 import com.google.common.collect.Lists;
 
 /**
  * This class is a hibernate event listener which listens on post commit events
- * for HProject and HProjectIteration. If it detects a HProject slug change, it
- * will perform re-indexing for all HTextFlowTargets under that project. It will
- * also fire update event for HProject and HProjectIteration with their old slug
- * in payload.
+ * for HProject and HProjectIteration. If it detects a slug change, it will
+ * perform re-indexing for all HTextFlowTargets under that project/version. It
+ * will also fire update event for HProject and HProjectIteration with their old
+ * slug in payload.
  *
  * @see org.zanata.webtrans.server.HibernateIntegrator
  * @see org.zanata.webtrans.server.TranslationWorkspaceManagerImpl
@@ -64,7 +65,11 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
                     getSlugFieldIndex(slugFieldIndexInIteration, event);
             String oldSlug =
                     event.getOldState()[slugFieldIndexInIteration].toString();
+            String newSlug =
+                    event.getState()[slugFieldIndexInIteration].toString();
+
             fireProjectIterationUpdateEvent(iteration, oldSlug);
+            reindexIfProjectIterationSlugHasChanged(oldSlug, newSlug, iteration);
         }
     }
 
@@ -100,6 +105,23 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
             } catch (Exception e) {
                 log.error("exception happen in async framework", e);
             }
+        }
+    }
+
+    private void reindexIfProjectIterationSlugHasChanged(String oldSlug,
+            String newSlug, HProjectIteration iteration) {
+        if (Objects.equals(oldSlug, newSlug)) {
+            return;
+        }
+        log.debug("HProjectIteration [{}] changed slug. old slug: {}, new slug: {}",
+                iteration, oldSlug, newSlug);
+        AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
+        getAsyncTaskHandleManager().registerTaskHandle(handle);
+        try {
+            getIndexingServiceImpl()
+                    .reindexHTextFlowTargetsForProjectIteration(iteration, handle);
+        } catch (Exception e) {
+            log.error("exception happen in async framework", e);
         }
     }
 
