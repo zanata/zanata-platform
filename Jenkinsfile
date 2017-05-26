@@ -53,14 +53,19 @@ node {
       $class: 'ParametersDefinitionProperty',
       parameterDefinitions: [
         [
-          $class: 'LabelParameterDefinition',
-          /* Specify the default node in Jenkins environment DEFAULT_NODE
-           * (eg kvm) or default to build on any node
-           */
-          defaultValue: defaultNodeLabel,
-          description: 'Jenkins node label to use for build',
-          name: 'LABEL'
-        ]
+                $class: 'LabelParameterDefinition',
+                // Specify the default node in Jenkins env var DEFAULT_NODE
+                // (eg kvm), or leave blank to build on any node.
+                defaultValue: defaultNodeLabel,
+                description: 'Jenkins node label to use for build',
+                name: 'LABEL'
+        ],
+        [
+                $class: 'BooleanParameterDefinition',
+                defaultValue: false,
+                description: 'Run all functional tests?',
+                name: 'allFuncTests'
+        ],
       ]
     ],
   ]
@@ -89,6 +94,32 @@ String getLabel() {
   }
   def result = labelParam ?: defaultNodeLabel
   echo "Using build node label: $result"
+  return result
+}
+
+// NB: don't call this getAllFuncTests() or isAllFuncTests(), because it would
+// shadow the global parameter allFuncTests.
+boolean resolveAllFuncTests() {
+  def paramVal = null
+  try {
+    paramVal = params.allFuncTests
+  } catch (e1) {
+    // workaround for https://issues.jenkins-ci.org/browse/JENKINS-38813
+    echo '[WARNING] unable to access `params`'
+    echo getStackTrace(e1)
+    try {
+      paramVal = allFuncTests
+    } catch (e2) {
+      echo '[WARNING] unable to access `allFuncTests`'
+      echo getStackTrace(e2)
+    }
+  }
+
+  if (paramVal == null) {
+    echo "allFuncTests param is null; using default value."
+  }
+  def result = paramVal ?: false
+  echo "allFuncTests: $result"
   return result
 }
 
@@ -356,7 +387,7 @@ void integrationTests(String appserver) {
         def ftOpts = '-Dcargo.debug.jvm.args= '
 
         // run *all* functional tests in these branches only:
-        if (env.BRANCH_NAME in mainlineBranches) {
+        if (env.BRANCH_NAME in mainlineBranches || resolveAllFuncTests()) {
           ftOpts += '-DallFuncTests '
         }
 
