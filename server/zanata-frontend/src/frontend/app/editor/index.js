@@ -119,8 +119,11 @@ if (window.Intl) {
   runApp()
 } else {
   // Intl not present, so polyfill it.
-  require.ensure([], () => {
+  require.ensure([], (require) => {
     // This is 'require' on purpose, do not change to 'import'
+    console.error('Trying to load intl module. Expected path:')
+    console.dir(__webpack_public_path__) // eslint-disable-line
+    console.error('expected filename: intl-polyfill.min.js')
     require('intl')
     runApp()
   }, 'intl-polyfill')
