@@ -82,6 +82,7 @@ public class TransMemoryMergeManagerTest {
     public void startTMMergeWillReturnTrueIfProcessForThisRequestIsCancelled() {
         TransMemoryMergeTaskHandle existingHandle =
                 new TransMemoryMergeTaskHandle() {
+                    private static final long serialVersionUID = 1L;
                     @Override
                     public boolean isCancelled() {
                         return true;
@@ -110,6 +111,7 @@ public class TransMemoryMergeManagerTest {
     public void startTMMergeWillReturnTrueIfProcessForThisRequestIsDone() {
         TransMemoryMergeTaskHandle existingHandle =
                 new TransMemoryMergeTaskHandle() {
+                    private static final long serialVersionUID = 1L;
                     @Override
                     public boolean isDone() {
                         return true;
@@ -160,6 +162,7 @@ public class TransMemoryMergeManagerTest {
     public void cancelTMMergeWillReturnFalseIfProcessForThisRequestIsDone() {
         TransMemoryMergeTaskHandle existingHandle =
                 new TransMemoryMergeTaskHandle() {
+                    private static final long serialVersionUID = 1L;
                     @Override
                     public boolean isDone() {
                         return true;
@@ -181,6 +184,7 @@ public class TransMemoryMergeManagerTest {
     public void cancelTMMergeWillReturnFalseIfProcessForThisRequestIsCancelled() {
         TransMemoryMergeTaskHandle existingHandle =
                 new TransMemoryMergeTaskHandle() {
+                    private static final long serialVersionUID = 1L;
                     @Override
                     public boolean isCancelled() {
                         return true;
@@ -219,6 +223,7 @@ public class TransMemoryMergeManagerTest {
     public void cancelTMMergeWillReturnTrueIfProcessForThisRequestIsRunningAndTriggeredByTheSamePerson() {
         TransMemoryMergeTaskHandle existingHandle =
                 new TransMemoryMergeTaskHandle() {
+                    private static final long serialVersionUID = 1L;
                     @Override
                     public boolean cancel(boolean mayInterruptIfRunning) {
                         return true;

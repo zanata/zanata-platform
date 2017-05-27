@@ -42,6 +42,8 @@ public class MockServerTestUtil {
                 "admin",
                 "b6d7044e9ee3b2447c28fb7c50d86d98", new VersionInfo(
                 "3.6.0-SNAPSHOT", "unknown", "unknown"), true, true) {
+            private static final long serialVersionUID = 1L;
+
             @Override
             protected String getUrlPrefix() {
                 return "";
