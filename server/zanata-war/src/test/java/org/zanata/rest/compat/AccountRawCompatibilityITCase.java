@@ -164,10 +164,12 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
 
         // Assert initial put
         assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
+        putResponse.close();
 
         // Modified Account
         a.setName("New Account Name");
         putResponse = accountClient.put(a);
+        putResponse.close();
 
         // Assert modification
         assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
@@ -240,6 +242,7 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
 
         // Assert initial put
         assertThat(putResponse.getStatus(), is(Status.FORBIDDEN.getStatusCode()));
+        putResponse.close();
     }
 
 }

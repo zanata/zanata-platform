@@ -80,8 +80,13 @@ public abstract class ResourceRequest {
     }
 
     public void invoke(Invocation.Builder builder) throws Exception {
-        Response response = builder.build(method).invoke();
-        onResponse(response);
+        Response response = null;
+        try {
+            response = builder.build(method).invoke();
+            onResponse(response);
+        } finally {
+            response.close();
+        }
     }
 
     private Invocation.Builder prepareEnvironment(Invocation.Builder builder) {

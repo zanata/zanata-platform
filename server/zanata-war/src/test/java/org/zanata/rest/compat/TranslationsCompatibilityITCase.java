@@ -96,6 +96,7 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         + SimpleComment.ID), true);
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        response.close();
 
         // Verify that it was created successfully
         Response resourceResponse =
@@ -151,6 +152,7 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         + SimpleComment.ID), true);
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        response.close();
 
         // Post Twice (should conflict)
         response =
@@ -158,6 +160,7 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         + SimpleComment.ID), true);
 
         assertThat(response.getStatus(), is(Status.CONFLICT.getStatusCode())); // 409
+        response.close();
     }
 
     @Test
@@ -181,6 +184,7 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         PoHeader.ID + ";" + SimpleComment.ID), false);
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        response.close();
 
         // Verify that it was created successfully
         Response resourceResponse =
@@ -270,18 +274,21 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         PoHeader.ID + ";" + SimpleComment.ID), false);
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        response.close();
 
         // Delete the resource
         Response deleteResponse =
                 sourceDocClient.deleteResource(res.getName());
 
         assertThat(deleteResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        deleteResponse.close();
 
         // try to fetch it again
         Response getResponse =
                 sourceDocClient.getResource(res.getName(), null);
         assertThat(getResponse.getStatus(),
                 is(Status.NOT_FOUND.getStatusCode())); // 404
+        getResponse.close();
     }
 
     @Test
@@ -317,6 +324,7 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.putResourceMeta("my,path,document-2.txt",
                         resMeta, null);
         assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        putResponse.close();
 
         // Fetch again
         Response getResponse =
@@ -416,6 +424,7 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                                 SimpleComment.ID), "auto");
 
         assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        putResponse.close();
 
         // Retrieve the translations once more to make sure they were changed
         // accordingly
@@ -464,6 +473,7 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         LocaleId.EN_US);
 
         assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+        response.close();
 
         // try to fetch them again
         Response getResponse =
