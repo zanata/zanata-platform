@@ -17,14 +17,6 @@ import Sidebar from '../Sidebar'
  * Top level of Zanata view hierarchy.
  */
 class Root extends Component {
-  constructor () {
-    super()
-    // have to bind this for es6 classes until property initializers are
-    // available in ES7
-    this.resizeFinished = ::this.resizeFinished
-    this.onWindowResize = ::this.onWindowResize
-  }
-
   componentDidMount () {
     this.props.requestUiLocales()
     window.addEventListener('resize', this.onWindowResize)
@@ -35,7 +27,7 @@ class Root extends Component {
   }
 
   // TODO could debounce this
-  onWindowResize (e) {
+  onWindowResize = (e) => {
     // Reach in and override the dragged pixel size of the resizer component.
     // This is a workaround, needed because once the resizer is dragged, only
     // the size prop will override the dragged size, but specifying size prop
@@ -52,7 +44,7 @@ class Root extends Component {
     }
   }
 
-  resizeFinished () {
+  resizeFinished = () => {
     // draggedSize is defined as soon as any drag-resize happens,
     // so no need to save the height if it has not been set
     if (this.refs && this.refs.suggestionResizer &&

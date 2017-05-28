@@ -21,7 +21,6 @@
 package org.zanata.rest.service;
 
 import java.io.Serializable;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -37,7 +36,6 @@ import javax.ws.rs.core.Response;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.exception.ConstraintViolationException;
-import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -131,11 +129,7 @@ public class LocalesService implements LocalesResource {
         if (localeDetails.size() > size) {
             localeDetails = localeDetails.subList(0, size);
         }
-        Type genericType = new GenericType<List<LocaleDetails>>() {
-
-        }.getGenericType();
-        Object entity = new GenericEntity<List<LocaleDetails>>(localeDetails,
-                genericType);
+        Object entity = new GenericEntity<List<LocaleDetails>>(localeDetails){};
         return Response.ok(entity).build();
     }
 
@@ -180,11 +174,7 @@ public class LocalesService implements LocalesResource {
         List<LocaleDetails> localesRefs = locales.stream()
                 .map(hLocale -> LocaleService.convertHLocaleToDTO(hLocale))
                 .collect(Collectors.toList());
-        Type genericType = new GenericType<List<LocaleDetails>>() {
-
-        }.getGenericType();
-        Object entity = new GenericEntity<List<LocaleDetails>>(localesRefs,
-                genericType);
+        Object entity = new GenericEntity<List<LocaleDetails>>(localesRefs){};
         return Response.ok(entity).build();
     }
 

@@ -327,7 +327,7 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
             try {
                 FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } catch (IOException e) {
-                Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         }
     }

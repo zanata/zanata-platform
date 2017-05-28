@@ -23,7 +23,7 @@ package org.zanata.util;
 import com.google.common.collect.Sets;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.ApplicationConfiguration;
@@ -38,9 +38,9 @@ import org.zanata.model.HLocale;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -90,8 +90,8 @@ public class EssentialDataCreatorTest {
 
         creator.prepare();
 
-        verify(accountRoleDAO, never()).create(anyString(), eq(HAccountRole.RoleType.MANUAL), Matchers
-                .<String> anyVararg());
+        verify(accountRoleDAO, never()).create(anyString(), eq(HAccountRole.RoleType.MANUAL), ArgumentMatchers
+                .<String> any());
     }
 
     @Test
@@ -121,8 +121,8 @@ public class EssentialDataCreatorTest {
     private void givenRolesDoNotExists(String... roleNames) {
         for (String roleName : roleNames) {
             when(accountRoleDAO.roleExists(roleName)).thenReturn(false);
-            when(accountRoleDAO.create(anyString(), eq(HAccountRole.RoleType.MANUAL), Matchers
-                    .<String> anyVararg())).thenReturn(role);
+            when(accountRoleDAO.create(anyString(), eq(HAccountRole.RoleType.MANUAL), ArgumentMatchers
+                    .<String> any())).thenReturn(role);
         }
     }
 

@@ -137,7 +137,7 @@ public class CacheAction implements Serializable {
             return properties;
         } catch (IllegalAccessException | InvocationTargetException
                 | NoSuchMethodException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

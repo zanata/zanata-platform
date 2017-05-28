@@ -5,8 +5,8 @@ import SuggestionList from '../components/SuggestionList'
 /**
  * Display all suggestions that match the current search.
  */
-const SuggestionsBody = React.createClass({
-  propTypes: {
+class SuggestionsBody extends React.Component {
+  static propTypes = {
     copySuggestion: PropTypes.func.isRequired,
     searchType: PropTypes.oneOf(['phrase', 'text']).isRequired,
     search: PropTypes.shape({
@@ -34,9 +34,9 @@ const SuggestionsBody = React.createClass({
     showDiff: PropTypes.bool.isRequired,
     showDetail: PropTypes.func.isRequired,
     phraseSelected: PropTypes.bool.isRequired
-  },
+  }
 
-  renderContent: function () {
+  renderContent = () => {
     const isTextSearch = this.props.searchType === 'text'
     const phraseSelected = this.props.phraseSelected
     const hasSearch = this.props.search.searchStrings.length !== 0
@@ -85,15 +85,15 @@ const SuggestionsBody = React.createClass({
         suggestions={this.props.search.suggestions}
         copySuggestion={this.props.copySuggestion} />
     )
-  },
+  }
 
-  render: function () {
+  render () {
     return (
       <div className="Editor-suggestionsBody u-bgHigh">
         {this.renderContent()}
       </div>
     )
   }
-})
+}
 
 export default SuggestionsBody

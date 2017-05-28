@@ -32,7 +32,6 @@ import org.jglue.cdiunit.AdditionalClasses;
 import org.jglue.cdiunit.InRequestScope;
 import org.jglue.cdiunit.ProducesAlternative;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
-import org.jglue.cdiunit.internal.InRequestInterceptor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +45,7 @@ import org.zanata.test.CdiUnitRunner;
 import static java.util.Collections.emptyIterator;
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,7 +54,7 @@ import static org.mockito.Mockito.when;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 @RunWith(CdiUnitRunner.class)
-@AdditionalClasses({ InRequestInterceptor.class, WithActiveWindowInterceptor.class})
+@AdditionalClasses({ WithActiveWindowInterceptor.class})
 @InRequestScope
 @WithActiveWindow("34")
 @SupportDeltaspikeCore

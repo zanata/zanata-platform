@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.zanata</groupId>
   <artifactId>parent</artifactId>
-  <version>4.2.0</version>
+  <version>4.3.0-SNAPSHOT</version>
   <name>Zanata Parent POM</name>
   <description>Parent pom for Zanata modules</description>
   <url>http://zanata.org/</url>
@@ -22,7 +22,7 @@
          See https://issues.apache.org/jira/browse/MPIR-234?focusedCommentId=14663321&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-14663321
     -->
     <url>https://github.com/zanata/zanata-platform/tree/master/</url>
-    <tag>platform-4.2.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <licenses>
@@ -230,9 +230,7 @@
     <checkstyle.includes>*.xml,*.txt,*.md,etc/**,src/main/**,src/test/**,src/etc/**,src/conf/**</checkstyle.includes>
     <checkstyle.excludes>src/test/resources/**,**/.gitkeep</checkstyle.excludes>
 
-    <!-- NB: If we want to failOnError, we may need to
-         remove GuavaBetaDetector/library-detectors. -->
-    <findbugs.failOnError>false</findbugs.failOnError>
+    <findbugs.failOnError>true</findbugs.failOnError>
     <findbugs.excludeFilterFile>zanata-build-tools/findbugs-filter.xml</findbugs.excludeFilterFile>
     <reports-plugin.dependencyDetailsEnabled>false</reports-plugin.dependencyDetailsEnabled>
     <reports-plugin.dependencyLocationsEnabled>false</reports-plugin.dependencyLocationsEnabled>
@@ -442,9 +440,8 @@
                 <exclude>xml-apis:xml-apis</exclude>
                 <exclude>xerces:xmlParserAPIs</exclude>
 
-                <!-- use com.google.code.findbugs:annotations -->
-                <exclude>net.jcip:jcip-annotations</exclude>
-                <exclude>com.google.code.findbugs:jsr305</exclude>
+                <!-- use com.google.code.findbugs:findbugs-annotations, net.jcip:jcip-annotations, com.google.code.findbugs:jsr305 -->
+                <exclude>com.google.code.findbugs:annotations</exclude>
 
                 <!-- use org.glassfish.jaxb:jaxb-core -->
                 <exclude>com.sun.xml.bind:jaxb-core</exclude>
@@ -523,6 +520,36 @@
             <version>1.0-beta-3</version>
           </dependency>
         </dependencies>
+      </plugin>
+
+      <plugin>
+        <groupId>com.yamanyar</groupId>
+        <artifactId>restrict-maven-plugin</artifactId>
+        <version>0.8</version>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>restrict</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <continueOnError>false</continueOnError>
+          <!-- Don't check our dependencies (yet) -->
+          <onlyInspectFolder>true</onlyInspectFolder>
+          <printDebugs>false</printDebugs>
+          <restrictions>
+            <!-- Restrict org.zanata.* access to *.internal.* packages, with some exceptions. -->
+            <!-- kotlin.jvm.internal: required by Kotlin-compiled code -->
+            <!-- TODO remove references to org.hibernate.engine.jdbc.connections.internal.DriverManagerConnectionProviderImpl
+                 and org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl -->
+            <!-- TODO remove references to org.hibernate.internal.SessionImpl -->
+            <!-- TODO remove references to org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator -->
+            <!-- TODO block *.impl.* except org.zanata.*, com.google.gwt.i18n.server.impl, antlr.collections.impl.BitSet -->
+            <restriction>org.zanata.* to *.internal.*,!kotlin.jvm.internal.*,!org.hibernate.validator.internal.constraintvalidators.hv.EmailValidator,!org.hibernate.engine.jdbc.connections.internal.*,!org.hibernate.internal.SessionImpl</restriction>
+          </restrictions>
+        </configuration>
       </plugin>
 
       <plugin>
@@ -1184,19 +1211,23 @@
 
       <dependency>
         <groupId>com.google.code.findbugs</groupId>
-        <artifactId>annotations</artifactId>
-        <version>${findbugs.maven.version}</version>
+        <artifactId>findbugs-annotations</artifactId>
+        <version>3.0.1</version>
         <scope>provided</scope>
-        <exclusions>
-          <exclusion>
-            <groupId>com.google.code.findbugs</groupId>
-            <artifactId>jsr305</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>net.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
-          </exclusion>
-        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>3.0.2</version>
+        <scope>provided</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>net.jcip</groupId>
+        <artifactId>jcip-annotations</artifactId>
+        <version>1.0</version>
+        <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -1312,10 +1343,6 @@
           <exclusion>
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>net.jcip</groupId>
-            <artifactId>jcip-annotations</artifactId>
           </exclusion>
           <exclusion>
             <groupId>javassist</groupId>

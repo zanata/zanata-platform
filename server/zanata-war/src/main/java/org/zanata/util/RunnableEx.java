@@ -34,7 +34,7 @@ public interface RunnableEx {
             try {
                 r.run();
             } catch (Exception e) {
-                Throwables.propagate(e);
+                new RuntimeException(e);
             }
         };
     }

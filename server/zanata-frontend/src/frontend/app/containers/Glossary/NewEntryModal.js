@@ -9,6 +9,14 @@ import {
 } from '../../actions/glossary-actions'
 
 class NewEntryModal extends Component {
+  static propTypes = {
+    entry: PropTypes.object,
+    isSaving: PropTypes.bool,
+    show: PropTypes.bool,
+    handleNewEntryDisplay: PropTypes.func,
+    handleNewEntryCreate: PropTypes.func
+  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -16,7 +24,7 @@ class NewEntryModal extends Component {
     }
   }
 
-  handleContentChanged (e) {
+  handleContentChanged = (e) => {
     const { entry } = this.state
     const { srcTerm } = entry
     this.setState({
@@ -30,7 +38,7 @@ class NewEntryModal extends Component {
     })
   }
 
-  handlePosChanged (e) {
+  handlePosChanged = (e) => {
     const { entry } = this.state
     this.setState({
       entry: {
@@ -40,7 +48,7 @@ class NewEntryModal extends Component {
     })
   }
 
-  handleDescChanged (e) {
+  handleDescChanged = (e) => {
     const { entry } = this.state
     this.setState({
       entry: {
@@ -50,12 +58,12 @@ class NewEntryModal extends Component {
     })
   }
 
-  handleCancel () {
+  handleCancel = () => {
     this.resetFields()
     this.props.handleNewEntryDisplay(false)
   }
 
-  resetFields () {
+  resetFields = () => {
     this.setState({
       entry: cloneDeep(this.props.entry)
     })
@@ -84,8 +92,8 @@ class NewEntryModal extends Component {
             <label className='text-bold'>Term</label>
             <EditableText
               className='editable text-state-classes'
-              editable={true}
-              editing={true}
+              editable
+              editing
               placeholder='The new term'
               maxLength={255}
               onChange={::this.handleContentChanged}>
@@ -96,8 +104,8 @@ class NewEntryModal extends Component {
             <label className='text-bold'>Part of speech</label>
             <EditableText
               className='text-input modal-section'
-              editable={true}
-              editing={true}
+              editable
+              editing
               placeholder='Noun, Verb, etc'
               maxLength={255}
               onChange={::this.handlePosChanged}>
@@ -108,8 +116,8 @@ class NewEntryModal extends Component {
             <label className='text-bold'>Description</label>
             <EditableText
               className='text-input'
-              editable={true}
-              editing={true}
+              editable
+              editing
               placeholder='The definition of this term'
               maxLength={255}
               onChange={::this.handleDescChanged}>
@@ -141,15 +149,6 @@ class NewEntryModal extends Component {
       </Modal>)
     /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */
   }
-}
-
-NewEntryModal.propTypes = {
-  entry: PropTypes.object,
-  isSaving: PropTypes.bool,
-  show: PropTypes.bool,
-  handleNewEntryDisplay: PropTypes.func,
-  handleNewEntryCreate: PropTypes.func
-
 }
 
 const mapStateToProps = (state) => {

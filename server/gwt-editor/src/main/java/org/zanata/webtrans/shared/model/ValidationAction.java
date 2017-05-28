@@ -35,7 +35,7 @@ public interface ValidationAction {
 
     List<ValidationAction> getExclusiveValidations();
 
-    void mutuallyExclusive(ValidationAction[] exclusiveValidations);
+    void mutuallyExclusive(ValidationAction... exclusiveValidations);
 
     ValidationDisplayRules getRules();
 

@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>common</artifactId>
-    <version>4.2.0</version>
+    <version>4.3.0-SNAPSHOT</version>
   </parent>
   <packaging>takari-jar</packaging>
 
@@ -14,14 +14,24 @@
   <scm>
     <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
-    <tag>platform-4.2.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <dependencies>
 
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
-      <artifactId>annotations</artifactId>
+      <artifactId>findbugs-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.jcip</groupId>
+      <artifactId>jcip-annotations</artifactId>
     </dependency>
 
     <dependency>

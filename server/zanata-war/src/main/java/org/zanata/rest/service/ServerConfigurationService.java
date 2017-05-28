@@ -1,6 +1,5 @@
 package org.zanata.rest.service;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
 import javax.annotation.Nonnull;
@@ -18,15 +17,11 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.xml.ws.Service;
 import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
-import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.security.annotations.CheckLoggedIn;
-import org.zanata.security.annotations.CheckPermission;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.common.Namespaces;
 import org.zanata.dao.ApplicationConfigurationDAO;
@@ -39,7 +34,6 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 import javax.enterprise.event.Event;
-import org.zanata.util.ServiceLocator;
 
 /**
  * This API is experimental only and subject to change or even removal.
@@ -89,11 +83,8 @@ public class ServerConfigurationService {
                 applicationConfigurationDAO.findAll();
         List<Configuration> allConfig =
                 Lists.transform(all, new ToConfigurationFunction(accept));
-        Type genericType = new GenericType<List<Configuration>>() {
-
-        }.getGenericType();
         Object entity =
-                new GenericEntity<List<Configuration>>(allConfig, genericType);
+                new GenericEntity<List<Configuration>>(allConfig){};
         return Response.ok().entity(entity).build();
     }
 

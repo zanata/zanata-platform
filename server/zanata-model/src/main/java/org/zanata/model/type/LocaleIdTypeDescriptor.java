@@ -48,6 +48,7 @@ public class LocaleIdTypeDescriptor extends AbstractTypeDescriptor<LocaleId> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <X> X unwrap(LocaleId value, Class<X> type, WrapperOptions options) {
         if (value == null) {
             return null;

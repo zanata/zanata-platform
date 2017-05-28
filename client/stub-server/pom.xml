@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.zanata</groupId>
     <artifactId>client</artifactId>
-    <version>4.2.0</version>
+    <version>4.3.0-SNAPSHOT</version>
   </parent>
   <artifactId>stub-server</artifactId>
   <name>stub-server</name>
@@ -14,7 +14,7 @@
   <scm>
     <connection>scm:git:https://github.com/zanata/zanata-platform.git</connection>
     <developerConnection>scm:git:git@github.com:zanata/zanata-platform.git</developerConnection>
-    <tag>platform-4.2.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <properties>
@@ -64,12 +64,6 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxrs</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>net.jcip</groupId>
-          <artifactId>jcip-annotations</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -129,10 +123,20 @@
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
+
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
-      <artifactId>annotations</artifactId>
-      <scope>compile</scope>
+      <artifactId>findbugs-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>net.jcip</groupId>
+      <artifactId>jcip-annotations</artifactId>
     </dependency>
   </dependencies>
 

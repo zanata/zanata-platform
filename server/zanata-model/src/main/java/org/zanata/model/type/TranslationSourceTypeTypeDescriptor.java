@@ -50,13 +50,14 @@ public class TranslationSourceTypeTypeDescriptor extends
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <X> X unwrap(TranslationSourceType value, Class<X> type,
             WrapperOptions options) {
         if (value == null) {
             return null;
         }
         if (String.class.isAssignableFrom(type)) {
-            return (X) String.valueOf(value.getAbbr());
+            return (X) value.getAbbr();
         }
         throw unknownUnwrap(type);
     }

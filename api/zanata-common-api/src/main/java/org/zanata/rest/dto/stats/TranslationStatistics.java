@@ -58,7 +58,6 @@ public class TranslationStatistics implements Serializable {
     private StatUnit unit;
     private BaseTranslationCount translationCount;
     private String locale;
-    private double remainingHours;
     private String lastTranslated;
 
     private @Nullable
@@ -91,20 +90,21 @@ public class TranslationStatistics implements Serializable {
         translationCount = wordCount;
         this.unit = StatUnit.WORD;
         this.locale = locale;
-
-        countRemainingHours();
     }
 
     /**
      * Calculate remaining hours if StatUnit equals to 'WORD'.
      */
-    private void countRemainingHours() {
+    @XmlTransient
+    @JsonIgnore
+    public @Nullable Double getRemainingHours() {
         if (unit.equals(StatUnit.WORD)) {
             double untransHours = translationCount.getUntranslated() / 250.0;
             double fuzzyHours = translationCount.getNeedReview() / 500.0;
 
-            remainingHours = untransHours + fuzzyHours;
+            return untransHours + fuzzyHours;
         }
+        return null;
     }
 
     /**
@@ -316,32 +316,16 @@ public class TranslationStatistics implements Serializable {
         }
     }
 
-    public void setRemainingHours(double remainingHours) {
-        this.remainingHours = remainingHours;
-    }
-
-    // TODO Should consolidate with countRemainingHours() as it might return 0
-    // or null for StatUnit.MESSAGE
-    @XmlTransient
-    @JsonIgnore
-    @Deprecated
-    public double getRemainingHours() {
-        return remainingHours;
-    }
-
     public void add(TranslationStatistics other) {
         translationCount.add(other.translationCount);
-        countRemainingHours();
     }
 
     public void increment(ContentState state, long count) {
         translationCount.increment(state, (int) count);
-        countRemainingHours();
     }
 
     public void decrement(ContentState state, long count) {
         translationCount.decrement(state, (int) count);
-        countRemainingHours();
     }
 
     @Override
@@ -350,7 +334,6 @@ public class TranslationStatistics implements Serializable {
         sb.append("unit=").append(unit);
         sb.append(", translationCount=").append(translationCount);
         sb.append(", locale='").append(locale).append('\'');
-        sb.append(", remainingHours=").append(remainingHours);
         sb.append(", lastTranslated='").append(lastTranslated).append('\'');
         sb.append(", lastTranslatedDate=").append(lastTranslatedDate);
         sb.append(", lastTranslatedBy='").append(lastTranslatedBy).append('\'');

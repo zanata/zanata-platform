@@ -47,7 +47,7 @@ public class ParameterRule<T> implements MethodRule {
                                 parameters.get(parameterIndex));
                         base.evaluate();
                     } catch (Throwable throwable) {
-                        throw Throwables.propagate(throwable);
+                        throw new RuntimeException(throwable);
                     }
                 }
             }

@@ -22,25 +22,23 @@ package org.zanata.hibernate.search;
 
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.hibernate.search.bridge.FieldBridge;
+import org.apache.lucene.document.FieldType;
 import org.hibernate.search.bridge.LuceneOptions;
 import org.zanata.model.HProject;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public class GroupSearchBridge implements FieldBridge {
+public class GroupSearchBridge extends AbstractFieldBridge {
     public static final String PROJECT_FIELD = "project";
 
     @Override
     public void set(String name, Object value, Document document,
             LuceneOptions luceneOptions) {
         HProject project = (HProject) value;
-
+        FieldType fieldType = translateFieldType(luceneOptions);
         Field field =
-                new Field(PROJECT_FIELD, project.getSlug(),
-                        luceneOptions.getStore(), luceneOptions.getIndex(),
-                        luceneOptions.getTermVector());
+                new Field(PROJECT_FIELD, project.getSlug(), fieldType);
         field.setBoost(luceneOptions.getBoost());
         document.add(field);
     }

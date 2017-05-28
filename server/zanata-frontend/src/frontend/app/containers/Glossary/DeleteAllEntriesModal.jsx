@@ -7,6 +7,13 @@ import { Button, Tooltip, Overlay } from 'react-bootstrap'
  * Confirmation modal dialog for delete all glossary entries
  */
 class DeleteAllEntriesModal extends Component {
+  static propTypes = {
+    show: React.PropTypes.bool,
+    isDeleting: React.PropTypes.bool,
+    handleDeleteAllEntriesDisplay: PropTypes.func.isRequired,
+    handleDeleteAllEntries: React.PropTypes.func.isRequired
+  }
+
   render () {
     const {
       show,
@@ -36,7 +43,7 @@ class DeleteAllEntriesModal extends Component {
               </Button>
               <Button bsStyle='danger' className='btn-sm' type='button'
                 disabled={isDeleting}
-                onClick={() => handleDeleteAllEntries()}>
+                onClick={handleDeleteAllEntries}>
                 <LoaderText loading={isDeleting} size='n1'
                   loadingText='Deleting'>
                   Delete
@@ -57,13 +64,6 @@ class DeleteAllEntriesModal extends Component {
     )
     /* eslint-enable react/jsx-no-bind */
   }
-}
-
-DeleteAllEntriesModal.propTypes = {
-  show: React.PropTypes.bool,
-  isDeleting: React.PropTypes.bool,
-  handleDeleteAllEntriesDisplay: PropTypes.func.isRequired,
-  handleDeleteAllEntries: React.PropTypes.func.isRequired
 }
 
 export default DeleteAllEntriesModal

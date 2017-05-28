@@ -50,7 +50,7 @@ public class NotificationManager {
                     event.getClass().getCanonicalName());
             mailQueueSender.send(message);
         } catch (JMSException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
     /*

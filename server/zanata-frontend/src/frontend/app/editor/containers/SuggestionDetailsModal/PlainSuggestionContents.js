@@ -7,8 +7,17 @@ import SuggestionContents from '../../components/SuggestionContents'
 import cx from 'classnames'
 
 class PlainSuggestionContents extends Component {
+  static propTypes = {
+    /* Optional match type colour to display on the status bar. */
+    matchType: PropTypes.string,
+    suggestion: PropTypes.shape({
+      sourceContents: PropTypes.arrayOf(PropTypes.string).isRequired,
+      targetContents: PropTypes.arrayOf(PropTypes.string).isRequired
+    }).isRequired,
+    displayHeader: PropTypes.bool
+  }
 
-  matchTypeClass (matchType) {
+  matchTypeClass = (matchType) => {
     return ({
       imported: 'TransUnit--secondary',
       translated: 'TransUnit--success',
@@ -39,16 +48,6 @@ class PlainSuggestionContents extends Component {
       </div>
     )
   }
-}
-
-PlainSuggestionContents.propTypes = {
-  /* Optional match type colour to display on the status bar. */
-  matchType: PropTypes.string,
-  suggestion: PropTypes.shape({
-    sourceContents: PropTypes.arrayOf(PropTypes.string).isRequired,
-    targetContents: PropTypes.arrayOf(PropTypes.string).isRequired
-  }).isRequired,
-  displayHeader: PropTypes.bool
 }
 
 export default PlainSuggestionContents

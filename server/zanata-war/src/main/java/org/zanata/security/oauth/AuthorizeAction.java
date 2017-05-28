@@ -101,7 +101,7 @@ public class AuthorizeAction {
                     resp.getLocationUri());
             FacesNavigationUtil.redirectToExternal(resp.getLocationUri());
         } catch (OAuthSystemException | IOException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -142,7 +142,7 @@ public class AuthorizeAction {
                     resp.getLocationUri());
             FacesNavigationUtil.redirectToExternal(resp.getLocationUri());
         } catch (OAuthSystemException | IOException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
