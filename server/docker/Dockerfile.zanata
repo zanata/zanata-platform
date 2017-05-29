@@ -1,4 +1,4 @@
-FROM wildfly-base
+FROM wildfly-zanata-base
 
 # Add the war file
 ADD zanata.war /opt/jboss/wildfly/standalone/deployments/
