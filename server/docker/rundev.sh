@@ -105,7 +105,8 @@ ZANATA_DIR=$HOME/docker-volumes/zanata
 mkdir -p $ZANATA_DIR
 
 # build the docker dev image
-docker build -t zanata/server-dev docker/
+# TODO rename docker/Dockerfile to docker/Dockerfile.zanata-base
+docker build --tag zanata/server-dev --file docker/Dockerfile docker/
 
 # OutOfMemoryError handling:
 #  The heap will be dumped to a file on the host, eg ~/docker-volumes/zanata/java_pid63.hprof

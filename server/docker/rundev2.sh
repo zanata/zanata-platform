@@ -1,16 +1,15 @@
 #!/bin/bash
 
-docker build -t wildfly-base .
+docker build --tag wildfly-zanata-base .
 
 # First transform flattens everything
 # Second transform removes the version in zanata.war
 # Third transform standardizes the Dockerfile name
 tar --create \
-  Dockerfile.wildfly \
+  Dockerfile.zanata \
   ../zanata-war/target/zanata-*.war \
   --transform 's,.*/,,' \
-  --transform 's/zanata-.*\.war/zanata.war/' \
-  --transform 's/Dockerfile.wildfly/Dockerfile/' |
-docker build -t zanata-dev -
+  --transform 's/zanata-.*\.war/zanata.war/' |
+    docker build -t zanata-dev --file Dockerfile.zanata -
 
 docker-compose up
