@@ -136,10 +136,13 @@ String getLockName() {
     // Each mainline branch pipeline will have its own lock.
     return jobName
   } else if (env.BRANCH_NAME.startsWith('PR-')) {
-    // All pull requests (in any repo) will share the same lock/locks.
-    // It probably makes sense to define 2 or 3 locks with the name
-    // PullRequest for more concurrency.
-    return 'GitHubPullRequest'
+    // Pull requests 1, 101, 201, xx01 will all share the same lock name.
+    // Barring collisions, this means each PR gets its own lock, with a
+    // maximum of 100 lock names. This is a workaround for
+    // https://issues.jenkins-ci.org/browse/JENKINS-38906
+    String digits = '00' + env.BRANCH_NAME.substring('PR-'.length())
+    String last2Digits = digits.substring(digits.length() - 2)
+    return 'zanata-platform-PR-x' + last2Digits
   } else {
     // All miscellaneous branches (across all repos) will share the same lock.
     return 'GitHubMiscBranch'
