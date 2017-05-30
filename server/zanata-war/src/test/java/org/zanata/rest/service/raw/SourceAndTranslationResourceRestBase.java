@@ -96,6 +96,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
     public SourceDocResource getSourceDocResource() {
         if (sourceDocResource == null) {
             sourceDocResource = new SourceDocResource() {
+                private static final long serialVersionUID = 1L;
                 @Override
                 public Response head() {
                     return new ResourceRequest(
@@ -289,6 +290,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
     public TranslatedDocResource getTransResource() {
         if (translatedDocResource == null) {
             translatedDocResource = new TranslatedDocResource() {
+                private static final long serialVersionUID = 1L;
                 @Override
                 public Response getTranslations(String idNoSlash, LocaleId locale,
                         final Set<String> extensions, final boolean createSkeletons,

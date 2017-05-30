@@ -78,6 +78,7 @@ public abstract class RestTest {
                 @Override
                 public Map<String, Object> getDefaultHeaders() {
                     return new HashMap<String, Object>() {
+                        private static final long serialVersionUID = 1L;
                         {
                             put("X-Auth-User", ADMIN);
                             put("X-Auth-Token", ADMIN_KEY);
@@ -246,6 +247,7 @@ public abstract class RestTest {
             @Override
             public Map<String, Object> getDefaultHeaders() {
                 return new HashMap<String, Object>() {
+                    private static final long serialVersionUID = 1L;
                     {
                         put("X-Auth-User", TRANSLATOR);
                         put("X-Auth-Token", TRANSLATOR_KEY);

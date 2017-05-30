@@ -74,6 +74,8 @@ public class AutocompleteTest extends ZanataTest {
                 .thenReturn(supportedLocales);
 
         LocaleAutocomplete autocomplete = new LocaleAutocomplete() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             protected Collection<HLocale> getLocales() {
                 return Collections.EMPTY_LIST;

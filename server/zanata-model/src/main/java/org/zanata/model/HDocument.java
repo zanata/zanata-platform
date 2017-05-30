@@ -308,7 +308,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
                     account = BeanProvider.getContextualReference(
                             HAccount.class, true,
                             new AnnotationLiteral<Authenticated>() {
-
+                                private static final long serialVersionUID = 1L;
                             });
                 } catch (IllegalStateException e) {
                     account = null;

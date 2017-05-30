@@ -229,6 +229,7 @@ public class AnonymousUserRawRestITCase extends RestTest {
             @Override
             public Map<String, Object> getDefaultHeaders() {
                 return new HashMap<String, Object>() {
+                    private static final long serialVersionUID = 1L;
                     {
                         put("X-Auth-User", ADMIN);
                         put("X-Auth-Token", invalidAPI);
