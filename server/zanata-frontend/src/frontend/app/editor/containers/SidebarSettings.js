@@ -3,18 +3,18 @@ import {Button} from 'react-bootstrap'
 import Icon from '../../components/Icon'
 import ValidationOptions from '../components/ValidationOptions'
 
-const SidebarSettings = React.createClass({
+class SidebarSettings extends React.Component {
 
-  propTypes: {
+  static propTypes: {
     /* close the sidebar */
     close: PropTypes.func.isRequired
-  },
+  };
 
   sidebarDetails () {
     return (
       <ValidationOptions />
     )
-  },
+  }
 
   render () {
     return (
@@ -33,6 +33,10 @@ const SidebarSettings = React.createClass({
       </div>
     )
   }
-})
+}
+
+SidebarSettings.propTypes = {
+  close: PropTypes.func
+}
 
 export default SidebarSettings
