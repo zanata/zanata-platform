@@ -5,12 +5,12 @@ import ValidationOptions from '../components/ValidationOptions'
 
 class SidebarSettings extends React.Component {
 
-  static propTypes: {
+  static propTypes = {
     /* close the sidebar */
     close: PropTypes.func.isRequired
-  };
+  }
 
-  sidebarDetails () {
+  sidebarDetails = () => {
     return (
       <ValidationOptions />
     )
@@ -33,10 +33,6 @@ class SidebarSettings extends React.Component {
       </div>
     )
   }
-}
-
-SidebarSettings.propTypes = {
-  close: PropTypes.func
 }
 
 export default SidebarSettings

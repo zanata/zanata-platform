@@ -1,9 +1,14 @@
 import React from 'react'
 import { Checkbox } from 'react-bootstrap'
 
-const validations = ['HTML/XML tags', 'Java variables', 'Leading/trailing' +
-' newline (n)', 'Positional printf (XSI extension)', 'Printf variables',
-  'Tab characters (t)', 'XML entity reference']
+const validations =
+    ['HTML/XML tags',
+      'Java variables',
+      'Leading/trailing newline (n)',
+      'Positional printf (XSI extension)',
+      'Printf variables',
+      'Tab characters (t)',
+      'XML entity reference']
 
 const ValidationOptions = () => {
   const checkboxes = validations.map((validation, index) => (
