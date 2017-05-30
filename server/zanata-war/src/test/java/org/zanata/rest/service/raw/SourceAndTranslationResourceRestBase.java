@@ -26,13 +26,14 @@ import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
 import java.util.Set;
 
 import javax.ws.rs.DefaultValue;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.zanata.RestTest;
 import org.zanata.common.LocaleId;
 import org.zanata.provider.DBUnitProvider;
@@ -43,8 +44,6 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.SourceDocResource;
 import org.zanata.rest.service.TranslatedDocResource;
 import org.zanata.util.RawRestTestUtils;
-
-import com.google.common.collect.Lists;
 
 /**
  * Common parent for org.zanata.rest.service.raw.ResourceServiceRestITCase and
@@ -80,20 +79,18 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
     }
 
     public static Resource getResourceFromResponse(Response response) {
-        return RawRestTestUtils.jaxbUnmarshal(
-                (ClientResponse) response, Resource.class);
+        return RawRestTestUtils.jaxbUnmarshal(response, Resource.class);
     }
 
     public static ResourceMeta getResourceMetaFromResponse(
             Response resourceGetResponse) {
         return RawRestTestUtils.jaxbUnmarshal(
-                (ClientResponse) resourceGetResponse,
-                ResourceMeta.class);
+                resourceGetResponse, ResourceMeta.class);
     }
 
     public static TranslationsResource getTranslationsResourceFromResponse(
             Response response) {
-        return jaxbUnmarshal((ClientResponse) response, TranslationsResource.class);
+        return jaxbUnmarshal(response, TranslationsResource.class);
     }
 
     public SourceDocResource getSourceDocResource() {
@@ -105,12 +102,13 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                             getRestEndpointUrl(RESOURCE_PATH),
                             "HEAD", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return webTarget.request();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -121,15 +119,15 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                             getRestEndpointUrl(RESOURCE_PATH),
                             "GET", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            request.header(HttpHeaders.ACCEPT,
-                                    MediaType.APPLICATION_JSON);
-                            addExtensionToRequest(extensions, request);
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .request().header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_JSON);
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -142,18 +140,25 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                             getRestEndpointUrl(RESOURCE_PATH),
                             "POST", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            addExtensionToRequest(extensions, request);
-                            request.queryParameter("copyTrans",
-                                    String.valueOf(copytrans));
-                            request.body(MediaType.APPLICATION_XML_TYPE,
-                                    jaxbMarhsal(
-                                            resource));
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .queryParam("copyTrans",
+                                            String.valueOf(copytrans))
+                                    .request();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        public Response invokeWithResponse(
+                                Invocation.Builder builder) {
+                            Entity<String> entity = Entity
+                                    .entity(jaxbMarhsal(resource),
+                                            MediaType.APPLICATION_XML_TYPE);
+                            return builder.buildPost(entity).invoke();
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -165,14 +170,15 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                             getRestEndpointUrl(RESOURCE_PATH + idNoSlash),
                             "GET", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            addExtensionToRequest(extensions, request);
-                            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_TYPE);
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget).
+                                    request().header(HttpHeaders.ACCEPT,
+                                    MediaType.APPLICATION_XML_TYPE);
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -186,19 +192,24 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                             getRestEndpointUrl(RESOURCE_PATH + idNoSlash),
                             "PUT", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_TYPE);
-                            addExtensionToRequest(extensions, request);
-                            request.queryParameter("copyTrans",
-                                    String.valueOf(copytrans));
-                            request.body(MediaType.APPLICATION_XML_TYPE,
-                                    jaxbMarhsal(
-                                            resource));
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .queryParam("copyTrans",
+                                            String.valueOf(copytrans)).request();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        public Response invokeWithResponse(
+                                Invocation.Builder builder) {
+                            Entity<String> entity = Entity
+                                    .entity(jaxbMarhsal(resource),
+                                            MediaType.APPLICATION_XML_TYPE);
+                            return builder.buildPut(entity).invoke();
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -209,12 +220,13 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                             getRestEndpointUrl(RESOURCE_PATH + idNoSlash),
                             "DELETE", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return webTarget.request();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -227,14 +239,15 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                                     RESOURCE_PATH + idNoSlash + "/meta"),
                             "GET", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_TYPE);
-                            addExtensionToRequest(extensions, request);
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .request().header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_XML_TYPE);
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -248,15 +261,23 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                                     RESOURCE_PATH + idNoSlash + "/meta"),
                             "PUT", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(
-                                ClientRequest request) {
-                            addExtensionToRequest(extensions, request);
-                            request.body(MediaType.APPLICATION_XML_TYPE,
-                                    jaxbMarhsal(messageBody));
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .request();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        public Response invokeWithResponse(
+                                Invocation.Builder builder) {
+                            Entity<String> entity = Entity
+                                    .entity(jaxbMarhsal(messageBody),
+                                            MediaType.APPLICATION_XML_TYPE);
+                            return builder.buildPut(entity).invoke();
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -276,15 +297,17 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                             getRestEndpointUrl(RESOURCE_PATH + idNoSlash + "/translations/" + locale),
                             "GET", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(ClientRequest request) {
-                            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_TYPE);
-                            addExtensionToRequest(extensions, request);
-                            request.queryParameter("skeletons",
-                                    String.valueOf(createSkeletons));
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .queryParam("skeletons",
+                                            String.valueOf(createSkeletons))
+                                    .request().header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_XML_TYPE);
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -296,11 +319,13 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                             getRestEndpointUrl(RESOURCE_PATH + idNoSlash + "/translations/" + locale),
                             "DELETE", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(ClientRequest request) {
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return webTarget.request();
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }
@@ -313,15 +338,25 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                             getRestEndpointUrl(RESOURCE_PATH + idNoSlash + "/translations/" + locale),
                             "PUT", getAuthorizedEnvironment()) {
                         @Override
-                        protected void prepareRequest(ClientRequest request) {
-                            request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_XML_TYPE);
-                            addExtensionToRequest(extensions, request);
-                            request.queryParameter("merge", merge);
-                            request.body(MediaType.APPLICATION_XML_TYPE, jaxbMarhsal(messageBody));
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .queryParam("merge", merge).request()
+                                    .header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_XML_TYPE);
                         }
 
                         @Override
-                        protected void onResponse(ClientResponse response) {
+                        public Response invokeWithResponse(
+                                Invocation.Builder builder) {
+                            Entity<String> entity = Entity
+                                    .entity(jaxbMarhsal(messageBody),
+                                            MediaType.APPLICATION_XML_TYPE);
+                            return builder.buildPut(entity).invoke();
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
                         }
                     }.runWithResult();
                 }

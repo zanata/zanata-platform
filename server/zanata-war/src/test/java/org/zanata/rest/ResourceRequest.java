@@ -20,10 +20,13 @@
  */
 package org.zanata.rest;
 
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 
-import com.google.common.base.Throwables;
+import javax.ws.rs.client.Invocation;
+import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.util.Map;
 
 /**
  * This class performs an HTTP resource request and offers callback methods for
@@ -51,43 +54,50 @@ public abstract class ResourceRequest {
         this.environment = environment;
     }
 
-    protected abstract void prepareRequest(ClientRequest request);
+    protected abstract Invocation.Builder prepareRequest(ResteasyWebTarget webTarget);
 
-    protected abstract void onResponse(ClientResponse response);
+    protected abstract void onResponse(Response response)
+            throws IOException;
 
     public void run() throws Exception {
-        ClientRequest request = new ClientRequest(resourceUrl);
-        request.setHttpMethod(method);
-        prepareEnvironment(request);
-        prepareRequest(request);
-        ClientResponse response = request.execute();
+        ResteasyWebTarget webTarget = new ResteasyClientBuilder().build()
+                .target(resourceUrl);
+        Invocation.Builder builder = prepareRequest(webTarget);
+        builder = prepareEnvironment(builder);
+        invoke(builder);
+    }
+
+    public Response runWithResult() {
+        ResteasyWebTarget webTarget = new ResteasyClientBuilder().build()
+                .target(resourceUrl);
+        Invocation.Builder builder = prepareRequest(webTarget);
+        builder = prepareEnvironment(builder);
+        return invokeWithResponse(builder);
+    }
+
+    public Response invokeWithResponse(Invocation.Builder builder) {
+        return builder.build(method).invoke();
+    }
+
+    public void invoke(Invocation.Builder builder) throws Exception {
+        Response response = null;
         try {
+            response = builder.build(method).invoke();
             onResponse(response);
         } finally {
-            response.releaseConnection();
+            response.close();
         }
     }
 
-    public ClientResponse runWithResult() {
-        ClientRequest request = new ClientRequest(resourceUrl);
-        request.setHttpMethod(method);
-        prepareEnvironment(request);
-        prepareRequest(request);
-        try {
-            return request.execute();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private void prepareEnvironment(ClientRequest request) {
+    private Invocation.Builder prepareEnvironment(Invocation.Builder builder) {
         // Insert the default headers
-        if (this.environment.getDefaultHeaders() != null) {
-            for (String headerName : this.environment.getDefaultHeaders()
-                    .keySet()) {
-                request.header(headerName, this.environment.getDefaultHeaders()
-                        .get(headerName));
+        if (environment.getDefaultHeaders() != null &&
+                !environment.getDefaultHeaders().isEmpty()) {
+            for (Map.Entry<String, Object> entry : environment
+                    .getDefaultHeaders().entrySet()) {
+                builder = builder.header(entry.getKey(), entry.getValue());
             }
         }
+        return builder;
     }
 }
