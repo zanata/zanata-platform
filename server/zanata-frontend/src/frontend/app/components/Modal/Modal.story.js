@@ -68,7 +68,31 @@ storiesOf('Modal', module)
           </Modal.Footer>
         </Modal>
     ))
-    .add('version-TM', () => (
+    .add('TMX export - one language', () => (
+        <Modal
+            show={true}
+            onHide={action('onHide')}>
+          <Modal.Header>
+            <Modal.Title>Export Project to TMX</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Lorem />
+          </Modal.Body>
+        </Modal>
+    ))
+    .add('TMX export - multiple languages', () => (
+        <Modal
+            show={true}
+            onHide={action('onHide')}>
+          <Modal.Header>
+            <Modal.Title>Export Project to TMX</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Lorem />
+          </Modal.Body>
+        </Modal>
+    ))
+    .add('version TM', () => (
         <Modal
             show={true}
             onHide={action('onHide')}>
