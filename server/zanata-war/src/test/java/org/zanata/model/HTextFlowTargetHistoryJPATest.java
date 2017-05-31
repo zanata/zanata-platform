@@ -53,8 +53,7 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
         HDocument d =
                 new HDocument("/path/to/document.txt", ContentType.TextPlain,
                         en_US);
-        d.setProjectIteration((HProjectIteration) session.load(
-                HProjectIteration.class, 1L));
+        d.setProjectIteration(session.load(HProjectIteration.class, 1L));
         session.save(d);
         session.flush();
 
@@ -97,8 +96,7 @@ public class HTextFlowTargetHistoryJPATest extends ZanataDbunitJpaTest {
         HDocument d =
                 new HDocument("/path/to/document.txt", ContentType.TextPlain,
                         en_US);
-        d.setProjectIteration((HProjectIteration) session.load(
-                HProjectIteration.class, 1L));
+        d.setProjectIteration(session.load(HProjectIteration.class, 1L));
         session.save(d);
         session.flush();
 
