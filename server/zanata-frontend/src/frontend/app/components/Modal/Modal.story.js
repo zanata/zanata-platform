@@ -76,7 +76,19 @@ storiesOf('Modal', module)
             <Modal.Title>Export Project to TMX</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Lorem />
+            <span className="tmx-export">
+              <p>Are you sure you want to export this project to TMX?<br />
+              <strong>All documents in this project have the source language
+              &nbsp;<a href="">en-US</a>.</strong></p>
+              <br />
+               <p>
+                 <Button
+                   bsStyle='primary'
+                   onClick={action('onClick')}>
+                    Download
+                 </Button>
+              </p>
+            </span>
           </Modal.Body>
         </Modal>
     ))
@@ -88,7 +100,9 @@ storiesOf('Modal', module)
             <Modal.Title>Export Project to TMX</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Lorem />
+             <span className="tmx-export">
+              <p>Are you sure you want to export this project to TMX?</p>
+             </span>
           </Modal.Body>
         </Modal>
     ))
