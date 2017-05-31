@@ -25,6 +25,8 @@ import java.util.List;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
 import javax.persistence.PersistenceException;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import javax.inject.Inject;
@@ -42,6 +44,7 @@ import org.zanata.service.UserAccountService;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.faces.FacesMessages;
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Extension of Seam management's UserAction class' behaviour.
@@ -164,7 +167,7 @@ public class UserAction implements Serializable {
             }
         }
         String newName = name.trim();
-        if (!newName.isEmpty() && !newName.equals(originalName)) {
+        if (isNotBlank(newName) && !StringUtils.equals(originalName, newName)) {
             HPerson person = personDAO.findByUsername(username);
             person.setName(newName);
             personDAO.makePersistent(person);
