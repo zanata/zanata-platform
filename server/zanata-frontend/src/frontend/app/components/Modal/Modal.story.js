@@ -6,7 +6,7 @@ import {action, decorateAction} from '@kadira/storybook-addon-actions'
 import {
   Button, Panel, Row, Table, Well, Checkbox, InputGroup, Col,
   FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem, PanelGroup,
-  OverlayTrigger, Tooltip
+  OverlayTrigger, Tooltip, Badge
 }
   from 'react-bootstrap'
 import {Icon, Modal} from '../../components'
@@ -79,12 +79,12 @@ storiesOf('Modal', module)
             <span className="tmx-export">
               <p>Are you sure you want to export this project to TMX?<br />
               <strong>All documents in this project have the source language
-              &nbsp;<a href="">en-US</a>.</strong></p>
+                &nbsp;<a href="">en-US</a>.</strong></p>
               <br />
                <p>
                  <Button
-                   bsStyle='primary'
-                   onClick={action('onClick')}>
+                     bsStyle='primary'
+                     onClick={action('onClick')}>
                     Download
                  </Button>
               </p>
@@ -102,6 +102,43 @@ storiesOf('Modal', module)
           <Modal.Body>
              <span className="tmx-export">
               <p>Are you sure you want to export this project to TMX?</p>
+               <p className="lead">Source languages</p>
+                 <Table className="tmx-table">
+    <tbody>
+      <tr>
+        <td>as</td>
+        <td>
+          <Badge>
+            12 <Icon name="document" className="n1" />
+          </Badge>
+        </td>
+        <td>
+                   <Button
+                       bsSize="small"
+                       bsStyle='primary'
+                       onClick={action('onClick')}>
+                    Download
+                 </Button>
+        </td>
+      </tr>
+      <tr>
+        <td>de</td>
+         <td>
+          <Badge>
+            8 <Icon name="document" className="n1" />
+          </Badge>
+        </td>
+        <td>
+         <Button
+             bsStyle='primary'
+             bsSize="small"
+             onClick={action('onClick')}>
+                    Download
+                 </Button>
+        </td>
+      </tr>
+    </tbody>
+  </Table>
              </span>
           </Modal.Body>
         </Modal>

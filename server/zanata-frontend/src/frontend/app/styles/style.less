@@ -2621,7 +2621,7 @@ span.langcode {
 
 .btn-primary {
   color: #fff;
-  border-color: #ccc;
+  border-color: @color-neutral;
   background-color: @color-light;
 }
 
@@ -2631,12 +2631,12 @@ span.langcode {
 
 .btn-primary.focus, .btn-primary:focus {
   color: #fff;
-  border-color: #122b40;
+   border-color: @color-neutral;
   background-color: @color-dark;
 }
 
 .btn-primary.active.focus, .btn-primary.active:focus, .btn-primary.active:hover, .btn-primary:active.focus, .btn-primary:active:focus, .btn-primary:active:hover {
-  border-color: #ccc;
+  border-color: @color-neutral;
   background-color: @color-light;
   color: #fff;
 }
@@ -2652,7 +2652,7 @@ span.langcode {
 }
 
 .btn-primary.active:hover {
-  border-color: #ccc;
+  border-color: @color-neutral;
   background-color: @color-dark;
 }
 
@@ -6334,6 +6334,42 @@ i.i--left.i--lock, i.i--left.i--trash {
 .tmx-export {
   text-align: center;
 }
+
+.tmx-export p.lead {
+  font-weight: 500;
+}
+
+table.tmx-table {
+  width:60%;
+  margin-left:auto;
+  margin-right:auto;
+}
+
+table.tmx-table tbody tr td {
+  border-top: 0;
+}
+
+table.tmx-table tbody tr td:last-child {
+  width: 200px;
+}
+
+table.tmx-table .btn-sm {
+  padding: 0.31rem 2.4rem;
+}
+
+table.tmx-table .badge {
+  background-color:@color-muted;
+  color:#fff;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  width: 4rem;
+  font-weight: 400;
+}
+
+table.tmx-table .badge .n1 {
+  vertical-align: middle;
+}
+
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
   .view {
