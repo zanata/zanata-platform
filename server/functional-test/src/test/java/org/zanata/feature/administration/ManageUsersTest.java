@@ -129,4 +129,17 @@ public class ManageUsersTest extends ZanataTestCase {
                 .isEqualTo("Zanata: Administration")
                 .as("The user can access the administration panel");
     }
+
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void changeUsersName() {
+        ManageUserAccountPage manageUserAccountPage = dashboardPage
+                .goToAdministration()
+                .goToManageUserPage()
+                .editUserAccount("translator")
+                .enterFullName("Aloy")
+                .saveUser()
+                .editUserAccount("translator");
+
+        assertThat(manageUserAccountPage.getCurrentName()).isEqualTo("Aloy");
+    }
 }
