@@ -11,6 +11,7 @@ import {
 import RecentContributions from './RecentContributions'
 import { Notification, Icon, LoaderText } from '../../components'
 import { getLanguageUrl } from '../../utils/UrlHelper'
+import { isLoggedIn } from '../../config'
 
 /**
  * Root component for user profile page
@@ -71,8 +72,6 @@ class UserProfile extends Component {
         )
       })
       : undefined
-
-    const isLoggedIn = window.config.permission.isLoggedIn
 
     return (
       <div className='page'>

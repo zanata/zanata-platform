@@ -2,6 +2,7 @@ import { CALL_API } from 'redux-api-middleware'
 import { replaceRouteQuery } from '../utils/RoutingHelpers'
 import { getJsonHeaders, buildAPIRequest } from './common-actions'
 import { isEmpty, includes, clamp } from 'lodash'
+import { apiUrl } from '../config'
 
 export const SEARCH_PROJECT_REQUEST = 'SEARCH_PROJECT_REQUEST'
 export const SEARCH_PROJECT_SUCCESS = 'SEARCH_PROJECT_SUCCESS'
@@ -22,7 +23,7 @@ export const SEARCH_GROUP_FAILURE = 'SEARCH_GROUP_FAILURE'
 export const SIZE_PER_PAGE = 20
 
 const getEndpoint = (type, page, searchText) => {
-  return window.config.baseUrl + window.config.apiRoot + '/search/' +
+  return apiUrl + '/search/' +
     type + '?' +
     'sizePerPage=' + SIZE_PER_PAGE +
     '&page=' + (page || '1') +
