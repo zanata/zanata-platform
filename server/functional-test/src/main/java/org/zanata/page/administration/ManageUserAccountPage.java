@@ -37,6 +37,7 @@ public class ManageUserAccountPage extends BasePage {
     private By passwordField = By.id("userdetailForm:password:input:password");
     private By passwordConfirmField =
             By.id("userdetailForm:passwordConfirm:input:confirm");
+    private By fullNameField = By.id("userdetailForm:name");
     private By enabledField = By.id("userdetailForm:enabled");
     private By saveButton = By.id("userdetailForm:userdetailSave");
     private By cancelButton = By.id("userdetailForm:userdetailCancel");
@@ -50,6 +51,17 @@ public class ManageUserAccountPage extends BasePage {
         roleMap.put("glossary-admin", "2");
         roleMap.put("translator", "3");
         roleMap.put("user", "4");
+    }
+
+    public ManageUserAccountPage enterFullName(String fullName) {
+        log.info("Enter name {}", fullName);
+        enterText(readyElement(fullNameField), fullName);
+        return new ManageUserAccountPage(getDriver());
+    }
+
+    public String getCurrentName() {
+        log.info("Query user's name");
+        return readyElement(fullNameField).getAttribute("value");
     }
 
     public ManageUserAccountPage enterPassword(String password) {

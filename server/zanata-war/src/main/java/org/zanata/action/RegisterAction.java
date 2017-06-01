@@ -27,6 +27,7 @@ import javax.persistence.NoResultException;
 import javax.validation.constraints.Size;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.core.api.scope.GroupedConversation;
 import org.apache.deltaspike.core.api.scope.GroupedConversationScoped;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -164,9 +165,20 @@ public class RegisterAction implements HasUserDetail, Serializable {
         }
     }
 
+    private void validateFullName() {
+        if (StringUtils.isBlank(getPerson().getName())) {
+            valid = false;
+            facesMessages.addToControl("name",
+                    "Full Name cannot be empty");
+        } else {
+            getPerson().setName(getPerson().getName().trim());
+        }
+    }
+
     public String register() {
         valid = true;
         validateUsername(getUsername());
+        validateFullName();
         validateHumanField();
         if (!isValid()) {
             return null;
