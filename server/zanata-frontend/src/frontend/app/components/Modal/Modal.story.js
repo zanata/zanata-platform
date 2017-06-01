@@ -76,7 +76,7 @@ storiesOf('Modal', module)
             <Modal.Title>Export Project to TMX</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <span className="tmx-export">
+            <span className='tmx-export'>
               <p>Are you sure you want to export this project to TMX?<br />
               <strong>All documents in this project have the source language
                 &nbsp;<a href="">en-US</a>.</strong></p>
@@ -100,49 +100,96 @@ storiesOf('Modal', module)
             <Modal.Title>Export Project to TMX</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-             <span className="tmx-export">
+             <span className='tmx-export'>
               <p>Are you sure you want to export this project to TMX?</p>
-               <p className="lead">Source languages</p>
-                 <Table className="tmx-table">
-    <tbody>
-      <tr>
-        <td>as</td>
-        <td>
-          <Badge>
-            12 <Icon name="document" className="n1" />
-          </Badge>
-        </td>
-        <td>
-                   <Button
-                       bsSize="small"
-                       bsStyle='primary'
-                       onClick={action('onClick')}>
-                    Download
-                 </Button>
-        </td>
-      </tr>
-      <tr>
-        <td>de</td>
-         <td>
-          <Badge>
-            8 <Icon name="document" className="n1" />
-          </Badge>
-        </td>
-        <td>
-         <Button
-             bsStyle='primary'
-             bsSize="small"
-             onClick={action('onClick')}>
-                    Download
-                 </Button>
-        </td>
-      </tr>
-    </tbody>
-  </Table>
+               <p className='lead'>Source languages</p>
+                 <Table className='tmx-table'>
+                  <tbody>
+                    <tr>
+                      <td>as</td>
+                      <td>
+                        <Badge>
+                          12 <Icon name='document' className='n1'/>
+                        </Badge>
+                      </td>
+                      <td>
+                        <span className='tmx-dl'>
+                          <Button
+                          bsStyle='primary'
+                          bsSize='small'
+                          onClick={action('onClick')}>
+                          Download
+                          </Button>
+                          <span className='asterix'>*</span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>de</td>
+                      <td>
+                        <Badge>
+                          12 <Icon name='document' className='n1'/>
+                        </Badge>
+                      </td>
+                      <td>
+                        <span className='tmx-dl'>
+                          <Button
+                              bsStyle='primary'
+                              bsSize='small'
+                              onClick={action('onClick')}>
+                          Download
+                          </Button>
+                          <span className='asterix'>*</span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>ja</td>
+                      <td>
+                        <Badge>
+                          12 <Icon name='document' className='n1'/>
+                        </Badge>
+                      </td>
+                      <td>
+                        <span className='tmx-dl'>
+                          <Button
+                              bsStyle='primary'
+                              bsSize='small'
+                              onClick={action('onClick')}>
+                          Download
+                          </Button>
+                          <span className='asterix'>*</span>
+                        </span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>ALL</strong></td>
+                      <td>
+                        <Badge>
+                          52 <Icon name='document' className='n1'/>
+                        </Badge>
+                      </td>
+                      <td>
+                        <Button
+                          bsStyle='primary'
+                          bsSize='small'
+                          onClick={action('onClick')}>
+                          Download
+                        </Button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </Table>
+                <p className='all-warning'>
+                  <Icon name='warning' className='n1'/>
+                  &nbsp;Produces a TMX file which some systems can't import.</p>
+                <p className='text-warning'>* All translations of documents for
+                  the selected source language will be included.</p>
              </span>
           </Modal.Body>
         </Modal>
     ))
+
     .add('version TM', () => (
         <Modal
             show={true}
@@ -152,8 +199,10 @@ storiesOf('Modal', module)
           </Modal.Header>
           <Modal.Body>
             <div>
-              <p className="intro">This feature copies existing translations from similar documents
-                in other projects and versions into this project version if the source
+              <p className='intro'>This feature copies existing translations
+                from similar documents
+                in other projects and versions into this project version if the
+                source
                 text and context both match.
                 The translation state will be preserved (
                 <span className='vmerge-transtxt'>translated</span> or
@@ -167,7 +216,8 @@ storiesOf('Modal', module)
               </Well>
               <Col xs={12} className='vmerge-row'>
                 <Col xs={4}>
-                  <span className='vmerge-title text-dark'>TM match percentage</span>
+                  <span
+                      className='vmerge-title text-dark'>TM match percentage</span>
                 </Col>
                 <Col xs={5}>
                   <DropdownButton bsStyle='default' bsSize='small'

@@ -6339,8 +6339,12 @@ i.i--left.i--lock, i.i--left.i--trash {
   font-weight: 500;
 }
 
+.tmx-export p.text-warning {
+  font-size: 0.75em;
+}
+
 table.tmx-table {
-  width:60%;
+  width:50%;
   margin-left:auto;
   margin-right:auto;
 }
@@ -6350,11 +6354,21 @@ table.tmx-table tbody tr td {
 }
 
 table.tmx-table tbody tr td:last-child {
-  width: 200px;
+  float: right;
+}
+
+table.tmx-table tbody tr td:first-child {
+  color: @color-light;
 }
 
 table.tmx-table .btn-sm {
   padding: 0.31rem 2.4rem;
+}
+
+.asterix {
+  vertical-align: bottom;
+  margin-left: 0.5em;
+  color: @color-warning;
 }
 
 table.tmx-table .badge {
@@ -6366,8 +6380,26 @@ table.tmx-table .badge {
   font-weight: 400;
 }
 
+.tmx-export p.all-warning {
+  position: absolute;
+  bottom: 80px;
+  right: 20px;
+  width: 200px;
+  font-size: 0.75em;
+  line-height:1em;
+  color: @color-warning;
+}
+
+.tmx-export p.all-warning .n1 {
+  vertical-align: sub;
+}
+
 table.tmx-table .badge .n1 {
   vertical-align: middle;
+}
+
+.tmx-dl {
+  margin-right: -0.9em;
 }
 
 // @screen-xs variable depreciated
