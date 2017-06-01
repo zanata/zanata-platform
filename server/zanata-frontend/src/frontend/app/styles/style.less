@@ -234,7 +234,6 @@ body.templatestyle {
   background-color: @color-light;
   box-shadow: inset 0 1px 4px 0 rgba(0, 0, 0, 0.185);
   display: flex !important;
-  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flex;
@@ -250,6 +249,11 @@ body.templatestyle {
 }
 
 .nav-link {
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
   background-color: '';
   color: rgb(237, 242, 248) !important;
   flex-direction: column;
@@ -287,15 +291,10 @@ body.templatestyle {
 
 .nav-link.small {
   display: flex;
-  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flex;
   display: -o-flex;
-}
-
-.nav-link.search {
-  margin-top: @spacing-rq;
 }
 
 .nav-logo {
@@ -306,7 +305,6 @@ body.templatestyle {
   flex-direction: column;
   -webkit-flex-direction: column;
   display: flex;
-  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flex;
@@ -317,7 +315,6 @@ body.templatestyle {
   flex-direction: row-reverse;
   -webkit-flex-direction: row-reverse;
   display: flex;
-  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flex;
@@ -328,7 +325,6 @@ body.templatestyle {
   display: flex;
   align-items: center;
   -webkit-align-items: center; /* Safari 7.0+ */
-  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flex;
@@ -342,7 +338,6 @@ body.templatestyle {
 
 .flex-chart-container {
   display: flex;
-  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
   display: -webkit-flex;
   display: -moz-flex;
   display: -ms-flex;
@@ -1777,7 +1772,7 @@ label  .s0.icon-locked  {
 }
 
 .modal-body .dropdown .dropdown-menu > li > a {
-font-size: 0.75em;
+  font-size: 0.75em;
 }
 
 .alert {
@@ -6726,7 +6721,6 @@ table .projectWideSearchResultsDocumentBody {
 
   .nav-link {
     display: flex;
-    display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
     display: -webkit-flex;
     display: -moz-flex;
     display: -ms-flex;
