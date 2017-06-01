@@ -90,7 +90,9 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     private void prepareAccount() {
         Session session = getSession();
         String username = "anAuthenticatedAccount";
-        HAccount account = (HAccount) session.byNaturalId(HAccount.class).using("username", username).load();
+        HAccount account =
+                session.byNaturalId(HAccount.class).using("username", username)
+                        .load();
         if (account == null) {
             account = new HAccount();
             account.setUsername(username);
