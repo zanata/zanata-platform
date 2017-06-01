@@ -14,6 +14,12 @@ import { getContextPath } from '../utils/UrlHelper'
  */
 
 class App extends Component {
+  static propTypes = {
+    children: PropTypes.node,
+    activePath: PropTypes.string,
+    loading: PropTypes.bool
+  }
+
   render () {
     const {
       children,
@@ -38,12 +44,6 @@ class App extends Component {
       </div>
     )
   }
-}
-
-App.propTypes = {
-  children: PropTypes.node,
-  activePath: PropTypes.string,
-  loading: PropTypes.bool
 }
 
 function mapStateToProps (state) {

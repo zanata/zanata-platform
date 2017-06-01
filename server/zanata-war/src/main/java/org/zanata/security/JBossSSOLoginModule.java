@@ -35,9 +35,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.zanata.util.HashUtil;
 
 /**
@@ -83,7 +81,8 @@ public class JBossSSOLoginModule implements LoginModule {
             username = cbName.getName();
             password = cbPassword.getPassword();
             // Send the request to JBoss.org's REST service
-            HttpClient httpClient = new DefaultHttpClient();
+            HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+//            HttpClient httpClient = new DefaultHttpClient();
             StringBuilder requestUrl =
                     new StringBuilder(jbossSSOServerUrl + "/rest/auth?");
             String passwordHash = HashUtil
@@ -91,7 +90,7 @@ public class JBossSSOLoginModule implements LoginModule {
             requestUrl.append("u=").append(username);
             requestUrl.append("&h=").append(passwordHash);
             HttpGet getAuthRequest = new HttpGet(requestUrl.toString());
-            HttpResponse authResponse = httpClient.execute(getAuthRequest);
+            HttpResponse authResponse = httpClientBuilder.build().execute(getAuthRequest);
             loginSuccessful = authResponse.getStatusLine()
                     .getStatusCode() == HttpStatus.SC_OK;
             if (loginSuccessful) {

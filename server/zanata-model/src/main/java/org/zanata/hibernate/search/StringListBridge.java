@@ -3,7 +3,7 @@ package org.zanata.hibernate.search;
 import java.util.List;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.hibernate.search.bridge.FieldBridge;
+import org.apache.lucene.document.FieldType;
 import org.hibernate.search.bridge.LuceneOptions;
 
 /**
@@ -19,7 +19,7 @@ import org.hibernate.search.bridge.LuceneOptions;
  *
  * @author David Mason, damason@redhat.com
  */
-public class StringListBridge implements FieldBridge {
+public class StringListBridge extends AbstractFieldBridge {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(StringListBridge.class);
 
@@ -40,8 +40,8 @@ public class StringListBridge implements FieldBridge {
 
     private void addStringField(String fieldName, String fieldValue,
             Document luceneDocument, LuceneOptions luceneOptions) {
-        Field field = new Field(fieldName, fieldValue, luceneOptions.getStore(),
-                luceneOptions.getIndex(), luceneOptions.getTermVector());
+        FieldType fieldType = translateFieldType(luceneOptions);
+        Field field = new Field(fieldName, fieldValue, fieldType);
         field.setBoost(luceneOptions.getBoost());
         luceneDocument.add(field);
     }

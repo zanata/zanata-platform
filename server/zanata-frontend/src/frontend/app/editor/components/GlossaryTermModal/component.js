@@ -6,8 +6,8 @@ import { Icon, LoaderText, Modal } from '../../../components'
 /**
  * Modal to show detail for a single glossary term
  */
-const GlossaryTermModal = React.createClass({
-  propTypes: {
+class GlossaryTermModal extends React.Component {
+  static propTypes = {
     show: PropTypes.bool.isRequired,
     close: PropTypes.func.isRequired,
     sourceLocale: PropTypes.string.isRequired,
@@ -24,9 +24,9 @@ const GlossaryTermModal = React.createClass({
         targetComment: PropTypes.string
       })
     ).isRequired
-  },
+  }
 
-  render: function () {
+  render () {
     const {
       close,
       details,
@@ -116,6 +116,6 @@ const GlossaryTermModal = React.createClass({
       </Modal>
     )
   }
-})
+}
 
 export default GlossaryTermModal

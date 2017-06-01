@@ -255,7 +255,7 @@ public class UrlUtil implements Serializable {
             FacesContext.getCurrentInstance().getExternalContext()
                     .redirect(urlWithWindowId);
         } catch (IOException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -273,7 +273,7 @@ public class UrlUtil implements Serializable {
             }
             return urlWithWindowId;
         } catch (URISyntaxException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

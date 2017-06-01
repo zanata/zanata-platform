@@ -1,7 +1,6 @@
 package org.zanata.rest.service.raw;
 
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import static com.jayway.awaitility.Awaitility.waitAtMost;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -11,25 +10,26 @@ import static org.hamcrest.Matchers.notNullValue;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 import static org.zanata.util.RawRestTestUtils.jaxbUnmarshal;
+
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.MediaType;
-import org.assertj.core.api.Assertions;
+import javax.ws.rs.core.Response;
+
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.provider.DBUnitProvider.DataSetOperation;
 import org.zanata.rest.ResourceRequest;
-import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.ResourceTestObjectFactory;
 import org.zanata.rest.service.ResourceTestUtil;
 import org.zanata.rest.service.TranslationsResourceTestObjectFactory;
-import com.jayway.awaitility.Awaitility;
 import com.jayway.awaitility.Duration;
 
 /**
@@ -81,20 +81,29 @@ public class AsyncResourceRestITCase extends RestTest {
                 "PUT", getAuthorizedEnvironment()) {
 
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.getQueryParameters().add("ext", "gettext");
-                request.getQueryParameters().add("ext", "comment");
-                request.queryParameter("copyTrans", false);
-                request.body(MediaType.APPLICATION_XML_TYPE,
-                        jaxbMarhsal(resource).getBytes());
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("ext", "gettext").
+                        queryParam("ext", "comment").
+                        queryParam("copyTrans", false).request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+
+            @Override
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
-                assertJaxbUnmarshal(response, ProcessStatus.class);
+                String entityString = response.readEntity(String.class);
+
+                assertJaxbUnmarshal(entityString, ProcessStatus.class);
                 ProcessStatus status =
-                        jaxbUnmarshal(response, ProcessStatus.class);
+                        jaxbUnmarshal(entityString, ProcessStatus.class);
                 assertThat(status.getUrl(), is(notNullValue()));
                 processId.set(status.getUrl());
             }
@@ -109,15 +118,17 @@ public class AsyncResourceRestITCase extends RestTest {
                 "GET", getAuthorizedEnvironment()) {
 
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.getQueryParameters().add("ext", "gettext");
-                request.getQueryParameters().add("ext", "comment");
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("ext", "gettext").
+                        queryParam("ext", "comment").request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
-                Resource get = jaxbUnmarshal(response, Resource.class);
+                String entityString = response.readEntity(String.class);
+                Resource get = jaxbUnmarshal(entityString, Resource.class);
                 Resource base = resourceTestFactory.getTextFlowTest();
                 ResourceTestUtil.clearRevs(base);
                 ResourceTestUtil.clearRevs(get);
@@ -140,20 +151,29 @@ public class AsyncResourceRestITCase extends RestTest {
                 "PUT", getAuthorizedEnvironment()) {
 
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.getQueryParameters().add("ext", "gettext");
-                request.getQueryParameters().add("ext", "comment");
-                request.queryParameter("merge", "auto");
-                request.body(MediaType.APPLICATION_XML_TYPE,
-                        jaxbMarhsal(resource).getBytes());
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("ext", "gettext").
+                        queryParam("ext", "comment").
+                        queryParam("merge", "auto").request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            public void invoke(Invocation.Builder builder) {
+                Entity entity = Entity
+                        .entity(jaxbMarhsal(resource),
+                                MediaType.APPLICATION_XML_TYPE);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200));
-                assertJaxbUnmarshal(response, ProcessStatus.class);
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, ProcessStatus.class);
                 ProcessStatus status =
-                        jaxbUnmarshal(response, ProcessStatus.class);
+                        jaxbUnmarshal(entityString, ProcessStatus.class);
                 assertThat(status.getUrl(), is(notNullValue()));
                 processId.set(status.getUrl());
             }
@@ -172,15 +192,18 @@ public class AsyncResourceRestITCase extends RestTest {
                         "GET", getAuthorizedEnvironment()) {
 
                     @Override
-                    protected void prepareRequest(ClientRequest request) {
+                    protected Invocation.Builder prepareRequest(
+                            ResteasyWebTarget webTarget) {
+                        return webTarget.request();
                     }
 
                     @Override
-                    protected void onResponse(ClientResponse response) {
+                    protected void onResponse(Response response) {
                         assertThat(response.getStatus(), is(200));
-                        assertJaxbUnmarshal(response, ProcessStatus.class);
+                        String entityString = response.readEntity(String.class);
+                        assertJaxbUnmarshal(entityString, ProcessStatus.class);
                         ProcessStatus status =
-                                jaxbUnmarshal(response, ProcessStatus.class);
+                                jaxbUnmarshal(entityString, ProcessStatus.class);
                         assertThat(status.getStatusCode(), equalTo(
                                 ProcessStatus.ProcessStatusCode.Finished));
                     }

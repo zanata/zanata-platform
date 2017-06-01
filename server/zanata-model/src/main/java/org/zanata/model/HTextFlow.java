@@ -49,7 +49,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.hibernate.annotations.AccessType;
+import org.hibernate.annotations.AttributeAccessor;
 import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -197,7 +197,7 @@ public class HTextFlow extends HTextContainer implements Serializable,
     @JoinColumn(name = "document_id", insertable = false, updatable = false,
             nullable = false)
     @NaturalId
-    @AccessType("field")
+    @AttributeAccessor("field")
     @Field(analyze = Analyze.NO)
     @FieldBridge(impl = ContainingWorkspaceBridge.class)
     public HDocument getDocument() {

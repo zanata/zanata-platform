@@ -29,7 +29,43 @@ import {getProjectUrl} from '../../utils/UrlHelper'
  * Header for glossary page
  */
 class ViewHeader extends Component {
-  currentLocaleCount () {
+  static propTypes = {
+    title: PropTypes.string,
+    project: PropTypes.object,
+    results: PropTypes.object,
+    termCount: PropTypes.number.isRequired,
+    statsLoading: PropTypes.bool,
+    transLocales: PropTypes.arrayOf(
+      PropTypes.shape({
+        count: PropTypes.number.isRequired,
+        label: PropTypes.string.isRequired,
+        value: PropTypes.string.isRequired
+      })
+    ).isRequired,
+    filterText: PropTypes.string,
+    selectedTransLocale: PropTypes.string,
+    permission: PropTypes.shape({
+      canAddNewEntry: PropTypes.bool,
+      canUpdateEntry: PropTypes.bool,
+      canDeleteEntry: PropTypes.bool
+    }).isRequired,
+    sort: PropTypes.shape({
+      src_content: PropTypes.bool,
+      part_of_speech: PropTypes.bool
+    }).isRequired,
+    deleteAll: PropTypes.object,
+    handleTranslationLocaleChange: PropTypes.func,
+    handleFilterFieldUpdate: PropTypes.func,
+    handleImportFileDisplay: PropTypes.func,
+    handleNewEntryDisplay: PropTypes.func,
+    handleDeleteAllEntriesDisplay: PropTypes.func,
+    handleDeleteAllEntries: PropTypes.func,
+    handleSortColumn: PropTypes.func,
+    handleSearchCancelClick: PropTypes.func,
+    handleExportFileDisplay: PropTypes.func
+  }
+
+  currentLocaleCount = () => {
     if (this.props.filterText && this.props.results) {
       return this.props.results
         .filter(result => result.glossaryTerms.length >= 2).length
@@ -40,7 +76,7 @@ class ViewHeader extends Component {
     }
   }
 
-  localeOptionsRenderer (op) {
+  localeOptionsRenderer = (op) => {
     return (
       <span className='locale-options'>
         <span className='locale-options-label' title={op.label}>
@@ -56,7 +92,7 @@ class ViewHeader extends Component {
     )
   }
 
-  handleClearSearch () {
+  handleClearSearch = () => {
     if (this.searchInput !== null) {
       this.searchInput._onClear()
     }
@@ -124,9 +160,7 @@ class ViewHeader extends Component {
             <Button bsStyle='link'
               title='Cancel search'
               disabled={isEmpty(filterText)}
-              onClick={(e) => {
-                this.handleClearSearch()
-              }}>
+              onClick={this.handleClearSearch}>
               <Icon name='cross' className='s1' />
             </Button>
 
@@ -170,8 +204,8 @@ class ViewHeader extends Component {
                     <div className='glossary-button'>
                       <DeleteAllEntriesModal show={deleteAll.show}
                         isDeleting={deleteAll.isDeleting}
-                        handleDeleteAllEntriesDisplay={(display) =>
-                           handleDeleteAllEntriesDisplay(display)}
+                        handleDeleteAllEntriesDisplay={
+                          handleDeleteAllEntriesDisplay}
                         handleDeleteAllEntries={handleDeleteAllEntries} />
                     </div>)}
           </div>
@@ -244,42 +278,6 @@ class ViewHeader extends Component {
       </Header>
     )
   }
-}
-
-ViewHeader.propTypes = {
-  title: PropTypes.string,
-  project: PropTypes.object,
-  results: PropTypes.object,
-  termCount: PropTypes.number.isRequired,
-  statsLoading: PropTypes.bool,
-  transLocales: PropTypes.arrayOf(
-    PropTypes.shape({
-      count: PropTypes.number.isRequired,
-      label: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired
-    })
-  ).isRequired,
-  filterText: PropTypes.string,
-  selectedTransLocale: PropTypes.string,
-  permission: PropTypes.shape({
-    canAddNewEntry: PropTypes.bool,
-    canUpdateEntry: PropTypes.bool,
-    canDeleteEntry: PropTypes.bool
-  }).isRequired,
-  sort: PropTypes.shape({
-    src_content: PropTypes.bool,
-    part_of_speech: PropTypes.bool
-  }).isRequired,
-  deleteAll: PropTypes.object,
-  handleTranslationLocaleChange: PropTypes.func,
-  handleFilterFieldUpdate: PropTypes.func,
-  handleImportFileDisplay: PropTypes.func,
-  handleNewEntryDisplay: PropTypes.func,
-  handleDeleteAllEntriesDisplay: PropTypes.func,
-  handleDeleteAllEntries: PropTypes.func,
-  handleSortColumn: PropTypes.func,
-  handleSearchCancelClick: PropTypes.func,
-  handleExportFileDisplay: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

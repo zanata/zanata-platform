@@ -6,9 +6,8 @@ import IconButton from './IconButton'
 /**
  * Panel for the source of the selected phrase
  */
-const TransUnitSourcePanel = React.createClass({
-
-  propTypes: {
+class TransUnitSourcePanel extends React.Component {
+  static propTypes = {
     phrase: PropTypes.object.isRequired,
     selected: PropTypes.bool.isRequired,
     cancelEdit: PropTypes.func.isRequired,
@@ -17,9 +16,9 @@ const TransUnitSourcePanel = React.createClass({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired
     }).isRequired
-  },
+  }
 
-  render: function () {
+  render () {
     const isPlural = this.props.phrase.plural
 
     const header = this.props.selected
@@ -100,6 +99,6 @@ const TransUnitSourcePanel = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default TransUnitSourcePanel

@@ -2,12 +2,17 @@ import React, { PropTypes } from 'react'
 import SuggestionSources from './SuggestionSources'
 import SuggestionTranslations from './SuggestionTranslations'
 
+const matchTypeClass = {
+  imported: 'TransUnit--secondary',
+  translated: 'TransUnit--success',
+  approved: 'TransUnit--highlight'
+}
+
 /**
  * Display a single suggestion source, translation and metadata.
  */
-const Suggestion = React.createClass({
-
-  propTypes: {
+class Suggestion extends React.Component {
+  static propTypes = {
     copySuggestion: PropTypes.func.isRequired,
     index: PropTypes.number.isRequired,
     suggestion: PropTypes.shape({
@@ -26,12 +31,12 @@ const Suggestion = React.createClass({
     search: PropTypes.arrayOf(PropTypes.string),
     showDiff: PropTypes.bool.isRequired,
     showDetail: PropTypes.func.isRequired
-  },
+  }
 
   /**
    * Calculate the match type for the suggestion
    */
-  matchType: function (suggestion) {
+  matchType = (suggestion) => {
     let topMatch = suggestion.matchDetails[0]
 
     if (topMatch.type === 'IMPORTED_TM') {
@@ -46,26 +51,20 @@ const Suggestion = React.createClass({
       }
     }
     console.error('Unable to generate row display type for top match')
-  },
+  }
 
-  matchTypeClass: {
-    imported: 'TransUnit--secondary',
-    translated: 'TransUnit--success',
-    approved: 'TransUnit--highlight'
-  },
-
-  copySuggestion () {
+  copySuggestion = () => {
     this.props.copySuggestion(this.props.index)
-  },
+  }
 
-  showDetail () {
+  showDetail = () => {
     this.props.showDetail(this.props.index)
-  },
+  }
 
-  render: function () {
+  render () {
     const matchType = this.matchType(this.props.suggestion)
     const className = 'TransUnit TransUnit--suggestion ' +
-                        this.matchTypeClass[matchType]
+                        matchTypeClass[matchType]
     const suggestion = {
       ...this.props.suggestion,
       matchType
@@ -86,6 +85,6 @@ const Suggestion = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default Suggestion

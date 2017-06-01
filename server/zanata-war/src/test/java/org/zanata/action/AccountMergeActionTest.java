@@ -54,6 +54,7 @@ import static org.zanata.action.AccountMergeAction.AccountMergeAuthCallback;
 @InSessionScope
 @RunWith(CdiUnitRunner.class)
 public class AccountMergeActionTest implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Mock
     @Produces

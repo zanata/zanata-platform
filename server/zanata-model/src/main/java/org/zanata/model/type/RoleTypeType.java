@@ -35,6 +35,8 @@ import org.zanata.model.HAccountRole.RoleType;
  */
 public class RoleTypeType extends AbstractSingleColumnStandardBasicType<RoleType>
     implements DiscriminatorType<RoleType> {
+    private static final long serialVersionUID = -8503982687031387285L;
+
     public RoleTypeType() {
         super(StringType.INSTANCE.getSqlTypeDescriptor(),
             RoleTypeDescriptor.INSTANCE);

@@ -25,7 +25,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
@@ -45,7 +44,6 @@ import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.zanata.adapter.FileFormatAdapter;
@@ -126,27 +124,22 @@ public class FileService implements FileResource {
     @Override
     @Deprecated
     public Response acceptedFileTypeList() {
-        Type genericType = new GenericType<List<DocumentType>>() {
-
-        }.getGenericType();
         Object entity = new GenericEntity<List<DocumentType>>(
                 Lists.newArrayList(
-                        translationFileServiceImpl.getSupportedDocumentTypes()),
-                genericType);
+                        translationFileServiceImpl
+                                .getSupportedDocumentTypes())) {
+        };
         return Response.ok(entity).build();
     }
 
     @Override
     public Response fileTypeInfoList() {
-        Type genericType = new GenericType<List<FileTypeInfo>>() {
-
-        }.getGenericType();
         Set<DocumentType> supportedDocumentTypes =
                 translationFileServiceImpl.getSupportedDocumentTypes();
         List<FileTypeInfo> docTypes = supportedDocumentTypes.stream()
                 .sorted((a, b) -> a.toString().compareTo(b.toString()))
                 .map(DocumentType::toFileTypeInfo).collect(Collectors.toList());
-        Object entity = new GenericEntity<>(docTypes, genericType);
+        Object entity = new GenericEntity<List<FileTypeInfo>>(docTypes){};
         return Response.ok(entity).build();
     }
 

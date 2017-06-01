@@ -5,34 +5,22 @@ import React, { PropTypes } from 'react'
 /**
  * Dropdown to select the language to display the user interface in.
  */
-const UiLanguageDropdown = React.createClass({
-
-  propTypes: {
+class UiLanguageDropdown extends React.Component {
+  static propTypes = {
     changeUiLocale: PropTypes.func.isRequired,
     selectedUiLocale: PropTypes.string,
     uiLocales: PropTypes.object.isRequired,
 
     toggleDropdown: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired
-  },
+  }
 
-  changeUiLocale: function (locale) {
-    // AppCtrl expects { localeId, name } rather than { id, name }
-    this.props.changeUiLocale({
-      localeId: locale.id,
-      name: locale.name
-    })
-  },
-
-  render: function () {
+  render () {
     const items = values(this.props.uiLocales).map(locale => {
       return (
-        <li key={locale.id}>
-          <a onClick={() => this.changeUiLocale(locale)}
-             className="Dropdown-item">
-            {locale.name}
-          </a>
-        </li>
+        <LocaleItem key={locale.id}
+          locale={locale}
+          changeUiLocale={this.props.changeUiLocale} />
       )
     })
 
@@ -42,8 +30,8 @@ const UiLanguageDropdown = React.createClass({
 
     return (
       <Dropdown onToggle={this.props.toggleDropdown}
-                isOpen={this.props.isOpen}
-                className="Dropdown--right u-sMV-1-2">
+        isOpen={this.props.isOpen}
+        className="Dropdown--right u-sMV-1-2">
         <Dropdown.Button>
           <a className="Link--invert u-inlineBlock u-textNoWrap u-sPH-1-4">
             {uiLocaleName}
@@ -57,6 +45,37 @@ const UiLanguageDropdown = React.createClass({
       </Dropdown>
     )
   }
-})
+}
+
+class LocaleItem extends React.Component {
+  static propTypes = {
+    locale: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired
+    }).isRequired,
+    changeUiLocale: PropTypes.func.isRequired
+  }
+
+  changeUiLocale = () => {
+    const { id, name } = this.props.locale
+    // AppCtrl expects { localeId, name } rather than { id, name }
+    this.props.changeUiLocale({
+      localeId: id,
+      name
+    })
+  }
+
+  render () {
+    const { id, name } = this.props.locale
+    return (
+      <li key={id}>
+        <a onClick={this.changeUiLocale}
+          className="Dropdown-item" >
+          {name}
+        </a>
+      </li>
+    )
+  }
+}
 
 export default UiLanguageDropdown

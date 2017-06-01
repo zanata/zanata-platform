@@ -16,6 +16,22 @@ import { getLanguageUrl } from '../../utils/UrlHelper'
  * Root component for user profile page
  */
 class UserProfile extends Component {
+  static propTypes = {
+    params: PropTypes.object,
+    user: PropTypes.object,
+    notification: PropTypes.object,
+    loading: PropTypes.bool,
+    matrixForAllDays: PropTypes.array,
+    wordCountsForSelectedDayFilteredByContentState: PropTypes.array,
+    wordCountsForEachDayFilteredByContentState: PropTypes.array,
+    contentStateOption: PropTypes.string,
+    selectedDay: PropTypes.string,
+    dateRange: PropTypes.object,
+    handleInitLoad: PropTypes.func,
+    handleDateRangeChanged: PropTypes.func,
+    handleFilterChanged: PropTypes.func,
+    handleSelectedDayChanged: PropTypes.func
+  }
 
   componentDidMount () {
     const paramUsername = this.props.params.username
@@ -137,23 +153,6 @@ class UserProfile extends Component {
       </div>
     )
   }
-}
-
-UserProfile.propTypes = {
-  params: PropTypes.object,
-  user: PropTypes.object,
-  notification: PropTypes.object,
-  loading: PropTypes.bool,
-  matrixForAllDays: PropTypes.array,
-  wordCountsForSelectedDayFilteredByContentState: PropTypes.array,
-  wordCountsForEachDayFilteredByContentState: PropTypes.array,
-  contentStateOption: PropTypes.string,
-  selectedDay: PropTypes.string,
-  dateRange: PropTypes.object,
-  handleInitLoad: PropTypes.func,
-  handleDateRangeChanged: PropTypes.func,
-  handleFilterChanged: PropTypes.func,
-  handleSelectedDayChanged: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

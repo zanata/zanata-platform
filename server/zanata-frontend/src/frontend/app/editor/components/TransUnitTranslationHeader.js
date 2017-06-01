@@ -6,9 +6,8 @@ import { hasTranslationChanged } from '../utils/phrase-util'
 /**
  * Heading that displays locale name and ID
  */
-const TransUnitTranslationHeader = React.createClass({
-
-  propTypes: {
+class TransUnitTranslationHeader extends React.Component {
+  static propTypes = {
     phrase: PropTypes.object.isRequired,
     cancelEdit: PropTypes.func.isRequired,
     undoEdit: PropTypes.func.isRequired,
@@ -16,14 +15,14 @@ const TransUnitTranslationHeader = React.createClass({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired
     }).isRequired
-  },
+  }
 
   // TODO this is duplicated between source header and translation header,
   //      de-duplicate it
-  buttonClass:
-    'Link Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1 u-textCenter',
+  buttonClass =
+    'Link Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1 u-textCenter'
 
-  closeButtonElement: function () {
+  closeButtonElement = () => {
     return (
       <li className="u-sm-hidden">
         <IconButton
@@ -33,9 +32,9 @@ const TransUnitTranslationHeader = React.createClass({
           onClick={this.props.cancelEdit} />
       </li>
     )
-  },
+  }
 
-  undoButtonElement: function () {
+  undoButtonElement = () => {
     return (
       <li>
         <IconButton
@@ -45,9 +44,9 @@ const TransUnitTranslationHeader = React.createClass({
           onClick={this.props.undoEdit} />
       </li>
     )
-  },
+  }
 
-  render: function () {
+  render () {
     const displayUndo = hasTranslationChanged(this.props.phrase)
     const button = displayUndo
       ? this.undoButtonElement()
@@ -66,6 +65,6 @@ const TransUnitTranslationHeader = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default TransUnitTranslationHeader

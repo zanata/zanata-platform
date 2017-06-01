@@ -184,15 +184,11 @@ public class StatisticsServiceImpl implements StatisticsResource {
             }
             TranslationStatistics transUnitStats = getMessageStats(count, locId,
                     lastModifiedDate, lastModifiedBy);
-            transUnitStats.setRemainingHours(
-                    StatisticsUtil.getRemainingHours(wordCount));
             iterationStats.addStats(transUnitStats);
             // word level stats
             if (includeWordStats) {
                 TranslationStatistics wordsStats = getWordsStats(wordCount,
                         locId, lastModifiedDate, lastModifiedBy);
-                wordsStats.setRemainingHours(
-                        StatisticsUtil.getRemainingHours(wordCount));
                 iterationStats.addStats(wordsStats);
             }
         }
@@ -405,22 +401,7 @@ public class StatisticsServiceImpl implements StatisticsResource {
             LocaleId localeId) {
         ContainerTranslationStatistics result =
                 documentDAO.getStatistics(documentId, localeId);
-        TranslationStatistics wordStatistics =
-                extractStatistics(result, localeId, StatUnit.WORD);
-        TranslationStatistics msgStatistics =
-                extractStatistics(result, localeId, StatUnit.MESSAGE);
-        msgStatistics.setRemainingHours(
-                StatisticsUtil.getRemainingHours(wordStatistics));
         return result;
-    }
-
-    private TranslationStatistics extractStatistics(
-            ContainerTranslationStatistics containerTranslationStatistics,
-            LocaleId localeId, StatUnit statUnit) {
-        TranslationStatistics stats = containerTranslationStatistics
-                .getStats(localeId.getId(), statUnit);
-        stats.setRemainingHours(StatisticsUtil.getRemainingHours(stats));
-        return stats;
     }
 
     /**

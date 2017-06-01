@@ -114,7 +114,7 @@ public class TMXParser implements Serializable {
             } else if (rootCause instanceof XMLStreamException) {
                 throw new TMXParseException(rootCause);
             } else {
-                throw Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         } finally {
             log.info("parsing stopped for: {}, TU count={}",

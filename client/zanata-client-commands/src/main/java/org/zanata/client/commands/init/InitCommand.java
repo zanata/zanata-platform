@@ -71,7 +71,9 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
 
     public InitCommand(InitOptions opts) {
         // we don't have all mandatory information yet (server URL etc)
-        super(opts, new RestClientFactory() {});
+        super(opts, new RestClientFactory() {
+            private static final long serialVersionUID = 1L;
+        });
         console = new ConsoleInteractorImpl(opts);
         projectConfigHandler =
                 new ProjectConfigHandler(console, getOpts());
@@ -80,7 +82,9 @@ public class InitCommand extends ConfigurableCommand<InitOptions> {
 
     @VisibleForTesting
     protected InitCommand(InitOptions opts, ConsoleInteractor console) {
-        this(opts, console, new RestClientFactory() {});
+        this(opts, console, new RestClientFactory() {
+            private static final long serialVersionUID = 1L;
+        });
     }
 
     @VisibleForTesting

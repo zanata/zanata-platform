@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,7 +36,6 @@ import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
-import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -133,11 +131,8 @@ public class SourceDocResourceService implements SourceDocResource {
                 resources.add(resource);
             }
         }
-        Type genericType = new GenericType<List<ResourceMeta>>() {
-
-        }.getGenericType();
         Object entity =
-                new GenericEntity<List<ResourceMeta>>(resources, genericType);
+                new GenericEntity<List<ResourceMeta>>(resources){};
         return Response.ok(entity).tag(etag).build();
     }
 

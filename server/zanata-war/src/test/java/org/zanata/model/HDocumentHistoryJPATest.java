@@ -48,8 +48,7 @@ public class HDocumentHistoryJPATest extends ZanataDbunitJpaTest {
         HDocument d =
                 new HDocument("/path/to/document.txt", ContentType.TextPlain,
                         de_DE);
-        d.setProjectIteration((HProjectIteration) session.load(
-                HProjectIteration.class, 1L));
+        d.setProjectIteration(session.load(HProjectIteration.class, 1L));
         session.save(d);
         session.flush();
 

@@ -6,7 +6,7 @@ import com.google.common.base.Preconditions;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 //@Immutable
-public class DocumentId implements Identifier<Long>, Comparable,
+public class DocumentId implements Identifier<Long>, Comparable<DocumentId>,
         IsSerializable, Serializable {
     private static final long serialVersionUID = 1L;
     private static final String SEPARATOR = ":";
@@ -66,17 +66,14 @@ public class DocumentId implements Identifier<Long>, Comparable,
     }
 
     @Override
-    public int compareTo(Object o) {
+    public int compareTo(DocumentId o) {
         if (o == this) {
             return 0;
         }
         if (o == null) {
             return -1;
         }
-        if (o instanceof DocumentId) {
-            DocumentId compareTo = (DocumentId) o;
-            return this.getDocId().compareTo(compareTo.getDocId());
-        }
-        return -1;
+        DocumentId compareTo = o;
+        return this.getDocId().compareTo(compareTo.getDocId());
     }
 }

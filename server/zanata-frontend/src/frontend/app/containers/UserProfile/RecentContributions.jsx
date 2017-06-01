@@ -11,8 +11,8 @@ const STATS_MAX_DAYS = 365
 /**
  * User profile statistics root page
  */
-var RecentContributions = React.createClass({
-  propTypes: {
+class RecentContributions extends React.Component {
+  static propTypes = {
     matrixForAllDays: PropTypes.array,
     dateRange: PropTypes.object,
     wordCountsForSelectedDayFilteredByContentState: PropTypes.array,
@@ -22,22 +22,23 @@ var RecentContributions = React.createClass({
     handleDateRangeChanged: PropTypes.func,
     handleFilterChanged: PropTypes.func,
     handleSelectedDayChanged: PropTypes.func
-  },
+  }
 
-  getInitialState: function () {
-    return {
-      dateRange: this.props.dateRange,
+  constructor (props) {
+    super(props)
+    this.state = {
+      dateRange: props.dateRange,
       showDateRange: false
     }
-  },
+  }
 
-  onToggleShowDateRange: function () {
+  onToggleShowDateRange = () => {
     this.setState({
       showDateRange: !this.state.showDateRange
     })
-  },
+  }
 
-  onDateRangeChanged: function (dateRange) {
+  onDateRangeChanged = (dateRange) => {
     // adjust dateRange to be in STATS_MAX_DAYS
     const adjustedDateRange =
       utilsDate.keepDateInRange(
@@ -45,9 +46,9 @@ var RecentContributions = React.createClass({
     this.setState({
       dateRange: adjustedDateRange
     })
-  },
+  }
 
-  render: function () {
+  render () {
     const {
       dateRange,
       matrixForAllDays,
@@ -127,6 +128,6 @@ var RecentContributions = React.createClass({
     )
     /* eslint-enable react/jsx-no-bind */
   }
-})
+}
 
 export default RecentContributions

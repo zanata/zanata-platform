@@ -17,9 +17,8 @@ const { any, arrayOf, func, object, shape, string } = PropTypes
 /**
  * Hideable navigation header across the top of the app.
  */
-const NavHeader = React.createClass({
-
-  propTypes: {
+class NavHeader extends React.Component {
+  static propTypes = {
     actions: shape({
       changeUiLocale: func.isRequired,
       toggleDropdown: func.isRequired
@@ -59,9 +58,9 @@ const NavHeader = React.createClass({
       // localeId -> { id, name }
       uiLocales: object.isRequired
     }).isRequired
-  },
+  }
 
-  render: function () {
+  render () {
     const props = this.props
     const ctx = props.data.context
     const dropdowns = props.dropdown
@@ -131,7 +130,7 @@ const NavHeader = React.createClass({
       </nav>
     )
   }
-})
+}
 
 function mapStateToProps (state) {
   const { dropdown, headerData, ui } = state

@@ -25,12 +25,13 @@ import static org.hamcrest.Matchers.is;
 import static org.zanata.util.RawRestTestUtils.assertJaxbUnmarshal;
 import static org.zanata.util.RawRestTestUtils.assertJsonUnmarshal;
 
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.provider.DBUnitProvider;
@@ -56,15 +57,16 @@ public class VersionRawRestITCase extends RestTest {
     public void getJson() throws Exception {
         new ResourceRequest(getRestEndpointUrl("/version"), "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_VERSION_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
-                assertJsonUnmarshal(response, VersionInfo.class);
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, VersionInfo.class);
             }
         }.run();
     }
@@ -74,15 +76,16 @@ public class VersionRawRestITCase extends RestTest {
     public void getXml() throws Exception {
         new ResourceRequest(getRestEndpointUrl("/version"), "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_VERSION_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
-                assertJaxbUnmarshal(response, VersionInfo.class);
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, VersionInfo.class);
             }
         }.run();
     }

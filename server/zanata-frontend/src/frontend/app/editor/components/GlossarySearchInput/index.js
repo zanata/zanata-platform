@@ -28,33 +28,34 @@ import React, { PropTypes } from 'react'
 /**
  * Styled text input that displays result count.
  */
-const GlossarySearchInput = React.createClass({
-  propTypes: {
+class GlossarySearchInput extends React.Component {
+  static propTypes = {
     text: PropTypes.string.isRequired,
     onTextChange: PropTypes.func.isRequired
-  },
+  }
 
-  getInitialState: () => {
-    return {
+  constructor (props) {
+    super(props)
+    this.state = {
       // FIXME one other component is interested in this state
       //       just deal with that when I get to it
       focused: false
     }
-  },
+  }
 
-  onFocus: function () {
+  onFocus = () => {
     this.setState({
       focused: true
     })
-  },
+  }
 
-  onBlur: function () {
+  onBlur = () => {
     this.setState({
       focused: false
     })
-  },
+  }
 
-  focusInput: function () {
+  focusInput = () => {
     // TODO different approach for React 0.14
 
     // may not need to actually set focused=true, mainly using for
@@ -65,11 +66,11 @@ const GlossarySearchInput = React.createClass({
     }, () => {
       this.refs.input.focus()
     })
-  },
+  }
 
-  componentDidMount: function () {
+  componentDidMount () {
     this.focusInput()
-  },
+  }
 
   render () {
     return (
@@ -93,6 +94,6 @@ const GlossarySearchInput = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default GlossarySearchInput

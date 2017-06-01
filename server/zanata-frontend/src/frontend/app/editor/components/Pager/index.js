@@ -26,8 +26,8 @@ import React, { PropTypes } from 'react'
  * Paging buttons and current-page indicator.
  */
 
-const PagerButton = React.createClass({
-  propTypes: {
+class PagerButton extends React.Component {
+  static propTypes = {
     // name of the icon type to use
     icon: PropTypes.string.isRequired,
     // text to display on mouseover
@@ -36,9 +36,9 @@ const PagerButton = React.createClass({
     disabled: PropTypes.bool.isRequired,
     // action to perform on click/tap
     action: PropTypes.func.isRequired
-  },
+  }
 
-  render: function () {
+  render () {
     const icon =
       <Icon name={this.props.icon}
         title={this.props.title}
@@ -59,10 +59,10 @@ const PagerButton = React.createClass({
       </li>
     )
   }
-})
+}
 
-const Pager = React.createClass({
-  propTypes: {
+class Pager extends React.Component {
+  static propTypes = {
     actions: PropTypes.shape({
       firstPage: PropTypes.func.isRequired,
       previousPage: PropTypes.func.isRequired,
@@ -77,9 +77,9 @@ const Pager = React.createClass({
     gettextCatalog: PropTypes.shape({
       getString: PropTypes.func.isRequired
     }).isRequired
-  },
+  }
 
-  render: function () {
+  render () {
     const { actions, gettextCatalog, pageCount, pageNumber } = this.props
     const { firstPage, previousPage, nextPage, lastPage } = actions
 
@@ -134,6 +134,6 @@ const Pager = React.createClass({
       </ul>
     )
   }
-})
+}
 
 export default Pager

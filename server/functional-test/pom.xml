@@ -209,6 +209,10 @@
       <version>2.1.0-beta-4</version>
       <exclusions>
         <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>javax.annotation</groupId>
           <artifactId>jsr250-api</artifactId>
         </exclusion>
@@ -306,6 +310,10 @@
       <artifactId>subethasmtp</artifactId>
       <version>3.1.7</version>
       <exclusions>
+        <exclusion>
+          <groupId>com.google.code.findbugs</groupId>
+          <artifactId>jsr305</artifactId>
+        </exclusion>
         <exclusion>
           <groupId>commons-logging</groupId>
           <artifactId>commons-logging</artifactId>
@@ -611,6 +619,10 @@
                 <id>extract-appserver</id>
                 <phase>prepare-package</phase>
               </execution>
+              <execution>
+                <id>run-jboss-cli</id>
+                <phase>package</phase>
+              </execution>
             </executions>
           </plugin>
           <plugin>
@@ -692,16 +704,6 @@
                   <sqlCommand>ALTER DATABASE ${ds.database} CHARACTER SET utf8 COLLATE utf8_general_ci;</sqlCommand>
                   <onError>continue</onError>
                 </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.codehaus.gmavenplus</groupId>
-            <artifactId>gmavenplus-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>run-jboss-cli</id>
-                <phase>package</phase>
               </execution>
             </executions>
           </plugin>

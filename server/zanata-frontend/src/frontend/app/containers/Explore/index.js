@@ -17,17 +17,38 @@ import {
  * Root component for Explore page
  */
 class Explore extends Component {
+  static propTypes = {
+    location: PropTypes.object,
+    searchText: PropTypes.string,
+    projectPage: PropTypes.number,
+    groupPage: PropTypes.number,
+    personPage: PropTypes.number,
+    languageTeamPage: PropTypes.number,
+    searchResults: PropTypes.object,
+    searchError: PropTypes.bool,
+    searchLoading: PropTypes.shape({
+      Project: PropTypes.bool,
+      LanguageTeam: PropTypes.bool,
+      Person: PropTypes.bool,
+      Group: PropTypes.bool
+    }),
+    handleInitLoad: PropTypes.func,
+    handleSearchCancelClick: PropTypes.func,
+    handleSearchTextChange: PropTypes.func,
+    handleUpdateSearchPage: PropTypes.func
+  }
+
   componentDidMount () {
     this.props.handleInitLoad()
   }
 
-  handleKeyDown (e) {
+  handleKeyDown = (e) => {
     if (e.key === 'Escape') {
       this.handleClearSearch()
     }
   }
 
-  handleClearSearch () {
+  handleClearSearch = () => {
     if (this.searchInput !== null) {
       this.searchInput._onClear()
     }
@@ -130,12 +151,12 @@ class Explore extends Component {
               placeholder='Search Zanata…'
               accessibilityLabel='Search Zanata'
               defaultValue={searchText}
-              onKeyDown={(e) => { this.handleKeyDown(e) }}
+              onKeyDown={this.handleKeyDown}
               onChange={handleSearchTextChange}
             />
             <Button
               bsStyle='link' disabled={isEmpty(searchText)}
-              onClick={(e) => { this.handleClearSearch() }}>
+              onClick={this.handleClearSearch}>
               Cancel
             </Button>
           </div>
@@ -147,27 +168,6 @@ class Explore extends Component {
     )
     /* eslint-enable react/jsx-no-bind, no-return-assign */
   }
-}
-
-Explore.propTypes = {
-  location: PropTypes.object,
-  searchText: PropTypes.string,
-  projectPage: PropTypes.number,
-  groupPage: PropTypes.number,
-  personPage: PropTypes.number,
-  languageTeamPage: PropTypes.number,
-  searchResults: PropTypes.object,
-  searchError: PropTypes.bool,
-  searchLoading: PropTypes.shape({
-    Project: PropTypes.bool,
-    LanguageTeam: PropTypes.bool,
-    Person: PropTypes.bool,
-    Group: PropTypes.bool
-  }),
-  handleInitLoad: PropTypes.func,
-  handleSearchCancelClick: PropTypes.func,
-  handleSearchTextChange: PropTypes.func,
-  handleUpdateSearchPage: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

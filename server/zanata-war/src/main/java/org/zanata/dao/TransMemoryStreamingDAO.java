@@ -22,7 +22,7 @@
 package org.zanata.dao;
 
 import org.hibernate.Query;
-import org.hibernate.ejb.HibernateEntityManagerFactory;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

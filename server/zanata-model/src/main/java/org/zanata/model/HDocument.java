@@ -39,12 +39,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
 import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.apache.deltaspike.core.api.provider.BeanProvider;
-import org.hibernate.annotations.IndexColumn;
+import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -240,7 +241,8 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
      */
     @OneToMany(cascade = CascadeType.ALL)
     @Where(clause = "obsolete=0")
-    @IndexColumn(name = "pos", base = 0, nullable = false)
+    @OrderColumn(name = "pos", nullable = false)
+    @ListIndexBase
     @JoinColumn(name = "document_id", nullable = false)
     public List<HTextFlow> getTextFlows() {
         if (textFlows == null) {
@@ -306,7 +308,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
                     account = BeanProvider.getContextualReference(
                             HAccount.class, true,
                             new AnnotationLiteral<Authenticated>() {
-
+                                private static final long serialVersionUID = 1L;
                             });
                 } catch (IllegalStateException e) {
                     account = null;
