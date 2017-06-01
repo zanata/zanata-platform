@@ -11,16 +11,14 @@ const validations =
       'XML entity reference']
 
 const ValidationOptions = ({states, updateValidationOption}) => {
-  const checkboxes = validations.map((validation, index) => {
-    const isChecked = !!states[validation]
-    return (
-      <li key={index}>
-        <Checkbox checked={isChecked} onClick={updateValidationOption}>
-          {validation}
-        </Checkbox>
-      </li>
-    )
-  })
+  const checkboxes = validations.map((validation, index) => (
+    <li key={index}>
+      <ValidationCheckbox
+        validation={validation}
+        checked={states[validation]}
+        onChange={updateValidationOption} />
+    </li>
+  ))
   return (
     <div>
       <h2 className="validation">Validation options</h2>
@@ -42,6 +40,29 @@ ValidationOptions.propTypes = {
     'XML entity reference': PropTypes.bool.isRequired
   }).isRequired,
   updateValidationOption: PropTypes.func.isRequired
+}
+
+class ValidationCheckbox extends React.Component {
+  static propTypes = {
+    validation: PropTypes.string.isRequired,
+    checked: PropTypes.bool.isRequired,
+    /* Will be called with (validation, newValue) */
+    onChange: PropTypes.func.isRequired
+  }
+
+  onChange = (event) => {
+    this.props.onChange(this.props.validation, event.target.checked)
+  }
+
+  render () {
+    const { validation, checked } = this.props
+    return (
+      <Checkbox checked={checked}
+        onChange={this.onChange}>
+        {validation}
+      </Checkbox>
+    )
+  }
 }
 
 export default ValidationOptions
