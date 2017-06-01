@@ -52,6 +52,7 @@ import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
+import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.VersionLocaleKey;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.transaction.TransactionUtilImpl;
@@ -132,6 +133,9 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
 
     @Produces @Mock
     private CacheLoader<VersionLocaleKey, WordStatistic> versionStatisticLoader;
+
+    @Produces @Mock
+    private TransMemoryMergeService transMemoryMergeService;
 
     private UserTransaction tx;
 

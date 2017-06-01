@@ -29,16 +29,16 @@ import org.zanata.async.AsyncTaskHandle;
  */
 public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> {
 
-    private int totalTranslations;
+    private long totalTranslations;
     private String cancelledBy;
     private long cancelledTime;
     private String triggeredBy;
 
-    public int getTotalTranslations() {
+    public long getTotalTranslations() {
         return this.totalTranslations;
     }
 
-    public void setTotalTranslations(final int totalTranslations) {
+    public void setTotalTranslations(final long totalTranslations) {
         this.totalTranslations = totalTranslations;
     }
 

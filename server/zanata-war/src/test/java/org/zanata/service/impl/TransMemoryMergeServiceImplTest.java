@@ -32,6 +32,7 @@ import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLURAL;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,6 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.ContentState;
@@ -140,6 +140,7 @@ public class TransMemoryMergeServiceImplTest {
     private final EditorClientId editorClientId =
             new EditorClientId("sessionId", 1);
     private FilterConstraints untranslatedFilter;
+    private List<Long> fromVersions;
 
     private TransMemoryMergeRequest prepareAction(int threshold, MergeOptions opts) {
         LocaleId localeId = targetLocale.getLocaleId();
@@ -173,7 +174,7 @@ public class TransMemoryMergeServiceImplTest {
     private static TransMemoryResultItem tmResult(Long sourceId, int percent) {
         TransMemoryResultItem resultItem =
                 new TransMemoryResultItem(tmSource, tmTarget,
-                        MatchType.ApprovedInternal, 1D, percent);
+                        MatchType.ApprovedInternal, 1D, percent, 1L);
         resultItem.addSourceId(sourceId);
         return resultItem;
     }
@@ -182,7 +183,7 @@ public class TransMemoryMergeServiceImplTest {
             int percent) {
         TransMemoryResultItem resultItem =
                 new TransMemoryResultItem(tmSource, tmTarget,
-                        MatchType.Imported, 1D, percent);
+                        MatchType.Imported, 1D, percent, 1L);
         resultItem.addSourceId(sourceId);
         return resultItem;
     }
@@ -201,7 +202,7 @@ public class TransMemoryMergeServiceImplTest {
             return new TransMemoryQuery(contents, searchType,
                     new TransMemoryQuery.Condition(false, projectSlug),
                     new TransMemoryQuery.Condition(false, docId),
-                    new TransMemoryQuery.Condition(false, resId));
+                    new TransMemoryQuery.Condition(false, resId), fromVersions);
         } else {
             TransMemoryQuery.Condition projectCondition =
                     new TransMemoryQuery.Condition(
@@ -218,13 +219,14 @@ public class TransMemoryMergeServiceImplTest {
                             opts.getDifferentResId() == MergeRule.REJECT, resId);
 
             return new TransMemoryQuery(contents, searchType, projectCondition,
-                    documentCondition, resCondition);
+                    documentCondition, resCondition, fromVersions);
         }
     }
 
     @Before
     public void setUp() throws NoSuchWorkspaceException {
         MockitoAnnotations.initMocks(this);
+        fromVersions = Collections.emptyList();
         asyncTaskHandle = new TransMemoryMergeTaskHandle();
         WorkspaceId workspaceId =
                 new WorkspaceId(projectIterationId, targetLocale.getLocaleId());
@@ -275,7 +277,8 @@ public class TransMemoryMergeServiceImplTest {
         when(
                 translationMemoryService.searchBestMatchTransMemory(hTextFlow,
                         targetLocale.getLocaleId(), sourceLocale.getLocaleId(),
-                        false, false, false, action.getThresholdPercent()))
+                        false, false, false, action.getThresholdPercent(),
+                        fromVersions))
                 .thenReturn(matches);
 
         // When: execute the action
@@ -320,7 +323,8 @@ public class TransMemoryMergeServiceImplTest {
         when(
                 translationMemoryService.searchBestMatchTransMemory(hTextFlow,
                         targetLocale.getLocaleId(), sourceLocale.getLocaleId(),
-                        false, false, false, action.getThresholdPercent()))
+                        false, false, false, action.getThresholdPercent(),
+                        fromVersions))
                 .thenReturn(matches);
 
         when(localeService.getByLocaleId(action.localeId))
@@ -388,22 +392,26 @@ public class TransMemoryMergeServiceImplTest {
         when(
                 translationMemoryService.searchBestMatchTransMemory(
                         textFlow100TM, targetLocale.getLocaleId(),
-                        sourceLocale.getLocaleId(), false, false, false, 90))
+                        sourceLocale.getLocaleId(), false, false, false, 90,
+                        fromVersions))
                 .thenReturn(tm100);
         when(
                 translationMemoryService.searchBestMatchTransMemory(
                         textFLow90TM, targetLocale.getLocaleId(),
-                        sourceLocale.getLocaleId(), false, false, false, 90))
+                        sourceLocale.getLocaleId(), false, false, false, 90,
+                        fromVersions))
                 .thenReturn(tm90);
         when(
                 translationMemoryService.searchBestMatchTransMemory(
                         textFlow80TM, targetLocale.getLocaleId(),
-                        sourceLocale.getLocaleId(), false, false, false, 90))
+                        sourceLocale.getLocaleId(), false, false, false, 90,
+                        fromVersions))
                 .thenReturn(tm80);
         when(
                 translationMemoryService.searchBestMatchTransMemory(
                         textFlowNoTM, targetLocale.getLocaleId(),
-                        sourceLocale.getLocaleId(), false, false, false, 90))
+                        sourceLocale.getLocaleId(), false, false, false, 90,
+                        fromVersions))
                 .thenReturn(noMatch);
 
         when(textFlowDAO.findById(tmResultSource.getId(), false)).thenReturn(
@@ -483,7 +491,8 @@ public class TransMemoryMergeServiceImplTest {
         when(
                 translationMemoryService.searchBestMatchTransMemory(hTextFlow,
                         targetLocale.getLocaleId(), sourceLocale.getLocaleId(),
-                        false, false, false, action.getThresholdPercent()))
+                        false, false, false, action.getThresholdPercent(),
+                        fromVersions))
                 .thenReturn(match);
         when(transMemoryUnitDAO.findById(tuResultSource.getId())).thenReturn(
                 tuResultSource);

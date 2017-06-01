@@ -21,10 +21,14 @@
 package org.zanata.service;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.concurrent.Future;
 
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
+import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
 public interface MergeTranslationsService extends Serializable {
     //@formatter:off
@@ -52,4 +56,8 @@ public interface MergeTranslationsService extends Serializable {
      */
     int getTotalProgressCount(HProjectIteration sourceVersion,
         HProjectIteration targetVersion);
+
+    Future<Void> startMergeTranslations(HProjectIteration version, HLocale hLocale,
+            TransMemoryMergeRequest mergeRequest,
+            MergeTranslationsTaskHandle handle);
 }

@@ -21,6 +21,23 @@
 package org.zanata.service.impl;
 
 import static com.google.common.collect.Collections2.filter;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.annotation.Nonnull;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
@@ -36,9 +53,6 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -67,21 +81,12 @@ import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
 import org.zanata.webtrans.shared.rpc.LuceneQuery;
+
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.annotation.Nonnull;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -155,6 +160,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     }
 
     /**
+     * TODO this is only used by test. Should we remove it?
      * This is used by CopyTrans, with ContentHash search in lucene. Returns
      * first entry of the matches which sort by HTextFlowTarget.lastChanged DESC
      *
@@ -172,7 +178,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             boolean checkDocument, boolean checkProject) {
         TransMemoryQuery query =
                 buildTMQuery(textFlow, HasSearchType.SearchType.CONTENT_HASH,
-                        checkContext, checkDocument, checkProject, false);
+                        checkContext, checkDocument, checkProject, false,
+                        Collections.emptyList());
         Collection<Object[]> matches =
                 findMatchingTranslation(targetLocaleId, sourceLocaleId, query,
                         0, Optional.empty(), HTextFlowTarget.class);
@@ -185,7 +192,6 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     /**
      * This is used by TMMerge. Returns first entry of the matches which sort by
      * similarityPercent, sourceContents, and contents size.
-     *
      * @param textFlow
      * @param targetLocaleId
      * @param sourceLocaleId
@@ -193,15 +199,18 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      * @param checkDocument
      * @param checkProject
      * @param thresholdPercent
+     * @param fromVersionIds
      */
     @Override
     public Optional<TransMemoryResultItem> searchBestMatchTransMemory(
             HTextFlow textFlow, LocaleId targetLocaleId,
             LocaleId sourceLocaleId, boolean checkContext,
-            boolean checkDocument, boolean checkProject, int thresholdPercent) {
+            boolean checkDocument, boolean checkProject, int thresholdPercent,
+            List<Long> fromVersionIds) {
         TransMemoryQuery query =
                 buildTMQuery(textFlow, HasSearchType.SearchType.FUZZY_PLURAL,
-                        checkContext, checkDocument, checkProject, true);
+                        checkContext, checkDocument, checkProject,
+                        true, fromVersionIds);
         List<TransMemoryResultItem> tmResults =
                 searchTransMemory(targetLocaleId, sourceLocaleId, query);
         // findTMAboveThreshold
@@ -232,7 +241,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         }
         List<TransMemoryResultItem> results =
                 Lists.newArrayList(matchesMap.values());
-        Collections.sort(results, TransMemoryResultComparator.COMPARATOR);
+        Collections.sort(results, new TransMemoryResultComparator(transMemoryQuery.getFromVersionIds()));
         return results;
     }
 
@@ -248,7 +257,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     private TransMemoryQuery buildTMQuery(HTextFlow textFlow,
             HasSearchType.SearchType searchType, boolean checkContext,
             boolean checkDocument, boolean checkProject,
-            boolean includeOwnTranslation) {
+            boolean includeOwnTranslation,
+            List<Long> fromVersions) {
         TransMemoryQuery.Condition project = new TransMemoryQuery.Condition(
                 checkProject, textFlow.getDocument().getProjectIteration()
                         .getProject().getId().toString());
@@ -262,7 +272,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                     project, document, res);
         } else {
             query = new TransMemoryQuery(textFlow.getContents(), searchType,
-                    project, document, res);
+                    project, document, res, fromVersions);
         }
         if (!includeOwnTranslation) {
             query.setIncludeOwnTranslation(false, textFlow.getId().toString());
@@ -339,9 +349,12 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                         textFlowContents, MINIMUM_SIMILARITY);
                 return;
             }
+            Long fromVersionId = textFlowTarget.getTextFlow().getDocument()
+                    .getProjectIteration().getId();
             TransMemoryResultItem item =
                     createOrGetResultItem(matchesMap, match, matchType,
-                            textFlowContents, targetContents, percent);
+                            textFlowContents, targetContents, percent,
+                            fromVersionId);
             addTextFlowTargetToResultMatches(textFlowTarget, item);
         } else if (entity instanceof TransMemoryUnit) {
             TransMemoryUnit transUnit = (TransMemoryUnit) entity;
@@ -360,7 +373,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             }
             TransMemoryResultItem item = createOrGetResultItem(matchesMap,
                     match, TransMemoryResultItem.MatchType.Imported,
-                    sourceContents, targetContents, percent);
+                    sourceContents, targetContents, percent, null);
             addTransMemoryUnitToResultMatches(item, transUnit);
         }
     }
@@ -422,13 +435,13 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             Map<TMKey, TransMemoryResultItem> matchesMap, Object[] match,
             TransMemoryResultItem.MatchType matchType,
             ArrayList<String> sourceContents, ArrayList<String> targetContents,
-            double percent) {
+            double percent, Long fromVersionId) {
         TMKey key = new TMKey(sourceContents, targetContents);
         TransMemoryResultItem item = matchesMap.get(key);
         if (item == null) {
             float score = (Float) match[0];
             item = new TransMemoryResultItem(sourceContents, targetContents,
-                    matchType, score, percent);
+                    matchType, score, percent, fromVersionId);
             matchesMap.put(key, item);
         }
         return item;
@@ -465,9 +478,16 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
      * NB just because this Comparator returns 0 doesn't mean the matches are
      * identical.
      */
-    private static enum TransMemoryResultComparator
-            implements Comparator<TransMemoryResultItem> {
-        COMPARATOR;
+    private static class TransMemoryResultComparator
+            implements Comparator<TransMemoryResultItem>, Serializable {
+
+
+        private static final long serialVersionUID = 1L;
+        private final List<Long> fromVersionIds;
+
+        public TransMemoryResultComparator(List<Long> fromVersionIds) {
+            this.fromVersionIds = fromVersionIds;
+        }
 
         @Override
         public int compare(TransMemoryResultItem m1, TransMemoryResultItem m2) {
@@ -483,7 +503,35 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
                 // sort longer string lists first (more plural forms)
                 return result;
             }
-            return m2.getMatchType().compareTo(m1.getMatchType());
+            result = m2.getMatchType().compareTo(m1.getMatchType());
+            if (result != 0) {
+                // sort match type
+                return result;
+            }
+            // if TM is from TMX, getFromVersionId is null
+            // if fromVersionIds is empty, we have no restriction on source version
+            if (m2.getFromVersionId() != null && m1.getFromVersionId() != null && !fromVersionIds.isEmpty()) {
+                int indexOfM2 = fromVersionIds.indexOf(m2.getFromVersionId());
+                int indexOfM1 = fromVersionIds.indexOf(m1.getFromVersionId());
+                // sort higher when index is lower
+                // if index is -1, something wrong with our lucene query or index
+                if (indexOfM1 < 0 || indexOfM2 < 0) {
+                    log.warn("Having TM result not from requested source versions:{}", fromVersionIds);
+                    if (indexOfM1 < 0 && indexOfM2 >= 0) {
+                        // m2 rank higher since it's from the defined source versions
+                        return 1;
+                    } else if (indexOfM2 < 0 && indexOfM1 >= 0) {
+                        // m1 is from defined source versions
+                        return -1;
+                    } else {
+                        // they are both not from defined source versions
+                        return result;
+                    }
+
+                }
+                return Integer.compare(indexOfM1, indexOfM2);
+            }
+            return result;
         }
 
         private int compare(List<String> list1, List<String> list2) {
@@ -779,6 +827,18 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             } else {
                 query.add(resIdQuery, BooleanClause.Occur.SHOULD);
             }
+        }
+        if (queryParams.getFromVersionIds() != null && !queryParams.getFromVersionIds().isEmpty()) {
+            BooleanQuery.Builder fromVersions = new BooleanQuery.Builder();
+            queryParams.getFromVersionIds().forEach(projectIterationId -> {
+                TermQuery fromVersionQuery = new TermQuery(
+                        new Term(IndexFieldLabels.PROJECT_VERSION_ID_FIELD,
+                                projectIterationId.toString()));
+
+
+                fromVersions.add(fromVersionQuery, BooleanClause.Occur.SHOULD);
+            });
+            query.add(fromVersions.build(), BooleanClause.Occur.MUST);
         }
     }
 

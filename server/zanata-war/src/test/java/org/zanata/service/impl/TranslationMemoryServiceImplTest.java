@@ -3,6 +3,7 @@ package org.zanata.service.impl;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.test.rule.FunctionalTestRule.reentrant;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -210,7 +211,7 @@ public class TranslationMemoryServiceImplTest {
                     service.searchBestMatchTransMemory(textFlow,
                             targetLocale.getLocaleId(),
                             sourceLocale.getLocaleId(), false, false, false,
-                            threshold);
+                            threshold, Collections.emptyList());
             assertThat(match.isPresent()).isEqualTo(hasMatch);
         }
         // to check if any of the sourceContents contain searchString

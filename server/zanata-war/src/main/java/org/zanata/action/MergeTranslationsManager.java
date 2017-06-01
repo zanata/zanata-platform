@@ -1,14 +1,23 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Objects;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
+
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
+import org.zanata.common.LocaleId;
+import org.zanata.model.HLocale;
+import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.MergeTranslationsService;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
 /**
  * Manages tasks to copy translations from one existing version to another.
@@ -88,6 +97,26 @@ public class MergeTranslationsManager implements Serializable {
         return handle != null && !handle.isDone();
     }
 
+    public boolean start(HProjectIteration version, HLocale hLocale,
+            TransMemoryMergeRequest mergeRequest) {
+        MergeTranslationTaskKey key =
+                new MergeTranslationTaskKey(version.getId(),
+                        hLocale.getLocaleId());
+        AsyncTaskHandle handleByKey =
+                asyncTaskHandleManager.getHandleByKey(key);
+        if (handleByKey == null || handleByKey.isCancelled()
+                || handleByKey.isDone()) {
+            MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle();
+
+            handle.setTriggeredBy(identity.getAccountUsername());
+            asyncTaskHandleManager.registerTaskHandle(handle, key);
+            mergeTranslationsServiceImpl.startMergeTranslations(version, hLocale,
+                    mergeRequest, handle);
+            return true;
+        }
+        return false;
+    }
+
     /**
      * Key used for copy version task
      */
@@ -146,6 +175,34 @@ public class MergeTranslationsManager implements Serializable {
         public Key(final String projectSlug, final String versionSlug) {
             this.projectSlug = projectSlug;
             this.versionSlug = versionSlug;
+        }
+    }
+
+
+    static class MergeTranslationTaskKey implements Serializable {
+
+        private static final long serialVersionUID = 5671982177725183233L;
+        private final Long versionId;
+        private final LocaleId localeId;
+
+        public MergeTranslationTaskKey(Long versionId, LocaleId localeId) {
+            this.versionId = versionId;
+            this.localeId = localeId;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            MergeTranslationTaskKey that = (MergeTranslationTaskKey) o;
+            return Objects.equals(versionId, that.versionId) &&
+                    Objects.equals(localeId, that.localeId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects
+                    .hash(versionId, localeId);
         }
     }
 }

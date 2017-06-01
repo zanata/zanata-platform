@@ -63,6 +63,7 @@ import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rest.dto.HasTMMergeCriteria;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -226,7 +227,8 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                     hTextFlow, targetLocale.getLocaleId(),
                                     hTextFlow.getDocument().getLocale().getLocaleId(),
                                     checkContext, checkDocument, checkProject,
-                                    request.getThresholdPercent());
+                                    request.getThresholdPercent(),
+                                    Collections.emptyList());
                     if (tmResult.isPresent()) {
                         TransUnitUpdateRequest updateRequest =
                                 createRequest(request, targetLocale,
@@ -252,7 +254,58 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         }
     }
 
-    private TransUnitUpdateRequest createRequest(TransMemoryMergeRequest action,
+    // TODO pahuang this duplicated most part of above method
+    @Override
+    public void translateInBatch(HasTMMergeCriteria mergeCriteria,
+            List<HTextFlow> textFlows, HLocale targetLocale,
+            List<Long> fromProjectVersions) {
+
+        if (textFlows.isEmpty()) {
+            return;
+        }
+
+        try {
+            transactionUtil.run(() -> {
+
+                List<TransUnitUpdateRequest> updateRequests = Lists.newLinkedList();
+                for (HTextFlow hTextFlow : textFlows) {
+                    HTextFlowTarget hTextFlowTarget =
+                            hTextFlow.getTargets().get(targetLocale.getId());
+                    boolean checkContext =
+                            mergeCriteria.getDifferentContextRule() ==
+                                    MergeRule.REJECT;
+                    boolean checkDocument =
+                            mergeCriteria.getDifferentDocumentRule() ==
+                                    MergeRule.REJECT;
+                    boolean checkProject =
+                            mergeCriteria.getDifferentProjectRule() ==
+                                    MergeRule.REJECT;
+                    Optional<TransMemoryResultItem> tmResult =
+                            translationMemoryServiceImpl.searchBestMatchTransMemory(
+                                    hTextFlow, targetLocale.getLocaleId(),
+                                    hTextFlow.getDocument().getLocale().getLocaleId(),
+                                    checkContext, checkDocument, checkProject,
+                                    mergeCriteria.getThresholdPercent(),
+                                    fromProjectVersions);
+                    if (tmResult.isPresent()) {
+                        TransUnitUpdateRequest updateRequest =
+                                createRequest(mergeCriteria, targetLocale,
+                                        hTextFlow, tmResult.get(), hTextFlowTarget);
+
+                        if (updateRequest != null) {
+                            updateRequests.add(updateRequest);
+                        }
+                    }
+                }
+                translationServiceImpl.translate(
+                        targetLocale.getLocaleId(), updateRequests);
+            });
+        } catch (Exception e) {
+            log.error("exception during TM merge", e);
+        }
+    }
+
+    private TransUnitUpdateRequest createRequest(HasTMMergeCriteria action,
             HLocale hLocale,
             HTextFlow hTextFlowToBeFilled, TransMemoryResultItem tmResult,
             HTextFlowTarget oldTarget) {

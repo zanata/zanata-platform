@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.action.MergeTranslationsManager;
 import org.zanata.i18n.Messages;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
@@ -59,6 +60,8 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
     @Produces @Mock WindowContext windowContext;
     @Produces @Mock UrlUtil urlUtil;
     @Produces @Mock IdentityManager identityManager;
+
+    @Produces @Mock MergeTranslationsManager mergeTranslationsManager;
 
     @Override
     @Produces
