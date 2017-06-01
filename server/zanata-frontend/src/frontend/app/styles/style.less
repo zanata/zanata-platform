@@ -6383,16 +6383,26 @@ table.tmx-table .badge {
 .tmx-export p.all-warning {
   position: absolute;
   bottom: 80px;
-  right: 20px;
-  width: 200px;
+  right: 40px;
+}
+
+.tmx-export p.all-warning .btn-link {
   font-size: 0.75em;
   line-height:1em;
   color: @color-warning;
 }
 
-.tmx-export p.all-warning .n1 {
+.tmx-export p.all-warning .btn-link .n1 {
   vertical-align: sub;
 }
+
+.tmx-export p.all-warning .btn-link:focus,
+.tmx-export p.all-warning .btn-link:hover,
+.tmx-export p.all-warning .btn-link:active {
+  text-decoration: none;
+  opacity: 1 !important;
+}
+
 
 table.tmx-table .badge .n1 {
   vertical-align: middle;
@@ -6401,6 +6411,7 @@ table.tmx-table .badge .n1 {
 .tmx-dl {
   margin-right: -0.9em;
 }
+
 
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
