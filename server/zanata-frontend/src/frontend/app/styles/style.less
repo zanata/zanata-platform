@@ -250,6 +250,11 @@ body.templatestyle {
 }
 
 .nav-link {
+  display: flex;
+  display: -webkit-flex;
+  display: -moz-flex;
+  display: -ms-flex;
+  display: -o-flex;
   background-color: '';
   color: rgb(237, 242, 248) !important;
   flex-direction: column;
@@ -283,15 +288,6 @@ body.templatestyle {
 .nav-link.active:hover {
   color: '';
   background-color: '';
-}
-
-.nav-link.small {
-  display: flex;
-  display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
-  display: -webkit-flex;
-  display: -moz-flex;
-  display: -ms-flex;
-  display: -o-flex;
 }
 
 .nav-link.search {
@@ -6726,7 +6722,6 @@ table .projectWideSearchResultsDocumentBody {
 
   .nav-link {
     display: flex;
-    display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
     display: -webkit-flex;
     display: -moz-flex;
     display: -ms-flex;
