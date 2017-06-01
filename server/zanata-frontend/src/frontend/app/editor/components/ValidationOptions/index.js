@@ -44,6 +44,4 @@ ValidationOptions.propTypes = {
   updateValidationOption: PropTypes.func.isRequired
 }
 
-
 export default ValidationOptions
-
