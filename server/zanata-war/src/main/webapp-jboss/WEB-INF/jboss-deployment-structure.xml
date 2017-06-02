@@ -12,6 +12,8 @@
       <!-- end of unsupported modules -->
 
       <!-- start of private modules -->
+      <!-- Needed by MigrateSeamTextToCommonMark -->
+      <module name="org.antlr" />
       <!-- end of private modules -->
 
       <!-- start of deprecated modules -->
