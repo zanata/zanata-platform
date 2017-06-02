@@ -108,12 +108,12 @@ class UserProfile extends Component {
                         className='s0'
                         title='Username' />
                       {username}
+                    </span>
                       {email &&
                         (<span className='profile-email'>
                           {email}
                         </span>)
                       }
-                    </span>
                     {languageTeams &&
                     (<span tagName='li'
                       id='profile-languages'>
