@@ -23,7 +23,6 @@ package org.zanata.ui.faces;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Produces;
 import javax.faces.application.FacesMessage;
-import javax.faces.application.FacesMessage.Severity;
 import javax.faces.component.UIViewRoot;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -91,9 +90,8 @@ public class FacesMessagesTest {
 
         verify(facesContext).addMessage(eq("clientId"), message.capture());
         assertThat(message.getValue().getSummary()).isEqualTo(testMessage);
-        //noinspection unchecked
-        assertThat(message.getValue().getSeverity()).isEqualTo(
-                SEVERITY_INFO);
+        assertThat(message.getValue().getSeverity().equals(SEVERITY_INFO))
+                .isTrue();
     }
 
     @Test
@@ -102,9 +100,8 @@ public class FacesMessagesTest {
         facesMessages.beforeRenderResponse();
         verify(facesContext).addMessage(eq(null), message.capture());
         assertThat(message.getValue().getSummary()).isEqualTo(testMessage);
-        //noinspection unchecked
-        assertThat(message.getValue().getSeverity()).isEqualTo(
-                SEVERITY_INFO);
+        assertThat(message.getValue().getSeverity().equals(SEVERITY_INFO))
+                .isTrue();
     }
 
     @Test
@@ -114,9 +111,8 @@ public class FacesMessagesTest {
         facesMessages.beforeRenderResponse();
         verify(facesContext).addMessage(eq(null), message.capture());
         assertThat(message.getValue()).isSameAs(msg);
-        //noinspection unchecked
-        assertThat(message.getValue().getSeverity()).isEqualTo(
-                SEVERITY_INFO);
+        assertThat(message.getValue().getSeverity().equals(SEVERITY_INFO))
+                .isTrue();
     }
 
 }

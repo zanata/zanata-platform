@@ -35,9 +35,7 @@ import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
 import com.google.common.collect.Lists;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.user.cellview.client.ColumnSortEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.view.client.SelectionChangeEvent;
 
 import net.customware.gwt.presenter.client.EventBus;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -63,10 +61,6 @@ public class TranslationHistoryPresenterTest {
     private WebTransMessages messages;
     @Mock
     private TargetContentsPresenter targetContentsPresenter;
-    @Mock
-    private SelectionChangeEvent selectionChangeEvent;
-    @Captor
-    private ArgumentCaptor<ColumnSortEvent.ListHandler<TransHistoryItem>> sortHandlerCaptor;
     @Captor
     private ArgumentCaptor<GetTranslationHistoryAction> actionCaptor;
     @Captor
@@ -78,6 +72,12 @@ public class TranslationHistoryPresenterTest {
     private KeyShortcutPresenter keyShortcutPresenter;
     @Captor
     private ArgumentCaptor<KeyShortcut> keyShortcutCapture;
+    @Captor
+    private ArgumentCaptor<List<ComparableByDate>> listArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<AddReviewCommentAction> addReviewCommentActionArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<AsyncCallback<AddReviewCommentResult>> addReviewCommentResultCaptor;
 
     @Before
     public void beforeMethod() {
@@ -146,7 +146,7 @@ public class TranslationHistoryPresenterTest {
                 resultCaptor.getValue();
         result.onSuccess(createTranslationHistory(latest, historyItem));
         verify(display).setData(
-                Lists.<ComparableByDate> newArrayList(latest, historyItem));
+                Lists.newArrayList(latest, historyItem));
     }
 
     @Test
@@ -168,19 +168,15 @@ public class TranslationHistoryPresenterTest {
         AsyncCallback<GetTranslationHistoryResult> result =
                 resultCaptor.getValue();
         result.onSuccess(createTranslationHistory(latest, historyItem));
-
-        ArgumentCaptor<List> listArgumentCaptor =
-                ArgumentCaptor.forClass(List.class);
         verify(display).setData(listArgumentCaptor.capture());
-        assertThat((List<ComparableByDate>) listArgumentCaptor.getValue(),
-                Matchers.<ComparableByDate> hasSize(3));
+        assertThat(listArgumentCaptor.getValue(), Matchers.hasSize(3));
     }
 
     private static GetTranslationHistoryResult createTranslationHistory(
             TransHistoryItem latest, TransHistoryItem... historyItems) {
         return new GetTranslationHistoryResult(
                 Lists.newArrayList(historyItems), latest,
-                Lists.<ReviewComment> newArrayList());
+                Lists.newArrayList());
     }
 
     @Test
@@ -201,20 +197,15 @@ public class TranslationHistoryPresenterTest {
     public void testAddComment() throws Exception {
         when(contextHolder.getContext().getDocument().getId()).thenReturn(
                 new DocumentId(1L, "doc"));
-        ArgumentCaptor<AddReviewCommentAction> actionCaptor =
-                ArgumentCaptor.forClass(AddReviewCommentAction.class);
-        ArgumentCaptor<AsyncCallback> resultCaptor =
-                ArgumentCaptor.forClass(AsyncCallback.class);
-
         presenter.addComment("some comment");
 
-        verify(dispatcher).execute(actionCaptor.capture(),
-                resultCaptor.capture());
-        assertThat(actionCaptor.getValue().getContent(),
+        verify(dispatcher).execute(addReviewCommentActionArgumentCaptor.capture(),
+                addReviewCommentResultCaptor.capture());
+        assertThat(addReviewCommentActionArgumentCaptor.getValue().getContent(),
                 Matchers.equalTo("some comment"));
 
         AsyncCallback<AddReviewCommentResult> callback =
-                resultCaptor.getValue();
+                addReviewCommentResultCaptor.getValue();
         AddReviewCommentResult result =
                 new AddReviewCommentResult(new ReviewComment());
         callback.onSuccess(result);
@@ -243,11 +234,8 @@ public class TranslationHistoryPresenterTest {
         presenter.displayEntries(latest, Lists.newArrayList(item),
                 Lists.newArrayList(comment));
 
-        ArgumentCaptor<List> listArgumentCaptor =
-                ArgumentCaptor.forClass(List.class);
         verify(display).setData(listArgumentCaptor.capture());
-        List<ComparableByDate> result =
-                (List<ComparableByDate>) listArgumentCaptor.getValue();
+        List<ComparableByDate> result = listArgumentCaptor.getValue();
         assertThat(result,
                 Matchers.<ComparableByDate> contains(comment, latest, item));
     }
@@ -275,6 +263,7 @@ public class TranslationHistoryPresenterTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testKeyShortcutForAddComment() {
         when(display.getComment()).thenReturn("blah");
         KeyShortcut keyShortcut = keyShortcutCapture.getValue();

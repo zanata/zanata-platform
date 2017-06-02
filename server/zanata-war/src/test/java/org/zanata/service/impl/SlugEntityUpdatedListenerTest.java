@@ -36,7 +36,7 @@ public class SlugEntityUpdatedListenerTest {
     @Mock
     private EntityPersister persister;
     @Captor
-    private ArgumentCaptor<AsyncTaskHandle> asyncTaskHandleArgumentCaptor;
+    private ArgumentCaptor<AsyncTaskHandle<Void>> asyncTaskHandleArgumentCaptor;
 
     @Produces
     @Mock

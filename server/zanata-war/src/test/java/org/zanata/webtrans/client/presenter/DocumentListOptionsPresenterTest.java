@@ -56,7 +56,7 @@ public class DocumentListOptionsPresenterTest {
     @Mock
     private WebTransMessages messages;
     @Captor
-    private ArgumentCaptor<UserConfigChangeEvent> eventCaptor;
+    private ArgumentCaptor<AsyncCallback<LoadOptionsResult>> callbackCaptor;
 
     private WorkspaceId workspaceId;
 
@@ -205,12 +205,10 @@ public class DocumentListOptionsPresenterTest {
 
         ArgumentCaptor<LoadOptionsAction> actionCaptor =
                 ArgumentCaptor.forClass(LoadOptionsAction.class);
-        ArgumentCaptor<AsyncCallback> callbackCaptor =
-                ArgumentCaptor.forClass(AsyncCallback.class);
         verify(dispatcher).execute(actionCaptor.capture(),
                 callbackCaptor.capture());
 
-        AsyncCallback callback = callbackCaptor.getValue();
+        AsyncCallback<LoadOptionsResult> callback = callbackCaptor.getValue();
 
         callback.onSuccess(result);
         assertThat(configHolder.getState().getDocumentListPageSize(),
