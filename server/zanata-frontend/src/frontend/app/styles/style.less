@@ -1678,19 +1678,8 @@ button.btn-link-sort i.fa.fa-sort {
   margin-right: 1em;
 }
 
-.vmerge-fuzzytxt {
-  font-weight: 600;
-  color: @color-warning;
-}
-
-.vmerge-transtxt {
-  font-weight: 600;
-  color: @color-success;
-}
-
-.vmerge-apptxt {
-  font-weight: 600;
-  color: @color-light;
+.vmerge-searchinput.form-control {
+  height: inherit !important;
 }
 
 
@@ -1762,7 +1751,18 @@ label  .s0.icon-locked  {
 }
 
 .modal-body .dropdown .dropdown-menu > li > a {
-font-size: 0.75em;
+  font-size: 1em;
+}
+
+.tm-panel .checkbox .label {
+  font-size: 0.95em;
+  margin-left: 1em;
+  padding-left: 0.375em;
+  padding-right: 0.375em;
+}
+
+.tm-panel .checkbox small {
+  color: @color-muted;
 }
 
 .alert {
@@ -5423,6 +5423,22 @@ a.lineclamp:after {
 #documents h2 span#document-label {
   max-width: 100%;
   hyphens: initial;
+}
+
+.tm-panel .panel-body {
+  padding: 0.375em;
+  margin-left: 1em;
+  color: @color-neutral;
+  font-size: 0.75em;
+  font-weight: 600;
+}
+
+.tm-panel .panel-body .and {
+  background-color: white;
+}
+
+#tm-panel .panel-body .or {
+
 }
 
 .ellipsis {
