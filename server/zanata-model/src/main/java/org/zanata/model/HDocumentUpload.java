@@ -31,7 +31,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import org.hibernate.annotations.IndexColumn;
+import javax.persistence.OrderColumn;
+
+import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
 
@@ -85,7 +87,8 @@ public class HDocumentUpload extends ModelEntityBase implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "documentUploadId", nullable = false)
-    @IndexColumn(name = "partIndex", base = 0, nullable = false)
+    @OrderColumn(name = "partIndex", nullable = false)
+    @ListIndexBase
     public List<HDocumentUploadPart> getParts() {
         return parts;
     }

@@ -51,7 +51,7 @@ public class OAuthUtil {
                         OAuthAccessResourceRequest(request, ParameterStyle.HEADER);
                 return Optional.of(oauthRequest.getAccessToken());
             } catch (OAuthSystemException | OAuthProblemException e) {
-                throw Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         }
         log.debug("no Authorization header");

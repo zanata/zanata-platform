@@ -23,9 +23,9 @@ package org.zanata.client.integration;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
-import org.apache.commons.codec.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.Rule;
@@ -49,7 +49,6 @@ import com.google.common.collect.Lists;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 /**
@@ -135,9 +134,9 @@ public class PushPullFileProjectITCase {
         log.debug("pull base dir is: {}", pullBaseDir);
 
         InputStream sourceFileStream =
-                IOUtils.toInputStream("source content", Charsets.UTF_8);
+                IOUtils.toInputStream("source content", StandardCharsets.UTF_8);
         InputStream transFileStream =
-                IOUtils.toInputStream("translation content", Charsets.UTF_8);
+                IOUtils.toInputStream("translation content", StandardCharsets.UTF_8);
         ArrayList<ResourceMeta> remoteDocList =
                 Lists.newArrayList(new ResourceMeta("test-ods.ods"),
                         new ResourceMeta("test-odt.odt"));
@@ -168,9 +167,9 @@ public class PushPullFileProjectITCase {
         ));
 
         InputStream sourceFileStream =
-                IOUtils.toInputStream("source content", Charsets.UTF_8);
+                IOUtils.toInputStream("source content", StandardCharsets.UTF_8);
         InputStream transFileStream =
-                IOUtils.toInputStream("translation content", Charsets.UTF_8);
+                IOUtils.toInputStream("translation content", StandardCharsets.UTF_8);
         ArrayList<ResourceMeta> remoteDocList =
                 Lists.newArrayList(new ResourceMeta("test-ods.ods"),
                         new ResourceMeta("test-odt.odt"));

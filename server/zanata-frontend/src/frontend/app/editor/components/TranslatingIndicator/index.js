@@ -28,17 +28,16 @@ import { Row } from 'react-bootstrap'
  * translating the document. Presumably it will show
  * 'viewing' when that mode is available.
  */
-const TranslatingIndicator = React.createClass({
-
-  propTypes: {
+class TranslatingIndicator extends React.Component {
+  static propTypes = {
     // DO NOT RENAME, the translation string extractor looks specifically
     // for gettextCatalog.getString when generating the translation template.
     gettextCatalog: PropTypes.shape({
       getString: PropTypes.func.isRequired
     }).isRequired
-  },
+  }
 
-  render: function () {
+  render () {
     return (
       <button className="Link--neutral u-sPV-1-4 u-floatLeft
                          u-sizeHeight-1_1-2 u-sMR-1-4">
@@ -51,6 +50,6 @@ const TranslatingIndicator = React.createClass({
       </button>
     )
   }
-})
+}
 
 export default TranslatingIndicator

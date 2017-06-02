@@ -9,10 +9,8 @@ import { map } from 'lodash'
  * Wraps a div around the content that can observe for key shortcut combinations
  * on bubbled events.
  */
-const KeyShortcutDispatcher = React.createClass({
-  combokeys: undefined,
-
-  propTypes: {
+class KeyShortcutDispatcher extends React.Component {
+  static propTypes = {
     className: PropTypes.string,
     cancelSaveAs: PropTypes.func.isRequired,
     shortcutInfoList: PropTypes.arrayOf(PropTypes.shape({
@@ -30,7 +28,9 @@ const KeyShortcutDispatcher = React.createClass({
       handler: PropTypes.func.isRequired
     })),
     children: PropTypes.node
-  },
+  }
+
+  combokeys = undefined
 
   /**
    * Extend a handler to also register the next keys in the sequence.
@@ -38,7 +38,7 @@ const KeyShortcutDispatcher = React.createClass({
    * This is hard-coded to assume a save-as sequence. Need to fix that
    * before using for anything else.
    */
-  makeSequenceHandler (handler, sequenceKeys) {
+  makeSequenceHandler = (handler, sequenceKeys) => {
     return (event) => {
       handler(event)
 
@@ -62,19 +62,19 @@ const KeyShortcutDispatcher = React.createClass({
       })
       this.enableKeysFor({ keys: ['esc'] }, endSaveAsMode)
     }
-  },
+  }
 
-  enableKeysFor ({ keys, eventType }, handler) {
+  enableKeysFor = ({ keys, eventType }, handler) => {
     if (!Array.isArray(keys)) {
       throw Error('keyConfig does not contain a "keys" value that is an array')
     }
     // Note: eventType may be undefined
     this.combokeys.bindGlobal(keys, handler, eventType)
-  },
+  }
 
-  deleteKeys ({ keys, eventType }) {
+  deleteKeys = ({ keys, eventType }) => {
     this.combokeys.unbind(keys, eventType)
-  },
+  }
 
   componentDidMount () {
     const elem = this.shortcutContainer
@@ -94,19 +94,19 @@ const KeyShortcutDispatcher = React.createClass({
       console.error('No shortcut container element is bound for this ' +
                     'KeyShortcutDispatcher')
     }
-  },
+  }
 
   componentWillUnmount () {
     if (this.combokeys) {
       this.combokeys.detach()
     }
-  },
+  }
 
-  setShortcutContainer (ref) {
+  setShortcutContainer = (ref) => {
     this.shortcutContainer = ref
-  },
+  }
 
-  render: function () {
+  render () {
     // tabIndex is to make it focusable.
     return (
       <div tabIndex="0"
@@ -116,7 +116,7 @@ const KeyShortcutDispatcher = React.createClass({
       </div>
     )
   }
-})
+}
 
 const mapDispatchToProps = (dispatch) => {
   return {

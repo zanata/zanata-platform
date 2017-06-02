@@ -809,7 +809,8 @@ public class DocumentListPresenter extends WidgetPresenter<DocumentListDisplay>
                     o2.getDocInfo().getStats()
                             .getStats(localeId.getId(), StatUnit.WORD);
 
-            if (msgStats1.getRemainingHours() == msgStats2.getRemainingHours()) {
+            if (Double.compare(msgStats1.getRemainingHours(),
+                    msgStats2.getRemainingHours()) == 0) {
                 return 0;
             }
             return msgStats1.getRemainingHours() > msgStats2

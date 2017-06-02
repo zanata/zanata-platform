@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import org.dbunit.database.DatabaseConfig;
@@ -13,31 +12,24 @@ import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ReplacementDataSet;
-import org.dbunit.dataset.datatype.DataType;
-import org.dbunit.dataset.datatype.DataTypeException;
-import org.dbunit.dataset.datatype.DefaultDataTypeFactory;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.internal.SessionImpl;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 
 /**
- * Adapted from org.jboss.seam.mock.DBUnitSeamTest
- *
- * @see org.jboss.seam.mock.DBUnitSeamTest
- * @see org.jboss.seam.mock.DBJUnitSeamTest
- *
- *      For a better alternative to prepare a test database:
- * @see org.zanata.test.DBUnitDataSetRunner
- * @see org.zanata.test.rule.JpaRule
+ * Adapted from org.jboss.seam.mock.DBUnitSeamTest.
+ * (Refer to org.jboss.seam.mock.DBUnitSeamTest
+ * and org.jboss.seam.mock.DBJUnitSeamTest.)
+ * <p>
+ * For a better way to prepare a test database, see also
+ * {@link org.zanata.test.DBUnitDataSetRunner},
+ * {@link org.zanata.test.rule.JpaRule}.
+ * </p>
  */
 public abstract class ZanataDbunitJpaTest extends ZanataJpaTest {
-    private static final org.slf4j.Logger log =
-            org.slf4j.LoggerFactory.getLogger(ZanataDbunitJpaTest.class);
-
     protected String binaryDir;
     protected boolean replaceNull = true;
     protected List<DataSetOperation> beforeTestOperations =

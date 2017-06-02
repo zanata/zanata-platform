@@ -71,7 +71,7 @@ public class CopyTransResourceService implements CopyTransResource {
             copyTransManager.startCopyTrans(document, null);
             return this.getCopyTransStatus(projectSlug, iterationSlug, docId);
         } catch (Exception e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

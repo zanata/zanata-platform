@@ -7,9 +7,8 @@ import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossaryTab from './GlossaryTab'
 
-const SidebarContent = React.createClass({
-
-  propTypes: {
+class SidebarContent extends React.Component {
+  static propTypes = {
     /* close the sidebar */
     close: PropTypes.func.isRequired,
     glossaryCount: PropTypes.number.isRequired,
@@ -23,9 +22,9 @@ const SidebarContent = React.createClass({
       lastModifiedBy: PropTypes.string,
       lastModifiedTime: PropTypes.instanceOf(Date)
     })
-  },
+  }
 
-  sidebarDetails () {
+  sidebarDetails = () => {
     if (!this.props.hasSelectedPhrase) {
       return <span>Select a phrase to see details.</span>
     }
@@ -50,9 +49,9 @@ const SidebarContent = React.createClass({
             this.lastModifiedDisplay(lastModifiedBy, lastModifiedTime))}
       </ul>
     )
-  },
+  }
 
-  detailItem (label, value) {
+  detailItem = (label, value) => {
     const valueDisplay = isEmpty(value)
         ? <span className="details-nocontent">No content</span>
         : <span className="details-content">{value}</span>
@@ -61,9 +60,9 @@ const SidebarContent = React.createClass({
         <span>{label}</span> {valueDisplay}
       </li>
     )
-  },
+  }
 
-  lastModifiedDisplay (lastModifiedBy, lastModifiedTime) {
+  lastModifiedDisplay = (lastModifiedBy, lastModifiedTime) => {
     if (isUndefined(lastModifiedBy) && isUndefined(lastModifiedTime)) {
       return undefined
     }
@@ -82,10 +81,10 @@ const SidebarContent = React.createClass({
         } {modifiedDate} {modifiedTime}
       </span>
     )
-  },
+  }
 
   /* URL of the selected phrase, with copy button. */
-  phraseLink () {
+  phraseLink = () => {
     // TODO need to set up phrase ID in the URL first
     return (
       <FormGroup className="trans-link">
@@ -97,7 +96,7 @@ const SidebarContent = React.createClass({
         </InputGroup>
       </FormGroup>
     )
-  },
+  }
 
   render () {
     const { glossaryCount } = this.props
@@ -137,7 +136,7 @@ const SidebarContent = React.createClass({
       </div>
     )
   }
-})
+}
 
 function mapStateToProps (state) {
   const { glossary, phrases } = state

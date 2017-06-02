@@ -44,6 +44,7 @@ import java.io.Serializable;
 @InSessionScope
 @RunWith(CdiUnitRunner.class)
 public class LoginActionTest implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @Mock
     @Produces

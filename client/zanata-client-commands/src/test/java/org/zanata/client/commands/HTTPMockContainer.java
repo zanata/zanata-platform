@@ -2,11 +2,8 @@ package org.zanata.client.commands;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.net.URL;
 import java.util.Map;
 
-import org.apache.commons.codec.Charsets;
-import org.apache.commons.io.IOUtils;
 import org.hamcrest.Matcher;
 import org.simpleframework.http.Request;
 import org.simpleframework.http.Response;
@@ -15,7 +12,6 @@ import org.simpleframework.http.core.Container;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
 import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableMap;
 
@@ -63,7 +59,7 @@ public class HTTPMockContainer implements Container {
             try {
                 response.close();
             } catch (IOException e1) {
-                throw Throwables.propagate(e1);
+                throw new RuntimeException(e1);
             }
         }
     }

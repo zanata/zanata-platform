@@ -20,6 +20,8 @@
  */
 package org.zanata.rest.compat;
 
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -27,13 +29,10 @@ import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.apicompat.rest.service.SourceDocResource;
 import org.zanata.apicompat.rest.service.TranslatedDocResource;
-import org.zanata.provider.DBUnitProvider;
-import org.zanata.rest.ResourceRequest;
 import org.zanata.apicompat.common.ContentState;
 import org.zanata.apicompat.common.ContentType;
 import org.zanata.apicompat.common.LocaleId;
@@ -46,6 +45,7 @@ import org.zanata.apicompat.rest.dto.resource.ResourceMeta;
 import org.zanata.apicompat.rest.dto.resource.TextFlow;
 import org.zanata.apicompat.rest.dto.resource.TextFlowTarget;
 import org.zanata.apicompat.rest.dto.resource.TranslationsResource;
+import org.zanata.rest.ResourceRequest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.greaterThan;
@@ -91,15 +91,18 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request()
+                        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertJsonUnmarshal(response, Resource.class);
+            protected void onResponse(Response response) {
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, Resource.class);
 
-                Resource resource = jsonUnmarshal(response, Resource.class);
+                Resource resource = jsonUnmarshal(entityString, Resource.class);
                 assertThat(resource.getName(), is("my/path/document-2.txt"));
                 assertThat(resource.getType(), is(ResourceType.FILE));
                 assertThat(resource.getLang(), is(LocaleId.EN_US));
@@ -146,14 +149,21 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r"),
                 "POST", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.queryParameter("ext", PoHeader.ID).queryParameter(
-                        "ext", SimpleComment.ID);
-                request.body(MediaType.APPLICATION_JSON, jsonMarshal(res));
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("ext", PoHeader.ID).queryParam(
+                        "ext", SimpleComment.ID).request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jsonMarshal(res), MediaType.APPLICATION_JSON);
+                Response response = builder.buildPost(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.CREATED.getStatusCode())); // 201
             }
@@ -219,14 +229,22 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/"
                         + res.getName()), "PUT", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.queryParameter("ext", SimpleComment.ID).queryParameter(
-                        "ext", PoHeader.ID);
-                request.body(MediaType.APPLICATION_JSON, jsonMarshal(res));
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+
+                return webTarget.queryParam("ext", SimpleComment.ID).queryParam(
+                        "ext", PoHeader.ID).request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jsonMarshal(res), MediaType.APPLICATION_JSON);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
                         is(Status.CREATED.getStatusCode())); // 201
             }
@@ -277,18 +295,19 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-                request.queryParameter("ext", SimpleComment.ID);
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("ext", SimpleComment.ID).request()
+                        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-                assertJsonUnmarshal(response, ResourceMeta.class);
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, ResourceMeta.class);
 
                 ResourceMeta resMeta =
-                        jsonUnmarshal(response, ResourceMeta.class);
+                        jsonUnmarshal(entityString, ResourceMeta.class);
                 assertThat(resMeta.getName(), is("my/path/document-2.txt"));
                 assertThat(resMeta.getType(), is(ResourceType.FILE));
                 assertThat(resMeta.getLang(), is(LocaleId.EN_US));
@@ -312,14 +331,24 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt"),
                 "PUT", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.queryParameter("ext", SimpleComment.ID);
-                request.body(MediaType.APPLICATION_JSON, jsonMarshal(resMeta));
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("ext", SimpleComment.ID).request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jsonMarshal(resMeta),
+                                MediaType.APPLICATION_JSON);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
+                assertThat(response.getStatus(),
+                        is(Status.OK.getStatusCode())); // 200
             }
         }.run();
 
@@ -345,18 +374,20 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt/translations/"
                         + LocaleId.EN_US), "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-                request.queryParameter("ext", SimpleComment.ID);
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("ext", SimpleComment.ID).request()
+                        .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
-                assertJsonUnmarshal(response, TranslationsResource.class);
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, TranslationsResource.class);
 
                 TranslationsResource transRes =
-                        jsonUnmarshal(response, TranslationsResource.class);
+                        jsonUnmarshal(entityString, TranslationsResource.class);
                 assertThat(transRes.getTextFlowTargets().size(),
                         greaterThanOrEqualTo(3));
 
@@ -439,13 +470,22 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                 getRestEndpointUrl("/projects/p/sample-project/iterations/i/1.0/r/my,path,document-2.txt/translations/"
                         + LocaleId.EN_US), "PUT", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.queryParameter("ext", SimpleComment.ID);
-                request.body(MediaType.APPLICATION_JSON, jsonMarshal(transRes));
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.queryParam("ext", SimpleComment.ID).request();
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            public void invoke(Invocation.Builder builder) {
+                Entity<String> entity = Entity
+                        .entity(jsonMarshal(transRes),
+                                MediaType.APPLICATION_JSON);
+                Response response = builder.buildPut(entity).invoke();
+                onResponse(response);
+            }
+
+            @Override
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
             }
         }.run();

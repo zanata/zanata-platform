@@ -8,7 +8,7 @@ import static org.zanata.model.tm.TransMemoryUnitVariant.tuv;
 import java.io.Serializable;
 import java.util.ArrayList;
 import org.hibernate.Session;
-import org.hibernate.ejb.HibernateEntityManagerFactory;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ZanataJpaTest;

@@ -298,7 +298,7 @@ class SourceConfigPrompt {
                                 opts.getCaseSensitive(),
                                 opts.getExcludeLocaleFilenames());
             } catch (IOException e) {
-                throw Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         }
     }

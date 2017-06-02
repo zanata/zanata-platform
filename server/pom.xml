@@ -232,6 +232,10 @@
             <artifactId>jsr250-api</artifactId>
           </exclusion>
           <exclusion>
+            <artifactId>jcip-annotations</artifactId>
+            <groupId>net.jcip</groupId>
+          </exclusion>
+          <exclusion>
             <groupId>org.jboss.spec.javax.annotation</groupId>
             <artifactId>jboss-annotations-api_1.2_spec</artifactId>
           </exclusion>
@@ -1536,6 +1540,12 @@
         <artifactId>activation</artifactId>
         <version>1.1.1</version>
         <scope>provided</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>jsr305</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
 
       <dependency>

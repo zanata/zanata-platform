@@ -117,7 +117,7 @@ public class SecurityTokens implements Serializable, Introspectable {
                 return map;
             });
         } catch (ExecutionException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
         return authorizationCode;
     }
@@ -229,7 +229,7 @@ public class SecurityTokens implements Serializable, Introspectable {
                     .buildQueryMessage();
             return resp.getLocationUri();
         } catch (OAuthSystemException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

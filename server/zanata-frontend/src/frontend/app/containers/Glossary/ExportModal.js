@@ -11,6 +11,22 @@ import {
 } from '../../actions/glossary-actions'
 
 class ExportModal extends Component {
+  static propTypes = {
+    show: PropTypes.bool,
+    type: PropTypes.shape({
+      label: PropTypes.string,
+      value: PropTypes.string
+    }),
+    status: PropTypes.number,
+    types: PropTypes.arrayOf(PropTypes.shape({
+      label: PropTypes.string,
+      value: PropTypes.string
+    })),
+    handleExportType: PropTypes.func,
+    handleExportFileDisplay: PropTypes.func,
+    handleExport: PropTypes.func
+  }
+
   render () {
     const {
       show,
@@ -80,22 +96,6 @@ class ExportModal extends Component {
       </Modal>)
     /* eslint-enable react/jsx-no-bind */
   }
-}
-
-ExportModal.propTypes = {
-  show: PropTypes.bool,
-  type: PropTypes.shape({
-    label: PropTypes.string,
-    value: PropTypes.string
-  }),
-  status: PropTypes.number,
-  types: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string,
-    value: PropTypes.string
-  })),
-  handleExportType: PropTypes.func,
-  handleExportFileDisplay: PropTypes.func,
-  handleExport: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

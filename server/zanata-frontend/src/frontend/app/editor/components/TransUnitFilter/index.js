@@ -11,8 +11,8 @@ import {
 /**
  * Panel with controls to filter the list of trans units
  */
-const TransUnitFilter = React.createClass({
-  propTypes: {
+class TransUnitFilter extends React.Component {
+  static propTypes = {
     actions: PropTypes.shape({
       resetFilter: PropTypes.func.isRequired,
       onFilterChange: PropTypes.func.isRequired
@@ -42,22 +42,20 @@ const TransUnitFilter = React.createClass({
     gettextCatalog: PropTypes.shape({
       getString: PropTypes.func.isRequired
     }).isRequired
-  },
+  }
 
-  getDefaultProps: () => {
-    return {
-      counts: {
-        total: 0,
-        approved: 0,
-        rejected: 0,
-        translated: 0,
-        needswork: 0,
-        untranslated: 0
-      }
+  static defaultProps = {
+    counts: {
+      total: 0,
+      approved: 0,
+      rejected: 0,
+      translated: 0,
+      needswork: 0,
+      untranslated: 0
     }
-  },
+  }
 
-  componentWillMount: function () {
+  componentWillMount () {
     const { onFilterChange } = this.props.actions
     this.filterApproved = onFilterChange.bind(undefined, STATUS_APPROVED)
     this.filterRejected = onFilterChange.bind(undefined, STATUS_REJECTED)
@@ -65,9 +63,9 @@ const TransUnitFilter = React.createClass({
     this.filterNeedsWork = onFilterChange.bind(undefined, STATUS_NEEDS_WORK)
     this.filterUntranslated =
       onFilterChange.bind(undefined, STATUS_UNTRANSLATED)
-  },
+  }
 
-  render: function () {
+  render () {
     const { resetFilter } = this.props.actions
     const gettextCatalog = this.props.gettextCatalog
 
@@ -148,6 +146,6 @@ const TransUnitFilter = React.createClass({
       </ul>
     )
   }
-})
+}
 
 export default TransUnitFilter

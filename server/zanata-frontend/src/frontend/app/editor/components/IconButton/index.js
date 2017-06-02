@@ -5,18 +5,17 @@ import React, { PropTypes } from 'react'
 /**
  * Action button with an icon and title, unstyled.
  */
-const IconButton = React.createClass({
-
-  propTypes: {
+class IconButton extends React.Component {
+  static propTypes = {
     icon: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
     disabled: PropTypes.bool,
     iconSize: PropTypes.string,
     className: PropTypes.string
-  },
+  }
 
-  render: function () {
+  render () {
     const iconSize = this.props.iconSize || 's1'
     return (
       <Button
@@ -31,6 +30,6 @@ const IconButton = React.createClass({
       </Button>
     )
   }
-})
+}
 
 export default IconButton

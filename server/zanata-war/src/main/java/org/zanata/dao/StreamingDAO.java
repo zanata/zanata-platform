@@ -24,7 +24,7 @@ package org.zanata.dao;
 import javax.annotation.Nonnull;
 
 import org.hibernate.Session;
-import org.hibernate.ejb.HibernateEntityManagerFactory;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
 
 import java.io.Serializable;
 

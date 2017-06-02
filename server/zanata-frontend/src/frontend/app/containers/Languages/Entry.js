@@ -7,6 +7,14 @@ import { Label } from 'react-bootstrap'
 import { getLanguageUrl } from '../../utils/UrlHelper'
 
 class Entry extends Component {
+  static propTypes = {
+    userLanguageTeams: PropTypes.object,
+    locale: PropTypes.object.isRequired,
+    permission: PropTypes.object.isRequired,
+    isDeleting: PropTypes.bool,
+    handleDelete: PropTypes.func
+  }
+
   constructor () {
     super()
     this.state = {
@@ -14,7 +22,7 @@ class Entry extends Component {
     }
   }
 
-  setShowingDeleteEntryModal (showing) {
+  setShowingDeleteEntryModal = (showing) => {
     this.setState({
       showDeleteModal: showing
     })
@@ -86,14 +94,6 @@ class Entry extends Component {
     )
     /* eslint-disable react/jsx-no-bind */
   }
-}
-
-Entry.propTypes = {
-  userLanguageTeams: PropTypes.object,
-  locale: PropTypes.object.isRequired,
-  permission: PropTypes.object.isRequired,
-  isDeleting: PropTypes.bool,
-  handleDelete: PropTypes.func
 }
 
 export default Entry

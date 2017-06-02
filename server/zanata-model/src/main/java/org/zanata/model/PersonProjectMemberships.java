@@ -98,7 +98,8 @@ public class PersonProjectMemberships implements Serializable {
                 Collections2.transform(localeRoles, TO_LOCALE);
         for (HLocale locale : locales) {
             if (!presentLocales.contains(locale)) {
-                localeRoles.add(new LocaleRoles(locale, Collections.EMPTY_SET));
+                localeRoles.add(new LocaleRoles(locale,
+                        Collections.<LocaleRole>emptySet()));
             }
         }
     }

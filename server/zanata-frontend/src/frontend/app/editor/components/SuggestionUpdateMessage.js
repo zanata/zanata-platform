@@ -7,16 +7,15 @@ import { Row } from 'react-bootstrap'
  * Show an appropriate message about the source and time of the most
  * recent update to the translation of a suggestion.
  */
-const SuggestionUpdateMessage = React.createClass({
-
-  propTypes: {
+class SuggestionUpdateMessage extends React.Component {
+  static propTypes = {
     matchType: PropTypes.oneOf(['imported', 'translated', 'approved'])
       .isRequired,
     user: PropTypes.string,
     lastChanged: PropTypes.instanceOf(Date)
-  },
+  }
 
-  message: function () {
+  message = () => {
     const date =
       <FormattedDate value={this.props.lastChanged} format="medium" />
 
@@ -43,9 +42,9 @@ const SuggestionUpdateMessage = React.createClass({
         console.error('invalid match type to generate message: ' +
                       this.props.matchType)
     }
-  },
+  }
 
-  render: function () {
+  render () {
     return (
       <span className="u-textMeta">
         <Row>
@@ -55,6 +54,6 @@ const SuggestionUpdateMessage = React.createClass({
       </span>
     )
   }
-})
+}
 
 export default SuggestionUpdateMessage

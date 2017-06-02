@@ -7,6 +7,11 @@ There are two ways to install zanata-client, via `0install` or `yum`.
 
     0install destroy zanata-cli | yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml
 
+* To install a specific version (e.g. 4.1.1)
+ 
+       0install destroy zanata-cli | yes | 0install -c add zanata-cli https://raw.githubusercontent.com/zanata/zanata.github.io/master/files/0install/zanata-cli.xml --version=4.1.1
+
+
 **Note: If you have previously installed `zanata-cli` with Ivy or yum, you need to uninstall it first**
 
 ---

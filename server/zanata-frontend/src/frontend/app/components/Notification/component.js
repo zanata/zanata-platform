@@ -7,8 +7,15 @@ import { Button, ButtonGroup, Row } from 'react-bootstrap'
  * Notification popup modal that overlays on the page.
  */
 class Notification extends Component {
+  static propTypes = {
+    severity: PropTypes.oneOf(['warn', 'error', 'info']).isRequired,
+    message: PropTypes.string,
+    details: PropTypes.string,
+    show: PropTypes.bool,
+    handleClearMessage: PropTypes.func
+  }
 
-  getSeverityClass (severity) {
+  getSeverityClass = (severity) => {
     switch (severity) {
       case 'warn':
       case 'error':
@@ -18,7 +25,7 @@ class Notification extends Component {
     }
   }
 
-  getIcon (severity) {
+  getIcon = (severity) => {
     switch (severity) {
       case 'warn':
       case 'error':
@@ -28,7 +35,7 @@ class Notification extends Component {
     }
   }
 
-  clearMessage () {
+  clearMessage = () => {
     this.props.handleClearMessage()
   }
 
@@ -44,7 +51,7 @@ class Notification extends Component {
 
     /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
     return (
-      <Modal show={show} onHide={() => this.clearMessage()}>
+      <Modal show={show} onHide={this.clearMessage}>
         <Modal.Header>
           <Modal.Title>
             <Row
@@ -70,7 +77,7 @@ class Notification extends Component {
               <ButtonGroup className='pull-right'>
                 <Button bsStyle='primary'
                   id='btn-notification-close'
-                  type='button' onClick={() => this.clearMessage()}>
+                  type='button' onClick={this.clearMessage}>
                   Close
                 </Button>
               </ButtonGroup>
@@ -81,14 +88,6 @@ class Notification extends Component {
     )
     /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */
   }
-}
-
-Notification.propTypes = {
-  severity: PropTypes.oneOf(['warn', 'error', 'info']).isRequired,
-  message: PropTypes.string,
-  details: PropTypes.string,
-  show: PropTypes.bool,
-  handleClearMessage: PropTypes.func
 }
 
 export default Notification

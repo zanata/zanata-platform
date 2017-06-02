@@ -218,7 +218,7 @@ public class CopyTransServiceImpl implements CopyTransService {
                 copyTransForDocumentLocale(document, targetLocale,
                         copyTransOpts, taskHandleOpt);
             } catch (Exception e) {
-                Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         }
         log.info("copyTrans finished: document \"{}\"", document.getDocId());

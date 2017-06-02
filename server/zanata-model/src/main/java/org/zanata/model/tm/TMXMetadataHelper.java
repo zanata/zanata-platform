@@ -66,6 +66,7 @@ public class TMXMetadataHelper {
     private static final String TUID = "tuid";
 
     private static List<String> getChildrenXml(Map<String, Object> metadata) {
+        @SuppressWarnings("unchecked")
         List<String> children =
                 (List<String>) metadata.get(TMX_ELEMENT_CHILDREN);
         if (children == null) {
@@ -81,6 +82,7 @@ public class TMXMetadataHelper {
             if (metadataString == null) {
                 return ImmutableList.of();
             }
+            @SuppressWarnings("unchecked")
             Map<String, Object> metadata =
                     jsonMapper.readValue(metadataString, Map.class);
             List<String> children = getChildrenXml(metadata);
@@ -170,7 +172,7 @@ public class TMXMetadataHelper {
         return m.build();
     }
 
-    @SuppressWarnings("null")
+    @SuppressWarnings({"null", "unchecked"})
     @Nonnull
     private static Map<String, String>
             getGenericMetadata(HasTMMetadata fromEntity) {

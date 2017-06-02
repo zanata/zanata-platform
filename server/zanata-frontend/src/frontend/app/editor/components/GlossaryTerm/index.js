@@ -7,8 +7,8 @@ import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import IconButton from '../IconButton'
 import { isEmpty } from 'lodash'
 
-const GlossaryTerm = React.createClass({
-  propTypes: {
+class GlossaryTerm extends React.Component {
+  static propTypes = {
     index: PropTypes.number.isRequired,
     copyGlossaryTerm: PropTypes.func.isRequired,
     showDetails: PropTypes.func.isRequired,
@@ -16,15 +16,15 @@ const GlossaryTerm = React.createClass({
       source: PropTypes.string.isRequired,
       target: PropTypes.string.isRequired
     }).isRequired
-  },
+  }
 
-  copy () {
+  copy = () => {
     this.props.copyGlossaryTerm(this.props.term.target)
-  },
+  }
 
-  showDetails () {
+  showDetails = () => {
     this.props.showDetails(this.props.index)
-  },
+  }
 
   render () {
     const { index, term } = this.props
@@ -87,6 +87,6 @@ const GlossaryTerm = React.createClass({
       </tr>
     )
   }
-})
+}
 
 export default GlossaryTerm

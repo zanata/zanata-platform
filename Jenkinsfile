@@ -53,14 +53,19 @@ node {
       $class: 'ParametersDefinitionProperty',
       parameterDefinitions: [
         [
-          $class: 'LabelParameterDefinition',
-          /* Specify the default node in Jenkins environment DEFAULT_NODE
-           * (eg kvm) or default to build on any node
-           */
-          defaultValue: defaultNodeLabel,
-          description: 'Jenkins node label to use for build',
-          name: 'LABEL'
-        ]
+                $class: 'LabelParameterDefinition',
+                // Specify the default node in Jenkins env var DEFAULT_NODE
+                // (eg kvm), or leave blank to build on any node.
+                defaultValue: defaultNodeLabel,
+                description: 'Jenkins node label to use for build',
+                name: 'LABEL'
+        ],
+        [
+                $class: 'BooleanParameterDefinition',
+                defaultValue: false,
+                description: 'Run all functional tests?',
+                name: 'allFuncTests'
+        ],
       ]
     ],
   ]
@@ -92,6 +97,32 @@ String getLabel() {
   return result
 }
 
+// NB: don't call this getAllFuncTests() or isAllFuncTests(), because it would
+// shadow the global parameter allFuncTests.
+boolean resolveAllFuncTests() {
+  def paramVal = null
+  try {
+    paramVal = params.allFuncTests
+  } catch (e1) {
+    // workaround for https://issues.jenkins-ci.org/browse/JENKINS-38813
+    echo '[WARNING] unable to access `params`'
+    echo getStackTrace(e1)
+    try {
+      paramVal = allFuncTests
+    } catch (e2) {
+      echo '[WARNING] unable to access `allFuncTests`'
+      echo getStackTrace(e2)
+    }
+  }
+
+  if (paramVal == null) {
+    echo "allFuncTests param is null; using default value."
+  }
+  def result = paramVal ?: false
+  echo "allFuncTests: $result"
+  return result
+}
+
 @Field
 def mainlineBranches = ['master', 'release', 'legacy']
 @Field
@@ -105,10 +136,13 @@ String getLockName() {
     // Each mainline branch pipeline will have its own lock.
     return jobName
   } else if (env.BRANCH_NAME.startsWith('PR-')) {
-    // All pull requests (in any repo) will share the same lock/locks.
-    // It probably makes sense to define 2 or 3 locks with the name
-    // PullRequest for more concurrency.
-    return 'GitHubPullRequest'
+    // Pull requests 1, 101, 201, xx01 will all share the same lock name.
+    // Barring collisions, this means each PR gets its own lock, with a
+    // maximum of 100 lock names. This is a workaround for
+    // https://issues.jenkins-ci.org/browse/JENKINS-38906
+    String digits = '00' + env.BRANCH_NAME.substring('PR-'.length())
+    String last2Digits = digits.substring(digits.length() - 2)
+    return 'zanata-platform-PR-x' + last2Digits
   } else {
     // All miscellaneous branches (across all repos) will share the same lock.
     return 'GitHubMiscBranch'
@@ -220,6 +254,12 @@ timestamps {
 
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
+
+          if (env.BRANCH_NAME == 'master') {
+            step([$class: 'MasterCoverageAction'])
+          } else if (env.BRANCH_NAME.startsWith('PR-')) {
+            step([$class: 'CompareCoverageAction'])
+          }
 
           // ref: https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
           step([$class: 'CheckStylePublisher',
@@ -356,7 +396,7 @@ void integrationTests(String appserver) {
         def ftOpts = '-Dcargo.debug.jvm.args= '
 
         // run *all* functional tests in these branches only:
-        if (env.BRANCH_NAME in mainlineBranches) {
+        if (env.BRANCH_NAME in mainlineBranches || resolveAllFuncTests()) {
           ftOpts += '-DallFuncTests '
         }
 

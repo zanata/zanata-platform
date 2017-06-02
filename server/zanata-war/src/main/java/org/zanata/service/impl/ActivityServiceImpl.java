@@ -234,7 +234,7 @@ public class ActivityServiceImpl implements ActivityService {
                     }
                 });
             } catch (Exception e) {
-                Throwables.propagate(e);
+                throw new RuntimeException(e);
             } finally {
                 lock.unlock();
             }
@@ -266,7 +266,7 @@ public class ActivityServiceImpl implements ActivityService {
                         getDocumentWordCount(document));
             });
         } catch (Exception e) {
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         } finally {
             lock.unlock();
         }
