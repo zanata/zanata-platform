@@ -80,9 +80,8 @@
       <property name="jboss.entity.manager.factory.jndi.name"
         value="java:/zanataEntityManagerFactory" />
 
-      <!-- Automatic schema export and drop -->
-      <property name="hibernate.hbm2ddl.auto"
-        value="${env.hibernate.hbm2ddl.auto}" />
+      <!-- Verify Liquibase's schemas against Hibernate mappings -->
+      <property name="hibernate.hbm2ddl.auto" value="validate" />
 
       <!-- Logging -->
       <property name="hibernate.show_sql" value="${env.hibernate.show_sql}" />
