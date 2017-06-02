@@ -1,13 +1,12 @@
 package org.zanata.service.impl;
 
-import java.util.Objects;
-
 import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 import org.hibernate.persister.entity.EntityPersister;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.common.EntityStatus;
 import org.zanata.events.ProjectIterationUpdate;
 import org.zanata.events.ProjectUpdate;
 import org.zanata.model.HProject;
@@ -20,10 +19,10 @@ import com.google.common.collect.Lists;
 
 /**
  * This class is a hibernate event listener which listens on post commit events
- * for HProject and HProjectIteration. If it detects a slug change, it will
- * perform re-indexing for all HTextFlowTargets under that project/version. It
- * will also fire update event for HProject and HProjectIteration with their old
- * slug in payload.
+ * for HProject and HProjectIteration. If it detects the status becoming
+ * obsolete, it will perform re-indexing for all HTextFlowTargets under that
+ * project/version. It will also fire update event for HProject and
+ * HProjectIteration with their old slug in payload.
  *
  * @see org.zanata.webtrans.server.HibernateIntegrator
  * @see org.zanata.webtrans.server.TranslationWorkspaceManagerImpl
@@ -55,21 +54,47 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
                     getSlugFieldIndex(slugFieldIndexInProject, event);
             String oldSlug =
                     event.getOldState()[slugFieldIndexInProject].toString();
-            String newSlug =
-                    event.getState()[slugFieldIndexInProject].toString();
+
             fireProjectUpdateEvent(project, oldSlug);
-            reindexIfProjectSlugHasChanged(oldSlug, newSlug, project);
+            reindexIfStatusBecameObsolete(project);
+
         } else if (slugEntityBase instanceof HProjectIteration) {
             HProjectIteration iteration = (HProjectIteration) slugEntityBase;
             slugFieldIndexInIteration =
                     getSlugFieldIndex(slugFieldIndexInIteration, event);
             String oldSlug =
                     event.getOldState()[slugFieldIndexInIteration].toString();
-            String newSlug =
-                    event.getState()[slugFieldIndexInIteration].toString();
 
             fireProjectIterationUpdateEvent(iteration, oldSlug);
-            reindexIfProjectIterationSlugHasChanged(oldSlug, newSlug, iteration);
+            reindexIfStatusBecameObsolete(iteration);
+        }
+    }
+
+    private void reindexIfStatusBecameObsolete(HProjectIteration iteration) {
+        if (iteration.getStatus() == EntityStatus.OBSOLETE) {
+            log.debug("HProjectIteration [{}] became obsolete");
+            AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
+            getAsyncTaskHandleManager().registerTaskHandle(handle);
+            try {
+                getIndexingServiceImpl()
+                        .reindexHTextFlowTargetsForProjectIteration(iteration, handle);
+            } catch (Exception e) {
+                log.error("exception happen in async framework", e);
+            }
+        }
+    }
+
+    private void reindexIfStatusBecameObsolete(HProject project) {
+        if (project.getStatus() == EntityStatus.OBSOLETE) {
+            log.debug("HProject [{}] became obsolete");
+            AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
+            getAsyncTaskHandleManager().registerTaskHandle(handle);
+            try {
+                getIndexingServiceImpl()
+                        .reindexHTextFlowTargetsForProject(project, handle);
+            } catch (Exception e) {
+                log.error("exception happen in async framework", e);
+            }
         }
     }
 
@@ -90,39 +115,6 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
         // TODO use Event.fire()
         BeanManagerProvider.getInstance().getBeanManager()
                 .fireEvent(new ProjectUpdate(project, oldSlug));
-    }
-
-    public void reindexIfProjectSlugHasChanged(String oldSlug, String newSlug,
-            HProject project) {
-        if (!oldSlug.equals(newSlug)) {
-            log.debug("HProject [{}] changed slug. old slug: {}, new slug: {}",
-                    project, oldSlug, newSlug);
-            AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
-            getAsyncTaskHandleManager().registerTaskHandle(handle);
-            try {
-                getIndexingServiceImpl()
-                        .reindexHTextFlowTargetsForProject(project, handle);
-            } catch (Exception e) {
-                log.error("exception happen in async framework", e);
-            }
-        }
-    }
-
-    private void reindexIfProjectIterationSlugHasChanged(String oldSlug,
-            String newSlug, HProjectIteration iteration) {
-        if (Objects.equals(oldSlug, newSlug)) {
-            return;
-        }
-        log.debug("HProjectIteration [{}] changed slug. old slug: {}, new slug: {}",
-                iteration, oldSlug, newSlug);
-        AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
-        getAsyncTaskHandleManager().registerTaskHandle(handle);
-        try {
-            getIndexingServiceImpl()
-                    .reindexHTextFlowTargetsForProjectIteration(iteration, handle);
-        } catch (Exception e) {
-            log.error("exception happen in async framework", e);
-        }
     }
 
     /**

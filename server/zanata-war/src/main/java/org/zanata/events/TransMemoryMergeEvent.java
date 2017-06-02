@@ -93,6 +93,6 @@ public class TransMemoryMergeEvent {
     }
 
     public Date getEndTime() {
-        return new Date(endTime.getTime());
+        return endTime == null ? null : new Date(endTime.getTime());
     }
 }

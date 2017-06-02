@@ -40,9 +40,10 @@ public class ContainingWorkspaceBridge extends AbstractFieldBridge {
         HProjectIteration iteration = doc.getProjectIteration();
         HProject project = iteration.getProject();
 
-        addStringField(IndexFieldLabels.PROJECT_FIELD, project.getSlug(),
+        addStringField(IndexFieldLabels.PROJECT_FIELD, project.getId().toString(),
                 luceneDocument, luceneOptions);
-        addStringField(IndexFieldLabels.PROJECT_VERSION_FIELD, iteration.getSlug(),
+        addStringField(IndexFieldLabels.PROJECT_VERSION_FIELD,
+                iteration.getId().toString(),
                 luceneDocument, luceneOptions);
         addStringField(IndexFieldLabels.DOCUMENT_ID_FIELD, doc.getDocId(),
                 luceneDocument, luceneOptions);

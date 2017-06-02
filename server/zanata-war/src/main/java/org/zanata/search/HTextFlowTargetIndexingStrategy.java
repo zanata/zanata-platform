@@ -59,7 +59,7 @@ public class HTextFlowTargetIndexingStrategy
             FullTextSession session) {
         // TODO move this query into something like HTextFlowTargetStreamingDAO
         Query query = session.createQuery(
-                "from HTextFlowTarget tft join fetch tft.locale join fetch tft.textFlow join fetch tft.textFlow.document join fetch tft.textFlow.document.locale join fetch tft.textFlow.document.projectIteration join fetch tft.textFlow.document.projectIteration.project");
+                "from HTextFlowTarget tft join fetch tft.locale join fetch tft.textFlow join fetch tft.textFlow.document join fetch tft.textFlow.document.locale join fetch tft.textFlow.document.projectIteration version join fetch tft.textFlow.document.projectIteration.project project where project.status <> 'O' and version.status <> 'O'");
         query.setFetchSize(Integer.MIN_VALUE);
         return query.scroll(ScrollMode.FORWARD_ONLY);
     }
