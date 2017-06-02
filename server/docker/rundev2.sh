@@ -4,7 +4,6 @@ docker build --tag wildfly-zanata-base .
 
 # First transform flattens everything
 # Second transform removes the version in zanata.war
-# Third transform standardizes the Dockerfile name
 tar --create \
   Dockerfile.zanata \
   ../zanata-war/target/zanata-*.war \
