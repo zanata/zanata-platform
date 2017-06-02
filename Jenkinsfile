@@ -255,6 +255,12 @@ timestamps {
           // parse Jacoco test coverage
           step([$class: 'JacocoPublisher'])
 
+          if (env.BRANCH_NAME == 'master') {
+            step([$class: 'MasterCoverageAction'])
+          } else if (env.BRANCH_NAME.startsWith('PR-')) {
+            step([$class: 'CompareCoverageAction'])
+          }
+
           // ref: https://philphilphil.wordpress.com/2016/12/28/using-static-code-analysis-tools-with-jenkins-pipeline-jobs/
           step([$class: 'CheckStylePublisher',
                 pattern: '**/target/checkstyle-result.xml',
