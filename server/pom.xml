@@ -1151,6 +1151,7 @@
         <groupId>org.codehaus.jackson</groupId>
         <artifactId>jackson-jaxrs</artifactId>
         <version>1.9.13</version>
+        <scope>${resteasy.scope}</scope>
       </dependency>
       <dependency>
         <groupId>org.richfaces</groupId>
