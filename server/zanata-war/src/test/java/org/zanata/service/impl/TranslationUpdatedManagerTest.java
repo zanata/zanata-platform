@@ -90,7 +90,6 @@ public class TranslationUpdatedManagerTest {
     private LocaleId localeId = LocaleId.DE;
     private String versionSlug = "versionSlug";
     private String projectSlug = "projectSlug";
-    private int wordCount = 10;
     private ContentState oldState = ContentState.New;
     private ContentState newState = ContentState.Translated;
     private String username = "username1";
@@ -129,20 +128,20 @@ public class TranslationUpdatedManagerTest {
 
     @Test
     public void onDocStatUpdateTest() {
+        Long wordCount = 10L;
         TranslationUpdatedManager spyManager = Mockito.spy(manager);
 
         WordStatistic stats = new WordStatistic(10, 10, 10, 10, 10);
         WordStatistic oldStats = StatisticsUtil.copyWordStatistic(stats);
-        oldStats.decrement(newState, wordCount);
-        oldStats.increment(oldState, wordCount);
+        oldStats.decrement(newState, wordCount.intValue());
+        oldStats.increment(oldState, wordCount.intValue());
 
         DocumentLocaleKey key =
                 new DocumentLocaleKey(docId, localeId);
 
         Map<ContentState, Long> contentStates = new HashMap<>();
-        Long longWordCount = (long) wordCount;
-        contentStates.put(newState, longWordCount);
-        contentStates.put(oldState, longWordCount);
+        contentStates.put(newState, wordCount);
+        contentStates.put(oldState, wordCount);
 
         DocStatsEvent event =
                 new DocStatsEvent(key, versionId, contentStates, tftId);

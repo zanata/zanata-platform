@@ -82,6 +82,7 @@ public class FacesMessagesTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void addToControl() throws Exception {
         when(uiViewRoot.getId()).thenReturn("id");
         when(uiViewRoot.getClientId()).thenReturn("clientId");
@@ -90,29 +91,31 @@ public class FacesMessagesTest {
 
         verify(facesContext).addMessage(eq("clientId"), message.capture());
         assertThat(message.getValue().getSummary()).isEqualTo(testMessage);
-        assertThat(message.getValue().getSeverity().equals(SEVERITY_INFO))
-                .isTrue();
+        assertThat(message.getValue().getSeverity()).isEqualTo(
+                SEVERITY_INFO);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void addGlobalString() throws Exception {
         facesMessages.addGlobal(testMessage);
         facesMessages.beforeRenderResponse();
         verify(facesContext).addMessage(eq(null), message.capture());
         assertThat(message.getValue().getSummary()).isEqualTo(testMessage);
-        assertThat(message.getValue().getSeverity().equals(SEVERITY_INFO))
-                .isTrue();
+        assertThat(message.getValue().getSeverity()).isEqualTo(
+                SEVERITY_INFO);
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void addGlobalFacesMessage() throws Exception {
         FacesMessage msg = new FacesMessage(testMessage);
         facesMessages.addGlobal(msg);
         facesMessages.beforeRenderResponse();
         verify(facesContext).addMessage(eq(null), message.capture());
         assertThat(message.getValue()).isSameAs(msg);
-        assertThat(message.getValue().getSeverity().equals(SEVERITY_INFO))
-                .isTrue();
+        assertThat(message.getValue().getSeverity()).isEqualTo(
+                SEVERITY_INFO);
     }
 
 }
