@@ -116,7 +116,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
                         conf.versionSlug, conf.docId)).thenReturn(
                 Optional.fromNullable(conf.storedParams));
         when(
-                documentDAO.addRawDocument(Matchers.<HDocument> any(),
+                documentDAO.addRawDocument(ArgumentMatchers.any(HDocument.class),
                         persistedRawDocument.capture())).thenReturn(
                 new HRawDocument());
         when(
@@ -132,8 +132,8 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
             document);
         when(
                 documentService.saveDocument(eq(conf.projectSlug),
-                        eq(conf.versionSlug), Matchers.<Resource> any(),
-                        Matchers.anySetOf(String.class), Matchers.anyBoolean()))
+                        eq(conf.versionSlug), ArgumentMatchers.any(Resource.class),
+                        ArgumentMatchers.anySet(), ArgumentMatchers.anyBoolean()))
                 .thenReturn(new HDocument());
     }
 
