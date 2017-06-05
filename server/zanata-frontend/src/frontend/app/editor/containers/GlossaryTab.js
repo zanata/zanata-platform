@@ -45,7 +45,7 @@ class GlossaryTab extends React.Component {
 
     if (searching) {
       return <div className="search-glos">
-        <LoaderText loading loadingText='Searching...' />
+        <LoaderText loading loadingText='Searching' />
       </div>
     }
 

@@ -185,6 +185,10 @@
   overflow: hidden;
 }
 
+.TransUnit-panel .u-textMeta .loader-text span span {
+  padding-left: 1em;
+}
+
 li.docName {
   max-width: 20em;
 }
