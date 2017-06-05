@@ -117,8 +117,7 @@ public class TransFileResolver {
 
     private ProjectType getProjectType() {
         try {
-            return ProjectType.getValueOf(
-                    opts.getProjectType());
+            return ProjectType.getValueOf(opts.getProjectType());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
