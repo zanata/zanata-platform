@@ -26,9 +26,11 @@ public class ArgsUtil {
         this.opts = opts;
         this.parser = new CmdLineParser(opts);
         try {
-            parser.setUsageWidth(Integer.parseInt(System.getenv("COLUMNS")));
-        } catch (Exception e) {
-            parser.setUsageWidth(120);
+            parser.getProperties()
+                    .withUsageWidth(Integer.parseInt(System.getenv("COLUMNS")));
+        }
+        catch (Exception e) {
+            parser.getProperties().withUsageWidth(120);
         }
     }
 
