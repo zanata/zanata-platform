@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 import ReactSidebar from 'react-sidebar'
-import SidebarSettings from '../SidebarSettings'
+import SidebarContent from '../SidebarContent'
 
 const defaultState = {
   docked: true
@@ -13,8 +13,6 @@ const defaultState = {
 class Sidebar extends Component {
   constructor () {
     super()
-    this.setOpen = ::this.setOpen
-    this.close = ::this.close
     this.state = defaultState
   }
 
@@ -35,18 +33,16 @@ class Sidebar extends Component {
   //   this.setState({docked: this.state.mql.matches})
   // }
 
-  setOpen (open) {
+  setOpen = (open) => {
     this.props.setSidebarVisible(open)
   }
 
-  close () {
+  close = () => {
     this.props.setSidebarVisible(false)
   }
 
   render () {
-    const content = <SidebarSettings
-      close={this.close}
-    />
+    const content = <SidebarContent close={this.close} />
 
     return (
       <ReactSidebar

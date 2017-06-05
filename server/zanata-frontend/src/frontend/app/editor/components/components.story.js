@@ -12,4 +12,3 @@ require('./GlossarySearchInput/GlossarySearchInput.story.js')
 require('./GlossaryTerm/GlossaryTerm.story.js')
 require('./GlossaryTermModal/GlossaryTermModal.story.js')
 require('./ValidationOptions/ValidationOptions.story')
-

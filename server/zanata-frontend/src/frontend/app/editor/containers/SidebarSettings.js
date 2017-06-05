@@ -1,19 +1,12 @@
-import React, {PropTypes} from 'react'
+import React, { Component, PropTypes } from 'react'
 import {Button} from 'react-bootstrap'
 import Icon from '../../components/Icon'
 import ValidationOptions from '../components/ValidationOptions'
 
-class SidebarSettings extends React.Component {
-
+class SidebarSettings extends Component {
   static propTypes = {
     /* close the sidebar */
     close: PropTypes.func.isRequired
-  }
-
-  sidebarDetails = () => {
-    return (
-      <ValidationOptions />
-    )
   }
 
   render () {
@@ -28,7 +21,7 @@ class SidebarSettings extends React.Component {
           </span>
         </h1>
         <div className="sidebar-wrapper">
-          {this.sidebarDetails()}
+          <ValidationOptions />
         </div>
       </div>
     )
