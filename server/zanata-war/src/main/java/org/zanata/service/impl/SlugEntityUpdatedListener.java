@@ -38,6 +38,8 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
     private static final long serialVersionUID = -1L;
     private Integer slugFieldIndexInProject;
     private Integer slugFieldIndexInIteration;
+    private Integer statusFieldIndexInProject;
+    private Integer statusFieldIndexInIteration;
 
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
@@ -51,28 +53,37 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
         if (slugEntityBase instanceof HProject) {
             HProject project = (HProject) slugEntityBase;
             slugFieldIndexInProject =
-                    getSlugFieldIndex(slugFieldIndexInProject, event);
+                    getFieldIndex(slugFieldIndexInProject, event, "slug");
+            statusFieldIndexInProject = getFieldIndex(
+                    statusFieldIndexInProject, event, "status");
             String oldSlug =
                     event.getOldState()[slugFieldIndexInProject].toString();
+            EntityStatus oldStatus = (EntityStatus) event
+                    .getOldState()[statusFieldIndexInProject];
 
             fireProjectUpdateEvent(project, oldSlug);
-            reindexIfStatusBecameObsolete(project);
+            reindexIfStatusChange(project, oldStatus);
 
         } else if (slugEntityBase instanceof HProjectIteration) {
             HProjectIteration iteration = (HProjectIteration) slugEntityBase;
             slugFieldIndexInIteration =
-                    getSlugFieldIndex(slugFieldIndexInIteration, event);
+                    getFieldIndex(slugFieldIndexInIteration, event, "slug");
+            statusFieldIndexInIteration =
+                    getFieldIndex(statusFieldIndexInIteration, event, "status");
             String oldSlug =
                     event.getOldState()[slugFieldIndexInIteration].toString();
+            EntityStatus oldStatus = (EntityStatus) event
+                    .getOldState()[statusFieldIndexInIteration];
 
             fireProjectIterationUpdateEvent(iteration, oldSlug);
-            reindexIfStatusBecameObsolete(iteration);
+            reindexIfStatusChange(iteration, oldStatus);
         }
     }
 
-    private void reindexIfStatusBecameObsolete(HProjectIteration iteration) {
-        if (iteration.getStatus() == EntityStatus.OBSOLETE) {
-            log.debug("HProjectIteration [{}] became obsolete");
+    private void reindexIfStatusChange(HProjectIteration iteration, EntityStatus oldStatus) {
+        if (iteration.getStatus() == EntityStatus.OBSOLETE
+                || oldStatus == EntityStatus.OBSOLETE) {
+            log.debug("HProjectIteration [{}] changed from/to obsolete");
             AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
             getAsyncTaskHandleManager().registerTaskHandle(handle);
             try {
@@ -84,9 +95,11 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
         }
     }
 
-    private void reindexIfStatusBecameObsolete(HProject project) {
-        if (project.getStatus() == EntityStatus.OBSOLETE) {
-            log.debug("HProject [{}] became obsolete");
+    private void reindexIfStatusChange(HProject project,
+            EntityStatus oldStatus) {
+        if (project.getStatus() == EntityStatus.OBSOLETE
+                || oldStatus == EntityStatus.OBSOLETE) {
+            log.debug("HProject [{}] status changed from/to obsolete");
             AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
             getAsyncTaskHandleManager().registerTaskHandle(handle);
             try {
@@ -118,7 +131,7 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
     }
 
     /**
-     * Try to locate index for field slug in the entity. We try to optimize a
+     * Try to locate index for field in the entity. We try to optimize a
      * bit here since the index should be consistent and only need to be looked
      * up once. If the given index is not null, it means it has been looked up
      * and set already so we just return that value. Otherwise it will look it
@@ -128,10 +141,11 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
      *            if not null it will be the index to use
      * @param event
      *            post update event for an entity
-     * @return looked up index for slug field for the entity
+     * @param entityField field name to look up in entity
+     * @return looked up index for a given field for the entity
      */
-    private static Integer getSlugFieldIndex(Integer slugFieldIndex,
-            PostUpdateEvent event) {
+    private static Integer getFieldIndex(Integer slugFieldIndex,
+            PostUpdateEvent event, String entityField) {
         if (slugFieldIndex != null) {
             return slugFieldIndex;
         }
@@ -139,7 +153,7 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
         int i;
         for (i = 0; i < propertyNames.length; i++) {
             String propertyName = propertyNames[i];
-            if (propertyName.equals("slug")) {
+            if (propertyName.equals(entityField)) {
                 return i;
             }
         }
