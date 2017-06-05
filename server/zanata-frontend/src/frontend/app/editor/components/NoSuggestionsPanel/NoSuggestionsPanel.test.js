@@ -9,17 +9,17 @@ describe('NoSuggestionsPanelTest', () => {
   it('NoSuggestionsPanel markup', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <NoSuggestionsPanel
-        message="You're on your own"
-        icon="loader"/>
+        message="You are going to have to wait"
+        icon="search"/>
     )
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div
         className="u-posCenterCenter u-textEmpty u-textCenter">
         <div className="u-sMB-1-4">
-          <Icon name="loader" className="s5" />
+          <Icon name="search" className="s5" />
         </div>
-        <p>You&apos;re on your own</p>
+        <p>You are going to have to wait</p>
       </div>
     )
     expect(actual).toEqual(expected)
