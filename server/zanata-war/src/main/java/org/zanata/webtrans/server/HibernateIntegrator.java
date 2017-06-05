@@ -8,6 +8,7 @@ import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 import org.hibernate.integrator.spi.Integrator;
 import org.hibernate.service.spi.SessionFactoryServiceRegistry;
+import org.zanata.service.impl.ReindexChildrenEntityEventListener;
 import org.zanata.service.impl.SlugEntityUpdatedListener;
 
 /**
@@ -40,7 +41,7 @@ public class HibernateIntegrator implements Integrator {
         SlugEntityUpdatedListener slugEntityUpdatedListener =
                 new SlugEntityUpdatedListener();
         eventListenerRegistry.appendListeners(EventType.POST_COMMIT_UPDATE,
-                slugEntityUpdatedListener);
+                slugEntityUpdatedListener, new ReindexChildrenEntityEventListener());
     }
 
     @Override
