@@ -29,7 +29,7 @@ import org.zanata.model.HTextFlowTarget;
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class EntityStatusIndexingInterceptor implements
+public class TextFlowTargetEntityIndexingInterceptor implements
         EntityIndexingInterceptor<HTextFlowTarget> {
     @Override
     public IndexingOverride onAdd(HTextFlowTarget hTextFlowTarget) {
