@@ -44,6 +44,7 @@ public class ReactEditorPage extends CorePage {
         super(driver);
     }
 
+    // TODO: find out why there's a background request, and either amend or override waitForPageSilence
     @Override
     protected int getExpectedBackgroundRequests() {
         return 1;
@@ -58,8 +59,8 @@ public class ReactEditorPage extends CorePage {
         return new ReactEditorPage(getDriver());
     }
 
-    public boolean isAlphaEditor() {
-        log.info("Query is alpha editor visible");
+    public boolean isReactEditor() {
+        log.info("Query is React editor visible");
         return getDriver().findElements(headerElement).size() > 0;
     }
 

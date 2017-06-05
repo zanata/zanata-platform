@@ -562,7 +562,7 @@ public class AbstractPage {
     }
 
     public String getMainWindowHandle() {
-        return Lists.newArrayList(driver.getWindowHandles()).get(0);
+        return getAllWindowHandles().get(0);
     }
 
     public List<String> getAllWindowHandles() {

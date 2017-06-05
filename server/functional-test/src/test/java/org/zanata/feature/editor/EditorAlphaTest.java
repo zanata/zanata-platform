@@ -47,7 +47,7 @@ public class EditorAlphaTest extends ZanataTestCase {
                 .pressAlphaEditorButton()
                 .switchToEditorWindow();
 
-        assertThat(reactEditorPage.isAlphaEditor());
+        assertThat(reactEditorPage.isReactEditor());
         assertThat(reactEditorPage.getTransunitTargets().size()).isEqualTo(1);
     }
 }
