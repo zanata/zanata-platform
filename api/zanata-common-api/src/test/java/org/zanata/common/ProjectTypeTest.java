@@ -41,6 +41,7 @@ public class ProjectTypeTest {
         assertThat(getValueOf("Properties"), is(Properties));
         assertThat(getValueOf("Gettext"), is(Gettext));
         assertThat(getValueOf("Podir"), is(Podir));
+        assertThat(getValueOf("Offlinepo"), is(Podir));
         assertThat(getValueOf("Xliff"), is(Xliff));
         assertThat(getValueOf("Xml"), is(Xml));
         assertThat(getValueOf("File"), is(File));
@@ -52,6 +53,7 @@ public class ProjectTypeTest {
         assertThat(getValueOf("properties"), is(Properties));
         assertThat(getValueOf("gettext"), is(Gettext));
         assertThat(getValueOf("podir"), is(Podir));
+        assertThat(getValueOf("offlinepo"), is(Podir));
         assertThat(getValueOf("xliff"), is(Xliff));
         assertThat(getValueOf("xml"), is(Xml));
         assertThat(getValueOf("file"), is(File));
