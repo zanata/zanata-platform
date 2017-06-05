@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react'
+import React, { PropTypes } from 'react'
 import { Tabs, FormGroup, InputGroup,
   FormControl, Button } from 'react-bootstrap'
 import Icon from '../../components/Icon'
@@ -10,7 +10,7 @@ import GlossaryTab from './GlossaryTab'
 // TODO change SidebarContent to just choose between the current
 //      content (moved to a different component) and SidebarSettings.
 // TODO split this into separate components for each tab and panel
-class SidebarContent extends Component {
+class SidebarContent extends React.Component {
   static propTypes = {
     /* close the sidebar */
     close: PropTypes.func.isRequired,
