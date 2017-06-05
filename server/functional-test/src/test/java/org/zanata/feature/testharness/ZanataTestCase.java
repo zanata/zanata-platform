@@ -52,6 +52,8 @@ public class ZanataTestCase {
 
     public static final int MAX_SHORT_TEST_DURATION = 180000;
     public static final int MAX_LONG_TEST_DURATION = 600000;
+    private static String mainWindowHandle;
+
     @ClassRule
     public static ExternalResource javascriptLogging = new ExternalResource() {
 
@@ -65,7 +67,6 @@ public class ZanataTestCase {
             // Close all windows other than the original one
             WebDriver driverRef = WebDriverFactory.INSTANCE.getDriver();
             List<String> windows = Lists.newArrayList(driverRef.getWindowHandles());
-            String mainWindowHandle = windows.get(0);
             for (String windowHandle : windows) {
                 if (!windowHandle.equals(mainWindowHandle)) {
                     log.info("Closing {}", windowHandle);
@@ -106,6 +107,7 @@ public class ZanataTestCase {
         WebDriverFactory.INSTANCE.testEntry();
         zanataRestCaller.signalBeforeTest(getClass().getName(),
                 testName.getMethodName());
+        mainWindowHandle = WebDriverFactory.INSTANCE.getDriver().getWindowHandle();
     }
 
     @After
