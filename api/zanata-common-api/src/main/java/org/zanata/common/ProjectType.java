@@ -33,6 +33,7 @@ public enum ProjectType {
     Utf8Properties, Properties, Gettext, Podir, Xliff, Xml, File;
 
     private static final String OBSOLETE_PROJECT_TYPE_RAW = "raw";
+    protected static final String PROJECT_TYPE_OFFLINE_PO = "offlinepo";
 
     /**
      * @param projectType
@@ -43,6 +44,10 @@ public enum ProjectType {
         // TODO change all values to upper case and use ProjectType.valueOf(projectType)
         if (projectType == null || projectType.isEmpty()) {
             throw new Exception("No project type specified");
+        }
+        // handle offline po project type which is not part of the enum
+        if (projectType.equalsIgnoreCase(PROJECT_TYPE_OFFLINE_PO)) {
+            return ProjectType.Podir;
         }
         for (ProjectType pt : ProjectType.values()) {
             if (pt.name().equalsIgnoreCase(projectType)) {
