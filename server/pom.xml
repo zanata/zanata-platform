@@ -266,6 +266,11 @@
 
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-reflect</artifactId>
+        <version>${kotlin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
         <artifactId>kotlin-stdlib</artifactId>
         <version>${kotlin.version}</version>
       </dependency>
@@ -286,6 +291,13 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>2.6.2</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>com.nhaarman</groupId>
+        <artifactId>mockito-kotlin</artifactId>
+        <version>1.4.0</version>
         <scope>test</scope>
       </dependency>
 
@@ -454,7 +466,7 @@
       <dependency>
         <groupId>org.assertj</groupId>
         <artifactId>assertj-core</artifactId>
-        <version>3.5.2</version>
+        <version>3.8.0</version>
         <scope>test</scope>
       </dependency>
 
