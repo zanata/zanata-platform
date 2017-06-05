@@ -274,7 +274,7 @@ public class MockServerRule extends ExternalResource {
         when(transResourceResponse.getStatus()).thenReturn(200);
 
         when(transResourceResponse.getStringHeaders()).thenReturn(
-                new MultivaluedMapImpl());
+                new MultivaluedMapImpl<>());
         when(transResourceResponse.readEntity(TranslationsResource.class))
                 .thenReturn(transResourceOnServer);
         return new PullCommand(pullOpts, clientFactory);

@@ -35,6 +35,7 @@ import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -62,6 +63,8 @@ public class UserOptionsServiceTest {
     private CachingDispatchAsync dispatcher;
     @Mock
     private WebTransMessages messages;
+    @Captor
+    private ArgumentCaptor<AsyncCallback<SaveOptionsResult>> callbackCaptor;
 
     private UserConfigHolder configHolder = new UserConfigHolder();
 
@@ -74,7 +77,7 @@ public class UserOptionsServiceTest {
 
     @Test
     public void persistOptionChange() {
-        Map<UserOptions, String> map = new HashMap<UserOptions, String>();
+        Map<UserOptions, String> map = new HashMap<>();
         map.put(DocumentListPageSize, String.valueOf(1000));
         map.put(EditorPageSize, String.valueOf(2000));
 
@@ -85,8 +88,6 @@ public class UserOptionsServiceTest {
 
         ArgumentCaptor<SaveOptionsAction> actionCaptor =
                 ArgumentCaptor.forClass(SaveOptionsAction.class);
-        ArgumentCaptor<AsyncCallback> callbackCaptor =
-                ArgumentCaptor.forClass(AsyncCallback.class);
         verify(dispatcher).execute(actionCaptor.capture(),
                 callbackCaptor.capture());
 

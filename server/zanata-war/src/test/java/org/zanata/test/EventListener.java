@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class EventListener {
 
-    private List firedEvents = new ArrayList<>();
+    private List<Object> firedEvents = new ArrayList<>();
 
     public void fireEvent(@Observes Object event) {
         firedEvents.add(event);

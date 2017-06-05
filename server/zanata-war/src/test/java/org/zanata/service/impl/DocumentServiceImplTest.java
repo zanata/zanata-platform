@@ -40,6 +40,7 @@ import java.util.Set;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -91,6 +92,9 @@ public class DocumentServiceImplTest {
     @Mock
     private WebhookServiceImpl webhookService;
 
+    @Captor
+    private ArgumentCaptor<List<WebHook>> captor;
+
     private DocumentServiceImpl documentService;
 
     private Long docId = 1L, versionId = 1L;
@@ -101,13 +105,12 @@ public class DocumentServiceImplTest {
 
     private int milestone = DocumentService.DOC_EVENT_MILESTONE;
 
-    List<WebHook> webHooks = Lists.newArrayList();
-
     private String testUrl = "http://localhost/test/doc/url";
 
     private String key = null;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setup() {
         MockitoAnnotations.initMocks(this);
         documentService = new DocumentServiceImpl();
@@ -125,7 +128,7 @@ public class DocumentServiceImplTest {
         HProject project = Mockito.mock(HProject.class);
         HDocument document = Mockito.mock(HDocument.class);
 
-        webHooks = Lists.newArrayList();
+        List<WebHook> webHooks = Lists.newArrayList();
         Set<WebhookType> types =
             Sets.newHashSet(WebhookType.DocumentMilestoneEvent);
         webHooks.add(new WebHook(project, "http://test.example.com",
@@ -159,16 +162,14 @@ public class DocumentServiceImplTest {
         String message = msgs.format("jsf.webhook.response.state", milestone,
                 ContentState.Translated);
 
-        ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-
         verify(webhookService).processDocumentMilestone(
             eq(projectSlug), eq(versionSlug), eq(docIdString),
             eq(localeId), eq(message), eq(testUrl), captor.capture());
 
         assertThat(captor.getValue().size(), is(2));
-        assertThat(((WebHook) captor.getValue().get(0)).getTypes(),
+        assertThat((captor.getValue().get(0)).getTypes(),
             contains(WebhookType.DocumentMilestoneEvent));
-        assertThat(((WebHook) captor.getValue().get(1)).getTypes(),
+        assertThat((captor.getValue().get(1)).getTypes(),
             contains(WebhookType.DocumentMilestoneEvent));
     }
 
@@ -198,16 +199,14 @@ public class DocumentServiceImplTest {
         String message = msgs.format("jsf.webhook.response.state",
             milestone, ContentState.Approved);
 
-        ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
-
         verify(webhookService).processDocumentMilestone(
             eq(projectSlug), eq(versionSlug), eq(docIdString),
             eq(localeId), eq(message), eq(testUrl), captor.capture());
 
         assertThat(captor.getValue().size(), is(2));
-        assertThat(((WebHook) captor.getValue().get(0)).getTypes(),
+        assertThat((captor.getValue().get(0)).getTypes(),
             contains(WebhookType.DocumentMilestoneEvent));
-        assertThat(((WebHook) captor.getValue().get(1)).getTypes(),
+        assertThat((captor.getValue().get(1)).getTypes(),
             contains(WebhookType.DocumentMilestoneEvent));
     }
 

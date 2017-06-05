@@ -28,6 +28,7 @@ import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -72,6 +73,9 @@ public class TranslationUpdatedManagerTest {
 
     @Mock
     private WebhookServiceImpl webhookService;
+
+    @Captor
+    private ArgumentCaptor<List<WebHook>> captor;
 
     TranslationUpdatedManager manager;
 
@@ -136,7 +140,7 @@ public class TranslationUpdatedManagerTest {
                 new DocumentLocaleKey(docId, localeId);
 
         Map<ContentState, Long> contentStates = new HashMap<>();
-        Long longWordCount = new Long(wordCount);
+        Long longWordCount = (long) wordCount;
         contentStates.put(newState, longWordCount);
         contentStates.put(oldState, longWordCount);
 
@@ -145,7 +149,6 @@ public class TranslationUpdatedManagerTest {
 
         spyManager.docStatsUpdated(event);
         verify(spyManager).processWebHookEvent(event);
-        ArgumentCaptor<List> captor = ArgumentCaptor.forClass(List.class);
         verify(webhookService).processDocumentStats(eq(username),
                 eq(projectSlug), eq(versionSlug), eq(strDocId), eq(localeId),
                 eq(contentStates), captor.capture());

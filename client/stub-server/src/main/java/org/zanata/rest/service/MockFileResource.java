@@ -84,7 +84,7 @@ public class MockFileResource implements FileResource {
 
     @Override
     public Response fileTypeInfoList() {
-        List fileTypeInfoList = (List) fileProjectSourceDocTypes().stream().map(
+        List<FileTypeInfo> fileTypeInfoList = fileProjectSourceDocTypes().stream().map(
                 DocumentType::toFileTypeInfo).collect(Collectors.toList());
         GenericEntity<List<FileTypeInfo>> genericEntity =
                 new GenericEntity<List<FileTypeInfo>>(fileTypeInfoList) {};
