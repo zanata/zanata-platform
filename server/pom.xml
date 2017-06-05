@@ -67,10 +67,10 @@
     <!-- see http://community.jboss.org/wiki/HibernateCompatibilityMatrix?decorator=print -->
     <!-- see also the jboss7 profile below -->
     <hibernate.scope>provided</hibernate.scope>
-    <hibernate.version>5.0.7.Final</hibernate.version>
+    <hibernate.version>5.0.12.Final</hibernate.version>
 
     <hibernate.search.scope>provided</hibernate.search.scope>
-    <hibernate.search.version>5.5.1.Final</hibernate.search.version>
+    <hibernate.search.version>5.5.2.Final</hibernate.search.version>
     <hibernate.entitymanager.version>${hibernate.version}</hibernate.entitymanager.version>
     <war_bundles_jsf_impl>false</war_bundles_jsf_impl>
     <hibernate.validator.version>5.2.3.Final</hibernate.validator.version>
