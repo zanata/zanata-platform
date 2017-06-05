@@ -4,6 +4,8 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Provider;
 import javax.servlet.http.HttpServletRequest;
 
+import net.customware.gwt.dispatch.shared.Action;
+import net.customware.gwt.dispatch.shared.Result;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -39,6 +41,7 @@ public class SeamDispatchTest {
     @Mock private AbstractActionHandler handler;
 
     @Before
+    @SuppressWarnings("unchecked")
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         dispatch = new SeamDispatch(request, allowAnonymous, identity,

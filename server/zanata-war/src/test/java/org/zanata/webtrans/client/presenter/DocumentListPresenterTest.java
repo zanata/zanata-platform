@@ -98,11 +98,11 @@ public class DocumentListPresenterTest {
     @Captor
     private ArgumentCaptor<GwtEvent> capturedEventBusEvent;
     @Captor
-    private ArgumentCaptor<Integer> capturedPageSize;
-    @Captor
     private ArgumentCaptor<String> capturedHistoryTokenString;
     @Captor
     private ArgumentCaptor<HistoryToken> capturedHistoryToken;
+    @Captor
+    private ArgumentCaptor<AsyncCallback<GetDocumentStatsResult>> asyncCallbackArgumentCaptor;
 
     private static final String TEST_BY_WORDS_MESSAGE = "By Words";
     private static final String TEST_BY_MESSAGE_MESSAGE = "By Messages";
@@ -548,13 +548,11 @@ public class DocumentListPresenterTest {
 
         ArgumentCaptor<GetDocumentStats> actionCaptor =
                 ArgumentCaptor.forClass(GetDocumentStats.class);
-        ArgumentCaptor<AsyncCallback> callbackCaptor =
-                ArgumentCaptor.forClass(AsyncCallback.class);
 
         verify(mockDispatcher).execute(actionCaptor.capture(),
-                callbackCaptor.capture());
+                asyncCallbackArgumentCaptor.capture());
 
-        AsyncCallback callback = callbackCaptor.getValue();
+        AsyncCallback<GetDocumentStatsResult> callback = asyncCallbackArgumentCaptor.getValue();
         callback.onSuccess(result);
 
         verify(mockEventBus, times(3)).fireEvent(
