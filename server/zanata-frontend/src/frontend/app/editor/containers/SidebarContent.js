@@ -1,3 +1,6 @@
+// TODO change SidebarContent to just choose between the current
+//      content (moved to a different component) and SidebarSettings.
+// TODO split this into separate components for each tab and panel
 import React, { PropTypes } from 'react'
 import { Tabs, FormGroup, InputGroup,
   FormControl, Button } from 'react-bootstrap'
