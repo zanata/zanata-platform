@@ -157,10 +157,11 @@ public class SlugEntityUpdatedListener implements PostUpdateEventListener {
                 return i;
             }
         }
-        log.error("can not find slug index in entity [{}] properties [{}]",
-                event.getEntity(), Lists.newArrayList(propertyNames));
+        log.error("can not find {} index in entity [{}] properties [{}]",
+                entityField, event.getEntity(),
+                Lists.newArrayList(propertyNames));
         throw new IllegalStateException(
-                "can not find slug index in entity properties");
+                "can not find " + entityField + " index in entity properties");
     }
 
     public AsyncTaskHandleManager getAsyncTaskHandleManager() {
