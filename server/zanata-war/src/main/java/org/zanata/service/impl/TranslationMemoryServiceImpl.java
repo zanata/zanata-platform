@@ -752,7 +752,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             TransMemoryQuery queryParams) {
         if (queryParams.getProject() != null) {
             TermQuery projectQuery =
-                    new TermQuery(new Term(IndexFieldLabels.PROJECT_FIELD,
+                    new TermQuery(new Term(IndexFieldLabels.PROJECT_ID_FIELD,
                             queryParams.getProject().getValue()));
             if (queryParams.getProject().isCheck()) {
                 query.add(projectQuery, BooleanClause.Occur.MUST);
