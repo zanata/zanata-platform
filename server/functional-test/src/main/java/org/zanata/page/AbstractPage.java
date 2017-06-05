@@ -22,6 +22,8 @@ package org.zanata.page;
 
 import java.util.List;
 import java.util.Set;
+
+import org.assertj.core.util.Lists;
 import org.openqa.selenium.*;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
@@ -557,5 +559,13 @@ public class AbstractPage {
 
     public void triggerScreenshot(String tag) {
         WebElementUtil.triggerScreenshot(tag);
+    }
+
+    public String getMainWindowHandle() {
+        return Lists.newArrayList(driver.getWindowHandles()).get(0);
+    }
+
+    public List<String> getAllWindowHandles() {
+        return Lists.newArrayList(driver.getWindowHandles());
     }
 }

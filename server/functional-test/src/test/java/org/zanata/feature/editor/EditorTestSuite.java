@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+    EditorAlphaTest.class,
     EditorFilterMessagesTest.class,
     TranslateTextTest.class,
     TranslationHistoryTest.class
