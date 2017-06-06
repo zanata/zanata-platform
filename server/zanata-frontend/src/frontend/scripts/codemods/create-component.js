@@ -110,10 +110,10 @@ function askIfStateless (andThen) {
       isYes(response, (err, isStateless) => {
         if (err) {
           if (response === '?') {
-            write('  Stateless components are just a render function.')
-            write('  They are prefered, unless you need to:')
-            write('   - hold some state')
-            write('   - pass values to a callback')
+            writeln('  Stateless components are just a render function.')
+            writeln('  They are prefered, unless you need to:')
+            writeln('   - hold some state')
+            writeln('   - pass values to a callback')
           } else {
             console.error(c.red('What is "' + response + '"?'))
             console.error(
