@@ -1,5 +1,6 @@
 package org.zanata.webtrans.client.presenter;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +24,7 @@ import org.zanata.webtrans.shared.auth.Identity;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.UserPanelSessionItem;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
+import org.zanata.webtrans.shared.rpc.NoOpResult;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
 import com.google.gwt.event.dom.client.KeyCodes;
 
@@ -55,8 +57,6 @@ public class WorkspaceUsersPresenterTest {
     private KeyShortcutPresenter keyShortcutPresenter;
     @Captor
     private ArgumentCaptor<KeyShortcut> keyShortcutCaptor;
-    @Mock
-    private UserPanelSessionItem userPanelSessionItem;
     @Mock
     private HasManageUserPanel userSessionPanel;
 
@@ -116,6 +116,7 @@ public class WorkspaceUsersPresenterTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void onSendButtonClicked() {
         // Given:
         when(display.getChatInputText()).thenReturn("hello");

@@ -70,6 +70,8 @@ public class ForceReviewCommentPresenterTest {
     private KeyShortcutPresenter keyShortcutPresenter;
     @Captor
     private ArgumentCaptor<KeyShortcut> shortcutCapture;
+    @Captor
+    private ArgumentCaptor<AsyncCallback<AddReviewCommentResult>> resultCaptor;
 
     @Before
     public void setUp() throws Exception {
@@ -104,8 +106,6 @@ public class ForceReviewCommentPresenterTest {
                 new DocumentId(1L, "doc"));
         ArgumentCaptor<AddReviewCommentAction> actionCaptor =
                 ArgumentCaptor.forClass(AddReviewCommentAction.class);
-        ArgumentCaptor<AsyncCallback> resultCaptor =
-                ArgumentCaptor.forClass(AsyncCallback.class);
 
         presenter.addComment("i hate this");
 
