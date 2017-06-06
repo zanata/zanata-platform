@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Icon } from '../../../components'
+import LoaderText from '../../../components/LoaderText'
 
 /**
  * Generic panel showing an icon and message, to
@@ -8,19 +9,28 @@ import { Icon } from '../../../components'
 class NoSuggestionsPanel extends React.Component {
   static propTypes = {
     message: PropTypes.string.isRequired,
-    icon: PropTypes.oneOf(['search', 'suggestions']).isRequired
+    icon: PropTypes.oneOf(['loader', 'search', 'suggestions']).isRequired
   }
 
   render () {
-    return (
-      <div
-        className="u-posCenterCenter u-textEmpty u-textCenter">
-        <div className="u-sMB-1-4">
-          <Icon name={this.props.icon} className="s5" />
+    if (this.props.icon === 'loader') {
+      return (
+        <div className="u-posCenterCenter u-textEmpty u-textCenter">
+          <div className="u-sMB-1-4">
+            <LoaderText loading loadingText={this.props.message} />
+          </div>
         </div>
-        <p>{this.props.message}</p>
-      </div>
-    )
+      )
+    } else {
+      return (
+        <div className="u-posCenterCenter u-textEmpty u-textCenter">
+          <div className="u-sMB-1-4">
+            <Icon name={this.props.icon} className="s5" />
+          </div>
+          <p>{this.props.message}</p>
+        </div>
+      )
+    }
   }
 }
 

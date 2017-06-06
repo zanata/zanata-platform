@@ -4,23 +4,38 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { Icon } from '../../../components'
 import NoSuggestionsPanel from '.'
+import LoaderText from '../../../components/LoaderText'
 
 describe('NoSuggestionsPanelTest', () => {
   it('NoSuggestionsPanel markup', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <NoSuggestionsPanel
-        message="You are going to have to wait"
+        message="You're on your own"
         icon="search"/>
     )
-
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div
         className="u-posCenterCenter u-textEmpty u-textCenter">
-        <div className="u-sMB-1-4">
-          <Icon name="search" className="s5" />
-        </div>
-        <p>You are going to have to wait</p>
+        <Icon
+          name="search"
+          className="Icon--lg Icon--circle u-sMB-1-4"/>
+        <p>You&apos;re on your own</p>
       </div>
+    )
+    expect(actual).toEqual(expected)
+  })
+  it('NoSuggestionsPanel markup', () => {
+    const actual = ReactDOMServer.renderToStaticMarkup(
+        <NoSuggestionsPanel
+            message="You're on your own"
+            icon="loader"/>
+    )
+
+    const expected = ReactDOMServer.renderToStaticMarkup(
+        <div
+            className="u-posCenterCenter u-textEmpty u-textCenter">
+          <LoaderText loading loadingText='Loading suggestions' />
+        </div>
     )
     expect(actual).toEqual(expected)
   })

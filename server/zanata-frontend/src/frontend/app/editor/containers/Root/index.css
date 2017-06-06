@@ -189,6 +189,11 @@
   padding-left: 1em;
 }
 
+.Editor-suggestionsBody .loader-text span span {
+  color:rgb(144, 184, 197);
+  font-weight: 600;
+}
+
 li.docName {
   max-width: 20em;
 }
