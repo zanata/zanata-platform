@@ -38,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class EditorAlphaTest extends ZanataTestCase {
 
     // Test that the alpha button works
-    @Test
+    @Test(timeout = MAX_SHORT_TEST_DURATION)
     public void showAlphaEditor() {
         new LoginWorkFlow()
                 .signIn("admin", "admin");
