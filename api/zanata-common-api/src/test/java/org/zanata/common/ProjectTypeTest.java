@@ -79,6 +79,7 @@ public class ProjectTypeTest {
     }
 
     @Test
+    @Deprecated
     public void gettextProjectsSupportOnlyPot() {
         List<DocumentType> supported = getSupportedSourceFileTypes(Gettext);
         assertThat(supported.get(0).getSourceExtensions(), contains("pot"));
@@ -86,6 +87,7 @@ public class ProjectTypeTest {
     }
 
     @Test
+    @Deprecated
     public void podirProjectsSupportOnlyPot() {
         List<DocumentType> supported = getSupportedSourceFileTypes(Podir);
         assertThat(supported.get(0).getSourceExtensions(), contains("pot"));
@@ -93,6 +95,7 @@ public class ProjectTypeTest {
     }
 
     @Test
+    @Deprecated
     public void supportedSourceFileTypesCorrectForFileProject() {
         List<DocumentType> supportedTypes = getSupportedSourceFileTypes(File);
         Set<String> extensions = new HashSet<>();
@@ -106,6 +109,7 @@ public class ProjectTypeTest {
     }
 
     @Test
+    @Deprecated
     public void supportedSourceFileTypesEmptyForOtherProjectTypes() {
         // There is currently no DocumentType representation of the source documents for these project types
         // They should be added, but while they are absent we expect empty source type lists.
