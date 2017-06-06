@@ -272,7 +272,7 @@ storiesOf('Modal', module)
           </Modal.Body>
         </Modal>
     ))
-    .add('TMX export - reindexing', () => (
+    .add('TMX export - preparing files', () => (
         <Modal
             show={true}
             onHide={action('onHide')}>
@@ -281,7 +281,7 @@ storiesOf('Modal', module)
           </Modal.Header>
           <Modal.Body>
             <span className='tmx-export'>
-              <p><strong>Reindexing</strong></p>
+              <p><strong>Preparing files</strong></p>
               <p>
                 1 of 445
               </p>
@@ -289,7 +289,7 @@ storiesOf('Modal', module)
           </Modal.Body>
         </Modal>
     ))
-    .add('TMX export - reindexing finished', () => (
+    .add('TMX export - file prep finished', () => (
         <Modal
             show={true}
             onHide={action('onHide')}>
@@ -298,7 +298,7 @@ storiesOf('Modal', module)
           </Modal.Header>
           <Modal.Body>
             <span className='tmx-export'>
-              <p><strong>Reindexing complete</strong></p>
+              <p><strong>Files are ready for download</strong></p>
                <p>
                  <Button
                      bsStyle='primary'
