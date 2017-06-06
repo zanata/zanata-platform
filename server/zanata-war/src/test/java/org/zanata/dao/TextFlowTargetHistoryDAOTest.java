@@ -50,6 +50,8 @@ public class TextFlowTargetHistoryDAOTest extends ZanataJpaTest {
                         dateFormatter);
         historyDAO = new TextFlowTargetHistoryDAO(getSession()) {
 
+            private static final long serialVersionUID = 1L;
+
             @Override
             protected String stripTimeFromDateTimeFunction(String columnName) {
                 // we override mysql function with a h2 one

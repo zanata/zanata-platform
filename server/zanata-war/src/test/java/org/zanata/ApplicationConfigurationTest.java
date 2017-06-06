@@ -57,6 +57,7 @@ import com.google.common.collect.Lists;
 @Synchronized(timeout = ServerConstants.DEFAULT_TIMEOUT)
 @RunWith(CdiUnitRunner.class)
 public class ApplicationConfigurationTest implements Serializable {
+    private static final long serialVersionUID = 1L;
     @Produces
     @Mock(answer = Answers.RETURNS_DEEP_STUBS)
     private DatabaseBackedConfig databaseBackedConfig;
