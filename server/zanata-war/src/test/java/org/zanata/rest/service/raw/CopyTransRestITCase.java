@@ -81,7 +81,7 @@ public class CopyTransRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jaxbMarhsal(resource), MediaType.APPLICATION_XML_TYPE);
                 Response response = builder.buildPost(entity).invoke();
                 onResponse(response);

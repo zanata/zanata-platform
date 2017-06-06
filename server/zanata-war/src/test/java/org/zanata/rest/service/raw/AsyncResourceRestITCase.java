@@ -160,7 +160,7 @@ public class AsyncResourceRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jaxbMarhsal(resource),
                                 MediaType.APPLICATION_XML_TYPE);
                 Response response = builder.buildPut(entity).invoke();

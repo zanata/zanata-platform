@@ -217,7 +217,7 @@ public class ProjectRawCompatibilityITCase extends RestTest {
                         new Project("new-project", "New Project",
                                 ProjectType.Podir.toString(),
                                 "This is a New Sample Project");
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jsonMarshal(p),
                                 MediaTypes.APPLICATION_ZANATA_PROJECT_JSON);
                 Response response = builder.buildPut(entity).invoke();
