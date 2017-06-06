@@ -149,7 +149,7 @@ public class AccountRawRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jaxbMarhsal(account), MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
                 Response response = builder.buildPut(entity).invoke();
                 onResponse(response);
