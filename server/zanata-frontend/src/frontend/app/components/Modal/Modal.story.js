@@ -272,7 +272,44 @@ storiesOf('Modal', module)
           </Modal.Body>
         </Modal>
     ))
-
+    .add('TMX export - preparing files', () => (
+        <Modal
+            show={true}
+            onHide={action('onHide')}>
+          <Modal.Header>
+            <Modal.Title>Export Project to TMX</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <span className='tmx-export'>
+              <p><strong>Preparing files</strong></p>
+              <p>
+                1 of 445
+              </p>
+            </span>
+          </Modal.Body>
+        </Modal>
+    ))
+    .add('TMX export - file prep finished', () => (
+        <Modal
+            show={true}
+            onHide={action('onHide')}>
+          <Modal.Header>
+            <Modal.Title>Export Project to TMX</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <span className='tmx-export'>
+              <p><strong>Files are ready for download</strong></p>
+               <p>
+                 <Button
+                     bsStyle='primary'
+                     onClick={action('onClick')}>
+                    Download
+                 </Button>
+              </p>
+            </span>
+          </Modal.Body>
+        </Modal>
+    ))
     .add('version TM - diff doc id/context', () => (
         <Modal
             show={true}
