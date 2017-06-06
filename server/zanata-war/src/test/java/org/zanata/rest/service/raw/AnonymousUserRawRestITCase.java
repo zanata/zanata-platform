@@ -123,7 +123,7 @@ public class AnonymousUserRawRestITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity("false",
                                 MediaType.APPLICATION_JSON_TYPE);
                 Response response = builder.buildPut(entity).invoke();

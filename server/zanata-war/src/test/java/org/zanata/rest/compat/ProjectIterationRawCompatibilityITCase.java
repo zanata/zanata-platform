@@ -131,7 +131,7 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             public void invoke(Invocation.Builder builder) {
-                Entity entity = Entity
+                Entity<String> entity = Entity
                         .entity(jsonMarshal(newIteration),
                                 MediaTypes.APPLICATION_ZANATA_PROJECT_ITERATION_JSON);
                 Response response = builder.buildPut(entity).invoke();
