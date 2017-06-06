@@ -53,7 +53,6 @@ import javax.annotation.Nonnull;
 import java.net.URI;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -93,8 +92,6 @@ public class TSAdapter extends OkapiFilterAdapter {
             @Nonnull LocaleId sourceLocale, Optional<String> filterParams)
             throws  FileFormatAdapterException,
                     IllegalArgumentException {
-        Objects.requireNonNull(documentContent, "DocumentContent cannot be null");
-        Objects.requireNonNull(sourceLocale, "SourceLocale cannot be null");
         IFilter filter = getFilter();
         Resource document = new Resource();
         document.setLang(sourceLocale);
@@ -168,8 +165,6 @@ public class TSAdapter extends OkapiFilterAdapter {
     @Override
     public String generateTranslationFilename(@Nonnull HDocument document,
             @Nonnull String locale) {
-        Objects.requireNonNull(document, "Document cannot be null");
-        Objects.requireNonNull(locale, "Locale cannot be null");
         String srcExt = FilenameUtils.getExtension(document.getName());
         DocumentType documentType = document.getRawDocument().getType();
         String transExt = documentType.getExtensions().get(srcExt);

@@ -27,9 +27,10 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import net.sf.okapi.common.*;
+import net.sf.okapi.common.Event;
+import net.sf.okapi.common.EventType;
+import net.sf.okapi.common.IParameters;
 import net.sf.okapi.common.exceptions.OkapiIOException;
 import net.sf.okapi.common.filters.IFilter;
 import net.sf.okapi.common.filterwriter.GenericContent;
@@ -38,11 +39,12 @@ import net.sf.okapi.common.resource.RawDocument;
 import net.sf.okapi.common.resource.StartSubDocument;
 import net.sf.okapi.common.resource.TextUnit;
 
-import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.adapter.TranslatableSeparator.SplitString;
-import org.zanata.common.*;
+import org.zanata.common.ContentState;
+import org.zanata.common.ContentType;
+import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
 import org.zanata.rest.dto.resource.Resource;
@@ -58,8 +60,6 @@ import com.google.common.collect.Maps;
 
 import javax.annotation.Nonnull;
 
-import org.hibernate.validator.constraints.NotEmpty;
-import javax.annotation.Nonnull;
 import static net.sf.okapi.common.LocaleId.fromString;
 
 /**
@@ -164,8 +164,6 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
                                       @Nonnull LocaleId sourceLocale,
                                       Optional<String> filterParams)
             throws FileFormatAdapterException, IllegalArgumentException {
-        Objects.requireNonNull(sourceLocale, "SourceLocale cannot be null");
-        Objects.requireNonNull(documentContent, "DocumentContent cannot be null");
         Resource document = new Resource();
         document.setLang(sourceLocale);
         document.setContentType(ContentType.TextPlain);
@@ -293,12 +291,9 @@ public class OkapiFilterAdapter implements FileFormatAdapter {
     @Override
     public TranslationsResource parseTranslationFile(@Nonnull URI fileUri,
                                                      @Nonnull LocaleId sourceLocaleId,
-                                                     @Nonnull @NotEmpty String localeId,
+                                                     @Nonnull String localeId,
                                                      Optional<String> filterParams)
-            throws FileFormatAdapterException,
-            IllegalArgumentException {
-        Objects.requireNonNull(fileUri, "fileURI cannot be null");
-        Objects.requireNonNull(localeId, "LocaleID cannot be null");
+            throws FileFormatAdapterException, IllegalArgumentException {
         RawDocument rawDoc =
                 new RawDocument(fileUri, "UTF-8",
                         net.sf.okapi.common.LocaleId.fromString("en"));

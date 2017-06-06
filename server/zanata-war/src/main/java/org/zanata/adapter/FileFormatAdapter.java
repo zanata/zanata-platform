@@ -20,19 +20,13 @@
  */
 package org.zanata.adapter;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 
 import javax.annotation.Nonnull;
-import javax.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.zanata.common.DocumentType;
 import org.zanata.common.LocaleId;
 import org.zanata.exception.FileFormatAdapterException;
@@ -89,7 +83,7 @@ public interface FileFormatAdapter {
      *             if translatedDocumentContent or localeId is null
      */
     TranslationsResource parseTranslationFile(@Nonnull URI fileUri,
-            @Nonnull LocaleId sourceLocaleId, @Nonnull @NotEmpty String localeId,
+            @Nonnull LocaleId sourceLocaleId, @Nonnull String localeId,
             Optional<String> params)
             throws FileFormatAdapterException, IllegalArgumentException;
 
