@@ -343,7 +343,7 @@ timestamps {
         // define tasks which will run in parallel
         def tasks = [
                 "WILDFLY" : { integrationTests('wildfly8') },
-                "JBOSSEAP": { integrationTests('jbosseap6') },
+                //FIXME "JBOSSEAP": { integrationTests('jbosseap6') },
                 // abort other tasks (for faster feedback) as soon as one fails
                 // disabled; not currently handled by pipeline-unit
 //              failFast: true
