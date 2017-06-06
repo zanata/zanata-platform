@@ -27,6 +27,7 @@ import org.openqa.selenium.WebElement;
 import org.zanata.page.CorePage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -54,8 +55,17 @@ public class ReactEditorPage extends CorePage {
         log.info("Switching to new window (from {})", getDriver().getWindowHandle());
         waitForAMoment().until((Predicate<WebDriver>) input ->
                 getAllWindowHandles().size() > 1);
-        getDriver().switchTo().window(getAllWindowHandles().get(1));
-        log.info("Window: {}", getDriver().getWindowHandle());
+        Iterator<String> allWindows = getAllWindowHandles().iterator();
+        boolean foundEditor = false;
+        while (allWindows.hasNext()) {
+            getDriver().switchTo().window(allWindows.next());
+            if (isReactEditor()) {
+                foundEditor = true;
+                log.info("React Editor Window: {}", getDriver().getWindowHandle());
+                break;
+            }
+        }
+        assert foundEditor;
         return new ReactEditorPage(getDriver());
     }
 

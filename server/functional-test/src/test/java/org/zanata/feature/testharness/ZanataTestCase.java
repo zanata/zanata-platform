@@ -39,6 +39,7 @@ import org.zanata.util.EnsureLogoutRule;
 import org.zanata.util.SampleProjectRule;
 import org.zanata.util.ZanataRestCaller;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Global application of rules to Zanata functional tests
@@ -66,7 +67,7 @@ public class ZanataTestCase {
         protected void after() {
             // Close all windows other than the original one
             WebDriver driverRef = WebDriverFactory.INSTANCE.getDriver();
-            List<String> windows = Lists.newArrayList(driverRef.getWindowHandles());
+            Set<String> windows = driverRef.getWindowHandles();
             for (String windowHandle : windows) {
                 if (!windowHandle.equals(mainWindowHandle)) {
                     log.info("Closing {}", windowHandle);

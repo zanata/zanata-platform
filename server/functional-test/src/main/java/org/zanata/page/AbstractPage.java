@@ -561,11 +561,7 @@ public class AbstractPage {
         WebElementUtil.triggerScreenshot(tag);
     }
 
-    public String getMainWindowHandle() {
-        return getAllWindowHandles().get(0);
-    }
-
-    public List<String> getAllWindowHandles() {
-        return Lists.newArrayList(driver.getWindowHandles());
+    public Set<String> getAllWindowHandles() {
+        return driver.getWindowHandles();
     }
 }
