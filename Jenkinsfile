@@ -118,8 +118,10 @@ boolean resolveAllFuncTests() {
   if (paramVal == null) {
     echo "allFuncTests param is null; using default value."
   }
-  def result = paramVal ?: false
+  // paramVal may be a String, so compare as Strings
+  def result = (paramVal ?: false).toString().equals("true")
   echo "allFuncTests: $result"
+
   return result
 }
 
@@ -165,7 +167,6 @@ timestamps {
         stage('Checkout') {
           // notify methods send instant messages about the build progress
           notify.started()
-
           // Shallow Clone does not work with RHEL7, which uses git-1.8.3
           // https://issues.jenkins-ci.org/browse/JENKINS-37229
           checkout scm
