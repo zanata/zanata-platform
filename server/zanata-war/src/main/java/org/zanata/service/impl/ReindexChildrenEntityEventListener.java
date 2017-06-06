@@ -56,17 +56,13 @@ public class ReindexChildrenEntityEventListener
 
     @Override
     public boolean requiresPostCommitHanding(EntityPersister persister) {
+        // We must return true otherwise hibernate will not treat this as post commit event
         return true;
     }
 
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
         Object entity = event.getEntity();
-        Class<?> entityClass = entity.getClass();
-        if (!entityClass.equals(HProject.class)
-                && !entityClass.equals(HProjectIteration.class)) {
-            return;
-        }
         if (entity instanceof HProject) {
             HProject project = (HProject) entity;
 

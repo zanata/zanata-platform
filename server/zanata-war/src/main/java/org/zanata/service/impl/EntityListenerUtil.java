@@ -45,7 +45,7 @@ final class EntityListenerUtil {
      * @param entityField field name to look up in entity
      * @return looked up index for a given field for the entity
      */
-    static Integer getFieldIndex(Integer slugFieldIndex,
+    static int getFieldIndex(Integer slugFieldIndex,
             PostUpdateEvent event, String entityField) {
         if (slugFieldIndex != null) {
             return slugFieldIndex;

@@ -35,15 +35,10 @@ public class SlugEntityUpdatedListener implements
 
     @Override
     public void onPostUpdate(PostUpdateEvent event) {
-        Class<?> entityClass = event.getEntity().getClass();
-        if (!entityClass.equals(HProject.class)
-                && !entityClass.equals(HProjectIteration.class)) {
-            return;
-        }
-        SlugEntityBase slugEntityBase =
-                SlugEntityBase.class.cast(event.getEntity());
-        if (slugEntityBase instanceof HProject) {
-            HProject project = (HProject) slugEntityBase;
+        Object entity = event.getEntity();
+
+        if (entity instanceof HProject) {
+            HProject project = (HProject) entity;
             slugFieldIndexInProject =
                     getFieldIndex(slugFieldIndexInProject, event, "slug");
 
@@ -53,8 +48,8 @@ public class SlugEntityUpdatedListener implements
 
             fireProjectUpdateEvent(project, oldSlug);
 
-        } else if (slugEntityBase instanceof HProjectIteration) {
-            HProjectIteration iteration = (HProjectIteration) slugEntityBase;
+        } else if (entity instanceof HProjectIteration) {
+            HProjectIteration iteration = (HProjectIteration) entity;
             slugFieldIndexInIteration =
                     getFieldIndex(slugFieldIndexInIteration, event, "slug");
 
@@ -68,6 +63,7 @@ public class SlugEntityUpdatedListener implements
 
     @Override
     public boolean requiresPostCommitHanding(EntityPersister persister) {
+        // We must return true otherwise hibernate will not treat this as post commit event
         return true;
     }
 
