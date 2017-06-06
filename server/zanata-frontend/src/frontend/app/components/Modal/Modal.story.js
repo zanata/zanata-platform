@@ -272,7 +272,44 @@ storiesOf('Modal', module)
           </Modal.Body>
         </Modal>
     ))
-
+    .add('TMX export - reindexing', () => (
+        <Modal
+            show={true}
+            onHide={action('onHide')}>
+          <Modal.Header>
+            <Modal.Title>Export Project to TMX</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <span className='tmx-export'>
+              <p><strong>Reindexing</strong></p>
+              <p>
+                1 of 445
+              </p>
+            </span>
+          </Modal.Body>
+        </Modal>
+    ))
+    .add('TMX export - reindexing finished', () => (
+        <Modal
+            show={true}
+            onHide={action('onHide')}>
+          <Modal.Header>
+            <Modal.Title>Export Project to TMX</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <span className='tmx-export'>
+              <p><strong>Reindexing complete</strong></p>
+               <p>
+                 <Button
+                     bsStyle='primary'
+                     onClick={action('onClick')}>
+                    Download
+                 </Button>
+              </p>
+            </span>
+          </Modal.Body>
+        </Modal>
+    ))
     .add('version TM - diff doc id/context', () => (
         <Modal
             show={true}
