@@ -49,9 +49,7 @@ class Sidebar extends Component {
   }
 
   render () {
-    const content = <SidebarContent
-      close={this.close}
-    />
+    const content = <SidebarContent close={this.close} />
 
     return (
       <ReactSidebar

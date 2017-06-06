@@ -154,7 +154,8 @@ class ControlsHeader extends React.Component {
                 onClick={this.toggleSidebarVisibility}
                 active={this.props.ui.panels.sidebar.visible} />
             </li>
-      {/* extra items from the angular template that were not being displayed
+            {/* extra items from the angular template that were not being
+             displayed
             <li ng-show="appCtrl.PRODUCTION">
               <button class="Link--neutral u-sizeHeight-1_1-2"
                 title="{{'Details'|translate}}">

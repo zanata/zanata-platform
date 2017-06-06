@@ -61,12 +61,12 @@ public class EditorOptionsPresenterTest {
     private ChangeReferenceLangDisplay changeReferenceLangDisplay;
     @Mock
     private CachingDispatchAsync dispatcher;
-    @Captor
-    private ArgumentCaptor<UserConfigChangeEvent> eventCaptor;
     @Mock
     private UserOptionsService userOptionsService;
     @Mock
     private WebTransMessages messages;
+    @Captor
+    ArgumentCaptor<AsyncCallback<LoadOptionsResult>> asyncCallbackArgumentCaptor;
 
     private UserConfigHolder configHolder = new UserConfigHolder();
 
@@ -298,12 +298,10 @@ public class EditorOptionsPresenterTest {
 
         ArgumentCaptor<LoadOptionsAction> actionCaptor =
                 ArgumentCaptor.forClass(LoadOptionsAction.class);
-        ArgumentCaptor<AsyncCallback> callbackCaptor =
-                ArgumentCaptor.forClass(AsyncCallback.class);
         verify(dispatcher).execute(actionCaptor.capture(),
-                callbackCaptor.capture());
+                asyncCallbackArgumentCaptor.capture());
 
-        AsyncCallback callback = callbackCaptor.getValue();
+        AsyncCallback<LoadOptionsResult> callback = asyncCallbackArgumentCaptor.getValue();
 
         // when(needReviewChk.getValue()).thenReturn(false);
         // when(translatedChk.getValue()).thenReturn(true);

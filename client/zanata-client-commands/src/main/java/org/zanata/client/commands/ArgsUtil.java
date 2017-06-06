@@ -28,8 +28,7 @@ public class ArgsUtil {
         try {
             parser.getProperties()
                     .withUsageWidth(Integer.parseInt(System.getenv("COLUMNS")));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             parser.getProperties().withUsageWidth(120);
         }
     }
