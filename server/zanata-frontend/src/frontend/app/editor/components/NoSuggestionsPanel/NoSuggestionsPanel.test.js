@@ -16,9 +16,11 @@ describe('NoSuggestionsPanelTest', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div
         className="u-posCenterCenter u-textEmpty u-textCenter">
-        <Icon
-          name="search"
-          className="Icon--lg Icon--circle u-sMB-1-4"/>
+        <div className="u-sMB-1-4">
+          <Icon
+            name="search"
+            className="s5" />
+        </div>
         <p>You&apos;re on your own</p>
       </div>
     )
@@ -34,7 +36,9 @@ describe('NoSuggestionsPanelTest', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
         <div
             className="u-posCenterCenter u-textEmpty u-textCenter">
-          <LoaderText loading loadingText='Loading suggestions' />
+          <div className="u-sMB-1-4">
+            <LoaderText loading loadingText='You&apos;re on your own' />
+          </div>
         </div>
     )
     expect(actual).toEqual(expected)
