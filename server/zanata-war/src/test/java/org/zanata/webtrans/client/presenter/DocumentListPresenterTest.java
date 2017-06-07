@@ -32,11 +32,13 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.common.TransUnitCount;
 import org.zanata.common.TransUnitWords;
+import org.zanata.model.TestFixture;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics;
 import org.zanata.rest.dto.stats.TranslationStatistics.StatUnit;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.DocumentStatsUpdatedEvent;
+import org.zanata.webtrans.client.events.DocumentStatsUpdatedEventHandler;
 import org.zanata.webtrans.client.events.RefreshProjectStatsEvent;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -96,7 +98,8 @@ public class DocumentListPresenterTest {
 
     // captured events and handlers used in several tests
     @Captor
-    private ArgumentCaptor<GwtEvent> capturedEventBusEvent;
+    private ArgumentCaptor<GwtEvent<DocumentStatsUpdatedEventHandler>>
+            capturedEventBusEvent;
     @Captor
     private ArgumentCaptor<String> capturedHistoryTokenString;
     @Captor
@@ -224,13 +227,9 @@ public class DocumentListPresenterTest {
         verify(mockEventBus, times(2)).fireEvent(
                 capturedEventBusEvent.capture());
 
-        DocumentStatsUpdatedEvent docStatsEvent = null;
-        for (GwtEvent event : capturedEventBusEvent.getAllValues()) {
-            if (event.getAssociatedType().equals(
-                    DocumentStatsUpdatedEvent.getType())) {
-                docStatsEvent = (DocumentStatsUpdatedEvent) event;
-            }
-        }
+        DocumentStatsUpdatedEvent docStatsEvent =
+                TestFixture.extractFromEvents(capturedEventBusEvent.getAllValues(),
+                        DocumentStatsUpdatedEvent.class);
 
         assertThat(
                 "a document stats event should be fired when a TU update event occurs, not found",

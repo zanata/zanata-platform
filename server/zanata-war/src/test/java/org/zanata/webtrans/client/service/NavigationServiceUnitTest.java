@@ -23,6 +23,7 @@ import org.zanata.webtrans.client.events.EditorPageSizeChangeEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.RequestSelectTableRowEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.history.History;
 import org.zanata.webtrans.client.history.HistoryToken;
@@ -61,7 +62,7 @@ public class NavigationServiceUnitTest {
     private Map<TransUnitId, ContentState> idStateMap;
     private List<TransUnitId> idIndexList;
     @Captor
-    private ArgumentCaptor<GwtEvent> eventCaptor;
+    private ArgumentCaptor<GwtEvent<TableRowSelectedEventHandler>> eventCaptor;
     @Captor
     private ArgumentCaptor<GetTransUnitList> actionCaptor;
     @Captor

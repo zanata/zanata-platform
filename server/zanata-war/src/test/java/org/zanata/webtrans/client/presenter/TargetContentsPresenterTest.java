@@ -24,6 +24,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.inject.Provider;
 import net.customware.gwt.presenter.client.EventBus;
@@ -42,6 +43,7 @@ import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
 import org.zanata.webtrans.client.events.CommentChangedEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
+import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -117,7 +119,7 @@ public class TargetContentsPresenterTest {
 
     // all event extends GwtEvent therefore captor will capture them all
     @Captor
-    private ArgumentCaptor<GwtEvent> eventCaptor;
+    private ArgumentCaptor<GwtEvent<EventHandler>> eventCaptor;
 
     @Mock
     private Provider<TargetContentsDisplay> displayProvider;
@@ -183,7 +185,10 @@ public class TargetContentsPresenterTest {
         presenter.validate(editor);
 
         verify(eventBus).fireEvent(eventCaptor.capture());
-        RunValidationEvent event = (RunValidationEvent) eventCaptor.getValue();
+
+        RunValidationEvent event =
+                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+                        RunValidationEvent.class);
         assertThat(event.getSourceContent(), equalTo("source"));
         assertThat(event.getTarget(), equalTo("target"));
         assertThat(event.isFireNotification(), equalTo(false));

@@ -21,6 +21,7 @@
 package org.zanata.webtrans.client.service;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import net.customware.gwt.presenter.client.EventBus;
@@ -54,7 +55,6 @@ import org.zanata.webtrans.client.events.LoadingEvent;
 import org.zanata.webtrans.client.events.PageCountChangeEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
 import org.zanata.webtrans.client.history.History;
-import org.zanata.webtrans.client.presenter.TargetContentsPresenter;
 import org.zanata.webtrans.client.presenter.TransUnitsTablePresenter;
 import org.zanata.webtrans.client.presenter.UserConfigHolder;
 import org.zanata.webtrans.client.resources.TableEditorMessages;
@@ -140,11 +140,9 @@ public class NavigationServiceIntegrationTest {
     @Mock
     private TransUnitsTablePresenter transUnitsTablePresenter;
     @Mock
-    private TargetContentsPresenter targetContentsPresenter;
-    @Mock
     private History history;
     @Captor
-    private ArgumentCaptor<GwtEvent> eventCaptor;
+    private ArgumentCaptor<GwtEvent<EventHandler>> eventCaptor;
     private GetTransUnitListResult getTransUnitListResult;
     private SinglePageDataModelImpl pageModel;
     private UserConfigHolder configHolder;
