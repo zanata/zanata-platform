@@ -124,7 +124,8 @@ public class LoadOptionsHandlerTest extends ZanataDbunitJpaTest {
 
         // given: no options in database
         List<HAccountOption> options =
-                getEm().createQuery("from HAccountOption").getResultList();
+                getEm().createQuery("from HAccountOption", HAccountOption.class)
+                        .getResultList();
         assertThat(options, Matchers.<HAccountOption> empty());
 
         LoadOptionsResult result =

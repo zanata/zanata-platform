@@ -67,8 +67,7 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
     @Test
     @InRequestScope
     public void testExecute() throws Exception {
-        HashMap<UserOptions, String> configMap =
-                new HashMap<UserOptions, String>();
+        HashMap<UserOptions, String> configMap = new HashMap<>();
         configMap.put(UserOptions.DisplayButtons, Boolean.toString(true));
         configMap.put(UserOptions.EditorPageSize, Integer.toString(25));
         configMap.put(UserOptions.EnterSavesApproved, Boolean.toString(true));
@@ -76,7 +75,8 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
         SaveOptionsResult result = handler.execute(action, null);
         assertThat(result.isSuccess(), Matchers.equalTo(true));
         List<HAccountOption> accountOptions =
-                getEm().createQuery("from HAccountOption").getResultList();
+                getEm().createQuery("from HAccountOption", HAccountOption.class)
+                        .getResultList();
         assertThat(accountOptions, Matchers.hasSize(configMap.size()));
         Map<String, HAccountOption> editorOptions =
                 getAuthenticatedAcount(getEm()).getEditorOptions();
@@ -85,7 +85,8 @@ public class SaveOptionsHandlerTest extends ZanataDbunitJpaTest {
         handler.execute(action, null); // save again should override previous
         // value
         accountOptions =
-                getEm().createQuery("from HAccountOption").getResultList();
+                getEm().createQuery("from HAccountOption", HAccountOption.class)
+                        .getResultList();
         assertThat(accountOptions, Matchers.hasSize(configMap.size()));
         assertThat(editorOptions.values(),
                 Matchers.containsInAnyOrder(accountOptions.toArray()));
