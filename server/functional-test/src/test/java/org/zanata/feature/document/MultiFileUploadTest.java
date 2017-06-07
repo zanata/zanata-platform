@@ -140,10 +140,11 @@ public class MultiFileUploadTest extends ZanataTestCase {
         assertThat(versionDocumentsTab.getErrors().isEmpty());
     }
 
+    @SuppressWarnings("deprecation")
+    // TODO: Replace ProjectType.getSupportedSourceFileTypes
     private VersionDocumentsTab createAndAddToQueue(VersionDocumentsTab versionDocumentsTab) {
         List<DocumentType> projectTypes = ProjectType
                 .getSupportedSourceFileTypes(ProjectType.File);
-        List<String> types = Collections.emptyList();
         for (DocumentType documentType : projectTypes) {
             for (String extension : documentType.getSourceExtensions()) {
                 log.info("[addAllTypesTOTheQueue]: Test {}", extension);

@@ -83,6 +83,7 @@ public class MockFileResource implements FileResource {
     }
 
     @Override
+    @Deprecated
     public Response fileTypeInfoList() {
         List<FileTypeInfo> fileTypeInfoList = fileProjectSourceDocTypes().stream().map(
                 DocumentType::toFileTypeInfo).collect(Collectors.toList());
