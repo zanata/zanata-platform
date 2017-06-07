@@ -43,7 +43,6 @@ import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.CommentBeforeSaveEvent;
 import org.zanata.webtrans.client.events.CommentChangedEvent;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
-import org.zanata.webtrans.client.events.DocumentSelectionEvent;
 import org.zanata.webtrans.client.events.InsertStringInEditorEvent;
 import org.zanata.webtrans.client.events.NavTransUnitEvent;
 import org.zanata.webtrans.client.events.NotificationEvent;
@@ -871,10 +870,9 @@ public class TargetContentsPresenterTest {
         selectedTU = currentPageRows.get(0);
         ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
         when(editor.getId()).thenReturn(selectedTU.getId());
-        ArrayList<ToggleEditor> previousEditors = Lists.newArrayList(editor2);
         presenter.setStatesForTesting(null, 0, display);
         when(display.getId()).thenReturn(selectedTU.getId());
-        when(display.getEditors()).thenReturn(previousEditors, currentEditors);
+        when(display.getEditors()).thenReturn(currentEditors);
         when(sourceContentPresenter.getSourceContent(selectedTU.getId()))
                 .thenReturn(Optional.of("source"));
 
