@@ -724,7 +724,7 @@
                   <groupId>${project.groupId}</groupId>
                   <artifactId>zanata-test-war</artifactId>
                   <type>war</type>
-                  <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}</pingURL>
+                  <pingURL>http://${cargo.host}:${cargo.servlet.port}/${context.path}info?dswid=1</pingURL>
                   <pingTimeout>600000</pingTimeout>
                   <properties>
                     <context>/${context.path}</context>
