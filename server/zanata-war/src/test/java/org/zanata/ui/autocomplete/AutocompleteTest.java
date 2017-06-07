@@ -78,7 +78,7 @@ public class AutocompleteTest extends ZanataTest {
 
             @Override
             protected Collection<HLocale> getLocales() {
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
 
             @Override

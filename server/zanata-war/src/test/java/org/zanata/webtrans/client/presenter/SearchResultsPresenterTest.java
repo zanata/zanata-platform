@@ -159,6 +159,8 @@ public class SearchResultsPresenterTest {
     HasText mockSearchResponseLabel;
     @Mock
     HasValue<Boolean> mockSelectAllChk;
+    @Mock
+    ValueChangeEvent<String> valueChangeEvent;
 
     @Captor
     ArgumentCaptor<ClickHandler> capturedReplaceAllButtonClickHandler;
@@ -411,8 +413,6 @@ public class SearchResultsPresenterTest {
         verify(mockReplacementTextBox).addValueChangeHandler(
                 capturedReplacementTextBoxValueChangeHandler.capture());
 
-        ValueChangeEvent<String> valueChangeEvent =
-                mock(ValueChangeEvent.class);
         when(valueChangeEvent.getValue()).thenReturn(TEST_REPLACE_PHRASE);
         capturedReplacementTextBoxValueChangeHandler.getValue().onValueChange(
                 valueChangeEvent);
