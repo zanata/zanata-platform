@@ -321,6 +321,13 @@ storiesOf('Modal', module)
             <div>
               <p className="intro">Copy existing translations from similar documents
                 in other projects and versions into this project version.</p>
+              <span className='pull-right'>
+                <Button
+                    bsStyle='primary'
+                    onClick={action('onClick')}>
+                  Merge translations
+                </Button>
+              </span>
               <Col xs={12} className='vmerge-row'>
                 <Col xs={4}>
                   <span className='vmerge-title text-info'>TM match percentage</span>
@@ -527,6 +534,13 @@ storiesOf('Modal', module)
             <div>
               <p className="intro">Copy existing translations from similar documents
                 in other projects and versions into this project version.</p>
+              <span className='pull-right'>
+                <Button
+                    bsStyle='primary'
+                    onClick={action('onClick')}>
+                  Merge translations
+                </Button>
+              </span>s
               <Col xs={12} className='vmerge-row'>
                 <Col xs={4}>
                   <span className='vmerge-title text-info'>TM match percentage</span>
@@ -733,6 +747,13 @@ storiesOf('Modal', module)
             <div>
               <p className="intro">Copy existing translations from similar documents
                 in other projects and versions into this project version.</p>
+              <span className='pull-right'>
+                <Button
+                    bsStyle='primary'
+                    onClick={action('onClick')}>
+                  Merge translations
+                </Button>
+              </span>
               <Col xs={12} className='vmerge-row'>
                 <Col xs={4}>
                   <span className='vmerge-title text-info'>TM match percentage</span>
