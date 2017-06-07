@@ -683,6 +683,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private List<FileTypeInfo> fileTypeInfoListWorkaround() {
         return ProjectType.fileProjectSourceDocTypes().stream()
                 .sorted((a, b) -> a.toString().compareTo(b.toString()))

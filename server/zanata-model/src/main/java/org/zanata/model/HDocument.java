@@ -63,7 +63,6 @@ import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import com.google.common.collect.ImmutableList;
 import org.zanata.security.annotations.Authenticated;
-import org.zanata.util.Contexts;
 
 /**
  * @see AbstractResourceMeta
@@ -301,8 +300,9 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
     public static class EntityListener {
 
         @PreUpdate
+        @SuppressWarnings("deprecation")
         private void onUpdate(HDocument doc) {
-            if (Contexts.isSessionContextActive()) {
+            if (org.zanata.util.Contexts.isSessionContextActive()) {
                 HAccount account;
                 try {
                     account = BeanProvider.getContextualReference(

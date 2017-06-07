@@ -100,6 +100,7 @@ public class ZanataIdentityTest extends ZanataJpaTest {
     }
 
 
+    @SuppressWarnings("deprecation")
     private static HAccount makeAccount() {
         HAccount account = new HAccount();
         account.setUsername(username);

@@ -1,14 +1,13 @@
 package org.zanata.util;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.*;
 
 public class PasswordUtilTest {
 
     @Test
+    @Deprecated
     public void testGenerateSaltedHash() throws Exception {
 
         assertThat(PasswordUtil.generateSaltedHash("admin", "admin"))

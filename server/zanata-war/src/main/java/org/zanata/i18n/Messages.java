@@ -39,7 +39,6 @@ import javax.inject.Named;
 
 import org.zanata.action.LocaleSelectorAction;
 import org.zanata.events.LocaleSelectedEvent;
-import org.zanata.util.Contexts;
 import org.zanata.util.EmptyEnumeration;
 import org.zanata.util.ServiceLocator;
 
@@ -237,9 +236,10 @@ public class Messages extends AbstractMap<String, String>
          * Gets the locale of the current request. NB: May not work during
          * application startup: use @DefaultLocale Messages.
          */
+        @SuppressWarnings("deprecation")
         private static Locale getLocale() {
             // TODO [CDI] inject LocaleResolver but make sure it handles session locale
-            if (Contexts.isSessionContextActive()) {
+            if (org.zanata.util.Contexts.isSessionContextActive()) {
                 LocaleSelectorAction selectorAction = ServiceLocator.instance()
                         .getInstance(LocaleSelectorAction.class);
                 return selectorAction.getLocale();

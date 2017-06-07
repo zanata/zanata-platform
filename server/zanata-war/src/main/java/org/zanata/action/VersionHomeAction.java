@@ -78,7 +78,6 @@ import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.VirusScanner;
-import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
@@ -153,7 +152,8 @@ public class VersionHomeAction extends AbstractSortAction
     private HLocale selectedLocale;
     private HDocument selectedDocument;
     @Inject
-    private ConversationScopeMessages conversationScopeMessages;
+    @SuppressWarnings("deprecation")
+    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
     @Inject
     private FilePersistService filePersistService;
     @Inject

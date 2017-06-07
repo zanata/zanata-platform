@@ -21,8 +21,6 @@
 
 package org.zanata.rest.client;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -35,7 +33,6 @@ import java.util.Set;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.input.CountingInputStream;
-import org.apache.commons.io.input.ProxyInputStream;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hamcrest.Matchers;
@@ -55,7 +52,6 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.rest.service.StubbingServerRule;
 
-import static org.hamcrest.collection.IsMapContaining.hasEntry;
 import static org.junit.Assert.*;
 
 public class FileResourceClientTest {
@@ -75,11 +71,11 @@ public class FileResourceClientTest {
     }
 
     @Test
+    @Deprecated
     public void testServerAcceptedType() {
-        List<DocumentType> serverAcceptedTypes = client
-                .acceptedFileTypes();
+        List<DocumentType> serverAcceptedTypes = client.acceptedFileTypes();
 
-        Set<String> allExtension = new HashSet<String>();
+        Set<String> allExtension = new HashSet<>();
         for (DocumentType docType : serverAcceptedTypes) {
             allExtension.addAll(docType.getSourceExtensions());
         }
