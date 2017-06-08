@@ -19,7 +19,7 @@ const rl = readline.createInterface({
 
 // TODO use promises
 askIfEditor(isEditor => {
-  askName(name => {
+  askName(isEditor, name => {
     askIfStateless(isStateless => {
       writeln()
       write(c.blue('Making a '))
@@ -29,10 +29,7 @@ askIfEditor(isEditor => {
       writeln(c.blueBright(name))
       writeln()
 
-      const absoluteComponentDir = path.resolve(
-        __dirname, '..', '..', 'app',
-        (isEditor ? 'editor' : ''),
-        'components', name)
+      const absoluteComponentDir = componentPath(name, isEditor)
       const componentDir = path.relative(process.cwd(), absoluteComponentDir)
 
       createComponent({
@@ -81,18 +78,25 @@ function isYes (string, cb) {
   }
 }
 
-function askName (andThen) {
+/*
+ * isEditor: the name is for an editor component
+ * andThen: callback to call with the user selected name
+ */
+function askName (isEditor, andThen) {
   rl.question(c.cyan('What is the component name? '), (compName) => {
     const name = compName.trim()
-    if (isValidName(name)) {
-      // TODO check the component doesn't exist yet
-      andThen(name)
-    } else {
+    if (!isValidName(name)) {
       console.error(c.red('"' + name + '" does not look valid.'))
       console.error(c.yellow(
         'It should be caps-case; like Bobbins, RickyRouse or MonaldMuck.'))
-      askName(andThen)
+      askName(isEditor, andThen)
+      return
     }
+    if (!isNameAvailable(isEditor, name)) {
+      askName(isEditor, andThen)
+      return
+    }
+    andThen(name)
   })
 }
 
@@ -102,6 +106,31 @@ function isValidName (name) {
 
 function isCapsCase (name) {
   return /^([A-Z])\w+$/.test(name)
+}
+
+/* Check if the name is available, print success or error and return bool */
+function isNameAvailable (isEditor, name) {
+  const absPath = componentPath(name, isEditor)
+  const relPath = path.relative(process.cwd(), absPath)
+
+  const exists = (suffix) => {
+    if (fs.existsSync(absPath + suffix)) {
+      console.error(c.red('That name is already taken by ' + relPath + suffix))
+      return true
+    }
+    return false
+  }
+
+  if (exists('/')) return false
+  if (exists('.js')) return false
+  if (exists('.jsx')) return false
+  writeln(c.green('Component directory is available ' + relPath + '/'))
+  return true
+}
+
+function componentPath (name, isEditor) {
+  return path.resolve(__dirname, '..', '..', 'app',
+    (isEditor ? 'editor' : ''), 'components', name)
 }
 
 function askIfStateless (andThen) {
