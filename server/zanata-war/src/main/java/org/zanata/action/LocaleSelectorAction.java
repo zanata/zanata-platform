@@ -41,7 +41,6 @@ import javax.servlet.http.HttpServletRequest;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.events.LocaleSelectedEvent;
 import org.zanata.servlet.HttpRequestAndSessionHolder;
-import org.zanata.util.Contexts;
 
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
@@ -101,12 +100,13 @@ public class LocaleSelectorAction implements Serializable {
     /**
      * Get the selected locale
      */
+    @SuppressWarnings("deprecation")
     public Locale getLocale() {
         FacesContext facesContext = FacesContext.getCurrentInstance();
         if (facesContext != null) {
             Locale jsfLocale = facesContext.getApplication().getViewHandler()
                     .calculateLocale(facesContext);
-            if (Contexts.isSessionContextActive()) {
+            if (org.zanata.util.Contexts.isSessionContextActive()) {
                 return calculateLocale(jsfLocale);
             }
         }

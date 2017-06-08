@@ -61,6 +61,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Translated Documents")
 public interface TranslatedDocResource extends RestResource {
+    @SuppressWarnings("deprecation")
     public static final String SERVICE_PATH =
             ProjectIterationResource.SERVICE_PATH + "/r";
 

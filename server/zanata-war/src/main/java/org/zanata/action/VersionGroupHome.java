@@ -46,7 +46,6 @@ import org.zanata.model.HIterationGroup;
 import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProjectIteration;
-import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.SlugEntityService;
@@ -85,7 +84,8 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
     @Inject
     private Messages msgs;
     @Inject
-    private ConversationScopeMessages conversationScopeMessages;
+    @SuppressWarnings("deprecation")
+    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
     @Inject
     private ZanataIdentity identity;
     @Inject
@@ -180,7 +180,9 @@ public class VersionGroupHome extends SlugHome<HIterationGroup>
      * @param conversationScopeMessages
      * @return
      */
-    private String update(ConversationScopeMessages conversationScopeMessages) {
+    @SuppressWarnings("deprecation")
+    private String update(
+            org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages) {
         if (this.conversationScopeMessages == null) {
             this.conversationScopeMessages = conversationScopeMessages;
         }

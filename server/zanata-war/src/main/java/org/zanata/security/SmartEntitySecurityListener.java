@@ -9,7 +9,6 @@ import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
 
 import org.zanata.annotation.EntityRestrict;
-import org.zanata.util.Contexts;
 
 /**
  * Disable permission checking when security is disabled, which solves the
@@ -73,12 +72,13 @@ public class SmartEntitySecurityListener {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public void checkEntityPermission(Object entity, EntityAction action) {
         if (!ZanataIdentity.isSecurityEnabled()) {
             return;
         }
 
-        if (!Contexts.isSessionContextActive()) {
+        if (!org.zanata.util.Contexts.isSessionContextActive()) {
             return;
         }
 

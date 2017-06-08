@@ -60,7 +60,6 @@ import org.zanata.model.HProjectMember;
 import org.zanata.model.LocaleRole;
 import org.zanata.model.ProjectRole;
 import org.zanata.rest.service.GlossaryService;
-import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ActivityService;
@@ -128,7 +127,8 @@ public class ProjectHomeAction extends AbstractSortAction
     @Inject
     private ProjectIterationDAO projectIterationDAO;
     @Inject
-    private ConversationScopeMessages conversationScopeMessages;
+    @SuppressWarnings("deprecation")
+    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
     @Inject
     private GlossaryDAO glossaryDAO;
     private SortingType VersionSortingList = new SortingType(Lists.newArrayList(

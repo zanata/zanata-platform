@@ -64,8 +64,6 @@ import org.zanata.security.jaas.InternalLoginModule;
 import org.zanata.security.permission.CustomPermissionResolver;
 import org.zanata.security.permission.MultiTargetList;
 import org.zanata.servlet.annotations.SessionId;
-import org.zanata.util.Contexts;
-import org.zanata.util.RequestContextValueStore;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.Synchronized;
 import org.zanata.util.UrlUtil;
@@ -114,7 +112,8 @@ public class ZanataIdentity implements Identity, Serializable {
 
     @Inject
     @SuppressFBWarnings(value = "SE_BAD_FIELD", justification = "CDI proxies are Serializable")
-    private RequestContextValueStore requestContextValueStore;
+    @SuppressWarnings("deprecation")
+    private org.zanata.util.RequestContextValueStore requestContextValueStore;
 
     @Inject
     private UrlUtil urlUtil;
@@ -403,9 +402,10 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     // copied from org.jboss.seam.security.Identity.tryLogin()
+    @SuppressWarnings("deprecation")
     public boolean tryLogin() {
         if (!authenticating && getPrincipal() == null && credentials.isSet() &&
-                Contexts.isRequestContextActive() &&
+                org.zanata.util.Contexts.isRequestContextActive() &&
                 !requestContextValueStore.contains(LOGIN_TRIED)) {
             requestContextValueStore.put(LOGIN_TRIED, true);
             quietLogin();
@@ -415,6 +415,7 @@ public class ZanataIdentity implements Identity, Serializable {
     }
 
     // copied from org.jboss.seam.security.Identity.quietLogin()
+    @SuppressWarnings("deprecation")
     private void quietLogin() {
         try {
             // N.B. this will trigger Seam's RememberMe functionality and causes
@@ -425,7 +426,7 @@ public class ZanataIdentity implements Identity, Serializable {
             if (!isLoggedIn()) {
                 if (credentials.isSet()) {
                     authenticate();
-                    if (isLoggedIn() && Contexts.isRequestContextActive()) {
+                    if (isLoggedIn() && org.zanata.util.Contexts.isRequestContextActive()) {
                         requestContextValueStore.put(SILENT_LOGIN, true);
                     }
                 }
@@ -553,6 +554,7 @@ public class ZanataIdentity implements Identity, Serializable {
         return this.login(AuthenticationType.INTERNAL);
     }
 
+    @SuppressWarnings("deprecation")
     public String login(AuthenticationType authType) {
         getCredentials().setAuthType(authType);
         try {
@@ -563,7 +565,7 @@ public class ZanataIdentity implements Identity, Serializable {
                 // the LOGIN_SUCCESSFUL event,
                 // and then return.
                 cacheUserDetails();
-                if (Contexts.isRequestContextActive()
+                if (org.zanata.util.Contexts.isRequestContextActive()
                         && requestContextValueStore.contains(SILENT_LOGIN)) {
                     getLoginSuccessfulEvent().fire(new LoginSuccessfulEvent(
                             cachedPersonName));

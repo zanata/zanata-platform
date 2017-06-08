@@ -56,7 +56,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.validator.SlugValidator;
-import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SlugEntityService;
@@ -107,7 +106,8 @@ public class VersionHome extends SlugHome<HProjectIteration>
     @Inject
     private LocaleDAO localeDAO;
     @Inject
-    private ConversationScopeMessages conversationScopeMessages;
+    @SuppressWarnings("deprecation")
+    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
     @Inject
     private LocaleService localeServiceImpl;
     @Inject
