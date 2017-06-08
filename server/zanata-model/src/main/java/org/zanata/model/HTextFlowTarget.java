@@ -60,6 +60,7 @@ import org.zanata.common.ContentState;
 import org.zanata.common.HasContents;
 import org.zanata.common.LocaleId;
 import org.zanata.hibernate.search.ContentStateBridge;
+import org.zanata.hibernate.search.TextFlowTargetEntityIndexingInterceptor;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.hibernate.search.LocaleIdBridge;
 import org.zanata.hibernate.search.StringListBridge;
@@ -86,7 +87,7 @@ import org.zanata.model.type.TranslationSourceTypeType;
         @TypeDef(name = "sourceType",
                 typeClass = TranslationSourceTypeType.class),
         @TypeDef(name = "entityType", typeClass = EntityTypeType.class) })
-@Indexed
+@Indexed(interceptor = TextFlowTargetEntityIndexingInterceptor.class)
 public class HTextFlowTarget extends ModelEntityBase
         implements HasContents, HasSimpleComment, ITextFlowTargetHistory,
         Serializable, ITextFlowTarget, IsEntityWithType {

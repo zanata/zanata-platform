@@ -7,7 +7,7 @@ package org.zanata.hibernate.search;
  * @author David Mason, damason@redhat.com
  */
 public interface IndexFieldLabels {
-    public static final String PROJECT_FIELD = "project";
+    public static final String PROJECT_ID_FIELD = "projectId";
     public static final String ENTITY_STATUS = "status";
 
     /**
@@ -35,5 +35,5 @@ public interface IndexFieldLabels {
 
     public static final String GLOSSARY_QUALIFIED_NAME = "glossaryEntry.glossary.qualifiedName";
 
-    String PROJECT_VERSION_FIELD = "projectVersion";
+    String PROJECT_VERSION_ID_FIELD = "projectVersionId";
 }
