@@ -113,6 +113,7 @@ public class RawRestTestUtils {
             // um.setEventHandler( new
             // javax.xml.bind.helpers.DefaultValidationEventHandler() );
             String entity = response.readEntity(String.class);
+            @SuppressWarnings("unchecked")
             T result = (T) um.unmarshal(new StringReader(entity));
             return result;
         } catch (JAXBException e) {
@@ -128,6 +129,7 @@ public class RawRestTestUtils {
             Unmarshaller um = jc.createUnmarshaller();
             // um.setEventHandler( new
             // javax.xml.bind.helpers.DefaultValidationEventHandler() );
+            @SuppressWarnings("unchecked")
             T result = (T) um.unmarshal(new StringReader(entityString));
             return result;
         } catch (JAXBException e) {

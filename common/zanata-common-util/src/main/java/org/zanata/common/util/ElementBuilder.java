@@ -149,6 +149,7 @@ public class ElementBuilder {
     }
 
     public static void copyAttributes(StartElement fromElem, Element toElem) {
+        @SuppressWarnings("unchecked")
         Iterator<Attribute> attributes = (Iterator<Attribute>) fromElem.getAttributes();
         while (attributes.hasNext()) {
             Attribute attr = attributes.next();

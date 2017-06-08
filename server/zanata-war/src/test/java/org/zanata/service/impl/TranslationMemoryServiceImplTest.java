@@ -221,7 +221,9 @@ public class TranslationMemoryServiceImplTest {
             assertThat(results).extracting("sourceContents")
                     .has(new Condition<>(contentsList -> {
                         for (Object contents : contentsList) {
-                            for (String content : (List<String>) contents) {
+                            @SuppressWarnings("unchecked")
+                            List<String> strings = (List<String>) contents;
+                            for (String content : strings) {
                                 if (content.contains(searchString)) {
                                     return true;
                                 }
