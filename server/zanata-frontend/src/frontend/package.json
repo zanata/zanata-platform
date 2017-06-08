@@ -99,6 +99,7 @@
     "moment-range": "2.2.0",
     "normalize.css": "3.0.1",
     "normalizr": "2.1.0",
+    "prop-types": "15.5.10",
     "react": "15.5.4",
     "react-autosuggest": "6.0.4",
     "react-bootstrap": "0.30.7",

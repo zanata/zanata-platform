@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import utilsDate from '../../utils/DateHelper'
 import { Line as LineChart } from 'react-chartjs'
 
@@ -110,18 +111,18 @@ function convertMatrixDataToChartData (matrixData) {
 
 class ContributionChart extends React.Component {
   static propTypes = {
-    dateRange: React.PropTypes.object.isRequired,
-    wordCountForEachDay: React.PropTypes.arrayOf(
-      React.PropTypes.shape(
+    dateRange: PropTypes.object.isRequired,
+    wordCountForEachDay: PropTypes.arrayOf(
+      PropTypes.shape(
         {
-          date: React.PropTypes.string.isRequired,
-          totalActivity: React.PropTypes.number.isRequired,
-          totalApproved: React.PropTypes.number.isRequired,
-          totalTranslated: React.PropTypes.number.isRequired,
-          totalNeedsWork: React.PropTypes.number.isRequired
+          date: PropTypes.string.isRequired,
+          totalActivity: PropTypes.number.isRequired,
+          totalApproved: PropTypes.number.isRequired,
+          totalTranslated: PropTypes.number.isRequired,
+          totalNeedsWork: PropTypes.number.isRequired
         })
     ).isRequired,
-    chartOptions: React.PropTypes.object
+    chartOptions: PropTypes.object
   }
 
   static defaultProps = {

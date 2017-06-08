@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import { LoaderText, Icon } from '../../components'
 import { Button, Tooltip, Overlay } from 'react-bootstrap'
@@ -8,10 +9,10 @@ import { Button, Tooltip, Overlay } from 'react-bootstrap'
  */
 class DeleteAllEntriesModal extends Component {
   static propTypes = {
-    show: React.PropTypes.bool,
-    isDeleting: React.PropTypes.bool,
+    show: PropTypes.bool,
+    isDeleting: PropTypes.bool,
     handleDeleteAllEntriesDisplay: PropTypes.func.isRequired,
-    handleDeleteAllEntries: React.PropTypes.func.isRequired
+    handleDeleteAllEntries: PropTypes.func.isRequired
   }
 
   render () {

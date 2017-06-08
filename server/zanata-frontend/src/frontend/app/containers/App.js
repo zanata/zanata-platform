@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 /**
  * TODO: use react-ally to identify accessibility issue
  * import a11y from 'react-a11y'

@@ -22,7 +22,8 @@
 import cx from 'classnames'
 import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 /**
  * Styled checkbox to toggle a filter option on and off.

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { Link, Icon } from '../../components'
 import { serverUrl } from '../../config'
 
@@ -34,9 +35,9 @@ LanguageTeamTeaser.propTypes = {
    * Entry of the search results.
    */
   details: PropTypes.shape({
-    id: React.PropTypes.string,
-    localeDetails: React.PropTypes.object,
-    memberCount: React.PropTypes.number
+    id: PropTypes.string,
+    localeDetails: PropTypes.object,
+    memberCount: PropTypes.number
   }),
   /**
    * Name for the component
