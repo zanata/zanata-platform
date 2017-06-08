@@ -100,7 +100,7 @@
     "moment-range": "2.2.0",
     "normalize.css": "3.0.1",
     "normalizr": "2.1.0",
-    "react": "0.14.8",
+    "react": "15.5.4",
     "react-autosuggest": "6.0.4",
     "react-bootstrap": "0.30.7",
     "react-chartjs": "0.8.0",
