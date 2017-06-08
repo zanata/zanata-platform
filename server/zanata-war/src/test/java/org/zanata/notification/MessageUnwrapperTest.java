@@ -52,7 +52,7 @@ public class MessageUnwrapperTest {
     @Test
     public void testUnwrapGenericMessage() throws JMSException {
         Message message = Mockito.mock(Message.class);
-        when(message.getPropertyNames()).thenReturn(new EmptyEnumeration());
+        when(message.getPropertyNames()).thenReturn(new EmptyEnumeration<String>());
 
         MessageUnwrapper unwrap = MessageUnwrapper.unwrap(message);
 

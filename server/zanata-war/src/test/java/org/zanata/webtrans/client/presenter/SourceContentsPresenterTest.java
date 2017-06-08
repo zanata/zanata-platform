@@ -10,12 +10,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.RequestValidationEvent;
 import org.zanata.webtrans.client.events.TableRowSelectedEvent;
+import org.zanata.webtrans.client.events.TableRowSelectedEventHandler;
 import org.zanata.webtrans.client.events.TransUnitUpdatedEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
 import org.zanata.webtrans.client.ui.HasSelectableSource;
@@ -55,6 +57,8 @@ public class SourceContentsPresenterTest {
     private HasSelectableSource hasSelectableSource2;
     @GwtMock
     private ClickEvent clickEvent;
+    @Captor
+    ArgumentCaptor<GwtEvent<TableRowSelectedEventHandler>> gwtEventArgumentCaptor;
 
     private UserConfigHolder configHolder;
 
@@ -186,11 +190,11 @@ public class SourceContentsPresenterTest {
         presenter.onClick(clickEvent);
 
         // Then:
-        ArgumentCaptor<GwtEvent> eventCaptor =
-                ArgumentCaptor.forClass(GwtEvent.class);
-        verify(eventBus, atLeastOnce()).fireEvent(eventCaptor.capture());
+        verify(eventBus, atLeastOnce())
+                .fireEvent(gwtEventArgumentCaptor.capture());
         TableRowSelectedEvent tableRowSelectedEvent =
-                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+                TestFixture.extractFromEvents(
+                        gwtEventArgumentCaptor.getAllValues(),
                         TableRowSelectedEvent.class);
         assertThat(tableRowSelectedEvent.getSelectedId(),
                 Matchers.equalTo(selectedId));

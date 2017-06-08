@@ -31,6 +31,7 @@ import org.apache.deltaspike.core.spi.scope.window.WindowContext;
 @Interceptor
 @WithActiveWindow
 public class WithActiveWindowInterceptor implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     public WithActiveWindowInterceptor() {
     }
