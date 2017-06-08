@@ -1,6 +1,8 @@
 package org.zanata.rest;
 
+import javax.annotation.Priority;
 import javax.ws.rs.ConstrainedTo;
+import javax.ws.rs.Priorities;
 import javax.ws.rs.RuntimeType;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
@@ -10,8 +12,6 @@ import javax.ws.rs.ext.Provider;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 
-import org.jboss.resteasy.annotations.interception.HeaderDecoratorPrecedence;
-import org.jboss.resteasy.annotations.interception.ServerInterceptor;
 import org.zanata.rest.service.RestUtils;
 import org.zanata.service.impl.VersionManager;
 import org.zanata.util.ServiceLocator;
@@ -21,7 +21,7 @@ import java.io.IOException;
 
 @ConstrainedTo(RuntimeType.SERVER)
 @Provider
-@HeaderDecoratorPrecedence
+@Priority(Priorities.HEADER_DECORATOR)
 public class ZanataRestVersionInterceptor implements ReaderInterceptor {
 
     @Override

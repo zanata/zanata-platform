@@ -8,9 +8,13 @@ import javax.validation.ValidatorFactory;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.hibernate.Session;
-import org.jboss.resteasy.client.ClientRequestFactory;
-import org.jboss.resteasy.client.core.executors.InMemoryClientExecutor;
+import org.jboss.resteasy.client.jaxrs.ProxyBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
+import org.jboss.resteasy.client.jaxrs.engines.ApacheHttpClient4Engine;
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.mock.MockDispatcherFactory;
 import org.jboss.resteasy.spi.ResourceFactory;
@@ -36,12 +40,13 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
 
     protected static final URI MOCK_BASE_URI = URI.create("http://mockhost");
 
-    private ClientRequestFactory clientRequestFactory;
+    private ResteasyClientBuilder resteasyClientBuilder;
     protected final Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers =
             newHashSet();
     protected final Set<Object> resources = newHashSet();
     protected final Set<Class<?>> providers = newHashSet();
     protected final Set<Object> providerInstances = newHashSet();
+    protected Dispatcher dispatcher;
     @Mock
     private SystemPropertyConfigStore systemPropertyConfigStore;
 
@@ -51,7 +56,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
         when(systemPropertyConfigStore.getEnabledAuthenticationPolicies())
                 .thenReturn(
                         newHashSet(AuthenticationType.INTERNAL.name()));
-        Dispatcher dispatcher = MockDispatcherFactory.createDispatcher();
+        dispatcher = MockDispatcherFactory.createDispatcher();
         prepareAccount();
         prepareResources();
         prepareExceptionMappers();
@@ -79,12 +84,11 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
                     providerInstance);
         }
 
-        InMemoryClientExecutor executor =
-                new InMemoryClientExecutor(dispatcher);
-        executor.setBaseUri(MOCK_BASE_URI);
-        clientRequestFactory =
-                new ClientRequestFactory(executor, MOCK_BASE_URI);
-
+        HttpClient httpClient = HttpClientBuilder.create().build();
+        ApacheHttpClient4Engine executor =
+                new ApacheHttpClient4Engine(httpClient);
+        resteasyClientBuilder =
+                new ResteasyClientBuilder().httpEngine(executor);
     }
 
     private void prepareAccount() {
@@ -141,14 +145,19 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
         ValidatorFactory validatorFactory =
                 Validation.buildDefaultValidatorFactory();
     }
+//
+//    /**
+//     * Retrieve the configured request factory
+//     *
+//     * @return a ClientRequestFactory configured for your environment.
+//     */
+//    protected final ClientRequestFactory getClientRequestFactory() {
+//        return clientRequestFactory;
+//    }
 
-    /**
-     * Retrieve the configured request factory
-     *
-     * @return a ClientRequestFactory configured for your environment.
-     */
-    protected final ClientRequestFactory getClientRequestFactory() {
-        return clientRequestFactory;
+    protected final <T> ProxyBuilder<T> createProxy(Class<T> clazz, URI uri) {
+        ResteasyWebTarget webTarget = resteasyClientBuilder.build().target(uri);
+        return ProxyBuilder.builder(clazz, webTarget);
     }
 
     /**

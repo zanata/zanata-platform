@@ -41,10 +41,8 @@ public class TMXDummyRestTest extends ZanataRestTest {
     @Before
     public void createClient() {
         MockitoAnnotations.initMocks(this);
-        this.tmService =
-                getClientRequestFactory().createProxy(
-                        TranslationMemoryResource.class,
-                        createBaseURI("/rest/tm"));
+        this.tmService = createProxy(TranslationMemoryResource.class,
+                createBaseURI("/rest/tm")).build();
     }
 
     @Override
