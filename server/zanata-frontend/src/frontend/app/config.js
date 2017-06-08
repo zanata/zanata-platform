@@ -22,7 +22,7 @@ export const isLoggedIn = config.permission
   ? config.permission.isLoggedIn
   : false
 export const isAdmin = config.permission
-  ? config.isAdmin
+  ? config.permission.isAdmin
   : false
 export const user = config.user
 export const allowRegister = config.allowRegister || false
