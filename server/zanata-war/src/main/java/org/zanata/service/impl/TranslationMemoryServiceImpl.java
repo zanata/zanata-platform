@@ -251,7 +251,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             boolean includeOwnTranslation) {
         TransMemoryQuery.Condition project = new TransMemoryQuery.Condition(
                 checkProject, textFlow.getDocument().getProjectIteration()
-                        .getProject().getSlug());
+                        .getProject().getId().toString());
         TransMemoryQuery.Condition document = new TransMemoryQuery.Condition(
                 checkDocument, textFlow.getDocument().getDocId());
         TransMemoryQuery.Condition res = new TransMemoryQuery.Condition(
@@ -752,7 +752,7 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             TransMemoryQuery queryParams) {
         if (queryParams.getProject() != null) {
             TermQuery projectQuery =
-                    new TermQuery(new Term(IndexFieldLabels.PROJECT_FIELD,
+                    new TermQuery(new Term(IndexFieldLabels.PROJECT_ID_FIELD,
                             queryParams.getProject().getValue()));
             if (queryParams.getProject().isCheck()) {
                 query.add(projectQuery, BooleanClause.Occur.MUST);

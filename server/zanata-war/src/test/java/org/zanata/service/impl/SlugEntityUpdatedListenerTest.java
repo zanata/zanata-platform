@@ -1,12 +1,15 @@
 package org.zanata.service.impl;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
+import org.assertj.core.api.Assertions;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.persister.entity.EntityPersister;
 import org.jglue.cdiunit.deltaspike.SupportDeltaspikeCore;
@@ -19,6 +22,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.events.ProjectIterationUpdate;
+import org.zanata.events.ProjectUpdate;
 import org.zanata.model.HAccount;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -45,10 +50,22 @@ public class SlugEntityUpdatedListenerTest {
     @Produces
     @Mock
     IndexingService indexingService;
+    private ProjectUpdate projectUpdate;
+    private ProjectIterationUpdate projectIterationUpdate;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+        projectUpdate = null;
+        projectIterationUpdate = null;
+    }
+
+    public void onProjectUpdateEvent(@Observes ProjectUpdate projectUpdate) {
+        this.projectUpdate = projectUpdate;
+    }
+
+    public void onProjectIterationUpdateEvent(@Observes ProjectIterationUpdate event) {
+        this.projectIterationUpdate = event;
     }
 
     @Test
@@ -75,10 +92,8 @@ public class SlugEntityUpdatedListenerTest {
 
         listener.onPostUpdate(event);
 
-        verify(taskHandleManager)
-                .registerTaskHandle(asyncTaskHandleArgumentCaptor.capture());
-        verify(indexingService).reindexHTextFlowTargetsForProject(entity,
-                asyncTaskHandleArgumentCaptor.getValue());
+        assertThat(projectUpdate).isNotNull();
+        assertThat(projectUpdate.getOldSlug()).isEqualTo("old-slug");
     }
 
     @Test
@@ -95,10 +110,8 @@ public class SlugEntityUpdatedListenerTest {
 
         listener.onPostUpdate(event);
 
-        verify(taskHandleManager)
-                .registerTaskHandle(asyncTaskHandleArgumentCaptor.capture());
-        verify(indexingService).reindexHTextFlowTargetsForProjectIteration(entity,
-                asyncTaskHandleArgumentCaptor.getValue());
+        assertThat(projectIterationUpdate).isNotNull();
+        assertThat(projectIterationUpdate.getOldSlug()).isEqualTo("old-slug");
     }
 
 }

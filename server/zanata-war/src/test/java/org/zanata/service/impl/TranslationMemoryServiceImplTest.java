@@ -1,6 +1,17 @@
 package org.zanata.service.impl;
 
-import com.google.common.collect.Lists;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.test.rule.FunctionalTestRule.reentrant;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+
+import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import org.assertj.core.api.Condition;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
@@ -16,6 +27,7 @@ import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.mockito.Mock;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.TextFlowDAO;
@@ -41,15 +53,8 @@ import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
 import org.zanata.webtrans.shared.rpc.HasSearchType;
-import javax.enterprise.inject.Produces;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.zanata.test.rule.FunctionalTestRule.reentrant;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -101,9 +106,12 @@ public class TranslationMemoryServiceImplTest {
             return jpaRule.getSession();
         }
 
+        @Inject
+        private IndexingServiceImpl indexingService;
+
         @Before
         @InRequestScope
-        public void prepareDBUnitOperations() {
+        public void prepareDBUnitOperations() throws Exception {
             new DBUnitDataSetRunner(jpaRule.getEntityManager())
                     .runDataSetOperations(
                             new DataSetOperation(
@@ -117,6 +125,9 @@ public class TranslationMemoryServiceImplTest {
                                     DatabaseOperation.CLEAN_INSERT));
             sourceLocale = localeDAO.findByLocaleId(LocaleId.EN_US);
             targetLocale = localeDAO.findByLocaleId(LocaleId.DE);
+            indexingService.reindexHTextFlowTargetsForProject(
+                    getEntityManager().find(HProject.class, 100L),
+                    new AsyncTaskHandle<>());
         }
 
         @Test
@@ -240,6 +251,8 @@ public class TranslationMemoryServiceImplTest {
         TextFlowDAO textFlowDAO;
         @Inject
         LocaleDAO localeDAO;
+        @Inject
+        IndexingServiceImpl indexingService;
         @Produces
         @Mock
         private UrlUtil urlUtil;
@@ -268,7 +281,7 @@ public class TranslationMemoryServiceImplTest {
 
         @Before
         @InRequestScope
-        public void prepareDBUnitOperations() {
+        public void prepareDBUnitOperations() throws Exception {
             new DBUnitDataSetRunner(jpaRule.getEntityManager())
                     .runDataSetOperations(
                             new DataSetOperation(
@@ -280,6 +293,9 @@ public class TranslationMemoryServiceImplTest {
                             new DataSetOperation(
                                     "org/zanata/test/model/TranslationMemoryData.dbunit.xml",
                                     DatabaseOperation.CLEAN_INSERT));
+            indexingService.reindexHTextFlowTargetsForProject(
+                    getEntityManager().find(HProject.class, 100L),
+                    new AsyncTaskHandle<>());
             sourceLocale = localeDAO.findByLocaleId(LocaleId.EN_US);
             targetLocale = localeDAO.findByLocaleId(LocaleId.DE);
         }
@@ -297,41 +313,42 @@ public class TranslationMemoryServiceImplTest {
         public static Iterable<TransMemoryExecution> tmTestParams() {
             // Should return 1 records if all checked
             String validQuery = "file";
-            String validProjectSlug = "same-project";
+//            String validProjectSlug = "same-project";
+            Long validProjectId = 100L;
             String validDocId = "/same/document0";
             String validResId = "bbb5da9ad2bd9d24df29caead537b840";
             List<TransMemoryExecution> executions = Lists.newArrayList();
             executions.add(createExecution(validQuery,
                     new Boolean[] { true, true, true },
-                    new String[] { validProjectSlug, validDocId, validResId },
+                    new String[] { validProjectId.toString(), validDocId, validResId },
                     1));
             executions.add(createExecution(validQuery,
                     new Boolean[] { true, true, false },
-                    new String[] { validProjectSlug, validDocId, validResId },
+                    new String[] { validProjectId.toString(), validDocId, validResId },
                     2));
             executions.add(createExecution(validQuery,
                     new Boolean[] { false, false, false },
-                    new String[] { validProjectSlug, validDocId, validResId },
+                    new String[] { validProjectId.toString(), validDocId, validResId },
                     3));
             executions.add(createExecution(validQuery,
                     new Boolean[] { true, false, false },
-                    new String[] { validProjectSlug, validDocId, validResId },
+                    new String[] { validProjectId.toString(), validDocId, validResId },
                     3));
             executions.add(createExecution(validQuery,
                     new Boolean[] { true, false, true },
-                    new String[] { validProjectSlug, validDocId, validResId },
+                    new String[] { validProjectId.toString(), validDocId, validResId },
                     1));
             executions.add(createExecution(validQuery,
                     new Boolean[] { false, true, true },
-                    new String[] { validProjectSlug, validDocId, validResId },
+                    new String[] { validProjectId.toString(), validDocId, validResId },
                     1));
             executions.add(createExecution(validQuery,
                     new Boolean[] { false, false, true },
-                    new String[] { validProjectSlug, validDocId, validResId },
+                    new String[] { validProjectId.toString(), validDocId, validResId },
                     1));
             executions.add(createExecution(validQuery,
                     new Boolean[] { false, true, false },
-                    new String[] { validProjectSlug, validDocId, validResId },
+                    new String[] { validProjectId.toString(), validDocId, validResId },
                     2));
             return executions;
         }
