@@ -32,6 +32,7 @@ public class RequestContextValueStore {
         Object o = store.get(key);
         if (o != null) {
             try {
+                @SuppressWarnings("unchecked")
                 T value = (T) o;
                 return Optional.of(value);
             } catch (ClassCastException e) {

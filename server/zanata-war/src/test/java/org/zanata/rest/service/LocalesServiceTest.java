@@ -113,7 +113,7 @@ public class LocalesServiceTest extends ZanataDbunitJpaTest implements
         response = localesService.getMembers(LocaleId.FR.getId());
         assertThat(response.getStatus())
                 .isEqualTo(Response.Status.OK.getStatusCode());
-
+        @SuppressWarnings("unchecked")
         List<LocaleMember> results = (List<LocaleMember>) response.getEntity();
         assertThat(results).hasSize(1);
     }
