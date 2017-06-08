@@ -43,7 +43,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 // TODO test writeTranslatedFile
-public class XliffAdapterTest extends AbstractAdapterTest {
+public class XliffAdapterTest extends AbstractAdapterTest<XliffAdapter> {
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();

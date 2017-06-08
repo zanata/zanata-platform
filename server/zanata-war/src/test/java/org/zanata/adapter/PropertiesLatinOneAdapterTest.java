@@ -45,7 +45,7 @@ import org.apache.commons.io.output.ByteArrayOutputStream;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest {
+public class PropertiesLatinOneAdapterTest extends AbstractAdapterTest<PropertiesLatinOneAdapter> {
 
     @Before
     public void setup() {

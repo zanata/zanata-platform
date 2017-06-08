@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author djansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class DTDAdapterTest extends AbstractAdapterTest {
+public class DTDAdapterTest extends AbstractAdapterTest<DTDAdapter> {
 
     @Before
     public void setup() {

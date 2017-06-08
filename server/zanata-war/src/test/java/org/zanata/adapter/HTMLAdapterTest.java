@@ -30,7 +30,7 @@ import org.zanata.rest.dto.resource.Resource;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 // TODO test writeTranslatedFile
-public class HTMLAdapterTest extends AbstractAdapterTest {
+public class HTMLAdapterTest extends AbstractAdapterTest<HTMLAdapter> {
 
     @Before
     public void setup() {

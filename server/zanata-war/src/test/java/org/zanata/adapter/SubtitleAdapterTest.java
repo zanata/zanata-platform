@@ -37,7 +37,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Enclosed.class)
 public class SubtitleAdapterTest {
 
-    static abstract class AbstractSubtitleAdapterTest extends AbstractAdapterTest {
+    static abstract class AbstractSubtitleAdapterTest
+            extends AbstractAdapterTest<SubtitleAdapter> {
         @Before
         public void setup() {
             adapter = new SubtitleAdapter();

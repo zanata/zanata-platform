@@ -34,7 +34,7 @@ import org.zanata.rest.dto.resource.Resource;
 // @Feature(summary = "The user can translate OpenOffice files",
 // tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
 // TODO test writeTranslatedFile
-public class OpenOfficeAdapterTest extends AbstractAdapterTest {
+public class OpenOfficeAdapterTest extends AbstractAdapterTest<OpenOfficeAdapter> {
 
     @Before
     public void setup() {
