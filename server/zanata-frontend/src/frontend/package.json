@@ -64,7 +64,6 @@
     "react-split-pane": "0.1.42",
     "react-styleguidist": "2.3.1",
     "react-transform-hmr": "1.0.4",
-    "redux-simple-router": "2.0.4",
     "reselect": "1.1.0",
     "rework-calc": "1.1.0",
     "rework-color-function": "1.2.1",

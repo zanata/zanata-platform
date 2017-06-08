@@ -8,7 +8,7 @@ import { createStore, applyMiddleware } from 'redux'
 import { apiMiddleware } from 'redux-api-middleware'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
-import { syncHistory } from 'redux-simple-router'
+import { syncHistory } from 'react-router-redux'
 import newContextFetchMiddleware from './middlewares/new-context-fetch'
 import searchSelectedPhraseMiddleware
   from './middlewares/selected-phrase-searches'

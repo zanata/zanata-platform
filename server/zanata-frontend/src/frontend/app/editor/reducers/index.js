@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux'
-// TODO update dependency, it is renamed react-router-redux
-import { routeReducer } from 'redux-simple-router'
+import { routeReducer } from 'react-router-redux'
 import phrases from './phrase-reducer'
 import context from './context-reducer'
 import dropdown from './dropdown-reducer'
