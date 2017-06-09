@@ -110,7 +110,7 @@
     "react-list": "0.7.19",
     "react-loading": "0.0.9",
     "react-lorem-component": "0.12.1",
-    "react-redux": "4.4.5",
+    "react-redux": "5.0.5",
     "react-router": "3.0.5",
     "react-router-redux": "4.0.8",
     "react-select": "1.0.0-rc.3",
