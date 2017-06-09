@@ -174,7 +174,8 @@ function createComponent (opts) {
     path.resolve(dir, 'index.js')
   )
 
-  const storyFileName = name + '.story.js'
+  const storyModuleName = name + '.story'
+  const storyFileName = storyModuleName + '.js'
   copyWithName(name,
     path.resolve(__dirname, 'story.template.js'),
     path.resolve(dir, storyFileName)
@@ -185,7 +186,7 @@ function createComponent (opts) {
   write(c.green(' +add to: '))
   writeln(path.relative('', storiesPath))
   fs.appendFileSync(storiesPath,
-    "require('./" + name + '/' + storyFileName + "')\n"
+    "require('./" + name + '/' + storyModuleName + "')\n"
   )
 
   copyWithName(name,
