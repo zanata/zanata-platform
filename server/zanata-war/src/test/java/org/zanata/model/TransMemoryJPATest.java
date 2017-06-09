@@ -176,7 +176,7 @@ public class TransMemoryJPATest extends ZanataDbunitJpaTest {
         }
 
         // Verify they were saved
-        List results = queryTUVs().getResultList();
+        List<?> results = queryTUVs().getResultList();
         assertThat(results.size(), greaterThan(0));
     }
 

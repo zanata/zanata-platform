@@ -62,6 +62,7 @@ import com.google.common.collect.ImmutableList;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class ZanataEntities {
+    @SuppressWarnings("rawtypes")
     private static List<Class> entitiesForDelete;
 
     /**
@@ -70,6 +71,7 @@ public class ZanataEntities {
      * @return a list of entity classes that is in order for deletion i.e. won't
      *         violate referential constraint.
      */
+    @SuppressWarnings("rawtypes")
     public static List<Class> entitiesForRemoval() {
         if (entitiesForDelete != null) {
             return entitiesForDelete;

@@ -69,8 +69,8 @@ public class JPACopier {
     /**
      * Fields to copy using {@link this#copyBean(Object, String...)} in class.
      */
-    private static Map<Class, List<String>> FIELDS_TO_COPY =
-            Maps.<Class, List<String>>newConcurrentMap();
+    private static Map<Class<?>, List<String>> FIELDS_TO_COPY =
+            Maps.newConcurrentMap();
 
     /**
      * Create a clone of all writable properties from fromBean.
@@ -203,7 +203,7 @@ public class JPACopier {
     private static void copyProperty(BeanUtilsBean beanUtilsBean, Object toBean,
             String property, Object value) throws InvocationTargetException,
             IllegalAccessException, NoSuchMethodException {
-        Class propertyType = beanUtilsBean.getPropertyUtils()
+        Class<?> propertyType = beanUtilsBean.getPropertyUtils()
                 .getPropertyDescriptor(toBean, property).getPropertyType();
         if (isCollectionType(propertyType)) {
             value = createNewCollection(propertyType, value);
@@ -216,7 +216,7 @@ public class JPACopier {
      *
      * @param clazz
      */
-    private static boolean isCollectionType(Class clazz) {
+    private static boolean isCollectionType(Class<?> clazz) {
         return clazz == List.class || clazz == Set.class || clazz == Map.class;
     }
 
@@ -226,19 +226,19 @@ public class JPACopier {
      * @param clazz
      * @param value
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private static Object createNewCollection(Class clazz, Object value) {
         if (value != null) {
             if (clazz == List.class) {
-                List<Object> list = Lists.<Object> newArrayList();
+                List<Object> list = Lists.newArrayList();
                 list.addAll((List<Object>) value);
                 return list;
             } else if (clazz == Set.class) {
-                Set<Object> set = Sets.<Object> newHashSet();
+                Set<Object> set = Sets.newHashSet();
                 set.addAll((Set<Object>) value);
                 return set;
             } else if (clazz == Map.class) {
-                Map<Object, Object> map = Maps.<Object, Object> newHashMap();
+                Map<Object, Object> map = Maps.newHashMap();
                 map.putAll((Map<Object, Object>) value);
                 return map;
             }
@@ -266,7 +266,7 @@ public class JPACopier {
                 BeanUtilsBean.getInstance().getPropertyUtils();
         List<String> properties = Lists.newCopyOnWriteArrayList();
         // TODO: replace HibernateProxyHelper as its being phased out
-        Class noProxyBean =
+        Class<?> noProxyBean =
                 HibernateProxyHelper.getClassWithoutInitializingProxy(bean);
         Map<String, Object> propertiesMap = propertyUtilsBean.describe(bean);
         for (String property : propertiesMap.keySet()) {

@@ -34,7 +34,7 @@ import com.google.common.base.Optional;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 // TODO test writeTranslatedFile
-public class PlainTextAdapterTest extends AbstractAdapterTest {
+public class PlainTextAdapterTest extends AbstractAdapterTest<PlainTextAdapter> {
 
     @Before
     public void setup() {

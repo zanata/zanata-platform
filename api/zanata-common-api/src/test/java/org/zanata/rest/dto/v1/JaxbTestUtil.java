@@ -1,7 +1,5 @@
 package org.zanata.rest.dto.v1;
 
-import org.xml.sax.helpers.DefaultHandler;
-
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Arrays;
@@ -9,26 +7,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
 
 public class JaxbTestUtil {
 
-    public static void validateXml(Object obj, Class<?>... classes) throws JAXBException {
-        JAXBContext jc = createJaxbContextFor(obj, classes);
-        Marshaller m = jc.createMarshaller();
-        JAXBElement jx = new JAXBElement(new QName("root"), obj.getClass(), obj);
-        m.marshal(jx, new DefaultHandler());
-    }
-
     private static JAXBContext createJaxbContextFor(Object obj,
         Class<?>[] classes) throws JAXBException {
-        Set<Class> classSet = new HashSet<Class>();
+        Set<Class<?>> classSet = new HashSet<>();
         classSet.addAll(Arrays.asList(classes));
         classSet.add(obj.getClass());
-        return JAXBContext.newInstance(classSet.toArray(new Class[0]));
+        return JAXBContext.newInstance(classSet.toArray(new Class<?>[0]));
     }
 
 

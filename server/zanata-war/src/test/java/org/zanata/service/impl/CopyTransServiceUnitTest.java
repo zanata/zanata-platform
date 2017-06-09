@@ -26,7 +26,6 @@ import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,11 +43,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.service.LocaleService;
-import org.zanata.service.TranslationFinder;
 import org.zanata.service.TranslationStateCache;
-import org.zanata.service.ValidationService;
-import org.zanata.service.VersionStateCache;
-
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
@@ -58,19 +53,11 @@ public class CopyTransServiceUnitTest {
     @Mock
     LocaleService localeServiceImpl;
     @Mock
-    TranslationFinder translationFinder;
-    @Mock
     TextFlowTargetDAO textFlowTargetDAO;
     @Mock
     DocumentDAO documentDAO;
     @Mock
     ProjectDAO projectDAO;
-    @Mock
-    ValidationService validationServiceImpl;
-    @Mock
-    VersionStateCache versionStateCacheImpl;
-    @Mock
-    Callable copyTransWork;
     @Mock
     CopyTransWorkFactory copyTransWorkFactory;
     @Mock

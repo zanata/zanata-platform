@@ -46,7 +46,7 @@ import org.zanata.rest.dto.resource.TextFlowTarget;
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class JsonAdapterTest extends AbstractAdapterTest {
+public class JsonAdapterTest extends AbstractAdapterTest<JsonAdapter> {
 
     private LocaleId localeId = new LocaleId("en");
 

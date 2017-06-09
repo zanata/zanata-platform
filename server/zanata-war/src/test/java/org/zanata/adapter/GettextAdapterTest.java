@@ -40,7 +40,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  *  @// TODO: 8/02/17 test ids
  */
 
-public class GettextAdapterTest extends AbstractAdapterTest {
+public class GettextAdapterTest extends AbstractAdapterTest<GettextAdapter> {
 
     @Before
     public void setup() {
