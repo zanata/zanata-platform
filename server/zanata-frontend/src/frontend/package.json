@@ -58,7 +58,7 @@
     "less": "2.7.1",
     "less-loader": "2.2.3",
     "postcss-loader": "0.8.2",
-    "react-intl": "2.1.2",
+    "react-intl": "2.3.0",
     "react-overlays": "0.6.10",
     "react-sidebar": "2.3.0",
     "react-split-pane": "0.1.42",
