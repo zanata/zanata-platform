@@ -6471,9 +6471,11 @@ react-styleguidist@2.3.1:
     webpack-hot-middleware "2.10.0"
     webpack-merge "0.11.0"
 
-react-textarea-autosize@4.0.5:
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-4.0.5.tgz#55379f6a6fa575fc87d1b8de2756e57e3b6c995d"
+react-textarea-autosize@4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/react-textarea-autosize/-/react-textarea-autosize-4.3.2.tgz#962a52c68caceae408c18acecec29049b81e42fa"
+  dependencies:
+    prop-types "^15.5.8"
 
 react-themeable@^1.1.0:
   version "1.1.0"
