@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Link, Icon } from '../../components'
+import { serverUrl } from '../../config'
 
 const statusIcons = {
   ACTIVE: '',
@@ -33,7 +34,7 @@ const ProjectTeaser = ({
       </Link>
     </div>
   )
-  const link = window.config.baseUrl + '/project/view/' + details.id
+  const link = serverUrl + '/project/view/' + details.id
   const className = status !== statusIcons.ACTIVE
     ? 'text-muted-bold'
     : 'text-bold'
