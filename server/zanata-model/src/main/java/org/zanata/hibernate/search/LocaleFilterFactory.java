@@ -22,9 +22,6 @@ package org.zanata.hibernate.search;
 
 import org.apache.lucene.search.Filter;
 import org.hibernate.search.annotations.Factory;
-import org.hibernate.search.annotations.Key;
-import org.hibernate.search.filter.FilterKey;
-import org.hibernate.search.filter.StandardFilterKey;
 import org.zanata.common.LocaleId;
 
 public class LocaleFilterFactory {
@@ -43,12 +40,4 @@ public class LocaleFilterFactory {
     public void setLocale(LocaleId locale) {
         this.locale = locale;
     }
-
-    @Key
-    public FilterKey getKey() {
-        StandardFilterKey key = new StandardFilterKey();
-        key.addParameter(locale);
-        return key;
-    }
-
 }

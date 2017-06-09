@@ -23,10 +23,9 @@ package org.zanata.rest;
 import java.io.IOException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.ext.Provider;
+import javax.ws.rs.ext.ReaderInterceptor;
+import javax.ws.rs.ext.ReaderInterceptorContext;
 
-import org.jboss.resteasy.annotations.interception.ServerInterceptor;
-import org.jboss.resteasy.spi.interception.MessageBodyReaderContext;
-import org.jboss.resteasy.spi.interception.MessageBodyReaderInterceptor;
 import org.zanata.rest.service.RestUtils;
 import org.zanata.util.ServiceLocator;
 
@@ -39,12 +38,10 @@ import org.zanata.util.ServiceLocator;
  *         href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 @Provider
-@ServerInterceptor
-public class HibernateValidationInterceptor implements
-        MessageBodyReaderInterceptor {
+public class HibernateValidationInterceptor implements ReaderInterceptor {
     @Override
-    public Object read(MessageBodyReaderContext context) throws IOException,
-            WebApplicationException {
+    public Object aroundReadFrom(ReaderInterceptorContext context)
+            throws IOException, WebApplicationException {
         Object unmarshalledMsgBody = context.proceed();
 
         RestUtils restUtils =
@@ -53,5 +50,4 @@ public class HibernateValidationInterceptor implements
 
         return unmarshalledMsgBody;
     }
-
 }
