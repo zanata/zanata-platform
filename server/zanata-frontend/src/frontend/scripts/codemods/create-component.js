@@ -17,6 +17,11 @@ const rl = readline.createInterface({
   output: process.stdout
 })
 
+writeln()
+writeln('This script will set up a new React component')
+writeln('ready for development in storybook.')
+writeln()
+
 // TODO use promises
 askIfEditor(isEditor => {
   askName(isEditor, name => {
