@@ -47,12 +47,14 @@ class App extends Component {
   }
 }
 
-function mapStateToProps (state) {
+// FIXME checking if ownProps will work here, as react-router-redux should pass
+//       location info in to routed components that way.
+function mapStateToProps (state, { location }) {
   const exploreLoading = state.explore.loading
   const isExploreLoading = exploreLoading.Project ||
     exploreLoading.LanguageTeam || exploreLoading.Person || exploreLoading.Group
   return {
-    activePath: state.routing.location.pathname,
+    activePath: location.pathname,
     loading: state.common.loading || state.profile.loading ||
       isExploreLoading || state.glossary.statsLoading
   }

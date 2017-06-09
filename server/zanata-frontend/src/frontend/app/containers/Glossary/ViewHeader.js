@@ -292,7 +292,8 @@ const mapStateToProps = (state) => {
     deleteAll,
     project
   } = state.glossary
-  const query = state.routing.location.query
+  // FIXME probably out of date, needs the one that was passed as props
+  const query = state.routing.locationBeforeTransitions.query
   return {
     termCount,
     statsLoading,

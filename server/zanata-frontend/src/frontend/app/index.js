@@ -6,7 +6,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
 import { history } from './history'
-import { syncHistory } from 'react-router-redux'
+import { syncHistoryWithStore } from 'react-router-redux'
 import WebFont from 'webfontloader'
 import { apiMiddleware } from 'redux-api-middleware'
 import rootReducer from './reducers'
@@ -24,7 +24,7 @@ WebFont.load({
   timeout: 2000
 })
 
-const routerMiddleware = syncHistory(history)
+// const routerMiddleware = syncHistory(history)
 
 const logger = createLogger({
   predicate: (getState, action) =>
@@ -35,7 +35,7 @@ const finalCreateStore = compose(
   applyMiddleware(
     thunk,
     apiMiddleware,
-    routerMiddleware,
+    // routerMiddleware,
     logger
   )
 )(createStore)
@@ -53,7 +53,9 @@ const store = ((initialState) => {
   return store
 })()
 
+const enhancedHistory = syncHistoryWithStore(history, store)
+
 render(
-  <Root store={store} history={history} />,
+  <Root store={store} history={enhancedHistory} />,
   document.getElementById('root')
 )

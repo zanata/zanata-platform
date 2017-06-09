@@ -217,8 +217,8 @@ class Languages extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  let urlSort = state.routing.location.query.sort
+const mapStateToProps = (state, { location }) => {
+  let urlSort = location.query.sort
   if (urlSort) {
     urlSort = find(sortOption, function (sort) {
       return sort.value === urlSort
@@ -239,9 +239,9 @@ const mapStateToProps = (state) => {
     deleting
   } = state.languages
   return {
-    searchText: state.routing.location.query.search || '',
-    page: parseInt(state.routing.location.query.page) || 1,
-    size: parseInt(state.routing.location.query.size) || pageSizeOption[0],
+    searchText: location.query.search || '',
+    page: parseInt(location.query.page) || 1,
+    size: parseInt(location.query.size) || pageSizeOption[0],
     sort: urlSort,
     results: locales.results,
     totalCount: locales.totalCount,

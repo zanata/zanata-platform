@@ -171,14 +171,16 @@ class Explore extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, { location }) => {
+  const {
+    groupPage, languageTeamPage, personPage, projectPage, q } = location.query
   return {
-    location: state.routing.location,
-    searchText: state.routing.location.query.q,
-    projectPage: parseInt(state.routing.location.query.projectPage),
-    groupPage: parseInt(state.routing.location.query.groupPage),
-    personPage: parseInt(state.routing.location.query.personPage),
-    languageTeamPage: parseInt(state.routing.location.query.languageTeamPage),
+    location,
+    searchText: q,
+    projectPage: parseInt(projectPage),
+    groupPage: parseInt(groupPage),
+    personPage: parseInt(personPage),
+    languageTeamPage: parseInt(languageTeamPage),
     searchResults: state.explore.results,
     searchError: state.explore.error,
     searchLoading: state.explore.loading

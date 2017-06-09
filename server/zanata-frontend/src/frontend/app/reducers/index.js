@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { routeReducer as routing } from 'react-router-redux'
+import { routerReducer as routing } from 'react-router-redux'
 import glossary from './glossary-reducer'
 import explore from './explore-reducer'
 import profile from './profile-reducer'
