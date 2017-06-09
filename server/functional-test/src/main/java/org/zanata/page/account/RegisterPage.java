@@ -67,6 +67,12 @@ public class RegisterPage extends CorePage {
         return new RegisterPage(getDriver());
     }
 
+    public RegisterPage clearUsername() {
+        log.info("Clear username");
+        readyElement(usernameField).clear();
+        return new RegisterPage(getDriver());
+    }
+
     public RegisterPage enterUserName(String userName) {
         log.info("Enter username {}", userName);
         enterText(readyElement(usernameField), userName);
