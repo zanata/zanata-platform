@@ -1,10 +1,16 @@
 package org.zanata.rest.service;
 
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
-import javax.ws.rs.core.Response;
+import javax.transaction.UserTransaction;
 
 import org.hibernate.Session;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.hibernate.search.FullTextSession;
+import org.hibernate.search.jpa.FullTextEntityManager;
+import org.jboss.resteasy.client.ClientResponse;
+import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -14,18 +20,63 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.ZanataRestTest;
 import org.zanata.common.LocaleId;
+import org.zanata.jpa.FullText;
+import org.zanata.rest.NoSuchEntityException;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.service.LocaleService;
+import org.zanata.service.LockManagerService;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.util.Zanata;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(CdiUnitRunner.class)
 public class TMXDummyRestTest extends ZanataRestTest {
+
+    private TranslationMemoryResource tmResource;
+
+    @Inject
+    private TranslationMemoryResourceService tmService;
 
     @Produces
     @Mock
     private ZanataIdentity mockIdentity;
 
-    @Inject
-    private TranslationMemoryResource tmService;
+    @Produces
+    @Mock
+    LocaleService localeService;
+
+    @Produces
+    @Mock
+    @FullText
+    @Zanata
+    @Default
+    FullTextEntityManager fullTextEntityManager;
+
+    @Produces
+    @Mock
+    @FullText
+    @Zanata
+    FullTextSession fullTextSession;
+
+    @Produces
+    @Mock
+    @Zanata
+    HibernateEntityManagerFactory hibernateEntityManagerFactory;
+//    SessionFactory sessionFactory;
+
+    @Produces
+    @Mock
+    LockManagerService lockManagerService;
+
+    @Produces
+    @Mock
+    UserTransaction userTransaction;
+
+    @Produces
+    @Mock
+    RestSlugValidator restSlugValidator;
 
     @Override
     @Produces
@@ -41,10 +92,10 @@ public class TMXDummyRestTest extends ZanataRestTest {
     @Before
     public void createClient() {
         MockitoAnnotations.initMocks(this);
-        this.tmService =
+        this.tmResource =
                 getClientRequestFactory().createProxy(
                         TranslationMemoryResource.class,
-                        createBaseURI("/rest/tm"));
+                        createBaseURI("/"));
     }
 
     @Override
@@ -66,19 +117,40 @@ public class TMXDummyRestTest extends ZanataRestTest {
 
     @Override
     protected void prepareResources() {
-//        TranslationMemoryResourceService tmService =
-//                seam.autowire(TranslationMemoryResourceService.class);
-//        resources.add(seam.autowire(TextFlowStreamingDAO.class));
         resources.add(tmService);
+    }
+
+    @Test
+    @InRequestScope
+    public void testGetTmxForMissingProject() throws Exception {
+        when(restSlugValidator.retrieveAndCheckIteration("iok", "6.4", false))
+                .thenThrow(new NoSuchEntityException("Project \'iok\' not found."));
+        // TODO find a way to get entity without ClientResponse
+        @SuppressWarnings("deprecation")
+        ClientResponse response = (ClientResponse)
+                tmResource.getProjectIterationTranslationMemory("iok", "6.4",
+                        new LocaleId("as"));
+        assertThat(response.getStatus()).isEqualTo(404);
+        assertThat(response.getEntity(String.class)).isEqualTo("Project \'iok\' not found.");
     }
 
     @Ignore
     @Test
-    public void testGetTmx() {
-        Response response =
-                tmService.getProjectIterationTranslationMemory("iok", "6.4",
+    @InRequestScope
+    public void testGetTmx() throws Exception {
+//        HProject project = new HProject();
+//        when(restSlugValidator.retrieveAndCheckProject("iok", false)).thenReturn(project);
+        // TODO get this working with a mock Session
+//        when(sessionFactory.openSession()).
+
+        @SuppressWarnings("deprecation")
+        ClientResponse response = (ClientResponse)
+                tmResource.getProjectIterationTranslationMemory("iok", "6.4",
                         new LocaleId("as"));
-        System.out.println(response.getEntity());
+        assertThat(response.getStatus()).isEqualTo(200);
+
+//        InputStream inputStream = response.readEntity(InputStream.class);
+//        System.out.println(IOUtils.toString(inputStream, StandardCharsets.UTF_8));
     }
 
 }
