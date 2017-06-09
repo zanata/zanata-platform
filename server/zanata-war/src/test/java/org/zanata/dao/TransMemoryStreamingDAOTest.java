@@ -28,7 +28,7 @@ public class TransMemoryStreamingDAOTest extends ZanataJpaTest {
 
     @Before
     public void setup() {
-        dao = new TransMemoryStreamingDAO(getEmf());
+        dao = new TransMemoryStreamingDAO(getEmf().getSessionFactory());
         session = getSession();
         transMemoryDAO = new TransMemoryDAO(session);
     }

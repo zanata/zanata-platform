@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import javax.transaction.UserTransaction;
 
 import org.hibernate.Session;
-import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.jboss.resteasy.client.ClientResponse;
@@ -63,8 +63,7 @@ public class TMXDummyRestTest extends ZanataRestTest {
     @Produces
     @Mock
     @Zanata
-    HibernateEntityManagerFactory hibernateEntityManagerFactory;
-//    SessionFactory sessionFactory;
+    SessionFactory sessionFactory;
 
     @Produces
     @Mock
