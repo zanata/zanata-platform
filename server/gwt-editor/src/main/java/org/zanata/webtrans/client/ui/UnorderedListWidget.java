@@ -40,11 +40,13 @@ public class UnorderedListWidget extends ComplexPanel {
         ((UListElement) getElement().cast()).setDir(dir);
     }
 
+    @SuppressWarnings("deprecation")
     public void add(Widget widget) {
         // ComplexPanel requires the two-arg add() method
         super.add(widget, getElement());
     }
 
+    @SuppressWarnings("deprecation")
     public void addOnTop(Widget widget) {
         // ComplexPanel requires the two-arg add() method
         super.insert(widget, getElement(), 0, true);
