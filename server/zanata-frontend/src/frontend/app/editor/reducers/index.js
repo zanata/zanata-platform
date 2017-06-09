@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import { routeReducer } from 'react-router-redux'
+import { routerReducer } from 'react-router-redux'
 import phrases from './phrase-reducer'
 import context from './context-reducer'
 import dropdown from './dropdown-reducer'
@@ -14,7 +14,7 @@ const rootReducer = combineReducers({
   dropdown,
   glossary,
   phrases,
-  routing: routeReducer,
+  routing: routerReducer,
   suggestions,
   ui
 })
