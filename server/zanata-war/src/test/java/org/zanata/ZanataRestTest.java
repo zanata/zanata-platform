@@ -85,13 +85,6 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
                     providerInstance);
         }
 
-        // TODO: attach mock dispatcher into resteasyClient
-//        HttpClient httpClient = HttpClientBuilder.create().build();
-//        ApacheHttpClient4Engine executor =
-//                new ApacheHttpClient4Engine(httpClient);
-//        resteasyClientBuilder =
-//                new ResteasyClientBuilder().httpEngine(executor);
-
         org.jboss.resteasy.client.core.executors.InMemoryClientExecutor executor =
                 new org.jboss.resteasy.client.core.executors.InMemoryClientExecutor(dispatcher);
         executor.setBaseUri(MOCK_BASE_URI);
