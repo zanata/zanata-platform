@@ -20,8 +20,6 @@
  */
 package org.zanata.page
 
-import com.google.common.base.Function
-import com.google.common.base.Predicate
 import org.assertj.core.api.Assertions.assertThat
 import org.openqa.selenium.Alert
 import org.openqa.selenium.By
@@ -109,38 +107,19 @@ abstract class AbstractPage(val driver: WebDriver) {
     /**
      * @param currentPage
      * *
-     * @param predicate
-     * *
-     * @param message
-     * *            description of predicate
-     * *
-     * @param <P>
-     * *
-     * @return
-    </P> */
-    protected fun <P : AbstractPage> refreshPageUntil(currentPage: P,
-            predicate: Predicate<WebDriver>, message: String): P {
-        waitForAMoment().until(message, predicate::test)
-        PageFactory.initElements(driver, currentPage)
-        return currentPage
-    }
-
-    /**
-     * @param currentPage
-     * *
      * @param function
      * *
      * @param message
      * *            description of function
      * *
-     * @param <P>
+     * @param P
      * *
-     * @param <T>
+     * @param T
      * *
      * @return
-    </T></P> */
+     */
     protected fun <P : AbstractPage, T> refreshPageUntil(currentPage: P,
-            function: Function<WebDriver, T>, message: String): T {
+            message: String, function: (WebDriver) -> T): T {
         val done = waitForAMoment().withMessage(message).until(function)
         PageFactory.initElements(driver, currentPage)
         return done

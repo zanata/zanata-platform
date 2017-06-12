@@ -116,9 +116,10 @@ public class ProjectLanguagesTab extends ProjectBasePage {
                             getDriver().findElement(disabledLocales),
                             searchLocaleId);
                 });
-        refreshPageUntil(this, (Predicate<WebDriver>) driver -> {
-            return getEnabledLocaleList().contains(searchLocaleId);
-        }, "Wait for the locale list to contain " + searchLocaleId);
+        refreshPageUntil(this,
+                "Wait for the locale list to contain " + searchLocaleId,
+                it -> getEnabledLocaleList().contains(searchLocaleId)
+        );
         return new ProjectLanguagesTab(getDriver());
     }
 
@@ -139,9 +140,9 @@ public class ProjectLanguagesTab extends ProjectBasePage {
                             searchLocaleId);
                 });
         refreshPageUntil(this,
-                (Predicate<WebDriver>) driver -> !getEnabledLocaleList()
-                        .contains(searchLocaleId),
-                "Wait for the locale list to not contain " + searchLocaleId);
+                "Wait for the locale list to not contain " + searchLocaleId,
+                it -> !getEnabledLocaleList().contains(searchLocaleId)
+        );
         return new ProjectLanguagesTab(getDriver());
     }
 

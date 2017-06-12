@@ -79,13 +79,7 @@ public class CorePage extends AbstractPage {
 
     protected void clickAndExpectErrors(WebElement button) {
         clickElement(button);
-        refreshPageUntil(this, new Predicate<WebDriver>() {
-
-            @Override
-            public boolean apply(WebDriver input) {
-                return getErrors().size() > 0;
-            }
-        }, "errors > 0");
+        refreshPageUntil(this, "errors > 0", it -> getErrors().size() > 0);
     }
 
     public List<String> getErrors() {
@@ -111,9 +105,9 @@ public class CorePage extends AbstractPage {
     public List<String> getErrors(final int expectedNumber) {
         log.info("Query page errors, expecting {}", expectedNumber);
         refreshPageUntil(this,
-                (Predicate<WebDriver>) webDriver -> getErrors()
-                        .size() == expectedNumber,
-                "errors = " + expectedNumber);
+                "errors = " + expectedNumber,
+                it -> getErrors().size() == expectedNumber
+        );
         return getErrors();
     }
 

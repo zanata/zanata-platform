@@ -150,9 +150,9 @@ public class VersionLanguagesTab extends VersionBasePage {
                                 getDriver().findElement(activeLocales),
                                 localeId));
         refreshPageUntil(this,
-                (Predicate<WebDriver>) driver -> !getEnabledLocaleList()
-                        .contains(localeId),
-                "Wait for the locale list to not contain " + localeId);
+                "Wait for the locale list to not contain " + localeId,
+                it -> !getEnabledLocaleList().contains(localeId)
+        );
         return new VersionLanguagesTab(getDriver());
     }
 
@@ -165,9 +165,9 @@ public class VersionLanguagesTab extends VersionBasePage {
                                 getDriver().findElement(disabledLocales),
                                 localeId));
         refreshPageUntil(this,
-                (Predicate<WebDriver>) driver -> getEnabledLocaleList()
-                        .contains(localeId),
-                "Wait for the locale list to contain " + localeId);
+                "Wait for the locale list to contain " + localeId,
+                it -> getEnabledLocaleList().contains(localeId)
+        );
         return new VersionLanguagesTab(getDriver());
     }
 }

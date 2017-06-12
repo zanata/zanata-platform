@@ -73,7 +73,7 @@ public class VersionGroupPage extends BasePage {
             final int expectedResultNum) {
         enterText(readyElement(projectSearchField), projectName);
         return refreshPageUntil(this,
-                (Function<WebDriver, List<WebElement>>) driver -> {
+                "Find results of searching for " + projectName, it -> {
                     // we want to wait until search result comes back. There
                     // is no way we can tell whether search result has come
                     // back and table refreshed.
@@ -88,7 +88,7 @@ public class VersionGroupPage extends BasePage {
                         return null;
                     }
                     return listItems;
-                }, "Find results of searching for " + projectName);
+                });
     }
 
     public VersionGroupPage addToGroup(int rowIndex) {

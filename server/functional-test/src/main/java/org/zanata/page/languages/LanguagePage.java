@@ -195,9 +195,9 @@ public class LanguagePage extends BasePage {
 
     private LanguagePage confirmAdded(final String personUsername) {
         // we need to wait for the page to refresh
-        refreshPageUntil(this, (Predicate<WebDriver>) driver -> {
-            return getMemberUsernames().contains(personUsername);
-        }, "Wait for names to contain " + personUsername);
+        refreshPageUntil(this, "Wait for names to contain " + personUsername,
+                it -> getMemberUsernames().contains(personUsername)
+        );
         return new LanguagePage(getDriver());
     }
 
