@@ -50,8 +50,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
     public final HasEmailRule hasEmailRule = new HasEmailRule();
 
     @Feature(
-            summary = "The user needs to verify their account before they may log in",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181714)
+            summary = "The user needs to verify their account before they may log in")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void verifyAccount() throws Exception {
         String usernamepassword = "tester1";
@@ -81,8 +80,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                         "The user has validated their account and logged in");
     }
 
-    @Feature(summary = "The user can resend the account activation email",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 301686)
+    @Feature(summary = "The user can resend the account activation email")
     @Test(timeout = MAX_SHORT_TEST_DURATION)
     public void resendActivationEmail() throws Exception {
         String usernamepassword = "tester2";
@@ -113,8 +111,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                         "The user has validated their account and logged in");
     }
 
-    @Feature(summary = "The user can update the account activation email",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 301687)
+    @Feature(summary = "The user can update the account activation email")
     @Test(timeout = MAX_SHORT_TEST_DURATION)
     public void updateActivationEmail() throws Exception {
         String usernamepassword = "tester3";

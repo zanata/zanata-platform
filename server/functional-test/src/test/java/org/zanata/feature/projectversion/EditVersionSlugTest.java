@@ -52,8 +52,7 @@ public class EditVersionSlugTest extends ZanataTestCase {
                 "oldSlug", "file");
     }
 
-    @Feature(summary = "Project version slug can be changed and page will redirect to new URL",
-            tcmsTestPlanIds = 0, tcmsTestCaseIds = 0)
+    @Feature(summary = "Project version slug can be changed and page will redirect to new URL")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeVersionSlug() throws Exception {
         assertThat(new LoginWorkFlow()

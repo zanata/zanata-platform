@@ -88,8 +88,7 @@ public class ConcurrentEditTest extends ZanataTestCase {
     }
 
     @Feature(
-            summary = "The system will show concurrently changed translations to the web editor user",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            summary = "The system will show concurrently changed translations to the web editor user")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorReceivesCopyTransResults() throws Exception {
         // create project and populate master version

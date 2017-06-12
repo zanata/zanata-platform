@@ -48,8 +48,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can set validation options for " +
-            "a project version",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "a project version")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setValidationOptions() throws Exception {
         VersionTranslationTab versionTranslationTab = new ProjectWorkFlow()
@@ -80,8 +79,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The system recognises validation errors options in " +
-            "translation targets and displays them to the user",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "translation targets and displays them to the user")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void verifyValidationsAreErrors() throws Exception {
         VersionTranslationTab versionTranslationTab = new ProjectWorkFlow()
@@ -115,8 +113,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .as("The correct error is shown for the validation");
     }
 
-    @Feature(summary = "The user cannot disable enforced validations",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user cannot disable enforced validations")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void userCannotTurnOffEnforcedValidations() throws Exception {
         VersionTranslationTab versionTranslationTab = new ProjectWorkFlow()
@@ -144,8 +141,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The user cannot select both printf formats for " +
-            "validation options",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "validation options")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void printfAndPositionalPrintfAreExclusive() throws Exception {
         VersionTranslationTab versionTranslationTab = new ProjectWorkFlow()
@@ -185,8 +181,7 @@ public class EditVersionValidationsTest extends ZanataTestCase {
                 .as("The Positional printf level is Off");
     }
 
-    @Feature(summary = "The user can turn on a disabled validation option",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user can turn on a disabled validation option")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void userCanEnableADisabledValidation() throws Exception {
         VersionTranslationTab versionTranslationTab = new ProjectWorkFlow()

@@ -54,8 +54,7 @@ public class EmailValidationTest extends ZanataTestCase {
     }
 
     @Feature(
-            summary = "The system will allow acceptable forms of an email address for registration",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            summary = "The system will allow acceptable forms of an email address for registration")
     @Test
     public void validEmailAcceptance() throws Exception {
         registerPage =
@@ -67,8 +66,7 @@ public class EmailValidationTest extends ZanataTestCase {
     }
 
     @Feature(
-            summary = "The user must enter a valid email address to register with Zanata",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            summary = "The user must enter a valid email address to register with Zanata")
     @Test
     public void invalidEmailRejection() throws Exception {
         registerPage = registerPage.enterEmail("plaintext").registerFailure();

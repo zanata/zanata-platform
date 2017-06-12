@@ -53,8 +53,7 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The maintainer can override the available languages " +
-            "for a project version",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "for a project version")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeVersionLanguages() throws Exception {
         assertThat(new LoginWorkFlow()

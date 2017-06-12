@@ -38,8 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class AutoRoleAssignmentTest extends ZanataTestCase {
 
     @Feature(summary = "The administrator can create a rule to assign roles " +
-            "at user sign in",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "at user sign in")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createAutoRoleAssignment() throws Exception {
         RoleAssignmentsPage roleAssignmentsPage = new LoginWorkFlow()

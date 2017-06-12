@@ -34,8 +34,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.MavenHome.mvn;
 
 /**
- * @see <a href="https://tcms.engineering.redhat.com/case/169230/">TCMS case</a>
- *
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */

@@ -26,7 +26,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectVersionsPage;
@@ -53,8 +52,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .as("Admin is logged in");
     }
 
-    @Feature(summary = "The administrator can create a project version",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 136517)
+    @Feature(summary = "The administrator can create a project version")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createASimpleProjectVersion() throws Exception {
         VersionLanguagesPage versionLanguagesPage = new ProjectWorkFlow()
@@ -69,8 +67,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
                 .as("The version is created with correct ID");
     }
 
-    @Feature(summary = "The user must enter an id to create a project version",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user must enter an id to create a project version")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void idFieldMustNotBeEmpty() throws Exception {
         CreateVersionPage createVersionPage = new ProjectWorkFlow()
@@ -86,8 +83,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The user must enter an id that starts and ends with " +
-            "alphanumeric character to create a project version",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "alphanumeric character to create a project version")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void idStartsAndEndsWithAlphanumeric() throws Exception {
         CreateVersionPage createVersionPage = new ProjectWorkFlow()
@@ -125,8 +121,7 @@ public class CreateProjectVersionTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The system updates the project version counter " +
-            "when a project version is created",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "when a project version is created")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("intermittently failing; see rhbz1168447")
     public void versionCounterIsUpdated() throws Exception {

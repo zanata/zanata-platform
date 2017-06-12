@@ -74,8 +74,7 @@ public class PropertiesRoundTripTest extends ZanataTestCase {
         properties.store(new FileWriter(propertiesSource), "comment");
     }
 
-    @Feature(summary = "The maintainer user may push and pull properties files",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 139837)
+    @Feature(summary = "The maintainer user may push and pull properties files")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canPushAndPullProperties() throws IOException,
             InterruptedException {

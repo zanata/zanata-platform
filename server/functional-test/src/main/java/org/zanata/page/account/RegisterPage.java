@@ -43,7 +43,7 @@ public class RegisterPage extends CorePage {
             "size must be between 2 and 80";
     public static final String MALFORMED_EMAIL_ERROR =
             "not a well-formed email address";
-    public static final String REQUIRED_FIELD_ERROR = "value is required";
+    public static final String REQUIRED_FIELD_ERROR = "may not be empty";
 
     public static final String PASSWORD_LENGTH_ERROR =
             "size must be between 6 and 1024";

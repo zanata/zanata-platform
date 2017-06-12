@@ -68,8 +68,7 @@ public class TranslateTextTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Feature(summary = "The user can translate a plain text file",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user can translate a plain text file")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translateBasicTextFile() {
         File testfile = testFileGenerator.generateTestFileWithContent(

@@ -44,7 +44,6 @@ import org.zanata.rest.dto.resource.Resource;
 import org.zanata.util.Constants;
 import org.zanata.util.PropertiesHolder;
 import org.zanata.util.ZanataRestCaller;
-import com.google.common.base.Throwables;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.ZanataRestCaller.buildSourceResource;
@@ -66,8 +65,7 @@ public class ConcurrentAccessTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The system will handle concurrent document " +
-            "creation gracefully",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "creation gracefully")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void concurrentDocumentCreationWillNotCauseHibernateException()
             throws InterruptedException {

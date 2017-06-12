@@ -58,8 +58,7 @@ public class EditorFilterMessagesTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The user can filter translation entries using more " +
-            "than one search term",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "than one search term")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canFilterByMultipleFields() {
         EditorPage editorPage = new BasicWorkFlow()
@@ -73,8 +72,7 @@ public class EditorFilterMessagesTest extends ZanataTestCase {
         assertThat(page.getMessageSources()).contains("greetings");
     }
 
-    @Feature(summary = "The user may save the filter url for later use",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user may save the filter url for later use")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorFilterIsBookmarkable() {
         String urlForEditor =

@@ -31,8 +31,6 @@ import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -42,8 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class ProjectSearchTest extends ZanataTestCase {
 
-    @Feature(summary = "The user can search for a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user can search for a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void successfulProjectSearchAndDisplay() throws Exception {
         ExplorePage explorePage = new BasicWorkFlow()
@@ -65,8 +62,7 @@ public class ProjectSearchTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The system will provide no results on an " +
-            "unsuccessful search",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "unsuccessful search")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unsuccessfulProjectSearch() throws Exception {
         ExplorePage explorePage = new BasicWorkFlow()
@@ -79,8 +75,7 @@ public class ProjectSearchTest extends ZanataTestCase {
                 .as("No projects are displayed");
     }
 
-    @Feature(summary = "The user cannot search for Deleted projects",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user cannot search for Deleted projects")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void userCannotSearchDeleteProject() throws Exception {
         new LoginWorkFlow().signIn("admin", "admin")

@@ -39,8 +39,7 @@ public class UsernameValidationTest extends ZanataTestCase {
             org.slf4j.LoggerFactory.getLogger(UsernameValidationTest.class);
 
     @Feature(
-            summary = "The user must enter acceptable username charactersto register",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            summary = "The user must enter acceptable username characters to register")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernameCharacterValidation() throws Exception {
         RegisterPage registerPage = new BasicWorkFlow().goToHome()

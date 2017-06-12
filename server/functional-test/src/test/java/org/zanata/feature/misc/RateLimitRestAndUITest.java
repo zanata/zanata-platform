@@ -20,7 +20,6 @@
  */
 package org.zanata.feature.misc;
 
-import com.google.common.base.Throwables;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
@@ -53,9 +52,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Feature(
-        summary = "The system can be set to rate consecutive REST access calls",
-        tcmsTestPlanIds = 5315, tcmsTestCaseIds = 0)
+@Feature(summary = "The system can be set to rate consecutive REST access calls")
 @Category(DetailedTest.class)
 public class RateLimitRestAndUITest extends ZanataTestCase {
     private static final org.slf4j.Logger log =

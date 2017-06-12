@@ -36,6 +36,6 @@ public @interface Feature {
 
     int bugzilla() default NO_BUG;
     String summary() default "no description";
-    int[] tcmsTestPlanIds() default {};
-    int[] tcmsTestCaseIds() default {};
+    int[] testPlanIds() default {};
+    int[] testCaseIds() default {};
 }

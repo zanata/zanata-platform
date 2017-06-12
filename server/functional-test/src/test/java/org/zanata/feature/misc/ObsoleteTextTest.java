@@ -42,9 +42,6 @@ import static org.zanata.workflow.BasicWorkFlow.PROJECT_VERSION_TEMPLATE;
 
 
 /**
- * TCMS test case <a
- * href="https://tcms.engineering.redhat.com/case/137717/">137717</a>
- *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -59,7 +56,7 @@ public class ObsoleteTextTest extends ZanataTestCase {
     }
 
     /**
-     * Below is a modified version of what's in TCMS test cases.
+     * Scenario
      *
      * Project "obsolete-test" is created, and version "master" is created, and
      * source texts (message1 and message2) are pushed. Language fr should be

@@ -26,13 +26,10 @@ import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.BasePage;
 import org.zanata.page.account.ProfilePage;
 import org.zanata.page.explore.ExplorePage;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
-
-import com.google.common.base.Splitter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -43,8 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class PersonSearchTest extends ZanataTestCase {
 
-    @Feature(summary = "The user can search for another user",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user can search for another user")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void successfulPersonSearchAndDisplay() throws Exception {
         ExplorePage explorePage = new BasicWorkFlow()
@@ -66,8 +62,7 @@ public class PersonSearchTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The system will provide no results on an " +
-            "unsuccessful search",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "unsuccessful search")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unsuccessfulPersonSearch() throws Exception {
         ExplorePage explorePage = new BasicWorkFlow()
@@ -80,8 +75,7 @@ public class PersonSearchTest extends ZanataTestCase {
                 .as("The user is not displayed");
     }
 
-    @Feature(summary = "The user can access another user's profile via the URL",
-        tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user can access another user's profile via the URL")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void viewProfileViaUrl() throws Exception {
         BasicWorkFlow basicWorkFlow = new BasicWorkFlow();
@@ -94,8 +88,7 @@ public class PersonSearchTest extends ZanataTestCase {
             .isEqualTo("translator");
     }
 
-    @Feature(summary = "A logged user can see another user's contributions",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "A logged user can see another user's contributions")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void contributionsAreVisibleToLoggedInUsers() throws Exception {
         new LoginWorkFlow().signIn("glossarist", "glossarist");

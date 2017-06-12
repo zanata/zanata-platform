@@ -46,8 +46,7 @@ public class ContactAdminTest extends ZanataTestCase {
     @Rule
     public final HasEmailRule emailRule = new HasEmailRule();
 
-    @Feature(summary = "The user can contact the site administrator",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181717)
+    @Feature(summary = "The user can contact the site administrator")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testContactAdmin() {
         ContactAdminFormPage contactAdminFormPage = new LoginWorkFlow()

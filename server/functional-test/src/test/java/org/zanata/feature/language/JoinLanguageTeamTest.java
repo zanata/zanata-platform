@@ -46,8 +46,7 @@ public class JoinLanguageTeamTest extends ZanataTestCase {
     @Rule
     public final HasEmailRule hasEmailRule = new HasEmailRule();
 
-    @Feature(summary = "The administrator can add a member to a language team",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181703)
+    @Feature(summary = "The administrator can add a member to a language team")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translatorJoinsLanguageTeam() throws Exception {
         LanguagePage languagePage = new LoginWorkFlow()

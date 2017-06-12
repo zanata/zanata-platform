@@ -44,8 +44,7 @@ public class ContactLanguageTeamTest extends ZanataTestCase {
     @Rule
     public final HasEmailRule emailRule = new HasEmailRule();
 
-    @Feature(summary = "The user can contact a language team coordinator",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user can contact a language team coordinator")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translatorContactsLanguageTeamCoordinator() throws Exception {
         LanguagesPage languagesPage = new LoginWorkFlow()

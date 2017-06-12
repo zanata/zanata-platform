@@ -53,8 +53,7 @@ public class ManageUsersTest extends ZanataTestCase {
         dashboardPage = new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Feature(summary = "The administrator can change a user's password",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The administrator can change a user's password")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeAUsersPassword() throws Exception {
         dashboardPage.goToAdministration()
@@ -73,8 +72,7 @@ public class ManageUsersTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator must enter the new user password " +
-            "into password and confirm password in order to change it",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "into password and confirm password in order to change it")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeAUsersPasswordRequiredFields() throws Exception {
         ManageUserAccountPage manageUserAccountPage = dashboardPage
@@ -89,8 +87,7 @@ public class ManageUsersTest extends ZanataTestCase {
                 .as("The password failure error is displayed");
     }
 
-    @Feature(summary = "The administrator can disable an account",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The administrator can disable an account")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void disableAUsersAccount() throws Exception {
         dashboardPage.goToAdministration()
@@ -111,8 +108,7 @@ public class ManageUsersTest extends ZanataTestCase {
                 .as("The user's account cannot be logged in");
     }
 
-    @Feature(summary = "The administrator can change a user account's roles",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The administrator can change a user account's roles")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeUserRoles() throws Exception {
         dashboardPage.goToAdministration()

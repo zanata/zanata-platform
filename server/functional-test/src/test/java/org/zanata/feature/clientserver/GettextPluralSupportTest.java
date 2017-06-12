@@ -49,10 +49,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.MavenHome.mvn;
 
 /**
- * This covers TCMS case <a
- * href="https://tcms.engineering.redhat.com/case/217601/">217601</a> and case
- * <a href="https://tcms.engineering.redhat.com/case/217905/">217905</a>
- *
  * @author Patrick Huang <a
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -86,8 +82,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         restCaller = new ZanataRestCaller();
     }
 
-    @Feature(summary = "The user can push and pull gettext plural projects",
-            tcmsTestCaseIds = {217601, 217905}, tcmsTestPlanIds = 5316)
+    @Feature(summary = "The user can push and pull gettext plural projects")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canPushAndPullPlural() throws IOException {
         restCaller.createProjectAndVersion("plurals", "master", "podir");

@@ -47,8 +47,7 @@ public class EditProjectValidationsTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can change the validation levels " +
-            "for a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "for a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setValidationOptions() throws Exception {
 
@@ -113,8 +112,7 @@ public class EditProjectValidationsTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The system will only allow one of the two Printf " +
-            "validation options to be active at one time",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "validation options to be active at one time")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void printfAndPositionalPrintfAreExclusive() throws Exception {
         ProjectTranslationTab projectTranslationTab = new ProjectWorkFlow()

@@ -41,8 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class EditProjectAboutTest extends ZanataTestCase {
 
-    @Feature(summary = "The administrator can change a project about content",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The administrator can change a project about content")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addAboutPageDetails() throws Exception {
         new ZanataRestCaller().createProjectAndVersion(

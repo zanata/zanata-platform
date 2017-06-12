@@ -49,8 +49,7 @@ public class EditWebHooksTest extends ZanataTestCase {
                 .as("Admin is logged in");
     }
 
-    @Feature(summary = "The maintainer can add WebHooks for a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The maintainer can add WebHooks for a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addWebHook() throws Exception {
         String testUrl = "http://www.example.com";
@@ -68,8 +67,7 @@ public class EditWebHooksTest extends ZanataTestCase {
                 .as("The web hook was added");
     }
 
-    @Feature(summary = "The maintainer can add WebHooks for a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The maintainer can add WebHooks for a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeWebHook() throws Exception {
         String testUrl = "http://www.example.com";

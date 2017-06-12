@@ -56,8 +56,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can create a new translation " +
-            "memory entry",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "memory entry")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createNewTranslationMemory() throws Exception {
         String newTMId = "newtmtest";
@@ -82,8 +81,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator must use a unique identifier to " +
-            "create a new translation memory entry",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "create a new translation memory entry")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translationMemoryIdsAreUnique() throws Exception {
         String nonUniqueTMId = "doubletmtest";
@@ -117,8 +115,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can import data from a tmx data " +
-            "file into a translation memory entry",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "file into a translation memory entry")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void importTranslationMemory() throws Exception {
         String importTMId = "importmtest";
@@ -139,8 +136,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     /**
      * Updated to test import button is disabled if not file is selected.
      */
-    @Feature(summary = "The system rejects empty TMX data files",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The system rejects empty TMX data files")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void rejectEmptyTranslation() throws Exception {
         String rejectTMId = "rejectemptytmtest";
@@ -153,8 +149,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
         assertThat(tmMemoryPage.isImportButtonEnabled()).isEqualTo(false);
     }
 
-    @Feature(summary = "The administrator can delete a translation memory entry",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The administrator can delete a translation memory entry")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void deleteTranslationMemory() throws Exception {
         String deleteTMId = "deletetmtest";
@@ -175,8 +170,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can cancel the delete of a " +
-            "translation memory entry",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "translation memory entry")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void dontDeleteTranslationMemory() throws Exception {
         String dontDeleteTMId = "dontdeletetmtest";
@@ -197,8 +191,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can clear the content of a " +
-            "translation memory entry",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "translation memory entry")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     // fails intermittently
     @Ignore
@@ -226,8 +219,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can cancel clearing the content " +
-            "of a translation memory entry",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "of a translation memory entry")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void dontClearTranslationMemory() throws Exception {
         String clearTMId = "dontcleartmtest";
@@ -253,8 +245,7 @@ public class EditTranslationMemoryTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator must clear a translation memory " +
-            "entry before it can be deleted",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "entry before it can be deleted")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     // fails intermittently
     @Ignore

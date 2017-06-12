@@ -48,8 +48,7 @@ public class EditHomePageTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can edit the home screen in " +
-            "source mode",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "source mode")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editPageCode() throws Exception {
         HomePage homePage = new BasicWorkFlow()

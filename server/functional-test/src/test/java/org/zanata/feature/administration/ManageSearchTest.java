@@ -48,8 +48,7 @@ public class ManageSearchTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can clear and regenerate all of the " +
-            "search indexes",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "search indexes")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("RHBZ1180948 JBoss issue")
     public void regenerateSearchIndexes() throws Exception {
@@ -75,8 +74,7 @@ public class ManageSearchTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can abort the regeneration of the " +
-            "search indexes",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "search indexes")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Data set not large enough to achieve stable test")
     public void abortReindexes() throws Exception {

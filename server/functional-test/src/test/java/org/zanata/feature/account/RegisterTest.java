@@ -26,7 +26,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
@@ -51,13 +50,13 @@ public class RegisterTest extends ZanataTestCase {
     @Rule
     public final HasEmailRule emailRule = new HasEmailRule();
 
-    Map<String, String> fields;
+    private Map<String, String> fields;
     private HomePage homePage;
 
     @Before
     public void before() {
         // fields contains a set of data that can be successfully registered
-        fields = new HashMap<String, String>();
+        fields = new HashMap<>();
 
         // Conflicting fields - must be set for each test function to avoid
         // "not available" errors
@@ -70,7 +69,7 @@ public class RegisterTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The user can register an account with Zanata",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86816)
+            testPlanIds = 5681, testCaseIds = 5688)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void registerSuccessful() throws Exception {
         RegisterPage registerPage = homePage
@@ -90,7 +89,7 @@ public class RegisterTest extends ZanataTestCase {
 
     @Feature(summary = "The user must enter a username of between 3 and " +
             "20 (inclusive) characters to register",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            testPlanIds = 5681, testCaseIds = 5690)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernameLengthValidation() throws Exception {
         fields.put("email", "length.test@example.com");
@@ -119,7 +118,7 @@ public class RegisterTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The user must enter a unique username to register",
-        tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            testPlanIds = 5681, testCaseIds = 5690)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernamePreExisting() throws Exception {
         RegisterPage registerPage = homePage
@@ -130,27 +129,6 @@ public class RegisterTest extends ZanataTestCase {
         assertThat(registerPage.getErrors())
                 .contains(RegisterPage.USERNAME_UNAVAILABLE_ERROR)
                 .as("Username not available message is shown");
-    }
-
-    @Feature(summary = "The user must enter all necessary fields to register",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("RHBZ-1024150")
-    public void requiredFields() throws Exception {
-        fields.put("name", "");
-        fields.put("username", "");
-        fields.put("email", "");
-        fields.put("password", "");
-        RegisterPage registerPage =
-                homePage.goToRegistration().setFields(fields);
-        registerPage.defocus();
-
-        assertThat(registerPage.getErrors(4)).containsExactly(
-                RegisterPage.REQUIRED_FIELD_ERROR,
-                RegisterPage.USERNAME_VALIDATION_ERROR,
-                RegisterPage.REQUIRED_FIELD_ERROR,
-                RegisterPage.REQUIRED_FIELD_ERROR)
-                .as("Value is required shows for all fields");
     }
 
     /*

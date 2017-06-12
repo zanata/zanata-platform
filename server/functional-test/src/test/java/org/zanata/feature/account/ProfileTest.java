@@ -47,8 +47,7 @@ public class ProfileTest extends ZanataTestCase {
     private static final String serverUrl = PropertiesHolder
                 .getProperty(Constants.zanataInstance.value());
 
-    @Feature(summary = "The user can view their account details",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86819)
+    @Feature(summary = "The user can view their account details")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void verifyProfileData() throws Exception {
         DashboardClientTab dashboardClientTab = new LoginWorkFlow()
@@ -72,8 +71,7 @@ public class ProfileTest extends ZanataTestCase {
                 .as("The configuration api key is correct");
     }
 
-    @Feature(summary = "The user can change their API key",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user can change their API key")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Procedure call tracking appears to be flaky in this test")
     public void changeUsersApiKey() throws Exception {
@@ -99,8 +97,7 @@ public class ProfileTest extends ZanataTestCase {
                 .as("The configuration api key matches the label");
     }
 
-    @Feature(summary = "The user can change their display name",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86822)
+    @Feature(summary = "The user can change their display name")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeUsersName() throws Exception {
         DashboardProfileTab dashboardProfileTab = new LoginWorkFlow()
@@ -116,8 +113,7 @@ public class ProfileTest extends ZanataTestCase {
                 .as("The user's name has been changed");
     }
 
-    @Feature(summary = "The user's email address change is validated",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86822)
+    @Feature(summary = "The user's email address change is validated")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emailValidationIsUsedOnProfileEdit() throws Exception {
         DashboardAccountTab dashboardAccountTab = new LoginWorkFlow()

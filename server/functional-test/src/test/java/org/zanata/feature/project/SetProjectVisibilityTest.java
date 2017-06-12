@@ -13,8 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class SetProjectVisibilityTest extends ZanataTestCase {
 
-    @Feature(summary = "The administrator can delete a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 135846)
+    @Feature(summary = "The administrator can delete a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void deleteAProject() throws Exception {
         ExplorePage explore = new LoginWorkFlow()

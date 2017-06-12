@@ -27,7 +27,6 @@ import org.junit.experimental.categories.Category;
 import org.openqa.selenium.By;
 import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.ResetPasswordPage;
@@ -48,8 +47,7 @@ public class SecurityTest extends ZanataTestCase {
     @Rule
     public final HasEmailRule hasEmailRule = new HasEmailRule();
 
-    @Feature(summary = "The user can log in",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86815)
+    @Feature(summary = "The user can log in")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void signInSuccessful() {
         assertThat(new LoginWorkFlow()
@@ -60,8 +58,7 @@ public class SecurityTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The user must enter a correct username and " +
-            "password to log in",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86815)
+            "password to log in")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void signInFailure() {
         assertThat(new LoginWorkFlow()
@@ -71,8 +68,7 @@ public class SecurityTest extends ZanataTestCase {
                 .as("Log in error message is shown");
     }
 
-    @Feature(summary = "The user may reset their password via email",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "The user may reset their password via email")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void resetPasswordSuccessful() {
         ResetPasswordPage resetPasswordPage = new BasicWorkFlow()
@@ -99,8 +95,7 @@ public class SecurityTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The user must enter a known account or email " +
-            "to reset their password",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            "to reset their password")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void resetPasswordFailureForInvalidAccount() {
         ResetPasswordPage resetPasswordPage = new BasicWorkFlow()
@@ -116,8 +111,7 @@ public class SecurityTest extends ZanataTestCase {
                 .as("A no such account message is displayed");
     }
 
-    @Feature(summary = "Username or email field must not empty",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Feature(summary = "Username or email field must not empty")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void emptyResetPasswordFieldEntries() {
         ResetPasswordPage resetPasswordPage = new BasicWorkFlow()

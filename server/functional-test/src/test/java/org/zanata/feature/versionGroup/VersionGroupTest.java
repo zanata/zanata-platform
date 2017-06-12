@@ -24,7 +24,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.dashboard.DashboardGroupsTab;
@@ -54,8 +53,7 @@ public class VersionGroupTest extends ZanataTestCase {
             new BasicWorkFlow().goToHome().goToMyDashboard().gotoGroupsTab();
     }
 
-    @Feature(summary = "The administrator can create a basic group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
+    @Feature(summary = "The administrator can create a basic group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createABasicGroup() throws Exception {
         String groupID = "basic-group";
@@ -73,8 +71,7 @@ public class VersionGroupTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator must fill in the required fields " +
-            "to create a group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
+            "to create a group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void requiredFields() throws Exception {
         String errorMsg = "value is required";
@@ -107,8 +104,7 @@ public class VersionGroupTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator must enter valid data into the " +
-            "required fields to create a group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
+            "required fields to create a group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void groupDescriptionFieldSize() throws Exception {
         String groupID = "verifyDescriptionFieldSizeID";
@@ -144,8 +140,7 @@ public class VersionGroupTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can add a project version to " +
-            "a newly created group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
+            "a newly created group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addANewProjectVersionToAnEmptyGroup() throws Exception {
         String groupID = "add-version-to-empty-group";
@@ -167,8 +162,7 @@ public class VersionGroupTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator can use numbers, letters, periods, " +
-            "underscores and hyphens to create a group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 396261)
+            "underscores and hyphens to create a group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void groupIdCharactersAreAcceptable() throws Exception {
         String groupID = "test-_.1";
@@ -185,8 +179,7 @@ public class VersionGroupTest extends ZanataTestCase {
     }
 
     @Feature(summary = "The administrator must use numbers, letters, periods, "
-            + "underscores and hyphens to create a group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 396261)
+            + "underscores and hyphens to create a group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void inputValidationForID() throws Exception {
         String inputText = "group|name";

@@ -23,6 +23,7 @@ package org.zanata.feature.account.comp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
+import org.zanata.feature.Feature;
 import org.zanata.feature.testharness.TestPlan;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
@@ -40,8 +41,8 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 @Category(TestPlan.ComprehensiveTest.class)
 public class RegisterCTest extends ZanataTestCase {
-//    private static final org.slf4j.Logger log =
-//            org.slf4j.LoggerFactory.getLogger(RegisterUsernameCharactersCTest.class);
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(RegisterUsernameCharactersCTest.class);
 
     private HomePage homePage;
 
@@ -50,6 +51,30 @@ public class RegisterCTest extends ZanataTestCase {
         homePage = new BasicWorkFlow().goToHome();
     }
 
+    @Feature(summary = "The user must enter all necessary fields to register",
+            testPlanIds = 5681, testCaseIds = {5689, 5690, 5691, 5692})
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void requiredFields() throws Exception {
+        Map<String, String> fields = new HashMap<>();
+        fields.put("name", "");
+        fields.put("username", "");
+        fields.put("email", "");
+        fields.put("password", "");
+        RegisterPage registerPage = homePage
+                .goToRegistration()
+                .setFields(fields)
+                .registerFailure();
+
+        assertThat(registerPage.getErrors(4)).containsExactly(
+                RegisterPage.USERDISPLAYNAME_LENGTH_ERROR,
+                RegisterPage.USERNAME_LENGTH_ERROR,
+                RegisterPage.REQUIRED_FIELD_ERROR,
+                RegisterPage.REQUIRED_FIELD_ERROR)
+                .as("Size indication or 'May not be empty' shows for all fields");
+    }
+
+    @Feature(summary = "The user can navigate to Login from Sign up, or to "
+            + "Sign up from Login", testCaseIds = -1)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void signUpToLoginAndBack() {
         RegisterPage registerPage = homePage
@@ -67,6 +92,8 @@ public class RegisterCTest extends ZanataTestCase {
                 .as("The user is sent to the log in page");
     }
 
+    @Feature(summary = "The user can show or hide the registration password content",
+            testCaseIds = -1)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void togglePasswordVisible() {
         RegisterPage registerPage = homePage
@@ -93,7 +120,9 @@ public class RegisterCTest extends ZanataTestCase {
                 .as("The password field did not lose the entered text");
     }
 
-    @Test
+    @Feature(summary = "The user must provide a username to register",
+            testPlanIds = 5681, testCaseIds = 5690)
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void userMustSpecifyAUsername() {
         RegisterPage registerPage = homePage
                 .goToRegistration()
@@ -107,7 +136,8 @@ public class RegisterCTest extends ZanataTestCase {
                 .as("A username must be specified");
     }
 
-    // bugzilla 981498
+    @Feature(summary = "A username cannot be all underscores (RHBZ-981498)",
+            bugzilla = 981498)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void bug981498_underscoreRules() {
         Map<String, String> fields = new HashMap<>();

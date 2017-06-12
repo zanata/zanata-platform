@@ -49,8 +49,7 @@ public class GlossaryAdminTest extends ZanataTestCase {
      * the number of glossary entries per language matches the number of entries
      * pushed from each of the test cases mentioned in the Setup.
      */
-    @Feature(summary = "A user can push glossaries to Zanata",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181711)
+    @Feature(summary = "A user can push glossaries to Zanata")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testGlossaryView() {
         // Push a glossary
