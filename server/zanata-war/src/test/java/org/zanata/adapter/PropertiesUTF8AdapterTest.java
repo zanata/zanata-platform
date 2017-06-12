@@ -36,7 +36,7 @@ import org.zanata.rest.dto.resource.TranslationsResource;
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
-public class PropertiesUTF8AdapterTest extends PropertiesAbstractTest {
+public class PropertiesUTF8AdapterTest extends AbstractAdapterTest<PropertiesUTF8Adapter> {
 
     @Before
     public void setup() {

@@ -6,6 +6,7 @@ import Glossary from '../containers/Glossary'
 import Languages from '../containers/Languages'
 import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
+import { user } from '../config'
 
 export default class Root extends Component {
   static propTypes = {
@@ -14,7 +15,7 @@ export default class Root extends Component {
   }
 
   render () {
-    const username = window.config.user.username
+    const username = user.username
     const {
       store,
       history

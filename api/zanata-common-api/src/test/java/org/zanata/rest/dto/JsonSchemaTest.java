@@ -1,6 +1,7 @@
 package org.zanata.rest.dto;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -104,9 +105,9 @@ public class JsonSchemaTest {
         });
     }
 
-    private Class dtoClass;
+    private Class<Serializable> dtoClass;
 
-    public JsonSchemaTest(Class input) {
+    public JsonSchemaTest(Class<Serializable> input) {
         dtoClass = input;
     }
 

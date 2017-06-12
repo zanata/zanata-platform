@@ -126,6 +126,7 @@ public class ProjectVersionServiceUnitTest {
         Response response = service.getLocales("about-fedora", "master");
 
         assertThat(response.getStatus()).isEqualTo(200);
+        @SuppressWarnings("unchecked")
         List<LocaleDetails> iterationList =
                 (List<LocaleDetails>) response.getEntity();
         assertThat(iterationList).extracting("localeId")
@@ -225,6 +226,7 @@ public class ProjectVersionServiceUnitTest {
         Response response = service.getDocuments("about-fedora", "master");
 
         assertThat(response.getStatus()).isEqualTo(200);
+        @SuppressWarnings("unchecked")
         List<ResourceMeta> docList =
                 (List<ResourceMeta>) response.getEntity();
         assertThat(docList).extracting("name").contains("pot/authors");

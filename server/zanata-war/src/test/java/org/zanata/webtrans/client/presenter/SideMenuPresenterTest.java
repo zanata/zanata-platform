@@ -56,10 +56,10 @@ public class SideMenuPresenterTest {
     private UserWorkspaceContext userWorkspaceContext;
     @Mock
     private WorkspaceContext workspaceContext;
-    @Mock
-    private WebTransMessages messages;
     @Captor
     private ArgumentCaptor<ShowSideMenuEvent> eventCaptor;
+    @Captor
+    private ArgumentCaptor<AsyncCallback<GetTranslatorListResult>> callbackCaptor;
     @Mock
     private UserSessionService sessionService;
     private WorkspaceId workspaceId;
@@ -122,10 +122,7 @@ public class SideMenuPresenterTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void onBindWillLoadTranslatorList() {
-        ArgumentCaptor<AsyncCallback> callbackCaptor =
-                ArgumentCaptor.forClass(AsyncCallback.class);
         GetTranslatorListResult result = mock(GetTranslatorListResult.class);
 
         presenter.onBind();
@@ -133,7 +130,8 @@ public class SideMenuPresenterTest {
         // on calling get translator list callback success
         verify(dispatcher).execute(Mockito.eq(GetTranslatorList.ACTION),
                 callbackCaptor.capture());
-        AsyncCallback callback = callbackCaptor.getValue();
+        AsyncCallback<GetTranslatorListResult> callback =
+                callbackCaptor.getValue();
         callback.onSuccess(result);
         verify(result).getTranslatorList();
         verify(sessionService).initUserList(result.getTranslatorList());

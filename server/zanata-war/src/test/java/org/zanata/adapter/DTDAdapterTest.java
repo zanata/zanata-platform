@@ -21,11 +21,12 @@
 package org.zanata.adapter;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.junit.Before;
 import org.junit.Test;
-import org.zanata.common.LocaleId;
+import org.zanata.common.ContentState;
 import org.zanata.rest.dto.resource.Resource;
+import org.zanata.rest.dto.resource.TranslationsResource;
 
 import java.io.File;
 
@@ -34,9 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author djansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public class DTDAdapterTest {
-
-    private DTDAdapter adapter;
+public class DTDAdapterTest extends AbstractAdapterTest<DTDAdapter> {
 
     @Before
     public void setup() {
@@ -45,12 +44,39 @@ public class DTDAdapterTest {
 
     @Test
     public void parseBasicDTDFile() {
-        File testFile = new File("src/test/resources/org/zanata/adapter/basicdtd.dtd");
-        assert testFile.exists();
-        Resource resource = adapter.parseDocumentFile(testFile.toURI(),
-                LocaleId.EN, Optional.absent());
-        assertThat(resource.getTextFlows()).hasSize(1);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("Test text 1"));
+        Resource resource = parseTestFile("basicdtd.dtd");
+        assertThat(resource.getTextFlows()).hasSize(3);
+        assertThat(resource.getTextFlows().get(0).getContents()).containsExactly("Line One");
     }
+
+    @Test
+    public void testTranslatedDTDDocument() throws Exception {
+        File testFile = getTestFile("basicdtd.dtd");
+        assert testFile.exists();
+        Resource resource = parseTestFile("basicdtd.dtd");
+
+        TranslationsResource translationsResource = new TranslationsResource();
+        addTranslation(translationsResource,
+                resource.getTextFlows().get(0).getId(),
+                "Dakta Amna",
+                ContentState.Approved);
+        addTranslation(translationsResource,
+                resource.getTextFlows().get(1).getId(),
+                "Dakta Tba",
+                ContentState.Translated);
+        addTranslation(translationsResource,
+                resource.getTextFlows().get(2).getId(),
+                "Dakta Kba",
+                ContentState.NeedReview);
+
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        adapter.writeTranslatedFile(output, testFile.toURI(),
+                resource, translationsResource, "dv-DL", Optional.absent());
+
+        assertThat(output.toString()).isEqualTo(
+                "<!ENTITY firstField \"Dakta Amna\">\n" +
+                "<!ENTITY secondField \"Dakta Tba\">\n" +
+                "<!ENTITY thirdField \"Dakta Kba\">\n");
+    }
+
 }

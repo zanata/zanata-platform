@@ -39,7 +39,7 @@ storybook-editor:
 # for everything except the editor.
 storybook-frontend:
 	yarn storybook-frontend
-	
+
 # Build a static version of the React component storybook
 #  - outputs to ./storybook-static
 #  - will not display properly from file:// url since it uses an iframe
@@ -48,6 +48,10 @@ storybook-frontend:
 #    to prevent that.
 storybook-static:
 	yarn build-storybook --ignore-scripts=false
+
+# Run the script to create boilerplate for a new component.
+component:
+	node ./scripts/codemods/create-component.js
 
 # Run the tests.
 test:

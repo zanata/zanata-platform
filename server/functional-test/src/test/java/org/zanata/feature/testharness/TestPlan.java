@@ -178,6 +178,19 @@ public class TestPlan {
      */
     public interface DetailedTest {}
 
+
+
+    /**
+     * Interface for the execution of the Comprehensive Tests category.
+     *
+     * Tests in this category include as many tests as feasible covering boundaries,
+     * negative paths and various other considerations. These act as an Early
+     * Warning System for QA, and are wholly managed and maintained by QA.
+     */
+    public interface ComprehensiveTest {
+
+    }
+
     /**
      * Interface for the execution of the Unstable Test category.
      *

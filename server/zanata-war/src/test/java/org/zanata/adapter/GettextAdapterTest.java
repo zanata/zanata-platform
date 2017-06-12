@@ -23,21 +23,16 @@ package org.zanata.adapter;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.ContentState;
-import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.extensions.gettext.PoHeader;
 import org.zanata.rest.dto.extensions.gettext.PotEntryHeader;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
-import org.zanata.rest.dto.resource.TextFlowTarget;
 import org.zanata.rest.dto.resource.TranslationsResource;
 
 /**
@@ -45,22 +40,11 @@ import org.zanata.rest.dto.resource.TranslationsResource;
  *  @// TODO: 8/02/17 test ids
  */
 
-public class GettextAdapterTest {
-
-    private GettextAdapter adapter;
-    private File testFile;
-    private String filePath = "src/test/resources/org/zanata/adapter/";
+public class GettextAdapterTest extends AbstractAdapterTest<GettextAdapter> {
 
     @Before
     public void setup() {
         adapter = new GettextAdapter();
-    }
-
-    private Resource parseTestFile(String filename) {
-        testFile = new File(filePath.concat(filename));
-        assert testFile.exists();
-        return adapter.parseDocumentFile(testFile.toURI(),
-                LocaleId.EN, Optional.absent());
     }
 
     @Test
@@ -87,7 +71,8 @@ public class GettextAdapterTest {
     public void testGettextPlurals() {
         Resource resource = parseTestFile("test-gettext-plurals.po");
         assertThat(resource.getTextFlows()).hasSize(1);
-        assertThat(resource.getTextFlows().get(0).getContents()).containsExactly("%n file", "%n files");
+        assertThat(resource.getTextFlows().get(0).getContents())
+                .containsExactly("%n file", "%n files");
     }
 
     @Test
@@ -124,23 +109,14 @@ public class GettextAdapterTest {
         addTranslation(transResource, thirdSourceId, "Conectar", ContentState.NeedReview);
 
         OutputStream outputStream = new ByteArrayOutputStream();
-        adapter.writeTranslatedFile(outputStream, null, resource, transResource, "es", Optional.absent());
+        adapter.writeTranslatedFile(outputStream, null, resource,
+                transResource, "es", Optional.absent());
         assertThat(outputStream.toString()).contains("msgid \"Parent Folder\"\n" +
                 "msgstr \"Carpeta padre\"");
         assertThat(outputStream.toString()).contains("msgid \"Subject:\"\n" +
                 "msgstr \"Asunto:\"");
         assertThat(outputStream.toString()).contains("msgid \"Connect\"\n" +
                 "msgstr \"Conectar\"");
-    }
-
-    private TranslationsResource addTranslation(TranslationsResource resource,
-                                        String id, String content, ContentState state) {
-        TextFlowTarget textFlowTarget = new TextFlowTarget();
-        textFlowTarget.setResId(id);
-        textFlowTarget.setContents(content);
-        textFlowTarget.setState(state);
-        resource.getTextFlowTargets().add(textFlowTarget);
-        return resource;
     }
 
 }

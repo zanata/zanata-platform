@@ -37,6 +37,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OrderColumn;
 
 import org.hibernate.annotations.AttributeAccessor;
+import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -44,7 +45,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.google.common.base.Objects;
 
 @Entity
-@org.hibernate.annotations.Entity(mutable = false)
+@Immutable
 public class HTextFlowHistory extends HTextContainer implements Serializable,
         ITextFlowHistory {
 

@@ -22,7 +22,6 @@ package org.zanata.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,34 +29,24 @@ import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
 
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 // TODO test writeTranslatedFile
-public class PlainTextAdapterTest {
-
-    private PlainTextAdapter adapter;
-    private File testFile;
+public class PlainTextAdapterTest extends AbstractAdapterTest<PlainTextAdapter> {
 
     @Before
     public void setup() {
         adapter = new PlainTextAdapter();
-        testFile = new File("src/test/resources/org/zanata/adapter/plaintext.txt");
-        assert testFile.exists();
     }
 
     @Test
     public void parseTextWithDefaultSettings() {
-        Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-//        System.out.println(DTOUtil.toXML(resource));
+        Resource resource = parseTestFile("plaintext.txt");
         assertThat(resource.getTextFlows()).hasSize(3);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("The first paragraph is split over more than one line. It has more than"));
-        // TODO test contents, generated IDs
+        assertThat(resource.getTextFlows().get(0).getContents())
+                .containsExactly("The first paragraph is split over more than one line. It has more than");
     }
 
     @Test
@@ -65,7 +54,8 @@ public class PlainTextAdapterTest {
         // NB parameters copied from okapi-filter-plaintext: /net/sf/okapi/filters/plaintext/okf_plaintext_paragraphs.fprm
         // TODO we need a way of using Okapi's pre-defined filter configurations by name (okf_plaintext_paragraphs)
         Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
+                adapter.parseDocumentFile(getTestFile("plaintext.txt").toURI(),
+                        LocaleId.EN,
                         Optional.of("#v1\n" +
                                 "unescapeSource.b=true\n" +
                                 "trimLeading.b=false\n" +
@@ -76,11 +66,11 @@ public class PlainTextAdapterTest {
                                 "wrapMode.i=0\n" +
                                 "extractParagraphs.b=true\n" +
                                 "parametersClass=net.sf.okapi.filters.plaintext.paragraphs.Parameters"));
-//        System.out.println(DTOUtil.toXML(resource));
         assertThat(resource.getTextFlows()).hasSize(2);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("The first paragraph is split over more than one line. It has more than\n" +
-                        "one sentence."));
+        assertThat(resource.getTextFlows().get(0).getContents())
+                .containsExactly("The first paragraph is split over more than one line. " +
+                        "It has more than\n" +
+                        "one sentence.");
     }
 
 }

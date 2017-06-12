@@ -89,7 +89,7 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
         // After the query, go back to the original mode
         FlushMode flushMode = session.getFlushMode();
         session.setFlushMode(FlushMode.MANUAL);
-        List results = criteria.getExecutableCriteria(session).list();
+        List<?> results = criteria.getExecutableCriteria(session).list();
         Number count = (Number) results.iterator().next();
         session.setFlushMode(flushMode);
         return count.intValue();

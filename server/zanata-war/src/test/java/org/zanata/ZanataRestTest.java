@@ -42,7 +42,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
 
     protected static final URI MOCK_BASE_URI = URI.create("http://mockhost");
     private ResteasyClientBuilder resteasyClientBuilder;
-    private org.jboss.resteasy.client.ClientRequestFactory clientRequestFactory;
+    private ClientRequestFactory clientRequestFactory;
     protected final Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers =
             newHashSet();
     protected final Set<Object> resources = newHashSet();
@@ -84,18 +84,11 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
                     providerInstance);
         }
 
-        // TODO: attach mock dispatcher into resteasyClient
-//        HttpClient httpClient = HttpClientBuilder.create().build();
-//        ApacheHttpClient4Engine executor =
-//                new ApacheHttpClient4Engine(httpClient);
-//        resteasyClientBuilder =
-//                new ResteasyClientBuilder().httpEngine(executor);
-
         org.jboss.resteasy.client.core.executors.InMemoryClientExecutor executor =
                 new org.jboss.resteasy.client.core.executors.InMemoryClientExecutor(dispatcher);
         executor.setBaseUri(MOCK_BASE_URI);
         clientRequestFactory =
-                new org.jboss.resteasy.client.ClientRequestFactory(executor, MOCK_BASE_URI);
+                new ClientRequestFactory(executor, MOCK_BASE_URI);
 
     }
 
@@ -159,7 +152,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
      *
      * @return a ClientRequestFactory configured for your environment.
      */
-    protected org.jboss.resteasy.client.ClientRequestFactory getClientRequestFactory() {
+    protected ClientRequestFactory getClientRequestFactory() {
         return clientRequestFactory;
     }
 

@@ -27,6 +27,7 @@ import org.hibernate.ScrollMode;
 import org.hibernate.ScrollableResults;
 import org.hibernate.search.FullTextSession;
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.common.EntityStatus;
 import org.zanata.dao.HTextFlowTargetStreamingDAO;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
@@ -59,8 +60,9 @@ public class HTextFlowTargetIndexingStrategy
             FullTextSession session) {
         // TODO move this query into something like HTextFlowTargetStreamingDAO
         Query query = session.createQuery(
-                "from HTextFlowTarget tft join fetch tft.locale join fetch tft.textFlow join fetch tft.textFlow.document join fetch tft.textFlow.document.locale join fetch tft.textFlow.document.projectIteration join fetch tft.textFlow.document.projectIteration.project");
-        query.setFetchSize(Integer.MIN_VALUE);
+                "from HTextFlowTarget tft join fetch tft.locale join fetch tft.textFlow join fetch tft.textFlow.document join fetch tft.textFlow.document.locale join fetch tft.textFlow.document.projectIteration version join fetch tft.textFlow.document.projectIteration.project project where project.status <> :state and version.status <> :state");
+        query.setFetchSize(Integer.MIN_VALUE)
+                .setParameter("state", EntityStatus.OBSOLETE);
         return query.scroll(ScrollMode.FORWARD_ONLY);
     }
 

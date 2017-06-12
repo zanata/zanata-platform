@@ -33,7 +33,7 @@ public class AsyncTaskHandleTest {
 
     @Test
     public void testStartTiming() throws Exception {
-        AsyncTaskHandle handle = new AsyncTaskHandle();
+        AsyncTaskHandle<String> handle = new AsyncTaskHandle<>();
         handle.startTiming();
 
         assertThat(handle.isStarted()).isTrue();
@@ -42,7 +42,7 @@ public class AsyncTaskHandleTest {
 
     @Test
     public void testFinishTiming() throws Exception {
-        AsyncTaskHandle handle = new AsyncTaskHandle();
+        AsyncTaskHandle<String> handle = new AsyncTaskHandle<>();
         handle.startTiming();
         Thread.sleep(10); // Sleep as if something was executed
         handle.finishTiming();

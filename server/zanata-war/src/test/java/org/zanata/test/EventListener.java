@@ -49,9 +49,10 @@ public class EventListener {
         return Lists.newArrayList(firedEvents);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> List<T> getFiredEvents(Class<T> eventType) {
         return (List<T>) firedEvents.stream()
-                .filter(e -> eventType.isInstance(e))
+                .filter(eventType::isInstance)
                 .collect(Collectors.toList());
     }
 }

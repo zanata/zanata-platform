@@ -28,6 +28,7 @@ import org.hibernate.type.descriptor.java.AbstractTypeDescriptor;
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
+@SuppressWarnings("rawtypes")
 public abstract class SingleCharEnumTypeDescriptor<T extends Enum> extends AbstractTypeDescriptor<T> {
 
     private static final long serialVersionUID = -5530509335456087808L;

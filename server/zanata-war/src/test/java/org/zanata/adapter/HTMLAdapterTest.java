@@ -22,47 +22,26 @@ package org.zanata.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
-
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
 
 /**
  * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  */
 // TODO test writeTranslatedFile
-public class HTMLAdapterTest {
-
-    private HTMLAdapter adapter;
-    private File testFile;
+public class HTMLAdapterTest extends AbstractAdapterTest<HTMLAdapter> {
 
     @Before
     public void setup() {
         adapter = new HTMLAdapter();
-        testFile = new File("src/test/resources/org/zanata/adapter/basichtml.html");
-        assert testFile.exists();
     }
 
-//    @Feature(bugzilla = 980670,
-//            summary = "Maintainer can upload a HTML file for translation",
-//            tcmsTestCaseIds = { 377837 },
-//            tcmsTestPlanIds = { 5316 })
-//    @Feature(summary = "The user can translate HyperText Markup Language files",
-//            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test
     public void parseHTML() {
-        Resource resource =
-                adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                        Optional.absent());
-//        System.out.println(DTOUtil.toXML(resource));
+        Resource resource = parseTestFile("basichtml.html");
         assertThat(resource.getTextFlows()).hasSize(3);
-        assertThat(resource.getTextFlows().get(0).getContents()).isEqualTo(
-                ImmutableList.of("Line One"));
-        // TODO test IDs
+        assertThat(resource.getTextFlows().get(0).getContents())
+                .containsExactly("Line One");
     }
 }

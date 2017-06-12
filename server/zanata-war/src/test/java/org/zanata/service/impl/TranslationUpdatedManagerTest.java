@@ -153,7 +153,7 @@ public class TranslationUpdatedManagerTest {
                 eq(projectSlug), eq(versionSlug), eq(strDocId), eq(localeId),
                 eq(contentStates), captor.capture());
         assertThat(captor.getValue().size(), is(1));
-        assertThat(((WebHook) captor.getValue().get(0)).getTypes(),
+        assertThat((captor.getValue().get(0)).getTypes(),
                 contains(WebhookType.DocumentStatsEvent));
     }
 }

@@ -38,6 +38,7 @@ public class SeamDispatchTest {
     private WrappedAction<ActivateWorkspaceResult> wrappedAction;
     @Mock private Instance<AbstractActionHandler<?, ?>> handlerInstance;
     @Mock private ActivateWorkspaceAction action;
+    @SuppressWarnings("rawtypes")
     @Mock private AbstractActionHandler handler;
 
     @Before

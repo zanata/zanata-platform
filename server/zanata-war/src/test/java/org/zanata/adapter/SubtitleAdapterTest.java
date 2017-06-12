@@ -20,17 +20,13 @@
  */
 package org.zanata.adapter;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
-
-import java.io.File;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,20 +37,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(Enclosed.class)
 public class SubtitleAdapterTest {
 
-    static abstract class AbstractSubtitleAdapterTest {
-        private SubtitleAdapter adapter;
-
+    static abstract class AbstractSubtitleAdapterTest
+            extends AbstractAdapterTest<SubtitleAdapter> {
         @Before
         public void setup() {
             adapter = new SubtitleAdapter();
-        }
-
-        Resource parseTestFile(String filename) {
-            String resPath = "src/test/resources/org/zanata/adapter/";
-            File testFile = new File(resPath.concat(filename));
-            assert testFile.exists();
-            return adapter.parseDocumentFile(testFile.toURI(), LocaleId.EN,
-                    Optional.absent());
         }
     }
 

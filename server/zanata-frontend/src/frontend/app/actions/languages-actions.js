@@ -9,6 +9,7 @@ import {
   LOAD_USER_SUCCESS,
   LOAD_USER_FAILURE
 } from './common-actions'
+import { apiUrl, isLoggedIn } from '../config'
 
 export const LOAD_LANGUAGES_REQUEST = 'LOAD_LANGUAGES_REQUEST'
 export const LOAD_LANGUAGES_SUCCESS = 'LOAD_LANGUAGES_SUCCESS'
@@ -56,7 +57,7 @@ const getLocalesList = (state) => {
   if (query.sort) {
     queries.push('sort=' + query.sort)
   }
-  const endpoint = window.config.baseUrl + window.config.apiRoot + '/locales' +
+  const endpoint = apiUrl + '/locales' +
     (!isEmpty(queries) ? '?' + queries.join('&') : '')
 
   const apiTypes = [
@@ -83,8 +84,7 @@ const getLocalesList = (state) => {
 }
 
 const searchLocales = (query) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/locales/new?filter=' + encodeURIComponent(query)
+  const endpoint = apiUrl + '/locales/new?filter=' + encodeURIComponent(query)
 
   const apiTypes = [
     LOAD_LANGUAGES_SUGGESTION_REQUEST,
@@ -110,8 +110,7 @@ const searchLocales = (query) => {
 }
 
 const getLocalesPermission = (dispatch) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/user/permission/locales'
+  const endpoint = apiUrl + '/user/permission/locales'
 
   const apiTypes = [
     LANGUAGE_PERMISSION_REQUEST,
@@ -138,7 +137,7 @@ const getLocalesPermission = (dispatch) => {
 }
 
 const getUserInfo = (dispatch) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot + '/user'
+  const endpoint = apiUrl + '/user'
 
   const apiTypes = [
     LOAD_USER_REQUEST,
@@ -165,9 +164,7 @@ const getUserInfo = (dispatch) => {
 }
 
 const deleteLanguage = (dispatch, localeId) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/locales/locale/' + localeId
-
+  const endpoint = apiUrl + '/locales/locale/' + localeId
   const apiTypes = [
     LANGUAGE_DELETE_REQUEST,
     {
@@ -188,9 +185,7 @@ const deleteLanguage = (dispatch, localeId) => {
 }
 
 const createNewLanguage = (details, dispatch) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/locales/locale'
-
+  const endpoint = apiUrl + '/locales/locale'
   let headers = getJsonHeaders()
   headers['Content-Type'] = 'application/json'
 
@@ -236,7 +231,7 @@ export const initialLoad = () => {
         size: pageSizeOption[0]
       })
     }
-    if (!window.config.permission.isLoggedIn) {
+    if (!isLoggedIn) {
       dispatch(getLocalesList(getState()))
     } else {
       dispatch(getUserInfo(dispatch))
