@@ -25,9 +25,12 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan;
 import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.page.dashboard.DashboardGroupsTab;
 import org.zanata.page.explore.ExplorePage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.workflow.BasicWorkFlow;
+import org.zanata.workflow.LoginWorkFlow;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -37,22 +40,39 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(TestPlan.ComprehensiveTest.class)
 public class GroupSearchCTest extends ZanataTestCase {
 
+    private DashboardGroupsTab dashboardGroupsTab;
+
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void successfullGroupSearchAndDisplay() throws Exception {
+        String groupID = "basic-group";
+        String groupName = "A Basic Group";
+        assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin is logged in");
+        dashboardGroupsTab =
+                new BasicWorkFlow().goToHome().goToMyDashboard().gotoGroupsTab();
+
+        VersionGroupPage groupPage = dashboardGroupsTab
+                .createNewGroup()
+                .inputGroupId(groupID)
+                .inputGroupName(groupName)
+                .inputGroupDescription("A basic group can be saved")
+                .saveGroup();
+
         ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
                 .gotoExplore()
-                .enterSearch("zana")
-                .expectGroupListContains("zanata");
+                .enterSearch("Basic")
+                .expectGroupListContains(groupName);
 
         assertThat(explorePage.getGroupSearchResults())
-                .contains("zanata")
+                .contains(groupName)
                 .as("Normal user can see the group listed");
 
-        VersionGroupPage versionGroupPage = explorePage.clickGroupSearchEntry("zanata");
+        VersionGroupPage versionGroupPage = explorePage.clickGroupSearchEntry(groupName);
 
         assertThat(versionGroupPage.getGroupName().trim())
-                .isEqualTo("zanata");
+                .isEqualTo(groupName);
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
