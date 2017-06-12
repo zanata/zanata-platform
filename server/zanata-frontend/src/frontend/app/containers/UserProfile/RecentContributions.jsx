@@ -100,7 +100,7 @@ class RecentContributions extends React.Component {
                       onClick={() => this.onToggleShowDateRange()}>
                       Cancel
                     </Button>
-                    <Button bStyle='primary'
+                    <Button bsStyle='primary'
                       onClick={
                       () => handleDateRangeChanged(this.state.dateRange)}>
                       Apply
