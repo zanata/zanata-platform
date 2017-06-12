@@ -140,7 +140,7 @@ class Explore extends Component {
       <div className='page scroll-view-theme' id='explore'>
         <Helmet title='Search' />
         <div className='header-classes'>
-          <h1 className='hidden' level='1'>Search</h1>
+          <h1 className='hidden'>Search</h1>
           <div className='search-view-theme'>
             <Icon name='search' className='s1 list-inline' />
             <TextInput
