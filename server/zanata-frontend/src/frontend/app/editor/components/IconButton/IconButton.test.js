@@ -15,7 +15,7 @@ describe('IconButtonTest', () => {
       icon="classical"
       title="Mozart"
       onClick={clickFun}
-      className="push-me"/>)
+      className="push-me" />)
 
     const expected = ReactDOMServer.renderToStaticMarkup(
       <button

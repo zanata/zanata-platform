@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2017, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,33 +18,18 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.model.type;
+package org.zanata.feature.testharness;
 
-import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.HTextFlowTargetHistory;
-import org.zanata.model.tm.TransMemoryUnit;
-import java.io.Serializable;
-
+import org.junit.experimental.categories.Categories;
+import org.junit.runner.RunWith;
+import org.zanata.feature.testharness.TestPlan.ComprehensiveTest;
 /**
- * Entity type of origin for translation copied.
+ * Extend the full test suite, but filter by the Comprehensive Test category
  *
- * Usage {@link org.zanata.model.HTextFlowTarget.entityType} and
- * {@link org.zanata.model.HTextFlowTargetHistory.entityType}
- *
- * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public enum TranslationEntityType implements Serializable {
-    TMX(TransMemoryUnit.class),
-    TFT(HTextFlowTarget.class),
-    TTH(HTextFlowTargetHistory.class);
-    // MT(null);
-    private final Class clazz;
-
-    private TranslationEntityType(Class clazz) {
-        this.clazz = clazz;
-    }
-
-    public Class getClazz() {
-        return this.clazz;
-    }
+@RunWith(Categories.class)
+@Categories.IncludeCategory(ComprehensiveTest.class)
+public class ComprehensiveTestSuite extends TestPlan {
 }

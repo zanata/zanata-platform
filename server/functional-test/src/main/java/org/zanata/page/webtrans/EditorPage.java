@@ -32,6 +32,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.zanata.page.BasePage;
+import org.zanata.page.editor.ReactEditorPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.WebElementUtil;
 import com.google.common.base.Function;
@@ -80,6 +81,7 @@ public class EditorPage extends BasePage {
     private By validationOptions =
             By.xpath("//a[@title=\'Validation options\']");
     private By validationOptionsView = By.id("validationOptionsView");
+    private By alphaEditorButton = By.linkText("Try the new alpha editor");
 
     public EditorPage(WebDriver driver) {
         super(driver);
@@ -587,5 +589,11 @@ public class EditorPage extends BasePage {
         getTranslationHistoryBox()
                 .findElements(By.className("gwt-TabLayoutPanelContent")).get(1)
                 .findElements(By.className("textFlowEntry"));
+    }
+
+    public ReactEditorPage pressAlphaEditorButton() {
+        log.info("Pressing Alpha Editor button");
+        clickElement(alphaEditorButton);
+        return new ReactEditorPage(getDriver());
     }
 }

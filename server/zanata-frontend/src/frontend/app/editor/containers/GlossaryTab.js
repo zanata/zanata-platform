@@ -16,8 +16,8 @@ import {
 import { isEmpty } from 'lodash'
 import { Icon, LoaderText } from '../../components'
 
-const GlossaryTab = React.createClass({
-  propTypes: {
+class GlossaryTab extends React.Component {
+  static propTypes = {
     copyGlossaryTerm: PropTypes.func.isRequired,
     details: PropTypes.shape({
       show: PropTypes.bool.isRequired
@@ -32,9 +32,9 @@ const GlossaryTab = React.createClass({
       target: PropTypes.string.isRequired
     })).isRequired,
     onGlossaryTextChange: PropTypes.func.isRequired
-  },
+  }
 
-  renderResultsPanel () {
+  renderResultsPanel = () => {
     const {
       copyGlossaryTerm,
       results,
@@ -45,7 +45,7 @@ const GlossaryTab = React.createClass({
 
     if (searching) {
       return <div className="search-glos">
-        <LoaderText loading loadingText='Searching...' />
+        <LoaderText loading loadingText='Searching' />
       </div>
     }
 
@@ -93,7 +93,7 @@ const GlossaryTab = React.createClass({
         </tbody>
       </Table>
     )
-  },
+  }
 
   render () {
     const glossaryModal = this.props.details.show
@@ -112,8 +112,7 @@ const GlossaryTab = React.createClass({
       </Tab>
     )
   }
-
-})
+}
 
 function mapStateToProps ({ glossary }) {
   // FIXME move this to storybook for this component

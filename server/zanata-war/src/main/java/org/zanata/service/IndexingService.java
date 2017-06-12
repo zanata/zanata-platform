@@ -24,6 +24,7 @@ import org.zanata.action.ReindexClassOptions;
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
 import org.zanata.model.SlugEntityBase;
 
 import java.io.Serializable;
@@ -47,4 +48,13 @@ public interface IndexingService extends Serializable {
     Future<Void> reindexHTextFlowTargetsForProject(HProject hProject,
             AsyncTaskHandle<Void> handle)
             throws Exception;
+
+    /**
+     * This will re-index all HTextFlowTargets under a given project version.
+     * @param iteration project version
+     * @param handle async handle
+     */
+    @Async
+    Future<Void> reindexHTextFlowTargetsForProjectIteration(HProjectIteration iteration,
+            AsyncTaskHandle<Void> handle);
 }

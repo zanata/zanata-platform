@@ -24,6 +24,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.gwt.event.shared.EventHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.inject.Provider;
 import net.customware.gwt.presenter.client.EventBus;
@@ -117,7 +118,7 @@ public class TargetContentsPresenterTest {
 
     // all event extends GwtEvent therefore captor will capture them all
     @Captor
-    private ArgumentCaptor<GwtEvent> eventCaptor;
+    private ArgumentCaptor<GwtEvent<EventHandler>> eventCaptor;
 
     @Mock
     private Provider<TargetContentsDisplay> displayProvider;
@@ -183,7 +184,10 @@ public class TargetContentsPresenterTest {
         presenter.validate(editor);
 
         verify(eventBus).fireEvent(eventCaptor.capture());
-        RunValidationEvent event = (RunValidationEvent) eventCaptor.getValue();
+
+        RunValidationEvent event =
+                TestFixture.extractFromEvents(eventCaptor.getAllValues(),
+                        RunValidationEvent.class);
         assertThat(event.getSourceContent(), equalTo("source"));
         assertThat(event.getTarget(), equalTo("target"));
         assertThat(event.isFireNotification(), equalTo(false));
@@ -866,10 +870,9 @@ public class TargetContentsPresenterTest {
         selectedTU = currentPageRows.get(0);
         ArrayList<ToggleEditor> currentEditors = Lists.newArrayList(editor);
         when(editor.getId()).thenReturn(selectedTU.getId());
-        ArrayList<ToggleEditor> previousEditors = Lists.newArrayList(editor2);
         presenter.setStatesForTesting(null, 0, display);
         when(display.getId()).thenReturn(selectedTU.getId());
-        when(display.getEditors()).thenReturn(previousEditors, currentEditors);
+        when(display.getEditors()).thenReturn(currentEditors);
         when(sourceContentPresenter.getSourceContent(selectedTU.getId()))
                 .thenReturn(Optional.of("source"));
 

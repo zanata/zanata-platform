@@ -22,14 +22,10 @@ package org.zanata.adapter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.Resource;
-
-import com.google.common.base.Optional;
 
 /**
  * @author Sean Flanigan
@@ -38,9 +34,7 @@ import com.google.common.base.Optional;
 // @Feature(summary = "The user can translate OpenOffice files",
 // tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
 // TODO test writeTranslatedFile
-public class OpenOfficeAdapterTest {
-
-    private OpenOfficeAdapter adapter;
+public class OpenOfficeAdapterTest extends AbstractAdapterTest<OpenOfficeAdapter> {
 
     @Before
     public void setup() {
@@ -49,23 +43,20 @@ public class OpenOfficeAdapterTest {
 
     @Test
     public void parseODG() {
-        Resource resource =
-                parseFile("test-odg.odg");
+        Resource resource = parseTestFile("test-odg.odg");
         check3TextFlows(resource, true);
     }
 
     @Test
     public void parseODP() {
-        Resource resource =
-                parseFile("test-odp.odp");
+        Resource resource = parseTestFile("test-odp.odp");
         // TODO we are getting extra junk at the end
         check3TextFlows(resource, false);
     }
 
     @Test
     public void parseODT() {
-        Resource resource =
-                parseFile("test-odt.odt");
+        Resource resource = parseTestFile("test-odt.odt");
         check3TextFlows(resource, true);
     }
 
@@ -74,8 +65,7 @@ public class OpenOfficeAdapterTest {
     // tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
     @Test
     public void parseODS() {
-        Resource resource =
-                parseFile("test-ods.ods");
+        Resource resource = parseTestFile("test-ods.ods");
         checkTextFlowsForODS(resource);
     }
 
@@ -95,15 +85,6 @@ public class OpenOfficeAdapterTest {
                 .isEqualTo("Line Two").as("Item 4 shows Line Two");
         assertThat(resource.getTextFlows().get(4).getContents().get(0))
                 .isEqualTo("Line Three").as("Item 5 shows Line Three");
-    }
-
-    private Resource parseFile(String testFile) {
-        File file = new File("src/test/resources/org/zanata/adapter/" + testFile);
-        assert file.exists();
-        Resource resource = adapter.parseDocumentFile(file.toURI(), LocaleId.EN,
-                Optional.absent());
-        // System.out.println(DTOUtil.toXML(resource));
-        return resource;
     }
 
     private void check3TextFlows(Resource resource, boolean checkSize) {

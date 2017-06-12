@@ -1,6 +1,5 @@
 package org.zanata.rest.service;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -19,7 +18,6 @@ import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
-import org.jboss.resteasy.util.GenericType;
 import org.zanata.common.Namespaces;
 import org.zanata.rest.dto.Link;
 import org.zanata.security.annotations.CheckRole;
@@ -67,10 +65,7 @@ public class IntrospectableObjectMonitorService {
                         URI.create("/" + introspectable.getIntrospectableId()),
                         "self", MediaType.APPLICATION_JSON))
                 .collect(Collectors.toList());
-        Type genericType = new GenericType<List<LinkRoot>>() {
-
-        }.getGenericType();
-        Object entity = new GenericEntity<>(all, genericType);
+        Object entity = new GenericEntity<List<LinkRoot>>(all){};
         return Response.ok().entity(entity).build();
     }
 

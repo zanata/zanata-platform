@@ -3,6 +3,7 @@ package org.zanata.client;
 import java.io.StringWriter;
 import java.net.URL;
 
+import com.google.common.collect.Lists;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Rule;
@@ -33,9 +34,10 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @RunWith(PowerMockRunner.class)
 public class ZanataClientTest {
     @Rule
-    public ParameterRule<String> cmdNameRule = new ParameterRule<String>(
-            "list-remote", "pull", "push", "put-project", "put-user",
-            "put-version", "stats");
+    public ParameterRule<String> cmdNameRule = new ParameterRule<>(
+            Lists.newArrayList("list-remote", "pull", "push", "put-project",
+                    "put-user",
+                    "put-version", "stats"));
 
     private StringWriter out;
     private StringWriter err;

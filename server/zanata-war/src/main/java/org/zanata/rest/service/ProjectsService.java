@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +39,6 @@ import com.google.common.annotations.VisibleForTesting;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.hibernate.Session;
 import org.jboss.resteasy.annotations.providers.jaxb.Wrapped;
-import org.jboss.resteasy.util.GenericType;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
@@ -101,11 +99,7 @@ public class ProjectsService implements ProjectsResource {
             projectRefs.add(project);
         }
 
-        Type genericType = new GenericType<List<Project>>() {
-        }.getGenericType();
-        Object entity =
-                new GenericEntity<List<Project>>(projectRefs, genericType);
-
+        Object entity = new GenericEntity<List<Project>>(projectRefs){};
         return Response.ok(entity).build();
     }
 

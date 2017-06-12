@@ -31,14 +31,13 @@ import javax.sql.DataSource;
 import org.apache.deltaspike.core.api.exclude.Exclude;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
-import org.dbunit.database.DatabaseConfig;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
-import org.dbunit.ext.h2.H2DataTypeFactory;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.arquillian.test.api.ArquillianResource;
-import org.jboss.resteasy.client.ClientRequest;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -49,8 +48,6 @@ import org.zanata.arquillian.RemoteBefore;
 import org.zanata.provider.DBUnitProvider;
 import org.zanata.rest.ResourceRequestEnvironment;
 import org.zanata.util.ServiceLocator;
-
-import com.google.common.collect.Lists;
 
 /**
  * Provides basic test utilities to test raw REST APIs and compatibility.
@@ -81,6 +78,7 @@ public abstract class RestTest {
                 @Override
                 public Map<String, Object> getDefaultHeaders() {
                     return new HashMap<String, Object>() {
+                        private static final long serialVersionUID = 1L;
                         {
                             put("X-Auth-User", ADMIN);
                             put("X-Auth-Token", ADMIN_KEY);
@@ -148,14 +146,14 @@ public abstract class RestTest {
 
     @Before
     public void signalBeforeTest() {
-        ClientRequest clientRequest =
-                new ClientRequest(getRestEndpointUrl() + "test/remote/signal/before");
+        ResteasyWebTarget webTarget = new ResteasyClientBuilder().build()
+                .target(getRestEndpointUrl() + "test/remote/signal/before");
         // test resources allow anonymous access
         try {
-            clientRequest
-                    .queryParameter("c", this.getClass().getName())
-                    .queryParameter("m", testName.getMethodName())
-                    .post();
+            webTarget
+                    .queryParam("c", this.getClass().getName())
+                    .queryParam("m", testName.getMethodName())
+                    .request().build("post").invoke();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -163,14 +161,14 @@ public abstract class RestTest {
 
     @After
     public void signalAfterTest() {
-        ClientRequest clientRequest =
-                new ClientRequest(getRestEndpointUrl() + "test/remote/signal/after");
+        ResteasyWebTarget webTarget = new ResteasyClientBuilder().build()
+                .target(getRestEndpointUrl() + "test/remote/signal/after");
         // test resources allow anonymous access
         try {
-            clientRequest
-                    .queryParameter("c", this.getClass().getName())
-                    .queryParameter("m", testName.getMethodName())
-                    .post();
+            webTarget
+                    .queryParam("c", this.getClass().getName())
+                    .queryParam("m", testName.getMethodName())
+                    .request().build("post").invoke();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -249,6 +247,7 @@ public abstract class RestTest {
             @Override
             public Map<String, Object> getDefaultHeaders() {
                 return new HashMap<String, Object>() {
+                    private static final long serialVersionUID = 1L;
                     {
                         put("X-Auth-User", TRANSLATOR);
                         put("X-Auth-Token", TRANSLATOR_KEY);
@@ -258,12 +257,14 @@ public abstract class RestTest {
         };
     }
 
-    protected void addExtensionToRequest(Set<String> extensions,
-            ClientRequest request) {
-        if (extensions != null) {
-            request.getQueryParameters().put("ext", Lists
-                    .newArrayList(extensions));
+    protected ResteasyWebTarget addExtensionToRequest(Set<String> extensions,
+            ResteasyWebTarget webTarget) {
+        if (extensions != null && !extensions.isEmpty()) {
+            for (String extension: extensions) {
+                webTarget = webTarget.queryParam("ext", extension);
+            }
         }
+        return webTarget;
     }
 
 }

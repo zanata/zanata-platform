@@ -128,7 +128,7 @@ public class RestLimitingFilter implements Filter {
                 }
             }
         } catch (Exception e) {
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

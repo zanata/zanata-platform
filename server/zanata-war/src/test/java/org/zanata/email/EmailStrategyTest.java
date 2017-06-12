@@ -55,7 +55,9 @@ public class EmailStrategyTest {
     Locale locale = Locale.ENGLISH;
 
     // context values needed for most/all templates:
-    Messages msgs = DEBUG ? new Messages(locale) : new Messages(locale) {
+    private Messages msgs = DEBUG ? new Messages(locale) : new Messages(locale) {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public String get(Object key) {
             return "MSG:key=" + key;
@@ -74,15 +76,17 @@ public class EmailStrategyTest {
     InternetAddress toAddr;
     InternetAddress[] toAddresses;
 
-    MessagesFactory msgsFactory = new MessagesFactory() {
+    private MessagesFactory msgsFactory = new MessagesFactory() {
+        private static final long serialVersionUID = 1L;
+
         @Override
         public Messages getMessages(Locale locale) {
             return msgs;
         }
     };
 
-    Session session = Session.getDefaultInstance(new Properties());
-    EmailBuilder.Context context = new EmailBuilder.Context() {
+    private Session session = Session.getDefaultInstance(new Properties());
+    private EmailBuilder.Context context = new EmailBuilder.Context() {
         @Override
         String getFromAddress() {
             return fromAddress;
@@ -93,8 +97,8 @@ public class EmailStrategyTest {
             return testServerPath;
         }
     };
-    EmailBuilder builder = new EmailBuilder(session, context, msgsFactory);
-    MimeMessage message;
+    private EmailBuilder builder = new EmailBuilder(session, context, msgsFactory);
+    private MimeMessage message;
 
     // context values needed for some templates:
     String key = "123456";

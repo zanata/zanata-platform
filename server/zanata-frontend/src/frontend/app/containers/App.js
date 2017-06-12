@@ -6,7 +6,7 @@ import React, { PropTypes, Component } from 'react'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { Nav, Icons } from '../components'
-import { getContextPath } from '../utils/UrlHelper'
+import { serverUrl, links as configLinks } from '../config'
 
 /**
  * TODO: use react-ally to identify accessibility issue in dev mode
@@ -14,6 +14,12 @@ import { getContextPath } from '../utils/UrlHelper'
  */
 
 class App extends Component {
+  static propTypes = {
+    children: PropTypes.node,
+    activePath: PropTypes.string,
+    loading: PropTypes.bool
+  }
+
   render () {
     const {
       children,
@@ -22,9 +28,9 @@ class App extends Component {
     } = this.props
 
     const links = {
-      'context': getContextPath(),
-      '/login': window.config.links.loginUrl,
-      '/signup': window.config.links.registerUrl
+      'context': serverUrl,
+      '/login': configLinks.loginUrl,
+      '/signup': configLinks.registerUrl
     }
     return (
       <div className='view H(100vh)! Fld(c) Fld(r)--sm'>
@@ -38,12 +44,6 @@ class App extends Component {
       </div>
     )
   }
-}
-
-App.propTypes = {
-  children: PropTypes.node,
-  activePath: PropTypes.string,
-  loading: PropTypes.bool
 }
 
 function mapStateToProps (state) {

@@ -23,15 +23,16 @@ package org.zanata.ui;
 
 import java.io.Serializable;
 import java.util.List;
-import org.zanata.seam.scope.ConversationScopeMessages;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public abstract class AbstractAutocomplete<T> implements Serializable {
 
-    protected ConversationScopeMessages conversationScopeMessages =
-            ConversationScopeMessages.instance();
+    @SuppressWarnings("deprecation")
+    protected org.zanata.seam.scope.ConversationScopeMessages
+            conversationScopeMessages =
+            org.zanata.seam.scope.ConversationScopeMessages.instance();
     private String query; // String of the input box
     private String selectedItem; // Selected item from the suggestion
 

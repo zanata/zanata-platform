@@ -10,6 +10,9 @@
   --Editor-suggestions-header-z-index     : 300;
   --Editor-suggestionsSearch-z-index      : 300;
   --LogoLoader-transition-ease: cubic-bezier(.175, .885, .320, 1.275);
+  --Editor-color-light                    : #90b8c5;
+  --Editor-color-dark                     : #20718a;
+  --Editor-color-bright                   : #1ba7d9;
 }
 
 .stretched-box {
@@ -185,6 +188,15 @@
   overflow: hidden;
 }
 
+.TransUnit-panel .u-textMeta .loader-text span span {
+  padding-left: 1em;
+}
+
+.Editor-suggestionsBody .loader-text span span {
+  color: var(--Editor-color-light);
+  font-weight: 600;
+}
+
 li.docName {
   max-width: 20em;
 }
@@ -287,12 +299,12 @@ li.docName span.ellipsis {
 .trans-link.form-group .form-control {
   height: 2.25em;
   width: 90%;
-  color: #20718a;
+  color: var(--Editor-color-dark);
 }
 
 .input-group-addon {
   vertical-align: middle;
-  color: #20718a;
+  color: var(--Editor-color-dark);
 }
 
 .modal-title {
@@ -303,7 +315,7 @@ h4.modal-title {
   font-size: 1.728rem;
   font-weight: 300;
   text-align: center;
-  color: #1ba7d9;
+  color: var(--Editor-color-bright);
   line-height: 1em;
 }
 
@@ -318,7 +330,7 @@ h4.modal-title {
 
 .modal-body .list-group-item-heading {
   margin-top: 0.5em;
-  color: #20718a;
+  color: var(--Editor-color-dark);
 }
 
 .panel-body .modal-term {
@@ -351,11 +363,11 @@ h4.modal-title {
 }
 
 .comment-box li {
-  color: #20718a;
+  color: var(--Editor-color-dark);
 }
 
 .comment-icon svg {
-  fill: #90b8c5 !important;
+  fill: var(--Editor-color-light) !important;
 }
 
 ul.list-inline li.s1 {
@@ -446,7 +458,7 @@ ul.source-infolist {
   position: relative;
   display: block;
   padding: 10px 15px;
-  color:#20718a;
+  color: var(--Editor-color-dark);
 }
 
 .nav > li > a:hover,

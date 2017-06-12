@@ -24,33 +24,52 @@ import {
 } from '../../actions/languages-actions'
 
 class Languages extends Component {
+  static propTypes = {
+    page: PropTypes.number,
+    notification: PropTypes.object,
+    permission: PropTypes.object,
+    user: PropTypes.object,
+    searchText: PropTypes.string,
+    size: PropTypes.number,
+    sort: PropTypes.object,
+    results: PropTypes.array,
+    totalCount: PropTypes.number,
+    loading: PropTypes.bool,
+    deleting: PropTypes.bool,
+    handleInitLoad: PropTypes.func,
+    handleDelete: PropTypes.func,
+    handleOnUpdatePageSize: PropTypes.func,
+    handleOnUpdateSort: PropTypes.func,
+    handleOnUpdateSearch: PropTypes.func,
+    handlePageChanged: PropTypes.func,
+    handleOnDisplayNewLanguage: PropTypes.func
+  }
+
   constructor (props) {
     super(props)
     this.state = {
       searchText: props.searchText
     }
-    this.resetSearchText = ::this.resetSearchText
-
-    this.debounceHandleUpdateSearch = debounce(
-        this.debounceHandleUpdateSearch, 200)
   }
 
   componentDidMount () {
     this.props.handleInitLoad()
   }
 
-  debounceHandleUpdateSearch () {
-    this.props.handleOnUpdateSearch(this.state.searchText)
+  debounceHandleUpdateSearch = () => {
+    debounce(() => {
+      this.props.handleOnUpdateSearch(this.state.searchText)
+    }, 200)
   }
 
-  resetSearchText (localeId) {
+  resetSearchText = (localeId) => {
     this.setState({
       searchText: ''
     })
     this.props.handleDelete(localeId)
   }
 
-  onUpdateSearch (event) {
+  onUpdateSearch = (event) => {
     this.setState({
       searchText: event.target.value || ''
     })
@@ -116,7 +135,7 @@ class Languages extends Component {
                 <InputGroup>
                   <FormControl type='text'
                     value={this.state.searchText}
-                    onChange={::this.onUpdateSearch} />
+                    onChange={this.onUpdateSearch} />
                   <InputGroup.Addon>
                     <Icon name='search'
                       className='s1'
@@ -195,27 +214,6 @@ class Languages extends Component {
     )
     /* eslint-enable react/jsx-no-bind */
   }
-}
-
-Languages.propTypes = {
-  page: PropTypes.number,
-  notification: PropTypes.object,
-  permission: PropTypes.object,
-  user: PropTypes.object,
-  searchText: PropTypes.string,
-  size: PropTypes.number,
-  sort: PropTypes.object,
-  results: PropTypes.array,
-  totalCount: PropTypes.number,
-  loading: PropTypes.bool,
-  deleting: PropTypes.bool,
-  handleInitLoad: PropTypes.func,
-  handleDelete: PropTypes.func,
-  handleOnUpdatePageSize: PropTypes.func,
-  handleOnUpdateSort: PropTypes.func,
-  handleOnUpdateSearch: PropTypes.func,
-  handlePageChanged: PropTypes.func,
-  handleOnDisplayNewLanguage: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

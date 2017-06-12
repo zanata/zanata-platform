@@ -57,6 +57,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Source Documents")
 public interface SourceDocResource extends RestResource {
+    @SuppressWarnings("deprecation")
     String SERVICE_PATH =
             ProjectIterationResource.SERVICE_PATH + "/r";
     String RESOURCE_SLUG_REGEX =

@@ -58,11 +58,12 @@ public class AccountClient {
         }
     }
 
-    public void put(String username, Account account) {
+    public Response put(String username, Account account) {
         Response response = webResource(username)
                 .put(Entity.entity(account,
                         MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML));
         response.close();
+        return response;
     }
 
     private Invocation.Builder webResource(String username) {

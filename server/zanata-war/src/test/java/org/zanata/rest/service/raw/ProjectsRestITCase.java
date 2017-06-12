@@ -24,13 +24,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.zanata.util.RawRestTestUtils.jsonUnmarshal;
 
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.Response;
 
 import org.assertj.core.api.Assertions;
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.RestTest;
 import org.zanata.common.EntityStatus;
@@ -60,15 +61,17 @@ public class ProjectsRestITCase extends RestTest {
         new ResourceRequest(getRestEndpointUrl("/projects"),
                 "GET", getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(
+                    ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
-                Project[] projects = jsonUnmarshal(response, Project[].class);
+                String entityString = response.readEntity(String.class);
+                Project[] projects = jsonUnmarshal(entityString, Project[].class);
                 Assertions.assertThat(projects.length).isGreaterThan(0);
                 for (Project project : projects) {
                     Assertions.assertThat(project.getStatus()).isNotEqualTo(

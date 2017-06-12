@@ -11,6 +11,13 @@ import PlainSuggestionContents from './PlainSuggestionContents'
 import { matchType } from '../../utils/suggestion-util'
 
 class SuggestionDetailsModal extends Component {
+  propTypes = {
+    onClose: PropTypes.func.isRequired,
+    suggestion: PropTypes.shape({
+      matchDetails: PropTypes.array.isRequired
+    }).isRequired
+  }
+
   constructor (props) {
     super(props)
     this.state = {
@@ -56,13 +63,6 @@ class SuggestionDetailsModal extends Component {
       </Modal>
     )
   }
-}
-
-SuggestionDetailsModal.propTypes = {
-  onClose: PropTypes.func.isRequired,
-  suggestion: PropTypes.shape({
-    matchDetails: PropTypes.array.isRequired
-  }).isRequired
 }
 
 export default SuggestionDetailsModal

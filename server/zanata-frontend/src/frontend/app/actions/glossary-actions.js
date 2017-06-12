@@ -12,6 +12,7 @@ import {
   getHeaders,
   buildAPIRequest
 } from './common-actions'
+import { apiUrl } from '../config'
 
 export const FILE_TYPES = ['csv', 'po']
 export const PAGE_SIZE_SELECTION = [20, 50, 100, 300, 500]
@@ -120,8 +121,7 @@ const getGlossaryTerms = (state) => {
   const sortQuery = sort
     ? `&sort=${GlossaryHelper.convertSortToParam(sort)}` : ''
   const qualifiedNameQuery = '&qualifiedName=' + qualifiedName
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/glossary/entries' + srcQuery +
+  const endpoint = apiUrl + '/glossary/entries' + srcQuery +
     localeQuery + pageQuery + filterQuery + sortQuery + qualifiedNameQuery
 
   const apiTypes = [
@@ -149,8 +149,7 @@ const getGlossaryTerms = (state) => {
 }
 
 const getGlossaryStats = (dispatch, qualifiedName, resetTerms) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/glossary/info?qualifiedName=' + qualifiedName
+  const endpoint = apiUrl + '/glossary/info?qualifiedName=' + qualifiedName
   const apiTypes = [
     GLOSSARY_STATS_REQUEST,
     {
@@ -170,8 +169,8 @@ const getGlossaryStats = (dispatch, qualifiedName, resetTerms) => {
 }
 
 const getPermission = (dispatch, qualifiedName) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/user/permission/glossary?qualifiedName=' + qualifiedName
+  const endpoint =
+    apiUrl + '/user/permission/glossary?qualifiedName=' + qualifiedName
   const apiTypes = [
     GLOSSARY_PERMISSION_REQUEST,
     {
@@ -191,7 +190,7 @@ const getPermission = (dispatch, qualifiedName) => {
 }
 
 const getQualifiedName = (dispatch, projectSlug) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
+  const endpoint = apiUrl +
     (projectSlug ? '/projects/p/' + projectSlug + '/glossary/qualifiedName'
       : '/glossary/qualifiedName')
 
@@ -215,8 +214,7 @@ const getQualifiedName = (dispatch, projectSlug) => {
 }
 
 const getProjectDetails = (projectSlug) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/projects/p/' + projectSlug
+  const endpoint = apiUrl + '/projects/p/' + projectSlug
 
   const apiTypes = [
     PROJECT_GET_DETAILS_REQUEST,
@@ -236,7 +234,7 @@ const getProjectDetails = (projectSlug) => {
 }
 
 const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot + '/glossary'
+  const endpoint = apiUrl + '/glossary'
   let formData = new FormData()
   formData.append('file', data.file, data.file.name)
   formData.append('fileName', data.file.name)
@@ -268,8 +266,7 @@ const importGlossaryFile = (dispatch, data, qualifiedName, srcLocaleId) => {
 const createGlossaryTerm = (dispatch, qualifiedName, term) => {
   let headers = getJsonHeaders()
   headers['Content-Type'] = 'application/json'
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/glossary/entries?locale=' + term.srcTerm.locale +
+  const endpoint = apiUrl + '/glossary/entries?locale=' + term.srcTerm.locale +
     '&qualifiedName=' + qualifiedName
   const entryDTO = GlossaryHelper.convertToDTO(term, qualifiedName)
   const apiTypes = [
@@ -301,8 +298,7 @@ const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
   let headers = getJsonHeaders()
   headers['Content-Type'] = 'application/json'
 
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/glossary/entries?locale=' + localeId +
+  const endpoint = apiUrl + '/glossary/entries?locale=' + localeId +
     '&qualifiedName=' + qualifiedName
   const entryDTO = GlossaryHelper.convertToDTO(term, qualifiedName)
 
@@ -332,8 +328,8 @@ const updateGlossaryTerm = (dispatch, qualifiedName, term, localeId,
 }
 
 const deleteGlossaryTerm = (dispatch, id, qualifiedName) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/glossary/entries/' + id + '?qualifiedName=' + qualifiedName
+  const endpoint =
+    apiUrl + '/glossary/entries/' + id + '?qualifiedName=' + qualifiedName
   const apiTypes = [
     {
       type: GLOSSARY_DELETE_REQUEST,
@@ -359,8 +355,7 @@ const deleteGlossaryTerm = (dispatch, id, qualifiedName) => {
 }
 
 const deleteAllGlossaryEntry = (dispatch, qualifiedName) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/glossary?qualifiedName=' + qualifiedName
+  const endpoint = apiUrl + '/glossary?qualifiedName=' + qualifiedName
   const apiTypes = [
     {
       type: GLOSSARY_DELETE_ALL_REQUEST,
@@ -382,8 +377,8 @@ const deleteAllGlossaryEntry = (dispatch, qualifiedName) => {
 }
 
 const glossaryExport = (type, qualifiedName) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/glossary/file?fileType=' + type + '&qualifiedName=' + qualifiedName
+  const endpoint = apiUrl + '/glossary/file?fileType=' + type +
+    '&qualifiedName=' + qualifiedName
   let headers = getJsonHeaders()
   headers['Content-Type'] = 'application/octet-stream'
   const apiTypes = [

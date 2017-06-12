@@ -30,24 +30,21 @@ import React, { PropTypes } from 'react'
  *
  * props.className is applied to the icon
  */
-const IconButtonToggle = React.createClass({
-
-  propTypes: {
+class IconButtonToggle extends React.Component {
+  static propTypes = {
     icon: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     onClick: PropTypes.func.isRequired,
     active: PropTypes.bool.isRequired,
     disabled: PropTypes.bool,
     className: PropTypes.string
-  },
+  }
 
-  getDefaultProps: () => {
-    return {
-      active: false
-    }
-  },
+  static defaultProps = {
+    active: false
+  }
 
-  render: function () {
+  render () {
     const className = cx(this.props.className,
       'Button Button--snug u-roundish Button--invisible',
       { 'is-active': this.props.active })
@@ -58,6 +55,6 @@ const IconButtonToggle = React.createClass({
         className={className} />
     )
   }
-})
+}
 
 export default IconButtonToggle

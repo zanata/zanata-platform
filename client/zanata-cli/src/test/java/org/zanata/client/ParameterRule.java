@@ -27,7 +27,7 @@ public class ParameterRule<T> implements MethodRule {
     private int parameterIndex = 0;
     private List<T> parameters;
 
-    public ParameterRule(T... parameters) {
+    public ParameterRule(List<T> parameters) {
         this.parameters = ImmutableList.copyOf(parameters);
     }
 
@@ -47,7 +47,7 @@ public class ParameterRule<T> implements MethodRule {
                                 parameters.get(parameterIndex));
                         base.evaluate();
                     } catch (Throwable throwable) {
-                        throw Throwables.propagate(throwable);
+                        throw new RuntimeException(throwable);
                     }
                 }
             }

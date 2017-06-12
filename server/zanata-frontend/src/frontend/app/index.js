@@ -1,7 +1,7 @@
 import 'babel-polyfill'
+import 'es6-symbol/implement'
 import React from 'react'
 import { render } from 'react-dom'
-import { mapValues } from 'lodash'
 import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import createLogger from 'redux-logger'
@@ -11,7 +11,6 @@ import WebFont from 'webfontloader'
 import { apiMiddleware } from 'redux-api-middleware'
 import rootReducer from './reducers'
 import Root from './containers/Root'
-import { isJsonString } from './utils/StringUtils'
 
 import './styles/style.less'
 
@@ -53,11 +52,6 @@ const store = ((initialState) => {
   }
   return store
 })()
-
-window.config = mapValues(window.config, (value) =>
-  isJsonString(value) ? JSON.parse(value) : value)
-// baseUrl should be /zanata or ''
-window.config.baseUrl = window.config.baseUrl || ''
 
 render(
   <Root store={store} history={history} />,

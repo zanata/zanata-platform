@@ -41,6 +41,7 @@ public class ProjectTypeTest {
         assertThat(getValueOf("Properties"), is(Properties));
         assertThat(getValueOf("Gettext"), is(Gettext));
         assertThat(getValueOf("Podir"), is(Podir));
+        assertThat(getValueOf("Offlinepo"), is(Podir));
         assertThat(getValueOf("Xliff"), is(Xliff));
         assertThat(getValueOf("Xml"), is(Xml));
         assertThat(getValueOf("File"), is(File));
@@ -52,6 +53,7 @@ public class ProjectTypeTest {
         assertThat(getValueOf("properties"), is(Properties));
         assertThat(getValueOf("gettext"), is(Gettext));
         assertThat(getValueOf("podir"), is(Podir));
+        assertThat(getValueOf("offlinepo"), is(Podir));
         assertThat(getValueOf("xliff"), is(Xliff));
         assertThat(getValueOf("xml"), is(Xml));
         assertThat(getValueOf("file"), is(File));
@@ -77,6 +79,7 @@ public class ProjectTypeTest {
     }
 
     @Test
+    @Deprecated
     public void gettextProjectsSupportOnlyPot() {
         List<DocumentType> supported = getSupportedSourceFileTypes(Gettext);
         assertThat(supported.get(0).getSourceExtensions(), contains("pot"));
@@ -84,6 +87,7 @@ public class ProjectTypeTest {
     }
 
     @Test
+    @Deprecated
     public void podirProjectsSupportOnlyPot() {
         List<DocumentType> supported = getSupportedSourceFileTypes(Podir);
         assertThat(supported.get(0).getSourceExtensions(), contains("pot"));
@@ -91,6 +95,7 @@ public class ProjectTypeTest {
     }
 
     @Test
+    @Deprecated
     public void supportedSourceFileTypesCorrectForFileProject() {
         List<DocumentType> supportedTypes = getSupportedSourceFileTypes(File);
         Set<String> extensions = new HashSet<>();
@@ -104,6 +109,7 @@ public class ProjectTypeTest {
     }
 
     @Test
+    @Deprecated
     public void supportedSourceFileTypesEmptyForOtherProjectTypes() {
         // There is currently no DocumentType representation of the source documents for these project types
         // They should be added, but while they are absent we expect empty source type lists.

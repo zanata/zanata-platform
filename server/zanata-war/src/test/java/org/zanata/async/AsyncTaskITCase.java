@@ -77,7 +77,7 @@ public class AsyncTaskITCase extends ArquillianTest {
     @Test
     public void taskDoesNotReturnValue() throws Exception {
         // Given a task handle
-        AsyncTaskHandle handle = new AsyncTaskHandle();
+        AsyncTaskHandle<Void> handle = new AsyncTaskHandle<>();
 
         // Start an asynchronous process
         testAsyncBean.doesNotReturn(handle);
@@ -110,6 +110,8 @@ public class AsyncTaskITCase extends ArquillianTest {
         // Custom handle so that progress updates are recorded
         final AsyncTaskHandle<Void> taskHandle =
                 new AsyncTaskHandle<Void>() {
+                    private static final long serialVersionUID = 1L;
+
                     @Override
                     public void setCurrentProgress(int progress) {
                         super.setCurrentProgress(progress);
@@ -118,7 +120,7 @@ public class AsyncTaskITCase extends ArquillianTest {
                 };
 
         // Start an asynchronous process that updates its progress
-        Future result = testAsyncBean.progressUpdates(taskHandle);
+        Future<String> result = testAsyncBean.progressUpdates(taskHandle);
 
         // Wait for it to finish
         result.get();
@@ -139,9 +141,8 @@ public class AsyncTaskITCase extends ArquillianTest {
         }
 
         @Async
-        public void doesNotReturn(AsyncTaskHandle handle) {
+        public void doesNotReturn(AsyncTaskHandle<Void> handle) {
             handle.setCurrentProgress(100);
-            return;
         }
 
         @Async
@@ -150,7 +151,7 @@ public class AsyncTaskITCase extends ArquillianTest {
         }
 
         @Async
-        public Future progressUpdates(AsyncTaskHandle handle) {
+        public Future<String> progressUpdates(AsyncTaskHandle<Void> handle) {
             handle.setCurrentProgress(25);
             handle.setCurrentProgress(50);
             handle.setCurrentProgress(75);

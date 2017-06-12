@@ -1,22 +1,20 @@
 import React from 'react'
 import { storiesOf } from '@kadira/storybook'
-import { action, decorateAction } from '@kadira/storybook-addon-actions'
+import { action } from '@kadira/storybook-addon-actions'
 import RealEditorSearchInput from '.'
 
 // Simple wrapper component to handle text updates for the story
 // Uses the component name so it shows accurately how to use it
 class EditorSearchInput extends React.Component {
-  constructor(props) {
+  constructor (props) {
     super(props)
     this.state = {
       search: props.search,
       advanced: props.advanced
     }
-    this.toggleAdvanced = ::this.toggleAdvanced
-    this.updateSearch = ::this.updateSearch
   }
 
-  toggleAdvanced () {
+  toggleAdvanced = () => {
     // ensure the action is visible in the logger
     this.props.toggleAdvanced()
     this.setState({
@@ -24,7 +22,7 @@ class EditorSearchInput extends React.Component {
     })
   }
 
-  updateSearch (search) {
+  updateSearch = (search) => {
     // ensure the action is visible in the logger
     this.props.updateSearch(search)
     this.setState({

@@ -4,9 +4,8 @@ import React, { PropTypes } from 'react'
 /**
  * Dropdown with both an action button and a toggle button.
  */
-const SplitDropdown = React.createClass({
-
-  propTypes: {
+class SplitDropdown extends React.Component {
+  static propTypes = {
     onToggle: PropTypes.func.isRequired,
     isOpen: PropTypes.bool.isRequired,
     enabled: PropTypes.bool,
@@ -16,15 +15,13 @@ const SplitDropdown = React.createClass({
     actionButton: PropTypes.element.isRequired,
     toggleButton: PropTypes.element,
     content: PropTypes.element.isRequired
-  },
+  }
 
-  getDefaultProps: () => {
-    return {
-      enabled: true
-    }
-  },
+  static defaultProps = {
+    enabled: true
+  }
 
-  render: function () {
+  render () {
     const className = cx('Dropdown', this.props.className, {
       'is-active': this.props.isOpen
     })
@@ -61,6 +58,6 @@ const SplitDropdown = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default SplitDropdown

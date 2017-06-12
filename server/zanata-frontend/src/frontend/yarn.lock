@@ -3954,6 +3954,10 @@ intl-relativeformat@^1.3.0:
   dependencies:
     intl-messageformat "1.3.0"
 
+intl@1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/intl/-/intl-1.2.5.tgz#82244a2190c4e419f8371f5aa34daa3420e2abde"
+
 invariant@2.x.x, invariant@^2.0.0, invariant@^2.1.0, invariant@^2.1.1, invariant@^2.2.0, invariant@^2.2.1:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/invariant/-/invariant-2.2.2.tgz#9e1f56ac0acdb6bf303306f338be3b204ae60360"
@@ -6235,9 +6239,9 @@ react-bootstrap@0.30.7:
     uncontrollable "^4.0.1"
     warning "^3.0.0"
 
-react-chartjs@0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/react-chartjs/-/react-chartjs-0.4.0.tgz#dc05231e9927c50495950f3bc8b69ac03a6ced56"
+react-chartjs@0.8.0:
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/react-chartjs/-/react-chartjs-0.8.0.tgz#d41386b3d3cbfef9003f5a655e7ea48a49fbfa19"
 
 react-codemirror@0.2.6:
   version "0.2.6"

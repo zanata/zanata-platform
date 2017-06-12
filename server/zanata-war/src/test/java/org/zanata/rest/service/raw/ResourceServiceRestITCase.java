@@ -3,32 +3,22 @@ package org.zanata.rest.service.raw;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
-import static org.zanata.util.RawRestTestUtils.jaxbMarhsal;
 
 import java.util.List;
-import java.util.Set;
 
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zanata.common.ContentType;
-import org.zanata.rest.ResourceRequest;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.service.ResourceTestObjectFactory;
 import org.zanata.rest.service.ResourceTestUtil;
-import org.zanata.rest.service.SourceDocResource;
 import org.zanata.util.RawRestTestUtils;
 
 import com.google.common.collect.ImmutableList;

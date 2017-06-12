@@ -6,9 +6,8 @@ import { hasTranslationChanged } from '../utils/phrase-util'
 /**
  * Header for the source of the selected phrase
  */
-const TransUnitSourceHeader = React.createClass({
-
-  propTypes: {
+class TransUnitSourceHeader extends React.Component {
+  static propTypes = {
     phrase: PropTypes.object.isRequired,
     cancelEdit: PropTypes.func.isRequired,
     copyFromSource: PropTypes.func.isRequired,
@@ -16,13 +15,13 @@ const TransUnitSourceHeader = React.createClass({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired
     }).isRequired
-  },
+  }
 
-  componentWillMount: function () {
+  componentWillMount () {
     this.copyFromSource = this.props.copyFromSource.bind(undefined, 0)
-  },
+  }
 
-  render: function () {
+  render () {
     // TODO remove duplication of this between source and translation headers
     const buttonClass =
       'Link Link--neutral u-sizeHeight-1_1-2 u-sizeWidth-1 u-textCenter'
@@ -68,6 +67,6 @@ const TransUnitSourceHeader = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default TransUnitSourceHeader

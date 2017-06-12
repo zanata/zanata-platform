@@ -41,6 +41,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Version Locales")
 public interface ProjectIterationLocalesResource extends RestResource {
+    @SuppressWarnings("deprecation")
     public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH
             + "/locales";
 

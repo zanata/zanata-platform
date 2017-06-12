@@ -22,11 +22,9 @@
 import 'babel-polyfill'
 import React from 'react'
 import { render } from 'react-dom'
-import { mapValues } from 'lodash'
 import { Nav, Icons } from './components'
 import WebFont from 'webfontloader'
-import { isJsonString } from './utils/StringUtils'
-import { getContextPath } from './utils/UrlHelper'
+import { serverUrl, links as configLinks } from './config'
 
 import './styles/style.less'
 
@@ -44,21 +42,16 @@ WebFont.load({
   timeout: 2000
 })
 
-window.config = mapValues(window.config, (value) =>
-  isJsonString(value) ? JSON.parse(value) : value)
-
-window.config.baseUrl = getContextPath()
-
 const links = {
-  'context': window.config.baseUrl,
-  '/login': window.config.links.loginUrl,
-  '/signup': window.config.links.registerUrl
+  'context': serverUrl,
+  '/login': configLinks.loginUrl,
+  '/signup': configLinks.registerUrl
 }
 
 const activePath = window.location.pathname.replace(/\/$/, '')
 
 render(
-  <div className='H(a) H(100%)--sm'>
+  <div>
     <Icons />
     <Nav active={activePath} isJsfPage links={links} />
   </div>

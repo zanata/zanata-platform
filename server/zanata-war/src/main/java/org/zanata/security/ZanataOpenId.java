@@ -51,7 +51,6 @@ import org.zanata.security.openid.OpenIdProviderType;
 import org.zanata.security.openid.OpenIdProviderTypeHolder;
 import org.zanata.security.openid.YahooOpenIdProvider;
 import org.zanata.ui.faces.FacesMessages;
-import org.zanata.util.Contexts;
 import org.zanata.util.ServiceLocator;
 import org.zanata.util.Synchronized;
 import org.zanata.util.UrlUtil;
@@ -278,9 +277,10 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
         authResult = new OpenIdAuthenticationResult();
     }
 
+    @SuppressWarnings("deprecation")
     private void loginImmediate() {
         if (loginImmediately()) {
-            if (Contexts.isRequestContextActive()) {
+            if (org.zanata.util.Contexts.isRequestContextActive()) {
                 HAccount authenticatedAccount =
                         ServiceLocator.instance().getInstance(
                                 HAccount.class, new AuthenticatedLiteral());
@@ -327,7 +327,7 @@ public class ZanataOpenId implements OpenIdAuthCallback, Serializable {
             try {
                 FacesContext.getCurrentInstance().getExternalContext().redirect(url);
             } catch (IOException e) {
-                Throwables.propagate(e);
+                throw new RuntimeException(e);
             }
         }
     }

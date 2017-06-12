@@ -52,6 +52,7 @@ public class TranslatorInteractionServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void canCallServerOnSelection() {
         TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
         service.transUnitSelected(selectedTransUnit);
@@ -66,6 +67,7 @@ public class TranslatorInteractionServiceTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void onPersonExit() {
         TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
         Person person = TestFixture.person();

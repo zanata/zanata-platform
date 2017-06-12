@@ -11,11 +11,28 @@ import {
 import RecentContributions from './RecentContributions'
 import { Notification, Icon, LoaderText } from '../../components'
 import { getLanguageUrl } from '../../utils/UrlHelper'
+import { isLoggedIn } from '../../config'
 
 /**
  * Root component for user profile page
  */
 class UserProfile extends Component {
+  static propTypes = {
+    params: PropTypes.object,
+    user: PropTypes.object,
+    notification: PropTypes.object,
+    loading: PropTypes.bool,
+    matrixForAllDays: PropTypes.array,
+    wordCountsForSelectedDayFilteredByContentState: PropTypes.array,
+    wordCountsForEachDayFilteredByContentState: PropTypes.array,
+    contentStateOption: PropTypes.string,
+    selectedDay: PropTypes.string,
+    dateRange: PropTypes.object,
+    handleInitLoad: PropTypes.func,
+    handleDateRangeChanged: PropTypes.func,
+    handleFilterChanged: PropTypes.func,
+    handleSelectedDayChanged: PropTypes.func
+  }
 
   componentDidMount () {
     const paramUsername = this.props.params.username
@@ -56,8 +73,6 @@ class UserProfile extends Component {
       })
       : undefined
 
-    const isLoggedIn = window.config.permission.isLoggedIn
-
     return (
       <div className='page'>
         {notification &&
@@ -74,13 +89,14 @@ class UserProfile extends Component {
               <LoaderText className='loader-text s8' loading />
             </div>)
             : (<div className='flex-c profile-wrapper'>
-              <div className='flex-rr details' id='profile-overview'>
+              <div className='details' id='profile-overview'>
                 <img className='details-avatar'
                   src={user.imageUrl ? user.imageUrl : ''}
                   alt={username} />
                 <div className='flex-c details-text'>
                   {name &&
-                    <div className='username h2' id='profile-displayname'>
+                    <div className='username h2 ellipsis'
+                      id='profile-displayname'>
                       {name}
                     </div>
                   }
@@ -91,12 +107,12 @@ class UserProfile extends Component {
                         className='s0'
                         title='Username' />
                       {username}
+                    </span>
                       {email &&
                         (<span className='profile-email'>
                           {email}
                         </span>)
                       }
-                    </span>
                     {languageTeams &&
                     (<span tagName='li'
                       id='profile-languages'>
@@ -136,23 +152,6 @@ class UserProfile extends Component {
       </div>
     )
   }
-}
-
-UserProfile.propTypes = {
-  params: PropTypes.object,
-  user: PropTypes.object,
-  notification: PropTypes.object,
-  loading: PropTypes.bool,
-  matrixForAllDays: PropTypes.array,
-  wordCountsForSelectedDayFilteredByContentState: PropTypes.array,
-  wordCountsForEachDayFilteredByContentState: PropTypes.array,
-  contentStateOption: PropTypes.string,
-  selectedDay: PropTypes.string,
-  dateRange: PropTypes.object,
-  handleInitLoad: PropTypes.func,
-  handleDateRangeChanged: PropTypes.func,
-  handleFilterChanged: PropTypes.func,
-  handleSelectedDayChanged: PropTypes.func
 }
 
 const mapStateToProps = (state) => {

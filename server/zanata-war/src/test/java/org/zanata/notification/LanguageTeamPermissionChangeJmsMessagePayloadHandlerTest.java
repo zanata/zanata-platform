@@ -56,6 +56,7 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void willSendEmailToAffectedPerson() {
         when(permissionChangeEvent.hasPermissionsChanged()).thenReturn(true);
         when(permissionChangeEvent.getLanguage()).thenReturn(LocaleId.DE);
@@ -65,10 +66,9 @@ public class LanguageTeamPermissionChangeJmsMessagePayloadHandlerTest {
         handler.handle(permissionChangeEvent);
 
         ArgumentCaptor<LanguageTeamPermissionChangeEmailStrategy> strategyArgumentCaptor =
-                ArgumentCaptor
-                        .forClass(
+                ArgumentCaptor.forClass(
                         LanguageTeamPermissionChangeEmailStrategy.class);
-        ArgumentCaptor<List> receivedReasonCaptor =
+        ArgumentCaptor<List<String>> receivedReasonCaptor =
                 ArgumentCaptor.forClass(List.class);
         ArgumentCaptor<InternetAddress> toAddressCaptor =
                 ArgumentCaptor.forClass(InternetAddress.class);

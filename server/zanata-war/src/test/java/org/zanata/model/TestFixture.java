@@ -154,6 +154,7 @@ public class TestFixture {
         return new Person(new PersonId("pid"), "admin", null);
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static <E extends GwtEvent<?>> E extractFromEvents(
             List<? extends GwtEvent> events, final Class<E> eventType) {
         GwtEvent gwtEvent = Iterables.find(events, new Predicate<GwtEvent>() {
@@ -165,6 +166,7 @@ public class TestFixture {
         return (E) gwtEvent;
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public static <E extends AbstractWorkspaceAction<?>> E extractFromActions(
             List<? extends AbstractWorkspaceAction> events,
             final Class<E> eventType) {
@@ -173,8 +175,9 @@ public class TestFixture {
                         new Predicate<AbstractWorkspaceAction>() {
                             @Override
                             public boolean apply(AbstractWorkspaceAction input) {
-                                return eventType.isAssignableFrom(input
-                                        .getClass());
+                                return input != null &&
+                                        eventType.isAssignableFrom(input
+                                                .getClass());
                             }
                         });
         return (E) action;

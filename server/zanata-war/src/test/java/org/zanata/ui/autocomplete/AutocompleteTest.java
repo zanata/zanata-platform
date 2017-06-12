@@ -36,7 +36,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.LocaleDAO;
 import org.zanata.i18n.Messages;
 import org.zanata.model.HLocale;
-import org.zanata.seam.scope.ConversationScopeMessages;
 
 import com.google.common.collect.Lists;
 import org.zanata.service.impl.LocaleServiceImpl;
@@ -52,7 +51,7 @@ import javax.enterprise.inject.Produces;
 @SupportDeltaspikeCore
 public class AutocompleteTest extends ZanataTest {
 
-    static final List<HLocale> supportedLocales = Lists.newArrayList(
+    private static final List<HLocale> supportedLocales = Lists.newArrayList(
             new HLocale(LocaleId.DE), new HLocale(LocaleId.EN), new HLocale(
                     LocaleId.EN_US), new HLocale(LocaleId.ES), new HLocale(
                     LocaleId.FR));
@@ -63,8 +62,8 @@ public class AutocompleteTest extends ZanataTest {
     LocaleDAO localeDAO;
     @Produces @Mock
     Messages messages;
-    @Produces @Mock
-    ConversationScopeMessages conversationScopeMessages;
+    @Produces @Mock @SuppressWarnings("deprecation")
+    org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
 
     @Test
     public void suggestLocales() {
@@ -74,9 +73,11 @@ public class AutocompleteTest extends ZanataTest {
                 .thenReturn(supportedLocales);
 
         LocaleAutocomplete autocomplete = new LocaleAutocomplete() {
+            private static final long serialVersionUID = 1L;
+
             @Override
             protected Collection<HLocale> getLocales() {
-                return Collections.EMPTY_LIST;
+                return Collections.emptyList();
             }
 
             @Override

@@ -2,6 +2,7 @@ package org.zanata.feature.account;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.zanata.feature.account.comp.RegisterUsernameCharactersCTest;
 
 
 @RunWith(Suite.class)
@@ -11,7 +12,9 @@ import org.junit.runners.Suite;
     ProfileTest.class,
     RegisterTest.class,
     UsernameValidationTest.class,
-    EmailValidationTest.class
+    EmailValidationTest.class,
+    //Comprehensive tests
+    RegisterUsernameCharactersCTest.class
 })
 public class AccountTestSuite {
 

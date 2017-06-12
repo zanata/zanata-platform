@@ -97,6 +97,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         conf = null;
     }
 
+    @SuppressWarnings("unchecked")
     private void mockRequiredServices() throws IOException {
         mockProjectAndVersionStatus();
         mockHasUploadPermission();
@@ -115,7 +116,7 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
                         conf.versionSlug, conf.docId)).thenReturn(
                 Optional.fromNullable(conf.storedParams));
         when(
-                documentDAO.addRawDocument(Matchers.<HDocument> any(),
+                documentDAO.addRawDocument(ArgumentMatchers.any(HDocument.class),
                         persistedRawDocument.capture())).thenReturn(
                 new HRawDocument());
         when(
@@ -125,13 +126,14 @@ public class SourceDocumentUploadTest extends DocumentUploadTest {
         Resource document = new Resource();
         when(
                 translationFileService.parseUpdatedAdapterDocumentFile(
-                        Matchers.<URI> any(), eq(conf.docId),
-                        eq(conf.fileType), paramCaptor.capture(), Matchers.<Optional> any())).thenReturn(
+                        ArgumentMatchers.any(URI.class), eq(conf.docId),
+                        eq(conf.fileType), paramCaptor.capture(),
+                        ArgumentMatchers.any(Optional.class))).thenReturn(
             document);
         when(
                 documentService.saveDocument(eq(conf.projectSlug),
-                        eq(conf.versionSlug), Matchers.<Resource> any(),
-                        Matchers.anySetOf(String.class), Matchers.anyBoolean()))
+                        eq(conf.versionSlug), ArgumentMatchers.any(Resource.class),
+                        ArgumentMatchers.anySet(), ArgumentMatchers.anyBoolean()))
                 .thenReturn(new HDocument());
     }
 

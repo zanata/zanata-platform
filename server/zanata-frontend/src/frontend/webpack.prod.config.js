@@ -6,7 +6,6 @@
  */
 
 var webpack = require('webpack')
-var path = require('path')
 var merge = require('webpack-merge')
 var defaultConfig = require('./webpack.config.js')
 
@@ -16,7 +15,8 @@ module.exports = merge.smart(defaultConfig, {
   },
   cache: false,
   output: {
-    filename: '[name].min.js'
+    filename: '[name].min.js',
+    chunkFilename: '[name].min.js'
   },
   module: {
     loaders: [

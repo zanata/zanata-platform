@@ -27,9 +27,8 @@ import React, { PropTypes } from 'react'
 /**
  * Styled checkbox to toggle a filter option on and off.
  */
-const FilterToggle = React.createClass({
-
-  propTypes: {
+class FilterToggle extends React.Component {
+  static propTypes = {
     id: PropTypes.string,
     className: PropTypes.string,
     isChecked: PropTypes.bool.isRequired,
@@ -42,16 +41,14 @@ const FilterToggle = React.createClass({
       PropTypes.string
     ]),
     withDot: PropTypes.bool
-  },
+  }
 
-  getDefaultProps: () => {
-    return {
-      count: 0,
-      withDot: true
-    }
-  },
+  static defaultProps = {
+    count: 0,
+    withDot: true
+  }
 
-  render: function () {
+  render () {
     const className = cx('Toggle u-round', this.props.className)
     const dot = this.props.withDot && <Icon name="dot" className="n1" />
 
@@ -75,6 +72,6 @@ const FilterToggle = React.createClass({
       </div>
     )
   }
-})
+}
 
 export default FilterToggle

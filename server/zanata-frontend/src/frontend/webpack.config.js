@@ -3,7 +3,7 @@
  *
  * Cleanup needed:
  *  - This config is used for a first-pass build that is required for atomic css
- *    to work. This should be fixed so that atomic works without the extra build.
+ *   to work. This should be fixed so that atomic works without the extra build.
  *  - This outputs to a different file than the production build, but we could
  *    just use the same filename for all builds.
  */
@@ -27,7 +27,8 @@ module.exports = {
   },
   output: {
     path: join(__dirname, 'dist'),
-    filename: '[name].js'
+    filename: '[name].js',
+    chunkFilename: '[name].js'
   },
   module: {
     /* Checks for errors in syntax, and for problematic and inconsistent

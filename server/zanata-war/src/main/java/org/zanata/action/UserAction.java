@@ -24,14 +24,12 @@ import java.io.Serializable;
 import java.util.List;
 import javax.enterprise.inject.Model;
 import javax.faces.bean.ViewScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceException;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.hibernate.exception.ConstraintViolationException;
 import javax.inject.Inject;
-import org.apache.deltaspike.core.api.exclude.Exclude;
-import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import javax.inject.Named;
 import org.zanata.dao.AccountActivationKeyDAO;
 import org.zanata.dao.AccountDAO;
@@ -46,6 +44,7 @@ import org.zanata.service.UserAccountService;
 import org.zanata.ui.AbstractListFilter;
 import org.zanata.ui.faces.FacesMessages;
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Extension of Seam management's UserAction class' behaviour.
@@ -78,6 +77,7 @@ public class UserAction implements Serializable {
     @Inject
     private AccountActivationKeyDAO accountActivationKeyDAO;
     private String originalUsername;
+    private String originalName;
     private AbstractListFilter<String> userFilter =
             new AbstractListFilter<String>() {
 
@@ -93,6 +93,7 @@ public class UserAction implements Serializable {
                 }
             };
     private List<String> roles;
+    private String name;
     private String username;
     private String password;
     private String confirm;
@@ -118,14 +119,12 @@ public class UserAction implements Serializable {
         return personDAO.findEmail(username);
     }
 
-    public String getName(String username) {
-        return personDAO.findByUsername(username).getName();
-    }
-
     public void loadUser() {
         roles = identityManager.getGrantedRoles(username);
         enabled = identityManager.isUserEnabled(username);
         originalUsername = username;
+        originalName = personDAO.findByUsername(username).getName();
+        setName(originalName);
     }
 
     @Transactional
@@ -167,6 +166,12 @@ public class UserAction implements Serializable {
                 identityManager.changePassword(username, password);
             }
         }
+        String newName = name.trim();
+        if (isNotBlank(newName) && !StringUtils.equals(originalName, newName)) {
+            HPerson person = personDAO.findByUsername(username);
+            person.setName(newName);
+            personDAO.makePersistent(person);
+        }
         identityManager.grantRoles(username, roles);
         if (enabled) {
             enableAccount(username);
@@ -206,6 +211,18 @@ public class UserAction implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getOriginalName() {
+        return this.originalName;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {

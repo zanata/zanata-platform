@@ -10,6 +10,7 @@ import {
   LOAD_USER_SUCCESS,
   LOAD_USER_FAILURE
 } from './common-actions'
+import { apiUrl, isLoggedIn, links, serverUrl } from '../config'
 
 export const FILTER_UPDATE = 'FILTER_UPDATE'
 export const DATE_RANGE_UPDATE = 'DATE_RANGE_UPDATE'
@@ -28,8 +29,7 @@ export const updateFilter = createAction(FILTER_UPDATE)
 export const updateSelectDay = createAction(SELECT_DAY_UPDATE)
 
 const getStatsEndPoint = (username, fromDate, toDate) => {
-  return window.config.baseUrl + window.config.apiRoot +
-    '/stats/user/' + username + '/' + fromDate + '..' + toDate
+  return apiUrl + '/stats/user/' + username + '/' + fromDate + '..' + toDate
 }
 
 const getUserStatistics = (username, fromDate, toDate) => {
@@ -65,8 +65,7 @@ const loadUserStats = (username, dateRangeOption) => {
 }
 
 const getLocaleDetail = (localeId) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot +
-    '/locales/locale/' + localeId
+  const endpoint = apiUrl + '/locales/locale/' + localeId
 
   const apiTypes = [
     GET_LOCALE_REQUEST,
@@ -92,8 +91,7 @@ const getLocaleDetail = (localeId) => {
 }
 
 const getUserInfo = (dispatch, username, dateRangeOption) => {
-  const endpoint = window.config.baseUrl + window.config.apiRoot + '/user' +
-    (isEmpty(username) ? '' : '/' + username)
+  const endpoint = apiUrl + '/user' + (isEmpty(username) ? '' : '/' + username)
 
   const apiTypes = [
     LOAD_USER_REQUEST,
@@ -124,11 +122,10 @@ const getUserInfo = (dispatch, username, dateRangeOption) => {
 
 export const profileInitialLoad = (username) => {
   return (dispatch, getState) => {
-    const config = window.config
-    if (isEmpty(username) && !config.permission.isLoggedIn) {
+    if (isEmpty(username) && !isLoggedIn) {
       // redirect to login screen if no username is found url
       // and user is not logged in
-      window.location = config.baseUrl + config.links.loginUrl
+      window.location = serverUrl + links.loginUrl
     } else {
       dispatch(getUserInfo(dispatch, username,
         getState().profile.dateRange))

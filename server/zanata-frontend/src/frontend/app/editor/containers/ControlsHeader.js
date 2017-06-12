@@ -28,9 +28,8 @@ const { bool, func, number, shape } = PropTypes
 /**
  * Header row with editor controls (filtering, paging, etc.)
  */
-const ControlsHeader = React.createClass({
-
-  propTypes: {
+class ControlsHeader extends React.Component {
+  static propTypes = {
     actions: shape({
       resetFilter: func.isRequired,
       onFilterChange: func.isRequired,
@@ -87,14 +86,14 @@ const ControlsHeader = React.createClass({
       needswork: number,
       untranslated: number
     })
-  },
+  }
 
-  toggleSidebarVisibility: function () {
+  toggleSidebarVisibility = () => {
     const { actions, ui } = this.props
     actions.setSidebarVisibility(!ui.panels.sidebar.visible)
-  },
+  }
 
-  render: function () {
+  render () {
     const { actions, counts, paging, ui } = this.props
     const {
       toggleKeyboardShortcutsModal,
@@ -155,7 +154,8 @@ const ControlsHeader = React.createClass({
                 onClick={this.toggleSidebarVisibility}
                 active={this.props.ui.panels.sidebar.visible} />
             </li>
-      {/* extra items from the angular template that were not being displayed
+            {/* extra items from the angular template that were not being
+             displayed
             <li ng-show="appCtrl.PRODUCTION">
               <button class="Link--neutral u-sizeHeight-1_1-2"
                 title="{{'Details'|translate}}">
@@ -192,7 +192,7 @@ const ControlsHeader = React.createClass({
       </nav>
     )
   }
-})
+}
 
 function mapStateToProps (state) {
   const { actions, phrases, ui } = state

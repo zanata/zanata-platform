@@ -86,6 +86,7 @@ public class ZanataClient extends BasicOptionsImpl {
             SubCommands subCommands = cmdField.getAnnotation(SubCommands.class);
             for (SubCommand sub : subCommands.value()) {
                 if (BasicOptions.class.isAssignableFrom(sub.impl())) {
+                    @SuppressWarnings("unchecked")
                     Class<BasicOptions> clazz =
                             (Class<BasicOptions>) sub.impl();
                     m.put(sub.name(), clazz);

@@ -97,6 +97,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         String dateRange = "2010-01-01..2010-12-01";
         Response response = service.getContributors(projectSlug, versionSlug,
                 dateRange);
+        @SuppressWarnings("unchecked")
         List<User> userList = (List<User>) response.getEntity();
         assertThat(userList).extracting("username").contains("admin", "bob",
                 "demo");
@@ -110,6 +111,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         String dateRange = "2015-01-01..2015-12-01";
         Response response = service.getContributors(projectSlug, versionSlug,
             dateRange);
+        @SuppressWarnings("unchecked")
         List<User> userList = (List<User>) response.getEntity();
         assertThat(userList).isEmpty();
     }

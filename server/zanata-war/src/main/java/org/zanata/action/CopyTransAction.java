@@ -37,7 +37,6 @@ import org.zanata.i18n.Messages;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HProjectIteration;
 import org.zanata.rest.NoSuchEntityException;
-import org.zanata.seam.scope.ConversationScopeMessages;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.CopyTransOptionFactory;
 import org.zanata.ui.CopyAction;
@@ -64,7 +63,8 @@ public class CopyTransAction extends CopyAction implements Serializable {
     private CopyTransManager copyTransManager;
 
     @Inject
-    private ConversationScopeMessages conversationScopeMessages;
+    @SuppressWarnings("deprecation")
+    private org.zanata.seam.scope.ConversationScopeMessages conversationScopeMessages;
 
     @Inject
     private Messages msgs;

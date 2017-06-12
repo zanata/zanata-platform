@@ -20,19 +20,22 @@
  */
 package org.zanata.rest.compat;
 
+import javax.ws.rs.client.Invocation;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.dbunit.operation.DatabaseOperation;
 import org.jboss.arquillian.container.test.api.RunAsClient;
-import org.jboss.resteasy.client.ClientRequest;
-import org.jboss.resteasy.client.ClientResponse;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.junit.Test;
 import org.zanata.apicompat.rest.service.AccountResource;
 import org.zanata.rest.ResourceRequest;
 import org.zanata.apicompat.rest.MediaTypes;
 import org.zanata.apicompat.rest.dto.Account;
+import org.zanata.rest.ResourceRequest;
+
+import java.io.IOException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -61,16 +64,20 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
         new ResourceRequest(getRestEndpointUrl("/accounts/u/demo"), "GET",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                webTarget.request().header(HttpHeaders.ACCEPT,
+                        MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
+
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
-                assertJsonUnmarshal(response, Account.class);
-                Account account = jsonUnmarshal(response, Account.class);
+                String entityString = response.readEntity(String.class);
+                assertJsonUnmarshal(entityString, Account.class);
+                Account account = jsonUnmarshal(entityString, Account.class);
 
                 // Assert correct parsing of all properties
                 assertThat(account.getUsername(), is("demo"));
@@ -81,7 +88,7 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
                 assertThat(account.getPasswordHash(),
                         is("/9Se/pfHeUH8FJ4asBD6jQ=="));
                 assertThat(account.getRoles().size(), is(1));
-                // assertThat(account.getTribes().size(), is(1)); // Language
+                // assertThat(account.getLanguages().size(), is(1)); // Language
                 // teams are not being returned
             }
         }.run();
@@ -93,16 +100,17 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
         new ResourceRequest(getRestEndpointUrl("/accounts/u/demo"), "GET",
                 getAuthorizedEnvironment()) {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_ACCOUNT_XML);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response) {
                 assertThat(response.getStatus(), is(200)); // Ok
-                assertJaxbUnmarshal(response, Account.class);
-                Account account = jaxbUnmarshal(response, Account.class);
+                String entityString = response.readEntity(String.class);
+                assertJaxbUnmarshal(entityString, Account.class);
+                Account account = jaxbUnmarshal(entityString, Account.class);
 
                 // Assert correct parsing of all properties
                 assertThat(account.getUsername(), is("demo"));
@@ -113,7 +121,7 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
                 assertThat(account.getPasswordHash(),
                         is("/9Se/pfHeUH8FJ4asBD6jQ=="));
                 assertThat(account.getRoles().size(), is(1));
-                // assertThat(account.getTribes().size(), is(1)); // Language
+                // assertThat(account.getLanguages().size(), is(1)); // Language
                 // teams are not being returned
             }
         }.run();
@@ -124,16 +132,16 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
     public void getAccountJsonUnauthorized() throws Exception {
         new ResourceRequest(getRestEndpointUrl("/accounts/u/demo"), "GET") {
             @Override
-            protected void prepareRequest(ClientRequest request) {
-                request.header(HttpHeaders.ACCEPT,
+            protected Invocation.Builder prepareRequest(ResteasyWebTarget webTarget) {
+                return webTarget.request().header(HttpHeaders.ACCEPT,
                         MediaTypes.APPLICATION_ZANATA_ACCOUNT_JSON);
             }
 
             @Override
-            protected void onResponse(ClientResponse response) {
+            protected void onResponse(Response response)
+                    throws IOException {
                 assertThat(response.getStatus(),
                         is(Status.UNAUTHORIZED.getStatusCode()));
-                response.releaseConnection();
             }
         }.run();
     }
@@ -156,26 +164,26 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
 
         // Assert initial put
         assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
-        releaseConnection(putResponse);
+        putResponse.close();
 
         // Modified Account
         a.setName("New Account Name");
         putResponse = accountClient.put(a);
-        releaseConnection(putResponse);
+        putResponse.close();
 
         // Assert modification
         assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
 
         // Retrieve again
-        Response response = accountClient.get();
-        Account a2 = jsonUnmarshal((ClientResponse) response, Account.class);
+        String entityString = accountClient.get().readEntity(String.class);
+        Account a2 = jsonUnmarshal(entityString, Account.class);
         assertThat(a2.getUsername(), is(a.getUsername()));
         assertThat(a2.getApiKey(), is(a.getApiKey()));
         assertThat(a2.getEmail(), is(a.getEmail()));
         assertThat(a2.getName(), is(a.getName()));
         assertThat(a2.getPasswordHash(), is(a.getPasswordHash()));
         assertThat(a2.getRoles().size(), is(0));
-        // assertThat(a2.getTribes().size(), is(1)); // Language teams are not
+        // assertThat(a2.getLanguages().size(), is(1)); // Language teams are not
         // being returned
     }
 
@@ -197,26 +205,24 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
 
         // Assert initial put
         assertThat(putResponse.getStatus(), is(Status.CREATED.getStatusCode()));
-        releaseConnection(putResponse);
 
         // Modified Account
         a.setName("New Account Name");
         putResponse = accountClient.put(a);
-        releaseConnection(putResponse);
 
         // Assert modification
         assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
 
         // Retrieve again
-        Response response = accountClient.get();
-        Account a2 = jaxbUnmarshal((ClientResponse) response, Account.class);
+        String entityString = accountClient.get().readEntity(String.class);
+        Account a2 = jaxbUnmarshal(entityString, Account.class);
         assertThat(a2.getUsername(), is(a.getUsername()));
         assertThat(a2.getApiKey(), is(a.getApiKey()));
         assertThat(a2.getEmail(), is(a.getEmail()));
         assertThat(a2.getName(), is(a.getName()));
         assertThat(a2.getPasswordHash(), is(a.getPasswordHash()));
         assertThat(a2.getRoles().size(), is(0));
-        // assertThat(a2.getTribes().size(), is(1)); // Language teams are not
+        // assertThat(a2.getLanguages().size(), is(1)); // Language teams are not
         // being returned
     }
 
@@ -236,7 +242,7 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
 
         // Assert initial put
         assertThat(putResponse.getStatus(), is(Status.FORBIDDEN.getStatusCode()));
-        releaseConnection(putResponse);
+        putResponse.close();
     }
 
 }

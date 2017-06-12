@@ -45,9 +45,11 @@ public class TokenUtil {
                     sb.append("!s");
                     break;
                 case '!':
-                    sb.append('!');
+                    sb.append('!').append(nextChar);
+                    break;
                 default:
                     sb.append(nextChar);
+                    break;
             }
         }
         // Log.debug("Encoded: \"" + toEncode + "\" to \"" + sb + "\"");

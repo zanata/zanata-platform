@@ -17,6 +17,7 @@ import org.mockito.MockitoAnnotations;
 import org.zanata.model.TestFixture;
 import org.zanata.webtrans.client.events.BookmarkedTextFlowEvent;
 import org.zanata.webtrans.client.events.DocumentSelectionEvent;
+import org.zanata.webtrans.client.events.DocumentSelectionHandler;
 import org.zanata.webtrans.client.events.FilterViewEvent;
 import org.zanata.webtrans.client.events.InitEditorEvent;
 import org.zanata.webtrans.client.events.UserConfigChangeEvent;
@@ -47,7 +48,7 @@ public class HistoryEventHandlerServiceTest {
     @Mock
     private SearchResultsPresenter searchResultsPresenter;
     @Captor
-    private ArgumentCaptor<GwtEvent> eventCaptor;
+    private ArgumentCaptor<GwtEvent<DocumentSelectionHandler>> eventCaptor;
     @Mock
     private ValueChangeEvent<String> historyChangeEvent;
     @Mock

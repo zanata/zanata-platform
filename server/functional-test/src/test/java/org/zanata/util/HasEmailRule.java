@@ -143,7 +143,7 @@ public class HasEmailRule extends ExternalResource {
             return ((MimeMultipart) wiserMessage.getMimeMessage().getContent())
                     .getBodyPart(0).getContent().toString();
         } catch (Exception e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 }

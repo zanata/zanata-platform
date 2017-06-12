@@ -80,8 +80,6 @@ public class TransMemoryMergePresenterTest {
     private EventBus eventBus;
     @Mock
     private UiMessages messages;
-    @Mock
-    private Provider<UndoLink> undoLinkProvider;
     @Captor
     private ArgumentCaptor<NotificationEvent> notificationEventCaptor;
     private FakeTransMemoryMergeResource mergeResource;
@@ -214,6 +212,7 @@ public class TransMemoryMergePresenterTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void
             onRequestTMMergeSuccessWithStartTheAsyncMergeOnServer() {
         // Given:
@@ -352,9 +351,10 @@ public class TransMemoryMergePresenterTest {
 
         private TransMemoryMergeRequest request;
         private TransMemoryMergeCancelRequest cancelRequest;
-        private MethodCallback callback;
+        private MethodCallback<?> callback;
 
         @Override
+        @SuppressWarnings("rawtypes")
         public void setCallback(MethodCallback callback) {
             this.callback = callback;
         }

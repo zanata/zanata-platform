@@ -33,6 +33,8 @@ import org.hibernate.type.StringType;
 public class RequestTypeType extends AbstractSingleColumnStandardBasicType<RequestType>
     implements DiscriminatorType<RequestType> {
 
+    private static final long serialVersionUID = -5353515015196514549L;
+
     public RequestTypeType() {
         super(StringType.INSTANCE.getSqlTypeDescriptor(),
             RequestTypeTypeDescriptor.INSTANCE);

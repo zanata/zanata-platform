@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react'
 import NavItem from './NavItem'
 import { getDswid } from '../../utils/UrlHelper'
-import {remove} from 'lodash'
+import { remove } from 'lodash'
+import { allowRegister, isLoggedIn, isAdmin, user } from '../../config'
 
 const dswid = getDswid()
 
@@ -122,14 +123,12 @@ const Nav = ({
   ...props
 }) => {
   let auth = 'loggedout'
-  if (window.config.permission.isLoggedIn === true) {
-    auth = window.config.permission.isAdmin === true ? 'admin' : 'loggedin'
+  if (isLoggedIn) {
+    auth = isAdmin ? 'admin' : 'loggedin'
   }
   const admin = (auth === 'admin')
-
-  const username = window.config.user ? window.config.user.username : ''
-
-  if (!window.config.allowRegister) {
+  const username = user ? user.username : ''
+  if (!allowRegister) {
     // we don't allow public registration
     remove(items, item => item.id === 'nav_sign_up')
   }

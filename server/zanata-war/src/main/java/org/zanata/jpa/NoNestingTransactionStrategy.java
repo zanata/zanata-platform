@@ -59,7 +59,7 @@ public class NoNestingTransactionStrategy
             super.beforeProceed(invocationContext, entityManagerEntry,
                     transaction);
         } catch (SystemException e) {
-            Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 }

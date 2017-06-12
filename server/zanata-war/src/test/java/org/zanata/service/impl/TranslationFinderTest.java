@@ -125,8 +125,9 @@ public class TranslationFinderTest {
             return generateAllExecutions().toArray(new Execution[] {});
         }
 
+        @SuppressWarnings("rawtypes")
         private static Set<Execution> generateAllExecutions() {
-            Set<Execution> allExecutions = new HashSet<Execution>();
+            Set<Execution> allExecutions = new HashSet<>();
             List<Boolean> booleans = asList(true, false);
             // NB 2 ^ 6 = 64 combinations
             Iterable[] colls = { booleans, booleans, booleans, booleans,

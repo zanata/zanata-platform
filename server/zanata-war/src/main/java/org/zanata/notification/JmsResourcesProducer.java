@@ -92,7 +92,7 @@ public class JmsResourcesProducer {
             log.debug("________ closing JMS session");
             session.close();
         } catch (JMSException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -108,7 +108,7 @@ public class JmsResourcesProducer {
             log.debug("________ closing email queue sender");
             queueSender.close();
         } catch (JMSException e) {
-            throw Throwables.propagate(e);
+            throw new RuntimeException(e);
         }
     }
 

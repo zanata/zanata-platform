@@ -31,6 +31,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 @ParametersAreNonnullByDefault
 public class FileTypeName implements Comparable<FileTypeName>, Serializable {
+    private static final long serialVersionUID = 703862390590961467L;
     /** Name of the FileType/DocumentType. NS: This may not correspond to a
      * FileType/DocumentType recognised by the client (eg if server is newer).
      * @see DocumentType
