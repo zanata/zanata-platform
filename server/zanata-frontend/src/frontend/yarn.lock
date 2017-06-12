@@ -6179,19 +6179,19 @@ rc@~1.1.6:
     minimist "^1.2.0"
     strip-json-comments "~1.0.4"
 
-react-autosuggest@6.0.4:
-  version "6.0.4"
-  resolved "https://registry.yarnpkg.com/react-autosuggest/-/react-autosuggest-6.0.4.tgz#77798c692796c49e8c75bf3f4b212784028d3eb3"
+react-autosuggest@9.0.1:
+  version "9.0.1"
+  resolved "https://registry.yarnpkg.com/react-autosuggest/-/react-autosuggest-9.0.1.tgz#b56eaf8fc3dd46d36b92c5395b6b07174bc10912"
   dependencies:
-    react-autowhatever "^5.3.0"
-    react-redux "^4.4.5"
-    redux "^3.5.1"
+    prop-types "^15.5.8"
+    react-autowhatever "^10.0.0"
     shallow-equal "^1.0.0"
 
-react-autowhatever@^5.3.0:
-  version "5.4.0"
-  resolved "https://registry.yarnpkg.com/react-autowhatever/-/react-autowhatever-5.4.0.tgz#032ea7f0c5a055163d1461a28baae0367db9279a"
+react-autowhatever@^10.0.0:
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/react-autowhatever/-/react-autowhatever-10.1.0.tgz#41f6d69382437d3447a0a3c8913bb8ca2feaabc1"
   dependencies:
+    prop-types "^15.5.8"
     react-themeable "^1.1.0"
     section-iterator "^2.0.0"
 
@@ -6394,15 +6394,6 @@ react-redux@5.0.5:
     lodash-es "^4.2.0"
     loose-envify "^1.1.0"
     prop-types "^15.5.10"
-
-react-redux@^4.4.5:
-  version "4.4.5"
-  resolved "https://registry.yarnpkg.com/react-redux/-/react-redux-4.4.5.tgz#f509a2981be2252d10c629ef7c559347a4aec457"
-  dependencies:
-    hoist-non-react-statics "^1.0.3"
-    invariant "^2.0.0"
-    lodash "^4.2.0"
-    loose-envify "^1.1.0"
 
 react-router-redux@4.0.8:
   version "4.0.8"
@@ -6699,7 +6690,7 @@ redux-thunk@1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-1.0.3.tgz#778aa0099eea0595031ab6b39165f6670d8d26bd"
 
-redux@3.5.2, redux@^3.5.1, redux@^3.5.2:
+redux@3.5.2, redux@^3.5.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.5.2.tgz#4533745e970b647ec26066a83aa30e9e26faf843"
   dependencies:
