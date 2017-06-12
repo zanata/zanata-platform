@@ -28,6 +28,8 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.page.account.ProfilePage;
+import org.zanata.page.groups.VersionGroupPage;
+import org.zanata.page.languages.LanguagePage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.util.WebElementUtil;
 import java.util.List;
@@ -50,6 +52,22 @@ public class ExplorePage extends BasePage {
         super(driver);
     }
 
+    public ExplorePage clearSearch() {
+        log.info("Clear search field");
+        readyElement(searchInput).clear();
+        return new ExplorePage(getDriver());
+    }
+
+    public boolean isCancelButtonEnabled() {
+        log.info("Check cancel button is enabled");
+        return readyElement(searchInput).isEnabled();
+    }
+
+    public boolean isSearchFieldCleared() {
+        log.info("Search filed is cleard");
+        return readyElement(searchInput).getText().equals("");
+    }
+
     public ExplorePage enterSearch(String searchText) {
         log.info("Enter Explore search {}", searchText);
         existingElement(searchInput).sendKeys(searchText);
@@ -70,6 +88,15 @@ public class ExplorePage extends BasePage {
         return new ExplorePage(getDriver());
     }
 
+    public ExplorePage expectGroupListContains(final String expected) {
+        String msg = "Group search list contains " + expected;
+        waitForAMoment().withMessage("Waiting for search contains")
+                .until((Predicate<WebDriver>) webDriver -> getGroupSearchResults()
+                        .contains(expected));
+        assertThat(getGroupSearchResults()).as(msg).contains(expected);
+        return new ExplorePage(getDriver());
+    }
+
     public ExplorePage expectPersonListContains(final String expected) {
         waitForPageSilence();
         String msg = "Person search list contains " + expected;
@@ -80,14 +107,34 @@ public class ExplorePage extends BasePage {
         return new ExplorePage(getDriver());
     }
 
+    public ExplorePage expectLanguageTeamListContains(final String expected) {
+        waitForPageSilence();
+        String msg = "Language Team search list contains " + expected;
+        waitForAMoment().withMessage("Waiting for search contains")
+                .until((Predicate<WebDriver>) webDriver -> getLanguageSearchResults()
+                        .contains(expected));
+        assertThat(getLanguageSearchResults()).as(msg).contains(expected);
+        return new ExplorePage(getDriver());
+    }
+
     public List<String> getProjectSearchResults() {
         log.info("Query Project search results list");
         return getResultText(projectResult);
     }
 
+    public List<String> getGroupSearchResults() {
+        log.info("Query Group search results list");
+        return getResultText(groupResult);
+    }
+
     public List<String> getUserSearchResults() {
         log.info("Query User search results list");
         return getResultText(personResult);
+    }
+
+    public List<String> getLanguageSearchResults() {
+        log.info("Query Language search results list");
+        return getResultText(languageTeamResult);
     }
 
     public boolean isProjectSearchLoading() {
@@ -151,6 +198,34 @@ public class ExplorePage extends BasePage {
         return new ProjectVersionsPage(getDriver());
     }
 
+    public VersionGroupPage clickGroupSearchEntry(final String searchEntry) {
+        log.info("Click group search result {}", searchEntry);
+        List<WebElement> groups =
+                existingElement(groupResult).findElements(By.name("entry"));
+        for (WebElement element : groups) {
+            WebElement aTag = element.findElement(By.tagName("a"));
+            if (aTag != null && aTag.getText().equals(searchEntry)) {
+                clickElement(aTag);
+                break;
+            }
+        }
+        return new VersionGroupPage(getDriver());
+    }
+
+    public LanguagePage clickLangSearchEntry(final String searchEntry) {
+        log.info("Click language search result {}", searchEntry);
+        List<WebElement> langs =
+                existingElement(groupResult).findElements(By.name("entry"));
+        for (WebElement element : langs) {
+            WebElement aTag = element.findElement(By.tagName("a"));
+            if (aTag != null && aTag.getText().equals(searchEntry)) {
+                clickElement(aTag);
+                break;
+            }
+        }
+        return new LanguagePage(getDriver());
+    }
+
     public ProjectVersionsPage searchAndGotoProjectByName(String projectName) {
         log.info("go to project by name with name: {}", projectName);
         if (getProjectSearchResults().contains(projectName)) {
@@ -159,4 +234,14 @@ public class ExplorePage extends BasePage {
             return enterSearch(projectName).clickProjectEntry(projectName);
         }
     }
+
+    public VersionGroupPage searchAndGotoGroupByName(String groupName) {
+        log.info("go to project by name with name: {}", groupName);
+        if (getGroupSearchResults().contains(groupName)) {
+            return clickGroupSearchEntry(groupName);
+        } else {
+            return enterSearch(groupName).clickGroupSearchEntry(groupName);
+        }
+    }
+
 }
