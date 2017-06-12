@@ -102,7 +102,7 @@
     "react": "15.5.4",
     "react-autosuggest": "9.0.1",
     "react-bootstrap": "0.31.0",
-    "react-chartjs": "0.8.0",
+    "react-chartjs": "https://github.com/merlinpatt/react-chartjs.git#28fda9c04237be533787112263a24e07fe29b0ae",
     "react-date-range": "0.9.4",
     "react-dom": "15.5.4",
     "react-draggable": "2.2.6",

@@ -6210,9 +6210,9 @@ react-bootstrap@0.31.0:
     uncontrollable "^4.1.0"
     warning "^3.0.0"
 
-react-chartjs@0.8.0:
+"react-chartjs@https://github.com/merlinpatt/react-chartjs.git#28fda9c04237be533787112263a24e07fe29b0ae":
   version "0.8.0"
-  resolved "https://registry.yarnpkg.com/react-chartjs/-/react-chartjs-0.8.0.tgz#d41386b3d3cbfef9003f5a655e7ea48a49fbfa19"
+  resolved "https://github.com/merlinpatt/react-chartjs.git#28fda9c04237be533787112263a24e07fe29b0ae"
 
 react-codemirror@0.2.6:
   version "0.2.6"
