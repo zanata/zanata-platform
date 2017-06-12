@@ -6222,13 +6222,13 @@ react-codemirror@0.2.6:
     codemirror "^5.13.4"
     lodash.debounce "^4.0.4"
 
-react-date-range@0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/react-date-range/-/react-date-range-0.2.4.tgz#e016e820691ae66e13464e25c1e1d748dbbc7a09"
+react-date-range@0.9.4:
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/react-date-range/-/react-date-range-0.9.4.tgz#d97515545a28edc717b674e169a50a215d69ec15"
   dependencies:
     classnames "^2.2.1"
     moment "^2.10.6"
-    react ">=0.13.0"
+    prop-types "^15.5.10"
 
 react-deep-force-update@^1.0.0:
   version "1.0.1"
@@ -6519,7 +6519,7 @@ react-transform-hmr@1.0.4, react-transform-hmr@^1.0.3:
     global "^4.3.0"
     react-proxy "^1.1.7"
 
-react@15.5.4, react@>=0.13.0:
+react@15.5.4:
   version "15.5.4"
   resolved "https://registry.yarnpkg.com/react/-/react-15.5.4.tgz#fa83eb01506ab237cdc1c8c3b1cea8de012bf047"
   dependencies:

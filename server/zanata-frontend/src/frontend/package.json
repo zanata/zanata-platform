@@ -103,7 +103,7 @@
     "react-autosuggest": "9.0.1",
     "react-bootstrap": "0.31.0",
     "react-chartjs": "0.8.0",
-    "react-date-range": "0.2.4",
+    "react-date-range": "0.9.4",
     "react-dom": "15.5.4",
     "react-draggable": "2.2.6",
     "react-helmet": "5.1.3",
