@@ -69,14 +69,14 @@ public class ProjectLanguagesTab extends ProjectBasePage {
 
     public ProjectLanguagesTab expectEnabledLocaleListCount(final int count) {
         waitForAMoment()
-                .until((Predicate<WebDriver>) input -> getEnabledLocaleList()
+                .until(it -> getEnabledLocaleList()
                         .size() == count);
         return new ProjectLanguagesTab(getDriver());
     }
 
     public ProjectLanguagesTab expectAvailableLocaleListCount(final int count) {
         waitForAMoment()
-                .until((Predicate<WebDriver>) webDriver -> getAvailableLocaleList()
+                .until(it -> getAvailableLocaleList()
                         .size() == count);
         return new ProjectLanguagesTab(getDriver());
     }
@@ -111,7 +111,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
         log.info("Click Enable on {}", searchLocaleId);
         String message = "can not find locale - " + searchLocaleId;
         waitForAMoment().withMessage(message)
-                .until((Predicate<WebDriver>) driver -> {
+                .until(driver -> {
                     return LanguageList.toggleLanguageInList(
                             getDriver().findElement(disabledLocales),
                             searchLocaleId);
@@ -133,7 +133,7 @@ public class ProjectLanguagesTab extends ProjectBasePage {
         log.info("Click Disable on {}", searchLocaleId);
         String message = "can not find locale - " + searchLocaleId;
         waitForAMoment().withMessage(message)
-                .until((Predicate<WebDriver>) driver -> {
+                .until(driver -> {
                     return LanguageList.toggleLanguageInList(
                             getDriver().findElement(activeLocales),
                             searchLocaleId);

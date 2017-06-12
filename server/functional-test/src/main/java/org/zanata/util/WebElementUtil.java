@@ -259,7 +259,7 @@ public class WebElementUtil {
             String query) {
         final String locator = id + "-autocomplete__input";
         waitForAMoment(driver)
-                .until((Predicate<WebDriver>) webDriver -> webDriver
+                .until(webDriver -> webDriver
                         .findElement(By.id(locator)).isDisplayed());
         driver.findElement(By.id(locator)).sendKeys(query);
     }

@@ -58,7 +58,7 @@ public class AddLanguagePage extends BasePage {
 
     public AddLanguagePage selectSearchLanguage(final String language) {
         log.info("Select language {}", language);
-        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+        waitForAMoment().until(it -> {
             List<WebElement> suggestions =
                     existingElement(suggestList).findElements(suggestRow);
             boolean clickedLanguage = false;

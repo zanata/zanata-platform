@@ -55,9 +55,9 @@ public class DashboardClientTab extends DashboardBasePage {
         log.info("Press OK on alert to generate API key");
         alert.accept();
         waitForAMoment().withMessage("Alert not dismissed")
-                .until((Predicate<WebDriver>) webDriver -> {
+                .until(driver -> {
                     try {
-                        getDriver().switchTo().alert();
+                        driver.switchTo().alert();
                     } catch (NoAlertPresentException nape) {
                         return true;
                     }

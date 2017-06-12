@@ -40,7 +40,7 @@ public class WebDriverLogWait extends WebDriverWait {
     }
 
     @Override
-    public <V> V until(Function<? super WebDriver, V> isTruthy) {
+    public <V> V until(java.util.function.Function<? super WebDriver, V> isTruthy) {
         return super.until((Function<? super WebDriver, V>)
                 driver -> {
                     factory.logLogs();

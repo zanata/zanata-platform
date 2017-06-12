@@ -179,7 +179,7 @@ public class VersionGroupPage extends BasePage {
     public Boolean isLanguagesTabActive() {
         log.info("Query is languages tab displayed");
         final WebElement languagesTab = readyElement(By.id("languages"));
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(it -> {
             return languagesTab.getAttribute("class").contains("is-active");
         });
         return languagesTab.getAttribute("class").contains("is-active");
@@ -187,7 +187,7 @@ public class VersionGroupPage extends BasePage {
 
     public Boolean isProjectsTabActive() {
         final WebElement languagesTab = existingElement(By.id("projects"));
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(it -> {
             return languagesTab.getAttribute("class").contains("is-active");
         });
         return languagesTab.getAttribute("class").contains("is-active");
@@ -210,7 +210,7 @@ public class VersionGroupPage extends BasePage {
 
     public VersionGroupPage selectProjectVersion(final String searchEntry) {
         log.info("Click project version {}", searchEntry);
-        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+        waitForAMoment().until(driver -> {
             List<WebElement> items =
                     WebElementUtil.getSearchAutocompleteResults(driver,
                             "settings-projects-form", "versionAutocomplete");
@@ -247,7 +247,7 @@ public class VersionGroupPage extends BasePage {
 
     public VersionGroupPage selectLanguage(final String searchEntry) {
         log.info("Click language {}", searchEntry);
-        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+        waitForAMoment().until(driver -> {
             List<WebElement> items =
                     WebElementUtil.getSearchAutocompleteResults(driver,
                             "settings-languages-form", "languageAutocomplete");

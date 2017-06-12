@@ -43,7 +43,7 @@ public class AbstractWebWorkFlow {
         return WebDriverFactory.INSTANCE.ignoringDswid(() -> {
             driver.get(hostUrl);
             new BasePage(driver).waitForAMoment().until(
-                    (Predicate<WebDriver>) input ->
+                    it ->
                             new HomePage(driver).isPageValid());
             return new HomePage(driver);
         });

@@ -88,7 +88,7 @@ public class CreateVersionGroupPage extends BasePage {
         readyElement(groupNameField).clear();
         readyElement(groupDescriptionField).clear();
         waitForAMoment().until(
-                (Predicate<WebDriver>) webDriver -> getGroupIdValue().equals("")
+                it -> getGroupIdValue().equals("")
                         && readyElement(groupNameField).getAttribute("value")
                                 .equals(""));
         return new CreateVersionGroupPage(getDriver());

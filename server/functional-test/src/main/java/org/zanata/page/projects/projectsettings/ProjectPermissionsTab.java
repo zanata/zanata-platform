@@ -55,7 +55,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     public ProjectPermissionsTab
             selectSearchMaintainer(final String maintainer) {
         log.info("Select user {}", maintainer);
-        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+        waitForAMoment().until(driver -> {
             List<WebElement> searchResults =
                     WebElementUtil.getSearchAutocompleteResults(driver,
                             "settings-permissions-form",

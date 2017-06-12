@@ -128,7 +128,7 @@ public class CorePage extends AbstractPage {
         String msg = "expected error: " + expected;
         logWaiting(msg);
         waitForAMoment().withMessage(msg)
-                .until((Predicate<WebDriver>) webDriver -> getErrors()
+                .until(webDriver -> getErrors()
                         .contains(expected));
         return getErrors();
     }

@@ -94,14 +94,14 @@ public class VersionLanguagesTab extends VersionBasePage {
 
     public VersionLanguagesTab expectEnabledLocaleListCount(final int count) {
         waitForAMoment()
-                .until((Predicate<WebDriver>) input -> getEnabledLocaleList()
+                .until(it -> getEnabledLocaleList()
                         .size() == count);
         return new VersionLanguagesTab(getDriver());
     }
 
     public VersionLanguagesTab expectAvailableLocaleListCount(final int count) {
         waitForAMoment()
-                .until((Predicate<WebDriver>) input -> getAvailableLocaleList()
+                .until(it -> getAvailableLocaleList()
                         .size() == count);
         return new VersionLanguagesTab(getDriver());
     }
@@ -145,7 +145,7 @@ public class VersionLanguagesTab extends VersionBasePage {
         log.info("Click Disable on {}", localeId);
         String message = "can not find locale - " + localeId;
         waitForAMoment().withMessage(message)
-                .until((Predicate<WebDriver>) driver -> LanguageList
+                .until(driver -> LanguageList
                         .toggleLanguageInList(
                                 getDriver().findElement(activeLocales),
                                 localeId));
@@ -160,7 +160,7 @@ public class VersionLanguagesTab extends VersionBasePage {
         log.info("Click Enable on {}", localeId);
         String message = "can not find locale - " + localeId;
         waitForAMoment().withMessage(message)
-                .until((Predicate<WebDriver>) driver -> LanguageList
+                .until(driver -> LanguageList
                         .toggleLanguageInList(
                                 getDriver().findElement(disabledLocales),
                                 localeId));

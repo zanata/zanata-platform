@@ -53,7 +53,7 @@ public class ReactEditorPage extends CorePage {
 
     public ReactEditorPage switchToEditorWindow() {
         log.info("Switching to new window (from {})", getDriver().getWindowHandle());
-        waitForAMoment().until((Predicate<WebDriver>) input ->
+        waitForAMoment().until(it ->
                 getAllWindowHandles().size() > 1);
         Iterator<String> allWindows = getAllWindowHandles().iterator();
         boolean foundEditor = false;

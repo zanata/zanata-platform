@@ -59,7 +59,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
 
     public VersionLanguagesPage gotoVersion(final String versionId) {
         log.info("Click Version {}", versionId);
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(driver -> {
             getDriver().findElement(By.id("versions_tab")).click();
             List<WebElement> versionLinks =
                     getDriver().findElement(By.id("versions_form"))
@@ -98,7 +98,7 @@ public class ProjectVersionsPage extends ProjectBasePage {
         log.info("Wait for number of displayed versions to be {}", expected);
         waitForPageSilence();
         waitForAMoment().withMessage("Waiting for versions").until(
-                (Predicate<WebDriver>) webDriver -> getNumberOfDisplayedVersions() == expected);
+                it -> getNumberOfDisplayedVersions() == expected);
         assertThat(getNumberOfDisplayedVersions()).isEqualTo(expected);
         assertThat(getVersions()).hasSize(expected);
         return new ProjectVersionsPage(getDriver());

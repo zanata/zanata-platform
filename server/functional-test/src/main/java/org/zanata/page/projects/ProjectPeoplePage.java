@@ -74,7 +74,7 @@ public class ProjectPeoplePage extends ProjectBasePage {
 
     public ProjectPeoplePage selectUserFromAddList(String username) {
         log.info("Click project version {}", username);
-        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+        waitForAMoment().until(driver -> {
             List<WebElement> items =
                     WebElementUtil.getSearchAutocompleteResults(driver,
                             "peopleTab-permissions", "modalManagePermissionsAutocomplete");
@@ -91,7 +91,7 @@ public class ProjectPeoplePage extends ProjectBasePage {
 
     public ProjectPeoplePage clickTranslatorCheckboxFor(final String language) {
         log.info("Click checkbox for translator: {}", language);
-        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+        waitForAMoment().until(driver -> {
             boolean found = false;
             List<WebElement> items = existingElement(By.id("peopleTab-permissions"))
                     .findElement(By.className("list--slat")).findElements(By.tagName("li"));

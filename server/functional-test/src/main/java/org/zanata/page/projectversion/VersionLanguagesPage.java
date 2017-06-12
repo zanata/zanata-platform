@@ -62,7 +62,7 @@ public class VersionLanguagesPage extends VersionBasePage {
 
     public VersionLanguagesPage clickLocale(final String locale) {
         log.info("Click locale {}", locale);
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(it -> {
             new BasePage(getDriver()).waitForPageSilence();
             for (WebElement localeRow : getLanguageTabLocaleList()) {
                 // Top <a>

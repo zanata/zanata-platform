@@ -35,6 +35,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.page.utility.PageSourceKt.shortenPageSource;
+import static org.zanata.util.FluentWaitExtKt.until;
 
 /**
  * The base class for the page driver. Contains functionality not generally of a
@@ -117,7 +118,7 @@ public class AbstractPage {
      */
     protected <P extends AbstractPage> P refreshPageUntil(P currentPage,
             Predicate<WebDriver> predicate, String message) {
-        waitForAMoment().withMessage(message).until(predicate);
+        until(waitForAMoment(), message, predicate::test);
         PageFactory.initElements(driver, currentPage);
         return currentPage;
     }
@@ -156,7 +157,7 @@ public class AbstractPage {
         String msg = "new page load";
         logWaiting(msg);
         waitForAMoment().withMessage(msg)
-                .until((Predicate<WebDriver>) webDriver -> {
+                .until(webDriver -> {
                     try {
                         // ignore result
                         oldPage.getAttribute("class");
@@ -189,7 +190,7 @@ public class AbstractPage {
         final String script = "return XMLHttpRequest.active";
         // Wait for AJAX/timeout requests to be 0
         waitForAMoment().withMessage("page silence")
-                .until((Predicate<WebDriver>) webDriver -> {
+                .until(webDriver -> {
                     Long outstanding =
                             (Long) getExecutor().executeScript(script);
                     if (outstanding == null) {
@@ -225,7 +226,7 @@ public class AbstractPage {
      */
     private void waitForLoaders() {
         waitForAMoment().withMessage("Loader indicator")
-                .until((Predicate<WebDriver>) webDriver -> {
+                .until(webDriver -> {
                     // Find all elements with class name js-loader, or return []
                     String script =
                             "return (typeof $ == \'undefined\') ?  [] : $(\'.js-loader\').toArray()";
@@ -406,7 +407,7 @@ public class AbstractPage {
         }
         if (check) {
             waitForAMoment().withMessage("Text equal to entered")
-                    .until((Predicate<WebDriver>) webDriver -> {
+                    .until(webDriver -> {
                         String foundText = element.getAttribute("value");
                         if (!text.equals(foundText)) {
                             log.info("Found: {}", foundText);
@@ -428,7 +429,7 @@ public class AbstractPage {
      * @param textField
      */
     public void touchTextField(WebElement textField) {
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(webDriver -> {
             enterText(textField, ".", true, false, false);
             return textField.getAttribute("value").equals(".");
         });
@@ -437,7 +438,7 @@ public class AbstractPage {
 
     private void waitForElementReady(final WebElement element) {
         waitForAMoment().withMessage("Waiting for element to be ready")
-                .until((Predicate<WebDriver>) webDriver -> element.isDisplayed()
+                .until(webDriver -> element.isDisplayed()
                         && element.isEnabled());
     }
     // Assert the element is available and visible
@@ -489,7 +490,7 @@ public class AbstractPage {
                 "return (typeof $ == \'undefined\') ?  [] : $(\'ul.message--global\').toArray()";
         final String message = "Waiting for notifications box to go";
         waitForAMoment().withMessage(message)
-                .until((Predicate<WebDriver>) webDriver -> {
+                .until(webDriver -> {
                     @SuppressWarnings("unchecked")
                     List<WebElement> boxes = (List<WebElement>) getExecutor()
                             .executeScript(script);

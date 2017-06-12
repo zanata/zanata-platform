@@ -89,7 +89,7 @@ public class EditorPage extends BasePage {
 
     public EditorPage searchGlossary(final String term) {
         log.info("Search glossary for {}", term);
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> webDriver
+        waitForAMoment().until(webDriver -> webDriver
                 .findElements(glossaryNoResult).size() == 1
                 || webDriver.findElements(glossaryTable).size() == 1);
         readyElement(glossarySearchInput).clear();
@@ -190,19 +190,17 @@ public class EditorPage extends BasePage {
 
     private Boolean openConfigurationPanel() {
         log.info("Click to open Configuration options");
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(webDriver -> {
             return getDriver().findElement(By.className("i--settings"))
                     .isEnabled();
         });
         new Actions(getDriver()).click(readyElement(configurationPanel))
                 .perform();
         return waitForAMoment()
-                .until((Function<WebDriver, Boolean>) webDriver -> {
-                    return webDriver
-                            .findElement(By.className(
-                                    "gwt-TabLayoutPanelContentContainer"))
-                            .isDisplayed();
-                });
+                .until(driver -> driver
+                        .findElement(By.className(
+                                "gwt-TabLayoutPanelContentContainer"))
+                        .isDisplayed());
     }
 
     /**
@@ -485,9 +483,7 @@ public class EditorPage extends BasePage {
         log.info("Click history button on row {}", row);
         readyElement(getTranslationTargetColumn(),
                 By.id("gwt-debug-target-" + row + "-history")).click();
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
-            return getTranslationHistoryBox().isDisplayed();
-        });
+        waitForAMoment().until(it -> getTranslationHistoryBox().isDisplayed());
         return new EditorPage(getDriver());
     }
 
@@ -510,7 +506,7 @@ public class EditorPage extends BasePage {
 
     public EditorPage clickCompareOn(final int entry) {
         log.info("Click Compare on history entry {}", entry);
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(webDriver -> {
             try {
                 return getTranslationHistoryList().get(entry)
                         .findElement(By.linkText("Compare")).isDisplayed();

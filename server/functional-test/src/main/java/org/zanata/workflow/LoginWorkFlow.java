@@ -80,7 +80,7 @@ public class LoginWorkFlow extends AbstractWebWorkFlow {
         basePage.deleteCookiesAndRefresh();
         basePage.clickSignInLink().enterUsername(username)
                 .enterPassword(password).clickSignIn().waitForAMoment()
-                .withMessage("login").until((Predicate<WebDriver>) driver1 -> {
+                .withMessage("login").until(driver1 -> {
                     // only enable this if you temporarily disable implicit
                     // waits:
                     // fail-fast logic

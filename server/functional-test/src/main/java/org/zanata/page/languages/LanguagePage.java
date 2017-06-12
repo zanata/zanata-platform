@@ -175,7 +175,7 @@ public class LanguagePage extends BasePage {
         permissionToAdd.add(TeamPermission.Translator);
         for (final TeamPermission permission : permissionToAdd) {
             log.info("Set checked as {}", permission.name());
-            waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+            waitForAMoment().until(it -> {
                 WebElement inputDiv = getSearchedForUser(username)
                         .findElement(By.className("list--horizontal"))
                         .findElements(By.tagName("li"))
