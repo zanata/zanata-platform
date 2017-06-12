@@ -6318,9 +6318,9 @@ react-list@0.7.19:
   version "0.7.19"
   resolved "https://registry.yarnpkg.com/react-list/-/react-list-0.7.19.tgz#ec93be2db8f6d1e217435749fb9a64c1852024f3"
 
-react-loading@0.0.9:
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-0.0.9.tgz#e9fba6948915ba7742a508193828b6c73eb04956"
+react-loading@0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/react-loading/-/react-loading-0.1.2.tgz#4da95b3d4b55904fd8294c1eb40f8512a6ca04f6"
 
 react-lorem-component@0.12.1:
   version "0.12.1"
