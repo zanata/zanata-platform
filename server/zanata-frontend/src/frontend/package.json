@@ -60,7 +60,7 @@
     "postcss-loader": "0.8.2",
     "react-intl": "2.3.0",
     "react-overlays": "0.7.0",
-    "react-sidebar": "2.3.0",
+    "react-sidebar": "2.3.2",
     "react-split-pane": "0.1.63",
     "react-styleguidist": "2.3.1",
     "react-transform-hmr": "1.0.4",
