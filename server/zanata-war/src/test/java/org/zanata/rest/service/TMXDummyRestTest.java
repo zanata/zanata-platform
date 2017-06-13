@@ -31,6 +31,12 @@ import org.zanata.util.Zanata;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+/**
+ * TODO: remove deprecated resteasy classes InMemoryClientExecutor and
+ * ClientRequestFactory, then remove @Deprecated annotation..
+ * @deprecated because we need InMemoryClientExecutor for now
+ */
+@Deprecated
 @RunWith(CdiUnitRunner.class)
 public class TMXDummyRestTest extends ZanataRestTest {
 

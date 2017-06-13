@@ -34,10 +34,11 @@ import static com.google.common.collect.Sets.newHashSet;
 import static org.mockito.Mockito.when;
 
 /**
- * TODO: remove deprecated resteasy class and remove SuppressWarnings. This
- * class is not in used at the moment
+ * TODO: remove deprecated resteasy classes InMemoryClientExecutor and
+ * ClientRequestFactory, then remove @Deprecated annotation..
+ * @deprecated because we need InMemoryClientExecutor for now
  */
-@SuppressWarnings("deprecation")
+@Deprecated
 public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
 
     protected static final URI MOCK_BASE_URI = URI.create("http://mockhost");
