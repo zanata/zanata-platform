@@ -2142,24 +2142,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <!--
-            Compiler plugin uses Java compiler API since version 3.0.
-            Usage of compiler API is much better than forking javac executable.
-            Compiler API is much faster as it's run in same process.
-            And most importantly ALL compiler messages are printed by maven.
-            When standalone javac executable is run, Maven parses its output and
-            some messages are lost in the process!!!
-          -->
-          <forceJavacCompilerUse>false</forceJavacCompilerUse>
-          <useIncrementalCompilation>true</useIncrementalCompilation>
-          <fork>false</fork>
-          <compilerArgs>
-            <arg>-Aorg.zanata.annotationclaim.annotations=${runtime.annotations}</arg>
-            <arg>-Xlint:all</arg>
-            <arg>-Xlint:-processing</arg>
-          </compilerArgs>
-        </configuration>
         <executions>
           <!-- Replacing default-compile as it is treated specially by Maven.
                We need kotlin-maven-plugin to compile first. -->
@@ -2172,16 +2154,6 @@
           <execution>
             <id>default-testCompile</id>
             <phase>none</phase>
-          </execution>
-          <execution>
-            <id>java-compile</id>
-            <phase>compile</phase>
-            <goals> <goal>compile</goal> </goals>
-          </execution>
-          <execution>
-            <id>java-test-compile</id>
-            <phase>test-compile</phase>
-            <goals> <goal>testCompile</goal> </goals>
           </execution>
         </executions>
       </plugin>
