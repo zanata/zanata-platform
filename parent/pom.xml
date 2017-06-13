@@ -245,7 +245,7 @@
         <groupId>io.takari.maven.plugins</groupId>
         <artifactId>takari-lifecycle-plugin</artifactId>
         <!-- See also build-tools pom -->
-        <version>1.12.2</version>
+        <version>1.12.4</version>
         <extensions>true</extensions>
         <configuration>
           <proc>proc</proc>
