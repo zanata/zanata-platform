@@ -11,25 +11,45 @@ import {
   from 'react-bootstrap'
 import {Icon, Modal} from '../../components'
 
+import {
+  toggleTMMergeModal
+} from '../../actions/version-actions'
+
 /**
  * Root component for TM Merge Modal
  */
 class TMMergeModal extends Component {
   static propTypes = {
-
+    showTMMergeModal: PropTypes.bool,
     openTMMergeModal: PropTypes.func.required
   }
-
+  constructor (props) {
+    super(props)
+    this.state = {
+      matchPercentage: 100,
+      differentDocId: false,
+      differentContext: false,
+      fromImportedTM: false,
+      language: '',
+      fromProjectVersion: []
+    }
+  }
+  onPercentSelection (percent) {
+    this.setState({
+      ...this.state,
+      matchPercentage: percent
+    })
+  }
   render () {
     const action = (message) => {
       // TODO: Use Real Actions
-      console.info(message)
+      // console.info(message)
     }
     const tooltipReadOnly = (
       <Tooltip id='tooltipreadonly'>Read only
       </Tooltip>
     )
-    const heading1 = <h3><Checkbox checked> Project A</Checkbox></h3>
+    const heading1 = <h3><Checkbox> Project A</Checkbox></h3>
     const heading2 = <h3><Checkbox> Project B
       <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
         <Icon name='locked'
@@ -39,10 +59,62 @@ class TMMergeModal extends Component {
 
     const currentProject = 'Current project'
     const currentVersion = 'Current version'
+    const short = this.props.showTMMergeModal
+    const showHide = short ? {display: 'block'} : {display: 'none'}
+    /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
+    const percentageItems = [100, 90, 80].map(i => {
+      return (<MenuItem onClick={this.onPercentSelection.bind(this, i)}
+        eventKey={i} key={i} active={i === this.state.matchPercentage}>
+        {i}%
+      </MenuItem>)
+    })
+    /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */
+    // Different DocID Checkbox handling
+    const onDocIdCheckboxChange = () => {
+      this.setState({
+        ...this.state,
+        differentDocId: !this.state.differentDocId
+      })
+    }
+    const docIdLabel = this.state.differentDocId
+        ? (<Label bsStyle='warning'>
+        Copy as Fuzzy
+        </Label>)
+        : (<Label bsStyle='danger'>
+        Don't Copy
+        </Label>)
+    // Different Context Checkbox handling
+    const onContextCheckboxChange = () => {
+      this.setState({
+        ...this.state,
+        differentContext: !this.state.differentContext
+      })
+    }
+    const differentContextLabel = this.state.differentContext
+        ? (<Label bsStyle='warning'>
+          Copy as Fuzzy
+        </Label>)
+        : (<Label bsStyle='danger'>
+          Don't Copy
+        </Label>)
+    // Match from Imported TM Checkbox handling
+    const onImportedCheckboxChange = () => {
+      this.setState({
+        ...this.state,
+        fromImportedTM: !this.state.fromImportedTM
+      })
+    }
+    const matchImportedLabel = this.state.fromImportedTM
+        ? (<Label bsStyle='warning'>
+          Copy as Fuzzy
+        </Label>)
+        : (<Label bsStyle='danger'>
+          Don't Copy
+        </Label>)
     return (
-      <Modal
+      <Modal style={showHide}
         show
-        onHide={action('onHide')}>
+        onHide={this.props.openTMMergeModal}>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
         </Modal.Header>
@@ -52,66 +124,55 @@ class TMMergeModal extends Component {
               documents
               in other projects and versions into this project version.
             </p>
-            <span className='pull-right'>
-              <Button
-                bsStyle='primary'
-                onClick={action('onClick')}>
-                Merge translations
-              </Button>
-            </span>
             <Col xs={12} className='vmerge-row'>
               <Col xs={4}>
                 <span
-                  className='vmerge-title text-info'>TM match percentage</span>
+                  className='vmerge-title text-info'>TM match threshold</span>
               </Col>
               <Col xs={5}>
                 <DropdownButton bsStyle='default' bsSize='small'
-                  title='90% +'
+                  title={this.state.matchPercentage + '%'}
                   id='dropdown-basic'
                   className='vmerge-ddown'>
-                  <MenuItem onClick={action('onClick')} eventKey='1'>
-                  100%</MenuItem>
-                  <MenuItem onClick={action('onClick')} eventKey='2'>
-                  80% +</MenuItem>
-                  <MenuItem onClick={action('onClick')} eventKey='3' active>
-                  70% +</MenuItem>
-                  <MenuItem onClick={action('onClick')} eventKey='4'>
-                  60% +</MenuItem>
+                  {percentageItems}
                 </DropdownButton>
               </Col>
             </Col>
             <Col xs={12}>
               <Panel className='tm-panel'>
                 <ListGroup fill>
-                  <ListGroupItem className=''><Checkbox checked>
+                  <ListGroupItem className=''>
+                    <Checkbox onChange={onDocIdCheckboxChange}
+                      checked={this.state.differentDocId}>
                     Different DocID
-                    <small>Document name and path</small>
-                    <Label bsStyle='warning'>
-                      Copy as Fuzzy
-                    </Label>
-                  </Checkbox>
+                      <small>{" "}Document name and path</small>
+                      {docIdLabel}
+                    </Checkbox>
                   </ListGroupItem>
                 </ListGroup>
                 <span className='and'>
               AND
                 </span>
                 <ListGroup fill>
-                  <ListGroupItem className=''><Checkbox checked>
-                    Different Context
-                    <small>resId, msgctxt</small>
-                    <Label bsStyle='warning'>
-                      Copy as Fuzzy
-                    </Label>
-                  </Checkbox>
+                  <ListGroupItem className=''>
+                    <Checkbox onChange={onContextCheckboxChange}
+                      checked={this.state.differentContext}>
+                      Different Context
+                      <small>{" "} resId, msgctxt</small>
+                      {differentContextLabel}
+                    </Checkbox>
                   </ListGroupItem>
                 </ListGroup>
               </Panel>
               <Panel className='tm-panel'>
                 <span className='or'>OR</span>
                 <ListGroup fill>
-                  <ListGroupItem className=''><Checkbox>
-                    Match from Imported TM
-                  </Checkbox>
+                  <ListGroupItem className=''>
+                    <Checkbox onChange={onImportedCheckboxChange}>
+                      Match from Imported TM
+                      <small>{" "}</small>
+                      {matchImportedLabel}
+                    </Checkbox>
                   </ListGroupItem>
                 </ListGroup>
               </Panel>
@@ -183,10 +244,10 @@ class TMMergeModal extends Component {
                   <PanelGroup defaultActiveKey='1' accordion>
                     <Panel header={heading1} eventKey='1'>
                       <ListGroup fill>
-                        <ListGroupItem className='v'><Checkbox checked>2.0
+                        <ListGroupItem className='v'><Checkbox>2.0
                         </Checkbox>
                         </ListGroupItem>
-                        <ListGroupItem className='v'><Checkbox checked>1.0
+                        <ListGroupItem className='v'><Checkbox>1.0
                         </Checkbox>
                         </ListGroupItem>
                       </ListGroup>
@@ -241,7 +302,7 @@ class TMMergeModal extends Component {
             <Row>
               <Button bsStyle='link'
                 className='btn-left link-danger'
-                onClick={action('onClick')}>
+                onClick={this.props.openTMMergeModal}>
                 Cancel
               </Button>
               <Button
@@ -258,11 +319,17 @@ class TMMergeModal extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return {}
+  return {
+    showTMMergeModal: state.projectVersion.TMMerge.show
+  }
 }
 
 const mapDispatchToProps = (dispatch) => {
-  return {}
+  return {
+    openTMMergeModal: () => {
+      dispatch(toggleTMMergeModal())
+    }
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(TMMergeModal)
