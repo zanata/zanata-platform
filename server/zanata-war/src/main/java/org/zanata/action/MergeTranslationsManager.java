@@ -1,10 +1,8 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -12,12 +10,11 @@ import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.LocaleId;
-import org.zanata.model.HLocale;
-import org.zanata.model.HProjectIteration;
+import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.MergeTranslationsService;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
-import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Manages tasks to copy translations from one existing version to another.
@@ -97,11 +94,9 @@ public class MergeTranslationsManager implements Serializable {
         return handle != null && !handle.isDone();
     }
 
-    public boolean start(HProjectIteration version, HLocale hLocale,
-            TransMemoryMergeRequest mergeRequest) {
+    public boolean start(Long versionId, VersionTMMerge mergeRequest) {
         MergeTranslationTaskKey key =
-                new MergeTranslationTaskKey(version.getId(),
-                        hLocale.getLocaleId());
+                new MergeTranslationTaskKey(versionId, mergeRequest.getLocaleId());
         AsyncTaskHandle handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
         if (handleByKey == null || handleByKey.isCancelled()
@@ -110,7 +105,7 @@ public class MergeTranslationsManager implements Serializable {
 
             handle.setTriggeredBy(identity.getAccountUsername());
             asyncTaskHandleManager.registerTaskHandle(handle, key);
-            mergeTranslationsServiceImpl.startMergeTranslations(version, hLocale,
+            mergeTranslationsServiceImpl.startMergeTranslations(versionId,
                     mergeRequest, handle);
             return true;
         }

@@ -46,6 +46,7 @@ import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.TransUnitStatus;
 import org.zanata.rest.dto.User;
+import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.editor.service.TransMemoryMergeManager;
 import org.zanata.rest.editor.service.UserService;
@@ -335,16 +336,13 @@ public class ProjectVersionService implements ProjectVersionResource {
     @Path(VERSION_SLUG_TEMPLATE + "/tm-merge")
     public Response prefillWithTM(@PathParam("projectSlug") String projectSlug,
             @PathParam("versionSlug") String versionSlug,
-            TransMemoryMergeRequest mergeRequest) {
+            VersionTMMerge mergeRequest) {
         int percent = mergeRequest.getThresholdPercent();
-        if (percent != 80 && percent != 90 && percent != 100) {
+        if (percent < 80 || percent > 100) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("{\"error\":\"percentThreshold must be 80, 90 or 100\"}")
+                    .entity("{\"error\":\"percentThreshold must be between 80 and 100\"}")
                     .build();
         }
-        // here we reuse the same DTO but some of the settings are fixed
-        mergeRequest.differentProjectRule = MergeRule.FUZZY;
-
         HProject hProject = projectDAO.getBySlug(projectSlug);
 
         Optional<Response> projectResponse =
@@ -365,7 +363,7 @@ public class ProjectVersionService implements ProjectVersionResource {
                             + versionSlug + "\' is readonly.")
                     .build();
         }
-        LocaleId localeId = mergeRequest.localeId;
+        LocaleId localeId = mergeRequest.getLocaleId();
         HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
         if (hLocale == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -373,7 +371,7 @@ public class ProjectVersionService implements ProjectVersionResource {
 
         // TODO pahuang check security
         boolean started = mergeTranslationsManager
-                .start(version, hLocale, mergeRequest);
+                .start(version.getId(), mergeRequest);
         if (!started) {
             throw new UnsupportedOperationException("There is already version merge operation in progress");
         }

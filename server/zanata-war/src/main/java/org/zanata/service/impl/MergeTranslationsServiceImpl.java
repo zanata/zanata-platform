@@ -40,6 +40,7 @@ import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
+import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.events.DocStatsEvent;
@@ -53,6 +54,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.ModelEntityBase;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
@@ -61,10 +63,6 @@ import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
 import org.zanata.util.TranslationUtil;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
-import org.zanata.webtrans.shared.rest.dto.HasTMMergeCriteria;
-import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
-import org.zanata.webtrans.shared.rpc.MergeRule;
 
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
@@ -368,12 +366,14 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
 
     @Async
     @Override
-    public Future<Void> startMergeTranslations(HProjectIteration targetVersion,
-            HLocale hLocale, TransMemoryMergeRequest mergeRequest,
+    public Future<Void> startMergeTranslations(Long targetVersionId,
+            VersionTMMerge mergeRequest,
             MergeTranslationsTaskHandle handle) {
         // since this is async we need to reload entities
-        targetVersion = projectIterationDAO.findById(targetVersion.getId());
-        HLocale targetLocale = localeServiceImpl.getByLocaleId(mergeRequest.localeId);
+        HProjectIteration targetVersion =
+                projectIterationDAO.findById(targetVersionId);
+        HLocale targetLocale =
+                localeServiceImpl.getByLocaleId(mergeRequest.getLocaleId());
 
         List<Long> fromVersionIds = mergeRequest.getFromProjectVersions().stream()
                 .map(projectIterationId -> projectIterationDAO.getBySlug(
@@ -397,14 +397,14 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         }
         List<HLocale> localesInTargetVersion = localeServiceImpl
                 .getSupportedLanguageByProjectIteration(targetVersion);
-        if (!localesInTargetVersion.contains(hLocale)) {
+        if (!localesInTargetVersion.contains(targetLocale)) {
             log.error("No locales enabled in target version of [{}]",
                     targetVersion.userFriendlyToString());
             return AsyncTaskResult.completed();
         }
 
         long mergeTargetCount = textFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion(
-                targetVersion.getId(), hLocale);
+                targetVersion.getId(), targetLocale);
 
         Optional<MergeTranslationsTaskHandle> taskHandleOpt =
                 Optional.fromNullable(handle);
@@ -420,9 +420,10 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         while (startCount < mergeTargetCount) {
             List<HTextFlow> batch = textFlowDAO
                     .getUntranslatedOrFuzzyTextFlowsInVersion(
-                            targetVersion.getId(), hLocale, startCount,
+                            targetVersion.getId(), targetLocale, startCount,
                             TEXTFLOWS_PER_BATCH);
-            transMemoryMergeService.translateInBatch(mergeRequest, batch, hLocale, fromVersionIds);
+            transMemoryMergeService.translateInBatch(mergeRequest, batch,
+                    targetLocale, fromVersionIds);
 
             if (taskHandleOpt.isPresent()) {
                 taskHandleOpt.get().increaseProgress(batch.size());
