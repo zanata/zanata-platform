@@ -168,6 +168,10 @@
         <groupId>org.basepom.maven</groupId>
         <artifactId>duplicate-finder-maven-plugin</artifactId>
         <configuration>
+          <ignoredClassPatterns>
+            <!-- part of richfaces cdk annotations(!) -->
+            <ignoredClassPattern>javax.annotation.Nullable</ignoredClassPattern>
+          </ignoredClassPatterns>
           <ignoredDependencies>
             <dependency>
               <groupId>com.google.gwt</groupId>
@@ -1226,6 +1230,12 @@
       <artifactId>guava</artifactId>
     </dependency>
 
+    <!-- workaround for https://github.com/google/guava/issues/2721 -->
+    <dependency>
+      <groupId>com.google.errorprone</groupId>
+      <artifactId>error_prone_annotations</artifactId>
+    </dependency>
+
     <dependency>
       <groupId>net.bull.javamelody</groupId>
       <artifactId>javamelody-core</artifactId>
@@ -1908,6 +1918,18 @@
       <groupId>io.github.microutils</groupId>
       <artifactId>kotlin-logging</artifactId>
       <version>1.4.1</version>
+    </dependency>
+
+    <!-- Make sure this dependency is at the end. It has a bad version of
+     javax.annotation.Nullable. Needed to avoid compiler warnings, eg
+     Cannot find annotation method 'description()' in type
+     'org.richfaces.cdk.annotations.Attribute': class file for
+     org.richfaces.cdk.annotations.Attribute not found -->
+    <dependency>
+      <groupId>org.richfaces.cdk</groupId>
+      <artifactId>annotations</artifactId>
+      <version>4.5.0.Final</version>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>
