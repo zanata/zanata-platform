@@ -20,18 +20,18 @@
  */
 package org.zanata.page.explore;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.page.account.ProfilePage;
 import org.zanata.page.projects.ProjectVersionsPage;
-import org.zanata.util.WebElementUtil;
-import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>

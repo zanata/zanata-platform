@@ -20,12 +20,15 @@
  */
 package org.zanata.page.webtrans;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -35,10 +38,9 @@ import org.zanata.page.BasePage;
 import org.zanata.page.editor.ReactEditorPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.WebElementUtil;
+
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang

@@ -21,13 +21,13 @@
 package org.zanata.page.projectversion;
 
 import java.util.List;
-import com.google.common.base.Predicate;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.page.webtrans.EditorPage;
-import com.google.common.base.Function;
+
 import com.google.common.base.Preconditions;
 
 /**

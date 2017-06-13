@@ -22,15 +22,17 @@ package org.zanata.page.groups;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.openqa.selenium.*;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.zanata.page.BasePage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 
 /**
  * @author Patrick Huang

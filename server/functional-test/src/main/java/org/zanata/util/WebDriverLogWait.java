@@ -20,7 +20,8 @@
  */
 package org.zanata.util;
 
-import com.google.common.base.Function;
+import java.util.function.Function;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.zanata.page.WebDriverFactory;
@@ -40,11 +41,10 @@ public class WebDriverLogWait extends WebDriverWait {
     }
 
     @Override
-    public <V> V until(java.util.function.Function<? super WebDriver, V> isTruthy) {
-        return super.until((Function<? super WebDriver, V>)
-                driver -> {
-                    factory.logLogs();
-                    return isTruthy.apply(driver);
-                });
+    public <V> V until(Function<? super WebDriver, V> isTruthy) {
+        return super.until(driver -> {
+            factory.logLogs();
+            return isTruthy.apply(driver);
+        });
     }
 }

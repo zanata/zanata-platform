@@ -20,12 +20,12 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import com.google.common.base.Predicate;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.LanguageList;
-import java.util.List;
 
 /**
  * This class represents the project language settings page.

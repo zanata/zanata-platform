@@ -20,15 +20,17 @@
  */
 package org.zanata.page.projectversion.versionsettings;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.VersionBasePage;
 import org.zanata.util.LanguageList;
-import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.common.base.Function;
 
 /**
  * This class represents the project version settings tab for languages.

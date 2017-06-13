@@ -20,17 +20,17 @@
  */
 package org.zanata.page.projectversion.versionsettings;
 
+import static org.zanata.util.FluentWaitExtKt.until;
+
 import java.util.ArrayList;
 import java.util.List;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.VersionBasePage;
 
-import static org.zanata.util.FluentWaitExtKt.until;
+import com.google.common.base.Function;
 
 /**
  * @author Damian Jansen

@@ -106,16 +106,16 @@ abstract class AbstractPage(val driver: WebDriver) {
 
     /**
      * @param currentPage
-     * *
+     *
      * @param function
-     * *
+     *
      * @param message
-     * *            description of function
-     * *
+     *            description of function
+     *
      * @param P
-     * *
+     *
      * @param T
-     * *
+     *
      * @return
      */
     protected fun <P : AbstractPage, T> refreshPageUntil(currentPage: P,
@@ -228,8 +228,8 @@ abstract class AbstractPage(val driver: WebDriver) {
      * Expect an element to be interactive, and return it
 
      * @param elementBy
-     * *            WebDriver By locator
-     * *
+     *            WebDriver By locator
+     *
      * @return target WebElement
      */
     fun readyElement(elementBy: By): WebElement {
@@ -246,11 +246,11 @@ abstract class AbstractPage(val driver: WebDriver) {
      * Wait for a child element to be visible, and return it
 
      * @param parentElement
-     * *            parent element of target
-     * *
+     *            parent element of target
+     *
      * @param elementBy
-     * *            WebDriver By locator
-     * *
+     *            WebDriver By locator
+     *
      * @return target WebElement
      */
     fun readyElement(parentElement: WebElement,
@@ -269,8 +269,8 @@ abstract class AbstractPage(val driver: WebDriver) {
      * rather than clicking on it or getting its text.
 
      * @param elementBy
-     * *            WebDriver By locator
-     * *
+     *            WebDriver By locator
+     *
      * @return target WebElement
      */
     fun existingElement(elementBy: By): WebElement {
@@ -287,8 +287,8 @@ abstract class AbstractPage(val driver: WebDriver) {
      * isVisible, rather than clicking on it or getting its text.
 
      * @param elementBy
-     * *            WebDriver By locator
-     * *
+     *            WebDriver By locator
+     *
      * @return target WebElement
      */
     fun existingElement(parentElement: WebElement,
@@ -305,7 +305,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      * scrolls the item into view and clicks it when it is ready.
 
      * @param findby
-     * *            locator for element to be clicked
+     *            locator for element to be clicked
      */
     fun clickElement(findby: By) {
         clickElement(readyElement(findby))
@@ -316,7 +316,7 @@ abstract class AbstractPage(val driver: WebDriver) {
      * scrolls the item into view and clicks it when it is ready.
 
      * @param element
-     * *            element to be clicked
+     *            element to be clicked
      */
     fun clickElement(element: WebElement) {
         removeNotifications()
@@ -335,20 +335,20 @@ abstract class AbstractPage(val driver: WebDriver) {
      * resulting screenshot may not be accurate.
 
      * @param element
-     * *            element to pass text to
-     * *
+     *            element to pass text to
+     *
      * @param text
-     * *            text to be entered
-     * *
+     *            text to be entered
+     *
      * @param clear
-     * *            clear the element's text before entering new text
-     * *
+     *            clear the element's text before entering new text
+     *
      * @param inject
-     * *            use sendKeys rather than the Actions chain (direct injection)
-     * *
+     *            use sendKeys rather than the Actions chain (direct injection)
+     *
      * @param check
-     * *            check the 'value' attribute for success, and accurate
-     * *            screenshot delay
+     *            check the 'value' attribute for success, and accurate
+     *            screenshot delay
      */
     @JvmOverloads fun enterText(element: WebElement, text: String,
             clear: Boolean = true, inject: Boolean = false, check: Boolean = true) {
@@ -410,8 +410,8 @@ abstract class AbstractPage(val driver: WebDriver) {
         waitForAMoment().withMessage("Waiting for element to be ready")
                 .until({ _ -> element.isDisplayed && element.isEnabled })
     }
-    // Assert the element is available and visible
 
+    /** Assert the element is available and visible */
     private fun assertReady(targetElement: WebElement) {
         assertThat(targetElement.isDisplayed).`as`("displayed").isTrue()
         assertThat(targetElement.isEnabled).`as`("enabled").isTrue()

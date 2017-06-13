@@ -20,14 +20,15 @@
  */
 package org.zanata.page.dashboard.dashboardsettings;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.dashboard.DashboardBasePage;
-import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.common.base.Function;
 
 /**
  * @author Carlos Munoz

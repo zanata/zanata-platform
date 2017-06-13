@@ -20,12 +20,11 @@
  */
 package org.zanata.workflow;
 
-import com.google.common.base.Predicate;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
+import org.zanata.page.WebDriverFactory;
 import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.utility.HomePage;
-import org.zanata.page.WebDriverFactory;
 
 public class AbstractWebWorkFlow {
     protected final WebDriver driver;
@@ -43,8 +42,7 @@ public class AbstractWebWorkFlow {
         return WebDriverFactory.INSTANCE.ignoringDswid(() -> {
             driver.get(hostUrl);
             new BasePage(driver).waitForAMoment().until(
-                    it ->
-                            new HomePage(driver).isPageValid());
+                    it -> new HomePage(driver).isPageValid());
             return new HomePage(driver);
         });
     }

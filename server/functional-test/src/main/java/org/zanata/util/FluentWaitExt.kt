@@ -1,7 +1,5 @@
 package org.zanata.util
 
-import com.google.common.base.Predicate
-import org.openqa.selenium.WebElement
 import org.openqa.selenium.support.ui.FluentWait
 
 /**

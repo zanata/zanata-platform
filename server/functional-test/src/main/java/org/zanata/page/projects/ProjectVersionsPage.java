@@ -20,7 +20,10 @@
  */
 package org.zanata.page.projects;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -28,8 +31,6 @@ import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.CreateVersionPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Predicate;
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
