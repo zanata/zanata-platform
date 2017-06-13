@@ -20,6 +20,8 @@
  */
 package org.zanata.rest.search.dto;
 
+import java.util.List;
+
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.EntityStatus;
@@ -35,6 +37,7 @@ public class ProjectSearchResult extends SearchResult {
     private String title;
     private long contributorCount;
     private EntityStatus status;
+    private List<ProjectVersionSearchResult> versions;
 
     public ProjectSearchResult() {
         this.setType(SearchResultType.Project);
@@ -62,5 +65,13 @@ public class ProjectSearchResult extends SearchResult {
 
     public void setStatus(final EntityStatus status) {
         this.status = status;
+    }
+
+    public List<ProjectVersionSearchResult> getVersions() {
+        return versions;
+    }
+
+    public void setVersions(List<ProjectVersionSearchResult> versions) {
+        this.versions = versions;
     }
 }
