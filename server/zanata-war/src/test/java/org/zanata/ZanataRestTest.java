@@ -9,8 +9,9 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import org.hibernate.Session;
-import org.jboss.resteasy.client.ClientRequestFactory;
-import org.jboss.resteasy.client.core.executors.InMemoryClientExecutor;
+import org.jboss.resteasy.client.jaxrs.ProxyBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.mock.MockDispatcherFactory;
 import org.jboss.resteasy.spi.ResourceFactory;
@@ -32,11 +33,16 @@ import org.zanata.security.AuthenticationType;
 import static com.google.common.collect.Sets.newHashSet;
 import static org.mockito.Mockito.when;
 
+/**
+ * TODO: remove deprecated resteasy class and remove SuppressWarnings. This
+ * class is not in used at the moment
+ */
+@SuppressWarnings("deprecation")
 public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
 
     protected static final URI MOCK_BASE_URI = URI.create("http://mockhost");
-
-    private ClientRequestFactory clientRequestFactory;
+    private ResteasyClientBuilder resteasyClientBuilder;
+    private org.jboss.resteasy.client.ClientRequestFactory clientRequestFactory;
     protected final Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers =
             newHashSet();
     protected final Set<Object> resources = newHashSet();
@@ -79,11 +85,11 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
                     providerInstance);
         }
 
-        InMemoryClientExecutor executor =
-                new InMemoryClientExecutor(dispatcher);
+        org.jboss.resteasy.client.core.executors.InMemoryClientExecutor executor =
+                new org.jboss.resteasy.client.core.executors.InMemoryClientExecutor(dispatcher);
         executor.setBaseUri(MOCK_BASE_URI);
         clientRequestFactory =
-                new ClientRequestFactory(executor, MOCK_BASE_URI);
+                new org.jboss.resteasy.client.ClientRequestFactory(executor, MOCK_BASE_URI);
 
     }
 
@@ -147,8 +153,16 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
      *
      * @return a ClientRequestFactory configured for your environment.
      */
-    protected final ClientRequestFactory getClientRequestFactory() {
+    protected final org.jboss.resteasy.client.ClientRequestFactory getClientRequestFactory() {
         return clientRequestFactory;
+    }
+
+    /**
+     * This is to replace {@link #getClientRequestFactory()}
+     */
+    protected final <T> ProxyBuilder<T> createProxy(Class<T> clazz, URI uri) {
+        ResteasyWebTarget webTarget = resteasyClientBuilder.build().target(uri);
+        return ProxyBuilder.builder(clazz, webTarget);
     }
 
     /**

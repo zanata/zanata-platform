@@ -43,14 +43,21 @@ public class MockResourcesApplication extends Application {
                 MockStatisticsResource.class,
                 MockFileResource.class,
                 MockProjectsResource.class,
-                MockProjectIterationResource.class,
                 MockProjectResource.class,
                 MockGlossaryResource.class,
                 MockCopyTransResource.class,
                 MockAccountResource.class,
                 MockAsynchronousProcessResource.class
         );
+        addDeprecatedResource(builder);
         services = builder.build();
+    }
+
+    @SuppressWarnings("deprecation")
+    //TODO: replace with MockProjectVersionResource
+    private static void addDeprecatedResource(
+            ImmutableSet.Builder<Class<?>> builder) {
+        builder.add(MockProjectIterationResource.class);
     }
 
     @Override

@@ -27,7 +27,7 @@ public class ParameterRule<T> implements MethodRule {
     private int parameterIndex = 0;
     private List<T> parameters;
 
-    public ParameterRule(T... parameters) {
+    public ParameterRule(List<T> parameters) {
         this.parameters = ImmutableList.copyOf(parameters);
     }
 
