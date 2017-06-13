@@ -122,29 +122,21 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
     /**
      * Gets the default name of the locale according to that locale, from ICU4J.
      */
-    fun retrieveDefaultNativeName(): String {
-        return asULocale().getDisplayName(asULocale())
-    }
+    fun retrieveDefaultNativeName() = asULocale().getDisplayName(asULocale())
 
     /**
      * Gets the name of the locale according to the server's default locale,
      * from ICU4J.
      */
-    fun retrieveDefaultDisplayName(): String {
-        return asULocale().displayName
-    }
+    fun retrieveDefaultDisplayName() = asULocale().displayName
 
     /**
      * Gets the ICU4J ULocale for this locale.
      */
-    fun asULocale(): ULocale {
-        return ULocale(this.localeId.id)
-    }
+    fun asULocale() = ULocale(this.localeId.id)
 
-    override fun userFriendlyToString(): String {
-        return "Locale(id=%s, name=%s)".format(localeId,
+    override fun userFriendlyToString() = "Locale(id=%s, name=%s)".format(localeId,
                 retrieveDisplayName())
-    }
 
     override fun equals(other: Any?): Boolean {
         if (other === this) return true
@@ -160,13 +152,9 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
         return result
     }
 
-    private fun canEqual(other: Any): Boolean {
-        return other is HLocale
-    }
+    private fun canEqual(other: Any) = other is HLocale
 
-    override fun toString(): String {
-        return "HLocale(localeId=$localeId)"
-    }
+    override fun toString() = "HLocale(localeId=$localeId)"
 
     companion object {
         private const val serialVersionUID = 1L
