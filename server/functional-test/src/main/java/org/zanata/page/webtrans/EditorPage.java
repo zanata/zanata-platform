@@ -20,8 +20,6 @@
  */
 package org.zanata.page.webtrans;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -38,9 +36,9 @@ import org.zanata.page.BasePage;
 import org.zanata.page.editor.ReactEditorPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.WebElementUtil;
-
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Patrick Huang
@@ -119,7 +117,7 @@ public class EditorPage extends BasePage {
     public List<List<String>> getGlossaryResultTable() {
         log.info("Query glossary results");
         return waitForAMoment()
-                .until((Function<WebDriver, List<List<String>>>) webDriver -> {
+                .until(webDriver -> {
                     if (webDriver.findElements(glossaryNoResult).size() == 1) {
                         return Collections.emptyList();
                     }
@@ -168,7 +166,7 @@ public class EditorPage extends BasePage {
     private String getCodeMirrorContent(final long rowIndex,
             final String idFormat, final Plurals plurals) {
         return waitForAMoment()
-                .until((Function<WebDriver, String>) webDriver -> {
+                .until(webDriver -> {
                     // code mirror will turn text into list of <pre>.
                     List<WebElement> cmTextLines = webDriver
                             .findElement(By.id(String.format(idFormat, rowIndex,
@@ -228,7 +226,7 @@ public class EditorPage extends BasePage {
         log.info("Wait for text flow target at {} to be {}", rowIndex,
                 expected);
         return waitForAMoment()
-                .until((Function<WebDriver, Boolean>) webDriver -> {
+                .until(webDriver -> {
                     return getBasicTranslationTargetAtRowIndex(rowIndex)
                             .equals(expected);
                 });
@@ -324,7 +322,7 @@ public class EditorPage extends BasePage {
     public String getValidationMessageCurrentTarget() {
         log.info("Query validation messages on current item");
         waitForAMoment()
-                .until((Function<WebDriver, Boolean>) webDriver -> !getTargetValidationBox()
+                .until(webDriver -> !getTargetValidationBox()
                         .getText().isEmpty());
         return getTargetValidationBox().getText();
     }
@@ -357,7 +355,7 @@ public class EditorPage extends BasePage {
     public EditorPage openValidationBox() {
         log.info("Click to open Validation panel");
         getTargetValidationBox().click();
-        waitForAMoment().until((Function<WebDriver, Boolean>) webDriver -> {
+        waitForAMoment().until(webDriver -> {
             String errorText = getValidationMessageCurrentTarget();
             return errorText.contains("Unexpected")
                     || errorText.contains("Target");

@@ -20,8 +20,6 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -29,10 +27,10 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.WebElementUtil;
-
-import com.google.common.base.Function;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Damian Jansen
@@ -94,7 +92,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
 
     private WebElement getMaintainerElementFromList(final String maintainer) {
         return waitForAMoment()
-                .until((Function<WebDriver, WebElement>) webDriver -> {
+                .until(webDriver -> {
                     for (WebElement maintainersLi : getSettingsMaintainersElement()) {
                         String displayedUsername = getUsername(maintainersLi);
                         if (displayedUsername.equals(maintainer)) {

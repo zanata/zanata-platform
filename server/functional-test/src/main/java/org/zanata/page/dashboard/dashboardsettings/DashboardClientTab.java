@@ -20,15 +20,13 @@
  */
 package org.zanata.page.dashboard.dashboardsettings;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.dashboard.DashboardBasePage;
 
-import com.google.common.base.Function;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * @author Carlos Munoz
@@ -50,9 +48,7 @@ public class DashboardClientTab extends DashboardBasePage {
         clickElement(generateApiKeyButton);
         slightPause();
         Alert alert = waitForAMoment().withMessage("Alert dialog not displayed")
-                .until((Function<WebDriver, Alert>) webDriver -> {
-                    return webDriver.switchTo().alert();
-                });
+                .until(webDriver -> webDriver.switchTo().alert());
         log.info("Press OK on alert to generate API key");
         alert.accept();
         waitForAMoment().withMessage("Alert not dismissed")

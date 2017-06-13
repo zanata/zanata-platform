@@ -30,8 +30,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.util.Checkbox;
-
-import com.google.common.base.Function;
 import com.google.common.collect.Sets;
 
 /**
@@ -124,13 +122,8 @@ public class LanguagePage extends BasePage {
         log.info("Click Join");
         clickElement(joinLanguageTeamButton);
         // we need to wait for this join to finish before returning the page
-        waitForAMoment().until(new Function<WebDriver, Boolean>() {
-
-            @Override
-            public Boolean apply(WebDriver driver) {
-                return driver.findElements(joinLanguageTeamButton).isEmpty();
-            }
-        });
+        waitForAMoment().until(driver ->
+                driver.findElements(joinLanguageTeamButton).isEmpty());
         return new LanguagePage(getDriver());
     }
 
@@ -203,7 +196,7 @@ public class LanguagePage extends BasePage {
 
     private WebElement getSearchedForUser(final String username) {
         return waitForAMoment()
-                .until((Function<WebDriver, WebElement>) webDriver -> {
+                .until(it -> {
                     WebElement list = readyElement(personTable)
                             .findElement(By.className("list--slat"));
                     List<WebElement> rows =

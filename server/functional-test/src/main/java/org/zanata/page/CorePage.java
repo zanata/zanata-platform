@@ -29,8 +29,6 @@ import org.openqa.selenium.WebElement;
 import org.zanata.page.more.MorePage;
 import org.zanata.page.utility.HomePage;
 import org.zanata.util.WebElementUtil;
-
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
@@ -142,7 +140,7 @@ public class CorePage extends AbstractPage {
         String msg = "notification " + notification;
         logWaiting(msg);
         return waitForAMoment().withMessage(msg)
-                .until((Function<WebDriver, Boolean>) driver -> {
+                .until(driver -> {
                     List<WebElement> messages =
                             getDriver().findElement(By.id("messages"))
                                     .findElements(By.tagName("li"));

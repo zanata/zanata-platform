@@ -64,7 +64,7 @@ public class WebElementUtil {
 
     public static List<String> elementsToText(WebDriver driver, final By by) {
         return waitForAMoment(driver)
-                .until((Function<WebDriver, List<String>>) input -> {
+                .until(input -> {
                     if (input == null) {
                         throw new RuntimeException("Driver is null");
                     }
@@ -88,7 +88,7 @@ public class WebElementUtil {
     public static List<TableRow> getTableRows(WebDriver driver,
             final By byQueryForTable) {
         return waitForAMoment(driver)
-                .until((Function<WebDriver, List<TableRow>>) webDriver -> {
+                .until(webDriver -> {
                     if (webDriver == null) {
                         throw new RuntimeException("Driver is null");
                     }
@@ -104,7 +104,7 @@ public class WebElementUtil {
     public static List<TableRow> getTableRows(WebDriver driver,
             final WebElement table) {
         return waitForAMoment(driver)
-                .until((Function<WebDriver, List<TableRow>>) webDriver -> {
+                .until(webDriver -> {
                     if (webDriver == null) {
                         throw new RuntimeException("Driver is null");
                     }
@@ -128,9 +128,8 @@ public class WebElementUtil {
     public static FluentWait<WebDriver> waitForSeconds(WebDriver webDriver,
             int durationInSec) {
         return new WebDriverLogWait(WebDriverFactory.INSTANCE, durationInSec)
-                .ignoring(
-                        // TODO is ignoring this safe?
-                        StaleElementReferenceException.class);
+                // if this happens, just wait (and try again)
+                .ignoring(StaleElementReferenceException.class);
     }
 
     public static FluentWait<WebDriver> waitForAMoment(WebDriver webDriver) {
@@ -141,7 +140,7 @@ public class WebElementUtil {
     public static List<String> getColumnContents(WebDriver driver, final By by,
             final int columnIndex) {
         return waitForAMoment(driver)
-                .until((Function<WebDriver, List<String>>) webDriver -> {
+                .until(webDriver -> {
                     if (webDriver == null) {
                         throw new RuntimeException("Driver is null");
                     }
@@ -171,7 +170,7 @@ public class WebElementUtil {
     public static List<List<String>> getTwoDimensionList(WebDriver driver,
             final By by) {
         return waitForAMoment(driver)
-                .until((Function<WebDriver, List<List<String>>>) webDriver -> {
+                .until(webDriver -> {
                     if (webDriver == null) {
                         throw new RuntimeException("Driver is null");
                     }
@@ -186,7 +185,7 @@ public class WebElementUtil {
 
     public static List<WebElement> getListItems(WebDriver driver, final By by) {
         return waitForAMoment(driver)
-                .until((Function<WebDriver, List<WebElement>>) webDriver -> {
+                .until(webDriver -> {
                     if (webDriver == null) {
                         throw new RuntimeException("Driver is null");
                     }
@@ -265,7 +264,7 @@ public class WebElementUtil {
     public static List<WebElement> getSearchAutocompleteResults(
             WebDriver driver, final String formId, final String id) {
         return waitForAMoment(driver)
-                .until((Function<WebDriver, List<WebElement>>) webDriver -> {
+                .until(webDriver -> {
                     String locator = formId + ":" + id + ":" + id + "-result";
                     return webDriver.findElement(By.id(locator)).findElements(
                             By.className("js-autocomplete__result"));

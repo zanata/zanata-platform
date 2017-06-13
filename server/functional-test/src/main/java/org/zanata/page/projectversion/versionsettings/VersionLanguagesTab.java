@@ -20,8 +20,6 @@
  */
 package org.zanata.page.projectversion.versionsettings;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
 
 import org.openqa.selenium.By;
@@ -30,7 +28,7 @@ import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.VersionBasePage;
 import org.zanata.util.LanguageList;
 
-import com.google.common.base.Function;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This class represents the project version settings tab for languages.
@@ -125,7 +123,7 @@ public class VersionLanguagesTab extends VersionBasePage {
     private void waitForLanguageEntryExpected(final String language,
             final boolean exists) {
         waitForAMoment()
-                .until((Function<WebDriver, Boolean>) driver -> getEnabledLocaleList()
+                .until(it -> getEnabledLocaleList()
                         .contains(language) == exists);
     }
 
