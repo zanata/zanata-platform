@@ -9,7 +9,6 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import org.hibernate.Session;
-import org.jboss.resteasy.client.ClientRequestFactory;
 import org.jboss.resteasy.client.jaxrs.ProxyBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
@@ -35,15 +34,15 @@ import static org.mockito.Mockito.when;
 
 /**
  * TODO: remove deprecated resteasy classes InMemoryClientExecutor and
- * ClientRequestFactory, then remove @Deprecated annotation..
- * @deprecated because we need InMemoryClientExecutor for now
+ * ClientRequestFactory
  */
-@Deprecated
+@SuppressWarnings("deprecation")
 public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
 
     protected static final URI MOCK_BASE_URI = URI.create("http://mockhost");
     private ResteasyClientBuilder resteasyClientBuilder;
-    private ClientRequestFactory clientRequestFactory;
+    // don't import this class, because @SuppressWarnings("deprecation") won't work
+    private org.jboss.resteasy.client.ClientRequestFactory clientRequestFactory;
     protected final Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers =
             newHashSet();
     protected final Set<Object> resources = newHashSet();
@@ -89,7 +88,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
                 new org.jboss.resteasy.client.core.executors.InMemoryClientExecutor(dispatcher);
         executor.setBaseUri(MOCK_BASE_URI);
         clientRequestFactory =
-                new ClientRequestFactory(executor, MOCK_BASE_URI);
+                new org.jboss.resteasy.client.ClientRequestFactory(executor, MOCK_BASE_URI);
 
     }
 
@@ -153,7 +152,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
      *
      * @return a ClientRequestFactory configured for your environment.
      */
-    protected ClientRequestFactory getClientRequestFactory() {
+    protected org.jboss.resteasy.client.ClientRequestFactory getClientRequestFactory() {
         return clientRequestFactory;
     }
 

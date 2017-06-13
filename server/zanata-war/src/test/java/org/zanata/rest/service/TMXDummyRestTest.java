@@ -9,7 +9,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.search.FullTextSession;
 import org.hibernate.search.jpa.FullTextEntityManager;
-import org.jboss.resteasy.client.ClientResponse;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -34,10 +33,9 @@ import static org.mockito.Mockito.when;
 /**
  * TODO: remove deprecated resteasy classes InMemoryClientExecutor and
  * ClientRequestFactory, then remove @Deprecated annotation..
- * @deprecated because we need InMemoryClientExecutor for now
  */
-@Deprecated
 @RunWith(CdiUnitRunner.class)
+@SuppressWarnings("deprecation")
 public class TMXDummyRestTest extends ZanataRestTest {
 
     private TranslationMemoryResource tmResource;
@@ -131,8 +129,9 @@ public class TMXDummyRestTest extends ZanataRestTest {
         when(restSlugValidator.retrieveAndCheckIteration("iok", "6.4", false))
                 .thenThrow(new NoSuchEntityException("Project \'iok\' not found."));
         // TODO find a way to get entity without ClientResponse
-        @SuppressWarnings("deprecation")
-        ClientResponse response = (ClientResponse)
+        @SuppressWarnings("unchecked")
+        // don't import this class, because @SuppressWarnings("deprecation") won't work
+        org.jboss.resteasy.client.ClientResponse<String> response = (org.jboss.resteasy.client.ClientResponse<String>)
                 tmResource.getProjectIterationTranslationMemory("iok", "6.4",
                         new LocaleId("as"));
         assertThat(response.getStatus()).isEqualTo(404);
@@ -148,8 +147,8 @@ public class TMXDummyRestTest extends ZanataRestTest {
         // TODO get this working with a mock Session
 //        when(sessionFactory.openSession()).
 
-        @SuppressWarnings("deprecation")
-        ClientResponse response = (ClientResponse)
+        @SuppressWarnings("unchecked")
+        org.jboss.resteasy.client.ClientResponse<String> response = (org.jboss.resteasy.client.ClientResponse<String>)
                 tmResource.getProjectIterationTranslationMemory("iok", "6.4",
                         new LocaleId("as"));
         assertThat(response.getStatus()).isEqualTo(200);
