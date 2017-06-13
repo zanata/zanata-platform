@@ -386,7 +386,7 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
                                 .contains(targetLocale))
                 .map(ModelEntityBase::getId).collect(Collectors.toList());
 
-        // TODO pahuang do we need to check this?
+        // TODO pahuang do we need to check this? If it's empty, should we default to current project versions?
 //        if (fromVersionIds.isEmpty()) {
 //            log.error("Cannot find source versions of {}", fromVersionIds);
 //            return AsyncTaskResult.completed();

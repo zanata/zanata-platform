@@ -37,6 +37,7 @@ import org.zanata.rest.search.dto.GroupSearchResult;
 import org.zanata.rest.search.dto.PersonSearchResult;
 import org.zanata.rest.search.dto.ProjectSearchResult;
 import org.zanata.rest.search.dto.SearchResults;
+import org.zanata.rest.service.RestResource;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
@@ -62,7 +63,7 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Path("/search")
 @Produces(APPLICATION_JSON)
 @Transactional(readOnly = true)
-public class SearchService {
+public class SearchService implements RestResource {
 
     @Inject
     private ProjectDAO projectDAO;
