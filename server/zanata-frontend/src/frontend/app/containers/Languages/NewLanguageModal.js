@@ -55,7 +55,10 @@ class NewLanguageModal extends Component {
     this.setState({
       details: {
         enabledByDefault: true,
-        enabled: true
+        enabled: true,
+        displayName: '',
+        nativeName: '',
+        pluralForms: ''
       },
       validFields: true,
       suggestions: [],
