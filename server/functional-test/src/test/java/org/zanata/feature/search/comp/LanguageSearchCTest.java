@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2017, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -37,8 +37,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(TestPlan.ComprehensiveTest.class)
 public class LanguageSearchCTest extends ZanataTestCase {
 
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void successfullLangSearch() throws Exception {
+    @Test(timeout = MAX_SHORT_TEST_DURATION)
+    public void successfulLangSearch() throws Exception {
         ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
                 .gotoExplore()
@@ -50,8 +50,8 @@ public class LanguageSearchCTest extends ZanataTestCase {
                 .as("Normal user can see the languages listed");
     }
 
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void unsuccessfullLangSearch() throws Exception {
+    @Test(timeout = MAX_SHORT_TEST_DURATION)
+    public void unsuccessfulLangSearch() throws Exception {
         ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
                 .gotoExplore()

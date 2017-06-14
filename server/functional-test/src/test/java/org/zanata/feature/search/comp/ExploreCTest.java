@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2017, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -38,17 +38,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(TestPlan.ComprehensiveTest.class)
 public class ExploreCTest extends ZanataTestCase {
 
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Test(timeout = MAX_SHORT_TEST_DURATION)
     public void enabledCancelButtonAfterSearch() throws Exception {
         ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
                 .gotoExplore()
                 .enterSearch("abcde");
         assertThat(explorePage.isCancelButtonEnabled())
-                .isTrue().as("Cancel button is enabled after search");
+                .isTrue()
+                .as("Cancel button is enabled after search");
     }
 
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    @Test(timeout = MAX_SHORT_TEST_DURATION)
     public void ableToClearSearch() throws Exception {
         ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
@@ -56,6 +57,7 @@ public class ExploreCTest extends ZanataTestCase {
                 .enterSearch("abcde")
                 .clearSearch();
         assertThat(explorePage.isSearchFieldCleared())
-                .isTrue();
+                .isTrue()
+                .as("Able clear the search field");
     }
 }

@@ -19,11 +19,8 @@
  * site: http://www.fsf.org.
  */
 package org.zanata.page.explore;
-
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.util.List;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -59,12 +56,12 @@ public class ExplorePage extends BasePage {
     }
 
     public boolean isCancelButtonEnabled() {
-        log.info("Check cancel button is enabled");
+        log.info("Query cancel button is enabled");
         return readyElement(searchInput).isEnabled();
     }
 
     public boolean isSearchFieldCleared() {
-        log.info("Search filed is cleard");
+        log.info("Query is search field clear");
         return readyElement(searchInput).getText().equals("");
     }
 
@@ -81,6 +78,7 @@ public class ExplorePage extends BasePage {
 
     public ExplorePage expectProjectListContains(final String expected) {
         String msg = "Project search list contains " + expected;
+        log.info("Expect {}", msg);
         waitForAMoment().withMessage("Waiting for search contains")
                 .until(it -> getProjectSearchResults()
                         .contains(expected));
@@ -90,8 +88,9 @@ public class ExplorePage extends BasePage {
 
     public ExplorePage expectGroupListContains(final String expected) {
         String msg = "Group search list contains " + expected;
+        log.info("Expect {}", msg);
         waitForAMoment().withMessage("Waiting for search contains")
-                .until((Predicate<WebDriver>) webDriver -> getGroupSearchResults()
+                .until(webDriver -> getGroupSearchResults()
                         .contains(expected));
         assertThat(getGroupSearchResults()).as(msg).contains(expected);
         return new ExplorePage(getDriver());
@@ -100,6 +99,7 @@ public class ExplorePage extends BasePage {
     public ExplorePage expectPersonListContains(final String expected) {
         waitForPageSilence();
         String msg = "Person search list contains " + expected;
+        log.info("Expect {}", msg);
         waitForAMoment().withMessage("Waiting for search contains")
                 .until(it -> getUserSearchResults()
                         .contains(expected));
@@ -108,10 +108,10 @@ public class ExplorePage extends BasePage {
     }
 
     public ExplorePage expectLanguageTeamListContains(final String expected) {
-        waitForPageSilence();
         String msg = "Language Team search list contains " + expected;
+        log.info("Expect {}", msg);
         waitForAMoment().withMessage("Waiting for search contains")
-                .until((Predicate<WebDriver>) webDriver -> getLanguageSearchResults()
+                .until(webDriver -> getLanguageSearchResults()
                         .contains(expected));
         assertThat(getLanguageSearchResults()).as(msg).contains(expected);
         return new ExplorePage(getDriver());
@@ -236,7 +236,7 @@ public class ExplorePage extends BasePage {
     }
 
     public VersionGroupPage searchAndGotoGroupByName(String groupName) {
-        log.info("go to project by name with name: {}", groupName);
+        log.info("Go to project by name with name: {}", groupName);
         if (getGroupSearchResults().contains(groupName)) {
             return clickGroupSearchEntry(groupName);
         } else {

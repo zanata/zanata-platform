@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2017, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -42,8 +42,8 @@ public class GroupSearchCTest extends ZanataTestCase {
 
     private DashboardGroupsTab dashboardGroupsTab;
 
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void successfullGroupSearchAndDisplay() throws Exception {
+    @Test(timeout = MAX_SHORT_TEST_DURATION)
+    public void successfulGroupSearchAndDisplay() throws Exception {
         String groupID = "basic-group";
         String groupName = "A Basic Group";
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
@@ -75,8 +75,8 @@ public class GroupSearchCTest extends ZanataTestCase {
                 .isEqualTo(groupName);
     }
 
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    public void unsuccessfullGroupSearch() throws Exception {
+    @Test(timeout = MAX_SHORT_TEST_DURATION)
+    public void unsuccessfulGroupSearch() throws Exception {
         ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
                 .gotoExplore()
