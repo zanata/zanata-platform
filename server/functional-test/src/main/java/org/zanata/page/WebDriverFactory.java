@@ -45,6 +45,7 @@ import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.FirefoxProfile;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
@@ -72,7 +73,6 @@ import static org.zanata.page.utility.PageSourceKt.shortenPageSource;
 import static org.zanata.util.Constants.webDriverType;
 import static org.zanata.util.Constants.webDriverWait;
 import static org.zanata.util.Constants.zanataInstance;
-
 
 public enum WebDriverFactory {
     INSTANCE;
@@ -453,10 +453,13 @@ public enum WebDriverFactory {
         } else {
             firefoxBinary = new FirefoxBinary();
         }
-        DesiredCapabilities capabilities = DesiredCapabilities.firefox();
+        FirefoxOptions options = new FirefoxOptions()
+                .setBinary(firefoxBinary)
+                .setProfile(makeFirefoxProfile());
+        DesiredCapabilities capabilities = options.addTo(DesiredCapabilities.firefox());
         enableLogging(capabilities);
-        return new EventFiringWebDriver(new FirefoxDriver(firefoxBinary,
-                makeFirefoxProfile(), capabilities));
+        FirefoxDriver driver = new FirefoxDriver(capabilities);
+        return new EventFiringWebDriver(driver);
     }
 
     private void enableLogging(DesiredCapabilities capabilities) {
@@ -475,7 +478,6 @@ public enum WebDriverFactory {
         }
         final FirefoxProfile firefoxProfile = new FirefoxProfile();
         firefoxProfile.setAlwaysLoadNoFocusLib(true);
-        firefoxProfile.setEnableNativeEvents(true);
         firefoxProfile.setAcceptUntrustedCertificates(true);
         // TODO port zanata-testing-extension to firefox
         // File file = new File("extension.xpi");
