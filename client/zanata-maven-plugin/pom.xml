@@ -129,9 +129,16 @@
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <!-- Ignore maven.compiler.compilerId=jdt -->
-          <compilerId>javac</compilerId>
+          <!-- Override maven.compiler.compilerId=jdt -->
+          <compilerId>eclipse</compilerId>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-compiler-eclipse</artifactId>
+            <version>2.7</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <plugin>
