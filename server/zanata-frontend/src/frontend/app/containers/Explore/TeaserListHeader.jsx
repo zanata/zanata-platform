@@ -51,7 +51,7 @@ const TeaserListHeader = ({
           </Button>
         </div>
       )}
-      {loading && <Loader className='header-loader s1' loading name='loader' />}
+      {loading && <Loader className='header-loader s1' />}
     </div>
   )
   /* eslint-enable react/jsx-no-bind */
