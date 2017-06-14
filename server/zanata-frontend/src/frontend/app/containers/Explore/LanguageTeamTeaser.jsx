@@ -15,7 +15,7 @@ const LanguageTeamTeaser = ({
   return (
     <div className='team-teaser-view' name={name}>
       <div className='flex-row'>
-        <Link link={link} className='text-bold'>
+        <Link link={link} useHref className='text-bold'>
           {details.localeDetails.displayName}
         </Link>
         <span className='text-muted langteam-teaser-view-id '>
