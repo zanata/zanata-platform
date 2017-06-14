@@ -32,7 +32,7 @@ class TMMergeModal extends Component {
       differentDocId: false,
       differentContext: false,
       fromImportedTM: false,
-      language: '',
+      selectedLanguage: '',
       fromProjectVersion: []
     }
   }
@@ -40,6 +40,12 @@ class TMMergeModal extends Component {
     this.setState({
       ...this.state,
       matchPercentage: percent
+    })
+  }
+  onLanguageSelection = (language) => {
+    this.setState({
+      ...this.state,
+      selectedLanguage: language
     })
   }
   render () {
@@ -112,6 +118,18 @@ class TMMergeModal extends Component {
         : (<Label bsStyle='danger'>
           Don't Copy
         </Label>)
+    // Language Dropdown handling
+    const languageMenu = ['Japanese', 'Chinese', 'French']
+        .map((language, index) => {
+          return (
+            <LanguageMenuItem
+              onClick={this.onLanguageSelection}
+              language={language}
+              selectedLanguage={this.state.selectedLanguage}
+              eventKey={index}
+              />
+          )
+        })
     return (
       <Modal style={showHide}
         show
@@ -184,18 +202,10 @@ class TMMergeModal extends Component {
               </Col>
               <Col xs={6}>
                 <DropdownButton bsStyle='default' bsSize='small'
-                  title='Japanese'
+                  title={this.state.selectedLanguage}
                   id='dropdown-basic'
                   className='vmerge-ddown'>
-                  <MenuItem onClick={action('onClick')} eventKey='1'>
-                  All</MenuItem>
-                  <MenuItem divider />
-                  <MenuItem onClick={action('onClick')} eventKey='2'>
-                  Korean</MenuItem>
-                  <MenuItem onClick={action('onClick')} eventKey='3' active>
-                  Japanese</MenuItem>
-                  <MenuItem onClick={action('onClick')} eventKey='4'>
-                  Russian</MenuItem>
+                  {languageMenu}
                 </DropdownButton>
               </Col>
             </Col>
@@ -334,6 +344,28 @@ class IndexedMenuItem extends Component {
       <MenuItem onClick={this.onClick}
         eventKey={i} key={i} active={i === this.props.matchPercentage}>
         {i}%
+      </MenuItem>
+    )
+  }
+}
+
+class LanguageMenuItem extends Component {
+  static propTypes = {
+    language: PropTypes.string.isRequired,
+    onClick: PropTypes.func.isRequired,
+    eventKey: PropTypes.number.isRequired,
+    selectedLanguage: PropTypes.string.isRequired
+  }
+  onClick = () => {
+    this.props.onClick(this.props.language)
+  }
+  render () {
+    const myLanguage = this.props.language
+    return (
+      <MenuItem onClick={this.onClick}
+        eventKey={this.props.eventKey}
+        active={myLanguage === this.props.selectedLanguage}>
+          {myLanguage}
       </MenuItem>
     )
   }
