@@ -189,6 +189,7 @@
     <required.jvm>1.8</required.jvm>
     <maven.compiler.target>${required.jvm}</maven.compiler.target>
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+    <maven.compiler.compilerId>jdt</maven.compiler.compilerId>
 
     <!--
       Version of Java used for API compatibility checking. Should

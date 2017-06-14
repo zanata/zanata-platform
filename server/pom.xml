@@ -1900,6 +1900,8 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
+          <!-- Ignore maven.compiler.compilerId=jdt -->
+          <compilerId>javac</compilerId>
           <!--
             Compiler plugin uses Java compiler API since version 3.0.
             Usage of compiler API is much better than forking javac executable.
