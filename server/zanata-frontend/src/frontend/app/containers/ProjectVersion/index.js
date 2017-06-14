@@ -14,7 +14,11 @@ import {
  */
 class ProjectVersion extends Component {
   static propTypes = {
-    openTMMergeModal: PropTypes.func.required
+    openTMMergeModal: PropTypes.func.isRequired,
+    params: PropTypes.shape({
+      project: PropTypes.string.isRequired,
+      version: PropTypes.string.isRequired
+    })
   }
 
   render () {
@@ -27,7 +31,8 @@ class ProjectVersion extends Component {
             onClick={this.props.openTMMergeModal}>
             Version
           </Button>
-          <TMMergeModal />
+          <TMMergeModal projectSlug={this.props.params.project}
+            versionSlug={this.props.params.version} />
         </div>
       </div>
     )

@@ -21,7 +21,9 @@ import {
 class TMMergeModal extends Component {
   static propTypes = {
     showTMMergeModal: PropTypes.bool,
-    openTMMergeModal: PropTypes.func.required
+    openTMMergeModal: PropTypes.func.isRequired,
+    projectSlug: PropTypes.string.isRequired,
+    versionSlug: PropTypes.string.isRequired
   }
   constructor (props) {
     super(props)
@@ -34,7 +36,7 @@ class TMMergeModal extends Component {
       fromProjectVersion: []
     }
   }
-  onPercentSelection (percent) {
+  onPercentSelection = (percent) => {
     this.setState({
       ...this.state,
       matchPercentage: percent
@@ -57,18 +59,17 @@ class TMMergeModal extends Component {
       </OverlayTrigger>
     </Checkbox></h3>
 
-    const currentProject = 'Current project'
-    const currentVersion = 'Current version'
+    const currentProject = this.props.projectSlug
+    const currentVersion = this.props.versionSlug
     const short = this.props.showTMMergeModal
     const showHide = short ? {display: 'block'} : {display: 'none'}
-    /* eslint-disable react/jsx-no-bind, react/jsx-boolean-value */
-    const percentageItems = [100, 90, 80].map(i => {
-      return (<MenuItem onClick={this.onPercentSelection.bind(this, i)}
-        eventKey={i} key={i} active={i === this.state.matchPercentage}>
-        {i}%
-      </MenuItem>)
+    const percentageItems = [100, 90, 80].map(percentage => {
+      return (
+        <IndexedMenuItem onClick={this.onPercentSelection}
+          percentage={percentage}
+          matchPercentage={this.state.matchPercentage} />
+      )
     })
-    /* eslint-enable react/jsx-no-bind, react/jsx-boolean-value */
     // Different DocID Checkbox handling
     const onDocIdCheckboxChange = () => {
       this.setState({
@@ -314,6 +315,26 @@ class TMMergeModal extends Component {
           </span>
         </Modal.Footer>
       </Modal>
+    )
+  }
+}
+
+class IndexedMenuItem extends Component {
+  static propTypes = {
+    percentage: PropTypes.number.isRequired,
+    onClick: PropTypes.func.isRequired,
+    matchPercentage: PropTypes.number.isRequired
+  }
+  onClick = () => {
+    this.props.onClick(this.props.percentage)
+  }
+  render () {
+    const i = this.props.percentage
+    return (
+      <MenuItem onClick={this.onClick}
+        eventKey={i} key={i} active={i === this.props.matchPercentage}>
+        {i}%
+      </MenuItem>
     )
   }
 }
