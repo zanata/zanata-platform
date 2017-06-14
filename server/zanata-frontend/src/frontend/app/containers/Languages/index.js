@@ -51,16 +51,15 @@ class Languages extends Component {
     this.state = {
       searchText: props.searchText
     }
+    // Debounce works when you call it once, then use the returned function
+    // multiple times.
+    // Do not extract this to a function like `() => { debounce(...) }` since
+    // that would make a new debounced function instance on every call.
+    this.handleUpdateSearch = debounce(props.handleOnUpdateSearch, 200)
   }
 
   componentDidMount () {
     this.props.handleInitLoad()
-  }
-
-  debounceHandleUpdateSearch = () => {
-    debounce(() => {
-      this.props.handleOnUpdateSearch(this.state.searchText)
-    }, 200)
   }
 
   resetSearchText = (localeId) => {
@@ -71,10 +70,11 @@ class Languages extends Component {
   }
 
   onUpdateSearch = (event) => {
+    const searchText = event.target.value || ''
     this.setState({
-      searchText: event.target.value || ''
+      searchText
     })
-    this.debounceHandleUpdateSearch()
+    this.handleUpdateSearch(searchText)
   }
 
   render () {
