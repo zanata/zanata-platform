@@ -9,11 +9,9 @@ const LoaderText = ({
   ...props
 }) => {
   return (
-    <span className='loader-text'
-      componentName='LoaderText' {...props}>
+    <span className='loader-text' {...props}>
           {loading
-            ? <span>{loadingText}
-              <Loader /></span>
+            ? <span>{loadingText}<Loader /></span>
             : children
           }
     </span>
