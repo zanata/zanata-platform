@@ -24,7 +24,7 @@ package org.zanata.dao;
 import javax.annotation.Nonnull;
 
 import org.hibernate.Session;
-import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.hibernate.SessionFactory;
 
 import java.io.Serializable;
 
@@ -37,10 +37,10 @@ import java.io.Serializable;
  */
 public abstract class StreamingDAO<T> implements Serializable {
 
-    private HibernateEntityManagerFactory entityManagerFactory;
+    private SessionFactory sessionFactory;
 
-    public StreamingDAO(HibernateEntityManagerFactory emf) {
-        this.entityManagerFactory = emf;
+    public StreamingDAO(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     /**
@@ -53,7 +53,7 @@ public abstract class StreamingDAO<T> implements Serializable {
         @SuppressWarnings("null")
         @Nonnull
         Session session =
-                entityManagerFactory.getSessionFactory().openSession();
+                sessionFactory.openSession();
         try {
             return new StreamingEntityIterator<T>(session);
         } catch (Throwable e) {

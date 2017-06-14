@@ -5,17 +5,16 @@ import static com.github.huangp.entityunit.entity.EntityCleaner.deleteAll;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.util.ZanataEntities;
@@ -26,7 +25,7 @@ public abstract class ZanataJpaTest extends ZanataTest {
     private static final Logger log = LoggerFactory.getLogger(ZanataJpaTest.class);
     private static final String PERSIST_NAME = "zanataDatasourcePU";
 
-    private static EntityManagerFactory emf;
+    private static HibernateEntityManagerFactory emf;
 
     protected EntityManager em;
 
@@ -60,7 +59,7 @@ public abstract class ZanataJpaTest extends ZanataTest {
         return em;
     }
 
-    protected EntityManagerFactory getEmf() {
+    protected HibernateEntityManagerFactory getEmf() {
         return emf;
     }
 
@@ -72,7 +71,7 @@ public abstract class ZanataJpaTest extends ZanataTest {
     public static void initializeEMF() {
         log.debug("Initializing EMF");
         emf =
-                Persistence.createEntityManagerFactory(PERSIST_NAME,
+                (HibernateEntityManagerFactory) Persistence.createEntityManagerFactory(PERSIST_NAME,
                         createPropertiesMap());
     }
 
