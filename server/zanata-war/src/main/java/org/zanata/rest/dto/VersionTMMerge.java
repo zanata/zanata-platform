@@ -51,6 +51,10 @@ public class VersionTMMerge implements HasTMMergeCriteria {
         this.fromProjectVersions = fromProjectVersions;
     }
 
+    @SuppressWarnings("unused")
+    public VersionTMMerge() {
+    }
+
     public LocaleId getLocaleId() {
         return localeId;
     }
