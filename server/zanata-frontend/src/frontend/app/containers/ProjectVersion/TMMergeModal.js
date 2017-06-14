@@ -11,6 +11,7 @@ import {Icon, Modal} from '../../components'
 
 import {
   loadVersionLocales,
+  loadProjectPage,
   toggleTMMergeModal
 } from '../../actions/version-actions'
 
@@ -22,9 +23,11 @@ class TMMergeModal extends Component {
     handleInitLoad: PropTypes.func.isRequired,
     showTMMergeModal: PropTypes.bool,
     openTMMergeModal: PropTypes.func.isRequired,
+    openProjectPage: PropTypes.func.isRequired,
     projectSlug: PropTypes.string.isRequired,
     versionSlug: PropTypes.string.isRequired,
-    locales: PropTypes.arrayOf(PropTypes.object)
+    locales: PropTypes.arrayOf(PropTypes.object),
+    projectVersions: PropTypes.arrayOf(PropTypes.object)
   }
   constructor (props) {
     super(props)
@@ -34,7 +37,8 @@ class TMMergeModal extends Component {
       differentContext: false,
       fromImportedTM: false,
       selectedLanguage: '',
-      fromProjectVersion: []
+      fromProjectVersion: [],
+      projectSearchTerm: this.props.projectSlug
     }
   }
   componentDidMount () {
@@ -61,10 +65,19 @@ class TMMergeModal extends Component {
       selectedLanguage: language
     })
   }
+  onProjectSearchChange = (event) => {
+    this.setState({
+      ...this.state,
+      projectSearchTerm: event.target.value
+    })
+  }
+  onProjectSearch = () => {
+    this.props.openProjectPage(this.state.projectSearchTerm)
+  }
   render () {
     const action = (message) => {
       // TODO: Use Real Actions
-      // console.info(message)
+      // console.info('clicked')
     }
     const tooltipReadOnly = (
       <Tooltip id='tooltipreadonly'>Read only
@@ -77,7 +90,6 @@ class TMMergeModal extends Component {
           className='s0 icon-locked' />
       </OverlayTrigger>
     </Checkbox></h3>
-
     const currentProject = this.props.projectSlug
     const currentVersion = this.props.versionSlug
     const short = this.props.showTMMergeModal
@@ -253,13 +265,20 @@ class TMMergeModal extends Component {
                     <InputGroup.Addon>
                       <Icon name='search'
                         className='s0'
-                        title='search' />
+                        title='search'
+                      />
                     </InputGroup.Addon>
                     <FormControl type='text'
-                      value='Project'
+                      value={this.state.projectSearchTerm}
                       className='vmerge-searchinput'
+                      onChange={this.onProjectSearchChange}
                     />
                   </InputGroup>
+                  <Button
+                    bsStyle='primary'
+                    onClick={this.onProjectSearch}>
+                  Search
+                  </Button>
                 </Col>
                 <Col xs={6}>
                   <span className='vmerge-adjtitle
@@ -387,7 +406,8 @@ class LanguageMenuItem extends Component {
 const mapStateToProps = (state) => {
   return {
     showTMMergeModal: state.projectVersion.TMMerge.show,
-    locales: state.projectVersion.locales
+    locales: state.projectVersion.locales,
+    projectVersions: state.projectVersion.TMMerge.projectVersions
   }
 }
 
@@ -395,6 +415,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     handleInitLoad: (project, version) => {
       dispatch(loadVersionLocales(project, version))
+    },
+    openProjectPage: (project) => {
+      dispatch(loadProjectPage(project))
     },
     openTMMergeModal: () => {
       dispatch(toggleTMMergeModal())
