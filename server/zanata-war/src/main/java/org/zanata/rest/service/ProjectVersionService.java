@@ -369,7 +369,7 @@ public class ProjectVersionService implements ProjectVersionResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        // TODO pahuang check security
+        identity.checkPermission("modify-translation", hProject, hLocale);
         boolean started = mergeTranslationsManager
                 .start(version.getId(), mergeRequest);
         if (!started) {

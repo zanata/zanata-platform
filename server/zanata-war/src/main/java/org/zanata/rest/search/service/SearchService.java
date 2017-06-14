@@ -126,7 +126,7 @@ public class SearchService implements RestResource {
 
             Map<String, List<HProjectIteration>> projectSlugToVersions =
                     Maps.newHashMap();
-            if (includeVersion) {
+            if (includeVersion && !projects.isEmpty()) {
                 List<HProjectIteration> versions = projectIterationDAO
                         .searchByProjectsExcludeObsolete(projects);
                 versions.forEach(ver -> {

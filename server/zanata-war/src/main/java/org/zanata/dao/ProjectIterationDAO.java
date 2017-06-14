@@ -51,6 +51,7 @@ import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.HashUtil;
 import org.zanata.util.StatisticsUtil;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 @RequestScoped
@@ -502,6 +503,10 @@ public class ProjectIterationDAO extends
 
     public List<HProjectIteration> searchByProjectsExcludeObsolete(
             List<HProject> projects) {
+        Preconditions.checkArgument(
+                !projects.isEmpty()
+                        && projects.size() < MAX_PARAMS_IN_IN_CLAUSE,
+                "invalid projectIds list");
         String query =
                 "FROM HProjectIteration t WHERE t.project.id in (:projectIds) "
                         + "AND t.status != :status"

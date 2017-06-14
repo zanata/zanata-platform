@@ -40,7 +40,6 @@ import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
-import org.zanata.common.LocaleId;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.events.DocStatsEvent;
@@ -345,15 +344,6 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         handle.setTotalTranslations(total);
     }
 
-    private void prepareMergeTranslationsHandle2(
-            long total,
-            @Nonnull MergeTranslationsTaskHandle handle) {
-        handle.setTriggeredBy(identity.getAccountUsername());
-        // TODO pahuang what is this maxProgress?
-        handle.setMaxProgress((int) total);
-        handle.setTotalTranslations(total);
-    }
-
     @Override
     public int getTotalProgressCount(HProjectIteration sourceVersion,
             HProjectIteration targetVersion) {
@@ -375,23 +365,6 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         HLocale targetLocale =
                 localeServiceImpl.getByLocaleId(mergeRequest.getLocaleId());
 
-        List<Long> fromVersionIds = mergeRequest.getFromProjectVersions().stream()
-                .map(projectIterationId -> projectIterationDAO.getBySlug(
-                        projectIterationId.getProjectSlug(),
-                        projectIterationId.getIterationSlug()))
-                .filter(ver -> ver != null
-                        && ver.getStatus() != EntityStatus.OBSOLETE
-                        && localeServiceImpl
-                                .getSupportedLanguageByProjectIteration(ver)
-                                .contains(targetLocale))
-                .map(ModelEntityBase::getId).collect(Collectors.toList());
-
-        // TODO pahuang do we need to check this? If it's empty, should we default to current project versions?
-//        if (fromVersionIds.isEmpty()) {
-//            log.error("Cannot find source versions of {}", fromVersionIds);
-//            return AsyncTaskResult.completed();
-//        }
-
         if (isVersionEmpty(targetVersion)) {
             return AsyncTaskResult.completed();
         }
@@ -403,13 +376,32 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
             return AsyncTaskResult.completed();
         }
 
+        List<Long> fromVersionIds = mergeRequest.getFromProjectVersions().stream()
+                .map(projectIterationId -> projectIterationDAO.getBySlug(
+                        projectIterationId.getProjectSlug(),
+                        projectIterationId.getIterationSlug()))
+                .filter(ver -> ver != null
+                        && ver.getStatus() != EntityStatus.OBSOLETE
+                        && localeServiceImpl
+                                .getSupportedLanguageByProjectIteration(ver)
+                                .contains(targetLocale))
+                .map(ModelEntityBase::getId).collect(Collectors.toList());
+
+        if (fromVersionIds.isEmpty()) {
+            log.error("Cannot find source versions of {}", fromVersionIds);
+            return AsyncTaskResult.completed();
+        }
+
         long mergeTargetCount = textFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion(
                 targetVersion.getId(), targetLocale);
 
         Optional<MergeTranslationsTaskHandle> taskHandleOpt =
                 Optional.fromNullable(handle);
         if (taskHandleOpt.isPresent()) {
-            prepareMergeTranslationsHandle2(mergeTargetCount, taskHandleOpt.get());
+            MergeTranslationsTaskHandle handle1 = taskHandleOpt.get();
+            handle1.setTriggeredBy(identity.getAccountUsername());
+            handle1.setMaxProgress((int) mergeTargetCount);
+            handle1.setTotalTranslations(mergeTargetCount);
         }
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         log.info("merge translations from TM start: from {} to {}",
