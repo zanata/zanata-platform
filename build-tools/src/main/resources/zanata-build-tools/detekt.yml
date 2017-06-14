@@ -51,7 +51,8 @@ formatting:
   useTabs: false
   Indentation:
     active: true
-    indentSize: 4
+    # workaround for https://github.com/arturbosch/detekt/issues/89
+    indentSize: "4"
   ConsecutiveBlankLines:
     active: true
     autoCorrect: true
