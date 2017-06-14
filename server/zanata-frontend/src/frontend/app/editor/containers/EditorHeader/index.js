@@ -30,8 +30,7 @@ class EditorHeader extends React.Component {
       <div id="editor-header">
         <ZanataLogoLoader />
         <header role="banner"
-          className={className}
-          focus-on="editor-header">
+          className={className}>
           <NavHeader />
           <ControlsHeader />
           <ProgressBar
