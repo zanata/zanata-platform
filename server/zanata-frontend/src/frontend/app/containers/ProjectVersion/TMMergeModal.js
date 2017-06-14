@@ -1,8 +1,6 @@
 import React, {PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
 import Draggable from 'react-draggable'
-// import {storiesOf} from '@kadira/storybook'
-// import ReactDOM from 'react-dom'
 import {
   Button, Panel, Row, Checkbox, InputGroup, Col,
   FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem, PanelGroup,
@@ -12,6 +10,7 @@ import {
 import {Icon, Modal} from '../../components'
 
 import {
+  loadVersionLocales,
   toggleTMMergeModal
 } from '../../actions/version-actions'
 
@@ -20,10 +19,12 @@ import {
  */
 class TMMergeModal extends Component {
   static propTypes = {
+    handleInitLoad: PropTypes.func.isRequired,
     showTMMergeModal: PropTypes.bool,
     openTMMergeModal: PropTypes.func.isRequired,
     projectSlug: PropTypes.string.isRequired,
-    versionSlug: PropTypes.string.isRequired
+    versionSlug: PropTypes.string.isRequired,
+    locales: PropTypes.arrayOf(PropTypes.object)
   }
   constructor (props) {
     super(props)
@@ -34,6 +35,18 @@ class TMMergeModal extends Component {
       fromImportedTM: false,
       selectedLanguage: '',
       fromProjectVersion: []
+    }
+  }
+  componentDidMount () {
+    this.props.handleInitLoad(this.props.projectSlug, this.props.versionSlug)
+  }
+  componentWillReceiveProps () {
+    const locales = this.props.locales
+    if (!this.state.selectedLanguage) {
+      this.setState({
+        ...this.state,
+        selectedLanguage: locales.length === 0 ? '' : locales[0].displayName
+      })
     }
   }
   onPercentSelection = (percent) => {
@@ -119,12 +132,12 @@ class TMMergeModal extends Component {
           Don't Copy
         </Label>)
     // Language Dropdown handling
-    const languageMenu = ['Japanese', 'Chinese', 'French']
-        .map((language, index) => {
+    const languageMenu = this.props.locales
+        .map((locale, index) => {
           return (
             <LanguageMenuItem
               onClick={this.onLanguageSelection}
-              language={language}
+              language={locale.displayName}
               selectedLanguage={this.state.selectedLanguage}
               eventKey={index}
               />
@@ -363,7 +376,7 @@ class LanguageMenuItem extends Component {
     const myLanguage = this.props.language
     return (
       <MenuItem onClick={this.onClick}
-        eventKey={this.props.eventKey}
+        eventKey={this.props.eventKey} key={this.props.eventKey}
         active={myLanguage === this.props.selectedLanguage}>
           {myLanguage}
       </MenuItem>
@@ -373,12 +386,16 @@ class LanguageMenuItem extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    showTMMergeModal: state.projectVersion.TMMerge.show
+    showTMMergeModal: state.projectVersion.TMMerge.show,
+    locales: state.projectVersion.locales
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    handleInitLoad: (project, version) => {
+      dispatch(loadVersionLocales(project, version))
+    },
     openTMMergeModal: () => {
       dispatch(toggleTMMergeModal())
     }
