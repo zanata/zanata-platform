@@ -120,7 +120,7 @@ class Languages extends Component {
             </h2>
             {permission.canAddLocale &&
               <div>
-                <Button bsStyle='primary btn-sm'
+                <Button bsStyle='primary' bsSize='small'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
                   <Icon name='plus' className='n1 plusicon'
@@ -166,7 +166,7 @@ class Languages extends Component {
                   <div className='show-items pull-right col-xs-5
                     col-sm-3 col-md-2 col-lg-2'>
                     <span>Show</span>
-                    <FormControl inline componentClass='select'
+                    <FormControl componentClass='select'
                       onChange={handleOnUpdatePageSize} value={size}
                       id='page-size-options'>
                     {pageSizeOption.map(function (value, i) {
