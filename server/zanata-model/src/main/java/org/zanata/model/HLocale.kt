@@ -122,13 +122,13 @@ class HLocale : ModelEntityBase, Serializable, HasUserFriendlyToString {
     /**
      * Gets the default name of the locale according to that locale, from ICU4J.
      */
-    fun retrieveDefaultNativeName() = asULocale().getDisplayName(asULocale())
+    fun retrieveDefaultNativeName(): String = asULocale().getDisplayName(asULocale())
 
     /**
      * Gets the name of the locale according to the server's default locale,
      * from ICU4J.
      */
-    fun retrieveDefaultDisplayName() = asULocale().displayName
+    fun retrieveDefaultDisplayName(): String = asULocale().displayName
 
     /**
      * Gets the ICU4J ULocale for this locale.

@@ -38,7 +38,7 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
 
     constructor(session: Session) : super(HLocale::class.java, session) {}
 
-    fun findByLocaleId(locale: LocaleId) = session.byNaturalId(HLocale::class.java)
+    fun findByLocaleId(locale: LocaleId): HLocale? = session.byNaturalId(HLocale::class.java)
                 .using("localeId", locale).load()
 
     fun findBySimilarLocaleId(localeId: LocaleId): List<HLocale> {
@@ -50,12 +50,12 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
         return result as List<HLocale>
     }
 
-    fun findAllActive() = findByCriteria(Restrictions.eq("active", true))
+    fun findAllActive(): List<HLocale> = findByCriteria(Restrictions.eq("active", true))
 
-    fun findAllActiveAndEnabledByDefault() = findByCriteria(Restrictions.eq("active", true),
+    fun findAllActiveAndEnabledByDefault(): List<HLocale> = findByCriteria(Restrictions.eq("active", true),
                 Restrictions.eq("enabledByDefault", true))
 
-    override fun findAll() = findByCriteria()
+    override fun findAll(): List<HLocale> = findByCriteria()
 
     fun find(offset: Int, maxResults: Int, filter: String?,
             sortFields: List<LocaleSortField>?, onlyActive: Boolean): List<HLocale> {
