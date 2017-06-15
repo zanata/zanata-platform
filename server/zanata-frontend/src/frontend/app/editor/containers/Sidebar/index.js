@@ -60,6 +60,12 @@ class Sidebar extends Component {
         pullRight
         onSetOpen={this.setOpen}
         shadow
+        styles={{
+          content: {
+            // prevents unwanted padding to the right from default 'scroll'
+            overflowY: 'auto'
+          }
+        }}
         sidebarClassName="sidebar-editor">
         {this.props.children}
       </ReactSidebar>
