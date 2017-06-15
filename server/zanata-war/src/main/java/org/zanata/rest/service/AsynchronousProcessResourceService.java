@@ -216,38 +216,7 @@ public class AsynchronousProcessResourceService
             throw new NotFoundException(
                     "A process was not found for id " + processId);
         }
-        ProcessStatus status = new ProcessStatus();
-        status.setStatusCode(handle.isDone() ? ProcessStatusCode.Finished
-                : ProcessStatusCode.Running);
-        int perComplete = 100;
-        if (handle.getMaxProgress() > 0) {
-            perComplete = (int) (handle.getCurrentProgress() * 100
-                                / handle.getMaxProgress());
-        }
-        status.setPercentageComplete(perComplete);
-        status.setUrl("" + processId);
-        if (handle.isDone()) {
-            Object result = null;
-            try {
-                result = handle.getResult();
-            } catch (InterruptedException e) {
-                // The process was forcefully cancelled
-                status.setStatusCode(ProcessStatusCode.Failed);
-                status.setMessages(Lists.newArrayList(e.getMessage()));
-            } catch (ExecutionException e) {
-                // Exception thrown while running the task
-                status.setStatusCode(ProcessStatusCode.Failed);
-                status.setMessages(
-                        Lists.newArrayList(e.getCause().getMessage()));
-            }
-            // TODO Need to find a generic way of returning all object types.
-            // Since the only current
-            // scenario involves lists of strings, hardcoding to that
-            if (result != null && result instanceof List) {
-                status.getMessages().addAll((List) result);
-            }
-        }
-        return status;
+        return AsyncProcessService.handleToProcessStatus(handle, processId);
     }
 
     private HProjectIteration retrieveAndCheckIteration(String projectSlug,
