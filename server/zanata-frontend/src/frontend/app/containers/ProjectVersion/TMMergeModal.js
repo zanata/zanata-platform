@@ -2,12 +2,12 @@ import React, {PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
 import Draggable from 'react-draggable'
 import {
-  Button, Panel, Row, Checkbox, InputGroup, Col,
-  FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem, PanelGroup,
-  OverlayTrigger, Tooltip, Label
+  Button, Panel, Row, Checkbox, InputGroup, Col, Label,
+  FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem
 }
   from 'react-bootstrap'
 import {Icon, Modal} from '../../components'
+import ProjectVersionPanels from '../../components/ProjectVersionPanels'
 
 import {
   loadVersionLocales,
@@ -87,10 +87,6 @@ class TMMergeModal extends Component {
       // TODO: Use Real Actions
       // console.info('clicked')
     }
-    const tooltipReadOnly = (
-      <Tooltip id='tooltipreadonly'>Read only
-      </Tooltip>
-    )
     const currentProject = projectSlug
     const currentVersion = versionSlug
     const showHide = showTMMergeModal ? {display: 'block'} : {display: 'none'}
@@ -158,32 +154,6 @@ class TMMergeModal extends Component {
               />
           )
         })
-    // Source Project Versions to Merge options handling
-    const firstProject = projectVersions[0]
-    // Check there is a first project
-    const projectPanels = firstProject
-        ? projectVersions.map((project, index) => {
-          return (
-            <Panel header={<h3><Checkbox>{project.title}</Checkbox></h3>}
-              key={index} eventKey={index}>
-              <ListGroup fill>
-              {project.versions.map((version, index) => {
-                const lockIcon = version.status === 'READONLY'
-                  ? <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
-                    <Icon name='locked' className='s0 icon-locked' />
-                  </OverlayTrigger>
-                  : ''
-                return (
-                  <ListGroupItem className='v' key={index}>
-                    <Checkbox>{version.id}{" "}{lockIcon}</Checkbox>
-                  </ListGroupItem>
-                )
-              })}
-              </ListGroup>
-            </Panel>
-          )
-        })
-        : ''
     return (
       <Modal style={showHide}
         show
@@ -313,9 +283,7 @@ class TMMergeModal extends Component {
                   <span className='vmerge-adjtitle
                   vmerge-title'>Select source project versions to merge
                   </span>
-                  <PanelGroup defaultActiveKey='1' accordion>
-                    {projectPanels}
-                  </PanelGroup>
+                  <ProjectVersionPanels projectVersions={projectVersions} />
                 </Col>
                 <Col xs={6}>
                   <ListGroup>
