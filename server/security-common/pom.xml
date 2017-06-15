@@ -33,24 +33,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>io.takari.maven.plugins</groupId>
-        <artifactId>takari-lifecycle-plugin</artifactId>
-        <configuration>
-          <proc>none</proc>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <compilerArgs combine.children="append">
-            <arg>-proc:none</arg>
-          </compilerArgs>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

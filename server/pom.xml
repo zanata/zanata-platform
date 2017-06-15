@@ -19,7 +19,7 @@
   </scm>
 
   <properties>
-    <runtime.annotations>
+    <annotationclaim.annotations>
       com.google.common.annotations.Beta
       com.google.common.annotations.VisibleForTesting
       com.google.gwt.user.client.rpc.RemoteServiceRelativePath
@@ -248,7 +248,7 @@
       org.zanata.util.Zanata
       org.zanata.webtrans.server.ActionHandlerFor
       org.zanata.webtrans.server.TranslationWorkspaceManagerImplTest.UseRealWorkspaceManagerFactory
-    </runtime.annotations>
+    </annotationclaim.annotations>
     <byteman.version>2.1.2</byteman.version>
     <failsafe.skipAfterFailureCount>10</failsafe.skipAfterFailureCount>
     <failsafe.rerunFailingTestsCount>0</failsafe.rerunFailingTestsCount>
@@ -2189,9 +2189,17 @@
         </executions>
         <configuration>
           <annotationProcessorOptions>
-            <org.zanata.annotationclaim.annotations>${runtime.annotations}</org.zanata.annotationclaim.annotations>
+            <org.zanata.annotationclaim.annotations>${annotationclaim.annotations}</org.zanata.annotationclaim.annotations>
+            <!--<org.zanata.annotationclaim.verbose>true</org.zanata.annotationclaim.verbose>-->
           </annotationProcessorOptions>
         </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.zanata</groupId>
+            <artifactId>annotationclaim</artifactId>
+            <version>1.0</version>
+          </dependency>
+        </dependencies>
       </plugin>
 
       <plugin>
