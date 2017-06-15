@@ -31,28 +31,11 @@ import com.google.common.base.MoreObjects;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> {
-    private long textFlowFilled;
-    private long totalTextFlows;
     private String cancelledBy;
     private Long cancelledTime;
     private String triggeredBy;
     private String mergeTarget;
 
-    public long getTextFlowFilled() {
-        return this.textFlowFilled;
-    }
-
-    public void setTextFlowFilled(final long textFlowFilled) {
-        this.textFlowFilled = textFlowFilled;
-    }
-
-    public long getTotalTextFlows() {
-        return this.totalTextFlows;
-    }
-
-    public void setTotalTextFlows(final long totalTextFlows) {
-        this.totalTextFlows = totalTextFlows;
-    }
 
     public String getCancelledBy() {
         return this.cancelledBy;
@@ -84,17 +67,13 @@ public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> {
                 documentId.getDocId(), localeId);
     }
 
-    public String getMergeTarget() {
-        return mergeTarget;
-    }
-
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
                 .omitNullValues()
                 .add("mergeTarget", mergeTarget)
-                .add("textFlowFilled", textFlowFilled)
-                .add("totalTextFlows", totalTextFlows)
+                .add("textFlowFilled", currentProgress)
+                .add("totalTextFlows", maxProgress)
                 .add("cancelledBy", cancelledBy)
                 .add("cancelledTime", cancelledTime)
                 .add("triggeredBy", triggeredBy)
