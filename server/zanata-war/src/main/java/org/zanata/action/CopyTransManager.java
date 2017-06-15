@@ -21,11 +21,12 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javax.annotation.Nonnull;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
+
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.CopyTransTaskHandle;
@@ -34,6 +35,10 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
+
+import com.google.common.base.Preconditions;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 // TODO This class should be merged with the copy trans service (?)
 
 /**
@@ -145,8 +150,10 @@ public class CopyTransManager implements Serializable {
     /**
      * Internal class to index Copy Trans processes.
      */
-    private static final class CopyTransProcessKey implements Serializable {
+    private static final class CopyTransProcessKey implements
+            AsyncTaskHandleManager.AsyncTaskKey<CopyTransProcessKey> {
         private static final long serialVersionUID = -2054359069473618887L;
+        private static final String KEY_NAME = "copyTransKey";
         private String projectSlug;
         private String iterationSlug;
         private String docId;
@@ -165,46 +172,6 @@ public class CopyTransManager implements Serializable {
                     document.getProjectIteration().getProject().getSlug());
             newKey.setIterationSlug(document.getProjectIteration().getSlug());
             return newKey;
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (o == this)
-                return true;
-            if (!(o instanceof CopyTransManager.CopyTransProcessKey))
-                return false;
-            final CopyTransProcessKey other = (CopyTransProcessKey) o;
-            final Object this$projectSlug = this.getProjectSlug();
-            final Object other$projectSlug = other.getProjectSlug();
-            if (this$projectSlug == null ? other$projectSlug != null
-                    : !this$projectSlug.equals(other$projectSlug))
-                return false;
-            final Object this$iterationSlug = this.getIterationSlug();
-            final Object other$iterationSlug = other.getIterationSlug();
-            if (this$iterationSlug == null ? other$iterationSlug != null
-                    : !this$iterationSlug.equals(other$iterationSlug))
-                return false;
-            final Object this$docId = this.getDocId();
-            final Object other$docId = other.getDocId();
-            if (this$docId == null ? other$docId != null
-                    : !this$docId.equals(other$docId))
-                return false;
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $projectSlug = this.getProjectSlug();
-            result = result * PRIME
-                    + ($projectSlug == null ? 43 : $projectSlug.hashCode());
-            final Object $iterationSlug = this.getIterationSlug();
-            result = result * PRIME
-                    + ($iterationSlug == null ? 43 : $iterationSlug.hashCode());
-            final Object $docId = this.getDocId();
-            result = result * PRIME + ($docId == null ? 43 : $docId.hashCode());
-            return result;
         }
 
         public String getProjectSlug() {
@@ -232,6 +199,21 @@ public class CopyTransManager implements Serializable {
         }
 
         private CopyTransProcessKey() {
+        }
+
+        @Override
+        public String id() {
+            return joinFields(KEY_NAME, projectSlug, iterationSlug, docId);
+        }
+
+        @Override
+        public CopyTransProcessKey from(String id) {
+            List<String> parts = parseId(id, KEY_NAME, 3);
+            CopyTransProcessKey key = new CopyTransProcessKey();
+            key.projectSlug = parts.get(0);
+            key.iterationSlug = parts.get(1);
+            key.docId = parts.get(2);
+            return key;
         }
     }
 }

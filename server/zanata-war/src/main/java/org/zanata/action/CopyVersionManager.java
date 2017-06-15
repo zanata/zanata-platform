@@ -1,6 +1,8 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.List;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -83,53 +85,26 @@ public class CopyVersionManager implements Serializable {
     /**
      * Key used for copy version task
      *
-     * @param projectSlug
-     *            - target project identifier
-     * @param versionSlug
-     *            - target version identifier
      */
-    public static final class CopyVersionKey implements Serializable {
+    public static final class CopyVersionKey implements
+            AsyncTaskHandleManager.AsyncTaskKey<CopyVersionKey> {
+        private static final String KEY_NAME = "copyVersion";
+        private static final long serialVersionUID = 3889349239078033373L;
         // target project identifier
         private final String projectSlug;
         // target version identifier
         private final String versionSlug;
 
+        /**
+         *
+         * @param projectSlug
+         *            - target project identifier
+         * @param versionSlug
+         *            - target version identifier
+         */
         public static CopyVersionKey getKey(String projectSlug,
                 String versionSlug) {
             return new CopyVersionKey(projectSlug, versionSlug);
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (o == this)
-                return true;
-            if (!(o instanceof CopyVersionManager.CopyVersionKey))
-                return false;
-            final CopyVersionKey other = (CopyVersionKey) o;
-            final Object this$projectSlug = this.getProjectSlug();
-            final Object other$projectSlug = other.getProjectSlug();
-            if (this$projectSlug == null ? other$projectSlug != null
-                    : !this$projectSlug.equals(other$projectSlug))
-                return false;
-            final Object this$versionSlug = this.getVersionSlug();
-            final Object other$versionSlug = other.getVersionSlug();
-            if (this$versionSlug == null ? other$versionSlug != null
-                    : !this$versionSlug.equals(other$versionSlug))
-                return false;
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $projectSlug = this.getProjectSlug();
-            result = result * PRIME
-                    + ($projectSlug == null ? 43 : $projectSlug.hashCode());
-            final Object $versionSlug = this.getVersionSlug();
-            result = result * PRIME
-                    + ($versionSlug == null ? 43 : $versionSlug.hashCode());
-            return result;
         }
 
         public String getProjectSlug() {
@@ -145,6 +120,17 @@ public class CopyVersionManager implements Serializable {
                 final String versionSlug) {
             this.projectSlug = projectSlug;
             this.versionSlug = versionSlug;
+        }
+
+        @Override
+        public String id() {
+            return joinFields(KEY_NAME, projectSlug, versionSlug);
+        }
+
+        @Override
+        public CopyVersionKey from(String id) {
+            List<String> parts = parseId(id, KEY_NAME, 2);
+            return getKey(parts.get(0), parts.get(1));
         }
     }
 }

@@ -211,7 +211,7 @@ public class AsynchronousProcessResourceService
     @Override
     public ProcessStatus getProcessStatus(String processId) {
         AsyncTaskHandle handle =
-                asyncTaskHandleManager.getHandleByKey(processId);
+                asyncTaskHandleManager.getHandleByKeyId(processId);
         if (handle == null) {
             throw new NotFoundException(
                     "A process was not found for id " + processId);

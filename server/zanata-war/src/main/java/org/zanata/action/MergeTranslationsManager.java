@@ -1,10 +1,12 @@
 package org.zanata.action;
 
 import java.io.Serializable;
+import java.util.List;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
-import javax.inject.Named;
+
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.security.ZanataIdentity;
@@ -48,7 +50,9 @@ public class MergeTranslationsManager implements Serializable {
     public void start(String sourceProjectSlug, String sourceVersionSlug,
             String targetProjectSlug, String targetVersionSlug,
             boolean useNewerTranslation) {
-        Key key = Key.getKey(targetProjectSlug, targetVersionSlug);
+        MergeVersionKey
+                key = MergeVersionKey
+                .getKey(targetProjectSlug, targetVersionSlug);
         MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         mergeTranslationsServiceImpl.startMergeTranslations(sourceProjectSlug,
@@ -79,7 +83,7 @@ public class MergeTranslationsManager implements Serializable {
     public MergeTranslationsTaskHandle getProcessHandle(String projectSlug,
             String versionSlug) {
         return (MergeTranslationsTaskHandle) asyncTaskHandleManager
-                .getHandleByKey(Key.getKey(projectSlug, versionSlug));
+                .getHandleByKey(MergeVersionKey.getKey(projectSlug, versionSlug));
     }
 
     public boolean isRunning(String projectSlug, String versionSlug) {
@@ -89,50 +93,21 @@ public class MergeTranslationsManager implements Serializable {
     }
 
     /**
-     * Key used for copy version task
+     * Key used for merge version task
      */
-    public static final class Key implements Serializable {
+    public static final class MergeVersionKey implements
+            AsyncTaskHandleManager.AsyncTaskKey<MergeVersionKey> {
+        private static final long serialVersionUID = 1L;
+        private static final String KEY_NAME = "mergeVersion";
         // target project identifier
         private final String projectSlug;
         // target version identifier
         private final String versionSlug;
 
-        public static Key getKey(String projectSlug, String versionSlug) {
-            return new Key(projectSlug, versionSlug);
+        public static MergeVersionKey getKey(String projectSlug, String versionSlug) {
+            return new MergeVersionKey(projectSlug, versionSlug);
         }
 
-        @Override
-        public boolean equals(final Object o) {
-            if (o == this)
-                return true;
-            if (!(o instanceof MergeTranslationsManager.Key))
-                return false;
-            final Key other = (Key) o;
-            final Object this$projectSlug = this.getProjectSlug();
-            final Object other$projectSlug = other.getProjectSlug();
-            if (this$projectSlug == null ? other$projectSlug != null
-                    : !this$projectSlug.equals(other$projectSlug))
-                return false;
-            final Object this$versionSlug = this.getVersionSlug();
-            final Object other$versionSlug = other.getVersionSlug();
-            if (this$versionSlug == null ? other$versionSlug != null
-                    : !this$versionSlug.equals(other$versionSlug))
-                return false;
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $projectSlug = this.getProjectSlug();
-            result = result * PRIME
-                    + ($projectSlug == null ? 43 : $projectSlug.hashCode());
-            final Object $versionSlug = this.getVersionSlug();
-            result = result * PRIME
-                    + ($versionSlug == null ? 43 : $versionSlug.hashCode());
-            return result;
-        }
 
         public String getProjectSlug() {
             return this.projectSlug;
@@ -143,9 +118,20 @@ public class MergeTranslationsManager implements Serializable {
         }
 
         @java.beans.ConstructorProperties({ "projectSlug", "versionSlug" })
-        public Key(final String projectSlug, final String versionSlug) {
+        public MergeVersionKey(final String projectSlug, final String versionSlug) {
             this.projectSlug = projectSlug;
             this.versionSlug = versionSlug;
+        }
+
+        @Override
+        public String id() {
+            return joinFields(KEY_NAME, projectSlug, versionSlug);
+        }
+
+        @Override
+        public MergeVersionKey from(String id) {
+            List<String> parts = parseId(id, KEY_NAME, 2);
+            return getKey(parts.get(0), parts.get(1));
         }
     }
 }

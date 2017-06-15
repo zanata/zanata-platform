@@ -57,7 +57,7 @@ public class GetDownloadAllFilesProgressHandler
         String downloadId = "";
 
         AsyncTaskHandle<String> handle =
-                asyncTaskHandleManager.getHandleByKey(action.getProcessId());
+                asyncTaskHandleManager.getHandleByKeyId(action.getProcessId());
         if (handle != null) {
             if (handle.isDone()) {
                 try {

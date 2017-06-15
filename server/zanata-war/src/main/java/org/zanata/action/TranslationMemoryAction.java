@@ -89,7 +89,7 @@ public class TranslationMemoryAction implements Serializable {
     }
 
     public void sortTMList() {
-        Collections.sort(transMemoryList, tmComparator);
+        transMemoryList.sort(tmComparator);
     }
 
     public void clearTransMemory(final String transMemorySlug) {
@@ -198,7 +198,10 @@ public class TranslationMemoryAction implements Serializable {
      * NB: Eventually this class might need to live outside if there are other
      * services that need to control this process.
      */
-    private static class ClearTransMemoryProcessKey implements Serializable {
+    private static class ClearTransMemoryProcessKey implements
+            AsyncTaskHandleManager.AsyncTaskKey<ClearTransMemoryProcessKey> {
+        private static final String KEY_NAME = "ClearTMXKey";
+        private static final long serialVersionUID = 3472355792561903500L;
         private String slug;
 
         @java.beans.ConstructorProperties({ "slug" })
@@ -207,34 +210,14 @@ public class TranslationMemoryAction implements Serializable {
         }
 
         @Override
-        public boolean equals(final Object o) {
-            if (o == this)
-                return true;
-            if (!(o instanceof TranslationMemoryAction.ClearTransMemoryProcessKey))
-                return false;
-            final ClearTransMemoryProcessKey other =
-                    (ClearTransMemoryProcessKey) o;
-            if (!other.canEqual((Object) this))
-                return false;
-            final Object this$slug = this.slug;
-            final Object other$slug = other.slug;
-            if (this$slug == null ? other$slug != null
-                    : !this$slug.equals(other$slug))
-                return false;
-            return true;
-        }
-
-        protected boolean canEqual(final Object other) {
-            return other instanceof TranslationMemoryAction.ClearTransMemoryProcessKey;
+        public String id() {
+            return joinFields(KEY_NAME, slug);
         }
 
         @Override
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $slug = this.slug;
-            result = result * PRIME + ($slug == null ? 43 : $slug.hashCode());
-            return result;
+        public ClearTransMemoryProcessKey from(String id) {
+            List<String> parts = parseId(id, KEY_NAME, 1);
+            return new ClearTransMemoryProcessKey(parts.get(0));
         }
     }
 

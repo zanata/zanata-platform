@@ -21,12 +21,12 @@
 package org.zanata.rest.editor.service;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.AsyncTaskHandle;
@@ -36,12 +36,8 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
-import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
-
-import com.google.common.base.MoreObjects;
 
 /**
  * @author Patrick Huang
@@ -51,6 +47,7 @@ import com.google.common.base.MoreObjects;
 public class TransMemoryMergeManager implements Serializable {
     private static final Logger log =
             LoggerFactory.getLogger(TransMemoryMergeManager.class);
+    private static final long serialVersionUID = 1364316697376958035L;
     private final AsyncTaskHandleManager asyncTaskHandleManager;
 
     private final TransMemoryMergeService transMemoryMergeService;
@@ -77,9 +74,9 @@ public class TransMemoryMergeManager implements Serializable {
      *             if there is already a task running
      */
     public boolean startTransMemoryMerge(TransMemoryMergeRequest request) {
-        TransMemoryTaskKey key =
-                new TransMemoryTaskKey(request.projectIterationId,
-                        request.documentId, request.localeId);
+        TMMergeForDocTaskKey key =
+                new TMMergeForDocTaskKey(
+                        request.documentId.getId(), request.localeId);
         AsyncTaskHandle handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
         if (handleByKey == null || handleByKey.isCancelled()
@@ -94,9 +91,9 @@ public class TransMemoryMergeManager implements Serializable {
     }
 
     public boolean cancelTransMemoryMerge(TransMemoryMergeCancelRequest request) {
-        TransMemoryTaskKey key =
-                new TransMemoryTaskKey(request.projectIterationId,
-                        request.documentId, request.localeId);
+        TMMergeForDocTaskKey key =
+                new TMMergeForDocTaskKey(
+                        request.documentId.getId(), request.localeId);
         AsyncTaskHandle handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
         if (handleByKey != null && !(handleByKey.isDone() || handleByKey.isCancelled())) {
@@ -116,42 +113,34 @@ public class TransMemoryMergeManager implements Serializable {
         return false;
     }
 
-    static class TransMemoryTaskKey implements Serializable {
+    static class TMMergeForDocTaskKey implements
+            AsyncTaskHandleManager.AsyncTaskKey<TMMergeForDocTaskKey> {
 
-        @SuppressFBWarnings("SE_BAD_FIELD")
-        private final ProjectIterationId projectIterationId;
-        private final DocumentId documentId;
+        private static final long serialVersionUID = -7210004008208642L;
+        private static final String KEY_NAME = "TMMergeForDocKey";
+        private final Long documentId;
         private final LocaleId localeId;
 
-        TransMemoryTaskKey(ProjectIterationId projectIterationId,
-                DocumentId documentId, LocaleId localeId) {
-
-            this.projectIterationId = projectIterationId;
+        TMMergeForDocTaskKey(Long documentId, LocaleId localeId) {
             this.documentId = documentId;
             this.localeId = localeId;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            TransMemoryTaskKey that = (TransMemoryTaskKey) o;
-            return Objects.equals(projectIterationId, that.projectIterationId)
-                    && Objects.equals(documentId, that.documentId)
-                    && Objects.equals(localeId, that.localeId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(projectIterationId, documentId, localeId);
-        }
-
-        @Override
         public String toString() {
-            return MoreObjects.toStringHelper(this)
-                    .add("projectIterationId", projectIterationId)
-                    .add("documentId", documentId).add("localeId", localeId)
-                    .toString();
+            return id();
+        }
+
+        @Override
+        public String id() {
+            return joinFields(KEY_NAME, documentId.toString(), localeId.getId());
+        }
+
+        @Override
+        public TMMergeForDocTaskKey from(String id) {
+            List<String> parts = parseId(id, KEY_NAME, 2);
+            return new TMMergeForDocTaskKey(Long.parseLong(parts.get(0)),
+                    new LocaleId(parts.get(1)));
         }
     }
 }
