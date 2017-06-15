@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import utilsDate from '../../utils/DateHelper'
-import { Line as LineChart } from 'react-chartjs'
+import { Line as LineChart } from 'react-chartjs-2'
 
 var defaultChartOptions = {
   animationEasing: 'easeOutQuint',
@@ -145,8 +145,8 @@ class ContributionChart extends React.Component {
       <LineChart
         data={chartData}
         options={chartOptions}
-        width='800'
-        height='250' />
+        width={800}
+        height={250} />
     )
   }
 }
