@@ -221,8 +221,8 @@ public class AsynchronousProcessResourceService
                 : ProcessStatusCode.Running);
         int perComplete = 100;
         if (handle.getMaxProgress() > 0) {
-            perComplete = (handle.getCurrentProgress() * 100
-                    / handle.getMaxProgress());
+            perComplete = (int) (handle.getCurrentProgress() * 100
+                                / handle.getMaxProgress());
         }
         status.setPercentageComplete(perComplete);
         status.setUrl("" + processId);

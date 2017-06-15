@@ -34,6 +34,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
@@ -106,9 +107,13 @@ public class AsyncTaskHandleManager implements Serializable {
 
     public Collection<AsyncTaskHandle> getAllHandles() {
         Collection<AsyncTaskHandle> handles = Lists.newArrayList();
-        handles.addAll(handlesByKey.values());
+        handles.addAll(getRunningHandles());
         handles.addAll(finishedTasks.asMap().values());
         return handles;
+    }
+
+    public Collection<AsyncTaskHandle> getRunningHandles() {
+        return ImmutableList.copyOf(handlesByKey.values());
     }
 
     public interface AsyncTaskKey<T> extends Serializable {

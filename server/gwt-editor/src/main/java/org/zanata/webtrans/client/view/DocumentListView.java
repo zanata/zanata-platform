@@ -222,7 +222,7 @@ public class DocumentListView extends Composite implements DocumentListDisplay {
 
     @Override
     public void
-            updateFileDownloadProgress(int currentProgress, int maxProgress) {
+            updateFileDownloadProgress(long currentProgress, long maxProgress) {
         confirmationBox.setProgressMessage(currentProgress + " of "
                 + maxProgress);
     }

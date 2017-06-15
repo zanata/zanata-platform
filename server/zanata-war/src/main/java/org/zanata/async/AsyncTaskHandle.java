@@ -42,13 +42,12 @@ public class AsyncTaskHandle<V> implements Serializable {
 
     @SuppressFBWarnings("SE_BAD_FIELD")
     private CompletableFuture<V> futureResult;
-    public int maxProgress = 100;
-    public int minProgress = 0;
-    public int currentProgress = 0;
+    public long maxProgress = 100;
+    public long currentProgress = 0;
     private long startTime = -1;
     private long finishTime = -1;
 
-    public int increaseProgress(int increaseBy) {
+    public long increaseProgress(long increaseBy) {
         currentProgress += increaseBy;
         return currentProgress;
     }
@@ -95,7 +94,7 @@ public class AsyncTaskHandle<V> implements Serializable {
         if (this.startTime > 0 && currentProgress > 0) {
             long currentTime = System.currentTimeMillis();
             long timeElapsed = currentTime - this.startTime;
-            int remainingUnits = this.maxProgress - this.currentProgress;
+            long remainingUnits = this.maxProgress - this.currentProgress;
             return Optional
                     .of(timeElapsed * remainingUnits / this.currentProgress);
         } else {
@@ -151,27 +150,19 @@ public class AsyncTaskHandle<V> implements Serializable {
         this.futureResult = futureResult;
     }
 
-    public int getMaxProgress() {
+    public long getMaxProgress() {
         return this.maxProgress;
     }
 
-    public void setMaxProgress(final int maxProgress) {
+    public void setMaxProgress(final long maxProgress) {
         this.maxProgress = maxProgress;
     }
 
-    public int getMinProgress() {
-        return this.minProgress;
-    }
-
-    public void setMinProgress(final int minProgress) {
-        this.minProgress = minProgress;
-    }
-
-    public int getCurrentProgress() {
+    public long getCurrentProgress() {
         return this.currentProgress;
     }
 
-    public void setCurrentProgress(final int currentProgress) {
+    protected void setCurrentProgress(final long currentProgress) {
         this.currentProgress = currentProgress;
     }
 

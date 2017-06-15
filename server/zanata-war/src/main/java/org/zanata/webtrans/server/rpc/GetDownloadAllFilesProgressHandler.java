@@ -52,8 +52,8 @@ public class GetDownloadAllFilesProgressHandler
     public GetDownloadAllFilesProgressResult execute(
             GetDownloadAllFilesProgress action, ExecutionContext context)
             throws ActionException {
-        int currentProgress = 0;
-        int maxProgress = 0;
+        long currentProgress = 0;
+        long maxProgress = 0;
         String downloadId = "";
 
         AsyncTaskHandle<String> handle =
