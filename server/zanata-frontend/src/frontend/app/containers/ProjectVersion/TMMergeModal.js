@@ -37,7 +37,7 @@ class TMMergeModal extends Component {
       differentContext: false,
       fromImportedTM: false,
       selectedLanguage: '',
-      fromProjectVersion: [],
+      fromProjectVersion: [], // For priority of versions
       projectSearchTerm: this.props.projectSlug
     }
   }
@@ -75,6 +75,14 @@ class TMMergeModal extends Component {
     this.props.openProjectPage(this.state.projectSearchTerm)
   }
   render () {
+    const {
+      showTMMergeModal,
+      openTMMergeModal,
+      projectSlug,
+      versionSlug,
+      locales,
+      projectVersions
+    } = this.props
     const action = (message) => {
       // TODO: Use Real Actions
       // console.info('clicked')
@@ -83,22 +91,16 @@ class TMMergeModal extends Component {
       <Tooltip id='tooltipreadonly'>Read only
       </Tooltip>
     )
-    const heading1 = <h3><Checkbox> Project A</Checkbox></h3>
-    const heading2 = <h3><Checkbox> Project B
-      <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
-        <Icon name='locked'
-          className='s0 icon-locked' />
-      </OverlayTrigger>
-    </Checkbox></h3>
-    const currentProject = this.props.projectSlug
-    const currentVersion = this.props.versionSlug
-    const short = this.props.showTMMergeModal
-    const showHide = short ? {display: 'block'} : {display: 'none'}
+    const currentProject = projectSlug
+    const currentVersion = versionSlug
+    const showHide = showTMMergeModal ? {display: 'block'} : {display: 'none'}
     const percentageItems = [100, 90, 80].map(percentage => {
       return (
         <IndexedMenuItem onClick={this.onPercentSelection}
           percentage={percentage}
-          matchPercentage={this.state.matchPercentage} />
+          matchPercentage={this.state.matchPercentage}
+          key={percentage}
+        />
       )
     })
     // Different DocID Checkbox handling
@@ -144,7 +146,7 @@ class TMMergeModal extends Component {
           Don't Copy
         </Label>)
     // Language Dropdown handling
-    const languageMenu = this.props.locales
+    const languageMenu = locales
         .map((locale, index) => {
           return (
             <LanguageMenuItem
@@ -152,13 +154,40 @@ class TMMergeModal extends Component {
               language={locale.displayName}
               selectedLanguage={this.state.selectedLanguage}
               eventKey={index}
+              key={index}
               />
           )
         })
+    // Source Project Versions to Merge options handling
+    const firstProject = projectVersions[0]
+    // Check there is a first project
+    const projectPanels = firstProject
+        ? projectVersions.map((project, index) => {
+          return (
+            <Panel header={<h3><Checkbox>{project.title}</Checkbox></h3>}
+              key={index} eventKey={index}>
+              <ListGroup fill>
+              {project.versions.map((version, index) => {
+                const lockIcon = version.status === 'READONLY'
+                  ? <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
+                    <Icon name='locked' className='s0 icon-locked' />
+                  </OverlayTrigger>
+                  : ''
+                return (
+                  <ListGroupItem className='v' key={index}>
+                    <Checkbox>{version.id}{" "}{lockIcon}</Checkbox>
+                  </ListGroupItem>
+                )
+              })}
+              </ListGroup>
+            </Panel>
+          )
+        })
+        : ''
     return (
       <Modal style={showHide}
         show
-        onHide={this.props.openTMMergeModal}>
+        onHide={openTMMergeModal}>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
         </Modal.Header>
@@ -285,22 +314,7 @@ class TMMergeModal extends Component {
                   vmerge-title'>Select source project versions to merge
                   </span>
                   <PanelGroup defaultActiveKey='1' accordion>
-                    <Panel header={heading1} eventKey='1'>
-                      <ListGroup fill>
-                        <ListGroupItem className='v'><Checkbox>2.0
-                        </Checkbox>
-                        </ListGroupItem>
-                        <ListGroupItem className='v'><Checkbox>1.0
-                        </Checkbox>
-                        </ListGroupItem>
-                      </ListGroup>
-                    </Panel>
-                    <Panel header={heading2} eventKey='2'>
-                      <ListGroup fill>
-                        <ListGroupItem className='v'><Checkbox>1.0</Checkbox>
-                        </ListGroupItem>
-                      </ListGroup>
-                    </Panel>
+                    {projectPanels}
                   </PanelGroup>
                 </Col>
                 <Col xs={6}>
@@ -345,7 +359,7 @@ class TMMergeModal extends Component {
             <Row>
               <Button bsStyle='link'
                 className='btn-left link-danger'
-                onClick={this.props.openTMMergeModal}>
+                onClick={openTMMergeModal}>
                 Cancel
               </Button>
               <Button
