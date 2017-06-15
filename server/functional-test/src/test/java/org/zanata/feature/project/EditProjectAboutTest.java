@@ -23,7 +23,7 @@ package org.zanata.feature.project;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectAboutPage;
@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class EditProjectAboutTest extends ZanataTestCase {
 
-    @Feature(summary = "The administrator can change a project about content")
+    @Trace(summary = "The administrator can change a project about content")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addAboutPageDetails() throws Exception {
         new ZanataRestCaller().createProjectAndVersion(

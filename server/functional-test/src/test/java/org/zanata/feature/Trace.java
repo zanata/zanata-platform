@@ -25,17 +25,14 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * @author Damian Jansen
+ *         <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.METHOD })
-/**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
- */
-public @interface Feature {
-    int NO_BUG = 0;
-
-    int bugzilla() default NO_BUG;
-    String summary() default "no description";
+public @interface Trace {
+    String summary() default "Summary undefined";
     int[] testPlanIds() default {};
     int[] testCaseIds() default {};
 }

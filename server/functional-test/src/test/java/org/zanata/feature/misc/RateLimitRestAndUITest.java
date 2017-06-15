@@ -26,7 +26,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.administration.AdministrationPage;
@@ -52,7 +52,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Feature(summary = "The system can be set to rate consecutive REST access calls")
+@Trace(summary = "The system can be set to rate consecutive REST access calls")
 @Category(DetailedTest.class)
 public class RateLimitRestAndUITest extends ZanataTestCase {
     private static final org.slf4j.Logger log =

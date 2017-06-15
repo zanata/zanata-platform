@@ -24,7 +24,7 @@ package org.zanata.feature.language;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.administration.AddLanguagePage;
@@ -52,7 +52,7 @@ public class AddLanguageTest extends ZanataTestCase {
                 .as("Admin is logged in");
     }
 
-    @Feature(summary = "The administrator can add a language to Zanata")
+    @Trace(summary = "The administrator can add a language to Zanata")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addLanguageAsEnabledByDefault() throws Exception {
         String language = "Goa'uld";
@@ -94,7 +94,7 @@ public class AddLanguageTest extends ZanataTestCase {
                 .as("The language is enabled by default");
     }
 
-    @Feature(summary = "The administrator can add a disabled language to Zanata")
+    @Trace(summary = "The administrator can add a disabled language to Zanata")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addLanguageAsDisabledByDefault() throws Exception {
         String language = "Klingon";
@@ -136,7 +136,7 @@ public class AddLanguageTest extends ZanataTestCase {
                 .as("The language is disabled by default");
     }
 
-    @Feature(summary = "The administrator can add a known language to Zanata")
+    @Trace(summary = "The administrator can add a known language to Zanata")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addKnownLanguage() throws Exception {
         String language = "ru-RU";

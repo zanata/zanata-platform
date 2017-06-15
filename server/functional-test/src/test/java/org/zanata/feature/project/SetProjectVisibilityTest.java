@@ -1,7 +1,7 @@
 package org.zanata.feature.project;
 
 import org.junit.Test;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.explore.ExplorePage;
 import org.zanata.workflow.LoginWorkFlow;
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class SetProjectVisibilityTest extends ZanataTestCase {
 
-    @Feature(summary = "The administrator can delete a project")
+    @Trace(summary = "The administrator can delete a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void deleteAProject() throws Exception {
         ExplorePage explore = new LoginWorkFlow()

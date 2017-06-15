@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.administration.ManageSearchPage;
@@ -47,7 +47,7 @@ public class ManageSearchTest extends ZanataTestCase {
         dashboardPage = new BasicWorkFlow().goToDashboard();
     }
 
-    @Feature(summary = "The administrator can clear and regenerate all of the " +
+    @Trace(summary = "The administrator can clear and regenerate all of the " +
             "search indexes")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("RHBZ1180948 JBoss issue")
@@ -73,7 +73,7 @@ public class ManageSearchTest extends ZanataTestCase {
                 .as("No operations are running");
     }
 
-    @Feature(summary = "The administrator can abort the regeneration of the " +
+    @Trace(summary = "The administrator can abort the regeneration of the " +
             "search indexes")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Data set not large enough to achieve stable test")

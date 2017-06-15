@@ -792,11 +792,12 @@
               <properties>
                 <property>
                   <name>listener</name>
-                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.TestLogger</value>
+                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.TestLogger,org.zanata.util.TestTracing</value>
                 </property>
               </properties>
               <systemPropertyVariables>
                 <maven.home>${maven.home}</maven.home>
+                <traceLocation>${project.build.directory}/test-classes/traceability</traceLocation>
               </systemPropertyVariables>
             </configuration>
           </plugin>

@@ -27,7 +27,7 @@ import org.junit.experimental.categories.Category;
 import org.xml.sax.InputSource;
 import org.zanata.adapter.po.PoReader2;
 import org.zanata.common.LocaleId;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
@@ -82,7 +82,7 @@ public class GettextPluralSupportTest extends ZanataTestCase {
         restCaller = new ZanataRestCaller();
     }
 
-    @Feature(summary = "The user can push and pull gettext plural projects")
+    @Trace(summary = "The user can push and pull gettext plural projects")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canPushAndPullPlural() throws IOException {
         restCaller.createProjectAndVersion("plurals", "master", "podir");

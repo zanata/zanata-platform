@@ -24,7 +24,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.InactiveAccountPage;
@@ -49,7 +49,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
     @Rule
     public final HasEmailRule hasEmailRule = new HasEmailRule();
 
-    @Feature(
+    @Trace(
             summary = "The user needs to verify their account before they may log in")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void verifyAccount() throws Exception {
@@ -80,7 +80,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                         "The user has validated their account and logged in");
     }
 
-    @Feature(summary = "The user can resend the account activation email")
+    @Trace(summary = "The user can resend the account activation email")
     @Test(timeout = MAX_SHORT_TEST_DURATION)
     public void resendActivationEmail() throws Exception {
         String usernamepassword = "tester2";
@@ -111,7 +111,7 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                         "The user has validated their account and logged in");
     }
 
-    @Feature(summary = "The user can update the account activation email")
+    @Trace(summary = "The user can update the account activation email")
     @Test(timeout = MAX_SHORT_TEST_DURATION)
     public void updateActivationEmail() throws Exception {
         String usernamepassword = "tester3";

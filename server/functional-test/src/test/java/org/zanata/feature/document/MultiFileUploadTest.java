@@ -24,7 +24,7 @@ import org.junit.*;
 import org.junit.experimental.categories.Category;
 import org.zanata.common.DocumentType;
 import org.zanata.common.ProjectType;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionDocumentsPage;
@@ -70,8 +70,7 @@ public class MultiFileUploadTest extends ZanataTestCase {
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Feature(summary = "The administrator can upload raw files for translation",
-            bugzilla = 980670)
+    @Trace(summary = "The administrator can upload raw files for translation")
     public void uploadFileTypeDocument() throws Exception {
         File testFile = new TestFileGenerator()
                 .generateTestFileWithContent("testtxtfile", ".txt", testString);

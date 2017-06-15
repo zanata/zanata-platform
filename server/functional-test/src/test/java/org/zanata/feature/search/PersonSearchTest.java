@@ -23,7 +23,7 @@ package org.zanata.feature.search;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.ProfilePage;
@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(DetailedTest.class)
 public class PersonSearchTest extends ZanataTestCase {
 
-    @Feature(summary = "The user can search for another user")
+    @Trace(summary = "The user can search for another user")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void successfulPersonSearchAndDisplay() throws Exception {
         ExplorePage explorePage = new BasicWorkFlow()
@@ -61,7 +61,7 @@ public class PersonSearchTest extends ZanataTestCase {
                 .isEqualTo("translator");
     }
 
-    @Feature(summary = "The system will provide no results on an " +
+    @Trace(summary = "The system will provide no results on an " +
             "unsuccessful search")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void unsuccessfulPersonSearch() throws Exception {
@@ -75,7 +75,7 @@ public class PersonSearchTest extends ZanataTestCase {
                 .as("The user is not displayed");
     }
 
-    @Feature(summary = "The user can access another user's profile via the URL")
+    @Trace(summary = "The user can access another user's profile via the URL")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void viewProfileViaUrl() throws Exception {
         BasicWorkFlow basicWorkFlow = new BasicWorkFlow();
@@ -88,7 +88,7 @@ public class PersonSearchTest extends ZanataTestCase {
             .isEqualTo("translator");
     }
 
-    @Feature(summary = "A logged user can see another user's contributions")
+    @Trace(summary = "A logged user can see another user's contributions")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void contributionsAreVisibleToLoggedInUsers() throws Exception {
         new LoginWorkFlow().signIn("glossarist", "glossarist");

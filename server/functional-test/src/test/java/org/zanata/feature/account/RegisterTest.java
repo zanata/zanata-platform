@@ -21,11 +21,10 @@
 package org.zanata.feature.account;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
@@ -68,7 +67,7 @@ public class RegisterTest extends ZanataTestCase {
         homePage.deleteCookiesAndRefresh();
     }
 
-    @Feature(summary = "The user can register an account with Zanata",
+    @Trace(summary = "The user can register an account with Zanata",
             testPlanIds = 5681, testCaseIds = 5688)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void registerSuccessful() throws Exception {
@@ -87,7 +86,7 @@ public class RegisterTest extends ZanataTestCase {
                 .as("Sign up is successful");
     }
 
-    @Feature(summary = "The user must enter a username of between 3 and " +
+    @Trace(summary = "The user must enter a username of between 3 and " +
             "20 (inclusive) characters to register",
             testPlanIds = 5681, testCaseIds = 5690)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -117,7 +116,7 @@ public class RegisterTest extends ZanataTestCase {
                 .as("Size errors are shown for string too long");
     }
 
-    @Feature(summary = "The user must enter a unique username to register",
+    @Trace(summary = "The user must enter a unique username to register",
             testPlanIds = 5681, testCaseIds = 5690)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernamePreExisting() throws Exception {

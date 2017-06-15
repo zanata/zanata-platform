@@ -37,7 +37,7 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.rest.dto.resource.Resource;
@@ -64,7 +64,7 @@ public class ConcurrentAccessTest extends ZanataTestCase {
         configRequest.put(Entity.json("6"));
     }
 
-    @Feature(summary = "The system will handle concurrent document " +
+    @Trace(summary = "The system will handle concurrent document " +
             "creation gracefully")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void concurrentDocumentCreationWillNotCauseHibernateException()

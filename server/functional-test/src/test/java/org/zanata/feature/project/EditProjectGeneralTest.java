@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.explore.ExplorePage;
@@ -52,7 +52,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
 
 
     @Ignore("Duplicate test with setAProjectToWritable")
-    @Feature(summary = "The administrator can set a project to read-only")
+    @Trace(summary = "The administrator can set a project to read-only")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAProjectToReadOnly() throws Exception {
         ExplorePage explorePage = new ProjectWorkFlow()
@@ -72,7 +72,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .as("The project is not displayed");
     }
 
-    @Feature(summary = "The administrator can set a read-only project " +
+    @Trace(summary = "The administrator can set a read-only project " +
             "to writable")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setAProjectToWritable() throws Exception {
@@ -102,7 +102,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .as("The project is now displayed");
     }
 
-    @Feature(summary = "The administrator can change a project's name")
+    @Trace(summary = "The administrator can change a project's name")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeProjectName() throws Exception {
         String replacementText = "a new name";
@@ -120,7 +120,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .as("The project name has changed");
     }
 
-    @Feature(summary = "The administrator can change a project's description")
+    @Trace(summary = "The administrator can change a project's description")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeProjectDescription() throws Exception {
         String replacementText = "a new description";
@@ -142,7 +142,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .as("The text has changed");
     }
 
-    @Feature(summary = "The administrator can change a project's type")
+    @Trace(summary = "The administrator can change a project's type")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeProjectType() throws Exception {
         ProjectGeneralTab projectGeneralTab = new ProjectWorkFlow()
@@ -162,7 +162,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .as("The project type is correct");
     }
 
-    @Feature(summary = "The administrator can change a project's source urls")
+    @Trace(summary = "The administrator can change a project's source urls")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeSourceLinks() throws Exception {
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
@@ -184,7 +184,7 @@ public class EditProjectGeneralTest extends ZanataTestCase {
                 .as("The git url is correct");
     }
 
-    @Feature(summary = "Project slug can be changed and page will redirect to new URL after the change")
+    @Trace(summary = "Project slug can be changed and page will redirect to new URL after the change")
     @Test
     public void changeProjectSlug() {
         ProjectGeneralTab projectGeneralTab = new ProjectWorkFlow()

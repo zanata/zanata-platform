@@ -23,7 +23,7 @@ package org.zanata.feature.account.comp;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
@@ -51,7 +51,7 @@ public class RegisterCTest extends ZanataTestCase {
         homePage = new BasicWorkFlow().goToHome();
     }
 
-    @Feature(summary = "The user must enter all necessary fields to register",
+    @Trace(summary = "The user must enter all necessary fields to register",
             testPlanIds = 5681, testCaseIds = {5689, 5690, 5691, 5692})
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void requiredFields() throws Exception {
@@ -73,7 +73,7 @@ public class RegisterCTest extends ZanataTestCase {
                 .as("Size indication or 'May not be empty' shows for all fields");
     }
 
-    @Feature(summary = "The user can navigate to Login from Sign up, or to "
+    @Trace(summary = "The user can navigate to Login from Sign up, or to "
             + "Sign up from Login", testCaseIds = -1)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void signUpToLoginAndBack() {
@@ -92,7 +92,7 @@ public class RegisterCTest extends ZanataTestCase {
                 .as("The user is sent to the log in page");
     }
 
-    @Feature(summary = "The user can show or hide the registration password content",
+    @Trace(summary = "The user can show or hide the registration password content",
             testCaseIds = -1)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void togglePasswordVisible() {
@@ -120,7 +120,7 @@ public class RegisterCTest extends ZanataTestCase {
                 .as("The password field did not lose the entered text");
     }
 
-    @Feature(summary = "The user must provide a username to register",
+    @Trace(summary = "The user must provide a username to register",
             testPlanIds = 5681, testCaseIds = 5690)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void userMustSpecifyAUsername() {
@@ -136,8 +136,7 @@ public class RegisterCTest extends ZanataTestCase {
                 .as("A username must be specified");
     }
 
-    @Feature(summary = "A username cannot be all underscores (RHBZ-981498)",
-            bugzilla = 981498)
+    @Trace(summary = "A username cannot be all underscores (RHBZ-981498)")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void bug981498_underscoreRules() {
         Map<String, String> fields = new HashMap<>();

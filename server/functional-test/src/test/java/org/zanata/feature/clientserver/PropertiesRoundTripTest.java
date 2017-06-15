@@ -26,7 +26,7 @@ import org.fedorahosted.openprops.Properties;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
@@ -74,7 +74,7 @@ public class PropertiesRoundTripTest extends ZanataTestCase {
         properties.store(new FileWriter(propertiesSource), "comment");
     }
 
-    @Feature(summary = "The maintainer user may push and pull properties files")
+    @Trace(summary = "The maintainer user may push and pull properties files")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canPushAndPullProperties() throws IOException,
             InterruptedException {

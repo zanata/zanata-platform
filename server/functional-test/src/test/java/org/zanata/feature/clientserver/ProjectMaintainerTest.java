@@ -27,7 +27,7 @@ import com.google.common.io.Files;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.common.LocaleId;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.VersionLanguagesPage;
@@ -76,7 +76,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
      */
     public final static String MAVEN_PLUGIN = "org.zanata:zanata-maven-plugin:3.8.1";
 
-    @Feature(summary = "A non-maintainer user may not push to a project")
+    @Trace(summary = "A non-maintainer user may not push to a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void nonProjectMaintainerCanNotPush() {
         // admin creates the project
@@ -93,7 +93,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         assertThat(joinedOutput).contains("Authorization check failed");
     }
 
-    @Feature(summary = "The system will run CopyTrans when a push occurs")
+    @Trace(summary = "The system will run CopyTrans when a push occurs")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void pushTransAndCopyTransTest() {
         // translator creates the project and become maintainer
@@ -147,7 +147,7 @@ public class ProjectMaintainerTest extends ZanataTestCase {
         assertThat(betaVersionPage.getStatisticsForLocale("pl")).contains("6.0%");
     }
 
-    @Feature(summary = "A maintainer user may pull translations from a project")
+    @Trace(summary = "A maintainer user may pull translations from a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void projectMaintainerPullTest() throws IOException {
         ZanataRestCaller restCaller = new ZanataRestCaller("translator",

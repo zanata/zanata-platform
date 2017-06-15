@@ -24,7 +24,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.subethamail.wiser.WiserMessage;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.languages.LanguagesPage;
@@ -44,7 +44,7 @@ public class ContactLanguageTeamTest extends ZanataTestCase {
     @Rule
     public final HasEmailRule emailRule = new HasEmailRule();
 
-    @Feature(summary = "The user can contact a language team coordinator")
+    @Trace(summary = "The user can contact a language team coordinator")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void translatorContactsLanguageTeamCoordinator() throws Exception {
         LanguagesPage languagesPage = new LoginWorkFlow()

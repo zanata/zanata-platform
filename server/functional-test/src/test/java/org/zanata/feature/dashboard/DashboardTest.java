@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.dashboard.DashboardActivityTab;
@@ -65,7 +65,7 @@ public class DashboardTest extends ZanataTestCase {
         dashboard = new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Feature(summary = "The user can traverse Dashboard activity lists")
+    @Trace(summary = "The user can traverse Dashboard activity lists")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void dashboardBasicTests() throws Exception {
         assertThat(dashboardPresentAfterLogin()).as("Dashboard is present")
@@ -92,7 +92,7 @@ public class DashboardTest extends ZanataTestCase {
         return projectsTab.getMaintainedProjectList().size() > 0;
     }
 
-    @Feature(summary = "The user can change their email address")
+    @Trace(summary = "The user can change their email address")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void accountEmailModification() throws Exception {
         dashboard.goToSettingsTab().gotoSettingsAccountTab()
@@ -101,7 +101,7 @@ public class DashboardTest extends ZanataTestCase {
         assertThat(dashboard.expectNotification(DashboardBasePage.EMAIL_SENT));
     }
 
-    @Feature(summary = "The user can change their password")
+    @Trace(summary = "The user can change their password")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void passwordChange() throws Exception {
         dashboard.goToSettingsTab().gotoSettingsAccountTab()
@@ -111,7 +111,7 @@ public class DashboardTest extends ZanataTestCase {
                 .expectNotification(DashboardBasePage.PASSWORD_UPDATE_SUCCESS));
     }
 
-    @Feature(
+    @Trace(
             summary = "The user can begin creating a project from the Dashboard")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createProject() throws Exception {

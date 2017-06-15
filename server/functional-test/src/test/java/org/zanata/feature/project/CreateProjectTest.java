@@ -24,7 +24,7 @@ package org.zanata.feature.project;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectBasePage;
@@ -53,7 +53,7 @@ public class CreateProjectTest extends ZanataTestCase {
                 .as("Admin is logged in");
     }
 
-    @Feature(summary = "The user can create a project")
+    @Trace(summary = "The user can create a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createABasicProject() throws Exception {
         ProjectVersionsPage projectVersionsPage = new ProjectWorkFlow()
@@ -64,7 +64,7 @@ public class CreateProjectTest extends ZanataTestCase {
                 .as("The project name is correct");
     }
 
-    @Feature(summary = "The user can create a project with description")
+    @Trace(summary = "The user can create a project with description")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createABasicProjectWithDescription() throws Exception {
         HashMap<String, String> projectSettings = projectDefaults();

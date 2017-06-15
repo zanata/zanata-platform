@@ -23,7 +23,7 @@ package org.zanata.feature.editor;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
@@ -57,7 +57,7 @@ public class EditorFilterMessagesTest extends ZanataTestCase {
         new LoginWorkFlow().signIn("admin", "admin");
     }
 
-    @Feature(summary = "The user can filter translation entries using more " +
+    @Trace(summary = "The user can filter translation entries using more " +
             "than one search term")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void canFilterByMultipleFields() {
@@ -72,7 +72,7 @@ public class EditorFilterMessagesTest extends ZanataTestCase {
         assertThat(page.getMessageSources()).contains("greetings");
     }
 
-    @Feature(summary = "The user may save the filter url for later use")
+    @Trace(summary = "The user may save the filter url for later use")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorFilterIsBookmarkable() {
         String urlForEditor =

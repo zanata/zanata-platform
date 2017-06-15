@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.dashboard.DashboardBasePage;
@@ -46,7 +46,7 @@ public class ChangePasswordTest extends ZanataTestCase {
         new BasicWorkFlow().goToHome().deleteCookiesAndRefresh();
     }
 
-    @Feature(summary = "The user can change their password", testCaseIds = 5704)
+    @Trace(summary = "The user can change their password", testCaseIds = 5704)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Flaky test")
     public void changePasswordSuccessful() throws Exception {
@@ -70,7 +70,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .as("User has logged in with the new password");
     }
 
-    @Feature(summary = "The user must enter their current password correctly " +
+    @Trace(summary = "The user must enter their current password correctly " +
             "to change it")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changePasswordCurrentPasswordFailure() throws Exception {
@@ -87,7 +87,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .as("The old password incorrect error is shown");
     }
 
-    @Feature(summary = "The user must enter a non-empty new password " +
+    @Trace(summary = "The user must enter a non-empty new password " +
             "to change it")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changePasswordRequiredFieldsAreNotEmpty() throws Exception {
@@ -102,7 +102,7 @@ public class ChangePasswordTest extends ZanataTestCase {
                 .as("Empty password message displayed");
     }
 
-    @Feature(summary = "The user must enter a new password of between 6 and " +
+    @Trace(summary = "The user must enter a new password of between 6 and " +
             "1024 characters in length to change it")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changePasswordAreOfRequiredLength() throws Exception {
