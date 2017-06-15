@@ -4,8 +4,7 @@ import {connect} from 'react-redux'
 import {
   Button, InputGroup, FormGroup, FormControl,
   Badge, Pagination
-}
-  from 'react-bootstrap'
+} from 'react-bootstrap'
 import Helmet from 'react-helmet'
 import {debounce, find} from 'lodash'
 import Entry from './Entry'

@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Button }
-  from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import TeaserList from './TeaserList'
 import { TextInput, Icon } from '../../components'
 import {
