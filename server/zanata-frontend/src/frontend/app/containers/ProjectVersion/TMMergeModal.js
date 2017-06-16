@@ -37,7 +37,7 @@ class TMMergeModal extends Component {
       differentContext: false,
       fromImportedTM: false,
       selectedLanguage: '',
-      fromProjectVersion: [], // For priority of versions
+      fromProjectVersion: [], // Selected Versions List
       projectSearchTerm: this.props.projectSlug
     }
   }
@@ -73,6 +73,23 @@ class TMMergeModal extends Component {
   }
   onProjectSearch = () => {
     this.props.openProjectPage(this.state.projectSearchTerm)
+  }
+  // Push/Pop version from fromProjectVersion array based on selection
+  onVersionCheckboxChange = (version) => {
+    const versionChecked = this.state.fromProjectVersion.includes(version)
+    const data = this.state.fromProjectVersion
+    const index = data.indexOf(version)
+    if (versionChecked) {
+      this.setState({
+        ...this.state,
+        fromProjectVersion: [...data.slice(0, index), ...data.slice(index + 1)]
+      })
+    } else {
+      this.setState({
+        ...this.state,
+        fromProjectVersion: [...data, version]
+      })
+    }
   }
   render () {
     const {
@@ -283,7 +300,9 @@ class TMMergeModal extends Component {
                   <span className='vmerge-adjtitle
                   vmerge-title'>Select source project versions to merge
                   </span>
-                  <ProjectVersionPanels projectVersions={projectVersions} />
+                  <ProjectVersionPanels projectVersions={projectVersions}
+                    fromProjectVersion={this.state.fromProjectVersion}
+                    onVersionCheckboxChange={this.onVersionCheckboxChange} />
                 </Col>
                 <Col xs={6}>
                   <ListGroup>
