@@ -189,6 +189,10 @@
     <required.jvm>1.8</required.jvm>
     <maven.compiler.target>${required.jvm}</maven.compiler.target>
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+    <!-- Tell takari to default to JDT (unless overridden on command line)
+         Note that maven-compiler-plugin doesn't support this compilerId, so
+         it must be overridden in zanata-maven-plugin. -->
+    <maven.compiler.compilerId>jdt</maven.compiler.compilerId>
 
     <!--
       Version of Java used for API compatibility checking. Should
@@ -711,7 +715,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.3</version>
+          <version>3.5.1</version>
         </plugin>
         <plugin>
           <artifactId>maven-dependency-plugin</artifactId>

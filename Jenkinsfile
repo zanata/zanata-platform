@@ -278,14 +278,14 @@ timestamps {
 
           step([$class: 'WarningsPublisher',
                 consoleParsers: [
-                        [parserName: 'Java Compiler (javac)'],
+                        [parserName: 'Java Compiler (Eclipse)'],
 //                        [parserName: 'JavaDoc'],
 //                        [parserName: 'Maven'], // ~279 warnings, but too variable
                         // TODO check integration test warnings (EAP and WildFly)
                         //[parserName: 'appserver log messages'], // 119 warnings
                         //[parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '0',
+                unstableTotalAll: '1366',
                 unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)
