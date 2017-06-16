@@ -125,86 +125,89 @@ class Entry extends Component {
 
     return (
       <Table className='glossary-entry'>
-        <tr className={cssClass}
-          selected={selected}
-          onClick={() => handleSelectTerm(entry.id)}>
-          <td className='td-4 tight'>
+        <tbody>
+          <tr className={cssClass}
+            selected={selected}
+            onClick={() => handleSelectTerm(entry.id)}>
+            <td className='td-4 tight'>
+              {termsLoading
+                ? loadingDiv
+                : (<EditableText
+                  title={entry.srcTerm.content}
+                  editable={false}
+                  editing={selected}>
+                  {entry.srcTerm.content}
+                </EditableText>)
+              }
+            </td>
+            <td className='td-3'>
+              {secondColumnContent}
+            </td>
+            <td className='hidesmall td-2'>
             {termsLoading
               ? loadingDiv
               : (<EditableText
-                title={entry.srcTerm.content}
-                editable={false}
-                editing={selected}>
-                {entry.srcTerm.content}
+                className='text-state-classes'
+                title={entry.pos}
+                editable={!transSelected && editable}
+                editing={selected}
+                onChange={(e) => handleTermFieldUpdate('pos', e)}
+                placeholder='Add part of speech'
+                emptyReadOnlyText='No part of speech'>
+                {entry.pos}
               </EditableText>)
             }
-          </td>
-          <td className='td-3'>
-            {secondColumnContent}
-          </td>
-          <td className='hidesmall td-2'>
-          {termsLoading
-            ? loadingDiv
-            : (<EditableText
-              className='text-state-classes'
-              title={entry.pos}
-              editable={!transSelected && editable}
-              editing={selected}
-              onChange={(e) => handleTermFieldUpdate('pos', e)}
-              placeholder='Add part of speech'
-              emptyReadOnlyText='No part of speech'>
-              {entry.pos}
-            </EditableText>)
-          }
-          </td>
-          <td className='td-2'>
-            {termsLoading
-              ? loadingDiv
-              : (<Row className='entry-row'>
-                <Button bsStyle='link btn-link-end'
-                  disabled={isDeleting}
-                  onClick={() => this.setShowingEntryModal(true)}>
-                  <Icon name='info' className='s1 infoicon-nomargin' />
-                </Button>
-                <EntryModal entry={entry}
-                  show={this.state.showEntryModal}
-                  isSaving={isSaving}
-                  selectedTransLocale={selectedTransLocale}
-                  canUpdate={displayUpdateButton}
-                  handleEntryModalDisplay={(display) =>
-                    this.setShowingEntryModal(display)}
-                  handleResetTerm={(entryId) => handleResetTerm(entryId)}
-                  handleTermFieldUpdate={(field, e) =>
-                    handleTermFieldUpdate(field, e)}
-                  handleUpdateTerm={(entry) =>
-                    handleUpdateTerm(entry, false)} />
-                <div className='trans-row row--selected
-                  editable-op1'>
-                  <div className='hidden-lesm'>
-                    <Row className='entry-row'>
-                      {updateButton}
-                      {displayUpdateButton && !isSaving ? (
-                        <Button bsStyle='link' bsSize='small'
-                          onClick={() => handleResetTerm(entry.id)}>
-                          Cancel
-                        </Button>
-                      ) : ''}
-                    </Row>
+            </td>
+            <td className='td-2'>
+              {termsLoading
+                ? loadingDiv
+                : (<Row className='entry-row'>
+                  <Button bsStyle="link"
+                    className="btn-link-end"
+                    disabled={isDeleting}
+                    onClick={() => this.setShowingEntryModal(true)}>
+                    <Icon name='info' className='s1 infoicon-nomargin' />
+                  </Button>
+                  <EntryModal entry={entry}
+                    show={this.state.showEntryModal}
+                    isSaving={isSaving}
+                    selectedTransLocale={selectedTransLocale}
+                    canUpdate={displayUpdateButton}
+                    handleEntryModalDisplay={(display) =>
+                      this.setShowingEntryModal(display)}
+                    handleResetTerm={(entryId) => handleResetTerm(entryId)}
+                    handleTermFieldUpdate={(field, e) =>
+                      handleTermFieldUpdate(field, e)}
+                    handleUpdateTerm={(entry) =>
+                      handleUpdateTerm(entry, false)} />
+                  <div className='trans-row row--selected
+                    editable-op1'>
+                    <div className='hidden-lesm'>
+                      <Row className='entry-row'>
+                        {updateButton}
+                        {displayUpdateButton && !isSaving ? (
+                          <Button bsStyle='link' bsSize='small'
+                            onClick={() => handleResetTerm(entry.id)}>
+                            Cancel
+                          </Button>
+                        ) : ''}
+                      </Row>
+                    </div>
+                    {!transSelected && permission.canDeleteEntry && !isSaving &&
+                    !displayUpdateButton && (
+                      <DeleteEntryModal entry={entry}
+                        isDeleting={isDeleting}
+                        show={this.state.showDeleteModal}
+                        handleDeleteEntryDisplay={(display) =>
+                      this.setShowingDeleteEntryModal(display)}
+                        handleDeleteEntry={handleDeleteTerm} />)
+                    }
                   </div>
-                  {!transSelected && permission.canDeleteEntry && !isSaving &&
-                  !displayUpdateButton && (
-                    <DeleteEntryModal entry={entry}
-                      isDeleting={isDeleting}
-                      show={this.state.showDeleteModal}
-                      handleDeleteEntryDisplay={(display) =>
-                    this.setShowingDeleteEntryModal(display)}
-                      handleDeleteEntry={handleDeleteTerm} />)
-                  }
-                </div>
-              </Row>)
-            }
-          </td>
-        </tr>
+                </Row>)
+              }
+            </td>
+          </tr>
+        </tbody>
       </Table>
     )
     /* eslint-enable react/jsx-no-bind */
