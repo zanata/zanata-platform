@@ -23,8 +23,7 @@ package org.zanata.feature.versionGroup;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.dashboard.DashboardGroupsTab;
@@ -54,8 +53,7 @@ public class VersionGroupTest extends ZanataTestCase {
             new BasicWorkFlow().goToHome().goToMyDashboard().gotoGroupsTab();
     }
 
-    @Feature(summary = "The administrator can create a basic group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
+    @Trace(summary = "The administrator can create a basic group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void createABasicGroup() throws Exception {
         String groupID = "basic-group";
@@ -72,9 +70,8 @@ public class VersionGroupTest extends ZanataTestCase {
             .as("The group name is correct");
     }
 
-    @Feature(summary = "The administrator must fill in the required fields " +
-            "to create a group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
+    @Trace(summary = "The administrator must fill in the required fields " +
+            "to create a group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void requiredFields() throws Exception {
         String errorMsg = "value is required";
@@ -106,9 +103,8 @@ public class VersionGroupTest extends ZanataTestCase {
                 .as("The value required error shown");
     }
 
-    @Feature(summary = "The administrator must enter valid data into the " +
-            "required fields to create a group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
+    @Trace(summary = "The administrator must enter valid data into the " +
+            "required fields to create a group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void groupDescriptionFieldSize() throws Exception {
         String groupID = "verifyDescriptionFieldSizeID";
@@ -143,9 +139,8 @@ public class VersionGroupTest extends ZanataTestCase {
             .as("A group description of 100 chars is valid");
     }
 
-    @Feature(summary = "The administrator can add a project version to " +
-            "a newly created group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 170109)
+    @Trace(summary = "The administrator can add a project version to " +
+            "a newly created group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addANewProjectVersionToAnEmptyGroup() throws Exception {
         String groupID = "add-version-to-empty-group";
@@ -166,9 +161,8 @@ public class VersionGroupTest extends ZanataTestCase {
                 .as("The version group shows in the list");
     }
 
-    @Feature(summary = "The administrator can use numbers, letters, periods, " +
-            "underscores and hyphens to create a group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 396261)
+    @Trace(summary = "The administrator can use numbers, letters, periods, " +
+            "underscores and hyphens to create a group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void groupIdCharactersAreAcceptable() throws Exception {
         String groupID = "test-_.1";
@@ -184,9 +178,8 @@ public class VersionGroupTest extends ZanataTestCase {
                 .as("The group was created");
     }
 
-    @Feature(summary = "The administrator must use numbers, letters, periods, "
-            + "underscores and hyphens to create a group",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 396261)
+    @Trace(summary = "The administrator must use numbers, letters, periods, "
+            + "underscores and hyphens to create a group")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void inputValidationForID() throws Exception {
         String inputText = "group|name";
