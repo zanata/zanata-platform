@@ -1,6 +1,5 @@
 import React, {PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
-import Draggable from 'react-draggable'
 import {
   Button, Panel, Row, Checkbox, InputGroup, Col, Label,
   FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem
@@ -8,6 +7,7 @@ import {
   from 'react-bootstrap'
 import {Icon, Modal} from '../../components'
 import ProjectVersionPanels from '../../components/ProjectVersionPanels'
+import DraggableVersionPanels from '../../components/DraggableVersionPanels'
 
 import {
   loadVersionLocales,
@@ -74,20 +74,61 @@ class TMMergeModal extends Component {
   onProjectSearch = () => {
     this.props.openProjectPage(this.state.projectSearchTerm)
   }
+  // Remove a version from fromProjectVersion array by index
+  popProjectVersion = (index) => {
+    const {
+      fromProjectVersion
+    } = this.state
+    this.setState({
+      ...this.state,
+      fromProjectVersion:
+          [...fromProjectVersion.slice(0, index),
+          ...fromProjectVersion.slice(index + 1)]
+    })
+  }
+  // Add a version to fromProjectVersion array
+  pushProjectVersion = (version) => {
+    const {
+      fromProjectVersion
+    } = this.state
+    this.setState({
+      ...this.state,
+      fromProjectVersion: [...fromProjectVersion, version]
+    })
+  }
   // Push/Pop version from fromProjectVersion array based on selection
   onVersionCheckboxChange = (version) => {
-    const versionChecked = this.state.fromProjectVersion.includes(version)
-    const data = this.state.fromProjectVersion
-    const index = data.indexOf(version)
+    const {
+      fromProjectVersion
+    } = this.state
+    const versionChecked = fromProjectVersion.includes(version)
+    const index = fromProjectVersion.indexOf(version)
     if (versionChecked) {
-      this.setState({
-        ...this.state,
-        fromProjectVersion: [...data.slice(0, index), ...data.slice(index + 1)]
+      this.popProjectVersion(index)
+    } else {
+      this.pushProjectVersion(version)
+    }
+  }
+  // Remove/Add all project versions to version list
+  onAllVersionCheckboxChange = (projectVersions) => {
+    const {
+      fromProjectVersion
+    } = this.state
+    let allVersionsChecked = true
+    projectVersions.map((project) => {
+      if (!fromProjectVersion.includes(project)) {
+        allVersionsChecked = false
+      }
+    })
+    if (allVersionsChecked) {
+      projectVersions.map((project) => {
+        this.popProjectVersion(fromProjectVersion.indexOf(project))
       })
     } else {
-      this.setState({
-        ...this.state,
-        fromProjectVersion: [...data, version]
+      projectVersions.map((project) => {
+        if (!fromProjectVersion.includes(project)) {
+          this.pushProjectVersion(project)
+        }
       })
     }
   }
@@ -302,40 +343,13 @@ class TMMergeModal extends Component {
                   </span>
                   <ProjectVersionPanels projectVersions={projectVersions}
                     fromProjectVersion={this.state.fromProjectVersion}
-                    onVersionCheckboxChange={this.onVersionCheckboxChange} />
+                    onVersionCheckboxChange={this.onVersionCheckboxChange}
+                    onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
+                  />
                 </Col>
                 <Col xs={6}>
-                  <ListGroup>
-                    <div><span className='vmerge-adjtitle
-                  vmerge-title'>
-                    Adjust priority of selected versions</span>
-                      <br /><span className='text-muted vmerge-adjsub'>
-                        (best first)
-                      </span>
-                    </div>
-                    <Draggable bounds='parent' axis='y' grid={[57, 57]}>
-                      <ListGroupItem className='v'>
-                        <Button bsStyle='link' className='btn-link-sort'>
-                          <i className='fa fa-sort'></i>
-                        </Button>
-                        2.0
-                        <span className='text-muted'>
-                          Project A
-                        </span>
-                      </ListGroupItem>
-                    </Draggable>
-                    <Draggable bounds='parent' axis='y' grid={[57, 57]}>
-                      <ListGroupItem className='v'>
-                        <Button bsStyle='link' className='btn-link-sort'>
-                          <i className='fa fa-sort'></i>
-                        </Button>
-                        1.0
-                        <span className='text-muted'>
-                          Project A
-                        </span>
-                      </ListGroupItem>
-                    </Draggable>
-                  </ListGroup>
+                  <DraggableVersionPanels
+                    fromProjectVersion={this.state.fromProjectVersion} />
                 </Col>
               </Panel>
             </Col>

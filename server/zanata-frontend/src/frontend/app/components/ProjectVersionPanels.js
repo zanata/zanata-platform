@@ -15,14 +15,11 @@ const ProjectVersionPanels = (props) => {
     return <div></div>
   }
   let panels = props.projectVersions.map((project, index) => {
-    const projectLockIcon = project.status === 'READONLY'
-        ? <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
-          <Icon name='locked' className='s0 icon-locked' />
-        </OverlayTrigger>
-        : ''
     return (
-      <Panel header={<h3><Checkbox>{project.title}{" "}{projectLockIcon}
-      </Checkbox></h3>} key={index} eventKey={index}>
+      <Panel header={<h3><SelectAllVersionsCheckbox
+        project={project} onClick={props.onAllVersionCheckboxChange}
+        fromProjectVersion={props.fromProjectVersion} />
+      </h3>} key={index} eventKey={index}>
         <ListGroup fill>
           {project.versions.map((version, index) => {
             return (
@@ -39,6 +36,45 @@ const ProjectVersionPanels = (props) => {
   }
   )
   return <PanelGroup defaultActiveKey='1' accordion>{panels}</PanelGroup>
+}
+
+class SelectAllVersionsCheckbox extends Component {
+  static propTypes = {
+    project: PropTypes.object,
+    onClick: PropTypes.func.isRequired,
+    fromProjectVersion: PropTypes.arrayOf(PropTypes.object)
+  }
+  onClick = () => {
+    this.props.onClick(this.props.project.versions)
+  }
+  render () {
+    const {
+      project,
+      fromProjectVersion
+    } = this.props
+    // Check if all project versions have been selected
+    const containsVersionArray = (projectList, versionList) => {
+      let allChecked = true
+      projectList.map((project) => {
+        if (!versionList.includes(project)) {
+          allChecked = false
+        }
+      })
+      return allChecked
+    }
+    const allVersionsChecked =
+        containsVersionArray(project.versions, fromProjectVersion)
+    const projectLockIcon = project.status === 'READONLY'
+        ? <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
+          <Icon name='locked' className='s0 icon-locked' />
+        </OverlayTrigger>
+        : ''
+    return (
+      <Checkbox onChange={this.onClick} checked={allVersionsChecked}>
+        {project.title}{" "}{projectLockIcon}
+      </Checkbox>
+    )
+  }
 }
 
 class VersionMenuCheckbox extends Component {
@@ -72,7 +108,8 @@ class VersionMenuCheckbox extends Component {
 ProjectVersionPanels.propTypes = {
   projectVersions: PropTypes.arrayOf(PropTypes.object),
   fromProjectVersion: PropTypes.arrayOf(PropTypes.object),
-  onVersionCheckboxChange: PropTypes.func.isRequired
+  onVersionCheckboxChange: PropTypes.func.isRequired,
+  onAllVersionCheckboxChange: PropTypes.func.isRequired
 }
 
 export default ProjectVersionPanels
