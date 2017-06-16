@@ -46,9 +46,7 @@ public class JaxRSApplication extends javax.ws.rs.core.Application {
         ImmutableSet<Class<?>> classes = concat(stream(resourceClasses), concat(
                 stream(pathClasses),
                 stream(providerClasses))).filter(clazz -> !clazz.getName()
-                        .startsWith("org.zanata.rest.client.")
-                        && !clazz.getName()
-                                .startsWith("org.zanata.rest.enunciate."))
+                        .startsWith("org.zanata.rest.client."))
                         .collect(Collectors.collectingAndThen(
                                 Collectors.toSet(), ImmutableSet::copyOf));
         log.info("Found {} JAX-RS classes in total", classes.size());

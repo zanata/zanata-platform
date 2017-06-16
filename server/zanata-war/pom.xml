@@ -335,6 +335,24 @@
         </configuration>
       </plugin>
 
+      <plugin>
+        <groupId>io.takari.maven.plugins</groupId>
+        <artifactId>takari-lifecycle-plugin</artifactId>
+        <extensions>true</extensions>
+
+        <configuration>
+          <!-- Recompile all sources if any source is recompiled! Hurts
+               incremental build performance.
+               Workaround for https://bugs.eclipse.org/bugs/show_bug.cgi?id=447546
+               If this proves too expensive, we could remove
+               org.atteo.classindex, return null in JaxRSApplication and
+               just let RESTEasy scan for @Path and @Provider classes at runtime.
+           -->
+          <proc>procEX</proc>
+          <annotationProcessors>org.zanata.util.JaxRSClassIndexProcessor</annotationProcessors>
+        </configuration>
+      </plugin>
+
     </plugins>
 
     <pluginManagement>

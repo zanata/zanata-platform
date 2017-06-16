@@ -478,7 +478,7 @@
       <dependency>
         <groupId>org.atteo.classindex</groupId>
         <artifactId>classindex</artifactId>
-        <version>3.3</version>
+        <version>3.4</version>
       </dependency>
 
       <dependency>
