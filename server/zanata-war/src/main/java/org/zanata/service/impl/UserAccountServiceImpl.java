@@ -124,10 +124,12 @@ public class UserAccountServiceImpl implements UserAccountService {
                     ruleMatches = true;
                 }
             }
+            /* FIXME this does nothing, but what was the intention?
             if (rule.getPolicyName() != null
                     && rule.getPolicyName().equals(policyName)) {
                 ruleMatches = ruleMatches && true;
             }
+            */
             if (ruleMatches) {
                 // apply the rule
                 account.getRoles().add(rule.getRoleToAssign());
