@@ -180,6 +180,8 @@
     as used by javac -source and -target).
     -->
     <required.java>1.8</required.java>
+    <!-- newer versions have better type inferencing -->
+    <java.version.range>[1.8.0-121,)</java.version.range>
     <maven.compiler.source>${required.java}</maven.compiler.source>
     <!--
       Version of Java used for runtime (major.minor) and for bytecode
@@ -499,7 +501,7 @@
               http://maven.apache.org/enforcer/enforcer-rules/requireJavaVersion.html
             -->
             <requireJavaVersion>
-              <version>${required.java}</version>
+              <version>${java.version.range}</version>
             </requireJavaVersion>
             <requireMavenVersion>
               <version>${required.maven}</version>
