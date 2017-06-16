@@ -43,6 +43,7 @@ import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.rest.dto.ProcessStatus;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * This endpoint should let us control and query all async tasks.
@@ -61,6 +62,7 @@ public class AsyncProcessService implements RestResource {
     @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
 
+    @SuppressFBWarnings("SE_BAD_FIELD")
     @Context
     private UriInfo uriInfo;
 
@@ -77,10 +79,10 @@ public class AsyncProcessService implements RestResource {
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
      */
-    @Path("key/{key}")
+    @Path("key/{keyId}")
     @GET
     @TypeHint(ProcessStatus.class)
-    public Response getAsyncProcessStatus(@PathParam("key") String keyId) {
+    public Response getAsyncProcessStatus(@PathParam("keyId") String keyId) {
         AsyncTaskHandle handle = asyncTaskHandleManager.getHandleByKeyId(keyId);
         if (handle == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
