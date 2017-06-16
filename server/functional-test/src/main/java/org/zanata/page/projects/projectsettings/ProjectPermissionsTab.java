@@ -20,16 +20,16 @@
  */
 package org.zanata.page.projects.projectsettings;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projects.ProjectBasePage;
 import org.zanata.util.WebElementUtil;
-import java.util.List;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -55,7 +55,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
     public ProjectPermissionsTab
             selectSearchMaintainer(final String maintainer) {
         log.info("Select user {}", maintainer);
-        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+        waitForAMoment().until(driver -> {
             List<WebElement> searchResults =
                     WebElementUtil.getSearchAutocompleteResults(driver,
                             "settings-permissions-form",
@@ -92,7 +92,7 @@ public class ProjectPermissionsTab extends ProjectBasePage {
 
     private WebElement getMaintainerElementFromList(final String maintainer) {
         return waitForAMoment()
-                .until((Function<WebDriver, WebElement>) webDriver -> {
+                .until(webDriver -> {
                     for (WebElement maintainersLi : getSettingsMaintainersElement()) {
                         String displayedUsername = getUsername(maintainersLi);
                         if (displayedUsername.equals(maintainer)) {

@@ -26,6 +26,7 @@ import java.awt.datatransfer.StringSelection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -35,9 +36,8 @@ import org.zanata.page.BasePage;
 import org.zanata.page.editor.ReactEditorPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
-import com.google.common.base.Predicate;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -89,7 +89,7 @@ public class EditorPage extends BasePage {
 
     public EditorPage searchGlossary(final String term) {
         log.info("Search glossary for {}", term);
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> webDriver
+        waitForAMoment().until(webDriver -> webDriver
                 .findElements(glossaryNoResult).size() == 1
                 || webDriver.findElements(glossaryTable).size() == 1);
         readyElement(glossarySearchInput).clear();
@@ -117,7 +117,7 @@ public class EditorPage extends BasePage {
     public List<List<String>> getGlossaryResultTable() {
         log.info("Query glossary results");
         return waitForAMoment()
-                .until((Function<WebDriver, List<List<String>>>) webDriver -> {
+                .until(webDriver -> {
                     if (webDriver.findElements(glossaryNoResult).size() == 1) {
                         return Collections.emptyList();
                     }
@@ -166,7 +166,7 @@ public class EditorPage extends BasePage {
     private String getCodeMirrorContent(final long rowIndex,
             final String idFormat, final Plurals plurals) {
         return waitForAMoment()
-                .until((Function<WebDriver, String>) webDriver -> {
+                .until(webDriver -> {
                     // code mirror will turn text into list of <pre>.
                     List<WebElement> cmTextLines = webDriver
                             .findElement(By.id(String.format(idFormat, rowIndex,
@@ -190,19 +190,17 @@ public class EditorPage extends BasePage {
 
     private Boolean openConfigurationPanel() {
         log.info("Click to open Configuration options");
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(webDriver -> {
             return getDriver().findElement(By.className("i--settings"))
                     .isEnabled();
         });
         new Actions(getDriver()).click(readyElement(configurationPanel))
                 .perform();
         return waitForAMoment()
-                .until((Function<WebDriver, Boolean>) webDriver -> {
-                    return webDriver
-                            .findElement(By.className(
-                                    "gwt-TabLayoutPanelContentContainer"))
-                            .isDisplayed();
-                });
+                .until(driver -> driver
+                        .findElement(By.className(
+                                "gwt-TabLayoutPanelContentContainer"))
+                        .isDisplayed());
     }
 
     /**
@@ -228,7 +226,7 @@ public class EditorPage extends BasePage {
         log.info("Wait for text flow target at {} to be {}", rowIndex,
                 expected);
         return waitForAMoment()
-                .until((Function<WebDriver, Boolean>) webDriver -> {
+                .until(webDriver -> {
                     return getBasicTranslationTargetAtRowIndex(rowIndex)
                             .equals(expected);
                 });
@@ -324,7 +322,7 @@ public class EditorPage extends BasePage {
     public String getValidationMessageCurrentTarget() {
         log.info("Query validation messages on current item");
         waitForAMoment()
-                .until((Function<WebDriver, Boolean>) webDriver -> !getTargetValidationBox()
+                .until(webDriver -> !getTargetValidationBox()
                         .getText().isEmpty());
         return getTargetValidationBox().getText();
     }
@@ -357,7 +355,7 @@ public class EditorPage extends BasePage {
     public EditorPage openValidationBox() {
         log.info("Click to open Validation panel");
         getTargetValidationBox().click();
-        waitForAMoment().until((Function<WebDriver, Boolean>) webDriver -> {
+        waitForAMoment().until(webDriver -> {
             String errorText = getValidationMessageCurrentTarget();
             return errorText.contains("Unexpected")
                     || errorText.contains("Target");
@@ -485,9 +483,7 @@ public class EditorPage extends BasePage {
         log.info("Click history button on row {}", row);
         readyElement(getTranslationTargetColumn(),
                 By.id("gwt-debug-target-" + row + "-history")).click();
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
-            return getTranslationHistoryBox().isDisplayed();
-        });
+        waitForAMoment().until(it -> getTranslationHistoryBox().isDisplayed());
         return new EditorPage(getDriver());
     }
 
@@ -510,7 +506,7 @@ public class EditorPage extends BasePage {
 
     public EditorPage clickCompareOn(final int entry) {
         log.info("Click Compare on history entry {}", entry);
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(webDriver -> {
             try {
                 return getTranslationHistoryList().get(entry)
                         .findElement(By.linkText("Compare")).isDisplayed();

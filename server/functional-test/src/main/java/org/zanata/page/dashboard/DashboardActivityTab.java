@@ -20,11 +20,11 @@
  */
 package org.zanata.page.dashboard;
 
-import com.google.common.base.Function;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import java.util.List;
 
 /**
  * @author Carlos Munoz
@@ -55,7 +55,7 @@ public class DashboardActivityTab extends DashboardBasePage {
         final int activityListOrigSize = getMyActivityList().size();
         clickElement(moreActivityButton);
         return waitForAMoment()
-                .until((Function<WebDriver, Boolean>) webDriver -> getMyActivityList()
+                .until(webDriver -> getMyActivityList()
                         .size() > activityListOrigSize);
     }
 

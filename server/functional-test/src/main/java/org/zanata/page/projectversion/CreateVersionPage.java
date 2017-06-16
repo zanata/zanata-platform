@@ -20,12 +20,12 @@
  */
 package org.zanata.page.projectversion;
 
-import com.google.common.base.Function;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class CreateVersionPage extends BasePage {
@@ -114,7 +114,7 @@ public class CreateVersionPage extends BasePage {
     public CreateVersionPage selectProjectType(final String projectType) {
         log.info("Click project type {}", projectType);
         WebElement projectTypeCheck = waitForAMoment()
-                .until((Function<WebDriver, WebElement>) webDriver -> {
+                .until(webDriver -> {
                     for (WebElement item : readyElement(projectTypeSelection)
                             .findElements(By.tagName("li"))) {
                         if (item.findElement(By.tagName("label")).getText()

@@ -21,6 +21,7 @@
 package org.zanata.page;
 
 import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -31,8 +32,8 @@ import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.explore.ExplorePage;
 import org.zanata.page.languages.LanguagesPage;
 import org.zanata.page.utility.HomePage;
-import com.google.common.base.Preconditions;
 import org.zanata.workflow.BasicWorkFlow;
+import com.google.common.base.Preconditions;
 
 /**
  * A Base Page is an extension of the Core Page, providing the navigation bar

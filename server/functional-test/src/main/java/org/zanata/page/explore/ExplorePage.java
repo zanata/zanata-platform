@@ -20,18 +20,18 @@
  */
 package org.zanata.page.explore;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Lists;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.page.account.ProfilePage;
 import org.zanata.page.projects.ProjectVersionsPage;
-import org.zanata.util.WebElementUtil;
-import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
+
+import com.google.common.collect.Lists;
 
 /**
  * @author Alex Eng<a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -54,7 +54,7 @@ public class ExplorePage extends BasePage {
         log.info("Enter Explore search {}", searchText);
         existingElement(searchInput).sendKeys(searchText);
         waitForAMoment().withMessage("Waiting for search complete")
-                .until((Predicate<WebDriver>) webDriver -> !isProjectSearchLoading()
+                .until(it -> !isProjectSearchLoading()
                         && !isGroupSearchLoading()
                         && !isLanguageTeamSearchLoading()
                         && !isPersonSearchLoading());
@@ -64,7 +64,7 @@ public class ExplorePage extends BasePage {
     public ExplorePage expectProjectListContains(final String expected) {
         String msg = "Project search list contains " + expected;
         waitForAMoment().withMessage("Waiting for search contains")
-                .until((Predicate<WebDriver>) webDriver -> getProjectSearchResults()
+                .until(it -> getProjectSearchResults()
                         .contains(expected));
         assertThat(getProjectSearchResults()).as(msg).contains(expected);
         return new ExplorePage(getDriver());
@@ -74,7 +74,7 @@ public class ExplorePage extends BasePage {
         waitForPageSilence();
         String msg = "Person search list contains " + expected;
         waitForAMoment().withMessage("Waiting for search contains")
-                .until((Predicate<WebDriver>) webDriver -> getUserSearchResults()
+                .until(it -> getUserSearchResults()
                         .contains(expected));
         assertThat(getUserSearchResults()).as(msg).contains(expected);
         return new ExplorePage(getDriver());

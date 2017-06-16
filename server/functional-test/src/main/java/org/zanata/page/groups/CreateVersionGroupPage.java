@@ -23,8 +23,6 @@ package org.zanata.page.groups;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.BasePage;
-import com.google.common.base.Predicate;
-import org.zanata.page.dashboard.DashboardGroupsTab;
 
 /**
  * @author Patrick Huang
@@ -88,7 +86,7 @@ public class CreateVersionGroupPage extends BasePage {
         readyElement(groupNameField).clear();
         readyElement(groupDescriptionField).clear();
         waitForAMoment().until(
-                (Predicate<WebDriver>) webDriver -> getGroupIdValue().equals("")
+                it -> getGroupIdValue().equals("")
                         && readyElement(groupNameField).getAttribute("value")
                                 .equals(""));
         return new CreateVersionGroupPage(getDriver());

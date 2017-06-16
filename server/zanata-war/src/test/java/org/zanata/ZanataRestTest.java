@@ -14,7 +14,6 @@ import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.ResteasyWebTarget;
 import org.jboss.resteasy.core.Dispatcher;
 import org.jboss.resteasy.mock.MockDispatcherFactory;
-import org.jboss.resteasy.spi.ResourceFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -34,14 +33,15 @@ import static com.google.common.collect.Sets.newHashSet;
 import static org.mockito.Mockito.when;
 
 /**
- * TODO: remove deprecated resteasy class and remove SuppressWarnings. This
- * class is not in used at the moment
+ * TODO: remove deprecated resteasy classes InMemoryClientExecutor and
+ * ClientRequestFactory
  */
 @SuppressWarnings("deprecation")
 public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
 
     protected static final URI MOCK_BASE_URI = URI.create("http://mockhost");
     private ResteasyClientBuilder resteasyClientBuilder;
+    // don't import this class, because @SuppressWarnings("deprecation") won't work
     private org.jboss.resteasy.client.ClientRequestFactory clientRequestFactory;
     protected final Set<Class<? extends ExceptionMapper<? extends Throwable>>> exceptionMappers =
             newHashSet();
@@ -52,7 +52,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     private SystemPropertyConfigStore systemPropertyConfigStore;
 
     @Before
-    public final void prepareRestEasyFramework() {
+    public void prepareRestEasyFramework() {
         MockitoAnnotations.initMocks(this);
         when(systemPropertyConfigStore.getEnabledAuthenticationPolicies())
                 .thenReturn(
@@ -65,8 +65,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
 
         // register resources
         for (Object obj : resources) {
-            ResourceFactory factory = new MockResourceFactory(obj);
-            dispatcher.getRegistry().addResourceFactory(factory);
+            dispatcher.getRegistry().addSingletonResource(obj);
         }
 
         // register Exception Mappers
@@ -112,7 +111,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
     }
 
     @After
-    public final void cleanUpRestEasyFramework() {
+    public void cleanUpRestEasyFramework() {
         exceptionMappers.clear();
         resources.clear();
         providers.clear();
@@ -153,14 +152,14 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
      *
      * @return a ClientRequestFactory configured for your environment.
      */
-    protected final org.jboss.resteasy.client.ClientRequestFactory getClientRequestFactory() {
+    protected org.jboss.resteasy.client.ClientRequestFactory getClientRequestFactory() {
         return clientRequestFactory;
     }
 
     /**
      * This is to replace {@link #getClientRequestFactory()}
      */
-    protected final <T> ProxyBuilder<T> createProxy(Class<T> clazz, URI uri) {
+    protected <T> ProxyBuilder<T> createProxy(Class<T> clazz, URI uri) {
         ResteasyWebTarget webTarget = resteasyClientBuilder.build().target(uri);
         return ProxyBuilder.builder(clazz, webTarget);
     }
@@ -174,7 +173,7 @@ public abstract class ZanataRestTest extends ZanataDbunitJpaTest {
      * @return a URI suitable for passing to ClientRequestFactory for the
      *         resource being tested.
      */
-    protected final URI createBaseURI(String resourcePath) {
+    protected URI createBaseURI(String resourcePath) {
         return MOCK_BASE_URI.resolve(resourcePath);
     }
 }

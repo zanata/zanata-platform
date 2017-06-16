@@ -5,7 +5,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
-import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.zanata.ZanataDbunitJpaTest;
@@ -21,7 +20,6 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
     private ProjectDAO projectDao;
     private ProjectIterationDAO projectIterDao;
     private TextFlowStreamingDAO dao;
-    private Session session;
 
     @Override
     protected void prepareDBUnitOperations() {
@@ -41,9 +39,8 @@ public class TextFlowStreamingDAOTest extends ZanataDbunitJpaTest {
 
     @Before
     public void setup() {
-        dao = new TextFlowStreamingDAO(
-                (HibernateEntityManagerFactory) getEmf());
-        session = getSession();
+        dao = new TextFlowStreamingDAO(getEmf().getSessionFactory());
+        Session session = getSession();
         projectDao = new ProjectDAO(session);
         projectIterDao = new ProjectIterationDAO(session);
     }

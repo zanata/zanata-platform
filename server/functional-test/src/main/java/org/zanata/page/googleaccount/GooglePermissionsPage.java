@@ -24,7 +24,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.zanata.page.AbstractPage;
 import org.zanata.page.account.EditProfilePage;
-import com.google.common.base.Function;
 
 /**
  * @author Damian Jansen
@@ -41,9 +40,8 @@ public class GooglePermissionsPage extends AbstractPage {
 
     public EditProfilePage acceptPermissions() {
         log.info("Click Approve");
-        waitForAMoment().until((Function<WebDriver, Boolean>) driver -> {
-            return getDriver().findElement(approveAccessButton).isEnabled();
-        });
+        waitForAMoment().withMessage("approve button enabled").until(driver ->
+                driver.findElement(approveAccessButton).isEnabled());
         clickElement(approveAccessButton);
         return new EditProfilePage(getDriver());
     }
