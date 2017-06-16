@@ -22,7 +22,6 @@ package org.zanata.async;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -30,8 +29,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Named;
 
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
@@ -47,23 +44,22 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @javax.enterprise.context.ApplicationScoped
 public class AsyncTaskHandleManager implements Serializable {
 
-    // TODO refactor the key to be something more useful. e.g. an interface Key with method String id for querying purpose
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private final Map<String, AsyncTaskHandle> handlesByKey = Maps
+    private final Map<AsyncTaskKey, AsyncTaskHandle> handlesByKey = Maps
             .newConcurrentMap();
 
     // Cache of recently completed tasks
-    private Cache<String, AsyncTaskHandle> finishedTasks = CacheBuilder
+    private Cache<AsyncTaskKey, AsyncTaskHandle> finishedTasks = CacheBuilder
             .newBuilder().expireAfterWrite(10, TimeUnit.MINUTES)
             .build();
 
     public synchronized <K extends AsyncTaskKey<?>> void registerTaskHandle(AsyncTaskHandle handle,
             K key) {
-        if (handlesByKey.containsKey(key.id())) {
+        if (handlesByKey.containsKey(key)) {
             throw new RuntimeException("Task handle with key " + key
                     + " already exists");
         }
-        handlesByKey.put(key.id(), handle);
+        handlesByKey.put(key, handle);
     }
 
     /**
@@ -71,17 +67,17 @@ public class AsyncTaskHandleManager implements Serializable {
      * @param handle The handle to register.
      * @return An auto generated key to retreive the handle later
      */
-    public synchronized Serializable registerTaskHandle(AsyncTaskHandle handle) {
+    public synchronized AsyncTaskKey<String> registerTaskHandle(AsyncTaskHandle handle) {
         String autoGenKey = UUID.randomUUID().toString();
-        AsyncTaskKey<String> autoKey = key -> autoGenKey;
+        AsyncTaskKey<String> autoKey = () -> autoGenKey;
         registerTaskHandle(handle, autoKey);
-        return autoGenKey;
+        return autoKey;
     }
 
     void taskFinished(AsyncTaskHandle taskHandle) {
         synchronized (handlesByKey) {
             // TODO This operation is O(n). Maybe we can do better?
-            for (Map.Entry<String, AsyncTaskHandle> entry : handlesByKey
+            for (Map.Entry<AsyncTaskKey, AsyncTaskHandle> entry : handlesByKey
                     .entrySet()) {
                 if (entry.getValue().equals(taskHandle)) {
                     handlesByKey.remove(entry.getKey());
@@ -92,17 +88,27 @@ public class AsyncTaskHandleManager implements Serializable {
     }
 
     public <K extends AsyncTaskKey<K>> AsyncTaskHandle getHandleByKey(K key) {
-        if (handlesByKey.containsKey(key.id())) {
-            return handlesByKey.get(key.id());
+        if (handlesByKey.containsKey(key)) {
+            return handlesByKey.get(key);
         }
         return finishedTasks.getIfPresent(key.id());
     }
 
     public AsyncTaskHandle getHandleByKeyId(String keyId) {
-        if (handlesByKey.containsKey(keyId)) {
-            return handlesByKey.get(keyId);
+        // TODO this is O(n) can we do better?
+        for (Map.Entry<AsyncTaskKey, AsyncTaskHandle> entry : handlesByKey
+                .entrySet()) {
+            if (entry.getKey().id().equals(keyId)) {
+                return entry.getValue();
+            }
         }
-        return finishedTasks.getIfPresent(keyId);
+        for (Map.Entry<AsyncTaskKey, AsyncTaskHandle> entry : finishedTasks
+                .asMap().entrySet()) {
+            if (entry.getKey().id().equals(keyId)) {
+                return entry.getValue();
+            }
+        }
+        return null;
     }
 
     public Collection<AsyncTaskHandle> getAllHandles() {
@@ -112,50 +118,25 @@ public class AsyncTaskHandleManager implements Serializable {
         return handles;
     }
 
-    public Map<String, AsyncTaskHandle> getAllTasks() {
-        ImmutableMap.Builder<String, AsyncTaskHandle> builder = ImmutableMap.builder();
+    public Map<AsyncTaskKey, AsyncTaskHandle> getAllTasks() {
+        ImmutableMap.Builder<AsyncTaskKey, AsyncTaskHandle> builder = ImmutableMap.builder();
         builder.putAll(handlesByKey);
         builder.putAll(finishedTasks.asMap());
         return builder.build();
     }
 
-    public Map<String, AsyncTaskHandle> getRunningTasks() {
+    public Map<AsyncTaskKey, AsyncTaskHandle> getRunningTasks() {
         return ImmutableMap.copyOf(handlesByKey);
     }
 
     public interface AsyncTaskKey<T> extends Serializable {
         /**
-         * When converting multiple fields to form id string or vice versa, we
-         * should use this as separator.
+         * When converting multiple fields to form id string, we
+         * should use this as separator (URL friendly).
          */
         String SEPARATOR = "-";
 
-        default String id() {
-            return UUID.randomUUID().toString();
-        }
-
-        T from(String id);
-
-        /**
-         * Helper method to convert id back to a list of fields.
-         *
-         * @param id
-         *            the id
-         * @param keyName
-         *            the name for this key
-         * @param expectedNumOfFields
-         *            number of fields embedded in the id
-         * @return list of fields
-         */
-        default List<String> parseId(String id, String keyName,
-                int expectedNumOfFields) {
-            String fields = id.replaceFirst(keyName + SEPARATOR, id);
-            List<String> result =
-                    Splitter.on(SEPARATOR).trimResults().splitToList(fields);
-            Preconditions.checkArgument(expectedNumOfFields == result.size(),
-                    "%s for %s is invalid", id, keyName);
-            return result;
-        }
+        String id();
 
         /**
          * Helper method to convert list of fields to a String as key id.

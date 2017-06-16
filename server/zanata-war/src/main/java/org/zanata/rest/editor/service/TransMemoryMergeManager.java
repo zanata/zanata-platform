@@ -21,7 +21,6 @@
 package org.zanata.rest.editor.service;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
@@ -137,10 +136,17 @@ public class TransMemoryMergeManager implements Serializable {
         }
 
         @Override
-        public TMMergeForDocTaskKey from(String id) {
-            List<String> parts = parseId(id, KEY_NAME, 2);
-            return new TMMergeForDocTaskKey(Long.parseLong(parts.get(0)),
-                    new LocaleId(parts.get(1)));
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TMMergeForDocTaskKey that = (TMMergeForDocTaskKey) o;
+            return Objects.equals(documentId, that.documentId) &&
+                    Objects.equals(localeId, that.localeId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(documentId, localeId);
         }
     }
 }

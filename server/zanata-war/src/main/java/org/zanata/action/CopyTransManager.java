@@ -21,7 +21,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
@@ -35,8 +35,6 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HProjectIteration;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyTransService;
-
-import com.google.common.base.Preconditions;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 // TODO This class should be merged with the copy trans service (?)
@@ -207,13 +205,18 @@ public class CopyTransManager implements Serializable {
         }
 
         @Override
-        public CopyTransProcessKey from(String id) {
-            List<String> parts = parseId(id, KEY_NAME, 3);
-            CopyTransProcessKey key = new CopyTransProcessKey();
-            key.projectSlug = parts.get(0);
-            key.iterationSlug = parts.get(1);
-            key.docId = parts.get(2);
-            return key;
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            CopyTransProcessKey that = (CopyTransProcessKey) o;
+            return Objects.equals(projectSlug, that.projectSlug) &&
+                    Objects.equals(iterationSlug, that.iterationSlug) &&
+                    Objects.equals(docId, that.docId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(projectSlug, iterationSlug, docId);
         }
     }
 }

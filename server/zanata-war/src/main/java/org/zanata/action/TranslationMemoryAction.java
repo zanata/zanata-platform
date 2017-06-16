@@ -22,9 +22,9 @@ package org.zanata.action;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.enterprise.inject.Model;
@@ -215,9 +215,16 @@ public class TranslationMemoryAction implements Serializable {
         }
 
         @Override
-        public ClearTransMemoryProcessKey from(String id) {
-            List<String> parts = parseId(id, KEY_NAME, 1);
-            return new ClearTransMemoryProcessKey(parts.get(0));
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ClearTransMemoryProcessKey that = (ClearTransMemoryProcessKey) o;
+            return Objects.equals(slug, that.slug);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(slug);
         }
     }
 

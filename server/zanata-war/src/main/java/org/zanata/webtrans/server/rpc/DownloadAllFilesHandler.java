@@ -27,6 +27,8 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.zanata.async.AsyncTask;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
@@ -72,7 +74,7 @@ public class DownloadAllFilesHandler extends
                         action.getVersionSlug());
         if (identity.hasPermission(version, "download-all")) {
             AsyncTaskHandle<String> handle = new AsyncTaskHandle<String>();
-            Serializable taskKey =
+            AsyncTaskHandleManager.AsyncTaskKey<String> taskKey =
                     asyncTaskHandleManager.registerTaskHandle(handle);
             // TODO This should be in a service and share code with the JSF
             // pages that do the same thing
@@ -85,9 +87,7 @@ public class DownloadAllFilesHandler extends
                 throw new ActionException(e);
             }
 
-            // NB Keys are currently strings, but this is tied to the
-            // implementation
-            return new DownloadAllFilesResult(true, taskKey.toString());
+            return new DownloadAllFilesResult(true, taskKey.id());
         }
 
         return new DownloadAllFilesResult(false, null);

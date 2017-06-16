@@ -107,7 +107,7 @@ public class AsyncProcessService implements RestResource {
     @GET
     public Response getAllAsyncProcess(
             @QueryParam("includeFinished") @DefaultValue("false") boolean includeFinished) {
-        Map<String, AsyncTaskHandle> tasks;
+        Map<AsyncTaskHandleManager.AsyncTaskKey, AsyncTaskHandle> tasks;
         if (includeFinished) {
             tasks = asyncTaskHandleManager.getAllTasks();
         } else {
@@ -116,7 +116,7 @@ public class AsyncProcessService implements RestResource {
         List<ProcessStatus> processStatuses = tasks.entrySet().stream()
                 .map(taskEntry -> handleToProcessStatus(taskEntry.getValue(),
                         uriInfo.getBaseUri().toString() + "process/key/"
-                                + taskEntry.getKey()))
+                                + taskEntry.getKey().id()))
                 .collect(Collectors.toList());
         return Response.ok(processStatuses).build();
     }

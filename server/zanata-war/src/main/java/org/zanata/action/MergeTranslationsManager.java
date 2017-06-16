@@ -1,7 +1,7 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.Objects;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.enterprise.context.Dependent;
@@ -129,9 +129,17 @@ public class MergeTranslationsManager implements Serializable {
         }
 
         @Override
-        public MergeVersionKey from(String id) {
-            List<String> parts = parseId(id, KEY_NAME, 2);
-            return getKey(parts.get(0), parts.get(1));
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            MergeVersionKey that = (MergeVersionKey) o;
+            return Objects.equals(projectSlug, that.projectSlug) &&
+                    Objects.equals(versionSlug, that.versionSlug);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(projectSlug, versionSlug);
         }
     }
 }
