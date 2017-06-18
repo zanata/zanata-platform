@@ -21,6 +21,7 @@
 package org.zanata.async.handle;
 
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.UserTriggerableTaskHandle;
 
 /**
  * Asynchronous task handle for the copy version process.
@@ -28,7 +29,8 @@ import org.zanata.async.AsyncTaskHandle;
  * @author Carlos Munoz
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> {
+public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> implements
+        UserTriggerableTaskHandle {
 
     private int documentCopied;
     private int totalDoc;
@@ -75,10 +77,12 @@ public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> {
         this.cancelledTime = cancelledTime;
     }
 
+    @Override
     public String getTriggeredBy() {
         return this.triggeredBy;
     }
 
+    @Override
     public void setTriggeredBy(final String triggeredBy) {
         this.triggeredBy = triggeredBy;
     }

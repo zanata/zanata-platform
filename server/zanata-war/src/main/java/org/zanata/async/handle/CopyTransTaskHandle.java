@@ -21,12 +21,14 @@
 package org.zanata.async.handle;
 
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.UserTriggerableTaskHandle;
 
 /**
  * @author Carlos Munoz
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
-public class CopyTransTaskHandle extends AsyncTaskHandle<Void> {
+public class CopyTransTaskHandle extends AsyncTaskHandle<Void> implements
+        UserTriggerableTaskHandle {
 
     private String cancelledBy;
     private long cancelledTime;
@@ -53,10 +55,12 @@ public class CopyTransTaskHandle extends AsyncTaskHandle<Void> {
         this.cancelledTime = cancelledTime;
     }
 
+    @Override
     public String getTriggeredBy() {
         return this.triggeredBy;
     }
 
+    @Override
     public void setTriggeredBy(final String triggeredBy) {
         this.triggeredBy = triggeredBy;
     }
