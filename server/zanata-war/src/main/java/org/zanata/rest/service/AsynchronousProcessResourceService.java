@@ -20,10 +20,7 @@
  */
 package org.zanata.rest.service;
 
-import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,7 +45,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
-import com.google.common.collect.Lists;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
@@ -113,7 +109,7 @@ public class AsynchronousProcessResourceService
         String name = "SourceDocCreation: " + projectSlug + "-" + iterationSlug
                 + "-" + idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        AsyncTaskHandleManager.AsyncTaskKey<String> taskKey = asyncTaskHandleManager.registerTaskHandle(handle);
+        AsyncTaskHandleManager.AsyncTaskKey taskKey = asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl
                 .saveDocumentAsync(projectSlug, iterationSlug,
                         resource, extensions, copytrans, true, handle);
@@ -137,7 +133,7 @@ public class AsynchronousProcessResourceService
         String name = "SourceDocCreationOrUpdate: " + projectSlug + "-"
                 + iterationSlug + "-" + idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        AsyncTaskHandleManager.AsyncTaskKey<String> taskKey = asyncTaskHandleManager.registerTaskHandle(handle);
+        AsyncTaskHandleManager.AsyncTaskKey taskKey = asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl
                 .saveDocumentAsync(projectSlug, iterationSlug, resource,
                         extensions, copytrans, true, handle);
@@ -199,7 +195,7 @@ public class AsynchronousProcessResourceService
         final MergeType finalMergeType = mergeType;
         String taskName = "TranslatedDocUpload: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        AsyncTaskHandleManager.AsyncTaskKey<String> taskKey = asyncTaskHandleManager.registerTaskHandle(handle);
+        AsyncTaskHandleManager.AsyncTaskKey taskKey = asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
                         iterationSlug, id, locale, translatedDoc, extensions,
                         finalMergeType, assignCreditToUploader, true, handle,

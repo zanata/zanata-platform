@@ -199,7 +199,7 @@ public class TranslationMemoryAction implements Serializable {
      * services that need to control this process.
      */
     private static class ClearTransMemoryProcessKey implements
-            AsyncTaskHandleManager.AsyncTaskKey<ClearTransMemoryProcessKey> {
+            AsyncTaskHandleManager.AsyncTaskKey {
         private static final String KEY_NAME = "ClearTMXKey";
         private static final long serialVersionUID = 3472355792561903500L;
         private String slug;

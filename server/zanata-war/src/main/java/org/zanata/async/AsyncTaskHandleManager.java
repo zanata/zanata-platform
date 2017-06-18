@@ -53,7 +53,7 @@ public class AsyncTaskHandleManager implements Serializable {
             .newBuilder().expireAfterWrite(10, TimeUnit.MINUTES)
             .build();
 
-    public synchronized <K extends AsyncTaskKey<?>> void registerTaskHandle(AsyncTaskHandle handle,
+    public synchronized <K extends AsyncTaskKey> void registerTaskHandle(AsyncTaskHandle handle,
             K key) {
         if (handlesByKey.containsKey(key)) {
             throw new RuntimeException("Task handle with key " + key
@@ -67,9 +67,9 @@ public class AsyncTaskHandleManager implements Serializable {
      * @param handle The handle to register.
      * @return An auto generated key to retreive the handle later
      */
-    public synchronized AsyncTaskKey<String> registerTaskHandle(AsyncTaskHandle handle) {
+    public synchronized AsyncTaskKey registerTaskHandle(AsyncTaskHandle handle) {
         String autoGenKey = UUID.randomUUID().toString();
-        AsyncTaskKey<String> autoKey = () -> autoGenKey;
+        AsyncTaskKey autoKey = () -> autoGenKey;
         registerTaskHandle(handle, autoKey);
         return autoKey;
     }
@@ -87,7 +87,7 @@ public class AsyncTaskHandleManager implements Serializable {
         }
     }
 
-    public <K extends AsyncTaskKey<K>> AsyncTaskHandle getHandleByKey(K key) {
+    public <K extends AsyncTaskKey> AsyncTaskHandle getHandleByKey(K key) {
         if (handlesByKey.containsKey(key)) {
             return handlesByKey.get(key);
         }
@@ -129,7 +129,7 @@ public class AsyncTaskHandleManager implements Serializable {
         return ImmutableMap.copyOf(handlesByKey);
     }
 
-    public interface AsyncTaskKey<T> extends Serializable {
+    public interface AsyncTaskKey extends Serializable {
         /**
          * When converting multiple fields to form id string, we
          * should use this as separator (URL friendly).

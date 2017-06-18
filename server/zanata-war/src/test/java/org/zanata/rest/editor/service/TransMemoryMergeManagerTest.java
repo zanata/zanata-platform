@@ -3,8 +3,6 @@ package org.zanata.rest.editor.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.io.Serializable;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -40,7 +38,7 @@ public class TransMemoryMergeManagerTest {
     @Captor
     private ArgumentCaptor<TransMemoryMergeTaskHandle> handleCaptor;
     @Captor
-    private ArgumentCaptor<AsyncTaskKey<TMMergeForDocTaskKey>> taskKeyCaptor;
+    private ArgumentCaptor<AsyncTaskKey> taskKeyCaptor;
     private TransMemoryMergeCancelRequest cancelRequest;
 
     @Before

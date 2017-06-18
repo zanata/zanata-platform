@@ -149,7 +149,7 @@ public class CopyTransManager implements Serializable {
      * Internal class to index Copy Trans processes.
      */
     private static final class CopyTransProcessKey implements
-            AsyncTaskHandleManager.AsyncTaskKey<CopyTransProcessKey> {
+            AsyncTaskHandleManager.AsyncTaskKey {
         private static final long serialVersionUID = -2054359069473618887L;
         private static final String KEY_NAME = "copyTransKey";
         private String projectSlug;

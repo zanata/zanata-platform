@@ -87,7 +87,7 @@ public class CopyVersionManager implements Serializable {
      *
      */
     public static final class CopyVersionKey implements
-            AsyncTaskHandleManager.AsyncTaskKey<CopyVersionKey> {
+            AsyncTaskHandleManager.AsyncTaskKey {
         private static final String KEY_NAME = "copyVersion";
         private static final long serialVersionUID = 3889349239078033373L;
         // target project identifier

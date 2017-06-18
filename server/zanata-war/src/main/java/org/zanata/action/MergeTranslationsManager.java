@@ -96,7 +96,7 @@ public class MergeTranslationsManager implements Serializable {
      * Key used for merge version task
      */
     public static final class MergeVersionKey implements
-            AsyncTaskHandleManager.AsyncTaskKey<MergeVersionKey> {
+            AsyncTaskHandleManager.AsyncTaskKey {
         private static final long serialVersionUID = 1L;
         private static final String KEY_NAME = "mergeVersion";
         // target project identifier

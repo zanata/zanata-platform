@@ -28,7 +28,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.zanata.async.AsyncTask;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.dao.ProjectIterationDAO;
@@ -74,7 +73,7 @@ public class DownloadAllFilesHandler extends
                         action.getVersionSlug());
         if (identity.hasPermission(version, "download-all")) {
             AsyncTaskHandle<String> handle = new AsyncTaskHandle<String>();
-            AsyncTaskHandleManager.AsyncTaskKey<String> taskKey =
+            AsyncTaskHandleManager.AsyncTaskKey taskKey =
                     asyncTaskHandleManager.registerTaskHandle(handle);
             // TODO This should be in a service and share code with the JSF
             // pages that do the same thing

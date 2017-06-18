@@ -113,7 +113,7 @@ public class TransMemoryMergeManager implements Serializable {
     }
 
     static class TMMergeForDocTaskKey implements
-            AsyncTaskHandleManager.AsyncTaskKey<TMMergeForDocTaskKey> {
+            AsyncTaskHandleManager.AsyncTaskKey {
 
         private static final long serialVersionUID = -7210004008208642L;
         private static final String KEY_NAME = "TMMergeForDocKey";
