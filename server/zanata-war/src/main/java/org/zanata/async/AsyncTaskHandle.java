@@ -54,7 +54,7 @@ public class AsyncTaskHandle<V> implements Serializable {
         return currentProgress;
     }
 
-    void startTiming() {
+    protected void startTiming() {
         startTime = System.currentTimeMillis();
     }
 
@@ -148,7 +148,7 @@ public class AsyncTaskHandle<V> implements Serializable {
         }
     }
 
-    void setFutureResult(final CompletableFuture<V> futureResult) {
+    protected void setFutureResult(final CompletableFuture<V> futureResult) {
         this.futureResult = futureResult;
     }
 
