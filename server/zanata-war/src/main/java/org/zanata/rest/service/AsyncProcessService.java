@@ -97,7 +97,7 @@ public class AsyncProcessService implements RestResource {
 
 
     /**
-     * Get an async task's status.
+     * Get an async task's status if user has read permission to the task.
      *
      * @param keyId
      *            task id
@@ -106,6 +106,8 @@ public class AsyncProcessService implements RestResource {
      *         OK(200) - The contents of the response will indicate the process
      *         identifier which may be used to query for its status or a message
      *         indicating what happened.<br>
+     *         NOT FOUND(404) - if the task can not be found or user has no
+     *         permission to view its status.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
      */
@@ -116,6 +118,17 @@ public class AsyncProcessService implements RestResource {
         AsyncTaskHandle<?> handle = asyncTaskHandleManager.getHandleByKeyId(keyId);
         if (handle == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        if (!identity.hasRole("admin")) {
+            if (handle instanceof UserTriggeredTaskHandle) {
+                String triggeredBy =
+                        ((UserTriggeredTaskHandle) handle).getTriggeredBy();
+                if (!triggeredBy.equals(identity.getAccountUsername())) {
+                    return Response.status(Response.Status.NOT_FOUND).build();
+                }
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
         }
         ProcessStatus status = handleToProcessStatus(handle,
                 uriInfo.getRequestUri().toString());
@@ -229,7 +242,7 @@ public class AsyncProcessService implements RestResource {
                 result = handle.getResult();
             } catch (InterruptedException e) {
                 // The process was forcefully cancelled
-                status.setStatusCode(ProcessStatus.ProcessStatusCode.Failed);
+                status.setStatusCode(ProcessStatus.ProcessStatusCode.Cancelled);
                 status.addMessage(e.getMessage());
             } catch (ExecutionException e) {
                 // Exception thrown while running the task

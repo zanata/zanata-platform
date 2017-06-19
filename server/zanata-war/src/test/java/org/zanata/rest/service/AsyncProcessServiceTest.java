@@ -75,8 +75,9 @@ public class AsyncProcessServiceTest {
     }
 
     @Test
-    public void canReturnSingleProcessStatus() throws URISyntaxException {
-        AsyncTaskHandle<Object> taskHandle = new AsyncTaskHandle<>();
+    public void notAdminUserCanReturnHisProcessStatus() throws URISyntaxException {
+        UserTriggeredStartedAsyncTaskHandle taskHandle = new UserTriggeredStartedAsyncTaskHandle();
+        taskHandle.setTriggeredBy(currentUsername);
         taskHandle.setMaxProgress(100L);
         taskHandle.increaseProgress(90);
 
@@ -89,6 +90,66 @@ public class AsyncProcessServiceTest {
         ProcessStatus processStatus = (ProcessStatus) response.getEntity();
         assertThat(processStatus.getPercentageComplete()).isEqualTo(90);
 
+    }
+
+    @Test
+    public void notAdminUserCanNotSeeOthersProcessStatus() throws URISyntaxException {
+        UserTriggeredStartedAsyncTaskHandle taskHandle = new UserTriggeredStartedAsyncTaskHandle();
+        taskHandle.setTriggeredBy("somebody-else");
+
+        when(taskHandleManager.getHandleByKeyId("id")).thenReturn(taskHandle);
+        when(urlInfo.getRequestUri())
+                .thenReturn(new URI(baseUriStr + "process/id"));
+        Response response = service.getAsyncProcessStatus("id");
+
+        assertThat(response.getStatus()).isEqualTo(404);
+    }
+
+
+
+    @Test
+    public void adminUserCanNotSeeOthersProcessStatus() throws URISyntaxException {
+        UserTriggeredStartedAsyncTaskHandle taskHandle = new UserTriggeredStartedAsyncTaskHandle();
+        taskHandle.setTriggeredBy("somebody-else");
+
+        when(identity.hasRole("admin")).thenReturn(true);
+        when(taskHandleManager.getHandleByKeyId("id")).thenReturn(taskHandle);
+        when(urlInfo.getRequestUri())
+                .thenReturn(new URI(baseUriStr + "process/id"));
+        Response response = service.getAsyncProcessStatus("id");
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        ProcessStatus processStatus = (ProcessStatus) response.getEntity();
+        assertThat(processStatus.getStatusCode()).isEqualTo(
+                ProcessStatus.ProcessStatusCode.Running);
+    }
+
+    @Test
+    public void notAdminUserCanNotSeeSystemProcessStatus() throws URISyntaxException {
+        AsyncTaskHandle<Object> taskHandle = new AsyncTaskHandle<>();
+
+        when(taskHandleManager.getHandleByKeyId("id")).thenReturn(taskHandle);
+        when(urlInfo.getRequestUri())
+                .thenReturn(new URI(baseUriStr + "process/id"));
+        Response response = service.getAsyncProcessStatus("id");
+
+        assertThat(response.getStatus()).isEqualTo(404);
+    }
+
+    @Test
+    public void adminUserCanSeeSystemProcessStatus() throws URISyntaxException {
+        AsyncTaskHandle<Object> taskHandle = new AsyncTaskHandle<>();
+
+        when(identity.hasRole("admin")).thenReturn(true);
+        when(taskHandleManager.getHandleByKeyId("id")).thenReturn(taskHandle);
+        when(urlInfo.getRequestUri())
+                .thenReturn(new URI(baseUriStr + "process/id"));
+        Response response = service.getAsyncProcessStatus("id");
+
+        assertThat(response.getStatus()).isEqualTo(200);
+        ProcessStatus processStatus = (ProcessStatus) response.getEntity();
+        assertThat(processStatus.getStatusCode()).isEqualTo(
+                ProcessStatus.ProcessStatusCode.Running);
     }
 
     @Test
