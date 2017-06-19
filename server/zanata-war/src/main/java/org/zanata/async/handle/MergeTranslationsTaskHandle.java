@@ -32,8 +32,6 @@ public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> implement
         UserTriggerableTaskHandle {
 
     private int totalTranslations;
-    private String cancelledBy;
-    private long cancelledTime;
     private String triggeredBy;
 
     public int getTotalTranslations() {
@@ -42,22 +40,6 @@ public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> implement
 
     public void setTotalTranslations(final int totalTranslations) {
         this.totalTranslations = totalTranslations;
-    }
-
-    public String getCancelledBy() {
-        return this.cancelledBy;
-    }
-
-    public void setCancelledBy(final String cancelledBy) {
-        this.cancelledBy = cancelledBy;
-    }
-
-    public long getCancelledTime() {
-        return this.cancelledTime;
-    }
-
-    public void setCancelledTime(final long cancelledTime) {
-        this.cancelledTime = cancelledTime;
     }
 
     @Override

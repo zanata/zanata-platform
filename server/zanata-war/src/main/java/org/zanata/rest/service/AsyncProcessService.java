@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -40,9 +41,13 @@ import javax.ws.rs.core.UriInfo;
 import org.jetbrains.annotations.NotNull;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.UserTriggerableTaskHandle;
+import org.zanata.exception.AuthorizationException;
 import org.zanata.rest.dto.ProcessStatus;
+import org.zanata.security.ZanataIdentity;
 
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -61,6 +66,9 @@ public class AsyncProcessService implements RestResource {
 
     @Inject
     private AsyncTaskHandleManager asyncTaskHandleManager;
+
+    @Inject
+    private ZanataIdentity identity;
 
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Context
@@ -117,10 +125,51 @@ public class AsyncProcessService implements RestResource {
         }
         List<ProcessStatus> processStatuses = tasks.entrySet().stream()
                 .map(taskEntry -> handleToProcessStatus(taskEntry.getValue(),
-                        uriInfo.getBaseUri().toString() + "process/key/"
+                        uriInfo.getBaseUri() + "process/key/"
                                 + taskEntry.getKey().id()))
                 .collect(Collectors.toList());
         return Response.ok(processStatuses).build();
+    }
+
+    /**
+     * Cancel a specific async task.
+     *
+     * @param keyId
+     *            task id
+     *
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - The contents of the response will indicate the process
+     *         identifier which may be used to query for its status or a message
+     *         indicating what happened.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @POST
+    @Path("cancel/key/{keyId}")
+    public Response cancelAsyncProcess(@PathParam("keyId") String keyId) {
+        AsyncTaskHandle handle = asyncTaskHandleManager.getHandleByKeyId(keyId);
+        if (handle == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        if (handle.isStarted() && !handle.isCancelled() && !handle.isDone()) {
+            if (!identity.hasRole("admin") && handle instanceof UserTriggerableTaskHandle) {
+                UserTriggerableTaskHandle taskHandle =
+                        (UserTriggerableTaskHandle) handle;
+                if (!taskHandle.canCancel(identity.getAccountUsername())) {
+                    throw new AuthorizationException(
+                            "Only the task triggerer or admin can cancel the task.");
+                }
+            }
+
+            handle.cancel(true);
+            handle.setCancelledBy(identity.getAccountUsername());
+            handle.setCancelledTime(System.currentTimeMillis());
+
+        }
+        ProcessStatus processStatus = handleToProcessStatus(handle,
+                uriInfo.getBaseUri() + "cancel/key" + keyId);
+        return Response.ok(processStatus).build();
     }
 
     @NotNull

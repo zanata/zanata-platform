@@ -30,29 +30,11 @@ import org.zanata.async.UserTriggerableTaskHandle;
 public class CopyTransTaskHandle extends AsyncTaskHandle<Void> implements
         UserTriggerableTaskHandle {
 
-    private String cancelledBy;
-    private long cancelledTime;
     private String triggeredBy;
     private boolean prepared;
 
     public void setPrepared() {
         this.prepared = true;
-    }
-
-    public String getCancelledBy() {
-        return this.cancelledBy;
-    }
-
-    public void setCancelledBy(final String cancelledBy) {
-        this.cancelledBy = cancelledBy;
-    }
-
-    public long getCancelledTime() {
-        return this.cancelledTime;
-    }
-
-    public void setCancelledTime(final long cancelledTime) {
-        this.cancelledTime = cancelledTime;
     }
 
     @Override

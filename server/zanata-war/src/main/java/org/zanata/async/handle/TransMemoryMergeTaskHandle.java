@@ -33,27 +33,8 @@ import com.google.common.base.MoreObjects;
  */
 public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> implements
         UserTriggerableTaskHandle {
-    private String cancelledBy;
-    private Long cancelledTime;
     private String triggeredBy;
     private String mergeTarget;
-
-
-    public String getCancelledBy() {
-        return this.cancelledBy;
-    }
-
-    public void setCancelledBy(final String cancelledBy) {
-        this.cancelledBy = cancelledBy;
-    }
-
-    public long getCancelledTime() {
-        return this.cancelledTime;
-    }
-
-    public void setCancelledTime(final long cancelledTime) {
-        this.cancelledTime = cancelledTime;
-    }
 
     @Override
     public String getTriggeredBy() {
@@ -78,8 +59,8 @@ public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> implements
                 .add("mergeTarget", mergeTarget)
                 .add("textFlowFilled", currentProgress)
                 .add("totalTextFlows", maxProgress)
-                .add("cancelledBy", cancelledBy)
-                .add("cancelledTime", cancelledTime)
+                .add("cancelledBy", getTriggeredBy())
+                .add("cancelledTime", getCancelledTime())
                 .add("triggeredBy", triggeredBy)
                 .toString();
     }

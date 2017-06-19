@@ -46,6 +46,8 @@ public class AsyncTaskHandle<V> implements Serializable {
     public long currentProgress = 0;
     private long startTime = -1;
     private long finishTime = -1;
+    private String cancelledBy;
+    private long cancelledTime;
 
     public long increaseProgress(long increaseBy) {
         currentProgress += increaseBy;
@@ -185,5 +187,21 @@ public class AsyncTaskHandle<V> implements Serializable {
      */
     public void whenTaskComplete(BiConsumer<V, Throwable> action) {
         futureResult = futureResult.whenComplete(action);
+    }
+
+    public String getCancelledBy() {
+        return this.cancelledBy;
+    }
+
+    public void setCancelledBy(final String cancelledBy) {
+        this.cancelledBy = cancelledBy;
+    }
+
+    public long getCancelledTime() {
+        return this.cancelledTime;
+    }
+
+    public void setCancelledTime(final long cancelledTime) {
+        this.cancelledTime = cancelledTime;
     }
 }

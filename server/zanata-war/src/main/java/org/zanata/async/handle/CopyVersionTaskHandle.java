@@ -34,8 +34,6 @@ public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> implements
 
     private int documentCopied;
     private int totalDoc;
-    private String cancelledBy;
-    private long cancelledTime;
     private String triggeredBy;
 
     /**
@@ -59,22 +57,6 @@ public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> implements
 
     public void setTotalDoc(final int totalDoc) {
         this.totalDoc = totalDoc;
-    }
-
-    public String getCancelledBy() {
-        return this.cancelledBy;
-    }
-
-    public void setCancelledBy(final String cancelledBy) {
-        this.cancelledBy = cancelledBy;
-    }
-
-    public long getCancelledTime() {
-        return this.cancelledTime;
-    }
-
-    public void setCancelledTime(final long cancelledTime) {
-        this.cancelledTime = cancelledTime;
     }
 
     @Override
