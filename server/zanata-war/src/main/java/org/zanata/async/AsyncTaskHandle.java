@@ -49,6 +49,10 @@ public class AsyncTaskHandle<V> implements Serializable {
     private String cancelledBy;
     private long cancelledTime;
 
+    public boolean isRunning() {
+        return isStarted() && !isCancelled() && !isDone();
+    }
+
     public long increaseProgress(long increaseBy) {
         currentProgress += increaseBy;
         return currentProgress;

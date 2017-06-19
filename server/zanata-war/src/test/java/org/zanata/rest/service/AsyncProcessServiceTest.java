@@ -95,12 +95,12 @@ public class AsyncProcessServiceTest {
     public void canGetAllRunningTasks() throws URISyntaxException {
         when(urlInfo.getBaseUri()).thenReturn(new URI(baseUriStr));
 
-        Map<AsyncTaskHandleManager.AsyncTaskKey, AsyncTaskHandle<?>> runningTasks =
+        Map<String, AsyncTaskHandle<?>> runningTasks =
                 Maps.newHashMap();
 
-        AsyncTaskHandleManager.AsyncTaskKey key = () -> "keyId";
+        String id = "keyId";
         AsyncTaskHandle<String> taskHandle = new AsyncTaskHandle<>();
-        runningTasks.put(key, taskHandle);
+        runningTasks.put(id, taskHandle);
 
         when(taskHandleManager.getRunningTasks()).thenReturn(runningTasks);
         Response response = service.getAllAsyncProcessStatuses(false);
@@ -119,12 +119,12 @@ public class AsyncProcessServiceTest {
             throws URISyntaxException {
         when(urlInfo.getBaseUri()).thenReturn(new URI(baseUriStr));
 
-        Map<AsyncTaskHandleManager.AsyncTaskKey, AsyncTaskHandle<?>> runningTasks =
+        Map<String, AsyncTaskHandle<?>> runningTasks =
                 Maps.newHashMap();
 
-        AsyncTaskHandleManager.AsyncTaskKey key = () -> "keyId";
+        String id = "keyId";
         AsyncTaskHandle<String> taskHandle = new AsyncTaskHandle<>();
-        runningTasks.put(key, taskHandle);
+        runningTasks.put(id, taskHandle);
 
         when(taskHandleManager.getAllTasks()).thenReturn(runningTasks);
         Response response = service.getAllAsyncProcessStatuses(true);

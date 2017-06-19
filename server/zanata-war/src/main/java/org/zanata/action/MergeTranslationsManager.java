@@ -127,19 +127,5 @@ public class MergeTranslationsManager implements Serializable {
         public String id() {
             return joinFields(KEY_NAME, projectSlug, versionSlug);
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            MergeVersionKey that = (MergeVersionKey) o;
-            return Objects.equals(projectSlug, that.projectSlug) &&
-                    Objects.equals(versionSlug, that.versionSlug);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(projectSlug, versionSlug);
-        }
     }
 }

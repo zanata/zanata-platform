@@ -213,19 +213,6 @@ public class TranslationMemoryAction implements Serializable {
         public String id() {
             return joinFields(KEY_NAME, slug);
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ClearTransMemoryProcessKey that = (ClearTransMemoryProcessKey) o;
-            return Objects.equals(slug, that.slug);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(slug);
-        }
     }
 
     private static class TMComparator implements Comparator<TransMemory>, Serializable {

@@ -140,7 +140,7 @@ public class AsyncProcessService implements RestResource {
     @CheckRole("admin")
     public Response getAllAsyncProcessStatuses(
             @QueryParam("includeFinished") @DefaultValue("false") boolean includeFinished) {
-        Map<AsyncTaskHandleManager.AsyncTaskKey, AsyncTaskHandle<?>> tasks;
+        Map<String, AsyncTaskHandle<?>> tasks;
         if (includeFinished) {
             tasks = asyncTaskHandleManager.getAllTasks();
         } else {
@@ -149,7 +149,7 @@ public class AsyncProcessService implements RestResource {
         List<ProcessStatus> processStatuses = tasks.entrySet().stream()
                 .map(taskEntry -> handleToProcessStatus(taskEntry.getValue(),
                         uriInfo.getBaseUri() + "process/key/"
-                                + taskEntry.getKey().id()))
+                                + taskEntry.getKey()))
                 .collect(Collectors.toList());
         return Response.ok(processStatuses).build();
     }
@@ -176,7 +176,7 @@ public class AsyncProcessService implements RestResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
-        if (!taskIsRunning(handle)) {
+        if (!handle.isRunning()) {
             ProcessStatus entity = handleToProcessStatus(handle,
                     uriInfo.getBaseUri() + "process/key/" + keyId);
             return Response.ok(entity).build();
@@ -204,10 +204,6 @@ public class AsyncProcessService implements RestResource {
         ProcessStatus processStatus = handleToProcessStatus(handle,
                 uriInfo.getBaseUri() + "process/cancel/key/" + keyId);
         return Response.ok(processStatus).build();
-    }
-
-    private static boolean taskIsRunning(AsyncTaskHandle handle) {
-        return handle.isStarted() && !handle.isCancelled() && !handle.isDone();
     }
 
     @NotNull

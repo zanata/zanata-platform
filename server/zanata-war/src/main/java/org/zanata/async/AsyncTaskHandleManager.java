@@ -45,21 +45,21 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 public class AsyncTaskHandleManager implements Serializable {
     private static final long serialVersionUID = -3209755141964141830L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private final Map<AsyncTaskKey, AsyncTaskHandle<?>> handlesByKey = Maps
+    private final Map<String, AsyncTaskHandle<?>> handlesByKey = Maps
             .newConcurrentMap();
 
     // Cache of recently completed tasks
-    private Cache<AsyncTaskKey, AsyncTaskHandle<?>> finishedTasks = CacheBuilder
+    private Cache<String, AsyncTaskHandle<?>> finishedTasks = CacheBuilder
             .newBuilder().expireAfterWrite(10, TimeUnit.MINUTES)
             .build();
 
     public synchronized <K extends AsyncTaskKey> void registerTaskHandle(AsyncTaskHandle handle,
             K key) {
-        if (handlesByKey.containsKey(key)) {
+        if (handlesByKey.containsKey(key.id())) {
             throw new RuntimeException("Task handle with key " + key
                     + " already exists");
         }
-        handlesByKey.put(key, handle);
+        handlesByKey.put(key.id(), handle);
     }
 
     /**
@@ -77,7 +77,7 @@ public class AsyncTaskHandleManager implements Serializable {
     void taskFinished(AsyncTaskHandle taskHandle) {
         synchronized (handlesByKey) {
             // TODO This operation is O(n). Maybe we can do better?
-            for (Map.Entry<AsyncTaskKey, AsyncTaskHandle<?>> entry : handlesByKey
+            for (Map.Entry<String, AsyncTaskHandle<?>> entry : handlesByKey
                     .entrySet()) {
                 if (entry.getValue().equals(taskHandle)) {
                     handlesByKey.remove(entry.getKey());
@@ -88,28 +88,15 @@ public class AsyncTaskHandleManager implements Serializable {
     }
 
     public <K extends AsyncTaskKey> AsyncTaskHandle getHandleByKey(K key) {
-        if (handlesByKey.containsKey(key)) {
-            return handlesByKey.get(key);
-        }
-        return finishedTasks.getIfPresent(key);
+        return getHandleByKeyId(key.id());
     }
 
     @SuppressWarnings("unchecked")
     public <T> AsyncTaskHandle<T> getHandleByKeyId(String keyId) {
-        // TODO this is O(n) can we do better?
-        for (Map.Entry<AsyncTaskKey, AsyncTaskHandle<?>> entry : handlesByKey
-                .entrySet()) {
-            if (entry.getKey().id().equals(keyId)) {
-                return (AsyncTaskHandle<T>) entry.getValue();
-            }
+        if (handlesByKey.containsKey(keyId)) {
+            return (AsyncTaskHandle<T>) handlesByKey.get(keyId);
         }
-        for (Map.Entry<AsyncTaskKey, AsyncTaskHandle<?>> entry : finishedTasks
-                .asMap().entrySet()) {
-            if (entry.getKey().id().equals(keyId)) {
-                return (AsyncTaskHandle<T>) entry.getValue();
-            }
-        }
-        return null;
+        return (AsyncTaskHandle<T>) finishedTasks.getIfPresent(keyId);
     }
 
     public Collection<AsyncTaskHandle> getAllHandles() {
@@ -119,14 +106,14 @@ public class AsyncTaskHandleManager implements Serializable {
         return handles;
     }
 
-    public Map<AsyncTaskKey, AsyncTaskHandle<?>> getAllTasks() {
-        ImmutableMap.Builder<AsyncTaskKey, AsyncTaskHandle<?>> builder = ImmutableMap.builder();
+    public Map<String, AsyncTaskHandle<?>> getAllTasks() {
+        ImmutableMap.Builder<String, AsyncTaskHandle<?>> builder = ImmutableMap.builder();
         builder.putAll(handlesByKey);
         builder.putAll(finishedTasks.asMap());
         return builder.build();
     }
 
-    public Map<AsyncTaskKey, AsyncTaskHandle<?>> getRunningTasks() {
+    public Map<String, AsyncTaskHandle<?>> getRunningTasks() {
         return ImmutableMap.copyOf(handlesByKey);
     }
 

@@ -126,19 +126,5 @@ public class CopyVersionManager implements Serializable {
         public String id() {
             return joinFields(KEY_NAME, projectSlug, versionSlug);
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            CopyVersionKey that = (CopyVersionKey) o;
-            return Objects.equals(projectSlug, that.projectSlug) &&
-                    Objects.equals(versionSlug, that.versionSlug);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(projectSlug, versionSlug);
-        }
     }
 }

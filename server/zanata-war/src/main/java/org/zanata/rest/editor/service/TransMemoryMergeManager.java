@@ -134,19 +134,5 @@ public class TransMemoryMergeManager implements Serializable {
         public String id() {
             return joinFields(KEY_NAME, documentId.toString(), localeId.getId());
         }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            TMMergeForDocTaskKey that = (TMMergeForDocTaskKey) o;
-            return Objects.equals(documentId, that.documentId) &&
-                    Objects.equals(localeId, that.localeId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(documentId, localeId);
-        }
     }
 }
