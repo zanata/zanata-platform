@@ -32,7 +32,7 @@ class UserProfile extends Component {
     handleInitLoad: PropTypes.func,
     handleDateRangeChanged: PropTypes.func,
     handleFilterChanged: PropTypes.func,
-    handleSelectedDayChanged: PropTypes.func
+    handleSelectedDayChanged: PropTypes.func.isRequired
   }
 
   componentDidMount () {

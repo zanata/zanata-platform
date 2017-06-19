@@ -22,7 +22,7 @@ class RecentContributions extends React.Component {
     selectedDay: PropTypes.string,
     handleDateRangeChanged: PropTypes.func,
     handleFilterChanged: PropTypes.func,
-    handleSelectedDayChanged: PropTypes.func
+    handleSelectedDayChanged: PropTypes.func.isRequired
   }
 
   constructor (props) {

@@ -85,7 +85,7 @@ FilterableMatrixTable.propTypes = {
   selectedContentState: PropTypes.oneOf(ContentStates).isRequired,
   selectedDay: PropTypes.string,
   handleFilterChanged: PropTypes.func,
-  handleSelectedDayChanged: PropTypes.func
+  handleSelectedDayChanged: PropTypes.func.isRequired
 }
 
 export default FilterableMatrixTable
