@@ -113,7 +113,7 @@ public class AsyncProcessService implements RestResource {
     @GET
     @TypeHint(ProcessStatus.class)
     public Response getAsyncProcessStatus(@PathParam("keyId") String keyId) {
-        AsyncTaskHandle handle = asyncTaskHandleManager.getHandleByKeyId(keyId);
+        AsyncTaskHandle<?> handle = asyncTaskHandleManager.getHandleByKeyId(keyId);
         if (handle == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -140,7 +140,7 @@ public class AsyncProcessService implements RestResource {
     @CheckRole("admin")
     public Response getAllAsyncProcessStatuses(
             @QueryParam("includeFinished") @DefaultValue("false") boolean includeFinished) {
-        Map<AsyncTaskHandleManager.AsyncTaskKey, AsyncTaskHandle> tasks;
+        Map<AsyncTaskHandleManager.AsyncTaskKey, AsyncTaskHandle<?>> tasks;
         if (includeFinished) {
             tasks = asyncTaskHandleManager.getAllTasks();
         } else {
@@ -211,7 +211,7 @@ public class AsyncProcessService implements RestResource {
     }
 
     @NotNull
-    static ProcessStatus handleToProcessStatus(AsyncTaskHandle handle,
+    static ProcessStatus handleToProcessStatus(AsyncTaskHandle<?> handle,
             String url) {
         ProcessStatus status = new ProcessStatus();
         status.setStatusCode(

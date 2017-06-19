@@ -43,13 +43,13 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Named("asyncTaskHandleManager")
 @javax.enterprise.context.ApplicationScoped
 public class AsyncTaskHandleManager implements Serializable {
-
+    private static final long serialVersionUID = -3209755141964141830L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private final Map<AsyncTaskKey, AsyncTaskHandle> handlesByKey = Maps
+    private final Map<AsyncTaskKey, AsyncTaskHandle<?>> handlesByKey = Maps
             .newConcurrentMap();
 
     // Cache of recently completed tasks
-    private Cache<AsyncTaskKey, AsyncTaskHandle> finishedTasks = CacheBuilder
+    private Cache<AsyncTaskKey, AsyncTaskHandle<?>> finishedTasks = CacheBuilder
             .newBuilder().expireAfterWrite(10, TimeUnit.MINUTES)
             .build();
 
@@ -77,7 +77,7 @@ public class AsyncTaskHandleManager implements Serializable {
     void taskFinished(AsyncTaskHandle taskHandle) {
         synchronized (handlesByKey) {
             // TODO This operation is O(n). Maybe we can do better?
-            for (Map.Entry<AsyncTaskKey, AsyncTaskHandle> entry : handlesByKey
+            for (Map.Entry<AsyncTaskKey, AsyncTaskHandle<?>> entry : handlesByKey
                     .entrySet()) {
                 if (entry.getValue().equals(taskHandle)) {
                     handlesByKey.remove(entry.getKey());
@@ -94,18 +94,19 @@ public class AsyncTaskHandleManager implements Serializable {
         return finishedTasks.getIfPresent(key);
     }
 
-    public AsyncTaskHandle getHandleByKeyId(String keyId) {
+    @SuppressWarnings("unchecked")
+    public <T> AsyncTaskHandle<T> getHandleByKeyId(String keyId) {
         // TODO this is O(n) can we do better?
-        for (Map.Entry<AsyncTaskKey, AsyncTaskHandle> entry : handlesByKey
+        for (Map.Entry<AsyncTaskKey, AsyncTaskHandle<?>> entry : handlesByKey
                 .entrySet()) {
             if (entry.getKey().id().equals(keyId)) {
-                return entry.getValue();
+                return (AsyncTaskHandle<T>) entry.getValue();
             }
         }
-        for (Map.Entry<AsyncTaskKey, AsyncTaskHandle> entry : finishedTasks
+        for (Map.Entry<AsyncTaskKey, AsyncTaskHandle<?>> entry : finishedTasks
                 .asMap().entrySet()) {
             if (entry.getKey().id().equals(keyId)) {
-                return entry.getValue();
+                return (AsyncTaskHandle<T>) entry.getValue();
             }
         }
         return null;
@@ -118,14 +119,14 @@ public class AsyncTaskHandleManager implements Serializable {
         return handles;
     }
 
-    public Map<AsyncTaskKey, AsyncTaskHandle> getAllTasks() {
-        ImmutableMap.Builder<AsyncTaskKey, AsyncTaskHandle> builder = ImmutableMap.builder();
+    public Map<AsyncTaskKey, AsyncTaskHandle<?>> getAllTasks() {
+        ImmutableMap.Builder<AsyncTaskKey, AsyncTaskHandle<?>> builder = ImmutableMap.builder();
         builder.putAll(handlesByKey);
         builder.putAll(finishedTasks.asMap());
         return builder.build();
     }
 
-    public Map<AsyncTaskKey, AsyncTaskHandle> getRunningTasks() {
+    public Map<AsyncTaskKey, AsyncTaskHandle<?>> getRunningTasks() {
         return ImmutableMap.copyOf(handlesByKey);
     }
 
