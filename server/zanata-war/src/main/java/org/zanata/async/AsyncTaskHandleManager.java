@@ -91,7 +91,7 @@ public class AsyncTaskHandleManager implements Serializable {
         if (handlesByKey.containsKey(key)) {
             return handlesByKey.get(key);
         }
-        return finishedTasks.getIfPresent(key.id());
+        return finishedTasks.getIfPresent(key);
     }
 
     public AsyncTaskHandle getHandleByKeyId(String keyId) {

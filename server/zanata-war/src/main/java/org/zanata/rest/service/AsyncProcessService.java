@@ -44,8 +44,13 @@ import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.UserTriggerableTaskHandle;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.rest.dto.ProcessStatus;
+import org.zanata.rest.editor.service.SuggestionsService;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.CheckRole;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
+import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -54,8 +59,12 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
  * This endpoint should let us control and query all async tasks.
  *
  * TODO AsynchronousProcessResourceService are specific for CLI push and pull
+ * TODO org.zanata.rest.editor.service.SuggestionsService has specific methods for TM merge
  *
  * @see AsynchronousProcessResourceService
+ * @see SuggestionsService#merge(TransMemoryMergeRequest)
+ * @see SuggestionsService#cancelMerge(TransMemoryMergeCancelRequest)
+ *
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -73,6 +82,19 @@ public class AsyncProcessService implements RestResource {
     @SuppressFBWarnings("SE_BAD_FIELD")
     @Context
     private UriInfo uriInfo;
+
+    public AsyncProcessService() {
+    }
+
+    // UriInfo can not be injected via constructor injection
+    @VisibleForTesting
+    AsyncProcessService(AsyncTaskHandleManager taskHandleManager,
+            ZanataIdentity identity, UriInfo uriInfo) {
+        asyncTaskHandleManager = taskHandleManager;
+        this.identity = identity;
+        this.uriInfo = uriInfo;
+    }
+
 
     /**
      * Get an async task's status.
@@ -101,7 +123,7 @@ public class AsyncProcessService implements RestResource {
     }
 
     /**
-     * Get all async task's status.
+     * Get statuses for all async tasks. This is for admin only.
      *
      * @param includeFinished
      *            whether to include finished tasks
@@ -115,7 +137,8 @@ public class AsyncProcessService implements RestResource {
      *         the server while performing this operation.
      */
     @GET
-    public Response getAllAsyncProcess(
+    @CheckRole("admin")
+    public Response getAllAsyncProcessStatuses(
             @QueryParam("includeFinished") @DefaultValue("false") boolean includeFinished) {
         Map<AsyncTaskHandleManager.AsyncTaskKey, AsyncTaskHandle> tasks;
         if (includeFinished) {
@@ -152,24 +175,39 @@ public class AsyncProcessService implements RestResource {
         if (handle == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        if (handle.isStarted() && !handle.isCancelled() && !handle.isDone()) {
-            if (!identity.hasRole("admin") && handle instanceof UserTriggerableTaskHandle) {
-                UserTriggerableTaskHandle taskHandle =
-                        (UserTriggerableTaskHandle) handle;
-                if (!taskHandle.canCancel(identity.getAccountUsername())) {
-                    throw new AuthorizationException(
-                            "Only the task triggerer or admin can cancel the task.");
-                }
-            }
 
-            handle.cancel(true);
-            handle.setCancelledBy(identity.getAccountUsername());
-            handle.setCancelledTime(System.currentTimeMillis());
-
+        if (!taskIsRunning(handle)) {
+            ProcessStatus entity = handleToProcessStatus(handle,
+                    uriInfo.getBaseUri() + "process/key/" + keyId);
+            return Response.ok(entity).build();
         }
+
+        if (handle instanceof UserTriggerableTaskHandle) {
+            UserTriggerableTaskHandle taskHandle =
+                    (UserTriggerableTaskHandle) handle;
+            if (!taskHandle.canCancel(identity)) {
+                throw new AuthorizationException(
+                        "Only the task owner or admin can cancel the task:" + keyId);
+            }
+        } else {
+            // for other type of async task, we consider them as system tasks
+            if (!identity.hasRole("admin")) {
+                throw new AuthorizationException(
+                        "Only admin can cancel the task:" + keyId);
+            }
+        }
+
+        handle.cancel(true);
+        handle.setCancelledBy(identity.getAccountUsername());
+        handle.setCancelledTime(System.currentTimeMillis());
+
         ProcessStatus processStatus = handleToProcessStatus(handle,
-                uriInfo.getBaseUri() + "cancel/key" + keyId);
+                uriInfo.getBaseUri() + "process/cancel/key/" + keyId);
         return Response.ok(processStatus).build();
+    }
+
+    private static boolean taskIsRunning(AsyncTaskHandle handle) {
+        return handle.isStarted() && !handle.isCancelled() && !handle.isDone();
     }
 
     @NotNull
@@ -179,16 +217,16 @@ public class AsyncProcessService implements RestResource {
         status.setStatusCode(
                 handle.isDone() ? ProcessStatus.ProcessStatusCode.Finished
                         : ProcessStatus.ProcessStatusCode.Running);
-        int perComplete = 100;
+        int percentComplete = 100;
         if (handle.getMaxProgress() > 0) {
-            perComplete = (int) (handle.getCurrentProgress() * 100
+            percentComplete = (int) (handle.getCurrentProgress() * 100
                     / handle.getMaxProgress());
         }
-        status.setPercentageComplete(perComplete);
+        status.setPercentageComplete(percentComplete);
         status.setUrl(url);
         if (handle.isCancelled()) {
             status.setStatusCode(ProcessStatus.ProcessStatusCode.Cancelled);
-            status.addMessage("Cancelled");
+            status.addMessage("Cancelled by " + handle.getCancelledBy());
         } else if (handle.isDone()) {
             Object result = null;
             try {

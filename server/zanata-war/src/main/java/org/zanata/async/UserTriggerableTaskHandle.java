@@ -20,12 +20,15 @@
  */
 package org.zanata.async;
 
+import org.zanata.security.ZanataIdentity;
+
 public interface UserTriggerableTaskHandle {
     void setTriggeredBy(String username);
 
     String getTriggeredBy();
 
-    default boolean canCancel(String currentUser) {
-        return currentUser.equals(getTriggeredBy());
+    default boolean canCancel(ZanataIdentity identity) {
+        return identity != null && (identity.hasRole("admin")
+                || getTriggeredBy().equals(identity.getAccountUsername()));
     }
 }

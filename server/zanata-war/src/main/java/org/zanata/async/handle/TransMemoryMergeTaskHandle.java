@@ -57,10 +57,8 @@ public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> implements
         return MoreObjects.toStringHelper(this)
                 .omitNullValues()
                 .add("mergeTarget", mergeTarget)
-                .add("textFlowFilled", currentProgress)
-                .add("totalTextFlows", maxProgress)
-                .add("cancelledBy", getTriggeredBy())
-                .add("cancelledTime", getCancelledTime())
+                .add("currentProgress", currentProgress)
+                .add("maxProgress", maxProgress)
                 .add("triggeredBy", triggeredBy)
                 .toString();
     }
