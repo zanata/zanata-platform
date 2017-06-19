@@ -42,7 +42,10 @@ const defaultChartOptions = {
     yAxes: [{
       ticks: {
         fontColor: 'rgb(84, 102, 122)',
-        fontFamily: defaultFonts
+        fontFamily: defaultFonts,
+        // chart should always start at 0, someone can't have negative contrib.
+        min: 0,
+        suggestedMax: 10
       },
       gridLines: {
         color: 'rgba(198, 210, 219, .1)',
