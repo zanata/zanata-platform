@@ -6,7 +6,7 @@ import {
 import Draggable from 'react-draggable'
 
 const DraggableVersionPanels = (props) => {
-  if (!props.fromProjectVersion[0]) {
+  if (props.fromProjectVersion.length <= 0) {
     return <div></div>
   }
   const draggablePanels = props.fromProjectVersion.map((version, index) => {

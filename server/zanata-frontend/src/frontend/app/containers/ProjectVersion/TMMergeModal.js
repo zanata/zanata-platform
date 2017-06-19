@@ -38,7 +38,8 @@ class TMMergeModal extends Component {
       fromImportedTM: false,
       selectedLanguage: '',
       fromProjectVersion: [], // Selected Versions List
-      projectSearchTerm: this.props.projectSlug
+      projectSearchTerm: this.props.projectSlug,
+      selectedProject: []
     }
   }
   componentDidMount () {
@@ -86,6 +87,17 @@ class TMMergeModal extends Component {
           ...fromProjectVersion.slice(index + 1)]
     })
   }
+  // Remove all versions of a Project from fromProjectVersion array
+  popAllProjectVersions = (projectVersions) => {
+    const {
+      fromProjectVersion
+    } = this.state
+    this.setState({
+      ...this.state,
+      fromProjectVersion: [...fromProjectVersion.filter((project) =>
+          !projectVersions.includes(project))]
+    })
+  }
   // Add a version to fromProjectVersion array
   pushProjectVersion = (version) => {
     const {
@@ -96,6 +108,18 @@ class TMMergeModal extends Component {
       fromProjectVersion: [...fromProjectVersion, version]
     })
   }
+  // Push all versions of a Project to fromProjectVersion array
+  pushAllProjectVersions = (projectVersions, newSelectedProject) => {
+    const {
+      fromProjectVersion
+    } = this.state
+    this.setState({
+      ...this.state,
+      fromProjectVersion:
+        [...fromProjectVersion.concat(projectVersions)],
+      selectedProject: newSelectedProject
+    })
+  }
   // Push/Pop version from fromProjectVersion array based on selection
   onVersionCheckboxChange = (version) => {
     const {
@@ -103,34 +127,28 @@ class TMMergeModal extends Component {
     } = this.state
     const versionChecked = fromProjectVersion.includes(version)
     const index = fromProjectVersion.indexOf(version)
-    if (versionChecked) {
-      this.popProjectVersion(index)
-    } else {
-      this.pushProjectVersion(version)
-    }
+    versionChecked ? this.popProjectVersion(index)
+      : this.pushProjectVersion(version)
   }
   // Remove/Add all project versions to version list
   onAllVersionCheckboxChange = (projectVersions) => {
     const {
       fromProjectVersion
     } = this.state
+    let newSelectedProject = [...this.state.selectedProject]
+    let versionsToPush = [...projectVersions]
     let allVersionsChecked = true
-    projectVersions.map((project) => {
+    projectVersions.map((project, index) => {
       if (!fromProjectVersion.includes(project)) {
         allVersionsChecked = false
+      } else {
+        versionsToPush = [...versionsToPush.slice(0, index),
+          ...versionsToPush.slice(index + 1)]
       }
     })
-    if (allVersionsChecked) {
-      projectVersions.map((project) => {
-        this.popProjectVersion(fromProjectVersion.indexOf(project))
-      })
-    } else {
-      projectVersions.map((project) => {
-        if (!fromProjectVersion.includes(project)) {
-          this.pushProjectVersion(project)
-        }
-      })
-    }
+    allVersionsChecked
+        ? this.popAllProjectVersions(projectVersions, newSelectedProject)
+        : this.pushAllProjectVersions(versionsToPush, newSelectedProject)
   }
   render () {
     const {
@@ -145,8 +163,6 @@ class TMMergeModal extends Component {
       // TODO: Use Real Actions
       // console.info('clicked')
     }
-    const currentProject = projectSlug
-    const currentVersion = versionSlug
     const showHide = showTMMergeModal ? {display: 'block'} : {display: 'none'}
     const percentageItems = [100, 90, 80].map(percentage => {
       return (
@@ -300,10 +316,10 @@ class TMMergeModal extends Component {
                   </div>
                   <ul>
                     <li>
-                      {currentProject}
+                      {projectSlug}
                     </li>
                     <li>
-                      {currentVersion}
+                      {versionSlug}
                     </li>
                   </ul>
                 </div>
@@ -345,6 +361,8 @@ class TMMergeModal extends Component {
                     fromProjectVersion={this.state.fromProjectVersion}
                     onVersionCheckboxChange={this.onVersionCheckboxChange}
                     onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
+                    selectedProject={this.state.selectedProject}
+                    projectList={this.props.projectVersions}
                   />
                 </Col>
                 <Col xs={6}>
