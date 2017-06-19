@@ -76,7 +76,7 @@ public class AsyncProcessServiceTest {
 
     @Test
     public void canReturnSingleProcessStatus() throws URISyntaxException {
-        AsyncTaskHandle taskHandle = new AsyncTaskHandle();
+        AsyncTaskHandle<Object> taskHandle = new AsyncTaskHandle<>();
         taskHandle.setMaxProgress(100L);
         taskHandle.increaseProgress(90);
 
@@ -95,17 +95,18 @@ public class AsyncProcessServiceTest {
     public void canGetAllRunningTasks() throws URISyntaxException {
         when(urlInfo.getBaseUri()).thenReturn(new URI(baseUriStr));
 
-        Map<AsyncTaskHandleManager.AsyncTaskKey, AsyncTaskHandle> runningTasks =
+        Map<AsyncTaskHandleManager.AsyncTaskKey, AsyncTaskHandle<?>> runningTasks =
                 Maps.newHashMap();
 
         AsyncTaskHandleManager.AsyncTaskKey key = () -> "keyId";
-        AsyncTaskHandle taskHandle = new AsyncTaskHandle();
+        AsyncTaskHandle<String> taskHandle = new AsyncTaskHandle<>();
         runningTasks.put(key, taskHandle);
 
         when(taskHandleManager.getRunningTasks()).thenReturn(runningTasks);
         Response response = service.getAllAsyncProcessStatuses(false);
 
         assertThat(response.getStatus()).isEqualTo(200);
+        @SuppressWarnings("unchecked")
         List<ProcessStatus> statusList =
                 (List<ProcessStatus>) response.getEntity();
         assertThat(statusList).hasSize(1);
@@ -118,17 +119,18 @@ public class AsyncProcessServiceTest {
             throws URISyntaxException {
         when(urlInfo.getBaseUri()).thenReturn(new URI(baseUriStr));
 
-        Map<AsyncTaskHandleManager.AsyncTaskKey, AsyncTaskHandle> runningTasks =
+        Map<AsyncTaskHandleManager.AsyncTaskKey, AsyncTaskHandle<?>> runningTasks =
                 Maps.newHashMap();
 
         AsyncTaskHandleManager.AsyncTaskKey key = () -> "keyId";
-        AsyncTaskHandle taskHandle = new AsyncTaskHandle();
+        AsyncTaskHandle<String> taskHandle = new AsyncTaskHandle<>();
         runningTasks.put(key, taskHandle);
 
         when(taskHandleManager.getAllTasks()).thenReturn(runningTasks);
         Response response = service.getAllAsyncProcessStatuses(true);
 
         assertThat(response.getStatus()).isEqualTo(200);
+        @SuppressWarnings("unchecked")
         List<ProcessStatus> statusList =
                 (List<ProcessStatus>) response.getEntity();
         assertThat(statusList).hasSize(1);
@@ -146,7 +148,7 @@ public class AsyncProcessServiceTest {
     @Test
     public void returnTaskStatusIfTaskIsNotRunning() throws URISyntaxException {
         // we have a finished task
-        AsyncTaskHandle<String> taskHandle =
+        AsyncTaskHandle<Object> taskHandle =
                 new FinishedAsyncTaskHandle("result");
 
         when(taskHandleManager.getHandleByKeyId("id")).thenReturn(taskHandle);
@@ -162,7 +164,7 @@ public class AsyncProcessServiceTest {
 
     @Test
     public void notAdminUserCanNotCancelSystemTask() {
-        AsyncTaskHandle<String> taskHandle = new StartedAsyncTaskHandle();
+        AsyncTaskHandle<Object> taskHandle = new StartedAsyncTaskHandle();
 
         String keyId = "id";
         when(taskHandleManager.getHandleByKeyId(keyId)).thenReturn(taskHandle);
@@ -174,7 +176,7 @@ public class AsyncProcessServiceTest {
 
     @Test
     public void adminUserCanCancelSystemTask() {
-        AsyncTaskHandle<String> taskHandle = new StartedAsyncTaskHandle();
+        AsyncTaskHandle<Object> taskHandle = new StartedAsyncTaskHandle();
 
         String keyId = "id";
         when(taskHandleManager.getHandleByKeyId(keyId)).thenReturn(taskHandle);
@@ -246,18 +248,18 @@ public class AsyncProcessServiceTest {
     }
 
     private static class FinishedAsyncTaskHandle
-            extends AsyncTaskHandle<String> {
+            extends AsyncTaskHandle<Object> {
         private static final long serialVersionUID = 1L;
 
         private FinishedAsyncTaskHandle(String result) {
-            CompletableFuture<String> futureResult = new CompletableFuture<>();
+            CompletableFuture<Object> futureResult = new CompletableFuture<>();
             futureResult.complete(result);
             super.setFutureResult(futureResult);
         }
     }
 
     private static class StartedAsyncTaskHandle
-            extends AsyncTaskHandle<String> {
+            extends AsyncTaskHandle<Object> {
         private static final long serialVersionUID = 1L;
         private boolean cancelled;
 
