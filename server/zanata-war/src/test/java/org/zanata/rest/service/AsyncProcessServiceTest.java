@@ -39,7 +39,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
-import org.zanata.async.UserTriggerableTaskHandle;
+import org.zanata.async.UserTriggeredTaskHandle;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.security.ZanataIdentity;
@@ -281,7 +281,7 @@ public class AsyncProcessServiceTest {
     }
 
     private static class UserTriggeredStartedAsyncTaskHandle extends
-            StartedAsyncTaskHandle implements UserTriggerableTaskHandle {
+            StartedAsyncTaskHandle implements UserTriggeredTaskHandle {
 
         private static final long serialVersionUID = 1L;
         private String triggerBy;

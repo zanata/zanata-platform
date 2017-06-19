@@ -67,11 +67,11 @@ public class AsyncTaskHandleManager implements Serializable {
      * @param handle The handle to register.
      * @return An auto generated key to retreive the handle later
      */
-    public synchronized AsyncTaskKey registerTaskHandle(AsyncTaskHandle handle) {
+    public synchronized String registerTaskHandle(AsyncTaskHandle handle) {
         String autoGenKey = UUID.randomUUID().toString();
         AsyncTaskKey autoKey = () -> autoGenKey;
         registerTaskHandle(handle, autoKey);
-        return autoKey;
+        return autoGenKey;
     }
 
     void taskFinished(AsyncTaskHandle taskHandle) {

@@ -22,7 +22,12 @@ package org.zanata.async;
 
 import org.zanata.security.ZanataIdentity;
 
-public interface UserTriggerableTaskHandle {
+/**
+ * Represents a task triggered by a user (as oppose to some system generated
+ * async tasks). For such tasks, the user takes ownership of this task and is
+ * allowed to cancel the task. Admin user can cancel any tasks.
+ */
+public interface UserTriggeredTaskHandle {
     void setTriggeredBy(String username);
 
     String getTriggeredBy();

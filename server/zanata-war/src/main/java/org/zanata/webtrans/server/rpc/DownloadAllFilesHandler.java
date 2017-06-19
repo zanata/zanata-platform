@@ -73,7 +73,7 @@ public class DownloadAllFilesHandler extends
                         action.getVersionSlug());
         if (identity.hasPermission(version, "download-all")) {
             AsyncTaskHandle<String> handle = new AsyncTaskHandle<String>();
-            AsyncTaskHandleManager.AsyncTaskKey taskKey =
+            String keyId =
                     asyncTaskHandleManager.registerTaskHandle(handle);
             // TODO This should be in a service and share code with the JSF
             // pages that do the same thing
@@ -86,7 +86,7 @@ public class DownloadAllFilesHandler extends
                 throw new ActionException(e);
             }
 
-            return new DownloadAllFilesResult(true, taskKey.id());
+            return new DownloadAllFilesResult(true, keyId);
         }
 
         return new DownloadAllFilesResult(false, null);

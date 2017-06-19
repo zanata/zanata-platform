@@ -41,7 +41,7 @@ import javax.ws.rs.core.UriInfo;
 import org.jetbrains.annotations.NotNull;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
-import org.zanata.async.UserTriggerableTaskHandle;
+import org.zanata.async.UserTriggeredTaskHandle;
 import org.zanata.exception.AuthorizationException;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.editor.service.SuggestionsService;
@@ -182,9 +182,9 @@ public class AsyncProcessService implements RestResource {
             return Response.ok(entity).build();
         }
 
-        if (handle instanceof UserTriggerableTaskHandle) {
-            UserTriggerableTaskHandle taskHandle =
-                    (UserTriggerableTaskHandle) handle;
+        if (handle instanceof UserTriggeredTaskHandle) {
+            UserTriggeredTaskHandle taskHandle =
+                    (UserTriggeredTaskHandle) handle;
             if (!taskHandle.canCancel(identity)) {
                 throw new AuthorizationException(
                         "Only the task owner or admin can cancel the task:" + keyId);

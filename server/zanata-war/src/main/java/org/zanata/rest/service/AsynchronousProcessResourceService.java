@@ -109,12 +109,12 @@ public class AsynchronousProcessResourceService
         String name = "SourceDocCreation: " + projectSlug + "-" + iterationSlug
                 + "-" + idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        AsyncTaskHandleManager.AsyncTaskKey taskKey = asyncTaskHandleManager.registerTaskHandle(handle);
+        String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl
                 .saveDocumentAsync(projectSlug, iterationSlug,
                         resource, extensions, copytrans, true, handle);
-        logWhenUploadComplete(handle, name, taskKey.id());
-        return getProcessStatus(taskKey.id()); // TODO Change to return 202
+        logWhenUploadComplete(handle, name, keyId);
+        return getProcessStatus(keyId); // TODO Change to return 202
         // Accepted,
         // with a url to get the
         // progress
@@ -133,12 +133,12 @@ public class AsynchronousProcessResourceService
         String name = "SourceDocCreationOrUpdate: " + projectSlug + "-"
                 + iterationSlug + "-" + idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        AsyncTaskHandleManager.AsyncTaskKey taskKey = asyncTaskHandleManager.registerTaskHandle(handle);
+        String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl
                 .saveDocumentAsync(projectSlug, iterationSlug, resource,
                         extensions, copytrans, true, handle);
-        logWhenUploadComplete(handle, name, taskKey.id());
-        return getProcessStatus(taskKey.id()); // TODO Change to return 202
+        logWhenUploadComplete(handle, name, keyId);
+        return getProcessStatus(keyId); // TODO Change to return 202
         // Accepted,
         // with a url to get the
         // progress
@@ -195,13 +195,13 @@ public class AsynchronousProcessResourceService
         final MergeType finalMergeType = mergeType;
         String taskName = "TranslatedDocUpload: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        AsyncTaskHandleManager.AsyncTaskKey taskKey = asyncTaskHandleManager.registerTaskHandle(handle);
+        String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
                         iterationSlug, id, locale, translatedDoc, extensions,
                         finalMergeType, assignCreditToUploader, true, handle,
                         TranslationSourceType.API_UPLOAD);
-        logWhenUploadComplete(handle, taskName, taskKey.id());
-        return this.getProcessStatus(taskKey.id());
+        logWhenUploadComplete(handle, taskName, keyId);
+        return this.getProcessStatus(keyId);
     }
 
     @Override

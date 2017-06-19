@@ -21,7 +21,7 @@
 package org.zanata.async.handle;
 
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.async.UserTriggerableTaskHandle;
+import org.zanata.async.UserTriggeredTaskHandle;
 
 /**
  * Asynchronous task handle for the copy version process.
@@ -30,7 +30,7 @@ import org.zanata.async.UserTriggerableTaskHandle;
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class CopyVersionTaskHandle extends AsyncTaskHandle<Void> implements
-        UserTriggerableTaskHandle {
+        UserTriggeredTaskHandle {
 
     private int documentCopied;
     private int totalDoc;

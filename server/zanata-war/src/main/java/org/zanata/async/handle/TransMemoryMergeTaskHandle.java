@@ -21,7 +21,7 @@
 package org.zanata.async.handle;
 
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.async.UserTriggerableTaskHandle;
+import org.zanata.async.UserTriggeredTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
@@ -32,7 +32,7 @@ import com.google.common.base.MoreObjects;
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public class TransMemoryMergeTaskHandle extends AsyncTaskHandle<Void> implements
-        UserTriggerableTaskHandle {
+        UserTriggeredTaskHandle {
     private String triggeredBy;
     private String mergeTarget;
 

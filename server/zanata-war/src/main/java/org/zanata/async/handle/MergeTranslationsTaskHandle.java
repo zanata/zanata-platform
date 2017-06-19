@@ -21,7 +21,7 @@
 package org.zanata.async.handle;
 
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.async.UserTriggerableTaskHandle;
+import org.zanata.async.UserTriggeredTaskHandle;
 
 /**
  * Asynchronous task handle for the merge translations process.
@@ -29,7 +29,7 @@ import org.zanata.async.UserTriggerableTaskHandle;
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
 public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> implements
-        UserTriggerableTaskHandle {
+        UserTriggeredTaskHandle {
 
     private int totalTranslations;
     private String triggeredBy;

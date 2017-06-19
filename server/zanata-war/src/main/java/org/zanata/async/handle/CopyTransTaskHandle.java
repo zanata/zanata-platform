@@ -21,14 +21,14 @@
 package org.zanata.async.handle;
 
 import org.zanata.async.AsyncTaskHandle;
-import org.zanata.async.UserTriggerableTaskHandle;
+import org.zanata.async.UserTriggeredTaskHandle;
 
 /**
  * @author Carlos Munoz
  *         <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
  */
 public class CopyTransTaskHandle extends AsyncTaskHandle<Void> implements
-        UserTriggerableTaskHandle {
+        UserTriggeredTaskHandle {
 
     private String triggeredBy;
     private boolean prepared;
