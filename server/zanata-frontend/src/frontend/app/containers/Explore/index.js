@@ -1,9 +1,9 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import Helmet from 'react-helmet'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
-import { Button }
-  from 'react-bootstrap'
+import { Button } from 'react-bootstrap'
 import TeaserList from './TeaserList'
 import { TextInput, Icon } from '../../components'
 import {
@@ -139,7 +139,7 @@ class Explore extends Component {
       <div className='page scroll-view-theme' id='explore'>
         <Helmet title='Search' />
         <div className='header-classes'>
-          <h1 className='hidden' level='1'>Search</h1>
+          <h1 className='hidden'>Search</h1>
           <div className='search-view-theme'>
             <Icon name='search' className='s1 list-inline' />
             <TextInput
@@ -170,14 +170,16 @@ class Explore extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, { location }) => {
+  const {
+    groupPage, languageTeamPage, personPage, projectPage, q } = location.query
   return {
-    location: state.routing.location,
-    searchText: state.routing.location.query.q,
-    projectPage: parseInt(state.routing.location.query.projectPage),
-    groupPage: parseInt(state.routing.location.query.groupPage),
-    personPage: parseInt(state.routing.location.query.personPage),
-    languageTeamPage: parseInt(state.routing.location.query.languageTeamPage),
+    location,
+    searchText: q,
+    projectPage: parseInt(projectPage),
+    groupPage: parseInt(groupPage),
+    personPage: parseInt(personPage),
+    languageTeamPage: parseInt(languageTeamPage),
     searchResults: state.explore.results,
     searchError: state.explore.error,
     searchLoading: state.explore.loading

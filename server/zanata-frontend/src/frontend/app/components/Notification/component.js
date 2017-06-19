@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Icon, Modal } from '../../components'
 import { isEmpty } from 'lodash'
 import { Button, ButtonGroup, Row } from 'react-bootstrap'

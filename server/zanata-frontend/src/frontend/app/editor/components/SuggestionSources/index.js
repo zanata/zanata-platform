@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import SuggestionContents from '../SuggestionContents'
 import SuggestionDetailsSummary from '../SuggestionDetailsSummary'
 

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import ContributionChart from './ContributionChart'
 import FilterableMatrixTable from './FilterableMatrixTable'
 import { DateRange } from 'react-date-range'
@@ -21,7 +22,7 @@ class RecentContributions extends React.Component {
     selectedDay: PropTypes.string,
     handleDateRangeChanged: PropTypes.func,
     handleFilterChanged: PropTypes.func,
-    handleSelectedDayChanged: PropTypes.func
+    handleSelectedDayChanged: PropTypes.func.isRequired
   }
 
   constructor (props) {
@@ -99,7 +100,7 @@ class RecentContributions extends React.Component {
                       onClick={() => this.onToggleShowDateRange()}>
                       Cancel
                     </Button>
-                    <Button bStyle='primary'
+                    <Button bsStyle='primary'
                       onClick={
                       () => handleDateRangeChanged(this.state.dateRange)}>
                       Apply

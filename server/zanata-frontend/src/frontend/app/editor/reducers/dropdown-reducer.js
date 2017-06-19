@@ -1,4 +1,4 @@
-import updateObject from 'react-addons-update'
+import updateObject from 'immutability-helper'
 import {
   OPEN_DROPDOWN, CLOSE_DROPDOWN, TOGGLE_DROPDOWN
 } from '../actions/action-types'

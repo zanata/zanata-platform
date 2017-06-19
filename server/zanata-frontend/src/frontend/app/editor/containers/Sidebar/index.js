@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import ReactSidebar from 'react-sidebar'
 import SidebarContent from '../SidebarContent'
 
@@ -59,6 +60,12 @@ class Sidebar extends Component {
         pullRight
         onSetOpen={this.setOpen}
         shadow
+        styles={{
+          content: {
+            // prevents unwanted padding to the right from default 'scroll'
+            overflowY: 'auto'
+          }
+        }}
         sidebarClassName="sidebar-editor">
         {this.props.children}
       </ReactSidebar>

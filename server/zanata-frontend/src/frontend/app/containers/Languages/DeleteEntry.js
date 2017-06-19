@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {
   Button,
   Popover,
@@ -12,7 +13,7 @@ class DeleteEntry extends Component {
     locale: PropTypes.object,
     show: PropTypes.bool,
     handleDeleteEntryDisplay: PropTypes.func.isRequired,
-    handleDeleteEntry: React.PropTypes.func.isRequired
+    handleDeleteEntry: PropTypes.func.isRequired
   }
 
   render () {
