@@ -17,9 +17,9 @@ const DraggableVersionPanels = (props) => {
           <Button bsStyle='link' className='btn-link-sort'>
             <i className='fa fa-sort'></i>
           </Button>
-          {version.id}
+          {version.version.id}
           <span className='text-muted'>
-            Project ?
+            {version.projectSlug}
           </span>
         </ListGroupItem>
       </Draggable>

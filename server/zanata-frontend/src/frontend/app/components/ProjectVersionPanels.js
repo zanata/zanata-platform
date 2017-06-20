@@ -26,7 +26,8 @@ const ProjectVersionPanels = (props) => {
               <ListGroupItem className='v' key={index}>
                 <VersionMenuCheckbox version={version}
                   onClick={props.onVersionCheckboxChange}
-                  fromProjectVersion={props.fromProjectVersion} />
+                  fromProjectVersion={props.fromProjectVersion}
+                  projectSlug={project.id} />
               </ListGroupItem>
                 )
           })}
@@ -45,13 +46,16 @@ class SelectAllVersionsCheckbox extends Component {
     fromProjectVersion: PropTypes.arrayOf(PropTypes.object)
   }
   onClick = () => {
-    this.props.onClick(this.props.project.versions)
+    this.props.onClick(this.props.project)
   }
   render () {
     const {
       project,
       fromProjectVersion
     } = this.props
+    const flattenedVersionArray = fromProjectVersion.map((project) => {
+      return project.version
+    })
     // Check if all project versions have been selected
     const containsVersionArray = (projectVersionList, selectedVersionList) => {
       let allChecked = true
@@ -63,7 +67,7 @@ class SelectAllVersionsCheckbox extends Component {
       return allChecked
     }
     const allVersionsChecked =
-        containsVersionArray(project.versions, fromProjectVersion)
+        containsVersionArray(project.versions, flattenedVersionArray)
     const projectLockIcon = project.status === 'READONLY'
         ? <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
           <Icon name='locked' className='s0 icon-locked' />
@@ -80,19 +84,23 @@ class SelectAllVersionsCheckbox extends Component {
 
 class VersionMenuCheckbox extends Component {
   static propTypes = {
-    version: PropTypes.object,
+    version: PropTypes.object.isRequired,
     onClick: PropTypes.func.isRequired,
-    fromProjectVersion: PropTypes.arrayOf(PropTypes.object)
+    fromProjectVersion: PropTypes.arrayOf(PropTypes.object),
+    projectSlug: PropTypes.string.isRequired
   }
   onClick = () => {
-    this.props.onClick(this.props.version)
+    this.props.onClick(this.props.version, this.props.projectSlug)
   }
   render () {
     const {
       version,
       fromProjectVersion
     } = this.props
-    const versionChecked = fromProjectVersion.includes(version)
+    const flattenedVersionArray = fromProjectVersion.map((project) => {
+      return project.version
+    })
+    const versionChecked = flattenedVersionArray.includes(version)
     const versionLockIcon = version.status === 'READONLY'
         ? <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
           <Icon name='locked' className='s0 icon-locked' />
