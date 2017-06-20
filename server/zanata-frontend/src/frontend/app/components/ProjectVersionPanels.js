@@ -18,9 +18,7 @@ const ProjectVersionPanels = (props) => {
     return (
       <Panel header={<h3><SelectAllVersionsCheckbox
         project={project} onClick={props.onAllVersionCheckboxChange}
-        fromProjectVersion={props.fromProjectVersion}
-        selectedProject={props.selectedProject}
-        projectList={props.projectList} />
+        fromProjectVersion={props.fromProjectVersion} />
       </h3>} key={index} eventKey={index}>
         <ListGroup fill>
           {project.versions.map((version, index) => {
@@ -44,9 +42,7 @@ class SelectAllVersionsCheckbox extends Component {
   static propTypes = {
     project: PropTypes.object,
     onClick: PropTypes.func.isRequired,
-    fromProjectVersion: PropTypes.arrayOf(PropTypes.object),
-    selectedProject: PropTypes.arrayOf(PropTypes.bool),
-    projectList: PropTypes.arrayOf(PropTypes.object)
+    fromProjectVersion: PropTypes.arrayOf(PropTypes.object)
   }
   onClick = () => {
     this.props.onClick(this.props.project.versions)
@@ -54,9 +50,7 @@ class SelectAllVersionsCheckbox extends Component {
   render () {
     const {
       project,
-      fromProjectVersion,
-      selectedProject,
-      projectList
+      fromProjectVersion
     } = this.props
     // Check if all project versions have been selected
     const containsVersionArray = (projectVersionList, selectedVersionList) => {
@@ -75,10 +69,9 @@ class SelectAllVersionsCheckbox extends Component {
           <Icon name='locked' className='s0 icon-locked' />
         </OverlayTrigger>
         : ''
-    const projectIndex = projectList.indexOf(project)
     return (
       <Checkbox onChange={this.onClick}
-        checked={selectedProject[projectIndex] && allVersionsChecked}>
+        checked={allVersionsChecked}>
         {project.title}{" "}{projectLockIcon}
       </Checkbox>
     )
@@ -117,9 +110,7 @@ ProjectVersionPanels.propTypes = {
   projectVersions: PropTypes.arrayOf(PropTypes.object),
   fromProjectVersion: PropTypes.arrayOf(PropTypes.object),
   onVersionCheckboxChange: PropTypes.func.isRequired,
-  onAllVersionCheckboxChange: PropTypes.func.isRequired,
-  selectedProject: PropTypes.arrayOf(PropTypes.bool),
-  projectList: PropTypes.arrayOf(PropTypes.object)
+  onAllVersionCheckboxChange: PropTypes.func.isRequired
 }
 
 export default ProjectVersionPanels

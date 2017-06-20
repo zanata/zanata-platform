@@ -92,11 +92,14 @@ class TMMergeModal extends Component {
     const {
       fromProjectVersion
     } = this.state
-    this.setState({
-      ...this.state,
-      fromProjectVersion: [...fromProjectVersion.filter((project) =>
-          !projectVersions.includes(project))]
-    })
+    // TODO Change state flow to update in correct order
+    setTimeout(() => {
+      this.setState({
+        ...this.state,
+        fromProjectVersion: [...fromProjectVersion.filter((project) =>
+            !projectVersions.includes(project))]
+      })
+    }, 0)
   }
   // Add a version to fromProjectVersion array
   pushProjectVersion = (version) => {
@@ -109,16 +112,18 @@ class TMMergeModal extends Component {
     })
   }
   // Push all versions of a Project to fromProjectVersion array
-  pushAllProjectVersions = (projectVersions, newSelectedProject) => {
+  pushAllProjectVersions = (projectVersions) => {
     const {
       fromProjectVersion
     } = this.state
-    this.setState({
-      ...this.state,
-      fromProjectVersion:
-        [...fromProjectVersion.concat(projectVersions)],
-      selectedProject: newSelectedProject
-    })
+    // TODO Change state flow to update in correct order
+    setTimeout(() => {
+      this.setState({
+        ...this.state,
+        fromProjectVersion:
+            [...fromProjectVersion.concat(projectVersions)]
+      })
+    }, 0)
   }
   // Push/Pop version from fromProjectVersion array based on selection
   onVersionCheckboxChange = (version) => {
@@ -135,7 +140,6 @@ class TMMergeModal extends Component {
     const {
       fromProjectVersion
     } = this.state
-    let newSelectedProject = [...this.state.selectedProject]
     let versionsToPush = [...projectVersions]
     let allVersionsChecked = true
     projectVersions.map((project, index) => {
@@ -146,9 +150,11 @@ class TMMergeModal extends Component {
           ...versionsToPush.slice(index + 1)]
       }
     })
+    console.log(projectVersions)
+    console.log(versionsToPush)
     allVersionsChecked
-        ? this.popAllProjectVersions(projectVersions, newSelectedProject)
-        : this.pushAllProjectVersions(versionsToPush, newSelectedProject)
+        ? this.popAllProjectVersions(projectVersions)
+        : this.pushAllProjectVersions(versionsToPush)
   }
   render () {
     const {
