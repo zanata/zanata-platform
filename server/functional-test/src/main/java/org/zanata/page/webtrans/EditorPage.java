@@ -118,11 +118,13 @@ public class EditorPage extends BasePage {
         log.info("Query glossary results");
         return waitForAMoment()
                 .until(webDriver -> {
+                    List<List<String>> resultTable;
                     if (webDriver.findElements(glossaryNoResult).size() == 1) {
-                        return Collections.emptyList();
+                        resultTable = Collections.emptyList();
+                    } else {
+                        resultTable = WebElementUtil
+                                .getTwoDimensionList(webDriver, glossaryTable);
                     }
-                    List<List<String>> resultTable = WebElementUtil
-                            .getTwoDimensionList(webDriver, glossaryTable);
                     log.info("glossary result: {}", resultTable);
                     return resultTable;
                 });
