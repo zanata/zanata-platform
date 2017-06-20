@@ -203,5 +203,18 @@ public class CopyTransManager implements Serializable {
         public String id() {
             return joinFields(KEY_NAME, projectSlug, iterationSlug, docId);
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            CopyTransProcessKey that = (CopyTransProcessKey) o;
+            return Objects.equals(id(), that.id());
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id());
+        }
     }
 }

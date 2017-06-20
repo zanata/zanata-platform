@@ -91,7 +91,7 @@ public class TransMemoryMergeManagerTest {
 
         TMMergeForDocTaskKey taskKey =
                 new TMMergeForDocTaskKey(
-                        request.documentId.getId(),
+                        request.documentId,
                         request.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -120,7 +120,7 @@ public class TransMemoryMergeManagerTest {
 
         TMMergeForDocTaskKey taskKey =
                 new TMMergeForDocTaskKey(
-                        request.documentId.getId(),
+                        request.documentId,
                         request.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -141,7 +141,7 @@ public class TransMemoryMergeManagerTest {
             startTMMergeWillReturnFalseIfProcessForSameRequestIsAlreadyRunning() {
         TMMergeForDocTaskKey taskKey =
                 new TMMergeForDocTaskKey(
-                        request.documentId.getId(),
+                        request.documentId,
                         request.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(new TransMemoryMergeTaskHandle());
@@ -171,7 +171,7 @@ public class TransMemoryMergeManagerTest {
 
         TMMergeForDocTaskKey taskKey =
                 new TMMergeForDocTaskKey(
-                        cancelRequest.documentId.getId(),
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -193,7 +193,7 @@ public class TransMemoryMergeManagerTest {
 
         TMMergeForDocTaskKey taskKey =
                 new TMMergeForDocTaskKey(
-                        cancelRequest.documentId.getId(),
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -210,7 +210,7 @@ public class TransMemoryMergeManagerTest {
 
         TMMergeForDocTaskKey taskKey =
                 new TMMergeForDocTaskKey(
-                        cancelRequest.documentId.getId(),
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -233,7 +233,7 @@ public class TransMemoryMergeManagerTest {
 
         TMMergeForDocTaskKey taskKey =
                 new TMMergeForDocTaskKey(
-                        cancelRequest.documentId.getId(),
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);

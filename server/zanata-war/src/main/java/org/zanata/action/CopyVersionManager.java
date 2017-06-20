@@ -94,6 +94,7 @@ public class CopyVersionManager implements Serializable {
         private final String projectSlug;
         // target version identifier
         private final String versionSlug;
+        private final String id;
 
         /**
          *
@@ -120,11 +121,25 @@ public class CopyVersionManager implements Serializable {
                 final String versionSlug) {
             this.projectSlug = projectSlug;
             this.versionSlug = versionSlug;
+            this.id = joinFields(KEY_NAME, projectSlug, versionSlug);
         }
 
         @Override
         public String id() {
-            return joinFields(KEY_NAME, projectSlug, versionSlug);
+            return id;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            CopyVersionKey that = (CopyVersionKey) o;
+            return Objects.equals(id, that.id);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
         }
     }
 }

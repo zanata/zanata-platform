@@ -202,16 +202,29 @@ public class TranslationMemoryAction implements Serializable {
             AsyncTaskHandleManager.AsyncTaskKey {
         private static final String KEY_NAME = "ClearTMXKey";
         private static final long serialVersionUID = 3472355792561903500L;
-        private String slug;
+        private final String id;
 
         @java.beans.ConstructorProperties({ "slug" })
         public ClearTransMemoryProcessKey(final String slug) {
-            this.slug = slug;
+            this.id = joinFields(KEY_NAME, slug);
         }
 
         @Override
         public String id() {
-            return joinFields(KEY_NAME, slug);
+            return id;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ClearTransMemoryProcessKey that = (ClearTransMemoryProcessKey) o;
+            return Objects.equals(id, that.id);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
         }
     }
 

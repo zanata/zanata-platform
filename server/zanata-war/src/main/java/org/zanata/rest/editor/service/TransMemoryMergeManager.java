@@ -35,8 +35,10 @@ import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
+import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
+import com.google.common.base.MoreObjects;
 
 /**
  * @author Patrick Huang
@@ -75,7 +77,7 @@ public class TransMemoryMergeManager implements Serializable {
     public boolean startTransMemoryMerge(TransMemoryMergeRequest request) {
         TMMergeForDocTaskKey key =
                 new TMMergeForDocTaskKey(
-                        request.documentId.getId(), request.localeId);
+                        request.documentId, request.localeId);
         AsyncTaskHandle handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
         if (handleByKey == null || handleByKey.isCancelled()
@@ -92,7 +94,7 @@ public class TransMemoryMergeManager implements Serializable {
     public boolean cancelTransMemoryMerge(TransMemoryMergeCancelRequest request) {
         TMMergeForDocTaskKey key =
                 new TMMergeForDocTaskKey(
-                        request.documentId.getId(), request.localeId);
+                        request.documentId, request.localeId);
         AsyncTaskHandle handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
         if (handleByKey != null && !(handleByKey.isDone() || handleByKey.isCancelled())) {
@@ -117,22 +119,41 @@ public class TransMemoryMergeManager implements Serializable {
 
         private static final long serialVersionUID = -7210004008208642L;
         private static final String KEY_NAME = "TMMergeForDocKey";
-        private final Long documentId;
+        private final DocumentId documentId;
         private final LocaleId localeId;
+        private final String id;
 
-        TMMergeForDocTaskKey(Long documentId, LocaleId localeId) {
+        TMMergeForDocTaskKey(DocumentId documentId, LocaleId localeId) {
             this.documentId = documentId;
             this.localeId = localeId;
+            // here we use numeric id to form the string id because it doesn't require URL encoding
+            this.id = joinFields(KEY_NAME, documentId.getId().toString(), localeId.getId());
         }
 
         @Override
         public String toString() {
-            return id();
+            return MoreObjects.toStringHelper(this)
+                    .add("documentId", documentId)
+                    .add("localeId", localeId)
+                    .toString();
         }
 
         @Override
         public String id() {
-            return joinFields(KEY_NAME, documentId.toString(), localeId.getId());
+            return id;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            TMMergeForDocTaskKey that = (TMMergeForDocTaskKey) o;
+            return Objects.equals(id, that.id);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
         }
     }
 }

@@ -103,6 +103,7 @@ public class MergeTranslationsManager implements Serializable {
         private final String projectSlug;
         // target version identifier
         private final String versionSlug;
+        private final String id;
 
         public static MergeVersionKey getKey(String projectSlug, String versionSlug) {
             return new MergeVersionKey(projectSlug, versionSlug);
@@ -121,11 +122,25 @@ public class MergeTranslationsManager implements Serializable {
         public MergeVersionKey(final String projectSlug, final String versionSlug) {
             this.projectSlug = projectSlug;
             this.versionSlug = versionSlug;
+            this.id = joinFields(KEY_NAME, projectSlug, versionSlug);
         }
 
         @Override
         public String id() {
-            return joinFields(KEY_NAME, projectSlug, versionSlug);
+            return id;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            MergeVersionKey that = (MergeVersionKey) o;
+            return Objects.equals(id, that.id);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
         }
     }
 }
