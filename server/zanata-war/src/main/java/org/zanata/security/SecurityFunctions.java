@@ -442,6 +442,12 @@ public class SecurityFunctions extends PermissionProvider {
     public boolean canManageSystemLanguage() {
         return identity.hasRole("admin");
     }
+
+    @GrantsPermission(actions = { "read-source-language"})
+    public boolean canGetAllSourceLanguages() {
+        return identity.hasRole("admin");
+    }
+
     // Only admin can view obsolete projects
 
     /**

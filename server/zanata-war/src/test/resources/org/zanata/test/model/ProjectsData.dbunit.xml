@@ -162,6 +162,17 @@
     projectIterationId="900"
     validation="XML_ENTITY" state="ERROR" />
 
-  <!-- Tell DbUnit to delete any existing documents -->
-  <HDocument />
+  <HDocument id="1" versionNum="1"
+      creationDate="2009-09-01 20:30:16" lastChanged="2009-09-01 20:30:16"
+      contentType="text/plain" docId="/same/document0"
+      locale="4" name="document0"
+      path="/same" project_iteration_id="1"
+      revision="1" obsolete="0" />
+
+  <HDocument id="2" versionNum="1"
+      creationDate="2009-09-01 20:30:16" lastChanged="2009-09-01 20:30:16"
+      contentType="text/plain" docId="/same/document1"
+      locale="1" name="document1"
+      path="/same" project_iteration_id="2"
+      revision="1" obsolete="0" />
 </dataset>

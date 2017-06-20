@@ -5,6 +5,7 @@ import { Router, Route, Redirect } from 'react-router'
 import App from '../containers/App'
 import Glossary from '../containers/Glossary'
 import Languages from '../containers/Languages'
+import TMX from '../containers/TMX'
 import Explore from '../containers/Explore'
 import UserProfile from '../containers/UserProfile'
 import { user } from '../config'
@@ -30,6 +31,10 @@ export default class Root extends Component {
               component={Glossary} />
             <Route path='glossary' component={Glossary} />
             <Route path='languages' component={Languages} />
+            <Route path='tmx' component={TMX} />
+            <Route path='tmx/projects/:project' component={TMX} />
+            <Route path='tmx/projects/:project/versions/:version'
+              component={TMX} />
             <Route path='profile/view/:username' component={UserProfile} />
             <Redirect from='profile' to={`profile/view/${username}`} />
           </Route>

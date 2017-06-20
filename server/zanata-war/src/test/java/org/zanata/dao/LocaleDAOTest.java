@@ -1,16 +1,18 @@
 package org.zanata.dao;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.core.IsNot.not;
 import static org.hamcrest.core.IsNull.nullValue;
 
 import org.dbunit.operation.DatabaseOperation;
-import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
 import org.junit.Before;
@@ -35,6 +37,9 @@ public class LocaleDAOTest extends ZanataDbunitJpaTest {
     protected void prepareDBUnitOperations() {
         beforeTestOperations.add(new DataSetOperation(
                 "org/zanata/test/model/LocalesData.dbunit.xml",
+                DatabaseOperation.CLEAN_INSERT));
+        beforeTestOperations.add(new DataSetOperation(
+                "org/zanata/test/model/ProjectsData.dbunit.xml",
                 DatabaseOperation.CLEAN_INSERT));
     }
 
@@ -100,6 +105,53 @@ public class LocaleDAOTest extends ZanataDbunitJpaTest {
         //first result of results2 can be ES or TE
 
         assertThat(results1.get(0), not(Matchers.equalTo(results2.get(0))));
+    }
+
+    @Test
+    public void getAllLocalesAndDocCount() {
+        // expected localeIds
+        LocaleId localeId1 = LocaleId.EN_US;
+        LocaleId localeId2 = new LocaleId("as");
+
+        Map<HLocale, Integer> results = dao.getAllSourceLocalesAndDocCount();
+        assertThat(results.size(), is(2));
+
+        List<LocaleId> returnedLocaleId =
+                results.keySet().stream().map(hLocale -> hLocale.getLocaleId())
+                        .collect(Collectors.toList());
+        assertThat(returnedLocaleId, containsInAnyOrder(localeId1, localeId2));
+    }
+
+    @Test
+    public void getProjectSourceLocalesAndDocCount() {
+        // expected localeIds
+        LocaleId localeId1 = LocaleId.EN_US;
+        LocaleId localeId2 = new LocaleId("as");
+
+        Map<HLocale, Integer> results =
+                dao.getProjectSourceLocalesAndDocCount("sample-project");
+        assertThat(results.size(), is(2));
+
+        List<LocaleId> returnedLocaleId =
+                results.keySet().stream().map(hLocale -> hLocale.getLocaleId())
+                        .collect(Collectors.toList());
+        assertThat(returnedLocaleId, containsInAnyOrder(localeId1, localeId2));
+    }
+
+    @Test
+    public void getProjectVersionSourceLocalesAndDocCount() {
+        // expected localeIds
+        LocaleId localeId1 = LocaleId.EN_US;
+
+        Map<HLocale, Integer> results =
+                dao.getProjectVersionSourceLocalesAndDocCount("sample-project",
+                        "1.0");
+        assertThat(results.size(), is(1));
+
+        List<LocaleId> returnedLocaleId =
+                results.keySet().stream().map(hLocale -> hLocale.getLocaleId())
+                        .collect(Collectors.toList());
+        assertThat(returnedLocaleId, contains(localeId1));
     }
 
 }

@@ -25,17 +25,23 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
+import org.zanata.dao.LocaleDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
+import org.zanata.rest.dto.LocaleDetails;
+import org.zanata.rest.dto.SourceLocaleDetails;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.LocaleServiceImpl;
 
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -56,6 +62,9 @@ public class ProjectIterationLocalesService implements ProjectIterationLocalesRe
     @Inject
     private LocaleService localeServiceImpl;
 
+    @Inject
+    private LocaleDAO localeDAO;
+
     @Override
     public Response get() {
         HProjectIteration iteration = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
@@ -70,6 +79,26 @@ public class ProjectIterationLocalesService implements ProjectIterationLocalesRe
 
         Object entity = LocaleService.buildLocaleDetailsListEntity(supportedLocales, localeAliases);
         return Response.ok(entity).build();
+    }
+
+    @Override
+    public Response getSourceLocales() {
+        HProjectIteration version = projectIterationDAO.getBySlug(projectSlug, iterationSlug);
+        if (version == null || version.getStatus().equals(EntityStatus.OBSOLETE)) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+
+        Map<HLocale, Integer> locales = localeDAO
+                .getProjectVersionSourceLocalesAndDocCount(projectSlug, iterationSlug);
+        List<SourceLocaleDetails> results = new ArrayList<>();
+
+        for (Map.Entry<HLocale, Integer> entry: locales.entrySet()) {
+            LocaleDetails details = LocaleService.convertHLocaleToDTO(entry.getKey());
+            results.add(new SourceLocaleDetails(entry.getValue(), details));
+        }
+        return Response
+                .ok(new GenericEntity<List<SourceLocaleDetails>>(results) {
+                }).build();
     }
 
 }

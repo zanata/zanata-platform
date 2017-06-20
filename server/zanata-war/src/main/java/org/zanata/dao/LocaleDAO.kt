@@ -30,6 +30,9 @@ import javax.enterprise.context.RequestScoped
 
 import com.google.common.base.Joiner
 import com.google.common.collect.Lists
+import com.google.common.collect.Maps
+import org.hibernate.Query
+import org.zanata.common.EntityStatus
 
 @RequestScoped
 class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
@@ -79,6 +82,71 @@ class LocaleDAO : AbstractDAOImpl<HLocale, Long> {
         }
         @Suppress("UNCHECKED_CAST")
         return query.list() as List<HLocale>
+    }
+
+    fun getAllSourceLocalesAndDocCount(): Map<HLocale, Int> {
+        val queryBuilder = StringBuilder()
+        queryBuilder.append("select doc.locale, count(*) from HDocument doc ")
+                .append("where doc.obsolete = false ")
+                .append("and doc.projectIteration.status<>:OBSOLETE ")
+                .append("and doc.projectIteration.project.status<>:OBSOLETE ")
+                .append("group by doc.locale")
+
+        val query = session.createQuery(queryBuilder.toString())
+                .setParameter("OBSOLETE", EntityStatus.OBSOLETE)
+                .setComment("LocaleDAO.getTranslationLocales")
+
+        return processGetSourceLocalesAndDocCount(query)
+    }
+
+    fun getProjectSourceLocalesAndDocCount(
+            projectSlug: String): Map<HLocale, Int> {
+        val queryBuilder = StringBuilder()
+        queryBuilder.append("select doc.locale, count(*) from HDocument doc ")
+                .append("where doc.obsolete = false ")
+                .append("and doc.projectIteration.status<>:OBSOLETE ")
+                .append("and doc.projectIteration.project.status<>:OBSOLETE ")
+                .append("and doc.projectIteration.project.slug =:projectSlug ")
+                .append("group by doc.locale")
+
+        val query = session.createQuery(queryBuilder.toString())
+                .setParameter("projectSlug", projectSlug)
+                .setParameter("OBSOLETE", EntityStatus.OBSOLETE)
+                .setComment("ProjectDAO.getTranslationLocales")
+        return processGetSourceLocalesAndDocCount(query)
+    }
+
+    fun getProjectVersionSourceLocalesAndDocCount(
+            projectSlug: String, versionSlug: String): Map<HLocale, Int> {
+        val queryBuilder = StringBuilder()
+        queryBuilder.append("select doc.locale, count(*) from HDocument doc ")
+                .append("where doc.obsolete = false ")
+                .append("and doc.projectIteration.status<>:OBSOLETE ")
+                .append("and doc.projectIteration.slug =:versionSlug ")
+                .append("and doc.projectIteration.project.slug =:projectSlug ")
+                .append("group by doc.locale")
+
+        val query = session.createQuery(queryBuilder.toString())
+                .setParameter("versionSlug", versionSlug)
+                .setParameter("projectSlug", projectSlug)
+                .setParameter("OBSOLETE", EntityStatus.OBSOLETE)
+                .setComment("ProjectIterationDAO.getTranslationLocales")
+
+        return processGetSourceLocalesAndDocCount(query)
+    }
+
+    fun processGetSourceLocalesAndDocCount(query: Query): Map<HLocale, Int> {
+        @Suppress("UNCHECKED_CAST")
+        val list = query.list() as List<Array<*>>
+
+        val results = Maps.newHashMap<HLocale, Int>()
+        for (obj in list) {
+            val locale = obj[0] as HLocale
+            val count = obj[1] as Long
+            val countInt = if (count == null) 0 else Math.toIntExact(count)
+            results.put(locale, countInt)
+        }
+        return results
     }
 
     fun countByFind(filter: String?, onlyActive: Boolean): Int {

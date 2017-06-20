@@ -21,7 +21,9 @@
 package org.zanata.rest.service;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -46,9 +48,11 @@ import org.zanata.model.HLocaleMember;
 import org.zanata.rest.dto.LanguageTeamSearchResult;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.LocaleMember;
+import org.zanata.rest.dto.SourceLocaleDetails;
 import org.zanata.rest.editor.dto.LocaleSortField;
 import org.zanata.rest.dto.LocalesResults;
 import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.CheckRole;
 import org.zanata.service.LocaleService;
 import com.google.common.collect.Lists;
 import org.zanata.service.impl.LocaleServiceImpl;
@@ -176,6 +180,23 @@ public class LocalesService implements LocalesResource {
                 .collect(Collectors.toList());
         Object entity = new GenericEntity<List<LocaleDetails>>(localesRefs){};
         return Response.ok(entity).build();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Response getSourceLocales() {
+        identity.checkPermission("read-source-language");
+        Map<HLocale, Integer> locales = localeDAO.getAllSourceLocalesAndDocCount();
+
+        List<SourceLocaleDetails> results = new ArrayList<>();
+
+        for (Map.Entry<HLocale, Integer> entry: locales.entrySet()) {
+            LocaleDetails details = LocaleService.convertHLocaleToDTO(entry.getKey());
+            results.add(new SourceLocaleDetails(entry.getValue(), details));
+        }
+        return Response
+                .ok(new GenericEntity<List<SourceLocaleDetails>>(results) {
+                }).build();
     }
 
     @Transactional

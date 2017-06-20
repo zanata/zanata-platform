@@ -12,9 +12,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import com.webcohesion.enunciate.metadata.rs.TypeHint;
 import org.zanata.rest.dto.LocaleDetails;
 import org.zanata.rest.dto.LocaleMember;
+import org.zanata.rest.dto.SourceLocaleDetails;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -73,6 +76,21 @@ public interface LocalesResource extends RestResource {
     @Produces(MediaType.APPLICATION_JSON)
     @TypeHint(LocaleDetails[].class)
     Response getUITranslations();
+
+    /**
+     * Returns list of active source locales of all documents for all active projects.
+     *
+     * @return
+     *    OK 200 containing the list of SourceLocaleDetails
+     */
+    @GET
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Content contains a list of source locale details")
+    })
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/source")
+    @TypeHint(SourceLocaleDetails[].class)
+    Response getSourceLocales();
 
 
     /**
