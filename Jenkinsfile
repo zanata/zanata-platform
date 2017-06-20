@@ -274,21 +274,19 @@ timestamps {
           // TODO reduce unstableTotal thresholds as bugs are eliminated
           step([$class: 'FindBugsPublisher',
                 pattern: '**/findbugsXml.xml',
-                unstableTotalAll: '467',
-                unstableTotalHigh: '47',
-                unstableTotalNormal: '420',
-                unstableTotalLow: '0'])
+                unstableTotalAll: '0'])
 
           step([$class: 'WarningsPublisher',
                 consoleParsers: [
-                        [parserName: 'Java Compiler (javac)'],    // 400 warnings
+                        [parserName: 'Java Compiler (javac)'],
+                        [parserName: 'kotlin'],
 //                        [parserName: 'JavaDoc'],
 //                        [parserName: 'Maven'], // ~279 warnings, but too variable
                         // TODO check integration test warnings (EAP and WildFly)
                         //[parserName: 'appserver log messages'], // 119 warnings
                         //[parserName: 'browser warnings'],       // 0 warnings
                 ],
-                unstableTotalAll: '4',
+                unstableTotalAll: '1366',
                 unstableTotalHigh: '0',
           ])
           // TODO check integration test warnings (EAP and WildFly)

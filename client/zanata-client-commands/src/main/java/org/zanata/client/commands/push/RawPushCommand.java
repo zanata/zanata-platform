@@ -656,7 +656,7 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
             } finally {
                 fileStream.close();
             }
-            @SuppressWarnings("UnnecessaryLocalVariable")
+            //noinspection UnnecessaryLocalVariable
             String md5hash = new String(Hex.encodeHex(md.digest()));
             return md5hash;
         } catch (NoSuchAlgorithmException | IOException e) {

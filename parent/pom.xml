@@ -191,6 +191,10 @@
     <required.jvm>1.8</required.jvm>
     <maven.compiler.target>${required.jvm}</maven.compiler.target>
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+    <!-- Tell takari to default to JDT (unless overridden on command line)
+         Note that maven-compiler-plugin doesn't support this compilerId, so
+         it must be overridden in zanata-maven-plugin. -->
+    <maven.compiler.compilerId>jdt</maven.compiler.compilerId>
 
     <!--
       Version of Java used for API compatibility checking. Should
@@ -208,6 +212,7 @@
     <mdep.analyze.skip>true</mdep.analyze.skip>
     <checkstyle.skip>true</checkstyle.skip>
     <animal.sniffer.skip>true</animal.sniffer.skip>
+    <restrict.skip>true</restrict.skip>
 
     <hamcrest.version>1.3</hamcrest.version>
     <findbugs.maven.version>3.0.1</findbugs.maven.version>
@@ -224,7 +229,6 @@
 
     <checkstyle.maven.version>2.17</checkstyle.maven.version>
     <checkstyle.version>7.2</checkstyle.version>
-    <checkstyle.skip>false</checkstyle.skip>
     <checkstyle.config.location>zanata-build-tools/checkstyle.xml</checkstyle.config.location>
     <checkstyle.suppressions.location>zanata-build-tools/checkstyle-suppressions.xml</checkstyle.suppressions.location>
     <!-- <checkstyle.enable.rules.summary>false</checkstyle.enable.rules.summary> -->
@@ -247,7 +251,7 @@
         <groupId>io.takari.maven.plugins</groupId>
         <artifactId>takari-lifecycle-plugin</artifactId>
         <!-- See also build-tools pom -->
-        <version>1.12.2</version>
+        <version>1.12.4</version>
         <extensions>true</extensions>
         <configuration>
           <proc>proc</proc>
@@ -638,11 +642,20 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-antrun-plugin</artifactId>
-        <configuration>
-          <target>
-            <echo>[describe] ${gitDescribe}</echo>
-          </target>
-        </configuration>
+        <executions>
+          <execution>
+            <id>gitdescribe</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <echo>[describe] ${gitDescribe}</echo>
+              </target>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
 
       <plugin>
@@ -704,7 +717,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.3</version>
+          <version>3.5.1</version>
         </plugin>
         <plugin>
           <artifactId>maven-dependency-plugin</artifactId>
@@ -915,18 +928,20 @@
       <activation>
         <property>
           <name>staticAnalysis</name>
+          <value>true</value>
         </property>
       </activation>
       <build>
 
       </build>
       <properties>
+        <animal.sniffer.skip>false</animal.sniffer.skip>
+        <checkstyle.skip>false</checkstyle.skip>
         <dupfind.skip>false</dupfind.skip>
         <enforcer.skip>false</enforcer.skip>
         <findbugs.skip>false</findbugs.skip>
         <mdep.analyze.skip>false</mdep.analyze.skip>
-        <checkstyle.skip>false</checkstyle.skip>
-        <animal.sniffer.skip>false</animal.sniffer.skip>
+        <restrict.skip>false</restrict.skip>
       </properties>
     </profile>
 
@@ -1068,9 +1083,15 @@
       </activation>
       <properties>
         <allow.deploy.skip>false</allow.deploy.skip>
-        <checkstyle.skip>true</checkstyle.skip>
-        <enforcer.skip>true</enforcer.skip>
-        <findbugs.skip>true</findbugs.skip>
+
+        <animal.sniffer.skip>false</animal.sniffer.skip>
+        <checkstyle.skip>false</checkstyle.skip>
+        <dupfind.skip>false</dupfind.skip>
+        <enforcer.skip>false</enforcer.skip>
+        <findbugs.skip>false</findbugs.skip>
+        <mdep.analyze.skip>false</mdep.analyze.skip>
+        <restrict.skip>false</restrict.skip>
+
         <mavensign.expand.skip>*</mavensign.expand.skip>
         <mavensign.sign.skip>*</mavensign.sign.skip>
         <skipTests>true</skipTests>

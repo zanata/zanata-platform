@@ -276,6 +276,11 @@
       </dependency>
       <dependency>
         <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-runtime</artifactId>
+        <version>${kotlin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
         <artifactId>kotlin-test-junit</artifactId>
         <version>${kotlin.version}</version>
         <scope>test</scope>
@@ -473,7 +478,7 @@
       <dependency>
         <groupId>org.atteo.classindex</groupId>
         <artifactId>classindex</artifactId>
-        <version>3.3</version>
+        <version>3.4</version>
       </dependency>
 
       <dependency>
@@ -902,6 +907,14 @@
         <artifactId>jackson-core</artifactId>
         <version>${jackson2.version}</version>
       </dependency>
+
+      <dependency>
+        <groupId>com.google.errorprone</groupId>
+        <artifactId>error_prone_annotations</artifactId>
+        <version>2.0.15</version>
+        <scope>provided</scope>
+      </dependency>
+
       <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-user</artifactId>
@@ -1899,23 +1912,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <!--
-            Compiler plugin uses Java compiler API since version 3.0.
-            Usage of compiler API is much better than forking javac executable.
-            Compiler API is much faster as it's run in same process.
-            And most importatly ALL compiler messages are printed by maven.
-            When standalone javac executable is run maven parses it's output and
-            some messages are lost in the process!!!
-          -->
-          <forceJavacCompilerUse>false</forceJavacCompilerUse>
-          <useIncrementalCompilation>true</useIncrementalCompilation>
-          <fork>false</fork>
-          <compilerArgs>
-            <arg>-Xlint:-processing</arg>
-            <arg>-Xlint:all</arg>
-          </compilerArgs>
-        </configuration>
         <executions>
           <!-- Replacing default-compile as it is treated specially by Maven.
                We need kotlin-maven-plugin to compile first. -->
@@ -1929,17 +1925,11 @@
             <id>default-testCompile</id>
             <phase>none</phase>
           </execution>
-          <execution>
-            <id>java-compile</id>
-            <phase>compile</phase>
-            <goals> <goal>compile</goal> </goals>
-          </execution>
-          <execution>
-            <id>java-test-compile</id>
-            <phase>test-compile</phase>
-            <goals> <goal>testCompile</goal> </goals>
-          </execution>
         </executions>
+        <configuration>
+          <!-- Ignore maven.compiler.compilerId=jdt -->
+          <compilerId>javac</compilerId>
+        </configuration>
       </plugin>
 
       <plugin>
@@ -1971,6 +1961,9 @@
             <goals> <goal>testCompile</goal> </goals>
           </execution>
         </executions>
+        <configuration>
+          <compilerId>jdt</compilerId>
+        </configuration>
       </plugin>
 
       <plugin>
@@ -2067,43 +2060,7 @@
               </target>
             </configuration>
           </execution>
-          <execution>
-            <!-- This can be run separately with mvn antrun:run@detekt -->
-            <id>detekt</id>
-            <phase>verify</phase>
-            <configuration>
-              <target name="detekt">
-                <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
-                  classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
-                  <arg value="--config-resource"/>
-                  <arg value="zanata-build-tools/detekt.yml"/>
-                  <arg value="--project"/>
-                  <arg value="${basedir}/src"/>
-                  <arg value="--filters"/>
-                  <arg value=".*test.*"/>
-                </java>
-              </target>
-            </configuration>
-            <goals><goal>run</goal></goals>
-          </execution>
         </executions>
-        <dependencies>
-          <dependency>
-            <groupId>org.zanata</groupId>
-            <artifactId>build-tools</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>io.gitlab.arturbosch.detekt</groupId>
-            <artifactId>detekt-cli</artifactId>
-            <version>1.0.0.M10.1</version>
-          </dependency>
-          <dependency>
-            <groupId>io.gitlab.arturbosch.detekt</groupId>
-            <artifactId>detekt-formatting</artifactId>
-            <version>1.0.0.M10.1</version>
-          </dependency>
-        </dependencies>
       </plugin>
     </plugins>
 
@@ -2320,6 +2277,62 @@
       <modules>
         <module>zanata-frontend</module>
       </modules>
+    </profile>
+
+    <profile>
+      <id>staticAnalysis</id>
+      <activation>
+        <property>
+          <name>staticAnalysis</name>
+          <value>true</value>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-antrun-plugin</artifactId>
+            <!--<version>1.8</version>-->
+            <executions>
+              <execution>
+                <!-- This can be run separately with mvn antrun:run@detekt -DstaticAnalysis -->
+                <id>detekt</id>
+                <phase>verify</phase>
+                <configuration>
+                  <target name="detekt">
+                    <java taskname="detekt" dir="${basedir}" fork="true" failonerror="true"
+                        classname="io.gitlab.arturbosch.detekt.cli.Main" classpathref="maven.plugin.classpath">
+                      <arg value="--config-resource"/>
+                      <arg value="zanata-build-tools/detekt.yml"/>
+                      <arg value="--project"/>
+                      <arg value="${basedir}/src"/>
+                      <arg value="--filters"/>
+                      <arg value=".*test.*"/>
+                    </java>
+                  </target>
+                </configuration>
+                <goals><goal>run</goal></goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>org.zanata</groupId>
+                <artifactId>build-tools</artifactId>
+                <version>${project.version}</version>
+              </dependency>
+              <dependency>
+                <groupId>io.gitlab.arturbosch.detekt</groupId>
+                <artifactId>detekt-cli</artifactId>
+                <version>1.0.0.M11</version>
+              </dependency>
+              <dependency>
+                <groupId>io.gitlab.arturbosch.detekt</groupId>
+                <artifactId>detekt-formatting</artifactId>
+                <version>1.0.0.M11</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
 
     <profile>
