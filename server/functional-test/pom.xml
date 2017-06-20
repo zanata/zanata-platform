@@ -77,6 +77,8 @@
     <!-- this property can be used to control what test needs to be run by failsafe -->
     <default.test.patterns>**/BasicAcceptanceTestSuite.java</default.test.patterns>
     <include.test.patterns>${default.test.patterns}</include.test.patterns>
+    <!-- Don't run Jacoco on functional test -->
+    <jacoco.skip>true</jacoco.skip>
     <hibernate.search.default.indexBase>${project.build.directory}/zanataindex</hibernate.search.default.indexBase>
     <javamelody.storage-directory>${project.build.directory}/zanatastats</javamelody.storage-directory>
     <!-- This may be changed by the SMTP_PORT profile -->
@@ -1171,17 +1173,6 @@
                 </pluginExecution>
               </pluginExecutions>
             </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-
-        <!-- We don't want to check coverage here -->
-        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <configuration>
-            <excludes>
-              <exclude>**</exclude>
-            </excludes>
           </configuration>
         </plugin>
       </plugins>

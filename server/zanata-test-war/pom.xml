@@ -18,6 +18,9 @@
     <zanata.test.war.name>zanata-test-${project.version}</zanata.test.war.name>
     <maven.javadoc.skip>true</maven.javadoc.skip>
     <maven.site.skip>true</maven.site.skip>
+    <!-- Don't run Jacoco on test war -->
+    <jacoco.skip>true</jacoco.skip>
+
   </properties>
 
   <dependencies>
