@@ -1,17 +1,18 @@
 package org.zanata.action;
 
-import java.io.Serializable;
-import java.util.Objects;
+import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.io.Serializable;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyVersionService;
 
-import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Manages copy version tasks.
@@ -45,7 +46,7 @@ public class CopyVersionManager implements Serializable {
      */
     public void startCopyVersion(String projectSlug, String versionSlug,
             String newVersionSlug) {
-        CopyVersionKey key = CopyVersionKey.getKey(projectSlug, newVersionSlug);
+        AsyncTaskHandleManager.AsyncTaskKey key = CopyVersionKey.getKey(projectSlug, newVersionSlug);
         CopyVersionTaskHandle handle = new CopyVersionTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyVersionServiceImpl.startCopyVersion(projectSlug, versionSlug,
@@ -88,14 +89,8 @@ public class CopyVersionManager implements Serializable {
      * Key used for copy version task
      *
      */
-    public static final class CopyVersionKey extends
-            AsyncTaskHandleManager.GenericKey {
+    public static final class CopyVersionKey {
         private static final String KEY_NAME = "copyVersion";
-        private static final long serialVersionUID = 3889349239078033373L;
-        // target project identifier
-        private final String projectSlug;
-        // target version identifier
-        private final String versionSlug;
 
         /**
          *
@@ -104,25 +99,11 @@ public class CopyVersionManager implements Serializable {
          * @param versionSlug
          *            - target version identifier
          */
-        public static CopyVersionKey getKey(String projectSlug,
-                String versionSlug) {
-            return new CopyVersionKey(projectSlug, versionSlug);
+        public static AsyncTaskHandleManager.AsyncTaskKey
+                getKey(String projectSlug, String versionSlug) {
+            return new AsyncTaskHandleManager.GenericKey(
+                    joinFields(KEY_NAME, projectSlug, versionSlug));
         }
 
-        public String getProjectSlug() {
-            return this.projectSlug;
-        }
-
-        public String getVersionSlug() {
-            return this.versionSlug;
-        }
-
-        @java.beans.ConstructorProperties({ "projectSlug", "versionSlug" })
-        public CopyVersionKey(final String projectSlug,
-                final String versionSlug) {
-            super(joinFields(KEY_NAME, projectSlug, versionSlug));
-            this.projectSlug = projectSlug;
-            this.versionSlug = versionSlug;
-        }
     }
 }

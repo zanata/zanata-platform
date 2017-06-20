@@ -26,7 +26,6 @@ import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.enterprise.inject.Model;
@@ -60,6 +59,7 @@ public class TranslationMemoryAction implements Serializable {
             org.slf4j.LoggerFactory.getLogger(TranslationMemoryAction.class);
 
     private static final long serialVersionUID = -6791743907133760028L;
+    private static final String KEY_NAME = "ClearTMXKey";
     @Inject
     private FacesMessages facesMessages;
     @Inject
@@ -71,7 +71,7 @@ public class TranslationMemoryAction implements Serializable {
             justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
     private List<TransMemory> transMemoryList;
-    private ClearTransMemoryProcessKey lastTaskTMKey;
+    private AsyncTaskHandleManager.AsyncTaskKey lastTaskTMKey;
     private SortingType tmSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
                     SortingType.SortOption.CREATED_DATE));
@@ -95,7 +95,7 @@ public class TranslationMemoryAction implements Serializable {
     }
 
     public void clearTransMemory(final String transMemorySlug) {
-        lastTaskTMKey = new ClearTransMemoryProcessKey(transMemorySlug);
+        lastTaskTMKey = new AsyncTaskHandleManager.GenericKey(joinFields(KEY_NAME, transMemorySlug));
         AsyncTaskHandle handle = new AsyncTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, lastTaskTMKey);
         translationMemoryResource
@@ -161,8 +161,11 @@ public class TranslationMemoryAction implements Serializable {
     }
 
     public boolean isTransMemoryBeingCleared(String transMemorySlug) {
+        AsyncTaskHandleManager.GenericKey taskKey =
+                new AsyncTaskHandleManager.GenericKey(
+                        joinFields(KEY_NAME, transMemorySlug));
         AsyncTaskHandle<Void> handle = asyncTaskHandleManager.getHandleByKey(
-                new ClearTransMemoryProcessKey(transMemorySlug));
+                taskKey);
         return handle != null && !handle.isDone();
     }
 
@@ -192,24 +195,6 @@ public class TranslationMemoryAction implements Serializable {
     public String cancel() {
         // Navigation logic in pages.xml
         return "cancel";
-    }
-
-    /**
-     * Represents a key to index a translation memory clear process.
-     *
-     * NB: Eventually this class might need to live outside if there are other
-     * services that need to control this process.
-     */
-    private static class ClearTransMemoryProcessKey extends
-            AsyncTaskHandleManager.GenericKey {
-        private static final String KEY_NAME = "ClearTMXKey";
-        private static final long serialVersionUID = 3472355792561903500L;
-
-        @java.beans.ConstructorProperties({ "slug" })
-        public ClearTransMemoryProcessKey(final String slug) {
-            super(joinFields(KEY_NAME, slug));
-        }
-
     }
 
     private static class TMComparator implements Comparator<TransMemory>, Serializable {

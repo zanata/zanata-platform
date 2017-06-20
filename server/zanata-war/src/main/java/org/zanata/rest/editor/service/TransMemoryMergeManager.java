@@ -40,6 +40,8 @@ import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import com.google.common.base.MoreObjects;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
 
 /**
@@ -116,6 +118,7 @@ public class TransMemoryMergeManager implements Serializable {
         return false;
     }
 
+    @SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS", justification = "super class equals method is sufficient")
     static class TMMergeForDocTaskKey extends
             AsyncTaskHandleManager.GenericKey {
 

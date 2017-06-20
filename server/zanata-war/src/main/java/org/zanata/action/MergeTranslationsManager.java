@@ -1,7 +1,6 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.enterprise.context.Dependent;
@@ -52,7 +51,7 @@ public class MergeTranslationsManager implements Serializable {
     public void start(String sourceProjectSlug, String sourceVersionSlug,
             String targetProjectSlug, String targetVersionSlug,
             boolean useNewerTranslation) {
-        MergeVersionKey
+        AsyncTaskHandleManager.AsyncTaskKey
                 key = MergeVersionKey
                 .getKey(targetProjectSlug, targetVersionSlug);
         MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle();
@@ -97,33 +96,12 @@ public class MergeTranslationsManager implements Serializable {
     /**
      * Key used for merge version task
      */
-    public static final class MergeVersionKey extends
-            AsyncTaskHandleManager.GenericKey {
-        private static final long serialVersionUID = 1L;
+    public static final class MergeVersionKey {
         private static final String KEY_NAME = "mergeVersion";
-        // target project identifier
-        private final String projectSlug;
-        // target version identifier
-        private final String versionSlug;
 
-        public static MergeVersionKey getKey(String projectSlug, String versionSlug) {
-            return new MergeVersionKey(projectSlug, versionSlug);
+        public static AsyncTaskHandleManager.AsyncTaskKey getKey(String projectSlug, String versionSlug) {
+            return new AsyncTaskHandleManager.GenericKey(joinFields(KEY_NAME, projectSlug, versionSlug));
         }
 
-
-        public String getProjectSlug() {
-            return this.projectSlug;
-        }
-
-        public String getVersionSlug() {
-            return this.versionSlug;
-        }
-
-        @java.beans.ConstructorProperties({ "projectSlug", "versionSlug" })
-        public MergeVersionKey(final String projectSlug, final String versionSlug) {
-            super(joinFields(KEY_NAME, projectSlug, versionSlug));
-            this.projectSlug = projectSlug;
-            this.versionSlug = versionSlug;
-        }
     }
 }

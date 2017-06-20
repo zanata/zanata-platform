@@ -23,7 +23,6 @@ package org.zanata.action;
 import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.annotation.Nonnull;
 import javax.enterprise.context.Dependent;
@@ -64,7 +63,7 @@ public class CopyTransManager implements Serializable {
     private ZanataIdentity identity;
 
     public boolean isCopyTransRunning(@Nonnull Object target) {
-        CopyTransProcessKey key;
+        AsyncTaskHandleManager.AsyncTaskKey key;
         if (target instanceof HProjectIteration) {
             key = CopyTransProcessKey.getKey((HProjectIteration) target);
         } else if (target instanceof HDocument) {
@@ -98,7 +97,7 @@ public class CopyTransManager implements Serializable {
                     "Copy Trans is already running for document \'"
                             + document.getDocId() + "\'");
         }
-        CopyTransProcessKey key = CopyTransProcessKey.getKey(document);
+        AsyncTaskHandleManager.AsyncTaskKey key = CopyTransProcessKey.getKey(document);
         CopyTransTaskHandle handle = new CopyTransTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyTransServiceImpl.startCopyTransForDocument(document, options,
@@ -116,7 +115,7 @@ public class CopyTransManager implements Serializable {
                     "Copy Trans is already running for version \'"
                             + iteration.getSlug() + "\'");
         }
-        CopyTransProcessKey key = CopyTransProcessKey.getKey(iteration);
+        AsyncTaskHandleManager.AsyncTaskKey key = CopyTransProcessKey.getKey(iteration);
         CopyTransTaskHandle handle = new CopyTransTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyTransServiceImpl.startCopyTransForIteration(iteration, options,
@@ -125,7 +124,7 @@ public class CopyTransManager implements Serializable {
 
     public CopyTransTaskHandle
             getCopyTransProcessHandle(@Nonnull Object target) {
-        CopyTransProcessKey key;
+        AsyncTaskHandleManager.AsyncTaskKey key;
         if (target instanceof HProjectIteration) {
             key = CopyTransProcessKey.getKey((HProjectIteration) target);
         } else if (target instanceof HDocument) {
@@ -150,44 +149,21 @@ public class CopyTransManager implements Serializable {
     /**
      * Internal class to index Copy Trans processes.
      */
-    private static final class CopyTransProcessKey extends
-            AsyncTaskHandleManager.GenericKey {
-        private static final long serialVersionUID = -2054359069473618887L;
+    private static final class CopyTransProcessKey {
         private static final String KEY_NAME = "copyTransKey";
-        private final String projectSlug;
-        private final String iterationSlug;
-        private final String docId;
 
-        CopyTransProcessKey(String projectSlug,
-                String iterationSlug, String docId) {
-            super(joinFields(KEY_NAME, projectSlug, iterationSlug, docId));
-            this.projectSlug = projectSlug;
-            this.iterationSlug = iterationSlug;
-            this.docId = docId;
+
+        public static AsyncTaskHandleManager.AsyncTaskKey getKey(HProjectIteration iteration) {
+            return new AsyncTaskHandleManager.GenericKey(joinFields(iteration.getProject().getSlug(),
+                    iteration.getSlug(), null));
         }
 
-        public static CopyTransProcessKey getKey(HProjectIteration iteration) {
-            return new CopyTransProcessKey(iteration.getProject().getSlug(),
-                    iteration.getSlug(), null);
-        }
-
-        public static CopyTransProcessKey getKey(HDocument document) {
+        public static AsyncTaskHandleManager.AsyncTaskKey getKey(HDocument document) {
             String projectSlug = document.getProjectIteration().getProject().getSlug();
             String versionSlug = document.getProjectIteration().getSlug();
             String docId = document.getDocId();
-            return new CopyTransProcessKey(projectSlug, versionSlug, docId);
+            return new AsyncTaskHandleManager.GenericKey(joinFields(KEY_NAME, projectSlug, versionSlug, docId));
         }
 
-        public String getProjectSlug() {
-            return this.projectSlug;
-        }
-
-        public String getIterationSlug() {
-            return this.iterationSlug;
-        }
-
-        public String getDocId() {
-            return this.docId;
-        }
     }
 }
