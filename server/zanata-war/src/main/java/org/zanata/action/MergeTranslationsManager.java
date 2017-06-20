@@ -7,11 +7,13 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.AsyncTaskKey;
+import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.MergeTranslationsService;
 
-import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
+import static org.zanata.async.AsyncTaskKey.joinFields;
 
 /**
  * Manages tasks to copy translations from one existing version to another.
@@ -51,7 +53,7 @@ public class MergeTranslationsManager implements Serializable {
     public void start(String sourceProjectSlug, String sourceVersionSlug,
             String targetProjectSlug, String targetVersionSlug,
             boolean useNewerTranslation) {
-        AsyncTaskHandleManager.AsyncTaskKey
+        AsyncTaskKey
                 key = MergeVersionKey
                 .getKey(targetProjectSlug, targetVersionSlug);
         MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle();
@@ -99,8 +101,8 @@ public class MergeTranslationsManager implements Serializable {
     public static final class MergeVersionKey {
         private static final String KEY_NAME = "mergeVersion";
 
-        public static AsyncTaskHandleManager.AsyncTaskKey getKey(String projectSlug, String versionSlug) {
-            return new AsyncTaskHandleManager.GenericKey(joinFields(KEY_NAME, projectSlug, versionSlug));
+        public static AsyncTaskKey getKey(String projectSlug, String versionSlug) {
+            return new GenericAsyncTaskKey(joinFields(KEY_NAME, projectSlug, versionSlug));
         }
 
     }

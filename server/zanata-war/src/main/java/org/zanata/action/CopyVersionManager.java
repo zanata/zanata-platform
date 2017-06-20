@@ -1,6 +1,6 @@
 package org.zanata.action;
 
-import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
+import static org.zanata.async.AsyncTaskKey.joinFields;
 
 import java.io.Serializable;
 
@@ -8,6 +8,8 @@ import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.AsyncTaskKey;
+import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyVersionService;
@@ -46,7 +48,7 @@ public class CopyVersionManager implements Serializable {
      */
     public void startCopyVersion(String projectSlug, String versionSlug,
             String newVersionSlug) {
-        AsyncTaskHandleManager.AsyncTaskKey key = CopyVersionKey.getKey(projectSlug, newVersionSlug);
+        AsyncTaskKey key = CopyVersionKey.getKey(projectSlug, newVersionSlug);
         CopyVersionTaskHandle handle = new CopyVersionTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyVersionServiceImpl.startCopyVersion(projectSlug, versionSlug,
@@ -99,9 +101,9 @@ public class CopyVersionManager implements Serializable {
          * @param versionSlug
          *            - target version identifier
          */
-        public static AsyncTaskHandleManager.AsyncTaskKey
+        public static AsyncTaskKey
                 getKey(String projectSlug, String versionSlug) {
-            return new AsyncTaskHandleManager.GenericKey(
+            return new GenericAsyncTaskKey(
                     joinFields(KEY_NAME, projectSlug, versionSlug));
         }
 

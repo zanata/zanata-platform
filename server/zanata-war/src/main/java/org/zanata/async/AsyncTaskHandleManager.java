@@ -23,15 +23,10 @@ package org.zanata.async;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
 
-import org.zanata.action.TranslationMemoryAction;
-import com.google.common.base.Joiner;
-import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -71,7 +66,7 @@ public class AsyncTaskHandleManager implements Serializable {
      * @return An auto generated key id to retrieve the handle later
      */
     public synchronized String registerTaskHandle(AsyncTaskHandle handle) {
-        GenericKey genericKey = new GenericKey();
+        GenericAsyncTaskKey genericKey = new GenericAsyncTaskKey();
         registerTaskHandle(handle, genericKey);
         return genericKey.id();
     }
@@ -119,65 +114,4 @@ public class AsyncTaskHandleManager implements Serializable {
         return ImmutableMap.copyOf(handlesByKey);
     }
 
-    public interface AsyncTaskKey extends Serializable {
-        /**
-         * When converting multiple fields to form id string, we
-         * should use this as separator (URL friendly).
-         */
-        String SEPARATOR = "-";
-
-        String id();
-
-        /**
-         * Helper method to convert list of fields to a String as key id.
-         *
-         * @param keyName
-         *            the name for this key
-         * @param fields
-         *            key instance field values
-         * @return String representation of the key which can be used as id
-         */
-        static String joinFields(String keyName, String... fields) {
-            return keyName + SEPARATOR
-                    + Joiner.on(SEPARATOR).useForNull("").join(fields);
-        }
-    }
-
-    public static class GenericKey implements AsyncTaskKey {
-        private static final long serialVersionUID = -8648519833116851231L;
-        private final String id;
-
-        GenericKey() {
-            id = UUID.randomUUID().toString();
-        }
-
-        public GenericKey(String id) {
-            this.id = id;
-        }
-
-        @Override
-        public String id() {
-            return id;
-        }
-
-        @Override
-        public String toString() {
-            return MoreObjects.toStringHelper(this)
-                    .add("id", id)
-                    .toString();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            GenericKey that = (GenericKey) o;
-            return Objects.equals(id, that.id);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(id);
-        }
-    }
 }

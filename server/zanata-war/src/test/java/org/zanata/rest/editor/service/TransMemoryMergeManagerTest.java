@@ -11,7 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.async.AsyncTaskHandleManager;
-import org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey;
+import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;

@@ -20,7 +20,7 @@
  */
 package org.zanata.action;
 
-import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
+import static org.zanata.async.AsyncTaskKey.joinFields;
 
 import java.io.Serializable;
 
@@ -30,6 +30,8 @@ import javax.inject.Inject;
 
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.AsyncTaskKey;
+import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.CopyTransTaskHandle;
 import org.zanata.model.HCopyTransOptions;
 import org.zanata.model.HDocument;
@@ -63,7 +65,7 @@ public class CopyTransManager implements Serializable {
     private ZanataIdentity identity;
 
     public boolean isCopyTransRunning(@Nonnull Object target) {
-        AsyncTaskHandleManager.AsyncTaskKey key;
+        AsyncTaskKey key;
         if (target instanceof HProjectIteration) {
             key = CopyTransProcessKey.getKey((HProjectIteration) target);
         } else if (target instanceof HDocument) {
@@ -97,7 +99,7 @@ public class CopyTransManager implements Serializable {
                     "Copy Trans is already running for document \'"
                             + document.getDocId() + "\'");
         }
-        AsyncTaskHandleManager.AsyncTaskKey key = CopyTransProcessKey.getKey(document);
+        AsyncTaskKey key = CopyTransProcessKey.getKey(document);
         CopyTransTaskHandle handle = new CopyTransTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyTransServiceImpl.startCopyTransForDocument(document, options,
@@ -115,7 +117,7 @@ public class CopyTransManager implements Serializable {
                     "Copy Trans is already running for version \'"
                             + iteration.getSlug() + "\'");
         }
-        AsyncTaskHandleManager.AsyncTaskKey key = CopyTransProcessKey.getKey(iteration);
+        AsyncTaskKey key = CopyTransProcessKey.getKey(iteration);
         CopyTransTaskHandle handle = new CopyTransTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyTransServiceImpl.startCopyTransForIteration(iteration, options,
@@ -124,7 +126,7 @@ public class CopyTransManager implements Serializable {
 
     public CopyTransTaskHandle
             getCopyTransProcessHandle(@Nonnull Object target) {
-        AsyncTaskHandleManager.AsyncTaskKey key;
+        AsyncTaskKey key;
         if (target instanceof HProjectIteration) {
             key = CopyTransProcessKey.getKey((HProjectIteration) target);
         } else if (target instanceof HDocument) {
@@ -153,16 +155,16 @@ public class CopyTransManager implements Serializable {
         private static final String KEY_NAME = "copyTransKey";
 
 
-        public static AsyncTaskHandleManager.AsyncTaskKey getKey(HProjectIteration iteration) {
-            return new AsyncTaskHandleManager.GenericKey(joinFields(iteration.getProject().getSlug(),
+        public static AsyncTaskKey getKey(HProjectIteration iteration) {
+            return new GenericAsyncTaskKey(joinFields(iteration.getProject().getSlug(),
                     iteration.getSlug(), null));
         }
 
-        public static AsyncTaskHandleManager.AsyncTaskKey getKey(HDocument document) {
+        public static AsyncTaskKey getKey(HDocument document) {
             String projectSlug = document.getProjectIteration().getProject().getSlug();
             String versionSlug = document.getProjectIteration().getSlug();
             String docId = document.getDocId();
-            return new AsyncTaskHandleManager.GenericKey(joinFields(KEY_NAME, projectSlug, versionSlug, docId));
+            return new GenericAsyncTaskKey(joinFields(KEY_NAME, projectSlug, versionSlug, docId));
         }
 
     }

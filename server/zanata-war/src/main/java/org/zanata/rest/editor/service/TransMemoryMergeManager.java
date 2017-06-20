@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
@@ -42,7 +43,7 @@ import com.google.common.base.MoreObjects;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
-import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
+import static org.zanata.async.AsyncTaskKey.joinFields;
 
 /**
  * @author Patrick Huang
@@ -120,7 +121,7 @@ public class TransMemoryMergeManager implements Serializable {
 
     @SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS", justification = "super class equals method is sufficient")
     static class TMMergeForDocTaskKey extends
-            AsyncTaskHandleManager.GenericKey {
+            GenericAsyncTaskKey {
 
         private static final long serialVersionUID = -7210004008208642L;
         private static final String KEY_NAME = "TMMergeForDocKey";

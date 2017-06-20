@@ -21,7 +21,7 @@
 package org.zanata.action;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
-import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
+import static org.zanata.async.AsyncTaskKey.joinFields;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -33,6 +33,8 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.async.AsyncTaskKey;
+import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
@@ -71,7 +73,7 @@ public class TranslationMemoryAction implements Serializable {
             justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
     private List<TransMemory> transMemoryList;
-    private AsyncTaskHandleManager.AsyncTaskKey lastTaskTMKey;
+    private AsyncTaskKey lastTaskTMKey;
     private SortingType tmSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
                     SortingType.SortOption.CREATED_DATE));
@@ -95,7 +97,7 @@ public class TranslationMemoryAction implements Serializable {
     }
 
     public void clearTransMemory(final String transMemorySlug) {
-        lastTaskTMKey = new AsyncTaskHandleManager.GenericKey(joinFields(KEY_NAME, transMemorySlug));
+        lastTaskTMKey = new GenericAsyncTaskKey(joinFields(KEY_NAME, transMemorySlug));
         AsyncTaskHandle handle = new AsyncTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, lastTaskTMKey);
         translationMemoryResource
@@ -161,8 +163,8 @@ public class TranslationMemoryAction implements Serializable {
     }
 
     public boolean isTransMemoryBeingCleared(String transMemorySlug) {
-        AsyncTaskHandleManager.GenericKey taskKey =
-                new AsyncTaskHandleManager.GenericKey(
+        GenericAsyncTaskKey taskKey =
+                new GenericAsyncTaskKey(
                         joinFields(KEY_NAME, transMemorySlug));
         AsyncTaskHandle<Void> handle = asyncTaskHandleManager.getHandleByKey(
                 taskKey);
