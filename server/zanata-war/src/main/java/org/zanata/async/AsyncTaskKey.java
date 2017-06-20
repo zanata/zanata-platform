@@ -14,6 +14,9 @@ public interface AsyncTaskKey extends Serializable {
      */
     String SEPARATOR = "-";
 
+    /**
+     * @return a unique identifier for the key
+     */
     String id();
 
     /**
