@@ -119,16 +119,8 @@ public class AsyncProcessService implements RestResource {
         if (handle == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        if (!identity.hasRole("admin")) {
-            if (handle instanceof UserTriggeredTaskHandle) {
-                String triggeredBy =
-                        ((UserTriggeredTaskHandle) handle).getTriggeredBy();
-                if (!triggeredBy.equals(identity.getAccountUsername())) {
-                    return Response.status(Response.Status.NOT_FOUND).build();
-                }
-            } else {
-                return Response.status(Response.Status.NOT_FOUND).build();
-            }
+        if (!handle.isVisibleTo(identity)) {
+            return Response.status(Response.Status.NOT_FOUND).build();
         }
         ProcessStatus status = handleToProcessStatus(handle,
                 uriInfo.getRequestUri().toString());
@@ -195,19 +187,13 @@ public class AsyncProcessService implements RestResource {
             return Response.ok(entity).build();
         }
 
-        if (handle instanceof UserTriggeredTaskHandle) {
-            UserTriggeredTaskHandle taskHandle =
-                    (UserTriggeredTaskHandle) handle;
-            if (!taskHandle.canCancel(identity)) {
-                throw new AuthorizationException(
-                        "Only the task owner or admin can cancel the task:" + keyId);
-            }
-        } else {
-            // for other type of async task, we consider them as system tasks
-            if (!identity.hasRole("admin")) {
-                throw new AuthorizationException(
-                        "Only admin can cancel the task:" + keyId);
-            }
+        if (!handle.canCancel(identity)) {
+            String message = handle instanceof UserTriggeredTaskHandle
+                    ? "Only the task owner or admin can cancel the task:"
+                            + keyId
+                    : "Only admin can cancel the task:"
+                            + keyId;
+            throw new AuthorizationException(message);
         }
 
         handle.cancel(true);

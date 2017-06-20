@@ -56,7 +56,7 @@ public class AsyncProcessRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(401));
+                assertThat(response.getStatus(), is(403));
             }
         }.run();
     }

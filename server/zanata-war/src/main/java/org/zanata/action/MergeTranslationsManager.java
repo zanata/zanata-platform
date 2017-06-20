@@ -12,6 +12,8 @@ import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.MergeTranslationsService;
 
+import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
+
 /**
  * Manages tasks to copy translations from one existing version to another.
  *
@@ -95,15 +97,14 @@ public class MergeTranslationsManager implements Serializable {
     /**
      * Key used for merge version task
      */
-    public static final class MergeVersionKey implements
-            AsyncTaskHandleManager.AsyncTaskKey {
+    public static final class MergeVersionKey extends
+            AsyncTaskHandleManager.GenericKey {
         private static final long serialVersionUID = 1L;
         private static final String KEY_NAME = "mergeVersion";
         // target project identifier
         private final String projectSlug;
         // target version identifier
         private final String versionSlug;
-        private final String id;
 
         public static MergeVersionKey getKey(String projectSlug, String versionSlug) {
             return new MergeVersionKey(projectSlug, versionSlug);
@@ -120,27 +121,9 @@ public class MergeTranslationsManager implements Serializable {
 
         @java.beans.ConstructorProperties({ "projectSlug", "versionSlug" })
         public MergeVersionKey(final String projectSlug, final String versionSlug) {
+            super(joinFields(KEY_NAME, projectSlug, versionSlug));
             this.projectSlug = projectSlug;
             this.versionSlug = versionSlug;
-            this.id = joinFields(KEY_NAME, projectSlug, versionSlug);
-        }
-
-        @Override
-        public String id() {
-            return id;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            MergeVersionKey that = (MergeVersionKey) o;
-            return Objects.equals(id, that.id);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(id);
         }
     }
 }

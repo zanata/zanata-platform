@@ -21,6 +21,8 @@
 package org.zanata.action;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
@@ -198,34 +200,16 @@ public class TranslationMemoryAction implements Serializable {
      * NB: Eventually this class might need to live outside if there are other
      * services that need to control this process.
      */
-    private static class ClearTransMemoryProcessKey implements
-            AsyncTaskHandleManager.AsyncTaskKey {
+    private static class ClearTransMemoryProcessKey extends
+            AsyncTaskHandleManager.GenericKey {
         private static final String KEY_NAME = "ClearTMXKey";
         private static final long serialVersionUID = 3472355792561903500L;
-        private final String id;
 
         @java.beans.ConstructorProperties({ "slug" })
         public ClearTransMemoryProcessKey(final String slug) {
-            this.id = joinFields(KEY_NAME, slug);
+            super(joinFields(KEY_NAME, slug));
         }
 
-        @Override
-        public String id() {
-            return id;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ClearTransMemoryProcessKey that = (ClearTransMemoryProcessKey) o;
-            return Objects.equals(id, that.id);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(id);
-        }
     }
 
     private static class TMComparator implements Comparator<TransMemory>, Serializable {

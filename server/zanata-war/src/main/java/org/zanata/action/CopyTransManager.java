@@ -20,6 +20,8 @@
  */
 package org.zanata.action;
 
+import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -148,28 +150,32 @@ public class CopyTransManager implements Serializable {
     /**
      * Internal class to index Copy Trans processes.
      */
-    private static final class CopyTransProcessKey implements
-            AsyncTaskHandleManager.AsyncTaskKey {
+    private static final class CopyTransProcessKey extends
+            AsyncTaskHandleManager.GenericKey {
         private static final long serialVersionUID = -2054359069473618887L;
         private static final String KEY_NAME = "copyTransKey";
-        private String projectSlug;
-        private String iterationSlug;
-        private String docId;
+        private final String projectSlug;
+        private final String iterationSlug;
+        private final String docId;
+
+        CopyTransProcessKey(String projectSlug,
+                String iterationSlug, String docId) {
+            super(joinFields(KEY_NAME, projectSlug, iterationSlug, docId));
+            this.projectSlug = projectSlug;
+            this.iterationSlug = iterationSlug;
+            this.docId = docId;
+        }
 
         public static CopyTransProcessKey getKey(HProjectIteration iteration) {
-            CopyTransProcessKey newKey = new CopyTransProcessKey();
-            newKey.setProjectSlug(iteration.getProject().getSlug());
-            newKey.setIterationSlug(iteration.getSlug());
-            return newKey;
+            return new CopyTransProcessKey(iteration.getProject().getSlug(),
+                    iteration.getSlug(), null);
         }
 
         public static CopyTransProcessKey getKey(HDocument document) {
-            CopyTransProcessKey newKey = new CopyTransProcessKey();
-            newKey.setDocId(document.getDocId());
-            newKey.setProjectSlug(
-                    document.getProjectIteration().getProject().getSlug());
-            newKey.setIterationSlug(document.getProjectIteration().getSlug());
-            return newKey;
+            String projectSlug = document.getProjectIteration().getProject().getSlug();
+            String versionSlug = document.getProjectIteration().getSlug();
+            String docId = document.getDocId();
+            return new CopyTransProcessKey(projectSlug, versionSlug, docId);
         }
 
         public String getProjectSlug() {
@@ -182,39 +188,6 @@ public class CopyTransManager implements Serializable {
 
         public String getDocId() {
             return this.docId;
-        }
-
-        public void setProjectSlug(final String projectSlug) {
-            this.projectSlug = projectSlug;
-        }
-
-        public void setIterationSlug(final String iterationSlug) {
-            this.iterationSlug = iterationSlug;
-        }
-
-        public void setDocId(final String docId) {
-            this.docId = docId;
-        }
-
-        private CopyTransProcessKey() {
-        }
-
-        @Override
-        public String id() {
-            return joinFields(KEY_NAME, projectSlug, iterationSlug, docId);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            CopyTransProcessKey that = (CopyTransProcessKey) o;
-            return Objects.equals(id(), that.id());
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(id());
         }
     }
 }

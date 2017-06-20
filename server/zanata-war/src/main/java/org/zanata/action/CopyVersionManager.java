@@ -11,6 +11,8 @@ import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyVersionService;
 
+import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
+
 /**
  * Manages copy version tasks.
  *
@@ -86,15 +88,14 @@ public class CopyVersionManager implements Serializable {
      * Key used for copy version task
      *
      */
-    public static final class CopyVersionKey implements
-            AsyncTaskHandleManager.AsyncTaskKey {
+    public static final class CopyVersionKey extends
+            AsyncTaskHandleManager.GenericKey {
         private static final String KEY_NAME = "copyVersion";
         private static final long serialVersionUID = 3889349239078033373L;
         // target project identifier
         private final String projectSlug;
         // target version identifier
         private final String versionSlug;
-        private final String id;
 
         /**
          *
@@ -119,27 +120,9 @@ public class CopyVersionManager implements Serializable {
         @java.beans.ConstructorProperties({ "projectSlug", "versionSlug" })
         public CopyVersionKey(final String projectSlug,
                 final String versionSlug) {
+            super(joinFields(KEY_NAME, projectSlug, versionSlug));
             this.projectSlug = projectSlug;
             this.versionSlug = versionSlug;
-            this.id = joinFields(KEY_NAME, projectSlug, versionSlug);
-        }
-
-        @Override
-        public String id() {
-            return id;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            CopyVersionKey that = (CopyVersionKey) o;
-            return Objects.equals(id, that.id);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(id);
         }
     }
 }

@@ -108,7 +108,7 @@ public class AsyncProcessServiceTest {
 
 
     @Test
-    public void adminUserCanNotSeeOthersProcessStatus() throws URISyntaxException {
+    public void adminUserCanSeeOthersProcessStatus() throws URISyntaxException {
         UserTriggeredStartedAsyncTaskHandle taskHandle = new UserTriggeredStartedAsyncTaskHandle();
         taskHandle.setTriggeredBy("somebody-else");
 
@@ -175,6 +175,10 @@ public class AsyncProcessServiceTest {
                 .isEqualTo(baseUriStr + "process/key/keyId");
     }
 
+    /**
+     * This operation is only available to admin.
+     * @see org.zanata.rest.service.raw.AsyncProcessRawRestITCase
+     */
     @Test
     public void canGetAllTasksIncludingFinishedTask()
             throws URISyntaxException {

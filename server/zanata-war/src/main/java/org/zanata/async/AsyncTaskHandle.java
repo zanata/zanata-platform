@@ -23,12 +23,14 @@ package org.zanata.async;
 import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.BiConsumer;
 
+import org.zanata.security.ZanataIdentity;
+
 import com.google.common.base.Optional;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -106,6 +108,23 @@ public class AsyncTaskHandle<V> implements Serializable {
         } else {
             return Optional.absent();
         }
+    }
+
+    public boolean isVisibleTo(ZanataIdentity identity) {
+        return isAdminOrSameUser(this, identity);
+    }
+
+    public boolean canCancel(ZanataIdentity identity) {
+        return isAdminOrSameUser(this, identity);
+    }
+
+    private static boolean isAdminOrSameUser(AsyncTaskHandle taskHandle,
+            ZanataIdentity identity) {
+        return identity != null && (identity.hasRole("admin")
+                || (taskHandle instanceof UserTriggeredTaskHandle
+                        && ((UserTriggeredTaskHandle) taskHandle)
+                                .getTriggeredBy()
+                                .equals(identity.getAccountUsername())));
     }
 
     /**

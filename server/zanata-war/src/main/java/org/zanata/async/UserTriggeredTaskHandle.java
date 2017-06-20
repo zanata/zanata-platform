@@ -20,7 +20,6 @@
  */
 package org.zanata.async;
 
-import org.zanata.security.ZanataIdentity;
 
 /**
  * Represents a task triggered by a user (as oppose to some system generated
@@ -32,8 +31,4 @@ public interface UserTriggeredTaskHandle {
 
     String getTriggeredBy();
 
-    default boolean canCancel(ZanataIdentity identity) {
-        return identity != null && (identity.hasRole("admin")
-                || getTriggeredBy().equals(identity.getAccountUsername()));
-    }
 }

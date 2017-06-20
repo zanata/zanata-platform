@@ -40,6 +40,8 @@ import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import com.google.common.base.MoreObjects;
 
+import static org.zanata.async.AsyncTaskHandleManager.AsyncTaskKey.joinFields;
+
 /**
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
@@ -114,20 +116,19 @@ public class TransMemoryMergeManager implements Serializable {
         return false;
     }
 
-    static class TMMergeForDocTaskKey implements
-            AsyncTaskHandleManager.AsyncTaskKey {
+    static class TMMergeForDocTaskKey extends
+            AsyncTaskHandleManager.GenericKey {
 
         private static final long serialVersionUID = -7210004008208642L;
         private static final String KEY_NAME = "TMMergeForDocKey";
         private final DocumentId documentId;
         private final LocaleId localeId;
-        private final String id;
 
         TMMergeForDocTaskKey(DocumentId documentId, LocaleId localeId) {
+            // here we use numeric id to form the string id because it doesn't require URL encoding
+            super(joinFields(KEY_NAME, documentId.getId().toString(), localeId.getId()));
             this.documentId = documentId;
             this.localeId = localeId;
-            // here we use numeric id to form the string id because it doesn't require URL encoding
-            this.id = joinFields(KEY_NAME, documentId.getId().toString(), localeId.getId());
         }
 
         @Override
@@ -136,24 +137,6 @@ public class TransMemoryMergeManager implements Serializable {
                     .add("documentId", documentId)
                     .add("localeId", localeId)
                     .toString();
-        }
-
-        @Override
-        public String id() {
-            return id;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            TMMergeForDocTaskKey that = (TMMergeForDocTaskKey) o;
-            return Objects.equals(id, that.id);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(id);
         }
     }
 }

@@ -23,12 +23,16 @@ package org.zanata.async;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
 
+import org.zanata.action.TranslationMemoryAction;
 import com.google.common.base.Joiner;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableMap;
@@ -55,23 +59,21 @@ public class AsyncTaskHandleManager implements Serializable {
 
     public synchronized <K extends AsyncTaskKey> void registerTaskHandle(AsyncTaskHandle handle,
             K key) {
-        if (handlesByKey.containsKey(key.id())) {
-            throw new RuntimeException("Task handle with key " + key
-                    + " already exists");
-        }
-        handlesByKey.put(key.id(), handle);
+        AsyncTaskHandle<?> existingHandle =
+                handlesByKey.putIfAbsent(key.id(), handle);
+        Preconditions.checkArgument(existingHandle == null,
+                "Task handle with key " + key + " already exists");
     }
 
     /**
      * Registers a task handle.
      * @param handle The handle to register.
-     * @return An auto generated key to retreive the handle later
+     * @return An auto generated key id to retrieve the handle later
      */
     public synchronized String registerTaskHandle(AsyncTaskHandle handle) {
-        String autoGenKey = UUID.randomUUID().toString();
-        AsyncTaskKey autoKey = () -> autoGenKey;
-        registerTaskHandle(handle, autoKey);
-        return autoGenKey;
+        GenericKey genericKey = new GenericKey();
+        registerTaskHandle(handle, genericKey);
+        return genericKey.id();
     }
 
     void taskFinished(AsyncTaskHandle taskHandle) {
@@ -135,9 +137,47 @@ public class AsyncTaskHandleManager implements Serializable {
          *            key instance field values
          * @return String representation of the key which can be used as id
          */
-        default String joinFields(String keyName, String... fields) {
+        static String joinFields(String keyName, String... fields) {
             return keyName + SEPARATOR
                     + Joiner.on(SEPARATOR).useForNull("").join(fields);
+        }
+    }
+
+    public static class GenericKey implements AsyncTaskKey {
+        private static final long serialVersionUID = -8648519833116851231L;
+        private final String id;
+
+        GenericKey() {
+            id = UUID.randomUUID().toString();
+        }
+
+        public GenericKey(String id) {
+            this.id = id;
+        }
+
+        @Override
+        public String id() {
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return MoreObjects.toStringHelper(this)
+                    .add("id", id)
+                    .toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            GenericKey that = (GenericKey) o;
+            return Objects.equals(id, that.id);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(id);
         }
     }
 }
