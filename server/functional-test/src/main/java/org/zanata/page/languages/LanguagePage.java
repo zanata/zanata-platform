@@ -51,6 +51,9 @@ public class LanguagePage extends BasePage {
     private By addUserSearchButton = By.id("searchForm:searchBtn");
     private By personTable = By.id("resultForm:searchResults");
     private By addSelectedButton = By.id("addSelectedBtn");
+    private By requestToJoinLanguage = By.xpath(".//button[contains(text(),'Request To Join')]");
+    private By cancelRequest = By.id("member-info:cancelRequest:j_idt94");
+    private By leaveLanguageTeam = By.id("member-info:leaveTeam:j_idt73");
     public static final int IS_TRANSLATOR_COLUMN = 0;
     public static final int IS_REVIEWER_COLUMN = 1;
     public static final int IS_COORDINATOR_COLUMN = 2;
@@ -234,4 +237,23 @@ public class LanguagePage extends BasePage {
             this.columnIndex = columnIndex;
         }
     }
+
+    public RequestToJoinPage requestToJoin() {
+        log.info("Click Request To Join");
+        clickElement(requestToJoinLanguage);
+        return new RequestToJoinPage(getDriver());
+    }
+
+    public LanguagePage leaveTeam() {
+        log.info("Click Leave Team");
+        clickElement(leaveLanguageTeam);
+        return new LanguagePage(getDriver());
+    }
+
+    public LanguagePage cancelRequest() {
+        log.info("Click Cancel Request");
+        clickElement(cancelRequest);
+        return new LanguagePage(getDriver());
+    }
+
 }
