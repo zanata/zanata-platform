@@ -104,9 +104,6 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
     @Authenticated
     private HAccount authenticatedAccount;
 
-    @Inject
-    private TransMemoryMergeService transMemoryMergeService;
-
     /**
      * Batch size for find matching HTextFlow to process merging of
      * translations. Each TextFlow may lead to changes in multiple
@@ -352,81 +349,6 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         List<HLocale> locales = getSupportedLocales(
                 targetVersion.getProject().getSlug(), targetVersion.getSlug());
         return matchCount * locales.size();
-    }
-
-    @Async
-    @Override
-    public Future<Void> startMergeTranslations(Long targetVersionId,
-            VersionTMMerge mergeRequest,
-            MergeTranslationsTaskHandle handle) {
-        // since this is async we need to reload entities
-        HProjectIteration targetVersion =
-                projectIterationDAO.findById(targetVersionId);
-        HLocale targetLocale =
-                localeServiceImpl.getByLocaleId(mergeRequest.getLocaleId());
-
-        if (isVersionEmpty(targetVersion)) {
-            return AsyncTaskResult.completed();
-        }
-        List<HLocale> localesInTargetVersion = localeServiceImpl
-                .getSupportedLanguageByProjectIteration(targetVersion);
-        if (!localesInTargetVersion.contains(targetLocale)) {
-            log.error("No locales enabled in target version of [{}]",
-                    targetVersion.userFriendlyToString());
-            return AsyncTaskResult.completed();
-        }
-
-        List<Long> fromVersionIds = mergeRequest.getFromProjectVersions().stream()
-                .map(projectIterationId -> projectIterationDAO.getBySlug(
-                        projectIterationId.getProjectSlug(),
-                        projectIterationId.getIterationSlug()))
-                .filter(ver -> ver != null
-                        && ver.getStatus() != EntityStatus.OBSOLETE
-                        && localeServiceImpl
-                                .getSupportedLanguageByProjectIteration(ver)
-                                .contains(targetLocale))
-                .map(ModelEntityBase::getId).collect(Collectors.toList());
-
-        if (fromVersionIds.isEmpty()) {
-            log.error("Cannot find source versions of {}", fromVersionIds);
-            return AsyncTaskResult.completed();
-        }
-
-        long mergeTargetCount = textFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion(
-                targetVersion.getId(), targetLocale);
-
-        Optional<MergeTranslationsTaskHandle> taskHandleOpt =
-                Optional.fromNullable(handle);
-        if (taskHandleOpt.isPresent()) {
-            MergeTranslationsTaskHandle handle1 = taskHandleOpt.get();
-            handle1.setTriggeredBy(identity.getAccountUsername());
-            handle1.setMaxProgress((int) mergeTargetCount);
-            handle1.setTotalTranslations(mergeTargetCount);
-        }
-        Stopwatch overallStopwatch = Stopwatch.createStarted();
-        log.info("merge translations from TM start: from {} to {}",
-                fromVersionIds,
-                targetVersion.userFriendlyToString());
-        int startCount = 0;
-
-        while (startCount < mergeTargetCount) {
-            List<HTextFlow> batch = textFlowDAO
-                    .getUntranslatedOrFuzzyTextFlowsInVersion(
-                            targetVersion.getId(), targetLocale, startCount,
-                            TEXTFLOWS_PER_BATCH);
-            transMemoryMergeService.translateInBatch(mergeRequest, batch,
-                    targetLocale, fromVersionIds);
-
-            if (taskHandleOpt.isPresent()) {
-                taskHandleOpt.get().increaseProgress(batch.size());
-            }
-            startCount += TEXTFLOWS_PER_BATCH;
-        }
-        versionStateCacheImpl.clearVersionStatsCache(targetVersion.getId());
-        log.info("merge translation from TM end: from {} to {}, {}",
-                mergeRequest.getFromProjectVersions(),
-                targetVersion.userFriendlyToString(), overallStopwatch);
-        return AsyncTaskResult.completed();
     }
 
     private int getTotalMatchCount(Long sourceVersionId, Long targetVersionId) {

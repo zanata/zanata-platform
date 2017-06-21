@@ -31,9 +31,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HAccount;
+import org.zanata.rest.dto.VersionTMMerge;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -57,14 +60,18 @@ public class TransMemoryMergeManager implements Serializable {
 
     private final HAccount authenticated;
 
+    private final ZanataIdentity identity;
+
     @Inject
     public TransMemoryMergeManager(
             AsyncTaskHandleManager asyncTaskHandleManager,
             TransMemoryMergeService transMemoryMergeService,
-            @Authenticated HAccount authenticated) {
+            @Authenticated HAccount authenticated,
+            ZanataIdentity identity) {
         this.asyncTaskHandleManager = asyncTaskHandleManager;
         this.transMemoryMergeService = transMemoryMergeService;
         this.authenticated = authenticated;
+        this.identity = identity;
     }
 
     /**
@@ -116,6 +123,24 @@ public class TransMemoryMergeManager implements Serializable {
         return false;
     }
 
+    public boolean start(Long versionId, VersionTMMerge mergeRequest) {
+        TransMemoryMergeManager.MergeTranslationTaskKey key =
+                new TransMemoryMergeManager.MergeTranslationTaskKey(versionId, mergeRequest.getLocaleId());
+        AsyncTaskHandle handleByKey =
+                asyncTaskHandleManager.getHandleByKey(key);
+        if (handleByKey == null || handleByKey.isCancelled()
+                || handleByKey.isDone()) {
+            MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle();
+
+            handle.setTriggeredBy(identity.getAccountUsername());
+            asyncTaskHandleManager.registerTaskHandle(handle, key);
+            transMemoryMergeService.startMergeTranslations(versionId,
+                    mergeRequest, handle);
+            return true;
+        }
+        return false;
+    }
+
     static class TransMemoryTaskKey implements Serializable {
 
         @SuppressFBWarnings("SE_BAD_FIELD")
@@ -152,6 +177,33 @@ public class TransMemoryMergeManager implements Serializable {
                     .add("projectIterationId", projectIterationId)
                     .add("documentId", documentId).add("localeId", localeId)
                     .toString();
+        }
+    }
+
+    public static class MergeTranslationTaskKey implements Serializable {
+
+        private static final long serialVersionUID = 5671982177725183233L;
+        private final Long versionId;
+        private final LocaleId localeId;
+
+        public MergeTranslationTaskKey(Long versionId, LocaleId localeId) {
+            this.versionId = versionId;
+            this.localeId = localeId;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            MergeTranslationTaskKey that = (MergeTranslationTaskKey) o;
+            return Objects.equals(versionId, that.versionId) &&
+                    Objects.equals(localeId, that.localeId);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects
+                    .hash(versionId, localeId);
         }
     }
 }

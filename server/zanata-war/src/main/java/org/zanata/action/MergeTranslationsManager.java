@@ -1,7 +1,6 @@
 package org.zanata.action;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
@@ -9,8 +8,8 @@ import javax.inject.Inject;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
-import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.VersionTMMerge;
+import org.zanata.rest.editor.service.TransMemoryMergeManager;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.MergeTranslationsService;
 
@@ -94,24 +93,6 @@ public class MergeTranslationsManager implements Serializable {
         return handle != null && !handle.isDone();
     }
 
-    public boolean start(Long versionId, VersionTMMerge mergeRequest) {
-        MergeTranslationTaskKey key =
-                new MergeTranslationTaskKey(versionId, mergeRequest.getLocaleId());
-        AsyncTaskHandle handleByKey =
-                asyncTaskHandleManager.getHandleByKey(key);
-        if (handleByKey == null || handleByKey.isCancelled()
-                || handleByKey.isDone()) {
-            MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle();
-
-            handle.setTriggeredBy(identity.getAccountUsername());
-            asyncTaskHandleManager.registerTaskHandle(handle, key);
-            mergeTranslationsServiceImpl.startMergeTranslations(versionId,
-                    mergeRequest, handle);
-            return true;
-        }
-        return false;
-    }
-
     /**
      * Key used for copy version task
      */
@@ -174,30 +155,4 @@ public class MergeTranslationsManager implements Serializable {
     }
 
 
-    static class MergeTranslationTaskKey implements Serializable {
-
-        private static final long serialVersionUID = 5671982177725183233L;
-        private final Long versionId;
-        private final LocaleId localeId;
-
-        public MergeTranslationTaskKey(Long versionId, LocaleId localeId) {
-            this.versionId = versionId;
-            this.localeId = localeId;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            MergeTranslationTaskKey that = (MergeTranslationTaskKey) o;
-            return Objects.equals(versionId, that.versionId) &&
-                    Objects.equals(localeId, that.localeId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects
-                    .hash(versionId, localeId);
-        }
-    }
 }

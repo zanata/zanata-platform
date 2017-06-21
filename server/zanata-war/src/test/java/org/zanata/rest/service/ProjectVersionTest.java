@@ -25,17 +25,14 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataDbunitJpaTest;
-import org.zanata.action.MergeTranslationsManager;
-import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
 import org.zanata.i18n.Messages;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
-import org.zanata.model.HProject;
-import org.zanata.model.HProjectIteration;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.dto.VersionTMMerge;
+import org.zanata.rest.editor.service.TransMemoryMergeManager;
 import org.zanata.rest.editor.service.resource.UserResource;
 import org.zanata.seam.security.IdentityManager;
 import org.zanata.security.ZanataIdentity;
@@ -77,7 +74,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
     @Produces @Mock IdentityManager identityManager;
     @Produces @Mock ZanataIdentity identity;
 
-    @Produces @Mock MergeTranslationsManager mergeTranslationsManager;
+    @Produces @Mock TransMemoryMergeManager transMemoryMergeManager;
 
     @Override
     @Produces
@@ -220,7 +217,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
 
         // when there is already a merge process running
         when(localeService.getByLocaleId(LocaleId.FR)).thenReturn(new HLocale(LocaleId.FR));
-        when(mergeTranslationsManager.start(1L, mergeRequest)).thenReturn(false);
+        when(transMemoryMergeManager.start(1L, mergeRequest)).thenReturn(false);
 
         assertThatThrownBy(() -> {
             service.prefillWithTM(projectSlug, versionSlug, mergeRequest);
@@ -239,7 +236,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 Collections.emptyList());
 
-        when(mergeTranslationsManager.start(2L, mergeRequest)).thenReturn(true);
+        when(transMemoryMergeManager.start(2L, mergeRequest)).thenReturn(true);
         assertThat(service.prefillWithTM(projectSlug, versionSlug, mergeRequest)
                 .getStatus()).isEqualTo(NOT_FOUND.getStatusCode());
     }

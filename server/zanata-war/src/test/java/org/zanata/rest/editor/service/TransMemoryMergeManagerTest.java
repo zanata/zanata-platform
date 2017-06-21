@@ -18,6 +18,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.model.HAccount;
 import org.zanata.model.TestFixture;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -40,6 +41,7 @@ public class TransMemoryMergeManagerTest {
     @Captor
     private ArgumentCaptor<Serializable> taskKeyCaptor;
     private TransMemoryMergeCancelRequest cancelRequest;
+    @Mock private ZanataIdentity identity;
 
     @Before
     public void setUp() {
@@ -47,7 +49,7 @@ public class TransMemoryMergeManagerTest {
         authenticated = new HAccount();
         authenticated.setUsername("admin");
         manager = new TransMemoryMergeManager(asyncTaskHandleManager,
-                transMemoryMergeService, authenticated);
+                transMemoryMergeService, authenticated, identity);
 
         WorkspaceId workspaceId = TestFixture.workspaceId(LocaleId.DE,
                 "project", "version", ProjectType.Gettext);

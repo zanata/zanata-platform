@@ -24,9 +24,7 @@ import java.io.Serializable;
 import java.util.concurrent.Future;
 
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
-import org.zanata.common.LocaleId;
 import org.zanata.model.HProjectIteration;
-import org.zanata.rest.dto.VersionTMMerge;
 
 public interface MergeTranslationsService extends Serializable {
     //@formatter:off
@@ -55,7 +53,4 @@ public interface MergeTranslationsService extends Serializable {
     int getTotalProgressCount(HProjectIteration sourceVersion,
         HProjectIteration targetVersion);
 
-    Future<Void> startMergeTranslations(Long versionId,
-            VersionTMMerge mergeRequest,
-            MergeTranslationsTaskHandle handle);
 }

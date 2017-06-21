@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
@@ -52,6 +53,7 @@ import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
+import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.model.HAccount;
@@ -60,11 +62,13 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.TestFixture;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationMemoryService;
 import org.zanata.service.TranslationService;
+import org.zanata.service.VersionStateCache;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.transaction.TransactionUtil;
 import org.zanata.transaction.TransactionUtilForUnitTest;
@@ -123,6 +127,13 @@ public class TransMemoryMergeServiceImplTest {
 
     @Produces
     TransactionUtil transactionUtil = new TransactionUtilForUnitTest(null);
+
+    @Produces @Mock
+    private VersionStateCache versionStateCacheImpl;
+    @Produces @Mock
+    private ZanataIdentity identity;
+    @Produces @Mock
+    private ProjectIterationDAO projectIterationDAO;
 
     private String projectSlug = "projectSlug";
     private String versionSlug = "versionSlug";

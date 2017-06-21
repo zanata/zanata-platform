@@ -26,7 +26,6 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
-import org.zanata.action.MergeTranslationsManager;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -49,6 +48,7 @@ import org.zanata.rest.dto.TransUnitStatus;
 import org.zanata.rest.dto.User;
 import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.rest.dto.resource.ResourceMeta;
+import org.zanata.rest.editor.service.TransMemoryMergeManager;
 import org.zanata.rest.editor.service.UserService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.ConfigurationService;
@@ -96,7 +96,7 @@ public class ProjectVersionService implements ProjectVersionResource {
     @Context
     private UriInfo uri;
     @Inject
-    private MergeTranslationsManager mergeTranslationsManager;
+    private TransMemoryMergeManager transMemoryMergeManager;
 
     @Override
     public Response head(@PathParam("projectSlug") String projectSlug,
@@ -388,6 +388,10 @@ public class ProjectVersionService implements ProjectVersionResource {
                     .entity("Project version \'" + projectSlug + ":"
                             + versionSlug + "\' is readonly.")
                     .build();
+        } else if (version.getDocuments().isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("{\"error\":\"project version has no documents\"}")
+                    .build();
         }
         LocaleId localeId = mergeRequest.getLocaleId();
         HLocale hLocale = localeServiceImpl.getByLocaleId(localeId);
@@ -396,7 +400,7 @@ public class ProjectVersionService implements ProjectVersionResource {
         }
 
         identity.checkPermission("modify-translation", hProject, hLocale);
-        boolean started = mergeTranslationsManager
+        boolean started = transMemoryMergeManager
                 .start(version.getId(), mergeRequest);
         if (!started) {
             throw new UnsupportedOperationException("There is already version merge operation in progress");
