@@ -38,6 +38,7 @@ import org.zanata.rest.dto.User;
 import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.rest.editor.service.resource.UserResource;
 import org.zanata.seam.security.IdentityManager;
+import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.ConfigurationService;
 import org.zanata.service.GravatarService;
@@ -74,6 +75,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
     @Produces @Mock WindowContext windowContext;
     @Produces @Mock UrlUtil urlUtil;
     @Produces @Mock IdentityManager identityManager;
+    @Produces @Mock ZanataIdentity identity;
 
     @Produces @Mock MergeTranslationsManager mergeTranslationsManager;
 
@@ -223,8 +225,8 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
         assertThatThrownBy(() -> {
             service.prefillWithTM(projectSlug, versionSlug, mergeRequest);
         })
-                .hasMessage("There is already version merge operation in progress")
-                .isInstanceOf(UnsupportedOperationException.class);
+                .isInstanceOf(UnsupportedOperationException.class)
+                .hasMessage("There is already version merge operation in progress");
     }
 
     @Test
