@@ -28,9 +28,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import javax.mail.internet.MimeMultipart;
 import org.junit.rules.ExternalResource;
-import org.junit.rules.TestRule;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
 import org.subethamail.wiser.Wiser;
 import org.subethamail.wiser.WiserMessage;
 import com.google.common.base.Throwables;
@@ -47,7 +44,6 @@ public class HasEmailRule extends ExternalResource {
     private static final Object wiserLock = new Object();
     private static volatile Wiser wiser;
 
-    @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
     @Override
     protected void before() throws Throwable {
         super.before();
@@ -70,6 +66,7 @@ public class HasEmailRule extends ExternalResource {
                         throw new RuntimeException("Error binding port "
                                 + portNum + ". See log for more info.", e);
                     }
+                    throw e;
                 }
                 HasEmailRule.wiser = w;
                 // NB we never call wiser.stop() because we want the email

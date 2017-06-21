@@ -20,7 +20,6 @@
  */
 package org.zanata.page.account;
 
-import com.google.common.base.Predicate;
 import org.openqa.selenium.By;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -60,7 +59,7 @@ public class ProfilePage extends BasePage {
     public boolean expectContributionsMatrixVisible() {
         log.info("Wait for contributions matrix to be visible");
         try {
-            waitForAMoment().until((Predicate<WebDriver>) webDriver -> webDriver
+            waitForAMoment().until(driver -> driver
                     .findElements(contributionsBy).size() > 0);
         } catch (TimeoutException te) {
             log.info("Contributions matrix was not discovered");

@@ -19,7 +19,8 @@
  * site: http://www.fsf.org.
  */
 
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { Icon } from '../../components'
 import IconButton from '../components/IconButton'
 import IconButtonToggle from '../components/IconButtonToggle'

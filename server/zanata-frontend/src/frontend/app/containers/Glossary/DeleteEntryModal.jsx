@@ -1,15 +1,16 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import ReactDOM from 'react-dom'
 import { LoaderText, Icon } from '../../components'
 import { Button, Tooltip, Overlay } from 'react-bootstrap'
 
 class DeleteEntryModal extends Component {
   static propTypes = {
-    entry: React.PropTypes.object,
-    show: React.PropTypes.bool,
-    isDeleting: React.PropTypes.bool,
+    entry: PropTypes.object,
+    show: PropTypes.bool,
+    isDeleting: PropTypes.bool,
     handleDeleteEntryDisplay: PropTypes.func.isRequired,
-    handleDeleteEntry: React.PropTypes.func.isRequired
+    handleDeleteEntry: PropTypes.func.isRequired
   }
 
   handleDeleteEntry = (entryId) => {

@@ -8,7 +8,7 @@ import { createStore, applyMiddleware } from 'redux'
 import { apiMiddleware } from 'redux-api-middleware'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
-import { syncHistory } from 'redux-simple-router'
+import { syncHistoryWithStore } from 'react-router-redux'
 import newContextFetchMiddleware from './middlewares/new-context-fetch'
 import searchSelectedPhraseMiddleware
   from './middlewares/selected-phrase-searches'
@@ -76,13 +76,13 @@ function runApp () {
     }
   })
 
-  const reduxRouterMiddleware = syncHistory(history)
+  // const reduxRouterMiddleware = syncHistory(history)
   const createStoreWithMiddleware =
     applyMiddleware(
       titleUpdateMiddleware,
       newContextFetchMiddleware,
       searchSelectedPhraseMiddleware,
-      reduxRouterMiddleware,
+      // reduxRouterMiddleware,
       thunk,
       apiMiddleware,
       // must run after thunk because it fails with thunks
@@ -91,7 +91,9 @@ function runApp () {
     )(createStore)
 
   const store = createStoreWithMiddleware(rootReducer)
-  reduxRouterMiddleware.listenForReplays(store)
+  // reduxRouterMiddleware.listenForReplays(store)
+
+  const enhancedHistory = syncHistoryWithStore(history, store)
 
   const rootElement = document.getElementById('appRoot')
 
@@ -104,7 +106,7 @@ function runApp () {
   ReactDOM.render(
     <IntlProvider locale={locale} formats={formats}>
       <Provider store={store}>
-        <Router history={history}>
+        <Router history={enhancedHistory}>
           {/* The ** is docId, captured as params.splat by react-router. */}
           <Route
             path="/project/translate/:projectSlug/v/:versionSlug/**"

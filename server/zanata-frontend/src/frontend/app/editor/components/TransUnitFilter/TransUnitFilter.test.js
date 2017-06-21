@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import TestUtils from 'react-addons-test-utils'
+import TestUtils from 'react-dom/test-utils'
 import TransUnitFilter from '.'
 import FilterToggle from '../FilterToggle'
 import { Icon } from '../../../components'

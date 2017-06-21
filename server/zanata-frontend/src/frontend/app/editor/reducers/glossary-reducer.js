@@ -3,7 +3,7 @@
  */
 
 import { chain } from 'lodash'
-import updateObject from 'react-addons-update'
+import updateObject from 'immutability-helper'
 import {
   GLOSSARY_DETAILS_REQUEST,
   GLOSSARY_DETAILS_SUCCESS,

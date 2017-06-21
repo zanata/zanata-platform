@@ -15,6 +15,16 @@ Navigate to `frontend`, run `make install`
 
 `make build`
 
+### Bootstrap a new component
+
+There is a helper script to create files for a new component and set it up with
+in storybook ready for iterating on its design. Just run the following, answer
+the questions and follow the instructions:
+
+```
+make component
+```
+
 ### Run styleguide
 
 `make styleguide-build` followed by `make styleguide-server`

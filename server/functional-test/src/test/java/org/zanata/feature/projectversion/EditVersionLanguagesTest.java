@@ -24,7 +24,7 @@ package org.zanata.feature.projectversion;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projectversion.versionsettings.VersionLanguagesTab;
@@ -52,9 +52,8 @@ public class EditVersionLanguagesTest extends ZanataTestCase {
                 "overridelangtest", "file");
     }
 
-    @Feature(summary = "The maintainer can override the available languages " +
-            "for a project version",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The maintainer can override the available languages " +
+            "for a project version")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void changeVersionLanguages() throws Exception {
         assertThat(new LoginWorkFlow()

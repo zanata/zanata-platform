@@ -23,7 +23,7 @@ package org.zanata.feature.glossary;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.workflow.ClientWorkFlow;
@@ -49,8 +49,7 @@ public class GlossaryAdminTest extends ZanataTestCase {
      * the number of glossary entries per language matches the number of entries
      * pushed from each of the test cases mentioned in the Setup.
      */
-    @Feature(summary = "A user can push glossaries to Zanata",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 181711)
+    @Trace(summary = "A user can push glossaries to Zanata")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void testGlossaryView() {
         // Push a glossary

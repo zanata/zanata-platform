@@ -1,5 +1,5 @@
 /*
- * Copyright 2014, Red Hat, Inc. and individual contributors as indicated by the
+ * Copyright 2017, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
  * listing of individual contributors.
  *
@@ -18,24 +18,18 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-package org.zanata.feature;
+package org.zanata.feature.testharness;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.METHOD })
+import org.junit.experimental.categories.Categories;
+import org.junit.runner.RunWith;
+import org.zanata.feature.testharness.TestPlan.ComprehensiveTest;
 /**
- * @author Patrick Huang
- *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
+ * Extend the full test suite, but filter by the Comprehensive Test category
+ *
+ * @author Damian Jansen <a
+ *         href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
-public @interface Feature {
-    int NO_BUG = 0;
-
-    int bugzilla() default NO_BUG;
-    String summary() default "no description";
-    int[] tcmsTestPlanIds() default {};
-    int[] tcmsTestCaseIds() default {};
+@RunWith(Categories.class)
+@Categories.IncludeCategory(ComprehensiveTest.class)
+public class ComprehensiveTestSuite extends TestPlan {
 }

@@ -20,14 +20,14 @@
  */
 package org.zanata.page.projectversion.versionsettings;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.VersionBasePage;
 import org.zanata.util.LanguageList;
-import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -94,14 +94,14 @@ public class VersionLanguagesTab extends VersionBasePage {
 
     public VersionLanguagesTab expectEnabledLocaleListCount(final int count) {
         waitForAMoment()
-                .until((Predicate<WebDriver>) input -> getEnabledLocaleList()
+                .until(it -> getEnabledLocaleList()
                         .size() == count);
         return new VersionLanguagesTab(getDriver());
     }
 
     public VersionLanguagesTab expectAvailableLocaleListCount(final int count) {
         waitForAMoment()
-                .until((Predicate<WebDriver>) input -> getAvailableLocaleList()
+                .until(it -> getAvailableLocaleList()
                         .size() == count);
         return new VersionLanguagesTab(getDriver());
     }
@@ -123,7 +123,7 @@ public class VersionLanguagesTab extends VersionBasePage {
     private void waitForLanguageEntryExpected(final String language,
             final boolean exists) {
         waitForAMoment()
-                .until((Function<WebDriver, Boolean>) driver -> getEnabledLocaleList()
+                .until(it -> getEnabledLocaleList()
                         .contains(language) == exists);
     }
 
@@ -145,14 +145,14 @@ public class VersionLanguagesTab extends VersionBasePage {
         log.info("Click Disable on {}", localeId);
         String message = "can not find locale - " + localeId;
         waitForAMoment().withMessage(message)
-                .until((Predicate<WebDriver>) driver -> LanguageList
+                .until(driver -> LanguageList
                         .toggleLanguageInList(
                                 getDriver().findElement(activeLocales),
                                 localeId));
         refreshPageUntil(this,
-                (Predicate<WebDriver>) driver -> !getEnabledLocaleList()
-                        .contains(localeId),
-                "Wait for the locale list to not contain " + localeId);
+                "Wait for the locale list to not contain " + localeId,
+                it -> !getEnabledLocaleList().contains(localeId)
+        );
         return new VersionLanguagesTab(getDriver());
     }
 
@@ -160,14 +160,14 @@ public class VersionLanguagesTab extends VersionBasePage {
         log.info("Click Enable on {}", localeId);
         String message = "can not find locale - " + localeId;
         waitForAMoment().withMessage(message)
-                .until((Predicate<WebDriver>) driver -> LanguageList
+                .until(driver -> LanguageList
                         .toggleLanguageInList(
                                 getDriver().findElement(disabledLocales),
                                 localeId));
         refreshPageUntil(this,
-                (Predicate<WebDriver>) driver -> getEnabledLocaleList()
-                        .contains(localeId),
-                "Wait for the locale list to contain " + localeId);
+                "Wait for the locale list to contain " + localeId,
+                it -> getEnabledLocaleList().contains(localeId)
+        );
         return new VersionLanguagesTab(getDriver());
     }
 }

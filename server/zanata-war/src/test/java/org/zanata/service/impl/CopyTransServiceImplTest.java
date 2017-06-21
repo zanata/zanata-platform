@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 import com.google.common.cache.CacheLoader;
 import org.dbunit.operation.DatabaseOperation;
 import org.hibernate.Session;
+import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.infinispan.manager.CacheContainer;
 import org.jglue.cdiunit.AdditionalClasses;
@@ -57,7 +58,6 @@ import org.zanata.webtrans.shared.model.ValidationId;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import java.util.Map;
 import static org.zanata.common.ContentState.Approved;
 import static org.zanata.common.ContentState.New;
@@ -117,7 +117,7 @@ public class CopyTransServiceImplTest extends ZanataDbunitJpaTest {
 
     @Override
     @Produces
-    protected EntityManagerFactory getEmf() {
+    protected HibernateEntityManagerFactory getEmf() {
         return super.getEmf();
     }
 

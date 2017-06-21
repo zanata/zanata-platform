@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import cx from 'classnames'
 import { GLOSSARY_TAB } from '../../reducers/ui-reducer'
 import TransUnitStatus from '../TransUnitStatus'

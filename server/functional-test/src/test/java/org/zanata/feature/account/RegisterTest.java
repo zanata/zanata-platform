@@ -21,12 +21,10 @@
 package org.zanata.feature.account;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
-import org.zanata.feature.testharness.TestPlan.BasicAcceptanceTest;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
@@ -51,13 +49,13 @@ public class RegisterTest extends ZanataTestCase {
     @Rule
     public final HasEmailRule emailRule = new HasEmailRule();
 
-    Map<String, String> fields;
+    private Map<String, String> fields;
     private HomePage homePage;
 
     @Before
     public void before() {
         // fields contains a set of data that can be successfully registered
-        fields = new HashMap<String, String>();
+        fields = new HashMap<>();
 
         // Conflicting fields - must be set for each test function to avoid
         // "not available" errors
@@ -69,8 +67,8 @@ public class RegisterTest extends ZanataTestCase {
         homePage.deleteCookiesAndRefresh();
     }
 
-    @Feature(summary = "The user can register an account with Zanata",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 86816)
+    @Trace(summary = "The user can register an account with Zanata",
+            testPlanIds = 5681, testCaseIds = 5688)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void registerSuccessful() throws Exception {
         RegisterPage registerPage = homePage
@@ -88,9 +86,9 @@ public class RegisterTest extends ZanataTestCase {
                 .as("Sign up is successful");
     }
 
-    @Feature(summary = "The user must enter a username of between 3 and " +
+    @Trace(summary = "The user must enter a username of between 3 and " +
             "20 (inclusive) characters to register",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+            testPlanIds = 5681, testCaseIds = 5690)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernameLengthValidation() throws Exception {
         fields.put("email", "length.test@example.com");
@@ -118,8 +116,8 @@ public class RegisterTest extends ZanataTestCase {
                 .as("Size errors are shown for string too long");
     }
 
-    @Feature(summary = "The user must enter a unique username to register",
-        tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The user must enter a unique username to register",
+            testPlanIds = 5681, testCaseIds = 5690)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernamePreExisting() throws Exception {
         RegisterPage registerPage = homePage
@@ -130,94 +128,6 @@ public class RegisterTest extends ZanataTestCase {
         assertThat(registerPage.getErrors())
                 .contains(RegisterPage.USERNAME_UNAVAILABLE_ERROR)
                 .as("Username not available message is shown");
-    }
-
-    @Feature(summary = "The user must enter all necessary fields to register",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Ignore("RHBZ-1024150")
-    public void requiredFields() throws Exception {
-        fields.put("name", "");
-        fields.put("username", "");
-        fields.put("email", "");
-        fields.put("password", "");
-        RegisterPage registerPage =
-                homePage.goToRegistration().setFields(fields);
-        registerPage.defocus();
-
-        assertThat(registerPage.getErrors(4)).containsExactly(
-                RegisterPage.REQUIRED_FIELD_ERROR,
-                RegisterPage.USERNAME_VALIDATION_ERROR,
-                RegisterPage.REQUIRED_FIELD_ERROR,
-                RegisterPage.REQUIRED_FIELD_ERROR)
-                .as("Value is required shows for all fields");
-    }
-
-    @Feature(summary = "The user can access the login page from the register " +
-            "page, and vice versa",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Test
-    public void signUpToLoginAndBack() {
-        RegisterPage registerPage = new BasicWorkFlow()
-                .goToHome()
-                .clickSignInLink()
-                .goToRegister();
-
-        assertThat(registerPage.getPageTitle())
-                .isEqualTo("Sign up with Zanata")
-                .as("The user is sent to the register page");
-
-        SignInPage signInPage = registerPage.goToSignIn();
-
-        assertThat(signInPage.getPageTitle())
-                .isEqualTo("Log in with your username")
-                .as("The user is sent to the log in page");
-    }
-
-    @Feature(summary = "The user can toggle the entered password visible and " +
-            "masked",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
-    @Test
-    public void togglePasswordVisible() {
-        RegisterPage registerPage = new BasicWorkFlow()
-                .goToHome()
-                .goToRegistration()
-                .enterPassword("mypassword");
-
-        assertThat(registerPage.getPasswordFieldType())
-                .isEqualTo("password")
-                .as("The password field starts as masked");
-
-        registerPage = registerPage.clickPasswordShowToggle();
-
-        assertThat(registerPage.getPasswordFieldType())
-                .isEqualTo("text")
-                .as("The password field is now not masked");
-
-        registerPage = registerPage.clickPasswordShowToggle();
-
-        assertThat(registerPage.getPasswordFieldType())
-                .isEqualTo("password")
-                .as("The password field is again masked");
-        assertThat(registerPage.getPassword())
-                .isEqualTo("mypassword")
-                .as("The password field did not lose the entered text");
-    }
-
-    @Feature(summary = "The user must enter at least one alphanumeric " +
-            "character in their username",
-            bugzilla = 981498)
-    @Test
-    public void bug981498_underscoreRules() {
-        fields.put("email", "bug981498test@example.com");
-        fields.put("username", "______");
-        RegisterPage registerPage =
-                homePage.goToRegistration().setFields(fields);
-        registerPage.defocus();
-
-        assertThat(registerPage.getErrors())
-                .contains(RegisterPage.USERNAME_VALIDATION_ERROR)
-                .as("A username of all underscores is not valid");
     }
 
     /*

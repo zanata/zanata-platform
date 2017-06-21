@@ -22,7 +22,7 @@ package org.zanata.feature.account;
 
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
@@ -38,9 +38,8 @@ public class UsernameValidationTest extends ZanataTestCase {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(UsernameValidationTest.class);
 
-    @Feature(
-            summary = "The user must enter acceptable username charactersto register",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(
+            summary = "The user must enter acceptable username characters to register")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void usernameCharacterValidation() throws Exception {
         RegisterPage registerPage = new BasicWorkFlow().goToHome()

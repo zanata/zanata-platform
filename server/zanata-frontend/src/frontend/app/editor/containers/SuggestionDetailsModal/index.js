@@ -2,7 +2,8 @@
  * Modal to display the details for a group of suggestion matches.
  */
 
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Modal } from '../../../components'
 import { PanelGroup } from 'react-bootstrap'
 import LocalProjectDetailPanel from './LocalProjectDetailPanel'

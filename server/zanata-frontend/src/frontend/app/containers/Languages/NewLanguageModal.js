@@ -1,4 +1,5 @@
-import React, {PropTypes, Component} from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { isEmpty, debounce } from 'lodash'
 import { Modal, Icon } from '../../components'
@@ -54,7 +55,10 @@ class NewLanguageModal extends Component {
     this.setState({
       details: {
         enabledByDefault: true,
-        enabled: true
+        enabled: true,
+        displayName: '',
+        nativeName: '',
+        pluralForms: ''
       },
       validFields: true,
       suggestions: [],

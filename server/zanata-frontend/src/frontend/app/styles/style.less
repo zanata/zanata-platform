@@ -181,6 +181,7 @@ body.templatestyle {
 
 .react-autosuggest__input {
   border: 0;
+  width: 100%;
 }
 
 .react-autosuggest__input:focus {
@@ -217,7 +218,7 @@ body.templatestyle {
   padding: 0.4em 0.5rem;
 }
 
-.react-autosuggest__suggestion--focused {
+.react-autosuggest__suggestion--highlighted {
   background-color: @color-neutral;
 }
 
@@ -1645,6 +1646,12 @@ td span.txt--understated {
 .modal-muted {
   color: @color-muted;
   padding-top: @spacing-rq;
+}
+
+.panel-body .tmx-icon {
+  vertical-align: middle;
+  padding-right: @spacing-re;
+  color: @color-muted;
 }
 
 .text-primary {
@@ -4725,6 +4732,7 @@ h2.recent-contrib {
 
 #activity-table td button.btn-warning {
   background-color: rgba(233, 221, 0, 0.65);
+  color: @color-dark;
 }
 
 #activity-table td button.btn-info {
@@ -4771,7 +4779,7 @@ button.success.btn.btn-default.active {
 button.unsure.btn.btn-default:focus, button.unsure.btn.btn-default:hover,
 button.unsure.btn.btn-default.active {
   background-color: rgba(233, 221, 0, 1);
-  color: #fff;
+  color: @color-dark;
   text-decoration: none;
   outline: 0;
   box-shadow: none;
@@ -4783,6 +4791,7 @@ button.unsure.btn.btn-default.active {
 
 #activity-table td button.active.btn.btn-warning {
   background-color: rgba(233, 221, 0, 1);
+  color: @color-dark;
 }
 
 #activity-table td button.active.btn.btn-info {
@@ -4801,6 +4810,7 @@ button.unsure.btn.btn-default.active {
 
 #activity-table td button.btn-warning:focus {
   background-color: rgba(233, 221, 0, 0.95);
+  color: @color-dark;
 }
 
 #activity-table td button.btn-primary:focus {

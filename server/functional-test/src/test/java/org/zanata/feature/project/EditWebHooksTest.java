@@ -24,7 +24,7 @@ import com.google.common.collect.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.projectsettings.ProjectWebHooksTab;
@@ -49,8 +49,7 @@ public class EditWebHooksTest extends ZanataTestCase {
                 .as("Admin is logged in");
     }
 
-    @Feature(summary = "The maintainer can add WebHooks for a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The maintainer can add WebHooks for a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addWebHook() throws Exception {
         String testUrl = "http://www.example.com";
@@ -68,8 +67,7 @@ public class EditWebHooksTest extends ZanataTestCase {
                 .as("The web hook was added");
     }
 
-    @Feature(summary = "The maintainer can add WebHooks for a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The maintainer can add WebHooks for a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeWebHook() throws Exception {
         String testUrl = "http://www.example.com";

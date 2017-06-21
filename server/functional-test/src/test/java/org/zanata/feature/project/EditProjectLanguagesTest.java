@@ -25,7 +25,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.projectsettings.ProjectLanguagesTab;
@@ -50,8 +50,7 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .as("Admin is logged in");
     }
 
-    @Feature(summary = "The administrator can edit the project languages",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The administrator can edit the project languages")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editProjectLanguages() throws Exception {
         ProjectLanguagesTab projectLanguagesTab = new ProjectWorkFlow()
@@ -106,9 +105,8 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .expectEnabledLocaleListCount(1);
     }
 
-    @Feature(summary = "The administrator can set an alias for a project " +
-            "language",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The administrator can set an alias for a project " +
+            "language")
     @Test
     public void setLanguageAliasTest() {
         ProjectLanguagesTab projectLanguagesTab = new ProjectWorkFlow()
@@ -127,9 +125,8 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .as("The alias was set");
     }
 
-    @Feature(summary = "The administrator can remove an alias for a project " +
-            "language",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The administrator can remove an alias for a project " +
+            "language")
     @Test
     public void removeLanguageAliasTest() {
         ProjectLanguagesTab projectLanguagesTab = new ProjectWorkFlow()
@@ -153,9 +150,8 @@ public class EditProjectLanguagesTest extends ZanataTestCase {
                 .isEmpty();
     }
 
-    @Feature(summary = "The administrator can edit an alias for a project " +
-            "language",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The administrator can edit an alias for a project " +
+            "language")
     @Test
     public void editLanguageAliasTest() {
         String locale = "pl";

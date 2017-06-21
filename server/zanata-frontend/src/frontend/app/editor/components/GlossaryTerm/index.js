@@ -2,7 +2,8 @@
  * Display for a single glossary term.
  */
 
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap'
 import IconButton from '../IconButton'
 import { isEmpty } from 'lodash'
@@ -30,12 +31,12 @@ class GlossaryTerm extends React.Component {
     const { index, term } = this.props
     const sourceTip = (
       <Tooltip id={'glossarytermsource-' + index}>
-        term.source
+        {term.source}
       </Tooltip>
     )
     const targetTip = (
       <Tooltip id={'glossarytermtarget-' + index}>
-        term.source
+        {term.target}
       </Tooltip>
     )
 
@@ -43,7 +44,7 @@ class GlossaryTerm extends React.Component {
       <tr key={index}>
         <td data-filetype="text" className="gloss-text long-string">
           <OverlayTrigger placement="top" overlay={sourceTip}>
-            <Button bStyle="link">
+            <Button bsStyle="link">
               <span>
                 <span className="hide-mdplus u-textMeta">
                   Source
@@ -55,7 +56,7 @@ class GlossaryTerm extends React.Component {
         </td>
         <td data-filetype="text" className="gloss-text long-string">
           <OverlayTrigger placement="top" overlay={targetTip}>
-            <Button bStyle="link">
+            <Button bsStyle="link">
               <span>
                 <span className="hide-mdplus u-textMeta">
                   Target
