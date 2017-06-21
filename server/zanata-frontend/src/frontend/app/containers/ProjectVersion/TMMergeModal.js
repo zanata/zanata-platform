@@ -322,9 +322,12 @@ class TMMergeModal extends Component {
                   </div>
                   <ul>
                     <li>
+                      <Icon name='project' className='s0 tmx-icon' />
                       {projectSlug}
                     </li>
                     <li>
+                      <Icon name='version' title='version'
+                        className='s0 tmx-icon' />
                       {versionSlug}
                     </li>
                   </ul>
