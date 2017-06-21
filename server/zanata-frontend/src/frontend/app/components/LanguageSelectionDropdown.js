@@ -2,8 +2,7 @@ import React, {PropTypes, Component} from 'react'
 import {MenuItem, DropdownButton} from 'react-bootstrap'
 
 /**
- * Sub-component of language selection drop down
- * Handles behavior of language menu items
+ * Root component for Language Selection Dropdown
  */
 class LanguageSelectionDropdown extends Component {
   static propTypes = {

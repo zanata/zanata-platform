@@ -3,12 +3,14 @@ import {connect} from 'react-redux'
 import { differenceWith, isEqual } from 'lodash'
 import {
   Button, Panel, Row, Checkbox, InputGroup, Col, Label,
-  FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem
+  FormControl, ListGroup, ListGroupItem
 }
   from 'react-bootstrap'
 import {Icon, Modal} from '../../components'
 import ProjectVersionPanels from '../../components/ProjectVersionPanels'
 import DraggableVersionPanels from '../../components/DraggableVersionPanels'
+import TMMatchPercentageDropdown
+  from '../../components/TMMatchPercentageDropdown'
 import LanguageSelectionDropdown
   from '../../components/LanguageSelectionDropdown'
 import {
@@ -171,15 +173,6 @@ class TMMergeModal extends Component {
       // console.info('clicked')
     }
     const showHide = showTMMergeModal ? {display: 'block'} : {display: 'none'}
-    const percentageItems = [100, 90, 80].map(percentage => {
-      return (
-        <TMMatchPercentageMenu onClick={this.onPercentSelection}
-          percentage={percentage}
-          matchPercentage={this.state.matchPercentage}
-          key={percentage}
-        />
-      )
-    })
     // Different DocID Checkbox handling
     const onDocIdCheckboxChange = () => {
       this.setState({
@@ -241,12 +234,8 @@ class TMMergeModal extends Component {
                   className='vmerge-title text-info'>TM match threshold</span>
               </Col>
               <Col xs={5}>
-                <DropdownButton bsStyle='default' bsSize='small'
-                  title={this.state.matchPercentage + '%'}
-                  id='dropdown-basic'
-                  className='vmerge-ddown'>
-                  {percentageItems}
-                </DropdownButton>
+                <TMMatchPercentageDropdown onClick={this.onPercentSelection}
+                  matchPercentage={this.state.matchPercentage} />
               </Col>
             </Col>
             <Col xs={12}>
@@ -386,34 +375,6 @@ class TMMergeModal extends Component {
           </span>
         </Modal.Footer>
       </Modal>
-    )
-  }
-}
-
-/**
- * Sub-component of TM merge modal
- * Handles behavior of TM match percentage selection drop down
- */
-class TMMatchPercentageMenu extends Component {
-  static propTypes = {
-    percentage: PropTypes.number.isRequired,
-    onClick: PropTypes.func.isRequired,
-    matchPercentage: PropTypes.number.isRequired
-  }
-  onClick = () => {
-    this.props.onClick(this.props.percentage)
-  }
-  render () {
-    const {
-      percentage,
-      matchPercentage
-    } = this.props
-    return (
-      <MenuItem onClick={this.onClick}
-        eventKey={percentage} key={percentage}
-        active={percentage === matchPercentage}>
-        {percentage}%
-      </MenuItem>
     )
   }
 }
