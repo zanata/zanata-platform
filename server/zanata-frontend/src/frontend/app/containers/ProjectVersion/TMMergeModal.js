@@ -1,5 +1,6 @@
 import React, {PropTypes, Component} from 'react'
 import {connect} from 'react-redux'
+import { differenceWith, isEqual } from 'lodash'
 import {
   Button, Panel, Row, Checkbox, InputGroup, Col, Label,
   FormControl, DropdownButton, MenuItem, ListGroup, ListGroupItem
@@ -8,7 +9,6 @@ import {
 import {Icon, Modal} from '../../components'
 import ProjectVersionPanels from '../../components/ProjectVersionPanels'
 import DraggableVersionPanels from '../../components/DraggableVersionPanels'
-
 import {
   loadVersionLocales,
   loadProjectPage,
@@ -145,14 +145,13 @@ class TMMergeModal extends Component {
     })
     const versionsToPop = [...versionsToPush]
     let allVersionsChecked = true
-    project.versions.map((version, index) => {
+    project.versions.map((version) => {
       if (!this.flattenedVersionArray().includes(version)) {
         allVersionsChecked = false
-      } else {
-        versionsToPush = [...versionsToPush.slice(0, index),
-          ...versionsToPush.slice(index + 1)]
       }
     })
+    versionsToPush = (differenceWith(versionsToPop,
+            this.state.fromProjectVersions, isEqual))
     allVersionsChecked
         ? this.popAllProjectVersions(versionsToPop)
         : this.pushAllProjectVersions(versionsToPush)
