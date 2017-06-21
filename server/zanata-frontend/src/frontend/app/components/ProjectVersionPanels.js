@@ -10,35 +10,49 @@ const tooltipReadOnly = (
   </Tooltip>
 )
 
-const ProjectVersionPanels = (props) => {
-  if (props.projectVersions.length <= 0) {
-    return <div></div>
+/**
+ * Root component for project version panels
+ */
+class ProjectVersionPanels extends Component {
+  static propTypes = {
+    projectVersions: PropTypes.arrayOf(PropTypes.object),
+    fromProjectVersion: PropTypes.arrayOf(PropTypes.object),
+    onVersionCheckboxChange: PropTypes.func.isRequired,
+    onAllVersionCheckboxChange: PropTypes.func.isRequired
   }
-  let panels = props.projectVersions.map((project, index) => {
-    return (
-      <Panel header={<h3><SelectAllVersionsCheckbox
-        project={project} onClick={props.onAllVersionCheckboxChange}
-        fromProjectVersion={props.fromProjectVersion} />
-      </h3>} key={index} eventKey={index}>
-        <ListGroup fill>
-          {project.versions.map((version, index) => {
-            return (
-              <ListGroupItem className='v' key={index}>
-                <VersionMenuCheckbox version={version}
-                  onClick={props.onVersionCheckboxChange}
-                  fromProjectVersion={props.fromProjectVersion}
-                  projectSlug={project.id} />
-              </ListGroupItem>
-                )
-          })}
-        </ListGroup>
-      </Panel>
+  render () {
+    if (this.props.projectVersions.length <= 0) {
+      return <div></div>
+    }
+    let panels = this.props.projectVersions.map((project, index) => {
+      return (
+        <Panel header={<h3><SelectAllVersionsCheckbox
+          project={project} onClick={this.props.onAllVersionCheckboxChange}
+          fromProjectVersion={this.props.fromProjectVersion} />
+        </h3>} key={index} eventKey={index}>
+          <ListGroup fill>
+            {project.versions.map((version, index) => {
+              return (
+                <ListGroupItem className='v' key={index}>
+                  <VersionMenuCheckbox version={version}
+                    onClick={this.props.onVersionCheckboxChange}
+                    fromProjectVersion={this.props.fromProjectVersion}
+                    projectSlug={project.id} />
+                </ListGroupItem>
+              )
+            })}
+          </ListGroup>
+        </Panel>
       )
+    })
+    return <PanelGroup defaultActiveKey='1' accordion>{panels}</PanelGroup>
   }
-  )
-  return <PanelGroup defaultActiveKey='1' accordion>{panels}</PanelGroup>
 }
 
+/**
+ * Sub Component of project version panels
+ * Handles behavior of select all versions checkbox
+ */
 class SelectAllVersionsCheckbox extends Component {
   static propTypes = {
     project: PropTypes.object,
@@ -82,6 +96,10 @@ class SelectAllVersionsCheckbox extends Component {
   }
 }
 
+/**
+ * Sub Component of project version panels
+ * Handles behavior of select version checkbox
+ */
 class VersionMenuCheckbox extends Component {
   static propTypes = {
     version: PropTypes.object.isRequired,
@@ -112,13 +130,6 @@ class VersionMenuCheckbox extends Component {
       </Checkbox>
     )
   }
-}
-
-ProjectVersionPanels.propTypes = {
-  projectVersions: PropTypes.arrayOf(PropTypes.object),
-  fromProjectVersion: PropTypes.arrayOf(PropTypes.object),
-  onVersionCheckboxChange: PropTypes.func.isRequired,
-  onAllVersionCheckboxChange: PropTypes.func.isRequired
 }
 
 export default ProjectVersionPanels

@@ -9,6 +9,8 @@ import {
 import {Icon, Modal} from '../../components'
 import ProjectVersionPanels from '../../components/ProjectVersionPanels'
 import DraggableVersionPanels from '../../components/DraggableVersionPanels'
+import LanguageSelectionDropdown
+  from '../../components/LanguageSelectionDropdown'
 import {
   loadVersionLocales,
   loadProjectPage,
@@ -92,7 +94,7 @@ class TMMergeModal extends Component {
     const {
       fromProjectVersions
     } = this.state
-    // TODO Change state flow to update in correct order
+    // FIXME Change state flow to update in correct order
     setTimeout(() => {
       this.setState({
         ...this.state,
@@ -116,7 +118,7 @@ class TMMergeModal extends Component {
     const {
       fromProjectVersions
     } = this.state
-    // TODO Change state flow to update in correct order
+    // FIXME Change state flow to update in correct order
     setTimeout(() => {
       this.setState({
         ...this.state,
@@ -162,7 +164,6 @@ class TMMergeModal extends Component {
       openTMMergeModal,
       projectSlug,
       versionSlug,
-      locales,
       projectVersions
     } = this.props
     const action = (message) => {
@@ -172,7 +173,7 @@ class TMMergeModal extends Component {
     const showHide = showTMMergeModal ? {display: 'block'} : {display: 'none'}
     const percentageItems = [100, 90, 80].map(percentage => {
       return (
-        <IndexedMenuItem onClick={this.onPercentSelection}
+        <TMMatchPercentageMenu onClick={this.onPercentSelection}
           percentage={percentage}
           matchPercentage={this.state.matchPercentage}
           key={percentage}
@@ -221,19 +222,6 @@ class TMMergeModal extends Component {
         : (<Label bsStyle='danger'>
           Don't Copy
         </Label>)
-    // Language Dropdown handling
-    const languageMenu = locales
-        .map((locale, index) => {
-          return (
-            <LanguageMenuItem
-              onClick={this.onLanguageSelection}
-              language={locale.displayName}
-              selectedLanguage={this.state.selectedLanguage}
-              eventKey={index}
-              key={index}
-              />
-          )
-        })
     return (
       <Modal style={showHide}
         show
@@ -305,20 +293,19 @@ class TMMergeModal extends Component {
                 <span className='vmerge-title text-info'>Language</span>
               </Col>
               <Col xs={6}>
-                <DropdownButton bsStyle='default' bsSize='small'
-                  title={this.state.selectedLanguage}
-                  id='dropdown-basic'
-                  className='vmerge-ddown'>
-                  {languageMenu}
-                </DropdownButton>
+                <LanguageSelectionDropdown
+                  onClick={this.onLanguageSelection}
+                  selectedLanguage={this.state.selectedLanguage}
+                  locales={this.props.locales}
+                />
               </Col>
             </Col>
             <Col xs={12} className='vmerge-boxes'>
               <Panel>
                 <div className='vmerge-target'>
                   <div className='vmerge-title'>
-                    <span className='text-info'>To </span>
-                    <span className='text-muted'>  Target</span>
+                    <span className='text-info'>To</span>
+                    <span className='text-muted'>Target</span>
                   </div>
                   <ul>
                     <li>
@@ -403,7 +390,11 @@ class TMMergeModal extends Component {
   }
 }
 
-class IndexedMenuItem extends Component {
+/**
+ * Sub-component of TM merge modal
+ * Handles behavior of TM match percentage selection drop down
+ */
+class TMMatchPercentageMenu extends Component {
   static propTypes = {
     percentage: PropTypes.number.isRequired,
     onClick: PropTypes.func.isRequired,
@@ -413,33 +404,15 @@ class IndexedMenuItem extends Component {
     this.props.onClick(this.props.percentage)
   }
   render () {
-    const i = this.props.percentage
+    const {
+      percentage,
+      matchPercentage
+    } = this.props
     return (
       <MenuItem onClick={this.onClick}
-        eventKey={i} key={i} active={i === this.props.matchPercentage}>
-        {i}%
-      </MenuItem>
-    )
-  }
-}
-
-class LanguageMenuItem extends Component {
-  static propTypes = {
-    language: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
-    eventKey: PropTypes.number.isRequired,
-    selectedLanguage: PropTypes.string.isRequired
-  }
-  onClick = () => {
-    this.props.onClick(this.props.language)
-  }
-  render () {
-    const myLanguage = this.props.language
-    return (
-      <MenuItem onClick={this.onClick}
-        eventKey={this.props.eventKey} key={this.props.eventKey}
-        active={myLanguage === this.props.selectedLanguage}>
-          {myLanguage}
+        eventKey={percentage} key={percentage}
+        active={percentage === matchPercentage}>
+        {percentage}%
       </MenuItem>
     )
   }
