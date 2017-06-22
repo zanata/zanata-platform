@@ -151,7 +151,7 @@ public class TransMemoryMergeManager implements Serializable {
 
         TMMergeForDocTaskKey(DocumentId documentId, LocaleId localeId) {
             // here we use numeric id to form the string id because it doesn't require URL encoding
-            super(joinFields(KEY_NAME, documentId.getId().toString(), localeId.getId()));
+            super(joinFields(KEY_NAME, documentId.getId(), localeId));
             this.documentId = documentId;
             this.localeId = localeId;
         }
