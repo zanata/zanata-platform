@@ -49,10 +49,6 @@ public interface TransMemoryMergeService extends Serializable {
     Future<List<TranslationService.TranslationResult>> executeMergeAsync(TransMemoryMergeRequest request,
             TransMemoryMergeTaskHandle asyncTaskHandle);
 
-    void translateInBatch(HasTMMergeCriteria mergeCriteria,
-            List<HTextFlow> textFlows,
-            HLocale targetLocale, List<Long> fromProjectVersionIds);
-
     /**
      * TM merge for a project version
      * @param versionId
