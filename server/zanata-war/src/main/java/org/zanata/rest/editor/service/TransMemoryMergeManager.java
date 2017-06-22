@@ -20,6 +20,8 @@
  */
 package org.zanata.rest.editor.service;
 
+import static org.zanata.async.AsyncTaskKey.joinFields;
+
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -35,17 +37,18 @@ import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
+import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.VersionTMMerge;
+import org.zanata.rest.service.AsyncProcessService;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
+
 import com.google.common.base.MoreObjects;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import static org.zanata.async.AsyncTaskKey.joinFields;
 
 /**
  * @author Patrick Huang
@@ -123,21 +126,24 @@ public class TransMemoryMergeManager implements Serializable {
         return false;
     }
 
-    public boolean start(Long versionId, VersionTMMerge mergeRequest) {
+    public AsyncTaskHandle<Void> start(Long versionId, VersionTMMerge mergeRequest) {
         AsyncTaskKey key = makeKey(versionId, mergeRequest.getLocaleId());
-        AsyncTaskHandle handleByKey =
-                asyncTaskHandleManager.getHandleByKey(key);
+        MergeTranslationsTaskHandle handleByKey =
+                (MergeTranslationsTaskHandle) asyncTaskHandleManager.getHandleByKey(key);
         if (handleByKey == null || handleByKey.isCancelled()
                 || handleByKey.isDone()) {
-            MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle();
+            handleByKey = new MergeTranslationsTaskHandle(key);
 
-            handle.setTriggeredBy(identity.getAccountUsername());
-            asyncTaskHandleManager.registerTaskHandle(handle, key);
+            handleByKey.setTriggeredBy(identity.getAccountUsername());
+            asyncTaskHandleManager.registerTaskHandle(handleByKey, key);
             transMemoryMergeService.startMergeTranslations(versionId,
-                    mergeRequest, handle);
-            return true;
+                    mergeRequest, handleByKey);
+        } else {
+            log.warn(
+                    "there is already a task running for version id {} and locale {}",
+                    versionId, mergeRequest.getLocaleId());
         }
-        return false;
+        return handleByKey;
     }
 
     @SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS", justification = "super class equals method is sufficient")

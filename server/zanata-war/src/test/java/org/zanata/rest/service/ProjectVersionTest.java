@@ -25,6 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.async.AsyncTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.i18n.Messages;
 import org.zanata.jpa.FullText;
@@ -207,27 +208,6 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
 
     @Test
     @InRequestScope
-    public void versionTMMergeThrowsExceptionIfAnotherMergeProcessIsRunning() {
-        String projectSlug = "sample-project";
-        String versionSlug = "1.0";
-
-        VersionTMMerge mergeRequest = new VersionTMMerge(LocaleId.FR, 90,
-                MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
-                Collections.emptyList());
-
-        // when there is already a merge process running
-        when(localeService.getByLocaleId(LocaleId.FR)).thenReturn(new HLocale(LocaleId.FR));
-        when(transMemoryMergeManager.start(1L, mergeRequest)).thenReturn(false);
-
-        assertThatThrownBy(() -> {
-            service.prefillWithTM(projectSlug, versionSlug, mergeRequest);
-        })
-                .isInstanceOf(UnsupportedOperationException.class)
-                .hasMessage("There is already version merge operation in progress");
-    }
-
-    @Test
-    @InRequestScope
     public void versionTMMergeReturnsAcceptedIfEverythingIsGood() {
         String projectSlug = "sample-project";
         String versionSlug = "2.0";
@@ -236,7 +216,7 @@ public class ProjectVersionTest extends ZanataDbunitJpaTest {
                 MergeRule.FUZZY, MergeRule.FUZZY, MergeRule.FUZZY,
                 Collections.emptyList());
 
-        when(transMemoryMergeManager.start(2L, mergeRequest)).thenReturn(true);
+        when(transMemoryMergeManager.start(2L, mergeRequest)).thenReturn(new AsyncTaskHandle<>());
         assertThat(service.prefillWithTM(projectSlug, versionSlug, mergeRequest)
                 .getStatus()).isEqualTo(NOT_FOUND.getStatusCode());
     }

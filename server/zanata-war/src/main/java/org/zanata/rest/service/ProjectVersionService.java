@@ -16,6 +16,7 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericEntity;
@@ -26,6 +27,8 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
+import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -43,6 +46,7 @@ import org.zanata.model.HTextFlow;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
 import org.zanata.rest.dto.LocaleDetails;
+import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.ProjectIteration;
 import org.zanata.rest.dto.TransUnitStatus;
 import org.zanata.rest.dto.User;
@@ -345,9 +349,7 @@ public class ProjectVersionService implements ProjectVersionResource {
      * @return The following response status codes will be returned from this
      *         operation:<br>
      *         ACCEPTED(202) - If the process is successfully triggered.<br>
-     *         UNACCEPTED(400) - If the incoming payload is invalid or there is
-     *         already a TM merge process running for this version and target
-     *         language.<br>
+     *         UNACCEPTED(400) - If the incoming payload is invalid.<br>
      *         NOT FOUND(404) - If no project or version was found for the given
      *         project slug and version slug.<br>
      *         FORBIDDEN(403) - If the user was not allowed to create/modify the
@@ -400,12 +402,13 @@ public class ProjectVersionService implements ProjectVersionResource {
         }
 
         identity.checkPermission("modify-translation", hProject, hLocale);
-        boolean started = transMemoryMergeManager
+        AsyncTaskHandle<Void> handle = transMemoryMergeManager
                 .start(version.getId(), mergeRequest);
-        if (!started) {
-            throw new UnsupportedOperationException("There is already version merge operation in progress");
-        }
-        return Response.accepted().build();
+
+        ProcessStatus processStatus = AsyncProcessService
+                .handleToProcessStatus(handle,
+                        uri.getBaseUri() + "process/key/" + handle.getKeyId());
+        return Response.accepted(processStatus).build();
     }
 
     @VisibleForTesting

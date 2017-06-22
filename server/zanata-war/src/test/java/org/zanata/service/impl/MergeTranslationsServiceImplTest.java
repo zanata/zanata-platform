@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataDbunitJpaTest;
+import org.zanata.action.MergeTranslationsManager;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.cache.InfinispanTestCacheContainer;
 import org.zanata.cdi.TestTransaction;
@@ -79,6 +80,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.zanata.action.MergeTranslationsManager.MergeVersionKey.getKey;
 
 @RunWith(CdiUnitRunner.class)
 @SupportDeltaspikeCore
@@ -180,7 +182,8 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         String sourceVersionSlug = "1.0";
         String targetVersionSlug = "non-exist-version";
 
-        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle();
+        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle(
+                getKey(projectSlug, targetVersionSlug));
         Future<Void> future = service.startMergeTranslations(projectSlug,
                 sourceVersionSlug, projectSlug, targetVersionSlug, true,
                 handle);
@@ -197,7 +200,8 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         String sourceVersionSlug = "1.0";
         String targetVersionSlug = "3.0";
 
-        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle();
+        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle(
+                getKey(projectSlug, targetVersionSlug));
         Future<Void> future = service.startMergeTranslations(projectSlug,
                 sourceVersionSlug, projectSlug, targetVersionSlug, true, null);
         verifyZeroInteractions(authenticatedAccount);

@@ -21,6 +21,7 @@
 package org.zanata.async.handle;
 
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.UserTriggeredTaskHandle;
 
 /**
@@ -31,8 +32,14 @@ import org.zanata.async.UserTriggeredTaskHandle;
 public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> implements
         UserTriggeredTaskHandle {
 
+    private static final long serialVersionUID = -8026264371441200919L;
     private long totalTranslations;
     private String triggeredBy;
+
+    public MergeTranslationsTaskHandle(
+            AsyncTaskKey key) {
+        setKeyId(key.id());
+    }
 
     public long getTotalTranslations() {
         return this.totalTranslations;
