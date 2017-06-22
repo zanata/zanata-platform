@@ -23,7 +23,7 @@ package org.zanata.feature.project;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.projectsettings.ProjectTranslationTab;
@@ -46,9 +46,8 @@ public class EditProjectValidationsTest extends ZanataTestCase {
                 .as("Admin is logged in");
     }
 
-    @Feature(summary = "The administrator can change the validation levels " +
-            "for a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The administrator can change the validation levels " +
+            "for a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void setValidationOptions() throws Exception {
 
@@ -112,9 +111,8 @@ public class EditProjectValidationsTest extends ZanataTestCase {
                 .as("The validation changes were saved");
     }
 
-    @Feature(summary = "The system will only allow one of the two Printf " +
-            "validation options to be active at one time",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The system will only allow one of the two Printf " +
+            "validation options to be active at one time")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void printfAndPositionalPrintfAreExclusive() throws Exception {
         ProjectTranslationTab projectTranslationTab = new ProjectWorkFlow()

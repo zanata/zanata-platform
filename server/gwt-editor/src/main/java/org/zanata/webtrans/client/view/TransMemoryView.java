@@ -283,8 +283,8 @@ public class TransMemoryView extends Composite implements
             panel.addStyleName(style.approved());
         } else if (object.getMatchType() == MatchType.TranslatedInternal) {
             panel.addStyleName(style.translated());
-        } else if (object.getMatchType() == MatchType.Imported) {
-            // TODO Add a style
+        //} else if (object.getMatchType() == MatchType.Imported) {
+            // TODO Add a style for imported/TMX matches
         }
 
         SafeHtml safeHtml =

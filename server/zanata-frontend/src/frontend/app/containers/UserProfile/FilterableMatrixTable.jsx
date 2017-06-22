@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import ContentStateFilter from './ContentStateFilter'
 import CalendarMonthMatrix from './CalendarMonthMatrix'
 import CalendarPeriodHeading from './CalendarPeriodHeading'
@@ -84,7 +85,7 @@ FilterableMatrixTable.propTypes = {
   selectedContentState: PropTypes.oneOf(ContentStates).isRequired,
   selectedDay: PropTypes.string,
   handleFilterChanged: PropTypes.func,
-  handleSelectedDayChanged: PropTypes.func
+  handleSelectedDayChanged: PropTypes.func.isRequired
 }
 
 export default FilterableMatrixTable

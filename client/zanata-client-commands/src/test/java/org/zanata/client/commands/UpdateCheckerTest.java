@@ -49,7 +49,7 @@ public class UpdateCheckerTest {
     @Captor
     private ArgumentCaptor<String> outputStringCaptor;
     @Captor
-    private ArgumentCaptor<Object[]> outputArgsCaptor;
+    private ArgumentCaptor<Object> outputArgsCaptor;
     private File marker;
 
     @Before
@@ -166,7 +166,7 @@ public class UpdateCheckerTest {
         List<String> allValues = outputStringCaptor.getAllValues();
         String lastMessage = allValues.get(allValues.size() - 1);
         assertThat(lastMessage, Matchers.equalTo(expectedString));
-        assertThat(outputArgsCaptor.getValue(), Matchers.<Object> equalTo("3.3.2"));
+        assertThat(outputArgsCaptor.getAllValues(), Matchers.contains("3.3.2"));
 
         Properties props = new Properties();
         props.load(new FileReader(marker));

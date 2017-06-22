@@ -102,7 +102,6 @@ abstract class AbstractPushPullMojo<O extends PushPullOptions> extends
     /**
      * The projects in the reactor.
      */
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @Parameter(defaultValue = "${reactorProjects}", readonly = true)
     private List<MavenProject> reactorProjects;
 

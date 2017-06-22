@@ -15,7 +15,7 @@ import {
   TOGGLE_SUGGESTIONS
 } from '../actions/suggestions-action-types'
 import {prepareLocales} from '../utils/Util'
-import updateObject from 'react-addons-update'
+import updateObject from 'immutability-helper'
 
 // TODO extract this to a common config
 export const DEFAULT_LOCALE = {

@@ -143,7 +143,10 @@ public enum DocumentType {
     /**
      * Create a document type enum constant with the given list of default extensions.
      */
-    DocumentType(@Nonnull String... extensions) throws IllegalArgumentException {
+    // Don't use @Nonnull in the constructor signature or you'll cause
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=388314 and
+    // https://bugs.openjdk.java.net/browse/JDK-8024694
+    DocumentType(String... extensions) throws IllegalArgumentException {
         Map<String, String> extensionsMap = new HashMap<>();
         for (String extension : extensions) {
             extensionsMap.put(extension, extension);
@@ -154,7 +157,10 @@ public enum DocumentType {
     /**
      * Create a document type enum constant with the given list of default extensions.
      */
-    DocumentType(@Nonnull Map<String, String> extensions) throws IllegalArgumentException {
+    // Don't use @Nonnull in the constructor signature or you'll cause
+    // https://bugs.eclipse.org/bugs/show_bug.cgi?id=388314 and
+    // https://bugs.openjdk.java.net/browse/JDK-8024694
+    DocumentType(Map<String, String> extensions) throws IllegalArgumentException {
         this.extensions = unmodifiableMap(extensions);
     }
 

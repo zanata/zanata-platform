@@ -1,47 +1,89 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import utilsDate from '../../utils/DateHelper'
-import { Line as LineChart } from 'react-chartjs'
+import { Line as LineChart } from 'react-chartjs-2'
 
-var defaultChartOptions = {
-  animationEasing: 'easeOutQuint',
-  bezierCurve: true,
-  bezierCurveTension: 0.4,
-  pointDot: true,
-  pointDotRadius: 4,
-  // This doesn't seem to work
-  datasetStroke: true,
-  datasetStrokeWidth: 2,
-  datasetFill: true,
+const defaultFonts = '"Source Sans Pro", "Helvetica Neue", HelveticaNeue, ' +
+  'Helvetica, Arial, sans-serif'
+
+const defaultChartOptions = {
+  animation: {
+    easing: 'easeOutQuint'
+  },
+  legend: {
+    display: false
+  },
+  elements: {
+    line: {
+      // curviness
+      tension: 0.4,
+      // thickness of line
+      borderWidth: 2
+    },
+    point: {
+      radius: 3,
+      hoverRadius: 4,
+      hitRadius: 10,
+      borderWidth: 0,
+      borderColor: '#fff'
+    }
+  },
   responsive: true,
-  showTooltips: true,
-  scaleFontFamily: '"Source Sans Pro", "Helvetica Neue", HelveticaNeue, ' +
-    'Helvetica, Arial, sans-serif',
-  scaleFontColor: 'rgb(84, 102, 122)',
-  scaleShowGridLines: true,
-  scaleShowVerticalLines: false,
-  scaleGridLineColor: 'rgba(198, 210, 219, .1)',
-  tooltipFillColor: 'rgba(255,255,255,0.8)',
-  // scaleOverride : true,
-  // scaleSteps : 10,
-  // scaleStepWidth : 100,
-  // scaleStartValue : 0,
-  tooltipFontFamily: '"Source Sans Pro", "Helvetica Neue", HelveticaNeue, ' +
-    'Helvetica, Arial, sans-serif',
-  tooltipFontSize: 14,
-  tooltipFontStyle: '400',
-  tooltipFontColor: 'rgb(132, 168, 196)',
-  tooltipTitleFontFamily: '"Source Sans Pro", "Helvetica Neue", ' +
-    'HelveticaNeue, Helvetica, Arial, sans-serif',
-  tooltipTitleFontSize: 14,
-  tooltipTitleFontStyle: '400',
-  tooltipTitleFontColor: 'rgb(84, 102, 122)',
-  tooltipYPadding: 6,
-  tooltipXPadding: 6,
-  tooltipCaretSize: 6,
-  tooltipCornerRadius: 2,
-  tooltipXOffset: 10,
-  multiTooltipTemplate: '<%= value %><%if (datasetLabel)' +
-    '{%> (<%= datasetLabel %>)<%}%>'
+  scales: {
+    xAxes: [{
+      ticks: {
+        fontColor: 'rgb(84, 102, 122)',
+        fontFamily: defaultFonts
+      },
+      gridLines: {
+        drawOnChartArea: false
+      }
+    }],
+    yAxes: [{
+      ticks: {
+        fontColor: 'rgb(84, 102, 122)',
+        fontFamily: defaultFonts,
+        // chart should always start at 0, someone can't have negative contrib.
+        min: 0,
+        suggestedMax: 10
+      },
+      gridLines: {
+        color: 'rgba(198, 210, 219, .1)',
+        drawBorder: true
+      }
+    }]
+  },
+  tooltips: {
+    mode: 'index',
+    intersect: false,
+    backgroundColor: 'rgba(255,255,255,0.92)',
+    borderColor: '#ccc',
+    borderWidth: 1,
+    yPadding: 8,
+    xPadding: 6,
+    caretSize: 6,
+    cornerRadius: 2,
+    titleFontFamily: defaultFonts,
+    titleFontSize: 14,
+    titleFontStyle: '400',
+    titleFontColor: 'rgb(84, 102, 122)',
+    titleSpacing: 0,
+    titleMarginBottom: 12,
+    bodyFontFamily: defaultFonts,
+    bodyFontSize: 14,
+    bodyFontStyle: '400',
+    bodyFontColor: 'rgb(132, 168, 196)',
+    bodySpacing: 6,
+    // http://www.chartjs.org/docs/latest/configuration/tooltip.html
+    callbacks: {
+      label: ({ datasetIndex, index }, { datasets }) => {
+        const dataset = datasets[datasetIndex]
+        const { data, label } = dataset
+        const val = data[index]
+        return ` ${val} (${label})`
+      }
+    }
+  }
 }
 
 function convertMatrixDataToChartData (matrixData) {
@@ -49,43 +91,43 @@ function convertMatrixDataToChartData (matrixData) {
     labels: [],
     datasets: [
       {
-        label: 'Total',
-        fillColor: 'rgba(84, 102, 122, .05)',
-        strokeColor: 'rgb(84, 102, 122)',
-        pointColor: 'rgb(84, 102, 122)',
-        pointStrokeColor: '#fff',
-        pointHighlightFill: '#fff',
-        pointHighlightStroke: 'rgb(84, 102, 122)',
-        data: []
-      },
-      {
-        label: 'Translated',
-        fillColor: 'rgba(36, 200, 137, .05)',
-        strokeColor: 'rgb(36, 200, 137)',
-        pointColor: 'rgb(36, 200, 137)',
-        pointStrokeColor: '#fff',
-        pointHighlightFill: '#fff',
-        pointHighlightStroke: 'rgb(36, 200, 137)',
+        label: 'Approved',
+        // fill colour under the line
+        backgroundColor: 'rgba(27, 167, 217, .05)',
+        // colour of the line
+        borderColor: 'rgb(27, 167, 217)',
+        pointBackgroundColor: 'rgb(27, 167, 217)',
+        pointHighlightStroke: 'rgb(27, 167, 217)',
         data: []
       },
       {
         label: 'Needs Work',
-        fillColor: 'rgba(235, 236, 21, .05)',
-        strokeColor: 'rgb(235, 236, 21)',
-        pointColor: 'rgb(235, 236, 21)',
-        pointStrokeColor: '#fff',
-        pointHighlightFill: '#fff',
+        // fill colour under the line
+        backgroundColor: 'rgba(235, 236, 21, .05)',
+        // colour of the line
+        borderColor: 'rgb(235, 236, 21)',
+        pointBackgroundColor: 'rgb(235, 236, 21)',
         pointHighlightStroke: 'rgb(235, 236, 21)',
         data: []
       },
       {
-        label: 'Approved',
-        fillColor: 'rgba(27, 167, 217, .05)',
-        strokeColor: 'rgb(27, 167, 217)',
-        pointColor: 'rgb(27, 167, 217)',
-        pointStrokeColor: '#fff',
-        pointHighlightFill: '#fff',
-        pointHighlightStroke: 'rgb(27, 167, 217)',
+        label: 'Translated',
+        // fill colour under the line
+        backgroundColor: 'rgba(36, 200, 137, .05)',
+        // colour of the line
+        borderColor: 'rgb(36, 200, 137)',
+        pointBackgroundColor: 'rgb(36, 200, 137)',
+        pointHighlightStroke: 'rgb(36, 200, 137)',
+        data: []
+      },
+      {
+        label: 'Total',
+        // fill colour under the line
+        backgroundColor: 'rgba(84, 102, 122, .05)',
+        // colour of the line
+        borderColor: 'rgb(84, 102, 122)',
+        pointBackgroundColor: 'rgb(84, 102, 122)',
+        pointHighlightStroke: 'rgb(84, 102, 122)',
         data: []
       }
     ]
@@ -99,29 +141,30 @@ function convertMatrixDataToChartData (matrixData) {
     chartData.labels.push(utilsDate.dayAsLabel(date, numOfDays))
 
     if (!intoTheFuture) {
-      chartData['datasets'][0]['data'].push(value['totalActivity'])
-      chartData['datasets'][1]['data'].push(value['totalTranslated'])
-      chartData['datasets'][2]['data'].push(value['totalNeedsWork'])
-      chartData['datasets'][3]['data'].push(value['totalApproved'])
+      chartData['datasets'][0]['data'].push(value['totalApproved'])
+      chartData['datasets'][1]['data'].push(value['totalNeedsWork'])
+      chartData['datasets'][2]['data'].push(value['totalTranslated'])
+      chartData['datasets'][3]['data'].push(value['totalActivity'])
     }
   })
+
   return chartData
 }
 
 class ContributionChart extends React.Component {
   static propTypes = {
-    dateRange: React.PropTypes.object.isRequired,
-    wordCountForEachDay: React.PropTypes.arrayOf(
-      React.PropTypes.shape(
+    dateRange: PropTypes.object.isRequired,
+    wordCountForEachDay: PropTypes.arrayOf(
+      PropTypes.shape(
         {
-          date: React.PropTypes.string.isRequired,
-          totalActivity: React.PropTypes.number.isRequired,
-          totalApproved: React.PropTypes.number.isRequired,
-          totalTranslated: React.PropTypes.number.isRequired,
-          totalNeedsWork: React.PropTypes.number.isRequired
+          date: PropTypes.string.isRequired,
+          totalActivity: PropTypes.number.isRequired,
+          totalApproved: PropTypes.number.isRequired,
+          totalTranslated: PropTypes.number.isRequired,
+          totalNeedsWork: PropTypes.number.isRequired
         })
     ).isRequired,
-    chartOptions: React.PropTypes.object
+    chartOptions: PropTypes.object
   }
 
   static defaultProps = {
@@ -144,8 +187,8 @@ class ContributionChart extends React.Component {
       <LineChart
         data={chartData}
         options={chartOptions}
-        width='800'
-        height='250' />
+        width={800}
+        height={250} />
     )
   }
 }

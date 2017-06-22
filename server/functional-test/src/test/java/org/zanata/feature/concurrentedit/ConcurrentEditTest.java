@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.common.LocaleId;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.webtrans.EditorPage;
@@ -52,9 +52,7 @@ public class ConcurrentEditTest extends ZanataTestCase {
         restCaller = new ZanataRestCaller();
     }
 
-    @Feature(
-            summary = "The system will propagate translations done by upload and copyTrans to editor",
-            bugzilla = 1067253)
+    @Trace(summary = "The system will propagate translations done by upload and copyTrans to editor")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorReceivesRestServiceResults() {
         // create project and push source
@@ -87,9 +85,8 @@ public class ConcurrentEditTest extends ZanataTestCase {
                 "hello world translated")).isTrue();
     }
 
-    @Feature(
-            summary = "The system will show concurrently changed translations to the web editor user",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(
+            summary = "The system will show concurrently changed translations to the web editor user")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void editorReceivesCopyTransResults() throws Exception {
         // create project and populate master version

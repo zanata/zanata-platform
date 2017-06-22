@@ -3,7 +3,8 @@ import ControlsHeader from '../ControlsHeader'
 import NavHeader from '../NavHeader'
 import ProgressBar from '../../components/ProgressBar'
 import { connect } from 'react-redux'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import ZanataLogoLoader from '../ZanataLogoLoader'
 
 /**
@@ -29,8 +30,7 @@ class EditorHeader extends React.Component {
       <div id="editor-header">
         <ZanataLogoLoader />
         <header role="banner"
-          className={className}
-          focus-on="editor-header">
+          className={className}>
           <NavHeader />
           <ControlsHeader />
           <ProgressBar

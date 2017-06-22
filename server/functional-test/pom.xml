@@ -431,6 +431,10 @@
       <artifactId>validation-api</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -810,11 +814,12 @@
               <properties>
                 <property>
                   <name>listener</name>
-                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.TestLogger</value>
+                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.TestLogger,org.zanata.util.TestTracing</value>
                 </property>
               </properties>
               <systemPropertyVariables>
                 <maven.home>${maven.home}</maven.home>
+                <traceLocation>${project.build.directory}/test-classes/traceability</traceLocation>
               </systemPropertyVariables>
             </configuration>
           </plugin>

@@ -43,7 +43,7 @@ export const sortOption = [
 ]
 
 const getLocalesList = (state) => {
-  const query = state.routing.location.query
+  const query = state.routing.locationBeforeTransitions.query
   let queries = []
   if (query.search) {
     queries.push('filter=' + encodeURIComponent(query.search))
@@ -217,17 +217,19 @@ const createNewLanguage = (details, dispatch) => {
 export const initialLoad = () => {
   return (dispatch, getState) => {
     // validate page number from query
-    const page = parseInt(getState().routing.location.query.page)
+    const page = parseInt(
+      getState().routing.locationBeforeTransitions.query.page)
     if (page && page <= 1) {
-      replaceRouteQuery(getState().routing.location, {
+      replaceRouteQuery(getState().routing.locationBeforeTransitions, {
         page: 1
       })
     }
 
     // validate page size from query
-    const pageSize = parseInt(getState().routing.location.query.size)
+    const pageSize = parseInt(
+      getState().routing.locationBeforeTransitions.query.size)
     if (pageSize && !includes(pageSizeOption, pageSize)) {
-      replaceRouteQuery(getState().routing.location, {
+      replaceRouteQuery(getState().routing.locationBeforeTransitions, {
         size: pageSizeOption[0]
       })
     }
@@ -241,7 +243,7 @@ export const initialLoad = () => {
 
 export const handleUpdatePageSize = (pageSize) => {
   return (dispatch, getState) => {
-    replaceRouteQuery(getState().routing.location, {
+    replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       size: pageSize
     })
     dispatch(getLocalesList(getState()))
@@ -250,7 +252,7 @@ export const handleUpdatePageSize = (pageSize) => {
 
 export const handleUpdateSort = (sort) => {
   return (dispatch, getState) => {
-    replaceRouteQuery(getState().routing.location, {
+    replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       sort: sort
     })
     dispatch(getLocalesList(getState()))
@@ -259,7 +261,7 @@ export const handleUpdateSort = (sort) => {
 
 export const handleUpdateSearch = (search) => {
   return (dispatch, getState) => {
-    replaceRouteQuery(getState().routing.location, {
+    replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       search: search,
       page: 1
     })
@@ -275,7 +277,7 @@ export const handleDelete = (localeId) => {
 
 export const handlePageUpdate = (page) => {
   return (dispatch, getState) => {
-    replaceRouteQuery(getState().routing.location, {
+    replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       page: page
     })
     dispatch(getLocalesList(getState()))

@@ -24,7 +24,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.account.RegisterPage;
@@ -53,9 +53,8 @@ public class EmailValidationTest extends ZanataTestCase {
         registerPage = new BasicWorkFlow().goToHome().goToRegistration();
     }
 
-    @Feature(
-            summary = "The system will allow acceptable forms of an email address for registration",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(
+            summary = "The system will allow acceptable forms of an email address for registration")
     @Test
     public void validEmailAcceptance() throws Exception {
         registerPage =
@@ -66,9 +65,8 @@ public class EmailValidationTest extends ZanataTestCase {
                 .as("Email validation errors are not shown").isEmpty();
     }
 
-    @Feature(
-            summary = "The user must enter a valid email address to register with Zanata",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(
+            summary = "The user must enter a valid email address to register with Zanata")
     @Test
     public void invalidEmailRejection() throws Exception {
         registerPage = registerPage.enterEmail("plaintext").registerFailure();

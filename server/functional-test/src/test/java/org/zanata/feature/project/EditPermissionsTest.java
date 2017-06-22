@@ -24,7 +24,7 @@ package org.zanata.feature.project;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectBasePage;
@@ -50,8 +50,7 @@ public class EditPermissionsTest extends ZanataTestCase {
             .getProperty(Constants.zanataTranslatorKey.value());
 
 
-    @Feature(summary = "The user can view maintainers for a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The user can view maintainers for a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     @Ignore("Test issue - also implicitly tested via other tests")
     public void maintainerDetailsAreDisplayed() throws Exception {
@@ -74,8 +73,7 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .as("The admin user is shown in the list");
     }
 
-    @Feature(summary = "The administrator can add a maintainer to a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The administrator can add a maintainer to a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addMaintainerAsAdmin() throws Exception {
         ProjectPermissionsTab projectPermissionsTab = new LoginWorkFlow()
@@ -117,8 +115,7 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .as("The settings tab is now available to the user");
     }
 
-    @Feature(summary = "The maintainer can add a maintainer to a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 199006)
+    @Trace(summary = "The maintainer can add a maintainer to a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void addMaintainerAsMaintainer() throws Exception {
         new ZanataRestCaller("translator", TRANSLATOR_KEY)
@@ -166,8 +163,7 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .as("The settings tab is now available to the glossarist");
     }
 
-    @Feature(summary = "The maintainer can remove a maintainer from a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 321234)
+    @Trace(summary = "The maintainer can remove a maintainer from a project")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeMaintainer() throws Exception {
         new ZanataRestCaller("translator", TRANSLATOR_KEY)
@@ -200,9 +196,8 @@ public class EditPermissionsTest extends ZanataTestCase {
                 .as("The glossarist user is not in the list");
     }
 
-    @Feature(summary = "The maintainer can remove themselves as maintainer " +
-            "from a project",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The maintainer can remove themselves as maintainer " +
+            "from a project")
     @Ignore("rhbz1151935")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void removeSelfAsMaintainer() throws Exception {

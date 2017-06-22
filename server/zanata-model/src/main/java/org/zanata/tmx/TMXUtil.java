@@ -95,6 +95,7 @@ public class TMXUtil {
                             break;
                         default:
                             // Ignore uninteresting types
+                            break;
                     }
                 }
                 return writer.toString();
