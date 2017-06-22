@@ -26,25 +26,25 @@ import java.util.Objects;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
-import org.zanata.model.HAccount;
 import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.webtrans.shared.model.DocumentId;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
-
 import com.google.common.base.MoreObjects;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
+import static org.zanata.async.AsyncTaskKey.joinFields;
 
 /**
  * @author Patrick Huang
@@ -54,6 +54,7 @@ import com.google.common.base.MoreObjects;
 public class TransMemoryMergeManager implements Serializable {
     private static final Logger log =
             LoggerFactory.getLogger(TransMemoryMergeManager.class);
+    private static final long serialVersionUID = 1364316697376958035L;
     private final AsyncTaskHandleManager asyncTaskHandleManager;
 
     private final TransMemoryMergeService transMemoryMergeService;
@@ -80,8 +81,8 @@ public class TransMemoryMergeManager implements Serializable {
      *             if there is already a task running
      */
     public boolean startTransMemoryMerge(TransMemoryMergeRequest request) {
-        TransMemoryTaskKey key =
-                new TransMemoryTaskKey(request.projectIterationId,
+        TMMergeForDocTaskKey key =
+                new TMMergeForDocTaskKey(
                         request.documentId, request.localeId);
         AsyncTaskHandle handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
@@ -97,8 +98,8 @@ public class TransMemoryMergeManager implements Serializable {
     }
 
     public boolean cancelTransMemoryMerge(TransMemoryMergeCancelRequest request) {
-        TransMemoryTaskKey key =
-                new TransMemoryTaskKey(request.projectIterationId,
+        TMMergeForDocTaskKey key =
+                new TMMergeForDocTaskKey(
                         request.documentId, request.localeId);
         AsyncTaskHandle handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
@@ -137,41 +138,27 @@ public class TransMemoryMergeManager implements Serializable {
         return false;
     }
 
-    static class TransMemoryTaskKey implements Serializable {
+    @SuppressFBWarnings(value = "EQ_DOESNT_OVERRIDE_EQUALS", justification = "super class equals method is sufficient")
+    static class TMMergeForDocTaskKey extends
+            GenericAsyncTaskKey {
 
-        @SuppressFBWarnings("SE_BAD_FIELD")
-        private final ProjectIterationId projectIterationId;
+        private static final long serialVersionUID = -7210004008208642L;
+        private static final String KEY_NAME = "TMMergeForDocKey";
         private final DocumentId documentId;
         private final LocaleId localeId;
 
-        TransMemoryTaskKey(ProjectIterationId projectIterationId,
-                DocumentId documentId, LocaleId localeId) {
-
-            this.projectIterationId = projectIterationId;
+        TMMergeForDocTaskKey(DocumentId documentId, LocaleId localeId) {
+            // here we use numeric id to form the string id because it doesn't require URL encoding
+            super(joinFields(KEY_NAME, documentId.getId().toString(), localeId.getId()));
             this.documentId = documentId;
             this.localeId = localeId;
         }
 
         @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            TransMemoryTaskKey that = (TransMemoryTaskKey) o;
-            return Objects.equals(projectIterationId, that.projectIterationId)
-                    && Objects.equals(documentId, that.documentId)
-                    && Objects.equals(localeId, that.localeId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(projectIterationId, documentId, localeId);
-        }
-
-        @Override
         public String toString() {
             return MoreObjects.toStringHelper(this)
-                    .add("projectIterationId", projectIterationId)
-                    .add("documentId", documentId).add("localeId", localeId)
+                    .add("documentId", documentId)
+                    .add("localeId", localeId)
                     .toString();
         }
     }

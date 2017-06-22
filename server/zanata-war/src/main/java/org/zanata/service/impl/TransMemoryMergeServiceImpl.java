@@ -159,7 +159,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                     startTime, authenticatedAccount.getUsername(),
                     request.editorClientId, request.documentId, total));
 
-            asyncTaskHandle.setTotalTextFlows(total);
+            asyncTaskHandle.setMaxProgress(total);
             asyncTaskHandle.setTMMergeTarget(request.projectIterationId,
                     request.documentId, request.localeId);
 
@@ -177,7 +177,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                 UNTRANSLATED_FILTER, index, BATCH_SIZE);
                 int processedSize = textFlowsBatch.size();
                 index = index + processedSize;
-                asyncTaskHandle.setTextFlowFilled(index);
+                asyncTaskHandle.increaseProgress(processedSize);
 
                 Consumer<TransUnitUpdateRequest>
                         callback =
@@ -194,7 +194,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                 log.debug("TM merge handle: {}", asyncTaskHandle);
                 transMemoryMergeProgressEvent
                         .fire(new TransMemoryMergeProgressEvent(workspaceId, total,
-                                asyncTaskHandle.getTextFlowFilled(),
+                                asyncTaskHandle.getCurrentProgress(),
                                 request.editorClientId, request.documentId));
             }
         } catch (Exception e) {
