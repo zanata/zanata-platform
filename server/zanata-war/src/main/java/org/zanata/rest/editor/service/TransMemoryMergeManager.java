@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
@@ -55,6 +56,8 @@ public class TransMemoryMergeManager implements Serializable {
     private static final Logger log =
             LoggerFactory.getLogger(TransMemoryMergeManager.class);
     private static final long serialVersionUID = 1364316697376958035L;
+    private static final String KEY_NAME = "TMMergeForVerKey";
+
     private final AsyncTaskHandleManager asyncTaskHandleManager;
 
     private final TransMemoryMergeService transMemoryMergeService;
@@ -121,8 +124,7 @@ public class TransMemoryMergeManager implements Serializable {
     }
 
     public boolean start(Long versionId, VersionTMMerge mergeRequest) {
-        TransMemoryMergeManager.MergeTranslationTaskKey key =
-                new TransMemoryMergeManager.MergeTranslationTaskKey(versionId, mergeRequest.getLocaleId());
+        AsyncTaskKey key = makeKey(versionId, mergeRequest.getLocaleId());
         AsyncTaskHandle handleByKey =
                 asyncTaskHandleManager.getHandleByKey(key);
         if (handleByKey == null || handleByKey.isCancelled()
@@ -163,30 +165,7 @@ public class TransMemoryMergeManager implements Serializable {
         }
     }
 
-    public static class MergeTranslationTaskKey implements Serializable {
-
-        private static final long serialVersionUID = 5671982177725183233L;
-        private final Long versionId;
-        private final LocaleId localeId;
-
-        public MergeTranslationTaskKey(Long versionId, LocaleId localeId) {
-            this.versionId = versionId;
-            this.localeId = localeId;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            MergeTranslationTaskKey that = (MergeTranslationTaskKey) o;
-            return Objects.equals(versionId, that.versionId) &&
-                    Objects.equals(localeId, that.localeId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects
-                    .hash(versionId, localeId);
-        }
+    private static AsyncTaskKey makeKey(Long versionId, LocaleId localeId) {
+        return new GenericAsyncTaskKey(joinFields(KEY_NAME, versionId, localeId));
     }
 }
