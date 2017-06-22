@@ -10,6 +10,7 @@ import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
 import { FormattedDate, FormattedTime } from 'react-intl'
 import GlossaryTab from './GlossaryTab'
+import ActivityTab from './ActivityTab'
 
 class SidebarContent extends React.Component {
   static propTypes = {
@@ -114,6 +115,12 @@ class SidebarContent extends React.Component {
         <span className="hide-md">Glossary{glossaryCountDisplay}</span>
       </span>
     )
+    const activityTitle = (
+      <span>
+        <Icon name="clock" className="s1 gloss-tab-svg" />
+        <span className="hide-md">Activity</span>
+      </span>
+    )
 
     return (
       <div>
@@ -135,7 +142,8 @@ class SidebarContent extends React.Component {
               Tab 1 content
             </div>
           </Tab> */ }
-          <GlossaryTab eventKey={1} title={glossaryTitle} />
+          <ActivityTab eventKey={1} title={activityTitle} />
+          <GlossaryTab eventKey={2} title={glossaryTitle} />
         </Tabs>
       </div>
     )
