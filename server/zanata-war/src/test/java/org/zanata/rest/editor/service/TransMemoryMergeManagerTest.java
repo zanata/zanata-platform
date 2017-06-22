@@ -46,10 +46,9 @@ public class TransMemoryMergeManagerTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        authenticated = new HAccount();
-        authenticated.setUsername("admin");
+
         manager = new TransMemoryMergeManager(asyncTaskHandleManager,
-                transMemoryMergeService, authenticated, identity);
+                transMemoryMergeService, identity);
 
         WorkspaceId workspaceId = TestFixture.workspaceId(LocaleId.DE,
                 "project", "version", ProjectType.Gettext);
@@ -63,6 +62,8 @@ public class TransMemoryMergeManagerTest {
         cancelRequest = new TransMemoryMergeCancelRequest(
                 workspaceId.getProjectIterationId(), documentId,
                 workspaceId.getLocaleId());
+
+        when(identity.getAccountUsername()).thenReturn("admin");
     }
 
     @Test
@@ -75,7 +76,7 @@ public class TransMemoryMergeManagerTest {
                 handleCaptor.capture(), taskKeyCaptor.capture());
         TransMemoryMergeTaskHandle handle = handleCaptor.getValue();
         assertThat(handle.getTriggeredBy())
-                .isEqualTo(authenticated.getUsername());
+                .isEqualTo(identity.getAccountUsername());
         Mockito.verify(transMemoryMergeService).executeMergeAsync(request,
                 handle);
     }
@@ -104,7 +105,7 @@ public class TransMemoryMergeManagerTest {
                 handleCaptor.capture(), taskKeyCaptor.capture());
         TransMemoryMergeTaskHandle handle = handleCaptor.getValue();
         assertThat(handle.getTriggeredBy())
-                .isEqualTo(authenticated.getUsername());
+                .isEqualTo(identity.getAccountUsername());
         Mockito.verify(transMemoryMergeService).executeMergeAsync(request,
                 handle);
     }
@@ -133,7 +134,7 @@ public class TransMemoryMergeManagerTest {
                 handleCaptor.capture(), taskKeyCaptor.capture());
         TransMemoryMergeTaskHandle handle = handleCaptor.getValue();
         assertThat(handle.getTriggeredBy())
-                .isEqualTo(authenticated.getUsername());
+                .isEqualTo(identity.getAccountUsername());
         Mockito.verify(transMemoryMergeService).executeMergeAsync(request,
                 handle);
     }
@@ -231,7 +232,7 @@ public class TransMemoryMergeManagerTest {
                         return true;
                     }
                 };
-        existingHandle.setTriggeredBy(authenticated.getUsername());
+        existingHandle.setTriggeredBy(identity.getAccountUsername());
 
         TransMemoryMergeManager.TransMemoryTaskKey taskKey =
                 new TransMemoryMergeManager.TransMemoryTaskKey(

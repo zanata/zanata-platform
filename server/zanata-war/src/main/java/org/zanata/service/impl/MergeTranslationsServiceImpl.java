@@ -89,8 +89,6 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
     @Inject
     private TextFlowDAO textFlowDAO;
     @Inject
-    private ZanataIdentity identity;
-    @Inject
     private VersionStateCache versionStateCacheImpl;
     @Inject
     private TranslationStateCache translationStateCacheImpl;
@@ -335,7 +333,7 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
             @Nonnull HProjectIteration sourceVersion,
             @Nonnull HProjectIteration targetVersion,
             @Nonnull MergeTranslationsTaskHandle handle) {
-        handle.setTriggeredBy(identity.getAccountUsername());
+        handle.setTriggeredBy(authenticatedAccount.getUsername());
         int total = getTotalProgressCount(sourceVersion, targetVersion);
         handle.setMaxProgress(total);
         handle.setTotalTranslations(total);

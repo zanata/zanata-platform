@@ -58,19 +58,15 @@ public class TransMemoryMergeManager implements Serializable {
 
     private final TransMemoryMergeService transMemoryMergeService;
 
-    private final HAccount authenticated;
-
     private final ZanataIdentity identity;
 
     @Inject
     public TransMemoryMergeManager(
             AsyncTaskHandleManager asyncTaskHandleManager,
             TransMemoryMergeService transMemoryMergeService,
-            @Authenticated HAccount authenticated,
             ZanataIdentity identity) {
         this.asyncTaskHandleManager = asyncTaskHandleManager;
         this.transMemoryMergeService = transMemoryMergeService;
-        this.authenticated = authenticated;
         this.identity = identity;
     }
 
@@ -92,7 +88,7 @@ public class TransMemoryMergeManager implements Serializable {
         if (handleByKey == null || handleByKey.isCancelled()
                 || handleByKey.isDone()) {
             TransMemoryMergeTaskHandle handle = new TransMemoryMergeTaskHandle();
-            handle.setTriggeredBy(authenticated.getUsername());
+            handle.setTriggeredBy(identity.getAccountUsername());
             asyncTaskHandleManager.registerTaskHandle(handle, key);
             transMemoryMergeService.executeMergeAsync(request, handle);
             return true;
@@ -110,14 +106,14 @@ public class TransMemoryMergeManager implements Serializable {
             TransMemoryMergeTaskHandle handle =
                     (TransMemoryMergeTaskHandle) handleByKey;
             String triggeredBy = handle.getTriggeredBy();
-            if (Objects.equals(authenticated.getUsername(), triggeredBy)) {
+            if (Objects.equals(identity.getAccountUsername(), triggeredBy)) {
                 handle.cancel(true);
                 handle.setCancelledTime(System.currentTimeMillis());
-                handle.setCancelledBy(authenticated.getUsername());
+                handle.setCancelledBy(identity.getAccountUsername());
                 log.info("task: {} cancelled by its creator", handle);
                 return true;
             } else {
-                log.warn("{} is attempting to cancel {}", authenticated.getUsername(), handle);
+                log.warn("{} is attempting to cancel {}", identity.getAccountUsername(), handle);
             }
         }
         return false;

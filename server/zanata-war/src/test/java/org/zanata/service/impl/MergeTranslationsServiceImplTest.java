@@ -103,9 +103,6 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
     @Inject
     TextFlowTargetDAO textFlowTargetDAO;
 
-    @Produces @Mock
-    private ZanataIdentity identity;
-
     @Produces @Mock @Authenticated
     HAccount authenticatedAccount;
 
@@ -187,7 +184,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         Future<Void> future = service.startMergeTranslations(projectSlug,
                 sourceVersionSlug, projectSlug, targetVersionSlug, true,
                 handle);
-        verifyZeroInteractions(identity);
+        verifyZeroInteractions(authenticatedAccount);
         // wait for the async process to finish...
         future.get();
         // No translations were performed
@@ -203,7 +200,7 @@ public class MergeTranslationsServiceImplTest extends ZanataDbunitJpaTest {
         MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle();
         Future<Void> future = service.startMergeTranslations(projectSlug,
                 sourceVersionSlug, projectSlug, targetVersionSlug, true, null);
-        verifyZeroInteractions(identity);
+        verifyZeroInteractions(authenticatedAccount);
         // wait for the async process to finish...
         future.get();
         // No translations were performed
