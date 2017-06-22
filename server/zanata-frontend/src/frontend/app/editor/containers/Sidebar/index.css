@@ -358,7 +358,12 @@ span.loader span div {
   color: var(--Sidebar-color-highlight);
 }
 
-.inline-flex-search .form-group {
+.inline-search {
+  display: inline-table;
+  padding-left: 1rem;
+}
+
+.inline-search .form-group {
   vertical-align: sub;
 }
 
@@ -370,8 +375,8 @@ span.loader span div {
   vertical-align: sub;
 }
 
-.inline-flex-search .InputGroup--outlined {
-  width: 100%;
+.inline-search .InputGroup--outlined {
+  min-width: 8rem;
 }
 
 h2.validation {
@@ -423,20 +428,11 @@ select.settings-select {
   }
 }
 
-@media (max-width:1009px) {
-  .inline-flex-search {
-    display: block;
-  }
-}
-
 @media (min-width:1100px) {
-  .inline-flex-search {
-    display: inline-flex;
-  }
-  .inline-flex-search .form-group {
+  .inline-search .form-group {
     margin-left: var(--Sidebar-spacing-small);
   }
-  .inline-flex-search .form-group select.form-control {
+  .inline-search .form-group select.form-control {
     vertical-align: sub;
   }
 }
