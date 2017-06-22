@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
@@ -178,8 +179,17 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                 index = index + processedSize;
                 asyncTaskHandle.setTextFlowFilled(index);
 
+                Consumer<TransUnitUpdateRequest>
+                        callback =
+                         updateRequest -> textFlowTargetUpdateContextEvent
+                                 .fire(new TextFlowTargetUpdateContextEvent(
+                                         updateRequest.getTransUnitId(),
+                                         request.localeId,
+                                         request.editorClientId,
+                                         TransUnitUpdated.UpdateType.NonEditorSave));
                 List<TranslationService.TranslationResult> batchResult =
-                        translateInBatch(request, textFlowsBatch, targetLocale);
+                        translateInBatch(request, textFlowsBatch, targetLocale,
+                                Collections.emptyList(), Optional.of(callback));
                 finalResult.addAll(batchResult);
                 log.debug("TM merge handle: {}", asyncTaskHandle);
                 transMemoryMergeProgressEvent
@@ -245,9 +255,8 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         long mergeTargetCount = textFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion(
                 targetVersion.getId(), targetLocale);
 
-        com.google.common.base.Optional<MergeTranslationsTaskHandle>
-                taskHandleOpt =
-                com.google.common.base.Optional.fromNullable(handle);
+        Optional<MergeTranslationsTaskHandle>
+                taskHandleOpt = Optional.ofNullable(handle);
         if (taskHandleOpt.isPresent()) {
             MergeTranslationsTaskHandle handle1 = taskHandleOpt.get();
             handle1.setTriggeredBy(identity.getAccountUsername());
@@ -266,11 +275,11 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                             targetVersion.getId(), targetLocale, startCount,
                             BATCH_SIZE);
             translateInBatch(mergeRequest, batch,
-                    targetLocale, fromVersionIds);
+                    targetLocale, fromVersionIds, Optional.empty());
 
-            if (taskHandleOpt.isPresent()) {
-                taskHandleOpt.get().increaseProgress(batch.size());
-            }
+            taskHandleOpt.ifPresent(
+                    mergeTranslationsTaskHandle -> mergeTranslationsTaskHandle
+                            .increaseProgress(batch.size()));
             startCount += BATCH_SIZE;
         }
         versionStateCacheImpl.clearVersionStatsCache(targetVersion.getId());
@@ -284,16 +293,23 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
      * This method will run in transaction and manages its own transaction.
      *
      * @param request
-     *            TM merge request
+     *            TM merge request criteria
      * @param textFlows
      *            the text flows to be filled
      * @param targetLocale
      *            target locale
+     * @param fromVersionIds
+     *            source version ids
+     * @param callbackOnUpdate
+     *            an optional callback to call when we have a
+     *            TransUnitUpdateRequest ready
      * @return translation results
      */
     private List<TranslationService.TranslationResult> translateInBatch(
-            TransMemoryMergeRequest request, List<HTextFlow> textFlows,
-            HLocale targetLocale) {
+            HasTMMergeCriteria request, List<HTextFlow> textFlows,
+            HLocale targetLocale,
+            List<Long> fromVersionIds,
+            Optional<Consumer<TransUnitUpdateRequest>> callbackOnUpdate) {
 
         if (textFlows.isEmpty()) {
             return Collections.emptyList();
@@ -317,7 +333,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                     hTextFlow.getDocument().getLocale().getLocaleId(),
                                     checkContext, checkDocument, checkProject,
                                     request.getThresholdPercent(),
-                                    Collections.emptyList());
+                                    fromVersionIds);
                     if (tmResult.isPresent()) {
                         TransUnitUpdateRequest updateRequest =
                                 createRequest(request, targetLocale,
@@ -325,71 +341,16 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
 
                         if (updateRequest != null) {
                             updateRequests.add(updateRequest);
-                            textFlowTargetUpdateContextEvent
-                                    .fire(new TextFlowTargetUpdateContextEvent(
-                                            updateRequest.getTransUnitId(),
-                                            request.localeId,
-                                            request.editorClientId,
-                                            TransUnitUpdated.UpdateType.NonEditorSave));
+                            callbackOnUpdate.ifPresent(c -> c.accept(updateRequest));
                         }
                     }
                 }
                 return translationServiceImpl.translate(
-                        request.localeId, updateRequests);
-            });
-        } catch (Exception e) {
-            log.error("exception during TM merge", e);
-            return Collections.emptyList();
-        }
-    }
-
-    // TODO pahuang this duplicated most part of above method
-    public void translateInBatch(HasTMMergeCriteria mergeCriteria,
-            List<HTextFlow> textFlows, HLocale targetLocale,
-            List<Long> fromProjectVersions) {
-
-        if (textFlows.isEmpty()) {
-            return;
-        }
-
-        try {
-            transactionUtil.run(() -> {
-
-                List<TransUnitUpdateRequest> updateRequests = Lists.newLinkedList();
-                for (HTextFlow hTextFlow : textFlows) {
-                    HTextFlowTarget hTextFlowTarget =
-                            hTextFlow.getTargets().get(targetLocale.getId());
-                    boolean checkContext =
-                            mergeCriteria.getDifferentContextRule() ==
-                                    MergeRule.REJECT;
-                    boolean checkDocument =
-                            mergeCriteria.getDifferentDocumentRule() ==
-                                    MergeRule.REJECT;
-                    boolean checkProject =
-                            mergeCriteria.getDifferentProjectRule() ==
-                                    MergeRule.REJECT;
-                    Optional<TransMemoryResultItem> tmResult =
-                            translationMemoryServiceImpl.searchBestMatchTransMemory(
-                                    hTextFlow, targetLocale.getLocaleId(),
-                                    hTextFlow.getDocument().getLocale().getLocaleId(),
-                                    checkContext, checkDocument, checkProject,
-                                    mergeCriteria.getThresholdPercent(),
-                                    fromProjectVersions);
-                    if (tmResult.isPresent()) {
-                        TransUnitUpdateRequest updateRequest =
-                                createRequest(mergeCriteria, targetLocale,
-                                        hTextFlow, tmResult.get(), hTextFlowTarget);
-
-                        if (updateRequest != null) {
-                            updateRequests.add(updateRequest);
-                        }
-                    }
-                }
-                translationServiceImpl.translate(
                         targetLocale.getLocaleId(), updateRequests);
             });
         } catch (Exception e) {
             log.error("exception during TM merge", e);
+            return Collections.emptyList();
         }
     }
 
