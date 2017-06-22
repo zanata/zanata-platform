@@ -136,14 +136,9 @@ class SidebarContent extends React.Component {
         <div className="sidebar-wrapper">
           {this.sidebarDetails()}
         </div>
-        <Tabs id="sidebartabs" defaultActiveKey={1}>
-          { /* <Tab eventKey={2} title={activityTitle}>
-            <div className="sidebar-wrapper" id="tab1">
-              Tab 1 content
-            </div>
-          </Tab> */ }
-          <ActivityTab eventKey={1} title={activityTitle} />
-          <GlossaryTab eventKey={2} title={glossaryTitle} />
+        <Tabs id="sidebartabs" defaultActiveKey={2}>
+          <GlossaryTab eventKey={1} title={glossaryTitle} />
+          <ActivityTab eventKey={2} title={activityTitle} />
         </Tabs>
       </div>
     )

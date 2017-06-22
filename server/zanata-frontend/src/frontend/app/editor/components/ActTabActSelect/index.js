@@ -21,17 +21,17 @@
 
 import React from 'react'
 
-class ActTabLangSelect extends React.Component {
+class ActTabActSelect extends React.Component {
 
   render () {
     return (
-      <ul className='act-lang-select'>
-        <li>Current language</li>
+      <ul className='act-act-select'>
         <li>All</li>
-        <li>Source language</li>
+        <li>Comments</li>
+        <li>Updates</li>
       </ul>
     )
   }
 }
 
-export default ActTabLangSelect
+export default ActTabActSelect

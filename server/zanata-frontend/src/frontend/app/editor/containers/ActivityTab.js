@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Tab } from 'react-bootstrap'
+import ActTabActSelect from '../components/ActTabActSelect'
 import ActTabLangSelect from '../components/ActTabLangSelect'
 
 class ActivityTab extends React.Component {
@@ -14,8 +15,9 @@ class ActivityTab extends React.Component {
     const { eventKey } = this.props
     return (
       <Tab eventKey={eventKey} title="">
-        <div className="sidebar-wrapper" id="tab1">
+        <div className="sidebar-wrapper" id="tab2">
           <ActTabLangSelect />
+          <ActTabActSelect />
         </div>
       </Tab>
     )
