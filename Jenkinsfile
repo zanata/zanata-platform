@@ -433,12 +433,15 @@ void integrationTests(String appserver) {
         -DskipShade \
          */
 
+        // retain traceability report
+        archive(includes: "server/functional-test/target/**/traceability.json")
+
         if (mvnResult != 0) {
           currentBuild.result = 'UNSTABLE'
 
           // gather db/app logs and screenshots to help debugging
           archive(
-                  includes: 'server/functional-test/target/**/*.log,server/functional-test/target/screenshots/**,server/functional-test/target/**/traceability.json',
+                  includes: 'server/functional-test/target/**/*.log,server/functional-test/target/screenshots/**',
                   excludes: '**/BACKUP-*.log')
         }
 

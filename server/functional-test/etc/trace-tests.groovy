@@ -15,7 +15,7 @@ String outputFileName = options.o == false ? System.getProperty("user.dir")+"/re
 
 String polarionData = new File(polarionFile).text
 String autoTestData = new File(autoTestFile).text
-println(polarionFile + "+" + autoTestFile + "=" + outputFileName)
+
 Map<String, List<String>> data = new HashMap<>()
 def dataMap = [:]
 
@@ -29,6 +29,8 @@ def parseDataFiles = {
       // Not a testcase
       return
     }
+    // Map Polarion manual tests for autotest matching
+    // If the entry exists already, update it with duplicate indicators
     if (data.containsKey(testId)) {
       println("Error: key " + testId + " already exists")
       List<String> newData = data.get(testId)
@@ -40,6 +42,7 @@ def parseDataFiles = {
   }
 
   def jsonObject = new JsonSlurper().parseText(autoTestData)
+  // Update Polarion manual test data with autotest results
   jsonObject.each {
     Object test = it
     it.testIds.each {
@@ -51,7 +54,7 @@ def parseDataFiles = {
         map.put("result", test.testResult)
         dataMap.put(id, map)
       } else {
-        println("Found rogue test case " + id)
+        println("Found dangling test case " + id)
       }
     }
   }
