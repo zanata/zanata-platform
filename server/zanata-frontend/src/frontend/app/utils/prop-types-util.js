@@ -6,7 +6,7 @@ export const ProjectType = PropTypes.shape({
   title: PropTypes.string.isRequired,
   versions: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired
+    status: PropTypes.oneOf(['READONLY', 'ACTIVE'])
   })).isRequired
 })
 
@@ -20,6 +20,6 @@ export const FromProjectVersionType = PropTypes.shape({
   projectSlug: PropTypes.string.isRequired,
   version: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    status: PropTypes.string.isRequired
+    status: PropTypes.oneOf(['READONLY', 'ACTIVE'])
   }).isRequired
 })

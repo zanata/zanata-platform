@@ -4,7 +4,7 @@ import {Button, ListGroup, ListGroupItem} from 'react-bootstrap'
 import Draggable from 'react-draggable'
 import {FromProjectVersionType} from '../utils/prop-types-util.js'
 /**
- * Root component for draggable version panels
+ * Root component for Version TM Merge draggable version panels
  */
 class DraggableVersionPanels extends Component {
   static propTypes = {
