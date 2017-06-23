@@ -7,7 +7,7 @@ import Icon from './Icon'
 import {ProjectType, FromProjectVersionType} from '../utils/prop-types-util.js'
 import {every} from 'lodash'
 
-const tooltipReadOnly = (<Tooltip id='tooltipreadonly'>Read only</Tooltip>)
+const tooltipReadOnly = <Tooltip id='tooltipreadonly'>Read only</Tooltip>
 
 /**
  * Root component for the Version TM Merge project version panels

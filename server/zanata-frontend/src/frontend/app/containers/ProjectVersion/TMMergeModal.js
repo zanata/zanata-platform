@@ -56,81 +56,65 @@ class TMMergeModal extends Component {
   componentWillReceiveProps (nextProps) {
     const locales = nextProps.locales
     if (!this.state.selectedLanguage) {
-      this.setState({
-        ...this.state,
+      this.setState((prevState, props) => ({
         // FIXME change to locale object for submission, use display name
         selectedLanguage: locales.length === 0 ? '' : locales[0].displayName
-      })
+      }))
     }
   }
   onPercentSelection = (percent) => {
-    this.setState({
-      ...this.state,
+    this.setState((prevState, props) => ({
       matchPercentage: percent
-    })
+    }))
   }
   onLanguageSelection = (language) => {
-    this.setState({
-      ...this.state,
+    this.setState((prevState, props) => ({
       selectedLanguage: language
-    })
+    }))
   }
   onProjectSearchChange = (event) => {
-    this.setState({
-      ...this.state,
+    this.setState((prevState, props) => ({
       projectSearchTerm: event.target.value
-    })
+    }))
   }
   onProjectSearch = () => {
     this.props.openProjectPage(this.state.projectSearchTerm)
   }
   // Remove a version from fromProjectVersion array by index
-  removeProjectVersion = (index) => {
-    const {
-      fromProjectVersions
-    } = this.state
-    this.setState({
-      ...this.state,
+  removeProjectVersion = (version, myProjectSlug) => {
+    this.setState((prevState, props) => ({
       fromProjectVersions:
-          [...fromProjectVersions.slice(0, index),
-          ...fromProjectVersions.slice(index + 1)]
-    })
+        prevState.fromProjectVersions.filter(
+          ({ projectSlug, version: { id } }) => projectSlug !== myProjectSlug ||
+          id !== version.id
+        )
+    }))
   }
   // Remove all versions of a Project from fromProjectVersion array
   removeAllProjectVersions = (projectVersions) => {
-    const {
-      fromProjectVersions
-    } = this.state
     // FIXME Change state flow to update in correct order
     setTimeout(() => {
-      this.setState({
-        ...this.state,
-        fromProjectVersions: [...fromProjectVersions.filter((version) =>
-            !(version.projectSlug === projectVersions[0].projectSlug))]
-      })
+      this.setState((prevState, props) => ({
+        fromProjectVersions:
+          [...prevState.fromProjectVersions.filter((version) =>
+          !(version.projectSlug === projectVersions[0].projectSlug))]
+      }))
     }, 0)
   }
   // Add a version to fromProjectVersion array
   pushProjectVersion = (version) => {
-    const {
-      fromProjectVersions
-    } = this.state
-    this.setState({
-      ...this.state,
-      fromProjectVersions: [...fromProjectVersions, version]
-    })
+    this.setState((prevState, props) => ({
+      fromProjectVersions: [...prevState.fromProjectVersions, version]
+    }))
   }
   // Add all versions of a Project to fromProjectVersion array
   pushAllProjectVersions = (projectVersions) => {
-    const {
-      fromProjectVersions
-    } = this.state
     // FIXME Change state flow to update in correct order
     setTimeout(() => {
-      this.setState({
-        ...this.state,
-        fromProjectVersions: [...fromProjectVersions.concat(projectVersions)]
-      })
+      this.setState((prevState, props) => ({
+        fromProjectVersions: [...prevState.fromProjectVersions.concat(
+            projectVersions)]
+      }))
     }, 0)
   }
   flattenedVersionArray = () => {
@@ -141,8 +125,8 @@ class TMMergeModal extends Component {
   // Remove/Add version from fromProjectVersion array based on selection
   onVersionCheckboxChange = (version, projectSlug) => {
     const versionChecked = this.flattenedVersionArray().includes(version)
-    const index = this.flattenedVersionArray().indexOf(version)
-    versionChecked ? this.removeProjectVersion(index)
+    // const index = this.flattenedVersionArray().indexOf(version)
+    versionChecked ? this.removeProjectVersion(version, projectSlug)
       : this.pushProjectVersion({version, projectSlug: projectSlug})
   }
   // Remove/Add all project versions to version list
@@ -179,10 +163,9 @@ class TMMergeModal extends Component {
     const showHide = showTMMergeModal ? {display: 'block'} : {display: 'none'}
     // Different DocID Checkbox handling
     const onDocIdCheckboxChange = () => {
-      this.setState({
-        ...this.state,
-        differentDocId: !this.state.differentDocId
-      })
+      this.setState((prevState, props) => ({
+        differentDocId: !prevState.differentDocId
+      }))
     }
     const docIdLabel = this.state.differentDocId
         ? (<Label bsStyle='warning'>
@@ -193,10 +176,9 @@ class TMMergeModal extends Component {
         </Label>)
     // Different Context Checkbox handling
     const onContextCheckboxChange = () => {
-      this.setState({
-        ...this.state,
-        differentContext: !this.state.differentContext
-      })
+      this.setState((prevState, props) => ({
+        differentContext: !prevState.differentContext
+      }))
     }
     const differentContextLabel = this.state.differentContext
         ? (<Label bsStyle='warning'>
@@ -207,10 +189,9 @@ class TMMergeModal extends Component {
         </Label>)
     // Match from Imported TM Checkbox handling
     const onImportedCheckboxChange = () => {
-      this.setState({
-        ...this.state,
-        fromImportedTM: !this.state.fromImportedTM
-      })
+      this.setState((prevState, props) => ({
+        fromImportedTM: !prevState.fromImportedTM
+      }))
     }
     const matchImportedLabel = this.state.fromImportedTM
         ? (<Label bsStyle='warning'>
