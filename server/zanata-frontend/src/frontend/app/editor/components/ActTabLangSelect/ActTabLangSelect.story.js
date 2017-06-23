@@ -6,7 +6,7 @@ import ActTabLangSelect from '.'
 /*
  * See .storybook/README.md for info on the component storybook.
  */
-storiesOf('GlossarySearchInput', module)
+storiesOf('ActTabLangSelect', module)
     .add('default', () => (
 
     })

@@ -20,28 +20,28 @@
  */
 
 import React from 'react'
-import { Button, ButtonToolbar } from 'react-bootstrap'
+import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 
-class ActTabActSelect extends React.Component {
+class ActTabCommentBox extends React.Component {
 
   render () {
     return (
-      <div>
-        <ButtonToolbar>
-          <Button className="Button Button--small u-rounded Button--secondary">
-            <Icon name="clock" className="n1" /> All
-          </Button>
-          <Button className="Button Button--small u-rounded Button--secondary">
-            <Icon name="comment" className="n1" /> Comments
-          </Button>
-          <Button className="Button Button--small u-rounded Button--secondary">
-            <Icon name="refresh" className="n1" /> Updates
-          </Button>
-        </ButtonToolbar>
+      <div className="trans-comment-box">
+        <FormGroup controlId="formControlsTextarea">
+          <ControlLabel>
+            <Icon name="comment" className="s1" /> Post a comment
+          </ControlLabel><br />
+          <FormControl componentClass="textarea"
+            placeholder="..." />
+        </FormGroup>
+        <Button
+         className="Button Button--small u-rounded Button--primary pull-right">
+         Post comment
+        </Button>
       </div>
     )
   }
 }
 
-export default ActTabActSelect
+export default ActTabCommentBox

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Tab } from 'react-bootstrap'
 import ActTabActSelect from '../components/ActTabActSelect'
 import ActTabLangSelect from '../components/ActTabLangSelect'
+import ActTabCommentBox from '../components/ActTabCommentBox'
 
 class ActivityTab extends React.Component {
 
@@ -17,7 +18,10 @@ class ActivityTab extends React.Component {
       <Tab eventKey={eventKey} title="">
         <div className="sidebar-wrapper" id="tab2">
           <ActTabLangSelect />
+        </div>
+        <div className="sidebar-activity">
           <ActTabActSelect />
+          <ActTabCommentBox />
         </div>
       </Tab>
     )

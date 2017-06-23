@@ -20,16 +20,26 @@
  */
 
 import React from 'react'
+import { Button, ButtonToolbar } from 'react-bootstrap'
+import Icon from '../../../components/Icon'
 
 class ActTabLangSelect extends React.Component {
 
   render () {
     return (
-      <ul className='act-lang-select'>
-        <li>Current language</li>
-        <li>All</li>
-        <li>Source language</li>
-      </ul>
+      <div className="act-tab-langselect">
+        <ButtonToolbar>
+          <Button className="Button Button--small u-rounded Button--primary">
+            <Icon name="language" className="n1" /> Current
+          </Button>
+          <Button className="Button Button--small u-rounded Button--primary">
+            <Icon name="language" className="n1" /> All
+          </Button>
+          <Button className="Button Button--small u-rounded Button--primary">
+            <Icon name="language" className="n1" /> Source
+          </Button>
+        </ButtonToolbar>
+      </div>
     )
   }
 }

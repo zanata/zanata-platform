@@ -95,7 +95,3 @@
   border-top-right-radius: calc(var(--InputGroup-rhythm) * 1);
   padding-right: calc(var(--InputGroup-rhythm) * .375);
 }
-
-.InputGroup--rounded {
-  width:16rem;
-}
