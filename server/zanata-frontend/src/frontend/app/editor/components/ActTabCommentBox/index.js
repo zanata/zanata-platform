@@ -36,7 +36,7 @@ class ActTabCommentBox extends React.Component {
             placeholder="..." />
         </FormGroup>
         <Button
-         className="Button Button--small u-rounded Button--primary pull-right">
+          className="Button Button--small u-rounded Button--primary pull-right">
          Post comment
         </Button>
       </div>

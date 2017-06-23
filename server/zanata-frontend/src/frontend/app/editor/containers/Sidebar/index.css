@@ -432,6 +432,7 @@ select.settings-select {
 
 .sidebar-activity {
   padding-top: 1rem;
+  padding-bottom: 0.5rem;
 }
 
 .trans-comment-box {
