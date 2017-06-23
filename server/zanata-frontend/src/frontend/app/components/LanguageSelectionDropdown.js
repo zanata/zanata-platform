@@ -1,19 +1,21 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {MenuItem, DropdownButton} from 'react-bootstrap'
+import {LocaleType} from '../utils/prop-types-util.js'
 
 /**
  * Root component for Language Selection Dropdown
  */
 class LanguageSelectionDropdown extends Component {
   static propTypes = {
-    onClick: PropTypes.func.isRequired,
+    /* params: selectedLanguage */
+    selectLanguage: PropTypes.func.isRequired,
     selectedLanguage: PropTypes.string.isRequired,
-    locales: PropTypes.arrayOf(PropTypes.object).isRequired
+    locales: PropTypes.arrayOf(LocaleType).isRequired
   }
   render () {
     const {
-      onClick,
+      selectLanguage,
       selectedLanguage,
       locales
     } = this.props
@@ -21,7 +23,7 @@ class LanguageSelectionDropdown extends Component {
         .map((locale, index) => {
           return (
             <LanguageMenuItem
-              onClick={onClick}
+              selectLanguage={selectLanguage}
               language={locale.displayName}
               selectedLanguage={selectedLanguage}
               eventKey={index}
@@ -47,12 +49,12 @@ class LanguageSelectionDropdown extends Component {
 class LanguageMenuItem extends Component {
   static propTypes = {
     language: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
+    selectLanguage: PropTypes.func.isRequired,
     eventKey: PropTypes.number.isRequired,
     selectedLanguage: PropTypes.string.isRequired
   }
-  onClick = () => {
-    this.props.onClick(this.props.language)
+  selectLanguage = () => {
+    this.props.selectLanguage(this.props.language)
   }
   render () {
     const {
@@ -61,7 +63,7 @@ class LanguageMenuItem extends Component {
       selectedLanguage
     } = this.props
     return (
-      <MenuItem onClick={this.onClick}
+      <MenuItem onClick={this.selectLanguage}
         eventKey={eventKey} key={eventKey}
         active={language === selectedLanguage}>
         {language}

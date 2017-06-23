@@ -4,7 +4,7 @@ import {
   TOGGLE_TM_MERGE_MODAL,
   VERSION_LOCALES_SUCCESS,
   PROJECT_PAGE_SUCCESS
-} from '../actions/version-actions'
+} from '../actions/version-action-types'
 
 export default handleActions({
   [TOGGLE_TM_MERGE_MODAL]: (state, action) => {

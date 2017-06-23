@@ -3,10 +3,9 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual } from 'lodash'
 import {
-  Button, Panel, Row, Checkbox, InputGroup, Col, Label,
-  FormControl, ListGroup, ListGroupItem
-}
-  from 'react-bootstrap'
+  Button, Panel, Row, Checkbox, InputGroup, Col, Label, FormControl, ListGroup,
+  ListGroupItem
+} from 'react-bootstrap'
 import {Icon, Modal} from '../../components'
 import ProjectVersionPanels from '../../components/ProjectVersionPanels'
 import DraggableVersionPanels from '../../components/DraggableVersionPanels'
@@ -15,24 +14,27 @@ import TMMatchPercentageDropdown
 import LanguageSelectionDropdown
   from '../../components/LanguageSelectionDropdown'
 import {
-  loadVersionLocales,
-  loadProjectPage,
+  fetchVersionLocales,
+  fetchProjectPage,
   toggleTMMergeModal
 } from '../../actions/version-actions'
+import {ProjectType, LocaleType} from '../../utils/prop-types-util.js'
 
 /**
  * Root component for TM Merge Modal
  */
 class TMMergeModal extends Component {
   static propTypes = {
+    /* params: projectSlug and versionSlug */
     handleInitLoad: PropTypes.func.isRequired,
-    showTMMergeModal: PropTypes.bool,
+    showTMMergeModal: PropTypes.bool.isRequired,
     openTMMergeModal: PropTypes.func.isRequired,
+    /* params: project object */
     openProjectPage: PropTypes.func.isRequired,
     projectSlug: PropTypes.string.isRequired,
     versionSlug: PropTypes.string.isRequired,
-    locales: PropTypes.arrayOf(PropTypes.object),
-    projectVersions: PropTypes.arrayOf(PropTypes.object)
+    locales: PropTypes.arrayOf(LocaleType).isRequired,
+    projectVersions: PropTypes.arrayOf(ProjectType).isRequired
   }
   constructor (props) {
     super(props)
@@ -44,17 +46,19 @@ class TMMergeModal extends Component {
       selectedLanguage: '',
       fromProjectVersions: [], // Selected Versions List
       projectSearchTerm: this.props.projectSlug,
+      // FIXME: make this hold the state of all searched projects
       selectedProject: []
     }
   }
   componentDidMount () {
     this.props.handleInitLoad(this.props.projectSlug, this.props.versionSlug)
   }
-  componentWillReceiveProps () {
-    const locales = this.props.locales
+  componentWillReceiveProps (nextProps) {
+    const locales = nextProps.locales
     if (!this.state.selectedLanguage) {
       this.setState({
         ...this.state,
+        // FIXME change to locale object for submission, use display name
         selectedLanguage: locales.length === 0 ? '' : locales[0].displayName
       })
     }
@@ -81,7 +85,7 @@ class TMMergeModal extends Component {
     this.props.openProjectPage(this.state.projectSearchTerm)
   }
   // Remove a version from fromProjectVersion array by index
-  popProjectVersion = (index) => {
+  removeProjectVersion = (index) => {
     const {
       fromProjectVersions
     } = this.state
@@ -93,7 +97,7 @@ class TMMergeModal extends Component {
     })
   }
   // Remove all versions of a Project from fromProjectVersion array
-  popAllProjectVersions = (projectVersions) => {
+  removeAllProjectVersions = (projectVersions) => {
     const {
       fromProjectVersions
     } = this.state
@@ -116,7 +120,7 @@ class TMMergeModal extends Component {
       fromProjectVersions: [...fromProjectVersions, version]
     })
   }
-  // Push all versions of a Project to fromProjectVersion array
+  // Add all versions of a Project to fromProjectVersion array
   pushAllProjectVersions = (projectVersions) => {
     const {
       fromProjectVersions
@@ -125,8 +129,7 @@ class TMMergeModal extends Component {
     setTimeout(() => {
       this.setState({
         ...this.state,
-        fromProjectVersions:
-            [...fromProjectVersions.concat(projectVersions)]
+        fromProjectVersions: [...fromProjectVersions.concat(projectVersions)]
       })
     }, 0)
   }
@@ -135,11 +138,11 @@ class TMMergeModal extends Component {
       return project.version
     })
   }
-  // Push/Pop version from fromProjectVersion array based on selection
+  // Remove/Add version from fromProjectVersion array based on selection
   onVersionCheckboxChange = (version, projectSlug) => {
     const versionChecked = this.flattenedVersionArray().includes(version)
     const index = this.flattenedVersionArray().indexOf(version)
-    versionChecked ? this.popProjectVersion(index)
+    versionChecked ? this.removeProjectVersion(index)
       : this.pushProjectVersion({version, projectSlug: projectSlug})
   }
   // Remove/Add all project versions to version list
@@ -158,7 +161,7 @@ class TMMergeModal extends Component {
     versionsToPush = (differenceWith(versionsToPop,
             this.state.fromProjectVersions, isEqual))
     allVersionsChecked
-        ? this.popAllProjectVersions(versionsToPop)
+        ? this.removeAllProjectVersions(versionsToPop)
         : this.pushAllProjectVersions(versionsToPush)
   }
   render () {
@@ -235,7 +238,8 @@ class TMMergeModal extends Component {
                   className='vmerge-title text-info'>TM match threshold</span>
               </Col>
               <Col xs={5}>
-                <TMMatchPercentageDropdown onClick={this.onPercentSelection}
+                <TMMatchPercentageDropdown
+                  selectPercentage={this.onPercentSelection}
                   matchPercentage={this.state.matchPercentage} />
               </Col>
             </Col>
@@ -284,7 +288,7 @@ class TMMergeModal extends Component {
               </Col>
               <Col xs={6}>
                 <LanguageSelectionDropdown
-                  onClick={this.onLanguageSelection}
+                  selectLanguage={this.onLanguageSelection}
                   selectedLanguage={this.state.selectedLanguage}
                   locales={this.props.locales}
                 />
@@ -344,7 +348,7 @@ class TMMergeModal extends Component {
                   vmerge-title'>Select source project versions to merge
                   </span>
                   <ProjectVersionPanels projectVersions={projectVersions}
-                    fromProjectVersion={this.state.fromProjectVersions}
+                    fromProjectVersions={this.state.fromProjectVersions}
                     onVersionCheckboxChange={this.onVersionCheckboxChange}
                     onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
                     selectedProject={this.state.selectedProject}
@@ -353,7 +357,7 @@ class TMMergeModal extends Component {
                 </Col>
                 <Col xs={6}>
                   <DraggableVersionPanels
-                    fromProjectVersion={this.state.fromProjectVersions} />
+                    fromProjectVersions={this.state.fromProjectVersions} />
                 </Col>
               </Panel>
             </Col>
@@ -391,10 +395,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     handleInitLoad: (project, version) => {
-      dispatch(loadVersionLocales(project, version))
+      dispatch(fetchVersionLocales(project, version))
     },
     openProjectPage: (project) => {
-      dispatch(loadProjectPage(project))
+      dispatch(fetchProjectPage(project))
     },
     openTMMergeModal: () => {
       dispatch(toggleTMMergeModal())

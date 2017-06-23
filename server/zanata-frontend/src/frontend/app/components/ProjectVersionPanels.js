@@ -2,42 +2,44 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {
   Panel, Tooltip, Checkbox, ListGroup, ListGroupItem, OverlayTrigger, PanelGroup
-}
-  from 'react-bootstrap'
+} from 'react-bootstrap'
 import Icon from './Icon'
+import {ProjectType, FromProjectVersionType} from '../utils/prop-types-util.js'
 
-const tooltipReadOnly = (
-  <Tooltip id='tooltipreadonly'>Read only
-  </Tooltip>
-)
+const tooltipReadOnly = (<Tooltip id='tooltipreadonly'>Read only</Tooltip>)
 
 /**
  * Root component for project version panels
  */
 class ProjectVersionPanels extends Component {
   static propTypes = {
-    projectVersions: PropTypes.arrayOf(PropTypes.object),
-    fromProjectVersion: PropTypes.arrayOf(PropTypes.object),
+    projectVersions: PropTypes.arrayOf(ProjectType).isRequired,
+    fromProjectVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
+    /* params: version, projectSlug */
     onVersionCheckboxChange: PropTypes.func.isRequired,
+    /* params: project object */
     onAllVersionCheckboxChange: PropTypes.func.isRequired
   }
   render () {
-    if (this.props.projectVersions.length <= 0) {
+    if (this.props.projectVersions.length === 0) {
       return <div></div>
     }
-    let panels = this.props.projectVersions.map((project, index) => {
+    const panels = this.props.projectVersions.map((project, index) => {
       return (
-        <Panel header={<h3><SelectAllVersionsCheckbox
-          project={project} onClick={this.props.onAllVersionCheckboxChange}
-          fromProjectVersion={this.props.fromProjectVersion} />
-        </h3>} key={index} eventKey={index}>
+        <Panel key={index} eventKey={index} header={
+          <h3>
+            <SelectAllVersionsCheckbox
+              project={project}
+              onClick={this.props.onAllVersionCheckboxChange}
+              fromProjectVersions={this.props.fromProjectVersions} />
+          </h3>}>
           <ListGroup fill>
             {project.versions.map((version, index) => {
               return (
                 <ListGroupItem className='v' key={index}>
                   <VersionMenuCheckbox version={version}
                     onClick={this.props.onVersionCheckboxChange}
-                    fromProjectVersion={this.props.fromProjectVersion}
+                    fromProjectVersions={this.props.fromProjectVersions}
                     projectSlug={project.id} />
                 </ListGroupItem>
               )
@@ -46,7 +48,7 @@ class ProjectVersionPanels extends Component {
         </Panel>
       )
     })
-    return <PanelGroup defaultActiveKey='1' accordion>{panels}</PanelGroup>
+    return <PanelGroup defaultActiveKey='0' accordion>{panels}</PanelGroup>
   }
 }
 
@@ -56,9 +58,9 @@ class ProjectVersionPanels extends Component {
  */
 class SelectAllVersionsCheckbox extends Component {
   static propTypes = {
-    project: PropTypes.object,
-    onClick: PropTypes.func.isRequired,
-    fromProjectVersion: PropTypes.arrayOf(PropTypes.object)
+    project: ProjectType.isRequired,
+    fromProjectVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
+    onClick: PropTypes.func.isRequired
   }
   onClick = () => {
     this.props.onClick(this.props.project)
@@ -66,9 +68,9 @@ class SelectAllVersionsCheckbox extends Component {
   render () {
     const {
       project,
-      fromProjectVersion
+      fromProjectVersions
     } = this.props
-    const flattenedVersionArray = fromProjectVersion.map((project) => {
+    const flattenedVersionArray = fromProjectVersions.map((project) => {
       return project.version
     })
     // Check if all project versions have been selected
@@ -103,9 +105,12 @@ class SelectAllVersionsCheckbox extends Component {
  */
 class VersionMenuCheckbox extends Component {
   static propTypes = {
-    version: PropTypes.object.isRequired,
+    version: PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      status: PropTypes.string.isRequired
+    }).isRequired,
     onClick: PropTypes.func.isRequired,
-    fromProjectVersion: PropTypes.arrayOf(PropTypes.object),
+    fromProjectVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
     projectSlug: PropTypes.string.isRequired
   }
   onClick = () => {
@@ -114,9 +119,9 @@ class VersionMenuCheckbox extends Component {
   render () {
     const {
       version,
-      fromProjectVersion
+      fromProjectVersions
     } = this.props
-    const flattenedVersionArray = fromProjectVersion.map((project) => {
+    const flattenedVersionArray = fromProjectVersions.map((project) => {
       return project.version
     })
     const versionChecked = flattenedVersionArray.includes(version)

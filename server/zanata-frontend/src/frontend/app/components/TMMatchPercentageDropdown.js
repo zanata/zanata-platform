@@ -7,21 +7,22 @@ import {MenuItem, DropdownButton} from 'react-bootstrap'
  */
 class TMMatchPercentageDropdown extends Component {
   static propTypes = {
-    onClick: PropTypes.func.isRequired,
+    /* params: percentage */
+    selectPercentage: PropTypes.func.isRequired,
     matchPercentage: PropTypes.number.isRequired
   }
   render () {
     const {
-      onClick,
+      selectPercentage,
       matchPercentage
     } = this.props
     const percentageItems = [100, 90, 80].map(percentage => {
       return (
-        <TMMatchPercentageItem onClick={onClick}
+        <TMMatchPercentageItem
+          selectPercentage={selectPercentage}
           percentage={percentage}
           matchPercentage={matchPercentage}
-          key={percentage}
-        />
+          key={percentage} />
       )
     })
     return (
@@ -42,11 +43,11 @@ class TMMatchPercentageDropdown extends Component {
 class TMMatchPercentageItem extends Component {
   static propTypes = {
     percentage: PropTypes.number.isRequired,
-    onClick: PropTypes.func.isRequired,
+    selectPercentage: PropTypes.func.isRequired,
     matchPercentage: PropTypes.number.isRequired
   }
-  onClick = () => {
-    this.props.onClick(this.props.percentage)
+  selectPercentage = () => {
+    this.props.selectPercentage(this.props.percentage)
   }
   render () {
     const {
@@ -54,7 +55,7 @@ class TMMatchPercentageItem extends Component {
       matchPercentage
     } = this.props
     return (
-      <MenuItem onClick={this.onClick}
+      <MenuItem onClick={this.selectPercentage}
         eventKey={percentage} key={percentage}
         active={percentage === matchPercentage}>
         {percentage}%

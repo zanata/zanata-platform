@@ -6,20 +6,32 @@ import {
 } from './common-actions'
 import { apiUrl } from '../config'
 
-export const TOGGLE_TM_MERGE_MODAL = 'TOGGLE_TM_MERGE_MODAL'
-
-export const VERSION_LOCALES_REQUEST = 'VERSION_LOCALES_REQUEST'
-export const VERSION_LOCALES_SUCCESS = 'VERSION_LOCALES_SUCCESS'
-export const VERSION_LOCALES_FAILURE = 'VERSION_LOCALES_FAILURE'
-
-export const PROJECT_PAGE_REQUEST = 'PROJECT_PAGE_REQUEST'
-export const PROJECT_PAGE_SUCCESS = 'PROJECT_PAGE_SUCCESS'
-export const PROJECT_PAGE_FAILURE = 'PROJECT_PAGE_FAILURE'
+import {
+  TOGGLE_TM_MERGE_MODAL,
+  VERSION_LOCALES_REQUEST,
+  VERSION_LOCALES_SUCCESS,
+  VERSION_LOCALES_FAILURE,
+  PROJECT_PAGE_REQUEST,
+  PROJECT_PAGE_SUCCESS,
+  PROJECT_PAGE_FAILURE
+} from './version-action-types'
 
 export const toggleTMMergeModal =
     createAction(TOGGLE_TM_MERGE_MODAL)
 
-const getProjectVersionLocales = (dispatch, project, version) => {
+/**
+ * Fetch project version specific locales from database
+ *
+ * @param projectSlug project ID
+ * @param versionSlug version ID
+ * */
+export const fetchVersionLocales = (projectSlug, versionSlug) => {
+  return (dispatch) => {
+    dispatch(getProjectVersionLocales(dispatch, projectSlug, versionSlug))
+  }
+}
+
+function getProjectVersionLocales (dispatch, project, version) {
   const endpoint = `${apiUrl}/project/${project}/version/${version}/locales`
   const apiTypes = [
     VERSION_LOCALES_REQUEST,
@@ -31,13 +43,18 @@ const getProjectVersionLocales = (dispatch, project, version) => {
   }
 }
 
-export const loadVersionLocales = (projectSlug, versionSlug) => {
+/**
+ * Fetch projects to merge from database
+ *
+ * @param projectSearchTerm to filter results
+ * */
+export const fetchProjectPage = (projectSearchTerm) => {
   return (dispatch) => {
-    dispatch(getProjectVersionLocales(dispatch, projectSlug, versionSlug))
+    dispatch(getProjectPage(dispatch, projectSearchTerm))
   }
 }
 
-const getProjectPage = (dispatch, projectSearchTerm) => {
+function getProjectPage (dispatch, projectSearchTerm) {
   const endpoint =
       `${apiUrl}/search/projects?q=${projectSearchTerm}&includeVersion=true`
   const apiTypes = [
@@ -52,11 +69,5 @@ const getProjectPage = (dispatch, projectSearchTerm) => {
   ]
   return {
     [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
-  }
-}
-
-export const loadProjectPage = (projectSearchTerm) => {
-  return (dispatch) => {
-    dispatch(getProjectPage(dispatch, projectSearchTerm))
   }
 }
