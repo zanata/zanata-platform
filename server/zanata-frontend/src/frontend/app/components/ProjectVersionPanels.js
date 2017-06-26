@@ -4,8 +4,9 @@ import {
   Panel, Tooltip, Checkbox, ListGroup, ListGroupItem, OverlayTrigger, PanelGroup
 } from 'react-bootstrap'
 import Icon from './Icon'
-import {ProjectType, FromProjectVersionType} from '../utils/prop-types-util.js'
-import {every} from 'lodash'
+import {ProjectType, FromProjectVersionType,
+  versionDtoPropType} from '../utils/prop-types-util.js'
+import {isEqual} from 'lodash'
 
 const tooltipReadOnly = <Tooltip id='tooltipreadonly'>Read only</Tooltip>
 
@@ -34,36 +35,83 @@ class ProjectVersionPanels extends Component {
     /* params: project object */
     onAllVersionCheckboxChange: PropTypes.func.isRequired
   }
+  /*
+    selectedVersions is an array of shape:
+    {
+      projectSlug,
+      version: {
+        id,
+        status
+      }
+    }
+   */
+  selectedVersionsOfProject = (selectedVersions, project) => {
+    return selectedVersions
+      .filter(p => p.projectSlug === project.id)
+      .map(p => p.version)
+  }
   render () {
     if (this.props.projectVersions.length === 0) {
-      return <div></div>
+      return <PanelGroup />
     }
+
     const panels = this.props.projectVersions.map((project, index) => {
+      const selectedVersionsInProject =
+        this.selectedVersionsOfProject(this.props.selectedVersions, project)
       return (
-        <Panel key={index} eventKey={index} header={
-          <h3>
-            <SelectAllVersionsCheckbox
-              project={project}
-              onAllVersionCheckboxChange={this.props.onAllVersionCheckboxChange}
-              selectedVersions={this.props.selectedVersions} />
-          </h3>}>
-          <ListGroup fill>
-            {project.versions.map((version, index) => {
-              return (
-                <ListGroupItem className='v' key={index}>
-                  <VersionMenuCheckbox version={version}
-                    onVersionCheckboxChange={this.props.onVersionCheckboxChange}
-                    selectedVersions={this.props.selectedVersions}
-                    projectSlug={project.id} />
-                </ListGroupItem>
-              )
-            })}
-          </ListGroup>
-        </Panel>
+        <SelectableProjectPanel key={index} eventKey={index}
+          selectedVersionsInProject={selectedVersionsInProject}
+          project={project}
+          onAllVersionCheckboxChange={this.props.onAllVersionCheckboxChange}
+          onVersionCheckboxChange={this.props.onVersionCheckboxChange}
+        />
       )
     })
     return <PanelGroup defaultActiveKey={0} accordion>{panels}</PanelGroup>
   }
+}
+/**
+ * Sub Component of a single project with versions.
+ * Handles behavior of display or selecting versions of this project.
+ */
+const SelectableProjectPanel = (props) => {
+  const {
+    project,
+    selectedVersionsInProject,
+    onAllVersionCheckboxChange,
+    onVersionCheckboxChange
+  } = props
+  return (
+    <Panel header={
+      <h3>
+        <SelectAllVersionsCheckbox
+          project={project}
+          onAllVersionCheckboxChange={onAllVersionCheckboxChange}
+          selectedVersions={selectedVersionsInProject} />
+      </h3>}>
+      <ListGroup fill>
+        {project.versions.map((version, index) => {
+          const checked = selectedVersionsInProject.includes(version)
+          return (
+            <ListGroupItem className='v' key={index}>
+              <VersionMenuCheckbox version={version}
+                onVersionCheckboxChange={onVersionCheckboxChange}
+                checked={checked}
+                projectSlug={project.id} />
+            </ListGroupItem>
+          )
+        })}
+      </ListGroup>
+    </Panel>
+  )
+}
+SelectableProjectPanel.propTypes = {
+  project: ProjectType.isRequired,
+  /* params: version, projectSlug */
+  onVersionCheckboxChange: PropTypes.func.isRequired,
+  /* params: project object */
+  onAllVersionCheckboxChange: PropTypes.func.isRequired,
+  selectedVersionsInProject: PropTypes.arrayOf(versionDtoPropType).isRequired
 }
 
 /**
@@ -73,23 +121,16 @@ class ProjectVersionPanels extends Component {
 class SelectAllVersionsCheckbox extends Component {
   static propTypes = {
     project: ProjectType.isRequired,
-    selectedVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
+    selectedVersions: PropTypes.arrayOf(versionDtoPropType).isRequired,
     onAllVersionCheckboxChange: PropTypes.func.isRequired
   }
   onAllVersionCheckboxChange = () => {
     this.props.onAllVersionCheckboxChange(this.props.project)
   }
   render () {
-    const {
-      project,
-      selectedVersions
-    } = this.props
-    const flattenedVersionArray = selectedVersions.map((project) => {
-      return project.version
-    })
+    const {project, selectedVersions} = this.props
     // Check if all project versions have been selected
-    const allVersionsChecked = every(project.versions,
-        version => flattenedVersionArray.includes(version))
+    const allVersionsChecked = isEqual(project.versions, selectedVersions)
 
     return (
       <Checkbox onChange={this.onAllVersionCheckboxChange}
@@ -106,13 +147,10 @@ class SelectAllVersionsCheckbox extends Component {
  */
 class VersionMenuCheckbox extends Component {
   static propTypes = {
-    version: PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      status: PropTypes.oneOf(['READONLY', 'ACTIVE'])
-    }).isRequired,
+    version: versionDtoPropType.isRequired,
     onVersionCheckboxChange: PropTypes.func.isRequired,
-    selectedVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
-    projectSlug: PropTypes.string.isRequired
+    projectSlug: PropTypes.string.isRequired,
+    checked: PropTypes.bool.isRequired
   }
   onVersionCheckboxChange = () => {
     this.props.onVersionCheckboxChange(
@@ -121,14 +159,11 @@ class VersionMenuCheckbox extends Component {
   render () {
     const {
       version,
-      selectedVersions
+      checked
     } = this.props
-    const versionChecked = selectedVersions.map((project) => {
-      return project.version
-    }).includes(version)
     return (
       <Checkbox onChange={this.onVersionCheckboxChange}
-        checked={versionChecked}>
+        checked={checked}>
         {version.id} <LockIcon status={version.status} />
       </Checkbox>
     )

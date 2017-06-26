@@ -57,9 +57,7 @@ class TMMergeModal extends Component {
       fromImportedTM: false,
       selectedLanguage: undefined,
       selectedVersions: [],
-      projectSearchTerm: this.props.projectSlug,
-      // FIXME: make this hold the state of all searched projects
-      selectedProject: []
+      projectSearchTerm: this.props.projectSlug
     }
     /* Chose 1 second as an arbitrary period between searches.
      * leading and trailing options specify we want to search to after the user
@@ -117,13 +115,11 @@ class TMMergeModal extends Component {
   }
   // Remove all versions of a Project from fromProjectVersion array
   removeAllProjectVersions = (projectVersions) => {
-    // FIXME Change state flow to update in correct order
-    setTimeout(() => {
-      this.setState((prevState, props) => ({
-        selectedVersions: prevState.selectedVersions.filter((version) =>
-          !(version.projectSlug === projectVersions[0].projectSlug))
-      }))
-    }, 0)
+    this.setState((prevState, props) => ({
+      selectedVersions:
+        [...prevState.selectedVersions.filter((version) =>
+        !(version.projectSlug === projectVersions[0].projectSlug))]
+    }))
   }
   // Add a version to fromProjectVersion array
   pushProjectVersion = (version) => {
@@ -133,13 +129,10 @@ class TMMergeModal extends Component {
   }
   // Add all versions of a Project to fromProjectVersion array
   pushAllProjectVersions = (projectVersions) => {
-    // FIXME Change state flow to update in correct order
-    setTimeout(() => {
-      this.setState((prevState, props) => ({
-        selectedVersions: [...prevState.selectedVersions.concat(
-            projectVersions)]
-      }))
-    }, 0)
+    this.setState((prevState, props) => ({
+      selectedVersions: [...prevState.selectedVersions.concat(
+          projectVersions)]
+    }))
   }
   flattenedVersionArray = () => {
     return this.state.selectedVersions.map((project) => {
@@ -341,7 +334,6 @@ class TMMergeModal extends Component {
                     selectedVersions={this.state.selectedVersions}
                     onVersionCheckboxChange={this.onVersionCheckboxChange}
                     onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
-                    selectedProject={this.state.selectedProject}
                     projectList={this.props.projectVersions}
                   />
                 </Col>
