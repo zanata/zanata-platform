@@ -9,6 +9,19 @@ import {every} from 'lodash'
 
 const tooltipReadOnly = <Tooltip id='tooltipreadonly'>Read only</Tooltip>
 
+const LockIcon = (props) => {
+  return props.status === 'READONLY'
+    ? (
+    <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
+      <Icon name='locked' className='s0 icon-locked' />
+    </OverlayTrigger>
+  )
+    : <span />
+}
+LockIcon.propTypes = {
+  status: PropTypes.string.isRequired
+}
+
 /**
  * Root component for the Version TM Merge project version panels
  */
@@ -77,15 +90,11 @@ class SelectAllVersionsCheckbox extends Component {
     // Check if all project versions have been selected
     const allVersionsChecked = every(project.versions,
         version => flattenedVersionArray.includes(version))
-    const projectLockIcon = project.status === 'READONLY'
-        ? <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
-          <Icon name='locked' className='s0 icon-locked' />
-        </OverlayTrigger>
-        : undefined
+
     return (
       <Checkbox onChange={this.onAllVersionCheckboxChange}
         checked={allVersionsChecked}>
-        {project.title} {projectLockIcon}
+        {project.title} <LockIcon status={project.status} />
       </Checkbox>
     )
   }
@@ -117,15 +126,10 @@ class VersionMenuCheckbox extends Component {
     const versionChecked = selectedVersions.map((project) => {
       return project.version
     }).includes(version)
-    const versionLockIcon = version.status === 'READONLY'
-        ? <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
-          <Icon name='locked' className='s0 icon-locked' />
-        </OverlayTrigger>
-        : undefined
     return (
       <Checkbox onChange={this.onVersionCheckboxChange}
         checked={versionChecked}>
-        {version.id} {versionLockIcon}
+        {version.id} <LockIcon status={version.status} />
       </Checkbox>
     )
   }
