@@ -90,9 +90,9 @@ class TMMergeModal extends Component {
     }))
   }
   onProjectSearchChange = (event) => {
-    event.persist()
+    const textEntered = event.target.value
     this.setState((prevState, props) => ({
-      projectSearchTerm: event.target.value
+      projectSearchTerm: textEntered
     }), this.throttleHandleSearch(this.state.projectSearchTerm))
   }
   flushProjectSearch = (event) => {
