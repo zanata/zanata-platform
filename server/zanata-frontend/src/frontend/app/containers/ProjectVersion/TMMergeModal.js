@@ -9,10 +9,7 @@ import {
 import {Icon, Modal} from '../../components'
 import ProjectVersionPanels from '../../components/ProjectVersionPanels'
 import DraggableVersionPanels from '../../components/DraggableVersionPanels'
-import TMMatchPercentageDropdown
-  from '../../components/TMMatchPercentageDropdown'
-import LanguageSelectionDropdown
-  from '../../components/LanguageSelectionDropdown'
+import SelectableDropdown from '../../components/SelectableDropdown'
 import {
   fetchVersionLocales,
   fetchProjectPage,
@@ -151,12 +148,15 @@ class TMMergeModal extends Component {
       openTMMergeModal,
       projectSlug,
       versionSlug,
-      projectVersions
+      projectVersions,
+      locales
     } = this.props
     const action = (message) => {
       // TODO: Use Real Actions
       // console.info('clicked')
     }
+    const languages = locales.map(l => l.displayName)
+    const percentValueToDisplay = p => `${p}%`
     const showHide = showTMMergeModal ? {display: 'block'} : {display: 'none'}
     // Different DocID Checkbox handling
     const onDocIdCheckboxChange = () => {
@@ -216,9 +216,12 @@ class TMMergeModal extends Component {
                   className='vmerge-title text-info'>TM match threshold</span>
               </Col>
               <Col xs={5}>
-                <TMMatchPercentageDropdown
-                  selectPercentage={this.onPercentSelection}
-                  matchPercentage={this.state.matchPercentage} />
+                <SelectableDropdown title={this.state.matchPercentage + '%'}
+                  id='dropdown-basic' className='vmerge-ddown'
+                  onSelectDropdownItem={this.onPercentSelection}
+                  selectedValue={this.state.matchPercentage}
+                  valueToDisplay={percentValueToDisplay}
+                  values={[80, 90, 100]} />
               </Col>
             </Col>
             <Col xs={12}>
@@ -265,11 +268,11 @@ class TMMergeModal extends Component {
                 <span className='vmerge-title text-info'>Language</span>
               </Col>
               <Col xs={6}>
-                <LanguageSelectionDropdown
-                  selectLanguage={this.onLanguageSelection}
-                  selectedLanguage={this.state.selectedLanguage}
-                  locales={this.props.locales}
-                />
+                <SelectableDropdown
+                  id='dropdown-basic' className='vmerge-ddown'
+                  onSelectDropdownItem={this.onLanguageSelection}
+                  selectedValue={this.state.selectedLanguage}
+                  values={languages} />
               </Col>
             </Col>
             <Col xs={12} className='vmerge-boxes'>
