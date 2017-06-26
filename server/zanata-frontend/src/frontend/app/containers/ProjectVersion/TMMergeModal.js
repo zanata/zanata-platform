@@ -11,6 +11,7 @@ import {Icon, Modal} from '../../components'
 import ProjectVersionPanels from '../../components/ProjectVersionPanels'
 import DraggableVersionPanels from '../../components/DraggableVersionPanels'
 import SelectableDropdown from '../../components/SelectableDropdown'
+import {ProjectVersionVertical} from '../../components/ProjectVersionDisplay'
 import {
   fetchVersionLocales,
   fetchProjectPage,
@@ -216,12 +217,13 @@ class TMMergeModal extends Component {
             </p>
             <Col xs={12} className='vmerge-row'>
               <Col xs={4}>
-                <span
-                  className='vmerge-title text-info'>TM match threshold</span>
+                <span className='vmerge-title text-info'>
+                  TM match threshold
+                </span>
               </Col>
               <Col xs={5}>
                 <SelectableDropdown title={this.state.matchPercentage + '%'}
-                  id='dropdown-basic' className='vmerge-ddown'
+                  id='percent-dropdown-basic' className='vmerge-ddown'
                   onSelectDropdownItem={this.onPercentSelection}
                   selectedValue={this.state.matchPercentage}
                   valueToDisplay={percentValueToDisplay}
@@ -231,24 +233,22 @@ class TMMergeModal extends Component {
             <Col xs={12}>
               <Panel className='tm-panel'>
                 <ListGroup fill>
-                  <ListGroupItem className=''>
+                  <ListGroupItem>
                     <Checkbox onChange={this.onDocIdCheckboxChange}
                       checked={this.state.differentDocId}>
                     Different DocID
-                      <small>{" "}Document name and path</small>
+                      <small> Document name and path</small>
                       <CopyLabel copy={this.state.differentDocId} />
                     </Checkbox>
                   </ListGroupItem>
                 </ListGroup>
-                <span className='and'>
-              AND
-                </span>
+                <span className='and'> AND </span>
                 <ListGroup fill>
-                  <ListGroupItem className=''>
+                  <ListGroupItem>
                     <Checkbox onChange={this.onContextCheckboxChange}
                       checked={this.state.differentContext}>
                       Different Context
-                      <small>{" "} resId, msgctxt</small>
+                      <small> resId, msgctxt</small>
                       <CopyLabel copy={this.state.differentContext} />
                     </Checkbox>
                   </ListGroupItem>
@@ -257,10 +257,9 @@ class TMMergeModal extends Component {
               <Panel className='tm-panel'>
                 <span className='or'>OR</span>
                 <ListGroup fill>
-                  <ListGroupItem className=''>
+                  <ListGroupItem >
                     <Checkbox onChange={this.onImportedCheckboxChange}>
                       Match from Imported TM
-                      <small>{" "}</small>
                       <CopyLabel copy={this.state.fromImportedTM} />
                     </Checkbox>
                   </ListGroupItem>
@@ -273,7 +272,7 @@ class TMMergeModal extends Component {
               </Col>
               <Col xs={6}>
                 <SelectableDropdown
-                  id='dropdown-basic' className='vmerge-ddown'
+                  id='language-dropdown-basic' className='vmerge-ddown'
                   onSelectDropdownItem={this.onLanguageSelection}
                   selectedValue={this.state.selectedLanguage}
                   values={languages} />
@@ -286,17 +285,8 @@ class TMMergeModal extends Component {
                     <span className='text-info'>To</span>
                     <span className='text-muted'>Target</span>
                   </div>
-                  <ul>
-                    <li>
-                      <Icon name='project' className='s0 tmx-icon' />
-                      {projectSlug}
-                    </li>
-                    <li>
-                      <Icon name='version' title='version'
-                        className='s0 tmx-icon' />
-                      {versionSlug}
-                    </li>
-                  </ul>
+                  <ProjectVersionVertical projectSlug={projectSlug}
+                    versionSlug={versionSlug} />
                 </div>
               </Panel>
             </Col>
@@ -325,8 +315,8 @@ class TMMergeModal extends Component {
                   </InputGroup>
                 </Col>
                 <Col xs={6}>
-                  <span className='vmerge-adjtitle
-                  vmerge-title'>Select source project versions to merge
+                  <span className='vmerge-adjtitle vmerge-title'>
+                    Select source project versions to merge
                   </span>
                   <ProjectVersionPanels projectVersions={projectVersions}
                     selectedVersions={this.state.selectedVersions}
@@ -347,15 +337,12 @@ class TMMergeModal extends Component {
         <Modal.Footer>
           <span className='bootstrap pull-right'>
             <Row>
-              <Button bsStyle='link'
-                className='btn-left link-danger'
+              <Button bsStyle='link' className='btn-left link-danger'
                 onClick={openTMMergeModal}>
                 Cancel
               </Button>
-              <Button
-                bsStyle='primary'
-                onClick={action('onClick')}>
-              Merge translations
+              <Button bsStyle='primary' onClick={action('onClick')}>
+                Merge translations
               </Button>
             </Row>
           </span>
