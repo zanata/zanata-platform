@@ -32,7 +32,8 @@ class TMMergeModal extends Component {
     projectSlug: PropTypes.string.isRequired,
     versionSlug: PropTypes.string.isRequired,
     locales: PropTypes.arrayOf(LocaleType).isRequired,
-    projectVersions: PropTypes.arrayOf(ProjectType).isRequired
+    projectVersions: PropTypes.arrayOf(ProjectType).isRequired,
+    notification: PropTypes.object
   }
   constructor (props) {
     super(props)
@@ -165,7 +166,8 @@ class TMMergeModal extends Component {
       projectSlug,
       versionSlug,
       projectVersions,
-      locales
+      locales,
+      notification
     } = this.props
     const action = (message) => {
       // TODO: Use Real Actions
@@ -219,6 +221,8 @@ class TMMergeModal extends Component {
         onHide={openTMMergeModal}>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
+          <p className="text-danger">
+            {notification && notification.message}</p>
         </Modal.Header>
         <Modal.Body>
           <div>
@@ -382,7 +386,8 @@ const mapStateToProps = (state) => {
   return {
     showTMMergeModal: state.projectVersion.TMMerge.show,
     locales: state.projectVersion.locales,
-    projectVersions: state.projectVersion.TMMerge.projectVersions
+    projectVersions: state.projectVersion.TMMerge.projectVersions,
+    notification: state.projectVersion.notification
   }
 }
 
