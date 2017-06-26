@@ -107,63 +107,61 @@ class TMMergeModal extends Component {
         arrayMove(prevState.selectedVersions, oldIndex, newIndex)
     }))
   }
-  // Remove a version from fromProjectVersion array by index
+  // Remove a version from fromProjectVersion array
   removeProjectVersion = (project, version) => {
     this.setState((prevState, props) => ({
       selectedVersions: prevState.selectedVersions.filter(({ projectSlug,
        version: { id } }) => projectSlug !== project || id !== version.id)}))
   }
   // Remove all versions of a Project from fromProjectVersion array
-  removeAllProjectVersions = (projectVersions) => {
-    this.setState((prevState, props) => ({
-      selectedVersions:
-        [...prevState.selectedVersions.filter((version) =>
-        !(version.projectSlug === projectVersions[0].projectSlug))]
-    }))
+  removeAllProjectVersions = (projectSlug) => {
+    this.setState((prevState) => {
+      return {
+        selectedVersions: prevState.selectedVersions
+          .filter(p => projectSlug !== p.projectSlug)
+      }
+    })
   }
   // Add a version to fromProjectVersion array
-  pushProjectVersion = (version) => {
+  pushProjectVersion = (projectVersion) => {
     this.setState((prevState, props) => ({
-      selectedVersions: [...prevState.selectedVersions, version]
+      selectedVersions: [...prevState.selectedVersions, projectVersion]
     }))
   }
   // Add all versions of a Project to fromProjectVersion array
   pushAllProjectVersions = (projectVersions) => {
-    this.setState((prevState, props) => ({
-      selectedVersions: [...prevState.selectedVersions.concat(
-          projectVersions)]
-    }))
-  }
-  flattenedVersionArray = () => {
-    return this.state.selectedVersions.map((project) => {
-      return project.version
+    this.setState(prevState => {
+      return {
+        selectedVersions: prevState.selectedVersions.concat(projectVersions)
+      }
     })
+  }
+  inSelection = (projectSlug, version) => {
+    return this.state.selectedVersions
+      .find(p => p.projectSlug === projectSlug && p.version.id === version.id)
   }
   // Remove/Add version from fromProjectVersion array based on selection
   onVersionCheckboxChange = (version, projectSlug) => {
-    const versionChecked = this.flattenedVersionArray().includes(version)
-    // const index = this.flattenedVersionArray().indexOf(version)
+    const versionChecked = this.inSelection(projectSlug, version)
     versionChecked ? this.removeProjectVersion(projectSlug, version)
       : this.pushProjectVersion({version, projectSlug: projectSlug})
   }
   // Remove/Add all project versions to version list
   onAllVersionCheckboxChange = (project) => {
     const projectSlug = project.id
-    let versionsToPush = project.versions.map((version) => {
+    const versionsInProject = project.versions.map((version) => {
       return {version, projectSlug}
     })
-    const versionsToPop = [...versionsToPush]
-    let allVersionsChecked = true
-    project.versions.map((version) => {
-      if (!this.flattenedVersionArray().includes(version)) {
-        allVersionsChecked = false
-      }
-    })
-    versionsToPush = (differenceWith(versionsToPop,
-            this.state.selectedVersions, isEqual))
-    allVersionsChecked
-        ? this.removeAllProjectVersions(versionsToPop)
-        : this.pushAllProjectVersions(versionsToPush)
+    const diff = differenceWith(versionsInProject,
+      this.state.selectedVersions, isEqual)
+    if (diff.length === 0) {
+      // we already have all versions in this project selected,
+      // the operation is to remove them all
+      this.removeAllProjectVersions(projectSlug)
+    } else {
+      // we want to add all versions to the selection
+      this.pushAllProjectVersions(diff)
+    }
   }
   // Different DocID Checkbox handling
   onDocIdCheckboxChange = () => {
