@@ -137,13 +137,13 @@ class TMMergeModal extends Component {
       }
     })
   }
-  inSelection = (projectSlug, version) => {
+  isProjectVersionSelected = (projectSlug, version) => {
     return this.state.selectedVersions
       .find(p => p.projectSlug === projectSlug && p.version.id === version.id)
   }
   // Remove/Add version from fromProjectVersion array based on selection
   onVersionCheckboxChange = (version, projectSlug) => {
-    const versionChecked = this.inSelection(projectSlug, version)
+    const versionChecked = this.isProjectVersionSelected(projectSlug, version)
     versionChecked ? this.removeProjectVersion(projectSlug, version)
       : this.pushProjectVersion({version, projectSlug: projectSlug})
   }
