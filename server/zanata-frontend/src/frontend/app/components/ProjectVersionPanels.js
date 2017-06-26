@@ -6,7 +6,6 @@ import {
 import Icon from './Icon'
 import {ProjectType, FromProjectVersionType,
   versionDtoPropType} from '../utils/prop-types-util.js'
-import {isEqual} from 'lodash'
 
 const tooltipReadOnly = <Tooltip id='tooltipreadonly'>Read only</Tooltip>
 
@@ -87,7 +86,7 @@ const SelectableProjectPanel = (props) => {
         <SelectAllVersionsCheckbox
           project={project}
           onAllVersionCheckboxChange={onAllVersionCheckboxChange}
-          selectedVersions={selectedVersionsInProject} />
+          selectedVersionsInProject={selectedVersionsInProject} />
       </h3>}>
       <ListGroup fill>
         {project.versions.map((version, index) => {
@@ -121,16 +120,19 @@ SelectableProjectPanel.propTypes = {
 class SelectAllVersionsCheckbox extends Component {
   static propTypes = {
     project: ProjectType.isRequired,
-    selectedVersions: PropTypes.arrayOf(versionDtoPropType).isRequired,
+    selectedVersionsInProject: PropTypes.arrayOf(versionDtoPropType).isRequired,
     onAllVersionCheckboxChange: PropTypes.func.isRequired
   }
   onAllVersionCheckboxChange = () => {
     this.props.onAllVersionCheckboxChange(this.props.project)
   }
   render () {
-    const {project, selectedVersions} = this.props
+    const {project, selectedVersionsInProject} = this.props
     // Check if all project versions have been selected
-    const allVersionsChecked = isEqual(project.versions, selectedVersions)
+    // since we are just comparing versions in one project, we can just check
+    // the size
+    const allVersionsChecked =
+      project.versions.length === selectedVersionsInProject.length
 
     return (
       <Checkbox onChange={this.onAllVersionCheckboxChange}
