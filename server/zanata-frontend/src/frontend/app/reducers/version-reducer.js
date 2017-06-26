@@ -9,7 +9,7 @@ import {
   PROJECT_PAGE_FAILURE
 } from '../actions/version-action-types'
 
-export default handleActions({
+const version = handleActions({
   [TOGGLE_TM_MERGE_MODAL]: (state, action) => {
     let newState = cloneDeep(state)
     newState.TMMerge.show = !state.TMMerge.show
@@ -21,7 +21,9 @@ export default handleActions({
     let newState = cloneDeep(state)
     newState.locales = action.payload
     return {
-      ...newState
+      ...newState,
+      loading: false,
+      notification: undefined
     }
   },
   [VERSION_LOCALES_FAILURE]: (state, action) => {
@@ -40,7 +42,9 @@ export default handleActions({
     let newState = cloneDeep(state)
     newState.TMMerge.projectVersions = action.payload
     return {
-      ...newState
+      ...newState,
+      loading: false,
+      notification: undefined
     }
   },
   [PROJECT_PAGE_FAILURE]: (state, action) => {
@@ -63,3 +67,5 @@ export default handleActions({
     },
     locales: []
   })
+
+export default version
