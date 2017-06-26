@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
+import {arrayMove} from 'react-sortable-hoc'
 import {
   Button, Panel, Row, Checkbox, InputGroup, Col, Label, FormControl, ListGroup,
   ListGroupItem
@@ -40,7 +41,7 @@ class TMMergeModal extends Component {
       differentDocId: false,
       differentContext: false,
       fromImportedTM: false,
-      selectedLanguage: '',
+      selectedLanguage: undefined,
       selectedVersions: [],
       projectSearchTerm: this.props.projectSlug,
       // FIXME: make this hold the state of all searched projects
@@ -87,6 +88,13 @@ class TMMergeModal extends Component {
       this.throttleHandleSearch.flush()
     }
   }
+  // Sorts the selectedVersion list after a reorder of the Draggable List
+  onDragMoveEnd = ({oldIndex, newIndex}) => {
+    this.setState((prevState, props) => ({
+      selectedVersions:
+        arrayMove(prevState.selectedVersions, oldIndex, newIndex)
+    }))
+  }
   // Remove a version from fromProjectVersion array by index
   removeProjectVersion = (project, version) => {
     this.setState((prevState, props) => ({
@@ -98,9 +106,8 @@ class TMMergeModal extends Component {
     // FIXME Change state flow to update in correct order
     setTimeout(() => {
       this.setState((prevState, props) => ({
-        selectedVersions:
-          [...prevState.selectedVersions.filter((version) =>
-          !(version.projectSlug === projectVersions[0].projectSlug))]
+        selectedVersions: prevState.selectedVersions.filter((version) =>
+          !(version.projectSlug === projectVersions[0].projectSlug))
       }))
     }, 0)
   }
@@ -343,7 +350,8 @@ class TMMergeModal extends Component {
                 </Col>
                 <Col xs={6}>
                   <DraggableVersionPanels
-                    selectedVersions={this.state.selectedVersions} />
+                    selectedVersions={this.state.selectedVersions}
+                    onDraggableMoveEnd={this.onDragMoveEnd} />
                 </Col>
               </Panel>
             </Col>

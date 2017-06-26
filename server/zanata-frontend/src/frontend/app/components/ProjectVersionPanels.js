@@ -81,7 +81,7 @@ class SelectAllVersionsCheckbox extends Component {
         ? <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
           <Icon name='locked' className='s0 icon-locked' />
         </OverlayTrigger>
-        : ''
+        : undefined
     return (
       <Checkbox onChange={this.onAllVersionCheckboxChange}
         checked={allVersionsChecked}>

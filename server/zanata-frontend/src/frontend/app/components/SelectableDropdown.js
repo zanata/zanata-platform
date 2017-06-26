@@ -9,7 +9,7 @@ class SelectableDropdown extends Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
     onSelectDropdownItem: PropTypes.func.isRequired,
-    selectedValue: PropTypes.any.isRequired,
+    selectedValue: PropTypes.any,
     values: PropTypes.arrayOf(PropTypes.any).isRequired,
     // optinal function to convert value to display string
     valueToDisplay: PropTypes.func,
@@ -39,7 +39,7 @@ class SelectableDropdown extends Component {
     })
     return (
       <DropdownButton id={id} bsStyle={bsStyle || 'default'}
-        bsSize={bsSize || 'small'} title={title || selectedValue}>
+        bsSize={bsSize || 'small'} title={title || selectedValue || ''}>
         {items}
       </DropdownButton>
     )
