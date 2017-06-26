@@ -18,6 +18,19 @@ import {
 } from '../../actions/version-actions'
 import {ProjectType, LocaleType} from '../../utils/prop-types-util.js'
 
+const CopyLabel = (props) => {
+  return props.copy
+    ? (<Label bsStyle='warning'>
+      Copy as Fuzzy
+    </Label>)
+    : (<Label bsStyle='danger'>
+      Don't Copy
+    </Label>)
+}
+CopyLabel.propTypes = {
+  copy: PropTypes.bool.isRequired
+}
+
 /**
  * Root component for TM Merge Modal
  */
@@ -159,6 +172,24 @@ class TMMergeModal extends Component {
         ? this.removeAllProjectVersions(versionsToPop)
         : this.pushAllProjectVersions(versionsToPush)
   }
+  // Different DocID Checkbox handling
+  onDocIdCheckboxChange = () => {
+    this.setState((prevState, props) => ({
+      differentDocId: !prevState.differentDocId
+    }))
+  }
+  // Different Context Checkbox handling
+  onContextCheckboxChange = () => {
+    this.setState((prevState, props) => ({
+      differentContext: !prevState.differentContext
+    }))
+  }
+  // Match from Imported TM Checkbox handling
+  onImportedCheckboxChange = () => {
+    this.setState((prevState, props) => ({
+      fromImportedTM: !prevState.fromImportedTM
+    }))
+  }
   render () {
     const {
       showTMMergeModal,
@@ -176,45 +207,7 @@ class TMMergeModal extends Component {
     const languages = locales.map(l => l.displayName)
     const percentValueToDisplay = p => `${p}%`
     const showHide = showTMMergeModal ? {display: 'block'} : {display: 'none'}
-    // Different DocID Checkbox handling
-    const onDocIdCheckboxChange = () => {
-      this.setState((prevState, props) => ({
-        differentDocId: !prevState.differentDocId
-      }))
-    }
-    const docIdLabel = this.state.differentDocId
-        ? (<Label bsStyle='warning'>
-        Copy as Fuzzy
-        </Label>)
-        : (<Label bsStyle='danger'>
-        Don't Copy
-        </Label>)
-    // Different Context Checkbox handling
-    const onContextCheckboxChange = () => {
-      this.setState((prevState, props) => ({
-        differentContext: !prevState.differentContext
-      }))
-    }
-    const differentContextLabel = this.state.differentContext
-        ? (<Label bsStyle='warning'>
-          Copy as Fuzzy
-        </Label>)
-        : (<Label bsStyle='danger'>
-          Don't Copy
-        </Label>)
-    // Match from Imported TM Checkbox handling
-    const onImportedCheckboxChange = () => {
-      this.setState((prevState, props) => ({
-        fromImportedTM: !prevState.fromImportedTM
-      }))
-    }
-    const matchImportedLabel = this.state.fromImportedTM
-        ? (<Label bsStyle='warning'>
-          Copy as Fuzzy
-        </Label>)
-        : (<Label bsStyle='danger'>
-          Don't Copy
-        </Label>)
+
     return (
       <Modal style={showHide}
         show
@@ -248,11 +241,11 @@ class TMMergeModal extends Component {
               <Panel className='tm-panel'>
                 <ListGroup fill>
                   <ListGroupItem className=''>
-                    <Checkbox onChange={onDocIdCheckboxChange}
+                    <Checkbox onChange={this.onDocIdCheckboxChange}
                       checked={this.state.differentDocId}>
                     Different DocID
                       <small>{" "}Document name and path</small>
-                      {docIdLabel}
+                      <CopyLabel copy={this.state.differentDocId} />
                     </Checkbox>
                   </ListGroupItem>
                 </ListGroup>
@@ -261,11 +254,11 @@ class TMMergeModal extends Component {
                 </span>
                 <ListGroup fill>
                   <ListGroupItem className=''>
-                    <Checkbox onChange={onContextCheckboxChange}
+                    <Checkbox onChange={this.onContextCheckboxChange}
                       checked={this.state.differentContext}>
                       Different Context
                       <small>{" "} resId, msgctxt</small>
-                      {differentContextLabel}
+                      <CopyLabel copy={this.state.differentContext} />
                     </Checkbox>
                   </ListGroupItem>
                 </ListGroup>
@@ -274,10 +267,10 @@ class TMMergeModal extends Component {
                 <span className='or'>OR</span>
                 <ListGroup fill>
                   <ListGroupItem className=''>
-                    <Checkbox onChange={onImportedCheckboxChange}>
+                    <Checkbox onChange={this.onImportedCheckboxChange}>
                       Match from Imported TM
                       <small>{" "}</small>
-                      {matchImportedLabel}
+                      <CopyLabel copy={this.state.fromImportedTM} />
                     </Checkbox>
                   </ListGroupItem>
                 </ListGroup>
