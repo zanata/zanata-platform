@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import { differenceWith, isEqual } from 'lodash'
+import { differenceWith, isEqual, throttle } from 'lodash'
 import {
   Button, Panel, Row, Checkbox, InputGroup, Col, Label, FormControl, ListGroup,
   ListGroupItem
@@ -46,10 +46,16 @@ class TMMergeModal extends Component {
       // FIXME: make this hold the state of all searched projects
       selectedProject: []
     }
+    /* Chose 1 second as an arbitrary period between searches.
+     * leading and trailing options specify we want to search to after the user
+     * stops typing. */
+    this.throttleHandleSearch = throttle(props.openProjectPage, 1000,
+      { 'leading': false }, { 'trailing': true })
   }
   componentDidMount () {
     this.props.fetchVersionLocales(
       this.props.projectSlug, this.props.versionSlug)
+    this.props.openProjectPage(this.state.projectSearchTerm)
   }
   componentWillReceiveProps (nextProps) {
     const locales = nextProps.locales
@@ -71,12 +77,15 @@ class TMMergeModal extends Component {
     }))
   }
   onProjectSearchChange = (event) => {
+    event.persist()
     this.setState((prevState, props) => ({
       projectSearchTerm: event.target.value
-    }))
+    }), this.throttleHandleSearch(this.state.projectSearchTerm))
   }
-  onProjectSearch = () => {
-    this.props.openProjectPage(this.state.projectSearchTerm)
+  flushProjectSearch = (event) => {
+    if (event.key === 'Enter') {
+      this.throttleHandleSearch.flush()
+    }
   }
   // Remove a version from fromProjectVersion array by index
   removeProjectVersion = (project, version) => {
@@ -316,13 +325,9 @@ class TMMergeModal extends Component {
                       value={this.state.projectSearchTerm}
                       className='vmerge-searchinput'
                       onChange={this.onProjectSearchChange}
+                      onKeyDown={this.flushProjectSearch}
                     />
                   </InputGroup>
-                  <Button
-                    bsStyle='primary'
-                    onClick={this.onProjectSearch}>
-                  Search
-                  </Button>
                 </Col>
                 <Col xs={6}>
                   <span className='vmerge-adjtitle
