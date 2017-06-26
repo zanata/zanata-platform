@@ -40,12 +40,6 @@ class ProjectVersion extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-
-  }
-}
-
 const mapDispatchToProps = (dispatch) => {
   return {
     openTMMergeModal: () => {
@@ -54,4 +48,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectVersion)
+export default connect(undefined, mapDispatchToProps)(ProjectVersion)

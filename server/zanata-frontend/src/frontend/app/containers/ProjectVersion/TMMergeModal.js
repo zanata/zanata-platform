@@ -26,7 +26,7 @@ import {ProjectType, LocaleType} from '../../utils/prop-types-util.js'
 class TMMergeModal extends Component {
   static propTypes = {
     /* params: projectSlug and versionSlug */
-    handleInitLoad: PropTypes.func.isRequired,
+    fetchVersionLocales: PropTypes.func.isRequired,
     showTMMergeModal: PropTypes.bool.isRequired,
     openTMMergeModal: PropTypes.func.isRequired,
     /* params: project object */
@@ -44,14 +44,15 @@ class TMMergeModal extends Component {
       differentContext: false,
       fromImportedTM: false,
       selectedLanguage: '',
-      fromProjectVersions: [], // Selected Versions List
+      selectedVersions: [],
       projectSearchTerm: this.props.projectSlug,
       // FIXME: make this hold the state of all searched projects
       selectedProject: []
     }
   }
   componentDidMount () {
-    this.props.handleInitLoad(this.props.projectSlug, this.props.versionSlug)
+    this.props.fetchVersionLocales(
+      this.props.projectSlug, this.props.versionSlug)
   }
   componentWillReceiveProps (nextProps) {
     const locales = nextProps.locales
@@ -81,22 +82,18 @@ class TMMergeModal extends Component {
     this.props.openProjectPage(this.state.projectSearchTerm)
   }
   // Remove a version from fromProjectVersion array by index
-  removeProjectVersion = (version, myProjectSlug) => {
+  removeProjectVersion = (project, version) => {
     this.setState((prevState, props) => ({
-      fromProjectVersions:
-        prevState.fromProjectVersions.filter(
-          ({ projectSlug, version: { id } }) => projectSlug !== myProjectSlug ||
-          id !== version.id
-        )
-    }))
+      selectedVersions: prevState.selectedVersions.filter(({ projectSlug,
+       version: { id } }) => projectSlug !== project || id !== version.id)}))
   }
   // Remove all versions of a Project from fromProjectVersion array
   removeAllProjectVersions = (projectVersions) => {
     // FIXME Change state flow to update in correct order
     setTimeout(() => {
       this.setState((prevState, props) => ({
-        fromProjectVersions:
-          [...prevState.fromProjectVersions.filter((version) =>
+        selectedVersions:
+          [...prevState.selectedVersions.filter((version) =>
           !(version.projectSlug === projectVersions[0].projectSlug))]
       }))
     }, 0)
@@ -104,7 +101,7 @@ class TMMergeModal extends Component {
   // Add a version to fromProjectVersion array
   pushProjectVersion = (version) => {
     this.setState((prevState, props) => ({
-      fromProjectVersions: [...prevState.fromProjectVersions, version]
+      selectedVersions: [...prevState.selectedVersions, version]
     }))
   }
   // Add all versions of a Project to fromProjectVersion array
@@ -112,13 +109,13 @@ class TMMergeModal extends Component {
     // FIXME Change state flow to update in correct order
     setTimeout(() => {
       this.setState((prevState, props) => ({
-        fromProjectVersions: [...prevState.fromProjectVersions.concat(
+        selectedVersions: [...prevState.selectedVersions.concat(
             projectVersions)]
       }))
     }, 0)
   }
   flattenedVersionArray = () => {
-    return this.state.fromProjectVersions.map((project) => {
+    return this.state.selectedVersions.map((project) => {
       return project.version
     })
   }
@@ -126,7 +123,7 @@ class TMMergeModal extends Component {
   onVersionCheckboxChange = (version, projectSlug) => {
     const versionChecked = this.flattenedVersionArray().includes(version)
     // const index = this.flattenedVersionArray().indexOf(version)
-    versionChecked ? this.removeProjectVersion(version, projectSlug)
+    versionChecked ? this.removeProjectVersion(projectSlug, version)
       : this.pushProjectVersion({version, projectSlug: projectSlug})
   }
   // Remove/Add all project versions to version list
@@ -143,7 +140,7 @@ class TMMergeModal extends Component {
       }
     })
     versionsToPush = (differenceWith(versionsToPop,
-            this.state.fromProjectVersions, isEqual))
+            this.state.selectedVersions, isEqual))
     allVersionsChecked
         ? this.removeAllProjectVersions(versionsToPop)
         : this.pushAllProjectVersions(versionsToPush)
@@ -329,7 +326,7 @@ class TMMergeModal extends Component {
                   vmerge-title'>Select source project versions to merge
                   </span>
                   <ProjectVersionPanels projectVersions={projectVersions}
-                    fromProjectVersions={this.state.fromProjectVersions}
+                    selectedVersions={this.state.selectedVersions}
                     onVersionCheckboxChange={this.onVersionCheckboxChange}
                     onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
                     selectedProject={this.state.selectedProject}
@@ -338,7 +335,7 @@ class TMMergeModal extends Component {
                 </Col>
                 <Col xs={6}>
                   <DraggableVersionPanels
-                    fromProjectVersions={this.state.fromProjectVersions} />
+                    selectedVersions={this.state.selectedVersions} />
                 </Col>
               </Panel>
             </Col>
@@ -375,7 +372,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    handleInitLoad: (project, version) => {
+    fetchVersionLocales: (project, version) => {
       dispatch(fetchVersionLocales(project, version))
     },
     openProjectPage: (project) => {

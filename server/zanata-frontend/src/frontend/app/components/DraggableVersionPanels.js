@@ -8,14 +8,14 @@ import {FromProjectVersionType} from '../utils/prop-types-util.js'
  */
 class DraggableVersionPanels extends Component {
   static propTypes = {
-    fromProjectVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired
+    selectedVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired
   }
   render () {
-    if (this.props.fromProjectVersions.length === 0) {
+    if (this.props.selectedVersions.length === 0) {
       return <div></div>
     }
     const draggablePanels =
-      this.props.fromProjectVersions.map((version, index) => {
+      this.props.selectedVersions.map((version, index) => {
         return (
           <Draggable bounds='parent' axis='y' grid={[57, 57]} key={index}>
             <ListGroupItem className='v' >

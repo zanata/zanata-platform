@@ -28,11 +28,11 @@ export const toggleTMMergeModal =
  * */
 export const fetchVersionLocales = (projectSlug, versionSlug) => {
   return (dispatch) => {
-    dispatch(getProjectVersionLocales(dispatch, projectSlug, versionSlug))
+    dispatch(fetchProjectVersionLocales(dispatch, projectSlug, versionSlug))
   }
 }
 
-function getProjectVersionLocales (dispatch, project, version) {
+function fetchProjectVersionLocales (dispatch, project, version) {
   const endpoint = `${apiUrl}/project/${project}/version/${version}/locales`
   const apiTypes = [
     VERSION_LOCALES_REQUEST,
@@ -51,11 +51,11 @@ function getProjectVersionLocales (dispatch, project, version) {
  * */
 export const fetchProjectPage = (projectSearchTerm) => {
   return (dispatch) => {
-    dispatch(getProjectPage(dispatch, projectSearchTerm))
+    dispatch(fetchSearchProjectPage(dispatch, projectSearchTerm))
   }
 }
 
-function getProjectPage (dispatch, projectSearchTerm) {
+function fetchSearchProjectPage (dispatch, projectSearchTerm) {
   const endpoint =
       `${apiUrl}/search/projects?q=${projectSearchTerm}&includeVersion=true`
   const apiTypes = [

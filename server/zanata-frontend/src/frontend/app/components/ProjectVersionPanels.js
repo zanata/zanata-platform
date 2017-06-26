@@ -15,7 +15,7 @@ const tooltipReadOnly = <Tooltip id='tooltipreadonly'>Read only</Tooltip>
 class ProjectVersionPanels extends Component {
   static propTypes = {
     projectVersions: PropTypes.arrayOf(ProjectType).isRequired,
-    fromProjectVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
+    selectedVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
     /* params: version, projectSlug */
     onVersionCheckboxChange: PropTypes.func.isRequired,
     /* params: project object */
@@ -32,7 +32,7 @@ class ProjectVersionPanels extends Component {
             <SelectAllVersionsCheckbox
               project={project}
               onAllVersionCheckboxChange={this.props.onAllVersionCheckboxChange}
-              fromProjectVersions={this.props.fromProjectVersions} />
+              selectedVersions={this.props.selectedVersions} />
           </h3>}>
           <ListGroup fill>
             {project.versions.map((version, index) => {
@@ -40,7 +40,7 @@ class ProjectVersionPanels extends Component {
                 <ListGroupItem className='v' key={index}>
                   <VersionMenuCheckbox version={version}
                     onVersionCheckboxChange={this.props.onVersionCheckboxChange}
-                    fromProjectVersions={this.props.fromProjectVersions}
+                    selectedVersions={this.props.selectedVersions}
                     projectSlug={project.id} />
                 </ListGroupItem>
               )
@@ -60,7 +60,7 @@ class ProjectVersionPanels extends Component {
 class SelectAllVersionsCheckbox extends Component {
   static propTypes = {
     project: ProjectType.isRequired,
-    fromProjectVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
+    selectedVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
     onAllVersionCheckboxChange: PropTypes.func.isRequired
   }
   onAllVersionCheckboxChange = () => {
@@ -69,9 +69,9 @@ class SelectAllVersionsCheckbox extends Component {
   render () {
     const {
       project,
-      fromProjectVersions
+      selectedVersions
     } = this.props
-    const flattenedVersionArray = fromProjectVersions.map((project) => {
+    const flattenedVersionArray = selectedVersions.map((project) => {
       return project.version
     })
     // Check if all project versions have been selected
@@ -102,7 +102,7 @@ class VersionMenuCheckbox extends Component {
       status: PropTypes.oneOf(['READONLY', 'ACTIVE'])
     }).isRequired,
     onVersionCheckboxChange: PropTypes.func.isRequired,
-    fromProjectVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
+    selectedVersions: PropTypes.arrayOf(FromProjectVersionType).isRequired,
     projectSlug: PropTypes.string.isRequired
   }
   onVersionCheckboxChange = () => {
@@ -112,9 +112,9 @@ class VersionMenuCheckbox extends Component {
   render () {
     const {
       version,
-      fromProjectVersions
+      selectedVersions
     } = this.props
-    const versionChecked = fromProjectVersions.map((project) => {
+    const versionChecked = selectedVersions.map((project) => {
       return project.version
     }).includes(version)
     const versionLockIcon = version.status === 'READONLY'
