@@ -1,13 +1,20 @@
 package org.zanata.action;
 
+import static org.zanata.async.AsyncTaskKey.joinFields;
+
 import java.io.Serializable;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.AsyncTaskKey;
+import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.async.handle.CopyVersionTaskHandle;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.CopyVersionService;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Manages copy version tasks.
@@ -41,7 +48,7 @@ public class CopyVersionManager implements Serializable {
      */
     public void startCopyVersion(String projectSlug, String versionSlug,
             String newVersionSlug) {
-        CopyVersionKey key = CopyVersionKey.getKey(projectSlug, newVersionSlug);
+        AsyncTaskKey key = CopyVersionKey.getKey(projectSlug, newVersionSlug);
         CopyVersionTaskHandle handle = new CopyVersionTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyVersionServiceImpl.startCopyVersion(projectSlug, versionSlug,
@@ -83,68 +90,22 @@ public class CopyVersionManager implements Serializable {
     /**
      * Key used for copy version task
      *
-     * @param projectSlug
-     *            - target project identifier
-     * @param versionSlug
-     *            - target version identifier
      */
-    public static final class CopyVersionKey implements Serializable {
-        // target project identifier
-        private final String projectSlug;
-        // target version identifier
-        private final String versionSlug;
+    public static final class CopyVersionKey {
+        private static final String KEY_NAME = "copyVersion";
 
-        public static CopyVersionKey getKey(String projectSlug,
-                String versionSlug) {
-            return new CopyVersionKey(projectSlug, versionSlug);
+        /**
+         *
+         * @param projectSlug
+         *            - target project identifier
+         * @param versionSlug
+         *            - target version identifier
+         */
+        public static AsyncTaskKey
+                getKey(String projectSlug, String versionSlug) {
+            return new GenericAsyncTaskKey(
+                    joinFields(KEY_NAME, projectSlug, versionSlug));
         }
 
-        @Override
-        public boolean equals(final Object o) {
-            if (o == this)
-                return true;
-            if (!(o instanceof CopyVersionManager.CopyVersionKey))
-                return false;
-            final CopyVersionKey other = (CopyVersionKey) o;
-            final Object this$projectSlug = this.getProjectSlug();
-            final Object other$projectSlug = other.getProjectSlug();
-            if (this$projectSlug == null ? other$projectSlug != null
-                    : !this$projectSlug.equals(other$projectSlug))
-                return false;
-            final Object this$versionSlug = this.getVersionSlug();
-            final Object other$versionSlug = other.getVersionSlug();
-            if (this$versionSlug == null ? other$versionSlug != null
-                    : !this$versionSlug.equals(other$versionSlug))
-                return false;
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $projectSlug = this.getProjectSlug();
-            result = result * PRIME
-                    + ($projectSlug == null ? 43 : $projectSlug.hashCode());
-            final Object $versionSlug = this.getVersionSlug();
-            result = result * PRIME
-                    + ($versionSlug == null ? 43 : $versionSlug.hashCode());
-            return result;
-        }
-
-        public String getProjectSlug() {
-            return this.projectSlug;
-        }
-
-        public String getVersionSlug() {
-            return this.versionSlug;
-        }
-
-        @java.beans.ConstructorProperties({ "projectSlug", "versionSlug" })
-        public CopyVersionKey(final String projectSlug,
-                final String versionSlug) {
-            this.projectSlug = projectSlug;
-            this.versionSlug = versionSlug;
-        }
     }
 }

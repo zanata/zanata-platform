@@ -148,7 +148,7 @@ public class ReindexAction implements Serializable {
         return false;
     }
 
-    public int getReindexCount() {
+    public long getReindexCount() {
         if (searchIndexManager.getProcessHandle() == null) {
             return 0;
         } else {
@@ -156,7 +156,7 @@ public class ReindexAction implements Serializable {
         }
     }
 
-    public int getReindexProgress() {
+    public long getReindexProgress() {
         if (searchIndexManager.getProcessHandle() == null) {
             return 0;
         } else {

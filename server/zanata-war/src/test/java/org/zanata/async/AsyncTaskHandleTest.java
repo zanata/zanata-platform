@@ -98,7 +98,6 @@ public class AsyncTaskHandleTest {
     @Test
     public void testEstimatedTimeRemaining() throws Exception {
         AsyncTaskHandle<String> handle = new AsyncTaskHandle<>();
-        handle.setMinProgress(0);
         handle.setMaxProgress(10);
         AsyncTaskResult<String> result = new AsyncTaskResult<>();
         handle.setFutureResult(result);
