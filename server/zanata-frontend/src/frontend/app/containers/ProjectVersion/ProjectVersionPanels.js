@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 import {
   Panel, Tooltip, Checkbox, ListGroup, ListGroupItem, OverlayTrigger, PanelGroup
 } from 'react-bootstrap'
-import Icon from './Icon'
+import {Icon} from '../../components'
 import {ProjectType, FromProjectVersionType,
-  versionDtoPropType} from '../utils/prop-types-util.js'
+  versionDtoPropType} from '../../utils/prop-types-util.js'
 
 const tooltipReadOnly = <Tooltip id='tooltipreadonly'>Read only</Tooltip>
 

@@ -5,11 +5,11 @@ import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
 import {Button, Panel, Row, InputGroup, Col, FormControl} from 'react-bootstrap'
 import {Icon, Modal} from '../../components'
-import ProjectVersionPanels from '../../components/ProjectVersionPanels'
+import ProjectVersionPanels from './ProjectVersionPanels'
 import DraggableVersionPanels from '../../components/DraggableVersionPanels'
 import SelectableDropdown from '../../components/SelectableDropdown'
-import {ProjectVersionVertical} from '../../components/ProjectVersionDisplay'
-import {ProjectVersionOptions} from '../../components/ProjectVersionOptions'
+import {ProjectVersionVertical} from './ProjectVersionDisplay'
+import {ProjectVersionOptions} from './ProjectVersionOptions'
 import {
   fetchVersionLocales,
   fetchProjectPage,
