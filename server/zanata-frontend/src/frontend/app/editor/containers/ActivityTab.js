@@ -4,6 +4,7 @@ import { Tab } from 'react-bootstrap'
 import ActTabActSelect from '../components/ActTabActSelect'
 import ActTabLangSelect from '../components/ActTabLangSelect'
 import ActTabCommentBox from '../components/ActTabCommentBox'
+import ActTabFeed from '../components/ActTabFeed'
 
 class ActivityTab extends React.Component {
 
@@ -22,6 +23,7 @@ class ActivityTab extends React.Component {
         <div className="sidebar-activity">
           <ActTabActSelect />
           <ActTabCommentBox />
+          <ActTabFeed />
         </div>
       </Tab>
     )
