@@ -9,7 +9,7 @@ class RevisionRejected extends React.Component {
       <div>
         <p><Icon name="refresh" className="s0" />
           <img className="u-round activity-avatar" src="" /><a>Username</a>
-          <span className="u-textWarning"><strong> rejected</strong>
+          <span className="u-textWarning"><strong> rejected </strong>
           </span>
         a translation.</p>
         <Well className="well-rejected">নাম</Well>

@@ -10,7 +10,7 @@ class RevisionTranslated extends React.Component {
         <p>
           <Icon name="refresh" className="s0" />
           <img className="u-round activity-avatar" src="" /><a>Username</a>
-          created a
+          &nbsp;created a
           <span className="u-textSuccess"><strong> translated </strong></span>
         revision.</p>
         <Well className="well-translated">নাম</Well>

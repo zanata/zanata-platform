@@ -29,7 +29,7 @@ storiesOf('ActTabActSelect', module)
       </div>
     ))
 
-  .add('Comments only', () => (
+  .add('comments only', () => (
     <div>
       <ButtonToolbar>
         <Button onClick={action('onClick')}
@@ -49,7 +49,7 @@ storiesOf('ActTabActSelect', module)
     </div>
   ))
 
-.add('Updates only', () => (
+.add('updates only', () => (
     <div>
       <ButtonToolbar>
         <Button onClick={action('onClick')}

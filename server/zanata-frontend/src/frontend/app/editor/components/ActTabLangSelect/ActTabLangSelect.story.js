@@ -29,7 +29,7 @@ storiesOf('ActTabLangSelect', module)
       </div>
     ))
 
-.add('All', () => (
+.add('all', () => (
     <div className="act-tab-langselect">
       <ButtonToolbar>
         <Button onClick={action('onClick')}
@@ -49,7 +49,7 @@ storiesOf('ActTabLangSelect', module)
     </div>
 ))
 
-.add('Source only', () => (
+.add('source only', () => (
     <div className="act-tab-langselect">
       <ButtonToolbar>
         <Button onClick={action('onClick')}

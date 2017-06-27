@@ -20,8 +20,6 @@
  */
 
 import React from 'react'
-import { Well } from 'react-bootstrap'
-import Icon from '../../../components/Icon'
 import RevisionTranslated from '../ActTabFeed/RevisionTranslated.js'
 import RevisionRejected from './RevisionRejected.js'
 import RevisionFuzzy from './RevisionFuzzy.js'

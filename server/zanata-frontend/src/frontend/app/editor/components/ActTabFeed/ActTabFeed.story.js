@@ -1,8 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@kadira/storybook'
 import { action, decorateAction } from '@kadira/storybook-addon-actions'
-import { Well } from 'react-bootstrap'
-import Icon from '../../../components/Icon'
 import ActTabFeed from '.'
 import RevisionTranslated from '../ActTabFeed/RevisionTranslated.js'
 import RevisionApproved from '../ActTabFeed/RevisionApproved.js'
