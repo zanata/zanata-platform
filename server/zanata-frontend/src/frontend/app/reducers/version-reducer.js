@@ -8,7 +8,10 @@ import {
   VERSION_LOCALES_FAILURE,
   PROJECT_PAGE_REQUEST,
   PROJECT_PAGE_SUCCESS,
-  PROJECT_PAGE_FAILURE
+  PROJECT_PAGE_FAILURE,
+  VERSION_TM_MERGE_REQUEST,
+  VERSION_TM_MERGE_SUCCESS,
+  VERSION_TM_MERGE_FAILURE
 } from '../actions/version-action-types'
 
 const version = handleActions({
@@ -101,11 +104,42 @@ const version = handleActions({
         'Please refresh this page and try again.'
       }
     }
+  },
+  [VERSION_TM_MERGE_REQUEST]: (state, action) => {
+    const newState = cloneDeep(state)
+    newState.TMMerge.triggered = true
+    return {
+      ...newState,
+      notification: undefined
+    }
+  },
+  [VERSION_TM_MERGE_SUCCESS]: (state, action) => {
+    const newState = cloneDeep(state)
+    newState.TMMerge.processStatus = action.payload
+    newState.TMMerge.triggered = false
+    return {
+      ...newState,
+      notification: undefined
+    }
+  },
+  [VERSION_TM_MERGE_FAILURE]: (state, action) => {
+    const newState = cloneDeep(state)
+    newState.TMMerge.triggered = false
+    return {
+      ...newState,
+      notification: {
+        severity: SEVERITY.ERROR,
+        message:
+        'We were unable perform the operation. Please try again.'
+      }
+    }
   }},
 // default state
   {
     TMMerge: {
       show: false,
+      triggered: false,
+      processStatus: undefined,
       projectVersions: []
     },
     locales: [],

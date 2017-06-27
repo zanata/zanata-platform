@@ -13,7 +13,8 @@ import {ProjectVersionOptions} from './ProjectVersionOptions'
 import {
   fetchVersionLocales,
   fetchProjectPage,
-  toggleTMMergeModal
+  toggleTMMergeModal,
+  mergeVersionFromTM
 } from '../../actions/version-actions'
 import {ProjectType, LocaleType} from '../../utils/prop-types-util.js'
 
@@ -32,7 +33,9 @@ class TMMergeModal extends Component {
     versionSlug: PropTypes.string.isRequired,
     locales: PropTypes.arrayOf(LocaleType).isRequired,
     projectVersions: PropTypes.arrayOf(ProjectType).isRequired,
-    notification: PropTypes.object
+    startMergeProcess: PropTypes.func.isRequired,
+    notification: PropTypes.object,
+    triggered: PropTypes.bool.isRequired
   }
   constructor (props) {
     super(props)
@@ -60,8 +63,7 @@ class TMMergeModal extends Component {
     const locales = nextProps.locales
     if (!this.state.selectedLanguage) {
       this.setState((prevState, props) => ({
-        // FIXME change to locale object for submission, use display name
-        selectedLanguage: locales.length === 0 ? '' : locales[0].displayName
+        selectedLanguage: locales.length === 0 ? undefined : locales[0]
       }))
     }
   }
@@ -167,6 +169,10 @@ class TMMergeModal extends Component {
       fromImportedTM: !prevState.fromImportedTM
     }))
   }
+  summitForm = () => {
+    this.props.startMergeProcess(this.props.projectSlug,
+      this.props.versionSlug, this.state)
+  }
   render () {
     const {
       showTMMergeModal,
@@ -175,13 +181,10 @@ class TMMergeModal extends Component {
       versionSlug,
       projectVersions,
       locales,
-      notification
+      notification,
+      triggered
     } = this.props
-    const action = (message) => {
-      // TODO: Use Real Actions
-      // console.info('clicked')
-    }
-    const languages = locales.map(l => l.displayName)
+    const localeToDisplay = l => l.displayName
     const percentValueToDisplay = p => `${p}%`
     const showHide = showTMMergeModal ? {display: 'block'} : {display: 'none'}
 
@@ -196,8 +199,8 @@ class TMMergeModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <div>
-            <p className="intro">Copy existing translations from similar
-              documents
+            <p className="intro">
+              Copy existing translations from similar documents
               in other projects and versions into this project version.
             </p>
             <Col xs={12} className='vmerge-row'>
@@ -231,7 +234,8 @@ class TMMergeModal extends Component {
                   id='language-dropdown-basic' className='vmerge-ddown'
                   onSelectDropdownItem={this.onLanguageSelection}
                   selectedValue={this.state.selectedLanguage}
-                  values={languages} />
+                  valueToDisplay={localeToDisplay}
+                  values={locales} />
               </Col>
             </Col>
             <Col xs={12} className='vmerge-boxes'>
@@ -297,7 +301,8 @@ class TMMergeModal extends Component {
                 onClick={openTMMergeModal}>
                 Cancel
               </Button>
-              <Button bsStyle='primary' onClick={action('onClick')}>
+              <Button bsStyle='primary' onClick={this.summitForm}
+                disabled={triggered}>
                 Merge translations
               </Button>
             </Row>
@@ -311,6 +316,7 @@ class TMMergeModal extends Component {
 const mapStateToProps = (state) => {
   return {
     showTMMergeModal: state.projectVersion.TMMerge.show,
+    triggered: state.projectVersion.TMMerge.triggered,
     locales: state.projectVersion.locales,
     projectVersions: state.projectVersion.TMMerge.projectVersions,
     notification: state.projectVersion.notification
@@ -327,6 +333,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     openTMMergeModal: () => {
       dispatch(toggleTMMergeModal())
+    },
+    startMergeProcess: (projectSlug, versionSlug, mergeOptions) => {
+      dispatch(mergeVersionFromTM(projectSlug, versionSlug, mergeOptions))
     }
   }
 }

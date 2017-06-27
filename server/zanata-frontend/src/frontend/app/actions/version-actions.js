@@ -13,7 +13,10 @@ import {
   VERSION_LOCALES_FAILURE,
   PROJECT_PAGE_REQUEST,
   PROJECT_PAGE_SUCCESS,
-  PROJECT_PAGE_FAILURE
+  PROJECT_PAGE_FAILURE,
+  VERSION_TM_MERGE_REQUEST,
+  VERSION_TM_MERGE_SUCCESS,
+  VERSION_TM_MERGE_FAILURE
 } from './version-action-types'
 
 /** Open or close the TM Merge modal  */
@@ -70,5 +73,47 @@ function fetchSearchProjectPage (dispatch, projectSearchTerm) {
   ]
   return {
     [CALL_API]: buildAPIRequest(endpoint, 'GET', getJsonHeaders(), apiTypes)
+  }
+}
+
+// convert merge option to MergeRule enum value
+const fuzzyOrRejectMergeRule = (isAccept) => isAccept ? 'FUZZY' : 'REJECT'
+
+// convert project version to string representation
+const toProjectVersion = (projectVersion) => {
+  return `${projectVersion.projectSlug}/${projectVersion.version.id}`
+}
+
+/**
+ * @param {string} projectSlug target project slug
+ * @param {string} versionSlug target version slug
+ * @param {{
+ *  matchPercentage: number,
+ *  differentDocId: boolean,
+ *  differentContext: boolean,
+ *  fromImportedTM: boolean,
+ *  selectedLanguage: Object.<{localeId: string, displayName: string}>,
+ *  selectedVersions: Array.<{projectSlug: string, version: {id: string}}>
+ * }} mergeOptions
+ * @returns redux api action object
+ */
+export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
+  const endpoint =
+    `${apiUrl}/project/${projectSlug}/version/${versionSlug}/tm-merge`
+  const types = [VERSION_TM_MERGE_REQUEST,
+    VERSION_TM_MERGE_SUCCESS, VERSION_TM_MERGE_FAILURE]
+  const body = {
+    localeId: mergeOptions.selectedLanguage.localeId,
+    thresholdPercent: mergeOptions.matchPercentage,
+    differentDocumentRule: fuzzyOrRejectMergeRule(mergeOptions.differentDocId),
+    differentContextRule: fuzzyOrRejectMergeRule(mergeOptions.differentContext),
+    importedMatchRule: fuzzyOrRejectMergeRule(mergeOptions.fromImportedTM),
+    fromProjectVersions: mergeOptions.selectedVersions.map(toProjectVersion)
+  }
+  const apiRequest = buildAPIRequest(
+    endpoint, 'POST', getJsonHeaders(), types, JSON.stringify(body)
+  )
+  return {
+    [CALL_API]: apiRequest
   }
 }
