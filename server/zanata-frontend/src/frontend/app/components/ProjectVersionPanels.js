@@ -23,7 +23,7 @@ LockIcon.propTypes = {
 }
 
 /**
- * Root component for the Version TM Merge project version panels
+ * Panels for selecting and prioritising of project-versions
  */
 class ProjectVersionPanels extends Component {
   static propTypes = {

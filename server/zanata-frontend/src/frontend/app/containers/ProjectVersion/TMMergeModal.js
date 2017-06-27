@@ -3,34 +3,19 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
-import {
-  Button, Panel, Row, Checkbox, InputGroup, Col, Label, FormControl, ListGroup,
-  ListGroupItem
-} from 'react-bootstrap'
+import {Button, Panel, Row, InputGroup, Col, FormControl} from 'react-bootstrap'
 import {Icon, Modal} from '../../components'
 import ProjectVersionPanels from '../../components/ProjectVersionPanels'
 import DraggableVersionPanels from '../../components/DraggableVersionPanels'
 import SelectableDropdown from '../../components/SelectableDropdown'
 import {ProjectVersionVertical} from '../../components/ProjectVersionDisplay'
+import {ProjectVersionOptions} from '../../components/ProjectVersionOptions'
 import {
   fetchVersionLocales,
   fetchProjectPage,
   toggleTMMergeModal
 } from '../../actions/version-actions'
 import {ProjectType, LocaleType} from '../../utils/prop-types-util.js'
-
-const CopyLabel = (props) => {
-  return props.copy
-    ? (<Label bsStyle='warning'>
-      Copy as Fuzzy
-    </Label>)
-    : (<Label bsStyle='danger'>
-      Don't Copy
-    </Label>)
-}
-CopyLabel.propTypes = {
-  copy: PropTypes.bool.isRequired
-}
 
 /**
  * Root component for TM Merge Modal
@@ -64,7 +49,7 @@ class TMMergeModal extends Component {
      * leading and trailing options specify we want to search to after the user
      * stops typing. */
     this.throttleHandleSearch = throttle(props.openProjectPage, 1000,
-      { 'leading': false }, { 'trailing': true })
+      { 'leading': false })
   }
   componentDidMount () {
     this.props.fetchVersionLocales(
@@ -81,14 +66,14 @@ class TMMergeModal extends Component {
     }
   }
   onPercentSelection = (percent) => {
-    this.setState((prevState, props) => ({
+    this.setState({
       matchPercentage: percent
-    }))
+    })
   }
   onLanguageSelection = (language) => {
-    this.setState((prevState, props) => ({
+    this.setState({
       selectedLanguage: language
-    }))
+    })
   }
   onProjectSearchChange = (event) => {
     const textEntered = event.target.value
@@ -230,42 +215,13 @@ class TMMergeModal extends Component {
                   values={[80, 90, 100]} />
               </Col>
             </Col>
-            <Col xs={12}>
-              <Panel className='tm-panel'>
-                <ListGroup fill>
-                  <ListGroupItem>
-                    <Checkbox onChange={this.onDocIdCheckboxChange}
-                      checked={this.state.differentDocId}>
-                    Different DocID
-                      <small> Document name and path</small>
-                      <CopyLabel copy={this.state.differentDocId} />
-                    </Checkbox>
-                  </ListGroupItem>
-                </ListGroup>
-                <span className='and'> AND </span>
-                <ListGroup fill>
-                  <ListGroupItem>
-                    <Checkbox onChange={this.onContextCheckboxChange}
-                      checked={this.state.differentContext}>
-                      Different Context
-                      <small> resId, msgctxt</small>
-                      <CopyLabel copy={this.state.differentContext} />
-                    </Checkbox>
-                  </ListGroupItem>
-                </ListGroup>
-              </Panel>
-              <Panel className='tm-panel'>
-                <span className='or'>OR</span>
-                <ListGroup fill>
-                  <ListGroupItem >
-                    <Checkbox onChange={this.onImportedCheckboxChange}>
-                      Match from Imported TM
-                      <CopyLabel copy={this.state.fromImportedTM} />
-                    </Checkbox>
-                  </ListGroupItem>
-                </ListGroup>
-              </Panel>
-            </Col>
+            <ProjectVersionOptions
+              differentDocId={this.state.differentDocId}
+              differentContext={this.state.differentContext}
+              fromImportedTM={this.state.fromImportedTM}
+              onDocIdCheckboxChange={this.onDocIdCheckboxChange}
+              onContextCheckboxChange={this.onContextCheckboxChange}
+              onImportedCheckboxChange={this.onImportedCheckboxChange} />
             <Col xs={12} className='vmerge-row'>
               <Col xs={2}>
                 <span className='vmerge-title text-info'>Language</span>
