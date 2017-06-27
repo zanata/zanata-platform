@@ -18,7 +18,7 @@
   float: right !important;
   overflow-x: hidden !important;
   overflow-y: auto !important;
-  max-width: 35%;
+  width: 35%;
   height: 99.5% !important;
   padding-top: 90px !important;
 }
@@ -114,7 +114,6 @@ span.s1.details-svg {
 a#sidebartabs-tab-1, a#sidebartabs-tab-2 {
   font-weight: var(--Sidebar-bold-text);
 }
-
 
 ul.nav-tabs li.active {
   color: var(--Sidebar-color-text);
@@ -358,6 +357,7 @@ span.loader span div {
 .inline-search {
   display: inline-table;
   padding-left: 1rem;
+  width: 100%;
 }
 
 .inline-search .form-group {
@@ -374,10 +374,6 @@ span.loader span div {
 
 .inline-search .InputGroup--outlined {
   min-width: 8rem;
-}
-
-.inline-search .InputGroup--rounded {
-  width:16rem;
 }
 
 h2.validation {
