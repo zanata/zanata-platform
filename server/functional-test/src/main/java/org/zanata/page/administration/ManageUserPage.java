@@ -67,6 +67,7 @@ public class ManageUserPage extends BasePage {
     }
 
     public boolean isUserEnabled(String username) {
+        log.info("Query is user {} enabled", username);
             List<WebElement> locks = findRowByUserName(username)
                     .findElements(By.className("i--lock"));
         return locks.isEmpty();
@@ -92,6 +93,8 @@ public class ManageUserPage extends BasePage {
 
     public List<String> getUserList() {
         log.info("Query user list");
+        // Page may refresh user list
+        waitForPageSilence();
         List<String> names = new ArrayList<>();
         for (WebElement element : getRows()) {
             names.add(getListItemUsername(element));
@@ -100,6 +103,7 @@ public class ManageUserPage extends BasePage {
     }
 
     public CreateUserAccountPage selectCreateNewUser() {
+        log.info("Click Create new user");
         clickElement(By.id("rolemanage-more-actions"));
         clickLinkAfterAnimation(By.linkText("Create new user"));
         return new CreateUserAccountPage(getDriver());

@@ -299,6 +299,11 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
 
     public static class EntityListener {
 
+        private static final AnnotationLiteral<Authenticated>
+                AUTHENTICATED = new AnnotationLiteral<Authenticated>() {
+            private static final long serialVersionUID = 1L;
+        };
+
         @PreUpdate
         @SuppressWarnings("deprecation")
         private void onUpdate(HDocument doc) {
@@ -306,10 +311,7 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
                 HAccount account;
                 try {
                     account = BeanProvider.getContextualReference(
-                            HAccount.class, true,
-                            new AnnotationLiteral<Authenticated>() {
-                                private static final long serialVersionUID = 1L;
-                            });
+                    HAccount.class, true, AUTHENTICATED);
                 } catch (IllegalStateException e) {
                     account = null;
                 }

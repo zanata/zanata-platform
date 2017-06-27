@@ -431,6 +431,10 @@
       <artifactId>validation-api</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
