@@ -4,6 +4,10 @@
  * See .storybook-editor for main config
  */
 
+require('./ActTabActSelect/ActTabActSelect.story')
+require('./ActTabLangSelect/ActTabLangSelect.story')
+require('./ActTabCommentBox/ActTabCommentBox.story')
+require('./ActTabFeed/ActTabFeed.story')
 require('./Button/Button.story.js')
 require('./TextDiff/TextDiff.story.js')
 require('./EditorSearchInput/EditorSearchInput.story.js')

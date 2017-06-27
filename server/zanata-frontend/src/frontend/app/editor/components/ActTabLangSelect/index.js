@@ -29,7 +29,8 @@ class ActTabLangSelect extends React.Component {
     return (
       <div className="act-tab-langselect">
         <ButtonToolbar>
-          <Button className="Button Button--small u-rounded Button--primary">
+          <Button className="Button is-active Button--small u-rounded
+            Button--primary">
             <Icon name="language" className="n1" /> Current
           </Button>
           <Button className="Button Button--small u-rounded Button--primary">

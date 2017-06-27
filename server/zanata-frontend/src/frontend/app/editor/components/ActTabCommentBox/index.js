@@ -30,7 +30,7 @@ class ActTabCommentBox extends React.Component {
       <div className="trans-comment-box">
         <FormGroup controlId="formControlsTextarea">
           <ControlLabel>
-            <Icon name="comment" className="s1" /> Post a comment
+            <Icon name="comment" className="s0" /> Post a comment
           </ControlLabel><br />
           <FormControl componentClass="textarea"
             placeholder="..." />

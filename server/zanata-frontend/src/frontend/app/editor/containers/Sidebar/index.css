@@ -6,6 +6,7 @@
   --Sidebar-color-highlight: #03a6d7;
   --Sidebar-panel-dark: #546677;
   --Sidebar-panel-grey: #333;
+  --Sidebar-activity-icon: rgb(188, 212, 220);;
   --Sidebar-bold-text: 600;
   --Sidebar-spacing-small: .375em;
   --Sidebar-spacing-large: .75em;
@@ -398,18 +399,16 @@ li .checkbox input {
   margin-right: var(--Sidebar-spacing-small) !important;
 }
 
-
-.btn-toolbar .Button--primary, .btn-toolbar .Button--secondary {
-  margin-bottom: 0.75rem;
-}
-
 .btn-toolbar .Button--primary {
-  margin-top: 0.75rem;
   margin-right: 0.75rem;
 }
 
 .btn-toolbar .Button--secondary {
   margin-left: 0.75rem;
+}
+
+.btn-toolbar .Button--secondary .n1, .btn-toolbar .Button--primary .n1  {
+  vertical-align: middle;
 }
 
 .Button--spacing {
@@ -431,25 +430,103 @@ select.settings-select {
 }
 
 .sidebar-activity {
-  padding-top: 1rem;
+  padding-top: 0.5rem;
   padding-bottom: 0.5rem;
+}
+
+.revision-box {
+  margin-top: 3rem;
+  margin-left: 0.75rem;
+  margin-right: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.revision-box p {
+  margin-top: 1rem;
+  color: var(--Sidebar-color-text);
+  padding-bottom: 0.375rem;
+
+}
+
+.revision-box {
+  margin-top: 3rem;
+  margin-left: 1rem;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+.revision-box img {
+  width: 1rem;
+  height: 1rem;
+  vertical-align: sub;
+  margin-right: 0.375rem;
+}
+
+.revision-box p.small .n1 {
+  vertical-align: sub;
+}
+
+.revision-box p.small.u-textMuted {
+  margin-top: 0.375rem !important;
+  margin-left: 0.75rem;
+  font-size: 0.75rem;
+}
+
+.revision-box p .s0 {
+  vertical-align: sub;
+  padding-right: 0.375rem;
+}
+
+img.activity-avatar {
+  width: 1.2rem;
+  height: 1.2rem;
+  display: inline-block;
+  vertical-align: sub;
+}
+
+.revision-box .well {
+  background-color: #fefefe;
+  padding: 0.75rem;
+  margin-left: 0.75rem;
+}
+
+.well-fuzzy {
+  border-left: solid 5px #E9DF1B;
+}
+
+.well-rejected {
+  border-left: solid 5px #FFA800;
+}
+
+.well-translated {
+  border-left: solid 5px #5CCA7B;
+}
+
+.well-approved {
+  border-left: solid 5px #03A6D7;
 }
 
 .trans-comment-box {
   padding: 0.75rem;
+  margin-top: 1rem;
 }
 
 .trans-comment-box label {
-  color: var(--Sidebar-color-text);
+  color: var(--Sidebar-activity-icon);
+  vertical-align: top;
 }
 
 .trans-comment-box textarea {
   border-color: rgb(99, 156, 173);
   border-radius: 0.75rem;
-  padding-right: 0.5625rem;
-  width: 98%;
-  max-width: 290px;
+  padding: 0.5625rem;
+  width: 100%;
+  max-width: 100%;
   height: 5rem;
+}
+
+.trans-comment-box .s0 {
+  vertical-align: sub;
 }
 /* --------------------- */
 

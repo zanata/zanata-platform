@@ -22,15 +22,21 @@
 import React from 'react'
 import { Well } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
+import RevisionTranslated from '../ActTabFeed/RevisionTranslated.js'
+import RevisionRejected from './RevisionRejected.js'
+import RevisionFuzzy from './RevisionFuzzy.js'
+import RevisionApproved from './RevisionApproved.js'
+import RevisionComment from './RevisionComment.js'
 
 class ActTabFeed extends React.Component {
-
   render () {
     return (
       <div className="revision-box">
-        <p><Icon name="refresh" className="s1" /> <a>Username</a> created a
-          <span className="u-textSuccess"> translated</span> revision.</p>
-        <Well>নাম</Well>
+        <RevisionTranslated />
+        <RevisionRejected />
+        <RevisionComment />
+        <RevisionFuzzy />
+        <RevisionApproved />
       </div>
     )
   }

@@ -29,7 +29,8 @@ class ActTabActSelect extends React.Component {
     return (
       <div>
         <ButtonToolbar>
-          <Button className="Button Button--small u-rounded Button--secondary">
+          <Button className="Button is-active
+            Button--small u-rounded Button--secondary">
             <Icon name="clock" className="n1" /> All
           </Button>
           <Button className="Button Button--small u-rounded Button--secondary">
