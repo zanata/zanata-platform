@@ -33,7 +33,7 @@ class SelectableDropdown extends Component {
         <DropdownMenuItem onSelect={onSelectDropdownItem}
           value={v} valueToDisplay={valueToDisplay}
           isSelected={selectedValue === v}
-          key={index} eventKey={index + 1}
+          key={index}
         />
       )
     })

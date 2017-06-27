@@ -16,7 +16,7 @@ import {
   PROJECT_PAGE_FAILURE
 } from './version-action-types'
 
-/** Toggle application state boolean determining whether modal is displayed */
+/** Open or close the TM Merge modal  */
 export const toggleTMMergeModal =
     createAction(TOGGLE_TM_MERGE_MODAL)
 

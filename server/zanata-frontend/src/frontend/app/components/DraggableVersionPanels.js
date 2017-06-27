@@ -15,30 +15,24 @@ const DragHandle = SortableHandle(() =>
 const SortableItem = SortableElement(({value}) =>
   <ListGroupItem className='v' >
     <DragHandle />
-    {value.version.id}{" "}
-    <span className='text-muted'>
-    {value.projectSlug}
-    </span>
+    {value.version.id} <span className='text-muted'> {value.projectSlug}</span>
   </ListGroupItem>
 )
 
 const SortableList = SortableContainer(({items}) => {
+  const sortableItems = items.map((value, index) => (
+    <SortableItem key={`item-${index}`} index={index} value={value} />))
   return (
-    <ul>
-      <div>
-        <span className='vmerge-adjtitle vmerge-title'>
-        Adjust priority of selected versions
-        </span><br />
-        <span className='text-muted vmerge-adjsub'>
-        (best first)
-        </span>
-      </div>
-      {items.map((value, index) => (
-        <SortableItem key={`item-${index}`} index={index}
-          value={value} />
-      ))}
-    </ul>
-  )
+    <div>
+      <span className='vmerge-adjtitle vmerge-title'>
+      Adjust priority of selected versions
+      </span><br />
+      <span className='text-muted vmerge-adjsub'>
+      (best first)
+      </span>
+      {sortableItems}
+    </div>
+    )
 })
 
 /**
@@ -53,11 +47,10 @@ class DraggableVersionPanels extends Component {
     if (this.props.selectedVersions.length === 0) {
       return <div></div>
     }
-    const drag = true
     return (
       <ListGroup>
         <SortableList items={this.props.selectedVersions}
-          onSortEnd={this.props.onDraggableMoveEnd} useDragHandle={drag} />
+          onSortEnd={this.props.onDraggableMoveEnd} useDragHandle />
       </ListGroup>
     )
   }
