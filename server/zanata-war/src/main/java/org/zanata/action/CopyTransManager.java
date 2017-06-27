@@ -101,6 +101,7 @@ public class CopyTransManager implements Serializable {
         }
         AsyncTaskKey key = CopyTransProcessKey.getKey(document);
         CopyTransTaskHandle handle = new CopyTransTaskHandle();
+        handle.setTriggeredBy(identity.getAccountUsername());
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyTransServiceImpl.startCopyTransForDocument(document, options,
                 handle);
@@ -119,6 +120,7 @@ public class CopyTransManager implements Serializable {
         }
         AsyncTaskKey key = CopyTransProcessKey.getKey(iteration);
         CopyTransTaskHandle handle = new CopyTransTaskHandle();
+        handle.setTriggeredBy(identity.getAccountUsername());
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         copyTransServiceImpl.startCopyTransForIteration(iteration, options,
                 handle);
