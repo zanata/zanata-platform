@@ -206,7 +206,7 @@ class TMMergeModal extends Component {
         onHide={openTMMergeModal}>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
-          <p className="text-danger">
+          <p className="text-danger modal-danger">
             {notification && notification.message}</p>
         </Modal.Header>
         <Modal.Body>
