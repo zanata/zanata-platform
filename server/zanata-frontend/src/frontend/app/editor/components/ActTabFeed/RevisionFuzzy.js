@@ -9,7 +9,7 @@ class RevisionFuzzy extends React.Component {
       <div>
         <p><Icon name="refresh" className="s0" />
           <img className="u-round activity-avatar" src="" /><a>Username</a>
-          created a
+          &nbsp;created a
           <span className="u-textUnsure"> <strong> fuzzy </strong>
           </span> revision.
         </p>
