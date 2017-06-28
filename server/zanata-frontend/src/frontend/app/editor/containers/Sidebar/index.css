@@ -380,6 +380,17 @@ h2.validation {
   color: var(--Sidebar-color-text);
 }
 
+.settings-options h2 {
+   font-weight: 500;
+   padding-bottom: 1rem;
+ }
+
+.settings-options p {
+  font-weight: 500;
+  color: var(--Sidebar-color-text);
+  font-size: 0.875rem;
+}
+
 li .checkbox {
   font-size: var(--Sidebar-small-text);
 }
