@@ -151,12 +151,14 @@ const MergeOptions = (
               <LoaderText loading={fetchingProject}
                 loadingText={'Fetching Projects'} />
             </div>
-            <ProjectVersionPanels projectVersions={projectVersions}
-              selectedVersions={mergeOptions.selectedVersions}
-              onVersionCheckboxChange={onVersionCheckboxChange}
-              onAllVersionCheckboxChange={onAllVersionCheckboxChange}
-              projectList={projectVersions}
-            />
+            <div className="pre-scrollable">
+              <ProjectVersionPanels projectVersions={projectVersions}
+                selectedVersions={mergeOptions.selectedVersions}
+                onVersionCheckboxChange={onVersionCheckboxChange}
+                onAllVersionCheckboxChange={onAllVersionCheckboxChange}
+                projectList={projectVersions}
+              />
+            </div>
           </Col>
           <Col xs={6}>
             <DraggableVersionPanels

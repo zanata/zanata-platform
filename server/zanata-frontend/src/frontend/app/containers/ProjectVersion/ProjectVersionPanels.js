@@ -4,7 +4,7 @@ import {
   Panel, Tooltip, Checkbox, ListGroup, ListGroupItem, OverlayTrigger, PanelGroup
 } from 'react-bootstrap'
 import {Icon} from '../../components'
-import {ProjectType, FromProjectVersionType,
+import {ProjectType, FromProjectVersionType, entityStatusPropType,
   versionDtoPropType} from '../../utils/prop-types-util'
 import {isEntityStatusReadOnly} from '../../utils/EnumValueUtils'
 
@@ -20,7 +20,7 @@ const LockIcon = (props) => {
     : <span />
 }
 LockIcon.propTypes = {
-  status: PropTypes.string.isRequired
+  status: entityStatusPropType
 }
 
 /**

@@ -30,7 +30,9 @@ const SortableList = SortableContainer(({items}) => {
       <span className='text-muted vmerge-adjsub'>
       (best first)
       </span>
+      <div className="pre-scrollable">
       {sortableItems}
+      </div>
     </div>
     )
 })
