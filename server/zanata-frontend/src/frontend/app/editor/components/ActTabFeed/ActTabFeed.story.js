@@ -6,6 +6,7 @@ import RevisionTranslated from '../ActTabFeed/RevisionTranslated.js'
 import RevisionApproved from '../ActTabFeed/RevisionApproved.js'
 import RevisionRejected from '../ActTabFeed/RevisionRejected.js'
 import RevisionComment from '../ActTabFeed/RevisionComment.js'
+import RevisionFuzzy from '../ActTabFeed/RevisionFuzzy.js'
 
 /*
  * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
