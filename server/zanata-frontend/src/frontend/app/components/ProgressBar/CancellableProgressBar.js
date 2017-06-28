@@ -21,6 +21,9 @@ class CancellableProgressBar extends Component {
     processStatus: processStatusPropType.isRequired,
     queryProgress: PropTypes.func.isRequired
   }
+  static defaultProps = {
+    heading: ''
+  }
   constructor (props) {
     super(props)
     this.state = {
@@ -52,13 +55,13 @@ class CancellableProgressBar extends Component {
     const {
       heading, onCancelOperation, processStatus
     } = this.props
-    const canCancel = isProcessEnded(processStatus)
     return (
       <div>
         <ProgressBar now={processStatus.percentageComplete}
           label={`${heading} ${processStatus.percentageComplete}%`}
         />
-        <Button bsStyle="primary" className="btn-danger" disabled={!canCancel}
+        <Button bsStyle="primary" className="btn-danger"
+          disabled={isProcessEnded(processStatus)}
           onClick={onCancelOperation}>
           Cancel Operation
         </Button>

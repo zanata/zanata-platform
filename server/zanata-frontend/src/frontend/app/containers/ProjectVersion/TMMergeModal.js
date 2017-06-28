@@ -215,7 +215,7 @@ class TMMergeModal extends Component {
     fetchingProject: PropTypes.bool.isRequired,
     fetchingLocale: PropTypes.bool.isRequired,
     onCancelTMMerge: PropTypes.func.isRequired,
-    TMMergeProcessStatus: PropTypes.shape({
+    processStatus: PropTypes.shape({
       url: PropTypes.string.isRequired,
       percentageComplete: PropTypes.number.isRequired,
       statusCode: processStatusPropType.isRequired
@@ -253,7 +253,7 @@ class TMMergeModal extends Component {
     }
   }
   queryTMMergeProgress = () => {
-    this.props.queryTMMergeProgress(this.props.TMMergeProcessStatus.url)
+    this.props.queryTMMergeProgress(this.props.processStatus.url)
   }
   onPercentSelection = (percent) => {
     this.setState({
@@ -372,11 +372,39 @@ class TMMergeModal extends Component {
       notification,
       triggered,
       fetchingProject,
-      fetchingLocale
+      fetchingLocale,
+      processStatus,
+      onCancelTMMerge
     } = this.props
 
     const mergeOptions = {
       ...this.state
+    }
+    let modalBody
+    if (processStatus) {
+      modalBody = (
+        <CancellableProgressBar onCancelOperation={onCancelTMMerge}
+          processStatus={processStatus}
+          queryProgress={this.queryTMMergeProgress} />
+      )
+    } else {
+      modalBody = (
+        <MergeOptions projectSlug={projectSlug} versionSlug={versionSlug}
+          locales={locales} projectVersions={projectVersions}
+          fetchingProject={fetchingProject} fetchingLocale={fetchingLocale}
+          mergeOptions={mergeOptions}
+          onPercentSelection={this.onPercentSelection}
+          onDocIdCheckboxChange={this.onDocIdCheckboxChange}
+          onContextCheckboxChange={this.onContextCheckboxChange}
+          onImportedCheckboxChange={this.onImportedCheckboxChange}
+          onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
+          onVersionCheckboxChange={this.onVersionCheckboxChange}
+          onLanguageSelection={this.onLanguageSelection}
+          onProjectSearchChange={this.onProjectSearchChange}
+          flushProjectSearch={this.flushProjectSearch}
+          onDragMoveEnd={this.onDragMoveEnd}
+        />
+      )
     }
     return (
       <Modal show={showTMMergeModal} onHide={openTMMergeModal}>
@@ -385,23 +413,7 @@ class TMMergeModal extends Component {
           <p className="text-danger modal-danger">
             {notification && notification.message}</p>
         </Modal.Header>
-        <Modal.Body>
-          <MergeOptions projectSlug={projectSlug} versionSlug={versionSlug}
-            locales={locales} projectVersions={projectVersions}
-            fetchingProject={fetchingProject} fetchingLocale={fetchingLocale}
-            mergeOptions={mergeOptions}
-            onPercentSelection={this.onPercentSelection}
-            onDocIdCheckboxChange={this.onDocIdCheckboxChange}
-            onContextCheckboxChange={this.onContextCheckboxChange}
-            onImportedCheckboxChange={this.onImportedCheckboxChange}
-            onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
-            onVersionCheckboxChange={this.onVersionCheckboxChange}
-            onLanguageSelection={this.onLanguageSelection}
-            onProjectSearchChange={this.onProjectSearchChange}
-            flushProjectSearch={this.flushProjectSearch}
-            onDragMoveEnd={this.onDragMoveEnd}
-          />
-        </Modal.Body>
+        <Modal.Body>{modalBody}</Modal.Body>
         <Modal.Footer>
           <span className='bootstrap pull-right'>
             <Row>
