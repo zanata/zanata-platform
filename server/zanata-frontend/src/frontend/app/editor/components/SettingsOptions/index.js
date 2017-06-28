@@ -9,7 +9,7 @@ const settings =
 const SettingsOptions = ({states, updateSettingsOption}) => {
   const checkboxes = settings.map((setting, index) => (
     <li key={index}>
-      <SettingsCheckbox
+      <SettingOption
           setting={setting}
           checked={states[setting]}
           onChange={updateSettingsOption} />
@@ -35,7 +35,7 @@ SettingsOptions.propTypes = {
   updateSettingsOption: PropTypes.func.isRequired
 }
 
-class SettingsCheckbox extends React.Component {
+class SettingOption extends React.Component {
   static propTypes = {
     setting: PropTypes.string.isRequired,
     checked: PropTypes.bool.isRequired,
