@@ -70,6 +70,10 @@ class ProjectVersionPanels extends Component {
     return <PanelGroup defaultActiveKey={0} accordion>{panels}</PanelGroup>
   }
 }
+
+// util function to check if a version is in a list of versions by id comparison
+const isVersionInList =
+  (versions, version) => !!versions.find(v => v.id === version.id)
 /**
  * Sub Component of a single project with versions.
  * Handles behavior of display or selecting versions of this project.
@@ -91,7 +95,7 @@ const SelectableProjectPanel = (props) => {
       </h3>}>
       <ListGroup fill>
         {project.versions.map((version, index) => {
-          const checked = selectedVersionsInProject.includes(version)
+          const checked = isVersionInList(selectedVersionsInProject, version)
           return (
             <ListGroupItem className='v' key={index}>
               <VersionMenuCheckbox version={version}
