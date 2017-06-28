@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import { differenceWith, isEqual, throttle } from 'lodash'
+import { differenceWith, isEqual, throttle, replace } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
 import {Button, Panel, Row, InputGroup, Col, FormControl} from 'react-bootstrap'
 import {Icon, Modal, LoaderText} from '../../components'
@@ -18,10 +18,12 @@ import {
   toggleTMMergeModal,
   mergeVersionFromTM,
   queryTMMergeProgress,
+  cancelTMMergeRequest,
   currentTMMergeProcessFinished
 } from '../../actions/version-actions'
 import {
-  ProjectType, LocaleType, processStatusPropType, FromProjectVersionType
+  ProjectType, LocaleType, processStatusCodeType, FromProjectVersionType,
+  processStatusType
 } from '../../utils/prop-types-util.js'
 import {isProcessEnded} from '../../utils/EnumValueUtils'
 
@@ -37,7 +39,7 @@ const MergeProgress = ({onCancelTMMerge, status, progress}) => {
 }
 MergeProgress.propTypes = {
   onCancelTMMerge: PropTypes.func.isRequired,
-  status: processStatusPropType.isRequired,
+  status: processStatusCodeType.isRequired,
   progress: PropTypes.number.isRequired
 }
 
@@ -219,11 +221,7 @@ class TMMergeModal extends Component {
     fetchingProject: PropTypes.bool.isRequired,
     fetchingLocale: PropTypes.bool.isRequired,
     onCancelTMMerge: PropTypes.func.isRequired,
-    processStatus: PropTypes.shape({
-      url: PropTypes.string.isRequired,
-      percentageComplete: PropTypes.number.isRequired,
-      statusCode: processStatusPropType.isRequired
-    }),
+    processStatus: processStatusType.isRequired,
     queryTMMergeProgress: PropTypes.func.isRequired,
     mergeProcessFinished: PropTypes.func.isRequired
   }
@@ -267,6 +265,11 @@ class TMMergeModal extends Component {
   }
   queryTMMergeProgress = () => {
     this.props.queryTMMergeProgress(this.props.processStatus.url)
+  }
+  cancelTMMerge = () => {
+    const cancelUrl = replace(this.props.processStatus.url,
+        '/rest/process/', '/rest/process/cancel/')
+    this.props.onCancelTMMerge(cancelUrl)
   }
   onPercentSelection = (percent) => {
     this.setState({
@@ -386,8 +389,7 @@ class TMMergeModal extends Component {
       triggered,
       fetchingProject,
       fetchingLocale,
-      processStatus,
-      onCancelTMMerge
+      processStatus
     } = this.props
 
     const mergeOptions = {
@@ -396,7 +398,7 @@ class TMMergeModal extends Component {
     let modalBody
     if (processStatus) {
       modalBody = (
-        <CancellableProgressBar onCancelOperation={onCancelTMMerge}
+        <CancellableProgressBar onCancelOperation={this.cancelTMMerge}
           processStatus={processStatus}
           queryProgress={this.queryTMMergeProgress} />
       )
@@ -479,9 +481,8 @@ const mapDispatchToProps = (dispatch) => {
     queryTMMergeProgress: (url) => {
       dispatch(queryTMMergeProgress(url))
     },
-    onCancelTMMerge: () => {
-      // TODO pahuang implement cancel operation
-      console.warn('boom!!!')
+    onCancelTMMerge: (url) => {
+      dispatch(cancelTMMergeRequest(url))
     },
     mergeProcessFinished: () => {
       dispatch(currentTMMergeProcessFinished())

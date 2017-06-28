@@ -20,6 +20,9 @@ import {
   QUERY_TM_MERGE_PROGRESS_REQUEST,
   QUERY_TM_MERGE_PROGRESS_SUCCESS,
   QUERY_TM_MERGE_PROGRESS_FAILURE,
+  TM_MERGE_CANCEL_REQUEST,
+  TM_MERGE_CANCEL_SUCCESS,
+  TM_MERGE_CANCEL_FAILURE,
   TM_MERGE_PROCESS_FINISHED
 } from './version-action-types'
 
@@ -128,6 +131,17 @@ export function queryTMMergeProgress (url) {
     QUERY_TM_MERGE_PROGRESS_FAILURE]
   return {
     [CALL_API]: buildAPIRequest(url, 'GET', getJsonHeaders(), types)
+  }
+}
+
+export function cancelTMMergeRequest (url) {
+  const types = [
+    TM_MERGE_CANCEL_REQUEST,
+    TM_MERGE_CANCEL_SUCCESS,
+    TM_MERGE_CANCEL_FAILURE
+  ]
+  return {
+    [CALL_API]: buildAPIRequest(url, 'POST', getJsonHeaders(), types)
   }
 }
 

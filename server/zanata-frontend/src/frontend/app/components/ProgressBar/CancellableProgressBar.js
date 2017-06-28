@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import {
   Button, ProgressBar
 } from 'react-bootstrap'
-import { processStatusPropType } from '../../utils/prop-types-util'
+import { processStatusType } from '../../utils/prop-types-util'
 import { isProcessEnded } from '../../utils/EnumValueUtils'
 
 /**
@@ -17,7 +17,7 @@ class CancellableProgressBar extends Component {
   static propTypes = {
     heading: PropTypes.string,
     onCancelOperation: PropTypes.func.isRequired,
-    processStatus: processStatusPropType.isRequired,
+    processStatus: processStatusType.isRequired,
     queryProgress: PropTypes.func.isRequired
   }
   static defaultProps = {

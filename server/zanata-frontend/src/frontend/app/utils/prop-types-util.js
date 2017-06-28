@@ -26,4 +26,10 @@ export const FromProjectVersionType = PropTypes.shape({
   version: versionDtoPropType.isRequired
 })
 
-export const processStatusPropType = PropTypes.oneOf(processStatusCodes)
+export const processStatusCodeType = PropTypes.oneOf(processStatusCodes)
+
+export const processStatusType = PropTypes.shape({
+  url: PropTypes.string.isRequired,
+  percentageComplete: PropTypes.number.isRequired,
+  statusCode: processStatusCodeType.isRequired
+})
