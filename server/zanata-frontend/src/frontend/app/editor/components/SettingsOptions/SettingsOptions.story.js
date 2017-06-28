@@ -10,7 +10,9 @@ storiesOf('SettingOptions', module)
   .add('default', () => (
     <SettingsOptions
       settings={{
-        /* add props here */
+       id="cat-list"
+       label="cat-list"
+       active={true}
       }} />
   ))
 

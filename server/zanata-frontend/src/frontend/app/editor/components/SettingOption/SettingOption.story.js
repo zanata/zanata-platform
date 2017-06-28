@@ -6,7 +6,9 @@ import SettingOption from '.'
 storiesOf('SettingOption', module)
   .add('default', () => (
     <SettingOption
-      setting={{
-        /* add props here */
+        settings={{
+        id="cat"
+        label="cat"
+        active={true}
       }} />
   ))
