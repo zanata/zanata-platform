@@ -34,7 +34,7 @@ const SettingsOptions = ({states, updateSettingsOption}) => {
         {checkboxes}
       </ul>
       <br />
-      <p>Set current layout as default</p>
+      <p>Set current layout as default:</p>
       <ul>
       {defaults}
       </ul>
