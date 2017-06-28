@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import { differenceWith, isEqual, throttle } from 'lodash'
 import {arrayMove} from 'react-sortable-hoc'
 import {Button, Panel, Row, InputGroup, Col, FormControl} from 'react-bootstrap'
-import {Icon, Modal} from '../../components'
+import {Icon, Modal, LoaderText} from '../../components'
 import ProjectVersionPanels from './ProjectVersionPanels'
 import DraggableVersionPanels from '../../components/DraggableVersionPanels'
 import SelectableDropdown from '../../components/SelectableDropdown'
@@ -35,7 +35,9 @@ class TMMergeModal extends Component {
     projectVersions: PropTypes.arrayOf(ProjectType).isRequired,
     startMergeProcess: PropTypes.func.isRequired,
     notification: PropTypes.object,
-    triggered: PropTypes.bool.isRequired
+    triggered: PropTypes.bool.isRequired,
+    fetchingProject: PropTypes.bool.isRequired,
+    fetchingLocale: PropTypes.bool.isRequired
   }
   constructor (props) {
     super(props)
@@ -182,7 +184,9 @@ class TMMergeModal extends Component {
       projectVersions,
       locales,
       notification,
-      triggered
+      triggered,
+      fetchingProject,
+      fetchingLocale
     } = this.props
     const localeToDisplay = l => l.displayName
     const percentValueToDisplay = p => `${p}%`
@@ -229,13 +233,17 @@ class TMMergeModal extends Component {
               <Col xs={2}>
                 <span className='vmerge-title text-info'>Language</span>
               </Col>
-              <Col xs={6}>
+              {fetchingLocale ? undefined : <Col xs={6}>
                 <SelectableDropdown
                   id='language-dropdown-basic' className='vmerge-ddown'
                   onSelectDropdownItem={this.onLanguageSelection}
                   selectedValue={this.state.selectedLanguage}
                   valueToDisplay={localeToDisplay}
                   values={locales} />
+              </Col>}
+              <Col xs={6}>
+                <LoaderText loading={fetchingLocale}
+                  loadingText={'Fetching Locales'} />
               </Col>
             </Col>
             <Col xs={12} className='vmerge-boxes'>
@@ -278,6 +286,10 @@ class TMMergeModal extends Component {
                   <span className='vmerge-adjtitle vmerge-title'>
                     Select source project versions to merge
                   </span>
+                  <div>
+                    <LoaderText loading={fetchingProject}
+                      loadingText={'Fetching Projects'} />
+                  </div>
                   <ProjectVersionPanels projectVersions={projectVersions}
                     selectedVersions={this.state.selectedVersions}
                     onVersionCheckboxChange={this.onVersionCheckboxChange}
@@ -319,7 +331,9 @@ const mapStateToProps = (state) => {
     triggered: state.projectVersion.TMMerge.triggered,
     locales: state.projectVersion.locales,
     projectVersions: state.projectVersion.TMMerge.projectVersions,
-    notification: state.projectVersion.notification
+    notification: state.projectVersion.notification,
+    fetchingProject: state.projectVersion.fetchingProject,
+    fetchingLocale: state.projectVersion.fetchingLocale
   }
 }
 
