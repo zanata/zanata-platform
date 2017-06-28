@@ -190,12 +190,9 @@ class TMMergeModal extends Component {
     } = this.props
     const localeToDisplay = l => l.displayName
     const percentValueToDisplay = p => `${p}%`
-    const showHide = showTMMergeModal ? {display: 'block'} : {display: 'none'}
 
     return (
-      <Modal style={showHide}
-        show
-        onHide={openTMMergeModal}>
+      <Modal show={showTMMergeModal} onHide={openTMMergeModal}>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
           <p className="text-danger modal-danger">

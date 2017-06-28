@@ -11,7 +11,9 @@ import {
   PROJECT_PAGE_FAILURE,
   VERSION_TM_MERGE_REQUEST,
   VERSION_TM_MERGE_SUCCESS,
-  VERSION_TM_MERGE_FAILURE
+  VERSION_TM_MERGE_FAILURE,
+  QUERY_TM_MERGE_PROGRESS_SUCCESS,
+  QUERY_TM_MERGE_PROGRESS_FAILURE
 } from '../actions/version-action-types'
 
 const version = handleActions({
@@ -133,6 +135,17 @@ const version = handleActions({
         'We were unable perform the operation. Please try again.'
       }
     }
+  },
+  [QUERY_TM_MERGE_PROGRESS_SUCCESS]: (state, action) => {
+    const newState = cloneDeep(state)
+    newState.TMMerge.processStatus = action.payload
+    return newState
+  },
+  [QUERY_TM_MERGE_PROGRESS_FAILURE]: (state, action) => {
+    // what do we do with failed status query?
+    console.error(
+      `failed getting process status for version TM merge ${action.error}`)
+    return state
   }},
 // default state
   {

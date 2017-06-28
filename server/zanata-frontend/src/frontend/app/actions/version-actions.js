@@ -16,7 +16,10 @@ import {
   PROJECT_PAGE_FAILURE,
   VERSION_TM_MERGE_REQUEST,
   VERSION_TM_MERGE_SUCCESS,
-  VERSION_TM_MERGE_FAILURE
+  VERSION_TM_MERGE_FAILURE,
+  QUERY_TM_MERGE_PROGRESS_REQUEST,
+  QUERY_TM_MERGE_PROGRESS_SUCCESS,
+  QUERY_TM_MERGE_PROGRESS_FAILURE
 } from './version-action-types'
 
 /** Open or close the TM Merge modal  */
@@ -115,5 +118,14 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   )
   return {
     [CALL_API]: apiRequest
+  }
+}
+
+export function queryTMMergeProgress (url) {
+  const types = [QUERY_TM_MERGE_PROGRESS_REQUEST,
+    QUERY_TM_MERGE_PROGRESS_SUCCESS,
+    QUERY_TM_MERGE_PROGRESS_FAILURE]
+  return {
+    [CALL_API]: buildAPIRequest(url, 'GET', getJsonHeaders(), types)
   }
 }
