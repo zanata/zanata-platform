@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
+import {processStatusCodes, entityStatuses} from './EnumValueUtils'
 
-export const entityStatusPropType = PropTypes.oneOf(['READONLY', 'ACTIVE'])
+export const entityStatusPropType = PropTypes.oneOf(entityStatuses)
 
 export const versionDtoPropType = PropTypes.shape({
   id: PropTypes.string.isRequired,
@@ -25,17 +26,4 @@ export const FromProjectVersionType = PropTypes.shape({
   version: versionDtoPropType.isRequired
 })
 
-export const processStatusPropType = PropTypes.oneOf([
-  'NotAccepted', 'Waiting', 'Running', 'Finished', 'Cancelled', 'Failed'])
-
-const isStatusCodeEnded = statusCode => {
-  return statusCode === 'Finished' || statusCode === 'Cancelled' ||
-    statusCode === 'Failed'
-}
-/**
- * @param {{statusCode: string}} processStatus
- * @returns {boolean} whether a process status represents an ended process
- */
-export function isProcessEnded (processStatus) {
-  return processStatus && isStatusCodeEnded(processStatus.statusCode)
-}
+export const processStatusPropType = PropTypes.oneOf(processStatusCodes)

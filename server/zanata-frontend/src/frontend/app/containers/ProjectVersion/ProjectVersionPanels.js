@@ -5,12 +5,13 @@ import {
 } from 'react-bootstrap'
 import {Icon} from '../../components'
 import {ProjectType, FromProjectVersionType,
-  versionDtoPropType} from '../../utils/prop-types-util.js'
+  versionDtoPropType} from '../../utils/prop-types-util'
+import {isEntityStatusReadOnly} from '../../utils/EnumValueUtils'
 
 const tooltipReadOnly = <Tooltip id='tooltipreadonly'>Read only</Tooltip>
 
 const LockIcon = (props) => {
-  return props.status === 'READONLY'
+  return isEntityStatusReadOnly(props.status)
     ? (
     <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
       <Icon name='locked' className='s0 icon-locked' />

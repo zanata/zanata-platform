@@ -13,7 +13,8 @@ import {
   VERSION_TM_MERGE_SUCCESS,
   VERSION_TM_MERGE_FAILURE,
   QUERY_TM_MERGE_PROGRESS_SUCCESS,
-  QUERY_TM_MERGE_PROGRESS_FAILURE
+  QUERY_TM_MERGE_PROGRESS_FAILURE,
+  TM_MERGE_PROCESS_FINISHED
 } from '../actions/version-action-types'
 
 const version = handleActions({
@@ -146,6 +147,11 @@ const version = handleActions({
     console.error(
       `failed getting process status for version TM merge ${action.error}`)
     return state
+  },
+  [TM_MERGE_PROCESS_FINISHED]: (state, action) => {
+    const newState = cloneDeep(state)
+    newState.TMMerge.processStatus = undefined
+    return newState
   }},
 // default state
   {

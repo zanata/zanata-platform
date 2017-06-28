@@ -3,9 +3,8 @@ import PropTypes from 'prop-types'
 import {
   Button, ProgressBar
 } from 'react-bootstrap'
-import {
-  processStatusPropType, isProcessEnded
-} from '../../utils/prop-types-util'
+import { processStatusPropType } from '../../utils/prop-types-util'
+import { isProcessEnded } from '../../utils/EnumValueUtils'
 
 /**
  * This component can be used to show progress of a background task running on
@@ -27,7 +26,7 @@ class CancellableProgressBar extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      // TODO pahuang helper state to stop the loop in dev mode
+      // helper state to stop the loop in dev mode (with chrome react add-on)
       stopTimer: false
     }
   }

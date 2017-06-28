@@ -19,7 +19,8 @@ import {
   VERSION_TM_MERGE_FAILURE,
   QUERY_TM_MERGE_PROGRESS_REQUEST,
   QUERY_TM_MERGE_PROGRESS_SUCCESS,
-  QUERY_TM_MERGE_PROGRESS_FAILURE
+  QUERY_TM_MERGE_PROGRESS_FAILURE,
+  TM_MERGE_PROCESS_FINISHED
 } from './version-action-types'
 
 /** Open or close the TM Merge modal  */
@@ -129,3 +130,6 @@ export function queryTMMergeProgress (url) {
     [CALL_API]: buildAPIRequest(url, 'GET', getJsonHeaders(), types)
   }
 }
+
+export const currentTMMergeProcessFinished =
+  createAction(TM_MERGE_PROCESS_FINISHED)

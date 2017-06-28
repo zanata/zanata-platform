@@ -17,11 +17,13 @@ import {
   fetchProjectPage,
   toggleTMMergeModal,
   mergeVersionFromTM,
-  queryTMMergeProgress
+  queryTMMergeProgress,
+  currentTMMergeProcessFinished
 } from '../../actions/version-actions'
 import {
   ProjectType, LocaleType, processStatusPropType, FromProjectVersionType
 } from '../../utils/prop-types-util.js'
+import {isProcessEnded} from '../../utils/EnumValueUtils'
 
 /*
  * Component to display TM merge progress
@@ -220,7 +222,8 @@ class TMMergeModal extends Component {
       percentageComplete: PropTypes.number.isRequired,
       statusCode: processStatusPropType.isRequired
     }),
-    queryTMMergeProgress: PropTypes.func.isRequired
+    queryTMMergeProgress: PropTypes.func.isRequired,
+    mergeProcessFinished: PropTypes.func.isRequired
   }
   constructor (props) {
     super(props)
@@ -250,6 +253,14 @@ class TMMergeModal extends Component {
       this.setState((prevState, props) => ({
         selectedLanguage: locales.length === 0 ? undefined : locales[0]
       }))
+    }
+    const currentProcessStatus = this.props.processStatus
+    if (!isProcessEnded(currentProcessStatus) &&
+      isProcessEnded(nextProps.processStatus)) {
+      // process just finished, we want to re-display the merge option form.
+      // but we want to delay it a bit so that the user can see the progress
+      // bar animation finishes
+      setTimeout(this.props.mergeProcessFinished, 1000)
     }
   }
   queryTMMergeProgress = () => {
@@ -469,6 +480,9 @@ const mapDispatchToProps = (dispatch) => {
     onCancelTMMerge: () => {
       // TODO pahuang implement cancel operation
       console.warn('boom!!!')
+    },
+    mergeProcessFinished: () => {
+      dispatch(currentTMMergeProcessFinished())
     }
   }
 }
