@@ -7,6 +7,6 @@ storiesOf('SettingOption', module)
   .add('default', () => (
     <SettingOption
       setting={{
-        
+        /* add props here */
       }} />
   ))
