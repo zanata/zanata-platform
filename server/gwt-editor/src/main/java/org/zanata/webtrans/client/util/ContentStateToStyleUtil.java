@@ -39,7 +39,7 @@ public class ContentStateToStyleUtil {
             case Approved:
                 return "txt--state-highlight";
             case Rejected:
-                return "txt--state-danger";
+                return "txt--state-warning";
         }
         return styleNames;
     }
