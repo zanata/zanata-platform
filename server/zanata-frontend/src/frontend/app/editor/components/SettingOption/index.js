@@ -2,18 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Checkbox } from 'react-bootstrap'
 
-const setting =
-    /* add props here */
-
-
-    class SettingOption extends React.Component {
+class SettingOption extends React.Component {
   setting: PropTypes.shape({
-  id: PropTypes.any.isRequired, // I will update this to whatever I use when I wire it up
-  label: PropTypes.string.isRequired,
-  active: PropTypes.bool.isRequired
-  }).isRequired
-  /* arguments: (any: settingId, bool: active) */
-  updateSetting: PropTypes.func.isRequired
+    id: PropTypes.any.isRequired, // I will update this to whatever I use when I wire it up
+    label: PropTypes.string.isRequired,
+    active: PropTypes.bool.isRequired
+    }).isRequired
+    /* arguments: (any: settingId, bool: active) */
+    updateSetting: PropTypes.func.isRequired
   }
 
   onChange = (event) => {

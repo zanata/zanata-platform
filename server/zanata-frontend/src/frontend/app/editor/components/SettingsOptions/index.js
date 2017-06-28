@@ -1,11 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Checkbox } from 'react-bootstrap'
 import SettingOption from '../SettingOption'
-
-const settings =
-/* add props here */
-
 
 const SettingsOptions = ({states, updateSettingsOption}) => {
   const checkboxes = settings.map((setting, index) => (
