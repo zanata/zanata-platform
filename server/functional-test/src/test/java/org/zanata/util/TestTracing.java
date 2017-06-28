@@ -53,9 +53,12 @@ public class TestTracing extends RunListener {
                 System.getProperty("traceLocation",
                         "./target/test-classes/traceability");
         File location = new File(locationPath);
-        report = new File(location, "tracing.json");
+        report = new File(location, "traceability.json");
         if (!location.exists() && !location.mkdirs()) {
             throw new RuntimeException("Unable to create traceability report dir");
+        }
+        if (report.exists() && !report.delete()) {
+            throw new RuntimeException("Unable to remove traceability report");
         }
         fileReport = report.createNewFile();
     }

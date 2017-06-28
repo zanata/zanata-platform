@@ -21,6 +21,7 @@
 package org.zanata.async;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -122,10 +123,14 @@ public class AsyncTaskHandle<V> implements Serializable {
     private static boolean isAdminOrSameUser(AsyncTaskHandle taskHandle,
             ZanataIdentity identity) {
         return identity != null && (identity.hasRole("admin")
-                || (taskHandle instanceof UserTriggeredTaskHandle
-                        && ((UserTriggeredTaskHandle) taskHandle)
-                                .getTriggeredBy()
-                                .equals(identity.getAccountUsername())));
+                || triggeredBySameUser(taskHandle, identity));
+    }
+
+    private static boolean triggeredBySameUser(AsyncTaskHandle taskHandle,
+            ZanataIdentity identity) {
+        return taskHandle instanceof UserTriggeredTaskHandle && Objects.equals(
+                ((UserTriggeredTaskHandle) taskHandle).getTriggeredBy(),
+                identity.getAccountUsername());
     }
 
     /**
