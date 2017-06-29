@@ -28,15 +28,19 @@ class SettingsOptions extends React.Component {
 }
 
 const updateAction = action('updateSettingsOption')
+const settings =
+    ['HTML/XML tags',
+      'Java variables',
+      'Leading/trailing newline (n)',
+      'Positional printf (XSI extension)',
+      'Printf variables',
+      'Tab characters (t)',
+      'XML entity reference']
 
 storiesOf('SettingsOptions', module)
     .add('default', () => (
         <SettingsOptions
-            settings={{
-              id: 'Ambulance',
-              label: 'Krankenwagen',
-              active: {true}
-            }}
+            settings={settings}
             updateSettingsOption={action(updateAction)} />
     ))
 

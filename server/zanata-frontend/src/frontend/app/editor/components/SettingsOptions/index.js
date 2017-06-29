@@ -2,40 +2,30 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import SettingOption from '../SettingOption'
 
-class SettingsOptions extends React.Component {
-  static propTypes = {
-    settings: PropTypes.shape({
-      id: PropTypes.any.isRequired, // I will update this to whatever I use when I wire it up
-      label: PropTypes.string.isRequired,
-      active: PropTypes.bool.isRequired
-    }).isRequired,
-    /* arguments: (any: settingId, bool: active) */
-    updateSettingsOption: PropTypes.func.isRequired
-  }
+const settings =
+    ['HTML/XML tags',
+      'Java variables',
+      'Leading/trailing newline (n)',
+      'Positional printf (XSI extension)',
+      'Printf variables',
+      'Tab characters (t)',
+      'XML entity reference']
 
-  onChange = (event) => {
-    this.props.onChange(this.props.settings, event.target.updateSettingsOption)
-  }
-
-  render () {
-  const { settings, updateSettingsOption } = this.props
-  const checkboxes = (
-    <li>
-      <SettingOption
-          setting={settings}
-          checked={true}
-          updateSetting={this.onChange} />
-    </li>
-  )
-
+const SettingsOptions = ({states, updateSettingOption}) => {
+  const checkboxes = settings.map((settings, index) => (
+      <li key={index}>
+        <SettingOption
+            setting={settings}
+            updateSetting={updateSettingOption}/>
+      </li>
+  ))
   return (
-    <div className="settings-options">
-      <ul>
-        {checkboxes}
-      </ul>
-    </div>
+      <div>
+        <ul>
+          {checkboxes}
+        </ul>
+      </div>
   )
-  }
 }
 
 export default SettingsOptions
