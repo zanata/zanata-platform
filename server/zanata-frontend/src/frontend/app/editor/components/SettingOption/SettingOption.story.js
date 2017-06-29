@@ -5,10 +5,11 @@ import SettingOption from '.'
 
 storiesOf('SettingOption', module)
   .add('default', () => (
-    <SettingOption
-        settings={{
-        id="cat"
-        label="cat"
-        active={true}
-      }} />
+      <SettingOption
+        setting={{
+          id: 'Ambulance',
+          label: 'Krankenwagen',
+          active: {true}
+     }}
+      updateSetting={action(updateSetting)} />
   ))

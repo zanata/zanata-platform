@@ -22,13 +22,13 @@ const SettingsOptions = ({states, updateSettingsOption}) => {
 }
 
 SettingsOptions.propTypes = {
-  settings: PropTypes.arrayOf(shape(
+    settings: PropTypes.shape({
       id: PropTypes.any.isRequired, // I will update this to whatever I use when I wire it up
       label: PropTypes.string.isRequired,
       active: PropTypes.bool.isRequired
-  )).isRequired
-  /* arguments: (any: settingId, bool: active) */
-  updateSetting: PropTypes.func.isRequired
+    }).isRequired,
+    /* arguments: (any: settingId, bool: active) */
+    updateSettingsOption: PropTypes.func.isRequired
 }
 
 export default SettingsOptions
