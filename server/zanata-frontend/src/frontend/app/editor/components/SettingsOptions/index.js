@@ -14,17 +14,17 @@ class SettingsOptions extends React.Component {
   }
 
   onChange = (event) => {
-    this.props.onChange(this.props.setting, event.target.checked)
+    this.props.onChange(this.props.settings, event.target.updateSettingsOption)
   }
 
   render () {
-  const { setting, checked } = this.props
+  const { settings, updateSettingsOption } = this.props
   const checkboxes = (
     <li>
       <SettingOption
-          setting={setting}
+          setting={settings}
           checked={true}
-          onChange={this.onChange} />
+          updateSetting={this.onChange} />
     </li>
   )
 
