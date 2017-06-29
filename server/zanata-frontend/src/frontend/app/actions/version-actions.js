@@ -33,8 +33,8 @@ export const toggleTMMergeModal =
 /**
  * Fetch project version specific locales from database
  *
- * @param projectSlug project ID
- * @param versionSlug version ID
+ * @param project projectSlug
+ * @param version versionSlug
  * */
 export const fetchVersionLocales = (project, version) => {
   const endpoint = `${apiUrl}/project/${project}/version/${version}/locales`

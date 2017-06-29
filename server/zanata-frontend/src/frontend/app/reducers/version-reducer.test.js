@@ -176,18 +176,26 @@ describe('version-reducer test', () => {
     const requestAction = {
       type: VERSION_TM_MERGE_REQUEST
     }
-    // FIXME: Find the appropriate shape for this action
     const mergeSuccessAction = {
       type: VERSION_TM_MERGE_SUCCESS,
-      payload: true
+      payload: {
+        messages: [],
+        percentageComplete: 100,
+        statusCode: 'Running',
+        url: 'http://localhost:8080/rest/process/key/TMMergeForVerKey-1-ja'
+      }
     }
     const initial = versionReducer(undefined, {type: 'any'})
     const mergeRequested = versionReducer(initial, requestAction)
     const mergeReceived = versionReducer(mergeRequested, mergeSuccessAction)
-
     expect(mergeReceived).toEqual({
       TMMerge: {
-        processStatus: true,
+        processStatus: {
+          messages: [],
+          percentageComplete: 100,
+          statusCode: 'Running',
+          url: 'http://localhost:8080/rest/process/key/TMMergeForVerKey-1-ja'
+        },
         projectVersions: [],
         show: false,
         triggered: false
@@ -204,7 +212,6 @@ describe('version-reducer test', () => {
       type: VERSION_TM_MERGE_REQUEST
     })
     expect(requestAction.TMMerge.triggered).toEqual(true)
-    // FIXME: Find the appropriate shape for this action
     const failed = versionReducer(requestAction, {
       type: VERSION_TM_MERGE_FAILURE
     })
@@ -214,7 +221,6 @@ describe('version-reducer test', () => {
     const requestAction = {
       type: TM_MERGE_CANCEL_REQUEST
     }
-    // FIXME: Find the appropriate shape for this action
     const cancelSuccessAction = {
       type: TM_MERGE_CANCEL_SUCCESS
     }
