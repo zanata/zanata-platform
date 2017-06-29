@@ -54,7 +54,6 @@ class ProjectVersionPanels extends Component {
     if (this.props.projectVersions.length === 0) {
       return <PanelGroup />
     }
-
     const panels = this.props.projectVersions.map((project, index) => {
       const selectedVersionsInProject =
         this.selectedVersionsOfProject(this.props.selectedVersions, project)
@@ -138,7 +137,6 @@ class SelectAllVersionsCheckbox extends Component {
     // the size
     const allVersionsChecked =
       project.versions.length === selectedVersionsInProject.length
-
     return (
       <Checkbox onChange={this.onAllVersionCheckboxChange}
         checked={allVersionsChecked}>

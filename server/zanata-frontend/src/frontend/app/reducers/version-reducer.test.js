@@ -9,7 +9,12 @@ import {
   VERSION_LOCALES_FAILURE,
   PROJECT_PAGE_REQUEST,
   PROJECT_PAGE_SUCCESS,
-  PROJECT_PAGE_FAILURE
+  PROJECT_PAGE_FAILURE,
+  VERSION_TM_MERGE_REQUEST,
+  VERSION_TM_MERGE_SUCCESS,
+  VERSION_TM_MERGE_FAILURE,
+  TM_MERGE_CANCEL_REQUEST,
+  TM_MERGE_CANCEL_SUCCESS
 } from '../actions/version-action-types'
 
 describe('version-reducer test', () => {
@@ -24,13 +29,13 @@ describe('version-reducer test', () => {
       payload: { show: false }
     })
     expect(initial.TMMerge).toEqual(
-      {projectVersions: [], show: false}
+      {processStatus: undefined, projectVersions: [], show: false, triggered: false}
     )
     expect(shown.TMMerge).toEqual(
-      {projectVersions: [], show: true}
+      {processStatus: undefined, projectVersions: [], show: true, triggered: false}
     )
     expect(hidden.TMMerge).toEqual(
-      {projectVersions: [], show: false}
+      {processStatus: undefined, projectVersions: [], show: false, triggered: false}
     )
   })
 
@@ -50,7 +55,7 @@ describe('version-reducer test', () => {
     const requestAction = {
       type: VERSION_LOCALES_REQUEST
     }
-    const details = {
+    const localeSuccessAction = {
       type: VERSION_LOCALES_SUCCESS,
       payload:
         [{
@@ -65,12 +70,12 @@ describe('version-reducer test', () => {
         }]
     }
     const initial = versionReducer(undefined, {type: 'any'})
-    const withFirstRequest = versionReducer(initial, requestAction)
-    const withFirst = versionReducer(withFirstRequest, details)
+    const localesRequested = versionReducer(initial, requestAction)
+    const localesReceived = versionReducer(localesRequested, localeSuccessAction)
 
-    expect(withFirstRequest.fetchingLocale).toEqual(true)
-    expect(withFirst.fetchingLocale).toEqual(false)
-    expect(withFirst.locales).toEqual([{
+    expect(localesRequested.fetchingLocale).toEqual(true)
+    expect(localesReceived.fetchingLocale).toEqual(false)
+    expect(localesReceived.locales).toEqual([{
         displayName: 'Japanese',
         localeId: 'ja',
         nativeName: '日本語'
@@ -98,7 +103,7 @@ describe('version-reducer test', () => {
     const requestAction = {
       type: PROJECT_PAGE_REQUEST
     }
-    const details = {
+    const projectSuccessAction = {
       type: PROJECT_PAGE_SUCCESS,
       payload:
         [{
@@ -131,12 +136,12 @@ describe('version-reducer test', () => {
         }]
     }
     const initial = versionReducer(undefined, {type: 'any'})
-    const withFirstRequest = versionReducer(initial, requestAction)
-    const withFirst = versionReducer(withFirstRequest, details)
+    const projectsRequested = versionReducer(initial, requestAction)
+    const projectsReceived = versionReducer(projectsRequested, projectSuccessAction)
 
-    expect(withFirstRequest.fetchingProject).toEqual(true)
-    expect(withFirst.fetchingProject).toEqual(false)
-    expect(withFirst.TMMerge.projectVersions).toEqual(
+    expect(projectsRequested.fetchingProject).toEqual(true)
+    expect(projectsReceived.fetchingProject).toEqual(false)
+    expect(projectsReceived.TMMerge.projectVersions).toEqual(
       [{
         contributorCount: 0,
         description: 'A project',
@@ -166,5 +171,67 @@ describe('version-reducer test', () => {
           ]
         }]
     )
+  })
+  it('can request a TM merge', () => {
+    const requestAction = {
+      type: VERSION_TM_MERGE_REQUEST
+    }
+    // FIXME: Find the appropriate shape for this action
+    const mergeSuccessAction = {
+      type: VERSION_TM_MERGE_SUCCESS,
+      payload: true
+    }
+    const initial = versionReducer(undefined, {type: 'any'})
+    const mergeRequested = versionReducer(initial, requestAction)
+    const mergeReceived = versionReducer(mergeRequested, mergeSuccessAction)
+
+    expect(mergeReceived).toEqual({
+      TMMerge: {
+        processStatus: true,
+        projectVersions: [],
+        show: false,
+        triggered: false
+      },
+        fetchingLocale: false,
+        fetchingProject: false,
+        locales: [],
+        notification: undefined
+    })
+  })
+  it('can track TM merge progress', () => {
+    const initial = versionReducer(undefined, { type: 'any' })
+    const requestAction = versionReducer(initial, {
+      type: VERSION_TM_MERGE_REQUEST
+    })
+    expect(requestAction.TMMerge.triggered).toEqual(true)
+    // FIXME: Find the appropriate shape for this action
+    const failed = versionReducer(requestAction, {
+      type: VERSION_TM_MERGE_FAILURE
+    })
+    expect(failed.TMMerge.processStatus).toEqual(undefined)
+  })
+  it('can cancel TM merge requests', () => {
+    const requestAction = {
+      type: TM_MERGE_CANCEL_REQUEST
+    }
+    // FIXME: Find the appropriate shape for this action
+    const cancelSuccessAction = {
+      type: TM_MERGE_CANCEL_SUCCESS
+    }
+    const initial = versionReducer(undefined, {type: 'any'})
+    const cancelRequested = versionReducer(initial, requestAction)
+    const cancelReceived = versionReducer(cancelRequested, cancelSuccessAction)
+    expect(cancelReceived).toEqual({
+      TMMerge: {
+        processStatus: undefined,
+        projectVersions: [],
+        show: false,
+        triggered: false
+      },
+      fetchingLocale: false,
+      fetchingProject: false,
+      locales: [],
+      notification: undefined
+    })
   })
 })
