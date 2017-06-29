@@ -22,20 +22,18 @@ class SettingOption extends React.Component {
     return (
         <RealSettingOption
             updateSetting={this.updateSetting}
-            states={this.state} />
+            states={this.state}
+            setting={setting}/>
     )
   }
 }
 
 const updateAction = action('updateSetting')
+const setting = 'HTML/XML tags'
 
 storiesOf('SettingOption', module)
   .add('default', () => (
       <SettingOption
-        setting={{
-          id: 'Ambulance',
-          label: 'Krankenwagen',
-          active: {true}
-     }}
-      updateSetting={action(updateAction)} />
+          setting={setting}
+          updateSetting={action(updateAction)} />
   ))
