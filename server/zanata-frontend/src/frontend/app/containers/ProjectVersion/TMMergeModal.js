@@ -67,7 +67,8 @@ const MergeOptions = (
     flushProjectSearch,
     onVersionCheckboxChange,
     onAllVersionCheckboxChange,
-    onDragMoveEnd
+    onDragMoveEnd,
+    _removeProjectVersion
   }) => {
   return (
     <div>
@@ -165,7 +166,8 @@ const MergeOptions = (
           <Col xs={6}>
             <DraggableVersionPanels
               selectedVersions={mergeOptions.selectedVersions}
-              onDraggableMoveEnd={onDragMoveEnd} />
+              onDraggableMoveEnd={onDragMoveEnd}
+              removeVersion={_removeProjectVersion} />
           </Col>
         </Panel>
       </Col>
@@ -197,7 +199,8 @@ MergeOptions.propTypes = {
   flushProjectSearch: PropTypes.func.isRequired,
   onVersionCheckboxChange: PropTypes.func.isRequired,
   onAllVersionCheckboxChange: PropTypes.func.isRequired,
-  onDragMoveEnd: PropTypes.func.isRequired
+  onDragMoveEnd: PropTypes.func.isRequired,
+  _removeProjectVersion: PropTypes.func.isRequired
 }
 
 /**
@@ -418,6 +421,7 @@ class TMMergeModal extends Component {
           onProjectSearchChange={this.onProjectSearchChange}
           flushProjectSearch={this.flushProjectSearch}
           onDragMoveEnd={this.onDragMoveEnd}
+          _removeProjectVersion={this._removeProjectVersion}
         />
       )
     }
@@ -460,7 +464,7 @@ const mapStateToProps = (state) => {
     notification: projectVersionState.notification,
     fetchingProject: projectVersionState.fetchingProject,
     fetchingLocale: projectVersionState.fetchingLocale,
-    processStatus
+    processStatus: processStatus
   }
 }
 
