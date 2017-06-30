@@ -15,7 +15,7 @@ const SettingsOptions = ({states, updateSettingOption}) => {
       <li key={index}>
         <SettingOption
             setting={settings}
-            updateSetting={updateSettingOption}/>
+            updateSetting={updateSettingOption} />
       </li>
   ))
   return (
@@ -35,6 +35,14 @@ SettingsOptions.propTypes = {
   }).isRequired,
   /* arguments: (any: settingId, bool: active) */
   updateSettingOption: PropTypes.func.isRequired
+}
+
+SettingsOptions.defaultProps = {
+  settings:({
+    id: 'id',
+    label: 'label',
+    active: {true}
+  })
 }
 
 export default SettingsOptions
