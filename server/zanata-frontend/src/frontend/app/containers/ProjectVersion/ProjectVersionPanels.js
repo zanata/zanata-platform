@@ -77,13 +77,11 @@ const isVersionInList =
  * Sub Component of a single project with versions.
  * Handles behavior of display or selecting versions of this project.
  */
-const SelectableProjectPanel = (props) => {
-  const {
-    project,
-    selectedVersionsInProject,
-    onAllVersionCheckboxChange,
-    onVersionCheckboxChange
-  } = props
+const SelectableProjectPanel = ({
+  project,
+  selectedVersionsInProject,
+  onAllVersionCheckboxChange,
+  onVersionCheckboxChange }) => {
   return (
     <Panel header={
       <h3>

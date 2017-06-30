@@ -213,7 +213,7 @@ class TMMergeModal extends Component {
     showTMMergeModal: PropTypes.bool.isRequired,
     openTMMergeModal: PropTypes.func.isRequired,
     /* params: project object */
-    openProjectPage: PropTypes.func.isRequired,
+    fetchProjectPage: PropTypes.func.isRequired,
     projectSlug: PropTypes.string.isRequired,
     versionSlug: PropTypes.string.isRequired,
     locales: PropTypes.arrayOf(LocaleType).isRequired,
@@ -224,7 +224,8 @@ class TMMergeModal extends Component {
     fetchingProject: PropTypes.bool.isRequired,
     fetchingLocale: PropTypes.bool.isRequired,
     onCancelTMMerge: PropTypes.func.isRequired,
-    processStatus: processStatusType.isRequired,
+    // Not required - set to undefined when merge not in progress
+    processStatus: processStatusType,
     queryTMMergeProgress: PropTypes.func.isRequired,
     mergeProcessFinished: PropTypes.func.isRequired
   }
@@ -242,13 +243,13 @@ class TMMergeModal extends Component {
     /* Chose 1 second as an arbitrary period between searches.
      * leading and trailing options specify we want to search to after the user
      * stops typing. */
-    this.throttleHandleSearch = throttle(props.openProjectPage, 1000,
+    this.throttleHandleSearch = throttle(props.fetchProjectPage, 1000,
       { 'leading': false })
   }
   componentDidMount () {
     this.props.fetchVersionLocales(
       this.props.projectSlug, this.props.versionSlug)
-    this.props.openProjectPage(this.state.projectSearchTerm)
+    this.props.fetchProjectPage(this.state.projectSearchTerm)
   }
   componentWillReceiveProps (nextProps) {
     const locales = nextProps.locales
@@ -286,9 +287,9 @@ class TMMergeModal extends Component {
   }
   onProjectSearchChange = (event) => {
     const textEntered = event.target.value
-    this.setState((prevState, props) => ({
+    this.setState({
       projectSearchTerm: textEntered
-    }), this.throttleHandleSearch(this.state.projectSearchTerm))
+    }, this.throttleHandleSearch(this.state.projectSearchTerm))
   }
   flushProjectSearch = (event) => {
     if (event.key === 'Enter') {
@@ -376,7 +377,7 @@ class TMMergeModal extends Component {
       fromImportedTM: !prevState.fromImportedTM
     }))
   }
-  summitForm = () => {
+  submitForm = () => {
     this.props.startMergeProcess(this.props.projectSlug,
       this.props.versionSlug, this.state)
   }
@@ -395,36 +396,30 @@ class TMMergeModal extends Component {
       processStatus
     } = this.props
 
-    const mergeOptions = {
-      ...this.state
-    }
-    let modalBody
-    if (processStatus) {
-      modalBody = (
-        <CancellableProgressBar onCancelOperation={this.cancelTMMerge}
-          processStatus={processStatus}
-          queryProgress={this.queryTMMergeProgress} />
+    const modalBody = processStatus
+      ? (
+      <CancellableProgressBar onCancelOperation={this.cancelTMMerge}
+        processStatus={processStatus}
+        queryProgress={this.queryTMMergeProgress} />
       )
-    } else {
-      modalBody = (
-        <MergeOptions projectSlug={projectSlug} versionSlug={versionSlug}
-          locales={locales} projectVersions={projectVersions}
-          fetchingProject={fetchingProject} fetchingLocale={fetchingLocale}
-          mergeOptions={mergeOptions}
-          onPercentSelection={this.onPercentSelection}
-          onDocIdCheckboxChange={this.onDocIdCheckboxChange}
-          onContextCheckboxChange={this.onContextCheckboxChange}
-          onImportedCheckboxChange={this.onImportedCheckboxChange}
-          onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
-          onVersionCheckboxChange={this.onVersionCheckboxChange}
-          onLanguageSelection={this.onLanguageSelection}
-          onProjectSearchChange={this.onProjectSearchChange}
-          flushProjectSearch={this.flushProjectSearch}
-          onDragMoveEnd={this.onDragMoveEnd}
-          _removeProjectVersion={this._removeProjectVersion}
-        />
+      : (
+      <MergeOptions projectSlug={projectSlug} versionSlug={versionSlug}
+        locales={locales} projectVersions={projectVersions}
+        fetchingProject={fetchingProject} fetchingLocale={fetchingLocale}
+        mergeOptions={this.state}
+        onPercentSelection={this.onPercentSelection}
+        onDocIdCheckboxChange={this.onDocIdCheckboxChange}
+        onContextCheckboxChange={this.onContextCheckboxChange}
+        onImportedCheckboxChange={this.onImportedCheckboxChange}
+        onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
+        onVersionCheckboxChange={this.onVersionCheckboxChange}
+        onLanguageSelection={this.onLanguageSelection}
+        onProjectSearchChange={this.onProjectSearchChange}
+        flushProjectSearch={this.flushProjectSearch}
+        onDragMoveEnd={this.onDragMoveEnd}
+        _removeProjectVersion={this._removeProjectVersion}
+      />
       )
-    }
     return (
       <Modal show={showTMMergeModal} onHide={openTMMergeModal}>
         <Modal.Header>
@@ -440,7 +435,7 @@ class TMMergeModal extends Component {
                 onClick={openTMMergeModal}>
                 Cancel
               </Button>
-              <Button bsStyle='primary' onClick={this.summitForm}
+              <Button bsStyle='primary' onClick={this.submitForm}
                 disabled={triggered}>
                 Merge translations
               </Button>
@@ -473,7 +468,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchVersionLocales: (project, version) => {
       dispatch(fetchVersionLocales(project, version))
     },
-    openProjectPage: (project) => {
+    fetchProjectPage: (project) => {
       dispatch(fetchProjectPage(project))
     },
     openTMMergeModal: () => {

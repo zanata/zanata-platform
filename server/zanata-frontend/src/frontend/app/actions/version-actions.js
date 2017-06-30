@@ -75,7 +75,7 @@ export const fetchProjectPage = (projectSearchTerm) => {
 const fuzzyOrRejectMergeRule = (isAccept) => isAccept ? 'FUZZY' : 'REJECT'
 
 // convert project version to string representation
-const toProjectVersion = (projectVersion) => {
+const toProjectVersionString = (projectVersion) => {
   return `${projectVersion.projectSlug}/${projectVersion.version.id}`
 }
 
@@ -97,13 +97,21 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
     `${apiUrl}/project/${projectSlug}/version/${versionSlug}/tm-merge`
   const types = [VERSION_TM_MERGE_REQUEST,
     VERSION_TM_MERGE_SUCCESS, VERSION_TM_MERGE_FAILURE]
+  const {
+    selectedLanguage: {localeId},
+    matchPercentage,
+    differentDocId,
+    differentContext,
+    fromImportedTM,
+    selectedVersions
+  } = mergeOptions
   const body = {
-    localeId: mergeOptions.selectedLanguage.localeId,
-    thresholdPercent: mergeOptions.matchPercentage,
-    differentDocumentRule: fuzzyOrRejectMergeRule(mergeOptions.differentDocId),
-    differentContextRule: fuzzyOrRejectMergeRule(mergeOptions.differentContext),
-    importedMatchRule: fuzzyOrRejectMergeRule(mergeOptions.fromImportedTM),
-    fromProjectVersions: mergeOptions.selectedVersions.map(toProjectVersion)
+    localeId: localeId,
+    thresholdPercent: matchPercentage,
+    differentDocumentRule: fuzzyOrRejectMergeRule(differentDocId),
+    differentContextRule: fuzzyOrRejectMergeRule(differentContext),
+    importedMatchRule: fuzzyOrRejectMergeRule(fromImportedTM),
+    fromProjectVersions: selectedVersions.map(toProjectVersionString)
   }
   const apiRequest = buildAPIRequest(
     endpoint, 'POST', getJsonHeaders(), types, JSON.stringify(body)
