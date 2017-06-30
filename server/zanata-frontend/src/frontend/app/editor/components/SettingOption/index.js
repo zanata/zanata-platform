@@ -13,17 +13,17 @@ class SettingOption extends React.Component {
     updateSetting: PropTypes.func.isRequired
   }
 
-  onChange = () => {
-    this.props.updateSetting(this.props.setting, event.target.checked)
+  updateSetting = (event) => {
+    this.props.updateSetting(this.props.id, event.target.checked)
   }
 
   render () {
-    const { setting, checked } = this.props
+    const { label, active } = this.props
     return (
-        <Checkbox checked={checked}
-           onChange={this.onChange}>
-          {setting}
-        </Checkbox>
+      <Checkbox checked={active}
+        onChange={this.updateSetting}>
+        &nbsp;{label}
+      </Checkbox>
     )
   }
 }

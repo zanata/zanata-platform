@@ -6,46 +6,86 @@ import RealSettingsOptions from '.'
 class SettingsOptions extends React.Component {
   static propTypes = {
     settings: PropTypes.shape({
-      id: PropTypes.any.isRequired, // I will update this to whatever I use when I wire it up
+      id: PropTypes.any.isRequired,
       label: PropTypes.string.isRequired,
       active: PropTypes.bool.isRequired
     }).isRequired,
-    /* arguments: (any: settingId, bool: active) */
     updateSetting: PropTypes.func.isRequired
   }
   constructor (props) {
     super(props)
-    this.state = props.state
+    this.state = { settings: props.settings }
   }
-  updateSettingOption = (settings, checked) => {
+  updateSetting = (id, active) => {
     // record the check state in the wrapper
-    this.setState({ [settings]: checked })
+    this.setState(newState => ({
+      settings: newState.settings.map(setting => {
+        if (setting.id === id) {
+          return {
+            ...setting,
+            active
+          }
+        } else {
+          return setting
+        }
+      })
+    }))
     // call the real one that was passed in
-    this.props.updateSettingOption(settings, checked)
+    this.props.updateSetting(id, active)
   }
   render () {
     return (
-        <RealSettingsOptions
-            updateSettingOption={this.updateSettingOption}
-            states={this.state} />
+      <RealSettingsOptions
+        settings={ this.state.settings }
+        updateSetting={ this.updateSetting } />
     )
   }
 }
 
-const updateAction = action('updateSettingOption')
+const updateSetting = action('updateSetting')
 const settings =
-    ['HTML/XML tags',
-      'Java variables',
-      'Leading/trailing newline (n)',
-      'Positional printf (XSI extension)',
-      'Printf variables',
-      'Tab characters (t)',
-      'XML entity reference']
+    [
+      {
+        id: 'html-xml-tags',
+        label: 'HTML/XML tags',
+        active: false
+      },
+      {
+        id: 'java-variables',
+        label: 'Java variables',
+        active: true
+      },
+      {
+        id: 'leading-trailing-newline',
+        label: 'Leading/trailing newline (n)',
+        active: false
+      },
+      {
+        id: 'positional-printf',
+        label: 'Positional printf (XSI extension)',
+        active: true
+      },
+      {
+        id: 'printf-variables',
+        label: 'Printf variables',
+        active: false
+      },
+      {
+        id: 'tab-characters',
+        label: 'Tab characters (t)',
+        active: false
+      },
+      {
+        id: 'xml-entity-reference',
+        label: 'XML entity reference',
+        active: true
+      }
+    ]
 
 storiesOf('SettingsOptions', module)
     .add('default', () => (
         <SettingsOptions
             settings={settings}
-            updateSettingOption={action(updateAction)} />
+            updateSetting={action('updateSetting')} />
     ))
 
