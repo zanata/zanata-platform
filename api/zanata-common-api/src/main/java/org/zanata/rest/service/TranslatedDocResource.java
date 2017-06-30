@@ -39,6 +39,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import org.jboss.resteasy.util.HttpHeaderNames;
 import org.zanata.common.LocaleId;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -60,6 +62,10 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
 @ResourceLabel("Translated Documents")
+@StatusCodes({
+        @ResponseCode(code = 500,
+                condition = "If there is an unexpected error in the server while performing this operation")
+})
 public interface TranslatedDocResource extends RestResource {
     @SuppressWarnings("deprecation")
     public static final String SERVICE_PATH =
@@ -79,35 +85,33 @@ public interface TranslatedDocResource extends RestResource {
      * @param extensions
      *            The translation extensions to retrieve (e.g. "comment"). This
      *            parameter allows multiple values.
-     * @param skeletons
+     * @param createSkeletons
      *            Indicates whether to generate untranslated entries or not.
      * @param eTag
      *            An Entity tag identifier. Based on this identifier (if
      *            provided), the server will decide if it needs to send a
      *            response to the client or not (See return section).
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Successfully retrieved translations. The data will be
-     *         contained in the response.<br>
-     *         NOT FOUND(404) - If a project, project iteration or document
-     *         could not be found with the given parameters. Also if no
-     *         translations are found for the given document and locale.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.<br/>
-     *         NOT_MODIFIED(304) - If the provided ETag matches the server's
-     *         stored ETag, it will reply with this code, indicating that the
-     *         last received response is still valid and should be reused.
      */
     @GET
     @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
     // /r/{id}/translations/{locale}
-            @TypeHint(TranslationsResource.class)
-            public
-            Response getTranslations(@PathParam("id") String idNoSlash,
-                    @PathParam("locale") LocaleId locale,
-                    @QueryParam("ext") Set<String> extensions,
-                    @QueryParam("skeletons") boolean createSkeletons,
-                    @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag);
+    @TypeHint(TranslationsResource.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Successfully retrieved translations. " +
+                    "The translation data will be contained in the response."),
+            @ResponseCode(code = 404, condition = "The project, version, or document could" +
+                    " not be found with the given parameters. Also, if no translations are" +
+                    " found for the given document and locale."),
+            @ResponseCode(code = 304, condition = "If the provided ETag matches the server's" +
+                    " stored ETag, indicating that the last received response is still valid" +
+                    " and should be reused."),
+    })
+    public
+    Response getTranslations(@PathParam("id") String idNoSlash,
+            @PathParam("locale") LocaleId locale,
+            @QueryParam("ext") Set<String> extensions,
+            @QueryParam("skeletons") boolean createSkeletons,
+            @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag);
 
     /**
      * Deletes a set of translations for a given locale. Also deletes any
@@ -122,22 +126,21 @@ public interface TranslatedDocResource extends RestResource {
      *            (',').
      * @param locale
      *            The locale for which to get translations.
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Successfully deleted the translations.<br>
-     *         NOT FOUND(404) - If a project, project iteration or document
-     *         could not be found with the given parameters. UNAUTHORIZED(401) -
-     *         If the user does not have the proper permissions to perform this
-     *         operation.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
      */
     @DELETE
     @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+    @TypeHint(TypeHint.NO_CONTENT.class)
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Successfully deleted the translations."),
+            @ResponseCode(code = 404, condition = "If a project, project iteration or document" +
+                    " could not be found with the given parameters."),
+            @ResponseCode(code = 401, condition = "If the user does not have the proper" +
+                    " permissions to perform this operation."),
+    })
     // /r/{id}/translations/{locale}
-            public
-            Response deleteTranslations(@PathParam("id") String idNoSlash,
-                    @PathParam("locale") LocaleId locale);
+    public
+    Response deleteTranslations(@PathParam("id") String idNoSlash,
+            @PathParam("locale") LocaleId locale);
 
     /**
      * Updates the translations for a document and a locale.
@@ -162,27 +165,26 @@ public interface TranslatedDocResource extends RestResource {
      *            Auto will check the history of your translations and will not
      *            overwrite any translations for which it detects a previous
      *            value is being pushed.
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Translations were successfully updated.<br>
-     *         NOT FOUND(404) - If a project, project iteration or document
-     *         could not be found with the given parameters.<br>
-     *         UNAUTHORIZED(401) - If the user does not have the proper
-     *         permissions to perform this operation.<br>
-     *         BAD REQUEST(400) - If there are problems with the parameters
-     *         passed. i.e. Merge type is not one of the accepted types. This
-     *         response should have a content message indicating a reason.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
      */
     @PUT
     @Path(RESOURCE_SLUG_TEMPLATE + "/translations/{locale}")
+    @StatusCodes({
+            @ResponseCode(code = 200, condition = "Translations were successfully updated."),
+            @ResponseCode(code = 404, condition = "If a project, project iteration or document" +
+                    " could not be found with the given parameters."),
+            @ResponseCode(code = 401, condition = "If the user does not have the proper" +
+                    " permissions to perform this operation."),
+            @ResponseCode(code = 400, condition = "If there are problems with the passed parameters." +
+                    " e.g. Merge type is not one of the accepted types. This response should have a" +
+                    " content message indicating a reason.",
+                    type = @TypeHint(String.class))
+    })
     // /r/{id}/translations/{locale}
-            public
-            Response putTranslations(@PathParam("id") String idNoSlash,
-                    @PathParam("locale") LocaleId locale,
-                    TranslationsResource messageBody,
-                    @QueryParam("ext") Set<String> extensions,
-                    @QueryParam("merge") @DefaultValue("auto") String merge);
+    public
+    Response putTranslations(@PathParam("id") String idNoSlash,
+            @PathParam("locale") LocaleId locale,
+            TranslationsResource messageBody,
+            @QueryParam("ext") Set<String> extensions,
+            @QueryParam("merge") @DefaultValue("auto") String merge);
 
 }
