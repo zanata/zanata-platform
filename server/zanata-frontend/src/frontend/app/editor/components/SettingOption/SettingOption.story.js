@@ -5,35 +5,38 @@ import RealSettingOption from '.'
 
 class SettingOption extends React.Component {
   static propTypes = {
-    setting: PropTypes.shape.isRequired,
+    id: PropTypes.any.isRequired,
+    label: PropTypes.string.isRequired,
+    active: PropTypes.bool.isRequired,
     updateSetting: PropTypes.func.isRequired
   }
   constructor (props) {
     super(props)
-    this.state = props.state
+    this.state = {active:props.active}
   }
-  updateSetting = (setting, checked) => {
+  updateSetting = (id, active) => {
     // record the check state in the wrapper
-    this.setState({ [setting]: checked })
+    this.setState({ active:active })
     // call the real one that was passed in
-    this.props.updateSetting(setting, checked)
+    this.props.updateSetting( id, active)
   }
   render () {
     return (
         <RealSettingOption
             updateSetting={this.updateSetting}
             states={this.state}
-            setting={setting}/>
+            id={this.props.id}
+            label={this.props.label}
+            active={this.state.active} />
     )
   }
 }
 
-const updateAction = action('updateSetting')
-const setting = 'HTML/XML tags'
-
 storiesOf('SettingOption', module)
   .add('default', () => (
       <SettingOption
-          setting={setting}
-          updateSetting={action(updateAction)} />
+          id='html-xml-tags'
+          label='HTML/XML Tags'
+          active
+          updateSetting={action('updateSetting')} />
   ))
