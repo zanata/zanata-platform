@@ -60,8 +60,9 @@ public interface SourceDocResource extends RestResource {
     @SuppressWarnings("deprecation")
     String SERVICE_PATH =
             ProjectIterationResource.SERVICE_PATH + "/r";
-    String RESOURCE_SLUG_REGEX =
-            "[\\-_a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?";
+    String RESOURCE_SLUG_REGEX = "([^\\s\\\\]+)?";
+    //    String RESOURCE_SLUG_REGEX =
+//            "[\\-_a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?";
     String RESOURCE_NAME_REGEX =
             // as above, with ',' replaced by '/'
             "[\\-_a-zA-Z0-9]+([a-zA-Z0-9_\\-/{.}]*[a-zA-Z0-9]+)?";
