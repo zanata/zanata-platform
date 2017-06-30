@@ -16,8 +16,14 @@ import { every, isUndefined, max, negate } from 'lodash'
  * @returns {number}
  */
 const getPageIndexFromQuery = (state) => {
-  return state.routing.location.query.page
-    ? max([parseInt(state.routing.location.query.page, 10) - 1, 0]) : 0
+  return state.routing.locationBeforeTransitions
+    ? state.routing.locationBeforeTransitions.query.page
+      ? max([
+        parseInt(state.routing.locationBeforeTransitions.query.page, 10) - 1,
+        0
+      ])
+      : 0
+    : 0
 }
 
 /**

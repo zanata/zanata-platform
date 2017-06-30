@@ -22,7 +22,7 @@
 package org.zanata.dao;
 
 import org.hibernate.Query;
-import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.hibernate.SessionFactory;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -52,8 +52,8 @@ public class TransMemoryStreamingDAO extends StreamingDAO<TransMemoryUnit> {
     }
 
     @Inject
-    public TransMemoryStreamingDAO(@Zanata HibernateEntityManagerFactory emf) {
-        super(emf);
+    public TransMemoryStreamingDAO(@Zanata SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     /**

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { Icon, Loader } from '../../components'
 import { Button } from 'react-bootstrap'
 
@@ -50,7 +51,7 @@ const TeaserListHeader = ({
           </Button>
         </div>
       )}
-      {loading && <Loader className='header-loader s1' loading name='loader' />}
+      {loading && <Loader className='header-loader s1' />}
     </div>
   )
   /* eslint-enable react/jsx-no-bind */

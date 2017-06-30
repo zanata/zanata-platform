@@ -3,8 +3,6 @@ package org.zanata.rest.editor.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.io.Serializable;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
@@ -13,11 +11,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.zanata.async.AsyncTaskHandleManager;
+import org.zanata.async.AsyncTaskKey;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.model.HAccount;
 import org.zanata.model.TestFixture;
+import org.zanata.rest.editor.service.TransMemoryMergeManager.TMMergeForDocTaskKey;
 import org.zanata.service.TransMemoryMergeService;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
@@ -38,7 +38,7 @@ public class TransMemoryMergeManagerTest {
     @Captor
     private ArgumentCaptor<TransMemoryMergeTaskHandle> handleCaptor;
     @Captor
-    private ArgumentCaptor<Serializable> taskKeyCaptor;
+    private ArgumentCaptor<AsyncTaskKey> taskKeyCaptor;
     private TransMemoryMergeCancelRequest cancelRequest;
 
     @Before
@@ -89,9 +89,9 @@ public class TransMemoryMergeManagerTest {
                     }
                 };
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        request.projectIterationId, request.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        request.documentId,
                         request.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -118,9 +118,9 @@ public class TransMemoryMergeManagerTest {
                     }
                 };
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        request.projectIterationId, request.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        request.documentId,
                         request.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -139,9 +139,9 @@ public class TransMemoryMergeManagerTest {
     @Test
     public void
             startTMMergeWillReturnFalseIfProcessForSameRequestIsAlreadyRunning() {
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        request.projectIterationId, request.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        request.documentId,
                         request.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(new TransMemoryMergeTaskHandle());
@@ -169,9 +169,9 @@ public class TransMemoryMergeManagerTest {
                     }
                 };
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        cancelRequest.projectIterationId, cancelRequest.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -191,9 +191,9 @@ public class TransMemoryMergeManagerTest {
                     }
                 };
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        cancelRequest.projectIterationId, cancelRequest.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -208,9 +208,9 @@ public class TransMemoryMergeManagerTest {
                 new TransMemoryMergeTaskHandle();
         existingHandle.setTriggeredBy("someone else");
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        cancelRequest.projectIterationId, cancelRequest.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);
@@ -231,9 +231,9 @@ public class TransMemoryMergeManagerTest {
                 };
         existingHandle.setTriggeredBy(authenticated.getUsername());
 
-        TransMemoryMergeManager.TransMemoryTaskKey taskKey =
-                new TransMemoryMergeManager.TransMemoryTaskKey(
-                        cancelRequest.projectIterationId, cancelRequest.documentId,
+        TMMergeForDocTaskKey taskKey =
+                new TMMergeForDocTaskKey(
+                        cancelRequest.documentId,
                         cancelRequest.localeId);
         when(asyncTaskHandleManager.getHandleByKey(taskKey))
                 .thenReturn(existingHandle);

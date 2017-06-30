@@ -1,5 +1,6 @@
 import cx from 'classnames'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import SuggestionsHeader from './SuggestionsHeader'
 import SuggestionsBody from './SuggestionsBody'
 import SuggestionDetailsModal from './SuggestionDetailsModal'

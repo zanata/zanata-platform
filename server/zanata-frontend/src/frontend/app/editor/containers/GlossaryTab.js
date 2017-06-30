@@ -2,7 +2,8 @@
  * Panel to search the glossary and display glossary terms.
  */
 
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Tab, Table } from 'react-bootstrap'
 import GlossarySearchInput from '../components/GlossarySearchInput'

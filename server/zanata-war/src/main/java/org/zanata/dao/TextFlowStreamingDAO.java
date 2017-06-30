@@ -24,7 +24,7 @@ package org.zanata.dao;
 import javax.annotation.Nonnull;
 
 import org.hibernate.Query;
-import org.hibernate.jpa.HibernateEntityManagerFactory;
+import org.hibernate.SessionFactory;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -59,8 +59,8 @@ public class TextFlowStreamingDAO extends StreamingDAO<HTextFlow> {
     }
 
     @Inject
-    public TextFlowStreamingDAO(@Zanata HibernateEntityManagerFactory emf) {
-        super(emf);
+    public TextFlowStreamingDAO(@Zanata SessionFactory sessionFactory) {
+        super(sessionFactory);
     }
 
     /**

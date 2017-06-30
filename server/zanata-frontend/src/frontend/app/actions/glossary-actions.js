@@ -105,7 +105,7 @@ const getGlossaryTerms = (state) => {
     sort = '',
     qualifiedName
   } = state.glossary
-  const query = state.routing.location.query
+  const query = state.routing.locationBeforeTransitions.query
 
   let page = query.page ? parseInt(query.page) : 1
   page = page <= 1 ? 1 : page
@@ -418,7 +418,7 @@ export const glossaryInitStateFromUrl =
 
 export const glossaryInitialLoad = (projectSlug) => {
   return (dispatch, getState) => {
-    const query = getState().routing.location.query
+    const query = getState().routing.locationBeforeTransitions.query
     dispatch(glossaryInitStateFromUrl({ query, projectSlug })).then(
     dispatch(getQualifiedName(dispatch, projectSlug)))
     if (projectSlug) {
@@ -429,7 +429,7 @@ export const glossaryInitialLoad = (projectSlug) => {
 
 export const glossaryChangeLocale = (locale) => {
   return (dispatch, getState) => {
-    replaceRouteQuery(getState().routing.location, {
+    replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       locale: locale
     })
     dispatch(glossaryUpdateLocale(locale))
@@ -440,7 +440,7 @@ export const glossaryChangeLocale = (locale) => {
 export const glossaryFilterTextChanged = (newFilter) => {
   return (dispatch, getState) => {
     if (!getState().glossary.termsLoading) {
-      replaceRouteQuery(getState().routing.location, {
+      replaceRouteQuery(getState().routing.locationBeforeTransitions, {
         filter: newFilter,
         page: 1
       })
@@ -508,7 +508,7 @@ export const glossarySortColumn = (col) => {
     sort[col] = getState().glossary.sort[col]
       ? !getState().glossary.sort[col] : true
 
-    replaceRouteQuery(getState().routing.location, {
+    replaceRouteQuery(getState().routing.locationBeforeTransitions, {
       sort: GlossaryHelper.convertSortToParam(sort)
     })
     dispatch(glossaryUpdateSort(sort)).then(
@@ -523,7 +523,7 @@ const delayGetGlossaryTerm = debounce((dispatch, state) =>
 export const glossaryGoFirstPage = (currentPage, totalPage) => {
   return (dispatch, getState) => {
     if (currentPage !== 1) {
-      replaceRouteQuery(getState().routing.location, {page: 1})
+      replaceRouteQuery(getState().routing.locationBeforeTransitions, {page: 1})
       dispatch(getGlossaryTerms(getState()))
     }
   }
@@ -533,7 +533,8 @@ export const glossaryGoPreviousPage = (currentPage, totalPage) => {
   return (dispatch, getState) => {
     const newPage = currentPage - 1
     if (newPage >= 1) {
-      replaceRouteQuery(getState().routing.location, {page: newPage})
+      replaceRouteQuery(getState().routing.locationBeforeTransitions,
+        {page: newPage})
       delayGetGlossaryTerm(dispatch, getState())
     }
   }
@@ -543,7 +544,8 @@ export const glossaryGoNextPage = (currentPage, totalPage) => {
   return (dispatch, getState) => {
     const newPage = currentPage + 1
     if (newPage <= totalPage) {
-      replaceRouteQuery(getState().routing.location, {page: newPage})
+      replaceRouteQuery(getState().routing.locationBeforeTransitions,
+        {page: newPage})
       delayGetGlossaryTerm(dispatch, getState())
     }
   }
@@ -552,7 +554,8 @@ export const glossaryGoNextPage = (currentPage, totalPage) => {
 export const glossaryGoLastPage = (currentPage, totalPage) => {
   return (dispatch, getState) => {
     if (currentPage !== totalPage) {
-      replaceRouteQuery(getState().routing.location, {page: totalPage})
+      replaceRouteQuery(getState().routing.locationBeforeTransitions,
+        {page: totalPage})
       dispatch(getGlossaryTerms(getState()))
     }
   }
@@ -560,7 +563,8 @@ export const glossaryGoLastPage = (currentPage, totalPage) => {
 
 export const glossaryUpdatePageSize = (size) => {
   return (dispatch, getState) => {
-    replaceRouteQuery(getState().routing.location, {page: 1, size: size})
+    replaceRouteQuery(getState().routing.locationBeforeTransitions,
+      {page: 1, size: size})
     dispatch(getGlossaryTerms(getState()))
   }
 }

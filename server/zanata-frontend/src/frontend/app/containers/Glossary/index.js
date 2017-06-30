@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isUndefined, size, map } from 'lodash'
@@ -269,7 +270,7 @@ class Glossary extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, { location }) => {
   const {
     selectedTerm,
     stats,
@@ -284,7 +285,7 @@ const mapStateToProps = (state) => {
     notification,
     project
   } = state.glossary
-  const query = state.routing.location.query
+  const query = location.query
   return {
     terms,
     termIds,

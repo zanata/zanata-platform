@@ -105,7 +105,7 @@ public class AsyncTaskITCase extends ArquillianTest {
 
     @Test
     public void progressUpdates() throws Exception {
-        final List<Integer> progressUpdates = Lists.newArrayList();
+        final List<Long> progressUpdates = Lists.newArrayList();
 
         // Custom handle so that progress updates are recorded
         final AsyncTaskHandle<Void> taskHandle =
@@ -113,7 +113,7 @@ public class AsyncTaskITCase extends ArquillianTest {
                     private static final long serialVersionUID = 1L;
 
                     @Override
-                    public void setCurrentProgress(int progress) {
+                    public void setCurrentProgress(long progress) {
                         super.setCurrentProgress(progress);
                         progressUpdates.add(progress);
                     }
@@ -128,7 +128,7 @@ public class AsyncTaskITCase extends ArquillianTest {
         // Progress update calls should match the task's internal updates
         assertThat(taskHandle.getCurrentProgress()).isEqualTo(100);
         assertThat(progressUpdates.size()).isEqualTo(4);
-        assertThat(progressUpdates).contains(25, 50, 75, 100);
+        assertThat(progressUpdates).contains(25L, 50L, 75L, 100L);
     }
 
 

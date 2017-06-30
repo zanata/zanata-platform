@@ -87,8 +87,8 @@ const heading2 = <h3><Checkbox> Project B
   </OverlayTrigger>
 </Checkbox></h3>
 
-const currentProject = 'Current project'
-const currentVersion = 'Current version'
+const currentProject = 'Project name'
+const currentVersion = 'Version name'
 
 storiesOf('Modal', module)
     .addDecorator((story) => (
@@ -412,9 +412,12 @@ storiesOf('Modal', module)
                     </div>
                     <ul>
                       <li>
+                        <Icon name='project' className='s0 tmx-icon' />
                         {currentProject}
                       </li>
                       <li>
+                        <Icon name='version' title='version'
+                         className='s0 tmx-icon' />
                         {currentVersion}
                       </li>
                     </ul>
@@ -625,9 +628,12 @@ storiesOf('Modal', module)
                     </div>
                     <ul>
                       <li>
+                        <Icon name='project' className='s0 tmx-icon' />
                         {currentProject}
                       </li>
                       <li>
+                        <Icon name='version' title='version'
+                              className='s0 tmx-icon' />
                         {currentVersion}
                       </li>
                     </ul>
@@ -835,9 +841,12 @@ storiesOf('Modal', module)
                     </div>
                     <ul>
                       <li>
+                        <Icon name='project' className='s0 tmx-icon' />
                         {currentProject}
                       </li>
                       <li>
+                        <Icon name='version' title='version'
+                              className='s0 tmx-icon' />
                         {currentVersion}
                       </li>
                     </ul>

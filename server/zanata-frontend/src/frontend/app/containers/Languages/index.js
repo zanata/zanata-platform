@@ -1,10 +1,10 @@
-import React, {PropTypes, Component} from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {
   Button, InputGroup, FormGroup, FormControl,
   Badge, Pagination
-}
-  from 'react-bootstrap'
+} from 'react-bootstrap'
 import Helmet from 'react-helmet'
 import {debounce, find} from 'lodash'
 import Entry from './Entry'
@@ -50,16 +50,15 @@ class Languages extends Component {
     this.state = {
       searchText: props.searchText
     }
+    // Debounce works when you call it once, then use the returned function
+    // multiple times.
+    // Do not extract this to a function like `() => { debounce(...) }` since
+    // that would make a new debounced function instance on every call.
+    this.handleUpdateSearch = debounce(props.handleOnUpdateSearch, 200)
   }
 
   componentDidMount () {
     this.props.handleInitLoad()
-  }
-
-  debounceHandleUpdateSearch = () => {
-    debounce(() => {
-      this.props.handleOnUpdateSearch(this.state.searchText)
-    }, 200)
   }
 
   resetSearchText = (localeId) => {
@@ -70,10 +69,11 @@ class Languages extends Component {
   }
 
   onUpdateSearch = (event) => {
+    const searchText = event.target.value || ''
     this.setState({
-      searchText: event.target.value || ''
+      searchText
     })
-    this.debounceHandleUpdateSearch()
+    this.handleUpdateSearch(searchText)
   }
 
   render () {
@@ -119,7 +119,7 @@ class Languages extends Component {
             </h2>
             {permission.canAddLocale &&
               <div>
-                <Button bsStyle='primary btn-sm'
+                <Button bsStyle='primary' bsSize='small'
                   id='btn-language-add-new'
                   onClick={handleOnDisplayNewLanguage}>
                   <Icon name='plus' className='n1 plusicon'
@@ -165,7 +165,7 @@ class Languages extends Component {
                   <div className='show-items pull-right col-xs-5
                     col-sm-3 col-md-2 col-lg-2'>
                     <span>Show</span>
-                    <FormControl inline componentClass='select'
+                    <FormControl componentClass='select'
                       onChange={handleOnUpdatePageSize} value={size}
                       id='page-size-options'>
                     {pageSizeOption.map(function (value, i) {
@@ -216,8 +216,8 @@ class Languages extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  let urlSort = state.routing.location.query.sort
+const mapStateToProps = (state, { location }) => {
+  let urlSort = location.query.sort
   if (urlSort) {
     urlSort = find(sortOption, function (sort) {
       return sort.value === urlSort
@@ -238,9 +238,9 @@ const mapStateToProps = (state) => {
     deleting
   } = state.languages
   return {
-    searchText: state.routing.location.query.search || '',
-    page: parseInt(state.routing.location.query.page) || 1,
-    size: parseInt(state.routing.location.query.size) || pageSizeOption[0],
+    searchText: location.query.search || '',
+    page: parseInt(location.query.page) || 1,
+    size: parseInt(location.query.size) || pageSizeOption[0],
     sort: urlSort,
     results: locales.results,
     totalCount: locales.totalCount,

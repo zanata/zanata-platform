@@ -14,7 +14,7 @@
 
   <properties>
     <allow.deploy.skip>true</allow.deploy.skip>
-    <selenium.version>2.45.0</selenium.version>
+    <selenium.version>3.4.0</selenium.version>
 
     <!--Cargo Settings -->
     <cargo.host>localhost</cargo.host>
@@ -93,12 +93,12 @@
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpclient</artifactId>
-        <version>4.3.6</version>
+        <version>4.5.3</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
         <artifactId>httpcore</artifactId>
-        <version>4.3.3</version>
+        <version>4.4.6</version>
       </dependency>
       <dependency>
         <groupId>org.apache.httpcomponents</groupId>
@@ -255,11 +255,23 @@
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-chrome-driver</artifactId>
       <version>${selenium.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-firefox-driver</artifactId>
       <version>${selenium.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
@@ -277,6 +289,12 @@
       <groupId>org.seleniumhq.selenium</groupId>
       <artifactId>selenium-support</artifactId>
       <version>${selenium.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.google.guava</groupId>
@@ -412,6 +430,10 @@
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
     </dependency>
 
     <dependency>
@@ -792,11 +814,12 @@
               <properties>
                 <property>
                   <name>listener</name>
-                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.TestLogger</value>
+                  <value>org.zanata.util.ScreenshotEnabledTestRunListener,org.zanata.util.TestLogger,org.zanata.util.TestTracing</value>
                 </property>
               </properties>
               <systemPropertyVariables>
                 <maven.home>${maven.home}</maven.home>
+                <traceLocation>${project.build.directory}/test-classes/traceability</traceLocation>
               </systemPropertyVariables>
             </configuration>
           </plugin>

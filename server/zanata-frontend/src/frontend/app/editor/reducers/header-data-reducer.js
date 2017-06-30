@@ -7,7 +7,7 @@ import {
   LOCALE_SELECTED,
   STATS_FETCHED
 } from '../actions/header-action-types'
-import updateObject from 'react-addons-update'
+import updateObject from 'immutability-helper'
 import {prepareLocales, prepareStats, prepareDocs} from '../utils/Util'
 import { dashboardUrl, serviceUrl } from '../api'
 

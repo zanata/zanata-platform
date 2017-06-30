@@ -20,12 +20,13 @@
  */
 package org.zanata.page.projectversion;
 
-import com.google.common.base.Function;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import java.util.ArrayList;
-import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -59,7 +60,7 @@ public class VersionDocumentsPage extends VersionBasePage {
         log.info("Query source documents list");
         // getText often falls into a UI change
         return waitForAMoment()
-                .until((Function<WebDriver, List<String>>) webDriver -> {
+                .until(webDriver -> {
                     List<String> fileNames = new ArrayList<>();
                     for (WebElement element : getDocumentsTabDocumentList()) {
                         fileNames.add(

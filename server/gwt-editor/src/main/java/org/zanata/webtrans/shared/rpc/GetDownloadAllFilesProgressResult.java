@@ -4,26 +4,26 @@ public class GetDownloadAllFilesProgressResult implements DispatchResult {
 
     private static final long serialVersionUID = 1L;
 
-    private int currentProgress;
-    private int maxProgress;
+    private long currentProgress;
+    private long maxProgress;
     private String downloadId;
 
     @SuppressWarnings("unused")
     private GetDownloadAllFilesProgressResult() {
     }
 
-    public GetDownloadAllFilesProgressResult(int currentProgress,
-            int maxProgress, String downloadId) {
+    public GetDownloadAllFilesProgressResult(long currentProgress,
+            long maxProgress, String downloadId) {
         this.maxProgress = maxProgress;
         this.currentProgress = currentProgress;
         this.downloadId = downloadId;
     }
 
-    public int getCurrentProgress() {
+    public long getCurrentProgress() {
         return currentProgress;
     }
 
-    public int getMaxProgress() {
+    public long getMaxProgress() {
         return maxProgress;
     }
 

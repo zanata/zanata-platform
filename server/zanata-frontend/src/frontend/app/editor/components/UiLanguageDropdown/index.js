@@ -1,6 +1,7 @@
 import { values } from 'lodash'
 import Dropdown from '../Dropdown'
-import React, { PropTypes } from 'react'
+import React from 'react'
+import PropTypes from 'prop-types'
 
 /**
  * Dropdown to select the language to display the user interface in.

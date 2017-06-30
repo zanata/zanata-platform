@@ -24,7 +24,7 @@ package org.zanata.feature.projectversion;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.page.projects.ProjectVersionsPage;
@@ -45,8 +45,7 @@ public class VersionFilteringTest extends ZanataTestCase {
 
     private ZanataRestCaller zanataRestCaller;
 
-    @Feature(summary = "The user can filter project versions by name",
-            tcmsTestPlanIds = 5316, tcmsTestCaseIds = 0)
+    @Trace(summary = "The user can filter project versions by name")
     @Ignore("dodgy test (intermittent timeout)")
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void versionSearchFiltering() throws Exception {

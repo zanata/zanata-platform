@@ -20,17 +20,13 @@
  */
 package org.zanata.page.administration;
 
-import com.google.common.base.Predicate;
+import java.util.List;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.BasePage;
 import org.zanata.page.languages.LanguagesPage;
-import org.zanata.util.Checkbox;
-import org.zanata.util.WebElementUtil;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class AddLanguagePage extends BasePage {
     private static final org.slf4j.Logger log =
@@ -58,7 +54,7 @@ public class AddLanguagePage extends BasePage {
 
     public AddLanguagePage selectSearchLanguage(final String language) {
         log.info("Select language {}", language);
-        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+        waitForAMoment().until(it -> {
             List<WebElement> suggestions =
                     existingElement(suggestList).findElements(suggestRow);
             boolean clickedLanguage = false;

@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Helmet from 'react-helmet'
 import { isEmpty, map } from 'lodash'
@@ -31,7 +32,7 @@ class UserProfile extends Component {
     handleInitLoad: PropTypes.func,
     handleDateRangeChanged: PropTypes.func,
     handleFilterChanged: PropTypes.func,
-    handleSelectedDayChanged: PropTypes.func
+    handleSelectedDayChanged: PropTypes.func.isRequired
   }
 
   componentDidMount () {
@@ -101,34 +102,34 @@ class UserProfile extends Component {
                     </div>
                   }
                   <ul className='large-font-list'>
-                    <span tagName='li' className='flex-center'
+                    <li className='flex-center'
                       id='profile-username'>
                       <Icon name='user'
                         className='s0'
                         title='Username' />
                       {username}
-                    </span>
+                    </li>
                       {email &&
                         (<span className='profile-email'>
                           {email}
                         </span>)
                       }
                     {languageTeams &&
-                    (<span tagName='li'
+                    (<li
                       id='profile-languages'>
                       <Icon name='language'
                         className='s0 langicon pull-left'
                         title='Spoken languages' />
                       {languageTeams}
-                    </span>)}
+                    </li>)}
                     {roles && isLoggedIn &&
-                     (<span className='flex-center' tagName='li'
+                     (<li className='flex-center'
                        id='profile-roles'
                        title='Roles'>
                        <Icon name='users'
                          className='s0' />
                        <span>{roles}</span>
-                     </span>)}
+                     </li>)}
                   </ul>
                 </div>
               </div>

@@ -21,8 +21,9 @@
 package org.zanata.action;
 
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+import static org.zanata.async.AsyncTaskKey.joinFields;
+
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -32,6 +33,8 @@ import javax.faces.bean.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.zanata.async.AsyncTaskKey;
+import org.zanata.async.GenericAsyncTaskKey;
 import org.zanata.security.annotations.CheckRole;
 import org.zanata.async.AsyncTaskHandle;
 import org.zanata.async.AsyncTaskHandleManager;
@@ -58,6 +61,7 @@ public class TranslationMemoryAction implements Serializable {
             org.slf4j.LoggerFactory.getLogger(TranslationMemoryAction.class);
 
     private static final long serialVersionUID = -6791743907133760028L;
+    private static final String KEY_NAME = "ClearTMXKey";
     @Inject
     private FacesMessages facesMessages;
     @Inject
@@ -69,7 +73,7 @@ public class TranslationMemoryAction implements Serializable {
             justification = "CDI proxies are Serializable")
     private AsyncTaskHandleManager asyncTaskHandleManager;
     private List<TransMemory> transMemoryList;
-    private ClearTransMemoryProcessKey lastTaskTMKey;
+    private AsyncTaskKey lastTaskTMKey;
     private SortingType tmSortingList = new SortingType(
             Lists.newArrayList(SortingType.SortOption.ALPHABETICAL,
                     SortingType.SortOption.CREATED_DATE));
@@ -89,11 +93,11 @@ public class TranslationMemoryAction implements Serializable {
     }
 
     public void sortTMList() {
-        Collections.sort(transMemoryList, tmComparator);
+        transMemoryList.sort(tmComparator);
     }
 
     public void clearTransMemory(final String transMemorySlug) {
-        lastTaskTMKey = new ClearTransMemoryProcessKey(transMemorySlug);
+        lastTaskTMKey = new GenericAsyncTaskKey(joinFields(KEY_NAME, transMemorySlug));
         AsyncTaskHandle handle = new AsyncTaskHandle();
         asyncTaskHandleManager.registerTaskHandle(handle, lastTaskTMKey);
         translationMemoryResource
@@ -159,8 +163,11 @@ public class TranslationMemoryAction implements Serializable {
     }
 
     public boolean isTransMemoryBeingCleared(String transMemorySlug) {
+        GenericAsyncTaskKey taskKey =
+                new GenericAsyncTaskKey(
+                        joinFields(KEY_NAME, transMemorySlug));
         AsyncTaskHandle<Void> handle = asyncTaskHandleManager.getHandleByKey(
-                new ClearTransMemoryProcessKey(transMemorySlug));
+                taskKey);
         return handle != null && !handle.isDone();
     }
 
@@ -190,52 +197,6 @@ public class TranslationMemoryAction implements Serializable {
     public String cancel() {
         // Navigation logic in pages.xml
         return "cancel";
-    }
-
-    /**
-     * Represents a key to index a translation memory clear process.
-     *
-     * NB: Eventually this class might need to live outside if there are other
-     * services that need to control this process.
-     */
-    private static class ClearTransMemoryProcessKey implements Serializable {
-        private String slug;
-
-        @java.beans.ConstructorProperties({ "slug" })
-        public ClearTransMemoryProcessKey(final String slug) {
-            this.slug = slug;
-        }
-
-        @Override
-        public boolean equals(final Object o) {
-            if (o == this)
-                return true;
-            if (!(o instanceof TranslationMemoryAction.ClearTransMemoryProcessKey))
-                return false;
-            final ClearTransMemoryProcessKey other =
-                    (ClearTransMemoryProcessKey) o;
-            if (!other.canEqual((Object) this))
-                return false;
-            final Object this$slug = this.slug;
-            final Object other$slug = other.slug;
-            if (this$slug == null ? other$slug != null
-                    : !this$slug.equals(other$slug))
-                return false;
-            return true;
-        }
-
-        protected boolean canEqual(final Object other) {
-            return other instanceof TranslationMemoryAction.ClearTransMemoryProcessKey;
-        }
-
-        @Override
-        public int hashCode() {
-            final int PRIME = 59;
-            int result = 1;
-            final Object $slug = this.slug;
-            result = result * PRIME + ($slug == null ? 43 : $slug.hashCode());
-            return result;
-        }
     }
 
     private static class TMComparator implements Comparator<TransMemory>, Serializable {

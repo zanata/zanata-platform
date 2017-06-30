@@ -22,15 +22,17 @@ package org.zanata.page.groups;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.openqa.selenium.*;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.zanata.page.BasePage;
 import org.zanata.page.projects.ProjectVersionsPage;
 import org.zanata.page.projectversion.VersionLanguagesPage;
 import org.zanata.util.TableRow;
 import org.zanata.util.WebElementUtil;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 
 /**
  * @author Patrick Huang
@@ -73,7 +75,7 @@ public class VersionGroupPage extends BasePage {
             final int expectedResultNum) {
         enterText(readyElement(projectSearchField), projectName);
         return refreshPageUntil(this,
-                (Function<WebDriver, List<WebElement>>) driver -> {
+                "Find results of searching for " + projectName, it -> {
                     // we want to wait until search result comes back. There
                     // is no way we can tell whether search result has come
                     // back and table refreshed.
@@ -88,7 +90,7 @@ public class VersionGroupPage extends BasePage {
                         return null;
                     }
                     return listItems;
-                }, "Find results of searching for " + projectName);
+                });
     }
 
     public VersionGroupPage addToGroup(int rowIndex) {
@@ -179,7 +181,7 @@ public class VersionGroupPage extends BasePage {
     public Boolean isLanguagesTabActive() {
         log.info("Query is languages tab displayed");
         final WebElement languagesTab = readyElement(By.id("languages"));
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(it -> {
             return languagesTab.getAttribute("class").contains("is-active");
         });
         return languagesTab.getAttribute("class").contains("is-active");
@@ -187,7 +189,7 @@ public class VersionGroupPage extends BasePage {
 
     public Boolean isProjectsTabActive() {
         final WebElement languagesTab = existingElement(By.id("projects"));
-        waitForAMoment().until((Predicate<WebDriver>) webDriver -> {
+        waitForAMoment().until(it -> {
             return languagesTab.getAttribute("class").contains("is-active");
         });
         return languagesTab.getAttribute("class").contains("is-active");
@@ -210,7 +212,7 @@ public class VersionGroupPage extends BasePage {
 
     public VersionGroupPage selectProjectVersion(final String searchEntry) {
         log.info("Click project version {}", searchEntry);
-        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+        waitForAMoment().until(driver -> {
             List<WebElement> items =
                     WebElementUtil.getSearchAutocompleteResults(driver,
                             "settings-projects-form", "versionAutocomplete");
@@ -247,7 +249,7 @@ public class VersionGroupPage extends BasePage {
 
     public VersionGroupPage selectLanguage(final String searchEntry) {
         log.info("Click language {}", searchEntry);
-        waitForAMoment().until((Predicate<WebDriver>) driver -> {
+        waitForAMoment().until(driver -> {
             List<WebElement> items =
                     WebElementUtil.getSearchAutocompleteResults(driver,
                             "settings-languages-form", "languageAutocomplete");

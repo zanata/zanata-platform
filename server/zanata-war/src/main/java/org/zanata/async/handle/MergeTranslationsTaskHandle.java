@@ -21,17 +21,17 @@
 package org.zanata.async.handle;
 
 import org.zanata.async.AsyncTaskHandle;
+import org.zanata.async.UserTriggeredTaskHandle;
 
 /**
  * Asynchronous task handle for the merge translations process.
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> {
+public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> implements
+        UserTriggeredTaskHandle {
 
     private int totalTranslations;
-    private String cancelledBy;
-    private long cancelledTime;
     private String triggeredBy;
 
     public int getTotalTranslations() {
@@ -42,26 +42,12 @@ public class MergeTranslationsTaskHandle extends AsyncTaskHandle<Void> {
         this.totalTranslations = totalTranslations;
     }
 
-    public String getCancelledBy() {
-        return this.cancelledBy;
-    }
-
-    public void setCancelledBy(final String cancelledBy) {
-        this.cancelledBy = cancelledBy;
-    }
-
-    public long getCancelledTime() {
-        return this.cancelledTime;
-    }
-
-    public void setCancelledTime(final long cancelledTime) {
-        this.cancelledTime = cancelledTime;
-    }
-
+    @Override
     public String getTriggeredBy() {
         return this.triggeredBy;
     }
 
+    @Override
     public void setTriggeredBy(final String triggeredBy) {
         this.triggeredBy = triggeredBy;
     }

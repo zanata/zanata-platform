@@ -1,5 +1,5 @@
 /*
- * Copyright 2015, Red Hat, Inc. and individual contributors
+ * Copyright 2017, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,24 +18,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.page.utility;
+package org.zanata.async;
 
-import com.google.common.base.Predicate;
-import org.openqa.selenium.WebDriver;
 
 /**
- * @author Sean Flanigan <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
+ * Represents a task triggered by a user (as oppose to some system generated
+ * async tasks). For such tasks, the user takes ownership of this task and is
+ * allowed to cancel the task. Admin user can cancel any tasks.
  */
-public abstract class NamedPredicate implements
-        Predicate<WebDriver> {
-    private final String name;
+public interface UserTriggeredTaskHandle {
+    void setTriggeredBy(String username);
 
-    public NamedPredicate(String name) {
-        this.name = name;
-    }
+    String getTriggeredBy();
 
-    @Override
-    public String toString() {
-        return "predicate: " + name;
-    }
 }

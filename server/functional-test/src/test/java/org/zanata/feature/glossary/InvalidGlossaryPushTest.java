@@ -24,7 +24,7 @@ import com.google.common.base.Joiner;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
-import org.zanata.feature.Feature;
+import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
 import org.zanata.workflow.ClientWorkFlow;
@@ -34,8 +34,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.zanata.util.MavenHome.mvn;
 
 /**
- * @see <a href="https://tcms.engineering.redhat.com/case/169230/">TCMS case</a>
- *
  * @author Patrick Huang
  *         <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
@@ -58,7 +56,7 @@ public class InvalidGlossaryPushTest extends ZanataTestCase {
     }
 
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
-    @Feature(summary = "Invalid glossary file will be rejected by the server")
+    @Trace(summary = "Invalid glossary file will be rejected by the server")
     public void invalidGlossaryPush() throws Exception {
         List<String> result = push(pushCommand, userConfigPath);
         String output = resultByLines(result);

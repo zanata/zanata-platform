@@ -22,14 +22,13 @@ package org.zanata.page.projectversion.versionsettings;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.zanata.page.projectversion.VersionBasePage;
-import org.zanata.page.utility.NamedPredicate;
+
+import static org.zanata.util.FluentWaitExtKt.until;
 
 /**
  * @author Damian Jansen
@@ -72,14 +71,10 @@ public class VersionDocumentsTab extends VersionBasePage {
     public VersionDocumentsTab cancelUpload() {
         log.info("Click Cancel");
         clickElement(cancelUploadButton);
-        waitForAMoment().until(new Predicate<WebDriver>() {
-
-            @Override
-            public boolean apply(WebDriver input) {
-                return !getDriver().findElement(By.id("file-upload-component"))
-                        .isDisplayed();
-            }
-        });
+        waitForAMoment().until(driver ->
+                !driver.findElement(By.id("file-upload-component"))
+                        .isDisplayed()
+        );
         slightPause();
         waitForPageSilence();
         return new VersionDocumentsTab(getDriver());
@@ -124,22 +119,18 @@ public class VersionDocumentsTab extends VersionBasePage {
     public boolean sourceDocumentsContains(String document) {
         log.info("Query source documents contain {}", document);
         for (String documentLabel : waitForAMoment()
-                .until(new Function<WebDriver, List<String>>() {
-
-                    @Override
-                    public List<String> apply(WebDriver input) {
-                        /*List<WebElement> elements =
-                                existingElement(By.id("settings-document_form"))
-                                        .findElement(By.tagName("ul"))
-                                        .findElements(By.xpath(
-                                                ".//li/label[@class=\'form__checkbox__label\']"));
-                        List<String> namesList = new ArrayList<String>();
-                        for (WebElement element : elements) {
-                            namesList.add(element.getText());
-                        }
-                        return namesList;*/
-                        return getSourceDocumentsList();
+                .until(it -> {
+                    /*List<WebElement> elements =
+                            existingElement(By.id("settings-document_form"))
+                                    .findElement(By.tagName("ul"))
+                                    .findElements(By.xpath(
+                                            ".//li/label[@class=\'form__checkbox__label\']"));
+                    List<String> namesList = new ArrayList<String>();
+                    for (WebElement element : elements) {
+                        namesList.add(element.getText());
                     }
+                    return namesList;*/
+                    return getSourceDocumentsList();
                 })) {
             if (documentLabel.contains(document)) {
                 return true;
@@ -171,13 +162,7 @@ public class VersionDocumentsTab extends VersionBasePage {
     }
 
     public void expectSomeUploadItems() {
-        waitForAMoment().until(new NamedPredicate("expectUploadItem") {
-
-            @Override
-            public boolean apply(WebDriver input) {
-                return !getUploadListElements().isEmpty();
-            }
-        });
+        until(waitForAMoment(), "expectUploadItem", it -> !getUploadListElements().isEmpty());
     }
 
     private List<WebElement> getUploadListElements() {
