@@ -27,7 +27,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
@@ -41,6 +43,7 @@ import org.hibernate.search.jpa.FullTextQuery;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.zanata.common.EntityStatus;
+import org.zanata.hibernate.search.Analyzers;
 import org.zanata.hibernate.search.CaseInsensitiveWhitespaceAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.jpa.FullText;
@@ -281,12 +284,14 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     private FullTextQuery buildSearchQuery(@Nonnull String searchQuery,
         boolean includeObsolete) throws ParseException {
         String queryText = QueryParser.escape(searchQuery);
+        Analyzer sourceAnalyzer = entityManager.getSearchFactory()
+                .getAnalyzer(Analyzers.DEFAULT);
+        MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
+                new String[]{ "slug", "name", "description" }, sourceAnalyzer);
+        queryParser.setDefaultOperator(QueryParser.Operator.OR);
 
-        BooleanQuery booleanQuery = new BooleanQuery();
-        booleanQuery.add(buildSearchFieldQuery(queryText, "slug"), BooleanClause.Occur.SHOULD);
-        booleanQuery.add(buildSearchFieldQuery(queryText, "name"), BooleanClause.Occur.SHOULD);
-        booleanQuery.add(buildSearchFieldQuery(queryText, "description"), BooleanClause.Occur.SHOULD);
-
+        BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
+        booleanQuery.add(queryParser.parse(queryText), BooleanClause.Occur.SHOULD);
         if (!includeObsolete) {
             TermQuery obsoleteStateQuery =
                     new TermQuery(new Term(IndexFieldLabels.ENTITY_STATUS,
@@ -294,7 +299,7 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
             booleanQuery.add(obsoleteStateQuery, BooleanClause.Occur.MUST_NOT);
         }
 
-        return entityManager.createFullTextQuery(booleanQuery, HProject.class);
+        return entityManager.createFullTextQuery(booleanQuery.build(), HProject.class);
     }
 
     /**
