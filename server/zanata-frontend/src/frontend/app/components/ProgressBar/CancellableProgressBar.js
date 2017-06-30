@@ -18,10 +18,12 @@ class CancellableProgressBar extends Component {
     heading: PropTypes.string,
     onCancelOperation: PropTypes.func.isRequired,
     processStatus: processStatusType.isRequired,
-    queryProgress: PropTypes.func.isRequired
+    queryProgress: PropTypes.func.isRequired,
+    buttonLabel: PropTypes.string.isRequired
   }
   static defaultProps = {
-    heading: ''
+    heading: '',
+    buttonLabel: 'Cancel Operation'
   }
   constructor (props) {
     super(props)
@@ -52,7 +54,7 @@ class CancellableProgressBar extends Component {
   }
   render () {
     const {
-      heading, onCancelOperation, processStatus
+      heading, onCancelOperation, processStatus, buttonLabel
     } = this.props
     return (
       <div>
@@ -62,7 +64,7 @@ class CancellableProgressBar extends Component {
         <Button bsStyle="primary" className="btn-danger"
           disabled={isProcessEnded(processStatus)}
           onClick={onCancelOperation}>
-          Cancel Operation
+          {buttonLabel}
         </Button>
       </div>
     )

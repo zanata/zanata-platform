@@ -200,10 +200,10 @@ describe('version-reducer test', () => {
         show: false,
         triggered: false
       },
-        fetchingLocale: false,
-        fetchingProject: false,
-        locales: [],
-        notification: undefined
+      fetchingLocale: false,
+      fetchingProject: false,
+      locales: [],
+      notification: undefined
     })
   })
   it('can track TM merge progress', () => {

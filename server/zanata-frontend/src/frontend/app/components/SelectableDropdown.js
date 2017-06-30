@@ -4,7 +4,9 @@ import {MenuItem, DropdownButton} from 'react-bootstrap'
 import {isEqual} from 'lodash'
 
 /**
- * Root component of a selectable Dropdown
+ * Selectable Dropdown
+ *
+ * TODO: pahuang document how this is different from a react bootstrap dropdown
  */
 const SelectableDropdown = (props) => {
   const {
@@ -41,7 +43,7 @@ SelectableDropdown.propTypes = {
   selectedValue: PropTypes.any,
   values: PropTypes.arrayOf(PropTypes.any).isRequired,
   // optinal function to convert value to display string
-  valueToDisplay: PropTypes.func,
+  valueToDisplay: PropTypes.func.isRequired,
   title: PropTypes.string,
   bsStyle: PropTypes.string,
   bsSize: PropTypes.string

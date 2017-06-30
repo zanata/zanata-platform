@@ -7,7 +7,7 @@ import {
   queryTMMergeProgress
 } from './version-actions'
 
-describe('version-reducer test', () => {
+describe('version-action test', () => {
   it('can fetch version locales', () => {
     const apiAction = fetchVersionLocales('meikai', 'ver1')
     expect(apiAction[CALL_API].endpoint).toEqual(

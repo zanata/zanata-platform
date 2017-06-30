@@ -1,5 +1,5 @@
 import {handleActions} from 'redux-actions'
-import updateObject from 'immutability-helper'
+import update from 'immutability-helper'
 import {
   TOGGLE_TM_MERGE_MODAL,
   VERSION_LOCALES_REQUEST,
@@ -16,33 +16,46 @@ import {
   TM_MERGE_PROCESS_FINISHED
 } from '../actions/version-action-types'
 
+const defaultState = {
+  TMMerge: {
+    show: false,
+        triggered: false,
+        processStatus: undefined,
+        projectVersions: []
+  },
+  locales: [],
+      fetchingProject: false,
+    fetchingLocale: false,
+    notification: undefined
+}
+
 const version = handleActions({
   [TOGGLE_TM_MERGE_MODAL]: (state, action) => {
-    return updateObject(state, {
+    return update(state, {
       TMMerge: { show: { $set: !state.TMMerge.show } }
     })
   },
   [VERSION_LOCALES_REQUEST]: (state, action) => {
-    return action.error ? updateObject(state, {
+    return action.error ? update(state, {
       fetchingLocale: { $set: false },
       notification: { $set: {
         message: 'We were unable load locale information. ' +
         'Please refresh this page and try again.'
       }}
-    }) : updateObject(state, {
+    }) : update(state, {
       fetchingLocale: { $set: true },
       notification: { $set: undefined }
     })
   },
   [VERSION_LOCALES_SUCCESS]: (state, action) => {
-    return updateObject(state, {
+    return update(state, {
       locales: { $set: action.payload },
       fetchingLocale: { $set: false },
       notification: { $set: undefined }
     })
   },
   [VERSION_LOCALES_FAILURE]: (state, action) => {
-    return updateObject(state, {
+    return update(state, {
       fetchingLocale: { $set: false },
       notification: { $set: {
         message: 'We were unable load locale information. ' +
@@ -51,26 +64,26 @@ const version = handleActions({
     })
   },
   [PROJECT_PAGE_REQUEST]: (state, action) => {
-    return action.error ? updateObject(state, {
+    return action.error ? update(state, {
       fetchingProject: { $set: false },
       notification: { $set: {
         message: 'We were unable load project information. ' +
         'Please refresh this page and try again.'
       }}
-    }) : updateObject(state, {
+    }) : update(state, {
       fetchingProject: { $set: true },
       notification: { $set: undefined }
     })
   },
   [PROJECT_PAGE_SUCCESS]: (state, action) => {
-    return updateObject(state, {
+    return update(state, {
       TMMerge: { projectVersions: { $set: action.payload } },
       fetchingProject: { $set: false },
       notification: { $set: undefined }
     })
   },
   [PROJECT_PAGE_FAILURE]: (state, action) => {
-    return updateObject(state, {
+    return update(state, {
       fetchingProject: { $set: false },
       notification: { $set: {
         message: 'We were unable load project information. ' +
@@ -79,19 +92,19 @@ const version = handleActions({
     })
   },
   [VERSION_TM_MERGE_REQUEST]: (state, action) => {
-    return updateObject(state, {
+    return update(state, {
       TMMerge: { triggered: { $set: true } },
       notification: { $set: undefined }
     })
   },
   [VERSION_TM_MERGE_SUCCESS]: (state, action) => {
-    return updateObject(state, {
+    return update(state, {
       TMMerge:
         { processStatus: { $set: action.payload }, triggered: { $set: false } }
     })
   },
   [VERSION_TM_MERGE_FAILURE]: (state, action) => {
-    return updateObject(state, {
+    return update(state, {
       TMMerge: { triggered: { $set: false } },
       notification: { $set: {
         message:
@@ -100,7 +113,7 @@ const version = handleActions({
     })
   },
   [QUERY_TM_MERGE_PROGRESS_SUCCESS]: (state, action) => {
-    return updateObject(state, {
+    return update(state, {
       TMMerge: { processStatus: { $set: action.payload } }
     })
   },
@@ -111,22 +124,10 @@ const version = handleActions({
     return state
   },
   [TM_MERGE_PROCESS_FINISHED]: (state, action) => {
-    return updateObject(state, {
+    return update(state, {
       TMMerge: { processStatus: { $set: undefined } }
     })
   }},
-// default state
-  {
-    TMMerge: {
-      show: false,
-      triggered: false,
-      processStatus: undefined,
-      projectVersions: []
-    },
-    locales: [],
-    fetchingProject: false,
-    fetchingLocale: false,
-    notification: undefined
-  })
+  defaultState)
 
 export default version

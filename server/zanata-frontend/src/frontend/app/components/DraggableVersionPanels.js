@@ -4,7 +4,7 @@ import {
   SortableContainer,
   SortableElement,
   SortableHandle} from 'react-sortable-hoc'
-import {FromProjectVersionType} from '../utils/prop-types-util.js'
+import {FromProjectVersionType} from '../utils/prop-types-util'
 import {Button, ListGroup, ListGroupItem} from 'react-bootstrap'
 import {Icon} from '../components'
 
@@ -15,8 +15,8 @@ const DragHandle = SortableHandle(() =>
 
 class Item extends Component {
   static propTypes = {
-    value: PropTypes.object,
-    removeVersion: PropTypes.func
+    value: FromProjectVersionType.isRequired,
+    removeVersion: PropTypes.func.isRequired
   }
   removeVersion = () => {
     const { value: { version, projectSlug } } = this.props
@@ -41,13 +41,14 @@ const SortableItem = SortableElement(Item)
 
 class Items extends Component {
   static propTypes = {
-    items: PropTypes.arrayOf(PropTypes.object),
-    removeVersion: PropTypes.func
+    items: PropTypes.arrayOf(FromProjectVersionType).isRequired,
+    removeVersion: PropTypes.func.isRequired
   }
   render () {
     const { items, removeVersion } = this.props
     const sortableItems = items.map((value, index) => (
-      <SortableItem key={`item-${index}`} index={index}
+      <SortableItem
+        key={value.projectSlug + ':' + value.version.id} index={index}
         value={value} removeVersion={removeVersion} />))
     return (
       <div>
@@ -68,7 +69,7 @@ class Items extends Component {
 const SortableList = SortableContainer(Items)
 
 /**
- * Root component for the Version TM Merge draggable version priority list
+ * Draggable version priority list
  */
 class DraggableVersionPanels extends Component {
   static propTypes = {

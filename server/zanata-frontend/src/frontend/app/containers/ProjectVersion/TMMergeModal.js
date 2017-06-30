@@ -34,6 +34,7 @@ const MergeProgress = ({onCancelTMMerge, status, progress}) => {
   return (
     <CancellableProgressBar onCancelOperation={onCancelTMMerge}
       processStatus={status} queryProgress={progress}
+      buttonLabel="Cancel TM Merge"
     />
   )
 }
@@ -399,7 +400,7 @@ class TMMergeModal extends Component {
     const modalBody = processStatus
       ? (
       <CancellableProgressBar onCancelOperation={this.cancelTMMerge}
-        processStatus={processStatus}
+        processStatus={processStatus} buttonLabel="Cancel TM Merge"
         queryProgress={this.queryTMMergeProgress} />
       )
       : (
@@ -448,18 +449,29 @@ class TMMergeModal extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const projectVersionState = state.projectVersion
-  const tmMergeState = projectVersionState.TMMerge
-  const processStatus = tmMergeState.processStatus
+  const {
+    projectVersion: {
+      locales,
+      notification,
+      fetchingProject,
+      fetchingLocale,
+      TMMerge: {
+        show,
+        triggered,
+        projectVersions,
+        processStatus
+      }
+    }
+  } = state
   return {
-    showTMMergeModal: tmMergeState.show,
-    triggered: tmMergeState.triggered,
-    locales: projectVersionState.locales,
-    projectVersions: tmMergeState.projectVersions,
-    notification: projectVersionState.notification,
-    fetchingProject: projectVersionState.fetchingProject,
-    fetchingLocale: projectVersionState.fetchingLocale,
-    processStatus: processStatus
+    showTMMergeModal: show,
+    triggered,
+    locales,
+    projectVersions,
+    notification,
+    fetchingProject,
+    fetchingLocale,
+    processStatus
   }
 }
 
