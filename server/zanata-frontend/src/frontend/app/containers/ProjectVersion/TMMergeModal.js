@@ -402,7 +402,8 @@ class TMMergeModal extends Component {
       />
       )
     return (
-      <Modal show={showTMMergeModal} onHide={openTMMergeModal}>
+      <Modal id="TM-merge-modal" show={showTMMergeModal}
+        onHide={openTMMergeModal}>
         <Modal.Header>
           <Modal.Title>Version TM Merge</Modal.Title>
           <p className="text-danger modal-danger">

@@ -1351,6 +1351,10 @@ table td {
   font-size: 1.44rem;
 }
 
+#messages {
+  margin-left: 4rem;
+}
+
 .locale-options {
   display: flex;
   display: -webkit-flex;
@@ -2899,19 +2903,19 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
 }
 
 .label-success {
-  background-color: @label-success-bg;
+  background-color: @color-success;
 }
 
 .label-info {
-  background-color: @label-info-bg;
+  background-color: @color-light;
 }
 
 .label-warning {
-  background-color: @label-warning-bg;
+  background-color: @color-warning;
 }
 
 .label-danger {
-  background-color: @label-danger-bg;
+  background-color: @color-danger;
 }
 
 .dropdown {
@@ -6629,6 +6633,11 @@ table.tmx-table .badge .n1 {
   margin-right: -0.9em;
 }
 
+#TM-merge-modal {
+  visibility: visible;
+  opacity: inherit;
+  backface-visibility: hidden;
+}
 
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
