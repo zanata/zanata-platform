@@ -1,11 +1,17 @@
 package org.zanata.rest.dto;
 
+import com.webcohesion.enunciate.metadata.Label;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlType;
 
+/**
+ * A collection of links
+ */
 @XmlType(name = "linksType", propOrder = {})
+@Label("Links")
 public class Links extends ArrayList<Link> {
 
     private static final long serialVersionUID = 1L;
