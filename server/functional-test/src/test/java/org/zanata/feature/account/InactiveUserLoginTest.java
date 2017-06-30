@@ -36,6 +36,7 @@ import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 import org.zanata.workflow.RegisterWorkFlow;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.EmailQuery.LinkType.ACTIVATE;
 
 /**
  * @author Carlos Munoz
@@ -63,9 +64,9 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                 .isEqualTo("Zanata: Account is not activated")
                 .as("The account is inactive");
         WiserMessage message = hasEmailRule.getMessages().get(0);
-        assertThat(EmailQuery.hasActivationLink(message)).isTrue()
+        assertThat(EmailQuery.hasLink(message, ACTIVATE)).isTrue()
                 .as("The email contains the activation link");
-        String activationLink = EmailQuery.getActivationLink(message);
+        String activationLink = EmailQuery.getLink(message, ACTIVATE);
         SignInPage page =
                 new BasicWorkFlow().goToUrl(activationLink, SignInPage.class);
         /*
@@ -80,7 +81,8 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                         "The user has validated their account and logged in");
     }
 
-    @Trace(summary = "The user can resend the account activation email")
+    @Trace(summary = "The user can resend the account activation email",
+            testCaseIds = 5697)
     @Test(timeout = MAX_SHORT_TEST_DURATION)
     public void resendActivationEmail() throws Exception {
         String usernamepassword = "tester2";
@@ -95,10 +97,10 @@ public class InactiveUserLoginTest extends ZanataTestCase {
         assertThat(hasEmailRule.getMessages().size()).isEqualTo(2)
                 .as("A second email was sent");
         WiserMessage message = hasEmailRule.getMessages().get(1);
-        assertThat(EmailQuery.hasActivationLink(message)).isTrue()
+        assertThat(EmailQuery.hasLink(message, ACTIVATE)).isTrue()
                 .as("The second email contains the activation link");
         homePage = new BasicWorkFlow()
-                .goToUrl(EmailQuery.getActivationLink(message), HomePage.class);
+                .goToUrl(EmailQuery.getLink(message, ACTIVATE), HomePage.class);
         /*
          * This fails in functional test, for reasons unknown
          * assertThat(homePage.getNotificationMessage())
@@ -111,7 +113,8 @@ public class InactiveUserLoginTest extends ZanataTestCase {
                         "The user has validated their account and logged in");
     }
 
-    @Trace(summary = "The user can update the account activation email")
+    @Trace(summary = "The user can update the account activation email address",
+            testCaseIds = 5696)
     @Test(timeout = MAX_SHORT_TEST_DURATION)
     public void updateActivationEmail() throws Exception {
         String usernamepassword = "tester3";
@@ -133,10 +136,10 @@ public class InactiveUserLoginTest extends ZanataTestCase {
         assertThat(message.getEnvelopeReceiver())
                 .isEqualTo("newtester@example.com")
                 .as("The new email address is used");
-        assertThat(EmailQuery.hasActivationLink(message)).isTrue()
+        assertThat(EmailQuery.hasLink(message, ACTIVATE)).isTrue()
                 .as("The second email contains the activation link");
         SignInPage page = new BasicWorkFlow().goToUrl(
-                EmailQuery.getActivationLink(message), SignInPage.class);
+                EmailQuery.getLink(message, ACTIVATE), SignInPage.class);
         /*
          * This fails in functional test, for reasons unknown
          * assertThat(homePage.getNotificationMessage())

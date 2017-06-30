@@ -120,6 +120,58 @@ public class RegisterCTest extends ZanataTestCase {
                 .as("The password field did not lose the entered text");
     }
 
+    @Trace(summary = "The user must provide a password to register via internal authentication",
+            testCaseIds = 5692)
+    @Test(timeout = MAX_SHORT_TEST_DURATION)
+    public void passwordLengthValidation() {
+        String longPass = makeString(1030);
+        assertThat(longPass.length()).isGreaterThan(1024);
+
+        RegisterPage registerPage = homePage
+                .goToRegistration()
+                .enterName("jimmy")
+                .enterEmail("jimmy@jim.net")
+                .enterUserName("jimmy")
+                .enterPassword("A")
+                .registerFailure();
+
+        assertThat(registerPage.getErrors())
+                .contains(RegisterPage.PASSWORD_LENGTH_ERROR)
+                .as("Password requires at least 6 characters");
+
+        registerPage = registerPage.enterPassword(longPass).registerFailure();
+
+        assertThat(registerPage.getErrors())
+                .contains(RegisterPage.PASSWORD_LENGTH_ERROR)
+                .as("The user must enter a password of at most 1024 characters");
+    }
+
+    @Trace(summary = "The user must provide a name to register",
+            testPlanIds = 5681, testCaseIds = 5689)
+    @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
+    public void userMustSpecifyAValidName() {
+        String longName = makeString(81);
+        assertThat(longName.length()).isGreaterThan(80);
+
+        RegisterPage registerPage = homePage
+                .goToRegistration()
+                .enterName("A")
+                .enterUserName("usermustspecifyaname")
+                .enterEmail("userMustSpecifyAName@test.com")
+                .enterPassword("password")
+                .registerFailure();
+
+        assertThat(registerPage.getErrors())
+                .contains(RegisterPage.USERDISPLAYNAME_LENGTH_ERROR)
+                .as("A name greater than 1 character must be specified");
+
+        registerPage = registerPage.enterName(longName).registerFailure();
+
+        assertThat(registerPage.getErrors())
+                .contains(RegisterPage.USERDISPLAYNAME_LENGTH_ERROR)
+                .as("A name shorter than 81 characters is specified");
+    }
+
     @Trace(summary = "The user must provide a username to register",
             testPlanIds = 5681, testCaseIds = 5690)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
@@ -162,5 +214,14 @@ public class RegisterCTest extends ZanataTestCase {
     private boolean containsUsernameError(List<String> errors) {
         return errors.contains(RegisterPage.USERNAME_VALIDATION_ERROR) ||
                 errors.contains(RegisterPage.USERNAME_LENGTH_ERROR);
+    }
+
+    private String makeString(int length) {
+        char[] ret = new char[length];
+        Random r = new Random();
+        for (int i = 0; i < length; ++i) {
+            ret[i] = (char) (r.nextInt(26) + 'a');
+        }
+        return String.valueOf(ret);
     }
 }
