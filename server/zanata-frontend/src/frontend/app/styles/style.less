@@ -2911,11 +2911,11 @@ button.btn.btn-danger.dropdown-toggle > span.caret, button.btn.btn-info.dropdown
 }
 
 .label-warning {
-  background-color: @color-warning;
+  background-color: @color-warning !important;
 }
 
 .label-danger {
-  background-color: @color-danger;
+  background-color: @color-danger !important;
 }
 
 .dropdown {
@@ -6296,6 +6296,11 @@ button.close:focus, button.close:hover, button.close:active:focus {
   align-self: center;
 }
 
+
+.new-zanata ul li {
+  list-style-type: none;
+}
+
 li.more-list-item {
   border-bottom: solid 1px #edf2f8;
   padding-top: @spacing-rq;
@@ -6425,6 +6430,10 @@ i.i--left.i--lock, i.i--left.i--trash {
   padding-bottom: @spacing-base-and-a-half;
 }
 
+.tm-panel ul.list-group {
+  padding:0;
+  margin:0;
+}
 //Project Version Sidebar
 
 .accordion-section-title {
