@@ -37,7 +37,7 @@ def parseDataFiles = {
       newData.add("[DUP]") + testSummary
       data.put(testId, newData)
     } else {
-      dataMap.put((testId), [id:testId, summary:testSummary, autoTest:"untested", autotestDesc:"untested", result:'untested'])
+      dataMap.put((testId), [id:testId, summary:testSummary, autoTest:"untested", autoTestDesc:"untested", result:'untested'])
     }
   }
 
@@ -49,9 +49,12 @@ def parseDataFiles = {
       String id = "ZAN-"+it
       if (dataMap.containsKey(id)) {
         def map = dataMap.get(id)
-        map.put("autoTest", test.testName)
-        map.put("autotestDesc", test.summary)
-        map.put("result", test.testResult)
+        String autoTest = map.autoTest == "untested" ? test.testName : map.autoTest + "|" + test.testName
+        map.put("autoTest", autoTest)
+        String autoTestDescription = map.autoTestDesc == "untested" ? test.summary : map.autoTestDesc + "|" + test.summary
+        map.put("autoTestDesc", autoTestDescription)
+        String result = map.result == "untested" ? test.testResult : map.result + "|" + test.testResult
+        map.put("result", result)
         dataMap.put(id, map)
       } else {
         println("Found dangling test case " + id)

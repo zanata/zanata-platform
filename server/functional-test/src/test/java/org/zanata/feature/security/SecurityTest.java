@@ -29,13 +29,17 @@ import org.subethamail.wiser.WiserMessage;
 import org.zanata.feature.Trace;
 import org.zanata.feature.testharness.TestPlan.DetailedTest;
 import org.zanata.feature.testharness.ZanataTestCase;
+import org.zanata.page.account.EnterNewPasswordPage;
 import org.zanata.page.account.ResetPasswordPage;
+import org.zanata.page.dashboard.DashboardBasePage;
 import org.zanata.page.utility.HomePage;
+import org.zanata.util.EmailQuery;
 import org.zanata.util.HasEmailRule;
 import org.zanata.workflow.BasicWorkFlow;
 import org.zanata.workflow.LoginWorkFlow;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.EmailQuery.LinkType.PASSWORD_RESET;
 
 /**
  * @author Damian Jansen <a
@@ -47,7 +51,8 @@ public class SecurityTest extends ZanataTestCase {
     @Rule
     public final HasEmailRule hasEmailRule = new HasEmailRule();
 
-    @Trace(summary = "The user can log in")
+    @Trace(summary = "The user can log in",
+            testCaseIds = 5698)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void signInSuccessful() {
         assertThat(new LoginWorkFlow()
@@ -58,7 +63,8 @@ public class SecurityTest extends ZanataTestCase {
     }
 
     @Trace(summary = "The user must enter a correct username and " +
-            "password to log in")
+            "password to log in",
+            testCaseIds = 5699)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void signInFailure() {
         assertThat(new LoginWorkFlow()
@@ -68,7 +74,8 @@ public class SecurityTest extends ZanataTestCase {
                 .as("Log in error message is shown");
     }
 
-    @Trace(summary = "The user may reset their password via email")
+    @Trace(summary = "The user may reset their password via email",
+            testCaseIds = 5700)
     @Test(timeout = ZanataTestCase.MAX_SHORT_TEST_DURATION)
     public void resetPasswordSuccessful() {
         ResetPasswordPage resetPasswordPage = new BasicWorkFlow()
@@ -92,6 +99,20 @@ public class SecurityTest extends ZanataTestCase {
                 .contains("Please follow the link below to reset the " +
                         "password for your account.")
                 .as("The system has sent a reset password email to the user");
+        assertThat(EmailQuery.hasLink(message, PASSWORD_RESET)).isTrue();
+
+        String resetLink = EmailQuery.getLink(message, PASSWORD_RESET);
+        DashboardBasePage dashboardBasePage = new BasicWorkFlow()
+                .goToUrl(resetLink, EnterNewPasswordPage.class)
+                .enterNewPassword("newpassword")
+                .enterConfirmPassword("newpassword")
+                .pressChangePasswordButton()
+                .enterUsername("admin")
+                .enterPassword("newpassword").clickSignIn();
+
+        assertThat(dashboardBasePage.loggedInAs())
+                .isEqualTo("admin")
+                .as("Admin has signed in with the new password");
     }
 
     @Trace(summary = "The user must enter a known account or email " +

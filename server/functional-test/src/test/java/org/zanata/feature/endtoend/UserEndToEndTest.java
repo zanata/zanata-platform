@@ -53,6 +53,7 @@ import java.io.File;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.util.EmailQuery.LinkType.ACTIVATE;
 
 /**
  * This aim of this test is to provide a method of testing as many
@@ -211,7 +212,7 @@ public class UserEndToEndTest extends ZanataTestCase {
 
     private BasePage checkEmailAndFailToActivate() {
         WiserMessage message = hasEmailRule.getMessages().get(0);
-        String link = EmailQuery.getActivationLink(message);
+        String link = EmailQuery.getLink(message, ACTIVATE);
         boolean exceptionFound = false;
         BasePage basePage = null;
         try {
@@ -225,7 +226,7 @@ public class UserEndToEndTest extends ZanataTestCase {
 
     private SignInPage checkEmailAndActivate() {
         WiserMessage message = hasEmailRule.getMessages().get(0);
-        String link = EmailQuery.getActivationLink(message);
+        String link = EmailQuery.getLink(message, ACTIVATE);
 
         SignInPage signInPage = new BasicWorkFlow().goToUrl(link.concat("?" + dswid), SignInPage.class);
 
