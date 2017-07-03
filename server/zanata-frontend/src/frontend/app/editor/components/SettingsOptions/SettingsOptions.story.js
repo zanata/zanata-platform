@@ -152,7 +152,7 @@ storiesOf('SettingsOptions', module)
             settings={listHalfChecked}
             updateSetting={action('updateSetting')} />
     ))
-    .add('default -all checked', () => (
+    .add('default - all checked', () => (
         <SettingsOptions
             settings={listAllChecked}
             updateSetting={action('updateSetting')} />
