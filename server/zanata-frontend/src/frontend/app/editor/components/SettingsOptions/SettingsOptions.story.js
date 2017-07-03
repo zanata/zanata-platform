@@ -43,7 +43,30 @@ class SettingsOptions extends React.Component {
 }
 
 const updateSetting = action('updateSetting')
-const settings =
+const listUnchecked =
+    [
+      {
+        id: 'list-item-1',
+        label: 'List item 1',
+        active: false
+      },
+      {
+        id: 'list-item-2',
+        label: 'List item 2',
+        active: false
+      },
+      {
+        id: 'list-item-3',
+        label: 'List item 3',
+        active: false
+      },
+      {
+        id: 'list-item-4',
+        label: 'List item 4',
+        active: false
+      }
+    ]
+const validations =
     [
       {
         id: 'html-xml-tags',
@@ -85,7 +108,12 @@ const settings =
 storiesOf('SettingsOptions', module)
     .add('default', () => (
         <SettingsOptions
-            settings={settings}
+            settings={listUnchecked}
+            updateSetting={action('updateSetting')} />
+    ))
+    .add('validation settings', () => (
+        <SettingsOptions
+            settings={validations}
             updateSetting={action('updateSetting')} />
     ))
 
