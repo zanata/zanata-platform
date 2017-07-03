@@ -1,27 +1,11 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {
-  Panel, Tooltip, Checkbox, ListGroup, ListGroupItem, OverlayTrigger, PanelGroup
+  Panel, Checkbox, ListGroup, ListGroupItem, PanelGroup
 } from 'react-bootstrap'
-import {Icon} from '../../components'
-import {ProjectType, FromProjectVersionType, entityStatusPropType,
+import {LockIcon} from '../../components'
+import {ProjectType, FromProjectVersionType,
   versionDtoPropType} from '../../utils/prop-types-util'
-import {isEntityStatusReadOnly} from '../../utils/EnumValueUtils'
-
-const tooltipReadOnly = <Tooltip id='tooltipreadonly'>Read only</Tooltip>
-
-const LockIcon = (props) => {
-  return isEntityStatusReadOnly(props.status)
-    ? (
-    <OverlayTrigger placement='top' overlay={tooltipReadOnly}>
-      <Icon name='locked' className='s0 icon-locked' />
-    </OverlayTrigger>
-  )
-    : <span />
-}
-LockIcon.propTypes = {
-  status: entityStatusPropType
-}
 
 /**
  * Panels for selecting and prioritising of project-versions

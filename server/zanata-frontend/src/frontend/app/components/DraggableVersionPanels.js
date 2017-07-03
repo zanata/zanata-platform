@@ -6,7 +6,7 @@ import {
   SortableHandle} from 'react-sortable-hoc'
 import {FromProjectVersionType} from '../utils/prop-types-util'
 import {Button, ListGroup, ListGroupItem} from 'react-bootstrap'
-import {Icon} from '../components'
+import {Icon, LockIcon} from '../components'
 
 const DragHandle = SortableHandle(() =>
   <Button bsStyle='link' className='btn-link-sort'>
@@ -27,7 +27,7 @@ class Item extends Component {
     return <ListGroupItem className='v' >
       <DragHandle />
       {version.id} <span className='text-muted'> {projectSlug}
-      </span>
+      </span> <LockIcon status={version.status} />
       {" "}
       <Button bsSize='xsmall' className='close rm-version-btn'
         onClick={this.removeVersion}>
