@@ -217,6 +217,3 @@ storiesOf('SettingsOptions', module)
             updateSetting={action('updateSetting')} />
       </div>
     ))
-
-
-
