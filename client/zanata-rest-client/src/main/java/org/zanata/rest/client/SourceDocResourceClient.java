@@ -32,6 +32,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 
@@ -78,34 +79,62 @@ public class SourceDocResourceClient {
                 .path("r");
     }
 
-    public Resource getResource(String idNoSlash, Set<String> extensions) {
+    public Resource getResource(String id, Set<String> extensions) {
         Client client = factory.getClient();
         WebTarget webResource =
                 getBaseServiceResource(client)
-                        .path(idNoSlash)
+                        .path("resource")
+                        .queryParam("id", id)
                         .queryParam("ext", extensions.toArray());
-        return webResource.request(MediaType.APPLICATION_XML_TYPE)
-                .get(Resource.class);
+        Response response = webResource.request(MediaType.APPLICATION_XML_TYPE)
+                .get();
+        if (RestUtil.isNotFound(response)) {
+            // fallback to old endpoint
+            String idNoSlash = RestUtil.convertToDocumentURIId(id);
+            webResource =
+                    getBaseServiceResource(client)
+                            .path(idNoSlash)
+                            .queryParam("ext", extensions.toArray());
+            return webResource.request(MediaType.APPLICATION_XML_TYPE)
+                    .get(Resource.class);
+        }
+        return response.readEntity(Resource.class);
     }
 
-    public String putResource(String idNoSlash, Resource resource,
+    public String putResource(String id, Resource resource,
             Set<String> extensions, boolean copyTrans) {
         Client client = factory.getClient();
-        WebTarget webResource = getBaseServiceResource(client)
-                .path(idNoSlash)
+        WebTarget webResource = getBaseServiceResource(client).path("resource")
+                .queryParam("id", id)
                 .queryParam("ext", extensions.toArray())
                 .queryParam("copyTrans", String.valueOf(copyTrans));
 
         Response response = webResource.request(MediaType.APPLICATION_XML_TYPE)
                 .put(Entity.entity(resource, MediaType.APPLICATION_XML_TYPE));
+        if (RestUtil.isNotFound(response)) {
+            // fallback to old endpoint
+            String idNoSlash = RestUtil.convertToDocumentURIId(id);
+            webResource = getBaseServiceResource(client)
+                    .path(idNoSlash)
+                    .queryParam("ext", extensions.toArray())
+                    .queryParam("copyTrans", String.valueOf(copyTrans));
+            response = webResource.request(MediaType.APPLICATION_XML_TYPE)
+                    .put(Entity.entity(resource, MediaType.APPLICATION_XML_TYPE));
+        }
         response.bufferEntity();
         return response.readEntity(String.class);
     }
 
-    public String deleteResource(String idNoSlash) {
+    public String deleteResource(String id) {
         Client client = factory.getClient();
         WebTarget webResource = getBaseServiceResource(client);
-        return webResource.path(idNoSlash).request().delete(String.class);
+        Response response =
+                webResource.path("resource").queryParam("id", id).request()
+                        .delete();
+        if (RestUtil.isNotFound(response)) {
+            String idNoSlash = RestUtil.convertToDocumentURIId(id);
+            return webResource.path(idNoSlash).request().delete(String.class);
+        }
+        return response.readEntity(String.class);
     }
-
 }

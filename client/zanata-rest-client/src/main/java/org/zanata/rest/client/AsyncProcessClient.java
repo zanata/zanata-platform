@@ -32,6 +32,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.zanata.common.LocaleId;
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -53,9 +54,8 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     // TODO: remove this test when parent method is removed
-    public ProcessStatus startSourceDocCreation(String idNoSlash,
+    public ProcessStatus startSourceDocCreation(String docId,
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {
         throw new UnsupportedOperationException(
@@ -63,6 +63,7 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
     }
 
     @Override
+    @Deprecated
     public ProcessStatus startSourceDocCreationOrUpdate(String idNoSlash,
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {
@@ -82,6 +83,34 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
     }
 
     @Override
+    public ProcessStatus startSourceDocCreationOrUpdateWithDocId(
+            String projectSlug, String iterationSlug, Resource resource,
+            Set<String> extensions, String id, boolean copytrans) {
+        Client client = factory.getClient();
+        WebTarget webResource = client.target(baseUri)
+                .path(AsynchronousProcessResource.SERVICE_PATH)
+                .path("projects").path("p").path(projectSlug)
+                .path("iterations").path("i").path(iterationSlug)
+                .path("r").path("resource");
+        Response response = webResource
+                .queryParam("id", id)
+                .queryParam("ext", extensions.toArray())
+                .queryParam("copyTrans", String.valueOf(copytrans))
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .put(Entity.xml(resource));
+        if (RestUtil.isNotFound(response)) {
+            // fallback to old endpoint
+            String idNoSlash = RestUtil.convertToDocumentURIId(id);
+            return startSourceDocCreationOrUpdate(idNoSlash, projectSlug,
+                    iterationSlug, resource, extensions, copytrans);
+        } else {
+            response.bufferEntity();
+            return response.readEntity(ProcessStatus.class);
+        }
+    }
+
+    @Override
+    @Deprecated
     public ProcessStatus startTranslatedDocCreationOrUpdate(String idNoSlash,
             String projectSlug, String iterationSlug, LocaleId locale,
             TranslationsResource translatedDoc, Set<String> extensions,
@@ -102,6 +131,38 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
                         .xml(translatedDoc));
         response.bufferEntity();
         return response.readEntity(ProcessStatus.class);
+    }
+
+    @Override
+    public ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(
+            String projectSlug, String iterationSlug, LocaleId locale,
+            TranslationsResource translatedDoc, String id,
+            Set<String> extensions,
+            String merge, boolean assignCreditToUploader) {
+        Client client = factory.getClient();
+        WebTarget webResource = client.target(baseUri)
+                .path(AsynchronousProcessResource.SERVICE_PATH)
+                .path("projects").path("p").path(projectSlug)
+                .path("iterations").path("i").path(iterationSlug)
+                .path("r").path("resource")
+                .path("translations").path(locale.toString());
+        Response response = webResource
+                .queryParam("id", id)
+                .queryParam("ext", extensions.toArray())
+                .queryParam("merge", merge)
+                .queryParam("assignCreditToUploader", String.valueOf(assignCreditToUploader))
+                .request(MediaType.APPLICATION_XML_TYPE)
+                .put(Entity.xml(translatedDoc));
+        if (RestUtil.isNotFound(response)) {
+            // fallback to old endpoint
+            String idNoSlash = RestUtil.convertToDocumentURIId(id);
+            return startTranslatedDocCreationOrUpdate(idNoSlash, projectSlug,
+                    iterationSlug, locale, translatedDoc, extensions, merge,
+                    assignCreditToUploader);
+        } else {
+            response.bufferEntity();
+            return response.readEntity(ProcessStatus.class);
+        }
     }
 
     @Override

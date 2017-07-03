@@ -53,7 +53,7 @@ import org.zanata.util.RawRestTestUtils;
  *         href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
 public abstract class SourceAndTranslationResourceRestBase extends RestTest {
-    protected static final String RESOURCE_PATH =
+    protected static final String BASE_PATH =
             "/projects/p/sample-project/iterations/i/1.0/r/";
     private SourceDocResource sourceDocResource;
     private TranslatedDocResource translatedDocResource;
@@ -100,7 +100,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                 @Override
                 public Response head() {
                     return new ResourceRequest(
-                            getRestEndpointUrl(RESOURCE_PATH),
+                            getRestEndpointUrl(BASE_PATH),
                             "HEAD", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
@@ -117,7 +117,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                 @Override
                 public Response get(final Set<String> extensions) {
                     return new ResourceRequest(
-                            getRestEndpointUrl(RESOURCE_PATH),
+                            getRestEndpointUrl(BASE_PATH),
                             "GET", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
@@ -138,7 +138,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         final Set<String> extensions,
                         @DefaultValue("true") final boolean copytrans) {
                     return new ResourceRequest(
-                            getRestEndpointUrl(RESOURCE_PATH),
+                            getRestEndpointUrl(BASE_PATH),
                             "POST", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
@@ -168,7 +168,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                 public Response getResource(String idNoSlash,
                         final Set<String> extensions) {
                     return new ResourceRequest(
-                            getRestEndpointUrl(RESOURCE_PATH + idNoSlash),
+                            getRestEndpointUrl(BASE_PATH + idNoSlash),
                             "GET", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
@@ -185,12 +185,33 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                 }
 
                 @Override
+                public Response getResourceWithDocId(String id,
+                        Set<String> extensions) {
+                    return new ResourceRequest(
+                            getRestEndpointUrl(BASE_PATH + "resource"),
+                            "GET", getAuthorizedEnvironment()) {
+                        @Override
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget).
+                                    queryParam("id", id).
+                                    request().header(HttpHeaders.ACCEPT,
+                                    MediaType.APPLICATION_XML_TYPE);
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
+                        }
+                    }.runWithResult();
+                }
+
+                @Override
                 public Response putResource(String idNoSlash,
                         final Resource resource,
                         final Set<String> extensions,
                         @DefaultValue("true") final boolean copytrans) {
                     return new ResourceRequest(
-                            getRestEndpointUrl(RESOURCE_PATH + idNoSlash),
+                            getRestEndpointUrl(BASE_PATH + idNoSlash),
                             "PUT", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
@@ -216,9 +237,40 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                 }
 
                 @Override
+                public Response putResourceWithDocId(Resource resource,
+                        String id,
+                        Set<String> extensions, boolean copytrans) {
+                    return new ResourceRequest(
+                            getRestEndpointUrl(BASE_PATH + "resource"),
+                            "PUT", getAuthorizedEnvironment()) {
+                        @Override
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .queryParam("id", id)
+                                    .queryParam("copyTrans",
+                                            String.valueOf(copytrans)).request();
+                        }
+
+                        @Override
+                        public Response invokeWithResponse(
+                                Invocation.Builder builder) {
+                            Entity<String> entity = Entity
+                                    .entity(jaxbMarhsal(resource),
+                                            MediaType.APPLICATION_XML_TYPE);
+                            return builder.buildPut(entity).invoke();
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
+                        }
+                    }.runWithResult();
+                }
+
+                @Override
                 public Response deleteResource(String idNoSlash) {
                     return new ResourceRequest(
-                            getRestEndpointUrl(RESOURCE_PATH + idNoSlash),
+                            getRestEndpointUrl(BASE_PATH + idNoSlash),
                             "DELETE", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
@@ -233,11 +285,28 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                 }
 
                 @Override
+                public Response deleteResourceWithDocId(String id) {
+                    return new ResourceRequest(
+                            getRestEndpointUrl(BASE_PATH + "resource"),
+                            "DELETE", getAuthorizedEnvironment()) {
+                        @Override
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return webTarget.queryParam("id", id).request();
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
+                        }
+                    }.runWithResult();
+                }
+
+                @Override
                 public Response getResourceMeta(String idNoSlash,
                         final Set<String> extensions) {
                     return new ResourceRequest(
                             getRestEndpointUrl(
-                                    RESOURCE_PATH + idNoSlash + "/meta"),
+                                    BASE_PATH + idNoSlash + "/meta"),
                             "GET", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
@@ -254,17 +323,69 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                 }
 
                 @Override
+                public Response getResourceMetaWithDocId(String id,
+                        Set<String> extensions) {
+                    return new ResourceRequest(
+                            getRestEndpointUrl(
+                                    BASE_PATH + "resource/meta"),
+                            "GET", getAuthorizedEnvironment()) {
+                        @Override
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .queryParam("id", id)
+                                    .request().header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_XML_TYPE);
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
+                        }
+                    }.runWithResult();
+                }
+
+                @Override
                 public Response putResourceMeta(String idNoSlash,
                         final ResourceMeta messageBody,
                         final Set<String> extensions) {
                     return new ResourceRequest(
                             getRestEndpointUrl(
-                                    RESOURCE_PATH + idNoSlash + "/meta"),
+                                    BASE_PATH + idNoSlash + "/meta"),
                             "PUT", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
                                 ResteasyWebTarget webTarget) {
                             return addExtensionToRequest(extensions, webTarget)
+                                    .request();
+                        }
+
+                        @Override
+                        public Response invokeWithResponse(
+                                Invocation.Builder builder) {
+                            Entity<String> entity = Entity
+                                    .entity(jaxbMarhsal(messageBody),
+                                            MediaType.APPLICATION_XML_TYPE);
+                            return builder.buildPut(entity).invoke();
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
+                        }
+                    }.runWithResult();
+                }
+
+                @Override
+                public Response putResourceMetaWithDocId(ResourceMeta messageBody,
+                        String id, Set<String> extensions) {
+                    return new ResourceRequest(
+                            getRestEndpointUrl(
+                                    BASE_PATH + "resource/meta"),
+                            "PUT", getAuthorizedEnvironment()) {
+                        @Override
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .queryParam("id", id)
                                     .request();
                         }
 
@@ -296,7 +417,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         final Set<String> extensions, final boolean createSkeletons,
                         String eTag) {
                     return new ResourceRequest(
-                            getRestEndpointUrl(RESOURCE_PATH + idNoSlash + "/translations/" + locale),
+                            getRestEndpointUrl(BASE_PATH + idNoSlash + "/translations/" + locale),
                             "GET", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
@@ -315,10 +436,35 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                 }
 
                 @Override
+                public Response getTranslationsWithDocId(LocaleId locale,
+                        String id,
+                        Set<String> extensions, boolean createSkeletons,
+                        String eTag) {
+                    return new ResourceRequest(
+                            getRestEndpointUrl(BASE_PATH + "resource/translations/" + locale),
+                            "GET", getAuthorizedEnvironment()) {
+                        @Override
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .queryParam("id", id)
+                                    .queryParam("skeletons",
+                                            String.valueOf(createSkeletons))
+                                    .request().header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_XML_TYPE);
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
+                        }
+                    }.runWithResult();
+                }
+
+                @Override
                 public Response deleteTranslations(String idNoSlash,
                         LocaleId locale) {
                     return new ResourceRequest(
-                            getRestEndpointUrl(RESOURCE_PATH + idNoSlash + "/translations/" + locale),
+                            getRestEndpointUrl(BASE_PATH + idNoSlash + "/translations/" + locale),
                             "DELETE", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
@@ -333,16 +479,67 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                 }
 
                 @Override
+                public Response deleteTranslationsWithDocId(LocaleId locale,
+                        String id) {
+                    return new ResourceRequest(
+                            getRestEndpointUrl(BASE_PATH + "resource/translations/" + locale),
+                            "DELETE", getAuthorizedEnvironment()) {
+                        @Override
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return webTarget.queryParam("id", id).request();
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
+                        }
+                    }.runWithResult();
+                }
+
+                @Override
                 public Response putTranslations(String idNoSlash, LocaleId locale,
                         final TranslationsResource messageBody, final Set<String> extensions,
                         @DefaultValue("auto") final String merge) {
                     return new ResourceRequest(
-                            getRestEndpointUrl(RESOURCE_PATH + idNoSlash + "/translations/" + locale),
+                            getRestEndpointUrl(BASE_PATH + idNoSlash + "/translations/" + locale),
                             "PUT", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
                                 ResteasyWebTarget webTarget) {
                             return addExtensionToRequest(extensions, webTarget)
+                                    .queryParam("merge", merge).request()
+                                    .header(HttpHeaders.ACCEPT,
+                                            MediaType.APPLICATION_XML_TYPE);
+                        }
+
+                        @Override
+                        public Response invokeWithResponse(
+                                Invocation.Builder builder) {
+                            Entity<String> entity = Entity
+                                    .entity(jaxbMarhsal(messageBody),
+                                            MediaType.APPLICATION_XML_TYPE);
+                            return builder.buildPut(entity).invoke();
+                        }
+
+                        @Override
+                        protected void onResponse(Response response) {
+                        }
+                    }.runWithResult();
+                }
+
+                @Override
+                public Response putTranslationsWithDocId(LocaleId locale,
+                        TranslationsResource messageBody, String id,
+                        Set<String> extensions,
+                        String merge) {
+                    return new ResourceRequest(
+                            getRestEndpointUrl(BASE_PATH + "resource/translations/" + locale),
+                            "PUT", getAuthorizedEnvironment()) {
+                        @Override
+                        protected Invocation.Builder prepareRequest(
+                                ResteasyWebTarget webTarget) {
+                            return addExtensionToRequest(extensions, webTarget)
+                                    .queryParam("id", id)
                                     .queryParam("merge", merge).request()
                                     .header(HttpHeaders.ACCEPT,
                                             MediaType.APPLICATION_XML_TYPE);

@@ -50,11 +50,11 @@ public class AsyncProcessClientTest {
     @Test
     public void testStartSourceDocCreationOrUpdate() throws Exception {
         ProcessStatus processStatus =
-                client.startSourceDocCreationOrUpdate("message",
+                client.startSourceDocCreationOrUpdateWithDocId(
                         "about-fedora",
                         "master",
                         new Resource("message"), Sets.newHashSet("gettext"),
-                        false);
+                        "message", false);
 
         assertThat(processStatus.getStatusCode(), Matchers.equalTo(
                 ProcessStatus.ProcessStatusCode.Running));
@@ -63,10 +63,11 @@ public class AsyncProcessClientTest {
     @Test
     public void testStartTranslatedDocCreationOrUpdate() throws Exception {
         ProcessStatus processStatus =
-                client.startTranslatedDocCreationOrUpdate("message",
+                client.startTranslatedDocCreationOrUpdateWithDocId(
                         "about-fedora",
                         "master", LocaleId.DE,
-                        new TranslationsResource(), Sets.newHashSet("gettext"),
+                        new TranslationsResource(), "message",
+                        Sets.newHashSet("gettext"),
                         "auto", false);
 
         assertThat(processStatus.getStatusCode(), Matchers.equalTo(

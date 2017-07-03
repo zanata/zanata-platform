@@ -88,7 +88,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         postResponse = getSourceDocResource().post(sr, null, true);
 
         Response resourceGetResponse =
-                getSourceDocResource().getResource("my.txt", null);
+                getSourceDocResource().getResourceWithDocId("my.txt", null);
         assertThat(resourceGetResponse.getStatus(), is(Status.OK.getStatusCode()));
         Resource gotSr = getResourceFromResponse(resourceGetResponse);
         assertThat(gotSr.getTextFlows().size(), is(1));
@@ -105,11 +105,12 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         sr.getTextFlows().add(stf);
 
         Response response =
-                getSourceDocResource().putResource("my.txt", sr, null, false);
+                getSourceDocResource()
+                        .putResourceWithDocId(sr, "my.txt", null, false);
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
 
         Response resourceGetResponse =
-                getSourceDocResource().getResource("my.txt", null);
+                getSourceDocResource().getResourceWithDocId("my.txt", null);
         assertThat(resourceGetResponse.getStatus(), is(Status.OK.getStatusCode()));
         Resource gotSr = getResourceFromResponse(resourceGetResponse);
         assertThat(gotSr.getTextFlows().size(), is(1));
@@ -121,7 +122,6 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     @RunAsClient
     public void createPoResourceWithPoHeader() {
         String docName = "my.txt";
-        String docUri = RestUtil.convertToDocumentURIId(docName);
         Resource sr = createSourceResource(docName);
 
         TextFlow stf = new TextFlow("tf1", LocaleId.EN, "tf1");
@@ -144,7 +144,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         doGetandAssertThatResourceListContainsNItems(1);
 
         Response resourceGetResponse =
-                getSourceDocResource().getResource(docUri, null);
+                getSourceDocResource().getResourceWithDocId(docName, null);
         // , new StringSet(PoHeader.ID));
         assertThat(resourceGetResponse.getStatus(), is(Status.OK.getStatusCode()));
         Resource gotSr = getResourceFromResponse(resourceGetResponse);
@@ -181,13 +181,14 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         LocaleId de_DE = new LocaleId("de");
         Response response =
                 getTransResource()
-                        .putTranslations("my.txt", de_DE, entity, null,
+                        .putTranslationsWithDocId(de_DE, entity, "my.txt", null,
                                 "auto");
 
         assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
 
         Response getResponse =
-                getTransResource().getTranslations("my.txt", de_DE, null, false,
+                getTransResource()
+                        .getTranslationsWithDocId(de_DE, "my.txt", null, false,
                         null);
         assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode()));
         TranslationsResource entity2 =
@@ -199,13 +200,14 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         // push an empty document
         response =
                 getTransResource()
-                        .putTranslations("my.txt", de_DE, entity, null,
+                        .putTranslationsWithDocId(de_DE, entity, "my.txt", null,
                                 MergeType.IMPORT.toString());
         assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
 
         getResponse =
-                getTransResource().getTranslations("my.txt", de_DE, null, false,
-                        null);
+                getTransResource()
+                        .getTranslationsWithDocId(de_DE, "my.txt", null, false,
+                                null);
         assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode()));
     }
 
@@ -214,7 +216,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     public void getDocumentThatDoesntExist() {
         Response clientResponse =
                 getSourceDocResource()
-                        .getResource("my,doc,does,not,exist.txt", null);
+                        .getResourceWithDocId("my,doc,does,not,exist.txt", null);
         assertThat(clientResponse.getStatus(), is(Status.NOT_FOUND.getStatusCode()));
     }
 
@@ -222,12 +224,12 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     @RunAsClient
     public void getDocument() throws Exception {
         String docName = "my/path/document.txt";
-        String docUri = RestUtil.convertToDocumentURIId(docName);
         Resource resource = createSourceDoc(docName, false);
-        getSourceDocResource().putResource(docUri, resource, null, false);
+        getSourceDocResource().putResourceWithDocId(resource, docName, null,
+                false);
 
         Response response =
-                getSourceDocResource().getResourceMeta(docUri, null);
+                getSourceDocResource().getResourceMetaWithDocId(docName, null);
         assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
         ResourceMeta doc = getResourceMetaFromResponse(response);
         assertThat(doc.getName(), is(docName));
@@ -252,16 +254,16 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     public void getDocumentWithResources() throws Exception {
         LocaleId nbLocale = new LocaleId("de");
         String docName = "my/path/document.txt";
-        String docUri = RestUtil.convertToDocumentURIId(docName);
         Resource resource = createSourceDoc(docName, true);
-        getSourceDocResource().putResource(docUri, resource, null, false);
+        getSourceDocResource().putResourceWithDocId(resource, docName, null,
+                false);
         TranslationsResource trans = createTargetDoc();
         getTransResource()
-                .putTranslations(docUri, nbLocale, trans, null, "auto");
+                .putTranslationsWithDocId(nbLocale, trans, docName, null, "auto");
 
         {
             Response response =
-                    getSourceDocResource().getResource(docUri, null);
+                    getSourceDocResource().getResourceWithDocId(docName, null);
             assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
 
             Resource doc = getResourceFromResponse(response);
@@ -270,7 +272,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         Response response =
                 getTransResource()
-                        .getTranslations(docUri, nbLocale, null, false,
+                        .getTranslationsWithDocId(nbLocale, docName, null,
+                                false,
                                 null);
         assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
 
@@ -292,17 +295,16 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     @RunAsClient
     public void putNewDocument() {
         String docName = "my/fancy/document.txt";
-        String docUrl = RestUtil.convertToDocumentURIId(docName);
         Resource doc = createSourceDoc(docName, false);
         Response response = getSourceDocResource()
-                .putResource(docUrl, doc, null, false);
+                .putResourceWithDocId(doc, docName, null, false);
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         assertThat(response.getMetadata().getFirst("Location").toString(),
-                endsWith(RESOURCE_PATH + docUrl));
+                endsWith(BASE_PATH + docName));
 
         Response documentResponse =
-                getSourceDocResource().getResource(docUrl, null);
+                getSourceDocResource().getResourceWithDocId(docName, null);
 
         assertThat(documentResponse.getStatus(), is(Status.OK.getStatusCode()));
 
@@ -325,7 +327,6 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     @RunAsClient
     public void putDocWithDuplicateTextFlowIds() throws Exception {
         String docName = "testDoc";
-        String docUrl = RestUtil.convertToDocumentURIId(docName);
         Resource doc = createSourceDoc(docName, false);
         List<TextFlow> textFlows = doc.getTextFlows();
 
@@ -335,7 +336,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
             textFlows.add(textFlow);
         }
         Response response =
-                getSourceDocResource().putResource(docUrl, doc, null, false);
+                getSourceDocResource()
+                        .putResourceWithDocId(doc, docName, null, false);
         assertThat(response.getStatus(), is(Status.BAD_REQUEST.getStatusCode()));
         String message = response.readEntity(String.class);
         assertThat(message, containsString("tf1"));
@@ -345,7 +347,6 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     @RunAsClient
     public void putNewDocumentWithResources() throws Exception {
         String docName = "my/fancy/document.txt";
-        String docUrl = RestUtil.convertToDocumentURIId(docName);
         Resource doc = createSourceDoc(docName, false);
 
         List<TextFlow> textFlows = doc.getTextFlows();
@@ -366,14 +367,14 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         // m.marshal(doc, System.out);
 
         Response response = getSourceDocResource()
-                .putResource(docUrl, doc, null, false);
+                .putResourceWithDocId(doc, docName, null, false);
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         assertThat(response.getMetadata().getFirst("Location").toString(),
-                endsWith(RESOURCE_PATH + docUrl));
+                endsWith(BASE_PATH + docName));
 
         Response documentResponse =
-                getSourceDocResource().getResource(docUrl, null);
+                getSourceDocResource().getResourceWithDocId(docName, null);
 
         assertThat(documentResponse.getStatus(), is(Status.OK.getStatusCode()));
 
@@ -391,12 +392,14 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         textFlow = doc.getTextFlows().get(0);
         textFlow.setId("tf2");
 
-        response = getSourceDocResource().putResource(docUrl, doc, null, false);
+        response = getSourceDocResource().putResourceWithDocId(doc, docName,
+                null, false);
 
         // this WAS testing for status 205
         assertThat(response.getStatus(), is(200));
 
-        documentResponse = getSourceDocResource().getResource(docUrl, null);
+        documentResponse = getSourceDocResource()
+                .getResourceWithDocId(docName, null);
         assertThat(documentResponse.getStatus(), is(Status.OK.getStatusCode()));
         doc = getResourceFromResponse(documentResponse);
 
@@ -625,7 +628,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         // Get the translations with PO headers
         Response response =
                 getTransResource()
-                        .getTranslations("my.txt", de_DE, new StringSet(
+                        .getTranslationsWithDocId(de_DE, "my.txt", new StringSet(
                                 "gettext"), true, null);
 
         TranslationsResource translations = getTranslationsResourceFromResponse(response);
@@ -686,7 +689,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         // Get the translations with PO headers
         Response response =
                 getTransResource()
-                        .getTranslations("my.txt", de_DE, new StringSet(
+                        .getTranslationsWithDocId(de_DE, "my.txt", new StringSet(
                                 "gettext"), true, null);
 
         TranslationsResource translations = getTranslationsResourceFromResponse(response);
@@ -745,15 +748,15 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         // Push the translations
         Response putResponse =
-                getTransResource().putTranslations("my.txt", de_DE, entity,
-                        new StringSet("gettext"), "auto");
+                getTransResource().putTranslationsWithDocId(de_DE, entity,
+                        "my.txt", new StringSet("gettext"), "auto");
         assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
 
 
         // Get the translations with PO headers
         Response transResponse =
                 getTransResource()
-                        .getTranslations("my.txt", de_DE, new StringSet(
+                        .getTranslationsWithDocId(de_DE, "my.txt", new StringSet(
                                 "gettext"), false, null);
         TranslationsResource translations = getTranslationsResourceFromResponse(transResponse);
 
@@ -797,14 +800,14 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         Response putResponse =
                 getTransResource()
-                        .putTranslations("my.txt", de_DE, entity, null,
+                        .putTranslationsWithDocId(de_DE, entity, "my.txt", null,
                                 "auto");
         assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
 
         // Get the translations with PO headers
         Response response =
                 getTransResource()
-                        .getTranslations("my.txt", de_DE, new StringSet(
+                        .getTranslationsWithDocId(de_DE, "my.txt", new StringSet(
                                 "gettext"), false, null);
 
         TranslationsResource translations = getTranslationsResourceFromResponse(response);
@@ -818,15 +821,15 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         putResponse =
                 getTransResource()
-                        .putTranslations("my.txt", de_DE, translations,
-                                null, "auto");
+                        .putTranslationsWithDocId(de_DE, translations,
+                                "my.txt", null, "auto");
         assertThat(putResponse.getStatus(),
                 is(Status.OK.getStatusCode()));
 
         // Fetch the translations again
         response =
                 getTransResource()
-                        .getTranslations("my.txt", de_DE, new StringSet(
+                        .getTranslationsWithDocId(de_DE, "my.txt", new StringSet(
                                 "gettext"), false, null);
 
         translations = getTranslationsResourceFromResponse(response);
@@ -870,13 +873,13 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                 entityString, ResourceMeta[].class));
         assertThat(actualDocs, notNullValue());
         Map<String, AbstractResourceMeta> expectedDocs =
-                new HashMap<String, AbstractResourceMeta>();
+                new HashMap<>();
         for (AbstractResourceMeta doc : docs) {
             expectedDocs.put(doc.getName(), doc);
         }
         // Set<String> actualDocVals = new TreeSet<String>();
         Map<String, AbstractResourceMeta> actualDocsMap =
-                new HashMap<String, AbstractResourceMeta>();
+                new HashMap<>();
         for (ResourceMeta doc : actualDocs) {
             actualDocsMap.put(doc.getName(), doc);
             log.debug("actual doc: " + doc.toString());
@@ -890,7 +893,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     private void expectResources(boolean checkRevs, Resource... docs) {
         for (Resource expectedDoc : docs) {
             Response response =
-                    getSourceDocResource().getResource(expectedDoc.getName(),
+                    getSourceDocResource().getResourceWithDocId(expectedDoc.getName(),
                             extGettextComment);
             assertThat(response.getStatus(), is(200));
             Resource actualDoc = getResourceFromResponse(response);
@@ -914,7 +917,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     private void dontExpectTarget(String id, LocaleId locale) {
         Response response =
                 getTransResource()
-                        .getTranslations(id, locale, null, false, null);
+                        .getTranslationsWithDocId(locale, id, null, false,
+                                null);
         assertThat(response.getStatus(), is(404));
     }
 
@@ -922,7 +926,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
             TranslationsResource expectedDoc) {
         Response response =
                 getTransResource()
-                        .getTranslations(id, locale, extGettextComment,
+                        .getTranslationsWithDocId(locale, id, extGettextComment,
                                 false, null);
         assertThat(response.getStatus(), is(200));
         TranslationsResource actualDoc = getTranslationsResourceFromResponse(response);
@@ -1025,11 +1029,11 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         return target;
     }
 
-    SimpleComment getOrAddComment(TextFlow tf) {
+    private SimpleComment getOrAddComment(TextFlow tf) {
         return tf.getExtensions(true).findOrAddByType(SimpleComment.class);
     }
 
-    SimpleComment getOrAddComment(TextFlowTarget tft) {
+    private SimpleComment getOrAddComment(TextFlowTarget tft) {
         return tft.getExtensions(true).findOrAddByType(SimpleComment.class);
     }
 
@@ -1059,7 +1063,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         log.debug("{}", doc);
         Response response =
                 getSourceDocResource()
-                        .putResource(id, doc, extGettextComment, false);
+                        .putResourceWithDocId(doc, id, extGettextComment, false);
         assertThat(response.getStatus(), isOneOf(200, 201));
         return doc;
     }
@@ -1078,7 +1082,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         tr.getExtensions(true).add(targetHeader);
 
         getTransResource()
-                .putTranslations(id, DE, tr, extGettextComment, "auto");
+                .putTranslationsWithDocId(DE, tr, id, extGettextComment, "auto");
 
         return tr;
     }
@@ -1090,7 +1094,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                         newTextFlow("FOOD", "Slime Mould",
                                 "slime mould comment"));
         Response response = getSourceDocResource()
-                .putResource(id, doc, extComment, false);
+                .putResourceWithDocId(doc, id, extComment, false);
         assertThat(response.getStatus(), isOneOf(200, 201));
 
         if (putTarget)
@@ -1105,7 +1109,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         TextFlowTarget target = newTextFlowTarget("FOOD", "Sauerkraut", null);
         tr.getTextFlowTargets().add(target);
         getTransResource()
-                .putTranslations(id, DE, tr, extGettextComment, "auto");
+                .putTranslationsWithDocId(DE, tr, id, extGettextComment, "auto");
         return tr;
     }
 
@@ -1123,7 +1127,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         String id = DOC1_NAME;
         Resource doc = newDoc(id, newTextFlow("HELLO", "Hello World", null));
         Response response = getSourceDocResource()
-                .putResource(id, doc, extComment, false);
+                .putResourceWithDocId(doc, id, extComment, false);
         assertThat(response.getStatus(), isOneOf(200, 201));
 
         if (putTarget)
@@ -1140,18 +1144,16 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                         "bon jour comment");
         tr.getTextFlowTargets().add(target);
         getTransResource()
-                .putTranslations(id, FR, tr, extGettextComment, "auto");
+                .putTranslationsWithDocId(FR, tr, id, extGettextComment, "auto");
         return tr;
     }
 
     private void dontExpectTarget1a() {
-        String id = DOC1_NAME;
-        dontExpectTarget(id, FR);
+        dontExpectTarget(DOC1_NAME, FR);
     }
 
     private void expectTarget1a(TranslationsResource target1a) {
-        String id = DOC1_NAME;
-        expectTarget(true, id, FR, target1a);
+        expectTarget(true, DOC1_NAME, FR, target1a);
     }
 
     private void deleteDoc1() {
@@ -1163,14 +1165,13 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     }
 
     protected void deleteDoc(String id) {
-        Response response = getSourceDocResource().deleteResource(id);
+        Response response = getSourceDocResource().deleteResourceWithDocId(id);
         assertThat(response.getStatus(), is(200));
     }
 
     private Resource postDoc2(boolean putTarget) {
-        String id = DOC2_NAME;
         Resource doc =
-                newDoc(id, newTextFlow("HELLO", "Hello World", "hello comment"));
+                newDoc(DOC2_NAME, newTextFlow("HELLO", "Hello World", "hello comment"));
         Response response = getSourceDocResource().post(doc, extComment, true);
         assertThat(response.getStatus(), is(201));
 
@@ -1181,24 +1182,21 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     }
 
     protected TranslationsResource putTarget2() {
-        String id = DOC2_NAME;
         TranslationsResource tr = new TranslationsResource();
         TextFlowTarget target =
                 newTextFlowTarget("HELLO", "Bonjour le Monde", null);
         tr.getTextFlowTargets().add(target);
         getTransResource()
-                .putTranslations(id, FR, tr, extGettextComment, "auto");
+                .putTranslationsWithDocId(FR, tr, DOC2_NAME, extGettextComment, "auto");
         return tr;
     }
 
     private void dontExpectTarget2() {
-        String id = DOC2_NAME;
-        dontExpectTarget(id, FR);
+        dontExpectTarget(DOC2_NAME, FR);
     }
 
     private void expectTarget2(TranslationsResource target2) {
-        String id = DOC2_NAME;
-        expectTarget(true, id, FR, target2);
+        expectTarget(true, DOC2_NAME, FR, target2);
     }
 
 }

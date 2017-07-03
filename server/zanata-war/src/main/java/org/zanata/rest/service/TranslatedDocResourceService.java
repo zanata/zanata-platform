@@ -20,7 +20,6 @@
  */
 package org.zanata.rest.service;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.enterprise.context.RequestScoped;
@@ -40,6 +39,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
@@ -129,8 +129,18 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
             Set<String> extensions, boolean skeletons, String eTag) {
-        log.debug("start to get translation");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return getTranslationsWithDocId(locale, id, extensions, skeletons, eTag);
+    }
+
+    @Override
+    public Response getTranslationsWithDocId(LocaleId locale, String id,
+            Set<String> extensions, boolean createSkeletons, String eTag) {
+        log.debug("start to get translation");
+        if (StringUtils.isBlank(id)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("missing id").build();
+        }
         HProjectIteration hProjectIteration = restSlugValidator
                 .retrieveAndCheckIteration(projectSlug, iterationSlug, false);
         HLocale hLocale = restSlugValidator.validateTargetLocale(locale,
@@ -162,7 +172,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         boolean foundData = resourceUtils.transferToTranslationsResource(
                 translationResource, document, hLocale, extensions, hTargets,
                 Optional.<String> absent());
-        if (!foundData && !skeletons) {
+        if (!foundData && !createSkeletons) {
             return Response.status(Status.NOT_FOUND).build();
         }
         // TODO lastChanged
@@ -172,9 +182,18 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
     @Override
     public Response deleteTranslations(String idNoSlash, LocaleId locale) {
+        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return deleteTranslationsWithDocId(locale, id);
+    }
+
+    @Override
+    public Response deleteTranslationsWithDocId(LocaleId locale, String id) {
         identity.checkPermission(getSecuredIteration().getProject(),
                 "modify-translation");
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        if (StringUtils.isBlank(id)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("missing id").build();
+        }
         HProjectIteration hProjectIteration = restSlugValidator
                 .retrieveAndCheckIteration(projectSlug, iterationSlug, true);
         HLocale hLocale = restSlugValidator.validateTargetLocale(locale,
@@ -205,12 +224,24 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     public Response putTranslations(String idNoSlash, LocaleId locale,
             TranslationsResource messageBody, Set<String> extensions,
             String merge) {
+        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return putTranslationsWithDocId(locale, messageBody, id, extensions, merge);
+    }
+
+    @Override
+    public Response putTranslationsWithDocId(LocaleId locale,
+            TranslationsResource messageBody, String id, Set<String> extensions,
+            String merge) {
         // check security (cannot be on @Restrict as it refers to method
         // parameters)
         identity.checkPermission("modify-translation",
                 this.localeServiceImpl.getByLocaleId(locale),
                 this.getSecuredIteration().getProject());
         log.debug("start put translations");
+        if (StringUtils.isBlank(id)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("missing id").build();
+        }
         MergeType mergeType;
         try {
             mergeType = MergeType.valueOf(merge.toUpperCase());
@@ -218,7 +249,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
             return Response.status(Status.BAD_REQUEST)
                     .entity("bad merge type " + merge).build();
         }
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         HProjectIteration hProjectIteration =
                 projectIterationDAO.getBySlug(projectSlug, iterationSlug);
         HLocale hLocale = restSlugValidator.validateTargetLocale(locale,

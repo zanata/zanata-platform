@@ -30,6 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.zanata.common.LocaleId;
+import org.zanata.rest.RestUtil;
 
 /**
  * This "implements" caller methods to endpoints in TranslatedDocResource.
@@ -52,20 +53,35 @@ public class TransDocResourceClient {
     }
 
     public Response getTranslations(
-            String idNoSlash,
+            String id,
             LocaleId locale,
             Set<String> extensions,
             boolean createSkeletons,
             String eTag) {
         Client client = factory.getClient();
-        return getBaseServiceResource(client)
-                .path(idNoSlash)
-                .path("translations").path(locale.getId())
+        Response response = getBaseServiceResource(client)
+                .path("resource")
+                .path("translations")
+                .path(locale.getId())
+                .queryParam("id", id)
                 .queryParam("ext", extensions.toArray())
                 .queryParam("skeletons", String.valueOf(createSkeletons))
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .header(HttpHeaders.IF_NONE_MATCH, eTag)
                 .get();
+        if (RestUtil.isNotFound(response)) {
+            // fallback to old endpoint
+            String idNoSlash = RestUtil.convertToDocumentURIId(id);
+            response = getBaseServiceResource(client)
+                    .path(idNoSlash)
+                    .path("translations").path(locale.getId())
+                    .queryParam("ext", extensions.toArray())
+                    .queryParam("skeletons", String.valueOf(createSkeletons))
+                    .request(MediaType.APPLICATION_XML_TYPE)
+                    .header(HttpHeaders.IF_NONE_MATCH, eTag)
+                    .get();
+        }
+        return response;
     }
 
     private WebTarget getBaseServiceResource(Client client) {

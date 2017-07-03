@@ -179,14 +179,14 @@ public class PushCommandTest {
         mockStatus.setStatusCode(ProcessStatus.ProcessStatusCode.Finished);
         mockStatus.setMessages(new ArrayList<String>());
         when(
-                asyncProcessClient.startSourceDocCreationOrUpdate(
-                        eq("RPM"), anyString(), anyString(),
-                        any(Resource.class), eq(extensionSet), eq(false)))
+                asyncProcessClient.startSourceDocCreationOrUpdateWithDocId(
+                        anyString(), anyString(), any(Resource.class),
+                        eq(extensionSet), eq("RPM"), eq(false)))
                 .thenReturn(mockStatus);
         when(
-                asyncProcessClient.startSourceDocCreationOrUpdate(
-                        eq("sub,RPM"), anyString(), anyString(),
-                        any(Resource.class), eq(extensionSet), eq(false)))
+                asyncProcessClient.startSourceDocCreationOrUpdateWithDocId(
+                        anyString(), anyString(), any(Resource.class),
+                        eq(extensionSet), eq("sub/RPM"), eq(false)))
                 .thenReturn(mockStatus);
         when(asyncProcessClient.getProcessStatus(anyString()))
                 .thenReturn(mockStatus);
@@ -208,10 +208,11 @@ public class PushCommandTest {
             }
             when(
                     asyncProcessClient
-                            .startTranslatedDocCreationOrUpdate(eq("RPM"),
+                            .startTranslatedDocCreationOrUpdateWithDocId(
                                     anyString(), anyString(),
                                     eq(expectedLocale),
                                     any(TranslationsResource.class),
+                                    eq("RPM"),
                                     eq(extensionSet), eq("auto"), eq(false))).
                                     thenReturn(mockStatus);
             // when(mockTranslationResources.putTranslations(eq("RPM"),

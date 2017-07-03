@@ -130,7 +130,10 @@ public interface AsynchronousProcessResource extends RestResource {
      *         indicating what happened.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
+     *
+     * Deprecated. Use {@link #startSourceDocCreationOrUpdateWithDocId}
      */
+    @Deprecated
     @PUT
     @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r"
             + SourceDocResource.RESOURCE_SLUG_TEMPLATE)
@@ -141,6 +144,45 @@ public interface AsynchronousProcessResource extends RestResource {
             @PathParam("projectSlug") String projectSlug,
             @PathParam("iterationSlug") String iterationSlug,
             Resource resource, @QueryParam("ext") Set<String> extensions,
+            @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
+
+    /**
+     * Attempts to starts the creation or update of a source document. NOTE:
+     * Still experimental.
+     *
+     * @param id
+     *            The document identifier.
+     * @param projectSlug
+     *            Project identifier.
+     * @param iterationSlug
+     *            Project Iteration identifier.
+     * @param resource
+     *            The document information.
+     * @param extensions
+     *            The document extensions to save with the document (e.g.
+     *            "gettext", "comment"). This parameter allows multiple values
+     *            e.g. "ext=gettext&ext=comment".
+     * @param copytrans
+     *            Boolean value that indicates whether reasonably close
+     *            translations from other projects should be found to initially
+     *            populate this document's translations.
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - The contents of the response will indicate the process
+     *         identifier which may be used to query for its status or a message
+     *         indicating what happened.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @PUT
+    @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/resource"
+            + SourceDocResource.RESOURCE_SLUG_TEMPLATE)
+    @TypeHint(ProcessStatus.class)
+    public ProcessStatus startSourceDocCreationOrUpdateWithDocId(
+            @PathParam("projectSlug") String projectSlug,
+            @PathParam("iterationSlug") String iterationSlug,
+            Resource resource, @QueryParam("ext") Set<String> extensions,
+            @QueryParam("id") @DefaultValue("") String id,
             @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
 
     /**
@@ -182,7 +224,10 @@ public interface AsynchronousProcessResource extends RestResource {
      *         indicating what happened.<br>
      *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
      *         the server while performing this operation.
+     *
+     * Deprecated. Use {@link #startTranslatedDocCreationOrUpdateWithDocId}
      */
+    @Deprecated
     @PUT
     @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/{id}/translations/{locale}")
     /* Same as TranslatedDocResource.putTranslations */
@@ -197,6 +242,57 @@ public interface AsynchronousProcessResource extends RestResource {
                     @QueryParam("ext") Set<String> extensions,
                     @QueryParam("merge") String merge,
                     @QueryParam("assignCreditToUploader") @DefaultValue("false") boolean assignCreditToUploader);
+
+    /**
+     * Attempts to start the translation of a document. NOTE: Still
+     * experimental.
+     *
+     * @param id
+     *            The document identifier.
+     * @param projectSlug
+     *            Project identifier.
+     * @param iterationSlug
+     *            Project Iteration identifier.
+     * @param locale
+     *            The locale for which to get translations.
+     * @param translatedDoc
+     *            The translations to modify.
+     * @param extensions
+     *            The document extensions to save with the document (e.g.
+     *            "gettext", "comment"). This parameter allows multiple values
+     *            e.g. "ext=gettext&ext=comment".
+     * @param merge
+     *            Indicates how to deal with existing translations (valid
+     *            options: 'auto', 'import'). Import will overwrite all current
+     *            values with the values being pushed (even empty ones), while
+     *            Auto will check the history of your translations and will not
+     *            overwrite any translations for which it detects a previous
+     *            value is being pushed.
+     * @param assignCreditToUploader
+     *            The translator field for all uploaded translations will
+     *            be set to the user who performs the upload.
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - The contents of the response will indicate the process
+     *         identifier which may be used to query for its status or a message
+     *         indicating what happened.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @PUT
+    @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/r/resource/translations/{locale}")
+    /* Same as TranslatedDocResource.putTranslations */
+    @TypeHint(ProcessStatus.class)
+    public
+    ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(
+            @PathParam("projectSlug") String projectSlug,
+            @PathParam("iterationSlug") String iterationSlug,
+            @PathParam("locale") LocaleId locale,
+            TranslationsResource translatedDoc,
+            @QueryParam("id") @DefaultValue("") String id,
+            @QueryParam("ext") Set<String> extensions,
+            @QueryParam("merge") String merge,
+            @QueryParam("assignCreditToUploader") @DefaultValue("false") boolean assignCreditToUploader);
 
     /**
      * Obtains the status of a previously started process.

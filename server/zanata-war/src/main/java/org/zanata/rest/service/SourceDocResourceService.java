@@ -38,6 +38,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -176,11 +178,20 @@ public class SourceDocResourceService implements SourceDocResource {
 
     @Override
     public Response getResource(String idNoSlash, Set<String> extensions) {
-        log.debug("start get resource");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return getResourceWithDocId(id, extensions);
+    }
+
+    @Override
+    public Response getResourceWithDocId(String id, Set<String> extensions) {
+        log.debug("start get resource");
+        if (StringUtils.isBlank(id)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("missing id").build();
+        }
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
-        resourceUtils.validateExtensions(extensions);
-        final Set<String> extSet = new HashSet<String>(extensions);
+        ResourceUtils.validateExtensions(extensions);
+        final Set<String> extSet = new HashSet<>(extensions);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
                 id, extSet);
         Response.ResponseBuilder response = request.evaluatePreconditions(etag);
@@ -215,9 +226,19 @@ public class SourceDocResourceService implements SourceDocResource {
     @Override
     public Response putResource(String idNoSlash, Resource resource,
             Set<String> extensions, boolean copytrans) {
+        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return putResourceWithDocId(resource, id, extensions, copytrans);
+    }
+
+    @Override
+    public Response putResourceWithDocId(Resource resource, String id,
+            Set<String> extensions, boolean copytrans) {
         identity.checkPermission(getSecuredIteration(), "import-template");
         log.debug("start put resource");
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        if (StringUtils.isBlank(id)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("missing id").build();
+        }
         Response.ResponseBuilder response;
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
         resourceUtils.validateExtensions(extensions);
@@ -239,8 +260,17 @@ public class SourceDocResourceService implements SourceDocResource {
 
     @Override
     public Response deleteResource(String idNoSlash) {
-        identity.checkPermission(getSecuredIteration(), "import-template");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return deleteResourceWithDocId(id);
+    }
+
+    @Override
+    public Response deleteResourceWithDocId(String id) {
+        identity.checkPermission(getSecuredIteration(), "import-template");
+        if (StringUtils.isBlank(id)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("missing id").build();
+        }
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
                 id, new HashSet<String>());
@@ -256,8 +286,18 @@ public class SourceDocResourceService implements SourceDocResource {
 
     @Override
     public Response getResourceMeta(String idNoSlash, Set<String> extensions) {
-        log.debug("start to get resource meta");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return getResourceMetaWithDocId(id, extensions);
+    }
+
+    @Override
+    public Response getResourceMetaWithDocId(String id,
+            Set<String> extensions) {
+        log.debug("start to get resource meta");
+        if (StringUtils.isBlank(id)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("missing id").build();
+        }
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
                 id, extensions);
@@ -283,9 +323,19 @@ public class SourceDocResourceService implements SourceDocResource {
     @Override
     public Response putResourceMeta(String idNoSlash, ResourceMeta messageBody,
             Set<String> extensions) {
-        identity.checkPermission(getSecuredIteration(), "import-template");
-        log.debug("start to put resource meta");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return putResourceMetaWithDocId(messageBody, id , extensions);
+    }
+
+    @Override
+    public Response putResourceMetaWithDocId(ResourceMeta messageBody,
+            String id, Set<String> extensions) {
+        identity.checkPermission(getSecuredIteration(), "import-template");
+        if (StringUtils.isBlank(id)) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("missing id").build();
+        }
+        log.debug("start to put resource meta");
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
                 id, extensions);

@@ -51,10 +51,10 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     public void testPutGetResourceWithExtension() {
         log.debug("put resource:" + sr.toString());
-        getSourceDocResource().putResource(sr.getName(), sr, new StringSet(
+        getSourceDocResource().putResourceWithDocId(sr, sr.getName(), new StringSet(
                 "gettext;comment"), false);
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(
+                getSourceDocResource().getResourceWithDocId(
                         sr.getName(),
                         new StringSet("gettext;comment")));
         ResourceTestUtil.clearRevs(sr);
@@ -66,9 +66,10 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     public void testPutGetNoExtensionResource() {
         log.debug("put resource:" + sr.toString());
-        getSourceDocResource().putResource(sr.getName(), sr, null, false);
+        getSourceDocResource()
+                .putResourceWithDocId(sr, sr.getName(), null, false);
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(sr.getName(),
+                getSourceDocResource().getResourceWithDocId(sr.getName(),
                         new StringSet("gettext;comment")));
         Resource base = resourceTestFactory.getTextFlowTest();
         ResourceTestUtil.clearRevs(base);
@@ -82,10 +83,10 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @RunAsClient
     public void testPutNoExtensionGetResource() {
         log.debug("put resource:" + sr.toString());
-        getSourceDocResource().putResource(sr.getName(), sr, new StringSet(
+        getSourceDocResource().putResourceWithDocId(sr, sr.getName(), new StringSet(
                 "gettext;comment"), false);
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(sr.getName(), null));
+                getSourceDocResource().getResourceWithDocId(sr.getName(), null));
         Resource base = resourceTestFactory.getTextFlowTest();
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
@@ -97,10 +98,10 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @Test
     @RunAsClient
     public void testPutGetResource() {
-        getSourceDocResource().putResource(sr.getName(), sr, null, false);
+        getSourceDocResource().putResourceWithDocId(sr, sr.getName(),null, false);
         Resource base = resourceTestFactory.getTextFlowTest();
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(sr.getName(), null));
+                getSourceDocResource().getResourceWithDocId(sr.getName(), null));
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
         assertThat(get.toString(), is(base.toString()));
@@ -112,7 +113,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         getSourceDocResource().post(sr, null, true);
         Resource base = resourceTestFactory.getTextFlowTest();
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(sr.getName(), null));
+                getSourceDocResource().getResourceWithDocId(sr.getName(), null));
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
         assertThat(get.toString(), is(base.toString()));
@@ -123,7 +124,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     public void testPostGetResourceWithExtension() {
         getSourceDocResource().post(sr, new StringSet("gettext;comment"), true);
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(sr.getName(),
+                getSourceDocResource().getResourceWithDocId(sr.getName(),
                         new StringSet("gettext;comment")));
         ResourceTestUtil.clearRevs(sr);
         ResourceTestUtil.clearRevs(get);
@@ -138,7 +139,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         log.debug("post resource:" + sr.toString());
         getSourceDocResource().post(sr, null, true);
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(sr.getName(),
+                getSourceDocResource().getResourceWithDocId(sr.getName(),
                         new StringSet("gettext;comment")));
         Resource base = resourceTestFactory.getTextFlowTest();
         ResourceTestUtil.clearRevs(base);
@@ -156,7 +157,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         log.debug("post resource:" + sr.toString());
         getSourceDocResource().post(sr, new StringSet("gettext;comment"), true);
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(sr.getName(), null));
+                getSourceDocResource().getResourceWithDocId(sr.getName(), null));
         Resource base = resourceTestFactory.getTextFlowTest();
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
@@ -170,15 +171,15 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     public void testPutGetResourceMeta() {
         log.debug("test put get resource meta service");
         Resource res = resourceTestFactory.getTextFlowTest();
-        getSourceDocResource().putResource(res.getName(), res, new StringSet(
+        getSourceDocResource().putResourceWithDocId(res, res.getName(), new StringSet(
                 "gettext;comment"), false);
         ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
-        getSourceDocResource().putResourceMeta(sr.getName(), sr, new StringSet(
+        getSourceDocResource().putResourceMetaWithDocId(sr, sr.getName(), new StringSet(
                 "gettext;comment"));
         log.debug("get resource meta");
         Response resourceGetResponse =
                 getSourceDocResource()
-                        .getResourceMeta(sr.getName(), new StringSet(
+                        .getResourceMetaWithDocId(sr.getName(), new StringSet(
                                 "gettext;comment"));
         ResourceMeta get = getResourceMetaFromResponse(resourceGetResponse);
         ResourceTestUtil.clearRevs(sr);
@@ -191,14 +192,14 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     public void testPutNoExtensionGetResourceMeta() {
         log.debug("test put get resource meta service");
         Resource res = resourceTestFactory.getTextFlowTest();
-        getSourceDocResource().putResource(res.getName(), res, null, false);
+        getSourceDocResource().putResourceWithDocId(res, res.getName(),null, false);
         ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
         ResourceMeta base = resourceTestFactory.getResourceMeta();
-        getSourceDocResource().putResourceMeta(sr.getName(), sr, null);
+        getSourceDocResource().putResourceMetaWithDocId(sr, sr.getName(),null);
         log.debug("get resource meta");
         Response resourceGetResponse =
                 getSourceDocResource()
-                        .getResourceMeta(sr.getName(), new StringSet(
+                        .getResourceMetaWithDocId(sr.getName(), new StringSet(
                                 "gettext;comment"));
         ResourceMeta get = getResourceMetaFromResponse(resourceGetResponse);
         ResourceTestUtil.clearRevs(base);
@@ -211,14 +212,14 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     public void testPutGetNoExtensionResourceMeta() {
         log.debug("test put get resource meta service");
         Resource res = resourceTestFactory.getTextFlowTest();
-        getSourceDocResource().putResource(res.getName(), res, null, false);
+        getSourceDocResource().putResourceWithDocId(res, res.getName(),null, false);
         ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
         ResourceMeta base = resourceTestFactory.getResourceMeta();
-        getSourceDocResource().putResourceMeta(sr.getName(), sr, new StringSet(
+        getSourceDocResource().putResourceMetaWithDocId(sr, sr.getName(),new StringSet(
                 "gettext;comment"));
         log.debug("get resource meta");
         Response resourceGetResponse =
-                getSourceDocResource().getResourceMeta(sr.getName(), null);
+                getSourceDocResource().getResourceMetaWithDocId(sr.getName(), null);
         ResourceMeta get = getResourceMetaFromResponse(resourceGetResponse);
         ResourceTestUtil.clearRevs(base);
         ResourceTestUtil.clearRevs(get);
@@ -231,13 +232,13 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         Resource rs1 = resourceTestFactory.getTextFlowTest2();
         getSourceDocResource().post(rs1, null, true);
         Response resourceGetResponse =
-                getSourceDocResource().deleteResource(rs1.getName());
+                getSourceDocResource().deleteResourceWithDocId(rs1.getName());
         assertThat(resourceGetResponse.getStatus(),
                 is(Status.OK.getStatusCode()));
 
         Resource rs2 = resourceTestFactory.getTextFlowTest();
         Response resourceGetResponse2 =
-                getSourceDocResource().deleteResource(rs2.getName());
+                getSourceDocResource().deleteResourceWithDocId(rs2.getName());
         assertThat(resourceGetResponse2.getStatus(),
                 is(Status.NOT_FOUND.getStatusCode()));
     }
@@ -252,7 +253,7 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
         resource.setType(sr.getType());
         getSourceDocResource().post(resource, new StringSet("gettext;comment"), false);
         Resource get = getResourceFromResponse(
-                getSourceDocResource().getResource(resource.getName(),
+                getSourceDocResource().getResourceWithDocId(resource.getName(),
                         new StringSet("gettext;comment")));
         ResourceTestUtil.clearRevs(resource);
         ResourceTestUtil.clearRevs(get);
