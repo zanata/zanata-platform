@@ -227,6 +227,7 @@ class TMMergeModal extends Component {
     onCancelTMMerge: PropTypes.func.isRequired,
     // Not required - set to undefined when merge not in progress
     processStatus: processStatusType,
+    queryStatus: PropTypes.string,
     queryTMMergeProgress: PropTypes.func.isRequired,
     mergeProcessFinished: PropTypes.func.isRequired
   }
@@ -404,9 +405,8 @@ class TMMergeModal extends Component {
         queryProgress={this.queryTMMergeProgress} />
       )
       : (
-      <MergeOptions projectSlug={projectSlug} versionSlug={versionSlug}
-        locales={locales} projectVersions={projectVersions}
-        fetchingProject={fetchingProject} fetchingLocale={fetchingLocale}
+      <MergeOptions {...{projectSlug, versionSlug, locales, projectVersions,
+        fetchingProject, fetchingLocale}}
         mergeOptions={this.state}
         onPercentSelection={this.onPercentSelection}
         onDocIdCheckboxChange={this.onDocIdCheckboxChange}
@@ -459,7 +459,8 @@ const mapStateToProps = (state) => {
         show,
         triggered,
         projectVersions,
-        processStatus
+        processStatus,
+        queryStatus
       }
     }
   } = state
@@ -471,7 +472,8 @@ const mapStateToProps = (state) => {
     notification,
     fetchingProject,
     fetchingLocale,
-    processStatus
+    processStatus,
+    queryStatus
   }
 }
 

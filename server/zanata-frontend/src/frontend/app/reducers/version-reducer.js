@@ -21,6 +21,7 @@ const defaultState = {
     show: false,
     triggered: false,
     processStatus: undefined,
+    queryStatus: undefined,
     projectVersions: []
   },
   locales: [],
@@ -119,9 +120,9 @@ const version = handleActions({
   },
   [QUERY_TM_MERGE_PROGRESS_FAILURE]: (state, action) => {
     // what do we do with failed status query?
-    console.error(
-      `failed getting process status for version TM merge ${action.error}`)
-    return state
+    return update(state, {
+      TMMerge: { queryStatus: { $set: action.error } }
+    })
   },
   [TM_MERGE_PROCESS_FINISHED]: (state, action) => {
     return update(state, {
