@@ -157,25 +157,26 @@ storiesOf('SettingsOptions', module)
             settings={listAllChecked}
             updateSetting={action('updateSetting')} />
     ))
-    .add('EDITOR SETTINGS', () => (
+    .add('EDITOR OPTIONS', () => (
         <div>
-          <h2>Editor options</h2>
+          <h2 className='settings-heading'>Editor options</h2>
           <SettingsOptions
               settings={settings}
               updateSetting={action('updateSetting')} />
-          <h3 className="small">Set current layouts as default:</h3>
+          <h3 className='settings-heading'>
+            Set current layouts as default:</h3>
           <SettingsOptions
               settings={defaults}
               updateSetting={action('updateSetting')} />
         </div>
     ))
     .add('VALIDATION SETTINGS', () => (
-    <div>
-        <h3>Validation settings</h3>
+      <div>
+        <h3 className='settings-heading'>Validation settings</h3>
         <SettingsOptions
             settings={validations}
             updateSetting={action('updateSetting')} />
-    </div>
+      </div>
     ))
 
 
