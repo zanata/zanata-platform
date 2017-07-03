@@ -55,24 +55,41 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
     @Override
     @SuppressWarnings("deprecation")
     // TODO: remove this test when parent method is removed
-    public ProcessStatus startSourceDocCreation(String idNoSlash,
+    public ProcessStatus startSourceDocCreation(String docId,
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {
+        return startSourceDocCreationWithDocId(projectSlug, iterationSlug,
+                resource, docId, extensions, copytrans);
+    }
+
+    @Override
+    public ProcessStatus startSourceDocCreationWithDocId(String projectSlug,
+            String iterationSlug, Resource resource, String id,
+            Set<String> extensions, boolean copytrans) {
         throw new UnsupportedOperationException(
                 "Not supported. Use startSourceDocCreationOrUpdate instead.");
     }
 
     @Override
-    public ProcessStatus startSourceDocCreationOrUpdate(String idNoSlash,
+    public ProcessStatus startSourceDocCreationOrUpdate(String docId,
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {
+        return startSourceDocCreationOrUpdateWithDocId(projectSlug,
+                iterationSlug, resource, extensions, docId, copytrans);
+    }
+
+    @Override
+    public ProcessStatus startSourceDocCreationOrUpdateWithDocId(
+            String projectSlug, String iterationSlug, Resource resource,
+            Set<String> extensions, String id, boolean copytrans) {
         Client client = factory.getClient();
         WebTarget webResource = client.target(baseUri)
                 .path(AsynchronousProcessResource.SERVICE_PATH)
                 .path("projects").path("p").path(projectSlug)
                 .path("iterations").path("i").path(iterationSlug)
-                .path("r").path(idNoSlash);
+                .path("r").path("resource");
         Response response = webResource
+                .queryParam("id", id)
                 .queryParam("ext", extensions.toArray())
                 .queryParam("copyTrans", String.valueOf(copytrans))
                 .request(MediaType.APPLICATION_XML_TYPE)
@@ -82,24 +99,35 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
     }
 
     @Override
-    public ProcessStatus startTranslatedDocCreationOrUpdate(String idNoSlash,
+    public ProcessStatus startTranslatedDocCreationOrUpdate(String docId,
             String projectSlug, String iterationSlug, LocaleId locale,
             TranslationsResource translatedDoc, Set<String> extensions,
             String merge, @DefaultValue("false") boolean myTrans) {
+        return startTranslatedDocCreationOrUpdateWithDocId(projectSlug,
+                iterationSlug, locale, translatedDoc, docId, extensions, merge,
+                myTrans);
+    }
+
+    @Override
+    public ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(
+            String projectSlug, String iterationSlug, LocaleId locale,
+            TranslationsResource translatedDoc, String id,
+            Set<String> extensions,
+            String merge, boolean assignCreditToUploader) {
         Client client = factory.getClient();
         WebTarget webResource = client.target(baseUri)
                 .path(AsynchronousProcessResource.SERVICE_PATH)
                 .path("projects").path("p").path(projectSlug)
                 .path("iterations").path("i").path(iterationSlug)
-                .path("r").path(idNoSlash)
+                .path("r").path("resource")
                 .path("translations").path(locale.toString());
         Response response = webResource
+                .queryParam("id", id)
                 .queryParam("ext", extensions.toArray())
                 .queryParam("merge", merge)
-                .queryParam("assignCreditToUploader", String.valueOf(myTrans))
+                .queryParam("assignCreditToUploader", String.valueOf(assignCreditToUploader))
                 .request(MediaType.APPLICATION_XML_TYPE)
-                .put(Entity
-                        .xml(translatedDoc));
+                .put(Entity.xml(translatedDoc));
         response.bufferEntity();
         return response.readEntity(ProcessStatus.class);
     }

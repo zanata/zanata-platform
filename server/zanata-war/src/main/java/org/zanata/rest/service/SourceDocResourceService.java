@@ -176,8 +176,13 @@ public class SourceDocResourceService implements SourceDocResource {
 
     @Override
     public Response getResource(String idNoSlash, Set<String> extensions) {
-        log.debug("start get resource");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return getResourceWithDocId(id, extensions);
+    }
+
+    @Override
+    public Response getResourceWithDocId(String id, Set<String> extensions) {
+        log.debug("start get resource");
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
         resourceUtils.validateExtensions(extensions);
         final Set<String> extSet = new HashSet<String>(extensions);
@@ -215,9 +220,15 @@ public class SourceDocResourceService implements SourceDocResource {
     @Override
     public Response putResource(String idNoSlash, Resource resource,
             Set<String> extensions, boolean copytrans) {
+        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return putResourceWithDocId(resource, id, extensions, copytrans);
+    }
+
+    @Override
+    public Response putResourceWithDocId(Resource resource, String id,
+            Set<String> extensions, boolean copytrans) {
         identity.checkPermission(getSecuredIteration(), "import-template");
         log.debug("start put resource");
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         Response.ResponseBuilder response;
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
         resourceUtils.validateExtensions(extensions);
@@ -239,8 +250,13 @@ public class SourceDocResourceService implements SourceDocResource {
 
     @Override
     public Response deleteResource(String idNoSlash) {
-        identity.checkPermission(getSecuredIteration(), "import-template");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return deleteResourceWithDocId(id);
+    }
+
+    @Override
+    public Response deleteResourceWithDocId(String id) {
+        identity.checkPermission(getSecuredIteration(), "import-template");
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
                 id, new HashSet<String>());
@@ -256,8 +272,14 @@ public class SourceDocResourceService implements SourceDocResource {
 
     @Override
     public Response getResourceMeta(String idNoSlash, Set<String> extensions) {
-        log.debug("start to get resource meta");
         String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return getResourceMetaWithDocId(id, extensions);
+    }
+
+    @Override
+    public Response getResourceMetaWithDocId(String id,
+            Set<String> extensions) {
+        log.debug("start to get resource meta");
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
                 id, extensions);
@@ -283,9 +305,15 @@ public class SourceDocResourceService implements SourceDocResource {
     @Override
     public Response putResourceMeta(String idNoSlash, ResourceMeta messageBody,
             Set<String> extensions) {
+        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return putResourceMetaWithDocId(messageBody, id , extensions);
+    }
+
+    @Override
+    public Response putResourceMetaWithDocId(ResourceMeta messageBody,
+            String id, Set<String> extensions) {
         identity.checkPermission(getSecuredIteration(), "import-template");
         log.debug("start to put resource meta");
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
                 id, extensions);

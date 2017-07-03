@@ -78,21 +78,22 @@ public class SourceDocResourceClient {
                 .path("r");
     }
 
-    public Resource getResource(String idNoSlash, Set<String> extensions) {
+    public Resource getResource(String id, Set<String> extensions) {
         Client client = factory.getClient();
         WebTarget webResource =
                 getBaseServiceResource(client)
-                        .path(idNoSlash)
+                        .path("resource")
+                        .queryParam("id", id)
                         .queryParam("ext", extensions.toArray());
         return webResource.request(MediaType.APPLICATION_XML_TYPE)
                 .get(Resource.class);
     }
 
-    public String putResource(String idNoSlash, Resource resource,
+    public String putResource(String id, Resource resource,
             Set<String> extensions, boolean copyTrans) {
         Client client = factory.getClient();
-        WebTarget webResource = getBaseServiceResource(client)
-                .path(idNoSlash)
+        WebTarget webResource = getBaseServiceResource(client).path("resource")
+                .queryParam("id", id)
                 .queryParam("ext", extensions.toArray())
                 .queryParam("copyTrans", String.valueOf(copyTrans));
 
@@ -105,7 +106,7 @@ public class SourceDocResourceClient {
     public String deleteResource(String idNoSlash) {
         Client client = factory.getClient();
         WebTarget webResource = getBaseServiceResource(client);
-        return webResource.path(idNoSlash).request().delete(String.class);
+        return webResource.path("resource").queryParam("id").request()
+                .delete(String.class);
     }
-
 }

@@ -136,9 +136,9 @@ public class ZanataRestCaller {
     }
 
     public void putSourceDocResource(String projectSlug, String iterationSlug,
-            String idNoSlash, Resource resource, boolean copytrans) {
+            String id, Resource resource, boolean copytrans) {
         restClientFactory.getSourceDocResourceClient(projectSlug, iterationSlug)
-                .putResource(idNoSlash, resource, Collections.emptySet(),
+                .putResource(id, resource, Collections.emptySet(),
                         copytrans);
     }
 

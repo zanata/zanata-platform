@@ -60,14 +60,14 @@ public interface SourceDocResource extends RestResource {
     @SuppressWarnings("deprecation")
     String SERVICE_PATH =
             ProjectIterationResource.SERVICE_PATH + "/r";
-    String RESOURCE_SLUG_REGEX = "([^\\s\\\\]+)?";
-    //    String RESOURCE_SLUG_REGEX =
-//            "[\\-_a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?";
+    String RESOURCE_SLUG_REGEX =
+            "[\\-_a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?";
     String RESOURCE_NAME_REGEX =
             // as above, with ',' replaced by '/'
             "[\\-_a-zA-Z0-9]+([a-zA-Z0-9_\\-/{.}]*[a-zA-Z0-9]+)?";
     String RESOURCE_SLUG_TEMPLATE = "/{id:"
             + RESOURCE_SLUG_REGEX + "}";
+    String RESOURCE_PATH = "/resource";
 
     /**
      * Returns header information for a Project's iteration source strings.
@@ -164,6 +164,31 @@ public interface SourceDocResource extends RestResource {
                     @QueryParam("ext") Set<String> extensions);
 
     /**
+     * Retrieves information for a source Document.
+     *
+     * @param id
+     *            The document identifier.
+     * @param extensions
+     *            The document extensions to fetch along with the document (e.g.
+     *            "gettext", "comment"). This parameter allows multiple values
+     *            e.g. "ext=gettext&ext=comment".
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - Response with the document's information.<br>
+     *         NOT FOUND(404) - If a document could not be found with the given
+     *         parameters.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @GET
+    @TypeHint(Resource.class)
+    @Path(RESOURCE_PATH)
+    // /r/resource?
+    public
+    Response getResourceWithDocId(@QueryParam("id") String id,
+            @QueryParam("ext") Set<String> extensions);
+
+    /**
      * Creates or modifies a source Document.
      *
      * @param idNoSlash
@@ -207,6 +232,45 @@ public interface SourceDocResource extends RestResource {
                     @QueryParam("ext") Set<String> extensions,
                     @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
 
+
+    /**
+     * Creates or modifies a source Document.
+     *
+     * @param id
+     *            The document identifier.
+     * @param resource
+     *            The document information.
+     * @param extensions
+     *            The document extensions to save with the document (e.g.
+     *            "gettext", "comment"). This parameter allows multiple values
+     *            e.g. "ext=gettext&ext=comment".
+     * @param copytrans
+     *            Boolean value that indicates whether reasonably close
+     *            translations from other projects should be found to initially
+     *            populate this document's translations.
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         CREATED(201) - If a new document was successfully created.<br>
+     *         OK(200) - If an already existing document was modified.<br>
+     *         NOT FOUND(404) - If a project or project iteration could not be
+     *         found with the given parameters.<br>
+     *         FORBIDDEN(403) - If the user is not allowed to modify the
+     *         project, project iteration or document. This might be due to the
+     *         project or iteration being in Read-Only mode.<br>
+     *         UNAUTHORIZED(401) - If the user does not have the proper
+     *         permissions to perform this operation.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @PUT
+    @Path(RESOURCE_PATH)
+    // /r/resource?
+    public Response putResourceWithDocId(
+            Resource resource,
+            @QueryParam("id") String id,
+            @QueryParam("ext") Set<String> extensions,
+            @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
+
     /**
      * Delete a source Document. The system keeps the history of this document however.
      *
@@ -234,6 +298,29 @@ public interface SourceDocResource extends RestResource {
     // /r/{id}
             public
             Response deleteResource(@PathParam("id") String idNoSlash);
+
+    /**
+     * Delete a source Document. The system keeps the history of this document however.
+     *
+     * @param id
+     *            The document identifier.
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - If The document was successfully deleted.<br>
+     *         NOT FOUND(404) - If a project or project iteration could not be
+     *         found with the given parameters.<br>
+     *         FORBIDDEN(403) - If the user is not allowed to modify the
+     *         project, project iteration or document. This might be due to the
+     *         project or iteration being in Read-Only mode.<br>
+     *         UNAUTHORIZED(401) - If the user does not have the proper
+     *         permissions to perform this operation.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @DELETE
+    @Path(RESOURCE_PATH)
+    // /r/resource?
+    public Response deleteResourceWithDocId(@QueryParam("id") String id);
 
     /**
      * Retrieves meta-data information for a source Document.
@@ -264,6 +351,31 @@ public interface SourceDocResource extends RestResource {
             public
             Response getResourceMeta(@PathParam("id") String idNoSlash,
                     @QueryParam("ext") Set<String> extensions);
+
+    /**
+     * Retrieves meta-data information for a source Document.
+     *
+     * @param id
+     *            The document identifier.
+     * @param extensions
+     *            The document extensions to retrieve with the document's
+     *            meta-data (e.g. "gettext", "comment"). This parameter allows
+     *            multiple values e.g. "ext=gettext&ext=comment".
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - If the Document's meta-data was found. The data will be
+     *         contained in the response.<br>
+     *         NOT FOUND(404) - If a project, project iteration or document
+     *         could not be found with the given parameters.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @GET
+    @Path(RESOURCE_PATH + "/meta")
+    // /r/resource/meta
+    @TypeHint(ResourceMeta.class)
+    public Response getResourceMetaWithDocId(@QueryParam("id") String id,
+            @QueryParam("ext") Set<String> extensions);
 
     /**
      * Modifies an existing source document's meta-data.
@@ -297,5 +409,33 @@ public interface SourceDocResource extends RestResource {
             Response putResourceMeta(@PathParam("id") String idNoSlash,
                     ResourceMeta messageBody,
                     @QueryParam("ext") Set<String> extensions);
+
+    /**
+     * Modifies an existing source document's meta-data.
+     *
+     * @param id
+     *            The document identifier.
+     * @param messageBody
+     *            The document's meta-data.
+     * @param extensions
+     *            The document extensions to save with the document (e.g.
+     *            "gettext", "comment"). This parameter allows multiple values
+     *            e.g. "ext=gettext&ext=comment".
+     * @return The following response status codes will be returned from this
+     *         operation:<br>
+     *         OK(200) - If the Document's meta-data was successfully modified.<br>
+     *         NOT FOUND(404) - If a document was not found using the given
+     *         parameters.<br>
+     *         UNAUTHORIZED(401) - If the user does not have the proper
+     *         permissions to perform this operation.<br>
+     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
+     *         the server while performing this operation.
+     */
+    @PUT
+    @Path(RESOURCE_PATH + "/meta")
+    // /r/resource/meta
+    public Response putResourceMetaWithDocId(ResourceMeta messageBody,
+            @QueryParam("id") String id,
+            @QueryParam("ext") Set<String> extensions);
 
 }

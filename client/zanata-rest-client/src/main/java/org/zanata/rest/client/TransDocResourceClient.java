@@ -52,15 +52,17 @@ public class TransDocResourceClient {
     }
 
     public Response getTranslations(
-            String idNoSlash,
+            String id,
             LocaleId locale,
             Set<String> extensions,
             boolean createSkeletons,
             String eTag) {
         Client client = factory.getClient();
         return getBaseServiceResource(client)
-                .path(idNoSlash)
-                .path("translations").path(locale.getId())
+                .path("resource")
+                .path("translations")
+                .path(locale.getId())
+                .queryParam("id", id)
                 .queryParam("ext", extensions.toArray())
                 .queryParam("skeletons", String.valueOf(createSkeletons))
                 .request(MediaType.APPLICATION_XML_TYPE)

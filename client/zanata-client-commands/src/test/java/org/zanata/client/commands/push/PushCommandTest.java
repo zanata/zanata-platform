@@ -185,7 +185,7 @@ public class PushCommandTest {
                 .thenReturn(mockStatus);
         when(
                 asyncProcessClient.startSourceDocCreationOrUpdate(
-                        eq("sub,RPM"), anyString(), anyString(),
+                        eq("sub/RPM"), anyString(), anyString(),
                         any(Resource.class), eq(extensionSet), eq(false)))
                 .thenReturn(mockStatus);
         when(asyncProcessClient.getProcessStatus(anyString()))

@@ -45,6 +45,14 @@ public class MockAsynchronousProcessResource implements
     public ProcessStatus startSourceDocCreation(String idNoSlash,
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {
+        return startSourceDocCreationWithDocId(projectSlug, iterationSlug,
+                resource, idNoSlash, extensions, copytrans);
+    }
+
+    @Override
+    public ProcessStatus startSourceDocCreationWithDocId(String projectSlug,
+            String iterationSlug, Resource resource, String id,
+            Set<String> extensions, boolean copytrans) {
         return MockResourceUtil.notUsedByClient();
     }
 
@@ -52,6 +60,14 @@ public class MockAsynchronousProcessResource implements
     public ProcessStatus startSourceDocCreationOrUpdate(String idNoSlash,
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {
+        return startSourceDocCreationOrUpdateWithDocId(projectSlug,
+                iterationSlug, resource, extensions, idNoSlash, copytrans);
+    }
+
+    @Override
+    public ProcessStatus startSourceDocCreationOrUpdateWithDocId(
+            String projectSlug, String iterationSlug, Resource resource,
+            Set<String> extensions, String id, boolean copytrans) {
         ProcessStatus processStatus = new ProcessStatus();
         processStatus.setStatusCode(ProcessStatus.ProcessStatusCode.Running);
         processStatus.setPercentageComplete(50);
@@ -64,6 +80,17 @@ public class MockAsynchronousProcessResource implements
             String projectSlug, String iterationSlug, LocaleId locale,
             TranslationsResource translatedDoc, Set<String> extensions,
             String merge, @DefaultValue("false") boolean myTrans) {
+        return startTranslatedDocCreationOrUpdateWithDocId(projectSlug,
+                iterationSlug, locale, translatedDoc, idNoSlash, extensions,
+                merge, myTrans);
+    }
+
+    @Override
+    public ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(
+            String projectSlug, String iterationSlug, LocaleId locale,
+            TranslationsResource translatedDoc, String id,
+            Set<String> extensions,
+            String merge, boolean assignCreditToUploader) {
         ProcessStatus processStatus = new ProcessStatus();
         processStatus.setStatusCode(ProcessStatus.ProcessStatusCode.Running);
         processStatus.setPercentageComplete(50);

@@ -44,14 +44,26 @@ public class MockTranslatedDocResource implements TranslatedDocResource {
     public Response getTranslations(String idNoSlash, LocaleId locale,
             Set<String> extensions, boolean createSkeletons,
             @HeaderParam("If-None-Match") String eTag) {
+        return getTranslationsWithDocId(locale, idNoSlash, extensions,
+                createSkeletons, eTag);
+    }
+
+    @Override
+    public Response getTranslationsWithDocId(LocaleId locale, String id,
+            Set<String> extensions, boolean createSkeletons, String eTag) {
         MockResourceUtil.validateExtensions(extensions);
         TranslationsResource transResource = new TranslationsResource();
-        transResource.getTextFlowTargets().add(new TextFlowTarget(idNoSlash));
+        transResource.getTextFlowTargets().add(new TextFlowTarget(id));
         return Response.ok(transResource).build();
     }
 
     @Override
     public Response deleteTranslations(String idNoSlash, LocaleId locale) {
+        return deleteTranslationsWithDocId(locale, idNoSlash);
+    }
+
+    @Override
+    public Response deleteTranslationsWithDocId(LocaleId locale, String id) {
         return MockResourceUtil.notUsedByClient();
     }
 
@@ -59,6 +71,14 @@ public class MockTranslatedDocResource implements TranslatedDocResource {
     public Response putTranslations(String idNoSlash, LocaleId locale,
             TranslationsResource messageBody, Set<String> extensions,
             @DefaultValue("auto") String merge) {
+        return putTranslationsWithDocId(locale, messageBody, idNoSlash,
+                extensions, merge);
+    }
+
+    @Override
+    public Response putTranslationsWithDocId(LocaleId locale,
+            TranslationsResource messageBody, String id, Set<String> extensions,
+            String merge) {
         // used by PublicanPush only
         MockResourceUtil.validateExtensions(extensions);
         return Response.ok().build();
