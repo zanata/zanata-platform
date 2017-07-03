@@ -8,7 +8,7 @@ import {Icon, Modal, LoaderText} from '../../components'
 import ProjectVersionPanels from './ProjectVersionPanels'
 import DraggableVersionPanels from '../../components/DraggableVersionPanels'
 import SelectableDropdown from '../../components/SelectableDropdown'
-import {ProjectVersionVertical} from './ProjectVersionDisplay'
+import {ProjectVersionVertical} from './project-version-displays'
 import {ProjectVersionOptions} from './ProjectVersionOptions'
 import CancellableProgressBar
   from '../../components/ProgressBar/CancellableProgressBar'
