@@ -5,6 +5,7 @@ import {
   buildAPIRequest
 } from './common-actions'
 import { apiUrl } from '../config'
+import {replace} from 'lodash'
 
 import {
   TOGGLE_TM_MERGE_MODAL,
@@ -96,7 +97,20 @@ export function mergeVersionFromTM (projectSlug, versionSlug, mergeOptions) {
   const endpoint =
     `${apiUrl}/project/${projectSlug}/version/${versionSlug}/tm-merge`
   const types = [VERSION_TM_MERGE_REQUEST,
-    VERSION_TM_MERGE_SUCCESS, VERSION_TM_MERGE_FAILURE]
+    {
+      type: VERSION_TM_MERGE_SUCCESS,
+      payload: (action, state, res) => {
+        const contentType = res.headers.get('Content-Type')
+        if (contentType && ~contentType.indexOf('json')) {
+          // Just making sure res.json() does not raise an error
+          return res.json().then((json) => {
+            const cancelUrl = replace(json.url,
+                '/rest/process/', '/rest/process/cancel/')
+            return {...json, cancelUrl}
+          })
+        }
+      }
+    }, VERSION_TM_MERGE_FAILURE]
   const {
     selectedLanguage: {localeId},
     matchPercentage,

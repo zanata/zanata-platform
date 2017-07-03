@@ -115,7 +115,8 @@ const version = handleActions({
   },
   [QUERY_TM_MERGE_PROGRESS_SUCCESS]: (state, action) => {
     return update(state, {
-      TMMerge: { processStatus: { $set: action.payload } }
+      // Using merge to ensure cancelUrl is not lost
+      TMMerge: { processStatus: { $merge: action.payload } }
     })
   },
   [QUERY_TM_MERGE_PROGRESS_FAILURE]: (state, action) => {
