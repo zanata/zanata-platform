@@ -31,8 +31,6 @@ class SettingOption extends React.Component {
   }
 }
 
-const updateSetting = action('updateSetting')
-
 storiesOf('SettingOption', module)
   .add('default', () => (
       <SettingOption
