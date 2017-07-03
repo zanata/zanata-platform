@@ -84,7 +84,8 @@ class DraggableVersionPanels extends Component {
       <ListGroup>
         <SortableList items={this.props.selectedVersions}
           onSortEnd={this.props.onDraggableMoveEnd} useDragHandle
-          removeVersion={this.props.removeVersion} />
+          removeVersion={this.props.removeVersion}
+          helperClass='sortable-helper' />
       </ListGroup>
     )
   }

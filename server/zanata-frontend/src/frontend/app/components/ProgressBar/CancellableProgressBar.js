@@ -32,25 +32,25 @@ class CancellableProgressBar extends Component {
       stopTimer: false
     }
   }
-  _queryProgressLoop = () => {
+  queryProgressLoop = () => {
     this.props.queryProgress()
-    this.timer = setTimeout(this._queryProgressLoop, 750)
+    this.timer = setTimeout(this.queryProgressLoop, 750)
   }
-  _stopTimer = () => {
+  stopTimer = () => {
     if (this.timer) {
       clearTimeout(this.timer)
     }
   }
   componentDidMount () {
-    this._queryProgressLoop()
+    this.queryProgressLoop()
   }
   componentWillUpdate (nextProp, nextState) {
     if (isProcessEnded(nextProp.processStatus) || nextState.stopTimer) {
-      this._stopTimer()
+      this.stopTimer()
     }
   }
   componentWillUnmount () {
-    this._stopTimer()
+    this.stopTimer()
   }
   render () {
     const {
