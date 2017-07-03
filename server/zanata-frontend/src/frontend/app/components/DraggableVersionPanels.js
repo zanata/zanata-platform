@@ -28,9 +28,8 @@ class Item extends Component {
       <DragHandle />
       {version.id} <span className='text-muted'> {projectSlug}
       </span>
-       {/** TODO: Float the button to the right */}
       {" "}
-      <Button bsSize='xsmall' className='cross u'
+      <Button bsSize='xsmall' className='close rm-version-btn'
         onClick={this.removeVersion}>
         <Icon name='cross' className='n2 crossicon' title='remove version' />
       </Button>
