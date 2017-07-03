@@ -66,6 +66,52 @@ const listUnchecked =
         active: false
       }
     ]
+const listHalfChecked =
+    [
+      {
+        id: 'list-item-1',
+        label: 'List item 1',
+        active: false
+      },
+      {
+        id: 'list-item-2',
+        label: 'List item 2',
+        active: true
+      },
+      {
+        id: 'list-item-3',
+        label: 'List item 3',
+        active: false
+      },
+      {
+        id: 'list-item-4',
+        label: 'List item 4',
+        active: true
+      }
+    ]
+const listAllChecked =
+    [
+      {
+        id: 'list-item-1',
+        label: 'List item 1',
+        active: true
+      },
+      {
+        id: 'list-item-2',
+        label: 'List item 2',
+        active: true
+      },
+      {
+        id: 'list-item-3',
+        label: 'List item 3',
+        active: true
+      },
+      {
+        id: 'list-item-4',
+        label: 'List item 4',
+        active: true
+      }
+    ]
 const validations =
     [
       {
@@ -106,14 +152,27 @@ const validations =
     ]
 
 storiesOf('SettingsOptions', module)
-    .add('default', () => (
+    .add('default - unchecked', () => (
         <SettingsOptions
             settings={listUnchecked}
             updateSetting={action('updateSetting')} />
     ))
-    .add('validation settings', () => (
+    .add('default - half-checked', () => (
+        <SettingsOptions
+            settings={listHalfChecked}
+            updateSetting={action('updateSetting')} />
+    ))
+    .add('default -all checked', () => (
+        <SettingsOptions
+            settings={listAllChecked}
+            updateSetting={action('updateSetting')} />
+    ))
+    .add('VALIDATION SETTINGS', () => (
+    <div>
+        <h2>Validation settings</h2>
         <SettingsOptions
             settings={validations}
             updateSetting={action('updateSetting')} />
+    </div>
     ))
 
