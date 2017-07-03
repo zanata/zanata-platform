@@ -65,6 +65,10 @@ public class ProcessStatus {
         /** The process has finshed with a failure */
         @XmlEnumValue("Failed")
         Failed,
+
+        /** The process has been cancelled */
+        @XmlEnumValue("Cancelled")
+        Cancelled
     }
 
     private String url;
@@ -109,6 +113,11 @@ public class ProcessStatus {
 
     public void setMessages(List<String> messages) {
         this.messages = messages;
+    }
+
+    public ProcessStatus addMessage(String message) {
+        getMessages().add(message);
+        return this;
     }
 
     @XmlElement

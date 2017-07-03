@@ -23,15 +23,17 @@ package org.zanata.async;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import com.google.common.collect.Lists;
 import javax.inject.Named;
 
+import com.google.common.base.Preconditions;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
@@ -40,40 +42,39 @@ import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 @Named("asyncTaskHandleManager")
 @javax.enterprise.context.ApplicationScoped
 public class AsyncTaskHandleManager implements Serializable {
-
+    private static final long serialVersionUID = -3209755141964141830L;
     @SuppressFBWarnings(value = "SE_BAD_FIELD")
-    private Map<Serializable, AsyncTaskHandle> handlesByKey = Maps
+    private final Map<String, AsyncTaskHandle<?>> handlesByKey = Maps
             .newConcurrentMap();
 
     // Cache of recently completed tasks
-    private Cache<Serializable, AsyncTaskHandle> finishedTasks = CacheBuilder
+    private Cache<String, AsyncTaskHandle<?>> finishedTasks = CacheBuilder
             .newBuilder().expireAfterWrite(10, TimeUnit.MINUTES)
             .build();
 
-    public synchronized void registerTaskHandle(AsyncTaskHandle handle,
-            Serializable key) {
-        if (handlesByKey.containsKey(key)) {
-            throw new RuntimeException("Task handle with key " + key
-                    + " already exists");
-        }
-        handlesByKey.put(key, handle);
+    public synchronized <K extends AsyncTaskKey> void registerTaskHandle(AsyncTaskHandle handle,
+            K key) {
+        AsyncTaskHandle<?> existingHandle =
+                handlesByKey.putIfAbsent(key.id(), handle);
+        Preconditions.checkArgument(existingHandle == null,
+                "Task handle with key " + key + " already exists");
     }
 
     /**
      * Registers a task handle.
      * @param handle The handle to register.
-     * @return An auto generated key to retreive the handle later
+     * @return An auto generated key id to retrieve the handle later
      */
-    public synchronized Serializable registerTaskHandle(AsyncTaskHandle handle) {
-        Serializable autoGenKey = UUID.randomUUID().toString();
-        registerTaskHandle(handle, autoGenKey);
-        return autoGenKey;
+    public synchronized String registerTaskHandle(AsyncTaskHandle handle) {
+        GenericAsyncTaskKey genericKey = new GenericAsyncTaskKey();
+        registerTaskHandle(handle, genericKey);
+        return genericKey.id();
     }
 
     void taskFinished(AsyncTaskHandle taskHandle) {
         synchronized (handlesByKey) {
             // TODO This operation is O(n). Maybe we can do better?
-            for (Map.Entry<Serializable, AsyncTaskHandle> entry : handlesByKey
+            for (Map.Entry<String, AsyncTaskHandle<?>> entry : handlesByKey
                     .entrySet()) {
                 if (entry.getValue().equals(taskHandle)) {
                     handlesByKey.remove(entry.getKey());
@@ -83,11 +84,16 @@ public class AsyncTaskHandleManager implements Serializable {
         }
     }
 
-    public AsyncTaskHandle getHandleByKey(Serializable key) {
-        if (handlesByKey.containsKey(key)) {
-            return handlesByKey.get(key);
+    public <K extends AsyncTaskKey> AsyncTaskHandle getHandleByKey(K key) {
+        return getHandleByKeyId(key.id());
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> AsyncTaskHandle<T> getHandleByKeyId(String keyId) {
+        if (handlesByKey.containsKey(keyId)) {
+            return (AsyncTaskHandle<T>) handlesByKey.get(keyId);
         }
-        return finishedTasks.getIfPresent(key);
+        return (AsyncTaskHandle<T>) finishedTasks.getIfPresent(keyId);
     }
 
     public Collection<AsyncTaskHandle> getAllHandles() {
@@ -96,4 +102,16 @@ public class AsyncTaskHandleManager implements Serializable {
         handles.addAll(finishedTasks.asMap().values());
         return handles;
     }
+
+    public Map<String, AsyncTaskHandle<?>> getAllTasks() {
+        ImmutableMap.Builder<String, AsyncTaskHandle<?>> builder = ImmutableMap.builder();
+        builder.putAll(handlesByKey);
+        builder.putAll(finishedTasks.asMap());
+        return builder.build();
+    }
+
+    public Map<String, AsyncTaskHandle<?>> getRunningTasks() {
+        return ImmutableMap.copyOf(handlesByKey);
+    }
+
 }

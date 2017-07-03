@@ -29,30 +29,28 @@ import java.util.regex.Pattern;
  * @author Damian Jansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
  */
 public class EmailQuery {
+    private static final org.slf4j.Logger log =
+            org.slf4j.LoggerFactory.getLogger(EmailQuery.class);
 
-    private static Pattern activationLink = Pattern
-            .compile("<(http://.+/activate/.+)>");
-    private static Pattern validateLink = Pattern
-            .compile("<(http://.+/validate_email/.+)>");
+    public enum LinkType {
+        ACTIVATE, VALIDATE_EMAIL, PASSWORD_RESET
+    }
 
-    public static boolean hasActivationLink(WiserMessage emailMessage) {
-        Matcher matcher = activationLink.matcher(HasEmailRule.getEmailContent(emailMessage));
+    private static Pattern getLinkRegex(LinkType type) {
+        return Pattern.compile("<(http://.+/" + type.name().toLowerCase() + "/.+)>");
+    }
+
+    public static boolean hasLink(WiserMessage emailMessage, LinkType linkType) {
+        log.info("Query {} has a {} link", emailMessage, linkType.name());
+        Pattern linkPattern = getLinkRegex(linkType);
+        Matcher matcher = linkPattern.matcher(HasEmailRule.getEmailContent(emailMessage));
         return matcher.find();
     }
 
-    public static String getActivationLink(WiserMessage emailMessage) {
-        Matcher matcher = activationLink.matcher(HasEmailRule.getEmailContent(emailMessage));
-        assert matcher.find();
-        return matcher.group(1);
-    }
-
-    public static boolean hasEmailVerificationLink(WiserMessage emailMessage) {
-        Matcher matcher = validateLink.matcher(HasEmailRule.getEmailContent(emailMessage));
-        return matcher.find();
-    }
-
-    public static String getEmailVerificationLink(WiserMessage emailMessage) {
-        Matcher matcher = validateLink.matcher(HasEmailRule.getEmailContent(emailMessage));
+    public static String getLink(WiserMessage emailMessage, LinkType linkType) {
+        log.info("Get {} link from email {}", linkType.name(), emailMessage);
+        Pattern linkPattern = getLinkRegex(linkType);
+        Matcher matcher = linkPattern.matcher(HasEmailRule.getEmailContent(emailMessage));
         assert matcher.find();
         return matcher.group(1);
     }
