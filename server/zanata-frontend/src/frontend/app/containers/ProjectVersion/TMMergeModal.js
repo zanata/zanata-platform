@@ -22,27 +22,9 @@ import {
   currentTMMergeProcessFinished
 } from '../../actions/version-actions'
 import {
-  ProjectType, LocaleType, processStatusCodeType, FromProjectVersionType,
-  processStatusType
+  ProjectType, LocaleType, FromProjectVersionType, processStatusType
 } from '../../utils/prop-types-util.js'
 import {isProcessEnded} from '../../utils/EnumValueUtils'
-
-/*
- * Component to display TM merge progress
- */
-const MergeProgress = ({onCancelTMMerge, status, progress}) => {
-  return (
-    <CancellableProgressBar onCancelOperation={onCancelTMMerge}
-      processStatus={status} queryProgress={progress}
-      buttonLabel="Cancel TM Merge"
-    />
-  )
-}
-MergeProgress.propTypes = {
-  onCancelTMMerge: PropTypes.func.isRequired,
-  status: processStatusCodeType.isRequired,
-  progress: PropTypes.number.isRequired
-}
 
 const percentValueToDisplay = v => `${v}%`
 const localeToDisplay = l => l.displayName
