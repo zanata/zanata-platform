@@ -35,8 +35,8 @@ class SettingOption extends React.Component {
 storiesOf('SettingOption', module)
   .add('default', () => (
       <SettingOption
-          id='list-item'
-          label='list item'
+          id='list-item-1'
+          label='List item 1'
           active
           updateSetting={action('updateSetting')} />
   ))
