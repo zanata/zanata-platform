@@ -16,7 +16,7 @@ public class ContentStateToStyleUtilTest {
         assertThat(stateToStyle(NeedReview)).contains("unsure");
         assertThat(stateToStyle(Translated)).contains("success");
         assertThat(stateToStyle(Approved)).contains("highlight");
-        assertThat(stateToStyle(Rejected)).contains("danger");
+        assertThat(stateToStyle(Rejected)).contains("warning");
     }
 
     @Test
