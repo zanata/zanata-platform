@@ -112,12 +112,41 @@ const listAllChecked =
         active: true
       }
     ]
+
+const settings =
+    [
+      {
+        id: 'key-saves',
+        label: 'Enter key saves immediately',
+        active: true
+      },
+      {
+        id: 'syntax-highlight',
+        label: 'Syntax highlighting',
+        active: false
+      }
+    ]
+
+const defaults =
+    [
+      {
+        id: 'suggestions-diff',
+        label: 'Suggestions diff',
+        active: false
+      },
+      {
+        id: 'panel-layout',
+        label: 'Panel layout',
+        active: false
+      }
+    ]
+
 const validations =
     [
       {
         id: 'html-xml-tags',
         label: 'HTML/XML tags',
-        active: false
+        active: true
       },
       {
         id: 'java-variables',
@@ -126,13 +155,13 @@ const validations =
       },
       {
         id: 'leading-trailing-newline',
-        label: 'Leading/trailing newline (n)',
-        active: false
+        label: 'Leading/trailing newline',
+        active: true
       },
       {
         id: 'positional-printf',
         label: 'Positional printf (XSI extension)',
-        active: true
+        active: false
       },
       {
         id: 'printf-variables',
@@ -141,13 +170,13 @@ const validations =
       },
       {
         id: 'tab-characters',
-        label: 'Tab characters (t)',
-        active: false
+        label: 'Tab characters',
+        active: true
       },
       {
         id: 'xml-entity-reference',
         label: 'XML entity reference',
-        active: true
+        active: false
       }
     ]
 
@@ -167,12 +196,26 @@ storiesOf('SettingsOptions', module)
             settings={listAllChecked}
             updateSetting={action('updateSetting')} />
     ))
+    .add('EDITOR SETTINGS', () => (
+        <div>
+          <h2>Editor options</h2>
+          <SettingsOptions
+              settings={settings}
+              updateSetting={action('updateSetting')} />
+          <h3 className="small">Set current layouts as default:</h3>
+          <SettingsOptions
+              settings={defaults}
+              updateSetting={action('updateSetting')} />
+        </div>
+    ))
     .add('VALIDATION SETTINGS', () => (
     <div>
-        <h2>Validation settings</h2>
+        <h3>Validation settings</h3>
         <SettingsOptions
             settings={validations}
             updateSetting={action('updateSetting')} />
     </div>
     ))
+
+
 
