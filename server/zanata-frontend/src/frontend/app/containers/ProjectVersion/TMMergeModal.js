@@ -69,7 +69,7 @@ const MergeOptions = (
     onVersionCheckboxChange,
     onAllVersionCheckboxChange,
     onDragMoveEnd,
-    _removeProjectVersion
+    removeProjectVersion
   }) => {
   return (
     <div>
@@ -168,7 +168,7 @@ const MergeOptions = (
             <DraggableVersionPanels
               selectedVersions={mergeOptions.selectedVersions}
               onDraggableMoveEnd={onDragMoveEnd}
-              removeVersion={_removeProjectVersion} />
+              removeVersion={removeProjectVersion} />
           </Col>
         </Panel>
       </Col>
@@ -201,7 +201,7 @@ MergeOptions.propTypes = {
   onVersionCheckboxChange: PropTypes.func.isRequired,
   onAllVersionCheckboxChange: PropTypes.func.isRequired,
   onDragMoveEnd: PropTypes.func.isRequired,
-  _removeProjectVersion: PropTypes.func.isRequired
+  removeProjectVersion: PropTypes.func.isRequired
 }
 
 /**
@@ -305,13 +305,13 @@ class TMMergeModal extends Component {
     }))
   }
   // Remove a version from fromProjectVersion array
-  _removeProjectVersion = (project, version) => {
+  removeProjectVersion = (project, version) => {
     this.setState((prevState, props) => ({
       selectedVersions: prevState.selectedVersions.filter(({ projectSlug,
        version: { id } }) => projectSlug !== project || id !== version.id)}))
   }
   // Remove all versions of a Project from fromProjectVersion array
-  _removeAllProjectVersions = (projectSlug) => {
+  removeAllProjectVersions = (projectSlug) => {
     this.setState((prevState) => {
       return {
         selectedVersions: prevState.selectedVersions
@@ -320,28 +320,28 @@ class TMMergeModal extends Component {
     })
   }
   // Add a version to fromProjectVersion array
-  _pushProjectVersion = (projectVersion) => {
+  pushProjectVersion = (projectVersion) => {
     this.setState((prevState, props) => ({
       selectedVersions: [...prevState.selectedVersions, projectVersion]
     }))
   }
   // Add all versions of a Project to fromProjectVersion array
-  _pushAllProjectVersions = (projectVersions) => {
+  pushAllProjectVersions = (projectVersions) => {
     this.setState(prevState => {
       return {
         selectedVersions: prevState.selectedVersions.concat(projectVersions)
       }
     })
   }
-  _isProjectVersionSelected = (projectSlug, version) => {
+  isProjectVersionSelected = (projectSlug, version) => {
     return this.state.selectedVersions
       .find(p => p.projectSlug === projectSlug && p.version.id === version.id)
   }
   // Remove/Add version from fromProjectVersion array based on selection
   onVersionCheckboxChange = (version, projectSlug) => {
-    const versionChecked = this._isProjectVersionSelected(projectSlug, version)
-    versionChecked ? this._removeProjectVersion(projectSlug, version)
-      : this._pushProjectVersion({version, projectSlug: projectSlug})
+    const versionChecked = this.isProjectVersionSelected(projectSlug, version)
+    versionChecked ? this.removeProjectVersion(projectSlug, version)
+      : this.pushProjectVersion({version, projectSlug: projectSlug})
   }
   // Remove/Add all project versions to version list
   onAllVersionCheckboxChange = (project) => {
@@ -354,10 +354,10 @@ class TMMergeModal extends Component {
     if (diff.length === 0) {
       // we already have all versions in this project selected,
       // the operation is to remove them all
-      this._removeAllProjectVersions(projectSlug)
+      this.removeAllProjectVersions(projectSlug)
     } else {
       // we want to add all versions to the selection
-      this._pushAllProjectVersions(diff)
+      this.pushAllProjectVersions(diff)
     }
   }
   // Different DocID Checkbox handling
@@ -418,7 +418,7 @@ class TMMergeModal extends Component {
         onProjectSearchChange={this.onProjectSearchChange}
         flushProjectSearch={this.flushProjectSearch}
         onDragMoveEnd={this.onDragMoveEnd}
-        _removeProjectVersion={this._removeProjectVersion}
+        removeProjectVersion={this.removeProjectVersion}
       />
       )
     return (

@@ -2,8 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Icon} from '../../components'
 
-export const ProjectVersionVertical = (props) => {
-  const {projectSlug, versionSlug} = props
+export const ProjectVersionVertical = ({projectSlug, versionSlug}) => {
   return (
     <ul>
       <li>

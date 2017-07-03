@@ -19,14 +19,14 @@ import {
 const defaultState = {
   TMMerge: {
     show: false,
-        triggered: false,
-        processStatus: undefined,
-        projectVersions: []
+    triggered: false,
+    processStatus: undefined,
+    projectVersions: []
   },
   locales: [],
-      fetchingProject: false,
-    fetchingLocale: false,
-    notification: undefined
+  fetchingProject: false,
+  fetchingLocale: false,
+  notification: undefined
 }
 
 const version = handleActions({
