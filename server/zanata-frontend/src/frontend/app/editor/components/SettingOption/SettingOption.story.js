@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { storiesOf, action } from '@kadira/storybook'
+import RealSettingOption from '.'
 
 class SettingOption extends React.Component {
   static propTypes = {
@@ -21,15 +22,15 @@ class SettingOption extends React.Component {
   }
   render () {
     return (
-        <SettingOption
+        <RealSettingOption
             updateSetting={this.updateSetting}
-            states={this.state}
             id={this.props.id}
             label={this.props.label}
             active={this.state.active} />
     )
   }
 }
+
 const updateSetting = action('updateSetting')
 
 storiesOf('SettingOption', module)
