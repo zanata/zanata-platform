@@ -2,7 +2,6 @@ package org.zanata.action;
 
 import java.io.Serializable;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
 
@@ -14,6 +13,8 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.MergeTranslationsService;
 
 import static org.zanata.async.AsyncTaskKey.joinFields;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 /**
  * Manages tasks to copy translations from one existing version to another.
@@ -56,7 +57,7 @@ public class MergeTranslationsManager implements Serializable {
         AsyncTaskKey
                 key = MergeVersionKey
                 .getKey(targetProjectSlug, targetVersionSlug);
-        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle();
+        MergeTranslationsTaskHandle handle = new MergeTranslationsTaskHandle(key);
         asyncTaskHandleManager.registerTaskHandle(handle, key);
         mergeTranslationsServiceImpl.startMergeTranslations(sourceProjectSlug,
                 sourceVersionSlug, targetProjectSlug, targetVersionSlug,
@@ -106,4 +107,6 @@ public class MergeTranslationsManager implements Serializable {
         }
 
     }
+
+
 }

@@ -21,26 +21,11 @@
 package org.zanata.rest.search.service;
 
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.apache.lucene.queryparser.classic.ParseException;
-import org.zanata.common.EntityStatus;
-import org.zanata.dao.LocaleDAO;
-import org.zanata.dao.PersonDAO;
-import org.zanata.dao.ProjectDAO;
-import org.zanata.dao.VersionGroupDAO;
-import org.zanata.model.HAccount;
-import org.zanata.model.HIterationGroup;
-import org.zanata.model.HProject;
-import org.zanata.rest.dto.SearchResult;
-import org.zanata.rest.search.dto.GroupSearchResult;
-import org.zanata.rest.search.dto.PersonSearchResult;
-import org.zanata.rest.search.dto.ProjectSearchResult;
-import org.zanata.rest.search.dto.SearchResults;
-import org.zanata.security.ZanataIdentity;
-import org.zanata.security.annotations.Authenticated;
-import org.zanata.service.GravatarService;
-import org.zanata.service.LocaleService;
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -50,10 +35,34 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
+import org.apache.commons.lang.StringUtils;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.zanata.common.EntityStatus;
+import org.zanata.dao.LocaleDAO;
+import org.zanata.dao.PersonDAO;
+import org.zanata.dao.ProjectDAO;
+import org.zanata.dao.ProjectIterationDAO;
+import org.zanata.dao.VersionGroupDAO;
+import org.zanata.model.HAccount;
+import org.zanata.model.HIterationGroup;
+import org.zanata.model.HProject;
+import org.zanata.model.HProjectIteration;
+import org.zanata.rest.dto.SearchResult;
+import org.zanata.rest.search.dto.GroupSearchResult;
+import org.zanata.rest.search.dto.PersonSearchResult;
+import org.zanata.rest.search.dto.ProjectSearchResult;
+import org.zanata.rest.search.dto.ProjectVersionSearchResult;
+import org.zanata.rest.search.dto.SearchResults;
+import org.zanata.rest.service.RestResource;
+import org.zanata.security.ZanataIdentity;
+import org.zanata.security.annotations.Authenticated;
+import org.zanata.service.GravatarService;
+import org.zanata.service.LocaleService;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 
 /**
  * @author Carlos Munoz <a href="mailto:camunoz@redhat.com">camunoz@redhat.com</a>
@@ -62,10 +71,13 @@ import static javax.ws.rs.core.MediaType.APPLICATION_JSON;
 @Path("/search")
 @Produces(APPLICATION_JSON)
 @Transactional(readOnly = true)
-public class SearchService {
+public class SearchService implements RestResource {
 
     @Inject
     private ProjectDAO projectDAO;
+
+    @Inject
+    private ProjectIterationDAO projectIterationDAO;
 
     @Inject
     private PersonDAO personDAO;
@@ -92,7 +104,8 @@ public class SearchService {
     public Response searchProjects(
             @QueryParam("q") @DefaultValue("") String query,
             @DefaultValue("1") @QueryParam("page") int page,
-            @DefaultValue("20") @QueryParam("sizePerPage") int sizePerPage) {
+            @DefaultValue("20") @QueryParam("sizePerPage") int sizePerPage,
+            @DefaultValue("false") @QueryParam("includeVersion") boolean includeVersion) {
 
         int offset = (validatePage(page) - 1) * validatePageSize(sizePerPage);
 
@@ -110,12 +123,36 @@ public class SearchService {
                                 validatePageSize(sizePerPage), offset,
                                 false);
             }
+
+            Map<String, List<HProjectIteration>> projectSlugToVersions =
+                    Maps.newHashMap();
+            if (includeVersion && !projects.isEmpty()) {
+                List<HProjectIteration> versions = projectIterationDAO
+                        .searchByProjectsExcludeObsolete(projects);
+                versions.forEach(ver -> {
+                    String projectSlug = ver.getProject().getSlug();
+                    List<HProjectIteration> iterations = projectSlugToVersions
+                            .getOrDefault(projectSlug,
+                                    Lists.newLinkedList());
+                    iterations.add(ver);
+                    projectSlugToVersions.put(projectSlug, iterations);
+                });
+            }
             List<SearchResult> results = projects.stream().map(p -> {
                 ProjectSearchResult result = new ProjectSearchResult();
                 result.setId(p.getSlug());
                 result.setStatus(p.getStatus());
                 result.setTitle(p.getName());
                 result.setDescription(p.getDescription());
+                if (includeVersion) {
+                    List<HProjectIteration> iterations =
+                            projectSlugToVersions.get(p.getSlug());
+                    result.setVersions(iterations == null ? null : iterations
+                            .stream()
+                            .map(iteration -> new ProjectVersionSearchResult(
+                                    iteration.getSlug(), iteration.getStatus()))
+                            .collect(Collectors.toList()));
+                }
                 // TODO: include contributor count when data is available
                 return result;
             }).collect(Collectors.toList());

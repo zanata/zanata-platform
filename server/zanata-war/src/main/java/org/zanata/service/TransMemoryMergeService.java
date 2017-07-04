@@ -24,7 +24,14 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.concurrent.Future;
 
+import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.async.handle.TransMemoryMergeTaskHandle;
+import org.zanata.model.HLocale;
+import org.zanata.model.HProjectIteration;
+import org.zanata.model.HTextFlow;
+import org.zanata.rest.dto.VersionTMMerge;
+import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.rest.dto.HasTMMergeCriteria;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 
 public interface TransMemoryMergeService extends Serializable {
@@ -33,6 +40,23 @@ public interface TransMemoryMergeService extends Serializable {
             TransMemoryMergeRequest request,
             TransMemoryMergeTaskHandle asyncTaskHandle);
 
+    /**
+     * TM merge for a single document
+     * @param request
+     * @param asyncTaskHandle
+     * @return
+     */
     Future<List<TranslationService.TranslationResult>> executeMergeAsync(TransMemoryMergeRequest request,
             TransMemoryMergeTaskHandle asyncTaskHandle);
+
+    /**
+     * TM merge for a project version
+     * @param versionId
+     * @param mergeRequest
+     * @param handle
+     * @return
+     */
+    Future<Void> startMergeTranslations(Long versionId,
+            VersionTMMerge mergeRequest,
+            MergeTranslationsTaskHandle handle);
 }

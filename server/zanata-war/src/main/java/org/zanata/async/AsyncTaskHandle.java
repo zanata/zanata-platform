@@ -51,6 +51,7 @@ public class AsyncTaskHandle<V> implements Serializable {
     private long finishTime = -1;
     private String cancelledBy;
     private long cancelledTime;
+    private String keyId;
 
     public boolean isRunning() {
         return isStarted() && !isCancelled() && !isDone();
@@ -231,5 +232,13 @@ public class AsyncTaskHandle<V> implements Serializable {
 
     public void setCancelledTime(final long cancelledTime) {
         this.cancelledTime = cancelledTime;
+    }
+
+    public String getKeyId() {
+        return keyId;
+    }
+
+    public void setKeyId(String keyId) {
+        this.keyId = keyId;
     }
 }

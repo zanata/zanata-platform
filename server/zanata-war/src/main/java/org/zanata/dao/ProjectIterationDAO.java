@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,6 +51,7 @@ import org.zanata.ui.model.statistic.WordStatistic;
 import org.zanata.util.HashUtil;
 import org.zanata.util.StatisticsUtil;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
 @RequestScoped
@@ -499,23 +501,23 @@ public class ProjectIterationDAO extends
         return q.list();
     }
 
-    public List<HProjectIteration> searchByProjectIdExcludingStatus(
-            Long projectId, EntityStatus... exclude) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("FROM HProjectIteration t WHERE t.project.id = :projectId ");
-        for (EntityStatus status : exclude) {
-            sb.append("AND t.status != :");
-            sb.append(status.toString());
-        }
-        sb.append(" order by t.creationDate DESC");
-        Query q = getSession().createQuery(sb.toString());
-        q.setParameter("projectId", projectId);
-
-        for (EntityStatus status : exclude) {
-            q.setParameter(status.toString(), status);
-        }
-        q.setCacheable(false).setComment(
-                "ProjectIterationDAO.searchByProjectIdExcludeObsolete");
+    public List<HProjectIteration> searchByProjectsExcludeObsolete(
+            List<HProject> projects) {
+        Preconditions.checkArgument(
+                !projects.isEmpty()
+                        && projects.size() < MAX_PARAMS_IN_IN_CLAUSE,
+                "invalid projectIds list");
+        String query =
+                "FROM HProjectIteration t WHERE t.project.id in (:projectIds) "
+                        + "AND t.status != :status"
+                        + " order by t.project.id, t.creationDate DESC";
+        List<Long> projectIds = projects.stream().map(HProject::getId).collect(
+                Collectors.toList());
+        Query q = getSession().createQuery(query)
+                .setParameterList("projectIds", projectIds)
+                .setParameter("status", EntityStatus.OBSOLETE)
+                .setCacheable(false).setComment(
+                        "ProjectIterationDAO.searchByProjectIdsExcludeObsolete");
         return q.list();
     }
 

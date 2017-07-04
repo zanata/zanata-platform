@@ -191,6 +191,8 @@ public interface ProjectVersionResource extends RestResource {
     /**
      * Retrieves a full list of locales enabled in project version.
      *
+     * @see ProjectIterationLocalesResource#get()
+     *
      * @param projectSlug
      *            Project identifier
      * @param versionSlug
