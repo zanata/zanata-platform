@@ -98,7 +98,8 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     @Test
     @RunAsClient
     public void testPutGetResource() {
-        getSourceDocResource().putResourceWithDocId(sr, sr.getName(),null, false);
+        getSourceDocResource()
+                .putResourceWithDocId(sr, sr.getName(), null, false);
         Resource base = resourceTestFactory.getTextFlowTest();
         Resource get = getResourceFromResponse(
                 getSourceDocResource().getResourceWithDocId(sr.getName(), null));
@@ -192,10 +193,11 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     public void testPutNoExtensionGetResourceMeta() {
         log.debug("test put get resource meta service");
         Resource res = resourceTestFactory.getTextFlowTest();
-        getSourceDocResource().putResourceWithDocId(res, res.getName(),null, false);
+        getSourceDocResource()
+                .putResourceWithDocId(res, res.getName(), null, false);
         ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
         ResourceMeta base = resourceTestFactory.getResourceMeta();
-        getSourceDocResource().putResourceMetaWithDocId(sr, sr.getName(),null);
+        getSourceDocResource().putResourceMetaWithDocId(sr, sr.getName(), null);
         log.debug("get resource meta");
         Response resourceGetResponse =
                 getSourceDocResource()
@@ -212,11 +214,13 @@ public class ResourceServiceRestITCase extends SourceAndTranslationResourceRestB
     public void testPutGetNoExtensionResourceMeta() {
         log.debug("test put get resource meta service");
         Resource res = resourceTestFactory.getTextFlowTest();
-        getSourceDocResource().putResourceWithDocId(res, res.getName(),null, false);
+        getSourceDocResource()
+                .putResourceWithDocId(res, res.getName(), null, false);
         ResourceMeta sr = resourceTestFactory.getPoHeaderResourceMeta();
         ResourceMeta base = resourceTestFactory.getResourceMeta();
-        getSourceDocResource().putResourceMetaWithDocId(sr, sr.getName(),new StringSet(
-                "gettext;comment"));
+        getSourceDocResource()
+                .putResourceMetaWithDocId(sr, sr.getName(), new StringSet(
+                        "gettext;comment"));
         log.debug("get resource meta");
         Response resourceGetResponse =
                 getSourceDocResource().getResourceMetaWithDocId(sr.getName(), null);

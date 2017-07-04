@@ -43,6 +43,7 @@ import org.zanata.rest.service.ResourceTestUtil;
 import org.zanata.rest.service.ResourceUtils;
 
 import com.google.common.collect.Lists;
+import org.zanata.util.UrlUtil;
 
 public class TranslationResourceRestITCase extends SourceAndTranslationResourceRestBase {
     private static final Logger log = LoggerFactory
@@ -301,7 +302,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         assertThat(response.getMetadata().getFirst("Location").toString(),
-                endsWith(BASE_PATH + docName));
+                endsWith(BASE_PATH + "resource?id=" + UrlUtil.encodeString(docName)));
 
         Response documentResponse =
                 getSourceDocResource().getResourceWithDocId(docName, null);
@@ -371,7 +372,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         assertThat(response.getMetadata().getFirst("Location").toString(),
-                endsWith(BASE_PATH + docName));
+                endsWith(BASE_PATH + "resource?id=" + UrlUtil.encodeString(docName)));
 
         Response documentResponse =
                 getSourceDocResource().getResourceWithDocId(docName, null);

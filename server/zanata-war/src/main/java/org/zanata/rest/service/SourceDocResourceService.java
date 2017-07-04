@@ -35,6 +35,7 @@ import javax.ws.rs.core.EntityTag;
 import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -245,7 +246,9 @@ public class SourceDocResourceService implements SourceDocResource {
         HDocument document =
                 this.documentDAO.getByDocIdAndIteration(hProjectIteration, id);
         if (document == null || document.isObsolete()) {
-            response = Response.created(uri.getAbsolutePath());
+            response = Response.created(
+                    UriBuilder.fromUri(uri.getAbsolutePath())
+                            .queryParam("id", id).build());
         } else {
             response = Response.ok();
         }
