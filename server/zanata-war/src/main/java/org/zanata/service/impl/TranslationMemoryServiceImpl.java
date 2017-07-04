@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -485,7 +486,8 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
         private static final long serialVersionUID = 1L;
         private final List<Long> fromVersionIds;
 
-        public TransMemoryResultComparator(List<Long> fromVersionIds) {
+        public TransMemoryResultComparator(
+                @Nullable List<Long> fromVersionIds) {
             this.fromVersionIds = fromVersionIds;
         }
 
@@ -510,7 +512,9 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
             }
             // if TM is from TMX, getFromVersionId is null
             // if fromVersionIds is empty, we have no restriction on source version
-            if (m2.getFromVersionId() != null && m1.getFromVersionId() != null && !fromVersionIds.isEmpty()) {
+            if (m2.getFromVersionId() != null &&
+                    m1.getFromVersionId() != null && fromVersionIds != null &&
+                    !fromVersionIds.isEmpty()) {
                 int indexOfM2 = fromVersionIds.indexOf(m2.getFromVersionId());
                 int indexOfM1 = fromVersionIds.indexOf(m1.getFromVersionId());
                 // sort higher when index is lower
