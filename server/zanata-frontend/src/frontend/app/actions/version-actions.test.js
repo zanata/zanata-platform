@@ -4,7 +4,8 @@ import {
   fetchVersionLocales,
   fetchProjectPage,
   mergeVersionFromTM,
-  queryTMMergeProgress
+  queryTMMergeProgress,
+  cancelTMMergeRequest
 } from './version-actions'
 
 describe('version-action test', () => {
@@ -61,6 +62,13 @@ describe('version-action test', () => {
     const apiAction = queryTMMergeProgress(url)
     expect(apiAction[CALL_API].endpoint).toEqual(
       '/rest/process/key/TMMergeForVerKey-1-ja'
+    )
+  })
+  it('can cancel the TM merge process', () => {
+    const url = '/rest/cancel/process/key/TMMergeForVerKey-1-ja'
+    const apiAction = cancelTMMergeRequest(url)
+    expect(apiAction[CALL_API].endpoint).toEqual(
+      '/rest/cancel/process/key/TMMergeForVerKey-1-ja'
     )
   })
 })
