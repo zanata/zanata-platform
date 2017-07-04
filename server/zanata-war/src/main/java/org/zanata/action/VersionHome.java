@@ -22,6 +22,7 @@
 package org.zanata.action;
 
 import static com.google.common.base.Strings.isNullOrEmpty;
+import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import static javax.faces.application.FacesMessage.SEVERITY_INFO;
 import java.util.ArrayList;
 import com.google.common.base.Function;
@@ -279,7 +280,9 @@ public class VersionHome extends SlugHome<HProjectIteration>
             log.warn(
                     "Project version [id={}, slug={}], does not exist or is soft deleted: {}",
                     versionId, getSlug(), iteration);
-            throw new VersionNotFoundException(getProjectSlug(), getSlug());
+            conversationScopeMessages.setMessage(SEVERITY_ERROR,
+                    msgs.format("jsf.VersionNotFound", getProject().getName(), getSlug()));
+            urlUtil.redirectToInternal(urlUtil.projectUrl(getProjectSlug()));
         }
     }
 
@@ -287,7 +290,9 @@ public class VersionHome extends SlugHome<HProjectIteration>
         if (project == null || project.getStatus() == EntityStatus.OBSOLETE) {
             log.warn("Project [slug={}], does not exist or is soft deleted: {}",
                     getProjectSlug(), project);
-            throw new ProjectNotFoundException(getProjectSlug());
+            conversationScopeMessages.setMessage(SEVERITY_ERROR,
+                    msgs.format("jsf.ProjectNotFound", getProjectSlug()));
+            urlUtil.redirectToInternal(urlUtil.dashboardUrl());
         }
     }
 

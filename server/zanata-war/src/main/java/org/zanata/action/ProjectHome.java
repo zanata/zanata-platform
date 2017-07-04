@@ -651,7 +651,9 @@ public class ProjectHome extends SlugHome<HProject>
             log.warn(
                     "Project [id={}, slug={}], does not exist or is soft deleted: {}",
                     projectId, getSlug(), project);
-            throw new ProjectNotFoundException(getSlug());
+            urlUtil.redirectToInternal(urlUtil.dashboardUrl());
+            facesMessages.addGlobal(FacesMessage.SEVERITY_ERROR,
+                    msgs.format("jsf.ProjectNotFound", getSlug()));
         }
     }
 
