@@ -44,15 +44,21 @@ public class InactiveAccountPage extends BasePage {
     }
 
     public InactiveAccountPage enterNewEmail(String email) {
-        enterText(
-                readyElement(
-                        By.id("inactiveAccountForm:email:input:emailInput")),
-                email);
+        log.info("Enter new email {}", email);
+        enterText(readyElement(
+                By.id("inactiveAccountForm:email:input:emailInput")), email);
         return new InactiveAccountPage(getDriver());
     }
 
     public HomePage clickUpdateEmail() {
+        log.info("Click Update button");
         clickElement(By.id("inactiveAccountForm:email:input:updateEmail"));
         return new HomePage(getDriver());
+    }
+
+    public InactiveAccountPage updateEmailFailure() {
+        log.info("Click Update button, expecting failure");
+        clickElement(By.id("inactiveAccountForm:email:input:updateEmail"));
+        return new InactiveAccountPage(getDriver());
     }
 }

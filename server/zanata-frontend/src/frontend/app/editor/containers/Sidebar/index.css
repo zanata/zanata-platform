@@ -516,11 +516,29 @@ img.activity-avatar {
   height: 5rem;
 }
 
+.settings-heading {
+  font-weight: 500;
+}
+
+h2.settings-heading {
+  padding-bottom:1rem;
+}
+
+h3.settings-heading {
+  font-size: 0.875rem;
+  padding-bottom: 0.375rem;
+  padding-top: 0.75rem;
+}
+
+.settings-options p {
+  font-weight: 500;
+  color: var(--Sidebar-color-text);
+  font-size: 0.875rem;
+}
+
 .trans-comment-box .s0 {
   vertical-align: sub;
 }
-/* --------------------- */
-
 
 /* Media queries */
 

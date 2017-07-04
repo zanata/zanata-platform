@@ -601,6 +601,10 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                         ConsoleUtils
                                 .setProgressFeedbackMessage("Waiting for other clients ...");
                         break;
+                    case Cancelled:
+                        waitForCompletion = false;
+                        ConsoleUtils.setProgressFeedbackMessage("Process is cancelled");
+                        break;
                 }
 
                 // Wait before retrying
@@ -724,6 +728,10 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                                                 getOpts().isMyTrans());
                         ConsoleUtils
                                 .setProgressFeedbackMessage("Waiting for other clients ...");
+                        break;
+                    case Cancelled:
+                        waitForCompletion = false;
+                        ConsoleUtils.setProgressFeedbackMessage("Process is cancelled");
                         break;
                 }
 
