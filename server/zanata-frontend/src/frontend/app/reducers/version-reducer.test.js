@@ -29,13 +29,16 @@ describe('version-reducer test', () => {
       payload: { show: false }
     })
     expect(initial.TMMerge).toEqual(
-      {processStatus: undefined, projectVersions: [], show: false, triggered: false}
+      {processStatus: undefined, projectVersions: [],
+        queryStatus: undefined, show: true, triggered: false}
     )
     expect(shown.TMMerge).toEqual(
-      {processStatus: undefined, projectVersions: [], show: true, triggered: false}
+      {processStatus: undefined, projectVersions: [],
+        queryStatus: undefined, show: false, triggered: false}
     )
     expect(hidden.TMMerge).toEqual(
-      {processStatus: undefined, projectVersions: [], show: false, triggered: false}
+      {processStatus: undefined, projectVersions: [],
+        queryStatus: undefined, show: true, triggered: false}
     )
   })
 
@@ -197,7 +200,7 @@ describe('version-reducer test', () => {
           url: 'http://localhost:8080/rest/process/key/TMMergeForVerKey-1-ja'
         },
         projectVersions: [],
-        show: false,
+        show: true,
         triggered: false
       },
       fetchingLocale: false,
@@ -231,7 +234,7 @@ describe('version-reducer test', () => {
       TMMerge: {
         processStatus: undefined,
         projectVersions: [],
-        show: false,
+        show: true,
         triggered: false
       },
       fetchingLocale: false,
