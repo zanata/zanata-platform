@@ -18,12 +18,18 @@ class ActivityTab extends React.Component {
     return (
       <Tab eventKey={eventKey} title="">
         <div className="sidebar-wrapper" id="tab2">
-          <ActivitySelectList />
+          <ActivitySelectList selectItem="all" />
         </div>
         <div className="sidebar-activity">
-          <LanguageSelectList />
+          <LanguageSelectList selectItem="current" />
           <CommentBox />
-          <ActivityFeed />
+          <ActivityFeed
+            icon="refresh"
+            username="Kath "
+            status="u-textSuccess"
+            message="marked this as translated"
+            wellStatus="well-translated"
+          />
         </div>
       </Tab>
     )
