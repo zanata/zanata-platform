@@ -20,8 +20,6 @@
  */
 package org.zanata.webtrans.client.resources;
 
-import java.util.List;
-
 import com.google.gwt.i18n.client.LocalizableResource.DefaultLocale;
 import com.google.gwt.i18n.client.LocalizableResource.Generate;
 import com.google.gwt.i18n.client.Messages;
@@ -230,7 +228,7 @@ public interface UiMessages extends Messages {
     @DefaultMessage("Show as Diff")
     String diffModeAsDiff();
 
-    @DefaultMessage("Highlight matches")
+    @DefaultMessage("Highlight Diff")
     String diffModeAsHighlight();
 
     @DefaultMessage("Translation that contained validation warning or error.")
@@ -250,4 +248,10 @@ public interface UiMessages extends Messages {
 
     @DefaultMessage("No content")
     String noContent();
+
+    @DefaultMessage("Matching")
+    String matching();
+
+    @DefaultMessage("Not Matching")
+    String notMatching();
 }
