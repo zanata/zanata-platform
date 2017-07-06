@@ -4,9 +4,9 @@
  * See .storybook-editor for main config
  */
 
-require('./ActTabContentSelect/ActTabContentSelect.story')
-require('./ActTabCommentBox/ActTabCommentBox.story')
-require('./ActTabFeed/ActTabFeed.story')
+require('./ActivityFeed/ActivityFeed.story')
+require('./ActivitySelectList/ActivitySelectList.story')
+require('./CommentBox/CommentBox.story')
 require('./Button/Button.story.js')
 require('./TextDiff/TextDiff.story.js')
 require('./EditorSearchInput/EditorSearchInput.story.js')
@@ -14,4 +14,6 @@ require('./ProgressBar/ProgressBar.story.js')
 require('./GlossarySearchInput/GlossarySearchInput.story.js')
 require('./GlossaryTerm/GlossaryTerm.story.js')
 require('./GlossaryTermModal/GlossaryTermModal.story.js')
+require('./SelectButton/SelectButton.story')
+require('./SelectButtonList/SelectButtonList.story')
 require('./ValidationOptions/ValidationOptions.story')

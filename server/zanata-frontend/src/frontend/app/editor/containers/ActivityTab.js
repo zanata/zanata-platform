@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Tab } from 'react-bootstrap'
-import ActTabActSelect from '../components/ActTabActSelect'
+import ActTabActSelect from '../components/SelectButton'
 import ActTabLangSelect from '../components/ActTabLangSelect'
-import ActTabCommentBox from '../components/ActTabCommentBox'
-import ActTabFeed from '../components/ActTabFeed'
+import ActTabCommentBox from '../components/CommentBox'
+import ActTabFeed from '../components/ActivityFeed'
 
 class ActivityTab extends React.Component {
 

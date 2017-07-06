@@ -1,3 +1,8 @@
+import React from 'react'
+import { storiesOf } from '@kadira/storybook'
+import { action } from '@kadira/storybook-addon-actions'
+import ActivitySelectList from '.'
+
 /*
  * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
  * @author tags. See the copyright.txt file in the distribution for a full
@@ -19,25 +24,11 @@
  * site: http://www.fsf.org.
  */
 
-import React from 'react'
-import RevisionTranslated from '../ActTabFeed/RevisionTranslated.js'
-import RevisionRejected from './RevisionRejected.js'
-import RevisionFuzzy from './RevisionFuzzy.js'
-import RevisionApproved from './RevisionApproved.js'
-import RevisionComment from './RevisionComment.js'
+/*
+ * See .storybook/README.md for info on the component storybook.
+ */
 
-class ActTabFeed extends React.Component {
-  render () {
-    return (
-      <div className="revision-box">
-        <RevisionTranslated />
-        <RevisionRejected />
-        <RevisionComment />
-        <RevisionFuzzy />
-        <RevisionApproved />
-      </div>
-    )
-  }
-}
-
-export default ActTabFeed
+storiesOf('ActivitySelectList', module)
+    .add('default', () => <ActivitySelectList selected="all"
+                           selectItem={action('selectItem')}
+    />)

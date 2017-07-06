@@ -1,12 +1,12 @@
 import React from 'react'
 import { storiesOf } from '@kadira/storybook'
-import { action, decorateAction } from '@kadira/storybook-addon-actions'
-import ActTabCommentBox from '.'
+import { action } from '@kadira/storybook-addon-actions'
+import CommentBox from '.'
 
 /*
  * See .storybook/README.md for info on the component storybook.
  */
-storiesOf('ActTabCommentBox', module)
+storiesOf('CommentBox', module)
     .add('default', () => (
-      <ActTabCommentBox />
+      <CommentBox postComment={action('postComment')} />
   ))

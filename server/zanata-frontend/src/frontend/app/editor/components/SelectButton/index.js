@@ -18,30 +18,37 @@
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
  */
-
+import cx from 'classnames'
 import React from 'react'
-import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
+import PropTypes from 'prop-types'
+import { Button } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 
-class ActTabCommentBox extends React.Component {
+class SelectButton extends React.Component {
+  static propTypes = {
+    icon: PropTypes.oneOf(['clock', 'comment', 'refresh', 'language']),
+    buttonName: PropTypes.string,
+    className: PropTypes.string,
+    selected: PropTypes.bool,
+    selectItem: PropTypes.func.isRequired
+  }
+
+  selectItem = (event) =>  {
+    this.props.selectItem(this.props.id, !this.props.selected)
+  }
 
   render () {
+
     return (
-      <div className="trans-comment-box">
-        <FormGroup controlId="formControlsTextarea">
-          <ControlLabel>
-            <Icon name="comment" className="s0" /> Post a comment
-          </ControlLabel><br />
-          <FormControl componentClass="textarea"
-            placeholder="..." />
-        </FormGroup>
-        <Button
-          className="Button Button--small u-rounded Button--primary pull-right">
-         Post comment
-        </Button>
-      </div>
+      <Button onClick={this.selectItem} className={cx('Button' +
+          ' Button--small u-rounded',
+          this.props.className, {
+            'is-active': this.props.selected
+          }) }>
+        <Icon name={this.props.icon} className="n1" /> {this.props.buttonName}
+      </Button>
     )
   }
 }
 
-export default ActTabCommentBox
+export default SelectButton
