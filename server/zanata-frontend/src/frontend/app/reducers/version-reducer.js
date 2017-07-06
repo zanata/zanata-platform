@@ -18,7 +18,7 @@ import {
 
 const defaultState = {
   TMMerge: {
-    show: true,
+    show: false,
     triggered: false,
     processStatus: undefined,
     queryStatus: undefined,
