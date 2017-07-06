@@ -4,8 +4,7 @@
  * See .storybook-editor for main config
  */
 
-require('./ActTabActSelect/ActTabActSelect.story')
-require('./ActTabLangSelect/ActTabLangSelect.story')
+require('./ActTabContentSelect/ActTabContentSelect.story')
 require('./ActTabCommentBox/ActTabCommentBox.story')
 require('./ActTabFeed/ActTabFeed.story')
 require('./Button/Button.story.js')
