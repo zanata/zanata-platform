@@ -120,7 +120,7 @@ public class Highlighting {
         html[x] = '<del class="diff-delete">' + text + '</del>';
         break;
       case $wnd['DIFF_EQUAL']:
-        html[x] = '<span class="diff-equal CodeMirror-searching">' + text + '</span>';
+        html[x] = '<span class="diff-equal">' + text + '</span>';
         break;
       }
     }
@@ -150,12 +150,12 @@ public class Highlighting {
               '<span class="newline"></span><br>');
       switch (op) {
       case $wnd['DIFF_INSERT']:
-        html[x] = text;
+        html[x] = '<span class="CodeMirror-searching">' + text + '</span>';
         break;
       case $wnd['DIFF_DELETE']:
         break;
       case $wnd['DIFF_EQUAL']:
-        html[x] = '<span class="CodeMirror-searching">' + text + '</span>';
+        html[x] = text;
         break;
       }
     }
