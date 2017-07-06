@@ -20,10 +20,7 @@
  */
 package org.zanata.rest.service;
 
-import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -48,7 +45,6 @@ import org.zanata.security.ZanataIdentity;
 import org.zanata.service.DocumentService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
-import com.google.common.collect.Lists;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.Path;
@@ -113,12 +109,12 @@ public class AsynchronousProcessResourceService
         String name = "SourceDocCreation: " + projectSlug + "-" + iterationSlug
                 + "-" + idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
+        String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl
                 .saveDocumentAsync(projectSlug, iterationSlug,
                         resource, extensions, copytrans, true, handle);
-        logWhenUploadComplete(handle, name, taskId);
-        return getProcessStatus(taskId.toString()); // TODO Change to return 202
+        logWhenUploadComplete(handle, name, keyId);
+        return getProcessStatus(keyId); // TODO Change to return 202
         // Accepted,
         // with a url to get the
         // progress
@@ -137,12 +133,12 @@ public class AsynchronousProcessResourceService
         String name = "SourceDocCreationOrUpdate: " + projectSlug + "-"
                 + iterationSlug + "-" + idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
+        String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl
                 .saveDocumentAsync(projectSlug, iterationSlug, resource,
                         extensions, copytrans, true, handle);
-        logWhenUploadComplete(handle, name, taskId);
-        return getProcessStatus(taskId.toString()); // TODO Change to return 202
+        logWhenUploadComplete(handle, name, keyId);
+        return getProcessStatus(keyId); // TODO Change to return 202
         // Accepted,
         // with a url to get the
         // progress
@@ -150,7 +146,7 @@ public class AsynchronousProcessResourceService
 
     private <T> void logWhenUploadComplete(
             AsyncTaskHandle<T> taskHandle,
-            final String taskName, final Serializable taskId) {
+            final String taskName, final String taskId) {
         taskHandle.whenTaskComplete((result, throwable) -> {
             if (throwable != null) {
                 log.warn("async upload failed. id={}, job={}", taskId, taskName,
@@ -199,55 +195,24 @@ public class AsynchronousProcessResourceService
         final MergeType finalMergeType = mergeType;
         String taskName = "TranslatedDocUpload: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
-        Serializable taskId = asyncTaskHandleManager.registerTaskHandle(handle);
+        String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
                         iterationSlug, id, locale, translatedDoc, extensions,
                         finalMergeType, assignCreditToUploader, true, handle,
                         TranslationSourceType.API_UPLOAD);
-        logWhenUploadComplete(handle, taskName, taskId);
-        return this.getProcessStatus(taskId.toString());
+        logWhenUploadComplete(handle, taskName, keyId);
+        return this.getProcessStatus(keyId);
     }
 
     @Override
     public ProcessStatus getProcessStatus(String processId) {
         AsyncTaskHandle handle =
-                asyncTaskHandleManager.getHandleByKey(processId);
+                asyncTaskHandleManager.getHandleByKeyId(processId);
         if (handle == null) {
             throw new NotFoundException(
                     "A process was not found for id " + processId);
         }
-        ProcessStatus status = new ProcessStatus();
-        status.setStatusCode(handle.isDone() ? ProcessStatusCode.Finished
-                : ProcessStatusCode.Running);
-        int perComplete = 100;
-        if (handle.getMaxProgress() > 0) {
-            perComplete = (handle.getCurrentProgress() * 100
-                    / handle.getMaxProgress());
-        }
-        status.setPercentageComplete(perComplete);
-        status.setUrl("" + processId);
-        if (handle.isDone()) {
-            Object result = null;
-            try {
-                result = handle.getResult();
-            } catch (InterruptedException e) {
-                // The process was forcefully cancelled
-                status.setStatusCode(ProcessStatusCode.Failed);
-                status.setMessages(Lists.newArrayList(e.getMessage()));
-            } catch (ExecutionException e) {
-                // Exception thrown while running the task
-                status.setStatusCode(ProcessStatusCode.Failed);
-                status.setMessages(
-                        Lists.newArrayList(e.getCause().getMessage()));
-            }
-            // TODO Need to find a generic way of returning all object types.
-            // Since the only current
-            // scenario involves lists of strings, hardcoding to that
-            if (result != null && result instanceof List) {
-                status.getMessages().addAll((List) result);
-            }
-        }
-        return status;
+        return AsyncProcessService.handleToProcessStatus(handle, processId);
     }
 
     private HProjectIteration retrieveAndCheckIteration(String projectSlug,

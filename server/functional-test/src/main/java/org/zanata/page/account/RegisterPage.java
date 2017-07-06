@@ -44,7 +44,7 @@ public class RegisterPage extends CorePage {
     public static final String MALFORMED_EMAIL_ERROR =
             "not a well-formed email address";
     public static final String REQUIRED_FIELD_ERROR = "may not be empty";
-
+    public static final String EMAIL_TAKEN = "This email address is already taken.";
     public static final String PASSWORD_LENGTH_ERROR =
             "size must be between 6 and 1024";
 
