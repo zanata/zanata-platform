@@ -27,12 +27,11 @@ class LanguageSelectList extends React.Component {
   }
 
   render () {
-
     return (
-        <SelectButtonList items={items} icon='language'
-           className="Button--primary" selected={this.props.selected}
-           selectItem={this.props.selectItem}
-        />
+      <SelectButtonList items={items} icon='language'
+        className="Button--primary" selected={this.props.selected}
+        selectItem={this.props.selectItem}
+      />
     )
   }
 }

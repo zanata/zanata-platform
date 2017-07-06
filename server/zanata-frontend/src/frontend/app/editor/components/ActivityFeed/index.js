@@ -37,15 +37,16 @@ class ActivityFeed extends React.Component {
     // add date from suggestions panel - only hardcode in storybook
     const date = 'May 18 2017 at 15:00'
     return (
-        <div className="revision-box">
-          <p><Icon name={this.props.icon} className="s0" />
-            <img className="u-round activity-avatar" src="" /><a>{this.props.username}</a>
-            has <span className={this.props.status}>{this.props.message}</span>
-          </p>
-          <Well className={this.props.wellStatus}>নাম</Well>
-          <p className="small u-textMuted">
-            <Icon name="clock" className="n1" /> {date}</p>
-        </div>
+      <div className="revision-box">
+        <p><Icon name={this.props.icon} className="s0" />
+          <img className="u-round activity-avatar" src="" />
+          <a>{this.props.username}</a>
+          has <span className={this.props.status}>{this.props.message}</span>
+        </p>
+        <Well className={this.props.wellStatus}>নাম</Well>
+        <p className="small u-textMuted">
+          <Icon name="clock" className="n1" /> {date}</p>
+      </div>
     )
   }
 }

@@ -26,6 +26,7 @@ import Icon from '../../../components/Icon'
 
 class SelectButton extends React.Component {
   static propTypes = {
+    id: PropTypes.string,
     icon: PropTypes.oneOf(['clock', 'comment', 'refresh', 'language']),
     buttonName: PropTypes.string,
     className: PropTypes.string,
@@ -33,18 +34,17 @@ class SelectButton extends React.Component {
     selectItem: PropTypes.func.isRequired
   }
 
-  selectItem = (event) =>  {
+  selectItem = (event) => {
     this.props.selectItem(this.props.id, !this.props.selected)
   }
 
   render () {
-
     return (
       <Button onClick={this.selectItem} className={cx('Button' +
           ' Button--small u-rounded',
           this.props.className, {
             'is-active': this.props.selected
-          }) }>
+          })}>
         <Icon name={this.props.icon} className="n1" /> {this.props.buttonName}
       </Button>
     )

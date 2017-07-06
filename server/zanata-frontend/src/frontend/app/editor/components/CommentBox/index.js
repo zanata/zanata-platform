@@ -20,10 +20,14 @@
  */
 
 import React from 'react'
+import PropTypes from 'prop-types'
 import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 
 class CommentBox extends React.Component {
+  static propTypes = {
+    postComment: PropTypes.string
+  }
 
   render () {
     return (

@@ -27,12 +27,11 @@ class ActivitySelectList extends React.Component {
   }
 
   render () {
-
     return (
-        <SelectButtonList items={items}
-           className="Button--secondary" selected={this.props.selected}
-           selectItem={this.props.selectItem}
-        />
+      <SelectButtonList items={items}
+        className="Button--secondary" selected={this.props.selected}
+        selectItem={this.props.selectItem}
+      />
     )
   }
 }
