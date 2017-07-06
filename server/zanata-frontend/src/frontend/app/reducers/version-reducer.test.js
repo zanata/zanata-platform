@@ -14,7 +14,10 @@ import {
   VERSION_TM_MERGE_SUCCESS,
   VERSION_TM_MERGE_FAILURE,
   TM_MERGE_CANCEL_REQUEST,
-  TM_MERGE_CANCEL_SUCCESS
+  TM_MERGE_CANCEL_SUCCESS,
+  QUERY_TM_MERGE_PROGRESS_REQUEST,
+  QUERY_TM_MERGE_PROGRESS_FAILURE,
+  TM_MERGE_PROCESS_FINISHED
 } from '../actions/version-action-types'
 
 describe('version-reducer test', () => {
@@ -123,25 +126,25 @@ describe('version-reducer test', () => {
             }
           ]
         },
-        {
-          contributorCount: 0,
-          description: 'Locked project',
-          id: 'meikailocked',
-          status: 'READONLY',
-          title: 'MeikaiLocked',
-          type: 'Project',
-          versions: [
-            {
-              id: 'ver1',
-              status: 'READONLY'
-            }
-          ]
-        }]
+          {
+            contributorCount: 0,
+            description: 'Locked project',
+            id: 'meikailocked',
+            status: 'READONLY',
+            title: 'MeikaiLocked',
+            type: 'Project',
+            versions: [
+              {
+                id: 'ver1',
+                status: 'READONLY'
+              }
+            ]
+          }]
     }
     const initial = versionReducer(undefined, {type: 'any'})
     const projectsRequested = versionReducer(initial, requestAction)
-    const projectsReceived = versionReducer(projectsRequested, projectSuccessAction)
-
+    const projectsReceived = versionReducer(projectsRequested,
+      projectSuccessAction)
     expect(projectsRequested.fetchingProject).toEqual(true)
     expect(projectsReceived.fetchingProject).toEqual(false)
     expect(projectsReceived.TMMerge.projectVersions).toEqual(
@@ -159,20 +162,20 @@ describe('version-reducer test', () => {
           }
         ]
       },
-        {
-          contributorCount: 0,
-          description: 'Locked project',
-          id: 'meikailocked',
-          status: 'READONLY',
-          title: 'MeikaiLocked',
-          type: 'Project',
-          versions: [
-            {
-              id: 'ver1',
-              status: 'READONLY'
-            }
-          ]
-        }]
+      {
+        contributorCount: 0,
+        description: 'Locked project',
+        id: 'meikailocked',
+        status: 'READONLY',
+        title: 'MeikaiLocked',
+        type: 'Project',
+        versions: [
+          {
+            id: 'ver1',
+            status: 'READONLY'
+          }
+        ]
+      }]
     )
   })
   it('can request a TM merge', () => {
@@ -220,6 +223,7 @@ describe('version-reducer test', () => {
     })
     expect(failed.TMMerge.processStatus).toEqual(undefined)
   })
+
   it('can cancel TM merge requests', () => {
     const requestAction = {
       type: TM_MERGE_CANCEL_REQUEST
@@ -231,6 +235,49 @@ describe('version-reducer test', () => {
     const cancelRequested = versionReducer(initial, requestAction)
     const cancelReceived = versionReducer(cancelRequested, cancelSuccessAction)
     expect(cancelReceived).toEqual({
+      TMMerge: {
+        processStatus: undefined,
+        projectVersions: [],
+        show: true,
+        triggered: false
+      },
+      fetchingLocale: false,
+      fetchingProject: false,
+      locales: [],
+      notification: undefined
+    })
+  })
+  it('can Query TM merge progress', () => {
+    const initial = versionReducer(undefined, {type: 'any'})
+    const queryRequestAction = {
+      type: QUERY_TM_MERGE_PROGRESS_REQUEST
+    }
+    const queryFailureAction = {
+      type: QUERY_TM_MERGE_PROGRESS_FAILURE
+    }
+    const queryRequested = versionReducer(initial, queryRequestAction)
+    const failureRecieved = versionReducer(queryRequested, queryFailureAction)
+    expect(failureRecieved).toEqual({
+      TMMerge: {
+        processStatus: undefined,
+        projectVersions: [],
+        show: true,
+        triggered: false
+      },
+      fetchingLocale: false,
+      fetchingProject: false,
+      locales: [],
+      notification: undefined
+    })
+  })
+  it('can handle TM Merge completion', () => {
+    const initial = versionReducer(undefined, {type: 'any'})
+    const queryRequestAction = {
+      type: TM_MERGE_PROCESS_FINISHED
+    }
+    const statusRequested = versionReducer(initial, queryRequestAction)
+    // TM_MERGE_PROCESS_FINISHED sets processStatus: undefined
+    expect(statusRequested).toEqual({
       TMMerge: {
         processStatus: undefined,
         projectVersions: [],
