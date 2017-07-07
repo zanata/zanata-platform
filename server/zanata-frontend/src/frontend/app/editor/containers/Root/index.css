@@ -197,8 +197,9 @@
   font-weight: 600;
 }
 
-li.docName {
-  max-width: 20em;
+li.docName .row {
+  display: flex;
+  width: 12rem;
 }
 
 li.docName span.ellipsis {
@@ -853,6 +854,11 @@ label span.n1 {
   }
   .long-string span {
     max-width: 9.5em;
+  }
+
+  li.docName .row {
+    display: flex;
+    width: 20rem;
   }
 
   #sidebartabs-pane-1 table tbody tr {
