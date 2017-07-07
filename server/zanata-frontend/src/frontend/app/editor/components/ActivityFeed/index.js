@@ -21,31 +21,36 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
+import { FormattedDate, FormattedTime } from 'react-intl'
 import Icon from '../../../components/Icon'
 import { Well } from 'react-bootstrap'
 
 class ActivityFeed extends React.Component {
   static propTypes = {
+    content: PropTypes.string.isRequired,
     icon: PropTypes.oneOf(['comment', 'refresh']).isRequired,
+    message: PropTypes.string.isRequired,
+    status: PropTypes.string,
     username: PropTypes.string.isRequired,
-    message: PropTypes.isRequired,
-    status: PropTypes.string.isRequired,
     wellStatus: PropTypes.string
   }
 
   render () {
-    // add date from suggestions panel - only hardcode in storybook
-    const date = 'May 18 2017 at 15:00'
+    const lastModifiedTime = new Date()
+
     return (
       <div className="revision-box">
         <p><Icon name={this.props.icon} className="s0" />
           <img className="u-round activity-avatar" src="" />
-          <a>{this.props.username}</a>
+          <a>{this.props.username}</a>&nbsp;
           has <span className={this.props.status}>{this.props.message}</span>
         </p>
-        <Well className={this.props.wellStatus}>নাম</Well>
+        <Well className={this.props.wellStatus}>{this.props.content}</Well>
         <p className="small u-textMuted">
-          <Icon name="clock" className="n1" /> {date}</p>
+          <Icon name="clock" className="n1" />&nbsp;
+          <FormattedDate value={lastModifiedTime} format="medium" />&nbsp;
+          <FormattedTime value={lastModifiedTime} />
+        </p>
       </div>
     )
   }

@@ -368,6 +368,10 @@ span.loader span div {
   color: var(--Sidebar-color-text);
 }
 
+.sidebar-activity .btn-toolbar {
+  margin-left: 1.5rem;
+}
+
 .hide-sidebar-toggle span {
   vertical-align: sub;
 }

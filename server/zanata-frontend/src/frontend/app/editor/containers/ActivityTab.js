@@ -25,10 +25,41 @@ class ActivityTab extends React.Component {
           <CommentBox />
           <ActivityFeed
             icon="refresh"
-            username="Kath "
+            username="Reviewdude"
+            status="u-textHighlight"
+            message="approved a translation"
+            wellStatus="well-approved"
+            content="নাম"
+          />
+          <ActivityFeed
+            icon="refresh"
+            username="Kathryn"
             status="u-textSuccess"
-            message="marked this as translated"
+            message="created a translated revision"
             wellStatus="well-translated"
+            content="নাম"
+          />
+          <ActivityFeed
+            icon="comment"
+            username="Kathryn"
+            message="commented on a translation"
+            content="I have no idea what I am doing"
+          />
+          <ActivityFeed
+            icon="refresh"
+            username="Kathryn"
+            status="u-textUnsure"
+            message="created a fuzzy translation"
+            wellStatus="well-fuzzy"
+            content="নাম"
+          />
+          <ActivityFeed
+            icon="refresh"
+            username="Reviewdude"
+            status="u-textWarning"
+            message="rejected a translation"
+            wellStatus="well-rejected"
+            content="নাম"
           />
         </div>
       </Tab>

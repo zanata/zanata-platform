@@ -30,56 +30,48 @@ import ActivityFeed from '.'
 storiesOf('ActivityFeed', module)
     .add('comment', () => {
       return <ActivityFeed
+          content={'What in the world does this mean?'}
           icon={'comment'}
-          message={'commented on a translation.'}
-          status={'u-textMuted'} username={'Kathryn '} />
+          message={'commented on a translation'}
+          username={'Kathryn '} />
     })
 
     .add('translated', () => {
-      const icon = 'refresh'
-      const username = 'Kathryn '
-      const message = 'marked this as translated'
-      const status = 'u-textSuccess'
-      const wellStatus = 'well-translated'
-
       return <ActivityFeed
-          icon={icon} message={message} status={status} wellStatus={wellStatus}
-          username={username} />
+          content={'নাম'}
+          icon={'refresh'}
+          message={'created a translation revision'}
+          status={'u-textSuccess'}
+          username={'Kathryn'}
+          wellStatus={'well-translated'} />
     })
 
     .add('fuzzy', () => {
-      const icon = 'refresh'
-      const username = 'Kathryn '
-      const message = 'marked this as fuzzy'
-      const status = 'u-textUnsure'
-      const wellStatus = 'well-fuzzy'
-
       return <ActivityFeed
-          icon={icon} message={message} status={status} wellStatus={wellStatus}
-          username={username} />
+          content={'নাম'}
+          icon={'refresh'}
+          message={'created a fuzzy revision'}
+          status={'u-textUnsure'}
+          username={'Kathryn'}
+          wellStatus={'well-fuzzy'} />
     })
 
     .add('approved', () => {
-      const icon = 'refresh'
-      const username = 'Kathryn '
-      const message = 'approved this translation'
-      const status = 'u-textHighlight'
-      const wellStatus = 'well-approved'
-
       return <ActivityFeed
-          icon={icon} message={message} status={status} wellStatus={wellStatus}
-          username={username} />
+          content={'নাম'}
+          icon={'refresh'}
+          message={'approved a translation'}
+          status={'u-textHighlight'}
+          username={'Kathryn'}
+          wellStatus={'well-approved'} />
     })
 
-
     .add('rejected', () => {
-      const icon = 'refresh'
-      const username = 'Kathryn '
-      const message = 'rejected this translation'
-      const status = 'u-textWarning'
-      const wellStatus = 'well-rejected'
-
       return <ActivityFeed
-          icon={icon} message={message} status={status} wellStatus={wellStatus}
-          username={username} />
+          content={'নাম'}
+          icon={'refresh'}
+          message={'rejected a translation'}
+          status={'u-textWarning'}
+          username={'Kathryn'}
+          wellStatus={'well-rejected'} />
     })
