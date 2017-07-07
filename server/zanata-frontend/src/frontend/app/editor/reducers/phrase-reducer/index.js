@@ -64,7 +64,7 @@ const defaultState = {
   }
 }
 
-const phraseReducer = (state = defaultState, action) => {
+export const phraseReducer = (state = defaultState, action) => {
   switch (action.type) {
     case CLAMP_PAGE:
       return update({

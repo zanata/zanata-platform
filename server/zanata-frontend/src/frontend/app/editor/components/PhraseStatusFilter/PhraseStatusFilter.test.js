@@ -10,6 +10,8 @@ import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'
 import mockGettextCatalog from '../../../../__tests__/mock/mockAngularGettext'
 
+const callback = () => {}
+
 describe('PhraseStatusFilterTest', () => {
   it('FilterToggle markup', () => {
     const doStuff = () => {}
@@ -79,10 +81,8 @@ describe('PhraseStatusFilterTest', () => {
   it('PhraseStatusFilter markup', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <PhraseStatusFilter
-        actions={{
-          resetFilter: () => {},
-          onFilterChange: () => {}
-        }}
+        resetFilter={callback}
+        onFilterChange={callback}
         filter={{
           all: true,
           approved: false,
@@ -111,7 +111,7 @@ describe('PhraseStatusFilterTest', () => {
             isChecked
             title="Total Phrases"
             count={1}
-            onChange={() => {}}
+            onChange={callback}
             withDot={false} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
@@ -121,7 +121,7 @@ describe('PhraseStatusFilterTest', () => {
             isChecked={false}
             title="Approved"
             count={2}
-            onChange={() => {}} />
+            onChange={callback} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
@@ -130,7 +130,7 @@ describe('PhraseStatusFilterTest', () => {
             isChecked
             title="Translated"
             count={3}
-            onChange={() => {}} />
+            onChange={callback} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
@@ -139,7 +139,7 @@ describe('PhraseStatusFilterTest', () => {
             isChecked={false}
             title="Needs Work"
             count={4}
-            onChange={() => {}} />
+            onChange={callback} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
@@ -148,7 +148,7 @@ describe('PhraseStatusFilterTest', () => {
             isChecked
             title="Rejected"
             count={5}
-            onChange={() => {}} />
+            onChange={callback} />
         </li>
         <li className="u-ltemd-hidden u-sMV-1-4">
           <FilterToggle
@@ -157,7 +157,7 @@ describe('PhraseStatusFilterTest', () => {
             isChecked={false}
             title="Untranslated"
             count={6}
-            onChange={() => {}} />
+            onChange={callback} />
         </li>
       </ul>
     )
@@ -177,10 +177,8 @@ describe('PhraseStatusFilterTest', () => {
 
     const filterComponent = TestUtils.renderIntoDocument(
       <PhraseStatusFilter
-        actions={{
-          resetFilter: resetFilter,
-          onFilterChange: onFilterChange
-        }}
+        resetFilter={resetFilter}
+        onFilterChange={onFilterChange}
         filter={{
           all: true,
           approved: false,

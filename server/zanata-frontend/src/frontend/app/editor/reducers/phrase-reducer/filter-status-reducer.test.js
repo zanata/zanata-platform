@@ -11,11 +11,11 @@ describe('filter-status-reducer test', () => {
   it('can reset filters', () => {
     const onlyApproved = filterStatusReducer(undefined, {
       type: UPDATE_STATUS_FILTER,
-      status: 'approved'
+      payload: 'approved'
     })
     const approvedAndTranslated = filterStatusReducer(onlyApproved, {
       type: UPDATE_STATUS_FILTER,
-      status: 'translated'
+      payload: 'translated'
     })
     const filterReset = filterStatusReducer(approvedAndTranslated, {
       type: RESET_STATUS_FILTERS
@@ -33,31 +33,31 @@ describe('filter-status-reducer test', () => {
   it('can update filters', () => {
     const onlyApproved = filterStatusReducer(undefined, {
       type: UPDATE_STATUS_FILTER,
-      status: 'approved'
+      payload: 'approved'
     })
     const approvedAndTranslated = filterStatusReducer(onlyApproved, {
       type: UPDATE_STATUS_FILTER,
-      status: 'translated'
+      payload: 'translated'
     })
     const includeNeedsWork = filterStatusReducer(approvedAndTranslated, {
       type: UPDATE_STATUS_FILTER,
-      status: 'needswork'
+      payload: 'needswork'
     })
     const excludeNeedsWork = filterStatusReducer(includeNeedsWork, {
       type: UPDATE_STATUS_FILTER,
-      status: 'needswork'
+      payload: 'needswork'
     })
     const includeRejected = filterStatusReducer(excludeNeedsWork, {
       type: UPDATE_STATUS_FILTER,
-      status: 'rejected'
+      payload: 'rejected'
     })
     const includeUntranslated = filterStatusReducer(includeRejected, {
       type: UPDATE_STATUS_FILTER,
-      status: 'untranslated'
+      payload: 'untranslated'
     })
     const includeAll = filterStatusReducer(includeUntranslated, {
       type: UPDATE_STATUS_FILTER,
-      status: 'needswork'
+      payload: 'needswork'
     })
 
     expect(onlyApproved).toEqual({
