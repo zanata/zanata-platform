@@ -3,7 +3,7 @@ import update from 'immutability-helper'
 import {
   RESET_STATUS_FILTERS,
   UPDATE_STATUS_FILTER
-} from '../../actions/controls-header-actions'
+} from '../../actions/phrases-action-types'
 
 const defaultState = {
   all: true,

@@ -9,16 +9,18 @@ import {
   STATUS_APPROVED,
   STATUS_REJECTED
 } from '../../utils/status-util'
+import {
+  resetStatusFilter,
+  updateStatusFilter
+} from '../../actions/phrases-filter-actions'
 
 /**
  * Panel with controls to filter the list of trans units
  */
 export class TransUnitFilter extends Component {
   static propTypes = {
-    actions: PropTypes.shape({
-      resetFilter: PropTypes.func.isRequired,
-      onFilterChange: PropTypes.func.isRequired
-    }).isRequired,
+    resetFilter: PropTypes.func.isRequired,
+    onFilterChange: PropTypes.func.isRequired,
 
     filter: PropTypes.shape({
       all: PropTypes.bool.isRequired,
@@ -57,19 +59,14 @@ export class TransUnitFilter extends Component {
     }
   }
 
-  componentWillMount () {
-    const { onFilterChange } = this.props.actions
-    this.filterApproved = onFilterChange.bind(undefined, STATUS_APPROVED)
-    this.filterRejected = onFilterChange.bind(undefined, STATUS_REJECTED)
-    this.filterTranslated = onFilterChange.bind(undefined, STATUS_TRANSLATED)
-    this.filterNeedsWork = onFilterChange.bind(undefined, STATUS_NEEDS_WORK)
-    this.filterUntranslated =
-      onFilterChange.bind(undefined, STATUS_UNTRANSLATED)
-  }
+  filterApproved = () => this.props.onFilterChange(STATUS_APPROVED)
+  filterRejected = () => this.props.onFilterChange(STATUS_REJECTED)
+  filterTranslated = () => this.props.onFilterChange(STATUS_TRANSLATED)
+  filterNeedsWork = () => this.props.onFilterChange(STATUS_NEEDS_WORK)
+  filterUntranslated = () => this.props.onFilterChange(STATUS_UNTRANSLATED)
 
   render () {
-    const { resetFilter } = this.props.actions
-    const gettextCatalog = this.props.gettextCatalog
+    const { gettextCatalog, resetFilter } = this.props
 
     return (
       <ul className="u-listHorizontal u-sizeHeight-1">
@@ -144,16 +141,28 @@ export class TransUnitFilter extends Component {
           </button>
         </li>
   */}
-
       </ul>
     )
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = ({
+  // TODO move counts to a more appropriate place in state
+  headerData: { context: { selectedDoc: { counts } } },
+  phrases: { filter: { status } },
+  ui: { gettextCatalog }}) => {
   return {
-    filter: state.phrases.filter.status
+    counts,
+    filter: status,
+    gettextCatalog
   }
 }
 
-export default connect(mapStateToProps)(TransUnitFilter)
+function mapDispatchToProps (dispatch) {
+  return {
+    resetFilter: () => dispatch(resetStatusFilter()),
+    onFilterChange: (status) => dispatch(updateStatusFilter(status))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(TransUnitFilter)
