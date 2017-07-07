@@ -10,18 +10,23 @@ class ActivityTab extends React.Component {
 
   static propTypes = {
     // eventKey prop to use for the bootstrap Tab
-    eventKey: PropTypes.number.isRequired
+    eventKey: PropTypes.number.isRequired,
+    selectItem: PropTypes.func.isRequired
   }
 
   render () {
-    const { eventKey } = this.props
+    const {
+      eventKey,
+      selectItem
+    } = this.props
+
     return (
       <Tab eventKey={eventKey} title="">
         <div className="sidebar-wrapper" id="tab2">
-          <ActivitySelectList selectItem="all" />
+          <ActivitySelectList selectItem={selectItem} selected="all" />
         </div>
         <div className="sidebar-activity">
-          <LanguageSelectList selectItem="current" />
+          <LanguageSelectList selectItem={selectItem} selected="current" />
           <CommentBox />
           <ActivityFeed
             icon="refresh"
