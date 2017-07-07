@@ -4,7 +4,7 @@ jest.disableAutomock()
 import {
   RESET_STATUS_FILTERS,
   UPDATE_STATUS_FILTER
-} from '../../actions/controls-header-actions'
+} from '../../actions/phrases-action-types'
 import filterStatusReducer from './filter-status-reducer'
 
 describe('filter-status-reducer test', () => {
