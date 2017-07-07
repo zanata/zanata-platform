@@ -16,11 +16,11 @@ const defaultState = {
 
 export default handleActions({
   [RESET_STATUS_FILTERS]: () => defaultState,
-  [UPDATE_STATUS_FILTER]: (state, { status }) => {
+  [UPDATE_STATUS_FILTER]: (state, { payload }) => {
     const newState = update(state, {
       // whenever all is true, the default state will be returned instead
       all: {$set: false},
-      [status]: {$set: !state[status]}
+      [payload]: {$set: !state[payload]}
     })
     // treat all-selected as no filter
     return allStatusesSame(newState) ? defaultState : newState
@@ -30,9 +30,10 @@ export default handleActions({
 /**
  * Check if statuses are either all true or all false
  */
-function allStatusesSame (statuses) {
-  return statuses.approved === statuses.rejected &&
-    statuses.rejected === statuses.translated &&
-    statuses.translated === statuses.needswork &&
-    statuses.needswork === statuses.untranslated
+function allStatusesSame ({
+  approved, rejected, translated, needswork, untranslated}) {
+  return approved === rejected &&
+    rejected === translated &&
+    translated === needswork &&
+    needswork === untranslated
 }

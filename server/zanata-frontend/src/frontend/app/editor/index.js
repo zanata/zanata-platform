@@ -64,13 +64,10 @@ function runApp () {
     predicate: (getState, action) =>
       process.env && (process.env.NODE_ENV === 'development'),
     actionTransformer: (action) => {
-      if (typeof action.type !== 'symbol') {
-        console.warn('You should use a Symbol for this action type: ' +
-          String(action.type))
-      }
       return {
         ...action,
         // allow symbol action type to be printed properly in logs
+        // TODO remove when types are migrated to stop using symbol
         type: String(action.type)
       }
     }
