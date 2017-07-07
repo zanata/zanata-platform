@@ -61,17 +61,6 @@ class ControlsHeader extends React.Component {
           visible: bool.isRequired
         }).isRequired
       }).isRequired,
-      textFlowDisplay: shape({
-        filter: shape({
-          // FIXME should be able to derive this from the other 4
-          all: bool.isRequired,
-          approved: bool.isRequired,
-          translated: bool.isRequired,
-          needswork: bool.isRequired,
-          untranslated: bool.isRequired
-        }).isRequired
-      }).isRequired,
-
       // DO NOT RENAME, the translation string extractor looks specifically
       // for gettextCatalog.getString when generating the translation template.
       gettextCatalog: shape({
@@ -101,11 +90,10 @@ class ControlsHeader extends React.Component {
       toggleMainNav,
       toggleSuggestionPanel
     } = actions
-    const { panels, textFlowDisplay, gettextCatalog } = ui
+    const { panels, gettextCatalog } = ui
     const transFilterProps = {
       actions,
       counts,
-      filter: textFlowDisplay.filter,
       gettextCatalog
     }
     const pagerProps = {
