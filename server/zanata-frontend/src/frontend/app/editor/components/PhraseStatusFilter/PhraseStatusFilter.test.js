@@ -4,13 +4,13 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-dom/test-utils'
-import { TransUnitFilter } from '.'
+import { PhraseStatusFilter } from '.'
 import FilterToggle from '../FilterToggle'
 import { Icon } from '../../../components'
 import { Row } from 'react-bootstrap'
 import mockGettextCatalog from '../../../../__tests__/mock/mockAngularGettext'
 
-describe('TransUnitFilterTest', () => {
+describe('PhraseStatusFilterTest', () => {
   it('FilterToggle markup', () => {
     const doStuff = () => {}
     const actual = ReactDOMServer.renderToStaticMarkup(
@@ -76,9 +76,9 @@ describe('TransUnitFilterTest', () => {
     expect(actual).toEqual(expected)
   })
 
-  it('TransUnitFilter markup', () => {
+  it('PhraseStatusFilter markup', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
-      <TransUnitFilter
+      <PhraseStatusFilter
         actions={{
           resetFilter: () => {},
           onFilterChange: () => {}
@@ -164,7 +164,7 @@ describe('TransUnitFilterTest', () => {
     expect(actual).toEqual(expected)
   })
 
-  it('TransUnitFilter events', () => {
+  it('PhraseStatusFilter events', () => {
     let filterReset = false
     const resetFilter = () => {
       filterReset = true
@@ -176,7 +176,7 @@ describe('TransUnitFilterTest', () => {
     }
 
     const filterComponent = TestUtils.renderIntoDocument(
-      <TransUnitFilter
+      <PhraseStatusFilter
         actions={{
           resetFilter: resetFilter,
           onFilterChange: onFilterChange

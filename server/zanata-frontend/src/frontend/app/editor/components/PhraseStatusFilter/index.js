@@ -17,7 +17,7 @@ import {
 /**
  * Panel with controls to filter the list of trans units
  */
-export class TransUnitFilter extends Component {
+export class PhraseStatusFilter extends Component {
   static propTypes = {
     resetFilter: PropTypes.func.isRequired,
     onFilterChange: PropTypes.func.isRequired,
@@ -165,4 +165,4 @@ function mapDispatchToProps (dispatch) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(TransUnitFilter)
+export default connect(mapStateToProps, mapDispatchToProps)(PhraseStatusFilter)
