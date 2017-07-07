@@ -1,4 +1,5 @@
 import cx from 'classnames'
+import EditorSearchInput from '../components/EditorSearchInput'
 import IconButtonToggle from '../components/IconButtonToggle'
 import Pager from '../components/Pager'
 import TranslatingIndicator from '../components/TranslatingIndicator'
@@ -91,6 +92,7 @@ class ControlsHeader extends React.Component {
       <nav className="u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
         <TranslatingIndicator gettextCatalog={gettextCatalog} />
         <div className="u-floatLeft"><PhraseStatusFilter /></div>
+        <div className="u-floatLeft"><EditorSearchInput /></div>
         <div className="u-floatRight flex">
           <ul className="u-listHorizontal u-textCenter">
             <li className="u-sMV-1-4">
