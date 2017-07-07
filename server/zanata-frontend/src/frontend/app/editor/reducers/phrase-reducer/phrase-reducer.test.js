@@ -1,12 +1,15 @@
 /* global jest describe it expect */
 jest.disableAutomock()
 
-import phraseReducer from './phrase-reducer'
+// Testing the combined phrase reducers since filter states are used in several
+// of the standard paging operations.
+import phraseReducer from '.'
+import phraseFilterReducer from './phrase-filter-reducer'
 import {
   CLAMP_PAGE,
   UPDATE_PAGE
-} from '../actions/controls-header-actions'
-import { COPY_GLOSSARY_TERM } from '../actions/glossary-action-types'
+} from '../../actions/controls-header-actions'
+import { COPY_GLOSSARY_TERM } from '../../actions/glossary-action-types'
 import {
   CANCEL_EDIT,
   COPY_FROM_ALIGNED_SOURCE,
@@ -24,10 +27,11 @@ import {
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
   UNDO_EDIT
-} from '../actions/phrases-action-types'
-import { COPY_SUGGESTION } from '../actions/suggestions-action-types'
-import { SET_SAVE_AS_MODE } from '../actions/key-shortcuts-actions'
-import { MOVE_NEXT, MOVE_PREVIOUS } from '../actions/phrase-navigation-actions'
+} from '../../actions/phrases-action-types'
+import { COPY_SUGGESTION } from '../../actions/suggestions-action-types'
+import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
+import { MOVE_NEXT, MOVE_PREVIOUS }
+  from '../../actions/phrase-navigation-actions'
 
 describe('phrase-reducer test', () => {
   it('generates initial state', () => {
@@ -38,16 +42,7 @@ describe('phrase-reducer test', () => {
       saveAsMode: false,
       inDoc: {},
       detail: {},
-      filter: {
-        status: {
-          all: true,
-          approved: false,
-          rejected: false,
-          translated: false,
-          needswork: false,
-          untranslated: false
-        }
-      },
+      filter: phraseFilterReducer(undefined, { type: 'any' }),
       selectedPhraseId: undefined,
       selectedTextRange: {
         start: 0,
