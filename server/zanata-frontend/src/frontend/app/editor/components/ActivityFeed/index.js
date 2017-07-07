@@ -36,6 +36,7 @@ class ActivityFeed extends React.Component {
   }
 
   render () {
+    // TODO damason make this the last modified date
     const lastModifiedTime = new Date()
 
     return (

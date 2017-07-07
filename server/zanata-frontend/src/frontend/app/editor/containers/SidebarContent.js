@@ -4,7 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Tabs, FormGroup, InputGroup,
-  FormControl, Button } from 'react-bootstrap'
+  FormControl, Button, Badge } from 'react-bootstrap'
 import Icon from '../../components/Icon'
 import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
@@ -107,7 +107,7 @@ class SidebarContent extends React.Component {
     const { glossaryCount } = this.props
     const glossaryCountDisplay = glossaryCount > 0
       // TODO kgough display as a badge instead of text in parens
-      ? <span> ({this.props.glossaryCount})</span>
+      ? <span>({this.props.glossaryCount})</span>
       : undefined
     const glossaryTitle = (
       <span>
@@ -115,6 +115,7 @@ class SidebarContent extends React.Component {
         <span className="hide-md">Glossary{glossaryCountDisplay}</span>
       </span>
     )
+    // ToDo damason comment out activity tab until backend completed
     const activityTitle = (
       <span>
         <Icon name="clock" className="s1 gloss-tab-svg" />

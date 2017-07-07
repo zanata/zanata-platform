@@ -19,7 +19,7 @@ class ActivityTab extends React.Component {
       eventKey,
       selectItem
     } = this.props
-
+    // TODO damason add the selectItem function
     return (
       <Tab eventKey={eventKey} title="">
         <div className="sidebar-wrapper" id="tab2">
