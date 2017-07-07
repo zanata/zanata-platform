@@ -2,7 +2,7 @@ import cx from 'classnames'
 import IconButtonToggle from '../components/IconButtonToggle'
 import Pager from '../components/Pager'
 import TranslatingIndicator from '../components/TranslatingIndicator'
-import TransUnitFilter from '../components/TransUnitFilter'
+import PhraseStatusFilter from '../components/PhraseStatusFilter'
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -90,7 +90,7 @@ class ControlsHeader extends React.Component {
     return (
       <nav className="u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
         <TranslatingIndicator gettextCatalog={gettextCatalog} />
-        <div className="u-floatLeft"><TransUnitFilter /></div>
+        <div className="u-floatLeft"><PhraseStatusFilter /></div>
         <div className="u-floatRight flex">
           <ul className="u-listHorizontal u-textCenter">
             <li className="u-sMV-1-4">
