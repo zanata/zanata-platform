@@ -121,6 +121,7 @@
     "redux-actions": "0.10.0",
     "redux-api-middleware": "1.0.2",
     "redux-logger": "2.6.1",
+    "redux-sac": "0.5.3",
     "redux-thunk": "1.0.3",
     "suitcss-components-button": "4.0.0",
     "suitcss-components-button-group": "2.2.0",

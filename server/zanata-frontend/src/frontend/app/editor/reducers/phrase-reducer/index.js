@@ -1,9 +1,11 @@
 import updateObject from 'immutability-helper'
+import phraseFilterReducer from './phrase-filter-reducer'
+import { composeReducers, subReducer } from 'redux-sac'
 import {
   CLAMP_PAGE,
   UPDATE_PAGE
-} from '../actions/controls-header-actions'
-import { COPY_GLOSSARY_TERM } from '../actions/glossary-action-types'
+} from '../../actions/controls-header-actions'
+import { COPY_GLOSSARY_TERM } from '../../actions/glossary-action-types'
 import {
   CANCEL_EDIT,
   COPY_FROM_ALIGNED_SOURCE,
@@ -21,16 +23,17 @@ import {
   SELECT_PHRASE_SPECIFIC_PLURAL,
   TRANSLATION_TEXT_INPUT_CHANGED,
   UNDO_EDIT
-} from '../actions/phrases-action-types'
-import { COPY_SUGGESTION } from '../actions/suggestions-action-types'
+} from '../../actions/phrases-action-types'
+import { COPY_SUGGESTION } from '../../actions/suggestions-action-types'
 import {
   calculateMaxPageIndex,
   calculateMaxPageIndexFromState,
   getFilteredPhrasesFromState
-} from '../utils/filter-paging-util'
-import { replaceRange } from '../utils/string-utils'
-import { SET_SAVE_AS_MODE } from '../actions/key-shortcuts-actions'
-import { MOVE_NEXT, MOVE_PREVIOUS } from '../actions/phrase-navigation-actions'
+} from '../../utils/filter-paging-util'
+import { replaceRange } from '../../utils/string-utils'
+import { SET_SAVE_AS_MODE } from '../../actions/key-shortcuts-actions'
+import { MOVE_NEXT, MOVE_PREVIOUS
+} from '../../actions/phrase-navigation-actions'
 
 // FIXME this reducer is too big. See if it can be split up.
 
@@ -371,4 +374,7 @@ function insertTextAtRange (phrase, text, {start, end}) {
   })
 }
 
-export default phraseReducer
+export default composeReducers(
+  phraseReducer,
+  subReducer('filter', phraseFilterReducer)
+)
