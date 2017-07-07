@@ -10,10 +10,6 @@ import {
   UI_LOCALES_FETCHED
 } from '../actions/header-action-types'
 import {
-  RESET_STATUS_FILTERS,
-  UPDATE_STATUS_FILTER
-} from '../actions/controls-header-actions'
-import {
   SUGGESTION_PANEL_HEIGHT_CHANGE,
   TOGGLE_SUGGESTIONS
 } from '../actions/suggestions-action-types'
@@ -45,16 +41,6 @@ describe('ui-reducer test', () => {
       },
       uiLocales: {},
       selectedUiLocale: 'en-US',
-      textFlowDisplay: {
-        filter: {
-          all: true,
-          approved: false,
-          rejected: false,
-          translated: false,
-          needswork: false,
-          untranslated: false
-        }
-      },
       gettextCatalog: {
         getString: identity
       }
@@ -148,116 +134,6 @@ describe('ui-reducer test', () => {
         name: 'Japanese',
         nplurals: 1
       }
-    })
-  })
-
-  it('can reset filters', () => {
-    const onlyApproved = uiReducer(undefined, {
-      type: UPDATE_STATUS_FILTER,
-      status: 'approved'
-    })
-    const approvedAndTranslated = uiReducer(onlyApproved, {
-      type: UPDATE_STATUS_FILTER,
-      status: 'translated'
-    })
-    const filterReset = uiReducer(approvedAndTranslated, {
-      type: RESET_STATUS_FILTERS
-    })
-    expect(filterReset.textFlowDisplay.filter).toEqual({
-      all: true,
-      approved: false,
-      rejected: false,
-      translated: false,
-      needswork: false,
-      untranslated: false
-    })
-  })
-
-  it('can update filters', () => {
-    const onlyApproved = uiReducer(undefined, {
-      type: UPDATE_STATUS_FILTER,
-      status: 'approved'
-    })
-    const approvedAndTranslated = uiReducer(onlyApproved, {
-      type: UPDATE_STATUS_FILTER,
-      status: 'translated'
-    })
-    const includeNeedsWork = uiReducer(approvedAndTranslated, {
-      type: UPDATE_STATUS_FILTER,
-      status: 'needswork'
-    })
-    const excludeNeedsWork = uiReducer(includeNeedsWork, {
-      type: UPDATE_STATUS_FILTER,
-      status: 'needswork'
-    })
-    const includeRejected = uiReducer(excludeNeedsWork, {
-      type: UPDATE_STATUS_FILTER,
-      status: 'rejected'
-    })
-    const includeUntranslated = uiReducer(includeRejected, {
-      type: UPDATE_STATUS_FILTER,
-      status: 'untranslated'
-    })
-    const includeAll = uiReducer(includeUntranslated, {
-      type: UPDATE_STATUS_FILTER,
-      status: 'needswork'
-    })
-
-    expect(onlyApproved.textFlowDisplay.filter).toEqual({
-      all: false,
-      approved: true,
-      rejected: false,
-      translated: false,
-      needswork: false,
-      untranslated: false
-    })
-    expect(approvedAndTranslated.textFlowDisplay.filter).toEqual({
-      all: false,
-      approved: true,
-      rejected: false,
-      translated: true,
-      needswork: false,
-      untranslated: false
-    })
-    expect(includeNeedsWork.textFlowDisplay.filter).toEqual({
-      all: false,
-      approved: true,
-      rejected: false,
-      translated: true,
-      needswork: true,
-      untranslated: false
-    })
-    expect(excludeNeedsWork.textFlowDisplay.filter).toEqual({
-      all: false,
-      approved: true,
-      rejected: false,
-      translated: true,
-      needswork: false,
-      untranslated: false
-    })
-    expect(includeRejected.textFlowDisplay.filter).toEqual({
-      all: false,
-      approved: true,
-      rejected: true,
-      translated: true,
-      needswork: false,
-      untranslated: false
-    })
-    expect(includeUntranslated.textFlowDisplay.filter).toEqual({
-      all: false,
-      approved: true,
-      rejected: true,
-      translated: true,
-      needswork: false,
-      untranslated: true
-    })
-    expect(includeAll.textFlowDisplay.filter).toEqual({
-      all: true,
-      approved: false,
-      rejected: false,
-      translated: false,
-      needswork: false,
-      untranslated: false
     })
   })
 

@@ -11,7 +11,7 @@ export function getCurrentPagePhrasesFromState (state) {
 }
 
 export function getFilteredPhrasesFromState (state) {
-  return filterPhrases(state.ui.textFlowDisplay.filter,
+  return filterPhrases(state.phrases.filter,
                        getSelectedDocPhrasesFromState(state))
 }
 
@@ -19,12 +19,12 @@ export function getFilteredPhrasesFromState (state) {
  * Given phrase summary list (detail not needed), get
  * phrases that match the given filter.
  */
-export function filterPhrases (filter, phrases) {
-  if (filter.all) {
+export function filterPhrases ({ status }, phrases) {
+  if (status.all) {
     return phrases
   }
   const filtered = phrases.filter(phrase => {
-    return filter[phrase.status]
+    return status[phrase.status]
   })
   return filtered
 }

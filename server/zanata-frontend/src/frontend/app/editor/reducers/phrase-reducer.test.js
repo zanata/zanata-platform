@@ -1,7 +1,7 @@
+/* global jest describe it expect */
 jest.disableAutomock()
 
 import phraseReducer from './phrase-reducer'
-import uiReducer from './ui-reducer'
 import {
   CLAMP_PAGE,
   UPDATE_PAGE
@@ -38,6 +38,16 @@ describe('phrase-reducer test', () => {
       saveAsMode: false,
       inDoc: {},
       detail: {},
+      filter: {
+        status: {
+          all: true,
+          approved: false,
+          rejected: false,
+          translated: false,
+          needswork: false,
+          untranslated: false
+        }
+      },
       selectedPhraseId: undefined,
       selectedTextRange: {
         start: 0,
@@ -55,14 +65,9 @@ describe('phrase-reducer test', () => {
      * the need to mock getState() with some data from several places in state.
      * The solution is to rearrange the state so that the phrase filtering data
      * and current document are part of the phrases data.
-     * FIXME move phrase filtering into phrase reducer
      * FIXME move selected doc state (consider overall docs/phrases structure)
      */
 
-    // Use ui-reducer just to get the default unfiltered state rather than
-    // manually build it up. This will be unnecessary when filter state is
-    // nested within the phrase state.
-    const { filter } = uiReducer(undefined, {}).textFlowDisplay
     const initialState = phraseReducer(undefined, {})
     // Simplified model for test, since code happens to only check id of the
     // first element. Could be a little fragile but we can make a proper list
@@ -94,12 +99,8 @@ describe('phrase-reducer test', () => {
             paging: {
               countPerPage: 20,
               pageIndex: 7
-            }
-          },
-          ui: {
-            textFlowDisplay: {
-              filter: filter
-            }
+            },
+            filter: initialState.filter
           }
         }
       }
@@ -410,7 +411,6 @@ describe('phrase-reducer test', () => {
   })
 
   it('can select phrase', () => {
-    const { filter } = uiReducer(undefined, {}).textFlowDisplay
     const phraseList = [ { id: 'p01' }, { id: 'p02' } ]
     const initialState = phraseReducer(undefined, {
       type: PHRASE_LIST_FETCHED,
@@ -433,12 +433,8 @@ describe('phrase-reducer test', () => {
             paging: {
               countPerPage: 20,
               pageIndex: 7
-            }
-          },
-          ui: {
-            textFlowDisplay: {
-              filter: filter
-            }
+            },
+            filter: initialState.filter
           }
         }
       }
@@ -449,7 +445,6 @@ describe('phrase-reducer test', () => {
   })
 
   it('can select a specific plural', () => {
-    const { filter } = uiReducer(undefined, {}).textFlowDisplay
     const phraseList = [ { id: 'p01' }, { id: 'p02' } ]
     const withPhraseList = phraseReducer(undefined, {
       type: PHRASE_LIST_FETCHED,
@@ -484,12 +479,8 @@ describe('phrase-reducer test', () => {
             paging: {
               countPerPage: 20,
               pageIndex: 7
-            }
-          },
-          ui: {
-            textFlowDisplay: {
-              filter: filter
-            }
+            },
+            filter: withPhraseDetail.filter
           }
         }
       }
@@ -690,11 +681,9 @@ describe('phrase-reducer test', () => {
     const phraseList = [ { id: 'p01' }, { id: 'p02' }, { id: 'p03' } ]
     const mockState = {
       context: { docId: 'mydoc' },
-      phrases: { inDoc: { mydoc: phraseList } },
-      ui: {
-        textFlowDisplay: {
-          filter: uiReducer(undefined, {}).textFlowDisplay.filter
-        }
+      phrases: {
+        inDoc: { mydoc: phraseList },
+        filter: phraseReducer(undefined, {}).filter
       }
     }
     const getState = () => mockState

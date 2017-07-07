@@ -1,6 +1,7 @@
 import FilterToggle from '../FilterToggle'
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
@@ -12,7 +13,7 @@ import {
 /**
  * Panel with controls to filter the list of trans units
  */
-class TransUnitFilter extends React.Component {
+export class TransUnitFilter extends Component {
   static propTypes = {
     actions: PropTypes.shape({
       resetFilter: PropTypes.func.isRequired,
@@ -149,4 +150,10 @@ class TransUnitFilter extends React.Component {
   }
 }
 
-export default TransUnitFilter
+const mapStateToProps = (state) => {
+  return {
+    filter: state.phrases.filter.status
+  }
+}
+
+export default connect(mapStateToProps)(TransUnitFilter)
