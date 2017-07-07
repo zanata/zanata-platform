@@ -1,7 +1,9 @@
 import { createAction } from 'redux-actions'
 import {
   RESET_STATUS_FILTERS,
-  UPDATE_STATUS_FILTER
+  UPDATE_STATUS_FILTER,
+  TOGGLE_ADVANCED_PHRASE_FILTERS,
+  UPDATE_PHRASE_FILTER
 } from './phrases-action-types'
 import { clampPage } from './controls-header-actions'
 
@@ -14,3 +16,6 @@ export function updateStatusFilter (status) {
     dispatch(clampPage())
   }
 }
+
+export const toggleAdvanced = createAction(TOGGLE_ADVANCED_PHRASE_FILTERS)
+export const updatePhraseFilter = createAction(UPDATE_PHRASE_FILTER)

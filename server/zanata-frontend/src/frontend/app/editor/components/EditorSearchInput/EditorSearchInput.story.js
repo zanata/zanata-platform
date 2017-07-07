@@ -1,16 +1,24 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { storiesOf } from '@kadira/storybook'
 import { action } from '@kadira/storybook-addon-actions'
-import RealEditorSearchInput from '.'
+import { EditorSearchInput as RealEditorSearchInput } from '.'
 
 // Simple wrapper component to handle text updates for the story
 // Uses the component name so it shows accurately how to use it
 class EditorSearchInput extends React.Component {
+  static propTypes = {
+    search: PropTypes.object.isRequired,
+    showAdvanced: PropTypes.bool.isRequired,
+    toggleAdvanced: PropTypes.func.isRequired,
+    updateSearch: PropTypes.func.isRequired
+  }
+
   constructor (props) {
     super(props)
     this.state = {
       search: props.search,
-      advanced: props.advanced
+      showAdvanced: props.showAdvanced
     }
   }
 
@@ -18,7 +26,7 @@ class EditorSearchInput extends React.Component {
     // ensure the action is visible in the logger
     this.props.toggleAdvanced()
     this.setState({
-      advanced: !this.state.advanced
+      showAdvanced: !this.state.showAdvanced
     })
   }
 
@@ -36,7 +44,7 @@ class EditorSearchInput extends React.Component {
   render () {
     return (
       <RealEditorSearchInput
-        advanced={this.state.advanced}
+        showAdvanced={this.state.showAdvanced}
         search={this.state.search}
         updateSearch={this.updateSearch}
         toggleAdvanced={this.toggleAdvanced}
@@ -61,7 +69,7 @@ storiesOf('EditorSearchInput', module)
     <EditorSearchInput
       search={blankSearch}
       updateSearch={action('updateSearch')}
-      advanced={false}
+      showAdvanced={false}
       toggleAdvanced={action('toggleAdvanced')}
     />
   ))
@@ -72,7 +80,7 @@ storiesOf('EditorSearchInput', module)
         text: 'it was the'
       }}
       updateSearch={action('updateSearch')}
-      advanced={false}
+      showAdvanced={false}
       toggleAdvanced={action('toggleAdvanced')}
     />
   ))
@@ -83,7 +91,7 @@ storiesOf('EditorSearchInput', module)
         text: 'it was the worst'
       }}
       updateSearch={action('updateSearch')}
-      advanced={true}
+      showAdvanced
       toggleAdvanced={action('toggleAdvanced')}
     />
   ))
@@ -100,7 +108,7 @@ storiesOf('EditorSearchInput', module)
         msgctxt: 'chapter01.txt'
       }}
       updateSearch={action('updateSearch')}
-      advanced={true}
+      showAdvanced
       toggleAdvanced={action('toggleAdvanced')}
     />
   ))

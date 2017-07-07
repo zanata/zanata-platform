@@ -4,7 +4,7 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import TestUtils from 'react-dom/test-utils'
-import EditorSearchInput from '.'
+import { EditorSearchInput } from '.'
 import { Icon } from '../../../components'
 import IconButton from '../IconButton'
 import { Panel, Button } from 'react-bootstrap'

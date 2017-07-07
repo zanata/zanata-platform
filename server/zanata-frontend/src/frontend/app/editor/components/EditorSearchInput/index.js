@@ -20,12 +20,17 @@
  */
 
 import cx from 'classnames'
+import { connect } from 'react-redux'
 import { Icon } from '../../../components'
 import IconButton from '../IconButton'
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Panel, Button } from 'react-bootstrap'
 import { map } from 'lodash'
+import {
+  toggleAdvanced,
+  updatePhraseFilter
+} from '../../actions/phrases-filter-actions'
 
 const fields = {
   resourceId: {
@@ -65,9 +70,9 @@ const fields = {
  * more appropriate widgets (e.g. username field that suggests usernames, date
  * input with calendar widget).
  */
-class EditorSearchInput extends React.Component {
+export class EditorSearchInput extends Component {
   static propTypes = {
-    advanced: PropTypes.bool.isRequired,
+    showAdvanced: PropTypes.bool.isRequired,
     search: PropTypes.shape({
       text: PropTypes.string.isRequired,
       resourceId: PropTypes.string.isRequired,
@@ -164,7 +169,7 @@ class EditorSearchInput extends React.Component {
   }
 
   render () {
-    const { advanced } = this.props
+    const { showAdvanced } = this.props
 
     const advancedFields = map(fields, (field, key) => (
       <AdvancedField key={key}
@@ -197,9 +202,9 @@ class EditorSearchInput extends React.Component {
           {this.clearButtonElement()}
           <span className="InputGroup-addon btn-xs advsearch btn-link"
             onClick={this.toggleAdvanced}>
-            {advanced ? 'Hide advanced' : 'Advanced'}</span>
+            {showAdvanced ? 'Hide advanced' : 'Advanced'}</span>
         </div>
-        <Panel collapsible expanded={this.props.advanced && this.state.focused}>
+        <Panel collapsible expanded={showAdvanced && this.state.focused}>
           <ul>
             {advancedFields}
           </ul>
@@ -213,7 +218,7 @@ class EditorSearchInput extends React.Component {
   }
 }
 
-class AdvancedField extends React.Component {
+class AdvancedField extends Component {
   static propTypes = {
     id: PropTypes.any.isRequired,
     field: PropTypes.shape({
@@ -249,4 +254,18 @@ class AdvancedField extends React.Component {
   }
 }
 
-export default EditorSearchInput
+function mapStateToProps ({ phrases: { filter: { showAdvanced, advanced } } }) {
+  return {
+    showAdvanced,
+    search: advanced
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    toggleAdvanced: () => dispatch(toggleAdvanced()),
+    updateSearch: (newValues) => dispatch(updatePhraseFilter(newValues))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditorSearchInput)
