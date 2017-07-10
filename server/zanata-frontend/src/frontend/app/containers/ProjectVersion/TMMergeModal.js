@@ -53,6 +53,7 @@ const MergeOptions = (
     onDragMoveEnd,
     removeProjectVersion
   }) => {
+  const noResults = (projectVersions.length === 0) ? 'No results' : ''
   return (
     <div>
       <p className="intro">
@@ -136,6 +137,7 @@ const MergeOptions = (
             <div>
               <LoaderText loading={fetchingProject}
                 loadingText={'Fetching Projects'} />
+              <span className="text-muted">{noResults}</span>
             </div>
             <div className="pre-scrollable">
               <ProjectVersionPanels projectVersions={projectVersions}
@@ -377,7 +379,7 @@ class TMMergeModal extends Component {
       fetchingLocale,
       processStatus
     } = this.props
-
+    const noVersionsToMerge = (this.state.selectedVersions.length === 0)
     const modalBody = processStatus
       ? (
       <CancellableProgressBar onCancelOperation={this.cancelTMMerge}
@@ -418,7 +420,7 @@ class TMMergeModal extends Component {
                 Cancel
               </Button>
               <Button bsStyle='primary' onClick={this.submitForm}
-                disabled={triggered}>
+                disabled={triggered || noVersionsToMerge}>
                 Merge translations
               </Button>
             </Row>
