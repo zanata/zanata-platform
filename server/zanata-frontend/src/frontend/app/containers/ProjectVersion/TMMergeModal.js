@@ -144,7 +144,6 @@ const MergeOptions = (
                 selectedVersions={mergeOptions.selectedVersions}
                 onVersionCheckboxChange={onVersionCheckboxChange}
                 onAllVersionCheckboxChange={onAllVersionCheckboxChange}
-                projectList={projectVersions}
               />
             </div>
           </Col>
@@ -252,6 +251,17 @@ class TMMergeModal extends Component {
       // bar animation finishes
       setTimeout(this.props.mergeProcessFinished, 1000)
     }
+    // Filter out the source project and version if present in search results
+    // TODO: perform this filtering on the server side when retrieving projects
+    nextProps.projectVersions.map((project) => {
+      project.versions = project.versions.filter((version) => {
+        if (project.id === nextProps.projectSlug &&
+          version.id === nextProps.versionSlug) {
+          return
+        }
+        return version
+      })
+    })
   }
   queryTMMergeProgress = () => {
     this.props.queryTMMergeProgress(this.props.processStatus.url)
