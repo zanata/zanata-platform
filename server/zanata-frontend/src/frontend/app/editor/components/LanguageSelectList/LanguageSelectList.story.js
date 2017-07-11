@@ -29,6 +29,8 @@ import LanguageSelectList from '.'
  */
 
 storiesOf('LanguageSelectList', module)
-    .add('default', () => <LanguageSelectList selected="current"
+    .add('default', () =>
+
+        <LanguageSelectList selected="current"
                            selectItem={action('selectItem')}
     />)

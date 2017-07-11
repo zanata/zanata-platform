@@ -1,6 +1,6 @@
 import React from 'react'
 import { storiesOf } from '@kadira/storybook'
-import ActivityFeed from '.'
+import ActivityFeedItem from '.'
 
 /*
  * Copyright 2016, Red Hat, Inc. and individual contributors as indicated by the
@@ -26,20 +26,23 @@ import ActivityFeed from '.'
 /*
  * See .storybook/README.md for info on the component storybook.
  */
+const lastModifiedTime = new Date()
 
-storiesOf('ActivityFeed', module)
+storiesOf('ActivityFeedItem', module)
     .add('comment', () => {
-      return <ActivityFeed
+      return <ActivityFeedItem
           content={'What in the world does this mean?'}
           icon={'comment'}
+          lastModifiedTime={lastModifiedTime}
           message={'commented on a translation'}
           username={'Kathryn '} />
     })
 
     .add('translated', () => {
-      return <ActivityFeed
+      return <ActivityFeedItem
           content={'নাম'}
           icon={'refresh'}
+          lastModifiedTime={lastModifiedTime}
           message={'created a translation revision'}
           status={'u-textSuccess'}
           username={'Kathryn'}
@@ -47,9 +50,10 @@ storiesOf('ActivityFeed', module)
     })
 
     .add('fuzzy', () => {
-      return <ActivityFeed
+      return <ActivityFeedItem
           content={'নাম'}
           icon={'refresh'}
+          lastModifiedTime={lastModifiedTime}
           message={'created a fuzzy revision'}
           status={'u-textUnsure'}
           username={'Kathryn'}
@@ -57,9 +61,10 @@ storiesOf('ActivityFeed', module)
     })
 
     .add('approved', () => {
-      return <ActivityFeed
+      return <ActivityFeedItem
           content={'নাম'}
           icon={'refresh'}
+          lastModifiedTime={lastModifiedTime}
           message={'approved a translation'}
           status={'u-textHighlight'}
           username={'Kathryn'}
@@ -67,9 +72,10 @@ storiesOf('ActivityFeed', module)
     })
 
     .add('rejected', () => {
-      return <ActivityFeed
+      return <ActivityFeedItem
           content={'নাম'}
           icon={'refresh'}
+          lastModifiedTime={lastModifiedTime}
           message={'rejected a translation'}
           status={'u-textWarning'}
           username={'Kathryn'}

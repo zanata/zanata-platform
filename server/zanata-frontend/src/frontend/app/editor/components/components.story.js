@@ -4,7 +4,7 @@
  * See .storybook-editor for main config
  */
 
-require('./ActivityFeed/ActivityFeed.story')
+require('./ActivityFeedItem/ActivityFeedItem.story')
 require('./ActivitySelectList/ActivitySelectList.story')
 require('./Button/Button.story.js')
 require('./CommentBox/CommentBox.story')

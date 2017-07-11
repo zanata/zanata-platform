@@ -4,7 +4,7 @@ import { Tab } from 'react-bootstrap'
 import ActivitySelectList from '../components/ActivitySelectList'
 import LanguageSelectList from '../components/LanguageSelectList'
 import CommentBox from '../components/CommentBox'
-import ActivityFeed from '../components/ActivityFeed'
+import ActivityFeedItem from '../components/ActivityFeedItem'
 
 class ActivityTab extends React.Component {
 
@@ -28,7 +28,7 @@ class ActivityTab extends React.Component {
         <div className="sidebar-activity">
           <LanguageSelectList selectItem={selectItem} selected="current" />
           <CommentBox />
-          <ActivityFeed
+          <ActivityFeedItem
             icon="refresh"
             username="Reviewdude"
             status="u-textHighlight"
@@ -36,7 +36,7 @@ class ActivityTab extends React.Component {
             wellStatus="well-approved"
             content="নাম"
           />
-          <ActivityFeed
+          <ActivityFeedItem
             icon="refresh"
             username="Kathryn"
             status="u-textSuccess"
@@ -44,13 +44,13 @@ class ActivityTab extends React.Component {
             wellStatus="well-translated"
             content="নাম"
           />
-          <ActivityFeed
+          <ActivityFeedItem
             icon="comment"
             username="Kathryn"
             message="commented on a translation"
             content="I have no idea what I am doing"
           />
-          <ActivityFeed
+          <ActivityFeedItem
             icon="refresh"
             username="Kathryn"
             status="u-textUnsure"
@@ -58,7 +58,7 @@ class ActivityTab extends React.Component {
             wellStatus="well-fuzzy"
             content="নাম"
           />
-          <ActivityFeed
+          <ActivityFeedItem
             icon="refresh"
             username="Reviewdude"
             status="u-textWarning"

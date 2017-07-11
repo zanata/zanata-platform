@@ -5,17 +5,14 @@ import SelectButtonList from '../../components/SelectButtonList'
 const items = [
   {
     id: 'current',
-    icon: 'language',
     label: 'Current'
   },
   {
     id: 'all',
-    icon: 'language',
     label: 'All'
   },
   {
     id: 'source',
-    icon: 'language',
     label: 'Source'
   }
 ]
@@ -28,7 +25,7 @@ class LanguageSelectList extends React.Component {
 
   render () {
     return (
-      <SelectButtonList items={items} icon='language'
+      <SelectButtonList items={items}
         className="Button--primary" selected={this.props.selected}
         selectItem={this.props.selectItem}
       />

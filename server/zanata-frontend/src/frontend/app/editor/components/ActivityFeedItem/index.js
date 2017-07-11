@@ -25,10 +25,11 @@ import { FormattedDate, FormattedTime } from 'react-intl'
 import Icon from '../../../components/Icon'
 import { Well } from 'react-bootstrap'
 
-class ActivityFeed extends React.Component {
+class ActivityFeedItem extends React.Component {
   static propTypes = {
     content: PropTypes.string.isRequired,
     icon: PropTypes.oneOf(['comment', 'refresh']).isRequired,
+    lastModifiedTime: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
     status: PropTypes.string,
     username: PropTypes.string.isRequired,
@@ -36,9 +37,6 @@ class ActivityFeed extends React.Component {
   }
 
   render () {
-    // TODO damason make this the last modified date
-    const lastModifiedTime = new Date()
-
     return (
       <div className="revision-box">
         <p><Icon name={this.props.icon} className="s0" />
@@ -49,12 +47,13 @@ class ActivityFeed extends React.Component {
         <Well className={this.props.wellStatus}>{this.props.content}</Well>
         <p className="small u-textMuted">
           <Icon name="clock" className="n1" />&nbsp;
-          <FormattedDate value={lastModifiedTime} format="medium" />&nbsp;
-          <FormattedTime value={lastModifiedTime} />
+          <FormattedDate value={this.props.lastModifiedTime}
+            format="medium" />&nbsp;
+          <FormattedTime value={this.props.lastModifiedTime} />
         </p>
       </div>
     )
   }
 }
 
-export default ActivityFeed
+export default ActivityFeedItem

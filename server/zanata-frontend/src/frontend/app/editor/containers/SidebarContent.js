@@ -4,7 +4,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Tabs, FormGroup, InputGroup,
-  FormControl, Button, Badge } from 'react-bootstrap'
+  FormControl, Button } from 'react-bootstrap'
 import Icon from '../../components/Icon'
 import { connect } from 'react-redux'
 import { isEmpty, isUndefined } from 'lodash'
