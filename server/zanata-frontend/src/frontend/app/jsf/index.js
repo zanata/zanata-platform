@@ -12,6 +12,9 @@ import { syncHistoryWithStore } from 'react-router-redux'
 import { apiMiddleware } from 'redux-api-middleware'
 import JsfRoot from './JsfRoot'
 import rootReducer from '../reducers'
+import {
+  toggleTMMergeModal
+} from '../actions/version-actions'
 
 const logger = createLogger({
   predicate: (getState, action) =>
@@ -42,6 +45,7 @@ const store = ((initialState) => {
 
 const enhancedHistory = syncHistoryWithStore(history, store)
 export default function mountReactComponent () {
+  window.openTMMergeModal = () => store.dispatch(toggleTMMergeModal())
   const mountPoint = document.getElementById('jsfReactRoot')
 
   render(<JsfRoot store={store} history={enhancedHistory} />, mountPoint)

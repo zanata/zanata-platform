@@ -52,7 +52,8 @@ const version = handleActions({
     return update(state, {
       locales: { $set: action.payload },
       fetchingLocale: { $set: false },
-      notification: { $set: undefined }
+      notification: { $set: undefined },
+      emptyLocales: { $set: action.payload.length === 0 }
     })
   },
   [VERSION_LOCALES_FAILURE]: (state, action) => {

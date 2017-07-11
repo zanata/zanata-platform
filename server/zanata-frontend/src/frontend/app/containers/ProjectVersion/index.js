@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import { Button }
-  from 'react-bootstrap'
 import Helmet from 'react-helmet'
 import TMMergeModal from './TMMergeModal'
 
@@ -23,20 +21,11 @@ class ProjectVersion extends Component {
   }
 
   render () {
-    const {
-      openTMMergeModal,
-      params
-    } = this.props
-
+    const { params } = this.props
     return (
       <div className='page wide-view-theme' id='version'>
         <Helmet title='ProjectVersion' />
         <div className='center-block'>
-          <h1>Project Version</h1>
-          <Button
-            onClick={openTMMergeModal}>
-            Version
-          </Button>
           <TMMergeModal projectSlug={params.project}
             versionSlug={params.version} />
         </div>

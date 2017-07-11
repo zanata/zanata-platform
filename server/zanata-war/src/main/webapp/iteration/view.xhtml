@@ -433,6 +433,15 @@
                     </li>
                   </ui:fragment>
                   <ui:fragment
+                    rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
+                    <li>
+                      <a href="javascript:window.openTMMergeModal()" class="i__item--right">
+                        TM Merge Translations
+                        <i class="i i--translate i__item__icon"></i>
+                      </a>
+                    </li>
+                  </ui:fragment>
+                  <ui:fragment
                     rendered="#{identity.hasPermission(versionHome.instance, 'insert')}">
                     <li>
                       <h:link outcome="/project/add_iteration.xhtml"
