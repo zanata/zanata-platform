@@ -27,7 +27,12 @@ import { Well } from 'react-bootstrap'
 
 //TODO add other statuses
 const statusToColor = {
-  approved: 'u-textHighlight'
+  approved: 'u-textHighlight',
+  rejected: 'u-textWarning',
+  translated: 'u-textSuccess',
+  fuzzy: 'u-textUnsure',
+  untranslated: 'u-textPrimary'
+
 }
 
 const statusToWellClass = {
