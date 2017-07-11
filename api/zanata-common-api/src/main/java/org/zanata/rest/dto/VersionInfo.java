@@ -56,7 +56,7 @@ public final class VersionInfo implements Serializable {
     }
 
     /**
-     * Timestamp when the current system version was built
+     * ISO8601 timestamp for when the current system version was built
      */
     @XmlElement(name = "buildTimeStamp", namespace = Namespaces.ZANATA_OLD)
     @DocumentationExample("20170225-1448")
