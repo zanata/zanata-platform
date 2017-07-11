@@ -85,7 +85,7 @@ public interface TranslatedDocResource extends RestResource {
      * @param extensions
      *            The translation extensions to retrieve (e.g. "comment"). This
      *            parameter allows multiple values.
-     * @param createSkeletons
+     * @param skeletons
      *            Indicates whether to generate untranslated entries or not.
      * @param eTag
      *            An Entity tag identifier. Based on this identifier (if
@@ -110,7 +110,7 @@ public interface TranslatedDocResource extends RestResource {
     Response getTranslations(@PathParam("id") String idNoSlash,
             @PathParam("locale") LocaleId locale,
             @QueryParam("ext") Set<String> extensions,
-            @QueryParam("skeletons") boolean createSkeletons,
+            @QueryParam("skeletons") boolean skeletons,
             @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag);
 
     /**
