@@ -5,21 +5,26 @@ import SelectButtonList from '../../components/SelectButtonList'
 const items = [
   {
     id: 'current',
+    icon: 'language',
     label: 'Current'
   },
   {
     id: 'all',
+    icon: 'language',
     label: 'All'
   },
   {
     id: 'source',
+    icon: 'language',
     label: 'Source'
   }
 ]
 
+const idType = PropTypes.oneOf(['current', 'all', 'source'])
+
 class LanguageSelectList extends React.Component {
   static propTypes = {
-    selected: PropTypes.oneOf(['current', 'all', 'source']),
+    selected: idType.isRequired,
     selectItem: PropTypes.func.isRequired
   }
 
@@ -32,5 +37,7 @@ class LanguageSelectList extends React.Component {
     )
   }
 }
+
+LanguageSelectList.idType = idType
 
 export default LanguageSelectList

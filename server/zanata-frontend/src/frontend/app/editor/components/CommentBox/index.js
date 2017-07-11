@@ -20,13 +20,28 @@
  */
 
 import React from 'react'
+import { isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import { Button, FormGroup, ControlLabel, FormControl } from 'react-bootstrap'
 import Icon from '../../../components/Icon'
 
 class CommentBox extends React.Component {
   static propTypes = {
-    postComment: PropTypes.string
+    postComment: PropTypes.func.isRequired
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {commentText: ''}
+  }
+
+  postComment = () => {
+    const text = this.state.commentText
+    this.props.postComment(text)
+  }
+
+  setCommentText = (event) => {
+    this.setState({commentText: event.target.value})
   }
 
   render () {
@@ -37,9 +52,9 @@ class CommentBox extends React.Component {
             <Icon name="comment" className="s0" /> Post a comment
           </ControlLabel><br />
           <FormControl componentClass="textarea"
-            placeholder="..." />
+            placeholder="..." onChange={this.setCommentText} />
         </FormGroup>
-        <Button onClick={this.props.postComment}
+        <Button disabled={isEmpty(this.state.commentText)} onClick={this.postComment}
           className="Button Button--small u-rounded Button--primary pull-right">
          Post comment
         </Button>

@@ -27,7 +27,8 @@ import Icon from '../../../components/Icon'
 class SelectButton extends React.Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
-    icon: PropTypes.oneOf(['clock', 'comment', 'refresh', 'language']),
+    icon: PropTypes.oneOf(
+        ['clock', 'comment', 'refresh', 'language']).isRequired,
     buttonName: PropTypes.string,
     className: PropTypes.string.isRequired,
     selected: PropTypes.bool.isRequired,
@@ -41,7 +42,7 @@ class SelectButton extends React.Component {
   render () {
     return (
       <Button onClick={this.selectItem}
-          className={cx('Button Button--small u-rounded',
+        className={cx('Button Button--small u-rounded',
           this.props.className, {
             'is-active': this.props.selected
           })}>

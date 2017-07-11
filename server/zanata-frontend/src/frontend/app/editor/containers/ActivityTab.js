@@ -11,22 +11,28 @@ class ActivityTab extends React.Component {
   static propTypes = {
     // eventKey prop to use for the bootstrap Tab
     eventKey: PropTypes.number.isRequired,
-    selectItem: PropTypes.func.isRequired
+    selectActivityTypeFilter: PropTypes.func.isRequired,
+    selectLanguageFilter: PropTypes.func.isRequired,
+    selectedActivites: ActivitySelectList.idType,
+    selectedLanguages: LanguageSelectList.idType
   }
 
   render () {
     const {
       eventKey,
-      selectItem
+      selectActivityTypeFilter,
+      selectLanguageFilter,
+      selectedActivites,
+      selectedLanguages
     } = this.props
     // TODO damason add the selectItem function
     return (
       <Tab eventKey={eventKey} title="">
         <div className="sidebar-wrapper" id="tab2">
-          <ActivitySelectList selectItem={selectItem} selected="all" />
+          <ActivitySelectList selectItem={selectActivityTypeFilter} selected={selectedActivites} />
         </div>
         <div className="sidebar-activity">
-          <LanguageSelectList selectItem={selectItem} selected="current" />
+          <LanguageSelectList selectItem={selectLanguageFilter} selected={selectedLanguages} />
           <CommentBox />
           <ActivityFeedItem
             icon="refresh"

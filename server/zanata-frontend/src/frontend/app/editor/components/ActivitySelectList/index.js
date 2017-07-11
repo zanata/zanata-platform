@@ -20,9 +20,11 @@ const items = [
   }
 ]
 
+const idType = PropTypes.oneOf(['all', 'comments', 'updates'])
+
 class ActivitySelectList extends React.Component {
   static propTypes = {
-    selected: PropTypes.oneOf(['all', 'comments', 'updates']),
+    selected: idType.isRequired,
     selectItem: PropTypes.func.isRequired
   }
 
@@ -35,5 +37,7 @@ class ActivitySelectList extends React.Component {
     )
   }
 }
+
+ActivitySelectList.idType = idType
 
 export default ActivitySelectList

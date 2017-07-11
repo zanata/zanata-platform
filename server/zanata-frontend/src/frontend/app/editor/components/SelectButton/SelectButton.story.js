@@ -8,10 +8,12 @@ import SelectButton from '.'
  */
 storiesOf('SelectButton', module)
     .add('default', () => (
-        <SelectButton icon="clock" buttonName="All" className="Button--secondary" selected={false} />
+        <SelectButton icon="clock" id="all" selectItem={action('selectItem')} buttonName="All"
+          className="Button--secondary" selected={false} />
     ))
 
     .add('active', () => (
-        <SelectButton icon="clock" buttonName="All" className="Button--secondary" selected={true} />
+        <SelectButton icon="clock" id="all" selectItem={action('selectItem')} buttonName="All"
+          className="Button--secondary" selected={true} />
     ))
 

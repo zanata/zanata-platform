@@ -61,14 +61,13 @@ storiesOf('ActivityFeedItem', module)
     })
 
     .add('approved', () => {
-      return <ActivityFeedItem
-          content={'নাম'}
-          icon={'refresh'}
+      return <ActivityFeedItem statusapproved
+          content='নাম'
+          icon='refresh'
           lastModifiedTime={lastModifiedTime}
-          message={'approved a translation'}
-          status={'u-textHighlight'}
-          username={'Kathryn'}
-          wellStatus={'well-approved'} />
+          message='approved a translation'
+          status='approved'
+          username='Kathryn' />
     })
 
     .add('rejected', () => {
@@ -78,6 +77,5 @@ storiesOf('ActivityFeedItem', module)
           lastModifiedTime={lastModifiedTime}
           message={'rejected a translation'}
           status={'u-textWarning'}
-          username={'Kathryn'}
-          wellStatus={'well-rejected'} />
+          username={'Kathryn'} />
     })

@@ -25,15 +25,25 @@ import { FormattedDate, FormattedTime } from 'react-intl'
 import Icon from '../../../components/Icon'
 import { Well } from 'react-bootstrap'
 
+//TODO add other statuses
+const statusToColor = {
+  approved: 'u-textHighlight'
+}
+
+const statusToWellClass = {
+  approved: 'well-approved'
+}
+
 class ActivityFeedItem extends React.Component {
   static propTypes = {
     content: PropTypes.string.isRequired,
     icon: PropTypes.oneOf(['comment', 'refresh']).isRequired,
     lastModifiedTime: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
-    status: PropTypes.string,
-    username: PropTypes.string.isRequired,
-    wellStatus: PropTypes.string
+    //TODO damason define type for status
+    status: PropTypes.oneOf(['translated', 'fuzzy', 'approved', 'rejected',
+      'untranslated']),
+    username: PropTypes.string.isRequired
   }
 
   render () {
@@ -42,9 +52,11 @@ class ActivityFeedItem extends React.Component {
         <p><Icon name={this.props.icon} className="s0" />
           <img className="u-round activity-avatar" src="" />
           <a>{this.props.username}</a>&nbsp;
-          has <span className={this.props.status}>{this.props.message}</span>
+          has <span className={statusToColor[this.props.status]}>
+            {this.props.message}</span>
         </p>
-        <Well className={this.props.wellStatus}>{this.props.content}</Well>
+        <Well className={statusToWellClass[this.props.status]}>
+          {this.props.content}</Well>
         <p className="small u-textMuted">
           <Icon name="clock" className="n1" />&nbsp;
           <FormattedDate value={this.props.lastModifiedTime}
