@@ -4,16 +4,16 @@ import {
   SortableContainer,
   SortableElement,
   SortableHandle} from 'react-sortable-hoc'
-import {FromProjectVersionType} from '../utils/prop-types-util'
+import {FromProjectVersionType} from '../../utils/prop-types-util'
 import {Button, ListGroup, ListGroupItem} from 'react-bootstrap'
-import {Icon, LockIcon} from '../components'
+import {Icon, LockIcon} from '../../components'
 
 const DragHandle = SortableHandle(() =>
   <Button bsStyle='link' className='btn-link-sort'>
     <i className='fa fa-sort'></i>
   </Button>)
 
-class Item extends Component {
+export class Item extends Component {
   static propTypes = {
     value: FromProjectVersionType.isRequired,
     removeVersion: PropTypes.func.isRequired

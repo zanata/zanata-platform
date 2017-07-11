@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import DraggableVersionPanels from './DraggableVersionPanels'
+import DraggableVersionPanels from '.'
 
 describe('DraggableVersionPanelsTest', () => {
   it('can render DraggableVersionPanels', () => {

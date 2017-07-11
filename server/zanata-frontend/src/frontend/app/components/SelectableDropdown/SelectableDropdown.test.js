@@ -2,7 +2,7 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import SelectableDropdown from './SelectableDropdown'
+import SelectableDropdown from '.'
 
 describe('SelectableDropdownTest', () => {
   it('can render SelectableDropdown markup', () => {
