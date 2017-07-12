@@ -430,7 +430,8 @@ class TMMergeModal extends Component {
                 Cancel
               </Button>
               <Button bsStyle='primary' onClick={this.submitForm}
-                disabled={triggered || noVersionsToMerge}>
+                disabled={(triggered || noVersionsToMerge) &&
+                  !this.state.fromImportedTM}>
                 Merge translations
               </Button>
             </Row>
