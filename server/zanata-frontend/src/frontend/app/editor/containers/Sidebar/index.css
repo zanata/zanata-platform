@@ -17,6 +17,10 @@
   --Sidebar-spacing-small: .375em;
   --Sidebar-spacing-large: .75em;
   --Sidebar-small-text: .875em;
+  --Editor-color-translated: #5cca7b;
+  --Editor-color-fuzzy: #E9DF1B;
+  --Editor-color-approved: #03A6D7;
+  --Editor-color-rejected: #FFA800;
 }
 
 .sidebar-editor {
