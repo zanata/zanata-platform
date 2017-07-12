@@ -13,6 +13,10 @@
   --Editor-color-light                    : #90b8c5;
   --Editor-color-dark                     : #20718a;
   --Editor-color-bright                   : #1ba7d9;
+  --Editor-color-translated               : #5cca7b;
+  --Editor-color-fuzzy                    : #E9DF1B;
+  --Editor-color-approved                 : #03A6D7;
+  --Editor-color-rejected                 : #FFA800;
 }
 
 .stretched-box {

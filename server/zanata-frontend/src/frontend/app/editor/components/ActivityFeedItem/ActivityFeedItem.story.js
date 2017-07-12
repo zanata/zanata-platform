@@ -28,54 +28,22 @@ import ActivityFeedItem from '.'
  */
 const lastModifiedTime = new Date()
 
+const items = [
+  {
+    type: 'comment',
+    username: 'kgo',
+    message: 'ate a hamburger',
+    content: 'I have no idea what I\'m doing'
+  },
+  {
+    type: 'revision',
+    username: 'kgo',
+    message: 'ate a hamburger',
+    content: 'I have no idea what I\'m doing'
+  }
+]
+
 storiesOf('ActivityFeedItem', module)
-    .add('comment', () => {
-      return <ActivityFeedItem
-          content={'What in the world does this mean?'}
-          icon={'comment'}
-          lastModifiedTime={lastModifiedTime}
-          message={'commented on a translation'}
-          username={'Kathryn '} />
-    })
-
-    .add('translated', () => {
-      return <ActivityFeedItem
-          content={'নাম'}
-          icon={'refresh'}
-          lastModifiedTime={lastModifiedTime}
-          message={'created a translation revision'}
-          status={'u-textSuccess'}
-          username={'Kathryn'}
-          wellStatus={'well-translated'} />
-    })
-
-    .add('fuzzy', () => {
-      return <ActivityFeedItem
-          content={'নাম'}
-          icon={'refresh'}
-          lastModifiedTime={lastModifiedTime}
-          message={'created a fuzzy revision'}
-          status={'u-textUnsure'}
-          username={'Kathryn'}
-          wellStatus={'well-fuzzy'} />
-    })
-
-    .add('approved', () => {
-      return <ActivityFeedItem statusapproved
-          content='নাম'
-          icon='refresh'
-          lastModifiedTime={lastModifiedTime}
-          message='approved a translation'
-          status='approved'
-          username='Kathryn' />
-    })
-
-    .add('rejected', () => {
-      return <ActivityFeedItem
-          content={'নাম'}
-          icon={'refresh'}
-          lastModifiedTime={lastModifiedTime}
-          message={'rejected a translation'}
-          status={'u-textWarning'}
-          username={'Kathryn'} />
+    .add('default', () => {
+      return <ActivityFeedItem items={items} />
     })

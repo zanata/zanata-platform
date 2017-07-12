@@ -8,10 +8,6 @@
   --Sidebar-panel-grey: #333;
   --Sidebar-well: #fefefe;
   --Sidebar-panel-background: #fdfdfd;
-  --Sidebar-well-translated: #5CCA7B;
-  --Sidebar-well-fuzzy: #E9DF1B;
-  --Sidebar-well-approved: #03A6D7;
-  --Sidebar-well-rejected: #FFA800;
   --Sidebar-border: #ddd;
   --Sidebar-textarea-border: #639cad;
   --Sidebar-no-results: #a9bfc6;
@@ -496,19 +492,19 @@ img.activity-avatar {
 }
 
 .well-fuzzy {
-  border-left: solid 5px var(--Sidebar-well-fuzzy);
+  border-left: solid 5px var(--Editor-color-fuzzy);
 }
 
 .well-rejected {
-  border-left: solid 5px var(--Sidebar-well-rejected);
+  border-left: solid 5px var(--Editor-color-rejected);
 }
 
 .well-translated {
-  border-left: solid 5px var(--Sidebar-well-translated);
+  border-left: solid 5px var(--Editor-color-translated);
 }
 
 .well-approved {
-  border-left: solid 5px var(--Sidebar-well-approved);
+  border-left: solid 5px var(--Editor-color-approved);
 }
 
 .trans-comment-box {

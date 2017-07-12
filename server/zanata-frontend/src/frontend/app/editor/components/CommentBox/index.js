@@ -54,7 +54,8 @@ class CommentBox extends React.Component {
           <FormControl componentClass="textarea"
             placeholder="..." onChange={this.setCommentText} />
         </FormGroup>
-        <Button disabled={isEmpty(this.state.commentText)} onClick={this.postComment}
+        <Button disabled={isEmpty(this.state.commentText)}
+          onClick={this.postComment}
           className="Button Button--small u-rounded Button--primary pull-right">
          Post comment
         </Button>
