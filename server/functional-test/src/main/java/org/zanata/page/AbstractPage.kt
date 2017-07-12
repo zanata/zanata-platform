@@ -482,6 +482,7 @@ abstract class AbstractPage(val driver: WebDriver) {
         } else {
             log.warn("Unable to focus page container")
         }
+        waitForPageSilence();
     }
 
     /**

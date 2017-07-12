@@ -26,6 +26,7 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.model.TestFixture;
 import org.zanata.rest.dto.stats.ContainerTranslationStatistics;
+import org.zanata.service.impl.TranslationMemoryServiceImpl;
 import org.zanata.webtrans.client.events.CopyDataToEditorEvent;
 import org.zanata.webtrans.client.events.TransMemoryShortcutCopyEvent;
 import org.zanata.webtrans.client.events.TransUnitSelectionEvent;
@@ -156,7 +157,7 @@ public class TransMemoryPresenterTest {
         TransMemoryResultItem object =
                 new TransMemoryResultItem(new ArrayList<String>(),
                         new ArrayList<String>(), MatchType.ApprovedInternal, 0,
-                        0);
+                        0, null);
         when(display.getSearchType()).thenReturn(searchType);
 
         presenter.showTMDetails(object);
@@ -169,7 +170,7 @@ public class TransMemoryPresenterTest {
         TransMemoryResultItem object =
                 new TransMemoryResultItem(new ArrayList<String>(),
                         new ArrayList<String>(), MatchType.ApprovedInternal, 0,
-                        0);
+                        0, null);
         ArgumentCaptor<CopyDataToEditorEvent> eventCaptor =
                 ArgumentCaptor.forClass(CopyDataToEditorEvent.class);
 
@@ -512,7 +513,7 @@ public class TransMemoryPresenterTest {
      * it.
      *
      * @throws Exception
-     * @see org.zanata.webtrans.server.rpc.GetTransMemoryHandler.TransMemoryResultComparator
+     * @see TranslationMemoryServiceImpl.TransMemoryResultComparator
      */
     @Test
     public void matchTypeEnumOrder() throws Exception {

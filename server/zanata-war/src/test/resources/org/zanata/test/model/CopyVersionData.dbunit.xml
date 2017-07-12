@@ -19,6 +19,10 @@
     creationDate="2009-09-01 20:40:46" lastChanged="2009-09-01 20:40:46"
     parentId="[NULL]" project_id="1" overrideLocales="TRUE" status="A" />
 
+  <HProjectIteration id="4" versionNum="1" slug="readonly"
+    creationDate="2009-09-01 20:40:46" lastChanged="2009-09-01 20:40:46"
+    parentId="[NULL]" project_id="1" overrideLocales="TRUE" status="R" />
+
   <HIterationGroup id="1" versionNum="1" creationDate="2009-09-01 20:30:16"
     lastChanged="2009-09-01 20:30:16" slug="group1"
     description="Group1 description" name="Group1" status="A" />

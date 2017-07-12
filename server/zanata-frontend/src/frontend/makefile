@@ -58,9 +58,17 @@ test:
 	yarn test
 
 # Run the tests on every change
+# Specify coverage=path if you want to limit reported coverage scope. This is
+# useful when using pattern mode to limit the tests that are run.
+# e.g. make test-watch coverage="app/editor/reducers/*"
+#      p > app/editor/reducers/.*
+# NOTE coverage uses a glob pattern (*), but test pattern uses a regex (.*)
 test-watch:
+ifdef coverage
+	yarn test:watch -- --collectCoverageFrom=$(coverage)
+else
 	yarn test:watch
-
+endif
 
 # Run a server that implements some of the Zanata API with some dummy data.
 # The server runs on localhost:7878 and has 0.5 to 5s of random latency.

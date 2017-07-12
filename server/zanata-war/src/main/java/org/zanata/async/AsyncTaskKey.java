@@ -28,7 +28,7 @@ public interface AsyncTaskKey extends Serializable {
      *         key instance field values
      * @return String representation of the key which can be used as id
      */
-    static String joinFields(String keyName, String... fields) {
+    static String joinFields(String keyName, Object... fields) {
         return keyName + SEPARATOR
                 + Joiner.on(SEPARATOR).useForNull("").join(fields);
     }

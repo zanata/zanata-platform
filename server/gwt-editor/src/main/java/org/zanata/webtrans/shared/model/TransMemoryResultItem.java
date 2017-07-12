@@ -54,6 +54,7 @@ public class TransMemoryResultItem extends SearchResultItem implements
     // The optional origin identifiers for this result (i.e. A Trans memory name)
     private List<String> origins;
     private ArrayList<Long> sourceIdList = new ArrayList<Long>();
+    private Long fromVersionId;
 
     // for GWT
     @SuppressWarnings("unused")
@@ -65,14 +66,17 @@ public class TransMemoryResultItem extends SearchResultItem implements
      * @param targetContents
      * @param relevanceScore
      * @param similarityPercent
+     * @param fromVersionId
      */
     public TransMemoryResultItem(ArrayList<String> sourceContents,
             ArrayList<String> targetContents, MatchType matchType,
-            double relevanceScore, double similarityPercent) {
+            double relevanceScore, double similarityPercent,
+            Long fromVersionId) {
         super(relevanceScore, similarityPercent);
         this.sourceContents = sourceContents;
         this.targetContents = targetContents;
         this.matchType = matchType;
+        this.fromVersionId = fromVersionId;
         this.origins = new ArrayList<String>();
     }
 
@@ -134,4 +138,7 @@ public class TransMemoryResultItem extends SearchResultItem implements
         this.sourceIdList.add(sourceId);
     }
 
+    public Long getFromVersionId() {
+        return fromVersionId;
+    }
 }

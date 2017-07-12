@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Red Hat, Inc. and individual contributors
+ * Copyright 2017, Red Hat, Inc. and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -18,59 +18,45 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.zanata.webtrans.shared.rest.dto;
+package org.zanata.rest.dto;
 
 import java.util.List;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.zanata.common.LocaleId;
-import org.zanata.webtrans.shared.auth.EditorClientId;
-import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.rest.dto.HasTMMergeCriteria;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 
 /**
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-public class TransMemoryMergeRequest implements HasTMMergeCriteria {
-    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
-            justification = "For future implement")
-    public EditorClientId editorClientId;
-    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
-            justification = "For future implement")
-    public ProjectIterationId projectIterationId;
-    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
-            justification = "For future implement")
-    public DocumentId documentId;
-    @SuppressFBWarnings(value = "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
-            justification = "For future implement")
-    public LocaleId localeId;
-    public int thresholdPercent;
-    public MergeRule differentProjectRule;
-    public MergeRule differentDocumentRule;
-    public MergeRule differentContextRule;
-    public MergeRule importedMatchRule;
+public class VersionTMMerge implements HasTMMergeCriteria {
+    private LocaleId localeId;
+    private int thresholdPercent;
+    private MergeRule differentDocumentRule;
+    private MergeRule differentContextRule;
+    private MergeRule importedMatchRule;
+    private List<ProjectIterationId> fromProjectVersions;
 
-    public TransMemoryMergeRequest(
-            EditorClientId editorClientId,
-            ProjectIterationId projectIterationId,
-            DocumentId documentId, LocaleId localeId, int thresholdPercent,
-            MergeRule differentProjectRule,
+    public VersionTMMerge(LocaleId localeId, int thresholdPercent,
             MergeRule differentDocumentRule,
             MergeRule differentContextRule,
-            MergeRule importedMatchRule) {
-        this.editorClientId = editorClientId;
-        this.projectIterationId = projectIterationId;
-        this.documentId = documentId;
+            MergeRule importedMatchRule,
+            List<ProjectIterationId> fromProjectVersions) {
         this.localeId = localeId;
         this.thresholdPercent = thresholdPercent;
-        this.differentProjectRule = differentProjectRule;
         this.differentDocumentRule = differentDocumentRule;
         this.differentContextRule = differentContextRule;
         this.importedMatchRule = importedMatchRule;
+        this.fromProjectVersions = fromProjectVersions;
     }
 
-    public TransMemoryMergeRequest() {
+    @SuppressWarnings("unused")
+    public VersionTMMerge() {
+    }
+
+    public LocaleId getLocaleId() {
+        return localeId;
     }
 
     @Override
@@ -80,7 +66,8 @@ public class TransMemoryMergeRequest implements HasTMMergeCriteria {
 
     @Override
     public MergeRule getDifferentProjectRule() {
-        return differentProjectRule;
+        // TM merge for version always accept TM from different project
+        return MergeRule.FUZZY;
     }
 
     @Override
@@ -98,4 +85,7 @@ public class TransMemoryMergeRequest implements HasTMMergeCriteria {
         return importedMatchRule;
     }
 
+    public List<ProjectIterationId> getFromProjectVersions() {
+        return fromProjectVersions;
+    }
 }
