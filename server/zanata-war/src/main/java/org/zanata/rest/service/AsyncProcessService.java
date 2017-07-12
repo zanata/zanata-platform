@@ -206,7 +206,7 @@ public class AsyncProcessService implements RestResource {
     }
 
     @NotNull
-    static ProcessStatus handleToProcessStatus(AsyncTaskHandle<?> handle,
+    public static ProcessStatus handleToProcessStatus(AsyncTaskHandle<?> handle,
             String url) {
         ProcessStatus status = new ProcessStatus();
         status.setStatusCode(

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.enterprise.context.ApplicationScoped;
@@ -53,6 +54,7 @@ import org.zanata.rest.editor.dto.LocaleSortField;
 import org.zanata.service.LocaleService;
 import org.zanata.servlet.annotations.AllJavaLocales;
 import org.zanata.util.ComparatorUtil;
+
 import com.google.common.collect.Maps;
 import com.ibm.icu.util.ULocale;
 
@@ -319,11 +321,29 @@ public class LocaleServiceImpl implements LocaleService {
     }
 
     @Override
+    public List<HLocale> getSupportedLanguageByProjectIteration(
+            @Nonnull HProjectIteration version) {
+        if (version.isOverrideLocales()) {
+            return new ArrayList<>(version.getCustomizedLocales());
+        }
+        return getSupportedLanguageByProject(version.getProject());
+    }
+
+    @Override
     public List<HLocale>
             getSupportedLanguageByProject(@Nonnull String projectSlug) {
         HProject proj = projectDAO.getBySlug(projectSlug);
         if (proj != null && proj.isOverrideLocales()) {
             return new ArrayList<HLocale>(proj.getCustomizedLocales());
+        }
+        return localeDAO.findAllActiveAndEnabledByDefault();
+    }
+
+    @Override
+    public List<HLocale>
+            getSupportedLanguageByProject(@Nonnull HProject project) {
+        if (project.isOverrideLocales()) {
+            return new ArrayList<>(project.getCustomizedLocales());
         }
         return localeDAO.findAllActiveAndEnabledByDefault();
     }
