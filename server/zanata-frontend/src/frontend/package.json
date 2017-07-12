@@ -14,7 +14,8 @@
     "storybook-editor": "start-storybook -p 9001 -s ./dist --config-dir .storybook-editor",
     "storybook-frontend": "start-storybook -p 9001 -s ./dist --config-dir .storybook-frontend",
     "storybook-build": "build-storybook -s ./dist",
-    "test": "jest --coverage"
+    "test": "jest --coverage",
+    "test:watch": "jest --watch --coverage"
   },
   "repository": {
     "type": "git",
