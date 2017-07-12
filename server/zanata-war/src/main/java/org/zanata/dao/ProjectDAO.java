@@ -53,6 +53,8 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.ProjectRole;
 
+import static org.zanata.hibernate.search.IndexFieldLabels.FULL_SLUG_FIELD;
+
 @RequestScoped
 public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
     @Inject @FullText
@@ -64,6 +66,11 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
 
     public ProjectDAO(Session session) {
         super(HProject.class, session);
+    }
+
+    public ProjectDAO(FullTextEntityManager entityManager, Session session) {
+        super(HProject.class, session);
+        this.entityManager = entityManager;
     }
 
     public @Nullable
@@ -283,15 +290,18 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
 
     private FullTextQuery buildSearchQuery(@Nonnull String searchQuery,
         boolean includeObsolete) throws ParseException {
-        String queryText = QueryParser.escape(searchQuery);
-        Analyzer sourceAnalyzer = entityManager.getSearchFactory()
+        String escapedSearchQuery = QueryParser.escape(searchQuery);
+        Analyzer defaultAnalyzer = entityManager.getSearchFactory()
                 .getAnalyzer(Analyzers.DEFAULT);
-        MultiFieldQueryParser queryParser = new MultiFieldQueryParser(
-                new String[]{ "slug", "name", "description" }, sourceAnalyzer);
-        queryParser.setDefaultOperator(QueryParser.Operator.OR);
+        MultiFieldQueryParser multiFieldQueryParser = new MultiFieldQueryParser(
+                new String[]{ "name", "description" }, defaultAnalyzer);
+        multiFieldQueryParser.setDefaultOperator(QueryParser.Operator.OR);
 
         BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
-        booleanQuery.add(queryParser.parse(queryText), BooleanClause.Occur.SHOULD);
+        // for slug, we do prefix search (so people can search with '-' in it
+        booleanQuery.add(buildSearchFieldQuery(searchQuery, FULL_SLUG_FIELD), BooleanClause.Occur.SHOULD);
+        // for name and description, we split the word using the same analyzer and search as is
+        booleanQuery.add(multiFieldQueryParser.parse(escapedSearchQuery), BooleanClause.Occur.SHOULD);
         if (!includeObsolete) {
             TermQuery obsoleteStateQuery =
                     new TermQuery(new Term(IndexFieldLabels.ENTITY_STATUS,
@@ -299,7 +309,8 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
             booleanQuery.add(obsoleteStateQuery, BooleanClause.Occur.MUST_NOT);
         }
 
-        return entityManager.createFullTextQuery(booleanQuery.build(), HProject.class);
+        BooleanQuery luceneQuery = booleanQuery.build();
+        return entityManager.createFullTextQuery(luceneQuery, HProject.class);
     }
 
     /**
@@ -307,24 +318,21 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
      * white space.
      *
      * @param searchQuery
-     *            - query string, will replace hypen with space and escape
-     *            special char
+     *            - query string, will escape special char
      * @param field
      *            - lucene field
      */
     private BooleanQuery buildSearchFieldQuery(@Nonnull String searchQuery,
         @Nonnull String field) throws ParseException {
-        BooleanQuery query = new BooleanQuery();
-
-        //escape special character search
-        searchQuery = QueryParser.escape(searchQuery);
+        BooleanQuery.Builder query = new BooleanQuery.Builder();
 
         for(String searchString: searchQuery.split("\\s+")) {
             QueryParser parser = new QueryParser(field,
                     new CaseInsensitiveWhitespaceAnalyzer());
-            query.add(parser.parse(searchString + "*"), BooleanClause.Occur.MUST);
+            //escape special character search
+            query.add(parser.parse(QueryParser.escape(searchString) + "*"), BooleanClause.Occur.MUST);
         }
-        return query;
+        return query.build();
     }
 
     public List<HProject> findAllTranslatedProjects(HAccount account, int maxResults) {

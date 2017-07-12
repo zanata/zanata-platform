@@ -28,7 +28,10 @@ import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.hibernate.annotations.NaturalId;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.Fields;
+import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.model.validator.Slug;
 import com.google.common.annotations.VisibleForTesting;
 
@@ -48,7 +51,10 @@ public abstract class SlugEntityBase extends ModelEntityBase {
     @Size(min = 1, max = 40)
     @Slug
     @NotNull
-    @Field
+    @Fields({
+            @Field,
+            @Field(analyze = Analyze.NO, name = IndexFieldLabels.FULL_SLUG_FIELD)
+    })
     private String slug;
 
     /**
