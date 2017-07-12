@@ -9,9 +9,9 @@ import {Button, ListGroup, ListGroupItem} from 'react-bootstrap'
 import {Icon, LockIcon} from '../../components'
 
 export const DragHandle = SortableHandle(() =>
-  <Button bsStyle='link' className='btn-link-sort'>
-    <i className='fa fa-sort'></i>
-  </Button>)
+  // TODO: Make an Icon component for the sortable handle
+  // <i className='fa fa-sort'></i>
+  <Icon name='chevron-up' className='s1' />)
 
 export class Item extends Component {
   static propTypes = {

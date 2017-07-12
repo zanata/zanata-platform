@@ -5872,18 +5872,6 @@ a.lineclamp:after {
   margin: 0;
 }
 
-.react-draggable.list-group-item span.text-muted {
-  margin-left: 1em;
-}
-
-.rm-version-btn {
-  top: 12% !important;
-}
-
-.sortable-helper {
-  z-index: 10000 !important;
-}
-
 .modal-body textarea.text-input {
   max-width: 100%;
 }
@@ -8339,3 +8327,6 @@ table.tmx-table .badge .n1 {
     border: 1px solid @color-neutral !important;
   }
 }
+
+// Override legacy JSF new-zanata classes for TMMergeModal React component
+@import "../containers/ProjectVersion/index.css";

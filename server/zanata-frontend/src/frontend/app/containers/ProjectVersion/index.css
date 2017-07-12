@@ -1,0 +1,19 @@
+/* Override legacy JSF new-zanata classes for TMMergeModal React components */
+
+.panel-title {
+   font-size: 1.1rem !important;
+   margin: 0 !important;
+}
+
+.react-draggable.list-group-item span.text-muted {
+  margin-left: 1em !important;
+}
+
+.rm-version-btn {
+  top: 12% !important;
+  color: red !important;
+}
+
+.sortable-helper {
+  z-index: 10000 !important;
+}
