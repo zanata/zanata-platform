@@ -38,7 +38,7 @@ describe('DraggableVersionPanelsTest', () => {
           <span className="text-muted vmerge-adjsub">(best first)</span>
           <div className="pre-scrollable">
             <ListGroupItem className='v' >
-              <Icon name='chevron-up' className='s1' />
+              <Icon name='chevron-up' className='s1' title='click to drag' />
               ver1 <span className="text-muted"> meikai1
               </span> <LockIcon status={'ACTIVE'} />
               {" "}
@@ -49,7 +49,7 @@ describe('DraggableVersionPanelsTest', () => {
               </Button>
             </ListGroupItem>
             <ListGroupItem className='v' >
-              <Icon name='chevron-up' className='s1' />
+              <Icon name='chevron-up' className='s1' title='click to drag' />
               ver2 <span className="text-muted"> meikai2
               </span> <LockIcon status={'ACTIVE'} />
               {" "}

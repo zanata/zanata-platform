@@ -122,7 +122,8 @@ class SelectAllVersionsCheckbox extends Component {
     return (
       <Checkbox onChange={this.onAllVersionCheckboxChange}
         checked={allVersionsChecked}>
-        <Icon name='project' className='s0 tmx-icon' />
+        <Icon name='project' title='source project'
+          className='s0 tmx-icon' />
         {project.title} <LockIcon status={project.status} />
       </Checkbox>
     )
@@ -152,7 +153,7 @@ class VersionMenuCheckbox extends Component {
     return (
       <Checkbox onChange={this.onVersionCheckboxChange}
         checked={checked}>
-        <Icon name='version' title='version' className='s0 tmx-icon' />
+        <Icon name='version' title='source version' className='s0 tmx-icon' />
         {version.id} <LockIcon status={version.status} />
       </Checkbox>
     )
