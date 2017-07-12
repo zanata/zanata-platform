@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.zanata.feature.testharness.TestPlan;
 import org.zanata.feature.testharness.ZanataTestCase;
-import org.zanata.page.dashboard.DashboardGroupsTab;
 import org.zanata.page.explore.ExplorePage;
 import org.zanata.page.groups.VersionGroupPage;
 import org.zanata.workflow.BasicWorkFlow;
@@ -40,8 +39,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Category(TestPlan.ComprehensiveTest.class)
 public class GroupSearchCTest extends ZanataTestCase {
 
-    private DashboardGroupsTab dashboardGroupsTab;
-
     @Test(timeout = MAX_SHORT_TEST_DURATION)
     public void successfulGroupSearchAndDisplay() throws Exception {
         String groupID = "basic-group";
@@ -49,10 +46,10 @@ public class GroupSearchCTest extends ZanataTestCase {
         assertThat(new LoginWorkFlow().signIn("admin", "admin").loggedInAs())
                 .isEqualTo("admin")
                 .as("Admin is logged in");
-        dashboardGroupsTab =
-                new BasicWorkFlow().goToHome().goToMyDashboard().gotoGroupsTab();
 
-        VersionGroupPage groupPage = dashboardGroupsTab
+        new BasicWorkFlow().goToHome()
+                .goToMyDashboard()
+                .gotoGroupsTab()
                 .createNewGroup()
                 .inputGroupId(groupID)
                 .inputGroupName(groupName)
@@ -80,7 +77,7 @@ public class GroupSearchCTest extends ZanataTestCase {
         ExplorePage explorePage = new BasicWorkFlow()
                 .goToHome()
                 .gotoExplore()
-                .enterSearch("group");
+                .enterSearch("groop");
 
         assertThat(explorePage.getGroupSearchResults().isEmpty())
                 .isTrue()
