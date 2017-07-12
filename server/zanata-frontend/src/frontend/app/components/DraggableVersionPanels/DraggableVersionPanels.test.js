@@ -3,6 +3,8 @@ jest.disableAutomock()
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import DraggableVersionPanels from '.'
+import {Button, ListGroup, ListGroupItem} from 'react-bootstrap'
+import {Icon, LockIcon} from '../../components'
 
 describe('DraggableVersionPanelsTest', () => {
   it('can render DraggableVersionPanels', () => {
@@ -27,39 +29,43 @@ describe('DraggableVersionPanelsTest', () => {
         onDraggableMoveEnd={clickFun}
         removeVersion={clickFun} />
     )
-    const svgIcon = `<use xlink:href="#Icon-cross" />`
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <div className="list-group">
+      <ListGroup>
         <div>
           <span className="vmerge-adjtitle vmerge-title">
           Adjust priority of selected versions
           </span><br />
           <span className="text-muted vmerge-adjsub">(best first)</span>
-          <div className="pre-scrollable"><span className="v list-group-item">
-            <button type="button" className="btn-link-sort btn btn-link">
-              <i className="fa fa-sort"></i>
-            </button>ver1 <span className="text-muted"> meikai1
-            </span> <span></span> <button type="button"
-              className="close rm-version-btn btn btn-xs btn-default">
-              <span className="n2 crossicon" title="remove version">
-                <svg dangerouslySetInnerHTML={{ __html: svgIcon }}
-                  style={{ fill: 'currentColor' }} />
-              </span>
-            </button></span><span className="v list-group-item">
+          <div className="pre-scrollable">
+            <ListGroupItem className='v' >
               <button type="button" className="btn-link-sort btn btn-link">
                 <i className="fa fa-sort"></i>
-              </button>ver2 <span className="text-muted"> meikai2
-              </span> <span></span> <button type="button"
-                className="close rm-version-btn btn btn-xs btn-default">
-                <span className="n2 crossicon" title="remove version">
-                  <svg dangerouslySetInnerHTML={{ __html: svgIcon }}
-                    style={{ fill: 'currentColor' }} />
-                </span>
               </button>
-            </span>
+              ver1 <span className="text-muted"> meikai1
+              </span> <LockIcon status={'ACTIVE'} />
+              {" "}
+              <Button bsSize='xsmall' className='close rm-version-btn'
+                onClick={clickFun}>
+                <Icon name='cross' className='n2 crossicon'
+                  title='remove version' />
+              </Button>
+            </ListGroupItem>
+            <ListGroupItem className='v' >
+              <button type="button" className="btn-link-sort btn btn-link">
+                <i className="fa fa-sort"></i>
+              </button>
+              ver2 <span className="text-muted"> meikai2
+              </span> <LockIcon status={'ACTIVE'} />
+              {" "}
+              <Button bsSize='xsmall' className='close rm-version-btn'
+                onClick={clickFun}>
+                <Icon name='cross' className='n2 crossicon'
+                  title='remove version' />
+              </Button>
+            </ListGroupItem>
           </div>
         </div>
-      </div>
+      </ListGroup>
     )
     expect(actual).toEqual(expected)
   })

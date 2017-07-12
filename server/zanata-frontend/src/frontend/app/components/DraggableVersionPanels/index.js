@@ -8,7 +8,7 @@ import {FromProjectVersionType} from '../../utils/prop-types-util'
 import {Button, ListGroup, ListGroupItem} from 'react-bootstrap'
 import {Icon, LockIcon} from '../../components'
 
-const DragHandle = SortableHandle(() =>
+export const DragHandle = SortableHandle(() =>
   <Button bsStyle='link' className='btn-link-sort'>
     <i className='fa fa-sort'></i>
   </Button>)
