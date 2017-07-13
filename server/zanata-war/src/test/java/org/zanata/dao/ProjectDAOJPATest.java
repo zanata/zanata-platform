@@ -3,6 +3,7 @@ package org.zanata.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.persistence.EntityManager;
@@ -34,20 +35,19 @@ public class ProjectDAOJPATest extends ZanataJpaTest {
         dao = new ProjectDAO(Search.getFullTextEntityManager(getEm()), getSession());
     }
 
-    private static HProject makeProject(String slug, String name, String description,
+    private static void makeProject(String slug, String name, String description,
             EntityManager em) {
         HProject hProject = new HProject();
         hProject.setSlug(slug);
         hProject.setName(name);
         hProject.setDescription(description);
         em.persist(hProject);
-        return hProject;
     }
 
-    private void doInTransaction(Iterable<Function<EntityManager, HProject>> function) {
+    private void doInTransaction(Consumer<EntityManager> function) {
         EntityManager em = getEmf().createEntityManager();
         em.getTransaction().begin();
-        function.forEach(f -> f.apply(em));
+        function.accept(em);
         em.getTransaction().commit();
     }
 
@@ -61,10 +61,13 @@ public class ProjectDAOJPATest extends ZanataJpaTest {
     public void canDoFullTextSearch() throws Exception {
         String slug = "Sample-Project";
         // hibernate search only works with transaction in place
-        doInTransaction(Lists.newArrayList(
-                em -> makeProject(slug, "Sample Project", "An example project", em),
-                em -> makeProject("another-project", "another Project", "Another project", em)
-                ));
+        doInTransaction(
+                em -> {
+                    makeProject(slug, "Sample Project", "An example project",
+                            em);
+                    makeProject("another-project", "another Project",
+                            "Another project", em);
+                });
 
         HProject expected = dao.getBySlug(slug);
 
@@ -76,7 +79,7 @@ public class ProjectDAOJPATest extends ZanataJpaTest {
         assertThat(searchProjects("proj"))
                 .as("wildcard search is only applied to full slug")
                 .isEmpty();
-        assertThat(searchProjects("an project")).containsExactly(expected)
+        assertThat(searchProjects("example project")).containsExactly(expected)
                 .as("search by description");
     }
 
