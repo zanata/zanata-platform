@@ -27,9 +27,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.queryparser.classic.MultiFieldQueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
@@ -43,7 +41,6 @@ import org.hibernate.search.jpa.FullTextQuery;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import org.zanata.common.EntityStatus;
-import org.zanata.hibernate.search.Analyzers;
 import org.zanata.hibernate.search.CaseInsensitiveWhitespaceAnalyzer;
 import org.zanata.hibernate.search.IndexFieldLabels;
 import org.zanata.jpa.FullText;
@@ -290,18 +287,13 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
 
     private FullTextQuery buildSearchQuery(@Nonnull String searchQuery,
         boolean includeObsolete) throws ParseException {
-        String escapedSearchQuery = QueryParser.escape(searchQuery);
-        Analyzer defaultAnalyzer = entityManager.getSearchFactory()
-                .getAnalyzer(Analyzers.DEFAULT);
-        MultiFieldQueryParser multiFieldQueryParser = new MultiFieldQueryParser(
-                new String[]{ "name", "description" }, defaultAnalyzer);
-        multiFieldQueryParser.setDefaultOperator(QueryParser.Operator.OR);
 
         BooleanQuery.Builder booleanQuery = new BooleanQuery.Builder();
         // for slug, we do prefix search (so people can search with '-' in it
-        booleanQuery.add(buildSearchFieldQuery(searchQuery, FULL_SLUG_FIELD), BooleanClause.Occur.SHOULD);
+        booleanQuery.add(buildSearchFieldQuery(searchQuery, FULL_SLUG_FIELD, true), BooleanClause.Occur.SHOULD);
         // for name and description, we split the word using the same analyzer and search as is
-        booleanQuery.add(multiFieldQueryParser.parse(escapedSearchQuery), BooleanClause.Occur.SHOULD);
+        booleanQuery.add(buildSearchFieldQuery(searchQuery, "name", false), BooleanClause.Occur.SHOULD);
+        booleanQuery.add(buildSearchFieldQuery(searchQuery, "description", false), BooleanClause.Occur.SHOULD);
         if (!includeObsolete) {
             TermQuery obsoleteStateQuery =
                     new TermQuery(new Term(IndexFieldLabels.ENTITY_STATUS,
@@ -321,16 +313,21 @@ public class ProjectDAO extends AbstractDAOImpl<HProject, Long> {
      *            - query string, will escape special char
      * @param field
      *            - lucene field
+     * @param wildcard
+     *            - whether append wildcard to the end
      */
     private BooleanQuery buildSearchFieldQuery(@Nonnull String searchQuery,
-        @Nonnull String field) throws ParseException {
+        @Nonnull String field, boolean wildcard) throws ParseException {
         BooleanQuery.Builder query = new BooleanQuery.Builder();
 
         for(String searchString: searchQuery.split("\\s+")) {
             QueryParser parser = new QueryParser(field,
                     new CaseInsensitiveWhitespaceAnalyzer());
             //escape special character search
-            query.add(parser.parse(QueryParser.escape(searchString) + "*"), BooleanClause.Occur.MUST);
+
+            String escaped = QueryParser.escape(searchString);
+            escaped = wildcard ? escaped + "*" : escaped;
+            query.add(parser.parse(escaped), BooleanClause.Occur.MUST);
         }
         return query.build();
     }
