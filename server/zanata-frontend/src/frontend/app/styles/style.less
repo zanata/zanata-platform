@@ -2677,10 +2677,10 @@ span.langcode {
   margin-left: @spacing-large-vertical;
 }
 
-.btn-primary, .new-zanata .button.btn-primary {
-  color: #fff !important;
-  border-color: @color-neutral !important;
-  background-color: @color-light !important;
+.btn-primary {
+  color: #fff;
+  border-color: @color-neutral;
+  background-color: @color-light;
 }
 
 .btn-primary .fa, .btn-primary:focus .fa {
@@ -2752,11 +2752,10 @@ button.btn-link.delete-link, button.btn-link.delete-link .loader-text {
   color: @color-danger;
 }
 
-.btn-link, .new-zanata .button.btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
-  background-color: transparent !important;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-  border: none !important;
+.btn-link, .btn-link, .btn-link.active, .btn-link:active, .btn-link[disabled], fieldset[disabled] .btn-link {
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
 }
 
 .btn-link, .btn-link:active, .btn-link:focus, .btn-link:hover {
@@ -4441,6 +4440,9 @@ img.avatar-round {
     }
   }
 }
+
+// Override legacy JSF new-zanata classes for TMMergeModal React component
+@import "../containers/ProjectVersion/index.css";
 
 // Nav variations
 // --------------------------------------------------
@@ -6288,32 +6290,6 @@ button.close:focus, button.close:hover, button.close:active:focus {
   align-self: center;
 }
 
-.new-zanata #TM-merge-modal ul {
-  margin: 0;
-  padding: 0;
-}
-
-.new-zanata  #TM-merge-modal ul, .new-zanata #TM-merge-modal ul li {
-  list-style-type: none !important;
-}
-
-.new-zanata #TM-merge-modal input[type=text] {
-  margin: 0;
-}
-
-.new-zanata #TM-merge-modal label {
-  color: @color-dark !important;
-  font-weight: 500;
-}
-
-#TM-merge-modal .modal-body .intro {
-  margin-bottom: 1rem !important;
-}
-
-#TM-merge-modal .modal-header {
-  padding-bottom: 0 !important;
-}
-
 .new-zanata button.close {
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -6321,16 +6297,6 @@ button.close:focus, button.close:hover, button.close:active:focus {
   border: none;
   outline: none;
   padding: 0.75rem
-}
-
-#TM-merge-modal .modal-body {
-  padding-top: 0 !important;
-}
-
-#TM-merge-modal  .open>.dropdown-menu {
-  display: block;
-  max-height: 12rem;
-  overflow-y: scroll;
 }
 
 li.more-list-item {
@@ -6672,12 +6638,6 @@ table.tmx-table .badge .n1 {
 
 .tmx-dl {
   margin-right: -0.9em;
-}
-
-#TM-merge-modal {
-  visibility: visible;
-  opacity: inherit;
-  backface-visibility: hidden;
 }
 
 // @screen-xs variable depreciated
@@ -8327,6 +8287,3 @@ table.tmx-table .badge .n1 {
     border: 1px solid @color-neutral !important;
   }
 }
-
-// Override legacy JSF new-zanata classes for TMMergeModal React component
-@import "../containers/ProjectVersion/index.css";
