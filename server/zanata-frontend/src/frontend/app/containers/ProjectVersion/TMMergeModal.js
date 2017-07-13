@@ -396,23 +396,26 @@ class TMMergeModal extends Component {
         processStatus={processStatus} buttonLabel="Cancel TM Merge"
         queryProgress={this.queryTMMergeProgress} />
       )
+      : locales.length === 0
+      ? <p >This project version does not have any languages associated for a TM
+        merge. <br /> Please add a language and try again.</p>
       : (
-      <MergeOptions {...{projectSlug, versionSlug, locales, projectVersions,
-        fetchingProject, fetchingLocale}}
-        mergeOptions={this.state}
-        onPercentSelection={this.onPercentSelection}
-        onDocIdCheckboxChange={this.onDocIdCheckboxChange}
-        onContextCheckboxChange={this.onContextCheckboxChange}
-        onImportedCheckboxChange={this.onImportedCheckboxChange}
-        onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
-        onVersionCheckboxChange={this.onVersionCheckboxChange}
-        onLanguageSelection={this.onLanguageSelection}
-        onProjectSearchChange={this.onProjectSearchChange}
-        flushProjectSearch={this.flushProjectSearch}
-        onDragMoveEnd={this.onDragMoveEnd}
-        removeProjectVersion={this.removeProjectVersion}
-      />
-      )
+        <MergeOptions {...{projectSlug, versionSlug, locales, projectVersions,
+          fetchingProject, fetchingLocale}}
+          mergeOptions={this.state}
+          onPercentSelection={this.onPercentSelection}
+          onDocIdCheckboxChange={this.onDocIdCheckboxChange}
+          onContextCheckboxChange={this.onContextCheckboxChange}
+          onImportedCheckboxChange={this.onImportedCheckboxChange}
+          onAllVersionCheckboxChange={this.onAllVersionCheckboxChange}
+          onVersionCheckboxChange={this.onVersionCheckboxChange}
+          onLanguageSelection={this.onLanguageSelection}
+          onProjectSearchChange={this.onProjectSearchChange}
+          flushProjectSearch={this.flushProjectSearch}
+          onDragMoveEnd={this.onDragMoveEnd}
+          removeProjectVersion={this.removeProjectVersion}
+        />
+        )
     return (
       <Modal id="TM-merge-modal" show={showTMMergeModal}
         onHide={openTMMergeModal}>
