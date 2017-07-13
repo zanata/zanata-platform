@@ -25,6 +25,7 @@ import {
   ProjectType, LocaleType, FromProjectVersionType, processStatusType
 } from '../../utils/prop-types-util.js'
 import {isProcessEnded} from '../../utils/EnumValueUtils'
+import {getVersionLanguageSettingsUrl} from '../../utils/UrlHelper'
 
 const percentValueToDisplay = v => `${v}%`
 const localeToDisplay = l => l.displayName
@@ -255,11 +256,8 @@ class TMMergeModal extends Component {
     // TODO: perform this filtering on the server side when retrieving projects
     nextProps.projectVersions.map((project) => {
       project.versions = project.versions.filter((version) => {
-        if (project.id === nextProps.projectSlug &&
-          version.id === nextProps.versionSlug) {
-          return
-        }
-        return version
+        return project.id !== nextProps.projectSlug ||
+          version.id !== nextProps.versionSlug
       })
     })
   }
@@ -397,8 +395,10 @@ class TMMergeModal extends Component {
         queryProgress={this.queryTMMergeProgress} />
       )
       : locales.length === 0
-      ? <p >This project version does not have any languages associated for a TM
-        merge. <br /> Please add a language and try again.</p>
+      ? <p>This version has no enabled languages. You must enable at least one
+        language to use TM merge. <br />
+        <a href={getVersionLanguageSettingsUrl(projectSlug, versionSlug)}>
+        Language Settings</a></p>
       : (
         <MergeOptions {...{projectSlug, versionSlug, locales, projectVersions,
           fetchingProject, fetchingLocale}}
