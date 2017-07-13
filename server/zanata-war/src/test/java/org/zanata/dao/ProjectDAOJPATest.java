@@ -17,6 +17,7 @@ import org.junit.Test;
 import org.zanata.ZanataJpaTest;
 import org.zanata.model.HProject;
 import org.zanata.security.ZanataIdentity;
+import com.google.common.collect.Lists;
 
 
 public class ProjectDAOJPATest extends ZanataJpaTest {
@@ -43,10 +44,10 @@ public class ProjectDAOJPATest extends ZanataJpaTest {
         return hProject;
     }
 
-    private void doInTransaction(Function<EntityManager, HProject> function) {
+    private void doInTransaction(Iterable<Function<EntityManager, HProject>> function) {
         EntityManager em = getEmf().createEntityManager();
         em.getTransaction().begin();
-        function.apply(em);
+        function.forEach(f -> f.apply(em));
         em.getTransaction().commit();
     }
 
@@ -60,19 +61,22 @@ public class ProjectDAOJPATest extends ZanataJpaTest {
     public void canDoFullTextSearch() throws Exception {
         String slug = "Sample-Project";
         // hibernate search only works with transaction in place
-        doInTransaction(em -> makeProject(slug, "Sample Project", "An example project", em));
+        doInTransaction(Lists.newArrayList(
+                em -> makeProject(slug, "Sample Project", "An example project", em),
+                em -> makeProject("another-project", "another Project", "Another project", em)
+                ));
 
         HProject expected = dao.getBySlug(slug);
 
-
-        assertThat(searchProjects("sam")).contains(expected);
-        assertThat(searchProjects("SaM")).contains(expected);
-        assertThat(searchProjects("sampl ")).contains(expected);
-        assertThat(searchProjects("sample-")).contains(expected);
+        assertThat(searchProjects("blah")).isEmpty();
+        assertThat(searchProjects("sam")).containsExactly(expected);
+        assertThat(searchProjects("SaM")).containsExactly(expected);
+        assertThat(searchProjects("sampl ")).containsExactly(expected);
+        assertThat(searchProjects("sample-")).containsExactly(expected);
         assertThat(searchProjects("proj"))
-                .as("wildcard search only for full slug")
+                .as("wildcard search is only applied to full slug")
                 .isEmpty();
-        assertThat(searchProjects("an project")).contains(expected)
+        assertThat(searchProjects("an project")).containsExactly(expected)
                 .as("search by description");
     }
 
