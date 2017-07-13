@@ -24,6 +24,8 @@ const defaultState = {
     queryStatus: undefined,
     projectVersions: []
   },
+  // this works unless the code is sent back in time to the 1960s or earlier.
+  projectResultsTimestamp: new Date(0),
   locales: [],
   fetchingProject: false,
   fetchingLocale: false,
@@ -78,11 +80,16 @@ const version = handleActions({
     })
   },
   [PROJECT_PAGE_SUCCESS]: (state, action) => {
-    return update(state, {
-      TMMerge: { projectVersions: { $set: action.payload } },
-      fetchingProject: { $set: false },
-      notification: { $set: undefined }
-    })
+    if (action.meta.timestamp > state.projectResultsTimestamp) {
+      return update(state, {
+        TMMerge: { projectVersions: { $set: action.payload } },
+        fetchingProject: { $set: false },
+        notification: { $set: undefined },
+        projectResultsTimestamp: {$set: action.meta.timestamp}
+      })
+    } else {
+      return state
+    }
   },
   [PROJECT_PAGE_FAILURE]: (state, action) => {
     return update(state, {

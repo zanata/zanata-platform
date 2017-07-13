@@ -106,11 +106,13 @@ describe('version-reducer test', () => {
   })
 
   it('can receive projects', () => {
+    const timestamp = Date.now()
     const requestAction = {
       type: PROJECT_PAGE_REQUEST
     }
     const projectSuccessAction = {
       type: PROJECT_PAGE_SUCCESS,
+      meta: {timestamp},
       payload:
         [{
           contributorCount: 0,
@@ -209,7 +211,8 @@ describe('version-reducer test', () => {
       fetchingLocale: false,
       fetchingProject: false,
       locales: [],
-      notification: undefined
+      notification: undefined,
+      projectResultsTimestamp: new Date(0)
     })
   })
   it('can track TM merge progress', () => {
@@ -244,7 +247,8 @@ describe('version-reducer test', () => {
       fetchingLocale: false,
       fetchingProject: false,
       locales: [],
-      notification: undefined
+      notification: undefined,
+      projectResultsTimestamp: new Date(0)
     })
   })
   it('can Query TM merge progress', () => {
@@ -267,7 +271,8 @@ describe('version-reducer test', () => {
       fetchingLocale: false,
       fetchingProject: false,
       locales: [],
-      notification: undefined
+      notification: undefined,
+      projectResultsTimestamp: new Date(0)
     })
   })
   it('can handle TM Merge completion', () => {
@@ -287,7 +292,8 @@ describe('version-reducer test', () => {
       fetchingLocale: false,
       fetchingProject: false,
       locales: [],
-      notification: undefined
+      notification: undefined,
+      projectResultsTimestamp: new Date(0)
     })
   })
 })
