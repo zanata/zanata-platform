@@ -1,3 +1,4 @@
+/* global jest describe it expect */
 jest.disableAutomock()
 
 import versionReducer from './version-reducer'
@@ -179,6 +180,50 @@ describe('version-reducer test', () => {
         ]
       }]
     )
+    const standardPayload = [{
+      contributorCount: 0,
+      description: 'A project',
+      id: 'meikai',
+      status: 'ACTIVE',
+      title: 'Meikai',
+      type: 'Project',
+      versions: [
+        {
+          id: 'ver1',
+          status: 'ACTIVE'
+        }
+      ]
+    },
+      {
+        contributorCount: 0,
+        description: 'Locked project',
+        id: 'meikailocked',
+        status: 'READONLY',
+        title: 'MeikaiLocked',
+        type: 'Project',
+        versions: [
+          {
+            id: 'ver1',
+            status: 'READONLY'
+          }
+        ]
+      }]
+    const brunch = new Date(2017, 4, 4, 11, 0, 0, 0)
+    const highTea = new Date(2017, 4, 4, 12, 0, 0, 3)
+    const firstProjectSuccessAction = {
+      type: PROJECT_PAGE_SUCCESS,
+      meta: brunch,
+      payload: standardPayload
+    }
+    const secondProjectSuccessAction = {
+      type: PROJECT_PAGE_SUCCESS,
+      meta: highTea,
+      payload: standardPayload
+    }
+    // The projects with the most recent timestamp should be maintained
+    const secondProjectsSuccess = versionReducer(secondProjectSuccessAction,
+      firstProjectSuccessAction)
+    expect(secondProjectsSuccess.meta).toEqual(highTea)
   })
   it('can request a TM merge', () => {
     const requestAction = {
@@ -212,7 +257,7 @@ describe('version-reducer test', () => {
       fetchingProject: false,
       locales: [],
       notification: undefined,
-      projectResultsTimestamp: new Date(0)
+      projectResultsTimestamp: initial.projectResultsTimestamp
     })
   })
   it('can track TM merge progress', () => {
@@ -248,7 +293,7 @@ describe('version-reducer test', () => {
       fetchingProject: false,
       locales: [],
       notification: undefined,
-      projectResultsTimestamp: new Date(0)
+      projectResultsTimestamp: initial.projectResultsTimestamp
     })
   })
   it('can Query TM merge progress', () => {
@@ -272,7 +317,7 @@ describe('version-reducer test', () => {
       fetchingProject: false,
       locales: [],
       notification: undefined,
-      projectResultsTimestamp: new Date(0)
+      projectResultsTimestamp: initial.projectResultsTimestamp
     })
   })
   it('can handle TM Merge completion', () => {
@@ -281,19 +326,6 @@ describe('version-reducer test', () => {
       type: TM_MERGE_PROCESS_FINISHED
     }
     const statusRequested = versionReducer(initial, queryRequestAction)
-    // TM_MERGE_PROCESS_FINISHED sets processStatus: undefined
-    expect(statusRequested).toEqual({
-      TMMerge: {
-        processStatus: undefined,
-        projectVersions: [],
-        show: false,
-        triggered: false
-      },
-      fetchingLocale: false,
-      fetchingProject: false,
-      locales: [],
-      notification: undefined,
-      projectResultsTimestamp: new Date(0)
-    })
+    expect(statusRequested.TMMerge.processStatus).toEqual(undefined)
   })
 })

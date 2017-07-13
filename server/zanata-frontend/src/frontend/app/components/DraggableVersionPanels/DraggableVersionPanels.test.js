@@ -1,14 +1,42 @@
+/* global jest describe it expect */
 jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import DraggableVersionPanels from '.'
+import DraggableVersionPanels, {Item, DragHandle} from '.'
 import {Button, ListGroup, ListGroupItem} from 'react-bootstrap'
 import {Icon, LockIcon} from '../../components'
 
-describe('DraggableVersionPanelsTest', () => {
+const callback = function (e) {}
+
+describe('DraggableVersionPanels', () => {
+  it('can render a draggable Item', () => {
+    const version = {
+      projectSlug: 'meikai1',
+      version: {
+        id: 'ver1',
+        status: 'ACTIVE'
+      }
+    }
+    const actual = ReactDOMServer.renderToStaticMarkup(
+      <Item key={'meikai1:ver1'} index={0}
+        value={version} removeVersion={callback} />
+    )
+    const expected = ReactDOMServer.renderToStaticMarkup(
+      <ListGroupItem className='v' >
+        <DragHandle />
+        {'ver1'} <span className='text-muted'> {'meikai1'}
+        </span> <LockIcon status={'ACTIVE'} />
+        {" "}
+        <Button bsSize='xsmall' className='close rm-version-btn'
+          onClick={callback}>
+          <Icon name='cross' className='n2 crossicon' title='remove version' />
+        </Button>
+      </ListGroupItem>
+    )
+    expect(actual).toEqual(expected)
+  })
   it('can render DraggableVersionPanels', () => {
-    const clickFun = function (e) {}
     const someVersions = [{
       projectSlug: 'meikai1',
       version: {
@@ -26,8 +54,8 @@ describe('DraggableVersionPanelsTest', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <DraggableVersionPanels
         selectedVersions={someVersions}
-        onDraggableMoveEnd={clickFun}
-        removeVersion={clickFun} />
+        onDraggableMoveEnd={callback}
+        removeVersion={callback} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
       <ListGroup>
@@ -37,28 +65,10 @@ describe('DraggableVersionPanelsTest', () => {
           </span><br />
           <span className="text-muted vmerge-adjsub">(best first)</span>
           <div className="pre-scrollable">
-            <ListGroupItem className='v' >
-              <Icon name='chevron-up' className='s1' title='click to drag' />
-              ver1 <span className="text-muted"> meikai1
-              </span> <LockIcon status={'ACTIVE'} />
-              {" "}
-              <Button bsSize='xsmall' className='close rm-version-btn'
-                onClick={clickFun}>
-                <Icon name='cross' className='n2 crossicon'
-                  title='remove version' />
-              </Button>
-            </ListGroupItem>
-            <ListGroupItem className='v' >
-              <Icon name='chevron-up' className='s1' title='click to drag' />
-              ver2 <span className="text-muted"> meikai2
-              </span> <LockIcon status={'ACTIVE'} />
-              {" "}
-              <Button bsSize='xsmall' className='close rm-version-btn'
-                onClick={clickFun}>
-                <Icon name='cross' className='n2 crossicon'
-                  title='remove version' />
-              </Button>
-            </ListGroupItem>
+            <Item key={'meikai1:ver1'} index={0}
+              value={someVersions[0]} removeVersion={callback} />
+            <Item key={'meikai2:ver2'} index={1}
+              value={someVersions[1]} removeVersion={callback} />
           </div>
         </div>
       </ListGroup>
@@ -66,12 +76,11 @@ describe('DraggableVersionPanelsTest', () => {
     expect(actual).toEqual(expected)
   })
   it('returns an empty span if there are no selectedVersions', () => {
-    const clickFun = function (e) {}
     const actual = ReactDOMServer.renderToStaticMarkup(
       <DraggableVersionPanels
         selectedVersions={[]}
-        onDraggableMoveEnd={clickFun}
-        removeVersion={clickFun} />
+        onDraggableMoveEnd={callback}
+        removeVersion={callback} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
       <span></span>

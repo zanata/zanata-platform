@@ -11,7 +11,7 @@ import {Icon, LockIcon} from '../../components'
 export const DragHandle = SortableHandle(() =>
   // TODO: Make an Icon component for the sortable handle
   // <i className='fa fa-sort'></i>
-  <Icon name='chevron-up' className='s1' title='click to drag' />)
+  <Icon name='menu' className='n1 drag-handle' title='click to drag' />)
 
 export class Item extends Component {
   static propTypes = {

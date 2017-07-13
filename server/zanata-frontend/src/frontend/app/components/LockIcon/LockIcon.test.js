@@ -1,20 +1,18 @@
+/* global jest describe it expect */
 jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import LockIcon from '.'
+import {Icon} from '../../components'
 
-describe('LockIconTest', () => {
+describe('LockIcon', () => {
   it('renders a LockIcon when given a READONLY status', () => {
-    const svgIcon = `<use xlink:href="#Icon-locked" />`
     const actual = ReactDOMServer.renderToStaticMarkup(
       <LockIcon status={'READONLY'} />
     )
     const expected = ReactDOMServer.renderToStaticMarkup(
-      <span className="s0 icon-locked">
-        <svg dangerouslySetInnerHTML={{ __html: svgIcon }}
-          style={{ fill: 'currentColor' }} />
-      </span>
+      <Icon name='locked' className='s0 icon-locked' />
     )
     expect(actual).toEqual(expected)
   })
