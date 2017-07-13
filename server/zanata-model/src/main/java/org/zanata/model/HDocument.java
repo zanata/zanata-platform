@@ -27,7 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import javax.enterprise.util.AnnotationLiteral;
+import javax.enterprise.inject.Instance;
+import javax.inject.Inject;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -44,7 +45,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import org.apache.deltaspike.core.api.provider.BeanProvider;
+
 import org.hibernate.annotations.ListIndexBase;
 import org.hibernate.annotations.NaturalId;
 import org.hibernate.annotations.Type;
@@ -298,26 +299,14 @@ public class HDocument extends ModelEntityBase implements DocumentWithId,
     }
 
     public static class EntityListener {
-
-        private static final AnnotationLiteral<Authenticated>
-                AUTHENTICATED = new AnnotationLiteral<Authenticated>() {
-            private static final long serialVersionUID = 1L;
-        };
+        @Inject
+        @Authenticated
+        private Instance<HAccount> account;
 
         @PreUpdate
-        @SuppressWarnings("deprecation")
         private void onUpdate(HDocument doc) {
-            if (org.zanata.util.Contexts.isSessionContextActive()) {
-                HAccount account;
-                try {
-                    account = BeanProvider.getContextualReference(
-                    HAccount.class, true, AUTHENTICATED);
-                } catch (IllegalStateException e) {
-                    account = null;
-                }
-                if (account != null) {
-                    doc.setLastModifiedBy(account.getPerson());
-                }
+            if (!account.isUnsatisfied()) {
+                doc.setLastModifiedBy(account.get().getPerson());
             }
         }
     }
