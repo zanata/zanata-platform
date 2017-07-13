@@ -906,8 +906,8 @@ pre {
   display: block;
   margin: 0 0 @spacing-heading;
   padding: @spacing-large-horizontal;
-  word-wrap: break-word;
-  word-break: break-all;
+  word-break: normal;
+  word-break: break-word; /*Chrome specific*/
   color: @gray-dark;
   border: 1px solid #ccc;
   border-radius: @border-radius-base;
@@ -6033,6 +6033,15 @@ i.i--left.i--lock, i.i--left.i--trash {
 
 .tabs__content {
   padding-bottom:@spacing-base-and-a-half;
+}
+
+.translationContainer pre.cm-s-default {
+  word-wrap: normal;
+  word-break: normal;
+  word-break: break-word; /*Chrome specific*/
+  -webkit-hyphens: initial;
+  -moz-hyphens: initial;
+  hyphens: initial;
 }
 
 // @screen-xs variable depreciated
