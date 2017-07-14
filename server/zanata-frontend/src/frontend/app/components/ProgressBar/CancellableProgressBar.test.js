@@ -37,10 +37,6 @@ describe('CancellableProgressBar', () => {
       percentageComplete: 0,
       statusCode: 'Cancelled'
     }
-    // Test the isProcessEnded utils function
-    const cancelled = isProcessEnded(cancelledStatus)
-    const cancelledExpected = true
-    expect(cancelled).toEqual(cancelledExpected)
     // Test the CancellableProgressBar markup cancel button is disabled
     expect(ReactDOMServer.renderToStaticMarkup(
       <CancellableProgressBar onCancelOperation={callback}
@@ -57,26 +53,31 @@ describe('CancellableProgressBar', () => {
   })
 
   it('detects loading process cancellation', () => {
+    // Testing the isProcessEnded utils function
     const cancelledStatus1 = {
       url: '/rest/process/key/TMMergeForVerKey-1-ja',
       percentageComplete: 0,
       statusCode: 'Cancelled'
     }
-    // Test the isProcessEnded utils function
     expect(isProcessEnded(cancelledStatus1)).toEqual(true)
     const cancelledStatus2 = {
       url: '/rest/process/key/TMMergeForVerKey-1-ja',
       percentageComplete: 66,
       statusCode: 'Cancelled'
     }
-    // Test the isProcessEnded utils function
     expect(isProcessEnded(cancelledStatus2)).toEqual(true)
     const cancelledStatus3 = {
       url: '/rest/process/key/TMMergeForVerKey-1-ja',
       percentageComplete: 100,
       statusCode: 'Cancelled'
     }
-    // Test the isProcessEnded utils function
     expect(isProcessEnded(cancelledStatus3)).toEqual(true)
+    const notCancelled = {
+      url: '/rest/process/key/TMMergeForVerKey-1-ja',
+      // This should not affect the status code logic
+      percentageComplete: 9999,
+      statusCode: 'Running'
+    }
+    expect(isProcessEnded(notCancelled)).toEqual(false)
   })
 })

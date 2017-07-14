@@ -180,12 +180,15 @@ describe('version-reducer test', () => {
         ]
       }]
     )
-    const standardPayload = [{
+  })
+
+  it('does not use stale results', () => {
+    const stalePayload = [{
       contributorCount: 0,
-      description: 'A project',
-      id: 'meikai',
+      description: 'A stale project',
+      id: 'meikai1',
       status: 'ACTIVE',
-      title: 'Meikai',
+      title: 'Meikai1',
       type: 'Project',
       versions: [
         {
@@ -193,37 +196,41 @@ describe('version-reducer test', () => {
           status: 'ACTIVE'
         }
       ]
-    },
-      {
-        contributorCount: 0,
-        description: 'Locked project',
-        id: 'meikailocked',
-        status: 'READONLY',
-        title: 'MeikaiLocked',
-        type: 'Project',
-        versions: [
-          {
-            id: 'ver1',
-            status: 'READONLY'
-          }
-        ]
-      }]
+    }]
+    const freshPayload = [{
+      contributorCount: 0,
+      description: 'A fresh project',
+      id: 'meikai2',
+      status: 'ACTIVE',
+      title: 'Meikai2',
+      type: 'Project',
+      versions: [
+        {
+          id: 'ver1',
+          status: 'ACTIVE'
+        }
+      ]
+    }]
     const brunch = new Date(2017, 4, 4, 11, 0, 0, 0)
     const highTea = new Date(2017, 4, 4, 12, 0, 0, 3)
     const firstProjectSuccessAction = {
       type: PROJECT_PAGE_SUCCESS,
-      meta: brunch,
-      payload: standardPayload
+      meta: { timestamp: brunch },
+      payload: stalePayload
     }
     const secondProjectSuccessAction = {
       type: PROJECT_PAGE_SUCCESS,
-      meta: highTea,
-      payload: standardPayload
+      meta: { timestamp: highTea },
+      payload: freshPayload
     }
-    // The projects with the most recent timestamp should be maintained
-    const secondProjectsSuccess = versionReducer(secondProjectSuccessAction,
+    // The project result with the most recent timestamp should be maintained
+    const newestResults = versionReducer(undefined, secondProjectSuccessAction)
+    const withStaleAction = versionReducer(newestResults,
       firstProjectSuccessAction)
-    expect(secondProjectsSuccess.meta).toEqual(highTea)
+
+    expect(withStaleAction.projectResultsTimestamp).toEqual(highTea)
+    expect(withStaleAction.TMMerge.projectVersions[0])
+      .toEqual(newestResults.TMMerge.projectVersions[0])
   })
   it('can request a TM merge', () => {
     const requestAction = {
