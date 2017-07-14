@@ -240,7 +240,7 @@ public interface ProjectVersionResource extends RestResource {
         @PathParam("versionSlug") String versionSlug);
 
     /**
-     * Retrieves a list translation unit with status in a document.
+     * Retrieves a list of translation unit id with status in a document.
      *
      * @param projectSlug
      *            Project identifier
@@ -269,6 +269,13 @@ public interface ProjectVersionResource extends RestResource {
         @PathParam("projectSlug") String projectSlug,
         @PathParam("versionSlug") String versionSlug,
         @PathParam("docId") String docId,
-        @DefaultValue("en-US") @PathParam("localeId")  String localeId);
-
+        @DefaultValue("en-US") @PathParam("localeId")  String localeId,
+        @QueryParam("searchString") String searchString,
+        @QueryParam("resId") String resId,
+        @QueryParam("changedBefore") String changedBefore,
+        @QueryParam("changedAfter") String changedAfter,
+        @QueryParam("lastModifiedByUser") String lastModifiedByUser,
+        @QueryParam("sourceComment") String sourceComment,
+        @QueryParam("transComment") String transComment,
+        @QueryParam("msgContext") String msgContext);
 }
