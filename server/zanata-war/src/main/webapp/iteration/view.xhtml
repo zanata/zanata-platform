@@ -435,7 +435,8 @@
                   <ui:fragment
                     rendered="#{identity.hasPermission(versionHomeAction.version, 'update')}">
                     <li>
-                      <a href="javascript:window.openTMMergeModal()" class="i__item--right">
+                      <a href="#" class="i__item--right"
+                        onclick="openTMMergeModal(); return false">
                         #{msgs['jsf.iteration.TMMerge']}
                         <i class="i i--translate i__item__icon"></i>
                       </a>
