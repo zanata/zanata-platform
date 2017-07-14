@@ -92,7 +92,12 @@ class ControlsHeader extends React.Component {
       <nav className="u-bgHighest u-sPH-1-2 l--cf-of u-sizeHeight-1_1-2">
         <TranslatingIndicator gettextCatalog={gettextCatalog} />
         <div className="u-floatLeft"><PhraseStatusFilter /></div>
-        <div className="u-floatLeft"><EditorSearchInput /></div>
+        {/* FIXME move InputEditorSearch into component. Layout component should
+                  not have to know the internals of how the component is
+                  styled. */}
+        <div className="u-floatLeft InputEditorSearch">
+          <EditorSearchInput />
+        </div>
         <div className="u-floatRight flex">
           <ul className="u-listHorizontal u-textCenter">
             <li className="u-sMV-1-4">
