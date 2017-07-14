@@ -1028,8 +1028,8 @@ pre {
   display: block;
   margin: 0 0 @spacing-heading;
   padding: @spacing-large-horizontal;
-  word-wrap: break-word;
-  word-break: break-all;
+  word-break: normal;
+  word-break: break-word; /*Chrome specific*/
   color: @gray-dark;
   border: 1px solid #ccc;
   border-radius: @border-radius-base;
@@ -6640,6 +6640,15 @@ table.tmx-table .badge .n1 {
   margin-right: -0.9em;
 }
 
+
+.translationContainer pre.cm-s-default {
+  word-wrap: normal;
+  word-break: normal;
+  word-break: break-word; /*Chrome specific*/
+  -webkit-hyphens: initial;
+  -moz-hyphens: initial;
+  hyphens: initial;
+}
 // @screen-xs variable depreciated
 @media (max-width: 29.375rem) {
   .view {
