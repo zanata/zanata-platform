@@ -9,8 +9,6 @@ import {Button, ListGroup, ListGroupItem} from 'react-bootstrap'
 import {Icon, LockIcon} from '../../components'
 
 export const DragHandle = SortableHandle(() =>
-  // TODO: Make an Icon component for the sortable handle
-  // <i className='fa fa-sort'></i>
   <Icon name='menu' className='n1 drag-handle' title='click to drag' />)
 
 export class Item extends Component {
