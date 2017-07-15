@@ -3,19 +3,11 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { baseUrl } from './config'
 import { locale, formats } from './config/intl'
+import createStoreWithMiddleware from './setup-middlewares'
 import { addLocaleData, IntlProvider } from 'react-intl'
-import { createStore, applyMiddleware } from 'redux'
-import { apiMiddleware } from 'redux-api-middleware'
 import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
-import newContextFetchMiddleware from './middlewares/new-context-fetch'
-import searchSelectedPhraseMiddleware
-  from './middlewares/selected-phrase-searches'
-import getStateInActions from './middlewares/getstate-in-actions'
-import titleUpdateMiddleware from './middlewares/title-update'
-import thunk from 'redux-thunk'
-import createLogger from 'redux-logger'
 import rootReducer from './reducers'
 
 import Root from './containers/Root'
@@ -54,42 +46,9 @@ function runApp () {
     locale: 'en-US'
   })
 
-  // example uses createHistory, but the latest bundles history with
-  // react-router and has some defaults, so now I am just using one of those.
-  // const history = createHistory()
   const history = browserHistory
   history.basename = baseUrl
-
-  const loggerMiddleware = createLogger({
-    predicate: (getState, action) =>
-      process.env && (process.env.NODE_ENV === 'development'),
-    actionTransformer: (action) => {
-      return {
-        ...action,
-        // allow symbol action type to be printed properly in logs
-        // TODO remove when types are migrated to stop using symbol
-        type: String(action.type)
-      }
-    }
-  })
-
-  // const reduxRouterMiddleware = syncHistory(history)
-  const createStoreWithMiddleware =
-    applyMiddleware(
-      titleUpdateMiddleware,
-      newContextFetchMiddleware,
-      searchSelectedPhraseMiddleware,
-      // reduxRouterMiddleware,
-      thunk,
-      apiMiddleware,
-      // must run after thunk because it fails with thunks
-      getStateInActions,
-      loggerMiddleware
-    )(createStore)
-
   const store = createStoreWithMiddleware(rootReducer)
-  // reduxRouterMiddleware.listenForReplays(store)
-
   const enhancedHistory = syncHistoryWithStore(history, store)
 
   const rootElement = document.getElementById('appRoot')
