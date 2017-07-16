@@ -1,5 +1,6 @@
 package org.zanata.rest.dto.stats.contribution;
 
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -15,6 +16,7 @@ import javax.annotation.Nullable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @JsonPropertyOrder({ "approved", "rejected", "translated", "needReview" })
+@Label("Base Contribution Statistics")
 public class BaseContributionStatistic implements Serializable {
 
     private static final long serialVersionUID = 6615374806881888982L;
