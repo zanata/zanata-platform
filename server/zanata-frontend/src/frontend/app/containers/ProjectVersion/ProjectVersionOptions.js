@@ -39,7 +39,6 @@ export const ProjectVersionOptions = (props) => {
             </Checkbox>
           </ListGroupItem>
         </ListGroup>
-        <span className='and'> AND </span>
         <ListGroup fill>
           <ListGroupItem>
             <Checkbox onChange={onContextCheckboxChange}
@@ -50,9 +49,6 @@ export const ProjectVersionOptions = (props) => {
             </Checkbox>
           </ListGroupItem>
         </ListGroup>
-      </Panel>
-      <Panel className='tm-panel'>
-        <span className='or'>OR</span>
         <ListGroup fill>
           <ListGroupItem >
             <Checkbox onChange={onImportedCheckboxChange}>
