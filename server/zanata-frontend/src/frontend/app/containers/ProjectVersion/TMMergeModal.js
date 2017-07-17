@@ -213,17 +213,18 @@ class TMMergeModal extends Component {
     queryTMMergeProgress: PropTypes.func.isRequired,
     mergeProcessFinished: PropTypes.func.isRequired
   }
+  defaultState = {
+    matchPercentage: 100,
+    differentDocId: false,
+    differentContext: false,
+    fromImportedTM: false,
+    selectedLanguage: undefined,
+    selectedVersions: [],
+    projectSearchTerm: this.props.projectSlug
+  }
   constructor (props) {
     super(props)
-    this.state = {
-      matchPercentage: 100,
-      differentDocId: false,
-      differentContext: false,
-      fromImportedTM: false,
-      selectedLanguage: undefined,
-      selectedVersions: [],
-      projectSearchTerm: this.props.projectSlug
-    }
+    this.state = this.defaultState
     /* Chose 1 second as an arbitrary period between searches.
      * leading and trailing options specify we want to search to after the user
      * stops typing. */
@@ -236,7 +237,13 @@ class TMMergeModal extends Component {
     this.props.fetchProjectPage(this.state.projectSearchTerm)
   }
   componentWillReceiveProps (nextProps) {
-    const locales = nextProps.locales
+    const { locales, showTMMergeModal } = nextProps
+    // Fetch locales again when modal is closed then re-opened
+    // Reset the state when the modal is closed
+    showTMMergeModal !== this.props.showTMMergeModal && showTMMergeModal
+    ? nextProps.fetchVersionLocales(
+      nextProps.projectSlug, nextProps.versionSlug)
+    : this.setState(this.defaultState)
     if (!this.state.selectedLanguage) {
       this.setState((prevState, props) => ({
         selectedLanguage: locales.length === 0 ? undefined : locales[0]
