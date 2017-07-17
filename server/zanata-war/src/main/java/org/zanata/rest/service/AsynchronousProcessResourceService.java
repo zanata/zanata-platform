@@ -151,7 +151,7 @@ public class AsynchronousProcessResourceService
         }
         HProjectIteration hProjectIteration =
                 retrieveAndCheckIteration(projectSlug, iterationSlug, true);
-        resourceUtils.validateExtensions(extensions); // gettext, comment
+        ResourceUtils.validateExtensions(extensions); // gettext, comment
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
         String name = "SourceDocCreationOrUpdate: " + projectSlug + "-"

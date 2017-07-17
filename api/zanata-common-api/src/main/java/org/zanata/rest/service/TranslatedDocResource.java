@@ -69,8 +69,7 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 })
 public interface TranslatedDocResource extends RestResource {
     @SuppressWarnings("deprecation")
-    public static final String SERVICE_PATH =
-            ProjectIterationResource.SERVICE_PATH + "/r";
+    public static final String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH;
 
     /**
      * Retrieves a set of translations for a given locale.

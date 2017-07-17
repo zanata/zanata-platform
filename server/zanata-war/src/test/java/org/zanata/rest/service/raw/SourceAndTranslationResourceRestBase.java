@@ -187,7 +187,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                 }
 
                 @Override
-                public Response getResourceWithDocId(String id,
+                public Response getResourceWithDocId(String docId,
                         Set<String> extensions) {
                     return new ResourceRequest(
                             getRestEndpointUrl(BASE_PATH),
@@ -196,7 +196,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         protected Invocation.Builder prepareRequest(
                                 ResteasyWebTarget webTarget) {
                             return addExtensionToRequest(extensions, webTarget).
-                                    queryParam("id", id).
+                                    queryParam("id", docId).
                                     request().header(HttpHeaders.ACCEPT,
                                     MediaType.APPLICATION_XML_TYPE);
                         }

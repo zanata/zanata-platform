@@ -184,9 +184,9 @@ public class SourceDocResourceService implements SourceDocResource {
     }
 
     @Override
-    public Response getResourceWithDocId(String id, Set<String> extensions) {
+    public Response getResourceWithDocId(String docId, Set<String> extensions) {
         log.debug("start get resource");
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(docId)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("missing id").build();
         }
@@ -194,13 +194,13 @@ public class SourceDocResourceService implements SourceDocResource {
         ResourceUtils.validateExtensions(extensions);
         final Set<String> extSet = new HashSet<>(extensions);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
-                id, extSet);
+                docId, extSet);
         Response.ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
             return response.build();
         }
         HDocument doc =
-                documentDAO.getByDocIdAndIteration(hProjectIteration, id);
+                documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
         if (doc == null || doc.isObsolete()) {
             // TODO: return Problem DTO, https://tools.ietf.org/html/rfc7807
             return Response.status(Response.Status.NOT_FOUND)
@@ -243,7 +243,7 @@ public class SourceDocResourceService implements SourceDocResource {
         }
         Response.ResponseBuilder response;
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
-        resourceUtils.validateExtensions(extensions);
+        ResourceUtils.validateExtensions(extensions);
         HDocument document =
                 this.documentDAO.getByDocIdAndIteration(hProjectIteration,
                         docId);

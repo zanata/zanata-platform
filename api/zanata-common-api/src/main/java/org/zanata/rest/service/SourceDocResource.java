@@ -172,7 +172,7 @@ public interface SourceDocResource extends RestResource {
     /**
      * Retrieves information for a source Document.
      *
-     * @param id
+     * @param docId
      *            The document identifier.
      * @param extensions
      *            The document extensions to fetch along with the document (e.g.
@@ -190,7 +190,7 @@ public interface SourceDocResource extends RestResource {
     @TypeHint(Resource.class)
     @Path(DOCID_RESOURCE_PATH)
     public
-    Response getResourceWithDocId(@QueryParam("id") @DefaultValue("") String id,
+    Response getResourceWithDocId(@QueryParam("docId") @DefaultValue("") String docId,
             @QueryParam("ext") Set<String> extensions);
 
     /**

@@ -166,8 +166,7 @@ public interface AsynchronousProcessResource extends RestResource {
      *            e.g. "ext=gettext&ext=comment".
      */
     @PUT
-    @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource"
-            + SourceDocResource.RESOURCE_SLUG_TEMPLATE)
+    @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource")
     @TypeHint(ProcessStatus.class)
     @StatusCodes({
             @ResponseCode(code = 200, condition = "The contents of the response will indicate the process" +
