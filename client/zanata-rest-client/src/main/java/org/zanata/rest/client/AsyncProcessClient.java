@@ -54,8 +54,6 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    // TODO: remove this test when parent method is removed
     public ProcessStatus startSourceDocCreation(String idNoSlash,
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {

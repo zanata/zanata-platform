@@ -41,11 +41,9 @@ import javax.inject.Named;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
-import org.zanata.ApplicationConfiguration;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.dao.DocumentDAO;
-import org.zanata.dao.ProjectDAO;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HDocument;
@@ -53,9 +51,9 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.resource.TranslationsResource;
 import org.zanata.security.ZanataIdentity;
-import org.zanata.service.CopyTransService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TranslationService;
 import com.google.common.base.Optional;
@@ -71,6 +69,7 @@ import com.google.common.base.Optional;
 public class TranslatedDocResourceService implements TranslatedDocResource {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(TranslatedDocResourceService.class);
+    private static final long serialVersionUID = -5855787114970845084L;
 
     // security actions
     // private static final String ACTION_IMPORT_TEMPLATE = "import-template";
@@ -96,19 +95,18 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Context
     private MediaType requestContentType;
     @Context
+    @SuppressFBWarnings("SE_BAD_FIELD")
     private HttpHeaders headers;
     @Context
+    @SuppressFBWarnings("SE_BAD_FIELD")
     private Request request;
     @Context
+    @SuppressFBWarnings("SE_BAD_FIELD")
     private UriInfo uri;
     @Inject
     private ZanataIdentity identity;
     @Inject
-    private ApplicationConfiguration applicationConfiguration;
-    @Inject
     private ProjectIterationDAO projectIterationDAO;
-    @Inject
-    private ProjectDAO projectDAO;
     @Inject
     private DocumentDAO documentDAO;
     @Inject
@@ -117,8 +115,6 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     private ResourceUtils resourceUtils;
     @Inject
     private ETagUtils eTagUtils;
-    @Inject
-    private CopyTransService copyTransServiceImpl;
     @Inject
     private RestSlugValidator restSlugValidator;
     @Inject
@@ -129,7 +125,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     @Override
     public Response getTranslations(String idNoSlash, LocaleId locale,
             Set<String> extensions, boolean skeletons, String eTag) {
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String id = RestUtil.convertFromDocumentURIId(idNoSlash);
         return getTranslationsWithDocId(locale, id, extensions, skeletons, eTag);
     }
 
@@ -183,7 +179,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
     @Override
     public Response deleteTranslations(String idNoSlash, LocaleId locale) {
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String id = RestUtil.convertFromDocumentURIId(idNoSlash);
         return deleteTranslationsWithDocId(locale, id);
     }
 
@@ -225,7 +221,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     public Response putTranslations(String idNoSlash, LocaleId locale,
             TranslationsResource messageBody, Set<String> extensions,
             String merge) {
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String id = RestUtil.convertFromDocumentURIId(idNoSlash);
         return putTranslationsWithDocId(locale, messageBody, id, extensions, merge);
     }
 

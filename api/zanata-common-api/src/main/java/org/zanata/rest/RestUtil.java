@@ -4,12 +4,16 @@ import javax.ws.rs.core.Response;
 
 public class RestUtil {
 
-    public static String convertToDocumentURIId(String id) {
+    public static String convertToDocumentURIId(String docId) {
         // NB this currently prevents us from allowing ',' in file names
-        if (id.startsWith("/")) {
-            return id.substring(1).replace('/', ',');
+        if (docId.startsWith("/")) {
+            return docId.substring(1).replace('/', ',');
         }
-        return id.replace('/', ',');
+        return docId.replace('/', ',');
+    }
+
+    public static String convertFromDocumentURIId(String docIdWithNoSlash) {
+        return docIdWithNoSlash.replace(',', '/');
     }
 
     public static boolean isNotFound(Response response) {

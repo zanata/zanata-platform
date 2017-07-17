@@ -40,6 +40,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.ProcessStatus;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.TranslationsResource;
@@ -69,6 +70,7 @@ public class AsynchronousProcessResourceService
         implements AsynchronousProcessResource {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(AsynchronousProcessResourceService.class);
+    private static final long serialVersionUID = -5915271018788588841L;
 
     @Inject
     private LocaleService localeServiceImpl;
@@ -83,8 +85,6 @@ public class AsynchronousProcessResourceService
     @Inject
     private ProjectIterationDAO projectIterationDAO;
     @Inject
-    private ResourceUtils resourceUtils;
-    @Inject
     private ZanataIdentity identity;
 
     @Override
@@ -96,7 +96,7 @@ public class AsynchronousProcessResourceService
                 retrieveAndCheckIteration(projectSlug, iterationSlug, true);
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
-        resourceUtils.validateExtensions(extensions); // gettext, comment
+        ResourceUtils.validateExtensions(extensions); // gettext, comment
         HDocument document = documentDAO
                 .getByDocIdAndIteration(hProjectIteration, resource.getName());
         // already existing non-obsolete document.
@@ -112,7 +112,7 @@ public class AsynchronousProcessResourceService
         }
         String name = "SourceDocCreation: " + projectSlug + "-" + iterationSlug
                 + "-" + idNoSlash;
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
         String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl
                 .saveDocumentAsync(projectSlug, iterationSlug,
@@ -129,7 +129,7 @@ public class AsynchronousProcessResourceService
             final String projectSlug, final String iterationSlug,
             final Resource resource, final Set<String> extensions,
             final boolean copytrans) {
-        String docId = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String docId = RestUtil.convertFromDocumentURIId(idNoSlash);
         return startSourceDocCreationOrUpdateProcess(projectSlug,
                 iterationSlug, resource, extensions, docId, copytrans);
     }
@@ -151,7 +151,7 @@ public class AsynchronousProcessResourceService
         }
         HProjectIteration hProjectIteration =
                 retrieveAndCheckIteration(projectSlug, iterationSlug, true);
-        resourceUtils.validateExtensions(extensions); // gettext, comment
+        ResourceUtils.validateExtensions(extensions); // gettext, comment
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
         String name = "SourceDocCreationOrUpdate: " + projectSlug + "-"
@@ -198,7 +198,7 @@ public class AsynchronousProcessResourceService
             final TranslationsResource translatedDoc,
             final Set<String> extensions, final String merge,
             final boolean assignCreditToUploader) {
-        final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        final String id = RestUtil.convertFromDocumentURIId(idNoSlash);
         return startTranslatedDocCreationOrUpdateWithDocId(projectSlug,
                 iterationSlug, locale, translatedDoc, id, extensions, merge,
                 assignCreditToUploader);
@@ -217,7 +217,7 @@ public class AsynchronousProcessResourceService
                 this.getSecuredIteration(projectSlug, iterationSlug)
                         .getProject());
         if (StringUtils.isBlank(docId)) {
-            throw new BadRequestException("missing id");
+            throw new BadRequestException("missing docId");
         }
         MergeType mergeType;
         try {
@@ -231,7 +231,7 @@ public class AsynchronousProcessResourceService
         final MergeType finalMergeType = mergeType;
         String taskName = "TranslatedDocUpload: "+projectSlug+"-"+iterationSlug+"-"+
                 docId;
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
         String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
                 iterationSlug, docId, locale, translatedDoc, extensions,
@@ -242,6 +242,7 @@ public class AsynchronousProcessResourceService
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public ProcessStatus getProcessStatus(String processId) {
         AsyncTaskHandle handle =
                 asyncTaskHandleManager.getHandleByKeyId(processId);

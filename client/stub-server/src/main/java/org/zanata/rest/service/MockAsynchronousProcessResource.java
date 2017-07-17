@@ -40,7 +40,6 @@ public class MockAsynchronousProcessResource implements
     private static final long serialVersionUID = 8841332691985560066L;
 
     @Override
-    @SuppressWarnings("deprecation")
     // TODO: remove this test when parent method is removed
     public ProcessStatus startSourceDocCreation(String idNoSlash,
             String projectSlug, String iterationSlug, Resource resource,

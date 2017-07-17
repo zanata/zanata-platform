@@ -557,9 +557,6 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                     srcDoc.getName(), srcDoc.getTextFlows().size());
 
             ConsoleUtils.startProgressFeedback();
-            // NB: Copy trans is set to false as using copy trans in this manner
-            // is deprecated.
-            // see PushCommand.copyTransForDocument
             ProcessStatus status =
                     asyncProcessClient.startSourceDocCreationOrUpdateWithDocId(
                             getOpts().getProj(), getOpts().getProjectVersion(),

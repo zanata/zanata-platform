@@ -301,7 +301,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         assertThat(response.getMetadata().getFirst("Location").toString(),
-                endsWith(DEPRECATED_BASE_PATH + "resource?id=" + UrlUtil.encodeString(docName)));
+                endsWith(BASE_PATH + "?docId=" + UrlUtil.encodeString(docName)));
 
         Response documentResponse =
                 getSourceDocResource().getResourceWithDocId(docName, null);
@@ -371,7 +371,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         assertThat(response.getMetadata().getFirst("Location").toString(),
-                endsWith(DEPRECATED_BASE_PATH + "resource?id=" + UrlUtil.encodeString(docName)));
+                endsWith(BASE_PATH + "?docId=" + UrlUtil.encodeString(docName)));
 
         Response documentResponse =
                 getSourceDocResource().getResourceWithDocId(docName, null);

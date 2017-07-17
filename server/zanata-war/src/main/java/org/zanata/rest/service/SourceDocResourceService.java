@@ -40,6 +40,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.zanata.common.EntityStatus;
@@ -54,6 +55,7 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.rest.NoSuchEntityException;
 import org.zanata.rest.ReadOnlyEntityException;
+import org.zanata.rest.RestUtil;
 import org.zanata.rest.dto.resource.Resource;
 import org.zanata.rest.dto.resource.ResourceMeta;
 import org.zanata.rest.dto.resource.TextFlow;
@@ -72,10 +74,13 @@ import org.zanata.service.LocaleService;
 public class SourceDocResourceService implements SourceDocResource {
     private static final org.slf4j.Logger log =
             org.slf4j.LoggerFactory.getLogger(SourceDocResourceService.class);
+    private static final long serialVersionUID = 7787405987851272827L;
 
     @Context
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private Request request;
     @Context
+    @SuppressFBWarnings(value = "SE_BAD_FIELD")
     private UriInfo uri;
 
     /**
@@ -144,7 +149,7 @@ public class SourceDocResourceService implements SourceDocResource {
             boolean copytrans) {
         identity.checkPermission(getSecuredIteration(), "import-template");
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
-        resourceUtils.validateExtensions(extensions); // gettext, comment
+        ResourceUtils.validateExtensions(extensions); // gettext, comment
         String resourceName = resource.getName();
         if (!Pattern.matches(SourceDocResource.RESOURCE_NAME_REGEX,
                 resourceName)) {
@@ -179,14 +184,14 @@ public class SourceDocResourceService implements SourceDocResource {
 
     @Override
     public Response getResource(String idNoSlash, Set<String> extensions) {
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String id = RestUtil.convertFromDocumentURIId(idNoSlash);
         return getResourceWithDocId(id, extensions);
     }
 
     @Override
-    public Response getResourceWithDocId(String id, Set<String> extensions) {
+    public Response getResourceWithDocId(String docId, Set<String> extensions) {
         log.debug("start get resource");
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(docId)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("missing id").build();
         }
@@ -194,13 +199,13 @@ public class SourceDocResourceService implements SourceDocResource {
         ResourceUtils.validateExtensions(extensions);
         final Set<String> extSet = new HashSet<>(extensions);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
-                id, extSet);
+                docId, extSet);
         Response.ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
             return response.build();
         }
         HDocument doc =
-                documentDAO.getByDocIdAndIteration(hProjectIteration, id);
+                documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
         if (doc == null || doc.isObsolete()) {
             // TODO: return Problem DTO, https://tools.ietf.org/html/rfc7807
             return Response.status(Response.Status.NOT_FOUND)
@@ -228,7 +233,7 @@ public class SourceDocResourceService implements SourceDocResource {
     @Override
     public Response putResource(String idNoSlash, Resource resource,
             Set<String> extensions, boolean copytrans) {
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String id = RestUtil.convertFromDocumentURIId(idNoSlash);
         return putResourceWithDocId(resource, id, extensions, copytrans);
     }
 
@@ -239,18 +244,18 @@ public class SourceDocResourceService implements SourceDocResource {
         log.debug("start put resource");
         if (StringUtils.isBlank(docId)) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("missing id").build();
+                    .entity("missing docId").build();
         }
         Response.ResponseBuilder response;
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
-        resourceUtils.validateExtensions(extensions);
+        ResourceUtils.validateExtensions(extensions);
         HDocument document =
                 this.documentDAO.getByDocIdAndIteration(hProjectIteration,
                         docId);
         if (document == null || document.isObsolete()) {
             response = Response.created(
                     UriBuilder.fromUri(uri.getAbsolutePath())
-                            .queryParam("id", docId).build());
+                            .queryParam("docId", docId).build());
         } else {
             response = Response.ok();
         }
@@ -265,7 +270,7 @@ public class SourceDocResourceService implements SourceDocResource {
 
     @Override
     public Response deleteResource(String idNoSlash) {
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String id = RestUtil.convertFromDocumentURIId(idNoSlash);
         return deleteResourceWithDocId(id);
     }
 
@@ -291,7 +296,7 @@ public class SourceDocResourceService implements SourceDocResource {
 
     @Override
     public Response getResourceMeta(String idNoSlash, Set<String> extensions) {
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String id = RestUtil.convertFromDocumentURIId(idNoSlash);
         return getResourceMetaWithDocId(id, extensions);
     }
 
@@ -328,7 +333,7 @@ public class SourceDocResourceService implements SourceDocResource {
     @Override
     public Response putResourceMeta(String idNoSlash, ResourceMeta messageBody,
             Set<String> extensions) {
-        String id = URIHelper.convertFromDocumentURIId(idNoSlash);
+        String id = RestUtil.convertFromDocumentURIId(idNoSlash);
         return putResourceMetaWithDocId(messageBody, id , extensions);
     }
 
