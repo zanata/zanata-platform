@@ -54,8 +54,9 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     // TODO: remove this test when parent method is removed
-    public ProcessStatus startSourceDocCreation(String docId,
+    public ProcessStatus startSourceDocCreation(String idNoSlash,
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {
         throw new UnsupportedOperationException(
@@ -85,24 +86,24 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
     @Override
     public ProcessStatus startSourceDocCreationOrUpdateWithDocId(
             String projectSlug, String iterationSlug, Resource resource,
-            Set<String> extensions, String id, boolean copytrans) {
+            Set<String> extensions, String docId) {
         Client client = factory.getClient();
         WebTarget webResource = client.target(baseUri)
                 .path(AsynchronousProcessResource.SERVICE_PATH)
                 .path("projects").path("p").path(projectSlug)
                 .path("iterations").path("i").path(iterationSlug)
-                .path("r").path("resource");
+                .path("resource");
         Response response = webResource
-                .queryParam("id", id)
+                .queryParam("docId", docId)
                 .queryParam("ext", extensions.toArray())
-                .queryParam("copyTrans", String.valueOf(copytrans))
                 .request(MediaType.APPLICATION_XML_TYPE)
                 .put(Entity.xml(resource));
         if (RestUtil.isNotFound(response)) {
+            response.close();
             // fallback to old endpoint
-            String idNoSlash = RestUtil.convertToDocumentURIId(id);
+            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
             return startSourceDocCreationOrUpdate(idNoSlash, projectSlug,
-                    iterationSlug, resource, extensions, copytrans);
+                    iterationSlug, resource, extensions, false);
         } else {
             response.bufferEntity();
             return response.readEntity(ProcessStatus.class);
@@ -136,7 +137,7 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
     @Override
     public ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(
             String projectSlug, String iterationSlug, LocaleId locale,
-            TranslationsResource translatedDoc, String id,
+            TranslationsResource translatedDoc, String docId,
             Set<String> extensions,
             String merge, boolean assignCreditToUploader) {
         Client client = factory.getClient();
@@ -144,10 +145,10 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
                 .path(AsynchronousProcessResource.SERVICE_PATH)
                 .path("projects").path("p").path(projectSlug)
                 .path("iterations").path("i").path(iterationSlug)
-                .path("r").path("resource")
+                .path("resource")
                 .path("translations").path(locale.toString());
         Response response = webResource
-                .queryParam("id", id)
+                .queryParam("docid", docId)
                 .queryParam("ext", extensions.toArray())
                 .queryParam("merge", merge)
                 .queryParam("assignCreditToUploader", String.valueOf(assignCreditToUploader))
@@ -155,7 +156,8 @@ public class AsyncProcessClient implements AsynchronousProcessResource {
                 .put(Entity.xml(translatedDoc));
         if (RestUtil.isNotFound(response)) {
             // fallback to old endpoint
-            String idNoSlash = RestUtil.convertToDocumentURIId(id);
+            response.close();
+            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
             return startTranslatedDocCreationOrUpdate(idNoSlash, projectSlug,
                     iterationSlug, locale, translatedDoc, extensions, merge,
                     assignCreditToUploader);

@@ -26,7 +26,6 @@ import org.zanata.common.ContentType;
 import org.zanata.common.LocaleId;
 import org.zanata.common.MergeType;
 import org.zanata.common.ResourceType;
-import org.zanata.rest.RestUtil;
 import org.zanata.rest.StringSet;
 import org.zanata.rest.dto.extensions.comment.SimpleComment;
 import org.zanata.rest.dto.extensions.gettext.HeaderEntry;
@@ -302,7 +301,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         assertThat(response.getMetadata().getFirst("Location").toString(),
-                endsWith(BASE_PATH + "resource?id=" + UrlUtil.encodeString(docName)));
+                endsWith(DEPRECATED_BASE_PATH + "resource?id=" + UrlUtil.encodeString(docName)));
 
         Response documentResponse =
                 getSourceDocResource().getResourceWithDocId(docName, null);
@@ -372,7 +371,7 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         assertThat(response.getMetadata().getFirst("Location").toString(),
-                endsWith(BASE_PATH + "resource?id=" + UrlUtil.encodeString(docName)));
+                endsWith(DEPRECATED_BASE_PATH + "resource?id=" + UrlUtil.encodeString(docName)));
 
         Response documentResponse =
                 getSourceDocResource().getResourceWithDocId(docName, null);

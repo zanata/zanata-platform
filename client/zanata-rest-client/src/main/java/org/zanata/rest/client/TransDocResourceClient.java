@@ -53,7 +53,7 @@ public class TransDocResourceClient {
     }
 
     public Response getTranslations(
-            String id,
+            String docId,
             LocaleId locale,
             Set<String> extensions,
             boolean createSkeletons,
@@ -63,7 +63,7 @@ public class TransDocResourceClient {
                 .path("resource")
                 .path("translations")
                 .path(locale.getId())
-                .queryParam("id", id)
+                .queryParam("docId", docId)
                 .queryParam("ext", extensions.toArray())
                 .queryParam("skeletons", String.valueOf(createSkeletons))
                 .request(MediaType.APPLICATION_XML_TYPE)
@@ -71,8 +71,10 @@ public class TransDocResourceClient {
                 .get();
         if (RestUtil.isNotFound(response)) {
             // fallback to old endpoint
-            String idNoSlash = RestUtil.convertToDocumentURIId(id);
+            response.close();
+            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
             response = getBaseServiceResource(client)
+                    .path("r")
                     .path(idNoSlash)
                     .path("translations").path(locale.getId())
                     .queryParam("ext", extensions.toArray())
@@ -89,8 +91,7 @@ public class TransDocResourceClient {
                 .path("projects").path("p")
                 .path(project)
                 .path("iterations").path("i")
-                .path(projectVersion)
-                .path("r");
+                .path(projectVersion);
     }
 
 }

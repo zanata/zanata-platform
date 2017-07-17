@@ -134,10 +134,11 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     }
 
     @Override
-    public Response getTranslationsWithDocId(LocaleId locale, String id,
+    public Response getTranslationsWithDocId(LocaleId locale, String docId,
             Set<String> extensions, boolean createSkeletons, String eTag) {
         log.debug("start to get translation");
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(docId)) {
+            // TODO: return Problem DTO, https://tools.ietf.org/html/rfc7807
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("missing id").build();
         }
@@ -148,7 +149,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         ResourceUtils.validateExtensions(extensions);
         // Check Etag header
         EntityTag generatedEtag = eTagUtils.generateETagForTranslatedDocument(
-                hProjectIteration, id, hLocale);
+                hProjectIteration, docId, hLocale);
         List<String> requestedEtagHeaders =
                 headers.getRequestHeader(HttpHeaders.IF_NONE_MATCH);
         if (requestedEtagHeaders != null && !requestedEtagHeaders.isEmpty()) {
@@ -161,7 +162,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
             return response.build();
         }
         HDocument document =
-                documentDAO.getByDocIdAndIteration(hProjectIteration, id);
+                documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
         if (document == null || document.isObsolete()) {
             return Response.status(Status.NOT_FOUND).build();
         }
@@ -187,10 +188,10 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
     }
 
     @Override
-    public Response deleteTranslationsWithDocId(LocaleId locale, String id) {
+    public Response deleteTranslationsWithDocId(LocaleId locale, String docId) {
         identity.checkPermission(getSecuredIteration().getProject(),
                 "modify-translation");
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(docId)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("missing id").build();
         }
@@ -199,13 +200,13 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         HLocale hLocale = restSlugValidator.validateTargetLocale(locale,
                 projectSlug, iterationSlug);
         EntityTag etag = eTagUtils.generateETagForTranslatedDocument(
-                hProjectIteration, id, hLocale);
+                hProjectIteration, docId, hLocale);
         ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
             return response.build();
         }
         HDocument document =
-                documentDAO.getByDocIdAndIteration(hProjectIteration, id);
+                documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
         if (document == null || document.isObsolete()) {
             return Response.status(Status.NOT_FOUND).build();
         }
@@ -230,7 +231,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
 
     @Override
     public Response putTranslationsWithDocId(LocaleId locale,
-            TranslationsResource messageBody, String id, Set<String> extensions,
+            TranslationsResource messageBody, String docId, Set<String> extensions,
             String merge) {
         // check security (cannot be on @Restrict as it refers to method
         // parameters)
@@ -238,7 +239,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
                 this.localeServiceImpl.getByLocaleId(locale),
                 this.getSecuredIteration().getProject());
         log.debug("start put translations");
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(docId)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("missing id").build();
         }
@@ -254,7 +255,7 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         HLocale hLocale = restSlugValidator.validateTargetLocale(locale,
                 projectSlug, iterationSlug);
         EntityTag etag = eTagUtils.generateETagForTranslatedDocument(
-                hProjectIteration, id, hLocale);
+                hProjectIteration, docId, hLocale);
         ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
             return response.build();
@@ -263,12 +264,12 @@ public class TranslatedDocResourceService implements TranslatedDocResource {
         boolean assignCreditToUploader = false;
         // Translate
         List<String> warnings = this.translationServiceImpl.translateAllInDoc(
-                projectSlug, iterationSlug, id, locale, messageBody, extensions,
+                projectSlug, iterationSlug, docId, locale, messageBody, extensions,
                 mergeType, assignCreditToUploader,
                 TranslationSourceType.API_UPLOAD);
         // Regenerate etag in case it has changed
         etag = eTagUtils.generateETagForTranslatedDocument(hProjectIteration,
-                id, hLocale);
+                docId, hLocale);
         log.debug("successful put translation");
         // TODO lastChanged
         StringBuilder sb = new StringBuilder();

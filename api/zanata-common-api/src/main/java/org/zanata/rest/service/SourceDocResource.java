@@ -58,16 +58,17 @@ import com.webcohesion.enunciate.metadata.rs.TypeHint;
 @ResourceLabel("Source Documents")
 public interface SourceDocResource extends RestResource {
     @SuppressWarnings("deprecation")
-    String SERVICE_PATH =
-            ProjectIterationResource.SERVICE_PATH + "/r";
+    String SERVICE_PATH = ProjectIterationResource.SERVICE_PATH;
+    String RESOURCE_PATH = "/r";
+    String DOCID_RESOURCE_PATH = "/resource";
+
     String RESOURCE_SLUG_REGEX =
             "[\\-_a-zA-Z0-9]+([a-zA-Z0-9_\\-,{.}]*[a-zA-Z0-9]+)?";
     String RESOURCE_NAME_REGEX =
             // as above, with ',' replaced by '/'
             "[\\-_a-zA-Z0-9]+([a-zA-Z0-9_\\-/{.}]*[a-zA-Z0-9]+)?";
-    String RESOURCE_SLUG_TEMPLATE = "/{id:"
-            + RESOURCE_SLUG_REGEX + "}";
-    String RESOURCE_PATH = "/resource";
+    String RESOURCE_SLUG_TEMPLATE =
+            RESOURCE_PATH + "/{id:" + RESOURCE_SLUG_REGEX + "}";
 
     /**
      * Returns header information for a Project's iteration source strings.
@@ -82,6 +83,7 @@ public interface SourceDocResource extends RestResource {
      *         the server while performing this operation.
      */
     @HEAD
+    @Path(RESOURCE_PATH)
     public Response head();
 
     /**
@@ -103,6 +105,7 @@ public interface SourceDocResource extends RestResource {
      *         the server while performing this operation.
      */
     @GET
+    @Path(RESOURCE_PATH)
     @TypeHint(ResourceMeta[].class)
     Response get(@QueryParam("ext") Set<String> extensions);
 
@@ -130,6 +133,7 @@ public interface SourceDocResource extends RestResource {
      *         the server while performing this operation.
      */
     @POST
+    @Path(RESOURCE_PATH)
     public Response post(Resource resource,
             @QueryParam("ext") Set<String> extensions,
             @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
@@ -184,8 +188,7 @@ public interface SourceDocResource extends RestResource {
      */
     @GET
     @TypeHint(Resource.class)
-    @Path(RESOURCE_PATH)
-    // /r/resource?
+    @Path(DOCID_RESOURCE_PATH)
     public
     Response getResourceWithDocId(@QueryParam("id") @DefaultValue("") String id,
             @QueryParam("ext") Set<String> extensions);
@@ -241,7 +244,7 @@ public interface SourceDocResource extends RestResource {
     /**
      * Creates or modifies a source Document.
      *
-     * @param id
+     * @param docId
      *            The document identifier.
      * @param resource
      *            The document information.
@@ -268,11 +271,10 @@ public interface SourceDocResource extends RestResource {
      *         the server while performing this operation.
      */
     @PUT
-    @Path(RESOURCE_PATH)
-    // /r/resource?
+    @Path(DOCID_RESOURCE_PATH)
     public Response putResourceWithDocId(
             Resource resource,
-            @QueryParam("id") @DefaultValue("") String id,
+            @QueryParam("docId") @DefaultValue("") String docId,
             @QueryParam("ext") Set<String> extensions,
             @QueryParam("copyTrans") @DefaultValue("true") boolean copytrans);
 
@@ -310,7 +312,7 @@ public interface SourceDocResource extends RestResource {
     /**
      * Delete a source Document. The system keeps the history of this document however.
      *
-     * @param id
+     * @param docId
      *            The document identifier.
      * @return The following response status codes will be returned from this
      *         operation:<br>
@@ -326,10 +328,9 @@ public interface SourceDocResource extends RestResource {
      *         the server while performing this operation.
      */
     @DELETE
-    @Path(RESOURCE_PATH)
-    // /r/resource?
+    @Path(DOCID_RESOURCE_PATH)
     public Response deleteResourceWithDocId(
-            @QueryParam("id") @DefaultValue("") String id);
+            @QueryParam("docId") @DefaultValue("") String docId);
 
     /**
      * Retrieves meta-data information for a source Document.
@@ -367,7 +368,7 @@ public interface SourceDocResource extends RestResource {
     /**
      * Retrieves meta-data information for a source Document.
      *
-     * @param id
+     * @param docId
      *            The document identifier.
      * @param extensions
      *            The document extensions to retrieve with the document's
@@ -383,11 +384,10 @@ public interface SourceDocResource extends RestResource {
      *         the server while performing this operation.
      */
     @GET
-    @Path(RESOURCE_PATH + "/meta")
-    // /r/resource/meta
+    @Path(DOCID_RESOURCE_PATH + "/meta")
     @TypeHint(ResourceMeta.class)
     public Response getResourceMetaWithDocId(
-            @QueryParam("id") @DefaultValue("") String id,
+            @QueryParam("docId") @DefaultValue("") String docId,
             @QueryParam("ext") Set<String> extensions);
 
     /**
@@ -428,7 +428,7 @@ public interface SourceDocResource extends RestResource {
     /**
      * Modifies an existing source document's meta-data.
      *
-     * @param id
+     * @param docId
      *            The document identifier.
      * @param messageBody
      *            The document's meta-data.
@@ -447,10 +447,9 @@ public interface SourceDocResource extends RestResource {
      *         the server while performing this operation.
      */
     @PUT
-    @Path(RESOURCE_PATH + "/meta")
-    // /r/resource/meta
+    @Path(DOCID_RESOURCE_PATH + "/meta")
     public Response putResourceMetaWithDocId(ResourceMeta messageBody,
-            @QueryParam("id") @DefaultValue("") String id,
+            @QueryParam("docId") @DefaultValue("") String docId,
             @QueryParam("ext") Set<String> extensions);
 
 }

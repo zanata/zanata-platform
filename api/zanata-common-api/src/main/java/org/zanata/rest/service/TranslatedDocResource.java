@@ -21,7 +21,7 @@
 
 package org.zanata.rest.service;
 
-import static org.zanata.rest.service.SourceDocResource.RESOURCE_PATH;
+import static org.zanata.rest.service.SourceDocResource.DOCID_RESOURCE_PATH;
 import static org.zanata.rest.service.SourceDocResource.RESOURCE_SLUG_TEMPLATE;
 
 import java.util.Set;
@@ -113,13 +113,13 @@ public interface TranslatedDocResource extends RestResource {
     Response getTranslations(@PathParam("id") String idNoSlash,
             @PathParam("locale") LocaleId locale,
             @QueryParam("ext") Set<String> extensions,
-            @QueryParam("skeletons") boolean createSkeletons,
+            @QueryParam("skeletons") boolean skeletons,
             @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag);
 
     /**
      * Retrieves a set of translations for a given locale.
      *
-     * @param id
+     * @param docId
      *            The document identifier.
      * @param locale
      *            The locale for which to get translations.
@@ -134,8 +134,7 @@ public interface TranslatedDocResource extends RestResource {
      *            response to the client or not (See return section).
      */
     @GET
-    @Path(RESOURCE_PATH + "/translations/{locale}")
-    // /r/resource/translations/{locale}
+    @Path(DOCID_RESOURCE_PATH + "/translations/{locale}")
     @TypeHint(TranslationsResource.class)
     @StatusCodes({
             @ResponseCode(code = 200, condition = "Successfully retrieved translations. " +
@@ -149,7 +148,7 @@ public interface TranslatedDocResource extends RestResource {
     })
     public Response getTranslationsWithDocId(
             @PathParam("locale") LocaleId locale,
-            @QueryParam("id") @DefaultValue("") String id,
+            @QueryParam("docId") @DefaultValue("") String docId,
             @QueryParam("ext") Set<String> extensions,
             @QueryParam("skeletons") boolean createSkeletons,
             @HeaderParam(HttpHeaderNames.IF_NONE_MATCH) String eTag);
@@ -190,13 +189,13 @@ public interface TranslatedDocResource extends RestResource {
      * extensions recorded for the translations in question. The system will
      * keep history of the translations.
      *
-     * @param id
+     * @param docId
      *            The document identifier.
      * @param locale
      *            The locale for which to get translations.
      */
     @DELETE
-    @Path(RESOURCE_PATH + "/translations/{locale}")
+    @Path(DOCID_RESOURCE_PATH + "/translations/{locale}")
     @TypeHint(TypeHint.NO_CONTENT.class)
     @StatusCodes({
             @ResponseCode(code = 200, condition = "Successfully deleted the translations."),
@@ -205,10 +204,9 @@ public interface TranslatedDocResource extends RestResource {
             @ResponseCode(code = 401, condition = "If the user does not have the proper" +
                     " permissions to perform this operation."),
     })
-    // /r/resource/translations/{locale}
     public Response deleteTranslationsWithDocId(
             @PathParam("locale") LocaleId locale,
-            @QueryParam("id") @DefaultValue("")  String id);
+            @QueryParam("docId") @DefaultValue("")  String docId);
 
     /**
      * Updates the translations for a document and a locale.
@@ -260,7 +258,7 @@ public interface TranslatedDocResource extends RestResource {
     /**
      * Updates the translations for a document and a locale.
      *
-     * @param id
+     * @param docId
      *            The document identifier.
      * @param locale
      *            The locale for which to get translations.
@@ -278,7 +276,7 @@ public interface TranslatedDocResource extends RestResource {
      *            value is being pushed.
      */
     @PUT
-    @Path(RESOURCE_PATH + "/translations/{locale}")
+    @Path(DOCID_RESOURCE_PATH + "/translations/{locale}")
     @StatusCodes({
             @ResponseCode(code = 200, condition = "Translations were successfully updated."),
             @ResponseCode(code = 404, condition = "If a project, project iteration or document" +
@@ -290,11 +288,10 @@ public interface TranslatedDocResource extends RestResource {
                     " content message indicating a reason.",
                     type = @TypeHint(String.class))
     })
-    // /r/resource/translations/{locale}
     public Response putTranslationsWithDocId(
             @PathParam("locale") LocaleId locale,
             TranslationsResource messageBody,
-            @QueryParam("id") @DefaultValue("") String id,
+            @QueryParam("docId") @DefaultValue("") String docId,
             @QueryParam("ext") Set<String> extensions,
             @QueryParam("merge") @DefaultValue("auto") String merge);
 

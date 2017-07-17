@@ -207,7 +207,7 @@ public class ZanataRestCaller {
                 asyncProcessClient.startSourceDocCreationOrUpdateWithDocId(
                         projectSlug, iterationSlug,
                         sourceResource, Sets.newHashSet(),
-                        sourceResource.getName(), false);
+                        sourceResource.getName());
         processStatus = waitUntilFinished(asyncProcessClient, processStatus.getUrl());
         log.info("finished async source push ({}-{}): {}", projectSlug,
                 iterationSlug, processStatus.getStatusCode());

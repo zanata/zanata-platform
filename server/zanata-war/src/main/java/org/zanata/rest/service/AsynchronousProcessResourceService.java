@@ -129,15 +129,24 @@ public class AsynchronousProcessResourceService
             final String projectSlug, final String iterationSlug,
             final Resource resource, final Set<String> extensions,
             final boolean copytrans) {
-        return startSourceDocCreationOrUpdateWithDocId(projectSlug,
-                iterationSlug, resource, extensions, idNoSlash, copytrans);
+        String docId = URIHelper.convertFromDocumentURIId(idNoSlash);
+        return startSourceDocCreationOrUpdateProcess(projectSlug,
+                iterationSlug, resource, extensions, docId, copytrans);
     }
 
     @Override
     public ProcessStatus startSourceDocCreationOrUpdateWithDocId(
             String projectSlug, String iterationSlug, Resource resource,
-            Set<String> extensions, String id, boolean copytrans) {
-        if (StringUtils.isBlank(id)) {
+            Set<String> extensions, String docId) {
+        boolean copyTrans = false;
+        return startSourceDocCreationOrUpdateProcess(projectSlug,
+                iterationSlug, resource, extensions, docId, copyTrans);
+    }
+
+    private ProcessStatus startSourceDocCreationOrUpdateProcess(
+            String projectSlug, String iterationSlug, Resource resource,
+            Set<String> extensions, String docId, boolean copyTrans) {
+        if (StringUtils.isBlank(docId)) {
             throw new BadRequestException("missing id");
         }
         HProjectIteration hProjectIteration =
@@ -146,17 +155,15 @@ public class AsynchronousProcessResourceService
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
         String name = "SourceDocCreationOrUpdate: " + projectSlug + "-"
-                + iterationSlug + "-" + id;
+                + iterationSlug + "-" + docId;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
         String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl
                 .saveDocumentAsync(projectSlug, iterationSlug, resource,
-                        extensions, copytrans, true, handle);
+                        extensions, copyTrans, true, handle);
         logWhenUploadComplete(handle, name, keyId);
         return getProcessStatus(keyId); // TODO Change to return 202
-        // Accepted,
-        // with a url to get the
-        // progress
+        // Accepted, with a url to get the progress
     }
 
     private <T> void logWhenUploadComplete(
@@ -200,7 +207,7 @@ public class AsynchronousProcessResourceService
     @Override
     public ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(
             String projectSlug, String iterationSlug, LocaleId locale,
-            TranslationsResource translatedDoc, String id,
+            TranslationsResource translatedDoc, String docId,
             Set<String> extensions,
             String merge, boolean assignCreditToUploader) {
         // check security (cannot be on @Restrict as it refers to method
@@ -209,7 +216,7 @@ public class AsynchronousProcessResourceService
                 this.localeServiceImpl.getByLocaleId(locale),
                 this.getSecuredIteration(projectSlug, iterationSlug)
                         .getProject());
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(docId)) {
             throw new BadRequestException("missing id");
         }
         MergeType mergeType;
@@ -222,11 +229,12 @@ public class AsynchronousProcessResourceService
             return status;
         }
         final MergeType finalMergeType = mergeType;
-        String taskName = "TranslatedDocUpload: "+projectSlug+"-"+iterationSlug+"-"+id;
+        String taskName = "TranslatedDocUpload: "+projectSlug+"-"+iterationSlug+"-"+
+                docId;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
         String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
-                iterationSlug, id, locale, translatedDoc, extensions,
+                iterationSlug, docId, locale, translatedDoc, extensions,
                 finalMergeType, assignCreditToUploader, true, handle,
                 TranslationSourceType.API_UPLOAD);
         logWhenUploadComplete(handle, taskName, keyId);

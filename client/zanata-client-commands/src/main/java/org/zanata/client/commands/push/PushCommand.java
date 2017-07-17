@@ -563,7 +563,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
             ProcessStatus status =
                     asyncProcessClient.startSourceDocCreationOrUpdateWithDocId(
                             getOpts().getProj(), getOpts().getProjectVersion(),
-                            srcDoc, extensions, docId, false);
+                            srcDoc, extensions, docId);
 
             boolean waitForCompletion = true;
 
@@ -594,8 +594,7 @@ public class PushCommand extends PushPullCommand<PushOptions> {
                                         .startSourceDocCreationOrUpdateWithDocId(
                                                 getOpts().getProj(), getOpts()
                                                         .getProjectVersion(),
-                                                srcDoc, extensions, docId,
-                                                false);
+                                                srcDoc, extensions, docId);
                         ConsoleUtils
                                 .setProgressFeedbackMessage("Waiting for other clients ...");
                         break;

@@ -49,11 +49,11 @@ public class MockTranslatedDocResource implements TranslatedDocResource {
     }
 
     @Override
-    public Response getTranslationsWithDocId(LocaleId locale, String id,
+    public Response getTranslationsWithDocId(LocaleId locale, String docId,
             Set<String> extensions, boolean createSkeletons, String eTag) {
         MockResourceUtil.validateExtensions(extensions);
         TranslationsResource transResource = new TranslationsResource();
-        transResource.getTextFlowTargets().add(new TextFlowTarget(id));
+        transResource.getTextFlowTargets().add(new TextFlowTarget(docId));
         return Response.ok(transResource).build();
     }
 
@@ -63,7 +63,7 @@ public class MockTranslatedDocResource implements TranslatedDocResource {
     }
 
     @Override
-    public Response deleteTranslationsWithDocId(LocaleId locale, String id) {
+    public Response deleteTranslationsWithDocId(LocaleId locale, String docId) {
         return MockResourceUtil.notUsedByClient();
     }
 
@@ -77,7 +77,7 @@ public class MockTranslatedDocResource implements TranslatedDocResource {
 
     @Override
     public Response putTranslationsWithDocId(LocaleId locale,
-            TranslationsResource messageBody, String id, Set<String> extensions,
+            TranslationsResource messageBody, String docId, Set<String> extensions,
             String merge) {
         // used by PublicanPush only
         MockResourceUtil.validateExtensions(extensions);

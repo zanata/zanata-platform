@@ -64,7 +64,7 @@ public class SourceDocResourceClient {
         Client client = factory.getClient();
         WebTarget webResource = getBaseServiceResource(client);
         if (extensions != null) {
-            webResource.queryParam("ext", extensions.toArray());
+            webResource.path("r").queryParam("ext", extensions.toArray());
         }
         return webResource.request(MediaType.APPLICATION_XML_TYPE)
                 .get(new GenericType<List<ResourceMeta>>() {});
@@ -75,24 +75,25 @@ public class SourceDocResourceClient {
                 .path("projects").path("p")
                 .path(project)
                 .path("iterations").path("i")
-                .path(projectVersion)
-                .path("r");
+                .path(projectVersion);
     }
 
-    public Resource getResource(String id, Set<String> extensions) {
+    public Resource getResource(String docId, Set<String> extensions) {
         Client client = factory.getClient();
         WebTarget webResource =
                 getBaseServiceResource(client)
                         .path("resource")
-                        .queryParam("id", id)
+                        .queryParam("docId", docId)
                         .queryParam("ext", extensions.toArray());
         Response response = webResource.request(MediaType.APPLICATION_XML_TYPE)
                 .get();
         if (RestUtil.isNotFound(response)) {
             // fallback to old endpoint
-            String idNoSlash = RestUtil.convertToDocumentURIId(id);
+            response.close();
+            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
             webResource =
                     getBaseServiceResource(client)
+                            .path("r")
                             .path(idNoSlash)
                             .queryParam("ext", extensions.toArray());
             return webResource.request(MediaType.APPLICATION_XML_TYPE)
@@ -101,11 +102,11 @@ public class SourceDocResourceClient {
         return response.readEntity(Resource.class);
     }
 
-    public String putResource(String id, Resource resource,
+    public String putResource(String docId, Resource resource,
             Set<String> extensions, boolean copyTrans) {
         Client client = factory.getClient();
         WebTarget webResource = getBaseServiceResource(client).path("resource")
-                .queryParam("id", id)
+                .queryParam("docId", docId)
                 .queryParam("ext", extensions.toArray())
                 .queryParam("copyTrans", String.valueOf(copyTrans));
 
@@ -113,8 +114,10 @@ public class SourceDocResourceClient {
                 .put(Entity.entity(resource, MediaType.APPLICATION_XML_TYPE));
         if (RestUtil.isNotFound(response)) {
             // fallback to old endpoint
-            String idNoSlash = RestUtil.convertToDocumentURIId(id);
+            response.close();
+            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
             webResource = getBaseServiceResource(client)
+                    .path("r")
                     .path(idNoSlash)
                     .queryParam("ext", extensions.toArray())
                     .queryParam("copyTrans", String.valueOf(copyTrans));
@@ -125,15 +128,17 @@ public class SourceDocResourceClient {
         return response.readEntity(String.class);
     }
 
-    public String deleteResource(String id) {
+    public String deleteResource(String docId) {
         Client client = factory.getClient();
         WebTarget webResource = getBaseServiceResource(client);
         Response response =
-                webResource.path("resource").queryParam("id", id).request()
+                webResource.path("resource").queryParam("docId", docId).request()
                         .delete();
         if (RestUtil.isNotFound(response)) {
-            String idNoSlash = RestUtil.convertToDocumentURIId(id);
-            return webResource.path(idNoSlash).request().delete(String.class);
+            response.close();
+            String idNoSlash = RestUtil.convertToDocumentURIId(docId);
+            return webResource.path("r").path(idNoSlash).request()
+                    .delete(String.class);
         }
         return response.readEntity(String.class);
     }

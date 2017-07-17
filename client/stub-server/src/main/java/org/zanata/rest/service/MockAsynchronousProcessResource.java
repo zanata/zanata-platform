@@ -53,13 +53,13 @@ public class MockAsynchronousProcessResource implements
             String projectSlug, String iterationSlug, Resource resource,
             Set<String> extensions, @DefaultValue("true") boolean copytrans) {
         return startSourceDocCreationOrUpdateWithDocId(projectSlug,
-                iterationSlug, resource, extensions, idNoSlash, copytrans);
+                iterationSlug, resource, extensions, idNoSlash);
     }
 
     @Override
     public ProcessStatus startSourceDocCreationOrUpdateWithDocId(
             String projectSlug, String iterationSlug, Resource resource,
-            Set<String> extensions, String id, boolean copytrans) {
+            Set<String> extensions, String docId) {
         ProcessStatus processStatus = new ProcessStatus();
         processStatus.setStatusCode(ProcessStatus.ProcessStatusCode.Running);
         processStatus.setPercentageComplete(50);
@@ -80,7 +80,7 @@ public class MockAsynchronousProcessResource implements
     @Override
     public ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(
             String projectSlug, String iterationSlug, LocaleId locale,
-            TranslationsResource translatedDoc, String id,
+            TranslationsResource translatedDoc, String docId,
             Set<String> extensions,
             String merge, boolean assignCreditToUploader) {
         ProcessStatus processStatus = new ProcessStatus();

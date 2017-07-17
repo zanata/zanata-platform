@@ -202,6 +202,7 @@ public class SourceDocResourceService implements SourceDocResource {
         HDocument doc =
                 documentDAO.getByDocIdAndIteration(hProjectIteration, id);
         if (doc == null || doc.isObsolete()) {
+            // TODO: return Problem DTO, https://tools.ietf.org/html/rfc7807
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("document not found").build();
         }
@@ -232,11 +233,11 @@ public class SourceDocResourceService implements SourceDocResource {
     }
 
     @Override
-    public Response putResourceWithDocId(Resource resource, String id,
+    public Response putResourceWithDocId(Resource resource, String docId,
             Set<String> extensions, boolean copytrans) {
         identity.checkPermission(getSecuredIteration(), "import-template");
         log.debug("start put resource");
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(docId)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("missing id").build();
         }
@@ -244,15 +245,16 @@ public class SourceDocResourceService implements SourceDocResource {
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
         resourceUtils.validateExtensions(extensions);
         HDocument document =
-                this.documentDAO.getByDocIdAndIteration(hProjectIteration, id);
+                this.documentDAO.getByDocIdAndIteration(hProjectIteration,
+                        docId);
         if (document == null || document.isObsolete()) {
             response = Response.created(
                     UriBuilder.fromUri(uri.getAbsolutePath())
-                            .queryParam("id", id).build());
+                            .queryParam("id", docId).build());
         } else {
             response = Response.ok();
         }
-        resource.setName(id);
+        resource.setName(docId);
         document = this.documentServiceImpl.saveDocument(projectSlug,
                 iterationSlug, resource, extensions, copytrans);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
@@ -268,21 +270,21 @@ public class SourceDocResourceService implements SourceDocResource {
     }
 
     @Override
-    public Response deleteResourceWithDocId(String id) {
+    public Response deleteResourceWithDocId(String docId) {
         identity.checkPermission(getSecuredIteration(), "import-template");
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(docId)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("missing id").build();
         }
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
-                id, new HashSet<String>());
+                docId, new HashSet<String>());
         Response.ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
             return response.build();
         }
         HDocument document =
-                documentDAO.getByDocIdAndIteration(hProjectIteration, id);
+                documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
         documentServiceImpl.makeObsolete(document);
         return Response.ok().build();
     }
@@ -294,22 +296,22 @@ public class SourceDocResourceService implements SourceDocResource {
     }
 
     @Override
-    public Response getResourceMetaWithDocId(String id,
+    public Response getResourceMetaWithDocId(String docId,
             Set<String> extensions) {
         log.debug("start to get resource meta");
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(docId)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("missing id").build();
         }
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(false);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
-                id, extensions);
+                docId, extensions);
         Response.ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
             return response.build();
         }
         HDocument doc =
-                documentDAO.getByDocIdAndIteration(hProjectIteration, id);
+                documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
         if (doc == null) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("document not found").build();
@@ -332,16 +334,16 @@ public class SourceDocResourceService implements SourceDocResource {
 
     @Override
     public Response putResourceMetaWithDocId(ResourceMeta messageBody,
-            String id, Set<String> extensions) {
+            String docId, Set<String> extensions) {
         identity.checkPermission(getSecuredIteration(), "import-template");
-        if (StringUtils.isBlank(id)) {
+        if (StringUtils.isBlank(docId)) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("missing id").build();
         }
         log.debug("start to put resource meta");
         HProjectIteration hProjectIteration = retrieveAndCheckIteration(true);
         EntityTag etag = eTagUtils.generateETagForDocument(hProjectIteration,
-                id, extensions);
+                docId, extensions);
         Response.ResponseBuilder response = request.evaluatePreconditions(etag);
         if (response != null) {
             return response.build();
@@ -349,7 +351,7 @@ public class SourceDocResourceService implements SourceDocResource {
         log.debug("pass evaluation");
         log.debug("put resource meta: {}", messageBody);
         HDocument document =
-                documentDAO.getByDocIdAndIteration(hProjectIteration, id);
+                documentDAO.getByDocIdAndIteration(hProjectIteration, docId);
         if (document == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -363,7 +365,7 @@ public class SourceDocResourceService implements SourceDocResource {
                 document.getRevision() + 1);
         if (changed) {
             documentDAO.flush();
-            etag = eTagUtils.generateETagForDocument(hProjectIteration, id,
+            etag = eTagUtils.generateETagForDocument(hProjectIteration, docId,
                     extensions);
         }
         log.debug("put resource meta successfully");

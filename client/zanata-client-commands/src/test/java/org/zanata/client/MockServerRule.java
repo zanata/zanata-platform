@@ -179,8 +179,7 @@ public class MockServerRule extends ExternalResource {
                         eq(pushOpts.getProj()),
                         eq(pushOpts.getProjectVersion()),
                         any(Resource.class), anySetOf(String.class),
-                        anyString(),
-                        eq(false)))
+                        anyString()))
                 .thenReturn(running);
         when(
                 asyncClient.startTranslatedDocCreationOrUpdateWithDocId(
@@ -225,7 +224,7 @@ public class MockServerRule extends ExternalResource {
         verify(asyncClient).startSourceDocCreationOrUpdateWithDocId(
                 eq(pushOpts.getProj()),
                 eq(pushOpts.getProjectVersion()), resourceCaptor.capture(),
-                extensionCaptor.capture(), docIdCaptor.capture(), eq(false));
+                extensionCaptor.capture(), docIdCaptor.capture());
     }
 
     public void verifyPushTranslation() {

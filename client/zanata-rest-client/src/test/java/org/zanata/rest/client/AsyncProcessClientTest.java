@@ -54,7 +54,7 @@ public class AsyncProcessClientTest {
                         "about-fedora",
                         "master",
                         new Resource("message"), Sets.newHashSet("gettext"),
-                        "message", false);
+                        "message");
 
         assertThat(processStatus.getStatusCode(), Matchers.equalTo(
                 ProcessStatus.ProcessStatusCode.Running));

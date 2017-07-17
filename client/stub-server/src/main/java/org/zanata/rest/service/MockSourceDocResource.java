@@ -82,7 +82,7 @@ public class MockSourceDocResource implements SourceDocResource {
     }
 
     @Override
-    public Response putResourceWithDocId(Resource resource, String id,
+    public Response putResourceWithDocId(Resource resource, String docId,
             Set<String> extensions, boolean copytrans) {
         MockResourceUtil.validateExtensions(extensions);
         return Response.ok(resource.getName()).build();
@@ -94,7 +94,7 @@ public class MockSourceDocResource implements SourceDocResource {
     }
 
     @Override
-    public Response deleteResourceWithDocId(String id) {
+    public Response deleteResourceWithDocId(String docId) {
         return Response.ok().build();
     }
 
@@ -104,7 +104,7 @@ public class MockSourceDocResource implements SourceDocResource {
     }
 
     @Override
-    public Response getResourceMetaWithDocId(String id,
+    public Response getResourceMetaWithDocId(String docId,
             Set<String> extensions) {
         return MockResourceUtil.notUsedByClient();
     }
@@ -117,7 +117,7 @@ public class MockSourceDocResource implements SourceDocResource {
 
     @Override
     public Response putResourceMetaWithDocId(ResourceMeta messageBody,
-            String id, Set<String> extensions) {
+            String docId, Set<String> extensions) {
         return MockResourceUtil.notUsedByClient();
     }
 }
