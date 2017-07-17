@@ -52,4 +52,5 @@ public interface MergeTranslationsService extends Serializable {
      */
     int getTotalProgressCount(HProjectIteration sourceVersion,
         HProjectIteration targetVersion);
+
 }

@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -17,8 +18,8 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.zanata.common.Namespaces;
 
 /**
- * Wrapper for list of HGlossaryEntry/GlossaryEntry and list of warning message after
- * saving/update
+ * Wrapper for list of Glossary entries and a list of warning messages after
+ * saving/updating
  *
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
@@ -27,6 +28,7 @@ import org.zanata.common.Namespaces;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
 @XmlType(name = "glossaryResults", propOrder = {"glossaryEntries", "warnings"})
+@Label("Glossary Results")
 public class GlossaryResults implements Serializable {
     private static final long serialVersionUID = 7100495681284134288L;
     private List<GlossaryEntry> glossaryEntries;
@@ -40,6 +42,9 @@ public class GlossaryResults implements Serializable {
         this.warnings = warnings;
     }
 
+    /**
+     * The list of created / updated glossary entries
+     */
     @JsonProperty("glossaryEntries")
     @XmlElementWrapper(name = "glossaryEntries", namespace = Namespaces.ZANATA_API)
     @XmlElementRef(namespace = Namespaces.ZANATA_API)
@@ -50,6 +55,9 @@ public class GlossaryResults implements Serializable {
         return glossaryEntries;
     }
 
+    /**
+     * A list of warnings generated when performing the operation
+     */
     @JsonProperty("warnings")
     @XmlElementWrapper(name = "warnings", namespace = Namespaces.ZANATA_API)
     public List<String> getWarnings() {

@@ -8,12 +8,12 @@
 
 .Editor-suggestionsBody .TransUnit--suggestion .TransUnit-text--tight {
     padding-top: 0 !important;
-    font-size:1em;
+    font-size: 1em;
 }
 
 .TransUnit--suggestion .TransUnit-text--tight {
-    padding-top:40px !important;
-    font-size:1.2em;
+    padding-top: 40px !important;
+    font-size: 1.2em;
 }
 /* Based on bootstrap styles. */
 
@@ -68,7 +68,7 @@
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
     background-color: #fcfcfc;
-    line-height:1.2em;
+    line-height: 1.2em;
 }
 
 .panel-body {
@@ -86,7 +86,7 @@
     margin-bottom: 0;
     color: inherit;
     font-size: 1.143em;
-    padding-bottom:0
+    padding-bottom: 0;
 }
 
 .panel.panel-side {
@@ -113,7 +113,7 @@
 .panel-info > .panel-heading {
     border-bottom: solid 1px var(--brand-info);
     color: var(--brand-info);
-    background-color:#fcfcfc;
+    background-color: #fcfcfc;
     font-weight: 300;
 }
 
@@ -193,14 +193,14 @@
 }
 
 .TransUnit-details {
-    white-space:normal;
+    white-space: normal;
     word-break: break-all;
-    line-height:1em;
+    line-height: 1em;
 }
 
 .TransUnit-details .u-listInline {
-    display:inline-flex;
-    width:100%;
+    display: block;
+    width: 100%;
 }
 
 li.TransUnit-label-suggestions {
@@ -208,9 +208,9 @@ li.TransUnit-label-suggestions {
 }
 
 span.TransUnit-details-inner {
-    padding-left:0.375em;
-    font-weight:500;
-    color:#444c54;
+    padding-left: 0.375em;
+    font-weight: 500;
+    color: #444c54;
 }
 
 

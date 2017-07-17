@@ -52,12 +52,14 @@ public interface TranslationMemoryService extends TranslationFinder {
      * @param checkDocument
      * @param checkProject
      * @param thresholdPercent
+     * @param fromVersionIds
      * @return
      */
     Optional<TransMemoryResultItem> searchBestMatchTransMemory(
             HTextFlow textFlow, LocaleId targetLocaleId,
             LocaleId sourceLocaleId, boolean checkContext,
-            boolean checkDocument, boolean checkProject, int thresholdPercent);
+            boolean checkDocument, boolean checkProject, int thresholdPercent,
+            List<Long> fromVersionIds);
 
     List<TransMemoryResultItem> searchTransMemory(LocaleId targetLocaleId,
             LocaleId sourceLocaleId, TransMemoryQuery transMemoryQuery);

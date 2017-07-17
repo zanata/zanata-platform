@@ -50,6 +50,10 @@ public interface ProjectIterationLocalesResource extends RestResource {
      *
      * This may be the list of locales inherited from the project.
      *
+     * This also returns locale aliases.
+     *
+     * @see ProjectVersionResource#getLocales(String, String)
+     *
      * @return
      *    OK 200 containing the list of LocaleDetails
      *    NOT FOUND 404 if the project-version does not exist

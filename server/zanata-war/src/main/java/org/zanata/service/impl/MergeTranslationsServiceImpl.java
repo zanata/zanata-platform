@@ -20,22 +20,26 @@
  */
 package org.zanata.service.impl;
 
+import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetStateChange;
+import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
+
 import javax.annotation.Nonnull;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Multimap;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
 import javax.inject.Named;
+
 import org.zanata.async.Async;
 import org.zanata.async.AsyncTaskResult;
 import org.zanata.async.handle.MergeTranslationsTaskHandle;
 import org.zanata.common.ContentState;
+import org.zanata.common.EntityStatus;
 import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.dao.TextFlowDAO;
 import org.zanata.events.DocStatsEvent;
@@ -47,19 +51,24 @@ import org.zanata.model.HProjectIteration;
 import org.zanata.model.HSimpleComment;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.ModelEntityBase;
 import org.zanata.model.type.TranslationSourceType;
+import org.zanata.rest.dto.VersionTMMerge;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.MergeTranslationsService;
+import org.zanata.service.TransMemoryMergeService;
 import org.zanata.service.TranslationStateCache;
 import org.zanata.service.VersionStateCache;
 import org.zanata.util.TranslationUtil;
+
 import com.google.common.base.Optional;
 import com.google.common.base.Stopwatch;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
-import static org.zanata.events.TextFlowTargetStateEvent.TextFlowTargetStateChange;
-import static org.zanata.transaction.TransactionUtilImpl.runInTransaction;
+import com.google.common.collect.Multimap;
 // Not @Transactional, because we use runInTransaction
 
 /**
@@ -79,8 +88,6 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
     private ProjectIterationDAO projectIterationDAO;
     @Inject
     private TextFlowDAO textFlowDAO;
-    @Inject
-    private ZanataIdentity identity;
     @Inject
     private VersionStateCache versionStateCacheImpl;
     @Inject
@@ -302,12 +309,7 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
      */
     private boolean isVersionsEmpty(HProjectIteration sourceVersion,
             HProjectIteration targetVersion) {
-        if (sourceVersion.getDocuments().isEmpty()) {
-            log.error("No documents in source version {}:{}",
-                    sourceVersion.getProject().getSlug(),
-                    sourceVersion.getSlug());
-            return true;
-        }
+        if (isVersionEmpty(sourceVersion)) return true;
         if (targetVersion.getDocuments().isEmpty()) {
             log.error("No documents in target version {}:{}",
                     targetVersion.getProject().getSlug(),
@@ -317,11 +319,21 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         return false;
     }
 
+    private boolean isVersionEmpty(HProjectIteration version) {
+        if (version.getDocuments().isEmpty()) {
+            log.error("No documents in version {}:{}",
+                    version.getProject().getSlug(),
+                    version.getSlug());
+            return true;
+        }
+        return false;
+    }
+
     private void prepareMergeTranslationsHandle(
             @Nonnull HProjectIteration sourceVersion,
             @Nonnull HProjectIteration targetVersion,
             @Nonnull MergeTranslationsTaskHandle handle) {
-        handle.setTriggeredBy(identity.getAccountUsername());
+        handle.setTriggeredBy(authenticatedAccount.getUsername());
         int total = getTotalProgressCount(sourceVersion, targetVersion);
         handle.setMaxProgress(total);
         handle.setTotalTranslations(total);
@@ -390,4 +402,5 @@ public class MergeTranslationsServiceImpl implements MergeTranslationsService {
         return useNewerTranslation
                 && sourceTft.getLastChanged().after(targetTft.getLastChanged());
     }
+
 }
