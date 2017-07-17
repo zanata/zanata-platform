@@ -64,12 +64,10 @@ describe('DraggableVersionPanels', () => {
           Adjust priority of selected versions
           </span><br />
           <span className="text-muted vmerge-adjsub">(best first)</span>
-          <div className="pre-scrollable">
-            <Item key={'meikai1:ver1'} index={0}
-              value={someVersions[0]} removeVersion={callback} />
-            <Item key={'meikai2:ver2'} index={1}
-              value={someVersions[1]} removeVersion={callback} />
-          </div>
+          <Item key={'meikai1:ver1'} index={0}
+            value={someVersions[0]} removeVersion={callback} />
+          <Item key={'meikai2:ver2'} index={1}
+            value={someVersions[1]} removeVersion={callback} />
         </div>
       </ListGroup>
     )

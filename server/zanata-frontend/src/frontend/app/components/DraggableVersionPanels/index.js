@@ -55,9 +55,7 @@ class Items extends Component {
         <span className='text-muted vmerge-adjsub'>
         (best first)
         </span>
-        <div className="pre-scrollable">
-          {sortableItems}
-        </div>
+        {sortableItems}
       </div>
     )
   }
