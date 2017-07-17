@@ -240,10 +240,14 @@ class TMMergeModal extends Component {
     const { locales, showTMMergeModal } = nextProps
     // Fetch locales again when modal is closed then re-opened
     // Reset the state when the modal is closed
-    showTMMergeModal !== this.props.showTMMergeModal && showTMMergeModal
-    ? nextProps.fetchVersionLocales(
-      nextProps.projectSlug, nextProps.versionSlug)
-    : this.setState(this.defaultState)
+    if (showTMMergeModal !== this.props.showTMMergeModal) {
+      if (showTMMergeModal) {
+        nextProps.fetchVersionLocales(
+        nextProps.projectSlug, nextProps.versionSlug)
+      } else {
+        this.setState(this.defaultState)
+      }
+    }
     if (!this.state.selectedLanguage) {
       this.setState((prevState, props) => ({
         selectedLanguage: locales.length === 0 ? undefined : locales[0]
@@ -284,9 +288,10 @@ class TMMergeModal extends Component {
   }
   onProjectSearchChange = (event) => {
     const textEntered = event.target.value
+    this.throttleHandleSearch(textEntered)
     this.setState({
       projectSearchTerm: textEntered
-    }, this.throttleHandleSearch(this.state.projectSearchTerm))
+    })
   }
   flushProjectSearch = (event) => {
     if (event.key === 'Enter') {

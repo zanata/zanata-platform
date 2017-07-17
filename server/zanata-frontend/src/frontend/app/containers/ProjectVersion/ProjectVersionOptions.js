@@ -49,6 +49,7 @@ export const ProjectVersionOptions = (props) => {
             </Checkbox>
           </ListGroupItem>
         </ListGroup>
+        <span></span>
         <ListGroup fill>
           <ListGroupItem >
             <Checkbox onChange={onImportedCheckboxChange}>
