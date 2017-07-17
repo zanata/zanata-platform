@@ -69,6 +69,7 @@ public class AsynchronousProcessResourceService
         implements AsynchronousProcessResource {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
             .getLogger(AsynchronousProcessResourceService.class);
+    private static final long serialVersionUID = -5915271018788588841L;
 
     @Inject
     private LocaleService localeServiceImpl;
@@ -96,7 +97,7 @@ public class AsynchronousProcessResourceService
                 retrieveAndCheckIteration(projectSlug, iterationSlug, true);
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
-        resourceUtils.validateExtensions(extensions); // gettext, comment
+        ResourceUtils.validateExtensions(extensions); // gettext, comment
         HDocument document = documentDAO
                 .getByDocIdAndIteration(hProjectIteration, resource.getName());
         // already existing non-obsolete document.
@@ -112,7 +113,7 @@ public class AsynchronousProcessResourceService
         }
         String name = "SourceDocCreation: " + projectSlug + "-" + iterationSlug
                 + "-" + idNoSlash;
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
         String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         documentServiceImpl
                 .saveDocumentAsync(projectSlug, iterationSlug,
@@ -151,7 +152,7 @@ public class AsynchronousProcessResourceService
         }
         HProjectIteration hProjectIteration =
                 retrieveAndCheckIteration(projectSlug, iterationSlug, true);
-        resourceUtils.validateExtensions(extensions); // gettext, comment
+        ResourceUtils.validateExtensions(extensions); // gettext, comment
         // Check permission
         identity.checkPermission(hProjectIteration, "import-template");
         String name = "SourceDocCreationOrUpdate: " + projectSlug + "-"
@@ -231,7 +232,7 @@ public class AsynchronousProcessResourceService
         final MergeType finalMergeType = mergeType;
         String taskName = "TranslatedDocUpload: "+projectSlug+"-"+iterationSlug+"-"+
                 docId;
-        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
+        AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<>();
         String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
                 iterationSlug, docId, locale, translatedDoc, extensions,
@@ -242,6 +243,7 @@ public class AsynchronousProcessResourceService
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public ProcessStatus getProcessStatus(String processId) {
         AsyncTaskHandle handle =
                 asyncTaskHandleManager.getHandleByKeyId(processId);

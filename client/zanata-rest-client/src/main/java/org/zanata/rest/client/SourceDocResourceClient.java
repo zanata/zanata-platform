@@ -62,9 +62,9 @@ public class SourceDocResourceClient {
 
     public List<ResourceMeta> getResourceMeta(Set<String> extensions) {
         Client client = factory.getClient();
-        WebTarget webResource = getBaseServiceResource(client);
+        WebTarget webResource = getBaseServiceResource(client).path("r");
         if (extensions != null) {
-            webResource.path("r").queryParam("ext", extensions.toArray());
+            webResource.queryParam("ext", extensions.toArray());
         }
         return webResource.request(MediaType.APPLICATION_XML_TYPE)
                 .get(new GenericType<List<ResourceMeta>>() {});

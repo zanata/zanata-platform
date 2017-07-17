@@ -52,12 +52,8 @@ public class TransDocResourceClient {
         baseUri = factory.getBaseUri();
     }
 
-    public Response getTranslations(
-            String docId,
-            LocaleId locale,
-            Set<String> extensions,
-            boolean createSkeletons,
-            String eTag) {
+    public Response getTranslations(String docId, LocaleId locale,
+            Set<String> extensions, boolean createSkeletons, String eTag) {
         Client client = factory.getClient();
         Response response = getBaseServiceResource(client)
                 .path("resource")

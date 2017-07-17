@@ -70,9 +70,9 @@ public class MockSourceDocResource implements SourceDocResource {
     }
 
     @Override
-    public Response getResourceWithDocId(String id, Set<String> extensions) {
+    public Response getResourceWithDocId(String docId, Set<String> extensions) {
         MockResourceUtil.validateExtensions(extensions);
-        return Response.ok(new Resource(id)).build();
+        return Response.ok(new Resource(docId)).build();
     }
 
     @Override

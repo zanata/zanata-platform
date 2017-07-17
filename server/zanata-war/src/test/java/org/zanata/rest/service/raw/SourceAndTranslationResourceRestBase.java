@@ -187,7 +187,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                 }
 
                 @Override
-                public Response getResourceWithDocId(String id,
+                public Response getResourceWithDocId(String docId,
                         Set<String> extensions) {
                     return new ResourceRequest(
                             getRestEndpointUrl(BASE_PATH),
@@ -196,7 +196,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         protected Invocation.Builder prepareRequest(
                                 ResteasyWebTarget webTarget) {
                             return addExtensionToRequest(extensions, webTarget).
-                                    queryParam("id", id).
+                                    queryParam("docId", docId).
                                     request().header(HttpHeaders.ACCEPT,
                                     MediaType.APPLICATION_XML_TYPE);
                         }
@@ -249,7 +249,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         protected Invocation.Builder prepareRequest(
                                 ResteasyWebTarget webTarget) {
                             return addExtensionToRequest(extensions, webTarget)
-                                    .queryParam("id", docId)
+                                    .queryParam("docId", docId)
                                     .queryParam("copyTrans",
                                             String.valueOf(copytrans)).request();
                         }
@@ -288,13 +288,12 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
 
                 @Override
                 public Response deleteResourceWithDocId(String docId) {
-                    return new ResourceRequest(
-                            getRestEndpointUrl(BASE_PATH),
+                    return new ResourceRequest(getRestEndpointUrl(BASE_PATH),
                             "DELETE", getAuthorizedEnvironment()) {
                         @Override
                         protected Invocation.Builder prepareRequest(
                                 ResteasyWebTarget webTarget) {
-                            return webTarget.queryParam("id", docId).request();
+                            return webTarget.queryParam("docId", docId).request();
                         }
 
                         @Override
@@ -335,7 +334,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         protected Invocation.Builder prepareRequest(
                                 ResteasyWebTarget webTarget) {
                             return addExtensionToRequest(extensions, webTarget)
-                                    .queryParam("id", docId)
+                                    .queryParam("docId", docId)
                                     .request().header(HttpHeaders.ACCEPT,
                                             MediaType.APPLICATION_XML_TYPE);
                         }
@@ -387,7 +386,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         protected Invocation.Builder prepareRequest(
                                 ResteasyWebTarget webTarget) {
                             return addExtensionToRequest(extensions, webTarget)
-                                    .queryParam("id", docId)
+                                    .queryParam("docId", docId)
                                     .request();
                         }
 
@@ -449,7 +448,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         protected Invocation.Builder prepareRequest(
                                 ResteasyWebTarget webTarget) {
                             return addExtensionToRequest(extensions, webTarget)
-                                    .queryParam("id", docId)
+                                    .queryParam("docId", docId)
                                     .queryParam("skeletons",
                                             String.valueOf(createSkeletons))
                                     .request().header(HttpHeaders.ACCEPT,
@@ -489,7 +488,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         @Override
                         protected Invocation.Builder prepareRequest(
                                 ResteasyWebTarget webTarget) {
-                            return webTarget.queryParam("id", docId).request();
+                            return webTarget.queryParam("docId", docId).request();
                         }
 
                         @Override
@@ -541,7 +540,7 @@ public abstract class SourceAndTranslationResourceRestBase extends RestTest {
                         protected Invocation.Builder prepareRequest(
                                 ResteasyWebTarget webTarget) {
                             return addExtensionToRequest(extensions, webTarget)
-                                    .queryParam("id", docId)
+                                    .queryParam("docId", docId)
                                     .queryParam("merge", merge).request()
                                     .header(HttpHeaders.ACCEPT,
                                             MediaType.APPLICATION_XML_TYPE);

@@ -166,8 +166,7 @@ public interface AsynchronousProcessResource extends RestResource {
      *            e.g. "ext=gettext&ext=comment".
      */
     @PUT
-    @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource"
-            + SourceDocResource.RESOURCE_SLUG_TEMPLATE)
+    @Path("/projects/p/{projectSlug}/iterations/i/{iterationSlug}/resource")
     @TypeHint(ProcessStatus.class)
     @StatusCodes({
             @ResponseCode(code = 200, condition = "The contents of the response will indicate the process" +
@@ -274,8 +273,7 @@ public interface AsynchronousProcessResource extends RestResource {
                     " identifier which may be used to query for its status or a message" +
                     " indicating what happened.")
     })
-    public
-    ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(
+    public ProcessStatus startTranslatedDocCreationOrUpdateWithDocId(
             @PathParam("projectSlug") String projectSlug,
             @PathParam("iterationSlug") String iterationSlug,
             @PathParam("locale") LocaleId locale,
