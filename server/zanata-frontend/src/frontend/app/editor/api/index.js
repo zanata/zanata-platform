@@ -7,6 +7,7 @@
 // (it is just a wrapper around whatwg-fetch)
 import fetch from 'isomorphic-fetch'
 import { encode } from '../utils/doc-id-util'
+import { chain, isEmpty } from 'lodash'
 import {
   STATUS_UNTRANSLATED,
   STATUS_NEEDS_WORK,
@@ -38,11 +39,12 @@ function getServiceUrl () {
   return serviceUrl
 }
 
-export function fetchPhraseList (projectSlug, versionSlug, localeId, docId) {
+export function fetchPhraseList (project, version, localeId, docId, filter) {
   // FIXME damason check that arguments are all defined
   const encodedId = encode(docId)
+  const queryString = filter ? filterQueryString(filter) : ''
   const statusListUrl =
-    `${baseRestUrl}/project/${projectSlug}/version/${versionSlug}/doc/${encodedId}/status/${localeId}` // eslint-disable-line max-len
+    `${baseRestUrl}/project/${project}/version/${version}/doc/${encodedId}/status/${localeId}?${queryString}` // eslint-disable-line max-len
 
   return fetch(statusListUrl, {
     credentials: 'include',
@@ -53,6 +55,35 @@ export function fetchPhraseList (projectSlug, versionSlug, localeId, docId) {
     },
     mode: 'cors'
   })
+}
+
+function filterQueryString ({advanced: {
+  text,
+  resourceId,
+  msgctxt,
+  lastModifiedBy,
+  lastModifiedBefore,
+  lastModifiedAfter,
+  sourceComment,
+  translationComment
+}}) {
+  return chain({
+    // TODO rename to match what the server has, so this mapping is not needed
+    //      will be able to just do chain(advanced)...
+    searchString: text,
+    resId: resourceId,
+    changedBefore: lastModifiedBefore,
+    changedAfter: lastModifiedAfter,
+    lastModifiedByUser: lastModifiedBy,
+    sourceComment: sourceComment,
+    transComment: translationComment,
+    msgContext: msgctxt
+  })
+    .filter(value => !isEmpty(value))
+    .mapValues(encodeURIComponent)
+    .map((value, key) => `${key}=${value}`)
+    .join('&')
+    .value()
 }
 
 export function fetchPhraseDetail (localeId, phraseIds) {
