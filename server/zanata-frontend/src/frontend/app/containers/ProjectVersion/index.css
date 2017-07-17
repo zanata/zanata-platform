@@ -56,6 +56,10 @@
   font-weight: 500;
 }
 
+#TM-merge-modal .panel-group .panel-heading {
+  border-bottom: 1px solid #cdd4dc !important;
+}
+
 #TM-merge-modal .modal-body .intro {
   margin-bottom: 1rem !important;
 }
