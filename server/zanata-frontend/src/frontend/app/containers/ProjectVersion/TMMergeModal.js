@@ -245,7 +245,8 @@ class TMMergeModal extends Component {
         nextProps.fetchVersionLocales(
         nextProps.projectSlug, nextProps.versionSlug)
       } else {
-        this.setState(this.defaultState)
+        window.location.reload()
+        // this.setState(this.defaultState)
       }
     }
     if (!this.state.selectedLanguage) {
