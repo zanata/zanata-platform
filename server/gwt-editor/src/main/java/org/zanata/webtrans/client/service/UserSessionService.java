@@ -31,7 +31,7 @@ import org.zanata.webtrans.client.events.NotificationEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEvent;
 import org.zanata.webtrans.client.events.TransUnitEditEventHandler;
 import org.zanata.webtrans.client.presenter.WorkspaceUsersPresenter;
-import org.zanata.webtrans.client.ui.HasManageUserPanel;
+import org.zanata.webtrans.shared.ui.HasManageUserPanel;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;

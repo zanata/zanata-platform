@@ -185,10 +185,12 @@ public abstract class DBUnitProvider {
             }
 
             // Load the base dataset file
-            InputStream input =
+            try (InputStream input =
                     Thread.currentThread().getContextClassLoader()
-                            .getResourceAsStream(dataSetLocation);
-            try {
+                            .getResourceAsStream(dataSetLocation)) {
+                if (input == null) {
+                    throw new RuntimeException("missing resource: " + dataSetLocation);
+                }
                 FlatXmlDataSetBuilder dataSetBuilder =
                         new FlatXmlDataSetBuilder();
                 dataSetBuilder.setColumnSensing(true);

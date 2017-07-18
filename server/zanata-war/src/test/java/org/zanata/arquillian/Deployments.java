@@ -22,6 +22,7 @@ package org.zanata.arquillian;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -33,8 +34,10 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 import com.google.common.base.Joiner;
+import org.apache.commons.io.IOUtils;
 import org.apache.deltaspike.core.api.projectstage.ProjectStage;
 import org.apache.deltaspike.core.util.ProjectStageProducer;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -44,6 +47,8 @@ import org.jboss.shrinkwrap.api.Filter;
 import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.ClassLoaderAsset;
+import org.jboss.shrinkwrap.api.exporter.ExplodedExporter;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -78,11 +83,34 @@ public class Deployments {
     public static void main(String[] args) {
         Archive<?> archive = Deployments.createDeployment();
         // see what will be in the war
+        printArchiveContents(archive);
+
+        // Export to .war (to actually see what is being deployed)
+//        archive.as(ZipExporter.class).exportTo(
+//                new File("/tmp/zanata-arquillian.war"), true);
+
+        // OR Export to exploded dir:
+//        File exploded = new File("/tmp/zanata-arquillian-exploded.war");
+//        exploded.delete();
+//        archive.as(ExplodedExporter.class).exportExplodedInto(
+//                exploded);
+    }
+
+    private static void printArchiveContents(Archive archive) {
         ArrayList<ArchivePath> paths =
                 new ArrayList<>(archive.getContent().keySet());
         Collections.sort(paths);
         System.out.println("Deployment contents:");
-        paths.forEach(it -> System.out.println("  " + it));
+        paths.forEach(it -> System.out.println("  " + it.get()));
+//        System.out.println("beans.xml: ");
+//        InputStream is =
+//                archive.get("/WEB-INF/beans.xml").getAsset().openStream();
+//        try {
+//            System.out.println(IOUtils.toString(is, StandardCharsets.UTF_8));
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//        IOUtils.closeQuietly(is);
     }
 
     static File[] runtimeAndTestDependenciesFromPom() {
@@ -116,7 +144,7 @@ public class Deployments {
         // instead of archive.merge() - paths may have different prefix.
         Filter<ArchivePath> archivePathFilter = object ->
                 notUnusedGwtClientCode(object) &&
-                notUnitTest(object);
+                        notUnitTest(object);
         archive.merge(ShrinkWrap.create(GenericArchive.class)
                         .as(ExplodedImporter.class)
                         .importDirectory("target/classes")
@@ -140,17 +168,10 @@ public class Deployments {
         archive.addAsWebInfResource(new File(
                 "src/main/webapp-jboss/WEB-INF/jboss-deployment-structure.xml"));
         archive.setWebXML("arquillian/test-web.xml");
-
-        // uncomment to see what will be in the war
-//        ArrayList<ArchivePath> paths =
-//                new ArrayList<>(archive.getContent().keySet());
-//        Collections.sort(paths);
-//        String contents = "  " + Joiner.on("\n  ").join(paths);
-//        System.out.println(contents);
-
-        // Export (to actually see what is being deployed)
-//        archive.as(ZipExporter.class).exportTo(
-//                 new File("/tmp/zanata-arquillian.war"), true);
+        archive.delete("/WEB-INF/classes/arquillian");
+        archive.delete("/WEB-INF/classes/arquillian.xml");
+        // Note: run the main method if you want to see or extract the contents of the deployment
+//        printArchiveContents(archive);
         return archive;
     }
 
@@ -202,15 +223,15 @@ public class Deployments {
         return context.contains("ArquillianTest")
                 || context.contains("RestTest")
                 || context.contains("TestAsyncBean")
-                || context.contains("ResourceTestObjectFactory")
+//                || context.contains("ResourceTestObjectFactory")
                 // unit test classes
                 || !unitTestsAndUnitTestInnerClasses(context);
     }
 
     private static boolean unitTestsAndUnitTestInnerClasses(String context) {
         return context.matches(".+Test(s)?\\.class$") ||
-        // inner classes of unit test classes
-        context.matches(".+Test(s)?\\$.*\\.class$");
+                // inner classes of unit test classes
+                context.matches(".+Test(s)?\\$.*\\.class$");
     }
 
     private static boolean notUnusedGwtClientCode(ArchivePath object) {
@@ -221,7 +242,7 @@ public class Deployments {
                 ".*/org/zanata/webtrans/client/resources/ValidationMessages") ||
                 context.matches(".*/org/zanata/webtrans/server/locale/.*") ||
                 !context.contains("/org/zanata/webtrans/client") &&
-                !context.contains("/org/zanata/webtrans/server");
+                        !context.contains("/org/zanata/webtrans/server");
     }
 
     private static <T> void forEachRemaining(Enumeration<T> enumeration,

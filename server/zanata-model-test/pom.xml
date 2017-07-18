@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>server</artifactId>
+    <groupId>org.zanata</groupId>
+    <version>4.3.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>zanata-model-test</artifactId>
+  <packaging>takari-jar</packaging>
+  <name>Zanata Model Test</name>
+  <description>Classes and config to help writing tests which use zanata-model</description>
+
+  <!-- Should be the same as zanata-server/pom.xml -->
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
+    <url>https://github.com/zanata/zanata</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.enterprise</groupId>
+      <artifactId>cdi-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains.kotlin</groupId>
+      <artifactId>kotlin-stdlib</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jglue.cdi-unit</groupId>
+      <artifactId>cdi-unit</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-model</artifactId>
+    </dependency>
+  </dependencies>
+
+</project>

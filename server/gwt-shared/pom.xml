@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>server</artifactId>
+    <groupId>org.zanata</groupId>
+    <version>4.3.0-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>gwt-shared</artifactId>
+  <packaging>takari-jar</packaging>
+  <name>gwt-shared</name>
+
+  <!-- Should be the same as zanata-server/pom.xml -->
+  <scm>
+    <connection>scm:git:git://github.com/zanata/zanata.git</connection>
+    <developerConnection>scm:git:git@github.com:zanata/zanata.git</developerConnection>
+    <url>https://github.com/zanata/zanata</url>
+    <tag>HEAD</tag>
+  </scm>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>io.takari.maven.plugins</groupId>
+        <artifactId>takari-lifecycle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <sourceJar>true</sourceJar>
+          <testJar>false</testJar>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-common-api</artifactId>
+    </dependency>
+
+    <!-- For GWT compilation -->
+    <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>zanata-common-api</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>findbugs-annotations</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>jsr305</artifactId>
+    </dependency>
+
+    <!-- GWT Dependencies -->
+    <!-- NB: GWT and anything which depends on it should go last, to
+         avoid overriding Java APIs (especially javax.servlet) -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-servlet</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>net.customware.gwt.dispatch</groupId>
+      <artifactId>gwt-dispatch</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+
+    <!--to enable guava on gwt-->
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava-gwt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>de.novanic.gwteventservice</groupId>
+      <artifactId>eventservice-rpc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.allen-sauer.gwt.log</groupId>
+      <artifactId>gwt-log</artifactId>
+      <version>3.2.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.fusesource.restygwt</groupId>
+      <artifactId>restygwt</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.spec.javax.ws.rs</groupId>
+      <artifactId>jboss-jaxrs-api_2.0_spec</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-library</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+    </dependency>
+
+  </dependencies>
+
+</project>
