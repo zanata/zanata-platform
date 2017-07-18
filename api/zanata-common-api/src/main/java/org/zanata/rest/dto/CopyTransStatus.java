@@ -20,6 +20,9 @@
  */
 package org.zanata.rest.dto;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
@@ -32,12 +35,17 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlRootElement(name = "copyTransStatus")
 @XmlType(name = "copyTransStatusType")
+@Label("Copy Trans Status")
 public class CopyTransStatus {
     private int percentageComplete;
 
     private boolean inProgress;
 
+    /**
+     * An estimated percentage of completion for the copy trans run.
+     */
     @XmlElement(required = true)
+    @DocumentationExample("80")
     public int getPercentageComplete() {
         return percentageComplete;
     }
@@ -46,6 +54,9 @@ public class CopyTransStatus {
         this.percentageComplete = percentageComplete;
     }
 
+    /**
+     * True if the process is still running. False otherwise
+     */
     @XmlElement(required = true)
     public boolean isInProgress() {
         return inProgress;
