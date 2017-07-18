@@ -3,8 +3,8 @@ jest.disableAutomock()
 
 import React from 'react'
 import ReactDOMServer from 'react-dom/server'
-import DraggableVersionPanels, {Item, DragHandle} from '.'
-import {Button, ListGroup, ListGroupItem} from 'react-bootstrap'
+import DraggableVersionPanels, {Item, DragHandle, tooltipSort} from '.'
+import {Button, ListGroup, ListGroupItem, OverlayTrigger} from 'react-bootstrap'
 import {Icon, LockIcon} from '../../components'
 
 const callback = function (e) {}
@@ -64,6 +64,9 @@ describe('DraggableVersionPanels', () => {
           Adjust priority of selected versions
           </span><br />
           <span className="text-muted vmerge-adjsub">(best first)</span>
+          <OverlayTrigger placement='top' overlay={tooltipSort}>
+            <Icon name='info' className='s0 info-icon' />
+          </OverlayTrigger>
           <Item key={'meikai1:ver1'} index={0}
             value={someVersions[0]} removeVersion={callback} />
           <Item key={'meikai2:ver2'} index={1}

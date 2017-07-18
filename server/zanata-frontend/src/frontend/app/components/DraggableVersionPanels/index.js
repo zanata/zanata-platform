@@ -1,12 +1,25 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
+import {FromProjectVersionType} from '../../utils/prop-types-util'
+import {Icon, LockIcon} from '../../components'
 import {
   SortableContainer,
   SortableElement,
-  SortableHandle} from 'react-sortable-hoc'
-import {FromProjectVersionType} from '../../utils/prop-types-util'
-import {Button, ListGroup, ListGroupItem} from 'react-bootstrap'
-import {Icon, LockIcon} from '../../components'
+  SortableHandle
+} from 'react-sortable-hoc'
+import {
+  Button,
+  ListGroup,
+  ListGroupItem,
+  Tooltip,
+  OverlayTrigger
+} from 'react-bootstrap'
+
+export const tooltipSort = (
+  <Tooltip id='tooltipsort'>Best match will be chosen based on the priority of
+    selected projects. Exact matches take precendence.
+  </Tooltip>
+)
 
 export const DragHandle = SortableHandle(() =>
   <Icon name='menu' className='n1 drag-handle' title='click to drag' />)
@@ -55,6 +68,9 @@ class Items extends Component {
         <span className='text-muted vmerge-adjsub'>
         (best first)
         </span>
+        <OverlayTrigger placement='top' overlay={tooltipSort}>
+          <Icon name='info' className='s0 info-icon' />
+        </OverlayTrigger>
         {sortableItems}
       </div>
     )
