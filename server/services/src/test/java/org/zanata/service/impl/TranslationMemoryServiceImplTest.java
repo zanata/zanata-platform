@@ -41,7 +41,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.TestFixture;
 import org.zanata.model.po.HPotEntryData;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.test.CdiUnitRunnerWithParameters;

@@ -39,7 +39,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 
@@ -62,7 +61,6 @@ import org.zanata.dao.TransMemoryUnitDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.TestFixture;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.security.ZanataIdentity;

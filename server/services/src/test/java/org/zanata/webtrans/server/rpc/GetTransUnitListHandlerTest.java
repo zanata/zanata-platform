@@ -29,7 +29,6 @@ import org.zanata.common.ProjectType;
 import org.zanata.events.DocumentLocaleKey;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HLocale;
-import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;

@@ -203,35 +203,6 @@
         </configuration>
       </plugin>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>test-jar</goal>
-            </goals>
-            <configuration>
-              <!-- Try excluding *Test and *Test$* instead of using include.
-              We need to keep them out because they have CDI producers which
-              break the Arquillian deployment. -->
-              <includes>
-                <!--<include>META-INF/persistence.xml</include>-->
-                <include>org/zanata/rest/service/ResourceTestObjectFactory*</include>
-                <include>org/zanata/rest/service/TranslationsResourceTestObjectFactory*</include>
-                <include>org/zanata/model/TestFixture*</include>
-                <include>org/zanata/test/*</include>
-                <include>com/google/gwt/core/client/GWTBridge*</include>
-              </includes>
-              <excludes>
-                <exclude>META-INF/persistence.xml</exclude>
-                <exclude>META-INF/validation.xml</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
     </plugins>
 
     <pluginManagement>
