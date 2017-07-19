@@ -95,7 +95,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.post(res, new StringSet(PoHeader.ID + ";"
                         + SimpleComment.ID), true);
 
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        // 201
+        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         response.close();
 
         // Verify that it was created successfully
@@ -108,8 +109,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
         assertThat(createdResource.getType(), is(res.getType()));
         assertThat(createdResource.getContentType(), is(res.getContentType()));
         assertThat(createdResource.getLang(), is(res.getLang()));
-        assertThat(createdResource.getRevision(), is(1)); // Created, so
-                                                          // revision 1
+        // Created, so revision 1
+        assertThat(createdResource.getRevision(), is(1));
 
         // Extensions
         assertThat(createdResource.getExtensions(true).size(),
@@ -125,7 +126,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
         assertThat(createdTf.getContents().get(0), is(tf1.getContents().get(0)));
         assertThat(createdTf.getId(), is(tf1.getId()));
         assertThat(createdTf.getLang(), is(tf1.getLang()));
-        assertThat(createdTf.getRevision(), is(1)); // Create, so revision 1
+        // Create, so revision 1
+        assertThat(createdTf.getRevision(), is(1));
 
         // Text Flow extensions
         assertThat(createdTf.getExtensions(true).size(), is(1));
@@ -151,7 +153,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.post(res, new StringSet(PoHeader.ID + ";"
                         + SimpleComment.ID), true);
 
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        // 201
+        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         response.close();
 
         // Post Twice (should conflict)
@@ -159,7 +162,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.post(res, new StringSet(PoHeader.ID + ";"
                         + SimpleComment.ID), true);
 
-        assertThat(response.getStatus(), is(Status.CONFLICT.getStatusCode())); // 409
+        // 409
+        assertThat(response.getStatus(), is(Status.CONFLICT.getStatusCode()));
         response.close();
     }
 
@@ -183,7 +187,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.putResource(res.getName(), res, new StringSet(
                         PoHeader.ID + ";" + SimpleComment.ID), false);
 
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        // 201
+        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         response.close();
 
         // Verify that it was created successfully
@@ -196,8 +201,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
         assertThat(createdResource.getType(), is(res.getType()));
         assertThat(createdResource.getContentType(), is(res.getContentType()));
         assertThat(createdResource.getLang(), is(res.getLang()));
-        assertThat(createdResource.getRevision(), is(1)); // Created, so
-                                                          // revision 1
+        // Created, so revision 1
+        assertThat(createdResource.getRevision(), is(1));
 
         // Extensions
         assertThat(createdResource.getExtensions(true).size(),
@@ -213,7 +218,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
         assertThat(createdTf.getContents().get(0), is(tf1.getContents().get(0)));
         assertThat(createdTf.getId(), is(tf1.getId()));
         assertThat(createdTf.getLang(), is(tf1.getLang()));
-        assertThat(createdTf.getRevision(), is(1)); // Create, so revision 1
+        // Create, so revision 1
+        assertThat(createdTf.getRevision(), is(1));
 
         // Text Flow extensions
         assertThat(createdTf.getExtensions(true).size(), is(1));
@@ -273,21 +279,24 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.putResource(res.getName(), res, new StringSet(
                         PoHeader.ID + ";" + SimpleComment.ID), false);
 
-        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode())); // 201
+        // 201
+        assertThat(response.getStatus(), is(Status.CREATED.getStatusCode()));
         response.close();
 
         // Delete the resource
         Response deleteResponse =
                 sourceDocClient.deleteResource(res.getName());
 
-        assertThat(deleteResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(deleteResponse.getStatus(), is(Status.OK.getStatusCode()));
         deleteResponse.close();
 
         // try to fetch it again
         Response getResponse =
                 sourceDocClient.getResource(res.getName(), null);
+        // 404
         assertThat(getResponse.getStatus(),
-                is(Status.NOT_FOUND.getStatusCode())); // 404
+                is(Status.NOT_FOUND.getStatusCode()));
         getResponse.close();
     }
 
@@ -301,7 +310,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         new StringSet(SimpleComment.ID));
         ResourceMeta resMeta = getResourceMetaFromResponse(response);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
         assertThat(resMeta.getName(), is("my/path/document-2.txt"));
         assertThat(resMeta.getType(), is(ResourceType.FILE));
         assertThat(resMeta.getLang(), is(LocaleId.EN_US));
@@ -323,7 +333,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
         Response putResponse =
                 sourceDocClient.putResourceMeta("my,path,document-2.txt",
                         resMeta, null);
-        assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
         putResponse.close();
 
         // Fetch again
@@ -331,12 +342,14 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.getResourceMeta("my,path,document-2.txt", null);
         ResourceMeta newResMeta = getResourceMetaFromResponse(getResponse);
 
-        assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode()));
         assertThat(newResMeta.getName(), is(resMeta.getName()));
         assertThat(newResMeta.getContentType(), is(resMeta.getContentType()));
         assertThat(newResMeta.getLang(), is(resMeta.getLang()));
         assertThat(newResMeta.getType(), is(resMeta.getType()));
-        assertThat(newResMeta.getRevision(), is(1)); // Created, so revision 1
+        // Created, so revision 1
+        assertThat(newResMeta.getRevision(), is(1));
     }
 
     @Test
@@ -351,7 +364,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         null);
         TranslationsResource transRes = getTransResourceFromResponse(response);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
         assertThat(transRes.getTextFlowTargets().size(),
                 greaterThanOrEqualTo(3));
 
@@ -397,7 +411,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         null);
         TranslationsResource transRes = getTransResourceFromResponse(response);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
         assertThat(transRes.getTextFlowTargets().size(),
                 greaterThanOrEqualTo(3));
 
@@ -423,7 +438,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         LocaleId.EN_US, transRes, new StringSet(
                                 SimpleComment.ID), "auto");
 
-        assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(putResponse.getStatus(), is(Status.OK.getStatusCode()));
         putResponse.close();
 
         // Retrieve the translations once more to make sure they were changed
@@ -433,7 +449,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                         LocaleId.EN_US, new StringSet(SimpleComment.ID), false, null);
         transRes = getTransResourceFromResponse(response);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
         assertThat(transRes.getTextFlowTargets().size(),
                 greaterThanOrEqualTo(3));
 
@@ -472,7 +489,8 @@ public class TranslationsCompatibilityITCase extends CompatibilityBase {
                 translationsClient.deleteTranslations("my,path,document-3.txt",
                         LocaleId.EN_US);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
         response.close();
 
         // try to fetch them again

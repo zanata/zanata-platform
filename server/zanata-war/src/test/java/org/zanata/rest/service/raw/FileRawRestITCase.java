@@ -76,7 +76,8 @@ public class FileRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // Ok
+                assertThat(response.getStatus(), is(200));
                 assertHeaderValue(response, "Content-Disposition",
                         "attachment; filename=\"document.txt.po\"");
                 assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
@@ -106,7 +107,8 @@ public class FileRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // Ok
+                assertThat(response.getStatus(), is(200));
                 assertHeaderValue(response, "Content-Disposition",
                         "attachment; filename=\"document-2.txt.po\"");
                 assertHeaderValue(response, HttpHeaders.CONTENT_TYPE,
@@ -141,9 +143,9 @@ public class FileRawRestITCase extends RestTest {
                         containsString("PO-Revision-Date:"));
                 assertThat(message.getMsgstr(),
                         containsString("Language-Team:"));
+                // Generator is Zanata
                 assertThat(message.getMsgstr(),
-                        containsString("X-Generator: Zanata")); // Generator is
-                                                                // Zanata
+                        containsString("X-Generator: Zanata"));
                 assertThat(message.getMsgstr(), containsString("Plural-Forms:"));
             }
         }

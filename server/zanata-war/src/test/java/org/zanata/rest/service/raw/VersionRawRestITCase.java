@@ -64,7 +64,8 @@ public class VersionRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, VersionInfo.class);
             }
@@ -83,7 +84,8 @@ public class VersionRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, VersionInfo.class);
             }
