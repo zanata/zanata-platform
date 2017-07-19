@@ -9,7 +9,7 @@
 
 import { createSelector } from 'reselect'
 
-const getLang = state => state.context.lang
+export const getLang = state => state.context.lang
 // FIXME move detail to detail[lang] and add timestamps
 const getPhrasesDetail = state => state.phrases.detail
 

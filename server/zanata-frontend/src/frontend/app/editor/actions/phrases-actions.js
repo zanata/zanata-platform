@@ -55,7 +55,6 @@ export function requestPhraseList (projectSlug, versionSlug, lang, docId,
         return response.json()
       })
       .then(statusList => {
-        // TODO statusList has status format from server, convert
         dispatch(phraseListFetched(docId, statusList, statusList.map(phrase => {
           return {
             ...phrase,
@@ -83,6 +82,9 @@ export function phraseListFetched (docId, statusList, phraseList) {
   return {
     type: PHRASE_LIST_FETCHED,
     docId: docId,
+    // FIXME phraseList is just statusList with different status names
+    // FIXME phraseList is used only for fetching detail by page, but does not
+    //       use status names so statusList would do fine.
     phraseList: phraseList,
     statusList: statusList
   }
@@ -188,7 +190,7 @@ function extractTranslations (trans) {
  *
  * Expect: untranslated/needswork/translated/approved
  */
-function transUnitStatusToPhraseStatus (mixedCaseStatus) {
+export function transUnitStatusToPhraseStatus (mixedCaseStatus) {
   const status = mixedCaseStatus && mixedCaseStatus.toLowerCase()
   if (!status || status === STATUS_NEW) {
     return STATUS_UNTRANSLATED

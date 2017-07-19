@@ -9,6 +9,7 @@ import { Provider } from 'react-redux'
 import { browserHistory, Router, Route } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 import rootReducer from './reducers'
+import addWatchers from './watchers'
 
 import Root from './containers/Root'
 import NeedSlugMessage from './containers/NeedSlugMessage'
@@ -49,6 +50,8 @@ function runApp () {
   const history = browserHistory
   history.basename = baseUrl
   const store = createStoreWithMiddleware(rootReducer)
+  addWatchers(store)
+
   const enhancedHistory = syncHistoryWithStore(history, store)
 
   const rootElement = document.getElementById('appRoot')
