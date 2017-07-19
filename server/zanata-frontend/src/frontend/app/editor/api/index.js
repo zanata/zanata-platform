@@ -57,7 +57,7 @@ export function fetchPhraseList (project, version, localeId, docId, filter) {
   })
 }
 
-function filterQueryString ({advanced: {
+export function filterQueryString ({
   text,
   resourceId,
   msgctxt,
@@ -66,7 +66,7 @@ function filterQueryString ({advanced: {
   lastModifiedAfter,
   sourceComment,
   translationComment
-}}) {
+}) {
   return chain({
     // TODO rename to match what the server has, so this mapping is not needed
     //      will be able to just do chain(advanced)...
@@ -79,9 +79,9 @@ function filterQueryString ({advanced: {
     transComment: translationComment,
     msgContext: msgctxt
   })
-    .filter(value => !isEmpty(value))
-    .mapValues(encodeURIComponent)
-    .map((value, key) => `${key}=${value}`)
+    .toPairs()
+    .filter(([key, value]) => !isEmpty(value))
+    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
     .join('&')
     .value()
 }
