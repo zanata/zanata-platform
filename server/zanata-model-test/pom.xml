@@ -43,6 +43,12 @@
       <groupId>org.jglue.cdi-unit</groupId>
       <artifactId>cdi-unit</artifactId>
       <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>annotations</artifactId>
+          <groupId>com.google.code.findbugs</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.zanata</groupId>
