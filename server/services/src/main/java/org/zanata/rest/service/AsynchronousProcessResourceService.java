@@ -193,7 +193,9 @@ public class AsynchronousProcessResourceService
         }
         final String id = URIHelper.convertFromDocumentURIId(idNoSlash);
         final MergeType finalMergeType = mergeType;
-        String taskName = "TranslatedDocUpload: "+projectSlug+"-"+iterationSlug+"-"+idNoSlash;
+        String taskName =
+                "TranslatedDocUpload: " + projectSlug + "-" + iterationSlug +
+                        "-" + idNoSlash;
         AsyncTaskHandle<HDocument> handle = new AsyncTaskHandle<HDocument>();
         String keyId = asyncTaskHandleManager.registerTaskHandle(handle);
         translationServiceImpl.translateAllInDocAsync(projectSlug,
