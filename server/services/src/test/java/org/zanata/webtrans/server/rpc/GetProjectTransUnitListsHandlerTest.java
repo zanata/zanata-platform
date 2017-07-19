@@ -16,8 +16,8 @@ import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -26,6 +26,8 @@ import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitLists;
 import org.zanata.webtrans.shared.rpc.GetProjectTransUnitListsResult;
+import org.zanata.webtrans.test.GWTTestData;
+import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import net.customware.gwt.dispatch.shared.ActionException;
 import javax.enterprise.inject.Any;
@@ -38,6 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.zanata.test.EntityTestData.makeHTextFlow;
+import static org.zanata.test.EntityTestData.setId;
 
 /**
  * @author Patrick Huang
@@ -73,11 +76,12 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
 
     @Before
     public void setUpData() {
-        hLocale = TestFixture.setId(3L, new HLocale(LocaleId.DE));
+        hLocale = new HLocale(LocaleId.DE);
+        setId(hLocale, 3L);
         // @formatter:off
         textFlows = Lists.newArrayList(textFlow(1L, "File is removed", ""), textFlow(2L, "file", "open file"), textFlow(3L, " file ", null), textFlow(4L, " File", "FILE   "));
         // @formatter:on
-        workspaceId = TestFixture.workspaceId(localeId);
+        workspaceId = GWTTestData.workspaceId(localeId);
     }
 
     @Before
@@ -95,7 +99,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
             String targetContent) {
         HTextFlow hTextFlow =
                 makeHTextFlow(id, hLocale, ContentState.NeedReview);
-        TestFixture.setId(DOC_ID, hTextFlow.getDocument());
+        setId(hTextFlow.getDocument(), DOC_ID);
         hTextFlow.setContent0(sourceContent);
         if (targetContent != null) {
             hTextFlow.getTargets().get(hLocale.getId())
@@ -148,7 +152,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         assertThat(constraints.isSearchInTarget(), Matchers.equalTo(true));
         assertThat(constraints.isCaseSensitive(), Matchers.equalTo(true));
         assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
-        assertThat(TestFixture.asIds(result.getUnits(DOC_ID)),
+        assertThat(getIntIds(result.getUnits(DOC_ID)),
                 Matchers.contains(1, 2, 3, 4));
     }
 
@@ -169,7 +173,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         assertThat(constraints.isSearchInTarget(), Matchers.equalTo(true));
         assertThat(constraints.isCaseSensitive(), Matchers.equalTo(true));
         assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
-        assertThat(TestFixture.asIds(result.getUnits(DOC_ID)),
+        assertThat(getIntIds(result.getUnits(DOC_ID)),
                 Matchers.contains(2, 3));
     }
 
@@ -190,7 +194,7 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
         assertThat(constraints.isSearchInTarget(), Matchers.equalTo(false));
         assertThat(constraints.isCaseSensitive(), Matchers.equalTo(false));
         assertThat(result.getDocumentIds(), Matchers.contains(DOC_ID));
-        assertThat(TestFixture.asIds(result.getUnits(DOC_ID)),
+        assertThat(getIntIds(result.getUnits(DOC_ID)),
                 Matchers.contains(1, 3));
     }
 
@@ -199,4 +203,10 @@ public class GetProjectTransUnitListsHandlerTest extends ZanataTest {
     public void testRollback() throws Exception {
         handler.rollback(null, null, null);
     }
+
+    private static List<Integer> getIntIds(List<TransUnit> transUnits) {
+        return Lists.newArrayList(Collections2.transform(transUnits,
+                from -> (int) from.getId().getId()));
+    }
+
 }

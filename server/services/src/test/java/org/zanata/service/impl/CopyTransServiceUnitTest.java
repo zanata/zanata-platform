@@ -23,6 +23,7 @@ package org.zanata.service.impl;
 import static org.mockito.Mockito.when;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.DOWNGRADE_TO_FUZZY;
 import static org.zanata.model.HCopyTransOptions.ConditionRuleAction.IGNORE;
+import static org.zanata.test.EntityTestData.setId;
 
 import java.util.Arrays;
 import java.util.List;
@@ -126,7 +127,7 @@ public class CopyTransServiceUnitTest {
     private HDocument createDoc(HProjectIteration iter,
             List<HTextFlow> textFlows) {
         HDocument doc = new HDocument();
-        doc.setId(9999L);
+        setId(doc, 9999L);
         doc.setProjectIteration(iter);
         doc.setTextFlows(textFlows);
         return doc;
@@ -143,7 +144,7 @@ public class CopyTransServiceUnitTest {
     private HProject createProject(String projSlug, long projId, HCopyTransOptions options) {
         HProject proj = new HProject();
         proj.setSlug(projSlug);
-        proj.setId(projId);
+        setId(proj, projId);
         proj.setDefaultCopyTransOpts(options);
         return proj;
     }

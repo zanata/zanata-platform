@@ -882,6 +882,13 @@
 
       <dependency>
         <groupId>org.zanata</groupId>
+        <artifactId>gwt-test</artifactId>
+        <version>${project.version}</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.zanata</groupId>
         <artifactId>zanata-liquibase</artifactId>
         <version>${project.version}</version>
       </dependency>

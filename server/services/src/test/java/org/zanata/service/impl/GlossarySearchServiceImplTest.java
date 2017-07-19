@@ -1,7 +1,6 @@
 package org.zanata.service.impl;
 
 import com.google.common.collect.Lists;
-import net.customware.gwt.dispatch.shared.ActionException;
 import org.hamcrest.Matchers;
 import org.jglue.cdiunit.InRequestScope;
 import org.junit.Test;
@@ -10,7 +9,6 @@ import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.dao.GlossaryDAO;
-import org.zanata.exception.ZanataServiceException;
 import org.zanata.model.*;
 import org.zanata.rest.service.GlossaryService;
 import org.zanata.security.ZanataIdentity;
@@ -18,9 +16,8 @@ import org.zanata.service.LocaleService;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.GlossaryDetails;
-import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
-import org.zanata.webtrans.shared.rpc.GetGlossaryDetailsAction;
+import org.zanata.webtrans.test.GWTTestData;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
@@ -67,7 +64,7 @@ public class GlossarySearchServiceImplTest extends ZanataTest {
     @InRequestScope
     public void testLookupDetails() throws Exception {
         WorkspaceId workspaceId =
-                TestFixture.workspaceId(targetHLocale.getLocaleId());
+                GWTTestData.workspaceId(targetHLocale.getLocaleId());
         ArrayList<Long> sourceIdList = Lists.newArrayList(1L);
 
         // Mock to return the locale (I think I changed this to not validate!)

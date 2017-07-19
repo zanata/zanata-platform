@@ -19,11 +19,11 @@ import org.zanata.common.ProjectType;
 import org.zanata.jpa.FullText;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
-import org.zanata.model.TestFixture;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 import org.zanata.service.LocaleService;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.test.GWTTestData;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -42,8 +42,8 @@ public class TextFlowSearchServiceImplTest extends ZanataDbunitJpaTest {
     private TextFlowSearchServiceImpl service;
 
     private final LocaleId localeId = new LocaleId("ja");
-    private final WorkspaceId workspaceId = TestFixture.workspaceId(localeId,
-            "plurals", "master", ProjectType.Podir);
+    private final WorkspaceId workspaceId = GWTTestData
+            .workspaceId(localeId, "plurals", "master", ProjectType.Podir);
     private HLocale jaHLocale;
 
     @Produces @Mock private LocaleService localeService;

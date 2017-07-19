@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -13,6 +12,7 @@ import org.zanata.webtrans.server.TranslationWorkspaceManager;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.EventServiceConnectedAction;
+import org.zanata.webtrans.test.GWTTestData;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -41,7 +41,7 @@ public class EventServiceConnectedHandlerTest extends ZanataTest {
     @Test
     @InRequestScope
     public void testExecute() throws ActionException {
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         EditorClientId editorClientId = new EditorClientId("sessionId", 1);
         EventServiceConnectedAction action =
                 new EventServiceConnectedAction("connectionId");

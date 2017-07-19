@@ -28,6 +28,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.zanata.test.EntityTestData.makeHTextFlow;
+import static org.zanata.test.EntityTestData.setId;
 
 public class ActivityEntryTest {
     private ActivityEntry activityEntry;
@@ -52,21 +53,21 @@ public class ActivityEntryTest {
         MockitoAnnotations.initMocks(this);
         activityEntry = new ActivityEntry(activityService, urlUtil, documentDAO, msgs);
         iteration = new HProjectIteration();
-        iteration.setId(1L);
+        setId(iteration, 1L);
         iteration.setSlug("master");
         project = new HProject();
-        project.setId(2L);
+        setId(project, 2L);
         project.setSlug("about-fedora");
         project.setName("About Fedora");
         iteration.setProject(project);
         targetLocale = new HLocale(LocaleId.DE);
-        targetLocale.setId(3L);
+        setId(targetLocale, 3L);
         textFlow = makeHTextFlow(4L, targetLocale, ContentState.Translated);
         document = textFlow.getDocument();
-        document.setId(5L);
+        setId(document, 5L);
         document.setProjectIteration(iteration);
         textFlowTarget = textFlow.getTargets().get(targetLocale.getId());
-        textFlowTarget.setId(6L);
+        setId(textFlowTarget, 6L);
         textFlowTarget.setLocale(targetLocale);
     }
 

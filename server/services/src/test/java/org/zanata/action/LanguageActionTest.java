@@ -58,6 +58,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
+import static org.zanata.test.EntityTestData.setId;
 
 /**
  * @author djansen <a href="mailto:djansen@redhat.com">djansen@redhat.com</a>
@@ -107,7 +108,7 @@ public class LanguageActionTest {
     public void adminCanJoinALanguage() {
         languageAction.setLanguage("en-us");
         HPerson person = new HPerson();
-        person.setId(1L);
+        setId(person, 1L);
 
         when(identity.hasRole("admin")).thenReturn(true);
         when(authenticatedAccount.getPerson()).thenReturn(person);
@@ -123,7 +124,7 @@ public class LanguageActionTest {
     public void userCanJoinIfAutoJoinIsEnabled() {
         languageAction.setLanguage("en-us");
         HPerson person = new HPerson();
-        person.setId(1L);
+        setId(person, 1L);
 
         when(applicationConfiguration.isAutoAcceptRequests()).thenReturn(true);
         when(identity.hasRole("admin")).thenReturn(false);
@@ -141,7 +142,7 @@ public class LanguageActionTest {
         msgs = new Messages(new Locale("en-us"));
         languageAction.setLanguage("en-us");
         HPerson person = new HPerson();
-        person.setId(1L);
+        setId(person, 1L);
 
         when(applicationConfiguration.isAutoAcceptRequests()).thenReturn(false);
         when(identity.hasRole("admin")).thenReturn(false);
@@ -156,7 +157,7 @@ public class LanguageActionTest {
     public void oldRequestsAreRemoved() throws Exception {
         languageAction.setLanguage("en-us");
         HPerson person = new HPerson();
-        person.setId(1L);
+        setId(person, 1L);
         HLocale locale = new HLocale(new LocaleId("en-us"));
         locale.setMembers(Collections.emptySet());
         LanguageRequest languageRequest = new LanguageRequest(

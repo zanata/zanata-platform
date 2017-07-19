@@ -17,7 +17,6 @@ import org.zanata.dao.ProjectIterationDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.TestFixture;
 import org.zanata.service.GravatarService;
 import org.zanata.service.LocaleService;
 import org.zanata.service.ValidationService;
@@ -31,6 +30,7 @@ import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspace;
 import org.zanata.webtrans.shared.rpc.WorkspaceContextUpdate;
+import org.zanata.webtrans.test.GWTTestData;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -124,7 +124,7 @@ public class TranslationWorkspaceManagerImplTest {
 
     @Test(expected = NoSuchWorkspaceException.class)
     public void testRegisterInvalidWorkspace() throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         when(
                 projectIterationDAO.getBySlug(workspaceId
                         .getProjectIterationId().getProjectSlug(), workspaceId
@@ -137,7 +137,7 @@ public class TranslationWorkspaceManagerImplTest {
     @Test(expected = NoSuchWorkspaceException.class)
     public void testRegisterWorkspaceForObsoleteProjectIteration()
             throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         HProjectIteration projectIteration = makeHProjectIteration("a", "1");
         projectIteration.getProject().setStatus(EntityStatus.OBSOLETE);
         when(
@@ -151,7 +151,7 @@ public class TranslationWorkspaceManagerImplTest {
 
     @Test(expected = NoSuchWorkspaceException.class)
     public void testRegisterWorkspaceWithInvalidLocale() throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         when(
                 projectIterationDAO.getBySlug(workspaceId
                         .getProjectIterationId().getProjectSlug(), workspaceId
@@ -165,7 +165,7 @@ public class TranslationWorkspaceManagerImplTest {
 
     @Test(expected = NoSuchWorkspaceException.class)
     public void testRegisterWorkspaceWithInactiveLocale() throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         when(
                 projectIterationDAO.getBySlug(workspaceId
                         .getProjectIterationId().getProjectSlug(), workspaceId
@@ -181,7 +181,7 @@ public class TranslationWorkspaceManagerImplTest {
 
     @Test
     public void testRegisterNewWorkspace() throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId(LocaleId.DE);
+        WorkspaceId workspaceId = GWTTestData.workspaceId(LocaleId.DE);
         when(
                 projectIterationDAO.getBySlug(workspaceId
                         .getProjectIterationId().getProjectSlug(), workspaceId
@@ -204,7 +204,7 @@ public class TranslationWorkspaceManagerImplTest {
 
     @Test
     public void testGetRegisteredNewWorkspace() throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId(LocaleId.DE);
+        WorkspaceId workspaceId = GWTTestData.workspaceId(LocaleId.DE);
         when(
                 projectIterationDAO.getBySlug(workspaceId
                         .getProjectIterationId().getProjectSlug(), workspaceId
@@ -238,7 +238,7 @@ public class TranslationWorkspaceManagerImplTest {
     public void testExitWorkspace() throws Exception {
         HProjectIteration projectIteration =
                 makeHProjectIteration("project", "master");
-        WorkspaceId workspaceId = TestFixture.workspaceId(LocaleId.DE);
+        WorkspaceId workspaceId = GWTTestData.workspaceId(LocaleId.DE);
         when(
                 projectIterationDAO.getBySlug(workspaceId
                                 .getProjectIterationId().getProjectSlug(),
@@ -286,7 +286,7 @@ public class TranslationWorkspaceManagerImplTest {
     public void testProjectIterationUpdate() throws Exception {
         HProjectIteration projectIteration =
                 makeHProjectIteration("project", "master");
-        WorkspaceId workspaceId = TestFixture.workspaceId(LocaleId.DE);
+        WorkspaceId workspaceId = GWTTestData.workspaceId(LocaleId.DE);
         when(
                 projectIterationDAO.getBySlug(workspaceId
                                 .getProjectIterationId().getProjectSlug(),

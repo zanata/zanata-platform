@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import com.google.common.cache.CacheLoader;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
 import org.dbunit.operation.DatabaseOperation;
 import org.hamcrest.Matchers;
 import org.hibernate.Session;
@@ -42,12 +44,15 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.DocumentStatus;
 import org.zanata.webtrans.shared.model.GetTransUnitActionContext;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
+import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.ValidationId;
 import org.zanata.webtrans.shared.rpc.GetTransUnitList;
 import org.zanata.webtrans.shared.rpc.GetTransUnitListResult;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigation;
 import org.zanata.webtrans.shared.rpc.GetTransUnitsNavigationResult;
+import org.zanata.webtrans.test.GWTTestData;
+
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -112,7 +117,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         return super.getSession();
     }
 
-    private final DocumentInfo document = TestFixture.documentInfo(1L, "");
+    private final DocumentInfo document = GWTTestData.documentInfo(1L, "");
     private final LocaleId localeId = new LocaleId("ja");
     private HLocale jaHLocale;
 
@@ -130,8 +135,8 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
 
     private void prepareActionAndMockLocaleService(GetTransUnitList action) {
         action.setEditorClientId(new EditorClientId("sessionId", 1));
-        action.setWorkspaceId(TestFixture.workspaceId(localeId, "plurals",
-                "master", ProjectType.Podir));
+        action.setWorkspaceId(GWTTestData
+                .workspaceId(localeId, "plurals", "master", ProjectType.Podir));
         ProjectIterationId projectIterationId =
                 action.getWorkspaceId().getProjectIterationId();
         when(localeService.validateLocaleByProjectIteration(
@@ -154,7 +159,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         log.info("result: {}", result);
         assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
         assertThat(result.getGotoRow(), Matchers.equalTo(0));
-        assertThat(TestFixture.asIds(result.getUnits()),
+        assertThat(getIntIds(result.getUnits()),
                 Matchers.contains(1, 2, 3, 4, 5));
     }
 
@@ -169,7 +174,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         log.info("result: {}", result);
         assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
         assertThat(result.getGotoRow(), Matchers.equalTo(0));
-        assertThat(TestFixture.asIds(result.getUnits()),
+        assertThat(getIntIds(result.getUnits()),
                 Matchers.contains(3, 5, 6, 7, 8));
     }
 
@@ -184,7 +189,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         log.info("result: {}", result);
         assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
         assertThat(result.getGotoRow(), Matchers.equalTo(0));
-        assertThat(TestFixture.asIds(result.getUnits()),
+        assertThat(getIntIds(result.getUnits()),
                 Matchers.contains(1, 2, 3, 4, 5));
     }
 
@@ -204,7 +209,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         log.info("result: {}", result);
         assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
         assertThat(result.getGotoRow(), Matchers.equalTo(0));
-        assertThat(TestFixture.asIds(result.getUnits()),
+        assertThat(getIntIds(result.getUnits()),
                 Matchers.contains(2, 3, 4, 5, 6, 8));
     }
 
@@ -223,7 +228,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         log.info("result: {}", result);
         assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
         assertThat(result.getGotoRow(), Matchers.equalTo(0));
-        assertThat(TestFixture.asIds(result.getUnits()),
+        assertThat(getIntIds(result.getUnits()),
                 Matchers.contains(3, 5, 6, 8));
     }
 
@@ -241,7 +246,7 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         log.info("result: {}", result);
         assertThat(result.getDocumentId(), Matchers.equalTo(document.getId()));
         assertThat(result.getGotoRow(), Matchers.equalTo(0));
-        assertThat(TestFixture.asIds(result.getUnits()),
+        assertThat(getIntIds(result.getUnits()),
                 Matchers.contains(3, 5, 6, 8));
     }
 
@@ -295,4 +300,10 @@ public class GetTransUnitListHandlerTest extends ZanataDbunitJpaTest {
         GetTransUnitListResult result = handler.execute(action, null);
         assertThat(result.getTargetPageIndex(), Matchers.equalTo(2));
     }
+
+    private static List<Integer> getIntIds(List<TransUnit> transUnits) {
+        return Lists.newArrayList(Collections2.transform(transUnits,
+                from -> (int) from.getId().getId()));
+    }
+
 }

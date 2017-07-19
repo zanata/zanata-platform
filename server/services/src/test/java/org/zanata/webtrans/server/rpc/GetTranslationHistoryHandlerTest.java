@@ -30,7 +30,6 @@ import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.HTextFlowTargetReviewComment;
-import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
@@ -42,6 +41,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryAction;
 import org.zanata.webtrans.shared.rpc.GetTranslationHistoryResult;
+import org.zanata.webtrans.test.GWTTestData;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -51,6 +51,7 @@ import net.customware.gwt.dispatch.shared.ActionException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.zanata.test.EntityTestData.*;
 import static org.zanata.test.EntityTestData.makeHTextFlow;
 
 /**
@@ -287,7 +288,7 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
     public void canGetReviewComments() {
         GetTranslationHistoryAction action =
                 new GetTranslationHistoryAction(new TransUnitId(1L));
-        action.setWorkspaceId(TestFixture.workspaceId());
+        action.setWorkspaceId(GWTTestData.workspaceId());
         LocaleId localeId = action.getWorkspaceId().getLocaleId();
         when(
                 reviewCommentsDAO.getReviewComments(action.getTransUnitId(),
@@ -306,13 +307,13 @@ public class GetTranslationHistoryHandlerTest extends ZanataTest {
     private static HTextFlowTargetReviewComment makeCommentEntity(
             LocaleId localeId, String comment) {
         HLocale hLocale = new HLocale(localeId);
-        TestFixture.setId(2L, hLocale);
+        setId(hLocale, 2L);
 
         HTextFlow textFlow =
                 makeHTextFlow(1L, hLocale, ContentState.Rejected);
 
         HPerson commenter = new HPerson();
-        TestFixture.setId(3L, commenter);
+        setId(commenter, 3L);
 
         return new HTextFlowTargetReviewComment(textFlow.getTargets().get(
                 hLocale.getId()), comment, commenter);

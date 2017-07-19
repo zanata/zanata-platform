@@ -4,6 +4,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.zanata.test.EntityTestData.setId;
 
 import javax.ws.rs.core.Response;
 
@@ -51,7 +52,7 @@ public class UserServiceTest {
         authenticatedAccount = new HAccount();
         authenticatedAccount.setUsername(username);
         person = new HPerson();
-        person.setId(1L);
+        setId(person, 1L);
         person.setName("peter");
         person.setEmail("pan@wonderland");
         person.setAccount(authenticatedAccount);

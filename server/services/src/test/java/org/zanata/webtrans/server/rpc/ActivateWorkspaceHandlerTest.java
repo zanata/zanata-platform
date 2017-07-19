@@ -34,7 +34,6 @@ import org.zanata.model.HLocale;
 import org.zanata.model.HPerson;
 import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.GravatarService;
@@ -63,6 +62,7 @@ import org.zanata.webtrans.shared.rpc.GetValidationRulesResult;
 import org.zanata.webtrans.shared.rpc.LoadOptionsAction;
 import org.zanata.webtrans.shared.rpc.LoadOptionsResult;
 import org.zanata.webtrans.shared.validation.ValidationFactory;
+import org.zanata.webtrans.test.GWTTestData;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
@@ -118,7 +118,7 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
     @Before
     public void setUp() throws Exception {
         handler = spy(handler);
-        person = TestFixture.person();
+        person = GWTTestData.person();
         doReturn(person).when(handler).retrievePerson();
         doReturn(HTTP_SESSION_ID).when(handler).getHttpSessionId();
         long accountId = 7;
@@ -137,7 +137,7 @@ public class ActivateWorkspaceHandlerTest extends ZanataTest {
     @Test
     @InRequestScope
     public void testExecute() throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         ActivateWorkspaceAction action =
                 new ActivateWorkspaceAction(workspaceId);
         when(translationWorkspaceManager.getOrRegisterWorkspace(workspaceId))

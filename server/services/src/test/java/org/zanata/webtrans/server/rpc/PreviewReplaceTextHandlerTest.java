@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.ContentState;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.TransUnit;
@@ -15,6 +14,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdatePreview;
 import org.zanata.webtrans.shared.rpc.PreviewReplaceText;
 import org.zanata.webtrans.shared.rpc.PreviewReplaceTextResult;
 import org.zanata.webtrans.shared.rpc.ReplaceText;
+import org.zanata.webtrans.test.GWTTestData;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -40,7 +40,8 @@ public class PreviewReplaceTextHandlerTest extends ZanataTest {
     @InRequestScope
     public void testExecute() throws Exception {
         TransUnit transUnit =
-                TestFixture.makeTransUnit(1, ContentState.NeedReview, "target");
+                GWTTestData.makeTransUnit((long) 1, ContentState.NeedReview,
+                        "target");
         PreviewReplaceText action =
                 new PreviewReplaceText(new ReplaceText(transUnit, "target",
                         "replace", true));

@@ -28,8 +28,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
-import org.zanata.model.TestFixture;
-import org.zanata.test.EntityTestData;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.PersonId;
 import org.zanata.webtrans.shared.model.PersonSessionDetails;
@@ -37,6 +35,7 @@ import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceContext;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.test.GWTTestData;
 
 import com.google.common.collect.MapMaker;
 
@@ -132,7 +131,7 @@ public class TranslationWorkspaceImplTest {
         EditorClientId editorClientId = new EditorClientId("sessionId", 1);
         translationWorkspace.addEditorClient("sessionId", editorClientId,
                 new PersonId("personId"));
-        TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
+        TransUnit selectedTransUnit = GWTTestData.makeTransUnit((long) 1);
 
         translationWorkspace.updateUserSelection(editorClientId,
                 selectedTransUnit.getId());

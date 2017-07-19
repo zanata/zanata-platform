@@ -27,6 +27,7 @@ import org.zanata.model.HTextFlowTargetHistory;
 import org.zanata.model.type.EntityType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.zanata.test.EntityTestData.setId;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -119,7 +120,7 @@ public class TranslationUtilTest {
     public HTextFlowTarget generateTarget(Long id, Long entityId) {
         HTextFlowTarget target = new HTextFlowTarget();
         target.setCopiedEntityId(entityId);
-        target.setId(id);
+        setId(target, id);
         return target;
     }
 

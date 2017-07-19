@@ -22,16 +22,17 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.LocaleService;
 import org.zanata.service.impl.TranslationMemoryServiceImpl;
 import org.zanata.test.CdiUnitRunner;
+import org.zanata.test.EntityTestData;
 import org.zanata.util.UrlUtil;
 import org.zanata.webtrans.shared.model.ProjectIterationId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTransMemoryDetailsAction;
 import org.zanata.webtrans.shared.rpc.TransMemoryDetailsList;
+import org.zanata.webtrans.test.GWTTestData;
 import com.google.common.collect.Lists;
 
 import net.customware.gwt.dispatch.shared.ActionException;
@@ -44,6 +45,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.zanata.test.EntityTestData.makeApprovedHTextFlow;
+import static org.zanata.test.EntityTestData.setId;
 
 /**
  * @author Patrick Huang <a
@@ -71,7 +73,8 @@ public class GetTransMemoryDetailsHandlerTest extends ZanataTest {
 
     @Before
     public void setUp() throws Exception {
-        hLocale = TestFixture.setId(1L, new HLocale(LocaleId.EN));
+        hLocale = new HLocale(LocaleId.EN);
+        setId(hLocale, 1L);
     }
 
     private static void setProjectAndIterationSlug(HTextFlow hTextFlow,
@@ -101,7 +104,7 @@ public class GetTransMemoryDetailsHandlerTest extends ZanataTest {
     @InRequestScope
     public void testExecute() throws Exception {
         WorkspaceId workspaceId =
-                TestFixture.workspaceId(hLocale.getLocaleId());
+                GWTTestData.workspaceId(hLocale.getLocaleId());
         GetTransMemoryDetailsAction action =
                 new GetTransMemoryDetailsAction(1L, 2L);
         action.setWorkspaceId(workspaceId);
@@ -133,7 +136,7 @@ public class GetTransMemoryDetailsHandlerTest extends ZanataTest {
     @Test(expected = ActionException.class)
     @InRequestScope
     public void testExecuteWithInvalidLocale() throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         GetTransMemoryDetailsAction action = new GetTransMemoryDetailsAction();
         action.setWorkspaceId(workspaceId);
         ProjectIterationId projectIterationId =

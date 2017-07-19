@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -14,6 +13,7 @@ import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.Person;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.ExitWorkspaceAction;
+import org.zanata.webtrans.test.GWTTestData;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
@@ -40,9 +40,9 @@ public class ExitWorkspaceHandlerTest extends ZanataTest {
     @Test
     @InRequestScope
     public void testExecute() throws Exception {
-        Person person = TestFixture.person();
+        Person person = GWTTestData.person();
         EditorClientId editorClientId = new EditorClientId("sessionId", 1);
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         when(translationWorkspaceManager.getOrRegisterWorkspace(workspaceId))
                 .thenReturn(translationWorkspace);
         ExitWorkspaceAction action = new ExitWorkspaceAction(person);

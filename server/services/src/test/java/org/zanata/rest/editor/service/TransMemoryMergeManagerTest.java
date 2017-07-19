@@ -16,7 +16,6 @@ import org.zanata.async.handle.TransMemoryMergeTaskHandle;
 import org.zanata.common.LocaleId;
 import org.zanata.common.ProjectType;
 import org.zanata.model.HAccount;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.rest.editor.service.TransMemoryMergeManager.TMMergeForDocTaskKey;
 import org.zanata.service.TransMemoryMergeService;
@@ -26,6 +25,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
+import org.zanata.webtrans.test.GWTTestData;
 
 public class TransMemoryMergeManagerTest {
 
@@ -50,8 +50,9 @@ public class TransMemoryMergeManagerTest {
         manager = new TransMemoryMergeManager(asyncTaskHandleManager,
                 transMemoryMergeService, identity);
 
-        WorkspaceId workspaceId = TestFixture.workspaceId(LocaleId.DE,
-                "project", "version", ProjectType.Gettext);
+        WorkspaceId workspaceId = GWTTestData
+                .workspaceId(LocaleId.DE, "project", "version",
+                        ProjectType.Gettext);
         EditorClientId editorClientId = new EditorClientId("session", 1);
         DocumentId documentId = new DocumentId(1L, "doc");
         request = new TransMemoryMergeRequest(editorClientId,

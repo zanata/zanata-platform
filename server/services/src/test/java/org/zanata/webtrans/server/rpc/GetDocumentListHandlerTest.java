@@ -3,6 +3,7 @@ package org.zanata.webtrans.server.rpc;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.zanata.test.EntityTestData.setId;
 
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +22,6 @@ import org.zanata.file.FilePersistService;
 import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HProjectIteration;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.TranslationFileService;
 import org.zanata.service.TranslationStateCache;
@@ -31,6 +31,7 @@ import org.zanata.webtrans.shared.model.DocumentInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetDocumentList;
 import org.zanata.webtrans.shared.rpc.GetDocumentListResult;
+import org.zanata.webtrans.test.GWTTestData;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
@@ -58,7 +59,7 @@ public class GetDocumentListHandlerTest extends ZanataTest {
     @Test
     @InRequestScope
     public void testExecute() throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         GetDocumentList action = new GetDocumentList();
         action.setWorkspaceId(workspaceId);
         HDocument hDocument = hDocument(1);
@@ -81,7 +82,7 @@ public class GetDocumentListHandlerTest extends ZanataTest {
     @Test
     @InRequestScope
     public void testExecuteWithFilter() throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         GetDocumentList action = new GetDocumentList();
         action.setWorkspaceId(workspaceId);
         HDocument hDocument = hDocument(1);
@@ -102,7 +103,7 @@ public class GetDocumentListHandlerTest extends ZanataTest {
                 new HDocument("/dot/a.po", ContentType.PO, new HLocale(
                         LocaleId.EN_US));
         hDocument.setProjectIteration(iteration);
-        TestFixture.setId(id, hDocument);
+        setId(hDocument, id);
         return hDocument;
     }
 

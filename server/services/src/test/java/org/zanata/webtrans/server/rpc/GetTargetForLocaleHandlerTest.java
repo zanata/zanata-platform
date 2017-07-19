@@ -15,7 +15,6 @@ import org.zanata.common.LocaleId;
 import org.zanata.dao.TextFlowTargetDAO;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.test.CdiUnitRunner;
@@ -25,6 +24,8 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocale;
 import org.zanata.webtrans.shared.rpc.GetTargetForLocaleResult;
+import org.zanata.webtrans.test.GWTTestData;
+
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -60,7 +61,7 @@ public class GetTargetForLocaleHandlerTest extends ZanataDbunitJpaTest {
         ResourceUtils resourceUtils = new ResourceUtils();
         resourceUtils.create(); // postConstruct
         jaHLocale = getEm().find(HLocale.class, 3L);
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         // plural="true" content0="One file removed_" content1="%d more files
         // removed"
         sourceTransUnitId = new TransUnitId(3L);

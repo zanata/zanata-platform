@@ -17,6 +17,7 @@ import org.zanata.rest.dto.stats.TranslationStatistics;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
+import static org.zanata.test.EntityTestData.setId;
 
 public class StatisticsServiceTest {
     private StatisticsService service;
@@ -42,7 +43,7 @@ public class StatisticsServiceTest {
     @Test
     public void getDocumentStatisticsWillReturnResult() {
         HDocument document = new HDocument();
-        document.setId(1L);
+        setId(document, 1L);
         when(documentDAO.getByProjectIterationAndDocId("a", "1", "authors"))
                 .thenReturn(document);
         ContainerTranslationStatistics statistics =

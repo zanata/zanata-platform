@@ -20,6 +20,8 @@
  */
 package org.zanata.test;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Date;
 
 import javax.annotation.Nonnull;
@@ -33,6 +35,7 @@ import org.zanata.model.HProject;
 import org.zanata.model.HProjectIteration;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
+import org.zanata.model.ModelEntityBase;
 import org.zanata.model.tm.TransMemory;
 import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.tm.TransMemoryUnitVariant;
@@ -155,4 +158,16 @@ public class EntityTestData {
                         .getLocaleId().getId(), "<seg>source</seg>",
                 TransMemoryUnitVariant.tuv("lang", "<seg>target</seg>"));
     }
+
+    public static void setId(ModelEntityBase entity, Long id) {
+        try {
+            Method setIdMethod = ModelEntityBase.class
+                    .getDeclaredMethod("setId", Long.class);
+            setIdMethod.setAccessible(true);
+            setIdMethod.invoke(entity, id);
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

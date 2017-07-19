@@ -12,7 +12,6 @@ import org.zanata.ZanataTest;
 import org.zanata.dao.AccountDAO;
 import org.zanata.model.HAccount;
 import org.zanata.model.HPerson;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.GravatarService;
 import org.zanata.test.CdiUnitRunner;
@@ -24,6 +23,7 @@ import org.zanata.webtrans.shared.model.PersonSessionDetails;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetTranslatorList;
 import org.zanata.webtrans.shared.rpc.GetTranslatorListResult;
+import org.zanata.webtrans.test.GWTTestData;
 
 import com.google.common.collect.Maps;
 
@@ -64,8 +64,8 @@ public class GetTranslatorListHandlerTest extends ZanataTest {
     @InRequestScope
     public void testExecute() throws Exception {
         GetTranslatorList action = GetTranslatorList.ACTION;
-        WorkspaceId workspaceId = TestFixture.workspaceId();
-        Person person = TestFixture.person();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
+        Person person = GWTTestData.person();
         EditorClientId editorClientId = new EditorClientId("sid", 1);
         action.setWorkspaceId(workspaceId);
         when(translationWorkspaceManager.getOrRegisterWorkspace(workspaceId))

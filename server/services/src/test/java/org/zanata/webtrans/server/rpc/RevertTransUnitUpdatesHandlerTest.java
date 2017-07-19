@@ -23,7 +23,6 @@ import org.zanata.model.HDocument;
 import org.zanata.model.HLocale;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
-import org.zanata.model.TestFixture;
 import org.zanata.rest.service.ResourceUtils;
 import org.zanata.service.SecurityService;
 import org.zanata.service.TranslationService;
@@ -37,6 +36,7 @@ import org.zanata.webtrans.shared.model.TransUnitUpdateInfo;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.RevertTransUnitUpdates;
 import org.zanata.webtrans.shared.rpc.UpdateTransUnitResult;
+import org.zanata.webtrans.test.GWTTestData;
 
 import com.google.common.collect.Lists;
 
@@ -73,8 +73,8 @@ public class RevertTransUnitUpdatesHandlerTest extends ZanataTest {
     public void testExecute() throws Exception {
         List<TransUnitUpdateInfo> updatesToRevert =
                 Lists.newArrayList(new TransUnitUpdateInfo(true, true,
-                        new DocumentId(new Long(1), ""), TestFixture
-                                .makeTransUnit(1), 0, 0, ContentState.Approved));
+                        new DocumentId(new Long(1), ""),
+                        GWTTestData.makeTransUnit((long) 1), 0, 0, ContentState.Approved));
         RevertTransUnitUpdates action =
                 new RevertTransUnitUpdates(updatesToRevert);
         action.setWorkspaceId(new WorkspaceId(new ProjectIterationId("", "",

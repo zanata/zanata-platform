@@ -1467,6 +1467,12 @@
     </dependency>
 
     <dependency>
+      <groupId>org.zanata</groupId>
+      <artifactId>gwt-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
       <groupId>io.github.microutils</groupId>
       <artifactId>kotlin-logging</artifactId>
       <version>1.4.1</version>

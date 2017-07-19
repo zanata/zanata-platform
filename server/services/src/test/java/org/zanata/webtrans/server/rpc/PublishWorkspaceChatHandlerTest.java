@@ -8,7 +8,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -17,6 +16,7 @@ import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.HasWorkspaceChatData;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChat;
 import org.zanata.webtrans.shared.rpc.PublishWorkspaceChatAction;
+import org.zanata.webtrans.test.GWTTestData;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
@@ -46,7 +46,7 @@ public class PublishWorkspaceChatHandlerTest extends ZanataTest {
     @Test
     @InRequestScope
     public void testExecute() throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         PublishWorkspaceChatAction action =
                 new PublishWorkspaceChatAction("admin", "hi",
                         HasWorkspaceChatData.MESSAGE_TYPE.USER_MSG);

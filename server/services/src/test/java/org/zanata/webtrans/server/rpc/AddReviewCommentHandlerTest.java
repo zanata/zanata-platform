@@ -38,7 +38,6 @@ import org.zanata.model.HProject;
 import org.zanata.model.HTextFlow;
 import org.zanata.model.HTextFlowTarget;
 import org.zanata.model.HTextFlowTargetReviewComment;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
@@ -51,6 +50,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.rpc.AddReviewComment;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentAction;
 import org.zanata.webtrans.shared.rpc.AddReviewCommentResult;
+import org.zanata.webtrans.test.GWTTestData;
 
 import net.customware.gwt.dispatch.shared.ActionException;
 
@@ -120,7 +120,7 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
         AddReviewCommentAction action =
                 new AddReviewCommentAction(transUnitId, commentContent,
                         documentId);
-        action.setWorkspaceId(TestFixture.workspaceId(LocaleId.DE));
+        action.setWorkspaceId(GWTTestData.workspaceId(LocaleId.DE));
         when(authenticatedAccount.getPerson()).thenReturn(hPerson);
         when(securityServiceImpl.checkWorkspaceStatus(action.getWorkspaceId()))
                 .thenReturn(hProject);
@@ -171,7 +171,7 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
         AddReviewCommentAction action =
                 new AddReviewCommentAction(new TransUnitId(1L), commentContent,
                         documentId);
-        action.setWorkspaceId(TestFixture.workspaceId(LocaleId.DE));
+        action.setWorkspaceId(GWTTestData.workspaceId(LocaleId.DE));
         when(authenticatedAccount.getPerson()).thenReturn(hPerson);
         when(hPerson.getName()).thenReturn("John Smith");
         when(textFlowTargetDAO.getTextFlowTarget(1L, LocaleId.DE)).thenReturn(
@@ -190,7 +190,7 @@ public class AddReviewCommentHandlerTest extends ZanataTest {
         AddReviewCommentAction action =
                 new AddReviewCommentAction(new TransUnitId(1L), commentContent,
                         documentId);
-        action.setWorkspaceId(TestFixture.workspaceId(LocaleId.DE));
+        action.setWorkspaceId(GWTTestData.workspaceId(LocaleId.DE));
         when(authenticatedAccount.getPerson()).thenReturn(hPerson);
         when(hPerson.getName()).thenReturn("John Smith");
         when(textFlowTargetDAO.getTextFlowTarget(1L, LocaleId.DE)).thenReturn(

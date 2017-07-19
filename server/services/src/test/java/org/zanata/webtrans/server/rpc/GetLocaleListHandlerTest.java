@@ -9,13 +9,13 @@ import org.mockito.Mock;
 import org.zanata.ZanataTest;
 import org.zanata.common.LocaleId;
 import org.zanata.model.HLocale;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.service.impl.LocaleServiceImpl;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.GetLocaleList;
 import org.zanata.webtrans.shared.rpc.GetLocaleListResult;
+import org.zanata.webtrans.test.GWTTestData;
 import com.google.common.collect.Lists;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
@@ -42,7 +42,7 @@ public class GetLocaleListHandlerTest extends ZanataTest {
 
     @Before
     public void setUp() throws Exception {
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         action = new GetLocaleList();
         action.setWorkspaceId(workspaceId);
         when(localeServiceImpl.getSupportedLanguageByProjectIteration("project",

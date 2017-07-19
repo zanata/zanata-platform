@@ -8,7 +8,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.zanata.ZanataTest;
-import org.zanata.model.TestFixture;
 import org.zanata.security.ZanataIdentity;
 import org.zanata.test.CdiUnitRunner;
 import org.zanata.webtrans.server.TranslationWorkspace;
@@ -19,6 +18,7 @@ import org.zanata.webtrans.shared.model.TransUnit;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rpc.TransUnitEdit;
 import org.zanata.webtrans.shared.rpc.TransUnitEditAction;
+import org.zanata.webtrans.test.GWTTestData;
 
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Produces;
@@ -48,9 +48,9 @@ public class TransUnitEditHandlerTest extends ZanataTest {
     @Test
     @InRequestScope
     public void testExecute() throws Exception {
-        Person person = TestFixture.person();
-        TransUnit selectedTransUnit = TestFixture.makeTransUnit(1);
-        WorkspaceId workspaceId = TestFixture.workspaceId();
+        Person person = GWTTestData.person();
+        TransUnit selectedTransUnit = GWTTestData.makeTransUnit((long) 1);
+        WorkspaceId workspaceId = GWTTestData.workspaceId();
         EditorClientId editorClientId = new EditorClientId("sessionId", 1);
         TransUnitEditAction action =
                 new TransUnitEditAction(person, selectedTransUnit.getId());

@@ -45,6 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.zanata.action.AccountMergeAction.ObsoleteHolder;
 import static org.zanata.action.AccountMergeAction.AccountMergeAuthCallback;
+import static org.zanata.test.EntityTestData.setId;
 
 /**
  * @author Damian Jansen
@@ -92,7 +93,7 @@ public class AccountMergeActionTest implements Serializable {
     public void testAuthCallback() throws Exception {
         HAccount fakeAccount = new HAccount();
         fakeAccount.setUsername("Aloy");
-        fakeAccount.setId(1234567890L);
+        setId(fakeAccount, 1234567890L);
         OpenIdAuthenticationResult result = new OpenIdAuthenticationResult();
         result.setAuthenticatedId("aloy");
         when(accountDAO.getByCredentialsId("aloy")).thenReturn(fakeAccount);
@@ -141,13 +142,13 @@ public class AccountMergeActionTest implements Serializable {
 
     @Test
     public void invalidIfIdsAreEqual() throws Exception {
-        doCallRealMethod().when(authenticatedAccount).setId(anyLong());
+        setId(doCallRealMethod().when(authenticatedAccount), anyLong());
         doCallRealMethod().when(authenticatedAccount).getId();
         String error = "You are attempting to merge the same account.";
         HAccount hAccount = new HAccount();
-        hAccount.setId(1234567890L);
+        setId(hAccount, 1234567890L);
         obsolete.account = hAccount;
-        authenticatedAccount.setId(1234567890L);
+        setId(authenticatedAccount, 1234567890L);
 
         doNothing().when(zanataIdentity).checkLoggedIn();
         doNothing().when(facesMessages).addGlobal(SEVERITY_ERROR, error);
@@ -174,7 +175,7 @@ public class AccountMergeActionTest implements Serializable {
     public void testMergeAction() {
         HAccount account = new HAccount();
         account.setUsername("aloy");
-        account.setId(1234567890L);
+        setId(account, 1234567890L);
         obsolete.account = account;
         doNothing().when(registerServiceImpl).mergeAccounts(authenticatedAccount, account);
         accountMergeAction.mergeAccounts();
