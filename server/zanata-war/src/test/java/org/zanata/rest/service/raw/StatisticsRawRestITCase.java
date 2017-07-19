@@ -223,7 +223,7 @@ public class StatisticsRawRestITCase extends RestTest {
     public void getDocumentStatisticsXmlWithDetails() throws Exception {
         // Ok
         // assertThat(stats.getDetailedStats().size(), greaterThan(0));
-        // // No detailed stats (maybe later)
+        // No detailed stats (maybe later)
         // make sure counts are sane
         // Results returned only for specified locales
         // make sure counts are sane
@@ -417,7 +417,7 @@ public class StatisticsRawRestITCase extends RestTest {
     public void getDocumentStatisticsJsonWithDetails() throws Exception {
         // Ok
         // assertThat(stats.getDetailedStats().size(), greaterThan(0));
-        // // No detailed stats (maybe later)
+        // No detailed stats (maybe later)
         // make sure counts are sane
         // Results returned only for specified locales
         // make sure counts are sane

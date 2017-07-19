@@ -97,7 +97,8 @@ public class AccountRawRestITCase extends RestTest {
                 assertThat(account.getEmail(), is("root@localhost"));
                 assertThat(account.getApiKey(),
                         is("b6d7044e9ee3b2447c28fb7c50d86d98"));
-                assertThat(account.getRoles().size(), is(1)); // 1 roles
+                // 1 role
+                assertThat(account.getRoles().size(), is(1));
             }
         }.run();
     }
@@ -127,7 +128,8 @@ public class AccountRawRestITCase extends RestTest {
                 assertThat(account.getEmail(), is("root@localhost"));
                 assertThat(account.getApiKey(),
                         is("b6d7044e9ee3b2447c28fb7c50d86d98"));
-                assertThat(account.getRoles().size(), is(1)); // 1 role
+                // 1 role
+                assertThat(account.getRoles().size(), is(1));
             }
         }.run();
     }

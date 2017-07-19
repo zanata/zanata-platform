@@ -94,7 +94,8 @@ public class ProjectRawCompatibilityITCase extends RestTest {
             @Override
             protected void onResponse(Response response)
                     throws IOException {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // Ok
+                assertThat(response.getStatus(), is(200));
                 assertHeaderPresent(response, HttpHeaders.ETAG);
             }
         }.run();
@@ -114,7 +115,8 @@ public class ProjectRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // Ok
+                assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, Project.class);
                 Project project = jsonUnmarshal(entityString, Project.class);
@@ -141,7 +143,8 @@ public class ProjectRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // Ok
+                assertThat(response.getStatus(), is(200));
                 List<Project> projects = jsonParse(response);
                 Project sampleProject = null;
 
@@ -176,7 +179,8 @@ public class ProjectRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // Ok
+                assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, Projects.class);
                 Projects projects = jaxbUnmarshal(entityString, Projects.class);
@@ -227,7 +231,8 @@ public class ProjectRawCompatibilityITCase extends RestTest {
             @Override
             protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode())); // 201
+                        // 201
+                        is(Status.CREATED.getStatusCode()));
             }
         }.run();
     }

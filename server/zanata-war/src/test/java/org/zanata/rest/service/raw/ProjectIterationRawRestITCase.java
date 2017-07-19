@@ -72,7 +72,8 @@ public class ProjectIterationRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus(), is(200));
                 assertHeaderPresent(response, HttpHeaders.ETAG);
             }
         }.run();
@@ -93,7 +94,8 @@ public class ProjectIterationRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, ProjectIteration.class);
 
@@ -120,7 +122,8 @@ public class ProjectIterationRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, ProjectIteration.class);
                 ProjectIteration iteration =
@@ -212,7 +215,8 @@ public class ProjectIterationRawRestITCase extends RestTest {
             @Override
             protected void onResponse(Response response) {
                 assertThat(response.getStatus(),
-                        is(Response.Status.NOT_FOUND.getStatusCode())); // 404
+                        // 404
+                        is(Response.Status.NOT_FOUND.getStatusCode()));
             }
         }.run();
     }
@@ -243,7 +247,8 @@ public class ProjectIterationRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(201)); // Created
+                // Created
+                assertThat(response.getStatus(), is(201));
             }
         }.run();
     }
@@ -337,7 +342,8 @@ public class ProjectIterationRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(201)); // Created
+                // Created
+                assertThat(response.getStatus(), is(201));
             }
         }.run();
     }
