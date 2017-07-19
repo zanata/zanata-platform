@@ -688,6 +688,20 @@ public class ProjectHome extends SlugHome<HProject>
         }
     }
 
+    public void onProjectNameChange(ValueChangeEvent e) {
+        if (!isValidName((String) e.getNewValue())) {
+            String componentId = e.getComponent().getId();
+            facesMessages.addToControl(componentId,
+                    "This project name is must be alphanumeric");
+        }
+    }
+
+    public boolean isValidName(String name) {
+        String trimmedName = StringUtils.trim(name);
+        return StringUtils.isNotBlank(trimmedName) &&
+                StringUtils.isAlphanumeric(trimmedName);
+    }
+
     public void verifySlugAvailable(ValueChangeEvent e) {
         String slug = (String) e.getNewValue();
         validateSlug(slug, e.getComponent().getId());
@@ -740,6 +754,9 @@ public class ProjectHome extends SlugHome<HProject>
                 && !getSlug().equals(getInputSlugValue())) {
             getInstance().setSlug(getInputSlugValue());
         }
+        if (!isValidName(getInstance().getName())) {
+            return null;
+        }
         boolean softDeleted = false;
         if (getInstance().getStatus() == EntityStatus.OBSOLETE) {
             softDeleted = true;
@@ -768,6 +785,11 @@ public class ProjectHome extends SlugHome<HProject>
             return null;
         }
         getInstance().setSlug(getInputSlugValue());
+        if (!isValidName(getInstance().getName())) {
+            facesMessages.addGlobal(SEVERITY_ERROR,
+                    "This project name is must be alphanumeric");
+            return null;
+        }
         if (StringUtils.isEmpty(selectedProjectType)
                 || selectedProjectType.equals("null")) {
             facesMessages.addGlobal(SEVERITY_ERROR,
