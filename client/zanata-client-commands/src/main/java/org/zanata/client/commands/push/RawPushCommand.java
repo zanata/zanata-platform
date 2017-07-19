@@ -713,7 +713,9 @@ public class RawPushCommand extends PushPullCommand<PushOptions> {
 
         @Override
         public void close() throws IOException {
-            fileStream.close();
+            if (fileStream != null) {
+                fileStream.close();
+            }
         }
 
         public int totalChunks() {
