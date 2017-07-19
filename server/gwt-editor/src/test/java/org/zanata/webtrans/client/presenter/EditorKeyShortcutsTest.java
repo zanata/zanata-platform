@@ -336,7 +336,8 @@ public class EditorKeyShortcutsTest {
         verify(keyShortcutPresenter, atLeastOnce()).register(
                 keyShortcutCaptor.capture());
         List<KeyShortcut> allKeys = keyShortcutCaptor.getAllValues();
-        KeyShortcut shortcut = allKeys.get(allKeys.size() - 1); // last key
+        // last key
+        KeyShortcut shortcut = allKeys.get(allKeys.size() - 1);
 
         assertKeys(shortcut, "enter save as approved", true, true, new Keys(
                 Keys.NO_MODIFIER, KeyCodes.KEY_ENTER));

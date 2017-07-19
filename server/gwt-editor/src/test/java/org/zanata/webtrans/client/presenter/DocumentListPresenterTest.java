@@ -388,8 +388,10 @@ public class DocumentListPresenterTest {
         historyTokenWithExactFilter.setDocFilterExact(true);
 
         ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
-        expectedDocs.remove(2); // third doc does not match the filter
-        expectedDocs.remove(0); // first doc does not match the filter
+        // third doc does not match the filter
+        expectedDocs.remove(2);
+        // first doc does not match the filter
+        expectedDocs.remove(0);
         ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
         for (DocumentNode node : documentListPresenter.getFilteredNodes()) {
             assertThat(
@@ -425,9 +427,9 @@ public class DocumentListPresenterTest {
         verify(mockDisplay).updateFilter(false, false, filterText);
 
         ArrayList<DocumentInfo> expectedDocs = buildSampleDocumentArray();
-        expectedDocs.remove(1); // second doc does not match any of the filter
-                                // strings
+        // second doc does not match any of the filter strings
         ArrayList<DocumentInfo> actualDocInfos = new ArrayList<DocumentInfo>();
+        expectedDocs.remove(1);
         for (DocumentNode node : documentListPresenter.getFilteredNodes()) {
             assertThat(
                     "the data provider should have only documents that match the current filter",

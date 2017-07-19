@@ -730,7 +730,7 @@ public class TargetContentsPresenterTest {
     public void canMoveToNextEditorInPluralFormOnFirstRow() {
         // Given: current editor index is last index (represent last entry from
         // move to previous)
-        selectedTU = currentPageRows.get(currentPageRows.size()-1);
+        selectedTU = currentPageRows.get(currentPageRows.size() - 1);
         when(display.getEditors()).thenReturn(
                 Lists.newArrayList(editor, editor2));
         presenter.setStatesForTesting(selectedTU.getId(),

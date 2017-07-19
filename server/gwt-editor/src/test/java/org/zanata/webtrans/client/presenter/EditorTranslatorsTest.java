@@ -93,8 +93,8 @@ public class EditorTranslatorsTest {
         when(identity.getEditorClientId()).thenReturn(ourClientId);
 
         // When:
-        editorTranslators.updateTranslator(display, new TransUnitId(2)); // different
-                                                                         // id
+        // different id
+        editorTranslators.updateTranslator(display, new TransUnitId(2));
 
         // Then:
         verify(display).removeTranslator("admin", "red");

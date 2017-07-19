@@ -43,6 +43,12 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-common-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>hibernate-validator</artifactId>
+          <groupId>org.hibernate</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- For GWT compilation -->
@@ -51,6 +57,12 @@
       <artifactId>zanata-common-api</artifactId>
       <classifier>sources</classifier>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>hibernate-validator</artifactId>
+          <groupId>org.hibernate</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>
