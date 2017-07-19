@@ -83,9 +83,6 @@ describe('DraggableVersionPanels', () => {
         onDraggableMoveEnd={callback}
         removeVersion={callback} />
     )
-    const expected = ReactDOMServer.renderToStaticMarkup(
-      <span></span>
-    )
-    expect(actual).toEqual(expected)
+    expect(actual).toEqual('')
   })
 })

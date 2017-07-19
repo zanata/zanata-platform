@@ -90,7 +90,7 @@ class DraggableVersionPanels extends Component {
   }
   render () {
     if (this.props.selectedVersions.length === 0) {
-      return <span></span>
+      return null
     }
     return (
       <ListGroup>

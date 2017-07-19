@@ -18,7 +18,7 @@ const LockIcon = ({status}) => {
       <Icon name='locked' className='s0 icon-locked' />
     </OverlayTrigger>
   )
-  : <span />
+  : null
 }
 LockIcon.propTypes = {
   status: entityStatusPropType

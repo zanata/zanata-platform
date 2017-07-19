@@ -20,9 +20,6 @@ describe('LockIcon', () => {
     const actual = ReactDOMServer.renderToStaticMarkup(
       <LockIcon status={'ACTIVE'} />
     )
-    const expected = ReactDOMServer.renderToStaticMarkup(
-      <span></span>
-    )
-    expect(actual).toEqual(expected)
+    expect(actual).toEqual('')
   })
 })

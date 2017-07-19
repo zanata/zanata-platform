@@ -437,7 +437,7 @@ class TMMergeModal extends Component {
         />
         )
     const modalFooter = processStatus
-    ? <span></span>
+    ? undefined
     : (
       <span>
         <Row>
