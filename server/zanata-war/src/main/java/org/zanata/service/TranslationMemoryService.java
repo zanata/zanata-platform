@@ -31,6 +31,7 @@ import org.zanata.rest.editor.dto.suggestion.Suggestion;
 import org.zanata.webtrans.shared.model.TransMemoryDetails;
 import org.zanata.webtrans.shared.model.TransMemoryQuery;
 import org.zanata.webtrans.shared.model.TransMemoryResultItem;
+import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
@@ -52,14 +53,14 @@ public interface TranslationMemoryService extends TranslationFinder {
      * @param checkDocument
      * @param checkProject
      * @param thresholdPercent
-     * @param fromVersionIds
+     * @param internalTMSource
      * @return
      */
     Optional<TransMemoryResultItem> searchBestMatchTransMemory(
             HTextFlow textFlow, LocaleId targetLocaleId,
             LocaleId sourceLocaleId, boolean checkContext,
             boolean checkDocument, boolean checkProject, int thresholdPercent,
-            List<Long> fromVersionIds);
+            InternalTMSource internalTMSource);
 
     List<TransMemoryResultItem> searchTransMemory(LocaleId targetLocaleId,
             LocaleId sourceLocaleId, TransMemoryQuery transMemoryQuery);

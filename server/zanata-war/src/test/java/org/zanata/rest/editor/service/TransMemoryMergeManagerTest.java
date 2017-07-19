@@ -28,6 +28,7 @@ import org.zanata.service.TransMemoryMergeService;
 import org.zanata.webtrans.shared.auth.EditorClientId;
 import org.zanata.webtrans.shared.model.DocumentId;
 import org.zanata.webtrans.shared.model.WorkspaceId;
+import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeCancelRequest;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
@@ -277,7 +278,7 @@ public class TransMemoryMergeManagerTest {
         VersionTMMerge versionTMMerge =
                 new VersionTMMerge(LocaleId.FR, 80, MergeRule.FUZZY,
                         MergeRule.FUZZY, MergeRule.FUZZY,
-                        Lists.newArrayList());
+                        InternalTMSource.SELECT_ALL);
         long versionId = 1L;
         AsyncTaskHandle<Void> result = manager.start(versionId, versionTMMerge);
 
@@ -302,7 +303,7 @@ public class TransMemoryMergeManagerTest {
         VersionTMMerge versionTMMerge =
                 new VersionTMMerge(localeId, 80, MergeRule.FUZZY,
                         MergeRule.FUZZY, MergeRule.FUZZY,
-                        Lists.newArrayList());
+                        InternalTMSource.SELECT_ALL);
 
         assertThatThrownBy(() -> manager.start(versionId, versionTMMerge))
                 .isInstanceOf(UnsupportedOperationException.class)

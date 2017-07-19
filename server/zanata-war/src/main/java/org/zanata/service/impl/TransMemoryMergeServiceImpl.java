@@ -74,6 +74,7 @@ import org.zanata.webtrans.shared.model.TransUnitId;
 import org.zanata.webtrans.shared.model.TransUnitUpdateRequest;
 import org.zanata.webtrans.shared.model.WorkspaceId;
 import org.zanata.webtrans.shared.rest.dto.HasTMMergeCriteria;
+import org.zanata.webtrans.shared.rest.dto.InternalTMSource;
 import org.zanata.webtrans.shared.rest.dto.TransMemoryMergeRequest;
 import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
@@ -189,7 +190,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                          TransUnitUpdated.UpdateType.NonEditorSave));
                 List<TranslationService.TranslationResult> batchResult =
                         translateInBatch(request, textFlowsBatch, targetLocale,
-                                Collections.emptyList(), Optional.of(callback));
+                                request.getInternalTMSource(), Optional.of(callback));
                 finalResult.addAll(batchResult);
                 log.debug("TM merge handle: {}", asyncTaskHandle);
                 transMemoryMergeProgressEvent
@@ -240,16 +241,27 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             return AsyncTaskResult.completed();
         }
 
-        List<Long> fromVersionIds = mergeRequest.getFromProjectVersions().stream()
-                .map(projectIterationId -> projectIterationDAO.getBySlug(
-                        projectIterationId.getProjectSlug(),
-                        projectIterationId.getIterationSlug()))
-                .filter(ver -> ver != null
-                        && ver.getStatus() != EntityStatus.OBSOLETE
-                        && localeServiceImpl
-                        .getSupportedLanguageByProjectIteration(ver)
-                        .contains(targetLocale))
-                .map(ModelEntityBase::getId).collect(Collectors.toList());
+        List<Long> fromVersionIds;
+        InternalTMSource internalTMSource = mergeRequest.getInternalTMSource();
+        if (mergeRequest.getInternalTMSource().getChoice() == InternalTMSource.InternalTMChoice.SelectSome) {
+            fromVersionIds = mergeRequest.getInternalTMSource()
+                    .getProjectIterationIds().stream()
+                    .map(projectIterationId -> projectIterationDAO.getBySlug(
+                            projectIterationId.getProjectSlug(),
+                            projectIterationId.getIterationSlug()))
+                    .filter(ver -> ver != null
+                            && ver.getStatus() != EntityStatus.OBSOLETE
+                            && localeServiceImpl
+                            .getSupportedLanguageByProjectIteration(ver)
+                            .contains(targetLocale))
+                    .map(ModelEntityBase::getId).collect(Collectors.toList());
+            if (fromVersionIds.isEmpty()) {
+                throw new IllegalArgumentException("selected internal TM versions list has nothing to copy from");
+            }
+            // we update internal TM source selection list
+            internalTMSource.setFilteredProjectVersionIds(fromVersionIds);
+        }
+
 
 
         long mergeTargetCount = textFlowDAO.getUntranslatedOrFuzzyTextFlowCountInVersion(
@@ -265,7 +277,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         }
         Stopwatch overallStopwatch = Stopwatch.createStarted();
         log.info("merge translations from TM start: from {} to {}",
-                fromVersionIds,
+                mergeRequest.getInternalTMSource(),
                 targetVersion.userFriendlyToString());
         int startCount = 0;
 
@@ -275,7 +287,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                             targetVersion.getId(), targetLocale, startCount,
                             BATCH_SIZE);
             translateInBatch(mergeRequest, batch,
-                    targetLocale, fromVersionIds, Optional.empty());
+                    targetLocale, internalTMSource, Optional.empty());
 
             taskHandleOpt.ifPresent(
                     mergeTranslationsTaskHandle -> mergeTranslationsTaskHandle
@@ -284,7 +296,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
         }
         versionStateCacheImpl.clearVersionStatsCache(targetVersion.getId());
         log.info("merge translation from TM end: from {} to {}, {}",
-                mergeRequest.getFromProjectVersions(),
+                mergeRequest.getInternalTMSource(),
                 targetVersion.userFriendlyToString(), overallStopwatch);
         return AsyncTaskResult.completed();
     }
@@ -298,8 +310,8 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
      *            the text flows to be filled
      * @param targetLocale
      *            target locale
-     * @param fromVersionIds
-     *            source version ids
+     * @param internalTMSource
+     *            source versions from internal TM
      * @param callbackOnUpdate
      *            an optional callback to call when we have a
      *            TransUnitUpdateRequest ready
@@ -308,7 +320,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
     private List<TranslationService.TranslationResult> translateInBatch(
             HasTMMergeCriteria request, List<HTextFlow> textFlows,
             HLocale targetLocale,
-            List<Long> fromVersionIds,
+            InternalTMSource internalTMSource,
             Optional<Consumer<TransUnitUpdateRequest>> callbackOnUpdate) {
 
         if (textFlows.isEmpty()) {
@@ -333,7 +345,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                                     hTextFlow.getDocument().getLocale().getLocaleId(),
                                     checkContext, checkDocument, checkProject,
                                     request.getThresholdPercent(),
-                                    fromVersionIds);
+                                    internalTMSource);
                     if (tmResult.isPresent()) {
                         TransUnitUpdateRequest updateRequest =
                                 createRequest(request, targetLocale,
