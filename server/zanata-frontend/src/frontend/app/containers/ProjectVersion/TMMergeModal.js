@@ -436,6 +436,23 @@ class TMMergeModal extends Component {
           removeProjectVersion={this.removeProjectVersion}
         />
         )
+    const modalFooter = processStatus
+    ? <span></span>
+    : (
+      <span>
+        <Row>
+          <Button bsStyle='link' className='btn-left link-danger'
+            onClick={openTMMergeModal}>
+            Close
+          </Button>
+          <Button bsStyle='primary' onClick={this.submitForm}
+            disabled={(triggered || noVersionsToMerge) &&
+              !this.state.fromImportedTM}>
+            Merge translations
+          </Button>
+        </Row>
+      </span>
+    )
     return (
       <Modal id="TM-merge-modal" show={showTMMergeModal}
         onHide={openTMMergeModal}>
@@ -445,21 +462,7 @@ class TMMergeModal extends Component {
             {notification && notification.message}</p>
         </Modal.Header>
         <Modal.Body>{modalBody}</Modal.Body>
-        <Modal.Footer>
-          <span className='bootstrap pull-right'>
-            <Row>
-              <Button bsStyle='link' className='btn-left link-danger'
-                onClick={openTMMergeModal}>
-                Cancel
-              </Button>
-              <Button bsStyle='primary' onClick={this.submitForm}
-                disabled={(triggered || noVersionsToMerge) &&
-                  !this.state.fromImportedTM}>
-                Merge translations
-              </Button>
-            </Row>
-          </span>
-        </Modal.Footer>
+        <Modal.Footer>{modalFooter}</Modal.Footer>
       </Modal>
     )
   }
