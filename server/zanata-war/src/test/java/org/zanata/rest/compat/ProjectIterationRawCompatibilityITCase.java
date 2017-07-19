@@ -76,7 +76,8 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
             @Override
             protected void onResponse(Response response)
                     throws IOException {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                // 200
+                assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, ProjectIteration.class);
 
@@ -102,7 +103,8 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                // 200
+                assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, ProjectIteration.class);
 
@@ -140,8 +142,9 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
+                // 201
                 assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode())); // 201
+                        is(Status.CREATED.getStatusCode()));
             }
 
         }.run();
@@ -160,7 +163,8 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                // 200
+                assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, ProjectIteration.class);
                 ProjectIteration it =
@@ -197,8 +201,9 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
+                // 201
                 assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode())); // 201
+                        is(Status.CREATED.getStatusCode()));
             }
 
         }.run();
@@ -216,7 +221,8 @@ public class ProjectIterationRawCompatibilityITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                // 200
+                assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, ProjectIteration.class);
 

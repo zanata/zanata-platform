@@ -74,7 +74,8 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // Ok
+                assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, Account.class);
                 Account account = jsonUnmarshal(entityString, Account.class);
@@ -107,7 +108,8 @@ public class AccountRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // Ok
+                assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 assertJaxbUnmarshal(entityString, Account.class);
                 Account account = jaxbUnmarshal(entityString, Account.class);

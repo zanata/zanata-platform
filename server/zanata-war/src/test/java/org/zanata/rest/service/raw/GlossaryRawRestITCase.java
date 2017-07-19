@@ -176,7 +176,8 @@ public class GlossaryRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus()).isEqualTo(200); // Ok
+                // OK
+                assertThat(response.getStatus()).isEqualTo(200);
             }
         }.run();
     }
@@ -196,7 +197,8 @@ public class GlossaryRawRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus()).isEqualTo(401); // Unauthorized
+                // Unauthorized
+                assertThat(response.getStatus()).isEqualTo(401);
             }
         }.run();
     }
