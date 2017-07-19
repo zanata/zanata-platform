@@ -15,6 +15,8 @@ import {
   OverlayTrigger
 } from 'react-bootstrap'
 
+const DO_NOT_RENDER = null
+
 export const tooltipSort = (
   <Tooltip id='tooltipsort'>Best match will be chosen based on the priority of
     selected projects. Exact matches take precendence.
@@ -90,7 +92,7 @@ class DraggableVersionPanels extends Component {
   }
   render () {
     if (this.props.selectedVersions.length === 0) {
-      return null
+      return DO_NOT_RENDER
     }
     return (
       <ListGroup>

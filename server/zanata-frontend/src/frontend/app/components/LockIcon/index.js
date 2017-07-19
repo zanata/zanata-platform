@@ -4,6 +4,8 @@ import {Icon} from '../../components'
 import {entityStatusPropType} from '../../utils/prop-types-util'
 import {isEntityStatusReadOnly} from '../../utils/EnumValueUtils'
 
+const DO_NOT_RENDER = null
+
 /**
  * Version Lock Icon with tooltip
  *
@@ -18,7 +20,7 @@ const LockIcon = ({status}) => {
       <Icon name='locked' className='s0 icon-locked' />
     </OverlayTrigger>
   )
-  : null
+  : DO_NOT_RENDER
 }
 LockIcon.propTypes = {
   status: entityStatusPropType
