@@ -16,7 +16,7 @@ const JsfRoot = ({store, history}) => {
     <Provider store={store}>
       <Router history={history}>
         <Route component={App} >
-          <Route path='iteration/view/:project/:version/*'
+          <Route path='iteration/view/:project/:version*'
             component={ProjectVersion} />
         </Route>
       </Router>

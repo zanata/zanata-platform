@@ -247,10 +247,12 @@ class TMMergeModal extends Component {
         nextProps.projectSlug, nextProps.versionSlug)
       } else {
         // If a merge has run, reload the page to display the merge results
+        if (this.state.hasMerged) {
+          window.location.reload()
         // Else reset the state to default on modal close
-        this.state.hasMerged
-        ? window.location.reload()
-        : this.setState(this.defaultState)
+        } else {
+          this.setState(this.defaultState)
+        }
       }
     }
     if (!this.state.selectedLanguage) {
