@@ -220,7 +220,8 @@ class TMMergeModal extends Component {
     fromImportedTM: false,
     selectedLanguage: undefined,
     selectedVersions: [],
-    projectSearchTerm: this.props.projectSlug
+    projectSearchTerm: this.props.projectSlug,
+    hasMerged: false
   }
   constructor (props) {
     super(props)
@@ -245,8 +246,11 @@ class TMMergeModal extends Component {
         nextProps.fetchVersionLocales(
         nextProps.projectSlug, nextProps.versionSlug)
       } else {
-        window.location.reload()
-        // this.setState(this.defaultState)
+        // If a merge has run, reload the page to display the merge results
+        // Else reset the state to default on modal close
+        this.state.hasMerged
+        ? window.location.reload()
+        : this.setState(this.defaultState)
       }
     }
     if (!this.state.selectedLanguage) {
@@ -257,6 +261,9 @@ class TMMergeModal extends Component {
     const currentProcessStatus = this.props.processStatus
     if (!isProcessEnded(currentProcessStatus) &&
       isProcessEnded(nextProps.processStatus)) {
+      this.setState({
+        hasMerged: true
+      })
       // process just finished, we want to re-display the merge option form.
       // but we want to delay it a bit so that the user can see the progress
       // bar animation finishes

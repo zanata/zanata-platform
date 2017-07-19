@@ -79,12 +79,6 @@
   padding-top: 0 !important;
 }
 
-/*#TM-merge-modal  .open>.dropdown-menu {
-  display: block;
-  max-height: 12rem;
-  overflow-y: scroll;
-}*/
-
 #TM-merge-modal {
   visibility: visible;
   opacity: inherit;
