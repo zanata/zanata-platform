@@ -25,7 +25,8 @@ class ActivityTab extends React.Component {
       selectedActivites,
       selectedLanguages
     } = this.props
-    // TODO damason add the selectItem function
+    const lastModifiedTime = new Date()
+
     return (
       <Tab eventKey={eventKey} title="">
         <div className="sidebar-wrapper" id="tab2">
@@ -43,6 +44,7 @@ class ActivityTab extends React.Component {
             message="approved a translation"
             wellStatus="well-approved"
             content="নাম"
+            lastModifiedTime={lastModifiedTime}
           />
           <ActivityFeedItem
             icon="refresh"
@@ -51,12 +53,14 @@ class ActivityTab extends React.Component {
             message="created a translated revision"
             wellStatus="well-translated"
             content="নাম"
+            lastModifiedTime={lastModifiedTime}
           />
           <ActivityFeedItem
             icon="comment"
             username="Kathryn"
             message="commented on a translation"
             content="I have no idea what I am doing"
+            lastModifiedTime={lastModifiedTime}
           />
           <ActivityFeedItem
             icon="refresh"
@@ -65,6 +69,7 @@ class ActivityTab extends React.Component {
             message="created a fuzzy translation"
             wellStatus="well-fuzzy"
             content="নাম"
+            lastModifiedTime={lastModifiedTime}
           />
           <ActivityFeedItem
             icon="refresh"
@@ -73,6 +78,7 @@ class ActivityTab extends React.Component {
             message="rejected a translation"
             wellStatus="well-rejected"
             content="নাম"
+            lastModifiedTime={lastModifiedTime}
           />
         </div>
       </Tab>

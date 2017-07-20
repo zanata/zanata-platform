@@ -31,42 +31,20 @@ class ActivityFeedItem extends React.Component {
     icon: PropTypes.oneOf(['comment', 'refresh']).isRequired,
     lastModifiedTime: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
-    // TODO damason define type for status
-    status: PropTypes.oneOf(['translated', 'fuzzy', 'approved', 'rejected',
-      'untranslated']),
-    username: PropTypes.string.isRequired
+    status: PropTypes.string,
+    username: PropTypes.string.isRequired,
+    wellStatus: PropTypes.string
   }
 
   render () {
-    // TODO add other statuses
-    const statusToColor = {
-      approved: 'u-textHighlight',
-      rejected: 'u-textWarning',
-      translated: 'u-textSuccess',
-      fuzzy: 'u-textUnsure',
-      untranslated: 'u-textPrimary'
-    }
-
-    const statusToWellClass = {
-      approved: 'well-approved',
-      rejected: 'well-rejected',
-      translated: 'well-translated',
-      fuzzy: 'well-fuzzy'
-    }
-
-    const isComment = type === 'comment'
-
     return (
       <div className="revision-box">
-        <p>
-          <Icon name={isComment ? 'comment' : 'refresh'} className="s0" />
+        <p><Icon name={this.props.icon} className="s0" />
           <img className="u-round activity-avatar" src="" />
           <a>{this.props.username}</a>&nbsp;
-          has <span className={statusToColor[this.props.status]}>
-            {this.props.message}</span>
+          has <span className={this.props.status}>{this.props.message}</span>
         </p>
-        <Well className={isComment ? '' : statusToWellClass(this.props.status)}>
-          {this.props.content}</Well>
+        <Well className={this.props.wellStatus}>{this.props.content}</Well>
         <p className="small u-textMuted">
           <Icon name="clock" className="n1" />&nbsp;
           <FormattedDate value={this.props.lastModifiedTime}
