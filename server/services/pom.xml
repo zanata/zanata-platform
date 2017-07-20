@@ -190,6 +190,7 @@
 
         <configuration>
           <sourceJar>true</sourceJar>
+          <testJar>true</testJar>
 
           <!-- Recompile all sources if any source is recompiled! Hurts
                incremental build performance.
