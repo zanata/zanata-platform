@@ -149,7 +149,7 @@ site: http://www.fsf.org.
                   value="#{msgs['jsf.upload.ClientUploadInstructions']}"
                   escape="false">
                   <f:param
-                    value="&lt;a href=&quot;http://zanata.org/help/cli/cli-push/&quot;>"/>
+                    value="&lt;a href=&quot;http://docs.zanata.org/en/release/client/commands/push/&quot;>"/>
                   <f:param value="&lt;/a>"/>
                 </h:outputFormat>
               </p>
@@ -190,7 +190,7 @@ site: http://www.fsf.org.
                 <a target="_blank"
                    href="http://docs.zanata.org/en/release/user-guide/documents/raw-documents/#supported-formats"
                    title="#{msgs['jsf.iteration.AcceptedFileFormats.tooltip']}">
-                  <i class="i i--help"></i>
+                  <i class="i i--question"/>
                 </a>
                 <h:outputFormat
                   value="#{msgs['jsf.upload.AcceptedFileTypes']}">
@@ -230,10 +230,10 @@ site: http://www.fsf.org.
                 </button>
                   <span id="#{cc.clientId}-fileupload-file-params"
                     class="is-hidden">
-                    <a
+                    <a target="_blank"
                       href="http://docs.zanata.org/en/release/user-guide/documents/custom-document-param/"
-                      title="#{msgs['jsf.upload.FileParametersHelp']}"><i
-                      class="i i--help"></i></a>
+                      title="#{msgs['jsf.upload.FileParametersHelp']}">
+                      <i class="i i--question"/></a>
                     <textarea name="fileparams" id="fileparams"
                       class="l--push-bottom-0"
                       style="background-image: none; background-position: 0% 0%; background-repeat: repeat repeat;"></textarea>
