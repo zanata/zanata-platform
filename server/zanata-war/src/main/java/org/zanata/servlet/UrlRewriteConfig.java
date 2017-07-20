@@ -59,8 +59,8 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
 //                    .perform(Redirect.temporary("https://{server}{pathAndQuery}"))
                     // Because of the above problem, we just redirect to the home page.
                     .perform(Redirect.temporary("https://{server}/"))
-                    .where("server").matches(".*")
-                    .where("pathAndQuery").matches(".*");
+            .where("server").matches(".*")
+            .where("pathAndQuery").matches(".*");
         }
         builder
                 // strip cid params to avoid NonexistentConversationException
@@ -70,7 +70,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
 
                 .addRule()
                 .when(Direction.isInbound()
-                        .and(Path.matches("/seam/resource/restv1/{path}")))
+                    .and(Path.matches("/seam/resource/restv1/{path}")))
                 .perform(Forward.to("/rest/{path}"))
                 .where("path").matches(".*")
 
@@ -83,30 +83,30 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
 
                 .addRule()
                 .when(Direction.isInbound().and(Path.matches(
-                        "/iteration/files/{projectSlug}/{iterationSlug}")))
+                    "/iteration/files/{projectSlug}/{iterationSlug}")))
                 .perform(Redirect.permanent(contextPath +
-                        "/iteration/view/{projectSlug}/{iterationSlug}/documents"))
+                    "/iteration/view/{projectSlug}/{iterationSlug}/documents"))
 
                 .addRule()
                 .when(Direction.isInbound().and(Path.matches(
-                        "/iteration/source_files/{projectSlug}/{iterationSlug}")))
+                    "/iteration/source_files/{projectSlug}/{iterationSlug}")))
                 .perform(Redirect.permanent(contextPath +
-                        "/iteration/view/{projectSlug}/{iterationSlug}/documents"))
+                    "/iteration/view/{projectSlug}/{iterationSlug}/documents"))
 
                 .addRule(Join.path("/{path}").to("/a/index.xhtml"))
                 .where("path").matches(anyOf(
-                "explore",
-                "glossary",
-                "glossary/project/[^/]*",
-                "languages",
-                // There is a 302 redirect from profile to profile/
-                // I don't know why it does it, but it causes 403 Forbidden
-                // unless there is also a rewrite for profile/ here
-                // Probably caused by the presence of the profile
-                // directory (which contains merge_account.xhtml).
-                "profile",
-                "profile/",
-                "profile/view/[^/]*"))
+                        "explore",
+                        "glossary",
+                        "glossary/project/[^/]*",
+                        "languages",
+                        // There is a 302 redirect from profile to profile/
+                        // I don't know why it does it, but it causes 403 Forbidden
+                        // unless there is also a rewrite for profile/ here
+                        // Probably caused by the presence of the profile
+                        // directory (which contains merge_account.xhtml).
+                        "profile",
+                        "profile/",
+                        "profile/view/[^/]*"))
 
                 .addRule(Join.path("/project/translate/{project}/v/{version}/{document}").to("/editor/index.xhtml"))
                 .where("document").matches(".*")
@@ -190,7 +190,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                 .addRule(Join.path("/404").to("/404.xhtml"))
                 // OAuth authorization
                 .addRule(Join.path("/oauth/").to("/oauth/home.xhtml"))
-        ;
+                ;
         return builder;
     }
 
@@ -208,7 +208,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
 
         @Override
         public void performHttp(HttpServletRewrite event,
-                                EvaluationContext context) {
+                EvaluationContext context) {
             // Remove param from address query
             Address address = event.getAddress();
             String query = address.getQuery();

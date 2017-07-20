@@ -71,8 +71,8 @@ public class WebAssetsConfiguration extends AbstractMap<String, String> {
          * otherwise {@link #DEFAULT_WEB_ASSETS_URL}
          */
         webAssetsUrlBase =
-                StringUtils.isEmpty(assetsProperty) ? DEFAULT_WEB_ASSETS_URL
-                        : assetsProperty;
+            StringUtils.isEmpty(assetsProperty) ? DEFAULT_WEB_ASSETS_URL
+                : assetsProperty;
     }
 
     private String getWebAssetsUrl(String resource) {

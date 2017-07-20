@@ -24,8 +24,8 @@ public class InvalidContentTypeFilterTest {
                     "    <title>Zanata: Home</title>\n" +
                     "    <link rel=\"shortcut icon\" href=\"/javax.faces.resource/jars/assets/img/logo/logo.ico\" type=\"image/x-icon\" />\n" +
                     "    <link type=\"text/css\" rel=\"stylesheet\" href=\"/resources/fontello/css/fontello.css\" />\n" +
-                    "    <link type=\"text/css\" rel=\"stylesheet\" class=\"user\" href=\"/resources/assets/css/zanata.css\" />\n" +
-                    "    <link type=\"text/css\" rel=\"stylesheet\" href=\"/resources/assets/css/style.css\" />";
+                    "    <link type=\"text/css\" rel=\"stylesheet\" class=\"user\" href=\"/javax.faces.resource/jars/assets/css/zanata.css\" />\n" +
+                    "    <link type=\"text/css\" rel=\"stylesheet\" href=\"/javax.faces.resource/jars/assets/css/style.min.css\" />";
 
     private String text = "    <title>Zanata: Home</title>  \n";
 
