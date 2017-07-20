@@ -31,6 +31,7 @@ export const getHeaders = () => {
 export const getJsonHeaders = () => {
   let headers = getHeaders()
   headers['Accept'] = 'application/json'
+  headers['Content-Type'] = 'application/json'
   return headers
 }
 
