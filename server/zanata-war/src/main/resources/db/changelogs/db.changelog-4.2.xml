@@ -163,6 +163,6 @@
     <comment>Alter TransMemory description, limit max length</comment>
     <sql>UPDATE TransMemory SET description=SUBSTRING(description,1,100);</sql>
     <modifyDataType tableName="TransMemory" columnName="description"
-        newDataType="char(100)"/>
+        newDataType="varchar(100)"/>
   </changeSet>
 </databaseChangeLog>
