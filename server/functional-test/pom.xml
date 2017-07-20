@@ -144,7 +144,7 @@
     <dependency>
       <groupId>org.zanata</groupId>
       <artifactId>zanata-war</artifactId>
-      <version>${version}</version>
+      <version>${project.version}</version>
       <classifier>tests</classifier>
       <scope>test</scope>
       <exclusions>
