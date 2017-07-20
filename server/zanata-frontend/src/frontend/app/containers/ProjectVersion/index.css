@@ -62,6 +62,10 @@
   font-weight: 500;
 }
 
+#TM-merge-modal .progress-bar {
+  height: 100% !important;
+}
+
 #TM-merge-modal .panel-group .panel-heading {
   border-bottom: 1px solid #cdd4dc !important;
 }
