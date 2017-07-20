@@ -138,8 +138,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         // @formatter:on
 
         Response postResponse =
-                getSourceDocResource().post(sr, null, true); // new
-        // StringSet(PoHeader.ID));
+                getSourceDocResource().post(sr, null, true);
+        // new StringSet(PoHeader.ID));
         assertThat(postResponse.getStatus(), is(Status.CREATED.getStatusCode()));
         doGetandAssertThatResourceListContainsNItems(1);
 
@@ -505,10 +505,12 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         expectDocs(true, false, doc1);
         tft1.setRevision(1);
         expectTarget1(target1);
-        deleteDoc1(); // doc1 becomes obsolete
+        // doc1 becomes obsolete
+        deleteDoc1();
         getZero();
         dontExpectTarget1();
-        putDoc1(false); // doc1 resurrected, rev 1
+        // doc1 resurrected, rev 1
+        putDoc1(false);
         doc1.setRevision(1);
         tf1.setRevision(1);
         tft1.setTextFlowRevision(1);
@@ -530,7 +532,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         tft1.setRevision(1);
         expectDocs(true, false, doc1);
         expectTarget1(target1);
-        putDoc1(false); // docRev still 1
+        // docRev still 1
+        putDoc1(false);
         doc1.setRevision(1);
         tf1.setRevision(1);
         tft1.setTextFlowRevision(1);
@@ -556,10 +559,12 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         expectDocs(true, false, doc1);
         tft1.setRevision(1);
         expectTarget1(target1);
-        deleteDoc1(); // doc1 becomes obsolete
+        // doc1 becomes obsolete
+        deleteDoc1();
         getZero();
         dontExpectTarget1();
-        Resource doc1a = putDoc1a(false); // doc1 resurrected, rev 2
+        // doc1 resurrected, rev 2
+        Resource doc1a = putDoc1a(false);
         doc1a.setRevision(2);
         TextFlow tf1a = doc1a.getTextFlows().get(0);
         tf1a.setRevision(doc1a.getRevision());
@@ -608,7 +613,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         expectDocs(true, false, doc1a);
         dontExpectTarget1();
         expectTarget1a(target1a);
-        putDoc1(false); // same as original doc1, but different doc rev
+        // same as original doc1, but different doc rev
+        putDoc1(false);
         doc1.setRevision(3);
         expectDocs(true, false, doc1);
         // target 1 should be resurrected
@@ -621,7 +627,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
     public void generatedPoHeaders() throws Exception {
         LocaleId de_DE = new LocaleId("de");
         getZero();
-        publishTranslations(); // push some translations (with no headers)
+        // push some translations (with no headers)
+        publishTranslations();
         // Get the translations with PO headers
         Response response =
                 getTransResource()
@@ -690,9 +697,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
                                 "gettext"), true, null);
 
         TranslationsResource translations = getTranslationsResourceFromResponse(response);
-        assertThat(translations.getTextFlowTargets().size(), is(0)); // Expecting
-                                                                     // no
-                                                                     // translations
+        // Expecting no translations
+        assertThat(translations.getTextFlowTargets().size(), is(0));
 
         // Make sure the headers are populated
         PoTargetHeader header =
@@ -730,7 +736,8 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
 
         // Future Date for the PO Revision Date Header
         Calendar poRevDate = Calendar.getInstance();
-        poRevDate.add(Calendar.YEAR, 1); // 1 year in the future
+        // 1 year in the future
+        poRevDate.add(Calendar.YEAR, 1);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mmZ");
 
         // Add initial headers to the translations
@@ -738,9 +745,10 @@ public class TranslationResourceRestITCase extends SourceAndTranslationResourceR
         transHeader.getEntries().add(
                 new HeaderEntry(HeaderFields.KEY_LastTranslator,
                         "Test User <test@zanata.org>"));
+        // Date in the future
         transHeader.getEntries().add(
                 new HeaderEntry(HeaderFields.KEY_PoRevisionDate, dateFormat
-                        .format(poRevDate.getTime()))); // Date in the future
+                        .format(poRevDate.getTime())));
         entity.getExtensions(true).add(transHeader);
 
         // Push the translations

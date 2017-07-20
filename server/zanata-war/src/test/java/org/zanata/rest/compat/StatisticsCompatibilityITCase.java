@@ -89,9 +89,8 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
         int mssgStatCount = 0;
 
         assertThat(stats.getStats().size(), greaterThan(0));
-        assertThat(stats.getDetailedStats().size(), greaterThan(0)); // Has
-                                                                     // document
-                                                                     // stats
+        // Has document stats
+        assertThat(stats.getDetailedStats().size(), greaterThan(0));
         for (TranslationStatistics langStats : stats.getStats()) {
             assertThat(
                     langStats.getTotal(),
@@ -172,11 +171,10 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
                 statsResource.getStatistics("sample-project", "1.0", true,
                         false, new String[] { "as" });
 
-        assertThat(stats.getStats().size(), is(1)); // Just one locale and no
-                                                    // word level stats
-        assertThat(stats.getDetailedStats().size(), greaterThan(0)); // Has
-                                                                     // document
-                                                                     // stats
+        // Just one locale and no word level stats
+        assertThat(stats.getStats().size(), is(1));
+        // Has document stats
+        assertThat(stats.getDetailedStats().size(), greaterThan(0));
         for (TranslationStatistics langStats : stats.getStats()) {
             assertThat(
                     langStats.getTotal(),
@@ -209,7 +207,8 @@ public class StatisticsCompatibilityITCase extends CompatibilityBase {
                 statsResource.getStatistics("sample-project", "1.0",
                         "my/path/document.txt", true, new String[] { "as" });
 
-        assertThat(stats.getStats().size(), is(2)); // Just one locale
+        // Just one locale
+        assertThat(stats.getStats().size(), is(2));
         for (TranslationStatistics langStats : stats.getStats()) {
             assertThat(
                     langStats.getTotal(),

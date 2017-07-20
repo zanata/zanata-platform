@@ -164,8 +164,9 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             protected void onResponse(Response response) {
+                // 201
                 assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode())); // 201
+                        is(Status.CREATED.getStatusCode()));
             }
         }.run();
 
@@ -175,7 +176,8 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                 sourceDocClient.getResource(res.getName(), new StringSet(
                         PoHeader.ID + ";" + SimpleComment.ID));
 
-        assertThat(resourceResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(resourceResponse.getStatus(), is(Status.OK.getStatusCode()));
 
         Resource createdResource = getResourceFromResponse(resourceResponse);
 
@@ -183,8 +185,8 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
         assertThat(createdResource.getType(), is(res.getType()));
         assertThat(createdResource.getContentType(), is(res.getContentType()));
         assertThat(createdResource.getLang(), is(res.getLang()));
-        assertThat(createdResource.getRevision(), is(1)); // Created, so
-                                                          // revision 1
+        // Created, so revision 1
+        assertThat(createdResource.getRevision(), is(1));
 
         // Extensions
         assertThat(createdResource.getExtensions(true).size(),
@@ -200,7 +202,8 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
         assertThat(createdTf.getContents(), is(tf1.getContents()));
         assertThat(createdTf.getId(), is(tf1.getId()));
         assertThat(createdTf.getLang(), is(tf1.getLang()));
-        assertThat(createdTf.getRevision(), is(1)); // Create, so revision 1
+        // Create, so revision 1
+        assertThat(createdTf.getRevision(), is(1));
 
         // Text Flow extensions
         assertThat(createdTf.getExtensions(true).size(), is(1));
@@ -245,8 +248,9 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             protected void onResponse(Response response) {
+                // 201
                 assertThat(response.getStatus(),
-                        is(Status.CREATED.getStatusCode())); // 201
+                        is(Status.CREATED.getStatusCode()));
             }
         }.run();
 
@@ -261,8 +265,8 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
         assertThat(createdResource.getType(), is(res.getType()));
         assertThat(createdResource.getContentType(), is(res.getContentType()));
         assertThat(createdResource.getLang(), is(res.getLang()));
-        assertThat(createdResource.getRevision(), is(1)); // Created, so
-                                                          // revision 1
+        // Created, so revision 1
+        assertThat(createdResource.getRevision(), is(1));
 
         // Extensions
         assertThat(createdResource.getExtensions(true).size(),
@@ -278,7 +282,8 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
         assertThat(createdTf.getContents(), is(tf1.getContents()));
         assertThat(createdTf.getId(), is(tf1.getId()));
         assertThat(createdTf.getLang(), is(tf1.getLang()));
-        assertThat(createdTf.getRevision(), is(1)); // Create, so revision 1
+        // Create, so revision 1
+        assertThat(createdTf.getRevision(), is(1));
 
         // Text Flow extensions
         assertThat(createdTf.getExtensions(true).size(), is(1));
@@ -302,7 +307,8 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                // 200
+                assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, ResourceMeta.class);
 
@@ -347,8 +353,9 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             protected void onResponse(Response response) {
+                // 200
                 assertThat(response.getStatus(),
-                        is(Status.OK.getStatusCode())); // 200
+                        is(Status.OK.getStatusCode()));
             }
         }.run();
 
@@ -358,13 +365,14 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                         null);
         ResourceMeta newResMeta = getResourceMetaFromResponse(getResponse);
 
-        assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(getResponse.getStatus(), is(Status.OK.getStatusCode()));
         assertThat(newResMeta.getName(), is(resMeta.getName()));
         assertThat(newResMeta.getContentType(), is(resMeta.getContentType()));
         assertThat(newResMeta.getLang(), is(resMeta.getLang()));
         assertThat(newResMeta.getType(), is(resMeta.getType()));
-        assertThat(newResMeta.getRevision(), greaterThan(1)); // Updated so
-                                                              // higher revision
+        // Updated so higher revision
+        assertThat(newResMeta.getRevision(), greaterThan(1));
     }
 
     @Test
@@ -382,7 +390,8 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                // 200
+                assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
                 String entityString = response.readEntity(String.class);
                 assertJsonUnmarshal(entityString, TranslationsResource.class);
 
@@ -445,7 +454,8 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                         null);
         final TranslationsResource transRes = getTransResourceFromResponse(response);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
         assertThat(transRes.getTextFlowTargets().size(),
                 greaterThanOrEqualTo(3));
 
@@ -486,7 +496,8 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+                // 200
+                assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
             }
         }.run();
 
@@ -497,7 +508,8 @@ public class TranslationsRawCompatibilityITCase extends CompatibilityBase {
                         LocaleId.EN_US, new StringSet(SimpleComment.ID), false, null);
         TranslationsResource updatedTransRes = getTransResourceFromResponse(response);
 
-        assertThat(response.getStatus(), is(Status.OK.getStatusCode())); // 200
+        // 200
+        assertThat(response.getStatus(), is(Status.OK.getStatusCode()));
         assertThat(updatedTransRes.getTextFlowTargets().size(),
                 greaterThanOrEqualTo(3));
 

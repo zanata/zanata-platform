@@ -29,6 +29,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import com.webcohesion.enunciate.metadata.DocumentationExample;
+import com.webcohesion.enunciate.metadata.Label;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.annotate.JsonPropertyOrder;
@@ -37,15 +39,15 @@ import org.zanata.common.LocaleId;
 import org.zanata.common.Namespaces;
 
 /**
- *
+ * A single glossary term for a single locale
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  *
- **/
-
+ */
 @XmlType(name = "glossaryTermType", propOrder = {"comment", "content", "locale", "lastModifiedDate", "lastModifiedBy"})
 @JsonPropertyOrder({ "content", "comment", "locale", "lastModifiedDate", "lastModifiedBy" })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@Label("Glossary Term")
 public class GlossaryTerm implements Serializable {
     /**
     *
@@ -66,9 +68,13 @@ public class GlossaryTerm implements Serializable {
     public GlossaryTerm() {
     }
 
+    /**
+     * Term's locale
+     */
     @XmlAttribute(name = "lang", namespace = Namespaces.XML)
     @XmlJavaTypeAdapter(type = LocaleId.class, value = LocaleIdAdapter.class)
     @JsonProperty("locale")
+    @DocumentationExample(value = "es-ES", value2 = "ja")
     public LocaleId getLocale() {
         return locale;
     }
@@ -77,9 +83,13 @@ public class GlossaryTerm implements Serializable {
         this.locale = locale;
     }
 
+    /**
+     * The term's translation in the given locale
+     */
     @XmlElement(name = "content", required = false,
             namespace = Namespaces.ZANATA_OLD)
     @JsonProperty("content")
+    @DocumentationExample(value = "Una casa", value2 = "家")
     public String getContent() {
         return content;
     }
@@ -98,9 +108,13 @@ public class GlossaryTerm implements Serializable {
         this.comment = comment;
     }
 
+    /**
+     * A string which identifies the user who last modififed this entry
+     */
     @XmlElement(name = "lastModifiedBy", required = false,
         namespace = Namespaces.ZANATA_API)
     @JsonProperty("lastModifiedBy")
+    @DocumentationExample("homer")
     public String getLastModifiedBy() {
         return lastModifiedBy;
     }
@@ -109,6 +123,9 @@ public class GlossaryTerm implements Serializable {
         this.lastModifiedBy = lastModifiedBy;
     }
 
+    /**
+     * A timestamp indicating the last modification date for this entry
+     */
     @XmlElement(name = "lastModifiedDate", required = false,
         namespace = Namespaces.ZANATA_API)
     @JsonProperty("lastModifiedDate")

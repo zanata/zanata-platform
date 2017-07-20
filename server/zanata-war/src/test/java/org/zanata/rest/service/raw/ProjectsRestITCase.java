@@ -69,7 +69,8 @@ public class ProjectsRestITCase extends RestTest {
 
             @Override
             protected void onResponse(Response response) {
-                assertThat(response.getStatus(), is(200)); // Ok
+                // OK
+                assertThat(response.getStatus(), is(200));
                 String entityString = response.readEntity(String.class);
                 Project[] projects = jsonUnmarshal(entityString, Project[].class);
                 Assertions.assertThat(projects.length).isGreaterThan(0);

@@ -29,6 +29,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.webcohesion.enunciate.metadata.rs.ResourceLabel;
+import com.webcohesion.enunciate.metadata.rs.ResponseCode;
+import com.webcohesion.enunciate.metadata.rs.StatusCodes;
 import org.zanata.rest.MediaTypes;
 import org.zanata.rest.dto.Project;
 
@@ -49,22 +51,20 @@ public interface ProjectsResource extends RestResource {
     public static final String SERVICE_PATH = "/projects";
 
     /**
-     * Retrieves a full list of projects in the system. The result is
-     *
-     * @return The following response status codes will be returned from this
-     *         operation:<br>
-     *         OK(200) - Response containing a full list of projects. The list
-     *         will be wrapped in a "projects" element, and all its child
-     *         elements will be "project"s.<br>
-     *         INTERNAL SERVER ERROR(500) - If there is an unexpected error in
-     *         the server while performing this operation.
+     * Retrieves a full list of projects in the system.
      */
     @GET
     @Produces({ MediaTypes.APPLICATION_ZANATA_PROJECTS_XML,
             MediaTypes.APPLICATION_ZANATA_PROJECTS_JSON,
             MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON })
-            @TypeHint(Project[].class)
-            public
-            Response get();
+    @TypeHint(Project[].class)
+    @StatusCodes({
+            @ResponseCode(code = 200,
+                    condition = "Response containing a full list of projects."),
+            @ResponseCode(code = 500,
+                    condition = "If there is an unexpected error in the server while performing this operation")
+    })
+    public
+    Response get();
 
 }
