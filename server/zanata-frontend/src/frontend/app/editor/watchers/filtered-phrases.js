@@ -6,7 +6,7 @@
  */
 
 import { createSelector } from 'reselect'
-import watch from 'redux-watch'
+import watch from './watch'
 import { debounce, every, isEmpty } from 'lodash'
 // import { fetchPhraseList } from '../api'
 import { getLang } from '../selectors'
@@ -15,6 +15,11 @@ import { getJsonWithCredentials } from '../utils/api-util'
 import { encode } from '../utils/doc-id-util'
 import { baseRestUrl, filterQueryString } from '../api'
 import { transUnitStatusToPhraseStatus } from '../actions/phrases-actions'
+import {
+  PHRASE_LIST_REQUEST,
+  PHRASE_LIST_SUCCESS,
+  PHRASE_LIST_FAILED
+} from '../actions/phrases-action-types'
 
 const getProject = state => state.context.projectSlug
 const getVersion = state => state.context.versionSlug
@@ -53,8 +58,9 @@ const getFilterPhraseListInfo = createSelector(
  * TODO (optimization) only run if phrases.inDoc[docId] is not set yet
  *                     or is stale.
  */
-export const watchRequiredPhraseList = (store) => {
-  const watcher = watch(() => getPhraseListInfo(store.getState()))
+export function watchRequiredPhraseList (store) {
+  const watcher = watch('watchRequiredPhraseList')(
+    () => getPhraseListInfo(store.getState()))
   const debounceCallApi = debounce(
     (project, version, lang, docId) => {
       // dispatch included within debounce to avoid repeated dispatch of the
@@ -64,23 +70,19 @@ export const watchRequiredPhraseList = (store) => {
     }, 1000)
 
   store.subscribe(watcher(
-    ({ project, version, lang, docId }) => {
-      console.log('Phrase list watcher triggered')
+    ({ project, version, lang, docId }, prevState) => {
       if (isEmpty(project) || isEmpty(version) ||
         isEmpty(lang) || isEmpty(docId)) {
-        // not enough info to fetch yet
-        console.log('Phrase list: Still waiting on some context data',
-          project, version, lang, docId)
         return
       }
-
-      console.log('Phrase list: running debounce API call')
       debounceCallApi(project, version, lang, docId)
     }))
 }
 
 export const watchAdvancedFilterList = (store) => {
-  const watcher = watch(() => getFilterPhraseListInfo(store.getState()))
+  // FIXME use an appropriate comparator.
+  const watcher = watch('watchAdvancedFilterList')(
+    () => getFilterPhraseListInfo(store.getState()))
   const debounceCallApi = debounce(
     (project, version, lang, docId, advancedFilter) => {
       // dispatch included within debounce to avoid repeated dispatch of the
@@ -91,18 +93,12 @@ export const watchAdvancedFilterList = (store) => {
 
   store.subscribe(watcher(
     ({ project, version, lang, docId, advancedFilter }) => {
-      console.log('Advanced filter list watcher triggered')
       if (isEmpty(project) || isEmpty(version) ||
         isEmpty(lang) || isEmpty(docId)) {
         // not enough info to fetch yet
-        console.log('Advanced filter list: Still waiting on some context data',
-          project, version, lang, docId)
         return
       }
-      if (every(advancedFilter, isEmpty)) {
-        console.log('Advanced filter list: no filter set, nothing to do.')
-      } else {
-        console.log('Advanced filter list: running debounce API call')
+      if (!every(advancedFilter, isEmpty)) {
         debounceCallApi(project, version, lang, docId, advancedFilter)
       }
     }))
@@ -125,11 +121,11 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
         // TODO use these types for both filter and non-filter,
         //      use meta.filter to distinguish in reducer
         {
-          type: 'PHRASE_LIST_REQUEST',
+          type: PHRASE_LIST_REQUEST,
           meta: { filter: hasFilter }
         },
         {
-          type: 'PHRASE_LIST_SUCCESS',
+          type: PHRASE_LIST_SUCCESS,
           payload: (action, state, res) =>
             getJSON(res).then(statusList => ({
               docId,
@@ -141,7 +137,7 @@ function fetchPhraseList (project, version, localeId, docId, filter) {
           meta: { filter: hasFilter }
         },
         {
-          type: 'PHRASE_LIST_FAILED',
+          type: PHRASE_LIST_FAILED,
           meta: { filter: hasFilter }
         }
       ]
