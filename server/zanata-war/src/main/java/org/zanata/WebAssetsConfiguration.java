@@ -50,7 +50,8 @@ public class WebAssetsConfiguration extends AbstractMap<String, String> {
     /**
      * system property for zanata assets url
      */
-    private final static String ASSETS_PROPERTY_KEY = "zanata.assets.url";
+    private final static String ASSETS_PROPERTY_KEY =
+            "../../../resources/assets";
 
     /**
      *  Default url for zanata-assets, http://{zanata.url}/javax.faces.resource/jars/assets

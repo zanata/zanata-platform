@@ -144,7 +144,7 @@ public class UrlRewriteConfig extends HttpConfigurationProvider {
                    e.g. jars/assets/style.css forwards to
                    jars/assets/style.css.xhtml
                 */
-                .addRule(Join.pathNonBinding("/javax.faces.resource/jars/assets/{path}")
+                .addRule(Join.pathNonBinding("/resources/assets/{path}")
                         .to("/javax.faces.resource/jars/assets/{path}.xhtml"))
                 .when(Direction.isInbound())
                 .where("path").matches(".*(?<!.xhtml)")
