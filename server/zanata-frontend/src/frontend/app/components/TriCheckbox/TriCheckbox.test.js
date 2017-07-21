@@ -16,7 +16,7 @@ describe('TriCheckbox', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div>
         <input type="checkbox" className="tri-checkbox"
-          checked={false} indeterminate={false} onChange={clickFun} />
+          checked={false} onChange={clickFun} />
       </div>
     )
     expect(actual).toEqual(expected)
@@ -28,7 +28,7 @@ describe('TriCheckbox', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div>
         <input type="checkbox" className="tri-checkbox"
-          checked={false} indeterminate onChange={clickFun} />
+          checked={false} onChange={clickFun} />
       </div>
     )
     expect(actual).toEqual(expected)
@@ -40,7 +40,7 @@ describe('TriCheckbox', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div>
         <input type="checkbox" className="tri-checkbox"
-          checked indeterminate={false} onChange={clickFun} />
+          checked onChange={clickFun} />
       </div>
     )
     expect(actual).toEqual(expected)
@@ -52,7 +52,7 @@ describe('TriCheckbox', () => {
     const expected = ReactDOMServer.renderToStaticMarkup(
       <div>
         <input type="checkbox" className="tri-checkbox"
-          checked indeterminate onChange={clickFun} />
+          checked onChange={clickFun} />
       </div>
     )
     expect(actual).toEqual(expected)
