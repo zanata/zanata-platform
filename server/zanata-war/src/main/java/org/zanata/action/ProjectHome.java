@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Model;
@@ -205,16 +206,14 @@ public class ProjectHome extends SlugHome<HProject>
      * already in the project.
      */
     private List<HLocale> findActiveNotEnabledLocales() {
-        Collection<HLocale> filtered = Collections2
-                .filter(localeDAO.findAllActive(), new Predicate<HLocale>() {
-
-                    @Override
-                    public boolean apply(HLocale input) {
-                        // only include those not already in the project
-                        return !getEnabledLocales().contains(input);
-                    }
-                });
-        return Lists.newArrayList(filtered);
+        List<HLocale> activeLocales = localeDAO.findAllActive();
+        // only include those not already in the project
+        List<HLocale> filteredList = activeLocales.stream()
+                .filter(hLocale -> !getEnabledLocales().contains(hLocale))
+                .collect(
+                        Collectors.toList());
+        Collections.sort(filteredList, ComparatorUtil.LOCALE_COMPARATOR);
+        return filteredList;
     }
 
     private Map<String, Boolean> roleRestrictions;
