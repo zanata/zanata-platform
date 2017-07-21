@@ -8,10 +8,13 @@ class TriCheckbox extends Component {
   static propTypes = {
     checked: PropTypes.bool.isRequired,
     indeterminate: PropTypes.bool.isRequired,
-    /* arguments: clickCount, sound */
     onClick: PropTypes.func.isRequired
   }
-
+  static defaultProps = {
+    checked: false,
+    indeterminate: false,
+    onClick: () => {}
+  }
   constructor (props) {
     super(props)
     this.state = {
@@ -21,7 +24,7 @@ class TriCheckbox extends Component {
   }
 
   onClick = (event) => {
-    this.setState({checked: !this.props.checked, indeterminate: false})
+    this.setState({checked: event.target.checked, indeterminate: false})
     this.props.onClick(event)
   }
 
@@ -35,7 +38,7 @@ class TriCheckbox extends Component {
         <RealTriCheckbox
           checked={this.state.checked}
           indeterminate={this.state.indeterminate}
-          onClick={this.onClick}
+          onChange={this.onClick}
         />
         <button onClick={this.makeIndeterminate}>Make indeterminate</button>
         <h2>Truth Table</h2>
@@ -54,7 +57,7 @@ class TriCheckbox extends Component {
               <RealTriCheckbox
                 checked={false}
                 indeterminate={false}
-                onClick={this.onClick}
+                onChange={this.onClick}
               />
             </td>
           </tr>
@@ -66,7 +69,7 @@ class TriCheckbox extends Component {
               <RealTriCheckbox
                 checked={false}
                 indeterminate
-                onClick={this.onClick}
+                onChange={this.onClick}
               />
             </td>
           </tr>
@@ -78,7 +81,7 @@ class TriCheckbox extends Component {
               <RealTriCheckbox
                 checked
                 indeterminate={false}
-                onClick={this.onClick}
+                onChange={this.onClick}
               />
             </td>
           </tr>
@@ -90,7 +93,7 @@ class TriCheckbox extends Component {
               <RealTriCheckbox
                 checked
                 indeterminate
-                onClick={this.onClick}
+                onChange={this.onClick}
               />
             </td>
           </tr>
