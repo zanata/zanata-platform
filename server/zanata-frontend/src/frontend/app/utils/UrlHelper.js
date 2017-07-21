@@ -25,6 +25,16 @@ export function getLanguageUrl (localeId) {
   return serverUrl + '/language/view/' + localeId
 }
 
+/**
+ * @returns string of project version languages settings url
+ * e.g. https://translate.zanata.org/iteration/view/meikai/
+ *      ver1/settings/languages?dswid=4384
+ */
+export function getVersionLanguageSettingsUrl (projectID, versionID) {
+  return serverUrl + '/iteration/view/' + projectID + '/' + versionID +
+    '/settings/languages' + getDswid()
+}
+
 export default {
   getDswid,
   getProjectUrl

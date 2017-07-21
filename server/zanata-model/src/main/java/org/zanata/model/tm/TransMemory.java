@@ -34,6 +34,8 @@ import javax.persistence.JoinTable;
 import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Size;
+
 import org.zanata.model.SlugEntityBase;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -48,7 +50,7 @@ import com.google.common.collect.Sets;
 @Access(AccessType.FIELD)
 public class TransMemory extends SlugEntityBase implements HasTMMetadata {
     private static final long serialVersionUID = 1L;
-    @Column(columnDefinition = "longtext")
+    @Size(max = 100)
     private String description;
     // This is the BCP-47 language code. Null means any source language (*all*
     // in TMX)

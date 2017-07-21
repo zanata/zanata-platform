@@ -238,7 +238,7 @@ class NewLanguageModal extends Component {
               <Button bsStyle='link'
                 id='btn-new-language-cancel' className='btn-left'
                 disabled={saving}
-                onClick={() => this.handleCancel()}>
+                onClick={this.handleCancel}>
                 Close
               </Button>
               <Button
@@ -246,7 +246,7 @@ class NewLanguageModal extends Component {
                   (isEmpty(details.localeId) && isEmpty(query))}
                 id='btn-new-language-save'
                 bsStyle='primary'
-                onClick={() => this.validateDetails()}>
+                onClick={this.validateDetails}>
                 Save
               </Button>
             </Row>
