@@ -42,6 +42,8 @@ public class InternalTMSource implements Serializable, IsSerializable {
             return "Select internal TM from any project version";
         }
     };
+
+    public static final InternalTMSource SELECT_NONE = new InternalTMSource(InternalTMChoice.SelectNone, null);
     private static final long serialVersionUID = 1L;
     private InternalTMChoice choice;
     private List<ProjectIterationId> projectIterationIds;

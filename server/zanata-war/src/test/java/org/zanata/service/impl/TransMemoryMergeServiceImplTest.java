@@ -32,11 +32,9 @@ import static org.zanata.webtrans.shared.model.TransMemoryResultItem.MatchType;
 import static org.zanata.webtrans.shared.rpc.HasSearchType.SearchType.FUZZY_PLURAL;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.inject.Alternative;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 

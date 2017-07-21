@@ -56,6 +56,8 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zanata.common.ContentState;
 import org.zanata.common.EntityStatus;
 import org.zanata.common.LocaleId;
@@ -95,11 +97,10 @@ import com.google.common.collect.Lists;
 /**
  * @author Alex Eng <a href="mailto:aeng@redhat.com">aeng@redhat.com</a>
  */
-@Named("translationMemoryServiceImpl")
 @RequestScoped
 public class TranslationMemoryServiceImpl implements TranslationMemoryService {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory
-            .getLogger(TranslationMemoryServiceImpl.class);
+    private static final Logger log =
+            LoggerFactory.getLogger(TranslationMemoryServiceImpl.class);
 
     private static final int SEARCH_MAX_RESULTS =
             SysProperties.getInt(SysProperties.TM_MAX_RESULTS, 20);
@@ -120,11 +121,19 @@ public class TranslationMemoryServiceImpl implements TranslationMemoryService {
     // SysProperties.TM_BOOST_PROJITERSLUG, 1.5f);
     private static final double MINIMUM_SIMILARITY = 1.0;
     private static final String LUCENE_KEY_WORDS = "(\\s*)(AND|OR|NOT)(\\s+)";
-    @Inject
-    @FullText
     private FullTextEntityManager entityManager;
-    @Inject
     private UrlUtil urlUtil;
+
+    @Inject
+    public TranslationMemoryServiceImpl(@FullText FullTextEntityManager entityManager, UrlUtil urlUtil) {
+        this.entityManager = entityManager;
+        this.urlUtil = urlUtil;
+    }
+
+    @SuppressWarnings("unused")
+    public TranslationMemoryServiceImpl() {
+    }
+
     // sort desc by lastChanged of HTextFlowTarget
     private final Sort lastChangedSort = new Sort(SortField.FIELD_SCORE,
             new SortField(IndexFieldLabels.LAST_CHANGED_FIELD,

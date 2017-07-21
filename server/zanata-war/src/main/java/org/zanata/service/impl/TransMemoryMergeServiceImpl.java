@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.event.Event;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import org.slf4j.Logger;
@@ -58,7 +57,6 @@ import org.zanata.model.tm.TransMemoryUnit;
 import org.zanata.model.type.EntityType;
 import org.zanata.model.type.TranslationSourceType;
 import org.zanata.rest.dto.VersionTMMerge;
-import org.zanata.security.ZanataIdentity;
 import org.zanata.security.annotations.Authenticated;
 import org.zanata.service.LocaleService;
 import org.zanata.service.TransMemoryMergeService;
@@ -80,7 +78,6 @@ import org.zanata.webtrans.shared.rpc.MergeRule;
 import org.zanata.webtrans.shared.rpc.TransUnitUpdated;
 import org.zanata.webtrans.shared.search.FilterConstraints;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Stopwatch;
 import com.google.common.collect.Lists;
 
@@ -89,7 +86,6 @@ import com.google.common.collect.Lists;
  *         <a href="mailto:sflaniga@redhat.com">sflaniga@redhat.com</a>
  * @author Patrick Huang <a href="mailto:pahuang@redhat.com">pahuang@redhat.com</a>
  */
-@Named("transMemoryMergeServiceImpl")
 @RequestScoped
 @Transactional
 public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
@@ -97,46 +93,60 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
             .getLogger(TransMemoryMergeServiceImpl.class);
     private static final String commentPrefix =
             "auto translated by TM merge from";
-    @VisibleForTesting
-    protected static final int BATCH_SIZE = 50;
     private static final FilterConstraints
             UNTRANSLATED_FILTER = FilterConstraints.builder().keepAll().excludeRejected()
                     .excludeApproved().excludeTranslated()
                     .excludeFuzzy().build();
+    private static final long serialVersionUID = -6049179312875626300L;
 
-    @Inject
     private LocaleService localeServiceImpl;
-    @Inject
     private TextFlowDAO textFlowDAO;
-    @Inject
     private TransMemoryUnitDAO transMemoryUnitDAO;
-    @Inject
     private TranslationMemoryService translationMemoryServiceImpl;
-    @Inject
     private TranslationService translationServiceImpl;
-    @Inject
     private Event<TextFlowTargetUpdateContextEvent> textFlowTargetUpdateContextEvent;
 
-    @Inject
     private Event<TransMemoryMergeEvent> transMemoryMergeEvent;
-    @Inject
     private Event<TransMemoryMergeProgressEvent> transMemoryMergeProgressEvent;
-    @Inject
     private TransactionUtil transactionUtil;
 
-    @Inject
     private ProjectIterationDAO projectIterationDAO;
 
-    @Inject
-    private ZanataIdentity identity;
-
-    @Inject
     private VersionStateCache versionStateCacheImpl;
 
-    @Inject
-    @Authenticated
     private HAccount authenticatedAccount;
 
+    @Inject
+    public TransMemoryMergeServiceImpl(
+            LocaleService localeServiceImpl, TextFlowDAO textFlowDAO,
+            TransMemoryUnitDAO transMemoryUnitDAO,
+            TranslationMemoryService translationMemoryServiceImpl,
+            TranslationService translationServiceImpl,
+            Event<TextFlowTargetUpdateContextEvent> textFlowTargetUpdateContextEvent,
+            Event<TransMemoryMergeEvent> transMemoryMergeEvent,
+            Event<TransMemoryMergeProgressEvent> transMemoryMergeProgressEvent,
+            TransactionUtil transactionUtil,
+            ProjectIterationDAO projectIterationDAO,
+            VersionStateCache versionStateCacheImpl,
+            @Authenticated HAccount authenticatedAccount) {
+        this.localeServiceImpl = localeServiceImpl;
+        this.textFlowDAO = textFlowDAO;
+        this.transMemoryUnitDAO = transMemoryUnitDAO;
+        this.translationMemoryServiceImpl = translationMemoryServiceImpl;
+        this.translationServiceImpl = translationServiceImpl;
+        this.textFlowTargetUpdateContextEvent =
+                textFlowTargetUpdateContextEvent;
+        this.transMemoryMergeEvent = transMemoryMergeEvent;
+        this.transMemoryMergeProgressEvent = transMemoryMergeProgressEvent;
+        this.transactionUtil = transactionUtil;
+        this.projectIterationDAO = projectIterationDAO;
+        this.versionStateCacheImpl = versionStateCacheImpl;
+        this.authenticatedAccount = authenticatedAccount;
+    }
+
+    @SuppressWarnings("unused")
+    public TransMemoryMergeServiceImpl() {
+    }
 
     @Override
     public List<TranslationService.TranslationResult> executeMerge(
@@ -271,7 +281,7 @@ public class TransMemoryMergeServiceImpl implements TransMemoryMergeService {
                 taskHandleOpt = Optional.ofNullable(handle);
         if (taskHandleOpt.isPresent()) {
             MergeTranslationsTaskHandle handle1 = taskHandleOpt.get();
-            handle1.setTriggeredBy(identity.getAccountUsername());
+            handle1.setTriggeredBy(authenticatedAccount.getUsername());
             handle1.setMaxProgress((int) mergeTargetCount);
             handle1.setTotalTranslations(mergeTargetCount);
         }
